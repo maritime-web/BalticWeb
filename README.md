@@ -1,4 +1,4 @@
-ArcticWeb
+Embryo
 =========
 
 Web portal for maritime stakeholders in the arctic area
