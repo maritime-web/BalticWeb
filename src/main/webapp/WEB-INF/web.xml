@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+	<display-name>ArcticWeb - Greenland</display-name>
+
+	<!-- Enable Wicket -->
+	<filter>
+		<filter-name>Wicket</filter-name>
+		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+		<init-param>
+			<!-- Specify the "entry point" for Wicket to configure itself from -->
+			<param-name>applicationClassName</param-name>
+			<param-value>dk.dma.arcticweb.site.ArcticWebApplication</param-value>
+		</init-param>
+	</filter>
+
+	<!-- Have wicket manage the context root -->
+	<filter-mapping>
+		<filter-name>Wicket</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<description></description>
+		<servlet-name>JsonProxyServlet</servlet-name>
+		<servlet-class>dk.dma.arcticweb.site.proxy.JsonProxyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>JsonProxyServlet</servlet-name>
+		<url-pattern>/json_proxy/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>

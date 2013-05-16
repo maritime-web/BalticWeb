@@ -1,0 +1,34 @@
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>	
+	<div id="voyageInformation" class="modal hide fade large" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<form wicket:id="voyage_information_form" class="form-horizontal">	
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h2 id="myModalLabel">Voyage information</h2>
+			</div>
+			<div class="modal-body">			
+				<wicket:enclosure>
+					<div class="alert alert-error" wicket:id="voyage_information_feedback">xxx</div>
+				</wicket:enclosure>
+				<div class="leftForm">				
+					<div class="control-group">
+					    <label class="control-label" for="mmsi">Persons onboard</label>
+					    <div class="controls">
+							<input wicket:id="personsOnboard" type="text" id="personsOnboard" class="input-small" />
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="doctorOnboard">Doctor onboard</label>
+					    <div class="controls">
+					    	<input wicket:id="doctorOnboard" type="checkbox" id="doctorOnboard"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary" wicket:id="save">Save</button>
+			</div>	
+		</form>
+	</div>	
+</wicket:panel>
+</html>

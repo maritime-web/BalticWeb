@@ -1,0 +1,271 @@
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>
+
+	<div id="map">
+			
+	</div>
+	<div id="leftSide" class="shadowsIE">
+	
+			<div id="legendsPanel" class="panel whiteOpacity arrowDown">
+				<div id="legendsHeader" class="panelHeader">Legends</div>
+				<div id="legendsContainer" class="panelContainer"></div>
+			</div>
+
+			<div id="searchPanel" class="panel whiteOpacity arrowDown">
+				<div id="searchHeader" class="panelHeader">Search</div>
+				<div id="searchContainer" class="panelContainer"></div>
+			</div>
+
+			<div id="filteringPanel" class="panel whiteOpacity arrowDown">
+				<div id="filteringHeader" class="panelHeader">Filtering</div>
+				<div id="filteringContainer" class="panelContainer"></div>
+			</div>
+
+			<div id="detailsPanel" class="panel whiteOpacity arrowDown">
+				<div id="detailsHeader" class="panelHeader">Vessel details</div>
+				<div id="detailsContainer" class="panelContainer"></div>
+			</div>
+
+		</div>
+	
+	<div id="legends">
+	
+		<div class="panelText"><img src="img/vessel_blue.png" class="legendsIMG"/> Passenger</div>
+		<div class="panelText"><img src="img/vessel_green.png" class="legendsIMG"/> Cargo</div>
+		<div class="panelText"><img src="img/vessel_red.png" class="legendsIMG"/> Tanker</div>
+		<div class="panelText"><img src="img/vessel_yellow.png" class="legendsIMG"/> High speed craft and WIG</div>						
+		<div class="panelText"><img src="img/vessel_orange.png" class="legendsIMG"/> Fishing</div>
+		<div class="panelText"><img src="img/vessel_purple.png" class="legendsIMG"/> Sailing and pleasure</div>
+		<div class="panelText"><img src="img/vessel_turquoise.png" class="legendsIMG"/> Pilot, tug and others</div>
+		<div class="panelText"><img src="img/vessel_gray.png" class="legendsIMG"/> Undefined / unknown</div>
+		<div class="panelText"><img src="img/vessel_white.png" class="legendsIMG"/> Sailing</div>
+		<div class="panelText"><img src="img/vessel_white_moored.png" class="legendsIMG"/> Anchored/Moored</div>
+	
+	</div>
+	
+	<div id="search">
+		<div id="searchMatch" class="information"></div>
+		<input id="searchField" type=text /> <img id="searchLoad" src="img\load.gif">
+		<div id="searchResults">
+			<div id="searchResultsTop">
+			</div>		
+			<div id="searchResultsContainer">
+			</div>
+		</div>
+	</div>
+	
+	<div id="filtering">
+		<div class="smallText">Presets</div>
+		<select name="filter_preset" class="filteringSelect"
+				onchange="useFilterPreset(this);">
+			<option value="">None</option>
+			<option value="country=DNK">Danish ships</option>
+			<option
+				value="country=BEL,BGR,CYP,CZE,DNK,EST,FRO,FIN,AUT,FRA,DEU,GBR,GRC,HUN,IRL,ITA,LVA,LTU,LUX,MLT,NLD,POL,PRT,ROU,SVK,SVN,ESP,SWE">
+				EU ships
+			</option>
+			<option value="country=CHN">Chinese ships</option>
+			<option value="sourceType=SAT">Satellite</option>
+			<option value="sourceRegion=804">Satellite (NO)</option>
+			<option value="sourceRegion=802">Satellite (ExactEarth)</option>
+			<option value="sourceRegion=808">Satellite (ORBCOMM)</option>
+			<option value="sourceCountry=DNK">Source DK</option>
+			<option value="sourceSystem=AISD">AISD</option>
+			<option value="sourceSystem=IALA">IALA.net</option>
+			<option value="sourceSystem=MSSIS">MSSIS</option>
+			<option value="sourceSystem=TEST">AIS-TEST</option>
+		</select>
+		
+		<form name="targetFilter">
+			<hr class="tight">
+			<div id="sidebarTable">					
+				<div class="detailsRow">
+					<div class="smallText">Target country</div>
+					<div class="detailsRightCol">
+						<input id="country" type="text" class="filteringInput" />
+					</div>
+				</div>
+				<div class="detailsRow">
+					<div class="smallText">Source country</div>
+					<div class="detailsRightCol">
+						<input id="sourceCountry" type="text" class="filteringInput" />
+					</div>
+				</div>
+				<div class="detailsRow">
+					<div class="smallText">Source type</div>
+					<div class="detailsRightCol">
+						<input id="sourceType" type="text" class="filteringInput" />
+					</div>
+				</div>
+				<div class="detailsRow">
+					<div class="smallText">Source region</div>
+					<div class="detailsRightCol">
+						<input id="sourceRegion" type="text" class="filteringInput" />
+					</div>
+				</div>
+				<div class="detailsRow">
+					<div class="smallText">Source BS</div>
+					<div class="detailsRightCol">
+						<input id="sourceBs" type="text" class="filteringInput" />
+					</div>
+				</div>
+				<div class="detailsRow">
+					<div class="smallText">Source system</div>
+					<div class="detailsRightCol">
+						<input id="sourceSystem" type="text" class="filteringInput" />
+					</div>
+				</div>
+				<div class="detailsRow">
+					<div class="smallText">Vessel class</div>
+					<div class="detailsRightCol">
+						<input id="vesselClass" type="text" class="filteringInput" />
+					</div>
+				</div>				
+			</div>
+			
+			<input class="btn btn-small btn-primary" type="button" value="Apply filter" onclick="applyFilter();"/> 
+			<input class="btn btn-small" type="button" value="Clear filter" onclick="clearFilters();applyFilter();"/>
+			
+		</form>
+
+	</div>
+	
+	<div id="vesselDetails">
+		<div class="table">
+			<div class="row">
+				<div class="smallText cell">MMSI</div>
+				<div id="vd_mmsi" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Class</div>
+				<div id="vd_class" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Name</div>
+				<div id="vd_name" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Callsign</div>
+				<div id="vd_callsign" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Lat</div>
+				<div id="vd_lat" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Lon</div>
+				<div id="vd_lon" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">IMO</div>
+				<div id="vd_imo" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Source</div>
+				<div id="vd_source" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Type</div>
+				<div id="vd_type" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Cargo</div>
+				<div id="vd_cargo" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Country</div>
+				<div id="vd_country" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">SOG</div>
+				<div id="vd_sog" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">COG</div>
+				<div id="vd_cog" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Heading</div>
+				<div id="vd_heading" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Draught</div>
+				<div id="vd_draught" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">ROT</div>
+				<div id="vd_rot" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Width</div>
+				<div id="vd_width" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Length</div>
+				<div id="vd_length" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Destination</div>
+				<div id="vd_destination" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Nav status</div>
+				<div id="vd_navStatus" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">ETA</div>
+				<div id="vd_eta" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Pos acc</div>
+				<div id="vd_posAcc" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">Last report</div>
+				<div id="vd_lastReport" class="information cellRight"></div>
+			</div>
+			<div class="row">
+				<div class="smallText cell">More information</div>
+				<div id="vd_link" class="information cellRight"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="rightSide">
+		<div id="statusPanel" class="panel whiteOpacity shadowsIE">
+			<div class="smallText">Coordinates</div>
+			<div id="location" class="information">0.0000, 0.0000</div>
+			<div class="smallText">Total vessels</div>
+			<div id="vesselsTotal" class="information">0</div>
+			<div id="vesselsViewText" class="smallText">Vessels in view</div>
+			<div id="vesselsView" class="information">0</div>
+			<div id="toolboxHeader" class="smallText">Tools</div>
+			<div id="toolbox"></div>
+		</div>
+
+		<div id="feedPanel" class="panel whiteOpacity shadowsIE arrowDown">
+			<div id="feedHeader" class="panelHeader">Abnormal behaviors</div>
+			
+			<div id="feedContainer" class="panelContainer">
+				
+			</div>
+		</div>
+	</div>
+	
+	<div id="loadingPanel" class="whiteOpacity shadowsIE">
+		&nbsp; &nbsp; Loading vessels <img src="img\load.gif">
+	</div>
+
+	<div id="vesselNameBox" class="whiteOpacity shadowsIE">			
+		
+	</div>
+
+	<div id="bottomOptions" class="btn-group">
+		<button class="btn btn-inverse">Distance tool</button>
+		<button class="btn btn-inverse">Routes</button>
+		<button class="btn btn-inverse">MSI</button>
+		<button class="btn btn-inverse">ICE</button>
+	</div>
+
+</wicket:panel>
+</html>

@@ -1,0 +1,49 @@
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>	
+	<div id="shipReport" class="modal hide fade large" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<form wicket:id="ship_report_form">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h2 id="myModalLabel">Ship report</h2>
+			</div>
+			<div class="modal-body">
+				<wicket:enclosure>
+					<div class="alert alert-error" wicket:id="ship_report_feedback">xxx</div>
+				</wicket:enclosure>
+				<div class="control-group">
+				    <label class="control-label" for="lat">Lat</label>
+				    <div class="controls">
+						<input wicket:id="lat" type="text" id="lat" class="input-small" />
+					</div>
+					<label class="control-label" for="lon">Lon</label>
+				    <div class="controls">
+						<input wicket:id="lon" type="text" id="lon" class="input-small" />
+					</div>
+				</div>
+				<div class="control-group">
+				    <label class="control-label" for="weather">Weather</label>
+				    <div class="controls">
+				    	<textarea wicket:id="weather" rows="3" id="weather"></textarea>
+					</div>
+				</div>
+				<div class="control-group">
+				    <label class="control-label" for="iceObservations">Ice observations</label>
+				    <div class="controls">
+				    	<textarea wicket:id="iceObservations" rows="3" id="iceObservations"></textarea>
+					</div>
+				</div>
+				<div class="control-group">
+				    <label class="control-label" for="reportTime">Report time</label>
+				    <div class="controls">
+				    	<div wicket:id="reportTime"> </div>
+					</div>
+				</div>				
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary" wicket:id="save">Save</button>
+				<button class="btn" role="button" data-toggle="modal" data-dismiss="modal">Cancel</button>
+			</div>		
+		</form>
+	</div>	
+</wicket:panel>
+</html>

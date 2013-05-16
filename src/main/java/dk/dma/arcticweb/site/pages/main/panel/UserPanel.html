@@ -1,0 +1,17 @@
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>
+	<i class="icon-user icon-white" style="vertical-align:middle; margin-bottom: 4px"></i>
+	
+	<span wicket:id="not_logged_in">
+		<a href="#login" role="button" class="navbar-link" data-toggle="modal">Sign in</a>
+		|
+		<a href="#request" role="button" class="navbar-link" data-toggle="modal">Request login</a>
+	</span>
+	<span wicket:id="logged_in">		
+		<a href="#"><span wicket:id=username>username</span></a>
+		|
+		<a href="#" role="button" class="navbar-link" data-toggle="modal" wicket:id="logout_link">Log out</a>
+	</span>
+	
+</wicket:panel>
+</html>

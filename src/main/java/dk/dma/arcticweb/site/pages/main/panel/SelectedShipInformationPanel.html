@@ -1,0 +1,108 @@
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>	
+	<div id="selectedShipInformation" class="modal hide fade large" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<form wicket:id="selected_ship_information_form" class="form-horizontal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h2 id="myModalLabel">Ship information</h2>
+			</div>
+			<div class="modal-body">			
+				<wicket:enclosure>
+					<div class="alert alert-error" wicket:id="ship_information_feedback">xxx</div>
+				</wicket:enclosure>
+				<div wicket:id="saved">
+					<div class="alert alert-success">Saved!</div>
+				</div>
+				
+				<div class="leftForm">
+				
+					<div class="control-group">
+					    <label class="control-label" for="mmsi">MMSI</label>
+					    <div class="controls">
+							<input wicket:id="mmsi" type="text" id="mmsi" class="input-small" disabled />
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="mmsi">Name</label>
+					    <div class="controls">
+							<input wicket:id="name" type="text" id="name" class="input-large" disabled/>
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="imoNo">IMO number</label>
+					    <div class="controls">
+							<input wicket:id="imoNo" type="text" id="imoNo" class="input-small" disabled/>
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="callsign">Callsign</label>
+					    <div class="controls">
+							<input wicket:id="callsign" type="text" id="callsign" class="input-small" disabled/>
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="type">Type</label>
+					    <div class="controls">
+					    	<select wicket:id="type" id="type" class="input-large" disabled></select>
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="commCapabilities">Communication capabilities</label>
+					    <div class="controls">
+					    	<input wicket:id="commCapabilities" type="text" id="commCapabilities" class="input-large" disabled/>
+						</div>
+					</div>
+					
+				</div>
+				
+				<div style="border-left:1px solid #aaa;height:300px;float:left"></div>
+				
+				<div class="rightForm">
+					
+					<div class="control-group">
+					    <label class="control-label" for="width">Width (m)</label>
+					    <div class="controls">
+					    	<input wicket:id="width" type="text" id="width" class="input-mini" disabled/>
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="length">Length (m)</label>
+					    <div class="controls">
+					    	<input wicket:id="length" type="text" id="length" class="input-mini" disabled/>
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="maxSpeed">Max speed (kn)</label>
+					    <div class="controls">
+					    	<input wicket:id="maxSpeed" type="text" id="maxSpeed" class="input-mini" disabled/>
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="tonnage">Tonnage</label>
+					    <div class="controls">
+					    	<input wicket:id="tonnage" type="text" id="tonnage" class="input-mini" disabled/>
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="iceClass">Ice class</label>
+					    <div class="controls">
+					    	<input wicket:id="iceClass"type="text" id="iceClass" class="input-small" disabled/>
+						</div>
+					</div>
+					<div class="control-group">
+					    <label class="control-label" for="helipad">Helipad</label>
+					    <div class="controls">
+					    	<input wicket:id="helipad" type="checkbox" id="helipad" disabled/>
+						</div>
+					</div>	
+					
+				</div>
+							
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			</div>
+		</form>
+	</div>	
+</wicket:panel>
+</html>
