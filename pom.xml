@@ -84,13 +84,13 @@
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-core</artifactId>
 		</dependency>
-		
-		<dependency>		
+
+		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-datetime</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
-           
+
 		<!-- Wicket CDI integration. -->
 		<dependency>
 			<groupId>net.ftlines.wicket-cdi</groupId>
@@ -170,6 +170,64 @@
 					<wtpversion>2.0</wtpversion>
 					<downloadSources>true</downloadSources>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>7.4.Final</version>
+				<executions>
+					<execution>
+						<id>install-undeploy</id>
+						<phase>install</phase>
+						<goals>
+							<goal>undeploy</goal>
+						</goals>
+					</execution>
+						<!-- Deploy the JDBC library -->
+					<execution>
+						<id>deploy-driver</id>
+						<phase>install</phase>
+						<configuration>
+							<groupId>mysql</groupId>
+							<artifactId>mysql-connector-java</artifactId>
+							<name>mysql-connector-java-5.1.21.jar</name>
+						</configuration>
+						<goals>
+							<goal>deploy-artifact</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>add-datasource</id>
+						<phase>install</phase>
+						<goals>
+							<goal>add-resource</goal>
+						</goals>
+						<configuration>
+							<address>subsystem=datasources,data-source=java:jboss/datasources/embryoDS</address>
+							<resource>
+								<enable-resource>true</enable-resource>
+								<properties>
+									<jndi-name>java:jboss/datasources/embryoDS</jndi-name>
+									<enabled>true</enabled>
+									<connection-url>jdbc:mysql://localhost:3306/embryo</connection-url>
+									<driver-name>mysql-connector-java-5.1.21.jar</driver-name>
+									<user-name>embryo</user-name>
+									<password>embryo</password>
+									<pool-name>mypool</pool-name>
+									<enabled>true</enabled>
+                                    <enable>true</enable>
+								</properties>
+							</resource>
+						</configuration>
+					</execution>
+					<execution>
+						<id>deploy</id>
+						<phase>install</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
