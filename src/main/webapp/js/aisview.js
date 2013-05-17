@@ -1,4 +1,9 @@
+// TODO: All JavaScript should be placed in appropriate namespaces according to their components etc.
+var embryo  = {};
+
+
 // Global variables
+
 var map;
 var vessels = [];
 var clusters = [];
@@ -22,6 +27,26 @@ var searchResults = [];
 var lastRequestId = 0;
 var lastZoomLevel;
 var lastLoadArea;
+
+
+//embryo.eventbus is necessary to construct a completely loose coupling between all components in the application.
+//The implementation is based on jQuery, and as such embryo.eventbus is just a wrapper around jQuery enabling object oriented like code
+embryo.eventbus = {};
+embryo.eventbus.registerHandler = function(eventType, handler) {
+	var type = eventType().type;
+	console.log("registerHandler for eventType : " + type);
+	$(document).on(type, handler);
+};
+
+embryo.eventbus.fireEvent = function(event) {
+	$(document).trigger(event);
+};
+
+embryo.eventbus.VesselSelectedEvent = function(id) {
+	var event = jQuery.Event("VesselSelectedEvent");
+	event.vesselId = id;
+	return event;
+};
 
 /**
  * Sets up the map by adding layers and overwriting 
@@ -527,7 +552,9 @@ function vesselInFocus(vessel, feature){
 		selectedFeature = feature;
 
 		// Update vessel details
-		updateVesselDetails(feature.attributes.id);
+		embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(feature.attributes.id));
+
+		//embryo.vesselDetailsPanel.update(feature.attributes.id);
 
 	}
 
@@ -590,7 +617,10 @@ function redrawSelection(){
 		
 		selectionFeatures.push(selectionFeature);
 		selectedVesselInView = true;
-		updateVesselDetails(selectedFeature.attributes.id);
+
+		//embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(selectedFeature.attributes.id));
+
+		//embryo.vesselDetailsPanel.update(selectedFeature.attributes.id);
 
 	}
 
