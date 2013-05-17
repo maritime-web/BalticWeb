@@ -875,6 +875,8 @@ function checkForPanelOverflow(){
  *            The feature of the vessel
  */
 function updateVesselDetails(vesselId){
+	console.log("Fetching data for vessel with id: " + vesselId);
+	
 	// Get details from server
 	$.getJSON(detailsUrl, {
 			past_track: '1',
