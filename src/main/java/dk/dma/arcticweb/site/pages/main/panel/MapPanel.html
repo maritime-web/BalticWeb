@@ -4,55 +4,8 @@
 	<div id="map">
 			
 	</div>
-	<div id="leftSide" class="shadowsIE">
 	
-			<div id="legendsPanel" class="panel whiteOpacity arrowDown">
-				<div id="legendsHeader" class="panelHeader">Legends</div>
-				<div id="legendsContainer" class="panelContainer"></div>
-			</div>
-
-			<div id="searchPanel" class="panel whiteOpacity arrowDown">
-				<div id="searchHeader" class="panelHeader">Search</div>
-				<div id="searchContainer" class="panelContainer"></div>
-			</div>
-
-			<div id="filteringPanel" class="panel whiteOpacity arrowDown">
-				<div id="filteringHeader" class="panelHeader">Filtering</div>
-				<div id="filteringContainer" class="panelContainer"></div>
-			</div>
-
-			<div id="detailsPanel" class="panel whiteOpacity arrowDown">
-				<div id="detailsHeader" class="panelHeader">Vessel details</div>
-				<div id="detailsContainer" class="panelContainer"></div>
-			</div>
-
-		</div>
-	
-	<div id="legends">
-	
-		<div class="panelText"><img src="img/vessel_blue.png" class="legendsIMG"/> Passenger</div>
-		<div class="panelText"><img src="img/vessel_green.png" class="legendsIMG"/> Cargo</div>
-		<div class="panelText"><img src="img/vessel_red.png" class="legendsIMG"/> Tanker</div>
-		<div class="panelText"><img src="img/vessel_yellow.png" class="legendsIMG"/> High speed craft and WIG</div>						
-		<div class="panelText"><img src="img/vessel_orange.png" class="legendsIMG"/> Fishing</div>
-		<div class="panelText"><img src="img/vessel_purple.png" class="legendsIMG"/> Sailing and pleasure</div>
-		<div class="panelText"><img src="img/vessel_turquoise.png" class="legendsIMG"/> Pilot, tug and others</div>
-		<div class="panelText"><img src="img/vessel_gray.png" class="legendsIMG"/> Undefined / unknown</div>
-		<div class="panelText"><img src="img/vessel_white.png" class="legendsIMG"/> Sailing</div>
-		<div class="panelText"><img src="img/vessel_white_moored.png" class="legendsIMG"/> Anchored/Moored</div>
-	
-	</div>
-	
-	<div id="search">
-		<div id="searchMatch" class="information"></div>
-		<input id="searchField" type=text /> <img id="searchLoad" src="img\load.gif">
-		<div id="searchResults">
-			<div id="searchResultsTop">
-			</div>		
-			<div id="searchResultsContainer">
-			</div>
-		</div>
-	</div>
+	<div wicket:id="left"></div>
 	
 	<div id="filtering">
 		<div class="smallText">Presets</div>
