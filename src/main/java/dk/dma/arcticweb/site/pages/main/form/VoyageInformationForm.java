@@ -9,8 +9,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.validation.validator.MaximumValidator;
-import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 
 import dk.dma.arcticweb.domain.Ship;
 import dk.dma.arcticweb.domain.VoyageInformation;
@@ -41,7 +40,10 @@ public class VoyageInformationForm extends Form<VoyageInformationForm> {
 		setDefaultModel(new CompoundPropertyModel<VoyageInformation>(voyageInformation));
 		
 		personsOnboard = new TextField<>("personsOnboard");
-		personsOnboard.setRequired(true).add(new MinimumValidator<Integer>(1)).add(new MaximumValidator<Integer>(10000));
+		// With Wicket 6.7.0
+		personsOnboard.add(new RangeValidator<Integer>(1, 10000));
+		// With Wicket 1.5.8
+		//personsOnboard.setRequired(true).add(new MinimumValidator<Integer>(1)).add(new MaximumValidator<Integer>(10000));
 		
 		doctorOnboard = new CheckBox("doctorOnboard");
 		

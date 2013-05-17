@@ -18,7 +18,7 @@
 
 		<slf4j.version>1.6.6</slf4j.version>
 		<log4j.version>1.6.6</log4j.version>
-		<wicket.version>1.5.8</wicket.version>
+		<wicket.version>6.7.0</wicket.version>
 		<version.org.jboss.spec.javaee6>3.0.0.Final</version.org.jboss.spec.javaee6>
 		<version.net.ftlines.wicket-cdi>1.2</version.net.ftlines.wicket-cdi>
 	</properties>

@@ -14,8 +14,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.validation.validator.MaximumValidator;
-import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import dk.dma.arcticweb.domain.Ship;
@@ -57,7 +56,13 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 		setDefaultModel(new CompoundPropertyModel<Ship>(ship));
 
 		mmsi = new TextField<>("mmsi");
-		mmsi.setRequired(true).add(new MinimumValidator<Long>(100000000L)).add(new MaximumValidator<Long>(999999999L));
+		
+		
+
+		// With Wicket 6.7.0
+		mmsi.setRequired(true).add(new RangeValidator<Long>(100000000L, 999999999L));
+		// With Wicket 1.5.8
+		//mmsi.setRequired(true).add(new MinimumValidator<Long>(100000000L)).add(new MaximumValidator<Long>(999999999L));
 		name = new TextField<>("name");
 		name.setRequired(true);
 		imoNo = new TextField<>("imoNo");
@@ -66,7 +71,12 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 		List<String> types = ShipType.getStringList();
 		type = new DropDownChoice<>("type", types);
 		maxSpeed = new TextField<>("maxSpeed");
-		maxSpeed.add(new MaximumValidator<Integer>(200));
+		
+		
+		// With Wicket 6.7.0
+		maxSpeed.add(new RangeValidator<Integer>(null, 200));
+		// With Wicket 1.5.8
+		//maxSpeed.add(new MaximumValidator<Integer>(200));
 		tonnage = new TextField<>("tonnage");
 		commCapabilities = new TextField<>("commCapabilities");
 		rescueCapacity = new TextField<>("rescueCapacity");
