@@ -316,7 +316,6 @@ hr.tight{
 .panel {
 	padding: 4px;
 	margin-bottom: 6px;
-	visibility: hidden;
 	-moz-user-select: none; 
     -khtml-user-select: none; 
     -webkit-user-select: none; 

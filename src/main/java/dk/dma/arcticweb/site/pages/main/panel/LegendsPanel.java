@@ -4,6 +4,8 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import dk.dma.arcticweb.site.resources.OnLoadMapDependentHeaderItem;
+
 @SuppressWarnings("serial")
 public class LegendsPanel extends Panel {
 	
@@ -20,7 +22,7 @@ public class LegendsPanel extends Panel {
 		if (!isEnabledInHierarchy())
 			return;
 		// initialize component
-		response.render(OnLoadHeaderItem.forScript(JS_INIT));
+		response.render(OnLoadMapDependentHeaderItem.forScript(JS_INIT));
 	}
 	
 	

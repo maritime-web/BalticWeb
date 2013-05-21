@@ -74,10 +74,6 @@ var includeAbnormalBehaviorTool = false;
 /***********************
  * Panels
  **********************/
-var includeStatusPanel = true;
-var includeLoadingPanel = true;
-var includeLegendsPanel = true;
-var includeSearchPanel = true;
 var includeFilteringPanel = false;
 var includeDetailsPanel = true;
 var includeFeedPanel = false;

@@ -4,7 +4,6 @@ var embryo  = {};
 
 // Global variables
 
-var map;
 var vessels = [];
 var clusters = [];
 var clustersDrawn = 0;
@@ -19,7 +18,7 @@ var timeOfLastLoad = 0;
 var selectSearchedVessel = false;
 var selectMarkedVessel = false;
 var searchedVessel;
-var selectedVessel;
+//var selectedVessel;
 var selectedVesselInView = false;
 var selectedFeature;
 var markedVessel;
@@ -27,6 +26,8 @@ var searchResults = [];
 var lastRequestId = 0;
 var lastZoomLevel;
 var lastLoadArea;
+
+embryo.selectedVessel = null;
 
 
 //embryo.eventbus is necessary to construct a completely loose coupling between all components in the application.
@@ -48,12 +49,10 @@ embryo.eventbus.VesselSelectedEvent = function(id) {
 	return event;
 };
 
-/**
- * Sets up the map by adding layers and overwriting 
- * the 'map' element in the HTML index file.
- * Vessels are loaded using JSON and drawn on the map.
- */
-function setupMap(){
+
+embryo.mapPanel = {};
+embryo.mapPanel.map = null;
+embryo.mapPanel.init = function(defaultProjection) {
 
 	includePanels();
 
@@ -62,19 +61,17 @@ function setupMap(){
 	// Load cookies
 	loadView();
 
-	// Create the map and overwrite cotent of the map element
-	
-	map = new OpenLayers.Map({
+	this.map = new OpenLayers.Map({
         div: "map",
-        projection: "EPSG:900913",
+        projection: defaultProjection,
         fractionalZoom: true
-    });
-    
+    });	
+
 	addLayers();
 
 	var center = transformPosition(initialLon, initialLat);
-	map.setCenter (center, initialZoom);
-	lastZoomLevel = map.zoom;
+	this.map.setCenter (center, initialZoom);
+	lastZoomLevel = this.map.zoom;
 	
 	// Load new vessels with an interval
 	setInterval("loadVesselsIfTime()", loadCheckingFrequence);
@@ -90,6 +87,50 @@ function setupMap(){
 
 	// Load vessels
 	loadVessels();
+};
+
+/**
+ * Sets up the map by adding layers and overwriting 
+ * the 'map' element in the HTML index file.
+ * Vessels are loaded using JSON and drawn on the map.
+ */
+function setupMap(){
+
+	//includePanels();
+
+	//includeTools();
+	
+	// Load cookies
+	//loadView();
+
+	// Create the map and overwrite cotent of the map element
+	
+//	map = new OpenLayers.Map({
+//        div: "map",
+//        projection: "EPSG:900913",
+//        fractionalZoom: true
+//    });
+    
+//	addLayers();
+//
+//	var center = transformPosition(initialLon, initialLat);
+//	map.setCenter (center, initialZoom);
+//	lastZoomLevel = map.zoom;
+//	
+//	// Load new vessels with an interval
+//	setInterval("loadVesselsIfTime()", loadCheckingFrequence);
+//
+//	if (includeEventFeed){
+//		setInterval("loadBehaviors()", loadBehaviorsFrequence);
+//		loadBehaviors();
+//	}
+//	
+//	setupUI();
+//	
+//	parseFilterQuery();
+//
+//	// Load vessels
+//	loadVessels();
 	
 }
 
@@ -134,7 +175,7 @@ function loadVessels(){
 	vessels = [];
 	clusters = [];
 
-	if (map.zoom >= vesselZoomLevel || loadAllVessels){
+	if (embryo.mapPanel.map.zoom >= vesselZoomLevel || loadAllVessels){
 
 		// Show Loading panel
 		$("#loadingPanel").css('visibility', 'visible');
@@ -217,12 +258,12 @@ function loadVesselList(){
 				var vesselJSON = JSONVessels[vesselId];
 				var vessel = new Vessel(vesselId, vesselJSON, 1);
 			
-				if (selectedVessel && vesselId == selectedVessel.id && !selectSearchedVessel) {
+				if (embryo.selectedVessel && vesselId == embryo.selectedVessel.id && !selectSearchedVessel) {
 					// Update selected vessel
-					selectedVessel = vessel;
+					embryo.selectedVessel = vessel;
 				} else if (selectSearchedVessel && searchedVessel && vesselId == searchedVessel.id) {
 					// Update selected vessel
-					selectedVessel = vessel;
+					embryo.selectedVessel = vessel;
 					vessels.push(vessel);
 				}
 
@@ -251,7 +292,7 @@ function loadVesselClusters(){
 	// Find cluster size
 	var size = 10;
 	for (i in clusterSizes){
-		if (map.zoom >= clusterSizes[i].zoom){
+		if (embryo.mapPanel.map.zoom >= clusterSizes[i].zoom){
 			size = clusterSizes[i].size;
 			//break;
 		}
@@ -345,11 +386,11 @@ function drawClusters(){
     }
 
     // Set vessel in focus if selected
-	vesselInFocus(selectedVessel, selectedFeature);
+	vesselInFocus(embryo.selectedVessel, selectedFeature);
 
     // Draw selected vessel
-    if (selectedVessel){
-		drawIndieVessel(selectedVessel);
+    if (embryo.selectedVessel){
+		drawIndieVessel(embryo.selectedVessel);
     }
 
 	// Draw selection
@@ -434,7 +475,7 @@ function drawIndieVessel(vessel){
 			angle: vessel.degree
 		};
 
-	if (selectedVessel && vessel.id == selectedVessel.id && selectedFeature.attributes.type == "indie"){
+	if (embryo.selectedVessel && vessel.id == embryo.selectedVessel.id && selectedFeature.attributes.type == "indie"){
 
 		selectedFeature.attributes = attr;
 		selectedFeature.geometry = geom;
@@ -480,10 +521,10 @@ function drawVessels(){
 
 		var geom = new OpenLayers.Geometry.Point( value.lon , value.lat ).transform(
 					new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-					map.getProjectionObject() // to Spherical Mercator Projection
+					embryo.mapPanel.map.getProjectionObject() // to Spherical Mercator Projection
 				);
 
-		if (selectedVessel && selectedFeature && value.id == selectedVessel.id && selectedFeature.attributes.type == "vessel"){
+		if (embryo.selectedVessel && selectedFeature && value.id == embryo.selectedVessel.id && selectedFeature.attributes.type == "vessel"){
 
 			selectedFeature.attributes = attr;
 			selectedFeature.geometry = geom;
@@ -501,7 +542,7 @@ function drawVessels(){
 			}
 			
 			// Select selected vessel?
-			if (selectedVessel && selectedVessel.id == value.id && !selectedFeature){
+			if (embryo.selectedVessel && embryo.selectedVessel.id == value.id && !selectedFeature){
 				selectedFeature = feature;
 			}
 			
@@ -520,7 +561,7 @@ function drawVessels(){
 	}
 	
 	// Set vessel in focus if selected
-	vesselInFocus(selectedVessel, selectedFeature);
+	vesselInFocus(embryo.selectedVessel, selectedFeature);
 
 	// Remove old features except selected feature
 	var arr = vesselLayer.features.slice();
@@ -543,12 +584,12 @@ function drawVessels(){
  */
 function vesselInFocus(vessel, feature){
 
-	if (selectedVessel && feature && vessel.id == selectedVessel.id){
+	if (embryo.selectedVessel && feature && vessel.id == embryo.selectedVessel.id){
 
 		selectedVesselInView = true;
 
 		// Update selected vessel
-		selectedVessel = vessel;
+		embryo.selectedVessel = vessel;
 		selectedFeature = feature;
 
 		// Update vessel details
@@ -671,7 +712,7 @@ function drawPastTrack(tracks) {
 	// Get time stamp distance
 	var CL = false;
 	var tracksBetweenTimeStamps;
-	if (map.zoom >= vesselZoomLevel){
+	if (embryo.mapPanel.map.zoom >= vesselZoomLevel){
 		tracksBetweenTimeStamps	= tracksBetweenTimeStampsVL;
 	} else {
 		tracksBetweenTimeStamps	= tracksBetweenTimeStampsCL;	
@@ -692,10 +733,10 @@ function drawPastTrack(tracks) {
 				var points = new Array(
 					new OpenLayers.Geometry.Point(lastLon, lastLat).transform(
 							new OpenLayers.Projection("EPSG:4326"), 
-							map.getProjectionObject()),
+							embryo.mapPanel.map.getProjectionObject()),
 					new OpenLayers.Geometry.Point(currentTrack.lon, currentTrack.lat).transform(
 							new OpenLayers.Projection("EPSG:4326"), 
-							map.getProjectionObject())
+							embryo.mapPanel.map.getProjectionObject())
 				);
 			
 				var line = new OpenLayers.Geometry.LineString(points);
@@ -770,17 +811,17 @@ function findClusterColor(cluster){
 function saveViewPort(){
 
 	// Get points from viewport
-	var viewportWidth = $(map.getViewport()).width();
-	var viewportHeight = $(map.getViewport()).height();
+	var viewportWidth = $(embryo.mapPanel.map.getViewport()).width();
+	var viewportHeight = $(embryo.mapPanel.map.getViewport()).height();
 	topLeftPixel = new OpenLayers.Pixel(viewportWidth*0.00, viewportHeight*0.00);
 	botRightPixel = new OpenLayers.Pixel(viewportWidth*1.00, viewportHeight*1.00);
 
-	var top = map.getLonLatFromPixel(topLeftPixel).transform(
-			map.getProjectionObject(), // from Spherical Mercator Projection
+	var top = embryo.mapPanel.map.getLonLatFromPixel(topLeftPixel).transform(
+			embryo.mapPanel.map.getProjectionObject(), // from Spherical Mercator Projection
 			new OpenLayers.Projection("EPSG:4326") // to WGS 1984
 		);
-	var bot = map.getLonLatFromPixel(botRightPixel).transform(
-			map.getProjectionObject(), // from Spherical Mercator Projection
+	var bot = embryo.mapPanel.map.getLonLatFromPixel(botRightPixel).transform(
+			embryo.mapPanel.map.getProjectionObject(), // from Spherical Mercator Projection
 			new OpenLayers.Projection("EPSG:4326") // to WGS 1984
 		);
 
@@ -796,11 +837,11 @@ function getSpecificLoadArea(){
 	var loadArea = {};
 	
 	// Get center from viewport
-	var viewportWidth = $(map.getViewport()).width();
-	var viewportHeight = $(map.getViewport()).height();
+	var viewportWidth = $(embryo.mapPanel.map.getViewport()).width();
+	var viewportHeight = $(embryo.mapPanel.map.getViewport()).height();
 	var centerPixel = new OpenLayers.Pixel(viewportWidth*0.50, viewportHeight*0.50);
-	var center = map.getLonLatFromPixel(centerPixel).transform(
-			map.getProjectionObject(), // from Spherical Mercator Projection
+	var center = embryo.mapPanel.map.getLonLatFromPixel(centerPixel).transform(
+			embryo.mapPanel.map.getProjectionObject(), // from Spherical Mercator Projection
 			new OpenLayers.Projection("EPSG:4326") // to WGS 1984
 		);
 
@@ -852,12 +893,12 @@ function goToVessel(vessel){
 
 	var center = new OpenLayers.LonLat(vessel.lon, vessel.lat).transform(
 			new OpenLayers.Projection("EPSG:4326"), 
-			map.getProjectionObject()
+			embryo.mapPanel.map.getProjectionObject()
 		);
 
-	selectedVessel = vessel;
+	embryo.selectedVessel = vessel;
 		
-	map.setCenter (center, focusZoom);
+	embryo.mapPanel.map.setCenter (center, focusZoom);
 
 	setTimeToLoad(400);
 
@@ -871,10 +912,10 @@ function goToVesselLocation(vessel){
 
 	var center = new OpenLayers.LonLat(vessel.lon, vessel.lat).transform(
 			new OpenLayers.Projection("EPSG:4326"), 
-			map.getProjectionObject()
+			embryo.mapPanel.map.getProjectionObject()
 		);
 		
-	map.setCenter (center, focusZoom);
+	embryo.mapPanel.map.setCenter (center, focusZoom);
 
 }
 
@@ -888,13 +929,13 @@ function goToSearchedVessel(key){
 
 	var center = new OpenLayers.LonLat(vessel.lon, vessel.lat).transform(
 			new OpenLayers.Projection("EPSG:4326"), 
-			map.getProjectionObject()
+			embryo.mapPanel.map.getProjectionObject()
 		);
 
 	searchedVessel = vessel;
 	selectSearchedVessel = true;
 		
-	map.setCenter (center, focusZoom);
+	embryo.mapPanel.map.setCenter (center, focusZoom);
 
 	setTimeToLoad(400);
 
@@ -914,10 +955,10 @@ function goToLocation(longitude, latitude){
 
 	var center = new OpenLayers.LonLat(longitude, latitude).transform(
 			new OpenLayers.Projection("EPSG:4326"), 
-			map.getProjectionObject()
+			embryo.mapPanel.map.getProjectionObject()
 		);
 		
-	map.setCenter (center, focusZoom);
+	embryo.mapPanel.map.setCenter (center, focusZoom);
 
 }
 
@@ -999,7 +1040,7 @@ function search(){
 					if (searchResults.length == 1){
 						s = "";
 					}
-					//selectedVessel = searchResults[0];
+					//embryo.selectedVessel = searchResults[0];
 					
 					$("#searchResultsTop").html("<div class='information'>Search results: </div>");
 					$.each(searchResults, function(key, value) { 
@@ -1047,7 +1088,7 @@ function transformPosition(lon, lat){
 	return new OpenLayers.LonLat( lon , lat )
 		.transform(
 			new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-			map.getProjectionObject() // to Spherical Mercator Projection
+			embryo.mapPanel.map.getProjectionObject() // to Spherical Mercator Projection
 		);
 }
 
@@ -1154,10 +1195,10 @@ function filterChanged() {
  * Method for saving the current view into a cookie.
  */
 function saveViewCookie() {
-	var center = map.getCenter();
-	setCookie("dma-ais-zoom", map.zoom, 30);
-	var lonlat = new OpenLayers.LonLat(map.center.lon, map.center.lat).transform(
-		map.getProjectionObject(), // from Spherical Mercator Projection
+	var center = embryo.mapPanel.map.getCenter();
+	setCookie("dma-ais-zoom", embryo.mapPanel.map.zoom, 30);
+	var lonlat = new OpenLayers.LonLat(embryo.mapPanel.map.center.lon, embryo.mapPanel.map.center.lat).transform(
+		embryo.mapPanel.map.getProjectionObject(), // from Spherical Mercator Projection
 		new OpenLayers.Projection("EPSG:4326") // to WGS 1984
 	); 
 	setCookie("dma-ais-lat", lonlat.lat, 30);

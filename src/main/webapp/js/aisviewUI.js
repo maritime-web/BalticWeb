@@ -22,31 +22,6 @@ var clusterTextLayer;
 var indieVesselLayer;
 
 function includePanels() {
-
-	if (includeStatusPanel) {
-		$("#statusPanel").css('visibility', 'visible');
-	} else {
-		$("#statusPanel").remove();
-	}
-
-	if (includeLoadingPanel) {
-		$("#loadingPanel").css('visibility', 'hidden');
-	} else {
-		$("#loadingPanel").remove();
-	}
-
-	if (includeLegendsPanel) {
-		$("#legendsPanel").css('visibility', 'visible');
-	} else {
-		$("#legendsPanel").remove();
-	}
-
-	if (includeSearchPanel) {
-		$("#searchPanel").css('visibility', 'visible');
-	} else {
-		$("#searchPanel").remove();
-	}
-
 	if (includeFilteringPanel) {
 		$("#filteringPanel").css('visibility', 'visible');
 	} else {
@@ -148,7 +123,7 @@ function addLayers() {
 		renderers : renderer
 	});
 
-	map.addLayer(vesselLayer);
+	embryo.mapPanel.map.addLayer(vesselLayer);
 
 	// Create vector layer with a stylemap for the selection image
 	markerLayer = new OpenLayers.Layer.Vector("Markers", {
@@ -169,7 +144,7 @@ function addLayers() {
 		renderers : renderer
 	});
 
-	map.addLayer(markerLayer);
+	embryo.mapPanel.map.addLayer(markerLayer);
 
 	// Create vector layer with a stylemap for the selection image
 	selectionLayer = new OpenLayers.Layer.Vector("Selection", {
@@ -233,7 +208,7 @@ function addLayers() {
 		})
 	});
 
-	map.addLayer(clusterLayer);
+	embryo.mapPanel.map.addLayer(clusterLayer);
 
 	// Create cluster text layer
 	clusterTextLayer = new OpenLayers.Layer.Vector("Cluster text", {
@@ -249,7 +224,7 @@ function addLayers() {
 		})
 	});
 
-	map.addLayer(clusterTextLayer);
+	embryo.mapPanel.map.addLayer(clusterTextLayer);
 
 	// Create layer for individual vessels in cluster
 	indieVesselLayer = new OpenLayers.Layer.Vector("Points", {
@@ -271,12 +246,12 @@ function addLayers() {
 		})
 	});
 
-	map.addLayer(indieVesselLayer);
-	map.addLayer(selectionLayer);
-	map.addLayer(tracksLayer);
-	map.addControl(new OpenLayers.Control.DrawFeature(tracksLayer,
+	embryo.mapPanel.map.addLayer(indieVesselLayer);
+	embryo.mapPanel.map.addLayer(selectionLayer);
+	embryo.mapPanel.map.addLayer(tracksLayer);
+	embryo.mapPanel.map.addControl(new OpenLayers.Control.DrawFeature(tracksLayer,
 			OpenLayers.Handler.Path));
-	map.addLayer(timeStampsLayer);
+	embryo.mapPanel.map.addLayer(timeStampsLayer);
 
 	// Add OpenStreetMap Layer
 	var osm = new OpenLayers.Layer.OSM("OSM",
@@ -286,7 +261,7 @@ function addLayers() {
 			});
 
 	// Add OpenStreetMap Layer
-	map.addLayer(osm);
+	embryo.mapPanel.map.addLayer(osm);
 
 	// Add KMS Layer
 	// addKMSLayer();
@@ -308,19 +283,6 @@ function setupUI() {
 	var x = $(document).width() / 2 - $("#loadingPanel").width() / 2;
 	$("#loadingPanel").css('left', x);
 
-	// Update mouse location when moved
-	map.events.register("mousemove", map, function(e) {
-		var position = this.events.getMousePosition(e);
-		pixel = new OpenLayers.Pixel(position.x, position.y);
-		var lonLat = map.getLonLatFromPixel(pixel).transform(
-				map.getProjectionObject(), // from Spherical Mercator
-				// Projection
-				new OpenLayers.Projection("EPSG:4326") // to WGS 1984
-		);
-		$("#location").html(
-				lonLat.lat.toFixed(4) + ", " + lonLat.lon.toFixed(4));
-	});
-
 	// Create functions for hovering a vessel
 	var showName = function(e) {
 		if (e.feature.attributes.vessel) {
@@ -332,10 +294,10 @@ function setupUI() {
 						e.feature.geometry.x, e.feature.geometry.y);
 				var lonlatVessel = new OpenLayers.LonLat(pointVessel.x,
 						pointVessel.y);
-				var pixelVessel = map.getPixelFromLonLat(lonlatVessel);
+				var pixelVessel = embryo.mapPanel.map.getPixelFromLonLat(lonlatVessel);
 				var pixelTopLeft = new OpenLayers.Pixel(0, 0);
-				var lonlatTopLeft = map.getLonLatFromPixel(pixelTopLeft)
-				pixelTopLeft = map.getPixelFromLonLat(lonlatTopLeft);
+				var lonlatTopLeft = embryo.mapPanel.map.getLonLatFromPixel(pixelTopLeft)
+				pixelTopLeft = embryo.mapPanel.map.getPixelFromLonLat(lonlatTopLeft);
 
 				var x = pixel.x - pixelTopLeft.x;
 				var y = pixel.y - pixelTopLeft.y;
@@ -378,17 +340,17 @@ function setupUI() {
 		clickout : true,
 		toggle : true,
 		onSelect : function(feature) {
-			if (selectedVessel
-					&& selectedVessel.id == feature.attributes.vessel.id) {
+			if (embryo.selectedVessel
+					&& embryo.selectedVessel.id == feature.attributes.vessel.id) {
 				selectedFeature = null;
-				selectedVessel = null;
+				embryo.selectedVessel = null;
 				detailsReadyToClose = true;
 				$("#vesselNameBox").css('visibility', 'hidden');
 				redrawSelection();
 				selectControlVessels.unselectAll();
 			} else {
 				selectedFeature = feature;
-				selectedVessel = feature.attributes.vessel;
+				embryo.selectedVessel = feature.attributes.vessel;
 				embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(feature.attributes.id));
 				//embryo.vesselDetailsPanel.update(feature.attributes.id);
 				
@@ -399,7 +361,7 @@ function setupUI() {
 		},
 		onUnselect : function(feature) {
 			selectedFeature = null;
-			selectedVessel = null;
+			embryo.selectedVessel = null;
 			detailsReadyToClose = true;
 			tracksLayer.removeAllFeatures();
 			timeStampsLayer.removeAllFeatures();
@@ -415,17 +377,17 @@ function setupUI() {
 				clickout : true,
 				toggle : true,
 				onSelect : function(feature) {
-					if (selectedVessel
-							&& selectedVessel.id == feature.attributes.vessel.id) {
+					if (embryo.selectedVessel
+							&& embryo.selectedVessel.id == feature.attributes.vessel.id) {
 						selectedFeature = null;
-						selectedVessel = null;
+						embryo.selectedVessel = null;
 						detailsReadyToClose = true;
 						$("#vesselNameBox").css('visibility', 'hidden');
 						redrawSelection();
 						selectControlIndieVessels.unselectAll();
 					} else {
 						selectedFeature = feature;
-						selectedVessel = feature.attributes.vessel;
+						embryo.selectedVessel = feature.attributes.vessel;
 
 						embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(feature.attributes.id));
 						//embryo.vesselDetailsPanel.update(feature.attributes.id);
@@ -436,7 +398,7 @@ function setupUI() {
 				},
 				onUnselect : function(feature) {
 					selectedFeature = null;
-					selectedVessel = null;
+					embryo.selectedVessel = null;
 					detailsReadyToClose = true;
 					tracksLayer.removeAllFeatures();
 					timeStampsLayer.removeAllFeatures();
@@ -446,20 +408,20 @@ function setupUI() {
 			});
 
 	// Add select controller to map and activate
-	map.addControl(hoverControlVessels);
-	map.addControl(hoverControlIndieVessels);
-	map.addControl(selectControlVessels);
-	map.addControl(selectControlIndieVessels);
+	embryo.mapPanel.map.addControl(hoverControlVessels);
+	embryo.mapPanel.map.addControl(hoverControlIndieVessels);
+	embryo.mapPanel.map.addControl(selectControlVessels);
+	embryo.mapPanel.map.addControl(selectControlIndieVessels);
 	hoverControlVessels.activate();
 	hoverControlIndieVessels.activate();
 	selectControlVessels.activate();
 	selectControlIndieVessels.activate();
 
 	// Register listeners
-	map.events.register("movestart", map, function() {
+	embryo.mapPanel.map.events.register("movestart", map, function() {
 
 	});
-	map.events.register("moveend", map, function() {
+	embryo.mapPanel.map.events.register("moveend", map, function() {
 
 		saveViewCookie();
 		$("#vesselNameBox").css('visibility', 'hidden');
@@ -472,7 +434,7 @@ function setupUI() {
 		// updateVesselsInView();
 		// }
 
-		lastZoomLevel = map.zoom;
+		lastZoomLevel = embryo.mapPanel.map.zoom;
 	});
 
 	// Set click events on vessel details panel
@@ -696,18 +658,18 @@ function loadAfterMove() {
 	}
 
 	// If cluster zoom level
-	if (map.zoom < vesselZoomLevel) {
+	if (embryo.mapPanel.map.zoom < vesselZoomLevel) {
 
 		return true;
 
-	} else if (map.zoom >= vesselZoomLevel && lastZoomLevel < vesselZoomLevel) {
+	} else if (embryo.mapPanel.map.zoom >= vesselZoomLevel && lastZoomLevel < vesselZoomLevel) {
 
 		return true;
 
 	} else {
 
 		// If zoom in
-		if (map.zoom > lastZoomLevel) {
+		if (embryo.mapPanel.map.zoom > lastZoomLevel) {
 
 			return false;
 
@@ -945,4 +907,21 @@ embryo.vesselDetailsPanel.onAjaxResponse = function(result){
 				});
 	}
 	
-}
+};
+
+embryo.statusPanel = {};
+embryo.statusPanel.init = function(projection){
+// Update mouse location when moved
+	
+	embryo.mapPanel.map.events.register("mousemove", embryo.mapPanel.map, function(e) {
+		var position = embryo.mapPanel.map.events.getMousePosition(e);
+		var pixel = new OpenLayers.Pixel(position.x, position.y);
+		var lonLat = embryo.mapPanel.map.getLonLatFromPixel(pixel).transform(
+				embryo.mapPanel.map.getProjectionObject(), // from Spherical Mercator
+				// Projection
+				new OpenLayers.Projection(projection) // to WGS 1984
+		);
+		$("#location").html(
+				lonLat.lat.toFixed(4) + ", " + lonLat.lon.toFixed(4));
+	});
+};

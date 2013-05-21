@@ -6,11 +6,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 import dk.dma.arcticweb.site.resources.OnLoadMapDependentHeaderItem;
 
 @SuppressWarnings("serial")
-public class VesselDetailsPanel extends Panel {
+public class StatusPanel extends Panel {
 
-	private final static String JS_INIT = "embryo.vesselDetailsPanel.init();";
+	private final static String JS_INIT = "embryo.statusPanel.init('projection');";
 
-	public VesselDetailsPanel(String id) {
+	public StatusPanel(String id) {
 		super(id);		
 	}
 	
@@ -21,7 +21,8 @@ public class VesselDetailsPanel extends Panel {
 		if (!isEnabledInHierarchy())
 			return;
 		// initialize component
-		response.render(OnLoadMapDependentHeaderItem.forScript(JS_INIT));
+		String js_init = JS_INIT.replaceAll("projection", "EPSG:4326");
+		response.render(OnLoadMapDependentHeaderItem.forScript(js_init));
 	}
 	
 
