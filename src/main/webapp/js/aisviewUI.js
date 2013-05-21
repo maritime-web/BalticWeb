@@ -5,7 +5,6 @@
 // Panel variables
 var detailsOpen = false;
 var filteringOpen = false;
-var searchOpen = false;
 var feedOpen = false;
 var abnormalOpen = false;
 var detailsReadyToClose = false;
@@ -492,33 +491,6 @@ function setupUI() {
 		}
 	});
 
-	// Set click events on search panel
-	$("#searchHeader").click(function() {
-		if (searchOpen) {
-			$("#searchContainer").slideUp({
-				complete : function() {
-					searchOpen = false;
-					$("#searchHeader").html("Search");
-					$("#searchPanel").removeClass("arrowUp");
-					$("#searchPanel").addClass("arrowDown");
-					checkForPanelOverflow();
-				}
-			});
-		} else {
-			$("#searchContainer").css('display', 'none');
-			$("#searchContainer").html($("#search").html());
-			$("#searchHeader").html("Search<br /><hr class='tight'>");
-			$("#searchContainer").slideDown({
-				complete : function() {
-					searchOpen = true;
-					$("#searchPanel").removeClass("arrowDown");
-					$("#searchPanel").addClass("arrowUp");
-					checkForPanelOverflow();
-					parseFilterQuery();
-				}
-			});
-		}
-	});
 
 	// Set click events on feed panel
 	$("#feedHeader").click(
@@ -560,8 +532,6 @@ function setupUI() {
 		abnormalOpen = false;
 	});
 
-	// Search when search field is changed
-	setInterval("checkForSearch()", 200);
 
 	// Close empty panels
 	setInterval("closeEmptyPanels()", 1000);
@@ -601,6 +571,124 @@ embryo.legendsPanel.init = function() {
 		}
 	});
 };
+
+
+embryo.searchPanel = {};
+embryo.searchPanel.searchOpen = false;
+embryo.searchPanel.init = function(){
+	// Set click events on search panel
+	$("#searchHeader").click(function() {
+		if (this.searchOpen) {
+			$("#searchContainer").slideUp({
+				complete : function() {
+					embryo.searchPanel.searchOpen = false;
+					$("#searchHeader").html("Search");
+					$("#searchPanel").removeClass("arrowUp");
+					$("#searchPanel").addClass("arrowDown");
+					
+					// TODO get rid of this call
+					checkForPanelOverflow();
+				}
+			});
+		} else {
+			$("#searchContainer").css('display', 'none');
+			$("#searchContainer").html($("#search").html());
+			$("#searchHeader").html("Search<br /><hr class='tight'>");
+			$("#searchContainer").slideDown({
+				complete : function() {
+					embryo.searchPanel.searchOpen = true;
+					$("#searchPanel").removeClass("arrowDown");
+					$("#searchPanel").addClass("arrowUp");
+					
+					// TODO get rid of this call
+					checkForPanelOverflow();
+					//FIXME should this be removed?
+					parseFilterQuery();
+				}
+			});
+		}
+	});
+	
+	// Search when search field is changed
+	setInterval("embryo.searchPanel.checkForSearch()", 200);
+};
+
+embryo.searchPanel.lastSearch = "";
+embryo.searchPanel.checkForSearch = function () {
+	var val = $("#searchField").val();
+	if (val != this.lastSearch) {
+		this.lastSearch = val;
+		this.search(val);
+	}
+};
+
+/**
+ * Searches for the vessel described in the search field.
+ */
+embryo.searchPanel.search = function(){
+	// Read search field
+	var arg = $("#searchField").val();
+	$("#searchResultsTop").empty();
+	$("#searchResultsContainer").empty();
+	
+	if (arg.length > 0){
+
+		// Show loader
+		$("#searchLoad").css('visibility', 'visible');
+
+		// Load search results
+		$.getJSON(searchUrl, { argument: arg }, function (result) {
+				var s = "s";
+				
+				// Show search results
+				$("#searchResults").css('visibility', 'visible');
+					
+				// Search results
+				searchResults = [];
+
+				// Get vessels
+				for (vesselId in result.vessels) {
+					var vesselJSON = result.vessels[vesselId];
+					var vessel = new Vessel(vesselId, vesselJSON, 1);
+					searchResults.push(vessel);
+				}
+
+				// Add search result to list
+				if (searchResults.length <= searchResultsLimit && searchResults.length != 0){
+					if (searchResults.length == 1){
+						s = "";
+					}
+					//embryo.selectedVessel = searchResults[0];
+					
+					$("#searchResultsTop").html("<div class='information'>Search results: </div>");
+					$.each(searchResults, function(key, value) { 
+
+							searchResults.push(value);
+
+							$("#searchResultsContainer").append(searchResultToHTML(value, key));
+							
+						}
+					);
+					
+				}
+
+				$("#searchMatch").html(result.vesselCount + " vessel" + s + " match.");
+
+				// Hide loader
+				$("#searchLoad").css('visibility', 'hidden');
+
+			});
+	} else {
+		searchResults = [];
+		drawVessels();
+
+		// Hide results
+		$("#searchMatch").html('');
+		$("#searchResults").css('visibility', 'hidden');
+	}
+
+}
+
 
 function setupDatePickers() {
 
@@ -716,15 +804,6 @@ function outOfLastLoadArea() {
 
 }
 
-var lastSearch = "";
-
-function checkForSearch() {
-	var val = $("#searchField").val();
-	if (val != lastSearch) {
-		lastSearch = val;
-		search(val);
-	}
-}
 
 function updateVesselsInView() {
 
@@ -777,7 +856,7 @@ function checkForPanelOverflow() {
 	var fih = 380; // The height of the filtering
 	var sh = 92; // The height of the search panel
 
-	if (searchOpen) {
+	if (embryo.searchPanel.searchOpen) {
 		sh = 340;
 	} else {
 		sh = 27;
