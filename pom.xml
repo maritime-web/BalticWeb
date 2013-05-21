@@ -183,7 +183,7 @@
 							<goal>undeploy</goal>
 						</goals>
 					</execution>
-						<!-- Deploy the JDBC library -->
+					<!-- Deploy the JDBC library -->
 					<execution>
 						<id>deploy-driver</id>
 						<phase>install</phase>
@@ -215,7 +215,7 @@
 									<password>embryo</password>
 									<pool-name>mypool</pool-name>
 									<enabled>true</enabled>
-                                    <enable>true</enable>
+									<enable>true</enable>
 								</properties>
 							</resource>
 						</configuration>
@@ -228,6 +228,61 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<configuration>
+					<target>
+						<property environment="env"/>
+					  	<property name="searchPath" value="META-INF/maven/${project.groupId}/${project.artifactId}/pom.properties"/>
+						
+						<first id="first">
+							<fileset dir="${env.JBOSS_HOME}/standalone/tmp/vfs/"
+								includes="**/${searchPath}" />
+						</first>
+						<script language="javascript">
+							var before = project.getProperty("toString:first");
+							var replace = project.getProperty("searchPath");
+							project.setProperty("jbossTmpDir", before.replaceAll(replace, ""));
+						</script>
+						<!-- Place any Ant task here. You can add anything you can add between 
+							<target> and </target> in a build.xml. -->
+						<echo message="${jbossTmpDir}" />
+						<copy todir="${jbossTmpDir}">
+							<fileset dir="src/main/webapp">
+								<include name="js/**/*.*" />
+								<include name="css/**/*.*" />
+								<include name="img/**/*.*" />
+							</fileset>
+						</copy>
+						<copy todir="${jbossTmpDir}/WEB-INF/classes">
+							<fileset dir="src/main/java">
+								<include name="**/*.html" />
+							</fileset>
+						</copy>
+					</target>
+
+
+					<macrodef name="find">
+						<attribute name="dir" />
+						<attribute name="name" />
+						<attribute name="property" />
+						<sequential>
+							<pathconvert property="@{property}.matches" pathsep="${line.separator}">
+								<fileset dir="@{dir}">
+									<include name="@{name}" />
+								</fileset>
+							</pathconvert>
+							<loadresource property="@{property}">
+								<string value="${@{property}.matches}" />
+								<filterchain>
+									<headfilter lines="1" />
+								</filterchain>
+							</loadresource>
+						</sequential>
+					</macrodef>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
