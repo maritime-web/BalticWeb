@@ -289,13 +289,8 @@ function setupUI() {
 				past_track : '1',
 				id : e.feature.attributes.id
 			}, function(result) {
-				var pointVessel = new OpenLayers.Geometry.Point(
-						e.feature.geometry.x, e.feature.geometry.y);
-				var lonlatVessel = new OpenLayers.LonLat(pointVessel.x,
-						pointVessel.y);
-				var pixelVessel = embryo.mapPanel.map.getPixelFromLonLat(lonlatVessel);
 				var pixelTopLeft = new OpenLayers.Pixel(0, 0);
-				var lonlatTopLeft = embryo.mapPanel.map.getLonLatFromPixel(pixelTopLeft)
+				var lonlatTopLeft = embryo.mapPanel.map.getLonLatFromPixel(pixelTopLeft);
 				pixelTopLeft = embryo.mapPanel.map.getPixelFromLonLat(lonlatTopLeft);
 
 				var x = pixel.x - pixelTopLeft.x;
@@ -578,7 +573,7 @@ embryo.searchPanel.searchOpen = false;
 embryo.searchPanel.init = function(){
 	// Set click events on search panel
 	$("#searchHeader").click(function() {
-		if (this.searchOpen) {
+		if (embryo.searchPanel.searchOpen) {
 			$("#searchContainer").slideUp({
 				complete : function() {
 					embryo.searchPanel.searchOpen = false;
