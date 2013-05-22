@@ -282,11 +282,12 @@ function setupUI() {
 	var x = $(document).width() / 2 - $("#loadingPanel").width() / 2;
 	$("#loadingPanel").css('left', x);
 
+	//
+	embryo.mapPanel.map.events.includeXY = true;
 	
 	// Create functions for hovering a vessel
 	var showName = function(e) {
-//		console.log(e.xy);
-		
+		var lonlatCenter = e.feature.geometry.getBounds().getCenterLonLat();
 		if (e.feature.attributes.vessel) {
 			$.getJSON(detailsUrl, {
 				past_track : '1',
@@ -296,9 +297,11 @@ function setupUI() {
 				var lonlatTopLeft = embryo.mapPanel.map.getLonLatFromPixel(pixelTopLeft);
 				pixelTopLeft = embryo.mapPanel.map.getPixelFromLonLat(lonlatTopLeft);
 
+				var pixel = embryo.mapPanel.map.getPixelFromLonLat(lonlatCenter);
+				
 				var x = pixel.x - pixelTopLeft.x;
 				var y = pixel.y - pixelTopLeft.y;
-
+				
 				$("#vesselNameBox").html(result.name);
 				$("#vesselNameBox").css('visibility', 'visible');
 				$("#vesselNameBox").css('top', (y - 26) + 'px');
@@ -308,7 +311,7 @@ function setupUI() {
 	};
 
 	var hideName = function(e) {
-		$("#vesselNameBox").css('visibility', 'hidden');
+		//$("#vesselNameBox").css('visibility', 'hidden');
 	};
 
 	vesselLayer.events.on({
@@ -998,7 +1001,7 @@ embryo.statusPanel.init = function(projection){
 	
 	embryo.mapPanel.map.events.register("mousemove", embryo.mapPanel.map, function(e) {
 		var position = embryo.mapPanel.map.events.getMousePosition(e);
-		var pixel = new OpenLayers.Pixel(position.x, position.y);
+		pixel = new OpenLayers.Pixel(position.x, position.y);
 		var lonLat = embryo.mapPanel.map.getLonLatFromPixel(pixel).transform(
 				embryo.mapPanel.map.getProjectionObject(), // from Spherical Mercator
 				// Projection
