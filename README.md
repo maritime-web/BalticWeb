@@ -10,11 +10,20 @@ Web portal for maritime stakeholders in the arctic area
 * JBoss 7.1.1 (Maven setup to deploy to JBoss)
 * MySQL (Maven configures JBoss datasource to use MySQL)
 
+
 ## Eclipse setup ##
 
-    mvn eclipse:eclipse
+	Install JSLint plugin
+	* Choose Help > Install New Software
+	* Use update URL: http://svn.codespot.com/a/eclipselabs.org/mobile-web-development-with-phonegap/tags/r1.2.91/download
+	* Choose to install jslint4java and JavaScript Development Tools
 
-Import into Eclipse
+	Use standard Eclipse project;
+    * Go to command line and execute: mvn eclipse:eclipse 
+	* Choose File > Import and then General > Existing Projects into Worksapce
+	
+	Use Eclipse Maven integration
+	* Choose File > Import and then Maven > Existing Maven Projects
 
 ## Building ##
 

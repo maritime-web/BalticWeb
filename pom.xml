@@ -149,6 +149,39 @@
 				</excludes>
 			</resource>
 		</resources>
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.googlecode.jslint4java</groupId>
+										<artifactId>jslint4java-maven-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+										<goals>
+											<goal>lint</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+										<!-- <execute /> -->
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -234,17 +267,21 @@
 				<version>1.7</version>
 				<configuration>
 					<target>
-						<property environment="env"/>
-					  	<property name="searchPath" value="META-INF/maven/${project.groupId}/${project.artifactId}/pom.properties"/>
-						
+						<property environment="env" />
+						<property name="searchPath"
+							value="META-INF/maven/${project.groupId}/${project.artifactId}/pom.properties" />
+
 						<first id="first">
 							<fileset dir="${env.JBOSS_HOME}/standalone/tmp/vfs/"
 								includes="**/${searchPath}" />
 						</first>
 						<script language="javascript">
-							var before = project.getProperty("toString:first");
-							var replace = project.getProperty("searchPath");
-							project.setProperty("jbossTmpDir", before.replaceAll(replace, ""));
+							var before =
+							project.getProperty("toString:first");
+							var replace =
+							project.getProperty("searchPath");
+							project.setProperty("jbossTmpDir", before.replaceAll(replace,
+							""));
 						</script>
 						<!-- Place any Ant task here. You can add anything you can add between 
 							<target> and </target> in a build.xml. -->
@@ -283,6 +320,35 @@
 						</sequential>
 					</macrodef>
 				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<!-- http://docs.jslint4java.googlecode.com/git-history/780e260b85a0a5a162eac5e94dc3dd104b433e81/2.0.2/maven.html -->
+				<groupId>com.googlecode.jslint4java</groupId>
+				<artifactId>jslint4java-maven-plugin</artifactId>
+				<version>2.0.2</version>
+				<executions>
+					<execution>
+						<id>lint</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>lint</goal>
+						</goals>
+						<configuration>
+							<failOnError>false</failOnError>
+							<!-- https://code.google.com/p/jslint4java/issues/detail?id=91 -->
+							<excludes>
+								<exclude>**/ext/*.js</exclude>
+							</excludes>
+							<options>
+								<eqeq>true</eqeq>
+								<undef>true</undef>
+								<predef>${predef}</predef>
+							</options>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
