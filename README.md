@@ -28,8 +28,15 @@ Web portal for maritime stakeholders in the arctic area
 ## Building ##
 
     mvn clean install (install will also provoke a deploy to local JBoss 7.1.1)
+    
+	    
 
 ## MySQL setup
+
+## Deploy to JBoss
+
+* Install database drivers environmental variables and deploy application: mvn clean install (used for first deploy)
+* App deploy only: mvn jboss-as:deploy 
  
 
 ## JavaScript Validation Errors
