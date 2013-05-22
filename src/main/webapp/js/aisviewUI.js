@@ -282,8 +282,11 @@ function setupUI() {
 	var x = $(document).width() / 2 - $("#loadingPanel").width() / 2;
 	$("#loadingPanel").css('left', x);
 
+	
 	// Create functions for hovering a vessel
 	var showName = function(e) {
+//		console.log(e.xy);
+		
 		if (e.feature.attributes.vessel) {
 			$.getJSON(detailsUrl, {
 				past_track : '1',
@@ -307,6 +310,12 @@ function setupUI() {
 	var hideName = function(e) {
 		$("#vesselNameBox").css('visibility', 'hidden');
 	};
+
+	vesselLayer.events.on({
+        "featurehighlighted": function(e) {       
+        alert(e);
+        }
+	}); 
 
 	// Create hover control - vessels
 	hoverControlVessels = new OpenLayers.Control.SelectFeature(vesselLayer, {
