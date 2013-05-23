@@ -54,7 +54,7 @@ embryo.mapPanel = {};
 embryo.mapPanel.map = null;
 embryo.mapPanel.init = function(defaultProjection) {
 
-	includePanels();
+	//includePanels();
 
 	includeTools();
 	
@@ -96,7 +96,7 @@ embryo.mapPanel.init = function(defaultProjection) {
  */
 function setupMap(){
 
-	//includePanels();
+	includePanels();
 
 	//includeTools();
 	

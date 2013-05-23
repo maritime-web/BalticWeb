@@ -1,7 +1,6 @@
 // TODO: All JavaScript should be placed in appropriate namespaces according to their components etc.
 // var embryo = {}; defined in aisview.js, which is imported first
 
-
 // Panel variables
 var detailsOpen = false;
 var filteringOpen = false;
@@ -248,8 +247,8 @@ function addLayers() {
 	embryo.mapPanel.map.addLayer(indieVesselLayer);
 	embryo.mapPanel.map.addLayer(selectionLayer);
 	embryo.mapPanel.map.addLayer(tracksLayer);
-	embryo.mapPanel.map.addControl(new OpenLayers.Control.DrawFeature(tracksLayer,
-			OpenLayers.Handler.Path));
+	embryo.mapPanel.map.addControl(new OpenLayers.Control.DrawFeature(
+			tracksLayer, OpenLayers.Handler.Path));
 	embryo.mapPanel.map.addLayer(timeStampsLayer);
 
 	// Add OpenStreetMap Layer
@@ -284,7 +283,7 @@ function setupUI() {
 
 	//
 	embryo.mapPanel.map.events.includeXY = true;
-	
+
 	// Create functions for hovering a vessel
 	var showName = function(e) {
 		var lonlatCenter = e.feature.geometry.getBounds().getCenterLonLat();
@@ -294,14 +293,17 @@ function setupUI() {
 				id : e.feature.attributes.id
 			}, function(result) {
 				var pixelTopLeft = new OpenLayers.Pixel(0, 0);
-				var lonlatTopLeft = embryo.mapPanel.map.getLonLatFromPixel(pixelTopLeft);
-				pixelTopLeft = embryo.mapPanel.map.getPixelFromLonLat(lonlatTopLeft);
+				var lonlatTopLeft = embryo.mapPanel.map
+						.getLonLatFromPixel(pixelTopLeft);
+				pixelTopLeft = embryo.mapPanel.map
+						.getPixelFromLonLat(lonlatTopLeft);
 
-				var pixel = embryo.mapPanel.map.getPixelFromLonLat(lonlatCenter);
-				
+				var pixel = embryo.mapPanel.map
+						.getPixelFromLonLat(lonlatCenter);
+
 				var x = pixel.x - pixelTopLeft.x;
 				var y = pixel.y - pixelTopLeft.y;
-				
+
 				$("#vesselNameBox").html(result.name);
 				$("#vesselNameBox").css('visibility', 'visible');
 				$("#vesselNameBox").css('top', (y - 26) + 'px');
@@ -311,14 +313,14 @@ function setupUI() {
 	};
 
 	var hideName = function(e) {
-		//$("#vesselNameBox").css('visibility', 'hidden');
+		// $("#vesselNameBox").css('visibility', 'hidden');
 	};
 
 	vesselLayer.events.on({
-        "featurehighlighted": function(e) {       
-        alert(e);
-        }
-	}); 
+		"featurehighlighted" : function(e) {
+			alert(e);
+		}
+	});
 
 	// Create hover control - vessels
 	hoverControlVessels = new OpenLayers.Control.SelectFeature(vesselLayer, {
@@ -342,39 +344,42 @@ function setupUI() {
 			});
 
 	// Create select control - vessels
-	selectControlVessels = new OpenLayers.Control.SelectFeature(vesselLayer, {
-		clickout : true,
-		toggle : true,
-		onSelect : function(feature) {
-			if (embryo.selectedVessel
-					&& embryo.selectedVessel.id == feature.attributes.vessel.id) {
-				selectedFeature = null;
-				embryo.selectedVessel = null;
-				detailsReadyToClose = true;
-				$("#vesselNameBox").css('visibility', 'hidden');
-				redrawSelection();
-				selectControlVessels.unselectAll();
-			} else {
-				selectedFeature = feature;
-				embryo.selectedVessel = feature.attributes.vessel;
-				embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(feature.attributes.id));
-				//embryo.vesselDetailsPanel.update(feature.attributes.id);
-				
-				$("#vesselNameBox").css('visibility', 'hidden');
-				// selectControlVessels.select(feature);
-				redrawSelection();
-			}
-		},
-		onUnselect : function(feature) {
-			selectedFeature = null;
-			embryo.selectedVessel = null;
-			detailsReadyToClose = true;
-			tracksLayer.removeAllFeatures();
-			timeStampsLayer.removeAllFeatures();
-			redrawSelection();
-			selectControlVessels.unselectAll();
-		}
-	});
+	selectControlVessels = new OpenLayers.Control.SelectFeature(
+			vesselLayer,
+			{
+				clickout : true,
+				toggle : true,
+				onSelect : function(feature) {
+					if (embryo.selectedVessel
+							&& embryo.selectedVessel.id == feature.attributes.vessel.id) {
+						selectedFeature = null;
+						embryo.selectedVessel = null;
+						detailsReadyToClose = true;
+						$("#vesselNameBox").css('visibility', 'hidden');
+						redrawSelection();
+						selectControlVessels.unselectAll();
+					} else {
+						selectedFeature = feature;
+						embryo.selectedVessel = feature.attributes.vessel;
+						embryo.eventbus.fireEvent(embryo.eventbus
+								.VesselSelectedEvent(feature.attributes.id));
+						// embryo.vesselDetailsPanel.update(feature.attributes.id);
+
+						$("#vesselNameBox").css('visibility', 'hidden');
+						// selectControlVessels.select(feature);
+						redrawSelection();
+					}
+				},
+				onUnselect : function(feature) {
+					selectedFeature = null;
+					embryo.selectedVessel = null;
+					detailsReadyToClose = true;
+					tracksLayer.removeAllFeatures();
+					timeStampsLayer.removeAllFeatures();
+					redrawSelection();
+					selectControlVessels.unselectAll();
+				}
+			});
 
 	// Create select control - indie vessels
 	selectControlIndieVessels = new OpenLayers.Control.SelectFeature(
@@ -395,9 +400,10 @@ function setupUI() {
 						selectedFeature = feature;
 						embryo.selectedVessel = feature.attributes.vessel;
 
-						embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(feature.attributes.id));
-						//embryo.vesselDetailsPanel.update(feature.attributes.id);
-						
+						embryo.eventbus.fireEvent(embryo.eventbus
+								.VesselSelectedEvent(feature.attributes.id));
+						// embryo.vesselDetailsPanel.update(feature.attributes.id);
+
 						$("#vesselNameBox").css('visibility', 'hidden');
 						redrawSelection();
 					}
@@ -498,7 +504,6 @@ function setupUI() {
 		}
 	});
 
-
 	// Set click events on feed panel
 	$("#feedHeader").click(
 			function() {
@@ -539,89 +544,64 @@ function setupUI() {
 		abnormalOpen = false;
 	});
 
-
 	// Close empty panels
 	setInterval("closeEmptyPanels()", 1000);
 
 }
 
-embryo.legendsPanel = {};
-embryo.legendsPanel.open = false;
-embryo.legendsPanel.init = function() {
-	// Simplify this code!
-
-	// Set click events on legends panel
-	$("#legendsHeader").click(function() {
-		if (embryo.legendsPanel.open) {
-			$("#legendsContainer").slideUp({
-				complete : function() {
-					embryo.legendsPanel.open = false;
-					$("#legendsContainer").html("");
-					$("#legendsHeader").html("Legends");
-					$("#legendsPanel").removeClass("arrowUp");
-					$("#legendsPanel").addClass("arrowDown");
-					checkForPanelOverflow();
-				}
-			});
-		} else {
-			$("#legendsContainer").css('display', 'none');
-			$("#legendsHeader").html("Legends<br /><hr class='tight'>");
-			$("#legendsContainer").html($("#legends").html());
-			$("#legendsContainer").slideDown({
-				complete : function() {
-					embryo.legendsPanel.open = true;
-					$("#legendsPanel").removeClass("arrowDown");
-					$("#legendsPanel").addClass("arrowUp");
-					checkForPanelOverflow();
-				}
-			});
-		}
-	});
+embryo.leftPanel = {};
+embryo.leftPanel.toggleArrows = function() {
+	$(this).toggleClass('arrowDown arrowUp');
 };
 
+// På en eller måde skal der lægges noget checkForPanelOverflow ind i leftPanel
+// Dvs hvis panelet flyder ud af bunden skal nogen af delpanelerne enten lukkes
+// eller have tilføjet en scroller
+// checkForPanelOverflow();
+
+embryo.leftPanel.init = function() {
+	$('.collapsablePanel .accordion-heading').click(this.toggleArrows);
+};
+
+embryo.legendsPanel = {};
+// FIXME embryo.legendsPanel.open bruges af checkForPanelOverflow som pt. ikke
+// kaldes
+// Fjern embryo.legendsPanel.open, når checkForPanelOverflow fjernes/skrives om.
+embryo.legendsPanel.open = false;
+embryo.legendsPanel.init = function() {
+
+};
 
 embryo.searchPanel = {};
+// FIXME embryo.searchPanel.searchOpen bruges af checkForPanelOverflow som pt.
+// ikke kaldes
+// Fjern embryo.searchPanel.searchOpen, når checkForPanelOverflow
+// fjernes/skrives om.
 embryo.searchPanel.searchOpen = false;
-embryo.searchPanel.init = function(){
+embryo.searchPanel.init = function() {
+
+	// some search fun
+
 	// Set click events on search panel
-	$("#searchHeader").click(function() {
-		if (embryo.searchPanel.searchOpen) {
-			$("#searchContainer").slideUp({
-				complete : function() {
-					embryo.searchPanel.searchOpen = false;
-					$("#searchHeader").html("Search");
-					$("#searchPanel").removeClass("arrowUp");
-					$("#searchPanel").addClass("arrowDown");
-					
-					// TODO get rid of this call
-					checkForPanelOverflow();
-				}
-			});
-		} else {
-			$("#searchContainer").css('display', 'none');
-			$("#searchContainer").html($("#search").html());
-			$("#searchHeader").html("Search<br /><hr class='tight'>");
-			$("#searchContainer").slideDown({
-				complete : function() {
-					embryo.searchPanel.searchOpen = true;
-					$("#searchPanel").removeClass("arrowDown");
-					$("#searchPanel").addClass("arrowUp");
-					
-					// TODO get rid of this call
-					checkForPanelOverflow();
-					//FIXME should this be removed?
-					parseFilterQuery();
-				}
-			});
-		}
-	});
-	
+	// $("#searchHeader").click(function() {
+	// if (embryo.searchPanel.searchOpen) {
+	// } else {
+	// $("#searchContainer").slideDown({
+	// complete : function() {
+
+	// //FIXME should this be removed?
+	// parseFilterQuery();
+	// }
+	// });
+	// }
+	// });
+
 	// Search when search field is changed
 	setInterval("embryo.searchPanel.checkForSearch()", 200);
 };
 
 embryo.searchPanel.lastSearch = "";
-embryo.searchPanel.checkForSearch = function () {
+embryo.searchPanel.checkForSearch = function() {
 	var val = $("#searchField").val();
 	if (val != this.lastSearch) {
 		this.lastSearch = val;
@@ -632,59 +612,64 @@ embryo.searchPanel.checkForSearch = function () {
 /**
  * Searches for the vessel described in the search field.
  */
-embryo.searchPanel.search = function(){
+embryo.searchPanel.search = function() {
 	// Read search field
 	var arg = $("#searchField").val();
 	$("#searchResultsTop").empty();
 	$("#searchResultsContainer").empty();
-	
-	if (arg.length > 0){
+
+	if (arg.length > 0) {
 
 		// Show loader
 		$("#searchLoad").css('visibility', 'visible');
 
 		// Load search results
-		$.getJSON(searchUrl, { argument: arg }, function (result) {
-				var s = "s";
-				
-				// Show search results
-				$("#searchResults").css('visibility', 'visible');
-					
-				// Search results
-				searchResults = [];
+		$.getJSON(searchUrl, {
+			argument : arg
+		}, function(result) {
+			var s = "s";
 
-				// Get vessels
-				for (vesselId in result.vessels) {
-					var vesselJSON = result.vessels[vesselId];
-					var vessel = new Vessel(vesselId, vesselJSON, 1);
-					searchResults.push(vessel);
+			// Show search results
+			$("#searchResults").css('visibility', 'visible');
+
+			// Search results
+			searchResults = [];
+
+			// Get vessels
+			for (vesselId in result.vessels) {
+				var vesselJSON = result.vessels[vesselId];
+				var vessel = new Vessel(vesselId, vesselJSON, 1);
+				searchResults.push(vessel);
+			}
+
+			// Add search result to list
+			if (searchResults.length <= searchResultsLimit
+					&& searchResults.length != 0) {
+				if (searchResults.length == 1) {
+					s = "";
 				}
+				// embryo.selectedVessel = searchResults[0];
 
-				// Add search result to list
-				if (searchResults.length <= searchResultsLimit && searchResults.length != 0){
-					if (searchResults.length == 1){
-						s = "";
-					}
-					//embryo.selectedVessel = searchResults[0];
-					
-					$("#searchResultsTop").html("<div class='information'>Search results: </div>");
-					$.each(searchResults, function(key, value) { 
+				$("#searchResultsTop").html(
+						"<div class='information'>Search results: </div>");
+				$.each(searchResults, function(key, value) {
 
-							searchResults.push(value);
+					searchResults.push(value);
 
-							$("#searchResultsContainer").append(searchResultToHTML(value, key));
-							
-						}
-					);
-					
-				}
+					$("#searchResultsContainer").append(
+							searchResultToHTML(value, key));
 
-				$("#searchMatch").html(result.vesselCount + " vessel" + s + " match.");
+				});
 
-				// Hide loader
-				$("#searchLoad").css('visibility', 'hidden');
+			}
 
-			});
+			$("#searchMatch").html(
+					result.vesselCount + " vessel" + s + " match.");
+
+			// Hide loader
+			$("#searchLoad").css('visibility', 'hidden');
+
+		});
 	} else {
 		searchResults = [];
 		drawVessels();
@@ -695,7 +680,6 @@ embryo.searchPanel.search = function(){
 	}
 
 }
-
 
 function setupDatePickers() {
 
@@ -757,7 +741,8 @@ function loadAfterMove() {
 
 		return true;
 
-	} else if (embryo.mapPanel.map.zoom >= vesselZoomLevel && lastZoomLevel < vesselZoomLevel) {
+	} else if (embryo.mapPanel.map.zoom >= vesselZoomLevel
+			&& lastZoomLevel < vesselZoomLevel) {
 
 		return true;
 
@@ -811,7 +796,6 @@ function outOfLastLoadArea() {
 
 }
 
-
 function updateVesselsInView() {
 
 	var vesselsInView = 0;
@@ -823,7 +807,6 @@ function updateVesselsInView() {
 		if (vesselInsideViewPort(value)) {
 			vesselsInView++;
 		}
-
 	}
 
 	);
@@ -909,12 +892,13 @@ function checkForPanelOverflow() {
 
 embryo.vesselDetailsPanel = {};
 embryo.vesselDetailsPanel.init = function() {
-	embryo.eventbus.registerHandler(embryo.eventbus.VesselSelectedEvent, embryo.vesselDetailsPanel.onVesselSelected);
+	embryo.eventbus.registerHandler(embryo.eventbus.VesselSelectedEvent,
+			embryo.vesselDetailsPanel.onVesselSelected);
 };
 
 embryo.vesselDetailsPanel.onVesselSelected = function(event) {
 	var vesselId = event.vesselId;
-	
+
 	console.log("Fetching data for vessel with id: " + vesselId);
 
 	// Get details from server
@@ -924,13 +908,15 @@ embryo.vesselDetailsPanel.onVesselSelected = function(event) {
 	}, embryo.vesselDetailsPanel.onAjaxResponse);
 };
 
-embryo.vesselDetailsPanel.onAjaxResponse = function(result){
+embryo.vesselDetailsPanel.onAjaxResponse = function(result) {
 	// Load and draw tracks
 	var tracks = result.pastTrack.points;
 	drawPastTrack(tracks);
 
 	// Load details
-	$("#detailsContainer").html("");
+	// $("#detailsContainer").html("");
+	$("#vesselDetails").hide();
+
 	$("#vd_mmsi").html(result.mmsi);
 	$("#vd_class").html(result.vesselClass);
 	$("#vd_name").html(result.name);
@@ -973,41 +959,40 @@ embryo.vesselDetailsPanel.onAjaxResponse = function(result){
 					+ result.mmsi + '" target="_blank">Target info</a>');
 
 	// Append details to vessel details panel
-	$("#detailsContainer").append($("#vesselDetails").html());
+	// $("#detailsContainer").append($("#vesselDetails").html());
+
+	$("#vesselDetails").show();
+
 	detailsReadyToClose = false;
 
 	// Open vessel details
-	if (!detailsOpen) {
-		$("#detailsContainer").css('display', 'none');
-		$("#detailsHeader").html("Vessel details<br /><hr class='tight'>");
-		$("#detailsContainer").slideDown(
-				{
-					complete : function() {
-						detailsOpen = true;
-						$("#detailsPanel").removeClass("arrowDown");
-						$("#detailsPanel").addClass("arrowUp");
-						checkForPanelOverflow();
-						$("#detailsPanel").css('background-image',
-								'url("../img/arrowUp.png"');
-					}
-				});
+	if (embryo.vesselDetailsPanel.onShown) {
+		embryo.vesselDetailsPanel.onShown();
 	}
-	
+};
+embryo.vesselDetailsPanel.onShown = function(result) {
+	var collapsable = $('#vesselDetails').closest('.collapse');
+	if (!collapsable.hasClass('in')) {
+		collapsable.collapse('show');
+	}
 };
 
 embryo.statusPanel = {};
-embryo.statusPanel.init = function(projection){
-// Update mouse location when moved
-	
-	embryo.mapPanel.map.events.register("mousemove", embryo.mapPanel.map, function(e) {
-		var position = embryo.mapPanel.map.events.getMousePosition(e);
-		pixel = new OpenLayers.Pixel(position.x, position.y);
-		var lonLat = embryo.mapPanel.map.getLonLatFromPixel(pixel).transform(
-				embryo.mapPanel.map.getProjectionObject(), // from Spherical Mercator
-				// Projection
-				new OpenLayers.Projection(projection) // to WGS 1984
-		);
-		$("#location").html(
-				lonLat.lat.toFixed(4) + ", " + lonLat.lon.toFixed(4));
-	});
+embryo.statusPanel.init = function(projection) {
+	// Update mouse location when moved
+
+	embryo.mapPanel.map.events.register("mousemove", embryo.mapPanel.map,
+			function(e) {
+				var position = embryo.mapPanel.map.events.getMousePosition(e);
+				var pixel = new OpenLayers.Pixel(position.x, position.y);
+				var lonLat = embryo.mapPanel.map.getLonLatFromPixel(pixel)
+						.transform(embryo.mapPanel.map.getProjectionObject(), // from
+																				// Spherical
+																				// Mercator
+						// Projection
+						new OpenLayers.Projection(projection) // to WGS 1984
+						);
+				$("#location").html(
+						lonLat.lat.toFixed(4) + ", " + lonLat.lon.toFixed(4));
+			});
 };

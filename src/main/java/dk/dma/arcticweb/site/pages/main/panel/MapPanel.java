@@ -18,8 +18,7 @@ public class MapPanel extends Panel {
 	
 	public MapPanel(String id) {
 		super(id);
-		
-		add(new LeftPanel("left"));
+		add(new LeftPanel2("left"));
 		add(new StatusPanel("status"));
 	}
 	
@@ -29,6 +28,4 @@ public class MapPanel extends Panel {
 		// initialize component
 		response.render(MAP_INIT);
 	}
-	
-
 }

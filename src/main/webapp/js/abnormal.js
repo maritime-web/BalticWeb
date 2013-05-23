@@ -11,7 +11,7 @@ function setup(){
 
 	if (includeAbnormalBehaviorTool && abnormalOpen){
 		//setInterval('loadEvents()', 20000);
-		loadEvents()
+		loadEvents();
 		setInterval('checkArguments()', 1000);
 	}
 	
