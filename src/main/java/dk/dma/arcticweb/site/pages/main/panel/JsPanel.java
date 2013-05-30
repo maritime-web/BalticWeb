@@ -25,9 +25,9 @@ import dk.dma.arcticweb.service.StakeholderService;
 import dk.dma.arcticweb.site.session.ArcticWebSession;
 
 public class JsPanel extends Panel {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@EJB
 	StakeholderService stakeholderService;
 
@@ -36,11 +36,11 @@ public class JsPanel extends Panel {
 		setRenderBodyOnly(true);
 
 		// Get stakeholder type and possibly ship MMSI
-		ArcticWebSession session = ArcticWebSession.get();		
-		String stakeholderType = session.getStakeholder().getStakeholderType();		
+		ArcticWebSession session = ArcticWebSession.get();
+		String stakeholderType = session.getStakeholder().getStakeholderType();
 		String shipMmsi = "null";
 		if (session.getStakeholder() instanceof Ship) {
-			shipMmsi = Long.toString(((Ship)session.getStakeholder()).getMmsi());
+			shipMmsi = Long.toString(((Ship) session.getStakeholder()).getMmsi());
 		}
 
 		// Make label

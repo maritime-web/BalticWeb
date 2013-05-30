@@ -25,9 +25,9 @@ import javax.persistence.OneToMany;
 @Entity
 public class ShipOwner extends Stakeholder {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Set<Ship> ships = new HashSet<Ship>();
-	
+
 	public ShipOwner() {
 	}
 
@@ -35,7 +35,7 @@ public class ShipOwner extends Stakeholder {
 	public Set<Ship> getShips() {
 		return ships;
 	}
-	
+
 	public void setShips(Set<Ship> ships) {
 		this.ships = ships;
 	}

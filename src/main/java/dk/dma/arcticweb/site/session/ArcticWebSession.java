@@ -32,7 +32,7 @@ import dk.dma.arcticweb.service.UserService;
  * Session object
  */
 public class ArcticWebSession extends WebSession {
-	
+
 	@EJB
 	private static StakeholderService stakeholderService;
 	@EJB
@@ -68,11 +68,11 @@ public class ArcticWebSession extends WebSession {
 	public User getUser() {
 		return user;
 	}
-	
+
 	public Stakeholder getStakeholder() {
 		return stakeholder;
 	}
-	
+
 	/**
 	 * Reload from DB
 	 */
@@ -80,7 +80,7 @@ public class ArcticWebSession extends WebSession {
 		if (user != null) {
 			user = userService.get(user);
 			stakeholder = stakeholderService.getStakeholder(user);
-		}		
+		}
 	}
-	
+
 }

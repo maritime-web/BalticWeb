@@ -26,9 +26,9 @@ public class VesselDetailsPanel extends Panel {
 	private final static String JS_INIT = "embryo.vesselDetailsPanel.init();";
 
 	public VesselDetailsPanel(String id) {
-		super(id);		
+		super(id);
 	}
-	
+
 	@Override
 	public void renderHead(IHeaderResponse response) {
 		super.renderHead(response);
@@ -38,6 +38,5 @@ public class VesselDetailsPanel extends Panel {
 		// initialize component
 		response.render(OnLoadMapDependentHeaderItem.forScript(JS_INIT));
 	}
-	
 
 }

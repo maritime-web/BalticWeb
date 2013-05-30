@@ -21,10 +21,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 public class LeftPanel extends Panel {
 
 	public LeftPanel(String id) {
-		super(id);		
+		super(id);
 		add(new LegendsPanel("legends"));
 		add(new SearchPanel("search"));
 		add(new VesselDetailsPanel("vesselDetails"));
 	}
-	
+
 }

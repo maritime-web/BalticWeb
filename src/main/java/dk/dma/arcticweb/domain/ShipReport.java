@@ -27,9 +27,9 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class ShipReport extends AbstractEntity {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private Double lat;
 	private Double lon;
 	private String weather;
@@ -37,10 +37,10 @@ public class ShipReport extends AbstractEntity {
 	private Date reportTime;
 	private Date created;
 	private Ship ship;
-	
+
 	public ShipReport() {
-	}	
-	
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(unique = true, nullable = false)
@@ -63,7 +63,6 @@ public class ShipReport extends AbstractEntity {
 		return lon;
 	}
 
-
 	public void setLon(Double lon) {
 		this.lon = lon;
 	}
@@ -81,7 +80,7 @@ public class ShipReport extends AbstractEntity {
 	public String getIceObservations() {
 		return iceObservations;
 	}
-	
+
 	public void setIceObservations(String iceObservations) {
 		this.iceObservations = iceObservations;
 	}
@@ -103,14 +102,14 @@ public class ShipReport extends AbstractEntity {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	public Ship getShip() {
 		return ship;
 	}
-	
+
 	public void setShip(Ship ship) {
 		this.ship = ship;
 	}
-	
+
 }

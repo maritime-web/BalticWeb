@@ -22,7 +22,7 @@ public class ShoreStakeholder extends Stakeholder {
 	private static final long serialVersionUID = 1L;
 
 	public ShoreStakeholder() {
-		
+
 	}
 
 }

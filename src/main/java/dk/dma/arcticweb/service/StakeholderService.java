@@ -25,16 +25,18 @@ import dk.dma.arcticweb.domain.VoyageInformation;
 
 @Local
 public interface StakeholderService {
-	
+
 	/**
 	 * Get stakeholder given user
+	 * 
 	 * @param user
 	 * @return
 	 */
 	Stakeholder getStakeholder(User user);
-	
+
 	/**
 	 * Persist stakeholder
+	 * 
 	 * @param stakeholder
 	 * @return
 	 */
@@ -42,6 +44,7 @@ public interface StakeholderService {
 
 	/**
 	 * Add ship report for ship
+	 * 
 	 * @param ship
 	 * @param shipReport
 	 */
@@ -49,6 +52,7 @@ public interface StakeholderService {
 
 	/**
 	 * Get or create voyage information for ship
+	 * 
 	 * @param ship
 	 * @return
 	 */
@@ -56,9 +60,10 @@ public interface StakeholderService {
 
 	/**
 	 * Save voyage information
-	 * @param ship 
+	 * 
+	 * @param ship
 	 * @param voyageInformation
 	 */
 	void saveVoyageInformation(Ship ship, VoyageInformation voyageInformation);
-	
+
 }

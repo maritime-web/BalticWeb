@@ -22,7 +22,7 @@ import dk.dma.arcticweb.site.resources.OnLoadMapDependentHeaderItem;
 
 @SuppressWarnings("serial")
 public class LegendsPanel extends Panel {
-	
+
 	private final static String JS_INIT = "embryo.legendsPanel.init();";
 
 	public LegendsPanel(String id) {
@@ -38,7 +38,5 @@ public class LegendsPanel extends Panel {
 		// initialize component
 		response.render(OnLoadMapDependentHeaderItem.forScript(JS_INIT));
 	}
-	
-	
 
 }

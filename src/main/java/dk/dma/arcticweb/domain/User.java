@@ -32,25 +32,23 @@ import javax.persistence.Transient;
 import org.apache.commons.codec.digest.DigestUtils;
 
 @Entity
-@NamedQueries( {
-	@NamedQuery(name = "User:getByUsername", query = "SELECT u FROM User u WHERE u.username=:username")
-})
+@NamedQueries({ @NamedQuery(name = "User:getByUsername", query = "SELECT u FROM User u WHERE u.username=:username") })
 public class User extends AbstractEntity {
-	
+
 	private static final long serialVersionUID = 1L;
-	
-	private static final String PASSWORD_SALT = "fa26frADu8";	
-	
+
+	private static final String PASSWORD_SALT = "fa26frADu8";
+
 	private String username;
 	private String passwordHash;
 	private String email;
 	private Date lastLogin;
-	private Stakeholder stakeholder;	
-	
+	private Stakeholder stakeholder;
+
 	public User() {
 		super();
 	}
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(unique = true, nullable = false)
@@ -58,7 +56,7 @@ public class User extends AbstractEntity {
 	public Integer getId() {
 		return id;
 	}
-	
+
 	@Column(unique = true, nullable = false, length = 32)
 	public String getUsername() {
 		return username;
@@ -67,7 +65,7 @@ public class User extends AbstractEntity {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
+
 	@Column(nullable = false, length = 256)
 	public String getPasswordHash() {
 		return passwordHash;
@@ -85,42 +83,43 @@ public class User extends AbstractEntity {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	@Column(nullable = true)
 	public Date getLastLogin() {
 		return lastLogin;
 	}
-	
+
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
 	}
-	
+
 	@ManyToOne(cascade = {}, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true)
+	@JoinColumn(nullable = true)
 	public Stakeholder getStakeholder() {
 		return stakeholder;
 	}
-	
+
 	public void setStakeholder(Stakeholder stakeholder) {
 		this.stakeholder = stakeholder;
 	}
-		
+
 	@Transient
 	public void setPassword(String password) {
 		setPasswordHash(hashPassword(password));
 	}
-	
+
 	@Transient
 	public boolean passwordMatch(String password) {
-		if (password == null) return false;
+		if (password == null)
+			return false;
 		return hashPassword(password).equals(getPasswordHash());
 	}
-	
+
 	@Transient
 	public static String hashPassword(String password) {
 		return DigestUtils.sha256Hex(DigestUtils.sha256Hex(password) + PASSWORD_SALT);
 	}
-	
+
 	public static void main(String[] args) {
 		String password = "qwerty";
 		if (args.length > 0) {
@@ -130,5 +129,5 @@ public class User extends AbstractEntity {
 		System.out.println("password     : " + password);
 		System.out.println("password hash: " + hash);
 	}
-	
+
 }

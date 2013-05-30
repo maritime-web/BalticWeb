@@ -26,9 +26,9 @@ public class StatusPanel extends Panel {
 	private final static String JS_INIT = "embryo.statusPanel.init('projection');";
 
 	public StatusPanel(String id) {
-		super(id);		
+		super(id);
 	}
-	
+
 	@Override
 	public void renderHead(IHeaderResponse response) {
 		super.renderHead(response);
@@ -39,6 +39,5 @@ public class StatusPanel extends Panel {
 		String js_init = JS_INIT.replaceAll("projection", "EPSG:4326");
 		response.render(OnLoadMapDependentHeaderItem.forScript(js_init));
 	}
-	
 
 }

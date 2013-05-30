@@ -30,13 +30,13 @@ import javax.persistence.OrderBy;
 @Entity
 public class Ship extends Stakeholder {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long mmsi;
 	private Long imoNo;
 	private String callsign;
 	private String type;
 	private Integer maxSpeed;
-	private Integer tonnage;	
+	private Integer tonnage;
 	private String commCapabilities;
 	private Integer rescueCapacity;
 	private Integer width;
@@ -44,27 +44,27 @@ public class Ship extends Stakeholder {
 	private String iceClass;
 	private Boolean helipad;
 	private List<ShipReport> reports;
-	private VoyageInformation voyageInformation;	
+	private VoyageInformation voyageInformation;
 	private ShipOwner owner;
-	
+
 	public Ship() {
 	}
-	
+
 	@Column(nullable = true)
 	public Long getMmsi() {
 		return mmsi;
 	}
-	
+
 	public void setMmsi(Long mmsi) {
 		this.mmsi = mmsi;
 	}
-	
+
 	@ManyToOne(cascade = {}, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true)
+	@JoinColumn(nullable = true)
 	public ShipOwner getOwner() {
 		return owner;
 	}
-	
+
 	public void setOwner(ShipOwner owner) {
 		this.owner = owner;
 	}
@@ -86,7 +86,7 @@ public class Ship extends Stakeholder {
 	public void setCallsign(String callsign) {
 		this.callsign = callsign;
 	}
-	
+
 	@Column(nullable = true, length = 32)
 	public String getType() {
 		return type;
@@ -113,7 +113,7 @@ public class Ship extends Stakeholder {
 	public void setTonnage(Integer tonnage) {
 		this.tonnage = tonnage;
 	}
-	
+
 	@Column(nullable = true, length = 32)
 	public String getCommCapabilities() {
 		return commCapabilities;
@@ -167,24 +167,24 @@ public class Ship extends Stakeholder {
 	public void setHelipad(Boolean helipad) {
 		this.helipad = helipad;
 	}
-	
+
 	@OneToMany(mappedBy = "ship", fetch = FetchType.LAZY)
 	@OrderBy("reportTime")
 	public List<ShipReport> getReports() {
 		return reports;
 	}
-	
+
 	public void setReports(List<ShipReport> reports) {
 		this.reports = reports;
 	}
-	
+
 	@OneToOne(mappedBy = "ship", cascade = { CascadeType.ALL })
 	public VoyageInformation getVoyageInformation() {
 		return voyageInformation;
 	}
-	
+
 	public void setVoyageInformation(VoyageInformation voyageInformation) {
 		this.voyageInformation = voyageInformation;
 	}
-	
+
 }

@@ -58,7 +58,7 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 	private TextField<Integer> length;
 	private TextField<String> iceClass;
 	private CheckBox helipad;
-	
+
 	private FeedbackPanel feedback;
 	private AjaxSubmitLink saveLink;
 	private Link<ShipInformationForm> closeLink;
@@ -71,13 +71,12 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 		setDefaultModel(new CompoundPropertyModel<Ship>(ship));
 
 		mmsi = new TextField<>("mmsi");
-		
-		
 
 		// With Wicket 6.7.0
 		mmsi.setRequired(true).add(new RangeValidator<Long>(100000000L, 999999999L));
 		// With Wicket 1.5.8
-		//mmsi.setRequired(true).add(new MinimumValidator<Long>(100000000L)).add(new MaximumValidator<Long>(999999999L));
+		// mmsi.setRequired(true).add(new MinimumValidator<Long>(100000000L)).add(new
+		// MaximumValidator<Long>(999999999L));
 		name = new TextField<>("name");
 		name.setRequired(true);
 		imoNo = new TextField<>("imoNo");
@@ -86,12 +85,11 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 		List<String> types = ShipType.getStringList();
 		type = new DropDownChoice<>("type", types);
 		maxSpeed = new TextField<>("maxSpeed");
-		
-		
+
 		// With Wicket 6.7.0
 		maxSpeed.add(new RangeValidator<Integer>(null, 200));
 		// With Wicket 1.5.8
-		//maxSpeed.add(new MaximumValidator<Integer>(200));
+		// maxSpeed.add(new MaximumValidator<Integer>(200));
 		tonnage = new TextField<>("tonnage");
 		commCapabilities = new TextField<>("commCapabilities");
 		rescueCapacity = new TextField<>("rescueCapacity");
@@ -99,8 +97,7 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 		length = new TextField<>("length");
 		iceClass = new TextField<>("iceClass");
 		helipad = new CheckBox("helipad");
-		
-		
+
 		feedback = new FeedbackPanel("ship_information_feedback");
 		feedback.setVisible(false);
 		saved = new WebMarkupContainer("saved");
@@ -115,7 +112,7 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 				setResponsePage(new MainPage());
 			}
 		};
-		//closeLink.setVisible(false);
+		// closeLink.setVisible(false);
 
 		saveLink = new AjaxSubmitLink("save") {
 			private static final long serialVersionUID = 1L;
@@ -140,7 +137,7 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 		add(mmsi);
 		add(name);
 		add(imoNo);
-		add(callsign);	
+		add(callsign);
 		add(type);
 		add(maxSpeed);
 		add(tonnage);
@@ -150,7 +147,7 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 		add(length);
 		add(iceClass);
 		add(helipad);
-		
+
 		add(feedback);
 		add(saveLink);
 		add(saved);

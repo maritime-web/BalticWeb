@@ -38,6 +38,5 @@ public class SearchPanel extends Panel {
 		// initialize component
 		response.render(OnLoadMapDependentHeaderItem.forScript(JS_INIT));
 	}
-	
-	
+
 }

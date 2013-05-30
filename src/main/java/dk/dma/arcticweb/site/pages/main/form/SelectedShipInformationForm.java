@@ -51,7 +51,7 @@ public class SelectedShipInformationForm extends Form<SelectedShipInformationFor
 	private TextField<Integer> length;
 	private TextField<String> iceClass;
 	private CheckBox helipad;
-	
+
 	private FeedbackPanel feedback;
 	private WebMarkupContainer saved;
 
@@ -62,7 +62,8 @@ public class SelectedShipInformationForm extends Form<SelectedShipInformationFor
 		// With Wicket 6.7.0
 		mmsi.setRequired(true).add(new RangeValidator<Long>(100000000L, 999999999L));
 		// With Wicket 1.5.8
-		// mmsi.setRequired(true).add(new MinimumValidator<Long>(100000000L)).add(new MaximumValidator<Long>(999999999L));
+		// mmsi.setRequired(true).add(new MinimumValidator<Long>(100000000L)).add(new
+		// MaximumValidator<Long>(999999999L));
 		name = new TextField<>("name");
 		name.setRequired(true);
 		imoNo = new TextField<>("imoNo");
@@ -82,8 +83,7 @@ public class SelectedShipInformationForm extends Form<SelectedShipInformationFor
 		length = new TextField<>("length");
 		iceClass = new TextField<>("iceClass");
 		helipad = new CheckBox("helipad");
-		
-		
+
 		feedback = new FeedbackPanel("ship_information_feedback");
 		feedback.setVisible(false);
 		saved = new WebMarkupContainer("saved");
@@ -92,7 +92,7 @@ public class SelectedShipInformationForm extends Form<SelectedShipInformationFor
 		add(mmsi);
 		add(name);
 		add(imoNo);
-		add(callsign);	
+		add(callsign);
 		add(type);
 		add(maxSpeed);
 		add(tonnage);
@@ -102,7 +102,7 @@ public class SelectedShipInformationForm extends Form<SelectedShipInformationFor
 		add(length);
 		add(iceClass);
 		add(helipad);
-		
+
 		add(feedback);
 		add(saved);
 	}
