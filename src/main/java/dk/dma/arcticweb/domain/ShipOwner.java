@@ -24,20 +24,20 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class ShipOwner extends Stakeholder {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Set<Ship> ships = new HashSet<Ship>();
+    private Set<Ship> ships = new HashSet<Ship>();
 
-	public ShipOwner() {
-	}
+    public ShipOwner() {
+    }
 
-	@OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "owner")
-	public Set<Ship> getShips() {
-		return ships;
-	}
+    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "owner")
+    public Set<Ship> getShips() {
+        return ships;
+    }
 
-	public void setShips(Set<Ship> ships) {
-		this.ships = ships;
-	}
+    public void setShips(Set<Ship> ships) {
+        this.ships = ships;
+    }
 
 }

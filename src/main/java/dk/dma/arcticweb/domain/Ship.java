@@ -29,162 +29,162 @@ import javax.persistence.OrderBy;
 
 @Entity
 public class Ship extends Stakeholder {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Long mmsi;
-	private Long imoNo;
-	private String callsign;
-	private String type;
-	private Integer maxSpeed;
-	private Integer tonnage;
-	private String commCapabilities;
-	private Integer rescueCapacity;
-	private Integer width;
-	private Integer length;
-	private String iceClass;
-	private Boolean helipad;
-	private List<ShipReport> reports;
-	private VoyageInformation voyageInformation;
-	private ShipOwner owner;
+    private Long mmsi;
+    private Long imoNo;
+    private String callsign;
+    private String type;
+    private Integer maxSpeed;
+    private Integer tonnage;
+    private String commCapabilities;
+    private Integer rescueCapacity;
+    private Integer width;
+    private Integer length;
+    private String iceClass;
+    private Boolean helipad;
+    private List<ShipReport> reports;
+    private VoyageInformation voyageInformation;
+    private ShipOwner owner;
 
-	public Ship() {
-	}
+    public Ship() {
+    }
 
-	@Column(nullable = true)
-	public Long getMmsi() {
-		return mmsi;
-	}
+    @Column(nullable = true)
+    public Long getMmsi() {
+        return mmsi;
+    }
 
-	public void setMmsi(Long mmsi) {
-		this.mmsi = mmsi;
-	}
+    public void setMmsi(Long mmsi) {
+        this.mmsi = mmsi;
+    }
 
-	@ManyToOne(cascade = {}, fetch = FetchType.LAZY)
-	@JoinColumn(nullable = true)
-	public ShipOwner getOwner() {
-		return owner;
-	}
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = true)
+    public ShipOwner getOwner() {
+        return owner;
+    }
 
-	public void setOwner(ShipOwner owner) {
-		this.owner = owner;
-	}
+    public void setOwner(ShipOwner owner) {
+        this.owner = owner;
+    }
 
-	@Column(nullable = true)
-	public Long getImoNo() {
-		return imoNo;
-	}
+    @Column(nullable = true)
+    public Long getImoNo() {
+        return imoNo;
+    }
 
-	public void setImoNo(Long imoNo) {
-		this.imoNo = imoNo;
-	}
+    public void setImoNo(Long imoNo) {
+        this.imoNo = imoNo;
+    }
 
-	@Column(nullable = true, length = 32)
-	public String getCallsign() {
-		return callsign;
-	}
+    @Column(nullable = true, length = 32)
+    public String getCallsign() {
+        return callsign;
+    }
 
-	public void setCallsign(String callsign) {
-		this.callsign = callsign;
-	}
+    public void setCallsign(String callsign) {
+        this.callsign = callsign;
+    }
 
-	@Column(nullable = true, length = 32)
-	public String getType() {
-		return type;
-	}
+    @Column(nullable = true, length = 32)
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	@Column(nullable = true)
-	public Integer getMaxSpeed() {
-		return maxSpeed;
-	}
+    @Column(nullable = true)
+    public Integer getMaxSpeed() {
+        return maxSpeed;
+    }
 
-	public void setMaxSpeed(Integer maxSpeed) {
-		this.maxSpeed = maxSpeed;
-	}
+    public void setMaxSpeed(Integer maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
 
-	@Column(nullable = true)
-	public Integer getTonnage() {
-		return tonnage;
-	}
+    @Column(nullable = true)
+    public Integer getTonnage() {
+        return tonnage;
+    }
 
-	public void setTonnage(Integer tonnage) {
-		this.tonnage = tonnage;
-	}
+    public void setTonnage(Integer tonnage) {
+        this.tonnage = tonnage;
+    }
 
-	@Column(nullable = true, length = 32)
-	public String getCommCapabilities() {
-		return commCapabilities;
-	}
+    @Column(nullable = true, length = 32)
+    public String getCommCapabilities() {
+        return commCapabilities;
+    }
 
-	public void setCommCapabilities(String commCapabilities) {
-		this.commCapabilities = commCapabilities;
-	}
+    public void setCommCapabilities(String commCapabilities) {
+        this.commCapabilities = commCapabilities;
+    }
 
-	@Column(nullable = true)
-	public Integer getRescueCapacity() {
-		return rescueCapacity;
-	}
+    @Column(nullable = true)
+    public Integer getRescueCapacity() {
+        return rescueCapacity;
+    }
 
-	public void setRescueCapacity(Integer rescueCapacity) {
-		this.rescueCapacity = rescueCapacity;
-	}
+    public void setRescueCapacity(Integer rescueCapacity) {
+        this.rescueCapacity = rescueCapacity;
+    }
 
-	@Column(nullable = true)
-	public Integer getWidth() {
-		return width;
-	}
+    @Column(nullable = true)
+    public Integer getWidth() {
+        return width;
+    }
 
-	public void setWidth(Integer width) {
-		this.width = width;
-	}
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
 
-	@Column(nullable = true)
-	public Integer getLength() {
-		return length;
-	}
+    @Column(nullable = true)
+    public Integer getLength() {
+        return length;
+    }
 
-	public void setLength(Integer length) {
-		this.length = length;
-	}
+    public void setLength(Integer length) {
+        this.length = length;
+    }
 
-	@Column(nullable = true, length = 32)
-	public String getIceClass() {
-		return iceClass;
-	}
+    @Column(nullable = true, length = 32)
+    public String getIceClass() {
+        return iceClass;
+    }
 
-	public void setIceClass(String iceClass) {
-		this.iceClass = iceClass;
-	}
+    public void setIceClass(String iceClass) {
+        this.iceClass = iceClass;
+    }
 
-	@Column(nullable = true)
-	public Boolean getHelipad() {
-		return helipad;
-	}
+    @Column(nullable = true)
+    public Boolean getHelipad() {
+        return helipad;
+    }
 
-	public void setHelipad(Boolean helipad) {
-		this.helipad = helipad;
-	}
+    public void setHelipad(Boolean helipad) {
+        this.helipad = helipad;
+    }
 
-	@OneToMany(mappedBy = "ship", fetch = FetchType.LAZY)
-	@OrderBy("reportTime")
-	public List<ShipReport> getReports() {
-		return reports;
-	}
+    @OneToMany(mappedBy = "ship", fetch = FetchType.LAZY)
+    @OrderBy("reportTime")
+    public List<ShipReport> getReports() {
+        return reports;
+    }
 
-	public void setReports(List<ShipReport> reports) {
-		this.reports = reports;
-	}
+    public void setReports(List<ShipReport> reports) {
+        this.reports = reports;
+    }
 
-	@OneToOne(mappedBy = "ship", cascade = { CascadeType.ALL })
-	public VoyageInformation getVoyageInformation() {
-		return voyageInformation;
-	}
+    @OneToOne(mappedBy = "ship", cascade = { CascadeType.ALL })
+    public VoyageInformation getVoyageInformation() {
+        return voyageInformation;
+    }
 
-	public void setVoyageInformation(VoyageInformation voyageInformation) {
-		this.voyageInformation = voyageInformation;
-	}
+    public void setVoyageInformation(VoyageInformation voyageInformation) {
+        this.voyageInformation = voyageInformation;
+    }
 
 }

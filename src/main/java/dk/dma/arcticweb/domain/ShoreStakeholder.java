@@ -19,10 +19,10 @@ import javax.persistence.Entity;
 
 @Entity
 public class ShoreStakeholder extends Stakeholder {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public ShoreStakeholder() {
+    public ShoreStakeholder() {
 
-	}
+    }
 
 }
