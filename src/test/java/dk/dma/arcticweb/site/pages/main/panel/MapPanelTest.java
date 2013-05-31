@@ -30,7 +30,7 @@ import dk.dma.arcticweb.site.TestPanel;
  * @author jesper
  * 
  */
-public class MapPanelTesting extends CdiUnitTestBase {
+public class MapPanelTest extends CdiUnitTestBase {
 
     @Test
     public void testAddComponentWithClass() {
