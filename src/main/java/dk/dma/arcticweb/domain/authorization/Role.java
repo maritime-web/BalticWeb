@@ -17,6 +17,7 @@ package dk.dma.arcticweb.domain.authorization;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -30,6 +31,10 @@ public class Role extends AbstractAuthorizationEntity<Integer> {
     public Role() {
     }
 
+    public Role(String logicalName) {
+        super(logicalName);
+    }
+
     public Role(String logicalName, Text name) {
         super(logicalName, name);
     }
@@ -40,8 +45,8 @@ public class Role extends AbstractAuthorizationEntity<Integer> {
     @ManyToMany(mappedBy = "roles")
     private Set<Permission> permissions;
 
-    @ManyToMany
-    private Set<SecuredUser> users;
+    @ManyToMany(mappedBy="roles")
+    private List<SecuredUser> users;
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -65,6 +70,14 @@ public class Role extends AbstractAuthorizationEntity<Integer> {
     public void setPermissions(Set<Permission> permissions) {
         this.permissions = permissions;
     }
+
+    @Override
+    public String toString() {
+        return "Role [" + super.toString() + "]";
+    }
+
+    
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////

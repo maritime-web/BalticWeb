@@ -20,8 +20,6 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 
-import dk.dma.arcticweb.domain.User;
-
 @Entity
 public class Permission extends AbstractAuthorizationEntity<Integer> {
 
@@ -31,7 +29,7 @@ public class Permission extends AbstractAuthorizationEntity<Integer> {
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     @ManyToMany
-    private Set<User> users;
+    private Set<SecuredUser> users;
 
     @ManyToMany
     private Set<Role> roles;
@@ -47,11 +45,11 @@ public class Permission extends AbstractAuthorizationEntity<Integer> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public Set<User> getUsers() {
+    public Set<SecuredUser> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(Set<SecuredUser> users) {
         this.users = users;
     }
 

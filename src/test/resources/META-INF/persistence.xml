@@ -4,6 +4,12 @@
         http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="componentTest" transaction-type="RESOURCE_LOCAL">
+		<class>dk.dma.arcticweb.domain.authorization.SecuredUser</class>
+		<class>dk.dma.arcticweb.domain.authorization.Role</class>
+		<class>dk.dma.arcticweb.domain.authorization.Permission</class>
+		<class>dk.dma.arcticweb.domain.authorization.Text</class>
+		
+
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:h2:file:target/h2/testdb;create=true" />
@@ -12,8 +18,9 @@
 
 			<!-- Properties for Hibernate -->
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
 		</properties>
+		
 	</persistence-unit>
 </persistence>

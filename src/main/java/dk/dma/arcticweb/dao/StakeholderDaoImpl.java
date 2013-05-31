@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import dk.dma.arcticweb.domain.Authority;
@@ -30,6 +32,11 @@ import dk.dma.arcticweb.domain.Stakeholder;
 
 @Stateless
 public class StakeholderDaoImpl extends DaoImpl implements StakeholderDao {
+
+    @Inject
+    public StakeholderDaoImpl(EntityManager entityManager) {
+        super(entityManager);
+    }
 
     @SuppressWarnings("unchecked")
     @Override

@@ -16,12 +16,19 @@
 package dk.dma.arcticweb.dao;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import dk.dma.arcticweb.domain.User;
 
 @Stateless
 public class UserDaoImpl extends DaoImpl implements UserDao {
+
+    @Inject
+    public UserDaoImpl(EntityManager entityManager) {
+        super(entityManager);
+    }
 
     @SuppressWarnings("unchecked")
     @Override

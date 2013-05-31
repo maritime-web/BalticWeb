@@ -15,6 +15,9 @@
  */
 package dk.dma.arcticweb.domain.authorization;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -25,12 +28,19 @@ import javax.persistence.NamedQuery;
 import dk.dma.arcticweb.domain.BaseEntity;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName") })
+@NamedQueries({
+        @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName"),
+        @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.roles WHERE u.id=:id") })
 public class SecuredUser extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;
 
     public SecuredUser() {
+    }
+
+    public SecuredUser(String userName, String password) {
+        setUserName(userName);
+        setPassword(password);
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -41,11 +51,11 @@ public class SecuredUser extends BaseEntity<Long> {
 
     private String userName;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "users")
     private Set<Permission> permissions;
 
-    @ManyToMany(mappedBy = "users")
-    private Set<Role> roles;
+    @ManyToMany
+    private List<Role> roles = new ArrayList<>(5);
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -54,7 +64,11 @@ public class SecuredUser extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-
+    @Override
+    public String toString() {
+        return "SecuredUser [password=" + password + ", userName=" + userName + ", id=" + id + "]";
+    }
+    
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -78,16 +92,11 @@ public class SecuredUser extends BaseEntity<Long> {
         return permissions;
     }
 
-    public void setPermissions(Set<Permission> permissions) {
-        this.permissions = permissions;
+    public List<Role> getRoles() {
+        return Collections.unmodifiableList(roles);
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public void addRole(Role role) {
+        roles.add(role);
     }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
 }

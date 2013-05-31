@@ -16,6 +16,8 @@
 package dk.dma.arcticweb.dao;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import dk.dma.arcticweb.domain.authorization.Permission;
@@ -25,8 +27,9 @@ import dk.dma.arcticweb.domain.authorization.SecuredUser;
 @Stateless
 public class RealmDaoImpl extends DaoImpl implements RealmDao {
 
-    public RealmDaoImpl() {
-        //super(SecuredUser.class);
+    @Inject
+    public RealmDaoImpl(EntityManager entityManager) {
+        super(entityManager);
     }
 
     @Override
@@ -34,14 +37,23 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
         TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:findByUserName", SecuredUser.class);
         query.setParameter("userName", username);
 
-        return (SecuredUser)getSingleOrNull(query.getResultList());
+        return (SecuredUser) getSingleOrNull(query.getResultList());
+    }
+
+    @Override
+    public SecuredUser getByPrimaryKeyReturnAll(Long key) {
+        TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:getByPrimaryKeyReturnAll", SecuredUser.class);
+        query.setParameter("id", key);
+
+        return (SecuredUser) getSingleOrNull(query.getResultList());
     }
 
     public Role saveEntity(Role entity) {
-        return (Role)saveEntity(entity);
+        return (Role) saveEntity(entity);
     }
 
     public Permission saveEntity(Permission entity) {
-        return (Permission)saveEntity(entity);
+        return (Permission) saveEntity(entity);
     }
+
 }

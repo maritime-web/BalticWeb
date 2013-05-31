@@ -17,18 +17,21 @@ package dk.dma.arcticweb.dao;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 import dk.dma.arcticweb.domain.IEntity;
+import dk.dma.arcticweb.domain.authorization.SecuredUser;
 
-@Stateless
 public class DaoImpl implements Dao {
 
     @PersistenceContext(name = "arcticweb")
     protected EntityManager em;
+
+    protected DaoImpl(EntityManager entityManager) {
+        this.em = entityManager;
+    }
 
     @Override
     public IEntity getByPrimaryKey(Class<? extends IEntity> clazz, Object id) {
@@ -59,5 +62,4 @@ public class DaoImpl implements Dao {
     public static IEntity getSingleOrNull(List<? extends IEntity> list) {
         return (list == null || list.size() == 0) ? null : list.get(0);
     }
-
 }

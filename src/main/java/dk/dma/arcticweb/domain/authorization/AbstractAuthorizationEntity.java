@@ -76,4 +76,11 @@ public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {
     public void setName(Text name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "id=" + id + ", logicalName=" + logicalName + ", name=" + name;
+    }
+    
+    
 }

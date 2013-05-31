@@ -19,6 +19,8 @@ import java.io.Serializable;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -54,5 +56,11 @@ public class Configuration implements Serializable {
 
         DefaultSecurityManager securityManager = new DefaultSecurityManager();
     }
+    
+    
+    
+    @Produces
+    @PersistenceContext(name = "arcticweb")
+    EntityManager entityManager;
 
 }

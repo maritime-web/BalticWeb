@@ -23,4 +23,6 @@ import dk.dma.arcticweb.domain.authorization.SecuredUser;
 public interface RealmDao extends Dao {
 
     SecuredUser findByUsername(String username);
+
+    SecuredUser getByPrimaryKeyReturnAll(Long key);
 }
