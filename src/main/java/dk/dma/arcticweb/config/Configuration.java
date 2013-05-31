@@ -13,54 +13,55 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.site.config;
+package dk.dma.arcticweb.config;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.realm.Realm;
+import org.apache.shiro.mgt.SecurityManager;
 
-@ApplicationScoped
+import dk.dma.arcticweb.service.JpaRealm;
+
 public class Configuration implements Serializable {
 
     private static final long serialVersionUID = 5538000455989826397L;
 
-    @Produces
-    public void security() {
-
-        Realm realm = new Realm() {
-
-            @Override
-            public boolean supports(AuthenticationToken token) {
-                return false;
-            }
-
-            @Override
-            public String getName() {
-                return null;
-            }
-
-            @Override
-            public AuthenticationInfo getAuthenticationInfo(AuthenticationToken token) {
-                return null;
-            }
-        };
-
+    
+    public static SecurityManager initShiroSecurity() {
         DefaultSecurityManager securityManager = new DefaultSecurityManager();
+        securityManager.setRealm(new JpaRealm());
+        return securityManager;
     }
-    
-    
-    
+
     @Produces
     @PersistenceContext(name = "arcticweb")
     EntityManager entityManager;
 
+    public static BeanManager getContainerBeanManager() {
+        BeanManager bm;
+        try {
+            bm = (BeanManager) new InitialContext().lookup("java:comp/BeanManager");
+        } catch (NamingException e) {
+            throw new IllegalStateException("Unable to obtain CDI BeanManager", e);
+        }
+        return bm;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getBean(Class<T> clazz) {
+        BeanManager bm = getContainerBeanManager();
+        Bean<T> bean = (Bean<T>) bm.getBeans(clazz).iterator().next();
+        CreationalContext<T> ctx = bm.createCreationalContext(bean);
+        T instance = (T) bm.getReference(bean, clazz, ctx); // this
+        return instance;
+    }
 }

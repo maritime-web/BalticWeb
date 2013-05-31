@@ -93,7 +93,7 @@ public class RealmDaoImplTest {
 
     @Test
     public void testGetByPrimaryKey() {
-        SecuredUser user = repository.getByPrimaryKeyReturnAll(1l);
+        SecuredUser user = repository.getByPrimaryKeyReturnAll(1L);
 
         assertEquals("user1", user.getUserName());
         assertEquals("pw1", user.getPassword());

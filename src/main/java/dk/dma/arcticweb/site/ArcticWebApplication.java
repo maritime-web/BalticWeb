@@ -18,8 +18,6 @@ package dk.dma.arcticweb.site;
 import static org.apache.wicket.cdi.ConversationPropagation.NONE;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.Session;
@@ -28,6 +26,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 
+import dk.dma.arcticweb.config.Configuration;
 import dk.dma.arcticweb.site.pages.front.FrontPage;
 import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.arcticweb.site.pages.test.TestPage;
@@ -44,11 +43,9 @@ public class ArcticWebApplication extends WebApplication {
     protected void init() {
         super.init();
 
-        // Enable CDI
-        enableCdi();
+        enableCdi(Configuration.getContainerBeanManager());
 
-        // Set security
-        getSecuritySettings().setAuthorizationStrategy(new AuthStrategy());
+        configureSecurity();
 
         // Mount pages
         mountPage("/main", MainPage.class);
@@ -60,18 +57,18 @@ public class ArcticWebApplication extends WebApplication {
     public Session newSession(Request request, Response response) {
         return new ArcticWebSession(request);
     }
-
-    private void enableCdi() {
-        // Enable CDI
-        BeanManager bm;
-        try {
-            bm = (BeanManager) new InitialContext().lookup("java:comp/BeanManager");
-        } catch (NamingException e) {
-            throw new IllegalStateException("Unable to obtain CDI BeanManager", e);
-        }
-
-        // Configure CDI, disabling Conversations as we aren't using them
-        new CdiConfiguration(bm).setPropagation(NONE).configure(this);
+    
+    private void enableCdi(BeanManager beanManager) {
+        // Enable CDI CDI, disabling Conversations as we aren't using them
+        new CdiConfiguration(beanManager).setPropagation(NONE).configure(this);
+    }
+    
+    private void configureSecurity(){
+        // This provokes configuration of Shiro SecurityManager
+        Configuration.initShiroSecurity();
+        
+        // Set Wicket Authorization strategy
+        getSecuritySettings().setAuthorizationStrategy(new AuthStrategy());
     }
 
 }
