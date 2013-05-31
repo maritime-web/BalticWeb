@@ -1,22 +1,24 @@
 <html lang="en" xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
 
-	<div id="map">
-			
+	<div id="map"></div>
+	
+	
+	
+	<div id="children">
+		<div wicket:id="childComponentGroup">
+			<div wicket:id="childComponent"></div>
+		</div>
 	</div>
-	
-	<div wicket:id="left"></div>
-	
+
 	<div id="filtering">
 		<div class="smallText">Presets</div>
-		<select name="filter_preset" class="filteringSelect"
-				onchange="useFilterPreset(this);">
+		<select name="filter_preset" class="filteringSelect" onchange="useFilterPreset(this);">
 			<option value="">None</option>
 			<option value="country=DNK">Danish ships</option>
 			<option
 				value="country=BEL,BGR,CYP,CZE,DNK,EST,FRO,FIN,AUT,FRA,DEU,GBR,GRC,HUN,IRL,ITA,LVA,LTU,LUX,MLT,NLD,POL,PRT,ROU,SVK,SVN,ESP,SWE">
-				EU ships
-			</option>
+				EU ships</option>
 			<option value="country=CHN">Chinese ships</option>
 			<option value="sourceType=SAT">Satellite</option>
 			<option value="sourceRegion=804">Satellite (NO)</option>
@@ -28,10 +30,10 @@
 			<option value="sourceSystem=MSSIS">MSSIS</option>
 			<option value="sourceSystem=TEST">AIS-TEST</option>
 		</select>
-		
+
 		<form name="targetFilter">
 			<hr class="tight">
-			<div id="sidebarTable">					
+			<div id="sidebarTable">
 				<div class="detailsRow">
 					<div class="smallText">Target country</div>
 					<div class="detailsRightCol">
@@ -73,36 +75,31 @@
 					<div class="detailsRightCol">
 						<input id="vesselClass" type="text" class="filteringInput" />
 					</div>
-				</div>				
+				</div>
 			</div>
-			
-			<input class="btn btn-small btn-primary" type="button" value="Apply filter" onclick="applyFilter();"/> 
-			<input class="btn btn-small" type="button" value="Clear filter" onclick="clearFilters();applyFilter();"/>
-			
+
+			<input class="btn btn-small btn-primary" type="button" value="Apply filter" onclick="applyFilter();" /> <input
+				class="btn btn-small" type="button" value="Clear filter" onclick="clearFilters();applyFilter();" />
+
 		</form>
 
 	</div>
-	
-	
+
+
 	<div id="rightSide">
-		<div wicket:id="status"></div>
-		
+
 		<div id="feedPanel" class="panel whiteOpacity shadowsIE arrowDown">
 			<div id="feedHeader" class="panelHeader">Abnormal behaviors</div>
-			
-			<div id="feedContainer" class="panelContainer">
-				
-			</div>
+
+			<div id="feedContainer" class="panelContainer"></div>
 		</div>
 	</div>
-	
+
 	<div id="loadingPanel" class="whiteOpacity shadowsIE">
 		&nbsp; &nbsp; Loading vessels <img src="img\load.gif">
 	</div>
 
-	<div id="vesselNameBox" class="whiteOpacity shadowsIE">			
-		
-	</div>
+	<div id="vesselNameBox" class="whiteOpacity shadowsIE"></div>
 
 	<div id="bottomOptions" class="btn-group">
 		<button class="btn btn-inverse">Distance tool</button>

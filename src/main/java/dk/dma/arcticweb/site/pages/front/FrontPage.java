@@ -24,30 +24,30 @@ import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
 import dk.dma.arcticweb.site.session.ArcticWebSession;
 
 public class FrontPage extends BasePage {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private WebMarkupContainer viewerMenu;
+    private WebMarkupContainer viewerMenu;
 
-	public FrontPage() {
-		super();
+    public FrontPage() {
+        super();
 
-		LoginForm loginForm = new LoginForm("login_form");
-		loginForm.setOutputMarkupId(true);
-		add(loginForm);
+        LoginForm loginForm = new LoginForm("login_form");
+        loginForm.setOutputMarkupId(true);
+        add(loginForm);
 
-		add(new UserPanel("user_panel"));
-		viewerMenu = new WebMarkupContainer("viewer_menu");
-		viewerMenu.add(new BookmarkablePageLink<>("viewer_link", MainPage.class));
-		viewerMenu.setVisible(false);
-		add(viewerMenu);
-	}
+        add(new UserPanel("user_panel"));
+        viewerMenu = new WebMarkupContainer("viewer_menu");
+        viewerMenu.add(new BookmarkablePageLink<>("viewer_link", MainPage.class));
+        viewerMenu.setVisible(false);
+        add(viewerMenu);
+    }
 
-	@Override
-	protected void onConfigure() {
-		super.onConfigure();
-		if (viewerMenu != null) {
-			viewerMenu.setVisible(ArcticWebSession.get().isLoggedIn());
-		}
-	}
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        if (viewerMenu != null) {
+            viewerMenu.setVisible(ArcticWebSession.get().isLoggedIn());
+        }
+    }
 
 }

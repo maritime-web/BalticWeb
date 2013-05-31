@@ -31,14 +31,13 @@ import javax.persistence.Transient;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Stakeholder extends AbstractEntity {
+public abstract class Stakeholder extends AbstractEntity {
     private static final long serialVersionUID = 1L;
 
     private String name;
     private Set<User> users = new HashSet<User>();
 
     public Stakeholder() {
-
     }
 
     @Id
@@ -78,22 +77,22 @@ public class Stakeholder extends AbstractEntity {
 
     @Transient
     public boolean isShip() {
-        return (this instanceof Ship);
+        return this instanceof Ship;
     }
 
     @Transient
     public boolean isAuthority() {
-        return (this instanceof Authority);
+        return this instanceof Authority;
     }
 
     @Transient
     public boolean isShipOwner() {
-        return (this instanceof ShipOwner);
+        return this instanceof ShipOwner;
     }
 
     @Transient
     public boolean isShoreStakeholder() {
-        return (this instanceof ShoreStakeholder);
+        return this instanceof ShoreStakeholder;
     }
 
 }

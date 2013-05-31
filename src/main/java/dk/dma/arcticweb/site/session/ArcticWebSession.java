@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Danish Maritime Authority
+/* Copyright (c) 2011 Danish Maritime Authority
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,54 +33,54 @@ import dk.dma.arcticweb.service.UserService;
  */
 public class ArcticWebSession extends WebSession {
 
-	@EJB
-	private static StakeholderService stakeholderService;
-	@EJB
-	private static UserService userService;
+    @EJB
+    private static StakeholderService stakeholderService;
+    @EJB
+    private static UserService userService;
 
-	private User user = null;
-	private Stakeholder stakeholder = null;
+    private User user;
+    private Stakeholder stakeholder;
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public static ArcticWebSession get() {
-		return (ArcticWebSession) Session.get();
-	}
+    public static ArcticWebSession get() {
+        return (ArcticWebSession) Session.get();
+    }
 
-	public ArcticWebSession(Request request) {
-		super(request);
-		setLocale(Locale.US);
-	}
+    public ArcticWebSession(Request request) {
+        super(request);
+        setLocale(Locale.US);
+    }
 
-	public void loginUser(User user) {
-		this.user = user;
-		this.stakeholder = stakeholderService.getStakeholder(user);
-	}
+    public void loginUser(User user) {
+        this.user = user;
+        this.stakeholder = stakeholderService.getStakeholder(user);
+    }
 
-	public boolean isLoggedIn() {
-		return (user != null);
-	}
+    public boolean isLoggedIn() {
+        return user != null;
+    }
 
-	public void logout() {
-		this.user = null;
-	}
+    public void logout() {
+        this.user = null;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public Stakeholder getStakeholder() {
-		return stakeholder;
-	}
+    public Stakeholder getStakeholder() {
+        return stakeholder;
+    }
 
-	/**
-	 * Reload from DB
-	 */
-	public void refresh() {
-		if (user != null) {
-			user = userService.get(user);
-			stakeholder = stakeholderService.getStakeholder(user);
-		}
-	}
+    /**
+     * Reload from DB
+     */
+    public void refresh() {
+        if (user != null) {
+            user = userService.get(user);
+            stakeholder = stakeholderService.getStakeholder(user);
+        }
+    }
 
 }

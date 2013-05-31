@@ -34,60 +34,60 @@ import dk.dma.arcticweb.site.session.ArcticWebSession;
 
 public class VoyageInformationForm extends Form<VoyageInformationForm> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@EJB
-	StakeholderService stakeholderService;
+    @EJB
+    StakeholderService stakeholderService;
 
-	private TextField<Integer> personsOnboard;
-	private CheckBox doctorOnboard;
+    private TextField<Integer> personsOnboard;
+    private CheckBox doctorOnboard;
 
-	private FeedbackPanel feedback;
-	private AjaxSubmitLink saveLink;
+    private FeedbackPanel feedback;
+    private AjaxSubmitLink saveLink;
 
-	private VoyageInformation voyageInformation;
+    private VoyageInformation voyageInformation;
 
-	public VoyageInformationForm(String id) {
-		super(id);
-		final Ship ship = (Ship) ArcticWebSession.get().getStakeholder();
-		voyageInformation = stakeholderService.getVoyageInformation(ship);
+    public VoyageInformationForm(String id) {
+        super(id);
+        final Ship ship = (Ship) ArcticWebSession.get().getStakeholder();
+        voyageInformation = stakeholderService.getVoyageInformation(ship);
 
-		setDefaultModel(new CompoundPropertyModel<VoyageInformation>(voyageInformation));
+        setDefaultModel(new CompoundPropertyModel<VoyageInformation>(voyageInformation));
 
-		personsOnboard = new TextField<>("personsOnboard");
-		// With Wicket 6.7.0
-		personsOnboard.add(new RangeValidator<Integer>(1, 10000));
-		// With Wicket 1.5.8
-		// personsOnboard.setRequired(true).add(new MinimumValidator<Integer>(1)).add(new
-		// MaximumValidator<Integer>(10000));
+        personsOnboard = new TextField<>("personsOnboard");
+        // With Wicket 6.7.0
+        personsOnboard.add(new RangeValidator<Integer>(1, 10000));
+        // With Wicket 1.5.8
+        // personsOnboard.setRequired(true).add(new MinimumValidator<Integer>(1)).add(new
+        // MaximumValidator<Integer>(10000));
 
-		doctorOnboard = new CheckBox("doctorOnboard");
+        doctorOnboard = new CheckBox("doctorOnboard");
 
-		feedback = new FeedbackPanel("voyage_information_feedback");
-		feedback.setVisible(false);
+        feedback = new FeedbackPanel("voyage_information_feedback");
+        feedback.setVisible(false);
 
-		saveLink = new AjaxSubmitLink("save") {
-			private static final long serialVersionUID = 1L;
+        saveLink = new AjaxSubmitLink("save") {
+            private static final long serialVersionUID = 1L;
 
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				stakeholderService.saveVoyageInformation(ship, voyageInformation);
-				feedback.setVisible(false);
-				target.add(this.getParent());
-				setResponsePage(new MainPage());
-			}
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                stakeholderService.saveVoyageInformation(ship, voyageInformation);
+                feedback.setVisible(false);
+                target.add(this.getParent());
+                setResponsePage(new MainPage());
+            }
 
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				feedback.setVisible(true);
-				target.add(this.getParent());
-			}
-		};
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                feedback.setVisible(true);
+                target.add(this.getParent());
+            }
+        };
 
-		add(personsOnboard);
-		add(doctorOnboard);
-		add(feedback);
-		add(saveLink);
-	}
+        add(personsOnboard);
+        add(doctorOnboard);
+        add(feedback);
+        add(saveLink);
+    }
 
 }

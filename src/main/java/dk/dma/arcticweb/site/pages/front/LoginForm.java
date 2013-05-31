@@ -34,79 +34,79 @@ import dk.dma.arcticweb.site.session.ArcticWebSession;
 
 public class LoginForm extends StatelessForm<LoginForm> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = Logger.getLogger(LoginForm.class);
+    private static final Logger LOG = Logger.getLogger(LoginForm.class);
 
-	@EJB
-	UserService userService;
+    @EJB
+    UserService userService;
 
-	private String username;
-	private String password;
-	private Boolean rememberMe;
+    private String username;
+    private String password;
+    private Boolean rememberMe;
 
-	private TextField<String> usernameField;
-	private PasswordTextField passwordField;
-	private FeedbackPanel feedback;
-	private AjaxSubmitLink submitLink;
+    private TextField<String> usernameField;
+    private PasswordTextField passwordField;
+    private FeedbackPanel feedback;
+    private AjaxSubmitLink submitLink;
 
-	public LoginForm(String id) {
-		super(id);
-		usernameField = new TextField<String>("username");
-		passwordField = new PasswordTextField("password");
-		feedback = new FeedbackPanel("login_feedback");
-		feedback.setVisible(false);
-		submitLink = new AjaxSubmitLink("login_btn") {
-			private static final long serialVersionUID = 1L;
+    public LoginForm(String id) {
+        super(id);
+        usernameField = new TextField<String>("username");
+        passwordField = new PasswordTextField("password");
+        feedback = new FeedbackPanel("login_feedback");
+        feedback.setVisible(false);
+        submitLink = new AjaxSubmitLink("login_btn") {
+            private static final long serialVersionUID = 1L;
 
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				User user = userService.login(username, password);
-				if (user != null) {
-					feedback.setVisible(false);
-					LOG.info("User logged in: " + username);
-					ArcticWebSession.get().loginUser(user);
-					setResponsePage(new MainPage());
-				} else {
-					feedback.setVisible(true);
-					error("Wrong username or password");
-					target.add(this.getParent());
-				}
-			}
-		};
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                User user = userService.login(username, password);
+                if (user != null) {
+                    feedback.setVisible(false);
+                    LOG.info("User logged in: " + username);
+                    ArcticWebSession.get().loginUser(user);
+                    setResponsePage(new MainPage());
+                } else {
+                    feedback.setVisible(true);
+                    error("Wrong username or password");
+                    target.add(this.getParent());
+                }
+            }
+        };
 
-		usernameField.setRequired(true);
-		passwordField.setRequired(true);
+        usernameField.setRequired(true);
+        passwordField.setRequired(true);
 
-		setModel(new CompoundPropertyModel<LoginForm>(this));
-		add(usernameField);
-		add(passwordField);
-		add(feedback);
-		add(submitLink);
-	}
+        setModel(new CompoundPropertyModel<LoginForm>(this));
+        add(usernameField);
+        add(passwordField);
+        add(feedback);
+        add(submitLink);
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public Boolean getRememberMe() {
-		return rememberMe;
-	}
+    public Boolean getRememberMe() {
+        return rememberMe;
+    }
 
-	public void setRememberMe(Boolean rememberMe) {
-		this.rememberMe = rememberMe;
-	}
+    public void setRememberMe(Boolean rememberMe) {
+        this.rememberMe = rememberMe;
+    }
 
 }

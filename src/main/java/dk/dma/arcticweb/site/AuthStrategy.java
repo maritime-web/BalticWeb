@@ -25,13 +25,13 @@ import dk.dma.arcticweb.site.session.ArcticWebSession;
  */
 public class AuthStrategy extends SimplePageAuthorizationStrategy {
 
-	public AuthStrategy() {
-		super(SecurePage.class, FrontPage.class);
-	}
+    public AuthStrategy() {
+        super(SecurePage.class, FrontPage.class);
+    }
 
-	@Override
-	protected boolean isAuthorized() {
-		return (ArcticWebSession.get().isLoggedIn());
-	}
+    @Override
+    protected boolean isAuthorized() {
+        return ArcticWebSession.get().isLoggedIn();
+    }
 
 }

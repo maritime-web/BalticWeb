@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Danish Maritime Authority
+/* Copyright (c) 2011 Danish Maritime Authority
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,19 +25,19 @@ import dk.dma.arcticweb.site.session.ArcticWebSession;
  */
 public abstract class BasePage extends WebPage {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public BasePage() {
-		super();
-	}
+    public BasePage() {
+        super();
+    }
 
-	@Override
-	public ArcticWebSession getSession() {
-		return (ArcticWebSession) super.getSession();
-	}
+    @Override
+    public ArcticWebSession getSession() {
+        return (ArcticWebSession) super.getSession();
+    }
 
-	public User getUser() {
-		return getSession().getUser();
-	}
+    public User getUser() {
+        return getSession().getUser();
+    }
 
 }

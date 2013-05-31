@@ -36,84 +36,84 @@ import dk.dma.arcticweb.site.session.ArcticWebSession;
 
 public class ShipReportForm extends Form<ShipReportForm> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@EJB
-	StakeholderService stakeholderService;
+    @EJB
+    StakeholderService stakeholderService;
 
-	private TextField<Double> lat;
-	private TextField<Double> lon;
-	private TextArea<String> weather;
-	private TextArea<String> iceObservations;
-	private DateTimeField reportTime;
+    private TextField<Double> lat;
+    private TextField<Double> lon;
+    private TextArea<String> weather;
+    private TextArea<String> iceObservations;
+    private DateTimeField reportTime;
 
-	private FeedbackPanel feedback;
-	private AjaxSubmitLink saveLink;
+    private FeedbackPanel feedback;
+    private AjaxSubmitLink saveLink;
 
-	private ShipReport shipReport;
+    private ShipReport shipReport;
 
-	public ShipReportForm(String id) {
-		super(id);
-		final Ship ship = (Ship) ArcticWebSession.get().getStakeholder();
+    public ShipReportForm(String id) {
+        super(id);
+        final Ship ship = (Ship) ArcticWebSession.get().getStakeholder();
 
-		shipReport = new ShipReport();
-		shipReport.setReportTime(new Date());
-		setDefaultModel(new CompoundPropertyModel<ShipReport>(shipReport));
+        shipReport = new ShipReport();
+        shipReport.setReportTime(new Date());
+        setDefaultModel(new CompoundPropertyModel<ShipReport>(shipReport));
 
-		lat = new TextField<>("lat");
-		lat.setRequired(true);
+        lat = new TextField<>("lat");
+        lat.setRequired(true);
 
-		lon = new TextField<>("lon");
-		lon.setRequired(true);
+        lon = new TextField<>("lon");
+        lon.setRequired(true);
 
-		// TODO try to get position from AIS (if updated recently)
-		// TODO formatted output
+        // TODO try to get position from AIS (if updated recently)
+        // TODO formatted output
 
-		weather = new TextArea<>("weather");
+        weather = new TextArea<>("weather");
 
-		iceObservations = new TextArea<>("iceObservations");
+        iceObservations = new TextArea<>("iceObservations");
 
-		reportTime = new DateTimeField("reportTime") {
-			private static final long serialVersionUID = 1L;
+        reportTime = new DateTimeField("reportTime") {
+            private static final long serialVersionUID = 1L;
 
-			@Override
-			protected boolean use12HourFormat() {
-				// this will force to use 24 hours format
-				return false;
-			}
-		};
-		reportTime.setRequired(true);
+            @Override
+            protected boolean use12HourFormat() {
+                // this will force to use 24 hours format
+                return false;
+            }
+        };
+        reportTime.setRequired(true);
 
-		feedback = new FeedbackPanel("ship_report_feedback");
-		feedback.setVisible(false);
+        feedback = new FeedbackPanel("ship_report_feedback");
+        feedback.setVisible(false);
 
-		saveLink = new AjaxSubmitLink("save") {
-			private static final long serialVersionUID = 1L;
+        saveLink = new AjaxSubmitLink("save") {
+            private static final long serialVersionUID = 1L;
 
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				shipReport.setReportTime(new Date());
-				stakeholderService.addShipReport(ship, shipReport);
-				feedback.setVisible(false);
-				target.add(this.getParent());
-				setResponsePage(new MainPage());
-			}
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                shipReport.setReportTime(new Date());
+                stakeholderService.addShipReport(ship, shipReport);
+                feedback.setVisible(false);
+                target.add(this.getParent());
+                setResponsePage(new MainPage());
+            }
 
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				feedback.setVisible(true);
-				target.add(this.getParent());
-			}
-		};
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                feedback.setVisible(true);
+                target.add(this.getParent());
+            }
+        };
 
-		add(lat);
-		add(lon);
-		add(weather);
-		add(iceObservations);
-		add(feedback);
-		add(saveLink);
-		add(reportTime);
+        add(lat);
+        add(lon);
+        add(weather);
+        add(iceObservations);
+        add(feedback);
+        add(saveLink);
+        add(reportTime);
 
-	}
+    }
 
 }

@@ -23,20 +23,21 @@ import dk.dma.arcticweb.site.resources.OnLoadMapDependentHeaderItem;
 @SuppressWarnings("serial")
 public class VesselDetailsPanel extends Panel {
 
-	private final static String JS_INIT = "embryo.vesselDetailsPanel.init();";
+    private static final String JS_INIT = "embryo.vesselDetailsPanel.init();";
 
-	public VesselDetailsPanel(String id) {
-		super(id);
-	}
+    public VesselDetailsPanel(String id) {
+        super(id);
+    }
 
-	@Override
-	public void renderHead(IHeaderResponse response) {
-		super.renderHead(response);
-		// if component is disabled we don't have to load the JQueryUI datepicker
-		if (!isEnabledInHierarchy())
-			return;
-		// initialize component
-		response.render(OnLoadMapDependentHeaderItem.forScript(JS_INIT));
-	}
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        // if component is disabled we don't have to load the JQueryUI datepicker
+        if (!isEnabledInHierarchy()) {
+            return;
+        }
+        // initialize component
+        response.render(OnLoadMapDependentHeaderItem.forScript(JS_INIT));
+    }
 
 }

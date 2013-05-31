@@ -1,3 +1,18 @@
+/* Copyright (c) 2011 Danish Maritime Authority
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package dk.dma.arcticweb.site.pages.main.panel;
 
 import org.apache.wicket.AttributeModifier;
@@ -12,56 +27,56 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 @SuppressWarnings("serial")
 public class LeftPanel2 extends Panel {
 
-	private final RepeatingView rw;
-	
-	private final static String JS_INIT = "embryo.leftPanel.init();";
+    private final RepeatingView rw;
 
-	public LeftPanel2(String id) {
-		super(id);
+    private static final String JS_INIT = "embryo.leftPanel.init();";
 
-		rw = new RepeatingView("collapseGroup");
-		add(rw);
+    public LeftPanel2(String id) {
+        super(id);
 
-		String collapsableGroupId = rw.newChildId();
-		add("Legends", collapsableGroupId, new LegendsPanel("collapsableContent"));
+        System.out.println("LeftPanel2(" + id + ")");
 
-		collapsableGroupId = rw.newChildId();
-		add("Search", collapsableGroupId, new SearchPanel("collapsableContent"));
-//
-		collapsableGroupId = rw.newChildId();
-		add("Vessel details", collapsableGroupId, new VesselDetailsPanel("collapsableContent"));
-	}
+        rw = new RepeatingView("collapseGroup");
+        add(rw);
 
-	private void add(String header, String collapsableGroupId, Component content) {
-		WebMarkupContainer collapsableGroup = new WebMarkupContainer(collapsableGroupId);
-		rw.add(collapsableGroup);
+        String collapsableGroupId = rw.newChildId();
+        add("Legends", collapsableGroupId, new LegendsPanel("collapsableContent"));
 
-		WebMarkupContainer collapsable = new WebMarkupContainer("collapsable");
-		// Get auto generated html id 
-		String idSelector = "#" + collapsable.getMarkupId();
-		collapsable.add(content);
+        collapsableGroupId = rw.newChildId();
+        add("Search", collapsableGroupId, new SearchPanel("collapsableContent"));
+        //
+        collapsableGroupId = rw.newChildId();
+        add("Vessel details", collapsableGroupId, new VesselDetailsPanel("collapsableContent"));
+    }
 
+    private void add(String header, String collapsableGroupId, Component content) {
+        WebMarkupContainer collapsableGroup = new WebMarkupContainer(collapsableGroupId);
+        rw.add(collapsableGroup);
 
-		Label headerText = new Label("collapseHeader", header);
-		headerText.add(new AttributeModifier("data-target", idSelector));
-//		ExternalLink headerLink = new ExternalLink(, idSelector);
-//		headerLink.add(new AttributeModifier("data-target", idSelector));
+        WebMarkupContainer collapsable = new WebMarkupContainer("collapsable");
+        // Get auto generated html id
+        String idSelector = "#" + collapsable.getMarkupId();
+        collapsable.add(content);
 
-		collapsableGroup.add(collapsable);
-		//collapsableGroup.add(headerLink);
-		collapsableGroup.add(headerText);
-	}
+        Label headerText = new Label("collapseHeader", header);
+        headerText.add(new AttributeModifier("data-target", idSelector));
+        // ExternalLink headerLink = new ExternalLink(, idSelector);
+        // headerLink.add(new AttributeModifier("data-target", idSelector));
 
-	@Override
-	public void renderHead(IHeaderResponse response) {
-		super.renderHead(response);
-		// if component is disabled we don't have to load the JQueryUI datepicker
-		if (!isEnabledInHierarchy())
-			return;
-		// initialize component
-		response.render(OnLoadHeaderItem.forScript(JS_INIT));
-	}
+        collapsableGroup.add(collapsable);
+        // collapsableGroup.add(headerLink);
+        collapsableGroup.add(headerText);
+    }
 
-	
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        // if component is disabled we don't have to load the JQueryUI datepicker
+        if (!isEnabledInHierarchy()) {
+            return;
+        }
+        // initialize component
+        response.render(OnLoadHeaderItem.forScript(JS_INIT));
+    }
 
 }

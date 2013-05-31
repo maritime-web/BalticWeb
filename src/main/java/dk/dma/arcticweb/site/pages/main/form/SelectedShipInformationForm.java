@@ -33,78 +33,78 @@ import dk.dma.enav.model.ship.ShipType;
 
 public class SelectedShipInformationForm extends Form<SelectedShipInformationForm> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@EJB
-	StakeholderService stakeholderService;
+    @EJB
+    StakeholderService stakeholderService;
 
-	private TextField<Long> mmsi;
-	private TextField<String> name;
-	private TextField<Long> imoNo;
-	private TextField<String> callsign;
-	private DropDownChoice<String> type;
-	private TextField<Integer> maxSpeed;
-	private TextField<Integer> tonnage;
-	private TextField<String> commCapabilities;
-	private TextField<Integer> rescueCapacity;
-	private TextField<Integer> width;
-	private TextField<Integer> length;
-	private TextField<String> iceClass;
-	private CheckBox helipad;
+    private TextField<Long> mmsi;
+    private TextField<String> name;
+    private TextField<Long> imoNo;
+    private TextField<String> callsign;
+    private DropDownChoice<String> type;
+    private TextField<Integer> maxSpeed;
+    private TextField<Integer> tonnage;
+    private TextField<String> commCapabilities;
+    private TextField<Integer> rescueCapacity;
+    private TextField<Integer> width;
+    private TextField<Integer> length;
+    private TextField<String> iceClass;
+    private CheckBox helipad;
 
-	private FeedbackPanel feedback;
-	private WebMarkupContainer saved;
+    private FeedbackPanel feedback;
+    private WebMarkupContainer saved;
 
-	public SelectedShipInformationForm(String id) {
-		super(id);
+    public SelectedShipInformationForm(String id) {
+        super(id);
 
-		mmsi = new TextField<>("mmsi");
-		// With Wicket 6.7.0
-		mmsi.setRequired(true).add(new RangeValidator<Long>(100000000L, 999999999L));
-		// With Wicket 1.5.8
-		// mmsi.setRequired(true).add(new MinimumValidator<Long>(100000000L)).add(new
-		// MaximumValidator<Long>(999999999L));
-		name = new TextField<>("name");
-		name.setRequired(true);
-		imoNo = new TextField<>("imoNo");
-		callsign = new TextField<>("callsign");
-		callsign.add(StringValidator.maximumLength(32));
-		List<String> types = ShipType.getStringList();
-		type = new DropDownChoice<>("type", types);
-		maxSpeed = new TextField<>("maxSpeed");
-		// With Wicket 6.7.0
-		maxSpeed.add(new RangeValidator<Integer>(null, 200));
-		// With Wicket 1.5.8
-		// maxSpeed.add(new MaximumValidator<Integer>(200));
-		tonnage = new TextField<>("tonnage");
-		commCapabilities = new TextField<>("commCapabilities");
-		rescueCapacity = new TextField<>("rescueCapacity");
-		width = new TextField<>("width");
-		length = new TextField<>("length");
-		iceClass = new TextField<>("iceClass");
-		helipad = new CheckBox("helipad");
+        mmsi = new TextField<>("mmsi");
+        // With Wicket 6.7.0
+        mmsi.setRequired(true).add(new RangeValidator<Long>(100000000L, 999999999L));
+        // With Wicket 1.5.8
+        // mmsi.setRequired(true).add(new MinimumValidator<Long>(100000000L)).add(new
+        // MaximumValidator<Long>(999999999L));
+        name = new TextField<>("name");
+        name.setRequired(true);
+        imoNo = new TextField<>("imoNo");
+        callsign = new TextField<>("callsign");
+        callsign.add(StringValidator.maximumLength(32));
+        List<String> types = ShipType.getStringList();
+        type = new DropDownChoice<>("type", types);
+        maxSpeed = new TextField<>("maxSpeed");
+        // With Wicket 6.7.0
+        maxSpeed.add(new RangeValidator<Integer>(null, 200));
+        // With Wicket 1.5.8
+        // maxSpeed.add(new MaximumValidator<Integer>(200));
+        tonnage = new TextField<>("tonnage");
+        commCapabilities = new TextField<>("commCapabilities");
+        rescueCapacity = new TextField<>("rescueCapacity");
+        width = new TextField<>("width");
+        length = new TextField<>("length");
+        iceClass = new TextField<>("iceClass");
+        helipad = new CheckBox("helipad");
 
-		feedback = new FeedbackPanel("ship_information_feedback");
-		feedback.setVisible(false);
-		saved = new WebMarkupContainer("saved");
-		saved.setVisible(false);
+        feedback = new FeedbackPanel("ship_information_feedback");
+        feedback.setVisible(false);
+        saved = new WebMarkupContainer("saved");
+        saved.setVisible(false);
 
-		add(mmsi);
-		add(name);
-		add(imoNo);
-		add(callsign);
-		add(type);
-		add(maxSpeed);
-		add(tonnage);
-		add(commCapabilities);
-		add(rescueCapacity);
-		add(width);
-		add(length);
-		add(iceClass);
-		add(helipad);
+        add(mmsi);
+        add(name);
+        add(imoNo);
+        add(callsign);
+        add(type);
+        add(maxSpeed);
+        add(tonnage);
+        add(commCapabilities);
+        add(rescueCapacity);
+        add(width);
+        add(length);
+        add(iceClass);
+        add(helipad);
 
-		add(feedback);
-		add(saved);
-	}
+        add(feedback);
+        add(saved);
+    }
 
 }

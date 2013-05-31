@@ -23,26 +23,26 @@ import dk.dma.arcticweb.site.session.ArcticWebSession;
 
 public class MenuPanel extends Panel {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private WebMarkupContainer yourShip;
-	private WebMarkupContainer selectedShip;
+    private WebMarkupContainer yourShip;
+    private WebMarkupContainer selectedShip;
 
-	public MenuPanel(String id) {
-		super(id);
+    public MenuPanel(String id) {
+        super(id);
 
-		Stakeholder stakeholder = ArcticWebSession.get().getStakeholder();
+        Stakeholder stakeholder = ArcticWebSession.get().getStakeholder();
 
-		yourShip = new WebMarkupContainer("your_ship");
-		yourShip.setVisible(stakeholder.isShip());
+        yourShip = new WebMarkupContainer("your_ship");
+        yourShip.setVisible(stakeholder.isShip());
 
-		add(yourShip);
+        add(yourShip);
 
-		selectedShip = new WebMarkupContainer("selected_ship");
-		selectedShip.setVisible(true);
+        selectedShip = new WebMarkupContainer("selected_ship");
+        selectedShip.setVisible(true);
 
-		add(selectedShip);
+        add(selectedShip);
 
-	}
+    }
 
 }

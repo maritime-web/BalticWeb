@@ -110,8 +110,9 @@ public class User extends AbstractEntity {
 
     @Transient
     public boolean passwordMatch(String password) {
-        if (password == null)
+        if (password == null){
             return false;
+        }
         return hashPassword(password).equals(getPasswordHash());
     }
 
