@@ -25,7 +25,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 
 import dk.dma.embryo.security.authorization.Ais;
-import dk.dma.embryo.security.authorization.YourShip;
 
 @Ais
 @SuppressWarnings("serial")
