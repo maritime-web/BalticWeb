@@ -17,7 +17,7 @@ package dk.dma.arcticweb.site.pages.main.form;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import javax.ejb.EJB;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -32,19 +32,18 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.arcticweb.domain.Ship;
+import dk.dma.arcticweb.service.StakeholderService;
 import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.arcticweb.site.session.ArcticWebSession;
-import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.enav.model.ship.ShipType;
 
-public class ShipInformationForm extends Form<ShipInformationForm> {
+public class ShipInformationFormOld extends Form<ShipInformationFormOld> {
 
     private static final long serialVersionUID = 1L;
 
-//    @EJB
-//    StakeholderService stakeholderService;
+    @EJB
+    StakeholderService stakeholderService;
 
     private TextField<Long> mmsi;
     private TextField<String> name;
@@ -62,20 +61,14 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 
     private FeedbackPanel feedback;
     private AjaxSubmitLink saveLink;
-    private Link<ShipInformationForm> closeLink;
+    private Link<ShipInformationFormOld> closeLink;
     private WebMarkupContainer saved;
-    
-    @Inject @YourShip
-    private Ship2 ship;
-    
-    //TODO Implement another DAO
-    @Inject
-    private RealmDao realmDao;
+    private Ship ship;
 
-    public ShipInformationForm(String id) {
+    public ShipInformationFormOld(String id) {
         super(id);
-//        ship = stakeholderService.getStakeholder(ArcticWebSession.get().getUser());
-        setDefaultModel(new CompoundPropertyModel<Ship2>(ship));
+        ship = stakeholderService.getStakeholder(ArcticWebSession.get().getUser());
+        setDefaultModel(new CompoundPropertyModel<Ship>(ship));
 
         mmsi = new TextField<>("mmsi");
 
@@ -109,7 +102,7 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
         feedback.setVisible(false);
         saved = new WebMarkupContainer("saved");
         saved.setVisible(false);
-        closeLink = new Link<ShipInformationForm>("close") {
+        closeLink = new Link<ShipInformationFormOld>("close") {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -126,8 +119,8 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                realmDao.saveEntity(ship);
-                //ArcticWebSession.get().refresh();
+                stakeholderService.save(ship);
+                ArcticWebSession.get().refresh();
                 feedback.setVisible(false);
                 saved.setVisible(true);
                 target.add(this.getParent());

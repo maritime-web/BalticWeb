@@ -26,20 +26,21 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.mgt.SecurityManager;
-
-import dk.dma.arcticweb.service.JpaRealm;
+import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.arcticweb.domain.authorization.Sailor;
+import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.security.authorization.YourShip;
 
 public class Configuration implements Serializable {
 
     private static final long serialVersionUID = 5538000455989826397L;
 
-    
-    public static SecurityManager initShiroSecurity() {
-        DefaultSecurityManager securityManager = new DefaultSecurityManager();
-        securityManager.setRealm(new JpaRealm());
-        return securityManager;
+    @Produces
+    @YourShip
+    public Ship2 getYourShip(Subject subject, RealmDao realmDao){
+        Sailor sailor = realmDao.getSailor(subject.getUserId());
+        return sailor.getShip();
     }
 
     @Produces
@@ -64,4 +65,13 @@ public class Configuration implements Serializable {
         T instance = (T) bm.getReference(bean, clazz, ctx); // this
         return instance;
     }
+
+//    public static SecurityManager initShiroSecurity() {
+//        
+//        System.out.println("Initializing Shiro Security");
+//        
+//        DefaultSecurityManager securityManager = new DefaultSecurityManager();
+//        securityManager.setRealm(new JpaRealm());
+//        return securityManager;
+//    }
 }

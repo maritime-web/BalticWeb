@@ -15,31 +15,26 @@
  */
 package dk.dma.arcticweb.site.pages.main;
 
-import javax.inject.Inject;
-
 import org.apache.wicket.markup.html.WebMarkupContainer;
 
 import dk.dma.arcticweb.site.SecurePage;
 import dk.dma.arcticweb.site.pages.BasePage;
-import dk.dma.arcticweb.site.pages.main.panel.JsPanel;
+import dk.dma.arcticweb.site.pages.main.panel.JsPanelOld;
 import dk.dma.arcticweb.site.pages.main.panel.LeftPanel2;
 import dk.dma.arcticweb.site.pages.main.panel.MapPanel;
-import dk.dma.arcticweb.site.pages.main.panel.MenuPanel;
+import dk.dma.arcticweb.site.pages.main.panel.MenuPanelOld;
 import dk.dma.arcticweb.site.pages.main.panel.SelectedShipInformationPanel;
 import dk.dma.arcticweb.site.pages.main.panel.ShipInformationPanel;
 import dk.dma.arcticweb.site.pages.main.panel.ShipReportPanel;
 import dk.dma.arcticweb.site.pages.main.panel.StatusPanel;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
 import dk.dma.arcticweb.site.pages.main.panel.VoyageInformationPanel;
-import dk.dma.embryo.security.Subject;
+import dk.dma.arcticweb.site.session.ArcticWebSession;
 
-public class MainPage extends BasePage implements SecurePage {
+public class MainPageOld extends BasePage implements SecurePage {
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    Subject subject;
-    
-    public MainPage() {
+    public MainPageOld() {
         super();
 
         MapPanel mapPanel = new MapPanel("map");
@@ -48,14 +43,14 @@ public class MainPage extends BasePage implements SecurePage {
         mapPanel.addComponent(StatusPanel.class);
 
         add(new UserPanel("user_panel"));
-        add(new MenuPanel("menu_panel"));
-        add(new JsPanel("js_panel"));
+        add(new MenuPanelOld("menu_panel"));
+        add(new JsPanelOld("js_panel"));
 
         // add(new LeftPanel2("left"));
         // add(new StatusPanel("status"));
 
-        //FIXME refactor this, such that panels have been annotated
-        if (subject.isPermitted("yourShip")) {
+        
+        if (ArcticWebSession.get().getStakeholder().isShip()) {
             add(new ShipInformationPanel("ship_information"));
             add(new ShipReportPanel("ship_report"));
             add(new VoyageInformationPanel("voyage_information"));

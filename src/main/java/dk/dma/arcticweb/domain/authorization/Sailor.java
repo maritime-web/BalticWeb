@@ -13,31 +13,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.site.pages;
+package dk.dma.arcticweb.domain.authorization;
 
-import org.apache.wicket.markup.html.WebPage;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
-import dk.dma.arcticweb.domain.User;
-import dk.dma.arcticweb.site.session.ArcticWebSession;
-
-/**
- * Parent page for all pages
- */
-public abstract class BasePage extends WebPage {
-
+@NamedQueries({ @NamedQuery(name = "Sailor:withShip", query = "SELECT r FROM Sailor r inner join r.users AS u JOIN FETCH r.ship where u.id = :id") })
+@Entity
+public class Sailor extends Role {
     private static final long serialVersionUID = 1L;
 
-    public BasePage() {
-        super();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Ship2 ship;
+
+    public Sailor() {
+        super("sailor");
     }
 
-    @Override
-    public ArcticWebSession getSession() {
-        return (ArcticWebSession) super.getSession();
+    public Ship2 getShip() {
+        return ship;
     }
 
-//    public User getUser() {
-//        return getSession().getUser();
-//    }
-
+    public void setShip(Ship2 ship) {
+        this.ship = ship;
+    }
 }

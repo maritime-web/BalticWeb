@@ -15,7 +15,7 @@
  */
 package dk.dma.arcticweb.site.pages.main.form;
 
-import javax.inject.Inject;
+import javax.ejb.EJB;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -26,16 +26,18 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.validation.validator.RangeValidator;
 
-import dk.dma.arcticweb.domain.authorization.Ship2;
-import dk.dma.arcticweb.domain.authorization.VoyageInformation2;
-import dk.dma.arcticweb.service.ShipService;
+import dk.dma.arcticweb.domain.Ship;
+import dk.dma.arcticweb.domain.VoyageInformation;
+import dk.dma.arcticweb.service.StakeholderService;
 import dk.dma.arcticweb.site.pages.main.MainPage;
-import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.arcticweb.site.session.ArcticWebSession;
 
-public class VoyageInformationForm extends Form<VoyageInformationForm> {
+public class VoyageInformationFormOld extends Form<VoyageInformationFormOld> {
 
     private static final long serialVersionUID = 1L;
 
+    @EJB
+    private StakeholderService stakeholderService; 
 
     private TextField<Integer> personsOnboard;
     private CheckBox doctorOnboard;
@@ -43,20 +45,14 @@ public class VoyageInformationForm extends Form<VoyageInformationForm> {
     private FeedbackPanel feedback;
     private AjaxSubmitLink saveLink;
 
-    private VoyageInformation2 voyageInformation;
-    
-    @Inject @YourShip
-    private Ship2 ship;
+    private VoyageInformation voyageInformation;
 
-    @Inject
-    private ShipService shipService;
-
-    public VoyageInformationForm(String id) {
+    public VoyageInformationFormOld(String id) {
         super(id);
-        
-        voyageInformation = shipService.getVoyageInformation(ship);
+        final Ship ship = (Ship) ArcticWebSession.get().getStakeholder();
+        voyageInformation = stakeholderService.getVoyageInformation(ship);
 
-        setDefaultModel(new CompoundPropertyModel<VoyageInformation2>(voyageInformation));
+        setDefaultModel(new CompoundPropertyModel<VoyageInformation>(voyageInformation));
 
         personsOnboard = new TextField<>("personsOnboard");
         // With Wicket 6.7.0
@@ -75,7 +71,7 @@ public class VoyageInformationForm extends Form<VoyageInformationForm> {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                shipService.saveVoyageInformation(voyageInformation);
+                stakeholderService.saveVoyageInformation(ship, voyageInformation);
                 feedback.setVisible(false);
                 target.add(this.getParent());
                 setResponsePage(new MainPage());

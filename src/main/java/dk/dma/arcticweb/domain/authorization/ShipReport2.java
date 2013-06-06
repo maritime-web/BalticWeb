@@ -13,45 +13,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.domain;
+package dk.dma.arcticweb.domain.authorization;
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.arcticweb.domain.BaseEntity;
 
 @Entity
-public class ShipReport extends AbstractEntity {
+public class ShipReport2 extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 1L;
 
+    @Column(unique = false, nullable = true)
     private Double lat;
-    private Double lon;
-    private String weather;
-    private String iceObservations;
-    private Date reportTime;
-    private Date created;
-    private Ship ship;
-
-    public ShipReport() {
-    }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique = true, nullable = false)
-    @Override
-    public Integer getId() {
-        return id;
-    }
 
     @Column(unique = false, nullable = true)
+    private Double lon;
+
+    @Column(unique = false, nullable = true)
+    private String weather;
+
+    @Column(unique = false, nullable = true)
+    private String iceObservations;
+
+    @Column(unique = false, nullable = false)
+    private Date reportTime;
+
+    @Column(unique = false, nullable = false, updatable = false)
+    private Date created;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Ship2 ship;
+
+    public ShipReport2() {
+    }
+
     public Double getLat() {
         return lat;
     }
@@ -60,7 +61,6 @@ public class ShipReport extends AbstractEntity {
         this.lat = lat;
     }
 
-    @Column(unique = false, nullable = true)
     public Double getLon() {
         return lon;
     }
@@ -69,7 +69,6 @@ public class ShipReport extends AbstractEntity {
         this.lon = lon;
     }
 
-    @Column(unique = false, nullable = true)
     public String getWeather() {
         return weather;
     }
@@ -78,7 +77,6 @@ public class ShipReport extends AbstractEntity {
         this.weather = weather;
     }
 
-    @Column(unique = false, nullable = true)
     public String getIceObservations() {
         return iceObservations;
     }
@@ -87,7 +85,6 @@ public class ShipReport extends AbstractEntity {
         this.iceObservations = iceObservations;
     }
 
-    @Column(unique = false, nullable = false)
     public Date getReportTime() {
         return reportTime;
     }
@@ -96,7 +93,6 @@ public class ShipReport extends AbstractEntity {
         this.reportTime = reportTime;
     }
 
-    @Column(unique = false, nullable = false, updatable = false)
     public Date getCreated() {
         return created;
     }
@@ -105,12 +101,11 @@ public class ShipReport extends AbstractEntity {
         this.created = created;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    public Ship getShip() {
+    public Ship2 getShip() {
         return ship;
     }
 
-    public void setShip(Ship ship) {
+    public void setShip(Ship2 ship) {
         this.ship = ship;
     }
 

@@ -59,7 +59,7 @@ public class JpaRealm extends AuthorizingRealm {
         RealmDao realmDao = Configuration.getBean(RealmDao.class);
 
         Long userId = (Long) principals.fromRealm(getName()).iterator().next();
-        SecuredUser user = (SecuredUser)realmDao.getByPrimaryKey(SecuredUser.class, userId);
+        SecuredUser user = realmDao.getByPrimaryKeyReturnAll(userId);
         if (user != null) {
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
             for (Role role : user.getRoles()) {

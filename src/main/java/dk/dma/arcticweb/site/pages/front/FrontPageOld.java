@@ -15,8 +15,6 @@
  */
 package dk.dma.arcticweb.site.pages.front;
 
-import javax.inject.Inject;
-
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 
@@ -24,17 +22,13 @@ import dk.dma.arcticweb.site.pages.BasePage;
 import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
 import dk.dma.arcticweb.site.session.ArcticWebSession;
-import dk.dma.embryo.security.Subject;
 
-public class FrontPage extends BasePage {
+public class FrontPageOld extends BasePage {
     private static final long serialVersionUID = 1L;
 
     private WebMarkupContainer viewerMenu;
-    
-    @Inject
-    private Subject subject;
 
-    public FrontPage() {
+    public FrontPageOld() {
         super();
 
         LoginForm loginForm = new LoginForm("login_form");
@@ -51,10 +45,8 @@ public class FrontPage extends BasePage {
     @Override
     protected void onConfigure() {
         super.onConfigure();
-        
-        // FIXME replace by authorization filter
         if (viewerMenu != null) {
-            viewerMenu.setVisible(subject.isLoggedIn());
+            viewerMenu.setVisible(ArcticWebSession.get().isLoggedIn());
         }
     }
 

@@ -13,19 +13,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.embryo.security.authorization;
 
-import javax.ejb.Local;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Permission(value = "ais")
+public @interface Ais {
 
-@Local
-public interface RealmDao extends Dao {
-
-    SecuredUser findByUsername(String username);
-
-    SecuredUser getByPrimaryKeyReturnAll(Long key);
-    
-    Sailor getSailor(Long userid);
 }

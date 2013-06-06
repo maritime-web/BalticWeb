@@ -13,19 +13,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.arcticweb.domain.authorization;
 
-import javax.ejb.Local;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class AuthorityRole extends Role {
+    private static final long serialVersionUID = 1L;
 
-@Local
-public interface RealmDao extends Dao {
+    public AuthorityRole() {
 
-    SecuredUser findByUsername(String username);
+    }
 
-    SecuredUser getByPrimaryKeyReturnAll(Long key);
-    
-    Sailor getSailor(Long userid);
 }

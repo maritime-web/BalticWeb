@@ -16,6 +16,7 @@
 package dk.dma.arcticweb.domain;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,9 +32,11 @@ import javax.persistence.Transient;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import dk.dma.arcticweb.domain.authorization.Role;
+
 @Entity
 @NamedQueries({ @NamedQuery(name = "User:getByUsername", query = "SELECT u FROM User u WHERE u.username=:username") })
-public class User extends AbstractEntity {
+public class User extends AbstractEntity {  
 
     private static final long serialVersionUID = 1L;
 
@@ -44,11 +47,11 @@ public class User extends AbstractEntity {
     private String email;
     private Date lastLogin;
     private Stakeholder stakeholder;
-
+    
     public User() {
         super();
     }
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false)

@@ -21,6 +21,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.Session;
+import org.apache.wicket.authorization.strategies.CompoundAuthorizationStrategy;
 import org.apache.wicket.cdi.CdiConfiguration;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
@@ -41,6 +42,9 @@ public class ArcticWebApplication extends WebApplication {
 
     @Override
     protected void init() {
+        
+        System.out.println("Initializing application");
+        
         super.init();
 
         enableCdi(Configuration.getContainerBeanManager());
@@ -65,10 +69,13 @@ public class ArcticWebApplication extends WebApplication {
     
     private void configureSecurity(){
         // This provokes configuration of Shiro SecurityManager
-        Configuration.initShiroSecurity();
+        //Configuration.initShiroSecurity();
+        CompoundAuthorizationStrategy s = new CompoundAuthorizationStrategy();
+        s.add(new AuthStrategy());
+        s.add(new FeatureAuthorizationStrategy());
         
         // Set Wicket Authorization strategy
-        getSecuritySettings().setAuthorizationStrategy(new AuthStrategy());
+        getSecuritySettings().setAuthorizationStrategy(s);
     }
 
 }

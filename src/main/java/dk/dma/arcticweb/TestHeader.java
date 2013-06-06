@@ -13,19 +13,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.arcticweb;
 
-import javax.ejb.Local;
+public class TestHeader {
 
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
-
-@Local
-public interface RealmDao extends Dao {
-
-    SecuredUser findByUsername(String username);
-
-    SecuredUser getByPrimaryKeyReturnAll(Long key);
-    
-    Sailor getSailor(Long userid);
 }

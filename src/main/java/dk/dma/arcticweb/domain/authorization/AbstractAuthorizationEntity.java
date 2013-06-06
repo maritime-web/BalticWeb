@@ -44,7 +44,7 @@ public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {
     // //////////////////////////////////////////////////////////////////////
     private String logicalName;
 
-    @ManyToOne
+    //@ManyToOne
     private Text name;
 
     // //////////////////////////////////////////////////////////////////////
@@ -77,10 +77,12 @@ public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
+    public String toStringRaw() {
         return "id=" + id + ", logicalName=" + logicalName + ", name=" + name;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + toStringRaw() + "]";
+    }
 }

@@ -27,6 +27,7 @@ import dk.dma.arcticweb.domain.ShipReport;
 import dk.dma.arcticweb.domain.Stakeholder;
 import dk.dma.arcticweb.domain.User;
 import dk.dma.arcticweb.domain.VoyageInformation;
+import dk.dma.arcticweb.domain.authorization.Ship2;
 
 @Stateless
 public class StakeholderServiceImpl implements StakeholderService {
@@ -57,6 +58,8 @@ public class StakeholderServiceImpl implements StakeholderService {
         stakeholderDao.saveEntity(shipReport);
     }
 
+
+    
     @Override
     public VoyageInformation getVoyageInformation(Ship ship) {
         ship = (Ship) stakeholderDao.getByPrimaryKey(Ship.class, ship.getId());
