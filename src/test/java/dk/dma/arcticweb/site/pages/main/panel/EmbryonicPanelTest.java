@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import dk.dma.arcticweb.site.CdiUnitTestBase;
 import dk.dma.arcticweb.site.TestPanel;
 import dk.dma.embryo.site.component.ReflectiveComponentFactory;
+import dk.dma.embryo.site.panel.EmbryonicPanel;
 
 /**
  * Won't pass test phase in Maven. Renamed to disable it. Question posted at stackoverflow:

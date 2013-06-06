@@ -144,7 +144,7 @@ public class TestPage extends WebPage {
         // Create auth and user
         AuthorityRole auth = new AuthorityRole();
         // auth.setName(new Text("en", "Danish Maritime Authority"));
-        // auth.add(ais);
+        auth.add(ais);
 
         user = new SecuredUser("dma", "qwerty", "obo@dma.dk");
         user.addRole(auth);

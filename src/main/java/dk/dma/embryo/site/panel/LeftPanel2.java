@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.site.pages.main.panel;
+package dk.dma.embryo.site.panel;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -24,6 +24,9 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 
+import dk.dma.arcticweb.site.pages.main.panel.LegendsPanel;
+import dk.dma.arcticweb.site.pages.main.panel.SearchPanel;
+import dk.dma.arcticweb.site.pages.main.panel.VesselDetailsPanel;
 import dk.dma.embryo.security.authorization.Ais;
 
 @Ais

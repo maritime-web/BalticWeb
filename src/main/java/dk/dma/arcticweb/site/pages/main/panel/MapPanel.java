@@ -18,6 +18,8 @@ package dk.dma.arcticweb.site.pages.main.panel;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
 
+import dk.dma.embryo.site.panel.EmbryonicPanel;
+
 @SuppressWarnings("serial")
 public class MapPanel extends EmbryonicPanel {
 
