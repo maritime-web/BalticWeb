@@ -17,8 +17,8 @@ package dk.dma.arcticweb.dao;
 
 import javax.ejb.Local;
 
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SecuredUser;
 
 @Local
 public interface RealmDao extends Dao {

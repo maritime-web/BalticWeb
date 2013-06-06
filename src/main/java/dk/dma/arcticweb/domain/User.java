@@ -32,7 +32,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import dk.dma.arcticweb.domain.authorization.Role;
+import dk.dma.embryo.domain.Role;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = "User:getByUsername", query = "SELECT u FROM User u WHERE u.username=:username") })

@@ -22,7 +22,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 import dk.dma.arcticweb.domain.IEntity;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
+import dk.dma.embryo.domain.SecuredUser;
 
 public class DaoImpl implements Dao {
 

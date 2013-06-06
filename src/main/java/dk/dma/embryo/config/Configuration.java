@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.config;
+package dk.dma.embryo.config;
 
 import java.io.Serializable;
 
@@ -27,8 +27,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
 

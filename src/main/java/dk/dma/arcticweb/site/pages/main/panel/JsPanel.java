@@ -21,7 +21,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.domain.authorization.Sailor;
+import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.security.Subject;
 
 public class JsPanel extends Panel {

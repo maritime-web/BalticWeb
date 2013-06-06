@@ -25,7 +25,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.embryo.domain.Ship2;
 
 @Entity
 public class ShipReport extends AbstractEntity {

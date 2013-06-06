@@ -27,10 +27,10 @@ import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.arcticweb.dao.UserDao;
 import dk.dma.arcticweb.domain.Ship;
 import dk.dma.arcticweb.domain.VoyageInformation;
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.Ship2;
-import dk.dma.arcticweb.domain.authorization.ShipReport2;
-import dk.dma.arcticweb.domain.authorization.VoyageInformation2;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.ShipReport2;
+import dk.dma.embryo.domain.VoyageInformation2;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
 

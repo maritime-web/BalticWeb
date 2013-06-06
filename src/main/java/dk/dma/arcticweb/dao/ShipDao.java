@@ -20,8 +20,8 @@ import java.util.List;
 import javax.ejb.Local;
 
 import dk.dma.arcticweb.domain.Stakeholder;
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.Ship2;
 
 @Local
 public interface ShipDao extends Dao {

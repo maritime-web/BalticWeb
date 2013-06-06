@@ -36,11 +36,11 @@ import dk.dma.arcticweb.domain.Authority;
 import dk.dma.arcticweb.domain.Ship;
 import dk.dma.arcticweb.domain.Stakeholder;
 import dk.dma.arcticweb.domain.User;
-import dk.dma.arcticweb.domain.authorization.AuthorityRole;
-import dk.dma.arcticweb.domain.authorization.Permission;
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
-import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.embryo.domain.AuthorityRole;
+import dk.dma.embryo.domain.Permission;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SecuredUser;
+import dk.dma.embryo.domain.Ship2;
 
 public class TestPage extends WebPage {
 

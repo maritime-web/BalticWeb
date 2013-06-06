@@ -17,8 +17,8 @@ package dk.dma.arcticweb.site;
 
 import org.apache.wicket.authorization.strategies.page.SimplePageAuthorizationStrategy;
 
-import dk.dma.arcticweb.config.Configuration;
 import dk.dma.arcticweb.site.pages.front.FrontPage;
+import dk.dma.embryo.config.Configuration;
 import dk.dma.embryo.security.Subject;
 
 /**

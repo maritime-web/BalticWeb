@@ -27,7 +27,7 @@ import dk.dma.arcticweb.domain.ShipReport;
 import dk.dma.arcticweb.domain.Stakeholder;
 import dk.dma.arcticweb.domain.User;
 import dk.dma.arcticweb.domain.VoyageInformation;
-import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.embryo.domain.Ship2;
 
 @Stateless
 public class StakeholderServiceImpl implements StakeholderService {

@@ -13,19 +13,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.domain.authorization;
+package dk.dma.embryo.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
+@NamedQueries({ @NamedQuery(name = "Sailor:withShip", query = "SELECT r FROM Sailor r inner join r.users AS u JOIN FETCH r.ship where u.id = :id") })
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class AuthorityRole extends Role {
+public class Sailor extends Role {
     private static final long serialVersionUID = 1L;
 
-    public AuthorityRole() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Ship2 ship;
 
+    public Sailor() {
+        super("sailor");
     }
 
+    public Ship2 getShip() {
+        return ship;
+    }
+
+    public void setShip(Ship2 ship) {
+        this.ship = ship;
+    }
 }

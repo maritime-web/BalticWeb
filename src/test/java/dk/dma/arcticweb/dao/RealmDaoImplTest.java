@@ -28,12 +28,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dk.dma.arcticweb.domain.authorization.Permission;
-import dk.dma.arcticweb.domain.authorization.Role;
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
-import dk.dma.arcticweb.domain.authorization.ShipOwnerRole;
-import dk.dma.arcticweb.domain.authorization.ShoreRole;
+import dk.dma.embryo.domain.Permission;
+import dk.dma.embryo.domain.Role;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SecuredUser;
+import dk.dma.embryo.domain.ShipOwnerRole;
+import dk.dma.embryo.domain.ShoreRole;
 
 public class RealmDaoImplTest {
 

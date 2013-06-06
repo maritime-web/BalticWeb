@@ -27,8 +27,8 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
 import dk.dma.arcticweb.site.pages.main.MainPage;
+import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.Subject;
 
 public class LoginForm extends StatelessForm<LoginForm> {

@@ -27,11 +27,11 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 
-import dk.dma.arcticweb.config.Configuration;
 import dk.dma.arcticweb.site.pages.front.FrontPage;
 import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.arcticweb.site.pages.test.TestPage;
 import dk.dma.arcticweb.site.session.ArcticWebSession;
+import dk.dma.embryo.config.Configuration;
 
 public class ArcticWebApplication extends WebApplication {
 

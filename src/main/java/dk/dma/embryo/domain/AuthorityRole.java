@@ -13,32 +13,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.domain.authorization;
-
-import java.util.HashSet;
-import java.util.Set;
+package dk.dma.embryo.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 @Entity
-public class ShipOwnerRole extends Role {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class AuthorityRole extends Role {
     private static final long serialVersionUID = 1L;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
-    private Set<Ship2> ships = new HashSet<Ship2>();
+    public AuthorityRole() {
 
-    public ShipOwnerRole() {
-        super("shipOwner");
-    }
-
-    public Set<Ship2> getShips() {
-        return ships;
-    }
-
-    public void setShips(Set<Ship2> ships) {
-        this.ships = ships;
     }
 
 }

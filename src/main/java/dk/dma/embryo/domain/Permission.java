@@ -13,54 +13,57 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.domain.authorization;
+package dk.dma.embryo.domain;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 
-import dk.dma.arcticweb.domain.BaseEntity;
 
 @Entity
-public class Text extends BaseEntity<Integer> {
+public class Permission extends AbstractAuthorizationEntity<Integer> {
 
-    private static final long serialVersionUID = -8480232439011093135L;
-
-    // //////////////////////////////////////////////////////////////////////
-    // Entity fields (also see super class)
-    // //////////////////////////////////////////////////////////////////////
-    @ElementCollection
-    @CollectionTable(name = "LanguageSpecificText")
-    @Column(name = "text")
-    private Map<String, String> languageSpecifixTexts = new HashMap<>();
+    private static final long serialVersionUID = 6625306470923937976L;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Text(String defaultLanguage, String defaultText) {
-        setText(defaultLanguage, defaultText);
+    public Permission(){
+        // used by JPA
     }
-
-    public Text() {
+    
+    public Permission(String permission){
+        super(permission);
     }
+    
+    // //////////////////////////////////////////////////////////////////////
+    // Entity fields (also see super class)
+    // //////////////////////////////////////////////////////////////////////
+    //@ManyToMany
+    //private Set<SecuredUser> users;
 
+    @ManyToMany(mappedBy = "permissions")
+    Set<Role> roles = new HashSet<>();
+
+    // //////////////////////////////////////////////////////////////////////
+    // business logic
+    // //////////////////////////////////////////////////////////////////////
+
+    // //////////////////////////////////////////////////////////////////////
+    // Utility methods
+    // //////////////////////////////////////////////////////////////////////    
+    
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public String getText(Locale locale) {
-        return getText(locale.getLanguage());
-    }
+//    public Set<SecuredUser> getUsers() {
+//        return users;
+//    }
 
-    public String getText(String language) {
-        return languageSpecifixTexts.get(language);
-    }
-
-    public void setText(String language, String text) {
-        languageSpecifixTexts.put(language, text);
+    public Set<Role> getRoles() {
+        return Collections.unmodifiableSet(roles);
     }
 }

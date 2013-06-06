@@ -31,8 +31,8 @@ import dk.dma.arcticweb.domain.Ship;
 import dk.dma.arcticweb.domain.ShipOwner;
 import dk.dma.arcticweb.domain.ShoreStakeholder;
 import dk.dma.arcticweb.domain.Stakeholder;
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.Ship2;
 
 @Stateless
 public class ShipDaoImpl extends DaoImpl implements ShipDao {

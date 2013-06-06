@@ -33,9 +33,9 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.domain.authorization.Ship2;
 import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.arcticweb.site.session.ArcticWebSession;
+import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.enav.model.ship.ShipType;
 

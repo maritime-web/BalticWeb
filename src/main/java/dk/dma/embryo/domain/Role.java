@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.domain.authorization;
+package dk.dma.embryo.domain;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
+
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

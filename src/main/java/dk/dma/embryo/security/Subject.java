@@ -28,9 +28,9 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.domain.authorization.IllegalConfigurationException;
-import dk.dma.arcticweb.domain.authorization.Role;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
+import dk.dma.embryo.config.IllegalConfigurationException;
+import dk.dma.embryo.domain.Role;
+import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.authorization.Permission;
 
 /**

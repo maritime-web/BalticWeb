@@ -4,17 +4,17 @@
         http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="componentTest" transaction-type="RESOURCE_LOCAL">
-		<class>dk.dma.arcticweb.domain.authorization.SecuredUser</class>
-		<class>dk.dma.arcticweb.domain.authorization.Role</class>
-		<class>dk.dma.arcticweb.domain.authorization.Permission</class>
-		<class>dk.dma.arcticweb.domain.authorization.Text</class>
-		<class>dk.dma.arcticweb.domain.authorization.Sailor</class>
-		<class>dk.dma.arcticweb.domain.authorization.ShoreRole</class>
-		<class>dk.dma.arcticweb.domain.authorization.ShipOwnerRole</class>
-		<class>dk.dma.arcticweb.domain.authorization.AuthorityRole</class>
-		<class>dk.dma.arcticweb.domain.authorization.Ship2</class>
-		<class>dk.dma.arcticweb.domain.authorization.ShipReport2</class>
-		<class>dk.dma.arcticweb.domain.authorization.VoyageInformation2</class>
+		<class>dk.dma.embryo.domain.SecuredUser</class>
+		<class>dk.dma.embryo.domain.Role</class>
+		<class>dk.dma.embryo.domain.Permission</class>
+		<class>dk.dma.embryo.domain.Text</class>
+		<class>dk.dma.embryo.domain.Sailor</class>
+		<class>dk.dma.embryo.domain.ShoreRole</class>
+		<class>dk.dma.embryo.domain.ShipOwnerRole</class>
+		<class>dk.dma.embryo.domain.AuthorityRole</class>
+		<class>dk.dma.embryo.domain.Ship2</class>
+		<class>dk.dma.embryo.domain.ShipReport2</class>
+		<class>dk.dma.embryo.domain.VoyageInformation2</class>
 		
 
 		<properties>

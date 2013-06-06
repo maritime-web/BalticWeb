@@ -30,10 +30,10 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
-import dk.dma.arcticweb.config.Configuration;
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.domain.authorization.Role;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
+import dk.dma.embryo.config.Configuration;
+import dk.dma.embryo.domain.Role;
+import dk.dma.embryo.domain.SecuredUser;
 
 public class JpaRealm extends AuthorizingRealm {
 

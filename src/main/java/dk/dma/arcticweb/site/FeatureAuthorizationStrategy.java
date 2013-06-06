@@ -20,7 +20,7 @@ import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.request.component.IRequestableComponent;
 
-import dk.dma.arcticweb.config.Configuration;
+import dk.dma.embryo.config.Configuration;
 import dk.dma.embryo.security.Subject;
 
 /**

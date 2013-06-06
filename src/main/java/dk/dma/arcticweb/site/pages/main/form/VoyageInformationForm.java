@@ -26,10 +26,10 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.validation.validator.RangeValidator;
 
-import dk.dma.arcticweb.domain.authorization.Ship2;
-import dk.dma.arcticweb.domain.authorization.VoyageInformation2;
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.pages.main.MainPage;
+import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.VoyageInformation2;
 import dk.dma.embryo.security.authorization.YourShip;
 
 public class VoyageInformationForm extends Form<VoyageInformationForm> {

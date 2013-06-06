@@ -37,7 +37,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
+import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.authorization.Permission;
 
 public class SubjectTest extends AbstractShiroTest {
