@@ -8,6 +8,13 @@
 		<class>dk.dma.arcticweb.domain.authorization.Role</class>
 		<class>dk.dma.arcticweb.domain.authorization.Permission</class>
 		<class>dk.dma.arcticweb.domain.authorization.Text</class>
+		<class>dk.dma.arcticweb.domain.authorization.Sailor</class>
+		<class>dk.dma.arcticweb.domain.authorization.ShoreRole</class>
+		<class>dk.dma.arcticweb.domain.authorization.ShipOwnerRole</class>
+		<class>dk.dma.arcticweb.domain.authorization.AuthorityRole</class>
+		<class>dk.dma.arcticweb.domain.authorization.Ship2</class>
+		<class>dk.dma.arcticweb.domain.authorization.ShipReport2</class>
+		<class>dk.dma.arcticweb.domain.authorization.VoyageInformation2</class>
 		
 
 		<properties>

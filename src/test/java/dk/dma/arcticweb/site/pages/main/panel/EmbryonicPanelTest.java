@@ -36,7 +36,7 @@ import dk.dma.embryo.site.component.ReflectiveComponentFactory;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = { ReflectiveComponentFactory.class })
-public class EmbryonicPanelTesting extends CdiUnitTestBase {
+public class EmbryonicPanelTest extends CdiUnitTestBase {
 
     @Test
     public void testAddComponentWithClass() {

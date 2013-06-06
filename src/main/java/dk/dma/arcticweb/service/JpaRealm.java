@@ -13,11 +13,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.domain.authorization;
+package dk.dma.arcticweb.service;
 
 
 
-import javax.inject.Inject;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
 
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -28,20 +30,22 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
+import dk.dma.arcticweb.config.Configuration;
 import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.arcticweb.domain.authorization.Role;
+import dk.dma.arcticweb.domain.authorization.SecuredUser;
 
 public class JpaRealm extends AuthorizingRealm {
 
     public static final String REALM = "EmbryonicJpaRealm";
-
-    @Inject
-    RealmDao realmDao;
 
     public JpaRealm() {
         setName(REALM); // This name must match the name in the User class's getPrincipals() method
     }
 
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) {
+        RealmDao realmDao = Configuration.getBean(RealmDao.class);
+        
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         SecuredUser user = realmDao.findByUsername(token.getUsername());
         if (user != null) {
@@ -52,8 +56,10 @@ public class JpaRealm extends AuthorizingRealm {
     }
 
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        RealmDao realmDao = Configuration.getBean(RealmDao.class);
+
         Long userId = (Long) principals.fromRealm(getName()).iterator().next();
-        SecuredUser user = (SecuredUser)realmDao.getByPrimaryKey(SecuredUser.class, userId);
+        SecuredUser user = realmDao.getByPrimaryKeyReturnAll(userId);
         if (user != null) {
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
             for (Role role : user.getRoles()) {

@@ -15,8 +15,6 @@
  */
 package dk.dma.arcticweb.site.pages.main.panel;
 
-import javax.inject.Inject;
-
 import org.apache.log4j.Logger;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -25,9 +23,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 
 import dk.dma.arcticweb.site.pages.front.FrontPage;
-import dk.dma.embryo.security.Subject;
+import dk.dma.arcticweb.site.session.ArcticWebSession;
 
-public class UserPanel extends Panel {
+public class UserPanelOld extends Panel {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,11 +33,8 @@ public class UserPanel extends Panel {
 
     private WebMarkupContainer notLoggedIn;
     private WebMarkupContainer loggedIn;
-    
-    @Inject
-    private Subject subject;
 
-    public UserPanel(String id) {
+    public UserPanelOld(String id) {
         super(id);
 
         notLoggedIn = new WebMarkupContainer("not_logged_in");
@@ -57,7 +52,7 @@ public class UserPanel extends Panel {
             @Override
             public void onClick() {
                 LOG.info("Logging out: " + getUsername());
-                subject.logout();
+                ArcticWebSession.get().logout();
                 setResponsePage(new FrontPage());
             }
         };
@@ -67,13 +62,13 @@ public class UserPanel extends Panel {
     @Override
     protected void onConfigure() {
         super.onConfigure();
-        loggedIn.setVisible(subject.isLoggedIn());
-        notLoggedIn.setVisible(!subject.isLoggedIn());
+        loggedIn.setVisible(ArcticWebSession.get().isLoggedIn());
+        notLoggedIn.setVisible(!ArcticWebSession.get().isLoggedIn());
     }
 
     public String getUsername() {
-        if (subject.isLoggedIn()) {
-            return subject.getUser().getUserName();
+        if (ArcticWebSession.get().isLoggedIn()) {
+            return ArcticWebSession.get().getUser().getUsername();
         }
         return null;
     }

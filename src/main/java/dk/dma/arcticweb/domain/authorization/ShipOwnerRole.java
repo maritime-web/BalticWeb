@@ -13,19 +13,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.arcticweb.domain.authorization;
 
-import javax.ejb.Local;
+import java.util.HashSet;
+import java.util.Set;
 
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 
-@Local
-public interface RealmDao extends Dao {
+@Entity
+public class ShipOwnerRole extends Role {
+    private static final long serialVersionUID = 1L;
 
-    SecuredUser findByUsername(String username);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    private Set<Ship2> ships = new HashSet<Ship2>();
 
-    SecuredUser getByPrimaryKeyReturnAll(Long key);
-    
-    Sailor getSailor(Long userid);
+    public ShipOwnerRole() {
+        super("shipOwner");
+    }
+
+    public Set<Ship2> getShips() {
+        return ships;
+    }
+
+    public void setShips(Set<Ship2> ships) {
+        this.ships = ships;
+    }
+
 }

@@ -15,9 +15,8 @@
  */
 package dk.dma.arcticweb.domain.authorization;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -30,7 +29,8 @@ import dk.dma.arcticweb.domain.BaseEntity;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName"),
-        @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.roles WHERE u.id=:id") })
+        // LEFT JOIN FETCH u.roles [identification variable] is not supported by JPA but by Hibernate
+       @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.roles AS r LEFT JOIN FETCH r.permissions WHERE u.id=:id") })
 public class SecuredUser extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;
@@ -43,6 +43,11 @@ public class SecuredUser extends BaseEntity<Long> {
         setPassword(password);
     }
 
+    public SecuredUser(String userName, String password, String email) {
+        this(userName, password);
+        setEmail(email);
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
@@ -51,12 +56,14 @@ public class SecuredUser extends BaseEntity<Long> {
 
     private String userName;
 
-    @ManyToMany(mappedBy = "users")
-    private Set<Permission> permissions;
+    private String email;
+
+    //@ManyToMany(mappedBy = "users")
+    //private Set<Permission> permissions;
 
     @ManyToMany
-    private List<Role> roles = new ArrayList<>(5);
-
+    private Set<Role> roles = new HashSet<>();
+    
     // //////////////////////////////////////////////////////////////////////
     // business logic
     // //////////////////////////////////////////////////////////////////////
@@ -87,16 +94,47 @@ public class SecuredUser extends BaseEntity<Long> {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
-    public Set<Permission> getPermissions() {
-        return permissions;
+    
+    public String getEmail() {
+        return email;
     }
 
-    public List<Role> getRoles() {
-        return Collections.unmodifiableList(roles);
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+//    public Set<Permission> getPermissions() {
+//        return permissions;
+//    }
+
+    public Set<Role> getRoles() {
+        return Collections.unmodifiableSet(roles);
     }
 
     public void addRole(Role role) {
         roles.add(role);
+        role.users.add(this);
+    }
+    
+    public Role getRole(String name){
+        for(Role role : roles){
+            if(role.getLogicalName().equals(name)){
+                return role;
+            }
+        }
+        
+        return null;
+    }
+
+    // TODO For now we only expect one of each role type
+    // with time this will not hold and the implementation must be changed. 
+    public <R extends Role> R getRole(Class<R> type){
+        for(Role role : roles){
+            if(role.getClass() == type){
+                return (R)role;
+            }
+        }
+        
+        return null;
     }
 }

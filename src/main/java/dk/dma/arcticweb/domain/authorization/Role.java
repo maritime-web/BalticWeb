@@ -16,15 +16,18 @@
 package dk.dma.arcticweb.domain.authorization;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 
 @Entity
-public class Role extends AbstractAuthorizationEntity<Integer> {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class Role extends AbstractAuthorizationEntity<Integer> {
 
     private static final long serialVersionUID = -8480232439011093135L;
 
@@ -42,11 +45,11 @@ public class Role extends AbstractAuthorizationEntity<Integer> {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-    @ManyToMany(mappedBy = "roles")
-    private Set<Permission> permissions;
+    @ManyToMany
+    private Set<Permission> permissions = new HashSet<>();
 
     @ManyToMany(mappedBy="roles")
-    private List<SecuredUser> users;
+    Set<SecuredUser> users = new HashSet<>();
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -63,22 +66,27 @@ public class Role extends AbstractAuthorizationEntity<Integer> {
         return permissions;
     }
 
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(Set<Permission> permissions) {
-        this.permissions = permissions;
-    }
-
     @Override
     public String toString() {
         return "Role [" + super.toString() + "]";
     }
-
-    
-
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
+    public Set<Permission> getPermissions() {
+        return Collections.unmodifiableSet(permissions);
+    }
+    
+    public void add(Permission permission){
+        // Maintain referential integrity
+        permissions.add(permission);
+        permission.roles.add(this);
+    }
+
+    public void remove(Permission permission){
+        // Maintain referential integrity
+        permissions.remove(permission);
+        permission.roles.remove(this);
+    }    
+
 }

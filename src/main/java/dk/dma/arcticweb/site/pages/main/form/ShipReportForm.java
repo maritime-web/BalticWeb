@@ -17,7 +17,7 @@ package dk.dma.arcticweb.site.pages.main.form;
 
 import java.util.Date;
 
-import javax.ejb.EJB;
+import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -28,18 +28,19 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import dk.dma.arcticweb.domain.Ship;
 import dk.dma.arcticweb.domain.ShipReport;
-import dk.dma.arcticweb.service.StakeholderService;
+import dk.dma.arcticweb.domain.authorization.Ship2;
+import dk.dma.arcticweb.domain.authorization.ShipReport2;
+import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.pages.main.MainPage;
-import dk.dma.arcticweb.site.session.ArcticWebSession;
+import dk.dma.embryo.security.authorization.YourShip;
 
 public class ShipReportForm extends Form<ShipReportForm> {
 
     private static final long serialVersionUID = 1L;
 
-    @EJB
-    StakeholderService stakeholderService;
+//    @EJB
+//    StakeholderService stakeholderService;
 
     private TextField<Double> lat;
     private TextField<Double> lon;
@@ -50,15 +51,21 @@ public class ShipReportForm extends Form<ShipReportForm> {
     private FeedbackPanel feedback;
     private AjaxSubmitLink saveLink;
 
-    private ShipReport shipReport;
+    private ShipReport2 shipReport;
+    
+    @Inject @YourShip
+    private Ship2 ship;
+    
+    @Inject
+    private ShipService shipService;
 
     public ShipReportForm(String id) {
         super(id);
-        final Ship ship = (Ship) ArcticWebSession.get().getStakeholder();
+//        final Ship ship = (Ship) ArcticWebSession.get().getStakeholder();
 
-        shipReport = new ShipReport();
+        shipReport = new ShipReport2();
         shipReport.setReportTime(new Date());
-        setDefaultModel(new CompoundPropertyModel<ShipReport>(shipReport));
+        setDefaultModel(new CompoundPropertyModel<ShipReport2>(shipReport));
 
         lat = new TextField<>("lat");
         lat.setRequired(true);
@@ -92,8 +99,7 @@ public class ShipReportForm extends Form<ShipReportForm> {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                shipReport.setReportTime(new Date());
-                stakeholderService.addShipReport(ship, shipReport);
+                shipService.reportForCurrentShip(shipReport);
                 feedback.setVisible(false);
                 target.add(this.getParent());
                 setResponsePage(new MainPage());

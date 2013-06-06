@@ -15,17 +15,23 @@
  */
 package dk.dma.arcticweb.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
+import dk.dma.arcticweb.domain.Stakeholder;
 import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.arcticweb.domain.authorization.SecuredUser;
+import dk.dma.arcticweb.domain.authorization.Ship2;
 
 @Local
-public interface RealmDao extends Dao {
+public interface ShipDao extends Dao {
 
-    SecuredUser findByUsername(String username);
 
-    SecuredUser getByPrimaryKeyReturnAll(Long key);
-    
-    Sailor getSailor(Long userid);
+    /**
+     * 
+     * @param sailor
+     * @return
+     */
+    Ship2 getShip(Sailor sailor);
+
 }

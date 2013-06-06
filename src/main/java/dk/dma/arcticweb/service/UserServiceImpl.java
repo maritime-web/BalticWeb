@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(String username, String password) {
+        
         User user = userDao.getByUsername(username);
         if (user == null) {
             return null;

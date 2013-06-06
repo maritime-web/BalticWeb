@@ -15,32 +15,28 @@
  */
 package dk.dma.arcticweb.site.pages.main.panel;
 
-import java.lang.annotation.Annotation;
-
-import javax.inject.Inject;
-
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 
-import dk.dma.embryo.security.Subject;
-import dk.dma.embryo.security.authorization.Permission;
+import dk.dma.arcticweb.domain.Stakeholder;
+import dk.dma.arcticweb.site.session.ArcticWebSession;
 
-public class MenuPanel extends Panel {
+public class MenuPanelOld extends Panel {
 
     private static final long serialVersionUID = 1L;
 
     private WebMarkupContainer yourShip;
     private WebMarkupContainer selectedShip;
     
-    @Inject
-    Subject subject;
-
-    public MenuPanel(String id) {
+    
+    
+    public MenuPanelOld(String id) {
         super(id);
 
+        Stakeholder stakeholder = ArcticWebSession.get().getStakeholder();
+
         yourShip = new WebMarkupContainer("your_ship");
-        yourShip.setVisible(subject.isPermitted("yourShip"));
+        yourShip.setVisible(stakeholder.isShip());
 
         add(yourShip);
 

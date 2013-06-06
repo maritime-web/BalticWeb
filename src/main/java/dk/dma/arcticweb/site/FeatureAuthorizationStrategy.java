@@ -15,25 +15,21 @@
  */
 package dk.dma.arcticweb.site;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.request.component.IRequestableComponent;
 
-import dk.dma.arcticweb.domain.authorization.IllegalConfigurationException;
-import dk.dma.arcticweb.domain.authorization.features.Permission;
+import dk.dma.arcticweb.config.Configuration;
+import dk.dma.embryo.security.Subject;
 
 /**
  * Simple authentication strategy
  */
 public class FeatureAuthorizationStrategy implements IAuthorizationStrategy {
+
+//    @Inject 
+//    private Subject subject; 
 
     public FeatureAuthorizationStrategy() {
     }
@@ -49,46 +45,16 @@ public class FeatureAuthorizationStrategy implements IAuthorizationStrategy {
 
     @Override
     public boolean isActionAuthorized(Component component, Action action) {
-        if (action.equals(Action.RENDER)) {
+        // Wicket CDI does not allow injection into IAuthorizationStrategy. Manual retrieval required. 
+        Subject subject = Configuration.getBean(Subject.class);
 
-            List<Permission> permissions = getPermissions(component);
-            if (!permissions.isEmpty()) {
-                Subject subject = SecurityUtils.getSubject();
-
-                for (Permission permission : permissions) {
-                    if (subject.isPermitted(permission.value())) {
-                        return true;
-                    }
-                }
-                return false;
-            }
+        System.out.println("isActionAuthorized(" + component.getClass().getSimpleName() + ", " + action + ")");
+        if (action.getName().equals(Action.RENDER)) {
+            boolean result = subject.isPermitted(component); 
+            System.out.println("isActionAuthorized(...) : " + result);
+            return result;
         }
 
         return true;
     }
-
-    private List<Permission> getPermissions(Component component) {
-        Annotation[] annotations = component.getClass().getAnnotations();
-
-        if (annotations == null) {
-            return Collections.emptyList();
-        }
-        List<Permission> permissions = new ArrayList<>(annotations.length);
-        for (Annotation annotation : annotations) {
-            Permission permission = annotation.annotationType().getAnnotation(Permission.class);
-
-            if (permission.value() == null) {
-                // TODO replaceable with checkstyle rule
-                throw new IllegalConfigurationException("Invalid configuration in class "
-                        + component.getClass().getSimpleName() + ". " + Permission.class.getSimpleName()
-                        + " must have a value.");
-            }
-
-            if (permission != null) {
-                permissions.add(permission);
-            }
-        }
-        return permissions;
-    }
-
 }

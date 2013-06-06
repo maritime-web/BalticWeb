@@ -13,17 +13,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.domain.authorization.features;
+package dk.dma.arcticweb.site;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.shiro.config.Ini;
+import org.apache.shiro.config.Ini.Section;
+import org.apache.shiro.web.env.IniWebEnvironment;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Permission {
-    String value();
+import dk.dma.arcticweb.service.JpaRealm;
+
+public class ShiroWebEnvironment extends IniWebEnvironment {
+
+    public ShiroWebEnvironment() {
+        
+        System.out.println(ShiroWebEnvironment.class.getName() + " Initializing");
+        
+        Ini ini = new Ini();
+        
+        Section s = ini.addSection("main");
+        s.put("realm", JpaRealm.class.getName());
+        
+        setIni(ini);
+    }
+
 }

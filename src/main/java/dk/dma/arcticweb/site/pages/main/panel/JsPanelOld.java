@@ -15,39 +15,37 @@
  */
 package dk.dma.arcticweb.site.pages.main.panel;
 
-import javax.inject.Inject;
+import javax.ejb.EJB;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.domain.authorization.Sailor;
-import dk.dma.embryo.security.Subject;
+import dk.dma.arcticweb.domain.Ship;
+import dk.dma.arcticweb.service.StakeholderService;
+import dk.dma.arcticweb.site.session.ArcticWebSession;
 
-public class JsPanel extends Panel {
+public class JsPanelOld extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private Subject subject;
-    
-    @Inject
-    private RealmDao realmRepository;
+    @EJB
+    StakeholderService stakeholderService;
 
-    public JsPanel(String id) {
+    public JsPanelOld(String id) {
         super(id);
         setRenderBodyOnly(true);
 
         // Get stakeholder type and possibly ship MMSI
+        ArcticWebSession session = ArcticWebSession.get();
+        String stakeholderType = session.getStakeholder().getStakeholderType();
         String shipMmsi = "null";
-        if (subject.hasRole(Sailor.class)) {
-            Sailor sailor = realmRepository.getSailor(subject.getUserId());
-            shipMmsi = Long.toString(sailor.getShip().getMmsi());
+        if (session.getStakeholder() instanceof Ship) {
+            shipMmsi = Long.toString(((Ship) session.getStakeholder()).getMmsi());
         }
-//
+
         // Make label
         StringBuilder js = new StringBuilder();
-//        js.append("var stakeholder_type = '" + stakeholderType + "';\n");
+        js.append("var stakeholder_type = '" + stakeholderType + "';\n");
         js.append("var ship_mmsi = " + shipMmsi + ";\n");
         add(new Label("js", "\n" + js.toString()).setEscapeModelStrings(false));
     }

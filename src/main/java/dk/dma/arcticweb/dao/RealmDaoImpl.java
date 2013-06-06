@@ -22,6 +22,7 @@ import javax.persistence.TypedQuery;
 
 import dk.dma.arcticweb.domain.authorization.Permission;
 import dk.dma.arcticweb.domain.authorization.Role;
+import dk.dma.arcticweb.domain.authorization.Sailor;
 import dk.dma.arcticweb.domain.authorization.SecuredUser;
 
 @Stateless
@@ -54,6 +55,13 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
 
     public Permission saveEntity(Permission entity) {
         return (Permission) saveEntity(entity);
+    }
+
+    @Override
+    public Sailor getSailor(Long userId) {
+        TypedQuery<Sailor> query = em.createNamedQuery("Sailor:withShip", Sailor.class);
+        query.setParameter("id", userId);
+        return query.getSingleResult();
     }
 
 }

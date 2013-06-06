@@ -17,8 +17,9 @@ package dk.dma.arcticweb.site;
 
 import org.apache.wicket.authorization.strategies.page.SimplePageAuthorizationStrategy;
 
+import dk.dma.arcticweb.config.Configuration;
 import dk.dma.arcticweb.site.pages.front.FrontPage;
-import dk.dma.arcticweb.site.session.ArcticWebSession;
+import dk.dma.embryo.security.Subject;
 
 /**
  * Simple authentication strategy
@@ -27,11 +28,18 @@ public class AuthStrategy extends SimplePageAuthorizationStrategy {
 
     public AuthStrategy() {
         super(SecurePage.class, FrontPage.class);
+        
     }
+
+    // @Inject
+    // private Subject subject;
 
     @Override
     protected boolean isAuthorized() {
-        return ArcticWebSession.get().isLoggedIn();
+        // Wicket CDI does not allow injection into IAuthorizationStrategy. Manual retrieval required. 
+        Subject subject = Configuration.getBean(Subject.class);
+        return subject.isLoggedIn();
+        // return ArcticWebSession.get().isLoggedIn();
     }
 
 }

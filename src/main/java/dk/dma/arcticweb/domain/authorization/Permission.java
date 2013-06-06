@@ -15,6 +15,8 @@
  */
 package dk.dma.arcticweb.domain.authorization;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -26,13 +28,24 @@ public class Permission extends AbstractAuthorizationEntity<Integer> {
     private static final long serialVersionUID = 6625306470923937976L;
 
     // //////////////////////////////////////////////////////////////////////
+    // Constructors
+    // //////////////////////////////////////////////////////////////////////
+    public Permission(){
+        // used by JPA
+    }
+    
+    public Permission(String permission){
+        super(permission);
+    }
+    
+    // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-    @ManyToMany
-    private Set<SecuredUser> users;
+    //@ManyToMany
+    //private Set<SecuredUser> users;
 
-    @ManyToMany
-    private Set<Role> roles;
+    @ManyToMany(mappedBy = "permissions")
+    Set<Role> roles = new HashSet<>();
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -40,24 +53,16 @@ public class Permission extends AbstractAuthorizationEntity<Integer> {
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
-    // //////////////////////////////////////////////////////////////////////
-
+    // //////////////////////////////////////////////////////////////////////    
+    
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public Set<SecuredUser> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<SecuredUser> users) {
-        this.users = users;
-    }
+//    public Set<SecuredUser> getUsers() {
+//        return users;
+//    }
 
     public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+        return Collections.unmodifiableSet(roles);
     }
 }
