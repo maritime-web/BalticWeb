@@ -27,13 +27,16 @@ public class EmbryonicException extends RuntimeException {
     
     public EmbryonicException(String message) {
         super(message);
+        init();
     }
 
     public EmbryonicException(Throwable cause) {
         super(cause);
+        init();
     }
 
     public EmbryonicException(String message, Throwable cause) {
         super(message, cause);
+        init();
     }
 }
