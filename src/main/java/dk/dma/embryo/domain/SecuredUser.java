@@ -24,7 +24,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-import dk.dma.arcticweb.domain.BaseEntity;
 
 @Entity
 @NamedQueries({

@@ -20,7 +20,6 @@ import java.util.Locale;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
-import dk.dma.arcticweb.domain.BaseEntity;
 
 @MappedSuperclass
 public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {

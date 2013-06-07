@@ -15,22 +15,10 @@
  */
 package dk.dma.arcticweb.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import dk.dma.arcticweb.domain.Authority;
-import dk.dma.arcticweb.domain.IEntity;
-import dk.dma.arcticweb.domain.Ship;
-import dk.dma.arcticweb.domain.ShipOwner;
-import dk.dma.arcticweb.domain.ShoreStakeholder;
-import dk.dma.arcticweb.domain.Stakeholder;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 

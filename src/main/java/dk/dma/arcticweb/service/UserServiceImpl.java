@@ -21,7 +21,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import dk.dma.arcticweb.dao.UserDao;
-import dk.dma.arcticweb.domain.User;
+import dk.dma.embryo.domain.User;
 
 @Stateless
 public class UserServiceImpl implements UserService {

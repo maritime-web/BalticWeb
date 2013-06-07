@@ -15,8 +15,6 @@
  */
 package dk.dma.arcticweb.site.pages.test;
 
-import java.util.List;
-
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -31,13 +29,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.dao.StakeholderDao;
 import dk.dma.arcticweb.dao.UserDao;
-import dk.dma.arcticweb.domain.Authority;
-import dk.dma.arcticweb.domain.Ship;
-import dk.dma.arcticweb.domain.Stakeholder;
-import dk.dma.arcticweb.domain.User;
-import dk.dma.arcticweb.domain.VoyageInformation;
 import dk.dma.embryo.domain.AuthorityRole;
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
@@ -54,52 +46,10 @@ public class TestPage extends WebPage {
     private RealmDao realmDao;
 
     @EJB
-    private StakeholderDao stakeholderDao;
-
-    @EJB
     private UserDao userDao;
 
     @Inject
     private transient Logger logger;
-
-    public TestPage() {
-        init2();
-    }
-
-    public void init() {
-        // Create ship and user
-        Ship newShip = new Ship();
-        newShip.setName("ORASILA");
-        newShip.setMmsi(220443000L);
-        User user = new User();
-        user.setUsername("ora");
-        user.setPassword("qwerty");
-        user.setEmail("obo@dma.dk");
-        user.setStakeholder(newShip);
-        newShip.getUsers().add(user);
-        stakeholderDao.saveEntity(newShip);
-        userDao.saveEntity(user);
-
-        // Create auth and user
-        Authority auth = new Authority();
-        auth.setName("Danish Maritime Authority");
-        user = new User();
-        user.setUsername("dma");
-        user.setPassword("qwerty");
-        user.setEmail("obo@dma.dk");
-        user.setStakeholder(auth);
-        auth.getUsers().add(user);
-        stakeholderDao.saveEntity(auth);
-        userDao.saveEntity(user);
-
-        List<Stakeholder> stakeholders = stakeholderDao.getAll();
-        for (Stakeholder stakeholder : stakeholders) {
-            if (stakeholder instanceof Ship) {
-                Ship ship = (Ship) stakeholder;
-                logger.info("mmsi: {}", ship.getMmsi());
-            }
-        }
-    }
 
     @Inject
     private EntityManager em;
@@ -107,6 +57,11 @@ public class TestPage extends WebPage {
     @Inject
     UserTransaction tx;
 
+    public TestPage() {
+        init2();
+    }
+
+ 
     public void init2() {
 
         try {

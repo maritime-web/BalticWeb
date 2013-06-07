@@ -24,7 +24,6 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 
-import dk.dma.arcticweb.domain.BaseEntity;
 
 @Entity
 public class Text extends BaseEntity<Integer> {

@@ -25,8 +25,6 @@ import javax.inject.Inject;
 
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.arcticweb.dao.UserDao;
-import dk.dma.arcticweb.domain.Ship;
-import dk.dma.arcticweb.domain.VoyageInformation;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport2;

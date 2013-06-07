@@ -23,10 +23,8 @@ import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.Request;
 
-import dk.dma.arcticweb.domain.Stakeholder;
-import dk.dma.arcticweb.domain.User;
-import dk.dma.arcticweb.service.StakeholderService;
 import dk.dma.arcticweb.service.UserService;
+import dk.dma.embryo.domain.User;
 
 /**
  * Session object
@@ -34,12 +32,9 @@ import dk.dma.arcticweb.service.UserService;
 public class ArcticWebSession extends WebSession {
 
     @EJB
-    private static StakeholderService stakeholderService;
-    @EJB
     private static UserService userService;
 
     private User user;
-    private Stakeholder stakeholder;
 
     private static final long serialVersionUID = 1L;
 
@@ -52,35 +47,25 @@ public class ArcticWebSession extends WebSession {
         setLocale(Locale.US);
     }
 
-    public void loginUser(User user) {
-        this.user = user;
-        this.stakeholder = stakeholderService.getStakeholder(user);
-    }
-
-    public boolean isLoggedIn() {
-        return user != null;
-    }
-
-    public void logout() {
-        this.user = null;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Stakeholder getStakeholder() {
-        return stakeholder;
-    }
-
-    /**
-     * Reload from DB
-     */
-    public void refresh() {
-        if (user != null) {
-            user = userService.get(user);
-            stakeholder = stakeholderService.getStakeholder(user);
-        }
-    }
+//    public void loginUser(User user) {
+//        this.user = user;
+//        this.stakeholder = stakeholderService.getStakeholder(user);
+//    }
+//
+//    public boolean isLoggedIn() {
+//        return user != null;
+//    }
+//
+//    public void logout() {
+//        this.user = null;
+//    }
+//
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public Stakeholder getStakeholder() {
+//        return stakeholder;
+//    }
 
 }

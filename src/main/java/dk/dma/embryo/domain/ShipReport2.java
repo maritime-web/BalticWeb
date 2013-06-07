@@ -22,7 +22,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
-import dk.dma.arcticweb.domain.BaseEntity;
 
 @Entity
 public class ShipReport2 extends BaseEntity<Long> {

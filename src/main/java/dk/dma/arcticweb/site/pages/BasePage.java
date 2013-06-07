@@ -17,8 +17,8 @@ package dk.dma.arcticweb.site.pages;
 
 import org.apache.wicket.markup.html.WebPage;
 
-import dk.dma.arcticweb.domain.User;
 import dk.dma.arcticweb.site.session.ArcticWebSession;
+import dk.dma.embryo.domain.User;
 
 /**
  * Parent page for all pages

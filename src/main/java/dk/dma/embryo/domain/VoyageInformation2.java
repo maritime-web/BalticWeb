@@ -19,7 +19,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
-import dk.dma.arcticweb.domain.BaseEntity;
 
 @Entity
 public class VoyageInformation2 extends BaseEntity<Long> {

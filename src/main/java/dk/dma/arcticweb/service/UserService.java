@@ -17,7 +17,7 @@ package dk.dma.arcticweb.service;
 
 import javax.ejb.Local;
 
-import dk.dma.arcticweb.domain.User;
+import dk.dma.embryo.domain.User;
 
 @Local
 public interface UserService {

@@ -41,9 +41,7 @@ public class MenuPanel extends Panel {
 
         yourShip = new WebMarkupContainer("your_ship");
 
-        
         boolean result = subject.isPermitted("yourShip");
-        logger.info("MenuPanel - isPermitted('yourShip') : {}", result);
         yourShip.setVisible(result);
 
         add(yourShip);

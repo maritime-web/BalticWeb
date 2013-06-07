@@ -13,30 +13,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.domain;
+package dk.dma.embryo.domain;
 
 import java.util.Date;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import dk.dma.embryo.domain.Role;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = "User:getByUsername", query = "SELECT u FROM User u WHERE u.username=:username") })
-public class User extends AbstractEntity {  
+public class User extends BaseEntity<Long> {  
 
     private static final long serialVersionUID = 1L;
 
@@ -46,20 +38,11 @@ public class User extends AbstractEntity {
     private String passwordHash;
     private String email;
     private Date lastLogin;
-    private Stakeholder stakeholder;
     
     public User() {
         super();
     }
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique = true, nullable = false)
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
     @Column(unique = true, nullable = false, length = 32)
     public String getUsername() {
         return username;
@@ -94,16 +77,6 @@ public class User extends AbstractEntity {
 
     public void setLastLogin(Date lastLogin) {
         this.lastLogin = lastLogin;
-    }
-
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true)
-    public Stakeholder getStakeholder() {
-        return stakeholder;
-    }
-
-    public void setStakeholder(Stakeholder stakeholder) {
-        this.stakeholder = stakeholder;
     }
 
     @Transient

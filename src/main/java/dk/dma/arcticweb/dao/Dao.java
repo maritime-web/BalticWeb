@@ -17,7 +17,7 @@ package dk.dma.arcticweb.dao;
 
 import java.util.List;
 
-import dk.dma.arcticweb.domain.IEntity;
+import dk.dma.embryo.domain.IEntity;
 
 public interface Dao {
 

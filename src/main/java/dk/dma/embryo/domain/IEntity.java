@@ -13,16 +13,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.domain;
+package dk.dma.embryo.domain;
 
-import javax.persistence.Entity;
+import java.io.Serializable;
 
-@Entity
-public class Authority extends Stakeholder {
-    private static final long serialVersionUID = 1L;
+/**
+ * Interface for all entities
+ */
+public interface IEntity<K> extends Serializable {
 
-    public Authority() {
+    K getId();
 
-    }
+    boolean isNew();
+
+    boolean isPersisted();
 
 }

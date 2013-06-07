@@ -24,7 +24,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import dk.dma.arcticweb.domain.IEntity;
+import dk.dma.embryo.domain.IEntity;
 
 public class DaoImpl implements Dao {
 

@@ -30,7 +30,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 
-import dk.dma.arcticweb.domain.BaseEntity;
 
 @Entity
 public class Ship2 extends BaseEntity<Long> {

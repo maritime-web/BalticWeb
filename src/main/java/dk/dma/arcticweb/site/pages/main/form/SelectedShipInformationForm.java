@@ -17,8 +17,6 @@ package dk.dma.arcticweb.site.pages.main.form;
 
 import java.util.List;
 
-import javax.ejb.EJB;
-
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -28,15 +26,11 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import dk.dma.arcticweb.service.StakeholderService;
 import dk.dma.enav.model.ship.ShipType;
 
 public class SelectedShipInformationForm extends Form<SelectedShipInformationForm> {
 
     private static final long serialVersionUID = 1L;
-
-    @EJB
-    StakeholderService stakeholderService;
 
     private TextField<Long> mmsi;
     private TextField<String> name;

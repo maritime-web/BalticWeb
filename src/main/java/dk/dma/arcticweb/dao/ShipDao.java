@@ -15,11 +15,8 @@
  */
 package dk.dma.arcticweb.dao;
 
-import java.util.List;
-
 import javax.ejb.Local;
 
-import dk.dma.arcticweb.domain.Stakeholder;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 

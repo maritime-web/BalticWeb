@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import dk.dma.arcticweb.domain.User;
+import dk.dma.embryo.domain.User;
 
 @Stateless
 public class UserDaoImpl extends DaoImpl implements UserDao {

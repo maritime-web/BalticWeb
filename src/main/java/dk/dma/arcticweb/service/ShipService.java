@@ -17,7 +17,6 @@ package dk.dma.arcticweb.service;
 
 import javax.ejb.Local;
 
-import dk.dma.arcticweb.domain.Ship;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport2;
 import dk.dma.embryo.domain.VoyageInformation2;
