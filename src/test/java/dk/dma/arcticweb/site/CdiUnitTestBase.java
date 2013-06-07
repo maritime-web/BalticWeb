@@ -41,7 +41,6 @@ public class CdiUnitTestBase {
 
     @Before
     public void setup() {
-        System.out.println("Setup executed");
         CdiConfiguration cdi = new CdiConfiguration(beanManager).setPropagation(ConversationPropagation.NONE);
         tester = new WicketTester();
         cdi.configure(tester.getApplication());

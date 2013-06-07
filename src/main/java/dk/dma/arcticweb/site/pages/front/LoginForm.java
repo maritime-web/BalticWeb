@@ -17,7 +17,6 @@ package dk.dma.arcticweb.site.pages.front;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.Form;
@@ -26,6 +25,7 @@ import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.slf4j.Logger;
 
 import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.embryo.domain.SecuredUser;
@@ -35,10 +35,11 @@ public class LoginForm extends StatelessForm<LoginForm> {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOG = Logger.getLogger(LoginForm.class);
-
     @Inject
-    Subject subject;
+    private transient Logger logger;
+    
+    @Inject
+    private Subject subject;
     
     private String username;
     private String password;
@@ -62,12 +63,10 @@ public class LoginForm extends StatelessForm<LoginForm> {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 //                User user = userService.login(username, password);
                 
-                System.out.println("username = " + username + ", password=" + password);
-                
                 SecuredUser user = subject.login(username, password); 
                 if (user != null) {
                     feedback.setVisible(false);
-                    LOG.info("User logged in: " + username);
+                    logger.info("User logged in: {}", username);
                     setResponsePage(new MainPage());
                 } else {
                     feedback.setVisible(true);

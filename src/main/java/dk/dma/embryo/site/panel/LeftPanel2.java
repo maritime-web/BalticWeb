@@ -40,8 +40,6 @@ public class LeftPanel2 extends Panel {
     public LeftPanel2(String id) {
         super(id);
 
-        System.out.println("LeftPanel2(" + id + ")");
-
         rw = new RepeatingView("collapseGroup");
         add(rw);
 

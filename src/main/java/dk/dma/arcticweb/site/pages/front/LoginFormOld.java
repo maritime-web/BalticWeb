@@ -16,8 +16,8 @@
 package dk.dma.arcticweb.site.pages.front;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.Form;
@@ -26,6 +26,7 @@ import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.slf4j.Logger;
 
 import dk.dma.arcticweb.domain.User;
 import dk.dma.arcticweb.service.UserService;
@@ -36,7 +37,8 @@ public class LoginFormOld extends StatelessForm<LoginFormOld> {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOG = Logger.getLogger(LoginFormOld.class);
+    @Inject
+    private transient Logger LOG;
 
     @EJB
     UserService userService;

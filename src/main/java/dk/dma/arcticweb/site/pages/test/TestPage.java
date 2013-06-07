@@ -28,6 +28,7 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.wicket.markup.html.WebPage;
+import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.StakeholderDao;
@@ -54,10 +55,14 @@ public class TestPage extends WebPage {
 
     @EJB
     private UserDao userDao;
+    
+    @Inject
+    private transient Logger logger;
 
     public TestPage() {
         init2();
     }
+    
 
     public void init() {
         // Create ship and user
@@ -89,7 +94,7 @@ public class TestPage extends WebPage {
         for (Stakeholder stakeholder : stakeholders) {
             if (stakeholder instanceof Ship) {
                 Ship ship = (Ship) stakeholder;
-                System.out.println("mmsi: " + ship.getMmsi());
+                logger.info("mmsi: {}", ship.getMmsi());
             }
         }
     }
@@ -156,7 +161,7 @@ public class TestPage extends WebPage {
         // for (Stakeholder stakeholder : stakeholders) {
         // if (stakeholder instanceof Ship) {
         // Ship ship = (Ship) stakeholder;
-        // System.out.println("mmsi: " + ship.getMmsi());
+        // logger.info("mmsi: {}", ship.getMmsi());
         // }
         // }
     }

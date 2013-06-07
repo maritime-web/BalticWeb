@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.embryo.config.IllegalConfigurationException;
@@ -43,8 +44,13 @@ import dk.dma.embryo.security.authorization.Permission;
 @SessionScoped
 public class Subject implements Serializable {
 
+    private static final long serialVersionUID = -7771436245663646148L;
+
     @Inject
-    RealmDao realmDao;
+    private transient RealmDao realmDao;
+    
+    @Inject
+    private transient Logger logger; 
 
     public SecuredUser login(String userName, String password, Boolean rememberMe) {
         // collect user principals and credentials in a gui specific manner
@@ -65,7 +71,7 @@ public class Subject implements Serializable {
 
     public boolean isPermitted(Permission permission) {
         boolean result = SecurityUtils.getSubject().isPermitted(permission.value());
-        System.out.println("isPermitted(" + permission + ") : " + result);
+        logger.trace("isPermitted({}) : {}" + permission, result);
         return result;
     }
 
@@ -112,18 +118,12 @@ public class Subject implements Serializable {
     }
 
     public boolean isAtLeastOnePermitted(List<Permission> permissions) {
-        System.out.println("isAtLeastOnePermitted(" + permissions + ")");
         if (!permissions.isEmpty()) {
-
             for (Permission permission : permissions) {
-                System.out.print(permission + " ");
-
                 if (isPermitted(permission)) {
-                    System.out.println("isAtLeastOnePermitted(...) : true");
                     return true;
                 }
             }
-            System.out.println("isAtLeastOnePermitted(...) : false");
             return false;
         }
 
@@ -131,8 +131,7 @@ public class Subject implements Serializable {
     }
 
     public boolean isPermitted(Object annotated) {
-
-        System.out.println("isPermitted(" + annotated + ")");
+        logger.trace("isPermitted({})", annotated);
 
         List<Permission> permissions = getPermissions(annotated);
         return isAtLeastOnePermitted(permissions);

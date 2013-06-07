@@ -26,6 +26,8 @@ import org.apache.wicket.cdi.CdiConfiguration;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dk.dma.arcticweb.site.pages.front.FrontPage;
 import dk.dma.arcticweb.site.pages.main.MainPage;
@@ -35,6 +37,9 @@ import dk.dma.embryo.config.Configuration;
 
 public class ArcticWebApplication extends WebApplication {
 
+    // No CDI support. Logger also before CDI has been enabled. Thus creating logger manually. 
+    private final Logger logger = LoggerFactory.getLogger(ArcticWebApplication.class);
+    
     @Override
     public Class<? extends Page> getHomePage() {
         return FrontPage.class;
@@ -42,8 +47,7 @@ public class ArcticWebApplication extends WebApplication {
 
     @Override
     protected void init() {
-        
-        System.out.println("Initializing application");
+        logger.info("Initialising Embryonic e-Navigation Wicket Application");
         
         super.init();
 

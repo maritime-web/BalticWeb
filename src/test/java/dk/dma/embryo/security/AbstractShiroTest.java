@@ -22,12 +22,19 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
 import org.apache.shiro.util.LifecycleUtils;
 import org.apache.shiro.util.ThreadState;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.CdiRunner;
 import org.junit.AfterClass;
+import org.junit.runner.RunWith;
+
+import dk.dma.embryo.config.Configuration;
 
 /**
  * Abstract test case enabling Shiro in test environments.
  * Taken from http://shiro.apache.org/testing.html
  */
+@RunWith(CdiRunner.class)
+@AdditionalClasses({Configuration.class})
 public abstract class AbstractShiroTest {
 
     private static ThreadState subjectThreadState;

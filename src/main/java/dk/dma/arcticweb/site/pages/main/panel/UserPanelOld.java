@@ -15,12 +15,14 @@
  */
 package dk.dma.arcticweb.site.pages.main.panel;
 
-import org.apache.log4j.Logger;
+import javax.inject.Inject;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
+import org.slf4j.Logger;
 
 import dk.dma.arcticweb.site.pages.front.FrontPage;
 import dk.dma.arcticweb.site.session.ArcticWebSession;
@@ -29,7 +31,8 @@ public class UserPanelOld extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOG = Logger.getLogger(UserPanel.class);
+    @Inject
+    private transient Logger LOG;
 
     private WebMarkupContainer notLoggedIn;
     private WebMarkupContainer loggedIn;

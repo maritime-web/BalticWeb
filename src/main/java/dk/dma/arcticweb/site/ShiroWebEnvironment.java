@@ -18,15 +18,19 @@ package dk.dma.arcticweb.site;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.Ini.Section;
 import org.apache.shiro.web.env.IniWebEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dk.dma.arcticweb.service.JpaRealm;
 
 public class ShiroWebEnvironment extends IniWebEnvironment {
 
+    // No CDI support. Constructor also before CDI has been enabled. Thus creating logger manually. 
+    private final Logger logger = LoggerFactory.getLogger(ShiroWebEnvironment.class);
+    
     public ShiroWebEnvironment() {
-        
-        System.out.println(ShiroWebEnvironment.class.getName() + " Initializing");
-        
+        logger.info("Initialising Shiro security for Embryonic e-Navigation Application");
+
         Ini ini = new Ini();
         
         Section s = ini.addSection("main");

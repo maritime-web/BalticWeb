@@ -22,6 +22,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Arrays;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
@@ -31,15 +34,22 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.DummyHttpRequest;
+import org.jglue.cdiunit.DummyHttpSession;
+import org.jglue.cdiunit.InSessionScope;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.authorization.Permission;
 
+// DummyHttpSession and DummyHttpRequest are necessary to test SessionScoped Subject
+@AdditionalClasses({ Subject.class , DummyHttpSession.class, DummyHttpRequest.class})
 public class SubjectTest extends AbstractShiroTest {
 
     private static final String PERMITTED_PERMISSION = "permission";
@@ -51,16 +61,21 @@ public class SubjectTest extends AbstractShiroTest {
         setSecurityManager(securityManager);
     }
 
+    @Produces
+    @Mock
+    RealmDao realmDao;
+
+    @Inject
+    Subject subject;
+    
     @Test
+    @InSessionScope
     public void testIsPermittedWithAnnotation_Permission() {
         String user = "permittedUser";
         String pw = "pw";
 
-        RealmDao realmDao = Mockito.mock(RealmDao.class);
         Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw));
-
-        Subject subject = new Subject();
-        subject.realmDao = realmDao;
+        
         subject.login(user, pw);
 
         Assert.assertTrue(subject.isPermitted(new Component()));
@@ -69,15 +84,13 @@ public class SubjectTest extends AbstractShiroTest {
     }
 
     @Test
+    @InSessionScope
     public void testIsPermittedWithAnnotation_NoPermission() {
         String user = "nopermission";
         String pw = "pw";
 
-        RealmDao realmDao = Mockito.mock(RealmDao.class);
         Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw));
 
-        Subject subject = new Subject();
-        subject.realmDao = realmDao;
         subject.login(user, pw);
 
         Assert.assertFalse(subject.isPermitted("not annotated object"));

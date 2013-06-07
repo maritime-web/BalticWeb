@@ -22,12 +22,13 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 /**
  * Servlet to proxy AisView JSON requests
@@ -36,7 +37,8 @@ public class JsonProxyServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOG = Logger.getLogger(JsonProxyServlet.class);
+    @Inject
+    private transient Logger logger;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -64,14 +66,14 @@ public class JsonProxyServlet extends HttpServlet {
             url += "?" + request.getQueryString();
         }
 
-        LOG.debug("JSOPN proxy request for service: " + url);
+        logger.debug("JSOPN proxy request for service: " + url);
 
         String output;
         try {
             output = requestUrl(url);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
-            LOG.error(e);
+            logger.error("IO error when communicating with URL " + url, e);
             output = "{\"error\":true}";
             response.setStatus(HttpServletResponse.SC_GATEWAY_TIMEOUT);
         }

@@ -48,10 +48,8 @@ public class FeatureAuthorizationStrategy implements IAuthorizationStrategy {
         // Wicket CDI does not allow injection into IAuthorizationStrategy. Manual retrieval required. 
         Subject subject = Configuration.getBean(Subject.class);
 
-        System.out.println("isActionAuthorized(" + component.getClass().getSimpleName() + ", " + action + ")");
         if (action.getName().equals(Action.RENDER)) {
             boolean result = subject.isPermitted(component); 
-            System.out.println("isActionAuthorized(...) : " + result);
             return result;
         }
 
