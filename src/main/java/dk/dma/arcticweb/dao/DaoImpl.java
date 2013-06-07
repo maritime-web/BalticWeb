@@ -20,9 +20,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import dk.dma.arcticweb.domain.IEntity;
-import dk.dma.embryo.domain.SecuredUser;
 
 public class DaoImpl implements Dao {
 
@@ -61,5 +63,12 @@ public class DaoImpl implements Dao {
 
     public static IEntity getSingleOrNull(List<? extends IEntity> list) {
         return (list == null || list.size() == 0) ? null : list.get(0);
+    }
+
+    public <E extends IEntity<?>> List<E> getAll(Class<E> entityType) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<E> cq = cb.createQuery(entityType);
+        Root<E> from = cq.from(entityType);
+        return em.createQuery(cq).getResultList();
     }
 }

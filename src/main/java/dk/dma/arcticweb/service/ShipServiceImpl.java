@@ -45,7 +45,6 @@ public class ShipServiceImpl implements ShipService {
     UserDao userDao;
 
     @Inject
-    @YourShip
     private Subject subject;
 
     // TODO implement Security Interceptor for EJB methods

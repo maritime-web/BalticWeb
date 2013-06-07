@@ -62,6 +62,10 @@ public class Subject implements Serializable {
         // token.setRememberMe(true);
         SecurityUtils.getSubject().login(token);
 
+        logger.info("AIS access: " + SecurityUtils.getSubject().isPermitted("ais"));
+        logger.info("YourShip access: " + SecurityUtils.getSubject().isPermitted("yourShip"));
+        
+        
         return realmDao.findByUsername(userName);
     }
 

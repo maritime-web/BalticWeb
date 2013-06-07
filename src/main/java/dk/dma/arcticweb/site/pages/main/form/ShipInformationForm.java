@@ -32,9 +32,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.arcticweb.site.pages.main.MainPage;
-import dk.dma.arcticweb.site.session.ArcticWebSession;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.enav.model.ship.ShipType;
@@ -42,9 +41,6 @@ import dk.dma.enav.model.ship.ShipType;
 public class ShipInformationForm extends Form<ShipInformationForm> {
 
     private static final long serialVersionUID = 1L;
-
-//    @EJB
-//    StakeholderService stakeholderService;
 
     private TextField<Long> mmsi;
     private TextField<String> name;
@@ -70,7 +66,7 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
     
     //TODO Implement another DAO
     @Inject
-    private RealmDao realmDao;
+    private ShipDao shipDao;
 
     public ShipInformationForm(String id) {
         super(id);
@@ -126,7 +122,7 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                realmDao.saveEntity(ship);
+                shipDao.saveEntity(ship);
                 //ArcticWebSession.get().refresh();
                 feedback.setVisible(false);
                 saved.setVisible(true);

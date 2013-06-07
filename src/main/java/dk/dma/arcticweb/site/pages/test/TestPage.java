@@ -37,11 +37,14 @@ import dk.dma.arcticweb.domain.Authority;
 import dk.dma.arcticweb.domain.Ship;
 import dk.dma.arcticweb.domain.Stakeholder;
 import dk.dma.arcticweb.domain.User;
+import dk.dma.arcticweb.domain.VoyageInformation;
 import dk.dma.embryo.domain.AuthorityRole;
 import dk.dma.embryo.domain.Permission;
+import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.VoyageInformation2;
 
 public class TestPage extends WebPage {
 
@@ -55,14 +58,13 @@ public class TestPage extends WebPage {
 
     @EJB
     private UserDao userDao;
-    
+
     @Inject
     private transient Logger logger;
 
     public TestPage() {
         init2();
     }
-    
 
     public void init() {
         // Create ship and user
@@ -108,42 +110,49 @@ public class TestPage extends WebPage {
     public void init2() {
 
         try {
+            logger.info("Deleting existing entries");
             tx.begin();
-            em.createQuery("DELETE VoyageInformation v").executeUpdate();
+            em.createQuery("DELETE VoyageInformation2 v").executeUpdate();
             em.createQuery("DELETE Ship2 s where s.name = 'ORASILA'").executeUpdate();
-            em.createQuery("DELETE SecuredUser u where u.userName = 'ora'").executeUpdate();
-            em.createQuery("DELETE Role r where r.logicalName = 'sailor' or r.logicalName='authority'").executeUpdate();
+            em.createQuery("DELETE SecuredUser u where u.userName = 'ora' or u.userName='dma'").executeUpdate();
+            em.createQuery(
+                    "DELETE Role r where r.logicalName = 'sailor' or r.logicalName='authority' or r.logicalName IS NULL")
+                    .executeUpdate();
             em.createQuery("DELETE Permission p where p.logicalName = 'ais' or p.logicalName='yourShip'")
                     .executeUpdate();
             tx.commit();
         } catch (NotSupportedException | SystemException | SecurityException | IllegalStateException
                 | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error deleting existing entries", e);
             throw new RuntimeException(e);
         }
+
+        logger.info("AFTER DELETION");
+        logExistingEntries();
 
         // Create ship and user
         Ship2 newShip = new Ship2();
         newShip.setName("ORASILA");
         newShip.setMmsi(220443000L);
 
-        SecuredUser user = new SecuredUser("ora", "qwerty", "obo@dma.dk");
-
         Permission ais = new Permission("ais");
         Permission yourShip = new Permission("yourShip");
+
+        realmDao.saveEntity(ais);
+        realmDao.saveEntity(yourShip);
 
         Sailor sailorRole = new Sailor();
         sailorRole.setShip(newShip);
         sailorRole.add(ais);
         sailorRole.add(yourShip);
 
-        user.addRole(sailorRole);
-
-        realmDao.saveEntity(ais);
-        realmDao.saveEntity(yourShip);
         realmDao.saveEntity(newShip);
         realmDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("ora", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
         realmDao.saveEntity(user);
 
         // Create auth and user
@@ -157,6 +166,9 @@ public class TestPage extends WebPage {
         realmDao.saveEntity(auth);
         realmDao.saveEntity(user);
 
+        logger.info("AFTER CREATION");
+        logExistingEntries();
+
         // List<Stakeholder> stakeholders = stakeholderDao.getAll();
         // for (Stakeholder stakeholder : stakeholders) {
         // if (stakeholder instanceof Ship) {
@@ -164,5 +176,23 @@ public class TestPage extends WebPage {
         // logger.info("mmsi: {}", ship.getMmsi());
         // }
         // }
+    }
+
+    private void logExistingEntries() {
+        try {
+            tx.begin();
+            logger.info("Permissions: {} ", realmDao.getAll(Permission.class));
+            logger.info("Roles: {} ", realmDao.getAll(Role.class));
+            logger.info("Users: {} ", realmDao.getAll(SecuredUser.class));
+            logger.info("Ships: {} ", realmDao.getAll(Ship2.class));
+            logger.info("VoyageInformations: {} ", realmDao.getAll(VoyageInformation2.class));
+            tx.commit();
+        } catch (NotSupportedException | SystemException | SecurityException | IllegalStateException
+                | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
+            // TODO Auto-generated catch block
+            logger.error("Error deleting existing entries", e);
+            throw new RuntimeException(e);
+        }
+
     }
 }

@@ -15,6 +15,8 @@
  */
 package dk.dma.arcticweb.dao;
 
+import java.util.List;
+
 import dk.dma.arcticweb.domain.IEntity;
 
 public interface Dao {
@@ -42,5 +44,13 @@ public interface Dao {
      * @return entity
      */
     IEntity saveEntity(IEntity bean);
+    
+    /**
+     * General purpose method to retrieve all instance of a entityType
+     * @param entityType
+     * @return
+     */
+    <E extends IEntity<?>> List<E> getAll(Class<E> entityType);
+
 
 }
