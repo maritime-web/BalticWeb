@@ -17,6 +17,7 @@ package dk.dma.arcticweb.service;
 
 import javax.ejb.Local;
 
+import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport2;
 import dk.dma.embryo.domain.VoyageInformation2;
@@ -24,6 +25,14 @@ import dk.dma.embryo.domain.VoyageInformation2;
 @Local
 public interface ShipService {
 
+    
+    /**
+     * Get the ship for the currently logged in {@link Sailor}.
+     * 
+     * @return
+     */
+    Ship2 getYourShip();
+    
     /**
      * Add ship report for ship
      * 
@@ -31,14 +40,6 @@ public interface ShipService {
      * @param shipReport
      */
     void reportForCurrentShip(ShipReport2 shipReport);
-
-    /**
-     * Get or create voyage information for ship
-     * 
-     * @param ship
-     * @return
-     */
-    VoyageInformation2 getVoyageInformation(Ship2 ship);
 
     /**
      * Save voyage information

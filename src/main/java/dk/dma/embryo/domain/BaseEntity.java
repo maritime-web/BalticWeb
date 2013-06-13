@@ -49,7 +49,7 @@ public abstract class BaseEntity<K> implements IEntity<K> {
     }
 
     /**
-     * Hash code is based on entity id for all Embryonic Entities
+     * Hash code is based on entity id for all Embryonic Entities.
      */
     @Override
     public int hashCode() {
@@ -64,6 +64,7 @@ public abstract class BaseEntity<K> implements IEntity<K> {
      * equals is based on object state (all fields).
      */
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -74,6 +75,7 @@ public abstract class BaseEntity<K> implements IEntity<K> {
         if (getClass() != obj.getClass()) {
             return false;
         }
+        
         BaseEntity<K> other = (BaseEntity<K>) obj;
         if (id == null) {
             if (other.id != null) {

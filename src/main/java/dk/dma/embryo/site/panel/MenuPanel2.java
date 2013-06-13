@@ -13,18 +13,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.security.authorization;
+package dk.dma.embryo.site.panel;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.RepeatingView;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Permission(value = "yourShip")
-public @interface YourShip {
+public class MenuPanel2 extends Panel {
+
+    private static final long serialVersionUID = 1L;
+
+    private final RepeatingView rw;
+
+    public MenuPanel2(String id) {
+        super(id);
+
+        rw = new RepeatingView("menuHeader");
+        add(rw);
+    }
+    
+    public MenuHeader addMenuHeader(String title){
+        String menuHeaderId = rw.newChildId();
+        MenuHeader menuHeader = new MenuHeader(menuHeaderId, title);
+        rw.add(menuHeader);
+        return menuHeader;
+    }
 
 }

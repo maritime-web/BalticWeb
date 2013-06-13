@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 
@@ -32,15 +33,30 @@ public abstract class EmbryonicPanel extends Panel implements ComponentFactory {
     public static final String OVERLAY_COMPONENT_GROUP_ID = "childComponentGroup";
     public static final String OVERLAY_COMPONENT_ID = "childComponent";
 
-    private final RepeatingView rw;
+    private RepeatingView rw;
+
+    private final String title;
 
     @Inject
     transient ReflectiveComponentFactory factory;
 
     public EmbryonicPanel(String id) {
         super(id);
-        rw = new RepeatingView(OVERLAY_COMPONENT_GROUP_ID);
-        add(rw);
+        this.title = null;
+    }
+
+    public EmbryonicPanel(String id, String title) {
+        super(id);
+        add(new Label("title", title));
+        this.title = title;
+    }
+
+    public RepeatingView getRepeatingView(){
+        if(rw == null){
+            rw = new RepeatingView(OVERLAY_COMPONENT_GROUP_ID);
+            add(rw);
+        }
+        return rw;
     }
 
     @Override
@@ -49,12 +65,17 @@ public abstract class EmbryonicPanel extends Panel implements ComponentFactory {
     }
 
     protected <CT extends Component> CT addComponent(Class<CT> componentType, String overlayComponentId) {
-        WebMarkupContainer collapsableGroup = new WebMarkupContainer(rw.newChildId());
-        rw.add(collapsableGroup);
+        WebMarkupContainer collapsableGroup = new WebMarkupContainer(getRepeatingView().newChildId());
+        getRepeatingView().add(collapsableGroup);
 
         CT component = factory.createComponent(componentType, overlayComponentId);
         collapsableGroup.add(component);
 
         return component;
     }
+    
+    public String getTitle() {
+        return title;
+    }
+
 }

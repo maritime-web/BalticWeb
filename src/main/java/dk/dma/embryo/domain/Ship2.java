@@ -17,19 +17,15 @@ package dk.dma.embryo.domain;
 
 import java.util.List;
 
-import javax.inject.Named;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
-
 
 @Entity
 public class Ship2 extends BaseEntity<Long> {
@@ -79,7 +75,7 @@ public class Ship2 extends BaseEntity<Long> {
     private List<ShipReport2> reports;
 
     @OneToOne(mappedBy = "ship", cascade = { CascadeType.ALL })
-    VoyageInformation2 voyageInformation;
+    private VoyageInformation2 voyageInformation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = true)
@@ -209,7 +205,9 @@ public class Ship2 extends BaseEntity<Long> {
     }
 
     public VoyageInformation2 getVoyageInformation() {
+        if (voyageInformation == null) {
+            voyageInformation = new VoyageInformation2();
+        }
         return voyageInformation;
     }
-
 }

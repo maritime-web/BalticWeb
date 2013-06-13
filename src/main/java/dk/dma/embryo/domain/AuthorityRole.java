@@ -16,11 +16,8 @@
 package dk.dma.embryo.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class AuthorityRole extends Role {
     private static final long serialVersionUID = 1L;
 

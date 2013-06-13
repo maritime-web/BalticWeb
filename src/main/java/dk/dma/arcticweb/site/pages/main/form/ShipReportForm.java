@@ -30,16 +30,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.pages.main.MainPage;
-import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport2;
-import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.embryo.site.panel.EmbryonicForm;
 
-public class ShipReportForm extends Form<ShipReportForm> {
+public class ShipReportForm extends EmbryonicForm<ShipReportForm> {
 
     private static final long serialVersionUID = 1L;
-
-//    @EJB
-//    StakeholderService stakeholderService;
 
     private TextField<Double> lat;
     private TextField<Double> lon;
@@ -52,14 +48,11 @@ public class ShipReportForm extends Form<ShipReportForm> {
 
     private ShipReport2 shipReport;
     
-    @Inject @YourShip
-    private Ship2 ship;
-    
     @Inject
     private ShipService shipService;
 
     public ShipReportForm(String id) {
-        super(id);
+        super(id, "Ship Report");
 //        final Ship ship = (Ship) ArcticWebSession.get().getStakeholder();
 
         shipReport = new ShipReport2();

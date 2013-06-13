@@ -16,22 +16,22 @@
 package dk.dma.embryo.security;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
+import org.hibernate.engine.jdbc.spi.ExtractedDatabaseMetaData;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.embryo.config.IllegalConfigurationException;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SecuredUser;
+import dk.dma.embryo.security.authorization.DependsOnChildPermissionContainers;
+import dk.dma.embryo.security.authorization.IsChildPermissionContainersAuthorized;
 import dk.dma.embryo.security.authorization.Permission;
 
 /**
@@ -48,9 +48,12 @@ public class Subject implements Serializable {
 
     @Inject
     private transient RealmDao realmDao;
-    
+
     @Inject
-    private transient Logger logger; 
+    private transient Logger logger;
+
+    @Inject
+    private PermissionExtractor permissionExtractor;
 
     public SecuredUser login(String userName, String password, Boolean rememberMe) {
         // collect user principals and credentials in a gui specific manner
@@ -64,8 +67,7 @@ public class Subject implements Serializable {
 
         logger.info("AIS access: " + SecurityUtils.getSubject().isPermitted("ais"));
         logger.info("YourShip access: " + SecurityUtils.getSubject().isPermitted("yourShip"));
-        
-        
+
         return realmDao.findByUsername(userName);
     }
 
@@ -121,8 +123,8 @@ public class Subject implements Serializable {
         return getUser().getRole(roleType);
     }
 
-    public boolean isAtLeastOnePermitted(List<Permission> permissions) {
-        if (!permissions.isEmpty()) {
+    public boolean isAtLeastOnePermitted(Permission[] permissions) {
+        if (permissions.length > 0) {
             for (Permission permission : permissions) {
                 if (isPermitted(permission)) {
                     return true;
@@ -134,35 +136,39 @@ public class Subject implements Serializable {
         return true;
     }
 
-    public boolean isPermitted(Object annotated) {
-        logger.trace("isPermitted({})", annotated);
+    public boolean isPermitted(Object secured) {
+        logger.info("isPermitted({})", secured);
 
-        List<Permission> permissions = getPermissions(annotated);
-        return isAtLeastOnePermitted(permissions);
-    }
-
-    private List<Permission> getPermissions(Object object) {
-        Annotation[] annotations = object.getClass().getAnnotations();
-
-        if (annotations == null) {
-            return Collections.emptyList();
-        }
-        List<Permission> permissions = new ArrayList<>(annotations.length);
-        for (Annotation annotation : annotations) {
-            Permission permission = annotation.annotationType().getAnnotation(Permission.class);
-
-            if (permission != null) {
-                if (permission.value() == null) {
-                    // TODO replaceable with checkstyle rule
-                    throw new IllegalConfigurationException("Invalid configuration in class "
-                            + object.getClass().getSimpleName() + ". " + Permission.class.getSimpleName()
-                            + " must have a value.");
-                }
-                permissions.add(permission);
+        if (secured instanceof PermissionContainer) {
+            PermissionContainer permissionContainer = (PermissionContainer) secured;
+            if (permissionContainer.hasPermissions()) {
+                return isAtLeastOnePermitted(permissionContainer.getPermissions());
             }
-
+            // fall through to security by original object
+            // should this instead just return true ?
         }
-        return permissions;
+
+        if (secured.getClass().getAnnotation(DependsOnChildPermissionContainers.class) != null) {
+            logger.info("Checking child permission container for object {}", secured);
+            MarkupContainer component = (MarkupContainer) secured;
+            IsChildPermissionContainersAuthorized visitor = new IsChildPermissionContainersAuthorized(this, permissionExtractor);
+            component.visitChildren(PermissionContainer.class, visitor);
+            return visitor.getResult();
+        }
+
+        // // DEAD CODE?
+        // if(secured instanceof PermissionDelegator<?>){
+        // PermissionDelegator<?> permissionDelegate = (PermissionDelegator<?>)secured;
+        // if(permissionDelegate.hasPermissionDelegate()){
+        // Permission[] permissions = permissionExtractor.getPermissions(permissionDelegate.getPermissionDelegate());
+        // return isAtLeastOnePermitted(permissions);
+        // }
+        // // fall through to security by original object
+        // // should this instead just return true ?
+        // }
+
+        Permission[] permissions = permissionExtractor.getPermissions(secured);
+        return isAtLeastOnePermitted(permissions);
     }
 
     public void logout() {

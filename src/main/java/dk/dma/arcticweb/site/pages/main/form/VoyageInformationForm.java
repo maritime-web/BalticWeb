@@ -28,11 +28,10 @@ import org.apache.wicket.validation.validator.RangeValidator;
 
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.pages.main.MainPage;
-import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.VoyageInformation2;
-import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.embryo.site.panel.EmbryonicForm;
 
-public class VoyageInformationForm extends Form<VoyageInformationForm> {
+public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,16 +44,13 @@ public class VoyageInformationForm extends Form<VoyageInformationForm> {
 
     private VoyageInformation2 voyageInformation;
     
-    @Inject @YourShip
-    private Ship2 ship;
-
     @Inject
     private ShipService shipService;
 
     public VoyageInformationForm(String id) {
-        super(id);
+        super(id, "Voyage Information");
         
-        voyageInformation = shipService.getVoyageInformation(ship);
+        voyageInformation = shipService.getYourShip().getVoyageInformation();
 
         setDefaultModel(new CompoundPropertyModel<VoyageInformation2>(voyageInformation));
 
@@ -62,7 +58,7 @@ public class VoyageInformationForm extends Form<VoyageInformationForm> {
         // With Wicket 6.7.0
         personsOnboard.add(new RangeValidator<Integer>(1, 10000));
         // With Wicket 1.5.8
-        // personsOnboard.setRequired(true).add(new MinimumValidator<Integer>(1)).add(new
+        // personsOnboard.setRequired(true).add(new MinimumValidator<Integer>(1)).add(new   
         // MaximumValidator<Integer>(10000));
 
         doctorOnboard = new CheckBox("doctorOnboard");

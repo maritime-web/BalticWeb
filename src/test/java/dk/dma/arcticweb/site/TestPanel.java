@@ -16,13 +16,18 @@
 package dk.dma.arcticweb.site;
 
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
+
+import dk.dma.embryo.site.panel.EmbryonicPanel;
 
 @SuppressWarnings("serial")
-public class TestPanel extends Panel {
+public class TestPanel extends EmbryonicPanel {
 
     public TestPanel(String id) {
-        super(id);
+        this(id, "Test Panel");
+    }
+
+    public TestPanel(String id, String title) {
+        super(id, title);
 
         add(new Label("text", "label"));
     }

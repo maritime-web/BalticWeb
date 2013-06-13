@@ -13,18 +13,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.security.authorization;
+package dk.dma.embryo.site.panel;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.MarkupContainer;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Permission(value = "yourShip")
-public @interface YourShip {
+public abstract class JSExecutor {
 
+    public String javaScript;
+    
+    public JSExecutor(String js) {
+        javaScript = js;
+    }
+    
+    public void decorate(MarkupContainer link){
+        link.add(new AttributeModifier("onclick", javaScript));
+    }
 }

@@ -33,12 +33,13 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import dk.dma.arcticweb.dao.ShipDao;
+import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.embryo.site.panel.EmbryonicForm;
 import dk.dma.enav.model.ship.ShipType;
 
-public class ShipInformationForm extends Form<ShipInformationForm> {
+public class ShipInformationForm extends EmbryonicForm<ShipInformationForm> {
 
     private static final long serialVersionUID = 1L;
 
@@ -61,16 +62,16 @@ public class ShipInformationForm extends Form<ShipInformationForm> {
     private Link<ShipInformationForm> closeLink;
     private WebMarkupContainer saved;
     
-    @Inject @YourShip
-    private Ship2 ship;
+    @Inject
+    private ShipService shipService;
     
-    //TODO Implement another DAO
     @Inject
     private ShipDao shipDao;
-
+    
     public ShipInformationForm(String id) {
-        super(id);
-//        ship = stakeholderService.getStakeholder(ArcticWebSession.get().getUser());
+        super(id, "Ship Information");
+        
+        final Ship2 ship = shipService.getYourShip();
         setDefaultModel(new CompoundPropertyModel<Ship2>(ship));
 
         mmsi = new TextField<>("mmsi");

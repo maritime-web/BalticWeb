@@ -31,7 +31,7 @@ public class VoyageInformation2 extends BaseEntity<Long> {
     private Boolean doctorOnboard;
 
     @OneToOne(optional = false)
-    private Ship2 ship;
+    Ship2 ship;
 
     public VoyageInformation2() {
 
@@ -56,11 +56,4 @@ public class VoyageInformation2 extends BaseEntity<Long> {
     public Ship2 getShip() {
         return ship;
     }
-
-    public void setShip(Ship2 ship) {
-        // poor mans referential integrity
-        this.ship = ship;
-        ship.voyageInformation = this;
-    }
-
 }

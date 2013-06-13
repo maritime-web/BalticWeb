@@ -21,8 +21,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.arcticweb.dao.UserDao;
 import dk.dma.embryo.domain.Sailor;
@@ -37,13 +40,17 @@ import dk.dma.embryo.security.authorization.YourShip;
 public class ShipServiceImpl implements ShipService {
 
     @EJB
-    ShipDao shipRepository;
+    private ShipDao shipRepository;
 
     @EJB
-    UserDao userDao;
+    private UserDao userDao;
 
     @Inject
     private Subject subject;
+    
+    @EJB
+    private RealmDao realmDao;
+    
 
     // TODO implement Security Interceptor for EJB methods
     @Override
@@ -60,20 +67,17 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public VoyageInformation2 getVoyageInformation(Ship2 ship) {
-        ship = (Ship2) shipRepository.getByPrimaryKey(Ship2.class, ship.getId());
-        VoyageInformation2 voyageInformation = ship.getVoyageInformation();
-        if (voyageInformation == null) {
-            voyageInformation = new VoyageInformation2();
-            voyageInformation.setShip(ship);
-        }
-        return voyageInformation;
-    }
-
-    @Override
     public void saveVoyageInformation(VoyageInformation2 voyageInformation) {
         Ship2 ship = voyageInformation.getShip();
         shipRepository.saveEntity(ship);
     }
-
+    
+    @RequestScoped
+    public Ship2 getYourShip() {
+        if (subject.hasRole(Sailor.class)) {
+            Sailor sailor = realmDao.getSailor(subject.getUserId());
+            return sailor.getShip();
+        }
+        return new Ship2();
+    }
 }
