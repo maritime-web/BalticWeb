@@ -90,6 +90,7 @@ public class TestPage extends WebPage {
         Ship2 newShip = new Ship2();
         newShip.setName("ORASILA");
         newShip.setMmsi(220443000L);
+        realmDao.saveEntity(newShip);
 
         Permission ais = new Permission("ais");
         Permission yourShip = new Permission("yourShip");
@@ -102,7 +103,6 @@ public class TestPage extends WebPage {
         sailorRole.add(ais);
         sailorRole.add(yourShip);
 
-        realmDao.saveEntity(newShip);
         realmDao.saveEntity(sailorRole);
 
         SecuredUser user = new SecuredUser("ora", "qwerty", "obo@dma.dk");
@@ -114,11 +114,11 @@ public class TestPage extends WebPage {
         AuthorityRole auth = new AuthorityRole();
         // auth.setName(new Text("en", "Danish Maritime Authority"));
         auth.add(ais);
+        realmDao.saveEntity(auth);
 
         user = new SecuredUser("dma", "qwerty", "obo@dma.dk");
         user.addRole(auth);
 
-        realmDao.saveEntity(auth);
         realmDao.saveEntity(user);
 
         logger.info("AFTER CREATION");

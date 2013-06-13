@@ -23,7 +23,6 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import dk.dma.arcticweb.site.pages.BasePage;
 import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
-import dk.dma.arcticweb.site.session.ArcticWebSession;
 import dk.dma.embryo.security.Subject;
 
 public class FrontPage extends BasePage {

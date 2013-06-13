@@ -30,22 +30,9 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.security.Subject;
-import dk.dma.embryo.security.authorization.YourShip;
-
 public class Configuration implements Serializable {
 
     private static final long serialVersionUID = 5538000455989826397L;
-
-    @Produces
-    @YourShip
-    public Ship2 getYourShip(Subject subject, RealmDao realmDao){
-        Sailor sailor = realmDao.getSailor(subject.getUserId());
-        return sailor.getShip();
-    }
 
     @Produces
     @PersistenceContext(name = "arcticweb")
@@ -69,16 +56,16 @@ public class Configuration implements Serializable {
         T instance = (T) bm.getReference(bean, clazz, ctx); // this
         return instance;
     }
-    
+
     @Produces
-    public Logger getLogger(InjectionPoint injectionPoint){
+    public Logger getLogger(InjectionPoint injectionPoint) {
         return LoggerFactory.getLogger(injectionPoint.getMember().getDeclaringClass());
     }
 
-//    public static SecurityManager initShiroSecurity() {
-//        
-//        DefaultSecurityManager securityManager = new DefaultSecurityManager();
-//        securityManager.setRealm(new JpaRealm());
-//        return securityManager;
-//    }
+    // public static SecurityManager initShiroSecurity() {
+    //
+    // DefaultSecurityManager securityManager = new DefaultSecurityManager();
+    // securityManager.setRealm(new JpaRealm());
+    // return securityManager;
+    // }
 }

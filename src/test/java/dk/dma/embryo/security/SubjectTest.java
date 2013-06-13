@@ -49,7 +49,7 @@ import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.authorization.Permission;
 
 // DummyHttpSession and DummyHttpRequest are necessary to test SessionScoped Subject
-@AdditionalClasses({ Subject.class , DummyHttpSession.class, DummyHttpRequest.class})
+@AdditionalClasses({ Subject.class, PermissionExtractor.class, DummyHttpSession.class, DummyHttpRequest.class })
 public class SubjectTest extends AbstractShiroTest {
 
     private static final String PERMITTED_PERMISSION = "permission";
@@ -67,7 +67,7 @@ public class SubjectTest extends AbstractShiroTest {
 
     @Inject
     Subject subject;
-    
+
     @Test
     @InSessionScope
     public void testIsPermittedWithAnnotation_Permission() {
@@ -75,7 +75,7 @@ public class SubjectTest extends AbstractShiroTest {
         String pw = "pw";
 
         Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw));
-        
+
         subject.login(user, pw);
 
         Assert.assertTrue(subject.isPermitted(new Component()));

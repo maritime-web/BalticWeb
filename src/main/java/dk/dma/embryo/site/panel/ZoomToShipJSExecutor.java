@@ -13,18 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.security.authorization;
+package dk.dma.embryo.site.panel;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import dk.dma.embryo.security.authorization.YourShip;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Permission(value = "yourShip")
-public @interface YourShip {
+@YourShip
+public class ZoomToShipJSExecutor extends JSExecutor {
 
+    public ZoomToShipJSExecutor() {
+        super("goToMyShip()");
+    }
 }

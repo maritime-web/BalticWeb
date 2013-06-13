@@ -13,18 +13,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.security.authorization;
+package dk.dma.embryo.site.panel;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Permission(value = "yourShip")
-public @interface YourShip {
+public abstract class EmbryonicForm<T> extends Form<T> {
 
+    private static final long serialVersionUID = 4132041261965905788L;
+
+    private final String title;
+    
+    public EmbryonicForm(String id, String title) {
+        super(id);
+        
+        add(new Label("title", title));
+        
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    
 }

@@ -28,6 +28,7 @@ import org.jglue.cdiunit.CdiRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
+import dk.dma.embryo.config.Configuration;
 import dk.dma.embryo.site.component.ReflectiveComponentFactory;
 
 @RunWith(CdiRunner.class)

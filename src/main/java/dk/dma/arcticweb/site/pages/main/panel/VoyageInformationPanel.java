@@ -15,18 +15,40 @@
  */
 package dk.dma.arcticweb.site.pages.main.panel;
 
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 
 import dk.dma.arcticweb.site.pages.main.form.VoyageInformationForm;
+import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.embryo.site.panel.EmbryonicPanel;
+import dk.dma.embryo.site.panel.ReachedFromMenu;
 
-public class VoyageInformationPanel extends Panel {
+@YourShip
+public class VoyageInformationPanel extends EmbryonicPanel implements ReachedFromMenu{
 
     private static final long serialVersionUID = 1L;
 
+    private final WebMarkupContainer voyageInformation;
+   
+    private final VoyageInformationForm form;
+    
+
     public VoyageInformationPanel(String id) {
         super(id);
+        
+        voyageInformation = new WebMarkupContainer("voyageInformation");
+        add(voyageInformation);
+        
+        form = new VoyageInformationForm("voyage_information_form");
 
-        add(new VoyageInformationForm("voyage_information_form"));
+        voyageInformation.add(form);
     }
 
+    public String getTitle(){
+        return form.getTitle();
+    }
+    
+    @Override
+    public String getBookmark() {
+        return voyageInformation.getMarkupId();
+    }
 }

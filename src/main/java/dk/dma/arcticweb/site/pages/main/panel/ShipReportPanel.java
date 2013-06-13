@@ -15,18 +15,42 @@
  */
 package dk.dma.arcticweb.site.pages.main.panel;
 
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 
 import dk.dma.arcticweb.site.pages.main.form.ShipReportForm;
+import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.embryo.site.panel.EmbryonicPanel;
+import dk.dma.embryo.site.panel.ReachedFromMenu;
 
-public class ShipReportPanel extends Panel {
+@YourShip
+public class ShipReportPanel extends EmbryonicPanel implements ReachedFromMenu{
 
     private static final long serialVersionUID = 1L;
 
+    private final WebMarkupContainer shipReport;
+
+    private final ShipReportForm form;
+    
+    
     public ShipReportPanel(String id) {
         super(id);
+        
+        shipReport = new WebMarkupContainer("shipReport");
+        add(shipReport);
 
-        add(new ShipReportForm("ship_report_form"));
+        form = new ShipReportForm("ship_report_form");
+        
+        shipReport.add(form);
+    }
+
+    
+    public String getTitle(){
+        return form.getTitle();
+    }
+    
+    @Override
+    public String getBookmark() {
+        return shipReport.getMarkupId();
     }
 
 }

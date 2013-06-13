@@ -15,30 +15,25 @@
  */
 package dk.dma.arcticweb.site.pages.main;
 
-import javax.inject.Inject;
-
-import org.apache.wicket.markup.html.WebMarkupContainer;
-
 import dk.dma.arcticweb.site.SecurePage;
 import dk.dma.arcticweb.site.pages.BasePage;
 import dk.dma.arcticweb.site.pages.main.panel.JsPanel;
 import dk.dma.arcticweb.site.pages.main.panel.MapPanel;
-import dk.dma.arcticweb.site.pages.main.panel.MenuPanel;
 import dk.dma.arcticweb.site.pages.main.panel.SelectedShipInformationPanel;
 import dk.dma.arcticweb.site.pages.main.panel.ShipInformationPanel;
 import dk.dma.arcticweb.site.pages.main.panel.ShipReportPanel;
 import dk.dma.arcticweb.site.pages.main.panel.StatusPanel;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
 import dk.dma.arcticweb.site.pages.main.panel.VoyageInformationPanel;
-import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.site.panel.LeftPanel2;
+import dk.dma.embryo.site.panel.MenuHeader;
+import dk.dma.embryo.site.panel.MenuPanel2;
+import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
 
 public class MainPage extends BasePage implements SecurePage {
+
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    Subject subject;
-    
     public MainPage() {
         super();
 
@@ -48,22 +43,31 @@ public class MainPage extends BasePage implements SecurePage {
         mapPanel.addComponent(StatusPanel.class);
 
         add(new UserPanel("user_panel"));
-        add(new MenuPanel("menu_panel"));
+
+        ShipInformationPanel shipInformation = new ShipInformationPanel("ship_information");
+        ShipReportPanel shipReport = new ShipReportPanel("ship_report");
+        VoyageInformationPanel voyageInformation = new VoyageInformationPanel("voyage_information");
+
+        // /////////////////////////////////////////////////
+        // Build up menu
+        // /////////////////////////////////////////////////
+        MenuPanel2 menuPanel = new MenuPanel2("menu_panel");
+
+        // Your Ship
+        MenuHeader yourShip = menuPanel.addMenuHeader("Your Ship");
+        yourShip.addMenuItem("Zoom to ship", new ZoomToShipJSExecutor());
+        yourShip.addMenuItem(shipInformation);
+        yourShip.addMenuItem(shipReport);
+        yourShip.addMenuItem(voyageInformation);
+
+        
+        add(menuPanel);
         add(new JsPanel("js_panel"));
 
         // add(new LeftPanel2("left"));
         // add(new StatusPanel("status"));
 
-        //FIXME refactor this, such that panels have been annotated
-        if (subject.isPermitted("yourShip")) {
-            add(new ShipInformationPanel("ship_information"));
-            add(new ShipReportPanel("ship_report"));
-            add(new VoyageInformationPanel("voyage_information"));
-        } else {
-            add(new WebMarkupContainer("ship_information"));
-            add(new WebMarkupContainer("ship_report"));
-            add(new WebMarkupContainer("voyage_information"));
-        }
+        add(shipInformation, shipReport, voyageInformation);
 
         add(new SelectedShipInformationPanel("selected_ship_information"));
     }
