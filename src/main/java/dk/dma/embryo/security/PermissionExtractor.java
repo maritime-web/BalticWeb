@@ -29,7 +29,7 @@ import dk.dma.embryo.security.authorization.Permission;
 public class PermissionExtractor implements Serializable{
     
     private static final long serialVersionUID = 1434693548735954680L;
-
+    
     public Permission[] getPermissions(Object object) {
         Annotation[] annotations = object.getClass().getAnnotations();
 
