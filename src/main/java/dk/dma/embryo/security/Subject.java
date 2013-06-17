@@ -22,9 +22,7 @@ import javax.inject.Inject;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
-import org.hibernate.engine.jdbc.spi.ExtractedDatabaseMetaData;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;

@@ -22,8 +22,6 @@ import java.util.List;
 
 import javax.inject.Named;
 
-import org.apache.shiro.web.tags.HasPermissionTag;
-
 import dk.dma.embryo.config.IllegalConfigurationException;
 import dk.dma.embryo.security.authorization.Permission;
 

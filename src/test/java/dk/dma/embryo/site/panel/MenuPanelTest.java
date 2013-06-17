@@ -26,7 +26,7 @@ public class MenuPanelTest extends CdiUnitTestBase{
     
     @Test
     public void testBuildMenu() {
-        MenuPanel2 menuPanel = new MenuPanel2("someId");
+        MenuPanel menuPanel = new MenuPanel("someId");
 
         MenuHeader header1 = menuPanel.addMenuHeader("Header 1");
         header1.addMenuItem("Item 1", new ZoomToShipJSExecutor());

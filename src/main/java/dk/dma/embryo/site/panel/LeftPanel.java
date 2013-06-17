@@ -31,13 +31,13 @@ import dk.dma.embryo.security.authorization.Ais;
 
 @Ais
 @SuppressWarnings("serial")
-public class LeftPanel2 extends Panel {
+public class LeftPanel extends Panel {
 
     private final RepeatingView rw;
 
     private static final String JS_INIT = "embryo.leftPanel.init();";
 
-    public LeftPanel2(String id) {
+    public LeftPanel(String id) {
         super(id);
 
         rw = new RepeatingView("collapseGroup");

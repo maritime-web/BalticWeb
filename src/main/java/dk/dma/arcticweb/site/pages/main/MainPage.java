@@ -25,9 +25,9 @@ import dk.dma.arcticweb.site.pages.main.panel.ShipReportPanel;
 import dk.dma.arcticweb.site.pages.main.panel.StatusPanel;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
 import dk.dma.arcticweb.site.pages.main.panel.VoyageInformationPanel;
-import dk.dma.embryo.site.panel.LeftPanel2;
+import dk.dma.embryo.site.panel.LeftPanel;
 import dk.dma.embryo.site.panel.MenuHeader;
-import dk.dma.embryo.site.panel.MenuPanel2;
+import dk.dma.embryo.site.panel.MenuPanel;
 import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
 
 public class MainPage extends BasePage implements SecurePage {
@@ -39,7 +39,7 @@ public class MainPage extends BasePage implements SecurePage {
 
         MapPanel mapPanel = new MapPanel("map");
         add(mapPanel);
-        mapPanel.addComponent(LeftPanel2.class);
+        mapPanel.addComponent(LeftPanel.class);
         mapPanel.addComponent(StatusPanel.class);
 
         add(new UserPanel("user_panel"));
@@ -51,7 +51,7 @@ public class MainPage extends BasePage implements SecurePage {
         // /////////////////////////////////////////////////
         // Build up menu
         // /////////////////////////////////////////////////
-        MenuPanel2 menuPanel = new MenuPanel2("menu_panel");
+        MenuPanel menuPanel = new MenuPanel("menu_panel");
 
         // Your Ship
         MenuHeader yourShip = menuPanel.addMenuHeader("Your Ship");

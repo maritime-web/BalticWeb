@@ -13,44 +13,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.site.pages.main.panel;
-
-import javax.inject.Inject;
+package dk.dma.embryo.site.panel;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.security.Subject;
+import org.apache.wicket.markup.repeater.RepeatingView;
 
 public class MenuPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    private WebMarkupContainer yourShip;
+    private final RepeatingView rw;
+
     private WebMarkupContainer selectedShip;
-    
-    @Inject
-    Subject subject;
-    
-    @Inject 
-    private transient Logger logger;
 
     public MenuPanel(String id) {
         super(id);
 
-        yourShip = new WebMarkupContainer("your_ship");
-
-        boolean result = subject.isPermitted("yourShip");
-        yourShip.setVisible(result);
-
-        add(yourShip);
+        rw = new RepeatingView("menuHeader");
+        add(rw);
+        
 
         selectedShip = new WebMarkupContainer("selected_ship");
         selectedShip.setVisible(true);
 
         add(selectedShip);
-
+    }
+    
+    public MenuHeader addMenuHeader(String title){
+        String menuHeaderId = rw.newChildId();
+        MenuHeader menuHeader = new MenuHeader(menuHeaderId, title);
+        rw.add(menuHeader);
+        return menuHeader;
     }
 
 }
