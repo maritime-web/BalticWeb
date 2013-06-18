@@ -15,6 +15,59 @@ hr.tight{
 	padding: 0px;
 }
 
+/* Menu customizations by changing boostrap css */
+.navbar{
+	font-size:14px;
+}
+
+.navbar .brand, .navbar .nav>li>a{
+	padding: 10px 20px 10px;
+}
+
+.navbar, .navbar li{
+	line-height: 20px;
+}
+
+.navbar-fixed-top .container{
+	width: auto;
+	padding-left:15px;
+	padding-right:15px;
+}
+
+/* Form customizations by changing bootstrap css*/
+.input-small{
+	width:60px;
+}
+
+.input-medium{
+	width:120px;
+}
+
+.input-large{
+	width:180px;
+}
+
+form{
+	margin:0;
+}
+
+
+.form-horizontal .control-label {
+    width: 100px;
+}
+
+
+.form-horizontal .controls {
+    margin-left: 120px;
+}
+
+.form-horizontal .modal-body .row-fluid>div:nth-child(1):nth-last-child(2){
+    border-radius: 0 0 6px 6px;
+    border-right: 1px solid #DDDDDD;
+    box-shadow: 0 1px 0 #FFFFFF inset;
+}
+
+
 #container
 {
 	width: 100%;
@@ -471,12 +524,6 @@ hr.tight{
 
 .filteringInput{
 	width: 175px;
-}
-
-select{
-	font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	color: #000000;
 }
 
 option {

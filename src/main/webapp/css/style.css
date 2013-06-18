@@ -13,8 +13,8 @@ body {
 }
 
 .modal.large{
-    width: 900px;
-    margin-left: -450px; /* - width/2 */
+    width: 650px;
+    margin-left: -325px; /* - width/2 */
 }
 
 .navbar {

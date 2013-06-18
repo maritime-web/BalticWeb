@@ -52,6 +52,7 @@ public class MainPage extends BasePage implements SecurePage {
         // Build up menu
         // /////////////////////////////////////////////////
         MenuPanel menuPanel = new MenuPanel("menu_panel");
+        add(menuPanel);
 
         // Your Ship
         MenuHeader yourShip = menuPanel.addMenuHeader("Your Ship");
@@ -60,8 +61,6 @@ public class MainPage extends BasePage implements SecurePage {
         yourShip.addMenuItem(shipReport);
         yourShip.addMenuItem(voyageInformation);
 
-        
-        add(menuPanel);
         add(new JsPanel("js_panel"));
 
         // add(new LeftPanel2("left"));
