@@ -204,12 +204,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-web</artifactId>
-			<version>${shiro.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>1.9.5</version>
@@ -337,6 +331,7 @@
 						<echo message="${jbossTmpDir}" />
 						<copy todir="${jbossTmpDir}">
 							<fileset dir="src/main/webapp">
+								<include name="bootstrap/**/*.*" />
 								<include name="js/**/*.*" />
 								<include name="css/**/*.*" />
 								<include name="img/**/*.*" />
