@@ -135,8 +135,6 @@ public class Subject implements Serializable {
     }
 
     public boolean isPermitted(Object secured) {
-        logger.info("isPermitted({})", secured);
-
         if (secured instanceof PermissionContainer) {
             PermissionContainer permissionContainer = (PermissionContainer) secured;
             if (permissionContainer.hasPermissions()) {
@@ -147,7 +145,7 @@ public class Subject implements Serializable {
         }
 
         if (secured.getClass().getAnnotation(DependsOnChildPermissionContainers.class) != null) {
-            logger.info("Checking child permission container for object {}", secured);
+            logger.debug("Checking child permission container for object {}", secured);
             MarkupContainer component = (MarkupContainer) secured;
             IsChildPermissionContainersAuthorized visitor = new IsChildPermissionContainersAuthorized(this, permissionExtractor);
             component.visitChildren(PermissionContainer.class, visitor);
