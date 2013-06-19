@@ -13,14 +13,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.site.pages.main.panel;
+package dk.dma.embryo.site.panel;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 
-import dk.dma.arcticweb.site.pages.main.form.ShipInformationForm;
 import dk.dma.embryo.security.authorization.YourShip;
-import dk.dma.embryo.site.panel.EmbryonicPanel;
-import dk.dma.embryo.site.panel.ReachedFromMenu;
+import dk.dma.embryo.site.form.ShipInformationForm;
 
 @YourShip
 public class ShipInformationPanel extends EmbryonicPanel implements ReachedFromMenu{

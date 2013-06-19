@@ -20,7 +20,6 @@ import dk.dma.arcticweb.site.pages.BasePage;
 import dk.dma.arcticweb.site.pages.main.panel.JsPanel;
 import dk.dma.arcticweb.site.pages.main.panel.MapPanel;
 import dk.dma.arcticweb.site.pages.main.panel.SelectedShipInformationPanel;
-import dk.dma.arcticweb.site.pages.main.panel.ShipInformationPanel;
 import dk.dma.arcticweb.site.pages.main.panel.ShipReportPanel;
 import dk.dma.arcticweb.site.pages.main.panel.StatusPanel;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
@@ -28,6 +27,7 @@ import dk.dma.arcticweb.site.pages.main.panel.VoyageInformationPanel;
 import dk.dma.embryo.site.panel.LeftPanel;
 import dk.dma.embryo.site.panel.MenuHeader;
 import dk.dma.embryo.site.panel.MenuPanel;
+import dk.dma.embryo.site.panel.ShipInformationPanel;
 import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
 
 public class MainPage extends BasePage implements SecurePage {
