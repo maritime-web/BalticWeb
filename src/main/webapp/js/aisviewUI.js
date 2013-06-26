@@ -987,12 +987,128 @@ embryo.statusPanel.init = function(projection) {
 				var pixel = new OpenLayers.Pixel(position.x, position.y);
 				var lonLat = embryo.mapPanel.map.getLonLatFromPixel(pixel)
 						.transform(embryo.mapPanel.map.getProjectionObject(), // from
-																				// Spherical
-																				// Mercator
+						// Spherical
+						// Mercator
 						// Projection
 						new OpenLayers.Projection(projection) // to WGS 1984
 						);
 				$("#location").html(
 						lonLat.lat.toFixed(4) + ", " + lonLat.lon.toFixed(4));
 			});
+};
+
+embryo.voyageInformationForm = {};
+embryo.voyageInformationForm.copyEmptyRow = function(event) {
+	var $row = $(event.target).closest('tr');
+	var $newRow = $row.clone(true);
+	$row.after($newRow);
+
+	// set focus on corresponding input element in new row
+	var columnIndex = $row.find('input').index(event.target);
+	$newRow.find('input').eq(columnIndex).val("");
+
+	embryo.voyageInformationForm.enableRow($row);
+};
+embryo.voyageInformationForm.registerHandlers = function($rows) {
+	// TODO if clearing all fields in a row and leaving it, then delete row.
+	// Not working. Delete should be performed manually
+	//$row.focusout(embryo.voyageInformationForm.deleteRowIfEmpty);
+	
+	// TODO if berth typed in, then make it impossible to type in longitude and
+	// lattitude and jump to arrival
+	var formObject = this;
+	
+	$rows.each(function(){
+		$(this).find('input:first').focusout(formObject.berthChanged);
+		$(this).find('input[type="text"]').eq(1).change(formObject.lonLanChanged);
+		$(this).find('input[type="text"]').eq(2).change(formObject.lonLanChanged);
+		$(this).find('button').click(formObject.onDelete);
+	});
+};
+embryo.voyageInformationForm.onDelete = function(event) {
+	event.preventDefault();
+	event.stopPropagation();
+	$rowToDelete = $(event.target).closest('tr');
+	$rowToDelete.next().find("input:first").focus();
+	$rowToDelete.remove();
+};
+
+embryo.voyageInformationForm.berthChanged = function(event) {
+	var $berth = $(event.target);
+	var $inputs = $berth.closest('tr').find('input[type="text"]');
+	var index = $inputs.index($berth);
+	if($berth.val() != null && $berth.val().length > 0){
+		$inputs.eq(index + 1).prop('disabled', true);
+		$inputs.eq(index + 2).prop('disabled', true);
+		
+		if($inputs.eq(index + 1).is(event.relatedTarget)){
+			$inputs.eq(index + 3).focus();
+		}
+	}else{
+		$inputs.eq(index + 1).removeProp('disabled');
+		$inputs.eq(index + 2).removeProp('disabled');
+	}	
+};
+embryo.voyageInformationForm.lonLanChanged = function(event) {
+	var $lonLan = $(event.target);
+	var $inputs = $lonLan.closest('tr').find('input');
+
+	$lan = $inputs.eq(1);
+	$lon = $inputs.eq(2);
+	if(($lan.val() != null && $lan.val().length > 0) || ($lon.val()!= null && $lon.val().length > 0)){
+		$inputs.eq(0).prop('disabled', true);
+	}else{
+		$inputs.eq(0).removeProp('disabled');
+	}	
+};
+embryo.voyageInformationForm.deleteRowIfEmpty = function(event) {
+	var $row = $(event.target).closest('tr');
+	if (!$row.find('input[type="text"]').is(function() {
+		// return true if value is present
+		return this.value != null && this.value.length > 0;
+	})) {
+		// if no values are present then delete row
+		$row.remove();
+	}
+};
+
+embryo.voyageInformationForm.enableRow = function($row) {
+	$row.find('button').show();
+	$row.removeClass('emptyRow');
+	$row.find('input[type="text"]').unbind('keyup',
+			embryo.voyageInformationForm.copyEmptyRow);
+	
+	embryo.voyageInformationForm.registerHandlers($row);
+};
+
+embryo.voyageInformationForm.prepareRequest = function(containerSelector) {
+	var $modalBody = $(containerSelector);
+	var $rows = $modalBody.find('tbody tr');
+	$modalBody.find('input[name="voyageCount"]').val($rows.length);
+	
+	var regex = new RegExp('\\d+', 'g');			
+	$rows.each(function(index, row){
+		$(row).find('input[name]').each(function(indeks, input){
+			var nameAttr = $(input).attr("name");
+			var result = nameAttr.replace(regex, "" + index);
+			$(input).attr("name", result);
+		});
+	});
+	
+	
+	return false;
+};
+embryo.voyageInformationForm.init = function(containerSelector) {
+	$(containerSelector).find('tr:last-child').addClass('emptyRow').find('button').hide();
+	
+	$(containerSelector).find('.emptyRow input[type="text"]').keyup(embryo.voyageInformationForm.copyEmptyRow);
+
+	$rows = $(containerSelector).find('.table tr:not(.emptyRow)');
+	embryo.voyageInformationForm.registerHandlers($rows);
+
+	$(containerSelector).find(containerSelector).closest('button[type="submit"]').click(embryo.voyageInformationForm.prepareRequest);
+
+	// TODO if berth not typed in, but longitude and lattitude is typed in, then
+	// make it impossible to type in berth (until longitude and lattitude are
+	// again deleted)
 };

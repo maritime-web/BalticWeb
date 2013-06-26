@@ -13,27 +13,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.site.panel;
+package dk.dma.embryo.config;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.StatelessForm;
+import java.io.Serializable;
 
-public abstract class EmbryonicForm<T> extends StatelessForm<T> {
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
 
-    private static final long serialVersionUID = 4132041261965905788L;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    private final String title;
-    
-    public EmbryonicForm(String id, String title) {
-        super(id);
-        
-        add(new Label("title", title));
-        
-        this.title = title;
+public class LogConfiguration implements Serializable {
+
+    private static final long serialVersionUID = 5538000455989826397L;
+
+    @Produces
+    public Logger getLogger(InjectionPoint injectionPoint) {
+        return LoggerFactory.getLogger(injectionPoint.getMember().getDeclaringClass());
     }
 
-    public String getTitle() {
-        return title;
-    }
-    
 }

@@ -1,0 +1,63 @@
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>
+	<div wicket:id="voyageInformation" class="modal hide fade xlarge" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<form wicket:id="voyage_information_form" class="form-horizontal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h2 id="myModalLabel" wicket:id="title">Voyage information</h2>
+			</div>
+			<div class="modal-body" wicket:id="modalBody">
+				<wicket:enclosure>
+					<div class="alert alert-error" wicket:id="voyage_information_feedback">xxx</div>
+				</wicket:enclosure>
+
+				<div class="row">
+
+					<div class="control-group">
+						<label class="control-label" for="personsOnboard">Persons onboard</label>
+						<div class="controls">
+							<input wicket:id="personsOnboard" type="text" id="personsOnboard" class="input-small" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="doctorOnboard">Doctor onboard</label>
+						<div class="controls">
+							<input wicket:id="doctorOnboard" type="checkbox" id="doctorOnboard" />
+						</div>
+					</div>
+				</div>
+				
+				<input type="hidden" name="voyageCount" />
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Berth</th>
+							<th>Lattitude</th>
+							<th>Longitude</th>
+							<th>Arrival</th>
+							<th>Departure</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr wicket:id="voyagePlan">
+							<td><input wicket:id="berthName" type="text" /><input type="hidden" wicket:id="businessId" />
+							</td>
+							<td><input wicket:id="position.lattitude" type="text" class="input-medium" /></td>
+							<td><input wicket:id="position.longitude" type="text" class="input-medium" /></td>
+							<td><input wicket:id="arrival" type="text" class="input-medium" placeholder="MM/dd/yyyy"/></td>
+							<td><input wicket:id="departure" type="text" class="input-medium" placeholder="MM/dd/yyyy"/></td>
+							<td><button type="submit" class="btn btn-danger">Delete</button></td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary" wicket:id="save">Save</button>
+			</div>
+		</form>
+	</div>
+</wicket:panel>
+</html>

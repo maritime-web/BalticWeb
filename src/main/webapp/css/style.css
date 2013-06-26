@@ -17,6 +17,11 @@ body {
     margin-left: -325px; /* - width/2 */
 }
 
+.modal.xlarge{
+    width: 950px;
+    margin-left: -475px; /* - width/2 */
+}
+
 .navbar {
 	-webkit-box-shadow: 0 0 2px 2px rgba(0,0,0,.2);
        -moz-box-shadow: 0 0 2px 2px rgba(0,0,0,.2);

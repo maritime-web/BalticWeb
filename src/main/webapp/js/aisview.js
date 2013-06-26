@@ -56,7 +56,7 @@ embryo.mapPanel.init = function(defaultProjection) {
 
 	//includePanels();
 
-	includeTools();
+	includeTools();	
 	
 	// Load cookies
 	loadView();
@@ -64,7 +64,7 @@ embryo.mapPanel.init = function(defaultProjection) {
 	this.map = new OpenLayers.Map({
         div: "map",
         projection: defaultProjection,
-        fractionalZoom: true
+        fractionalZoom: false
     });	
 
 	addLayers();

@@ -28,18 +28,18 @@ import org.jglue.cdiunit.CdiRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
-import dk.dma.embryo.config.Configuration;
+import dk.dma.embryo.config.LogConfiguration;
 import dk.dma.embryo.site.component.ReflectiveComponentFactory;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses(value = { ReflectiveComponentFactory.class, DetachEventEmitter.class, Event.class })
+@AdditionalClasses(value = { ReflectiveComponentFactory.class, DetachEventEmitter.class, Event.class, LogConfiguration.class})
 public class CdiUnitTestBase {
 
     private WicketTester tester;
 
     @Inject
     private BeanManager beanManager;
-
+    
     @Before
     public void setup() {
         CdiConfiguration cdi = new CdiConfiguration(beanManager).setPropagation(ConversationPropagation.NONE);

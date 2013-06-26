@@ -28,13 +28,14 @@ import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 
 import dk.dma.embryo.config.Configuration;
+import dk.dma.embryo.config.LogConfiguration;
 
 /**
  * Abstract test case enabling Shiro in test environments.
  * Taken from http://shiro.apache.org/testing.html
  */
 @RunWith(CdiRunner.class)
-@AdditionalClasses({Configuration.class})
+@AdditionalClasses({Configuration.class, LogConfiguration.class})
 public abstract class AbstractShiroTest {
 
     private static ThreadState subjectThreadState;

@@ -67,6 +67,7 @@ public class TestPage extends WebPage {
         try {
             logger.info("Deleting existing entries");
             tx.begin();
+            em.createQuery("DELETE Voyage v").executeUpdate();
             em.createQuery("DELETE VoyageInformation2 v").executeUpdate();
             em.createQuery("DELETE Ship2 s where s.name = 'ORASILA'").executeUpdate();
             em.createQuery("DELETE SecuredUser u where u.userName = 'ora' or u.userName='dma'").executeUpdate();

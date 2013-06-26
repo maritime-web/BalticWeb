@@ -87,4 +87,8 @@ public abstract class BaseEntity<K> implements IEntity<K> {
         return true;
     }
 
+    public String baseToString() {
+        return "id=" + id;
+    }
+    
 }

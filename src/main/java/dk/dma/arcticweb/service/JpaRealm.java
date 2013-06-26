@@ -16,11 +16,6 @@
 package dk.dma.arcticweb.service;
 
 
-
-import java.util.Set;
-
-import javax.enterprise.inject.spi.Bean;
-
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;

@@ -48,5 +48,7 @@ public interface ShipService {
      * @param voyageInformation
      */
     void saveVoyageInformation(VoyageInformation2 voyageInformation);
+    
+    VoyageInformation2 getVoyageInformation(Long mmsi);
 
 }

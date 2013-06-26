@@ -81,9 +81,20 @@ public class Ship2 extends BaseEntity<Long> {
     @JoinColumn(nullable = true)
     private ShipOwnerRole owner;
 
+    // //////////////////////////////////////////////////////////////////////
+    // Constructors
+    // //////////////////////////////////////////////////////////////////////
     public Ship2() {
     }
 
+    public Ship2(Long mmsi) {
+        this.mmsi = mmsi;
+    }
+
+
+    // //////////////////////////////////////////////////////////////////////
+    // Property methods
+    // //////////////////////////////////////////////////////////////////////
     public String getName() {
         return name;
     }
@@ -200,14 +211,12 @@ public class Ship2 extends BaseEntity<Long> {
         return reports;
     }
 
-    public void setReports(List<ShipReport2> reports) {
-        this.reports = reports;
-    }
-
     public VoyageInformation2 getVoyageInformation() {
-        if (voyageInformation == null) {
-            voyageInformation = new VoyageInformation2();
-        }
         return voyageInformation;
+    }
+    
+    public void setVoyageInformation(VoyageInformation2 info){
+        info.ship = this;
+        this.voyageInformation = info;
     }
 }

@@ -15,15 +15,30 @@
  */
 package dk.dma.embryo.domain;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 
 @Entity
+@NamedQueries({@NamedQuery(name="VoyageInformation:getByMmsi", query="SELECT DISTINCT v FROM VoyageInformation2 v LEFT JOIN FETCH v.voyagePlan where v.ship.mmsi = :mmsi")})
 public class VoyageInformation2 extends BaseEntity<Long> {
+
     private static final long serialVersionUID = 1L;
 
+    // //////////////////////////////////////////////////////////////////////
+    // Entity fields (also see super class)
+    // //////////////////////////////////////////////////////////////////////
     @Column(unique = false, nullable = true)
     private Integer personsOnboard;
 
@@ -32,11 +47,59 @@ public class VoyageInformation2 extends BaseEntity<Long> {
 
     @OneToOne(optional = false)
     Ship2 ship;
+    
+    @OneToMany(cascade={CascadeType.ALL}, mappedBy="info")
+    private List<Voyage> voyagePlan = new LinkedList<>(); 
 
+    // //////////////////////////////////////////////////////////////////////
+    // Utility methods
+    // //////////////////////////////////////////////////////////////////////
+    public void addVoyageEntry(Voyage entry){
+        voyagePlan.add(entry);
+        entry.info = this;
+    }
+    
+    public Map<String, Voyage> getVoyagePlanAsMap(){
+        Map<String, Voyage> m = new HashMap<>();
+        for(Voyage v : voyagePlan){
+            m.put(v.getBusinessId(), v);
+        }
+        return m;
+    }
+    
+    public void removeLastVoyage(){
+        voyagePlan.remove(voyagePlan.size()-1).info = null;
+    }
+    
+
+    public void removeVoyage(Voyage v){
+        v.info = null;
+        voyagePlan.remove(v);
+    }
+
+    
+    @Override
+    public String toString() {
+        return "VoyageInformation [personsOnboard=" + personsOnboard + ", doctorOnboard=" + doctorOnboard
+                + ", voyagePlan=" + voyagePlan + "]";
+    }
+
+
+    // //////////////////////////////////////////////////////////////////////
+    // Constructors
+    // //////////////////////////////////////////////////////////////////////
     public VoyageInformation2() {
 
     }
 
+    public VoyageInformation2(Integer personsOnboard, boolean doctorOnboard) {
+        this.personsOnboard = personsOnboard;
+        this.doctorOnboard = doctorOnboard;
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // Property methods
+    // //////////////////////////////////////////////////////////////////////
     public Integer getPersonsOnboard() {
         return personsOnboard;
     }
@@ -55,5 +118,9 @@ public class VoyageInformation2 extends BaseEntity<Long> {
 
     public Ship2 getShip() {
         return ship;
+    }
+    
+    public List<Voyage> getVoyagePlan(){
+        return Collections.unmodifiableList(voyagePlan);
     }
 }

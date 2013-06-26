@@ -16,21 +16,24 @@
 package dk.dma.arcticweb.service;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ShipDao;
-import dk.dma.arcticweb.dao.UserDao;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport2;
+import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyageInformation2;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
@@ -39,18 +42,18 @@ import dk.dma.embryo.security.authorization.YourShip;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ShipServiceImpl implements ShipService {
 
-    @EJB
     private ShipDao shipRepository;
 
-    @EJB
-    private UserDao userDao;
+    @Inject
+    private RealmDao realmDao;
 
     @Inject
     private Subject subject;
-    
-    @EJB
-    private RealmDao realmDao;
-    
+
+    @Inject
+    public ShipServiceImpl(ShipDao shipRepository) {
+        this.shipRepository = shipRepository;
+    }
 
     // TODO implement Security Interceptor for EJB methods
     @Override
@@ -67,12 +70,44 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public void saveVoyageInformation(VoyageInformation2 voyageInformation) {
-        Ship2 ship = voyageInformation.getShip();
-        shipRepository.saveEntity(ship);
+    public void saveVoyageInformation(VoyageInformation2 toBeUpdated) {
+        
+        VoyageInformation2 fresh = getVoyageInformation(toBeUpdated.getShip().getMmsi());
+        fresh.setDoctorOnboard(toBeUpdated.getDoctorOnboard());
+        fresh.setPersonsOnboard(toBeUpdated.getPersonsOnboard());
+        
+        Map<String, Voyage> voyagePlanToBeUpdated = toBeUpdated.getVoyagePlanAsMap();
+        Map<String, Voyage> freshVoyagePlan = fresh.getVoyagePlanAsMap();
+        
+        Set<String> toBeDeleted = new HashSet<>(freshVoyagePlan.keySet());
+        toBeDeleted.removeAll(voyagePlanToBeUpdated.keySet());
+
+        List<Voyage> newVoyages = new LinkedList<>();
+
+        for (Entry<String, Voyage> voyageEntry : voyagePlanToBeUpdated.entrySet()) {
+            Voyage v = null;
+            if (freshVoyagePlan.containsKey(voyageEntry.getKey())) {
+                v = freshVoyagePlan.get(voyageEntry.getKey());
+            } else {
+                v = new Voyage();
+                fresh.addVoyageEntry(v);
+                newVoyages.add(voyageEntry.getValue());
+            }
+            v.setArrival(voyageEntry.getValue().getArrival());
+            v.setBerthName(voyageEntry.getValue().getBerthName());
+            v.setDeparture(voyageEntry.getValue().getDeparture());
+            v.setPosition(voyageEntry.getValue().getPosition());
+        }
+
+        for(String key : toBeDeleted){
+            Voyage v = freshVoyagePlan.get(key);
+            fresh.removeVoyage(v);
+            shipRepository.remove(v);            
+        }
+
+        shipRepository.saveEntity(fresh);
     }
-    
-    @RequestScoped
+
     public Ship2 getYourShip() {
         if (subject.hasRole(Sailor.class)) {
             Sailor sailor = realmDao.getSailor(subject.getUserId());
@@ -80,4 +115,18 @@ public class ShipServiceImpl implements ShipService {
         }
         return new Ship2();
     }
+
+    @YourShip
+    @Override
+    public VoyageInformation2 getVoyageInformation(Long mmsi) {
+        VoyageInformation2 voyageInfo = shipRepository.getVoyageInformation(mmsi);
+        if (voyageInfo == null) {
+            voyageInfo = new VoyageInformation2();
+            // FIXME: Hack only works for YourShip feature
+            Ship2 ship = shipRepository.getShip(subject.getRole(Sailor.class));
+            ship.setVoyageInformation(voyageInfo);
+        }
+        return voyageInfo;
+    }
+
 }

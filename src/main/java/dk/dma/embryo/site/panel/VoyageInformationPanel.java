@@ -13,14 +13,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.site.pages.main.panel;
+package dk.dma.embryo.site.panel;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 
-import dk.dma.arcticweb.site.pages.main.form.VoyageInformationForm;
+import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.security.authorization.YourShip;
-import dk.dma.embryo.site.panel.EmbryonicPanel;
-import dk.dma.embryo.site.panel.ReachedFromMenu;
+import dk.dma.embryo.site.form.VoyageInformationForm;
 
 @YourShip
 public class VoyageInformationPanel extends EmbryonicPanel implements ReachedFromMenu{
@@ -40,7 +44,7 @@ public class VoyageInformationPanel extends EmbryonicPanel implements ReachedFro
         
         form = new VoyageInformationForm("voyage_information_form");
 
-        voyageInformation.add(form);
+        voyageInformation.add(form);        
     }
 
     public String getTitle(){

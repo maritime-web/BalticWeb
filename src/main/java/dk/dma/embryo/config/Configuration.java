@@ -21,14 +21,10 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Configuration implements Serializable {
 
@@ -55,11 +51,6 @@ public class Configuration implements Serializable {
         CreationalContext<T> ctx = bm.createCreationalContext(bean);
         T instance = (T) bm.getReference(bean, clazz, ctx); // this
         return instance;
-    }
-
-    @Produces
-    public Logger getLogger(InjectionPoint injectionPoint) {
-        return LoggerFactory.getLogger(injectionPoint.getMember().getDeclaringClass());
     }
 
     // public static SecurityManager initShiroSecurity() {
