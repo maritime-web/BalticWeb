@@ -133,19 +133,6 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
         add(saveLink);
     }
 
-    public abstract static class DynamicPropertyListView<T> extends PropertyListView<T> {
-
-        private static final long serialVersionUID = 6599673322320525132L;
-
-        public DynamicPropertyListView(String id) {
-            super(id);
-        }
-
-        public void rebuild() {
-            removeAll();
-            onPopulate();
-        };
-    }
 
     private void initializeListView(WebMarkupContainer modalBody) {
         lv = new DynamicPropertyListView<Voyage>("voyagePlan") {
@@ -171,6 +158,13 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
     }
 
     @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        // initialize component
+        response.render(OnLoadHeaderItem.forScript(js_init));
+    }
+
+    @Override
     public void process(IFormSubmitter submittingComponent) {
         // update request being treated.
         // create empty voyage information objects as of no value to load them from database. They will be
@@ -180,6 +174,21 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
         lv.rebuild();
         super.process(submittingComponent);
         model.setChainedModel(chainedModel);
+    }
+    
+
+    public abstract static class DynamicPropertyListView<T> extends PropertyListView<T> {
+
+        private static final long serialVersionUID = 6599673322320525132L;
+
+        public DynamicPropertyListView(String id) {
+            super(id);
+        }
+
+        public void rebuild() {
+            removeAll();
+            onPopulate();
+        };
     }
 
     public class EmptyVoyageInformationModel extends Model<VoyageInformation2> {
@@ -218,13 +227,6 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
             info.addVoyageEntry(new Voyage(null));
             return info;
         }
-    }
-
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        super.renderHead(response);
-        // initialize component
-        response.render(OnLoadHeaderItem.forScript(js_init));
     }
 
 }

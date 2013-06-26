@@ -35,12 +35,12 @@ import org.slf4j.Logger;
 import com.google.gson.Gson;
 
 public abstract class AbstractJQueryAutocompleAjaxBehavior extends AbstractAjaxBehavior {
-    
+
     @Inject
     private Logger logger;
 
     // The jQuery selector to be used by the jQuery ready handler that registers the autocomplete behavior
-    final private String jQuerySelector;
+    private final String jQuerySelector;
 
     /**
      * Constructor
@@ -53,21 +53,19 @@ public abstract class AbstractJQueryAutocompleAjaxBehavior extends AbstractAjaxB
         super();
         this.jQuerySelector = jQuerySelector;
     }
-    
+
     /*
      * Convert List to json object.
      * 
-     * Dependency on google-gson library which is 
-     * available at http://code.google.com/p/google-gson/
-     * and which must be on your classpath when using this
-     * library.
+     * Dependency on google-gson library which is available at http://code.google.com/p/google-gson/ and which must be
+     * on your classpath when using this library.
      */
     private String convertListToJson(List<?> matches) {
         Gson gson = new Gson();
         String json = gson.toJson(matches);
         return json;
     }
-    
+
     public abstract List<?> getMatches(String term);
 
     /**
@@ -90,9 +88,9 @@ public abstract class AbstractJQueryAutocompleAjaxBehavior extends AbstractAjaxB
         PackageTextTemplate packageTextTemplate = new PackageTextTemplate(getClass(), "autocomplete.js",
                 "text/javascript");
         String resource = packageTextTemplate.asString(map);
-        //response.renderJavaScript(resource, jQuerySelector);
+        // response.renderJavaScript(resource, jQuerySelector);
     }
-    
+
     @Override
     public void onRequest() {
         logger.trace("ajax request received");
