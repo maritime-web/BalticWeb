@@ -1022,16 +1022,27 @@ embryo.voyageInformationForm.registerHandlers = function($rows) {
 
 	$rows.each(function() {
 		embryo.typeahead.create($(this).find('input:first').get(0));
-
-		$(this).find('input:first').focusout(formObject.berthChanged);
 		
-		$(this).find('input[type="text"]').eq(1).change(
-				formObject.lonLanChanged);
-		$(this).find('input[type="text"]').eq(2).change(
+		$(this).find('input:first').focusout(formObject.berthChanged);
+
+		$(this).find('input.typeahead-textfield').bind("typeahead:autocompleted typeahead:selected", formObject.onBerthSelected($(this)));
+		
+		$(this).find('input.lat input.lon').change(
 				formObject.lonLanChanged);
 		$(this).find('button').click(formObject.onDelete);
 	});
 };
+
+embryo.voyageInformationForm.onBerthSelected = function($row) {
+	return function (event, datum){
+		
+		console.log(datum);
+		$row.find('input.lat').val(datum.latitude);
+		$row.find('input.lon').val(datum.longitude);
+	};
+};
+
+
 embryo.voyageInformationForm.onDelete = function(event) {
 	event.preventDefault();
 	event.stopPropagation();
