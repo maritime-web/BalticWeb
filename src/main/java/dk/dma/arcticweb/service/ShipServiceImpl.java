@@ -71,14 +71,14 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public void saveVoyageInformation(VoyageInformation2 toBeUpdated) {
-        
+
         VoyageInformation2 fresh = getVoyageInformation(toBeUpdated.getShip().getMmsi());
         fresh.setDoctorOnboard(toBeUpdated.getDoctorOnboard());
         fresh.setPersonsOnboard(toBeUpdated.getPersonsOnboard());
-        
+
         Map<String, Voyage> voyagePlanToBeUpdated = toBeUpdated.getVoyagePlanAsMap();
         Map<String, Voyage> freshVoyagePlan = fresh.getVoyagePlanAsMap();
-        
+
         Set<String> toBeDeleted = new HashSet<>(freshVoyagePlan.keySet());
         toBeDeleted.removeAll(voyagePlanToBeUpdated.keySet());
 
@@ -97,12 +97,14 @@ public class ShipServiceImpl implements ShipService {
             v.setBerthName(voyageEntry.getValue().getBerthName());
             v.setDeparture(voyageEntry.getValue().getDeparture());
             v.setPosition(voyageEntry.getValue().getPosition());
+            v.setPersonsOnBoard(voyageEntry.getValue().getPersonsOnBoard());
+            v.setDoctorOnBoard(voyageEntry.getValue().getDoctorOnBoard());
         }
 
-        for(String key : toBeDeleted){
+        for (String key : toBeDeleted) {
             Voyage v = freshVoyagePlan.get(key);
             fresh.removeVoyage(v);
-            shipRepository.remove(v);            
+            shipRepository.remove(v);
         }
 
         shipRepository.saveEntity(fresh);

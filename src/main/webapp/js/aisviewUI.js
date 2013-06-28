@@ -1006,9 +1006,9 @@ embryo.voyageInformationForm.copyEmptyRow = function(event) {
 	// set focus on corresponding input element in new row
 	var columnIndex = $row.find('input').index(event.target);
 	$newRow.find('input').eq(columnIndex).val("");
-	
+
 	embryo.voyageInformationForm.enableRow($row);
-	
+
 	$row.find('input:first').focus();
 };
 embryo.voyageInformationForm.registerHandlers = function($rows) {
@@ -1022,26 +1022,33 @@ embryo.voyageInformationForm.registerHandlers = function($rows) {
 
 	$rows.each(function() {
 		embryo.typeahead.create($(this).find('input:first').get(0));
-		
-		$(this).find('input:first').focusout(formObject.berthChanged);
 
-		$(this).find('input.typeahead-textfield').bind("typeahead:autocompleted typeahead:selected", formObject.onBerthSelected($(this)));
-		
-		$(this).find('input.lat input.lon').change(
-				formObject.lonLanChanged);
+		/* removed because difficult to coordinate with typeahead */
+		/* $(this).find('input:first').focusout(formObject.berthChanged); */
+
+		$(this).find('input.typeahead-textfield').bind(
+				"typeahead:autocompleted typeahead:selected",
+				formObject.onBerthSelected($(this)));
+
+		$(this).find('input.lat input.lon').change(formObject.lonLanChanged);
 		$(this).find('button').click(formObject.onDelete);
 	});
 };
 
 embryo.voyageInformationForm.onBerthSelected = function($row) {
-	return function (event, datum){
-		
-		console.log(datum);
+	return function(event, datum) {
 		$row.find('input.lat').val(datum.latitude);
 		$row.find('input.lon').val(datum.longitude);
+
+		/* removed because difficult to use with typeahead */
+		/*
+		 * $row.find('input.lat').val(datum.latitude).prop('disabled', true);
+		 * $row.find('input.lon').val(datum.longitude).prop('disabled', true);
+		 * if ($row.find('input.lat').is(event.relatedTarget)) {
+		 * $row.find('input.arrival').focus(); }
+		 */
 	};
 };
-
 
 embryo.voyageInformationForm.onDelete = function(event) {
 	event.preventDefault();
@@ -1050,23 +1057,14 @@ embryo.voyageInformationForm.onDelete = function(event) {
 	$rowToDelete.next().find("input:first").focus();
 	$rowToDelete.remove();
 };
+/*
+ * removed because difficult to use with typeahead
+ * embryo.voyageInformationForm.berthChanged = function(event) { var $berth =
+ * $(event.target); var $row = $berth.closest('tr'); if ($berth.val() == null ||
+ * $berth.val().length == 0) { $row.find('input.lat').removeProp('disabled');
+ * $row.find('input.lon').removeProp('disabled'); } };
+ */
 
-embryo.voyageInformationForm.berthChanged = function(event) {
-	var $berth = $(event.target);
-	var $inputs = $berth.closest('tr').find('input[type="text"]');
-	var index = $inputs.index($berth);
-	if ($berth.val() != null && $berth.val().length > 0) {
-		$inputs.eq(index + 1).prop('disabled', true);
-		$inputs.eq(index + 2).prop('disabled', true);
-
-		if ($inputs.eq(index + 1).is(event.relatedTarget)) {
-			$inputs.eq(index + 3).focus();
-		}
-	} else {
-		$inputs.eq(index + 1).removeProp('disabled');
-		$inputs.eq(index + 2).removeProp('disabled');
-	}
-};
 embryo.voyageInformationForm.lonLanChanged = function(event) {
 	var $lonLan = $(event.target);
 	var $inputs = $lonLan.closest('tr').find('input');
@@ -1096,7 +1094,7 @@ embryo.voyageInformationForm.enableRow = function($row) {
 	$row.removeClass('emptyRow');
 	$row.find('input[type="text"]').unbind('keyup',
 			embryo.voyageInformationForm.copyEmptyRow);
-	
+
 	embryo.voyageInformationForm.registerHandlers($row);
 };
 
@@ -1138,7 +1136,7 @@ embryo.voyageInformationForm.init = function(containerSelector) {
 embryo.typeahead = {};
 
 embryo.typeahead.init = function(inputSelector, jsonUrl) {
-	
+
 	// Initialize existing typeahead fields
 	embryo.typeahead.create(inputSelector);
 };
@@ -1146,7 +1144,7 @@ embryo.typeahead.init = function(inputSelector, jsonUrl) {
 // Initialize create function, which can be used both when initializing new
 // rows and during this first initialization
 embryo.typeahead.create = function(selector) {
-	$(selector).each(function(){
+	$(selector).each(function() {
 		var jsonUrl = $(this).attr('data-json');
 		$(this).typeahead({
 			name : 'berths',
@@ -1156,16 +1154,16 @@ embryo.typeahead.create = function(selector) {
 			}
 		});
 	});
-	
+
 };
 
 // Initialize function, which can be used when initializing new rows
 embryo.typeahead.reInitialize = function(selector) {
 	$(selector).typeahead('destroy');
-	
+
 	alert($(selector).length);
-	
-	//embryo.typeahead.create(selector);
+
+	// embryo.typeahead.create(selector);
 };
 
 embryo.typeahead.filter = function(parsedResponse) {
