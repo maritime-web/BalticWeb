@@ -68,9 +68,6 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
     private static final String JS_INIT = "embryo.voyageInformationForm.init('#id');";
     private final String js_init;
 
-    private TextField<Integer> personsOnboard;
-    private CheckBox doctorOnboard;
-
     private FeedbackPanel feedback;
     private AjaxSubmitLink saveLink;
 
@@ -97,20 +94,9 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
 
         js_init = JS_INIT.replaceAll("id", modalBody.getMarkupId());
 
-        personsOnboard = new TextField<>("personsOnboard");
-        // With Wicket 6.7.0
-        personsOnboard.add(new RangeValidator<Integer>(1, 10000));
-        // With Wicket 1.5.8
-        // personsOnboard.setRequired(true).add(new MinimumValidator<Integer>(1)).add(new
-        // MaximumValidator<Integer>(10000));
-
-        doctorOnboard = new CheckBox("doctorOnboard");
-
         feedback = new FeedbackPanel("voyage_information_feedback");
         feedback.setVisible(false);
 
-        modalBody.add(personsOnboard);
-        modalBody.add(doctorOnboard);
         modalBody.add(feedback);
 
         initializeListView(modalBody);
@@ -189,6 +175,13 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
 
                 item.add(new TextField<String>("arrival").add(dateFormat));
                 item.add(new TextField<String>("departure").add(dateFormat));
+
+                // With Wicket 6.7.0
+                item.add(new TextField<>("personsOnBoard").add(new RangeValidator<Integer>(1, 10000)));
+                // With Wicket 1.5.8
+                // personsOnboard.setRequired(true).add(new MinimumValidator<Integer>(1)).add(new
+                // MaximumValidator<Integer>(10000));
+                item.add(new CheckBox("doctorOnBoard"));
             }
         };
         lv.setReuseItems(false);

@@ -9,8 +9,12 @@
 	margin-bottom: 0;
 }
 
+.tt-hint {
+	width: 180px;
+}
+
 .tt-dropdown-menu {
-	overflow-y:visible;
+	overflow-y: visible;
 	min-width: 160px;
 	margin-top: 2px;
 	padding: 5px 0;

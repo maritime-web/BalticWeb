@@ -40,6 +40,10 @@ public class Voyage extends BaseEntity<Long> {
 
     private LocalDateTime departure;
     
+    private Integer personsOnBoard;
+    
+    private boolean doctorOnBoard;
+    
     @ManyToOne
     VoyageInformation2 info;
     
@@ -115,9 +119,27 @@ public class Voyage extends BaseEntity<Long> {
     }
 
     public void setBusinessId(String key) {
+        // hack such that wicket does not overwrite generated key with empty value
         if(key == null || key.length() == 0){
             return;
         }
         this.businessId = key;
     }
+
+    public Integer getPersonsOnBoard() {
+        return personsOnBoard;
+    }
+
+    public void setPersonsOnBoard(Integer personsOnBoard) {
+        this.personsOnBoard = personsOnBoard;
+    }
+
+    public boolean getDoctorOnBoard() {
+        return doctorOnBoard;
+    }
+
+    public void setDoctorOnBoard(boolean doctorOnBoard) {
+        this.doctorOnBoard = doctorOnBoard;
+    }
+    
 }

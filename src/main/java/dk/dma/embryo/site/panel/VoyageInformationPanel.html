@@ -12,22 +12,6 @@
 					<div class="alert alert-error" wicket:id="voyage_information_feedback">xxx</div>
 				</wicket:enclosure>
 
-				<div class="row">
-
-					<div class="control-group">
-						<label class="control-label" for="personsOnboard">Persons onboard</label>
-						<div class="controls">
-							<input wicket:id="personsOnboard" type="text" id="personsOnboard" class="input-small" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="doctorOnboard">Doctor onboard</label>
-						<div class="controls">
-							<input wicket:id="doctorOnboard" type="checkbox" id="doctorOnboard" />
-						</div>
-					</div>
-				</div>
-				
 				<input type="hidden" name="voyageCount" />
 				<table class="table">
 					<thead>
@@ -37,17 +21,21 @@
 							<th>Longitude</th>
 							<th>Arrival</th>
 							<th>Departure</th>
+							<th>Persons</th>
+							<th>Doctor</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr wicket:id="voyagePlan">
-							<td><input wicket:id="berthName" type="text" /><input type="hidden" wicket:id="businessId" />
+							<td><input wicket:id="berthName" class="input-large" type="text" /><input type="hidden" wicket:id="businessId" />
 							</td>
 							<td><input wicket:id="position.latitude" type="text" class="input-small lat" /></td>
 							<td><input wicket:id="position.longitude" type="text" class="input-small lon" /></td>
 							<td><input wicket:id="arrival" type="text" class="input-medium" placeholder="MM/dd/yyyy"/></td>
 							<td><input wicket:id="departure" type="text" class="input-medium" placeholder="MM/dd/yyyy"/></td>
+							<td><input wicket:id="personsOnBoard" type="text" class="input-small" /></td>
+							<td><input wicket:id="doctorOnBoard" type="checkbox"/></td>
 							<td><button type="submit" class="btn btn-danger">Delete</button></td>
 						</tr>
 					</tbody>

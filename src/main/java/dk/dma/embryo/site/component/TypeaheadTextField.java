@@ -97,7 +97,7 @@ public class TypeaheadTextField<T, R> extends TextField<T> {
         this.selector = selector != null ? selector : ".typeahead-textfield";
         // Class name may not be typeahead only. https://github.com/twitter/typeahead.js/issues/71
         // Use typeahead-textfield
-        add(new AttributeAppender("class", "typeahead-textfield"));
+        add(new AttributeAppender("class", " typeahead-textfield"));
         add(AttributeModifier.replace("data-json", urlModel));
     }
 
