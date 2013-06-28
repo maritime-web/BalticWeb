@@ -13,24 +13,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.embryo.site.behavior;
 
-import javax.ejb.Local;
+import java.io.Serializable;
 
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.VoyageInformation2;
+public interface TypeaheadDataSource<R> extends Serializable{
 
-@Local
-public interface ShipDao extends Dao {
+    R prefetch();
 
-
-    /**
-     * 
-     * @param sailor
-     * @return
-     */
-    Ship2 getShip(Sailor sailor);
-    
-    VoyageInformation2 getVoyageInformation(Long mmsi);
+    R remoteFetch(String query);
 }

@@ -13,24 +13,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.embryo.domain;
 
-import javax.ejb.Local;
+import dk.dma.embryo.EmbryonicException;
 
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.VoyageInformation2;
+public class FormatException extends EmbryonicException {
 
-@Local
-public interface ShipDao extends Dao {
+    private static final long serialVersionUID = 4106908373694045915L;
 
+    public FormatException() {
+        super("no message supplied");
+    }
 
-    /**
-     * 
-     * @param sailor
-     * @return
-     */
-    Ship2 getShip(Sailor sailor);
-    
-    VoyageInformation2 getVoyageInformation(Long mmsi);
+    public FormatException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public FormatException(String message) {
+        super(message);
+    }
+
+    public FormatException(Throwable cause) {
+        super(cause);
+    }
 }

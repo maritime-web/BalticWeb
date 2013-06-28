@@ -29,13 +29,16 @@ import org.apache.wicket.markup.html.WebPage;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.arcticweb.dao.UserDao;
 import dk.dma.embryo.domain.AuthorityRole;
+import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyageInformation2;
 
 public class TestPage extends WebPage {
@@ -47,6 +50,9 @@ public class TestPage extends WebPage {
 
     @EJB
     private UserDao userDao;
+
+    @Inject
+    ShipDao shipDao;
 
     @Inject
     private transient Logger logger;
@@ -61,12 +67,12 @@ public class TestPage extends WebPage {
         init2();
     }
 
- 
     public void init2() {
 
         try {
             logger.info("Deleting existing entries");
             tx.begin();
+            em.createQuery("DELETE Berth b").executeUpdate();
             em.createQuery("DELETE Voyage v").executeUpdate();
             em.createQuery("DELETE VoyageInformation2 v").executeUpdate();
             em.createQuery("DELETE Ship2 s where s.name = 'ORASILA'").executeUpdate();
@@ -122,16 +128,22 @@ public class TestPage extends WebPage {
 
         realmDao.saveEntity(user);
 
+        // Test data found on
+        // http://gronlandskehavnelods.dk/#HID=78
+        shipDao.saveEntity(new Berth("Nuuk", "64 10.4N", "051 43.5W"));
+        shipDao.saveEntity(new Berth("Sisimiut", "Holsteinsborg", "66 56.5N", "053 40.5W"));
+        shipDao.saveEntity(new Berth("Danmarkshavn", "76 46.0N", "018 45.0W"));
+        shipDao.saveEntity(new Berth("Kangilinnguit", "Grønnedal", "61 14.3N", "48 06.1W"));
+        shipDao.saveEntity(new Berth("Aasiaat", "Egedesminde", "68 42.6N", "052 53.0W"));
+        shipDao.saveEntity(new Berth("Ilulissat", "Jakobshavn", "69 13.5N", "051 06.0W"));
+        shipDao.saveEntity(new Berth("Qeqertarsuaq", "Godhavn", "69 15.0N", "053 33.0W"));
+        shipDao.saveEntity(new Berth("Ammassivik", "Sletten", "60 35.8N", "045 23.7W"));
+        shipDao.saveEntity(new Berth("Ittaajimmiut", "Kap Hope", "70 27.5N", "022 22.0W"));
+        shipDao.saveEntity(new Berth("Kangersuatsiaq", "Prøven", "72 22.7N","055 33.5W"));
+
         logger.info("AFTER CREATION");
         logExistingEntries();
 
-        // List<Stakeholder> stakeholders = stakeholderDao.getAll();
-        // for (Stakeholder stakeholder : stakeholders) {
-        // if (stakeholder instanceof Ship) {
-        // Ship ship = (Ship) stakeholder;
-        // logger.info("mmsi: {}", ship.getMmsi());
-        // }
-        // }
     }
 
     private void logExistingEntries() {
@@ -142,6 +154,8 @@ public class TestPage extends WebPage {
             logger.info("Users: {} ", realmDao.getAll(SecuredUser.class));
             logger.info("Ships: {} ", realmDao.getAll(Ship2.class));
             logger.info("VoyageInformations: {} ", realmDao.getAll(VoyageInformation2.class));
+            logger.info("Voyage: {} ", realmDao.getAll(Voyage.class));
+            logger.info("Berth: {} ", realmDao.getAll(Berth.class));
             tx.commit();
         } catch (NotSupportedException | SystemException | SecurityException | IllegalStateException
                 | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {

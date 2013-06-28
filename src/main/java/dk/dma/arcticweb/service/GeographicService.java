@@ -13,24 +13,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.arcticweb.service;
+
+import java.util.List;
 
 import javax.ejb.Local;
 
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.Berth;
 
 @Local
-public interface ShipDao extends Dao {
+public interface GeographicService {
 
-
-    /**
-     * 
-     * @param sailor
-     * @return
-     */
-    Ship2 getShip(Sailor sailor);
-    
-    VoyageInformation2 getVoyageInformation(Long mmsi);
+    List<Berth> findBerths(String query);
 }

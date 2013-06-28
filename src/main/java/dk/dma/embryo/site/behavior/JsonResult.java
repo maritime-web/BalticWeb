@@ -13,24 +13,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.embryo.site.behavior;
 
-import javax.ejb.Local;
+import com.google.gson.Gson;
 
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.VoyageInformation2;
+/**
+ * Wraps any Object and and converts it to a json string.
+ * 
+ * Dependency on google-gson library which is available at http://code.google.com/p/google-gson/ and which must be on
+ * your classpath when using this library.
+ * 
+ * @author jesper
+ */
+public class JsonResult {
 
-@Local
-public interface ShipDao extends Dao {
+    private String json;
 
+    private Object result;
 
-    /**
-     * 
-     * @param sailor
-     * @return
-     */
-    Ship2 getShip(Sailor sailor);
+    public JsonResult(Object o) {
+        this.result = o;
+    }
+
+    public String toJson() {
+        if (json == null) {
+            Gson gson = new Gson();
+            json = gson.toJson(result);
+        }
+        return json;
+    }
     
-    VoyageInformation2 getVoyageInformation(Long mmsi);
+    
 }

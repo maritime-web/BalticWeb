@@ -15,13 +15,14 @@
  */
 package dk.dma.embryo.domain;
 
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
-import javax.persistence.Embeddable;
 
-
-@Embeddable
-public class Berth implements Serializable{
+@Entity
+@NamedQueries({@NamedQuery(name="Berth:findByQuery", query="SELECT b FROM Berth b WHERE b.name LIKE :query OR b.alias like :query")})
+public class Berth extends BaseEntity<Long>{
 
     private static final long serialVersionUID = -7720878907095105915L;
 
@@ -29,6 +30,8 @@ public class Berth implements Serializable{
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     private String name;
+    
+    private String alias;
     
     private Position position;
 
@@ -50,6 +53,12 @@ public class Berth implements Serializable{
         this.position = new Position(lattitude, longitude);
     }
 
+    public Berth(String name, String alias, String lattitude, String longitude){
+        this.name = name;
+        this.alias = alias;
+        this.position = new Position(lattitude, longitude);
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -60,9 +69,16 @@ public class Berth implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
+    
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 
     public Position getPosition() {
         return position;
-    }
-    
+    }    
 }

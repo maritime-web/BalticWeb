@@ -68,11 +68,10 @@ public class Voyage extends BaseEntity<Long> {
         this(UUID.randomUUID().toString());
     }
 
-    public Voyage(String name, String lattitude, String longitude, LocalDateTime arrival, LocalDateTime departure) {
+    public Voyage(String name, String latitude, String longitude, LocalDateTime arrival, LocalDateTime departure) {
         this();
         this.berthName = name;
-        this.position.setLattitude(lattitude);
-        this.position.setLongitude(longitude);
+        this.position = new Position(latitude, longitude);
         this.arrival = arrival;
         this.departure = departure;
     }

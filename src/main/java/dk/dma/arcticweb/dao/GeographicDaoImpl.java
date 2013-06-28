@@ -22,33 +22,21 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.Berth;
 
 @Stateless
-public class ShipDaoImpl extends DaoImpl implements ShipDao {
+public class GeographicDaoImpl extends DaoImpl implements GeographicDao {
 
     @Inject
-    public ShipDaoImpl(EntityManager entityManager) {
+    public GeographicDaoImpl(EntityManager entityManager) {
         super(entityManager);
     }
 
-
     @Override
-    public Ship2 getShip(Sailor sailor) {
-        Long shipId = sailor.getShip().getId();
-        return (Ship2)getByPrimaryKey(Ship2.class, shipId);
-    }
-
-
-    @Override
-    public VoyageInformation2 getVoyageInformation(Long mmsi) {
-        TypedQuery<VoyageInformation2> query = em.createNamedQuery("VoyageInformation:getByMmsi", VoyageInformation2.class);
-        query.setParameter("mmsi", mmsi);
-        
-        List<VoyageInformation2> result = query.getResultList();
-        
-        return getSingleOrNull(result);
-    }
+    public List<Berth> findBerths(String queryString) {
+        TypedQuery<Berth> query = em.createNamedQuery("Berth:findByQuery", Berth.class);
+        query.setParameter("query", queryString + "%");
+        List<Berth> result = query.getResultList();
+        return result;
+    }    
 }

@@ -17,7 +17,6 @@ package dk.dma.embryo.domain;
 
 import java.util.Locale;
 
-import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 

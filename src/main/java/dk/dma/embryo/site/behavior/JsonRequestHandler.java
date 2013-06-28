@@ -13,24 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.embryo.site.behavior;
 
-import javax.ejb.Local;
+import org.apache.wicket.request.handler.TextRequestHandler;
 
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.VoyageInformation2;
+public class JsonRequestHandler extends TextRequestHandler{
 
-@Local
-public interface ShipDao extends Dao {
+    public JsonRequestHandler(JsonResult jsonResult) {
+        super("application/json", "UTF-8", jsonResult.toJson());
+    }
 
-
-    /**
-     * 
-     * @param sailor
-     * @return
-     */
-    Ship2 getShip(Sailor sailor);
-    
-    VoyageInformation2 getVoyageInformation(Long mmsi);
 }

@@ -15,14 +15,8 @@
  */
 package dk.dma.embryo.site.panel;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 
-import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.embryo.site.form.VoyageInformationForm;
 

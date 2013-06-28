@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import dk.dma.arcticweb.service.GeographicService;
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.CdiUnitTestBase;
 import dk.dma.embryo.domain.Ship2;
@@ -34,6 +35,10 @@ public class VoyageInformationPanelTest extends CdiUnitTestBase {
     @Mock
     ShipService shipService;
 
+    @Produces
+    @Mock
+    GeographicService geoService;
+
     @Test
     public void testConstruction() {
         // ///////////////////////////////////////////////////
@@ -42,7 +47,7 @@ public class VoyageInformationPanelTest extends CdiUnitTestBase {
         Ship2 ship = new Ship2();
 
         VoyageInformation2 voaygeInformation = new VoyageInformation2(12, false);
-        voaygeInformation.addVoyageEntry(new Voyage("City1", "1.100", "2.000", LocalDateTime.parse("2013-06-19T12:23"),
+        voaygeInformation.addVoyageEntry(new Voyage("City1", "1 1.000N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
                 LocalDateTime.parse("2013-06-20T11:56")));
 //        voaygeInformation.addVoyageEntry(new Voyage("City2", "3.300", "6.000", LocalDateTime.parse("2013-06-23T22:08"),
 //                LocalDateTime.parse("2013-06-25T20:19")));

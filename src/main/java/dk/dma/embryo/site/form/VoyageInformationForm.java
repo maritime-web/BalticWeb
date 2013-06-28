@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.site.form;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.apache.wicket.AttributeModifier;
@@ -42,11 +44,18 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.slf4j.Logger;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
+import dk.dma.arcticweb.service.GeographicService;
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.pages.main.MainPage;
+import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.site.behavior.TypeaheadDataSource;
+import dk.dma.embryo.site.component.TypeaheadTextField;
 import dk.dma.embryo.site.panel.EmbryonicForm;
 
 public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> {
@@ -64,6 +73,9 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
 
     @Inject
     private ShipService shipService;
+
+    @Inject
+    private GeographicService geoService;
 
     @Inject
     private Logger logger;
@@ -133,7 +145,6 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
         add(saveLink);
     }
 
-
     private void initializeListView(WebMarkupContainer modalBody) {
         lv = new DynamicPropertyListView<Voyage>("voyagePlan") {
 
@@ -142,12 +153,37 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
             @Override
             protected void populateItem(ListItem<Voyage> item) {
                 item.add(new HiddenField<String>("businessId"));
-                item.add(new TextField<String>("berthName"));
-                item.add(new TextField<String>("position.lattitude"));
+                item.add(new TypeaheadTextField<String, List<JsonBerth>>("berthName",
+                        new TypeaheadDataSource<List<JsonBerth>>() {
+                            private static final long serialVersionUID = 565818402802493124L;
+
+                            @Override
+                            public List<JsonBerth> remoteFetch(String query) {
+                                logger.debug("query={}", query);
+
+                                List<Berth> berths = geoService.findBerths(query);
+
+                                logger.debug("berths={}", berths);
+                                
+                                List<JsonBerth> transformed = Lists.transform(berths, new BerthTransformerFunction());
+                                return transformed;
+                            }
+
+                            @Override
+                            public List<JsonBerth> prefetch() {
+                                List<Berth> berths = geoService.findBerths("");
+                                
+                                logger.debug("berths={}", berths);
+                                
+                                List<JsonBerth> transformed = Lists.transform(berths, new BerthTransformerFunction());
+                                return transformed;
+                            }
+                        }));
+                item.add(new TextField<String>("position.latitude"));
                 item.add(new TextField<String>("position.longitude"));
-                
+
                 AttributeModifier dateFormat = new AttributeModifier("placeholder", "MM/dd/yyyy");
-                
+
                 item.add(new TextField<String>("arrival").add(dateFormat));
                 item.add(new TextField<String>("departure").add(dateFormat));
             }
@@ -175,7 +211,6 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
         super.process(submittingComponent);
         model.setChainedModel(chainedModel);
     }
-    
 
     public abstract static class DynamicPropertyListView<T> extends PropertyListView<T> {
 
@@ -229,4 +264,42 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
         }
     }
 
+    public static class BerthTransformerFunction implements Function<Berth, JsonBerth> {
+        @Override
+        public JsonBerth apply(Berth input) {
+            return new JsonBerth(input.getName(), input.getAlias(), input.getPosition().asGeometryPosition()
+                    .getLatitudeAsString(), input.getPosition().asGeometryPosition().getLongitudeAsString());
+        }
+    }
+
+    public static class JsonBerth {
+        private String name;
+        private String alias;
+        private String latitude;
+        private String longitude;
+
+        public JsonBerth(String name, String alias, String latitude, String longitude) {
+            super();
+            this.name = name;
+            this.alias = alias;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getAlias() {
+            return alias;
+        }
+
+        public String getLatitude() {
+            return latitude;
+        }
+
+        public String getLongitude() {
+            return longitude;
+        }
+    }
 }

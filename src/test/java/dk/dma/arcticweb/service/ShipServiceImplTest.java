@@ -65,9 +65,9 @@ public class ShipServiceImplTest {
         entityManager.persist(ship);
 
         VoyageInformation2 voyageInformation = new VoyageInformation2(12, true);
-        voyageInformation.addVoyageEntry(new Voyage("City1", "1.100", "2.000", LocalDateTime.parse("2013-06-19T12:23"),
+        voyageInformation.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
                 LocalDateTime.parse("2013-06-20T11:56")));
-        voyageInformation.addVoyageEntry(new Voyage("City2", "3.300", "6.000", LocalDateTime.parse("2013-06-23T22:08"),
+        voyageInformation.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime.parse("2013-06-23T22:08"),
                 LocalDateTime.parse("2013-06-25T20:19")));
 
         ship.setVoyageInformation(voyageInformation);

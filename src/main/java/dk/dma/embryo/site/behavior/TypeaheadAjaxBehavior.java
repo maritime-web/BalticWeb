@@ -15,10 +15,6 @@
  */
 package dk.dma.embryo.site.behavior;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import org.apache.wicket.Component;
@@ -27,47 +23,48 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.handler.TextRequestHandler;
-import org.apache.wicket.util.string.StringValue;
-import org.apache.wicket.util.template.PackageTextTemplate;
 import org.slf4j.Logger;
 
-import com.google.gson.Gson;
+/**
+ * Abstract class which enables Bootstrap behavior selector.
+ * 
+ * 
+ * @author jesper
+ */
+public class TypeaheadAjaxBehavior<R> extends AbstractAjaxBehavior {
+    
+    private static final long serialVersionUID = -1168601356372046736L;
 
-public abstract class AbstractJQueryAutocompleAjaxBehavior extends AbstractAjaxBehavior {
+    private static final String JS_INIT = "embryo.typeahead.init('inputSelector', 'url');";
 
     @Inject
     private Logger logger;
 
     // The jQuery selector to be used by the jQuery ready handler that registers the autocomplete behavior
     private final String jQuerySelector;
+    
+    private final TypeaheadDataSource<R> dataSource;
 
     /**
-     * Constructor
      * 
      * @param jQuerySelector
      *            - a string containing the jQuery selector for the target html element (<input type='text'... of the
      *            jQuery UI Autocomplete component
      */
-    public AbstractJQueryAutocompleAjaxBehavior(String jQuerySelector) {
+    public TypeaheadAjaxBehavior(String jQuerySelector, TypeaheadDataSource<R> dataSource) {
         super();
         this.jQuerySelector = jQuerySelector;
+        this.dataSource = dataSource;
     }
 
-    /*
-     * Convert List to json object.
-     * 
-     * Dependency on google-gson library which is available at http://code.google.com/p/google-gson/ and which must be
-     * on your classpath when using this library.
-     */
-    private String convertListToJson(List<?> matches) {
-        Gson gson = new Gson();
-        String json = gson.toJson(matches);
-        return json;
+    public String getJQuerySelector(){
+        return jQuerySelector;
     }
-
-    public abstract List<?> getMatches(String term);
-
+    
+    public String getJsonUrl(){
+        return getCallbackUrl().toString();
+    }
+    
     /**
      * Contributes a jQuery ready handler that registers autocomplete behavior for the html element represented by the
      * selector.
@@ -81,26 +78,44 @@ public abstract class AbstractJQueryAutocompleAjaxBehavior extends AbstractAjaxB
     @Override
     public void renderHead(Component component, IHeaderResponse response) {
         super.renderHead(component, response);
+        String js_init = JS_INIT.replaceAll("inputSelector", jQuerySelector);
+        js_init = js_init.replaceAll("url", getCallbackUrl().toString());
+        //response.render(OnLoadHeaderItem.forScript(js_init));
+    }
 
-        Map<String, CharSequence> map = new HashMap<String, CharSequence>(2);
-        map.put("selector", jQuerySelector);
-        map.put("callbackUrl", getCallbackUrl());
-        PackageTextTemplate packageTextTemplate = new PackageTextTemplate(getClass(), "autocomplete.js",
-                "text/javascript");
-        String resource = packageTextTemplate.asString(map);
-        // response.renderJavaScript(resource, jQuerySelector);
+    private String extractQueryRequestParameter() {
+        RequestCycle requestCycle = RequestCycle.get();
+        Request request = requestCycle.getRequest();
+        IRequestParameters irp = request.getRequestParameters();
+        String query = irp.getParameterValue("q").toString();
+        logger.debug("?q={}", query);
+        return query;
+    }
+    
+    boolean isPrefetchRequest(){
+        RequestCycle requestCycle = RequestCycle.get();
+        IRequestParameters params = requestCycle.getRequest().getRequestParameters();
+        return !params.getParameterNames().contains("q") || params.getParameterValue("q").isNull();
     }
 
     @Override
     public void onRequest() {
-        logger.trace("ajax request received");
+        logger.debug("request received on url {}", getCallbackUrl());
 
-        RequestCycle requestCycle = RequestCycle.get();
-        Request request = requestCycle.getRequest();
-        IRequestParameters irp = request.getRequestParameters();
-        StringValue term = irp.getParameterValue("term");
-        List<?> matches = getMatches(term.toString());
-        String json = convertListToJson(matches);
-        requestCycle.scheduleRequestHandlerAfterCurrent(new TextRequestHandler("application/json", "UTF-8", json));
+        R matches;
+        if(isPrefetchRequest()){
+            matches = dataSource.prefetch();
+        }else{
+            String query = extractQueryRequestParameter();
+            matches = dataSource.remoteFetch(query);
+        }
+
+        logger.debug("matches={}", matches);
+        
+        JsonResult json = new JsonResult(matches);
+
+        logger.debug("json={}", json.toJson());
+
+        RequestCycle.get().scheduleRequestHandlerAfterCurrent(new JsonRequestHandler(json));
     }
 }
