@@ -57,6 +57,8 @@ import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyageInformation2;
 import dk.dma.embryo.site.behavior.TypeaheadDataSource;
 import dk.dma.embryo.site.component.TypeaheadTextField;
+import dk.dma.embryo.site.markup.html.form.LatitudeTextField;
+import dk.dma.embryo.site.markup.html.form.LongitudeTextField;
 import dk.dma.embryo.site.panel.EmbryonicForm;
 
 public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> {
@@ -165,7 +167,7 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
                                 List<Berth> berths = geoService.findBerths(query);
 
                                 logger.debug("berths={}", berths);
-                                
+
                                 List<JsonBerth> transformed = Lists.transform(berths, new BerthTransformerFunction());
                                 return transformed;
                             }
@@ -173,15 +175,15 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
                             @Override
                             public List<JsonBerth> prefetch() {
                                 List<Berth> berths = geoService.findBerths("");
-                                
+
                                 logger.debug("berths={}", berths);
-                                
+
                                 List<JsonBerth> transformed = Lists.transform(berths, new BerthTransformerFunction());
                                 return transformed;
                             }
                         }));
-                item.add(new TextField<String>("position.latitude"));
-                item.add(new TextField<String>("position.longitude"));
+                item.add(new LatitudeTextField("position.latitude"));
+                item.add(new LongitudeTextField("position.longitude"));
 
                 AttributeModifier dateFormat = new AttributeModifier("placeholder", "MM/dd/yyyy");
 
@@ -268,8 +270,8 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
     public static class BerthTransformerFunction implements Function<Berth, JsonBerth> {
         @Override
         public JsonBerth apply(Berth input) {
-            return new JsonBerth(input.getName(), input.getAlias(), input.getPosition().asGeometryPosition()
-                    .getLatitudeAsString(), input.getPosition().asGeometryPosition().getLongitudeAsString());
+            return new JsonBerth(input.getName(), input.getAlias(), input.getPosition().getLatitudeAsString(), input
+                    .getPosition().getLongitudeAsString());
         }
     }
 

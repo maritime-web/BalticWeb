@@ -27,9 +27,9 @@ public class Position implements Serializable {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-    private double latitude;
+    private Double latitude;
 
-    private double longitude;
+    private Double longitude;
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -54,23 +54,38 @@ public class Position implements Serializable {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double lattitude) {
+    public void setLatitude(Double lattitude) {
         this.latitude = lattitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
     
     public dk.dma.enav.model.geometry.Position asGeometryPosition(){
         return dk.dma.enav.model.geometry.Position.create(latitude, longitude);
     }
+    
+    public String getLatitudeAsString(){
+        if(latitude == null){
+            return null;
+        }
+        return dk.dma.enav.model.geometry.Position.create(latitude, longitude).getLatitudeAsString();
+    }
+    
+    public String getLongitudeAsString(){
+        if(longitude == null){
+            return null;
+        }
+        return dk.dma.enav.model.geometry.Position.create(latitude, longitude).getLongitudeAsString();
+    }
+    
 }
