@@ -53,7 +53,7 @@ import com.google.common.collect.Lists;
 
 import dk.dma.arcticweb.service.GeographicService;
 import dk.dma.arcticweb.service.ShipService;
-import dk.dma.arcticweb.site.pages.main.MainPage;
+import dk.dma.arcticweb.site.pages.MainPage;
 import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;

@@ -13,32 +13,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.site.panel;
+package dk.dma.embryo.site.markup.html.menu;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
+public interface ReachedFromMenu {
 
-@SuppressWarnings("serial")
-public class MenuTestPanel extends EmbryonicPanel implements ReachedFromMenu{
-
+    String getTitle();
     
-    WebMarkupContainer container;
-    
-    
-    public MenuTestPanel(String id) {
-        this(id, "Test Panel");
-    }
-    public MenuTestPanel(String id, String title) {
-        super(id, title);
-
-        container = new WebMarkupContainer("container");
-        container.add(new Label("text", "label"));
-    }
-
-    @Override
-    public String getBookmark() {
-        return container.getMarkupId();
-    }
-    
-    
+    String getBookmark();
 }

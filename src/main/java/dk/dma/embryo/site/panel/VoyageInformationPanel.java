@@ -19,6 +19,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 
 import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.embryo.site.form.VoyageInformationForm;
+import dk.dma.embryo.site.markup.html.menu.ReachedFromMenu;
 
 @YourShip
 public class VoyageInformationPanel extends EmbryonicPanel implements ReachedFromMenu{

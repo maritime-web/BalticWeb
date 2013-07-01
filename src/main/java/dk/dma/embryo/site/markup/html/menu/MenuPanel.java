@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.site.panel;
+package dk.dma.embryo.site.markup.html.menu;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -33,7 +33,6 @@ public class MenuPanel extends Panel {
         rw = new RepeatingView("menuHeader");
         add(rw);
         
-
         selectedShip = new WebMarkupContainer("selected_ship");
         selectedShip.setVisible(true);
 

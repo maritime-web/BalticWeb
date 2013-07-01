@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.site.pages.front;
+package dk.dma.arcticweb.site.pages;
 
 import javax.inject.Inject;
 
@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.Subject;
 

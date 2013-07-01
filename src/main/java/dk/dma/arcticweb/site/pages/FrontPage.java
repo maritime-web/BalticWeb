@@ -13,15 +13,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.site.pages.front;
+package dk.dma.arcticweb.site.pages;
 
 import javax.inject.Inject;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 
-import dk.dma.arcticweb.site.pages.BasePage;
-import dk.dma.arcticweb.site.pages.main.MainPage;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
 import dk.dma.embryo.security.Subject;
 

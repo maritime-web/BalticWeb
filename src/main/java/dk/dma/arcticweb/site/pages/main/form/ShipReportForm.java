@@ -29,7 +29,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import dk.dma.arcticweb.service.ShipService;
-import dk.dma.arcticweb.site.pages.main.MainPage;
+import dk.dma.arcticweb.site.pages.MainPage;
 import dk.dma.embryo.domain.ShipReport2;
 import dk.dma.embryo.site.panel.EmbryonicForm;
 

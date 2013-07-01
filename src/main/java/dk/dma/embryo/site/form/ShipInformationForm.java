@@ -34,7 +34,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.arcticweb.service.ShipService;
-import dk.dma.arcticweb.site.pages.main.MainPage;
+import dk.dma.arcticweb.site.pages.MainPage;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.site.panel.EmbryonicForm;
 import dk.dma.enav.model.ship.ShipType;
@@ -59,7 +59,7 @@ public class ShipInformationForm extends EmbryonicForm<ShipInformationForm> {
 
     private FeedbackPanel feedback;
     private AjaxSubmitLink saveLink;
-    private Link<ShipInformationForm> closeLink;
+    private AjaxSubmitLink closeLink;
     private WebMarkupContainer saved;
     
     @Inject
@@ -106,14 +106,14 @@ public class ShipInformationForm extends EmbryonicForm<ShipInformationForm> {
         feedback.setVisible(false);
         saved = new WebMarkupContainer("saved");
         saved.setVisible(false);
-        closeLink = new Link<ShipInformationForm>("close") {
+        closeLink = new AjaxSubmitLink("close") {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void onClick() {
+            public void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 feedback.setVisible(false);
                 saved.setVisible(false);
-                setResponsePage(new MainPage());
+                target.add(this.getParent());
             }
         };
         // closeLink.setVisible(false);

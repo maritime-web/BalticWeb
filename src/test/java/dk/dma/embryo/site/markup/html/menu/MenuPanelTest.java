@@ -13,13 +13,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.site.panel;
+package dk.dma.embryo.site.markup.html.menu;
 
 import org.jglue.cdiunit.AdditionalClasses;
 import org.junit.Test;
 
 import dk.dma.arcticweb.site.CdiUnitTestBase;
 import dk.dma.embryo.security.PermissionExtractor;
+import dk.dma.embryo.site.markup.html.menu.MenuHeader;
+import dk.dma.embryo.site.markup.html.menu.MenuPanel;
+import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
 
 @AdditionalClasses({PermissionExtractor.class})
 public class MenuPanelTest extends CdiUnitTestBase{

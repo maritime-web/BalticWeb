@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.site.panel;
+package dk.dma.embryo.site.markup.html.menu;
 
 import javax.inject.Inject;
 
@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import dk.dma.embryo.security.PermissionContainer;
 import dk.dma.embryo.security.PermissionExtractor;
 import dk.dma.embryo.security.authorization.Permission;
+import dk.dma.embryo.site.panel.JSExecutor;
 
 public class MenuItem extends MarkupContainer implements PermissionContainer{
 

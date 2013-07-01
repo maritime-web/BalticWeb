@@ -13,19 +13,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.site.pages.main;
+package dk.dma.arcticweb.site.pages;
 
 import dk.dma.arcticweb.site.SecurePage;
-import dk.dma.arcticweb.site.pages.BasePage;
 import dk.dma.arcticweb.site.pages.main.panel.JsPanel;
 import dk.dma.arcticweb.site.pages.main.panel.MapPanel;
 import dk.dma.arcticweb.site.pages.main.panel.SelectedShipInformationPanel;
 import dk.dma.arcticweb.site.pages.main.panel.ShipReportPanel;
 import dk.dma.arcticweb.site.pages.main.panel.StatusPanel;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
+import dk.dma.embryo.site.markup.html.menu.MenuHeader;
+import dk.dma.embryo.site.markup.html.menu.MenuPanel;
 import dk.dma.embryo.site.panel.LeftPanel;
-import dk.dma.embryo.site.panel.MenuHeader;
-import dk.dma.embryo.site.panel.MenuPanel;
 import dk.dma.embryo.site.panel.ShipInformationPanel;
 import dk.dma.embryo.site.panel.VoyageInformationPanel;
 import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
@@ -41,7 +40,7 @@ public class MainPage extends BasePage implements SecurePage {
         add(mapPanel);
         mapPanel.addComponent(LeftPanel.class);
         mapPanel.addComponent(StatusPanel.class);
-
+        
         add(new UserPanel("user_panel"));
 
         ShipInformationPanel shipInformation = new ShipInformationPanel("ship_information");

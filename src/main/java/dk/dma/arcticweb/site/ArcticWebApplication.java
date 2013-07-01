@@ -17,6 +17,8 @@ package dk.dma.arcticweb.site;
 
 import static org.apache.wicket.cdi.ConversationPropagation.NONE;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.wicket.Page;
@@ -29,8 +31,8 @@ import org.apache.wicket.request.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.dma.arcticweb.site.pages.front.FrontPage;
-import dk.dma.arcticweb.site.pages.main.MainPage;
+import dk.dma.arcticweb.site.pages.FrontPage;
+import dk.dma.arcticweb.site.pages.MainPage;
 import dk.dma.arcticweb.site.pages.test.TestPage;
 import dk.dma.arcticweb.site.session.ArcticWebSession;
 import dk.dma.embryo.config.Configuration;
@@ -63,7 +65,9 @@ public class ArcticWebApplication extends WebApplication {
 
     @Override
     public Session newSession(Request request, Response response) {
-        return new ArcticWebSession(request);
+        ArcticWebSession session = new ArcticWebSession(request); 
+        session.setLocale(new Locale("da", "DK"));
+        return session;
     }
     
     private void enableCdi(BeanManager beanManager) {

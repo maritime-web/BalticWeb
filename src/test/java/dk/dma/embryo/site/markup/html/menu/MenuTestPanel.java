@@ -13,44 +13,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.site.panel;
+package dk.dma.embryo.site.markup.html.menu;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 
-import dk.dma.embryo.security.authorization.YourShip;
-import dk.dma.embryo.site.form.ShipInformationForm;
 import dk.dma.embryo.site.markup.html.menu.ReachedFromMenu;
+import dk.dma.embryo.site.panel.EmbryonicPanel;
 
-@YourShip
-public class ShipInformationPanel extends EmbryonicPanel implements ReachedFromMenu{
+@SuppressWarnings("serial")
+public class MenuTestPanel extends EmbryonicPanel implements ReachedFromMenu{
 
-    private static final long serialVersionUID = 1L;
-
-    private final WebMarkupContainer shipInformation;
     
-    private final ShipInformationForm form;
+    WebMarkupContainer container;
     
-    public ShipInformationPanel(String id) {
-        super(id);
-
-        shipInformation = new WebMarkupContainer("shipInformation");
-        add(shipInformation);
-        
-        form = new ShipInformationForm("ship_information_form");
-        
-        shipInformation.add(form);
+    
+    public MenuTestPanel(String id) {
+        this(id, "Test Panel");
     }
-    
-    public String getTitle(){
-        return form.getTitle();
+    public MenuTestPanel(String id, String title) {
+        super(id, title);
+
+        container = new WebMarkupContainer("container");
+        container.add(new Label("text", "label"));
     }
 
     @Override
     public String getBookmark() {
-        return shipInformation.getMarkupId();
+        return container.getMarkupId();
     }
     
     
-    
-
 }

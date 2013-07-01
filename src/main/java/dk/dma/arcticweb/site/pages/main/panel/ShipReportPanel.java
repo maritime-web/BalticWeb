@@ -19,8 +19,8 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 
 import dk.dma.arcticweb.site.pages.main.form.ShipReportForm;
 import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.embryo.site.markup.html.menu.ReachedFromMenu;
 import dk.dma.embryo.site.panel.EmbryonicPanel;
-import dk.dma.embryo.site.panel.ReachedFromMenu;
 
 @YourShip
 public class ShipReportPanel extends EmbryonicPanel implements ReachedFromMenu{

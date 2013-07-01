@@ -24,7 +24,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.site.pages.front.FrontPage;
+import dk.dma.arcticweb.site.pages.FrontPage;
 import dk.dma.embryo.security.Subject;
 
 public class UserPanel extends Panel {

@@ -13,13 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.site.panel;
+package dk.dma.embryo.site.markup.html.menu;
 
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.RepeatingView;
 
 import dk.dma.embryo.security.authorization.DependsOnChildPermissionContainers;
+import dk.dma.embryo.site.panel.JSExecutor;
 
 @DependsOnChildPermissionContainers
 public class MenuHeader extends MarkupContainer{
