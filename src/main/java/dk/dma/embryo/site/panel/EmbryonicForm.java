@@ -16,9 +16,9 @@
 package dk.dma.embryo.site.panel;
 
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.StatelessForm;
+import org.apache.wicket.markup.html.form.Form;
 
-public abstract class EmbryonicForm<T> extends StatelessForm<T> {
+public abstract class EmbryonicForm<T> extends Form<T> {
 
     private static final long serialVersionUID = 4132041261965905788L;
 

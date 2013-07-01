@@ -19,12 +19,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxCallListener;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.form.IFormSubmitter;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -42,7 +43,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
+import org.omg.CORBA.REBIND;
 import org.slf4j.Logger;
 
 import com.google.common.base.Function;
@@ -57,6 +60,8 @@ import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyageInformation2;
 import dk.dma.embryo.site.behavior.TypeaheadDataSource;
 import dk.dma.embryo.site.component.TypeaheadTextField;
+import dk.dma.embryo.site.converter.StyleDateConverter;
+import dk.dma.embryo.site.markup.html.form.DateTimeTextField;
 import dk.dma.embryo.site.markup.html.form.LatitudeTextField;
 import dk.dma.embryo.site.markup.html.form.LongitudeTextField;
 import dk.dma.embryo.site.panel.EmbryonicForm;
@@ -94,10 +99,11 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
 
         js_init = JS_INIT.replaceAll("id", modalBody.getMarkupId());
 
-        feedback = new FeedbackPanel("voyage_information_feedback");
+        feedback = new FeedbackPanel("voyage_information_feedback", new ContainerFeedbackMessageFilter(this));
+        feedback.setOutputMarkupId( true );
         feedback.setVisible(false);
-
-        modalBody.add(feedback);
+        
+        add(feedback);
 
         initializeListView(modalBody);
 
@@ -117,7 +123,6 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
                 VoyageInformation2 info = model.getObject();
                 // HACK an empty voyage was added, when loaded to generate empty row. Remove again before saving
                 info.removeLastVoyage();
-
                 shipService.saveVoyageInformation(info);
                 feedback.setVisible(false);
                 target.add(this.getParent());
@@ -133,6 +138,17 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
 
         add(saveLink);
     }
+    
+    
+    @Override
+    protected void onError() {
+        // DOES NOT WORK, BECAUSE MODEL RELOADED?
+//        updateFormComponentModels();
+
+        super.onError();
+    }
+
+
 
     private void initializeListView(WebMarkupContainer modalBody) {
         lv = new DynamicPropertyListView<Voyage>("voyagePlan") {
@@ -171,10 +187,8 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
                 item.add(new LatitudeTextField("position.latitude"));
                 item.add(new LongitudeTextField("position.longitude"));
 
-                AttributeModifier dateFormat = new AttributeModifier("placeholder", "MM/dd/yyyy");
-
-                item.add(new TextField<String>("arrival").add(dateFormat));
-                item.add(new TextField<String>("departure").add(dateFormat));
+                item.add(DateTimeTextField.forDateStyle("arrival", true, StyleDateConverter.DEFAULT_DATE_TIME));
+                item.add(DateTimeTextField.forDateStyle("departure", true, StyleDateConverter.DEFAULT_DATE_TIME));
 
                 // With Wicket 6.7.0
                 item.add(new TextField<>("personsOnBoard").add(new RangeValidator<Integer>(1, 10000)));
@@ -184,7 +198,7 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
                 item.add(new CheckBox("doctorOnBoard"));
             }
         };
-        lv.setReuseItems(false);
+        lv.setReuseItems(true);
 
         modalBody.add(lv);
     }
@@ -204,6 +218,7 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
         IModel<?> chainedModel = model.getChainedModel();
         model.setChainedModel(new EmptyVoyageInformationModel());
         lv.rebuild();
+        
         super.process(submittingComponent);
         model.setChainedModel(chainedModel);
     }
