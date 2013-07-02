@@ -1000,32 +1000,26 @@ embryo.statusPanel.init = function(projection) {
 embryo.voyageInformationForm = {};
 embryo.voyageInformationForm.copyEmptyRow = function(event) {
 	var $row = $(event.target).closest('tr');
+	
+	// create new row by copy and modify before insertion into document
 	var $newRow = $row.clone(true);
-	$row.after($newRow);
-
-	// set focus on corresponding input element in new row
 	var columnIndex = $row.find('input').index(event.target);
 	$newRow.find('input').eq(columnIndex).val("");
+	$row.after($newRow);
 
+	// new row must be copied before enableRow is called
 	embryo.voyageInformationForm.enableRow($row);
 
-	$row.find('input:first').focus();
+	// if user typed into berth field, then give field focus and trigger drowdown
+	if ($(event.target).is('.typeahead-textfield')) {
+		$(event.target).focus();
+		$(event.target).prev('.tt-hint').trigger('focused');
+	}
 };
 embryo.voyageInformationForm.registerHandlers = function($rows) {
-	// TODO if clearing all fields in a row and leaving it, then delete row.
-	// Not working. Delete should be performed manually
-	// $row.focusout(embryo.voyageInformationForm.deleteRowIfEmpty);
-
-	// TODO if berth typed in, then make it impossible to type in longitude and
-	// lattitude and jump to arrival
 	var formObject = this;
 
 	$rows.each(function() {
-		embryo.typeahead.create($(this).find('input:first').get(0));
-
-		/* removed because difficult to coordinate with typeahead */
-		/* $(this).find('input:first').focusout(formObject.berthChanged); */
-
 		$(this).find('input.typeahead-textfield').bind(
 				"typeahead:autocompleted typeahead:selected",
 				formObject.onBerthSelected($(this)));
@@ -1039,14 +1033,6 @@ embryo.voyageInformationForm.onBerthSelected = function($row) {
 	return function(event, datum) {
 		$row.find('input.lat').val(datum.latitude);
 		$row.find('input.lon').val(datum.longitude);
-
-		/* removed because difficult to use with typeahead */
-		/*
-		 * $row.find('input.lat').val(datum.latitude).prop('disabled', true);
-		 * $row.find('input.lon').val(datum.longitude).prop('disabled', true);
-		 * if ($row.find('input.lat').is(event.relatedTarget)) {
-		 * $row.find('input.arrival').focus(); }
-		 */
 	};
 };
 
@@ -1057,13 +1043,6 @@ embryo.voyageInformationForm.onDelete = function(event) {
 	$rowToDelete.next().find("input:first").focus();
 	$rowToDelete.remove();
 };
-/*
- * removed because difficult to use with typeahead
- * embryo.voyageInformationForm.berthChanged = function(event) { var $berth =
- * $(event.target); var $row = $berth.closest('tr'); if ($berth.val() == null ||
- * $berth.val().length == 0) { $row.find('input.lat').removeProp('disabled');
- * $row.find('input.lon').removeProp('disabled'); } };
- */
 
 embryo.voyageInformationForm.lonLanChanged = function(event) {
 	var $lonLan = $(event.target);
@@ -1090,9 +1069,11 @@ embryo.voyageInformationForm.deleteRowIfEmpty = function(event) {
 };
 
 embryo.voyageInformationForm.enableRow = function($row) {
+	embryo.typeahead.create($row.find('input.typeahead-textfield')[0]);
+
 	$row.find('button').show();
 	$row.removeClass('emptyRow');
-	$row.find('input[type="text"]').unbind('keyup',
+	$row.find('input, button').unbind('keydown',
 			embryo.voyageInformationForm.copyEmptyRow);
 
 	embryo.voyageInformationForm.registerHandlers($row);
@@ -1118,11 +1099,15 @@ embryo.voyageInformationForm.init = function(containerSelector) {
 	$(containerSelector).find('tr:last-child').addClass('emptyRow').find(
 			'button').hide();
 
-	$(containerSelector).find('.emptyRow input[type="text"]').keyup(
+	$(containerSelector).find('.emptyRow input[type="text"]').keydown(
 			embryo.voyageInformationForm.copyEmptyRow);
 
 	$rows = $(containerSelector).find('.table tr:not(.emptyRow)');
 	embryo.voyageInformationForm.registerHandlers($rows);
+
+	// Initialize typeahead for all input fields not being empty row
+	embryo.typeahead.create(containerSelector
+			+ ' tr:not(.emptyRow) input.typeahead-textfield');
 
 	$(containerSelector).find(containerSelector).closest(
 			'button[type="submit"]').click(
@@ -1146,8 +1131,15 @@ embryo.typeahead.init = function(inputSelector, jsonUrl) {
 embryo.typeahead.create = function(selector) {
 	$(selector).each(function() {
 		var jsonUrl = $(this).attr('data-json');
+
+		// ttl value should be set higher (see doc)
 		$(this).typeahead({
 			name : 'berths',
+			prefetch : {
+				url : jsonUrl,
+				ttl : 15000,
+				filter : embryo.typeahead.filter
+			},
 			remote : {
 				url : jsonUrl,
 				filter : embryo.typeahead.filter
