@@ -15,12 +15,27 @@
  */
 package dk.dma.embryo.site.behavior;
 
-import java.io.Serializable;
-import java.util.List;
+public class TypeaheadDatum {
+    private String name;
+    private String value;
+    private String[] tokens;
 
-public interface TypeaheadDataSource<D extends TypeaheadDatum> extends Serializable {
+    public TypeaheadDatum(String name, String value, String... tokens) {
+        this.name = name;
+        this.value = value;
+        this.tokens = tokens;
+    }
 
-    List<D> prefetch();
+    public String getName() {
+        return name;
+    }
 
-    List<D> remoteFetch(String query);
+    public String getValue() {
+        return value;
+    }
+
+    public String[] getTokens() {
+        return tokens;
+    }
+
 }

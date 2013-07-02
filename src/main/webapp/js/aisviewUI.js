@@ -1137,83 +1137,12 @@ embryo.typeahead.create = function(selector) {
 			name : 'berths',
 			prefetch : {
 				url : jsonUrl,
-				ttl : 15000,
-				filter : embryo.typeahead.filter
+				ttl : 15000
 			},
 			remote : {
-				url : jsonUrl,
-				filter : embryo.typeahead.filter
+				url : jsonUrl
 			}
 		});
 	});
 
-};
-
-// Initialize function, which can be used when initializing new rows
-embryo.typeahead.reInitialize = function(selector) {
-	$(selector).typeahead('destroy');
-
-	alert($(selector).length);
-
-	// embryo.typeahead.create(selector);
-};
-
-embryo.typeahead.filter = function(parsedResponse) {
-	console.log("filtering");
-	var datums = $.map(parsedResponse, function(berth) {
-		var datum = {
-			name : berth.name,
-			value : berth.name + (berth.alias ? " (" + berth.alias + ")" : ""),
-			tokens : [ berth.name, berth.alias ],
-			latitude : berth.latitude,
-			longitude : berth.longitude
-		};
-
-		return datum;
-	});
-
-	return datums;
-};
-
-/*
- * , template : '<p>{{name}}, ({{alias}})</p>'
- * 
- * 
- */
-
-embryo.typeahead.init2 = function(inputSelector, url) {
-	$(inputSelector).typeahead({
-		source : embryo.typeahead.buildFinder(url),
-		updater : function(item) {
-			// implementation
-		},
-		sorter : function(items) {
-			return items;
-		}
-	});
-};
-embryo.typeahead.buildFinder = function(url) {
-	return function(query, process) {
-		$.getJSON(url, function(data) {
-			embryo.typeahead.displayResult(data, process);
-		}).fail(function(jqxhr, textStatus, error) {
-			var err = textStatus + ', ' + error;
-			console.log("Request Failed: " + err);
-		});
-	};
-};
-embryo.typeahead.displayResult = function(data, process) {
-	embryo.typeahead.berths = [];
-	embryo.typeahead.nameMap = {};
-	embryo.typeahead.aliasMap = {};
-
-	$.each(data, function(i, berth) {
-		embryo.typeahead.nameMap[berth.name] = berth;
-		if (berth.alias != null) {
-			embryo.typeahead.aliasMap[berth.alias] = berth;
-		}
-		berths.push(berth.name + "(" + berth.alias + ")");
-	});
-
-	process(berths);
 };

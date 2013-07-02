@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.site.component;
+package dk.dma.embryo.site.markup.html.form;
 
 import java.util.List;
 
@@ -25,38 +25,39 @@ import org.apache.wicket.model.Model;
 
 import dk.dma.embryo.site.behavior.TypeaheadAjaxBehavior;
 import dk.dma.embryo.site.behavior.TypeaheadDataSource;
+import dk.dma.embryo.site.behavior.TypeaheadDatum;
 
-public class TypeaheadTextField<T, R> extends TextField<T> {
+public class TypeaheadTextField<T, D extends TypeaheadDatum> extends TextField<T> {
 
     private static final long serialVersionUID = 1938956927163519213L;
 
-    private TypeaheadDataSource<R> dataSource;
+    private TypeaheadDataSource<D> dataSource;
     
     private String selector;
     
     private Model<String> urlModel = Model.of();
     
-    public TypeaheadTextField(String id, Class<T> type, TypeaheadDataSource<R> dataSource) {
+    public TypeaheadTextField(String id, Class<T> type, TypeaheadDataSource<D> dataSource) {
         super(id, type);
         init(null, dataSource);
     }
 
-    public TypeaheadTextField(String id, IModel<T> model, Class<T> type, TypeaheadDataSource<R> dataSource) {
+    public TypeaheadTextField(String id, IModel<T> model, Class<T> type, TypeaheadDataSource<D> dataSource) {
         super(id, model, type);
         init(null, dataSource);
     }
 
-    public TypeaheadTextField(String id, IModel<T> model, TypeaheadDataSource<R> dataSource) {
+    public TypeaheadTextField(String id, IModel<T> model, TypeaheadDataSource<D> dataSource) {
         super(id, model);
         init(null, dataSource);
     }
 
-    public TypeaheadTextField(String id, TypeaheadDataSource<R> dataSource) {
+    public TypeaheadTextField(String id, TypeaheadDataSource<D> dataSource) {
         super(id);
         init(null, dataSource);
     }
 
-    public TypeaheadTextField(String id, String selector, TypeaheadDataSource<R> dataSource) {
+    public TypeaheadTextField(String id, String selector, TypeaheadDataSource<D> dataSource) {
         super(id);
         init(null, dataSource);
     }
@@ -78,7 +79,7 @@ public class TypeaheadTextField<T, R> extends TextField<T> {
         }
 
         if (typeahead == null) {
-            typeahead = new TypeaheadAjaxBehavior<R>(jQuerySelector, dataSource);
+            typeahead = new TypeaheadAjaxBehavior<D>(jQuerySelector, dataSource);
             getForm().add(typeahead);
         }
 
@@ -91,7 +92,7 @@ public class TypeaheadTextField<T, R> extends TextField<T> {
         super.onBeforeRender();
     }
 
-    private void init(final String selector, final TypeaheadDataSource<R> dataSource) {
+    private void init(final String selector, final TypeaheadDataSource<D> dataSource) {
         this.dataSource = dataSource;
 
         this.selector = selector != null ? selector : ".typeahead-textfield";

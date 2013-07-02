@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.site.behavior;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.apache.wicket.Component;
@@ -31,7 +33,7 @@ import org.slf4j.Logger;
  * 
  * @author jesper
  */
-public class TypeaheadAjaxBehavior<R> extends AbstractAjaxBehavior {
+public class TypeaheadAjaxBehavior<D extends TypeaheadDatum> extends AbstractAjaxBehavior {
     
     private static final long serialVersionUID = -1168601356372046736L;
 
@@ -43,7 +45,7 @@ public class TypeaheadAjaxBehavior<R> extends AbstractAjaxBehavior {
     // The jQuery selector to be used by the jQuery ready handler that registers the autocomplete behavior
     private final String jQuerySelector;
     
-    private final TypeaheadDataSource<R> dataSource;
+    private final TypeaheadDataSource<D> dataSource;
 
     /**
      * 
@@ -51,7 +53,7 @@ public class TypeaheadAjaxBehavior<R> extends AbstractAjaxBehavior {
      *            - a string containing the jQuery selector for the target html element (<input type='text'... of the
      *            jQuery UI Autocomplete component
      */
-    public TypeaheadAjaxBehavior(String jQuerySelector, TypeaheadDataSource<R> dataSource) {
+    public TypeaheadAjaxBehavior(String jQuerySelector, TypeaheadDataSource<D> dataSource) {
         super();
         this.jQuerySelector = jQuerySelector;
         this.dataSource = dataSource;
@@ -102,7 +104,7 @@ public class TypeaheadAjaxBehavior<R> extends AbstractAjaxBehavior {
     public void onRequest() {
         logger.debug("request received on url {}", getCallbackUrl());
 
-        R matches;
+        List<D> matches;
         if(isPrefetchRequest()){
             matches = dataSource.prefetch();
         }else{
