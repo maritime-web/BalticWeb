@@ -22,6 +22,7 @@ import dk.dma.arcticweb.site.pages.main.panel.SelectedShipInformationPanel;
 import dk.dma.arcticweb.site.pages.main.panel.ShipReportPanel;
 import dk.dma.arcticweb.site.pages.main.panel.StatusPanel;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
+import dk.dma.embryo.site.markup.html.form.modal.RouteEditModal;
 import dk.dma.embryo.site.markup.html.menu.MenuHeader;
 import dk.dma.embryo.site.markup.html.menu.MenuPanel;
 import dk.dma.embryo.site.panel.LeftPanel;
@@ -47,6 +48,9 @@ public class MainPage extends BasePage implements SecurePage {
         ShipReportPanel shipReport = new ShipReportPanel("ship_report");
         VoyageInformationPanel voyageInformation = new VoyageInformationPanel("voyage_information");
 
+        RouteEditModal routeModal = new RouteEditModal("routeModule");
+
+        
         // /////////////////////////////////////////////////
         // Build up menu
         // /////////////////////////////////////////////////
@@ -59,13 +63,14 @@ public class MainPage extends BasePage implements SecurePage {
         yourShip.addMenuItem(shipInformation);
         yourShip.addMenuItem(shipReport);
         yourShip.addMenuItem(voyageInformation);
+        yourShip.addMenuItem(routeModal);
 
         add(new JsPanel("js_panel"));
 
         // add(new LeftPanel2("left"));
         // add(new StatusPanel("status"));
 
-        add(shipInformation, shipReport, voyageInformation);
+        add(shipInformation, shipReport, voyageInformation, routeModal);
 
         add(new SelectedShipInformationPanel("selected_ship_information"));
     }

@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.AbstractAjaxBehavior;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.OnLoadHeaderItem;
 import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
@@ -31,7 +32,7 @@ import org.slf4j.Logger;
  * Abstract class which enables Bootstrap behavior selector.
  * 
  * 
- * @author jesper
+ * @author Jesper Tejlgaard
  */
 public class TypeaheadAjaxBehavior<D extends TypeaheadDatum> extends AbstractAjaxBehavior {
     
@@ -46,6 +47,8 @@ public class TypeaheadAjaxBehavior<D extends TypeaheadDatum> extends AbstractAja
     private final String jQuerySelector;
     
     private final TypeaheadDataSource<D> dataSource;
+    
+    private final boolean autoInitialize;
 
     /**
      * 
@@ -53,10 +56,11 @@ public class TypeaheadAjaxBehavior<D extends TypeaheadDatum> extends AbstractAja
      *            - a string containing the jQuery selector for the target html element (<input type='text'... of the
      *            jQuery UI Autocomplete component
      */
-    public TypeaheadAjaxBehavior(String jQuerySelector, TypeaheadDataSource<D> dataSource) {
+    public TypeaheadAjaxBehavior(String jQuerySelector, TypeaheadDataSource<D> dataSource, boolean autoInitialize) {
         super();
         this.jQuerySelector = jQuerySelector;
         this.dataSource = dataSource;
+        this.autoInitialize = autoInitialize;
     }
 
     public String getJQuerySelector(){
@@ -80,9 +84,11 @@ public class TypeaheadAjaxBehavior<D extends TypeaheadDatum> extends AbstractAja
     @Override
     public void renderHead(Component component, IHeaderResponse response) {
         super.renderHead(component, response);
-        String js_init = JS_INIT.replaceAll("inputSelector", jQuerySelector);
-        js_init = js_init.replaceAll("url", getCallbackUrl().toString());
-        //response.render(OnLoadHeaderItem.forScript(js_init));
+        if(autoInitialize){
+            String js_init = JS_INIT.replaceAll("inputSelector", jQuerySelector);
+            js_init = js_init.replaceAll("url", getCallbackUrl().toString());
+            response.render(OnLoadHeaderItem.forScript(js_init));
+        }
     }
 
     private String extractQueryRequestParameter() {
@@ -120,4 +126,6 @@ public class TypeaheadAjaxBehavior<D extends TypeaheadDatum> extends AbstractAja
 
         RequestCycle.get().scheduleRequestHandlerAfterCurrent(new JsonRequestHandler(json));
     }
+    
+    
 }

@@ -218,7 +218,7 @@ form {
 		rgba(99, 147, 193, 1) 100%); /* IE10+ */
 	background: linear-gradient(to bottom, rgba(207, 231, 250, 1) 0%,
 		rgba(99, 147, 193, 1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#cfe7fa',
+	filter: progid:DXImageTransform.Microsoft.gradient(    startColorstr='#cfe7fa',
 		endColorstr='#6393c1', GradientType=0); /* IE6-9 */
 }
 
@@ -260,7 +260,7 @@ form {
 		rgba(178, 217, 234, 1) 37%, rgba(121, 192, 216, 1) 100%); /* IE10+ */
 	background: linear-gradient(to bottom, rgba(208, 236, 244, 1) 0%,
 		rgba(178, 217, 234, 1) 37%, rgba(121, 192, 216, 1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#d0ecf4',
+	filter: progid:DXImageTransform.Microsoft.gradient(    startColorstr='#d0ecf4',
 		endColorstr='#79c0d8', GradientType=0); /* IE6-9 */
 }
 
@@ -281,7 +281,7 @@ form {
 		rgba(227, 234, 237, 1) 37%, rgba(200, 215, 220, 1) 100%); /* IE10+ */
 	background: linear-gradient(to bottom, rgba(242, 245, 246, 1) 0%,
 		rgba(227, 234, 237, 1) 37%, rgba(200, 215, 220, 1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#f2f5f6',
+	filter: progid:DXImageTransform.Microsoft.gradient(    startColorstr='#f2f5f6',
 		endColorstr='#c8d7dc', GradientType=0); /* IE6-9 */
 }
 
@@ -642,7 +642,7 @@ hr {
 	visibility: hidden;
 }
 
-/**/
+/* Voyage Information customization */
 tr.emptyRow input::-webkit-input-placeholder { /* WebKit browsers */
 	color: white;
 }
@@ -657,4 +657,13 @@ tr.emptyRow input::-moz-placeholder { /* Mozilla Firefox 19+ */
 
 tr.emptyRow input:-ms-input-placeholder { /* Internet Explorer 10+ */
 	color: white;
+}
+
+/*_Route Modal customization*/
+.form-horizontal .long-label .control-label {
+	width: 140px;
+}
+
+.form-horizontal .long-label .controls {
+	margin-left: 160px;
 }

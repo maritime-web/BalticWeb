@@ -152,34 +152,8 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
             @Override
             protected void populateItem(ListItem<Voyage> item) {
                 item.add(new HiddenField<String>("businessId"));
-                item.add(new TypeaheadTextField<String, BerthDatum>("berthName",
-                        new TypeaheadDataSource<BerthDatum>() {
-                            private static final long serialVersionUID = 565818402802493124L;
-
-                            @Override
-                            public List<BerthDatum> remoteFetch(String query) {
-                                logger.debug("remoteFetch({})", query);
-
-                                List<Berth> berths = geoService.findBerths(query);
-
-                                logger.debug("berths={}", berths);
-
-                                List<BerthDatum> transformed = Lists.transform(berths, new BerthTransformerFunction());
-                                return transformed;
-                            }
-
-                            @Override
-                            public List<BerthDatum> prefetch() {
-                                logger.debug("prefetch()");
-
-                                List<Berth> berths = geoService.findBerths("");
-
-                                logger.debug("berths={}", berths);
-
-                                List<BerthDatum> transformed = Lists.transform(berths, new BerthTransformerFunction());
-                                return transformed;
-                            }
-                        }));
+                item.add(new TypeaheadTextField<String, BerthDatum>("berthName", new BerthTypeaheadDataSource())
+                        .autoInitialize(false));
                 item.add(new LatitudeTextField("position.latitude"));
                 item.add(new LongitudeTextField("position.longitude"));
 
@@ -272,11 +246,11 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
     }
 
     public static final class BerthTransformerFunction implements Function<Berth, BerthDatum> {
-        private final String value(final Berth input) {
+        private String value(final Berth input) {
             return input.getName() + (input.getAlias() != null ? " (" + input.getAlias() + ")" : "");
         }
 
-        private final String[] tokens(final Berth input) {
+        private String[] tokens(final Berth input) {
             if (input.getAlias() != null) {
                 return new String[] { input.getName(), input.getAlias() };
             }
@@ -306,6 +280,34 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
 
         public String getLongitude() {
             return longitude;
+        }
+    }
+
+    public class BerthTypeaheadDataSource implements TypeaheadDataSource<BerthDatum> {
+        private static final long serialVersionUID = 565818402802493124L;
+
+        @Override
+        public List<BerthDatum> remoteFetch(String query) {
+            logger.debug("remoteFetch({})", query);
+
+            List<Berth> berths = geoService.findBerths(query);
+
+            logger.debug("berths={}", berths);
+
+            List<BerthDatum> transformed = Lists.transform(berths, new BerthTransformerFunction());
+            return transformed;
+        }
+
+        @Override
+        public List<BerthDatum> prefetch() {
+            logger.debug("prefetch()");
+
+            List<Berth> berths = geoService.findBerths("");
+
+            logger.debug("berths={}", berths);
+
+            List<BerthDatum> transformed = Lists.transform(berths, new BerthTransformerFunction());
+            return transformed;
         }
     }
 }

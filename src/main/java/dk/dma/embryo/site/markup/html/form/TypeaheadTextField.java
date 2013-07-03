@@ -44,6 +44,8 @@ public class TypeaheadTextField<T, D extends TypeaheadDatum> extends TextField<T
     
     private Model<String> urlModel = Model.of();
     
+    private boolean autoInitialize = true;
+    
     public TypeaheadTextField(String id, Class<T> type, TypeaheadDataSource<D> dataSource) {
         super(id, type);
         init(null, dataSource);
@@ -86,7 +88,7 @@ public class TypeaheadTextField<T, D extends TypeaheadDatum> extends TextField<T
         }
 
         if (typeahead == null) {
-            typeahead = new TypeaheadAjaxBehavior<D>(jQuerySelector, dataSource);
+            typeahead = new TypeaheadAjaxBehavior<D>(jQuerySelector, dataSource, autoInitialize);
             getForm().add(typeahead);
         }
 
@@ -107,6 +109,11 @@ public class TypeaheadTextField<T, D extends TypeaheadDatum> extends TextField<T
         // Use typeahead-textfield
         add(new AttributeAppender("class", " typeahead-textfield"));
         add(AttributeModifier.replace("data-json", urlModel));
+    }
+    
+    public TypeaheadTextField<T, D> autoInitialize(boolean auto){
+        this.autoInitialize = auto;
+        return this;
     }
 
 }
