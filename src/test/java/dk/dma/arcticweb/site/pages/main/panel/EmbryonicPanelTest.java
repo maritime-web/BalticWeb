@@ -31,7 +31,7 @@ import dk.dma.embryo.site.panel.EmbryonicPanel;
  * http://stackoverflow.com/questions
  * /16770518/unit-test-with-wickettester-and-cdi-unit-works-in-eclipse-but-fails-during-maven
  * 
- * @author jesper
+ * @author Jesper Tejlgaard
  * 
  */
 

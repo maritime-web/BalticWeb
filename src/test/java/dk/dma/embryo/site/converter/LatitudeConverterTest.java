@@ -23,7 +23,7 @@ import org.junit.Test;
  * Clas for testing LatitudeConverter. Tests are not at all performed detailed as LatitudeConverter is merely delegating
  * Converter tasks to other classes.
  * 
- * @author jesper
+ * @author Jesper Tejlgaard
  * 
  */
 public class LatitudeConverterTest {

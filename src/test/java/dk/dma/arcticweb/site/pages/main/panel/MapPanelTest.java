@@ -27,7 +27,7 @@ import dk.dma.arcticweb.site.TestPanel;
  * 
  * Question posted in CDI-Unit google group, but was deleted by the product owner
  * 
- * @author jesper
+ * @author Jesper Tejlgaard
  * 
  */
 public class MapPanelTest extends CdiUnitTestBase {

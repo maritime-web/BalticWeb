@@ -23,7 +23,7 @@ import com.google.gson.Gson;
  * Dependency on google-gson library which is available at http://code.google.com/p/google-gson/ and which must be on
  * your classpath when using this library.
  * 
- * @author jesper
+ * @author Jesper Tejlgaard
  */
 public class JsonResult {
 

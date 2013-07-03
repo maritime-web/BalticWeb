@@ -36,7 +36,7 @@ import dk.dma.embryo.security.authorization.Permission;
  * Subject class wrapping all access to shiro security and also decorating with extra syntactic sugar.
  * 
  * 
- * @author jesper
+ * @author Jesper Tejlgaard
  * 
  */
 @SessionScoped
