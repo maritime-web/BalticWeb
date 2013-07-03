@@ -45,12 +45,12 @@ public class MenuItem extends MarkupContainer implements PermissionContainer{
         add(link);
     }
 
-    public MenuItem(String id, ReachedFromMenu form) {
-        this(id, form.getTitle());
-        link.add(new AttributeModifier("href", "#" + form.getBookmark()));
+    public MenuItem(String id, ReachedFromMenu modal) {
+        this(id, modal.getTitle());
+        link.add(new AttributeModifier("href", "#" + modal.getBookmark()));
         link.add(new AttributeModifier("role", "button"));
         link.add(new AttributeModifier("data-toggle", "modal"));
-        permissions = permissionExtractor.getPermissions(form);
+        permissions = permissionExtractor.getPermissions(modal);
     }
 
     public MenuItem(String id, String title, JSExecutor executor) {

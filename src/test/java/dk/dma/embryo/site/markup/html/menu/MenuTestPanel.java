@@ -18,7 +18,6 @@ package dk.dma.embryo.site.markup.html.menu;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 
-import dk.dma.embryo.site.markup.html.menu.ReachedFromMenu;
 import dk.dma.embryo.site.panel.EmbryonicPanel;
 
 @SuppressWarnings("serial")

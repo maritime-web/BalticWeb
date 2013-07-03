@@ -20,8 +20,6 @@ import org.junit.Test;
 
 import dk.dma.arcticweb.site.CdiUnitTestBase;
 import dk.dma.embryo.security.PermissionExtractor;
-import dk.dma.embryo.site.markup.html.menu.MenuHeader;
-import dk.dma.embryo.site.markup.html.menu.MenuPanel;
 import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
 
 @AdditionalClasses({PermissionExtractor.class})
