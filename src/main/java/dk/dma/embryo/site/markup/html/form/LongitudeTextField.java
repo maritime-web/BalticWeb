@@ -20,7 +20,10 @@ import org.apache.wicket.util.convert.IConverter;
 
 import dk.dma.embryo.site.converter.LongitudeConverter;
 
-
+/**
+ * 
+ * @author Jesper Tejlgaard
+ */
 public class LongitudeTextField extends TextField<Double> {
 
     private static final long serialVersionUID = 1938956927163519213L;

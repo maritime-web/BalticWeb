@@ -28,6 +28,10 @@ import org.joda.time.LocalDateTime;
 import dk.dma.embryo.site.converter.DateConverter;
 import dk.dma.embryo.site.converter.StyleDateConverter;
 
+/**
+ * 
+ * @author Jesper Tejlgaard
+ */
 public class DateTimeTextField extends TextField<LocalDateTime> implements ITextFormatProvider {
 
     private static final long serialVersionUID = 1L;

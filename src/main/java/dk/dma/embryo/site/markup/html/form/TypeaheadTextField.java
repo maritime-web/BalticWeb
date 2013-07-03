@@ -27,6 +27,13 @@ import dk.dma.embryo.site.behavior.TypeaheadAjaxBehavior;
 import dk.dma.embryo.site.behavior.TypeaheadDataSource;
 import dk.dma.embryo.site.behavior.TypeaheadDatum;
 
+/**
+ * 
+ * @author Jesper Tejlgaard
+ *
+ * @param <T>
+ * @param <D>
+ */
 public class TypeaheadTextField<T, D extends TypeaheadDatum> extends TextField<T> {
 
     private static final long serialVersionUID = 1938956927163519213L;
