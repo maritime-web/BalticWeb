@@ -30,7 +30,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.pages.MainPage;
-import dk.dma.embryo.domain.ShipReport2;
+import dk.dma.embryo.domain.ShipReport;
 import dk.dma.embryo.site.panel.EmbryonicForm;
 
 public class ShipReportForm extends EmbryonicForm<ShipReportForm> {
@@ -46,7 +46,7 @@ public class ShipReportForm extends EmbryonicForm<ShipReportForm> {
     private FeedbackPanel feedback;
     private AjaxSubmitLink saveLink;
 
-    private ShipReport2 shipReport;
+    private ShipReport shipReport;
     
     @Inject
     private ShipService shipService;
@@ -55,9 +55,9 @@ public class ShipReportForm extends EmbryonicForm<ShipReportForm> {
         super(id, "Ship Report");
 //        final Ship ship = (Ship) ArcticWebSession.get().getStakeholder();
 
-        shipReport = new ShipReport2();
+        shipReport = new ShipReport();
         shipReport.setReportTime(new Date());
-        setDefaultModel(new CompoundPropertyModel<ShipReport2>(shipReport));
+        setDefaultModel(new CompoundPropertyModel<ShipReport>(shipReport));
 
         lat = new TextField<>("lat");
         lat.setRequired(true);

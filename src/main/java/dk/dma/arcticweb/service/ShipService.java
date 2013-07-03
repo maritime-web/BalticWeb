@@ -19,7 +19,7 @@ import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.ShipReport2;
+import dk.dma.embryo.domain.ShipReport;
 import dk.dma.embryo.domain.VoyageInformation2;
 
 @Local
@@ -39,7 +39,7 @@ public interface ShipService {
      * @param ship
      * @param shipReport
      */
-    void reportForCurrentShip(ShipReport2 shipReport);
+    void reportForCurrentShip(ShipReport shipReport);
 
     /**
      * Save voyage information

@@ -32,7 +32,7 @@ import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.ShipReport2;
+import dk.dma.embryo.domain.ShipReport;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyageInformation2;
 import dk.dma.embryo.security.Subject;
@@ -58,7 +58,7 @@ public class ShipServiceImpl implements ShipService {
     // TODO implement Security Interceptor for EJB methods
     @Override
     @YourShip
-    public void reportForCurrentShip(ShipReport2 shipReport) {
+    public void reportForCurrentShip(ShipReport shipReport) {
         Ship2 ship = subject.getRole(Sailor.class).getShip();
 
         // TODO Should report time be modified

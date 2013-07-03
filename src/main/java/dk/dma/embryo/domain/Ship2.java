@@ -72,7 +72,7 @@ public class Ship2 extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "ship", fetch = FetchType.LAZY)
     @OrderBy("reportTime")
-    private List<ShipReport2> reports;
+    private List<ShipReport> reports;
 
     @OneToOne(mappedBy = "ship", cascade = { CascadeType.ALL })
     private VoyageInformation2 voyageInformation;
@@ -207,7 +207,7 @@ public class Ship2 extends BaseEntity<Long> {
         this.helipad = helipad;
     }
 
-    public List<ShipReport2> getReports() {
+    public List<ShipReport> getReports() {
         return reports;
     }
 

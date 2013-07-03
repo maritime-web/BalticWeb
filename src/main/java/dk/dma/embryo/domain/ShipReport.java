@@ -24,7 +24,7 @@ import javax.persistence.ManyToOne;
 
 
 @Entity
-public class ShipReport2 extends BaseEntity<Long> {
+public class ShipReport extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 1L;
 
@@ -49,7 +49,7 @@ public class ShipReport2 extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Ship2 ship;
 
-    public ShipReport2() {
+    public ShipReport() {
     }
 
     public Double getLat() {
