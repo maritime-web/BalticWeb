@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ShipDao;
+import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport;
@@ -42,6 +43,7 @@ import dk.dma.embryo.security.authorization.YourShip;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ShipServiceImpl implements ShipService {
 
+    @Inject
     private ShipDao shipRepository;
 
     @Inject
@@ -50,7 +52,9 @@ public class ShipServiceImpl implements ShipService {
     @Inject
     private Subject subject;
 
-    @Inject
+    public ShipServiceImpl() {
+    }
+
     public ShipServiceImpl(ShipDao shipRepository) {
         this.shipRepository = shipRepository;
     }
@@ -131,4 +135,14 @@ public class ShipServiceImpl implements ShipService {
         return voyageInfo;
     }
 
+    @Override
+    public void saveRoute(Route route) {
+        
+        shipRepository.saveEntity(route);
+    }
+
+    @Override
+    public Route getActiveRoute(Long mmsi) {
+        return shipRepository.getActiveRoute(mmsi);
+    }
 }

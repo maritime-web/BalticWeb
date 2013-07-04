@@ -16,7 +16,6 @@
 package dk.dma.arcticweb.dao;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -28,7 +27,10 @@ import dk.dma.embryo.domain.SecuredUser;
 @Stateless
 public class RealmDaoImpl extends DaoImpl implements RealmDao {
 
-    @Inject
+    public RealmDaoImpl() {
+        super();
+    }
+
     public RealmDaoImpl(EntityManager entityManager) {
         super(entityManager);
     }

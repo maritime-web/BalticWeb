@@ -15,6 +15,8 @@
  */
 package dk.dma.arcticweb.site.pages.test;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -33,6 +35,7 @@ import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.arcticweb.dao.UserDao;
 import dk.dma.embryo.domain.AuthorityRole;
 import dk.dma.embryo.domain.Berth;
+import dk.dma.embryo.domain.IEntity;
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Sailor;
@@ -66,25 +69,29 @@ public class TestPage extends WebPage {
     public TestPage() {
         init2();
     }
+    
+    public <E extends IEntity<K>, K> void deleteAll(Class<E> type){
+        List<E> entities = shipDao.getAll(type);
+        for(E entity : entities){
+            shipDao.remove(entity);
+        }
+    }
 
     public void init2() {
 
         try {
             logger.info("Deleting existing entries");
-            tx.begin();
-            em.createQuery("DELETE Berth b").executeUpdate();
-            em.createQuery("DELETE Voyage v").executeUpdate();
-            em.createQuery("DELETE VoyageInformation2 v").executeUpdate();
-            em.createQuery("DELETE Ship2 s where s.name = 'ORASILA'").executeUpdate();
-            em.createQuery("DELETE SecuredUser u where u.userName = 'ora' or u.userName='dma'").executeUpdate();
-            em.createQuery(
-                    "DELETE Role r where r.logicalName = 'sailor' or r.logicalName='authority' or r.logicalName IS NULL")
-                    .executeUpdate();
-            em.createQuery("DELETE Permission p where p.logicalName = 'ais' or p.logicalName='yourShip'")
-                    .executeUpdate();
-            tx.commit();
-        } catch (NotSupportedException | SystemException | SecurityException | IllegalStateException
-                | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
+            
+            deleteAll(Berth.class);
+            deleteAll(Voyage.class);
+            deleteAll(VoyageInformation2.class);
+            deleteAll(Role.class);
+            deleteAll(Ship2.class);
+            deleteAll(SecuredUser.class);
+            deleteAll(Permission.class);
+            
+        } catch (SecurityException | IllegalStateException
+                 e) {
             // TODO Auto-generated catch block
             logger.error("Error deleting existing entries", e);
             throw new RuntimeException(e);

@@ -15,19 +15,28 @@
  */
 package dk.dma.embryo.site.markup.html.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.wicket.Component;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
-public class Modal<M extends Modal> extends Panel {
+public class Modal<M extends Modal<M>> extends Panel {
+
+    public static final String FOOTER_BUTTON = "button";
 
     private static final long serialVersionUID = 8742628521947906862L;
 
     protected WebMarkupContainer modalContainer;
-    private WebMarkupContainer footer;
     private Label titleLabel;
+
+    private final List<Component> buttons = new ArrayList<>(5);
 
     public Modal(String id) {
         super(id);
@@ -37,8 +46,17 @@ public class Modal<M extends Modal> extends Panel {
         // TODO somehow configure close button (cross)
         modalContainer.add(this.titleLabel = new Label("title"));
 
-        modalContainer.add(footer = new WebMarkupContainer("footer"));
+        WebMarkupContainer footer = new WebMarkupContainer("footer");
+        modalContainer.add(footer );
 
+        footer.add(new ListView<Component>("buttons", buttons) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void populateItem(ListItem<Component> item) {
+                item.add(item.getModelObject());
+            }
+        }.setOutputMarkupId(true));
     }
 
     /**
@@ -60,14 +78,10 @@ public class Modal<M extends Modal> extends Panel {
      */
     public M title(String modalTitle) {
         titleLabel.setDefaultModel(Model.of(modalTitle));
-        return (M)this;
+        return (M) this;
     }
 
-    protected WebMarkupContainer getFooter() {
-        return footer;
-    }
-    
-    public String getTitle(){
+    public String getTitle() {
         return titleLabel.getDefaultModelObjectAsString();
     }
 
@@ -84,5 +98,21 @@ public class Modal<M extends Modal> extends Panel {
         }
 
         String cssClass;
+    }
+
+    /**
+     * adds a button to footer section.
+     * 
+     * @param button
+     *            Button to add to footer
+     * @return this instance.
+     */
+    public Modal<M> addFooterButton(final Component button) {
+        if (!FOOTER_BUTTON.equals(button.getId())) {
+            throw new IllegalArgumentException(String.format("Invalid button markup id. Must be '%s'.", FOOTER_BUTTON));
+        }
+
+        buttons.add(button);
+        return this;
     }
 }

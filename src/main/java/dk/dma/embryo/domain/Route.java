@@ -16,15 +16,18 @@
 package dk.dma.embryo.domain;
 
 import java.util.List;
-import java.util.UUID;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 import org.joda.time.LocalDateTime;
 
 @Entity
+@NamedQueries({@NamedQuery(name="Route:getByMmsi", query="SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.ship.mmsi = :mmsi")})
 public class Route extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -32,20 +35,24 @@ public class Route extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-    private String businessId;
-    
     private String name;
     
     private String destination;
 
     private String origin;
+
+    transient private String voyageName;
     
     private LocalDateTime etaOfArrival;
 
     private LocalDateTime etaOfDeparture;
 
-    @OneToMany(mappedBy="route")
+    @ElementCollection
+    @CollectionTable(name="WayPoint")
     private List<WayPoint> wayPoints;
+    
+    @OneToOne
+    private Ship2 ship;
     
     @OneToOne
     Voyage voyage;
@@ -57,31 +64,82 @@ public class Route extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-
+    public void addWayPoint(WayPoint wPoint){
+        wayPoints.add(wPoint);
+    }
+    
+    
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Route(String key) {
-        this.businessId = key;
-    }
-
     public Route() {
-        this(UUID.randomUUID().toString());
     }
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
 
-    public String getBusinessId() {        
-        return businessId;
+    public String getName() {
+        return name;
     }
 
-    public void setBusinessId(String key) {
-        // hack such that wicket does not overwrite generated key with empty value
-        if(key == null || key.length() == 0){
-            return;
-        }
-        this.businessId = key;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public String getVoyageName() {
+        return voyageName;
+    }
+
+    public void setVoyageName(String voyageName) {
+        this.voyageName = voyageName;
+    }
+
+    public LocalDateTime getEtaOfArrival() {
+        return etaOfArrival;
+    }
+
+    public void setEtaOfArrival(LocalDateTime etaOfArrival) {
+        this.etaOfArrival = etaOfArrival;
+    }
+
+    public LocalDateTime getEtaOfDeparture() {
+        return etaOfDeparture;
+    }
+
+    public void setEtaOfDeparture(LocalDateTime etaOfDeparture) {
+        this.etaOfDeparture = etaOfDeparture;
+    }
+
+    public List<WayPoint> getWayPoints() {
+        return wayPoints;
+    }
+
+    public Ship2 getShip() {
+        return ship;
+    }
+
+    public void setShip(Ship2 ship){
+        this.ship = ship;
+    }
+    
+    public Voyage getVoyage() {
+        return voyage;
     }
 }

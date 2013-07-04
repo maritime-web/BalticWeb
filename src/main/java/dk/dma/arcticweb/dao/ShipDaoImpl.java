@@ -18,10 +18,10 @@ package dk.dma.arcticweb.dao;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.VoyageInformation2;
@@ -29,7 +29,10 @@ import dk.dma.embryo.domain.VoyageInformation2;
 @Stateless
 public class ShipDaoImpl extends DaoImpl implements ShipDao {
 
-    @Inject
+    public ShipDaoImpl() {
+        super();
+    }
+
     public ShipDaoImpl(EntityManager entityManager) {
         super(entityManager);
     }
@@ -48,6 +51,17 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
         query.setParameter("mmsi", mmsi);
         
         List<VoyageInformation2> result = query.getResultList();
+        
+        return getSingleOrNull(result);
+    }
+
+
+    @Override
+    public Route getActiveRoute(Long mmsi) {
+        TypedQuery<Route> query = em.createNamedQuery("Route:getByMmsi", Route.class);
+        query.setParameter("mmsi", mmsi);
+        
+        List<Route> result = query.getResultList();
         
         return getSingleOrNull(result);
     }

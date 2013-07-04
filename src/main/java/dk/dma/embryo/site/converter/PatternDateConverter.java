@@ -18,10 +18,11 @@ package dk.dma.embryo.site.converter;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class PatternDateConverter extends DateConverter {
+public class PatternDateConverter extends BaseJodaConverter<LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
 
@@ -62,4 +63,8 @@ public class PatternDateConverter extends DateConverter {
         return DateTimeFormat.forPattern(datePattern).withLocale(locale).withPivotYear(2000);
     }
 
+    @Override
+    protected LocalDateTime parse(DateTimeFormatter format, String value) {
+        return format.parseLocalDateTime(value);
+    }
 }

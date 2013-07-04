@@ -7,7 +7,7 @@
 			</wicket:enclosure>
 
 			<div class="row-fluid">
-				<div class="span12">
+				<div class="span5">
 					<div class="control-group">
 						<label class="control-label" for="name">Name</label>
 						<div class="controls">
@@ -15,6 +15,15 @@
 						</div>
 					</div>
 				</div>
+				<div class="span7">
+					<div class="control-group">
+						<label class="control-label" for="voyageName">Associated voyage</label>
+						<div class="controls">
+							<input wicket:id="voyage.id" type="hidden" id="voyageId" /> <input wicket:id="voyageName" type="text"
+								id="voyageName" class="input-large" />
+						</div>
+					</div>
+				</div>	
 			</div>
 			<div class="row-fluid">
 				<div class="span5">
@@ -68,22 +77,23 @@
 						<th>Berth</th>
 						<th>Latitude</th>
 						<th>Longitude</th>
-						<th>Arrival</th>
-						<th>Departure</th>
-						<th></th>
+						<th>Rad</th>
+						<th>Rot</th>
+						<th>TTG</th>
+						<th>ETA</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr wicket:id="routes">
-						<!-- 	<td><input wicket:id="routeId" class="input-medium" type="text" /></td>
-											<input type="hidden"
-						wicket:id="businessId" /><td><input wicket:id="position.latitude" type="text" class="input-small lat" /></td>
-					<td><input wicket:id="position.longitude" type="text" class="input-small lon" /></td>
-					<td><input wicket:id="arrival" type="text" class="arrival input-medium" placeholder="MM/dd/yyyy" /></td>
-					<td><input wicket:id="departure" type="text" class="input-medium" placeholder="MM/dd/yyyy" /></td>
-					<td><input wicket:id="personsOnBoard" type="text" class="input-small" /></td>
-					<td><input wicket:id="doctorOnBoard" type="checkbox" /></td>
-					<td><button type="submit" class="btn btn-danger">Delete</button></td> -->
+					<tr wicket:id="wayPoints">
+						<td><input wicket:id="routeId" class="input-medium" type="text" /> <input type="hidden"
+							wicket:id="businessId" /></td>
+						<td><input wicket:id="position.latitude" type="text" class="input-small lat" /></td>
+						<td><input wicket:id="position.longitude" type="text" class="input-small lon" /></td>
+						<td><input wicket:id="arrival" type="text" class="arrival input-medium" placeholder="MM/dd/yyyy" /></td>
+						<td><input wicket:id="departure" type="text" class="input-medium" placeholder="MM/dd/yyyy" /></td>
+						<td><input wicket:id="personsOnBoard" type="text" class="input-small" /></td>
+						<td><input wicket:id="doctorOnBoard" type="checkbox" /></td>
+						<td><button type="submit" class="btn btn-danger">Delete</button></td>
 					</tr>
 				</tbody>
 			</table>
