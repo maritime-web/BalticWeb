@@ -29,9 +29,12 @@ import dk.dma.embryo.domain.Berth;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class GeographicServiceImpl implements GeographicService {
 
+    @Inject
     private GeographicDao geoDao;
 
-    @Inject
+    public GeographicServiceImpl() {
+    }
+    
     public GeographicServiceImpl(GeographicDao geoDao) {
         this.geoDao = geoDao;
     }

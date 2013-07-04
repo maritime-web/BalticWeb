@@ -418,7 +418,7 @@
 
 	<profiles>
 		<profile>
-			<id>developer</id>
+			<id>fulldeploy</id>
 			<build>
 				<plugins>
 					<plugin>
@@ -431,19 +431,6 @@
 								<phase>install</phase>
 								<goals>
 									<goal>undeploy</goal>
-								</goals>
-							</execution>
-							<!-- Deploy the JDBC library -->
-							<execution>
-								<id>deploy-driver</id>
-								<phase>install</phase>
-								<configuration>
-									<groupId>mysql</groupId>
-									<artifactId>mysql-connector-java</artifactId>
-									<name>mysql-connector-java-5.1.21.jar</name>
-								</configuration>
-								<goals>
-									<goal>deploy-artifact</goal>
 								</goals>
 							</execution>
 							<execution>
@@ -459,7 +446,7 @@
 										<properties>
 											<jndi-name>java:jboss/datasources/embryoDS</jndi-name>
 											<connection-url>jdbc:mysql://localhost:3306/embryo</connection-url>
-											<driver-name>mysql-connector-java-5.1.21.jar</driver-name>
+											<driver-name>mysql</driver-name>
 											<user-name>embryo</user-name>
 											<password>embryo</password>
 											<pool-name>mypool</pool-name>

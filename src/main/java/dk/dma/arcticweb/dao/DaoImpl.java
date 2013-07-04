@@ -17,19 +17,21 @@ package dk.dma.arcticweb.dao;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import dk.dma.embryo.domain.IEntity;
 
-public class DaoImpl implements Dao {
+public abstract class DaoImpl implements Dao {
 
-    @PersistenceContext(name = "arcticweb")
+    @Inject
     protected EntityManager em;
+
+    protected DaoImpl() {
+    }
 
     protected DaoImpl(EntityManager entityManager) {
         this.em = entityManager;
@@ -68,7 +70,7 @@ public class DaoImpl implements Dao {
     public <E extends IEntity<?>> List<E> getAll(Class<E> entityType) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> cq = cb.createQuery(entityType);
-        Root<E> from = cq.from(entityType);
+        cq.from(entityType);
         return em.createQuery(cq).getResultList();
     }
 }

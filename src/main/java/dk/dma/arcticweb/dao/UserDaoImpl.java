@@ -16,7 +16,6 @@
 package dk.dma.arcticweb.dao;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -25,7 +24,10 @@ import dk.dma.embryo.domain.User;
 @Stateless
 public class UserDaoImpl extends DaoImpl implements UserDao {
 
-    @Inject
+    public UserDaoImpl() {
+        super();
+    }
+
     public UserDaoImpl(EntityManager entityManager) {
         super(entityManager);
     }

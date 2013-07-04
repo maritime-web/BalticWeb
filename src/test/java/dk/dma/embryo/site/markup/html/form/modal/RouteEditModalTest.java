@@ -20,9 +20,12 @@ import javax.enterprise.inject.Produces;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import dk.dma.arcticweb.service.GeographicService;
+import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.CdiUnitTestBase;
+import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.site.markup.html.dialog.Modal;
 
 public class RouteEditModalTest extends CdiUnitTestBase{
@@ -31,9 +34,23 @@ public class RouteEditModalTest extends CdiUnitTestBase{
     @Mock
     GeographicService geoService;
     
+    @Produces
+    @Mock
+    ShipService shipService;
+
     @Test
-    public void test() {
-        
+    public void construction() {
+        // ///////////////////////////////////////////////////
+        // Setup test data
+        // ///////////////////////////////////////////////////
+        Ship2 ship = new Ship2(10L);
+
+        // ///////////////////////////////////////////////////
+        // Setup ShipService stub to return test data
+        // ///////////////////////////////////////////////////
+        Mockito.when(shipService.getYourShip()).thenReturn(ship);
+        Mockito.when(shipService.getVoyageInformation(ship.getMmsi())).thenReturn(null);
+
         RouteEditModal modal = new RouteEditModal("someId").title("My title").size(Modal.SIZE.XLARGE);
         
         getTester().startComponentInPage(modal);

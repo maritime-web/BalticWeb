@@ -15,11 +15,12 @@
  */
 package dk.dma.embryo.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
-@Entity
-public class WayPoint extends BaseEntity<Long> {
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class WayPoint implements Serializable {
 
     private static final long serialVersionUID = -7205030526506222850L;
 
@@ -29,10 +30,9 @@ public class WayPoint extends BaseEntity<Long> {
     
     private String name;
     
-    private Position position;
+//    private Position position;
     
-    @ManyToOne
-    Route route;
+    private Double turnRadius;
     
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -46,21 +46,33 @@ public class WayPoint extends BaseEntity<Long> {
     // Constructors
     // //////////////////////////////////////////////////////////////////////
     public WayPoint() {
-        position = new Position();
+//        position = new Position();
     }
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-
-
-    public Position getPosition() {
-        return position;
-    }
-    
-    public void setPosition(Position position){
-        this.position = position;
+    public String getName() {
+        return name;
     }
 
-    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+//    public Position getPosition() {
+//        return position;
+//    }
+//    
+//    public void setPosition(Position position){
+//        this.position = position;
+//    }
+
+    public Double getTurnRadius() {
+        return turnRadius;
+    }
+
+    public void setTurnRadius(Double turnRadius) {
+        this.turnRadius = turnRadius;
+    }
 }

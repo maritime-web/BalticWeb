@@ -17,6 +17,7 @@ package dk.dma.embryo.site.converter;
 
 import java.util.Locale;
 
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -73,5 +74,10 @@ public class StyleDateConverter extends DateConverter {
     @Override
     protected DateTimeFormatter getFormat(Locale locale) {
         return DateTimeFormat.forPattern(getDatePattern(locale)).withLocale(locale).withPivotYear(2000);
+    }
+
+    @Override
+    protected LocalDateTime parse(DateTimeFormatter format, String value) {
+        return format.parseLocalDateTime(value);
     }
 }

@@ -1146,3 +1146,21 @@ embryo.typeahead.create = function(selector) {
 	});
 
 };
+
+embryo.routeModal = {};
+embryo.routeModal.prepareRequest = function(containerSelector) {
+	var $modalBody = $(containerSelector);
+	var $rows = $modalBody.find('tbody tr');
+	$modalBody.find('input[name="routeCount"]').val($rows.length);
+
+	var regex = new RegExp('\\d+', 'g');
+	$rows.each(function(index, row) {
+		$(row).find('input[name]').each(function(indeks, input) {
+			var nameAttr = $(input).attr("name");
+			var result = nameAttr.replace(regex, "" + index);
+			$(input).attr("name", result);
+		});
+	});
+
+	return false;
+};

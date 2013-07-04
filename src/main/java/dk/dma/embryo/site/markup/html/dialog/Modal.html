@@ -9,8 +9,10 @@
 		<div class="modal-body">
 			<wicket:child />
 		</div>
-		<div class="modal-footer">
-			<div wicket:id="footer"></div>
+		<div class="modal-footer" wicket:id="footer">
+			<wicket:fragment wicket:id="buttons">
+				<button wicket:id="button">save</button>
+			</wicket:fragment>
 		</div>
 	</div>
 </wicket:panel>

@@ -17,6 +17,7 @@ package dk.dma.arcticweb.service;
 
 import javax.ejb.Local;
 
+import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport;
@@ -50,5 +51,9 @@ public interface ShipService {
     void saveVoyageInformation(VoyageInformation2 voyageInformation);
     
     VoyageInformation2 getVoyageInformation(Long mmsi);
+    
+    void saveRoute(Route route);
+    
+    Route getActiveRoute(Long mmsi);
 
 }

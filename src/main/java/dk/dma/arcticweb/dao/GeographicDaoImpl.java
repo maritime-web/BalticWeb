@@ -18,7 +18,6 @@ package dk.dma.arcticweb.dao;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -27,7 +26,10 @@ import dk.dma.embryo.domain.Berth;
 @Stateless
 public class GeographicDaoImpl extends DaoImpl implements GeographicDao {
 
-    @Inject
+    public GeographicDaoImpl() {
+        super();
+    }
+
     public GeographicDaoImpl(EntityManager entityManager) {
         super(entityManager);
     }
