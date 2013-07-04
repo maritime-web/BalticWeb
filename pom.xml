@@ -462,6 +462,9 @@
 								<goals>
 									<goal>deploy</goal>
 								</goals>
+								<configuration>
+									<skipTests>true</skipTests>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
