@@ -27,7 +27,7 @@ import javax.persistence.OneToOne;
 import org.joda.time.LocalDateTime;
 
 @Entity
-@NamedQueries({@NamedQuery(name="Route:getByMmsi", query="SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.ship.mmsi = :mmsi")})
+@NamedQueries({ @NamedQuery(name = "Route:getByMmsi", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.ship.mmsi = :mmsi") })
 public class Route extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -36,27 +36,27 @@ public class Route extends BaseEntity<Long> {
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     private String name;
-    
+
     private String destination;
 
     private String origin;
 
-    transient private String voyageName;
-    
+    private transient String voyageName;
+
     private LocalDateTime etaOfArrival;
 
     private LocalDateTime etaOfDeparture;
 
     @ElementCollection
-    @CollectionTable(name="WayPoint")
+    @CollectionTable(name = "WayPoint")
     private List<WayPoint> wayPoints;
-    
+
     @OneToOne
     private Ship2 ship;
-    
+
     @OneToOne
     Voyage voyage;
-    
+
     // //////////////////////////////////////////////////////////////////////
     // business logic
     // //////////////////////////////////////////////////////////////////////
@@ -64,11 +64,10 @@ public class Route extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public void addWayPoint(WayPoint wPoint){
+    public void addWayPoint(WayPoint wPoint) {
         wayPoints.add(wPoint);
     }
-    
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
@@ -135,10 +134,10 @@ public class Route extends BaseEntity<Long> {
         return ship;
     }
 
-    public void setShip(Ship2 ship){
+    public void setShip(Ship2 ship) {
         this.ship = ship;
     }
-    
+
     public Voyage getVoyage() {
         return voyage;
     }
