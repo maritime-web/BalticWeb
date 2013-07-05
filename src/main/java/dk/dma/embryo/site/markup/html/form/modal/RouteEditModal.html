@@ -74,7 +74,7 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<th>Berth</th>
+						<th>Name</th>
 						<th>Latitude</th>
 						<th>Longitude</th>
 						<th>Rad</th>
@@ -85,15 +85,13 @@
 				</thead>
 				<tbody>
 					<tr wicket:id="wayPoints">
-						<td><input wicket:id="routeId" class="input-medium" type="text" /> <input type="hidden"
-							wicket:id="businessId" /></td>
+						<td><input wicket:id="name" class="input-medium" type="text" /></td>
 						<td><input wicket:id="position.latitude" type="text" class="input-small lat" /></td>
 						<td><input wicket:id="position.longitude" type="text" class="input-small lon" /></td>
-						<td><input wicket:id="arrival" type="text" class="arrival input-medium" placeholder="MM/dd/yyyy" /></td>
-						<td><input wicket:id="departure" type="text" class="input-medium" placeholder="MM/dd/yyyy" /></td>
-						<td><input wicket:id="personsOnBoard" type="text" class="input-small" /></td>
-						<td><input wicket:id="doctorOnBoard" type="checkbox" /></td>
-						<td><button type="submit" class="btn btn-danger">Delete</button></td>
+						<td><input wicket:id="turnRadius" type="text" class="input-small" /></td>
+						<td><input type="text" class="input-small" /></td>
+						<td><input type="text" class="input-small" /></td>
+						<td><input type="text" class="input-small" /></td>
 					</tr>
 				</tbody>
 			</table>

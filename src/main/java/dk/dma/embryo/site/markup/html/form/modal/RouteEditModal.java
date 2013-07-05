@@ -29,7 +29,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -43,13 +42,15 @@ import dk.dma.arcticweb.site.pages.MainPage;
 import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.Voyage;
+import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.embryo.site.behavior.TypeaheadDataSource;
 import dk.dma.embryo.site.behavior.TypeaheadDatum;
 import dk.dma.embryo.site.converter.StyleDateConverter;
 import dk.dma.embryo.site.markup.html.dialog.Modal;
 import dk.dma.embryo.site.markup.html.form.DateTimeTextField;
+import dk.dma.embryo.site.markup.html.form.DynamicListView;
+import dk.dma.embryo.site.markup.html.form.PropertyDynamicListView;
 import dk.dma.embryo.site.markup.html.form.TypeaheadTextField;
 import dk.dma.embryo.site.markup.html.menu.ReachedFromMenu;
 
@@ -107,15 +108,18 @@ public class RouteEditModal extends Modal<RouteEditModal> implements ReachedFrom
         form.add(DateTimeTextField.forDateStyle("etaOfDeparture", true, StyleDateConverter.DEFAULT_DATE_TIME));
         form.add(DateTimeTextField.forDateStyle("etaOfArrival", true, StyleDateConverter.DEFAULT_DATE_TIME));
 
-        PropertyListView lv = new PropertyListView<Voyage>("wayPoints") {
+        final DynamicListView<WayPoint> lv = new PropertyDynamicListView<WayPoint>("wayPoints") {
             private static final long serialVersionUID = 1L;
 
             @Override
-            protected void populateItem(ListItem<Voyage> item) {
+            protected void populateItem(ListItem<WayPoint> item) {
+                item.add(new TextField<>("name"));
+                item.add(new TextField<>("position.latitude"));
+                item.add(new TextField<>("position.longitude"));
+                item.add(new TextField<>("turnRadius"));
             }
-        };
-        lv.setOutputMarkupId(true);
-        lv.setReuseItems(true);
+            
+        }.setInstanceType(WayPoint.class).setAutoExpand(false);
 
         form.add(lv);
 
@@ -127,7 +131,7 @@ public class RouteEditModal extends Modal<RouteEditModal> implements ReachedFrom
             protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
                 // TODO try to remove this method and move logic into dynamic list component
                 AjaxCallListener listener = new AjaxCallListener();
-                listener.onBefore("embryo.routeModal.prepareRequest('#" + form.getMarkupId() + "')");
+                listener.onBefore("embryo.dynamicListView.prepareRequest('#" + lv.getMarkupId() + "')");
                 attributes.getAjaxCallListeners().add(listener);
             }
 
@@ -140,7 +144,6 @@ public class RouteEditModal extends Modal<RouteEditModal> implements ReachedFrom
 
                 // Hack to make it work (mmsi search needs mmsi number)
                 route.setShip(shipService.getYourShip());
-                
                 
                 shipService.saveRoute(route);
                 feedback.setVisible(false);

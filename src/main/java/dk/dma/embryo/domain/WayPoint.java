@@ -27,13 +27,13 @@ public class WayPoint implements Serializable {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-    
+
     private String name;
-    
-//    private Position position;
-    
+
+    private Position position;
+
     private Double turnRadius;
-    
+
     // //////////////////////////////////////////////////////////////////////
     // business logic
     // //////////////////////////////////////////////////////////////////////
@@ -46,7 +46,15 @@ public class WayPoint implements Serializable {
     // Constructors
     // //////////////////////////////////////////////////////////////////////
     public WayPoint() {
-//        position = new Position();
+        position = new Position();
+    }
+    
+    // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return "WayPoint [name=" + name + ", position=" + position + ", turnRadius=" + turnRadius + "]";
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -60,13 +68,9 @@ public class WayPoint implements Serializable {
         this.name = name;
     }
 
-//    public Position getPosition() {
-//        return position;
-//    }
-//    
-//    public void setPosition(Position position){
-//        this.position = position;
-//    }
+    public Position getPosition() {
+        return position;
+    }
 
     public Double getTurnRadius() {
         return turnRadius;

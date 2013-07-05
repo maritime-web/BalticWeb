@@ -15,6 +15,7 @@
  */
 package dk.dma.embryo.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CollectionTable;
@@ -49,7 +50,7 @@ public class Route extends BaseEntity<Long> {
 
     @ElementCollection
     @CollectionTable(name = "WayPoint")
-    private List<WayPoint> wayPoints;
+    private List<WayPoint> wayPoints = new ArrayList<>();
 
     @OneToOne
     private Ship2 ship;
@@ -75,9 +76,17 @@ public class Route extends BaseEntity<Long> {
     }
 
     // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return "Route [name=" + name + ", destination=" + destination + ", origin=" + origin + ", voyageName="
+                + voyageName + ", etaOfArrival=" + etaOfArrival + ", etaOfDeparture=" + etaOfDeparture + ", wayPoints"+  wayPoints + "]";
+    }
+    
+    // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-
     public String getName() {
         return name;
     }

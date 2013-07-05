@@ -28,6 +28,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.embryo.domain.Route;
@@ -51,6 +53,8 @@ public class ShipServiceImpl implements ShipService {
 
     @Inject
     private Subject subject;
+    
+    @Inject Logger logger;
 
     public ShipServiceImpl() {
     }
@@ -137,6 +141,7 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public void saveRoute(Route route) {
+        logger.debug("SAVING ROUTE {}", route);
         
         shipRepository.saveEntity(route);
     }

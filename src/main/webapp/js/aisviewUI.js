@@ -1000,17 +1000,18 @@ embryo.statusPanel.init = function(projection) {
 embryo.voyageInformationForm = {};
 embryo.voyageInformationForm.copyEmptyRow = function(event) {
 	var $row = $(event.target).closest('tr');
-	
+
 	// create new row by copy and modify before insertion into document
 	var $newRow = $row.clone(true);
 	var columnIndex = $row.find('input').index(event.target);
 	$newRow.find('input').eq(columnIndex).val("");
 	$row.after($newRow);
 
-	// new row must be copied before enableRow is called
+	// enableRow must be called after copying new row 
 	embryo.voyageInformationForm.enableRow($row);
 
-	// if user typed into berth field, then give field focus and trigger drowdown
+	// if user typed into berth field, then give field focus and trigger
+	// drowdown
 	if ($(event.target).is('.typeahead-textfield')) {
 		$(event.target).focus();
 		$(event.target).prev('.tt-hint').trigger('focused');
@@ -1096,6 +1097,7 @@ embryo.voyageInformationForm.prepareRequest = function(containerSelector) {
 	return false;
 };
 embryo.voyageInformationForm.init = function(containerSelector) {
+	//TODO remove when DynamicListView is introduced for VoyageInformationForm
 	$(containerSelector).find('tr:last-child').addClass('emptyRow').find(
 			'button').hide();
 
@@ -1152,6 +1154,73 @@ embryo.routeModal.prepareRequest = function(containerSelector) {
 	var $modalBody = $(containerSelector);
 	var $rows = $modalBody.find('tbody tr');
 	$modalBody.find('input[name="routeCount"]').val($rows.length);
+
+	var regex = new RegExp('\\d+', 'g');
+	$rows.each(function(index, row) {
+		$(row).find('input[name]').each(function(indeks, input) {
+			var nameAttr = $(input).attr("name");
+			var result = nameAttr.replace(regex, "" + index);
+			$(input).attr("name", result);
+		});
+	});
+
+	return false;
+};
+
+embryo.dynamicListView = {};
+embryo.dynamicListView.init = function(listSelector, name, autoExpand) {
+	$(listSelector).append('<input type="hidden" name="' + name + '"/>');
+
+	if(autoExpand){
+		$(listSelector).find('tr').each(function(){
+			$(this).find('td:last-child').append('<td><button type="submit" class="btn btn-danger">Delete</button></td>');
+		});
+
+		$(containerSelector).find('tr:last-child').addClass('emptyRow').find(
+			'button').hide();
+	}
+	
+};
+
+/*
+embryo.dynamicListView.onDelete = function(event) {
+	event.preventDefault();
+	event.stopPropagation();
+	$rowToDelete = $(event.target).closest('tr');
+	$rowToDelete.next().find("input:first").focus();
+	$rowToDelete.remove();
+};
+
+embryo.dynamicListView.copyEmptyRow = function(event) {
+	var $row = $(event.target).closest('tr');
+
+	// create new row by copy and modify before insertion into document
+	var $newRow = $row.clone(true);
+	var columnIndex = $row.find('input').index(event.target);
+	$newRow.find('input').eq(columnIndex).val("");
+	$row.after($newRow);
+
+	// enableRow must be called after copying new row 
+	embryo.dynamicListView.enableRow($row);
+};
+
+
+embryo.dynamicListView.enableRow = function($row) {
+	embryo.typeahead.create($row.find('input.typeahead-textfield')[0]);
+
+	$row.find('button').show();
+	$row.removeClass('emptyRow');
+	$row.find('input, button').unbind('keydown',
+			embryo.voyageInformationForm.copyEmptyRow);
+
+	//$(this).find('button').click(formObject.onDelete);
+//	embryo.voyageInformationForm.registerHandlers($row);
+};*/
+
+embryo.dynamicListView.prepareRequest = function(containerSelector) {
+	var $modalBody = $(containerSelector);
+	var $rows = $modalBody.find('tbody tr');
+	$modalBody.find('input[name="listCount"]').val($rows.length);
 
 	var regex = new RegExp('\\d+', 'g');
 	$rows.each(function(index, row) {

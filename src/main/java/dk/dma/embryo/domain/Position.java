@@ -17,11 +17,14 @@ package dk.dma.embryo.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@Access(AccessType.FIELD)
 public class Position implements Serializable {
-
+    
     private static final long serialVersionUID = 249219940778068392L;
 
     // //////////////////////////////////////////////////////////////////////
