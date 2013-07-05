@@ -338,12 +338,9 @@
 							<fileset dir="${env.JBOSS_HOME}/standalone/tmp/vfs/" includes="**/${searchPath}" />
 						</first>
 						<script language="javascript">
-							var before =
-							project.getProperty("toString:first");
-							var replace =
-							project.getProperty("searchPath");
-							project.setProperty("jbossTmpDir", before.replaceAll(replace,
-							""));
+							var before = project.getProperty("toString:first");
+							var replace = project.getProperty("searchPath");
+							project.setProperty("jbossTmpDir", before.replaceAll(replace, ""));
 						</script>
 						<!-- Place any Ant task here. You can add anything you can add between <target> and </target> in a build.xml. -->
 						<echo message="${jbossTmpDir}" />

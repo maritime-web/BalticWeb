@@ -3,6 +3,9 @@ Embryo
 
 Web portal for maritime stakeholders in the arctic area
 
+## Demo of Latest and Greatest ##
+http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only available to development team)
+
 ## Prerequisites ##
 
 * Java JDK 1.7
