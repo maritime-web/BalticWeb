@@ -15,8 +15,8 @@
  */
 package dk.dma.embryo.domain.transformers;
 
-import static org.junit.Assert.*;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import dk.dma.embryo.domain.WayPoint;
@@ -44,32 +44,32 @@ public class RouteTransformerTest {
         //Execute
         dk.dma.embryo.domain.Route transformed = new RouteTransformer().transform(route);
         
-        assertEquals("test route", transformed.getName());
-        assertEquals("departure", transformed.getOrigin());
-        assertEquals("destination", transformed.getDestination());
+        Assert.assertEquals("test route", transformed.getName());
+        Assert.assertEquals("departure", transformed.getOrigin());
+        Assert.assertEquals("destination", transformed.getDestination());
 
-        assertEquals(2, transformed.getWayPoints().size());
+        Assert.assertEquals(2, transformed.getWayPoints().size());
 
         WayPoint wpTrans = transformed.getWayPoints().get(0); 
-        assertEquals("wp1", wpTrans.getName());
-        assertEquals(55.5, wpTrans.getPosition().getLatitude(), 0.0);
-        assertEquals(88.8, wpTrans.getPosition().getLongitude(), 0.0);
-        assertEquals(0.5, wpTrans.getRot(), 0.0);
-        assertEquals(1.0, wpTrans.getTurnRadius(), 0.0);
+        Assert.assertEquals("wp1", wpTrans.getName());
+        Assert.assertEquals(55.5, wpTrans.getPosition().getLatitude(), 0.0);
+        Assert.assertEquals(88.8, wpTrans.getPosition().getLongitude(), 0.0);
+        Assert.assertEquals(0.5, wpTrans.getRot(), 0.0);
+        Assert.assertEquals(1.0, wpTrans.getTurnRadius(), 0.0);
 
-        assertEquals(10.0, wpTrans.getLeg().getSpeed(), 0.0);
-        assertEquals(0.5, wpTrans.getLeg().getXtdPort(), 0.0);
-        assertEquals(0.7, wpTrans.getLeg().getXtdStarboard(), 0.0);
+        Assert.assertEquals(10.0, wpTrans.getLeg().getSpeed(), 0.0);
+        Assert.assertEquals(0.5, wpTrans.getLeg().getXtdPort(), 0.0);
+        Assert.assertEquals(0.7, wpTrans.getLeg().getXtdStarboard(), 0.0);
 
         wpTrans = transformed.getWayPoints().get(1); 
-        assertEquals("wp2", wpTrans.getName());
-        assertEquals(65.5, wpTrans.getPosition().getLatitude(), 0.0);
-        assertEquals(44.4, wpTrans.getPosition().getLongitude(), 0.0);
-        assertEquals(0.2, wpTrans.getRot(), 0.0);
-        assertEquals(0.5, wpTrans.getTurnRadius(), 0.0);
+        Assert.assertEquals("wp2", wpTrans.getName());
+        Assert.assertEquals(65.5, wpTrans.getPosition().getLatitude(), 0.0);
+        Assert.assertEquals(44.4, wpTrans.getPosition().getLongitude(), 0.0);
+        Assert.assertEquals(0.2, wpTrans.getRot(), 0.0);
+        Assert.assertEquals(0.5, wpTrans.getTurnRadius(), 0.0);
 
-        assertEquals(20.0, wpTrans.getLeg().getSpeed(), 0.0);
-        assertEquals(0.4, wpTrans.getLeg().getXtdPort(), 0.0);
-        assertEquals(1.0, wpTrans.getLeg().getXtdStarboard(), 0.0);
+        Assert.assertEquals(20.0, wpTrans.getLeg().getSpeed(), 0.0);
+        Assert.assertEquals(0.4, wpTrans.getLeg().getXtdPort(), 0.0);
+        Assert.assertEquals(1.0, wpTrans.getLeg().getXtdStarboard(), 0.0);
 }
 }
