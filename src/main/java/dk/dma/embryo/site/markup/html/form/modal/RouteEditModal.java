@@ -158,7 +158,6 @@ public class RouteEditModal extends Modal<RouteEditModal> implements ReachedFrom
             }
         };
         
-        saveLink.add(AttributeModifier.replace("value", "SAVE"));
         saveLink.add(AttributeModifier.append("class", " btn btn-primary"));
 
         addFooterButton(saveLink);

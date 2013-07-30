@@ -20,23 +20,27 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class WayPoint implements Serializable {
+public class RouteLeg implements Serializable {
 
     private static final long serialVersionUID = -7205030526506222850L;
 
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
+    /** Speed in knots. */
+    private Double speed;
 
-    private String name;
+    /** Port XTD. */
+    private Double xtdPort;
 
-    private Position position;
-    
-    private Double rot;
+    /** Starboard XTD. */
+    private Double xtdStarboard;
 
-    private Double turnRadius;
-    
-    private RouteLeg leg;
+    /** Safe Haven Width */
+    private Double SFWidth;
+
+    /** Safe Haven Length */
+    private Double SFLen;
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -49,71 +53,65 @@ public class WayPoint implements Serializable {
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public WayPoint() {
-        position = new Position();
+    public RouteLeg() {
     }
 
-    public WayPoint(String name, Double latitude, Double longitude, Double rot, Double turnRadius) {
-        this();
-        
-        this.name = name;
-        position.setLatitude(latitude);
-        position.setLongitude(longitude);
-        this.rot = rot;
-        this.turnRadius = turnRadius;
+    
+    public RouteLeg(Double speed, Double xtdPort, Double xtdStarboard) {
+        super();
+        this.speed = speed;
+        this.xtdPort = xtdPort;
+        this.xtdStarboard = xtdStarboard;
     }
+
 
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return "WayPoint [name=" + name + ", position=" + position + ", turnRadius=" + turnRadius + "]";
-    }
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public String getName() {
-        return name;
+
+    public Double getSpeed() {
+        return speed;
     }
 
-    public Position getPosition() {
-        return position;
+    public void setSpeed(Double speed) {
+        this.speed = speed;
     }
 
-    public Double getTurnRadius() {
-        return turnRadius;
+    public Double getXtdPort() {
+        return xtdPort;
     }
 
-    public RouteLeg getLeg() {
-        return leg;
+    public void setXtdPort(Double xtdPort) {
+        this.xtdPort = xtdPort;
     }
+
+    public Double getXtdStarboard() {
+        return xtdStarboard;
+    }
+
+    public void setXtdStarboard(Double xtdStarboard) {
+        this.xtdStarboard = xtdStarboard;
+    }
+
+    public Double getSFWidth() {
+        return SFWidth;
+    }
+
+    public void setSFWidth(Double sFWidth) {
+        SFWidth = sFWidth;
+    }
+
+    public Double getSFLen() {
+        return SFLen;
+    }
+
+    public void setSFLen(Double sFLen) {
+        SFLen = sFLen;
+    }
+
     
-    
-
-    public Double getRot() {
-        return rot;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLeg(RouteLeg leg) {
-        this.leg = leg;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public void setRot(Double rot) {
-        this.rot = rot;
-    }
-
-    public void setTurnRadius(Double turnRadius) {
-        this.turnRadius = turnRadius;
-    }
-
 }
