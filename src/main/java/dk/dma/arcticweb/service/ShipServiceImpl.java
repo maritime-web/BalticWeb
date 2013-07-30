@@ -15,6 +15,8 @@
  */
 package dk.dma.arcticweb.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -38,8 +40,10 @@ import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.transformers.RouteTransformer;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.enav.serialization.RouteParser;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -149,5 +153,23 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public Route getActiveRoute(Long mmsi) {
         return shipRepository.getActiveRoute(mmsi);
+    }
+
+
+    @Override
+    public Voyage getVoyage(Long id) {
+        return shipRepository.getByPrimaryKey(Voyage.class, id);
+    }
+    
+    public Route parseRoute(InputStream is) throws IOException{
+        RouteParser parser = RouteParser.getSimpleRouteParser(is);
+        
+        dk.dma.enav.model.voyage.Route enavRoute = parser.parse();
+        
+        Route route = new RouteTransformer().transform(enavRoute);
+        
+        route.setShip(getYourShip());
+        
+        return route;
     }
 }

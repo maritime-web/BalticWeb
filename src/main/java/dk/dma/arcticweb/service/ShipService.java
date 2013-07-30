@@ -15,12 +15,16 @@
  */
 package dk.dma.arcticweb.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport;
+import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyageInformation2;
 
 @Local
@@ -55,5 +59,9 @@ public interface ShipService {
     void saveRoute(Route route);
     
     Route getActiveRoute(Long mmsi);
+
+    Voyage getVoyage(Long id);
+    
+    Route parseRoute(InputStream is) throws IOException;
 
 }

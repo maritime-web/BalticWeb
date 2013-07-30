@@ -54,6 +54,12 @@ public class Position implements Serializable {
         this.longitude = ParseUtils.parseLongitude(longitude);
     }
 
+    public Position(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -61,8 +67,8 @@ public class Position implements Serializable {
         return latitude;
     }
 
-    public void setLatitude(Double lattitude) {
-        this.latitude = lattitude;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     public Double getLongitude() {

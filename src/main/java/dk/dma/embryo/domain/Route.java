@@ -56,7 +56,7 @@ public class Route extends BaseEntity<Long> {
     private Ship2 ship;
 
     @OneToOne
-    Voyage voyage;
+    private Voyage voyage;
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -73,6 +73,13 @@ public class Route extends BaseEntity<Long> {
     // Constructors
     // //////////////////////////////////////////////////////////////////////
     public Route() {
+    }
+    
+    public Route(String name, String origin, String destination) {
+        super();
+        this.name = name;
+        this.destination = destination;
+        this.origin = origin;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -149,5 +156,9 @@ public class Route extends BaseEntity<Long> {
 
     public Voyage getVoyage() {
         return voyage;
+    }
+
+    public void setVoyage(Voyage voyage) {
+        this.voyage = voyage;
     }
 }
