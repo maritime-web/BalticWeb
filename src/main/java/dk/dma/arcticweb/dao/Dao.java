@@ -28,14 +28,14 @@ public interface Dao {
      * @param id
      * @return
      */
-    IEntity getByPrimaryKey(Class<? extends IEntity> clazz, Object id);
+    <E extends IEntity<?>> E getByPrimaryKey(Class<E> clazz, Object id);
 
     /**
      * Remove entity
      * 
      * @param bean
      */
-    void remove(IEntity bean);
+    void remove(IEntity<?> bean);
 
     /**
      * Save (insert or update) the entity bean
@@ -43,7 +43,7 @@ public interface Dao {
      * @param entity
      * @return entity
      */
-    IEntity saveEntity(IEntity bean);
+    <E extends IEntity<?>> E saveEntity(E bean);
     
     /**
      * General purpose method to retrieve all instance of a entityType

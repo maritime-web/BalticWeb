@@ -38,7 +38,7 @@ public abstract class DaoImpl implements Dao {
     }
 
     @Override
-    public IEntity getByPrimaryKey(Class<? extends IEntity> clazz, Object id) {
+    public <E extends IEntity<?>> E getByPrimaryKey(Class<E> clazz, Object id) {
         try {
             return em.find(clazz, id);
         } catch (EntityNotFoundException e) {
@@ -47,12 +47,12 @@ public abstract class DaoImpl implements Dao {
     }
 
     @Override
-    public void remove(IEntity entity) {
+    public void remove(IEntity<?> entity) {
         em.remove(em.merge(entity));
     }
 
     @Override
-    public IEntity saveEntity(IEntity entity) {
+    public <E extends IEntity<?>> E saveEntity(E entity) {
         if (entity.isPersisted()) {
             // Update existing
             entity = em.merge(entity);
