@@ -33,7 +33,6 @@ import org.apache.wicket.model.Model;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ShipService;
-import dk.dma.arcticweb.site.pages.MainPage;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.security.authorization.YourShip;
@@ -93,9 +92,6 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 FileUpload upload = fileUpload.getFileUpload();
 
-                // upload.get
-
-                // Hack until converter has been written.
                 Route route = null;
 
                 try {
@@ -107,14 +103,14 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
                         route.setVoyage(voyage);
                     }
 
-                    shipService.saveRoute(route);
+                    Long routeId = shipService.saveRoute(route);
+                    appendSaveDialogJS(target, routeId);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } 
 
                 feedback.setVisible(false);
                 target.add(form);
-                setResponsePage(new MainPage());
             }
 
             @Override
@@ -128,6 +124,10 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
         saveLink.add(AttributeModifier.append("class", " btn btn-primary"));
 
         addFooterButton(saveLink);
+    }
+    
+    public void appendSaveDialogJS(final AjaxRequestTarget target, Long routeId) {
+        target.appendJavaScript("embryo.modal.close('"+ modalContainer.getMarkupId() + "', embryo.route.fetchAndDraw('" + routeId + "'));");        
     }
 
     @Override

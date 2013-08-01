@@ -19,6 +19,8 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
+import dk.dma.enav.model.voyage.Waypoint;
+
 @Embeddable
 public class WayPoint implements Serializable {
 
@@ -45,7 +47,32 @@ public class WayPoint implements Serializable {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-
+    public static WayPoint fromEnavModel(Waypoint wayPoint){
+        WayPoint transformed = new WayPoint();
+        transformed.setName(wayPoint.getName());
+        transformed.setPosition(new Position(wayPoint.getLatitude(), wayPoint.getLongitude()));
+        transformed.setRot(wayPoint.getRot());
+        transformed.setTurnRadius(wayPoint.getTurnRad());
+        
+        transformed.setLeg(RouteLeg.from(wayPoint.getRouteLeg()));
+        
+        return transformed;
+    }
+    
+    public Waypoint toEnavModel(){
+        Waypoint toWaypoint = new Waypoint();
+        toWaypoint.setName(this.getName());
+        toWaypoint.setLatitude(this.getPosition().getLatitude());
+        toWaypoint.setLongitude(this.getPosition().getLongitude());
+        toWaypoint.setRot(this.getRot());
+        toWaypoint.setTurnRad(this.getTurnRadius());
+        
+        if(this.getLeg() != null){
+            toWaypoint.setRouteLeg(this.getLeg().toEnavModel());
+        }
+        
+        return toWaypoint;
+    }
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
@@ -89,8 +116,6 @@ public class WayPoint implements Serializable {
     public RouteLeg getLeg() {
         return leg;
     }
-    
-    
 
     public Double getRot() {
         return rot;

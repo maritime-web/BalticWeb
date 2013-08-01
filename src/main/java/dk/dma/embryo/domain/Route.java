@@ -27,6 +27,8 @@ import javax.persistence.OneToOne;
 
 import org.joda.time.LocalDateTime;
 
+import dk.dma.enav.model.voyage.Waypoint;
+
 @Entity
 @NamedQueries({ @NamedQuery(name = "Route:getByMmsi", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.ship.mmsi = :mmsi") })
 public class Route extends BaseEntity<Long> {
@@ -67,6 +69,29 @@ public class Route extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     public void addWayPoint(WayPoint wPoint) {
         wayPoints.add(wPoint);
+    }
+    
+    public static Route fromEnavModel(dk.dma.enav.model.voyage.Route from){
+        Route route = new Route(from.getName(), from.getDeparture(), from.getDestination());
+        
+        for(Waypoint wayPoint : from.getWaypoints()){
+            route.addWayPoint(WayPoint.fromEnavModel(wayPoint));
+        }
+        
+        return route;
+    }
+    
+    public dk.dma.enav.model.voyage.Route toEnavModel(){
+        dk.dma.enav.model.voyage.Route toRoute = new dk.dma.enav.model.voyage.Route();
+        toRoute.setName(this.name);
+        toRoute.setDeparture(this.origin);
+        toRoute.setDestination(this.destination);
+        
+        for(WayPoint wp : this.getWayPoints()){
+            toRoute.getWaypoints().add(wp.toEnavModel());
+        }
+        
+        return toRoute;
     }
 
     // //////////////////////////////////////////////////////////////////////

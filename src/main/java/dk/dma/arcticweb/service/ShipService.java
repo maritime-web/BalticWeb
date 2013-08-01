@@ -56,9 +56,11 @@ public interface ShipService {
     
     VoyageInformation2 getVoyageInformation(Long mmsi);
     
-    void saveRoute(Route route);
+    Long saveRoute(Route route);
     
     Route getActiveRoute(Long mmsi);
+
+    Route getRoute(Long id);
 
     Voyage getVoyage(Long id);
     

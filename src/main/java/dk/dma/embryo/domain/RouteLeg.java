@@ -49,7 +49,18 @@ public class RouteLeg implements Serializable {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-
+    public static RouteLeg from(dk.dma.enav.model.voyage.RouteLeg leg){
+        return new RouteLeg(leg.getSpeed(), leg.getXtdPort(), leg.getXtdStarboard());
+    }
+    
+    public dk.dma.enav.model.voyage.RouteLeg toEnavModel(){
+        dk.dma.enav.model.voyage.RouteLeg toLeg = new dk.dma.enav.model.voyage.RouteLeg();
+        toLeg.setSpeed(this.getSpeed());
+        toLeg.setXtdPort(this.getXtdPort());
+        toLeg.setXtdStarboard(this.getXtdStarboard());
+        return toLeg;
+    }
+    
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////

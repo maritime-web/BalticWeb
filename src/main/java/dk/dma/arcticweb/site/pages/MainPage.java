@@ -26,6 +26,7 @@ import dk.dma.embryo.site.markup.html.form.modal.RouteEditModal;
 import dk.dma.embryo.site.markup.html.form.modal.RouteUploadModal;
 import dk.dma.embryo.site.markup.html.menu.MenuHeader;
 import dk.dma.embryo.site.markup.html.menu.MenuPanel;
+import dk.dma.embryo.site.panel.DrawTestRoutesExecutor;
 import dk.dma.embryo.site.panel.LeftPanel;
 import dk.dma.embryo.site.panel.ShipInformationPanel;
 import dk.dma.embryo.site.panel.VoyageInformationPanel;
@@ -67,6 +68,7 @@ public class MainPage extends BasePage implements SecurePage {
         yourShip.addMenuItem(voyageInformation);
         yourShip.addMenuItem(routeModal);
         yourShip.addMenuItem(routeUpload);
+        yourShip.addMenuItem("Draw Route 231", new DrawTestRoutesExecutor());
 
         add(new JsPanel("js_panel"));
 
