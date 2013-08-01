@@ -1,14 +1,24 @@
 <html lang="en" xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
 
-	<div id="map"></div>
-	
-	
-	
+	<!-- Add data-toggle="context" to any element that needs a custom context menu and via CSS set position: relative to the element. -->
+	<div id="map" style="position: relative"></div>
+
+
 	<div id="children">
 		<div wicket:id="childComponentGroup">
 			<div wicket:id="childComponent"></div>
 		</div>
+	</div>
+
+	<div id="context-menu">
+		<ul class="dropdown-menu" role="menu">
+			<li><a tabindex="-1" href="#">Action</a></li>
+			<li><a tabindex="-1" href="#">Another action</a></li>
+			<li><a tabindex="-1" href="#">Something else here</a></li>
+			<li class="divider"></li>
+			<li><a tabindex="-1" href="#">Separated link</a></li>
+		</ul>
 	</div>
 
 	<div id="filtering">
