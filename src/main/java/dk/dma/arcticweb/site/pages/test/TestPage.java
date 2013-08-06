@@ -38,6 +38,7 @@ import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.IEntity;
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
+import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship2;
@@ -83,11 +84,12 @@ public class TestPage extends WebPage {
             logger.info("Deleting existing entries");
             
             deleteAll(Berth.class);
+            deleteAll(Route.class);
             deleteAll(Voyage.class);
             deleteAll(VoyageInformation2.class);
+            deleteAll(SecuredUser.class);
             deleteAll(Role.class);
             deleteAll(Ship2.class);
-            deleteAll(SecuredUser.class);
             deleteAll(Permission.class);
             
         } catch (SecurityException | IllegalStateException
