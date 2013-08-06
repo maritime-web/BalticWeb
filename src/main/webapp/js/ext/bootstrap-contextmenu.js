@@ -70,10 +70,15 @@
 				.css(tp)
 				.addClass('open');
 
-
 			return false;
 		}
 
+		,openmenu: function(e) {
+			if ($this.is('.disabled, :disabled')) return;
+			
+			this.getMenu().addClass('open');
+		}
+	
 		,closemenu: function(e) {
 			this.getMenu().removeClass('open');
 		}
