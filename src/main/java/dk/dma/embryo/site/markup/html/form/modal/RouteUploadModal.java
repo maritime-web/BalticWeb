@@ -45,8 +45,6 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
 
     private static final long serialVersionUID = 1L;
 
-    // private final WebMarkupContainer voyageInformation;
-
     private FeedbackPanel feedback;
 
     private DynamicForm form;

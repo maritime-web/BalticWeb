@@ -18,28 +18,28 @@ package dk.dma.embryo.site.panel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 
 import dk.dma.embryo.security.authorization.YourShip;
-import dk.dma.embryo.site.form.VoyageInformationForm;
+import dk.dma.embryo.site.form.VoyagePlanForm;
 import dk.dma.embryo.site.markup.html.menu.ReachedFromMenu;
 
 @YourShip
-public class VoyageInformationPanel extends EmbryonicPanel implements ReachedFromMenu{
+public class VoyagePlanPanel extends EmbryonicPanel implements ReachedFromMenu{
 
     private static final long serialVersionUID = 1L;
 
-    private final WebMarkupContainer voyageInformation;
+    private final WebMarkupContainer voyagePlan;
    
-    private final VoyageInformationForm form;
+    private final VoyagePlanForm form;
     
 
-    public VoyageInformationPanel(String id) {
+    public VoyagePlanPanel(String id) {
         super(id);
         
-        voyageInformation = new WebMarkupContainer("voyageInformation");
-        add(voyageInformation);
+        voyagePlan = new WebMarkupContainer("voyagePlan");
+        add(voyagePlan);
         
-        form = new VoyageInformationForm("voyage_information_form");
+        form = new VoyagePlanForm("voyage_plan_form");
 
-        voyageInformation.add(form);        
+        voyagePlan.add(form);        
     }
 
     public String getTitle(){
@@ -48,6 +48,6 @@ public class VoyageInformationPanel extends EmbryonicPanel implements ReachedFro
     
     @Override
     public String getBookmark() {
-        return voyageInformation.getMarkupId();
+        return voyagePlan.getMarkupId();
     }
 }

@@ -45,7 +45,7 @@ public class Voyage extends BaseEntity<Long> {
     private boolean doctorOnBoard;
     
     @ManyToOne
-    VoyageInformation2 info;
+    VoyagePlan plan;
     
     // //////////////////////////////////////////////////////////////////////
     // business logic

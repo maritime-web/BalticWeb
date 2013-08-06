@@ -75,7 +75,7 @@ public class Ship2 extends BaseEntity<Long> {
     private List<ShipReport> reports;
 
     @OneToOne(mappedBy = "ship", cascade = { CascadeType.ALL })
-    private VoyageInformation2 voyageInformation;
+    private VoyagePlan voyagePlan;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = true)
@@ -211,12 +211,12 @@ public class Ship2 extends BaseEntity<Long> {
         return reports;
     }
 
-    public VoyageInformation2 getVoyageInformation() {
-        return voyageInformation;
+    public VoyagePlan getVoyagePlan() {
+        return voyagePlan;
     }
     
-    public void setVoyageInformation(VoyageInformation2 info){
-        info.ship = this;
-        this.voyageInformation = info;
+    public void setVoyagePlan(VoyagePlan plan){
+        plan.ship = this;
+        this.voyagePlan = plan;
     }
 }

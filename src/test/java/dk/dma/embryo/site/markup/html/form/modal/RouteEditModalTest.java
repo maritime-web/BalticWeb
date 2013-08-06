@@ -49,7 +49,7 @@ public class RouteEditModalTest extends CdiUnitTestBase{
         // Setup ShipService stub to return test data
         // ///////////////////////////////////////////////////
         Mockito.when(shipService.getYourShip()).thenReturn(ship);
-        Mockito.when(shipService.getVoyageInformation(ship.getMmsi())).thenReturn(null);
+        Mockito.when(shipService.getVoyagePlan(ship.getMmsi())).thenReturn(null);
 
         RouteEditModal modal = new RouteEditModal("someId").title("My title").size(Modal.SIZE.XLARGE);
         

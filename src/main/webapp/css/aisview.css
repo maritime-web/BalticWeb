@@ -642,7 +642,7 @@ hr {
 	visibility: hidden;
 }
 
-/* Voyage Information customization */
+/* Voyage plan customization */
 tr.emptyRow input::-webkit-input-placeholder { /* WebKit browsers */
 	color: white;
 }

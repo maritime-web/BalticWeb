@@ -59,8 +59,6 @@ public class RouteEditModal extends Modal<RouteEditModal> implements ReachedFrom
 
     private static final long serialVersionUID = 1L;
 
-    // private final WebMarkupContainer voyageInformation;
-
     private FeedbackPanel feedback;
 
     private Form form;
@@ -194,7 +192,6 @@ public class RouteEditModal extends Modal<RouteEditModal> implements ReachedFrom
 
         @Override
         protected Route load() {
-            // Initial request. Load voyage information from database.
             Ship2 ship = shipService.getYourShip();
             Route route = shipService.getActiveRoute(ship.getMmsi());
             

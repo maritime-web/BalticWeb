@@ -29,7 +29,7 @@ import dk.dma.embryo.site.markup.html.menu.MenuPanel;
 import dk.dma.embryo.site.panel.DrawTestRoutesExecutor;
 import dk.dma.embryo.site.panel.LeftPanel;
 import dk.dma.embryo.site.panel.ShipInformationPanel;
-import dk.dma.embryo.site.panel.VoyageInformationPanel;
+import dk.dma.embryo.site.panel.VoyagePlanPanel;
 import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
 
 public class MainPage extends BasePage implements SecurePage {
@@ -48,7 +48,7 @@ public class MainPage extends BasePage implements SecurePage {
 
         ShipInformationPanel shipInformation = new ShipInformationPanel("ship_information");
         ShipReportPanel shipReport = new ShipReportPanel("ship_report");
-        VoyageInformationPanel voyageInformation = new VoyageInformationPanel("voyage_information");
+        VoyagePlanPanel voyagePlan = new VoyagePlanPanel("voyage_plan");
 
         RouteEdit routeModal = new RouteEdit("routeModule");
         RouteUploadModal routeUpload = new RouteUploadModal("routeUpload");
@@ -65,7 +65,7 @@ public class MainPage extends BasePage implements SecurePage {
         yourShip.addMenuItem("Zoom to ship", new ZoomToShipJSExecutor());
         yourShip.addMenuItem(shipInformation);
         yourShip.addMenuItem(shipReport);
-        yourShip.addMenuItem(voyageInformation);
+        yourShip.addMenuItem(voyagePlan);
         yourShip.addMenuItem(routeModal);
         yourShip.addMenuItem(routeUpload);
         yourShip.addMenuItem("Draw Route 231", new DrawTestRoutesExecutor());
@@ -75,7 +75,7 @@ public class MainPage extends BasePage implements SecurePage {
         // add(new LeftPanel2("left"));
         // add(new StatusPanel("status"));
 
-        add(shipInformation, shipReport, voyageInformation, routeModal, routeUpload);
+        add(shipInformation, shipReport, voyagePlan, routeModal, routeUpload);
 
         add(new SelectedShipInformationPanel("selected_ship_information"));
     }

@@ -27,9 +27,9 @@ import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.CdiUnitTestBase;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.VoyagePlan;
 
-public class VoyageInformationPanelTest extends CdiUnitTestBase {
+public class VoyagePlanPanelTest extends CdiUnitTestBase {
 
     @Produces
     @Mock
@@ -46,8 +46,8 @@ public class VoyageInformationPanelTest extends CdiUnitTestBase {
         // ///////////////////////////////////////////////////
         Ship2 ship = new Ship2();
 
-        VoyageInformation2 voaygeInformation = new VoyageInformation2(12, false);
-        voaygeInformation.addVoyageEntry(new Voyage("City1", "1 1.000N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
+        VoyagePlan voaygePlan = new VoyagePlan(12, false);
+        voaygePlan.addVoyageEntry(new Voyage("City1", "1 1.000N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
                 LocalDateTime.parse("2013-06-20T11:56")));
 //        voaygeInformation.addVoyageEntry(new Voyage("City2", "3.300", "6.000", LocalDateTime.parse("2013-06-23T22:08"),
 //                LocalDateTime.parse("2013-06-25T20:19")));
@@ -56,21 +56,21 @@ public class VoyageInformationPanelTest extends CdiUnitTestBase {
         // Setup ShipService stub to return test data
         // ///////////////////////////////////////////////////
         Mockito.when(shipService.getYourShip()).thenReturn(ship);
-        Mockito.when(shipService.getVoyageInformation(ship.getMmsi())).thenReturn(voaygeInformation);
+        Mockito.when(shipService.getVoyagePlan(ship.getMmsi())).thenReturn(voaygePlan);
 
         // ///////////////////////////////////////////////////
         // Instantiate panel
         // ///////////////////////////////////////////////////
-        VoyageInformationPanel panel = new VoyageInformationPanel("someId");
+        VoyagePlanPanel panel = new VoyagePlanPanel("someId");
         getTester().startComponentInPage(panel);
 
         // ///////////////////////////////////////////////////
         // Verify
         // ///////////////////////////////////////////////////
-        getTester().assertComponent(panel.getPageRelativePath(), VoyageInformationPanel.class);
-        getTester().assertLabel(panel.getPageRelativePath() + ":voyageInformation:voyage_information_form:title", "Voyage Information");
+        getTester().assertComponent(panel.getPageRelativePath(), VoyagePlanPanel.class);
+        getTester().assertLabel(panel.getPageRelativePath() + ":voyagePlan:voyage_plan_form:title", "Voyage Plan");
 
-        //getTester().assertModelValue(panel.getPageRelativePath() + ":voyageInformation:voyage_information_form:personsOnboard", Integer.valueOf(12));
+        //getTester().assertModelValue(panel.getPageRelativePath() + ":voyagePlan:voyage_plan_form:personsOnboard", Integer.valueOf(12));
         
 
         //

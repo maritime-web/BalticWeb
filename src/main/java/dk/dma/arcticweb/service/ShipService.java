@@ -25,7 +25,7 @@ import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.VoyagePlan;
 
 @Local
 public interface ShipService {
@@ -47,14 +47,14 @@ public interface ShipService {
     void reportForCurrentShip(ShipReport shipReport);
 
     /**
-     * Save voyage information
+     * Save voyage plan
      * 
      * @param ship
-     * @param voyageInformation
+     * @param voyagePlan
      */
-    void saveVoyageInformation(VoyageInformation2 voyageInformation);
+    void saveVoyagePlan(VoyagePlan voyagePlan);
     
-    VoyageInformation2 getVoyageInformation(Long mmsi);
+    VoyagePlan getVoyagePlan(Long mmsi);
     
     Long saveRoute(Route route);
     

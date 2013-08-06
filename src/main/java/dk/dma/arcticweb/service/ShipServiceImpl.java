@@ -39,7 +39,7 @@ import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.ShipReport;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.enav.serialization.RouteParser;
@@ -82,9 +82,9 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public void saveVoyageInformation(VoyageInformation2 toBeUpdated) {
+    public void saveVoyagePlan(VoyagePlan toBeUpdated) {
 
-        VoyageInformation2 fresh = getVoyageInformation(toBeUpdated.getShip().getMmsi());
+        VoyagePlan fresh = getVoyagePlan(toBeUpdated.getShip().getMmsi());
         fresh.setDoctorOnboard(toBeUpdated.getDoctorOnboard());
         fresh.setPersonsOnboard(toBeUpdated.getPersonsOnboard());
 
@@ -132,15 +132,15 @@ public class ShipServiceImpl implements ShipService {
 
     @YourShip
     @Override
-    public VoyageInformation2 getVoyageInformation(Long mmsi) {
-        VoyageInformation2 voyageInfo = shipRepository.getVoyageInformation(mmsi);
-        if (voyageInfo == null) {
-            voyageInfo = new VoyageInformation2();
+    public VoyagePlan getVoyagePlan(Long mmsi) {
+        VoyagePlan voyagePlan = shipRepository.getVoyagePlan(mmsi);
+        if (voyagePlan == null) {
+            voyagePlan = new VoyagePlan();
             // FIXME: Hack only works for YourShip feature
             Ship2 ship = shipRepository.getShip(subject.getRole(Sailor.class));
-            ship.setVoyageInformation(voyageInfo);
+            ship.setVoyagePlan(voyagePlan);
         }
-        return voyageInfo;
+        return voyagePlan;
     }
 
     @Override

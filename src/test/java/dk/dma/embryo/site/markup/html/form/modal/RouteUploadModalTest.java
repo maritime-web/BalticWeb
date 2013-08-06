@@ -48,7 +48,7 @@ public class RouteUploadModalTest extends CdiUnitTestBase{
         // Setup ShipService stub to return test data
         // ///////////////////////////////////////////////////
         Mockito.when(shipService.getYourShip()).thenReturn(ship);
-        Mockito.when(shipService.getVoyageInformation(ship.getMmsi())).thenReturn(null);
+        Mockito.when(shipService.getVoyagePlan(ship.getMmsi())).thenReturn(null);
 
         RouteUploadModal modal = new RouteUploadModal("someId").title("My title");
         

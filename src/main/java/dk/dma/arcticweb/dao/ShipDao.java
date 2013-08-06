@@ -20,7 +20,7 @@ import javax.ejb.Local;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.VoyagePlan;
 
 @Local
 public interface ShipDao extends Dao {
@@ -33,7 +33,7 @@ public interface ShipDao extends Dao {
      */
     Ship2 getShip(Sailor sailor);
     
-    VoyageInformation2 getVoyageInformation(Long mmsi);
+    VoyagePlan getVoyagePlan(Long mmsi);
     
     Route getActiveRoute(Long mmsi);
 

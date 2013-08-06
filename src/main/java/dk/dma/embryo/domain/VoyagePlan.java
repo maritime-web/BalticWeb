@@ -31,8 +31,8 @@ import javax.persistence.OneToOne;
 
 
 @Entity
-@NamedQueries({@NamedQuery(name="VoyageInformation:getByMmsi", query="SELECT DISTINCT v FROM VoyageInformation2 v LEFT JOIN FETCH v.voyagePlan where v.ship.mmsi = :mmsi")})
-public class VoyageInformation2 extends BaseEntity<Long> {
+@NamedQueries({@NamedQuery(name="VoyagePlan:getByMmsi", query="SELECT DISTINCT v FROM VoyagePlan v LEFT JOIN FETCH v.voyages where v.ship.mmsi = :mmsi")})
+public class VoyagePlan extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 1L;
 
@@ -48,51 +48,51 @@ public class VoyageInformation2 extends BaseEntity<Long> {
     @OneToOne(optional = false)
     Ship2 ship;
     
-    @OneToMany(cascade={CascadeType.ALL}, mappedBy="info")
-    private List<Voyage> voyagePlan = new LinkedList<>(); 
+    @OneToMany(cascade={CascadeType.ALL}, mappedBy="plan")
+    private List<Voyage> voyages = new LinkedList<>(); 
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
     public void addVoyageEntry(Voyage entry){
-        voyagePlan.add(entry);
-        entry.info = this;
+        voyages.add(entry);
+        entry.plan = this;
     }
     
     public Map<String, Voyage> getVoyagePlanAsMap(){
         Map<String, Voyage> m = new HashMap<>();
-        for(Voyage v : voyagePlan){
+        for(Voyage v : voyages){
             m.put(v.getBusinessId(), v);
         }
         return m;
     }
     
     public void removeLastVoyage(){
-        voyagePlan.remove(voyagePlan.size()-1).info = null;
+        voyages.remove(voyages.size()-1).plan = null;
     }
     
 
     public void removeVoyage(Voyage v){
-        v.info = null;
-        voyagePlan.remove(v);
+        v.plan = null;
+        voyages.remove(v);
     }
 
     
     @Override
     public String toString() {
-        return "VoyageInformation [personsOnboard=" + personsOnboard + ", doctorOnboard=" + doctorOnboard
-                + ", voyagePlan=" + voyagePlan + "]";
+        return "VoyagePlan [personsOnboard=" + personsOnboard + ", doctorOnboard=" + doctorOnboard
+                + ", voyagePlan=" + voyages + "]";
     }
 
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public VoyageInformation2() {
+    public VoyagePlan() {
 
     }
 
-    public VoyageInformation2(Integer personsOnboard, boolean doctorOnboard) {
+    public VoyagePlan(Integer personsOnboard, boolean doctorOnboard) {
         this.personsOnboard = personsOnboard;
         this.doctorOnboard = doctorOnboard;
     }
@@ -121,6 +121,6 @@ public class VoyageInformation2 extends BaseEntity<Long> {
     }
     
     public List<Voyage> getVoyagePlan(){
-        return Collections.unmodifiableList(voyagePlan);
+        return Collections.unmodifiableList(voyages);
     }
 }

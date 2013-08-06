@@ -37,7 +37,7 @@ import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.domain.WayPoint;
 
 public class ShipServiceImplTest {
@@ -67,14 +67,14 @@ public class ShipServiceImplTest {
         Ship2 ship = new Ship2(10L);
         entityManager.persist(ship);
 
-        VoyageInformation2 voyageInformation = new VoyageInformation2(12, true);
-        voyageInformation.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime
+        VoyagePlan voyagePlan = new VoyagePlan(12, true);
+        voyagePlan.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime
                 .parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-20T11:56")));
-        voyageInformation.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime
+        voyagePlan.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime
                 .parse("2013-06-23T22:08"), LocalDateTime.parse("2013-06-25T20:19")));
 
-        ship.setVoyageInformation(voyageInformation);
-        entityManager.persist(voyageInformation);
+        ship.setVoyagePlan(voyagePlan);
+        entityManager.persist(voyagePlan);
 
         // /// new user
         sailor = new Sailor();
@@ -88,10 +88,10 @@ public class ShipServiceImplTest {
         ship = new Ship2(20L);
         entityManager.persist(ship);
 
-        voyageInformation = new VoyageInformation2(20, true);
+        voyagePlan = new VoyagePlan(20, true);
 
-        ship.setVoyageInformation(voyageInformation);
-        entityManager.persist(voyageInformation);
+        ship.setVoyagePlan(voyagePlan);
+        entityManager.persist(voyagePlan);
 
         entityManager.getTransaction().commit();
         entityManager.close();
@@ -105,8 +105,8 @@ public class ShipServiceImplTest {
     }
 
     @Test
-    public void getVoyageInformation_NoVoyagePlan() {
-        VoyageInformation2 info = shipService.getVoyageInformation(20L);
+    public void getVoyagePlan_NoVoyagePlan() {
+        VoyagePlan info = shipService.getVoyagePlan(20L);
 
         entityManager.clear();
 
@@ -117,8 +117,8 @@ public class ShipServiceImplTest {
     }
 
     @Test
-    public void getVoyageInformation_WithVoyagePlan() {
-        VoyageInformation2 info = shipService.getVoyageInformation(10L);
+    public void getVoyagePlan_WithVoyagePlan() {
+        VoyagePlan info = shipService.getVoyagePlan(10L);
 
         entityManager.clear();
 

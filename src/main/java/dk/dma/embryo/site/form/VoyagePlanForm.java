@@ -53,7 +53,7 @@ import dk.dma.arcticweb.site.pages.MainPage;
 import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.site.behavior.TypeaheadDataSource;
 import dk.dma.embryo.site.behavior.TypeaheadDatum;
 import dk.dma.embryo.site.converter.StyleDateConverter;
@@ -63,11 +63,11 @@ import dk.dma.embryo.site.markup.html.form.LongitudeTextField;
 import dk.dma.embryo.site.markup.html.form.TypeaheadTextField;
 import dk.dma.embryo.site.panel.EmbryonicForm;
 
-public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> {
+public class VoyagePlanForm extends EmbryonicForm<VoyagePlanForm> {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String JS_INIT = "embryo.voyageInformationForm.init('#id');";
+    private static final String JS_INIT = "embryo.voyagePlanForm.init('#id');";
     private final String js_init;
 
     private FeedbackPanel feedback;
@@ -86,17 +86,17 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
 
     private WebMarkupContainer modalBody;
 
-    private CompoundPropertyModel<VoyageInformation2> model = new CompoundPropertyModel<>(new VoyageInformationModel());
+    private CompoundPropertyModel<VoyagePlan> model = new CompoundPropertyModel<>(new VoyagePlanModel());
 
-    public VoyageInformationForm(String id) {
-        super(id, "Voyage Information");
+    public VoyagePlanForm(String id) {
+        super(id, "Voyage Plan");
 
         modalBody = new WebMarkupContainer("modalBody", model);
         add(modalBody);
 
         js_init = JS_INIT.replaceAll("id", modalBody.getMarkupId());
 
-        feedback = new FeedbackPanel("voyage_information_feedback", new ContainerFeedbackMessageFilter(this));
+        feedback = new FeedbackPanel("voyage_plan_feedback", new ContainerFeedbackMessageFilter(this));
         feedback.setOutputMarkupId(true);
         feedback.setVisible(false);
 
@@ -111,16 +111,16 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
             @Override
             protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
                 AjaxCallListener listener = new AjaxCallListener();
-                listener.onBefore("embryo.voyageInformationForm.prepareRequest('#" + modalBody.getMarkupId() + "')");
+                listener.onBefore("embryo.voyagePlanForm.prepareRequest('#" + modalBody.getMarkupId() + "')");
                 attributes.getAjaxCallListeners().add(listener);
             }
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                VoyageInformation2 info = model.getObject();
+                VoyagePlan info = model.getObject();
                 // HACK an empty voyage was added, when loaded to generate empty row. Remove again before saving
                 info.removeLastVoyage();
-                shipService.saveVoyageInformation(info);
+                shipService.saveVoyagePlan(info);
                 feedback.setVisible(false);
                 target.add(this.getParent());
                 setResponsePage(new MainPage());
@@ -186,7 +186,7 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
         // create empty voyage information objects as of no value to load them from database. They will be
         // overwritten later on in any case.
         IModel<?> chainedModel = model.getChainedModel();
-        model.setChainedModel(new EmptyVoyageInformationModel());
+        model.setChainedModel(new EmptyVoyagePlanModel());
         lv.rebuild();
 
         super.process(submittingComponent);
@@ -207,10 +207,10 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
         };
     }
 
-    public class EmptyVoyageInformationModel extends Model<VoyageInformation2> {
+    public class EmptyVoyagePlanModel extends Model<VoyagePlan> {
         private static final long serialVersionUID = -8287432934320097962L;
 
-        public EmptyVoyageInformationModel() {
+        public EmptyVoyagePlanModel() {
             IRequestParameters parameters = RequestCycle.get().getRequest().getRequestParameters();
             if (parameters.getParameterNames().contains("voyageCount")) {
                 // update request being treated.
@@ -218,8 +218,8 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
                 // overwritten later on in any case.
                 Integer count = parameters.getParameterValue("voyageCount").toInteger();
                 Ship2 ship = shipService.getYourShip();
-                VoyageInformation2 info = new VoyageInformation2();
-                ship.setVoyageInformation(info);
+                VoyagePlan info = new VoyagePlan();
+                ship.setVoyagePlan(info);
                 for (int i = 0; i < count; i++) {
                     info.addVoyageEntry(new Voyage());
                 }
@@ -230,15 +230,15 @@ public class VoyageInformationForm extends EmbryonicForm<VoyageInformationForm> 
         }
     }
 
-    public class VoyageInformationModel extends LoadableDetachableModel<VoyageInformation2> {
+    public class VoyagePlanModel extends LoadableDetachableModel<VoyagePlan> {
 
         private static final long serialVersionUID = 5624306986147386672L;
 
         @Override
-        protected VoyageInformation2 load() {
+        protected VoyagePlan load() {
             // Initial request. Load voyage information from database.
             Ship2 ship = shipService.getYourShip();
-            VoyageInformation2 info = shipService.getVoyageInformation(ship.getMmsi());
+            VoyagePlan info = shipService.getVoyagePlan(ship.getMmsi());
             // HACK: Add empty voyage to generate empty row in case the user creates new voyages
             info.addVoyageEntry(new Voyage(null));
             return info;

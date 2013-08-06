@@ -43,7 +43,7 @@ import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.VoyagePlan;
 
 public class TestPage extends WebPage {
 
@@ -86,7 +86,7 @@ public class TestPage extends WebPage {
             deleteAll(Berth.class);
             deleteAll(Route.class);
             deleteAll(Voyage.class);
-            deleteAll(VoyageInformation2.class);
+            deleteAll(VoyagePlan.class);
             deleteAll(SecuredUser.class);
             deleteAll(Role.class);
             deleteAll(Ship2.class);
@@ -162,7 +162,7 @@ public class TestPage extends WebPage {
             logger.info("Roles: {} ", realmDao.getAll(Role.class));
             logger.info("Users: {} ", realmDao.getAll(SecuredUser.class));
             logger.info("Ships: {} ", realmDao.getAll(Ship2.class));
-            logger.info("VoyageInformations: {} ", realmDao.getAll(VoyageInformation2.class));
+            logger.info("VoyagePlans: {} ", realmDao.getAll(VoyagePlan.class));
             logger.info("Voyage: {} ", realmDao.getAll(Voyage.class));
             logger.info("Berth: {} ", realmDao.getAll(Berth.class));
             tx.commit();

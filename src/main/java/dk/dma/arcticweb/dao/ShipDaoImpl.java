@@ -24,7 +24,7 @@ import javax.persistence.TypedQuery;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.VoyagePlan;
 
 @Stateless
 public class ShipDaoImpl extends DaoImpl implements ShipDao {
@@ -46,11 +46,11 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
 
 
     @Override
-    public VoyageInformation2 getVoyageInformation(Long mmsi) {
-        TypedQuery<VoyageInformation2> query = em.createNamedQuery("VoyageInformation:getByMmsi", VoyageInformation2.class);
+    public VoyagePlan getVoyagePlan(Long mmsi) {
+        TypedQuery<VoyagePlan> query = em.createNamedQuery("VoyagePlan:getByMmsi", VoyagePlan.class);
         query.setParameter("mmsi", mmsi);
         
-        List<VoyageInformation2> result = query.getResultList();
+        List<VoyagePlan> result = query.getResultList();
         
         return getSingleOrNull(result);
     }
