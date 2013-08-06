@@ -29,7 +29,7 @@ public class RouteTest {
     public void testFromEnavModelRoute() {
         
         // DATA
-        Route route = new Route("test route", "departure", "destination");
+        Route route = new Route("MyKey", "test route", "departure", "destination");
         
         Waypoint wp1 = new Waypoint("wp1", 55.5, 88.8, 0.5, 1.0);
         wp1.setRouteLeg(new RouteLeg(10.0, Heading.GC, 0.5, 0.7));
@@ -42,6 +42,7 @@ public class RouteTest {
         //Execute
         dk.dma.embryo.domain.Route transformed = dk.dma.embryo.domain.Route.fromEnavModel(route);
         
+        Assert.assertEquals("MyKey", transformed.getEnavId());
         Assert.assertEquals("test route", transformed.getName());
         Assert.assertEquals("departure", transformed.getOrigin());
         Assert.assertEquals("destination", transformed.getDestination());

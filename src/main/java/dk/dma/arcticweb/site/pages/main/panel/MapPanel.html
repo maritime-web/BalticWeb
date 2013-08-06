@@ -2,8 +2,10 @@
 <wicket:panel>
 
 	<!-- Add data-toggle="context" to any element that needs a custom context menu and via CSS set position: relative to the element. -->
-	<div id="map" style="position: relative"></div>
-
+	<div id="map" style="position: relative">
+	
+	
+	</div>
 
 	<div id="children">
 		<div wicket:id="childComponentGroup">
@@ -11,14 +13,16 @@
 		</div>
 	</div>
 
-	<div id="context-menu">
-		<ul class="dropdown-menu" role="menu">
-			<li><a tabindex="-1" href="#">Action</a></li>
-			<li><a tabindex="-1" href="#">Another action</a></li>
-			<li><a tabindex="-1" href="#">Something else here</a></li>
-			<li class="divider"></li>
-			<li><a tabindex="-1" href="#">Separated link</a></li>
-		</ul>
+	<div >
+		<div id="context-menu" ng-controller="embryo.contextMenu.Ctrl">
+			<ul class="dropdown-menu" role="menu">
+				<li ng-show="shown(item, getSelectedFeature())" ng-repeat="item in getMenuItems()"><a tabindex="-1" href="#" ng-click="choose(item, getSelectedFeature())">{{item.text}}</a></li>
+				<li class="divider"></li>
+				<li><a tabindex="-1" href="#">Always here</a></li>
+				<li><a tabindex="-1" href="#">Another action</a></li>
+				<li><a tabindex="-1" href="#">Something else here</a></li>
+			</ul>
+		</div>
 	</div>
 
 	<div id="filtering">

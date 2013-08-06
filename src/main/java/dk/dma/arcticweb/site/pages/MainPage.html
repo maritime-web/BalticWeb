@@ -1,122 +1,108 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:wicket="http://wicket.apache.org">
-	<head>
-		<meta charset="utf-8" />
-		<title>ArcticWeb - Greenland</title>
-		
-		<!-- <link href="bootstrap/css/bootstrap.css" rel="stylesheet">-->
-		<!--  <link href="css/bootstrap_main.css" rel="stylesheet">-->
-		<link href="css/embryo.bootstrap.min.css" rel="stylesheet">
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="css/bootstrap-responsive.css" rel="stylesheet"> 
-		
-		<link href="css/style.css" rel="stylesheet" type="text/css">
-		<link href="css/aisview.css" rel="stylesheet" type="text/css">
+<html lang="en" xmlns:wicket="http://wicket.apache.org" ng-app="embryo">
+<head>
+<meta charset="utf-8" />
+<title>ArcticWeb - Greenland</title>
 
-		<link href="css/ext/typeahead-0.9.3.css" rel="stylesheet" type="text/css">
+<!-- <link href="bootstrap/css/bootstrap.css" rel="stylesheet">-->
+<!--  <link href="css/bootstrap_main.css" rel="stylesheet">-->
+<link href="css/embryo.bootstrap.min.css" rel="stylesheet">
 
-    	
-    	<script src="js/ext/jquery-1.9.1.min.js"></script>
-    	
-    	<script src="http://api.jquery.com/scripts/events.js"></script>
-    	<script src="http://openlayers.org/api/OpenLayers.js"></script>
-		<script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
-		<script src="js/aisview.js" defer="defer"></script>
-		<script src="js/aisviewUI.js" defer="defer"></script>
-		<script src="js/vessel.js" defer="defer"></script>
-		<script src="js/cluster.js" defer="defer" type="text/javascript"></script>
-		<script src="js/abnormalEvent.js" defer="defer" type="text/javascript"></script>
-		<script src="js/tool.js" defer="defer" type="text/javascript"></script>
-		<script src="js/abnormalBehaviorFeed.js" defer="defer" type="text/javascript"></script>
-		<script src="js/html.js" defer="defer" type="text/javascript"></script>
-		<script src="js/settings.js" defer="defer" type="text/javascript"></script>
-		<script type="text/javascript" src="js/abnormal.js"></script>
-		<script type="text/javascript" src="js/arcticWeb.js"></script>
-		
-		<script src="js/ext/bootstrap.min.js"></script>
-		<script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>		
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
 
-		<!-- Depends on jQuery 1.9.x -->
-		<!-- Must be loaded after bootstrap to overwrite bootstrap-typeahead -->
-    	<script src="js/ext/typeahead-0.9.3.min.js" type="text/javascript"></script>
-		<script src="js/ext/bootstrap-contextmenu.js"></script>
-	    
-	</head>
-	
-	<body onload="setupMap()">
-	
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<link href="css/aisview.css" rel="stylesheet" type="text/css">
+
+<link href="css/ext/typeahead-0.9.3.css" rel="stylesheet" type="text/css">
+
+
+<script src="js/ext/jquery-1.9.1.min.js"></script>
+
+<script src="http://api.jquery.com/scripts/events.js"></script>
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+<script src="js/aisview.js" defer="defer"></script>
+<script src="js/aisviewUI.js" defer="defer"></script>
+<script src="js/vessel.js" defer="defer"></script>
+<script src="js/cluster.js" defer="defer" type="text/javascript"></script>
+<script src="js/abnormalEvent.js" defer="defer" type="text/javascript"></script>
+<script src="js/tool.js" defer="defer" type="text/javascript"></script>
+<script src="js/abnormalBehaviorFeed.js" defer="defer" type="text/javascript"></script>
+<script src="js/html.js" defer="defer" type="text/javascript"></script>
+<script src="js/settings.js" defer="defer" type="text/javascript"></script>
+<script type="text/javascript" src="js/abnormal.js"></script>
+<script type="text/javascript" src="js/arcticWeb.js"></script>
+
+<script src="js/ext/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+
+<!-- Depends on jQuery 1.9.x -->
+<!-- Must be loaded after bootstrap to overwrite bootstrap-typeahead -->
+<script src="js/ext/typeahead-0.9.3.min.js" type="text/javascript"></script>
+<script src="js/ext/bootstrap-contextmenu.js"></script>
+<script src="js/ext/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-resource.min.js"></script>
+</head>
+
+<body onload="setupMap()">
+
 	<span wicket:id="js_panel">js_panel</span>
-	
+
 	<!-- Navbar
     ================================================== -->
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <i class="icon-th-list"></i>
-          </button>
-          <a class="brand" href="front">
-          	<font color="#0080C0">ArcticWeb</font><font color="#888888" size="3">Greenland</font>
-          </a>
-          <div class="nav-collapse collapse">
-          	 <p class="navbar-text pull-right">
-          	 	<span wicket:id="user_panel">User panel</span>
-            </p>
-            <span wicket:id="menu_panel">Menu panel</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- ============================================= -->
-    
-    <div class="menuDivider"></div>
-    
-    <!-- Ship information modal
-	================================================== -->
-	<div wicket:id="ship_information">
-	
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<i class="icon-th-list"></i>
+				</button>
+				<a class="brand" href="front"> <font color="#0080C0">ArcticWeb</font><font color="#888888" size="3">Greenland</font>
+				</a>
+				<div class="nav-collapse collapse">
+					<p class="navbar-text pull-right">
+						<span wicket:id="user_panel">User panel</span>
+					</p>
+					<span wicket:id="menu_panel">Menu panel</span>
+				</div>
+			</div>
+		</div>
 	</div>
-	
-	 <!-- Selected ship information modal
-	================================================== -->
-	<div wicket:id="selected_ship_information">
-	
-	</div>
+	<!-- ============================================= -->
 
-	 <!-- Route modal
-	================================================== -->
-	<div wicket:id="routeModule">
-	
-	</div>
+	<div class="menuDivider"></div>
 
-	 <!-- Route modal
+	<!-- Ship information modal
 	================================================== -->
-	<div wicket:id="routeUpload">
-	
-	</div>
+	<div wicket:id="ship_information"></div>
 
-	
 	<!-- Selected ship information modal
 	================================================== -->
-	<div wicket:id="voyage_information">
-	
-	</div>
-	
-	
+	<div wicket:id="selected_ship_information"></div>
+
+	<!-- Route modal
+	================================================== -->
+	<div wicket:id="routeModule"></div>
+
+	<!-- Route modal
+	================================================== -->
+	<div wicket:id="routeUpload"></div>
+
+
+	<!-- Selected ship information modal
+	================================================== -->
+	<div wicket:id="voyage_information"></div>
+
+
 	<!-- Ship report modal
 	================================================== -->
-	<div wicket:id="ship_report">
-	
-	</div>
-    
-    <!-- MAP
-    ================================================== -->
-    <div id="container" wicket:id="map">
-		
-	</div>
-    <!-- ============================================= -->
+	<div wicket:id="ship_report"></div>
 
-	</body>
+	<!-- MAP
+    ================================================== -->
+	<div id="container" wicket:id="map"></div>
+	<!-- ============================================= -->
+
+</body>
 </html>
 

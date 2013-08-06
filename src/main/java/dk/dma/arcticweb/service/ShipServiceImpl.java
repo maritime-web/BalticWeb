@@ -57,7 +57,8 @@ public class ShipServiceImpl implements ShipService {
     @Inject
     private Subject subject;
     
-    @Inject Logger logger;
+    @Inject 
+    private Logger logger;
 
     public ShipServiceImpl() {
     }
@@ -144,7 +145,10 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public Long saveRoute(Route route) {
-        logger.debug("SAVING ROUTE {}", route);
+        if(route.getId() == null){
+            Long id = shipRepository.getRouteId(route.getEnavId());
+            route.setId(id);
+        }
         
         shipRepository.saveEntity(route);
         
@@ -157,15 +161,11 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public Route getRoute(Long id) {
-        Route route = shipRepository.getByPrimaryKey(Route.class, id);
-        if(route.getWayPoints().size() > 0){
-            route.getWayPoints().get(0);
-        }
+    public Route getRouteByEnavId(String enavId) {
+        Route route = shipRepository.getRouteByEnavId(enavId);
         return route;
-        
     }
-
+    
     @Override
     public Voyage getVoyage(Long id) {
         return shipRepository.getByPrimaryKey(Voyage.class, id);

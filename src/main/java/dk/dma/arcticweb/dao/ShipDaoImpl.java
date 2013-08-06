@@ -65,4 +65,24 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
         
         return getSingleOrNull(result);
     }
+
+    @Override
+    public Long getRouteId(String enavId) {
+        TypedQuery<Long> query = em.createNamedQuery("Route:getId", Long.class);
+        query.setParameter("enavId", enavId);
+        
+        List<Long> result = query.getResultList();
+        
+        return getSingleOrNull(result);
+    }
+
+    @Override
+    public Route getRouteByEnavId(String enavId) {
+        TypedQuery<Route> query = em.createNamedQuery("Route:getByEnavId", Route.class);
+        query.setParameter("enavId", enavId);
+        
+        List<Route> result = query.getResultList();
+        
+        return getSingleOrNull(result);
+    }
 }

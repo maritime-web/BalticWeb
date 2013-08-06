@@ -1152,7 +1152,13 @@ embryo.typeahead.create = function(selector) {
 };
 
 embryo.routeModal = {};
+embryo.routeModal.modalIdSelector;
 embryo.routeModal.prepareRequest = function(containerSelector) {
+
+	console.log('prepareRequest');
+
+	embryo.routeModal.modalIdSelector = containerSelector;
+
 	var $modalBody = $(containerSelector);
 	var $rows = $modalBody.find('tbody tr');
 	$modalBody.find('input[name="routeCount"]').val($rows.length);
@@ -1167,6 +1173,55 @@ embryo.routeModal.prepareRequest = function(containerSelector) {
 	});
 
 	return false;
+};
+
+var angularApp = angular.module('embryo', [ 'ngResource' ]);
+
+angularApp.factory('Route', function($resource) {
+	return $resource('rest/route/save', {
+		save : {
+			method : 'POST',
+			headers : [ {
+				'Content-Type' : 'application/json'
+			}, {
+				'Accept' : 'application/json'
+			} ]
+		}
+	});
+});
+
+angularApp.factory('RouteService', function() {
+	var route = {
+		waypoints : []
+	};
+	return {
+		editRoute : function(r) {
+			route = r;
+		},
+		getRoute : function() {
+			return route;
+		}
+	};
+});
+
+embryo.routeModal.Ctrl = function($scope, RouteService, Route) {
+	$scope.route = RouteService.getRoute();
+
+	$scope.getRoute = function() {
+		return RouteService.getRoute();
+	};
+
+	$scope.save = function() {
+		// validate?
+		Route.save(RouteService.getRoute(), function(){
+			console.log('Saved route' + $scope.route.name);
+			console.log('Saved route' + $scope.route);
+			
+		});
+	};
+	$scope.close = function(){
+		$('#routeEdit').parents('.modal').modal('hide');
+	};
 };
 
 embryo.dynamicListView = {};
@@ -1257,10 +1312,6 @@ embryo.route.drawTests = function() {
 	embryo.route.fetch('235', embryo.route.draw);
 };
 
-embryo.route.enableDrawing = function() {
-
-};
-
 embryo.route.initLayer = function() {
 	// Create vector layer for routes
 
@@ -1271,11 +1322,11 @@ embryo.route.initLayer = function() {
 		strokeWidth : pastTrackWidth
 	}, OpenLayers.Feature.Vector.style["default"]);
 
-	var selectStyle = OpenLayers.Util.applyDefaults({
-	}, OpenLayers.Feature.Vector.style.select);
+	var selectStyle = OpenLayers.Util.applyDefaults({},
+			OpenLayers.Feature.Vector.style.select);
 
-	var temporary = OpenLayers.Util.applyDefaults({
-	}, OpenLayers.Feature.Vector.style.temporary);
+	var temporary = OpenLayers.Util.applyDefaults({},
+			OpenLayers.Feature.Vector.style.temporary);
 
 	embryo.route.layer = new OpenLayers.Layer.Vector("routeLayer", {
 		styleMap : new OpenLayers.StyleMap({
@@ -1306,6 +1357,18 @@ embryo.route.initLayer = function() {
 		"sketchcomplete" : report
 	});
 
+	var menuItems = [ {
+		text : 'Edit Route',
+		shown4FeatureType : 'route',
+		choose : function(scope, feature) {
+			var injector = angular.element(document).injector();
+			var service = injector.get('RouteService');
+			service.editRoute(feature.data.route);
+			$('#routeEdit').parents('.modal').modal('show');
+		}
+	} ];
+
+	embryo.contextMenu.addMenuItems(menuItems);
 };
 
 embryo.route.draw = function(route) {
@@ -1333,13 +1396,16 @@ embryo.route.draw = function(route) {
 			}
 			firstPoint = false;
 			previousPoint = currentPoint;
-
 		}
 
 		var multiLine = new OpenLayers.Geometry.MultiLineString(lines);
 
-		embryo.route.layer
-				.addFeatures(new OpenLayers.Feature.Vector(multiLine));
+		embryo.route.layer.addFeatures(new OpenLayers.Feature.Vector(multiLine,
+				{
+					featureType : 'route',
+					routeId : 'empty',
+					route : route
+				}));
 		// embryo.route.layer.addFeatures(points);
 
 		// Draw features

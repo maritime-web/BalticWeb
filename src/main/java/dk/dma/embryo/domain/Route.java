@@ -24,13 +24,18 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 
 import org.joda.time.LocalDateTime;
 
 import dk.dma.enav.model.voyage.Waypoint;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "Route:getByMmsi", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.ship.mmsi = :mmsi") })
+@NamedQueries({
+        @NamedQuery(name = "Route:getByMmsi", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.ship.mmsi = :mmsi"),
+        @NamedQuery(name = "Route:getByEnavId", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.enavId = :enavId"),
+        @NamedQuery(name = "Route:getId", query = "SELECT r.id FROM Route r WHERE r.enavId = :enavId") })
 public class Route extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -39,6 +44,8 @@ public class Route extends BaseEntity<Long> {
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     private String name;
+
+    private String enavId;
 
     private String destination;
 
@@ -52,6 +59,7 @@ public class Route extends BaseEntity<Long> {
 
     @ElementCollection
     @CollectionTable(name = "WayPoint")
+    @OrderColumn(name="orderNumber")
     private List<WayPoint> wayPoints = new ArrayList<>();
 
     @OneToOne
@@ -70,27 +78,27 @@ public class Route extends BaseEntity<Long> {
     public void addWayPoint(WayPoint wPoint) {
         wayPoints.add(wPoint);
     }
-    
-    public static Route fromEnavModel(dk.dma.enav.model.voyage.Route from){
-        Route route = new Route(from.getName(), from.getDeparture(), from.getDestination());
-        
-        for(Waypoint wayPoint : from.getWaypoints()){
+
+    public static Route fromEnavModel(dk.dma.enav.model.voyage.Route from) {
+        Route route = new Route(from.getId(), from.getName(), from.getDeparture(), from.getDestination());
+
+        for (Waypoint wayPoint : from.getWaypoints()) {
             route.addWayPoint(WayPoint.fromEnavModel(wayPoint));
         }
-        
+
         return route;
     }
-    
-    public dk.dma.enav.model.voyage.Route toEnavModel(){
-        dk.dma.enav.model.voyage.Route toRoute = new dk.dma.enav.model.voyage.Route();
+
+    public dk.dma.enav.model.voyage.Route toEnavModel() {
+        dk.dma.enav.model.voyage.Route toRoute = new dk.dma.enav.model.voyage.Route(this.enavId);
         toRoute.setName(this.name);
         toRoute.setDeparture(this.origin);
         toRoute.setDestination(this.destination);
-        
-        for(WayPoint wp : this.getWayPoints()){
+
+        for (WayPoint wp : this.getWayPoints()) {
             toRoute.getWaypoints().add(wp.toEnavModel());
         }
-        
+
         return toRoute;
     }
 
@@ -99,9 +107,10 @@ public class Route extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     public Route() {
     }
-    
-    public Route(String name, String origin, String destination) {
+
+    public Route(String key, String name, String origin, String destination) {
         super();
+        this.enavId = key;
         this.name = name;
         this.destination = destination;
         this.origin = origin;
@@ -113,9 +122,10 @@ public class Route extends BaseEntity<Long> {
     @Override
     public String toString() {
         return "Route [name=" + name + ", destination=" + destination + ", origin=" + origin + ", voyageName="
-                + voyageName + ", etaOfArrival=" + etaOfArrival + ", etaOfDeparture=" + etaOfDeparture + ", wayPoints"+  wayPoints + "]";
+                + voyageName + ", etaOfArrival=" + etaOfArrival + ", etaOfDeparture=" + etaOfDeparture + ", wayPoints"
+                + wayPoints + "]";
     }
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -185,5 +195,21 @@ public class Route extends BaseEntity<Long> {
 
     public void setVoyage(Voyage voyage) {
         this.voyage = voyage;
+    }
+
+    public String getEnavId() {
+        return enavId;
+    }
+
+    public void setEnavId(String enavId) {
+        this.enavId = enavId;
+    }
+
+    public void setId(Long id){
+        if(this.id != null){
+            throw new IllegalStateException("Can not modify existing id");
+        }
+        
+        this.id = id;
     }
 }

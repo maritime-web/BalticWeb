@@ -60,7 +60,7 @@ public interface ShipService {
     
     Route getActiveRoute(Long mmsi);
 
-    Route getRoute(Long id);
+    Route getRouteByEnavId(String enavId);
 
     Voyage getVoyage(Long id);
     

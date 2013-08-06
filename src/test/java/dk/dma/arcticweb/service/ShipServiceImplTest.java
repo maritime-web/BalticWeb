@@ -31,11 +31,14 @@ import org.unitils.reflectionassert.ReflectionAssert;
 import dk.dma.arcticweb.dao.ShipDaoImpl;
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
+import dk.dma.embryo.domain.Route;
+import dk.dma.embryo.domain.RouteLeg;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyageInformation2;
+import dk.dma.embryo.domain.WayPoint;
 
 public class ShipServiceImplTest {
 
@@ -65,15 +68,15 @@ public class ShipServiceImplTest {
         entityManager.persist(ship);
 
         VoyageInformation2 voyageInformation = new VoyageInformation2(12, true);
-        voyageInformation.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
-                LocalDateTime.parse("2013-06-20T11:56")));
-        voyageInformation.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime.parse("2013-06-23T22:08"),
-                LocalDateTime.parse("2013-06-25T20:19")));
+        voyageInformation.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime
+                .parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-20T11:56")));
+        voyageInformation.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime
+                .parse("2013-06-23T22:08"), LocalDateTime.parse("2013-06-25T20:19")));
 
         ship.setVoyageInformation(voyageInformation);
         entityManager.persist(voyageInformation);
 
-        ///// new user
+        // /// new user
         sailor = new Sailor();
         sailor.add(perm1);
         entityManager.persist(sailor);
@@ -89,7 +92,7 @@ public class ShipServiceImplTest {
 
         ship.setVoyageInformation(voyageInformation);
         entityManager.persist(voyageInformation);
-        
+
         entityManager.getTransaction().commit();
         entityManager.close();
     }
@@ -122,7 +125,54 @@ public class ShipServiceImplTest {
         Assert.assertNotNull(info);
         Assert.assertEquals(Integer.valueOf(12), info.getPersonsOnboard());
         Assert.assertTrue(info.getDoctorOnboard().booleanValue());
+
+        ReflectionAssert.assertPropertyLenientEquals("arrival",
+                asList(LocalDateTime.parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-23T22:08")),
+                info.getVoyagePlan());
+    }
+
+    @Test
+    public void saveRoute_notExisting() {
         
-        ReflectionAssert.assertPropertyLenientEquals("arrival", asList(LocalDateTime.parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-23T22:08")), info.getVoyagePlan());
+        entityManager.getTransaction().begin();
+        
+        Route route = new Route("key", "name", "origin", "destination");
+
+        WayPoint wp = new WayPoint("wp1", 61.0, 54.0, 0.5, 0.5);
+        wp.setLeg(new RouteLeg(10.0, 1.0, 1.0));
+        route.addWayPoint(wp);
+
+        wp = new WayPoint("wp2", 61.0, 54.0, 1.0, 1.0);
+        wp.setLeg(new RouteLeg(20.0, 2.0, 2.0));
+        route.addWayPoint(wp);
+
+        shipService.saveRoute(route);
+        entityManager.getTransaction().commit();
+
+        entityManager.clear();
+        
+        
+        Route result = shipService.getRouteByEnavId("key");
+        
+        Assert.assertNotNull(result);
+        Assert.assertEquals("key", result.getEnavId());
+        Assert.assertEquals("name", result.getName());
+        Assert.assertEquals("origin", result.getOrigin());
+        Assert.assertEquals("destination", result.getDestination());
+
+        Assert.assertNotNull(result.getWayPoints());
+        Assert.assertEquals(2, result.getWayPoints().size());
+        Assert.assertEquals("wp1", result.getWayPoints().get(0).getName());
+        Assert.assertEquals(61.0, result.getWayPoints().get(0).getPosition().getLatitude(), 0.0);
+        Assert.assertEquals(54.0, result.getWayPoints().get(0).getPosition().getLongitude(), 0.0);
+        Assert.assertEquals(.5, result.getWayPoints().get(0).getRot(), 0.0);
+        Assert.assertEquals(.5, result.getWayPoints().get(0).getTurnRadius(), 0.0);
+
+        Assert.assertEquals("wp2", result.getWayPoints().get(1).getName());
+        Assert.assertEquals(61.0, result.getWayPoints().get(1).getPosition().getLatitude(), 0.0);
+        Assert.assertEquals(54.0, result.getWayPoints().get(1).getPosition().getLongitude(), 0.0);
+        Assert.assertEquals(1.0, result.getWayPoints().get(1).getRot(), 0.0);
+        Assert.assertEquals(1.0, result.getWayPoints().get(1).getTurnRadius(), 0.0);
+        
     }
 }

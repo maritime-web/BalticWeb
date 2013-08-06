@@ -16,7 +16,9 @@
 package dk.dma.embryo.rest;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -49,8 +51,24 @@ public class RouteService {
     @GET
     @Path("/byId/{id}")
     @Produces("application/json")
-    public Route getRoute(@PathParam("id") Long id) {
-        dk.dma.embryo.domain.Route route = shipService.getRoute(id);
+    public Route getRoute(@PathParam("id") String id) {
+        logger.debug("getRoute({})", id);
+        dk.dma.embryo.domain.Route route = shipService.getRouteByEnavId(id);
         return route.toEnavModel();
     }
+
+
+    @POST
+    @Path("/save")
+    @Consumes("application/json")
+    public void save(Route route) {
+        logger.debug("Saving route {}", route);
+        
+        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromEnavModel(route);
+        shipService.saveRoute(toBeSaved);
+//        String result = "Product created : " + product;
+//        return Response.status(201).entity(result).build();
+    }
+    
+
 }

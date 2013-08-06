@@ -1,0 +1,119 @@
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+<wicket:panel>
+	
+	<div ng-controller="embryo.routeModal.Ctrl">
+
+		<div wicket:id="myContainer" class="modal hide fade xlarge" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h2 id="myModalLabel">Current Route</h2>
+			</div>
+			<div class="modal-body">
+				<div id="routeEdit">
+					<div ng-show="message" class="alert alert-error">{{message}} XXX</div>
+					<!-- <div ng-show="message" class="alert alert-error">{{message}}</div> -->
+
+					<form class="form-horizontal route">
+
+						<div class="row-fluid">
+							<div class="span5">
+								<div class="control-group">
+									<label class="control-label" for="name">Name</label>
+									<div class="controls">
+										<input ng-model="getRoute().name" type="text" id="name" class="input-large" />
+									</div>
+								</div>
+							</div>
+							<div class="span7">
+								<div class="control-group">
+									<label class="control-label" for="voyageName">Associated voyage</label>
+									<div class="controls">
+										<input ng-model="voyageId" type="hidden" id="voyageId" /> <input
+											type="text" id="voyageName" class="input-large" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span5">
+								<div class="control-group">
+									<label class="control-label" for="origin">Origin</label>
+									<div class="controls">
+										<input ng-model="getRoute().departure" type="text" id="origin" class="input-large" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="destination">Destination</label>
+									<div class="controls">
+										<input ng-model="getRoute().destination" type="text" id="destination" class="input-large" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="distance">Total Distance</label>
+									<div class="controls">
+										<span id="distance"></span>
+									</div>
+								</div>
+							</div>
+
+							<div class="span7 long-label">
+								<div class="control-group">
+									<label class="control-label long" for="etaOfDeparture">Estimated time of Departure</label>
+									<div class="controls">
+										<input type="text" id="etaOfDeparture" class="input-medium" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label long" for="etaOfArrival">Estimated time of Arrival</label>
+									<div class="controls">
+										<input type="text" id="etaOfArrival" class="input-medium" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label long" for="timeBetween">Estimated time in between</label>
+									<div class="controls">
+										<input type="text" id="timeBetween" class="input-medium" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Latitude</th>
+									<th>Longitude</th>
+									<th>Rad</th>
+									<th>Rot</th>
+									<th>TTG</th>
+									<th>ETA</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr ng-repeat="wp in getRoute().waypoints">
+									<td><input ng-model="wp.name" class="input-medium" type="text" /></td>
+									<td><input ng-model="wp.latitude" class="input-small" type="text" /></td>
+									<td><input ng-model="wp.longitude" class="input-small" type="text" /></td>
+									<td><input ng-model="wp.turnRad" class="input-small" type="text" /></td>
+									<td><input ng-model="wp.rot" class="input-small" type="text" /></td>
+									<td><input class="input-small" type="text" /></td>
+									<td><input class="input-small" type="text" /></td>
+
+								</tr>
+							</tbody>
+						</table>
+
+
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<input type="submit" class="btn btn-primary" value="Save" ng-click="save()" />
+			</div>
+		</div>
+	</div>
+</wicket:panel>
+</html>

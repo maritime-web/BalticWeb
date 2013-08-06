@@ -36,4 +36,8 @@ public interface ShipDao extends Dao {
     VoyageInformation2 getVoyageInformation(Long mmsi);
     
     Route getActiveRoute(Long mmsi);
+
+    Long getRouteId(String enavId);
+
+    Route getRouteByEnavId(String enavId);
 }

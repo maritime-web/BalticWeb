@@ -63,7 +63,7 @@ public abstract class DaoImpl implements Dao {
         return entity;
     }
 
-    public static <T extends IEntity<?>> T getSingleOrNull(List<T> list) {
+    public static <T> T getSingleOrNull(List<T> list) {
         return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
