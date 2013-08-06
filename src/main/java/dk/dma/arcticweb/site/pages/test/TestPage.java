@@ -85,9 +85,9 @@ public class TestPage extends WebPage {
             deleteAll(Berth.class);
             deleteAll(Voyage.class);
             deleteAll(VoyageInformation2.class);
+            deleteAll(SecuredUser.class);
             deleteAll(Role.class);
             deleteAll(Ship2.class);
-            deleteAll(SecuredUser.class);
             deleteAll(Permission.class);
             
         } catch (SecurityException | IllegalStateException
