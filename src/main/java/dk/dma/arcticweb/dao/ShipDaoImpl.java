@@ -56,6 +56,7 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
     }
 
 
+
     @Override
     public Route getActiveRoute(Long mmsi) {
         TypedQuery<Route> query = em.createNamedQuery("Route:getByMmsi", Route.class);

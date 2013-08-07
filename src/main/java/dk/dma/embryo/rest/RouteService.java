@@ -30,14 +30,14 @@ import dk.dma.enav.model.voyage.Route;
 
 @Path("/route")
 public class RouteService {
-    
+
     @Inject
     private ShipService shipService;
-    
-    @Inject Logger logger;
-    
-    public RouteService(){
-        //logger.error("RouteService INsTALLED!!!!!!!!!!!!!!!!!!!!!!");
+
+    @Inject
+    private Logger logger;
+
+    public RouteService() {
     }
 
     @GET
@@ -54,21 +54,21 @@ public class RouteService {
     public Route getRoute(@PathParam("id") String id) {
         logger.debug("getRoute({})", id);
         dk.dma.embryo.domain.Route route = shipService.getRouteByEnavId(id);
-        return route.toEnavModel();
-    }
 
+        // TODO replace below with some http status telling resource is not available
+        return route != null ? route.toEnavModel() : null;
+    }
 
     @POST
     @Path("/save")
     @Consumes("application/json")
     public void save(Route route) {
         logger.debug("Saving route {}", route);
-        
+
         dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromEnavModel(route);
         shipService.saveRoute(toBeSaved);
-//        String result = "Product created : " + product;
-//        return Response.status(201).entity(result).build();
+        // String result = "Product created : " + product;
+        // return Response.status(201).entity(result).build();
     }
-    
 
 }

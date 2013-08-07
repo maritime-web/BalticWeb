@@ -27,10 +27,10 @@ public class RouteTest {
 
     @Test
     public void testFromEnavModelRoute() {
-        
+
         // DATA
         Route route = new Route("MyKey", "test route", "departure", "destination");
-        
+
         Waypoint wp1 = new Waypoint("wp1", 55.5, 88.8, 0.5, 1.0);
         wp1.setRouteLeg(new RouteLeg(10.0, Heading.GC, 0.5, 0.7));
         route.getWaypoints().add(wp1);
@@ -38,10 +38,10 @@ public class RouteTest {
         Waypoint wp2 = new Waypoint("wp2", 65.5, 44.4, 0.2, 0.5);
         wp2.setRouteLeg(new RouteLeg(20.0, Heading.RL, 0.4, 1.0));
         route.getWaypoints().add(wp2);
-        
-        //Execute
+
+        // Execute
         dk.dma.embryo.domain.Route transformed = dk.dma.embryo.domain.Route.fromEnavModel(route);
-        
+
         Assert.assertEquals("MyKey", transformed.getEnavId());
         Assert.assertEquals("test route", transformed.getName());
         Assert.assertEquals("departure", transformed.getOrigin());
@@ -49,7 +49,7 @@ public class RouteTest {
 
         Assert.assertEquals(2, transformed.getWayPoints().size());
 
-        WayPoint wpTrans = transformed.getWayPoints().get(0); 
+        WayPoint wpTrans = transformed.getWayPoints().get(0);
         Assert.assertEquals("wp1", wpTrans.getName());
         Assert.assertEquals(55.5, wpTrans.getPosition().getLatitude(), 0.0);
         Assert.assertEquals(88.8, wpTrans.getPosition().getLongitude(), 0.0);
@@ -60,7 +60,7 @@ public class RouteTest {
         Assert.assertEquals(0.5, wpTrans.getLeg().getXtdPort(), 0.0);
         Assert.assertEquals(0.7, wpTrans.getLeg().getXtdStarboard(), 0.0);
 
-        wpTrans = transformed.getWayPoints().get(1); 
+        wpTrans = transformed.getWayPoints().get(1);
         Assert.assertEquals("wp2", wpTrans.getName());
         Assert.assertEquals(65.5, wpTrans.getPosition().getLatitude(), 0.0);
         Assert.assertEquals(44.4, wpTrans.getPosition().getLongitude(), 0.0);
@@ -70,6 +70,21 @@ public class RouteTest {
         Assert.assertEquals(20.0, wpTrans.getLeg().getSpeed(), 0.0);
         Assert.assertEquals(0.4, wpTrans.getLeg().getXtdPort(), 0.0);
         Assert.assertEquals(1.0, wpTrans.getLeg().getXtdStarboard(), 0.0);
-}
+    }
+
+    @Test
+    public void testFromEnavModelRoute_NoKey() {
+
+        // DATA
+        Route route = new Route(null, "test route", "departure", "destination");
+
+        // Execute
+        dk.dma.embryo.domain.Route transformed = dk.dma.embryo.domain.Route.fromEnavModel(route);
+
+        Assert.assertNotNull(transformed.getEnavId());
+        Assert.assertEquals("test route", transformed.getName());
+        Assert.assertEquals("departure", transformed.getOrigin());
+        Assert.assertEquals("destination", transformed.getDestination());
+    }
 
 }

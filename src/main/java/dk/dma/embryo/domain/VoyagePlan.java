@@ -28,6 +28,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 
 
 @Entity
@@ -49,6 +50,7 @@ public class VoyagePlan extends BaseEntity<Long> {
     Ship2 ship;
     
     @OneToMany(cascade={CascadeType.ALL}, mappedBy="plan")
+    @OrderBy("departure")
     private List<Voyage> voyages = new LinkedList<>(); 
 
     // //////////////////////////////////////////////////////////////////////

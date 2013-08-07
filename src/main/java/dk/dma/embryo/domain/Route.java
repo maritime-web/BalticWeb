@@ -17,6 +17,7 @@ package dk.dma.embryo.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -24,8 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
+import javax.validation.constraints.NotNull;
 
 import org.joda.time.LocalDateTime;
 
@@ -43,15 +44,15 @@ public class Route extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
+    @NotNull
     private String name;
 
+    @NotNull
     private String enavId;
 
     private String destination;
 
     private String origin;
-
-    private transient String voyageName;
 
     private LocalDateTime etaOfArrival;
 
@@ -59,7 +60,7 @@ public class Route extends BaseEntity<Long> {
 
     @ElementCollection
     @CollectionTable(name = "WayPoint")
-    @OrderColumn(name="orderNumber")
+    @OrderColumn(name = "orderNumber")
     private List<WayPoint> wayPoints = new ArrayList<>();
 
     @OneToOne
@@ -106,11 +107,12 @@ public class Route extends BaseEntity<Long> {
     // Constructors
     // //////////////////////////////////////////////////////////////////////
     public Route() {
+        this.enavId = UUID.randomUUID().toString();
     }
 
     public Route(String key, String name, String origin, String destination) {
         super();
-        this.enavId = key;
+        this.enavId = key != null ? key : UUID.randomUUID().toString();
         this.name = name;
         this.destination = destination;
         this.origin = origin;
@@ -121,9 +123,8 @@ public class Route extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "Route [name=" + name + ", destination=" + destination + ", origin=" + origin + ", voyageName="
-                + voyageName + ", etaOfArrival=" + etaOfArrival + ", etaOfDeparture=" + etaOfDeparture + ", wayPoints"
-                + wayPoints + "]";
+        return "Route [name=" + name + ", destination=" + destination + ", origin=" + origin + ", etaOfArrival="
+                + etaOfArrival + ", etaOfDeparture=" + etaOfDeparture + ", wayPoints" + wayPoints + "]";
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -151,14 +152,6 @@ public class Route extends BaseEntity<Long> {
 
     public void setOrigin(String origin) {
         this.origin = origin;
-    }
-
-    public String getVoyageName() {
-        return voyageName;
-    }
-
-    public void setVoyageName(String voyageName) {
-        this.voyageName = voyageName;
     }
 
     public LocalDateTime getEtaOfArrival() {
@@ -205,11 +198,11 @@ public class Route extends BaseEntity<Long> {
         this.enavId = enavId;
     }
 
-    public void setId(Long id){
-        if(this.id != null){
+    public void setId(Long id) {
+        if (this.id != null) {
             throw new IllegalStateException("Can not modify existing id");
         }
-        
+
         this.id = id;
     }
 }

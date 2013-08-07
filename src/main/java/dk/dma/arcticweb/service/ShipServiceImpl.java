@@ -17,6 +17,7 @@ package dk.dma.arcticweb.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -141,6 +142,18 @@ public class ShipServiceImpl implements ShipService {
             ship.setVoyagePlan(voyagePlan);
         }
         return voyagePlan;
+    }
+    
+
+    @YourShip
+    @Override
+    public List<Voyage> getVoyages(Long mmsi) {
+        // TODO fix to work for several voyage plans
+        VoyagePlan plan = shipRepository.getVoyagePlan(mmsi);
+        if(plan == null){
+            return Collections.emptyList();
+        }
+        return plan.getVoyagePlan();
     }
 
     @Override

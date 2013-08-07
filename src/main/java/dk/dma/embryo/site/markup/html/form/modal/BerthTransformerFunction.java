@@ -45,6 +45,6 @@ public class BerthTransformerFunction implements Function<Berth, TypeaheadDatum>
      */
     @Override
     public TypeaheadDatum apply(final Berth input) {
-        return new TypeaheadDatum(input.getName(), value(input), tokens(input));
+        return new TypeaheadDatum(value(input), tokens(input));
     }
 }

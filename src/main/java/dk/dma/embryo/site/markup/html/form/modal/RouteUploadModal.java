@@ -57,7 +57,7 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
 
     private FileUploadField fileUpload;
 
-    private Model<Long> voyageId = Model.of();
+    private Model<String> voyageId = Model.of();
     private Model<String> voyageName = Model.of();
 
     /**
@@ -67,6 +67,8 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
      */
     public RouteUploadModal(String id) {
         super(id);
+        
+        
 
         title("Upload Route");
 
@@ -88,6 +90,9 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                
+                logger.debug("FILE UPLOADED");
+                
                 FileUpload upload = fileUpload.getFileUpload();
 
                 Route route = null;
@@ -96,15 +101,18 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
                     route = shipService.parseRoute(upload.getInputStream());
 
                     if (voyageId.getObject() != null) {
-                        route.setVoyageName(voyageName.getObject());
-                        Voyage voyage = shipService.getVoyage(voyageId.getObject());
+                        logger.debug("voyageId: {}", voyageId.getObject());
+                        
+                        Long id = Long.valueOf(voyageId.getObject());
+                        
+                        Voyage voyage = shipService.getVoyage(id);
                         route.setVoyage(voyage);
                     }
 
                     Long routeId = shipService.saveRoute(route);
                     appendSaveDialogJS(target, routeId);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 } 
 
                 feedback.setVisible(false);

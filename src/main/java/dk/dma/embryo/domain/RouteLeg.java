@@ -18,6 +18,7 @@ package dk.dma.embryo.domain;
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 @Embeddable
 public class RouteLeg implements Serializable {
@@ -28,12 +29,15 @@ public class RouteLeg implements Serializable {
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     /** Speed in knots. */
+    @NotNull
     private Double speed;
 
     /** Port XTD. */
+    @NotNull
     private Double xtdPort;
 
     /** Starboard XTD. */
+    @NotNull
     private Double xtdStarboard;
 
     /** Safe Haven Width */

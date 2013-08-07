@@ -1114,8 +1114,8 @@ embryo.voyagePlanForm.init = function(containerSelector) {
 			+ ' tr:not(.emptyRow) input.typeahead-textfield');
 
 	$(containerSelector).find(containerSelector).closest(
-			'button[type="submit"]').click(
-			embryo.voyagePlanForm.prepareRequest);
+			'button[type="submit"]')
+			.click(embryo.voyagePlanForm.prepareRequest);
 
 	// TODO if berth not typed in, but longitude and lattitude is typed in, then
 	// make it impossible to type in berth (until longitude and lattitude are
@@ -1141,7 +1141,7 @@ embryo.typeahead.create = function(selector) {
 			name : 'berths',
 			prefetch : {
 				url : jsonUrl,
-				ttl : 15000
+				ttl : 30000
 			},
 			remote : {
 				url : jsonUrl
@@ -1149,6 +1149,34 @@ embryo.typeahead.create = function(selector) {
 		});
 	});
 
+};
+
+embryo.routeUpload = {};
+embryo.routeUpload.Ctrl = function($scope, $element) {
+	
+	//TODO Find out how to reset prefetch/typeahead upon new ship
+	var mmsi = '220443000';
+
+	// c
+	$($element).find('.ngTypeahead').bind(
+			"typeahead:autocompleted typeahead:selected", embryo.routeUpload.selected);
+
+	
+	var vUrl = 'rest/voyage/typeahead/' + mmsi;
+	$scope.voyageData = {
+		name : 'voyages_45_' + mmsi,
+		prefetch : {
+			url : vUrl,
+			ttl : 18000000// 1/2 hour
+		},
+		remote : vUrl
+	};
+};
+embryo.routeUpload.selected = function(event, datum){
+	console.log(event);
+	console.log(datum.id);
+	$(event.target).parents('form').find('.voyageId').val(datum.id)
+	console.log($('.voyageId'));
 };
 
 embryo.routeModal = {};
@@ -1175,7 +1203,7 @@ embryo.routeModal.prepareRequest = function(containerSelector) {
 	return false;
 };
 
-var angularApp = angular.module('embryo', [ 'ngResource' ]);
+var angularApp = angular.module('embryo', ['ngResource', 'siyfion.ngTypeahead']);
 
 angularApp.factory('Route', function($resource) {
 	return $resource('rest/route/save', {
@@ -1213,13 +1241,13 @@ embryo.routeModal.Ctrl = function($scope, RouteService, Route) {
 
 	$scope.save = function() {
 		// validate?
-		Route.save(RouteService.getRoute(), function(){
+		Route.save(RouteService.getRoute(), function() {
 			console.log('Saved route' + $scope.route.name);
 			console.log('Saved route' + $scope.route);
-			
+
 		});
 	};
-	$scope.close = function(){
+	$scope.close = function() {
 		$('#routeEdit').parents('.modal').modal('hide');
 	};
 };

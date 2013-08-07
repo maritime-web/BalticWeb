@@ -259,8 +259,8 @@ public class VoyagePlanForm extends EmbryonicForm<VoyagePlanForm> {
 
         @Override
         public BerthDatum apply(final Berth input) {
-            return new BerthDatum(input.getName(), value(input), tokens(input), input.getPosition()
-                    .getLatitudeAsString(), input.getPosition().getLongitudeAsString());
+            return new BerthDatum(value(input), tokens(input), input.getPosition().getLatitudeAsString(), input
+                    .getPosition().getLongitudeAsString());
         }
     }
 
@@ -268,8 +268,8 @@ public class VoyagePlanForm extends EmbryonicForm<VoyagePlanForm> {
         private String latitude;
         private String longitude;
 
-        public BerthDatum(String name, String value, String[] tokens, String latitude, String longitude) {
-            super(name, value, tokens);
+        public BerthDatum(String value, String[] tokens, String latitude, String longitude) {
+            super(value, tokens);
             this.latitude = latitude;
             this.longitude = longitude;
         }
@@ -288,25 +288,25 @@ public class VoyagePlanForm extends EmbryonicForm<VoyagePlanForm> {
 
         @Override
         public List<BerthDatum> remoteFetch(String query) {
-            logger.debug("remoteFetch({})", query);
+            logger.trace("remoteFetch({})", query);
 
             List<Berth> berths = geoService.findBerths(query);
-
-            logger.debug("berths={}", berths);
-
             List<BerthDatum> transformed = Lists.transform(berths, new BerthTransformerFunction());
+
+            logger.trace("berths={}", transformed);
+
             return transformed;
         }
 
         @Override
         public List<BerthDatum> prefetch() {
-            logger.debug("prefetch()");
+            logger.trace("prefetch()");
 
             List<Berth> berths = geoService.findBerths("");
-
-            logger.debug("berths={}", berths);
-
             List<BerthDatum> transformed = Lists.transform(berths, new BerthTransformerFunction());
+
+            logger.trace("berths={}", transformed);
+
             return transformed;
         }
     }

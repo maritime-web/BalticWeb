@@ -17,6 +17,8 @@ package dk.dma.arcticweb.service;
 
 import static java.util.Arrays.asList;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -39,6 +41,7 @@ import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.domain.WayPoint;
+import dk.dma.embryo.security.authorization.YourShip;
 
 public class ShipServiceImplTest {
 
@@ -130,6 +133,28 @@ public class ShipServiceImplTest {
                 asList(LocalDateTime.parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-23T22:08")),
                 info.getVoyagePlan());
     }
+    
+    @Test
+    public void getVoyages_notExisting() {
+        // TODO fix to work for several voyage plans
+        List<Voyage> voyages = shipService.getVoyages(65L);
+        
+        Assert.assertNotNull(voyages);
+        Assert.assertEquals(0, voyages.size());
+    }
+
+    @Test
+    public void getVoyages_existing() {
+        // TODO fix to work for several voyage plans
+        List<Voyage> voyages = shipService.getVoyages(10L);
+
+        Assert.assertNotNull(voyages);
+        Assert.assertEquals(2, voyages.size());
+
+        Assert.assertEquals("City1", voyages.get(0).getBerthName());
+        Assert.assertEquals("City2", voyages.get(1).getBerthName());
+}
+
 
     @Test
     public void saveRoute_notExisting() {

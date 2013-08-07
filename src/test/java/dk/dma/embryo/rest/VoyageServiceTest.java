@@ -15,16 +15,27 @@
  */
 package dk.dma.embryo.rest;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import static org.junit.Assert.assertEquals;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import org.joda.time.LocalDateTime;
+import org.junit.Test;
 
-@ApplicationPath("/rest")
-public class ApplicationConfig extends Application {
-    public Set<Class<?>> getClasses() {
-        return new HashSet<Class<?>>(Arrays.asList(RouteService.class, VoyageService.class));
+import dk.dma.embryo.domain.Voyage;
+import dk.dma.embryo.rest.VoyageService.VoyageDatum;
+
+import dk.dma.embryo.rest.VoyageService.VoyageTransformerFunction;
+
+public class VoyageServiceTest {
+
+    @Test
+    public void VoyageTransformerFunction_test() {
+        
+        Voyage v = new Voyage("MyBerth", "1 1.100N", "1 2.000W", LocalDateTime.now(), LocalDateTime.now());
+        v.setBusinessId("MyKey");
+        VoyageDatum d = new VoyageTransformerFunction().apply(v);
+        
+        assertEquals("MyBerth - (MyKey)", d.getValue());
+        assertEquals("MyBerth", d.getTokens()[0]);
+        assertEquals("MyKey", d.getTokens()[1]);
     }
 }

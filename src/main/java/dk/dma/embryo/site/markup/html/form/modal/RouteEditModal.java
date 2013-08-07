@@ -98,7 +98,6 @@ public class RouteEditModal extends Modal<RouteEditModal> implements ReachedFrom
 
         form.add(new TextField<>("name"));
         form.add(new HiddenField<>("voyage.id"));
-        form.add(new TextField<>("voyageName"));
 
         form.add(new TypeaheadTextField<Berth, TypeaheadDatum>("origin", dataSource));
         form.add(new TypeaheadTextField<Berth, TypeaheadDatum>("destination", dataSource));

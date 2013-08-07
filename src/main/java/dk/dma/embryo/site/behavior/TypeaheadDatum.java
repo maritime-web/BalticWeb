@@ -16,18 +16,12 @@
 package dk.dma.embryo.site.behavior;
 
 public class TypeaheadDatum {
-    private String name;
     private String value;
     private String[] tokens;
 
-    public TypeaheadDatum(String name, String value, String... tokens) {
-        this.name = name;
+    public TypeaheadDatum(String value, String... tokens) {
         this.value = value;
         this.tokens = tokens;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getValue() {

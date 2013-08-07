@@ -17,6 +17,7 @@ package dk.dma.arcticweb.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.ejb.Local;
 
@@ -55,6 +56,8 @@ public interface ShipService {
     void saveVoyagePlan(VoyagePlan voyagePlan);
     
     VoyagePlan getVoyagePlan(Long mmsi);
+    
+    List<Voyage> getVoyages(Long mmsi);
     
     Long saveRoute(Route route);
     

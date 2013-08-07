@@ -1,32 +1,33 @@
 <html lang="en" xmlns:wicket="http://wicket.apache.org">
 <body>
 	<wicket:extend>
-		<form wicket:id="uploadForm" class="form-horizontal route">
-			<wicket:enclosure>
-				<div class="alert alert-error" wicket:id="feedback">xxx</div>
-			</wicket:enclosure>
+		<div ng-controller="embryo.routeUpload.Ctrl">
+			<form wicket:id="uploadForm" class="form-horizontal route">
+				<wicket:enclosure>
+					<div class="alert alert-error" wicket:id="feedback">xxx</div>
+				</wicket:enclosure>
 
-			<div class="row-fluid">
-				<div class="span5">
-					<div class="control-group">
-						<label class="control-label" for="file">File</label>
-						<div class="controls">
-							<input wicket:id="file" type="file" id="file" class="input-large" />
+				<div class="row-fluid">
+					<div class="span5">
+						<div class="control-group">
+							<label class="control-label" for="file">File</label>
+							<div class="controls">
+								<input wicket:id="file" type="file" id="file" class="input-large" />
+							</div>
+						</div>
+					</div>
+					<div class="span7">
+						<div class="control-group">
+							<label class="control-label" for="voyageName">Associated voyage</label>
+							<div class="controls">
+								<input wicket:id="voyageName" type="text" class="input-large ngTypeahead" datasets="voyageData"/>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="span7">
-					<div class="control-group">
-						<label class="control-label" for="voyageName">Associated voyage</label>
-						<div class="controls">
-							<input wicket:id="voyageId" type="hidden" /> 
-							<input wicket:id="voyageName" type="text"
-								class="input-large" />
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
+				<input wicket:id="voyageId" class="voyageId" type="hidden" />
+			</form>
+		</div>
 	</wicket:extend>
 </body>
 </html>
