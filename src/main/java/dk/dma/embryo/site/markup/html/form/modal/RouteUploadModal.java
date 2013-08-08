@@ -68,8 +68,6 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
     public RouteUploadModal(String id) {
         super(id);
         
-        
-
         title("Upload Route");
 
         modalContainer.add(form = new DynamicForm<>("uploadForm"));
@@ -90,9 +88,6 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                
-                logger.debug("FILE UPLOADED");
-                
                 FileUpload upload = fileUpload.getFileUpload();
 
                 Route route = null;
