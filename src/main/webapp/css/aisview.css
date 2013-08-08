@@ -98,6 +98,16 @@ form {
 	-o-user-select: none;
 }
 
+/*
+ Hack because statusPanel inserted via Wicket (and no other right side panels are present
+*/
+#statusPanel{
+	position: absolute;
+	top: 8px;
+	right: 8px;
+}
+
+
 #feedPanel {
 	width: 220px;
 	padding: 4px;
@@ -169,7 +179,7 @@ form {
 	-o-user-select: none;
 }
 
-#rightSide {
+#rightSide{
 	width: 350px;
 	padding: 0px;
 	vertical-align: middle;
