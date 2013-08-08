@@ -8,9 +8,31 @@
  * ....
  */
 
-
-
 embryo.voyagePlanForm = {};
+embryo.voyagePlanForm.init = function(containerSelector) {
+	// TODO remove when DynamicListView is introduced for voyagePlanForm
+	$(containerSelector).find('tr:last-child').addClass('emptyRow').find(
+			'button').hide();
+
+	$(containerSelector).find('.emptyRow input[type="text"]').keydown(
+			embryo.voyagePlanForm.copyEmptyRow);
+
+	$rows = $(containerSelector).find('.table tr:not(.emptyRow)');
+	embryo.voyagePlanForm.registerHandlers($rows);
+
+	// Initialize typeahead for all input fields not being empty row
+	embryo.typeahead.create(containerSelector
+			+ ' tr:not(.emptyRow) input.typeahead-textfield');
+
+	$(containerSelector).find(containerSelector).closest(
+			'button[type="submit"]')
+			.click(embryo.voyagePlanForm.prepareRequest);
+
+	// TODO if berth not typed in, but longitude and lattitude is typed in, then
+	// make it impossible to type in berth (until longitude and lattitude are
+	// again deleted)
+};
+
 embryo.voyagePlanForm.copyEmptyRow = function(event) {
 	var $row = $(event.target).closest('tr');
 
@@ -108,29 +130,6 @@ embryo.voyagePlanForm.prepareRequest = function(containerSelector) {
 	});
 
 	return false;
-};
-embryo.voyagePlanForm.init = function(containerSelector) {
-	// TODO remove when DynamicListView is introduced for voyagePlanForm
-	$(containerSelector).find('tr:last-child').addClass('emptyRow').find(
-			'button').hide();
-
-	$(containerSelector).find('.emptyRow input[type="text"]').keydown(
-			embryo.voyagePlanForm.copyEmptyRow);
-
-	$rows = $(containerSelector).find('.table tr:not(.emptyRow)');
-	embryo.voyagePlanForm.registerHandlers($rows);
-
-	// Initialize typeahead for all input fields not being empty row
-	embryo.typeahead.create(containerSelector
-			+ ' tr:not(.emptyRow) input.typeahead-textfield');
-
-	$(containerSelector).find(containerSelector).closest(
-			'button[type="submit"]')
-			.click(embryo.voyagePlanForm.prepareRequest);
-
-	// TODO if berth not typed in, but longitude and lattitude is typed in, then
-	// make it impossible to type in berth (until longitude and lattitude are
-	// again deleted)
 };
 
 embryo.typeahead = {};
