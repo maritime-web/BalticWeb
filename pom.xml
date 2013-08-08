@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>dk.dma</groupId>
 		<artifactId>dma-root-pom</artifactId>
-		<version>9</version>
+		<version>10</version>
 	</parent>
 
 
@@ -27,6 +27,7 @@
 		<version.org.jboss.spec.javaee6>3.0.2.Final</version.org.jboss.spec.javaee6>
 		<hibernate.version>4.0.1.Final</hibernate.version>
 		<shiro.version>1.2.2</shiro.version>
+		<jslint.predef>embryo</jslint.predef>
 		<!-- <version.net.ftlines.wicket-cdi>1.2</version.net.ftlines.wicket-cdi> -->
 	</properties>
 
@@ -281,32 +282,6 @@
 
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.googlecode.jslint4java</groupId>
-										<artifactId>jslint4java-maven-plugin</artifactId>
-										<versionRange>[2.0,)</versionRange>
-										<goals>
-											<goal>lint</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-										<!-- <execute /> -->
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
 				<plugin>
 					<groupId>org.jboss.as.plugins</groupId>
 					<artifactId>jboss-as-maven-plugin</artifactId>
@@ -399,31 +374,33 @@
 
 
 			<plugin>
-				<!-- http://docs.jslint4java.googlecode.com/git-history/780e260b85a0a5a162eac5e94dc3dd104b433e81/2.0.2/maven.html -->
 				<groupId>com.googlecode.jslint4java</groupId>
 				<artifactId>jslint4java-maven-plugin</artifactId>
-				<version>2.0.2</version>
+			</plugin>
+
+			<plugin>
+				<groupId>com.cj.jshintmojo</groupId>
+				<artifactId>jshint-maven-plugin</artifactId>
+				<version>0.0.10</version>
 				<executions>
 					<execution>
-						<id>lint</id>
-						<phase>process-resources</phase>
 						<goals>
 							<goal>lint</goal>
 						</goals>
-						<configuration>
-							<failOnError>false</failOnError>
-							<!-- https://code.google.com/p/jslint4java/issues/detail?id=91 -->
-							<excludes>
-								<exclude>**/ext/*.js</exclude>
-							</excludes>
-							<options>
-								<eqeq>true</eqeq>
-								<undef>true</undef>
-								<predef>${predef}</predef>
-							</options>
-						</configuration>
 					</execution>
 				</executions>
+				<configuration>
+					<reporter>Checkstyle</reporter>
+					<options>maxparams:3,indent,camelcase,eqeqeq,forin,immed,latedef,noarg,noempty,nonew</options>
+					<globals>$,jQuery,angular,embryo</globals>
+					<directories>
+						<directory>src/main/webapp/js</directory>
+					</directories>
+					<excludes>
+						<exclude>src/main/webapp/js/ext/*.js</exclude>
+					</excludes>
+					<failOnError>false</failOnError>
+				</configuration>
 			</plugin>
 		</plugins>
 
