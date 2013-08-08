@@ -377,31 +377,6 @@
 				<groupId>com.googlecode.jslint4java</groupId>
 				<artifactId>jslint4java-maven-plugin</artifactId>
 			</plugin>
-
-			<plugin>
-				<groupId>com.cj.jshintmojo</groupId>
-				<artifactId>jshint-maven-plugin</artifactId>
-				<version>0.0.10</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>lint</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<reporter>Checkstyle</reporter>
-					<options>maxparams:3,indent,camelcase,eqeqeq,forin,immed,latedef,noarg,noempty,nonew</options>
-					<globals>$,jQuery,angular,embryo</globals>
-					<directories>
-						<directory>src/main/webapp/js</directory>
-					</directories>
-					<excludes>
-						<exclude>src/main/webapp/js/ext/*.js</exclude>
-					</excludes>
-					<failOnError>false</failOnError>
-				</configuration>
-			</plugin>
 		</plugins>
 
 	</build>
