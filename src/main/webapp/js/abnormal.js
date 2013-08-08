@@ -250,6 +250,53 @@ function checkArguments(){
 
 }
 
+/*
+ * eventFromDate is apparently not present anymore. Remove
+ */
+function setupDatePickers() {
+
+	$("#eventFromDate").datepicker();
+	$("#eventToDate").datepicker();
+
+	// Today
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth() + 1; // January is 0!
+	var minutes = today.getMinutes();
+	var hours = today.getHours();
+	var yyyy = today.getFullYear();
+	today = mm + '/' + dd + '/' + yyyy;
+
+	// Yesterday
+	var yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);
+	dd = yesterday.getDate();
+	mm = yesterday.getMonth() + 1; // January is 0!
+	yyyy = yesterday.getFullYear();
+
+	yesterday = mm + '/' + dd + '/' + yyyy;
+
+	$("#eventFromDate").datepicker("setDate", yesterday);
+	$("#eventToDate").datepicker("setDate", today);
+
+	// Set time
+	minutes = round5(minutes);
+
+	if (minutes == 60) {
+		if (hours != 23) {
+			hours++;
+			minutes = 0;
+		}
+	}
+
+	$("#eventFromHour").val(hours);
+	$("#eventToHour").val(hours);
+	$("#eventFromMin").val(minutes);
+	$("#eventToMin").val(minutes);
+
+}
+
+
 
 
 

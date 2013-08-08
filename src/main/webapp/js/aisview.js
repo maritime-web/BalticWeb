@@ -49,16 +49,35 @@ embryo.eventbus.VesselSelectedEvent = function(id) {
 	return event;
 };
 
-embryo.mapPanel = {};
-embryo.mapPanel.map = null;
-embryo.mapPanel.init = function(defaultProjection) {
-
-	// includePanels();
-
+/**
+ * Initialization fired when DOM has loaded (but before images, stylesheets, etc
+ * has been fetched
+ */
+$(document).ready(function() {
+	includePanels();
 	includeTools();
-
 	// Load cookies
 	loadView();
+
+	setupDatePickers();
+
+	embryo.exitAbnormal.init();
+	embryo.feed.init();
+	embryo.vessel.details.init();
+	embryo.filtering.init();
+
+	embryo.initAngular();
+
+});
+
+embryo.mapPanel = {};
+embryo.mapPanel.map = null;
+
+/**
+ * Initialize the map. This method is fired on window load (configured by
+ * wicket)
+ */
+embryo.mapPanel.init = function(defaultProjection) {
 
 	this.map = new OpenLayers.Map({
 		div : "map",
@@ -66,11 +85,17 @@ embryo.mapPanel.init = function(defaultProjection) {
 		fractionalZoom : false
 	});
 
-	addLayers();
+	this.addLayerInitializer(this.initLayer);
+	this.addLayerInitializer(embryo.vessel.initLayers);
+	this.addLayerInitializer(embryo.route.initLayer);
+
+	embryo.mapPanel.initLayers();
 
 	var center = transformPosition(initialLon, initialLat);
 	this.map.setCenter(center, initialZoom);
 	lastZoomLevel = this.map.zoom;
+
+	setupUI();
 
 	// Load new vessels with an interval
 	setInterval("loadVesselsIfTime()", loadCheckingFrequence);
@@ -80,19 +105,205 @@ embryo.mapPanel.init = function(defaultProjection) {
 		loadBehaviors();
 	}
 
-	setupUI();
-
 	parseFilterQuery();
 
 	// Load vessels
 	loadVessels();
 
+	// Context menu should be initialized on Window onload. This will increase
+	// likelyhood that all other features have been loaded
+	// Even better then load context menu as the very last thing or ?
 	embryo.contextMenu.init();
-	
-	embryo.initAngular();
 };
 
-embryo.initAngular = function(){
+/**
+ * Sets up the panels, event listeners and selection controllers.
+ */
+function setupUI() {
+
+	// Set zoom panel positon
+	$(".olControlZoom").css('left', zoomPanelPositionLeft);
+	$(".olControlZoom").css('top', zoomPanelPositionTop);
+
+	// Set loading panel positon
+	var x = $(document).width() / 2 - $("#loadingPanel").width() / 2;
+	$("#loadingPanel").css('left', x);
+
+	//
+	embryo.mapPanel.map.events.includeXY = true;
+
+	// Create functions for hovering a vessel
+	var showName = function(e) {
+		var lonlatCenter = e.feature.geometry.getBounds().getCenterLonLat();
+		if (e.feature.attributes.vessel) {
+			$.getJSON(detailsUrl, {
+				past_track : '1',
+				id : e.feature.attributes.id
+			}, function(result) {
+				var pixelTopLeft = new OpenLayers.Pixel(0, 0);
+				var lonlatTopLeft = embryo.mapPanel.map
+						.getLonLatFromPixel(pixelTopLeft);
+				pixelTopLeft = embryo.mapPanel.map
+						.getPixelFromLonLat(lonlatTopLeft);
+
+				var pixel = embryo.mapPanel.map
+						.getPixelFromLonLat(lonlatCenter);
+
+				var x = pixel.x - pixelTopLeft.x;
+				var y = pixel.y - pixelTopLeft.y;
+
+				$("#vesselNameBox").html(result.name);
+				$("#vesselNameBox").css('visibility', 'visible');
+				$("#vesselNameBox").css('top', (y - 26) + 'px');
+				$("#vesselNameBox").css('left', x + 'px');
+			});
+		}
+	};
+
+	var hideName = function(e) {
+		// $("#vesselNameBox").css('visibility', 'hidden');
+	};
+
+	vesselLayer.events.on({
+		"featurehighlighted" : function(e) {
+			alert(e);
+		}
+	});
+
+	// Create hover control - vessels
+	hoverControlVessels = new OpenLayers.Control.SelectFeature(vesselLayer, {
+		hover : true,
+		highlightOnly : true,
+		eventListeners : {
+			featurehighlighted : showName,
+			featureunhighlighted : hideName
+		}
+	});
+
+	// Create hover control - indie vessels
+	hoverControlIndieVessels = new OpenLayers.Control.SelectFeature(
+			indieVesselLayer, {
+				hover : true,
+				highlightOnly : true,
+				eventListeners : {
+					featurehighlighted : showName,
+					featureunhighlighted : hideName
+				}
+			});
+
+	// Create select control - vessels
+	selectControlVessels = new OpenLayers.Control.SelectFeature(
+			vesselLayer,
+			{
+				clickout : true,
+				toggle : true,
+				onSelect : function(feature) {
+					if (embryo.selectedVessel
+							&& embryo.selectedVessel.id == feature.attributes.vessel.id) {
+						selectedFeature = null;
+						embryo.selectedVessel = null;
+						detailsReadyToClose = true;
+						$("#vesselNameBox").css('visibility', 'hidden');
+						redrawSelection();
+						selectControlVessels.unselectAll();
+					} else {
+						selectedFeature = feature;
+						embryo.selectedVessel = feature.attributes.vessel;
+						embryo.eventbus.fireEvent(embryo.eventbus
+								.VesselSelectedEvent(feature.attributes.id));
+						// embryo.vesselDetailsPanel.update(feature.attributes.id);
+
+						$("#vesselNameBox").css('visibility', 'hidden');
+						// selectControlVessels.select(feature);
+						redrawSelection();
+					}
+				},
+				onUnselect : function(feature) {
+					selectedFeature = null;
+					embryo.selectedVessel = null;
+					detailsReadyToClose = true;
+					tracksLayer.removeAllFeatures();
+					timeStampsLayer.removeAllFeatures();
+					redrawSelection();
+					selectControlVessels.unselectAll();
+				}
+			});
+
+	// Create select control - indie vessels
+	selectControlIndieVessels = new OpenLayers.Control.SelectFeature(
+			indieVesselLayer,
+			{
+				clickout : true,
+				toggle : true,
+				onSelect : function(feature) {
+					if (embryo.selectedVessel
+							&& embryo.selectedVessel.id == feature.attributes.vessel.id) {
+						selectedFeature = null;
+						embryo.selectedVessel = null;
+						detailsReadyToClose = true;
+						$("#vesselNameBox").css('visibility', 'hidden');
+						redrawSelection();
+						selectControlIndieVessels.unselectAll();
+					} else {
+						selectedFeature = feature;
+						embryo.selectedVessel = feature.attributes.vessel;
+
+						embryo.eventbus.fireEvent(embryo.eventbus
+								.VesselSelectedEvent(feature.attributes.id));
+						// embryo.vesselDetailsPanel.update(feature.attributes.id);
+
+						$("#vesselNameBox").css('visibility', 'hidden');
+						redrawSelection();
+					}
+				},
+				onUnselect : function(feature) {
+					selectedFeature = null;
+					embryo.selectedVessel = null;
+					detailsReadyToClose = true;
+					tracksLayer.removeAllFeatures();
+					timeStampsLayer.removeAllFeatures();
+					redrawSelection();
+					selectControlIndieVessels.unselectAll();
+				}
+			});
+
+	// Add select controller to map and activate
+	embryo.mapPanel.map.addControl(hoverControlVessels);
+	embryo.mapPanel.map.addControl(hoverControlIndieVessels);
+	embryo.mapPanel.map.addControl(selectControlVessels);
+	embryo.mapPanel.map.addControl(selectControlIndieVessels);
+	hoverControlVessels.activate();
+	hoverControlIndieVessels.activate();
+	selectControlVessels.activate();
+	selectControlIndieVessels.activate();
+
+	// Register listeners
+	embryo.mapPanel.map.events.register("movestart", map, function() {
+
+	});
+	embryo.mapPanel.map.events.register("moveend", map, function() {
+
+		saveViewCookie();
+		$("#vesselNameBox").css('visibility', 'hidden');
+
+		if (loadAfterMove()) {
+			setTimeToLoad(loadDelay);
+			loadVesselsIfTime();
+		}
+		// else {
+		// updateVesselsInView();
+		// }
+
+		lastZoomLevel = embryo.mapPanel.map.zoom;
+	});
+
+	// Close empty panels
+	setInterval("closeEmptyPanels()", 1000);
+
+}
+
+
+embryo.initAngular = function() {
 	angular.bootstrap($('#contextMenuApp'));
 	angular.bootstrap($('#routeEditModalApp'));
 };
@@ -158,7 +369,9 @@ embryo.contextMenu = {
 								.getFeatureFromEvent(e);
 
 						// Provoke an update of rendered menus
-						angular.element($('#context-menu')).scope().$apply(function(){});
+						angular.element($('#context-menu')).scope().$apply(
+								function() {
+								});
 						return true;
 					}
 				});
@@ -192,57 +405,199 @@ embryo.contextMenu = {
 
 			return item.shown4FeatureType == featureType;
 		};
-		
-		$scope.choose = function(item, feature){
+
+		$scope.choose = function(item, feature) {
 			RouteService.editRoute(feature.data.route);
 			item.choose($scope, feature);
 		};
 	}
 };
 
+embryo.mapPanel.layerInitializers = [];
+
+embryo.mapPanel.addLayerInitializer = function(layerInitializer) {
+	this.layerInitializers.push(layerInitializer);
+};
+
+embryo.mapPanel.initLayers = function() {
+	for (x in this.layerInitializers) {
+		this.layerInitializers[x]();
+	}
+};
+
+embryo.mapPanel.initLayer = function() {
+	// Add OpenStreetMap Layer
+	var osm = new OpenLayers.Layer.OSM("OSM",
+			"http://a.tile.openstreetmap.org/${z}/${x}/${y}.png", {
+				'layers' : 'basic',
+				'isBaseLayer' : true
+			});
+
+	// Add OpenStreetMap Layer
+	embryo.mapPanel.map.addLayer(osm);
+};
+
 /**
- * Sets up the map by adding layers and overwriting the 'map' element in the
- * HTML index file. Vessels are loaded using JSON and drawn on the map.
+ * Adds all the layers that will contain graphic.
  */
-function setupMap() {
+embryo.vessel = {};
+embryo.vessel.initLayers = function() {
 
-	includePanels();
+	// Get renderer
+	var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+	renderer = (renderer) ? [ renderer ]
+			: OpenLayers.Layer.Vector.prototype.renderers;
+	// renderer = ["Canvas", "SVG", "VML"];
 
-	// includeTools();
+	// Create vector layer with a stylemap for vessels
+	vesselLayer = new OpenLayers.Layer.Vector("Vessels", {
+		styleMap : new OpenLayers.StyleMap({
+			"default" : {
+				externalGraphic : "${image}",
+				graphicWidth : "${imageWidth}",
+				graphicHeight : "${imageHeight}",
+				graphicYOffset : "${imageYOffset}",
+				graphicXOffset : "${imageXOffset}",
+				rotation : "${angle}"
+			},
+			"select" : {
+				cursor : "crosshair",
+				externalGraphic : "${image}"
+			}
+		}),
+		renderers : renderer
+	});
 
-	// Load cookies
-	// loadView();
+	embryo.mapPanel.map.addLayer(vesselLayer);
 
-	// Create the map and overwrite cotent of the map element
+	// Create vector layer with a stylemap for the selection image
+	markerLayer = new OpenLayers.Layer.Vector("Markers", {
+		styleMap : new OpenLayers.StyleMap({
+			"default" : {
+				externalGraphic : "${image}",
+				graphicWidth : "${imageWidth}",
+				graphicHeight : "${imageHeight}",
+				graphicYOffset : "${imageYOffset}",
+				graphicXOffset : "${imageXOffset}",
+				rotation : "${angle}"
+			},
+			"select" : {
+				cursor : "crosshair",
+				externalGraphic : "${image}"
+			}
+		}),
+		renderers : renderer
+	});
 
-	// map = new OpenLayers.Map({
-	// div: "map",
-	// projection: "EPSG:900913",
-	// fractionalZoom: true
-	// });
+	embryo.mapPanel.map.addLayer(markerLayer);
 
-	// addLayers();
-	//
-	// var center = transformPosition(initialLon, initialLat);
-	// map.setCenter (center, initialZoom);
-	// lastZoomLevel = map.zoom;
-	//	
-	// // Load new vessels with an interval
-	// setInterval("loadVesselsIfTime()", loadCheckingFrequence);
-	//
-	// if (includeEventFeed){
-	// setInterval("loadBehaviors()", loadBehaviorsFrequence);
-	// loadBehaviors();
-	// }
-	//	
-	// setupUI();
-	//	
-	// parseFilterQuery();
-	//
-	// // Load vessels
-	// loadVessels();
+	// Create vector layer with a stylemap for the selection image
+	selectionLayer = new OpenLayers.Layer.Vector("Selection", {
+		styleMap : new OpenLayers.StyleMap({
+			"default" : {
+				externalGraphic : "${image}",
+				graphicWidth : "${imageWidth}",
+				graphicHeight : "${imageHeight}",
+				graphicYOffset : "${imageYOffset}",
+				graphicXOffset : "${imageXOffset}",
+				rotation : "${angle}"
+			},
+			"select" : {
+				cursor : "crosshair",
+				externalGraphic : "${image}"
+			}
+		}),
+		renderers : renderer
+	});
 
-}
+	// Create vector layer for past tracks
+	tracksLayer = new OpenLayers.Layer.Vector("trackLayer", {
+		styleMap : new OpenLayers.StyleMap({
+			'default' : {
+				strokeColor : pastTrackColor,
+				strokeOpacity : pastTrackOpacity,
+				strokeWidth : pastTrackWidth
+			}
+		})
+	});
+
+	// Create vector layer for time stamps
+	timeStampsLayer = new OpenLayers.Layer.Vector("timeStampsLayer", {
+		styleMap : new OpenLayers.StyleMap({
+			'default' : {
+				label : "${timeStamp}",
+				fontColor : timeStampColor,
+				fontSize : timeStampFontSize,
+				fontFamily : timeStampFontFamily,
+				fontWeight : timeStampFontWeight,
+				labelAlign : "${align}",
+				labelXOffset : "${xOffset}",
+				labelYOffset : "${yOffset}",
+				labelOutlineColor : timeStamtOutlineColor,
+				labelOutlineWidth : 5,
+				labelOutline : 1
+			}
+		})
+	});
+
+	// Create cluster layer
+	clusterLayer = new OpenLayers.Layer.Vector("Clusters", {
+		styleMap : new OpenLayers.StyleMap({
+			'default' : {
+				fillColor : "${fill}",
+				fillOpacity : clusterFillOpacity,
+				strokeColor : clusterStrokeColor,
+				strokeOpacity : clusterStrokeOpacity,
+				strokeWidth : clusterStrokeWidth
+			}
+		})
+	});
+
+	embryo.mapPanel.map.addLayer(clusterLayer);
+
+	// Create cluster text layer
+	clusterTextLayer = new OpenLayers.Layer.Vector("Cluster text", {
+		styleMap : new OpenLayers.StyleMap({
+			'default' : {
+				label : "${count}",
+				fontColor : clusterFontColor,
+				fontSize : "${fontSize}",
+				fontWeight : clusterFontWeight,
+				fontFamily : clusterFontFamily,
+				labelAlign : "c"
+			}
+		})
+	});
+
+	embryo.mapPanel.map.addLayer(clusterTextLayer);
+
+	// Create layer for individual vessels in cluster
+	indieVesselLayer = new OpenLayers.Layer.Vector("Points", {
+		styleMap : new OpenLayers.StyleMap({
+			"default" : {
+				pointRadius : indieVesselRadius,
+				fillColor : indieVesselColor,
+				strokeColor : indieVesselStrokeColor,
+				strokeWidth : indieVesselStrokeWidth,
+				graphicZIndex : 1
+			},
+			"select" : {
+				pointRadius : indieVesselRadius * 3,
+				fillColor : indieVesselColor,
+				strokeColor : indieVesselStrokeColor,
+				strokeWidth : indieVesselStrokeWidth,
+				graphicZIndex : 1
+			}
+		})
+	});
+
+	embryo.mapPanel.map.addLayer(indieVesselLayer);
+	embryo.mapPanel.map.addLayer(selectionLayer);
+	embryo.mapPanel.map.addLayer(tracksLayer);
+	embryo.mapPanel.map.addControl(new OpenLayers.Control.DrawFeature(
+			tracksLayer, OpenLayers.Handler.Path));
+	embryo.mapPanel.map.addLayer(timeStampsLayer);
+};
 
 /**
  * Loads vessels if time since last update is higher than loadFrequence.

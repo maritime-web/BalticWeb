@@ -28,5 +28,4 @@ function Cluster(from, to, count, density, vessels) {
 	);
 
 	this.vessels = vesselList;
-	
 }
