@@ -1,523 +1,523 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>dk.dma.arcticweb</groupId>
-	<artifactId>Embryo</artifactId>
-	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>embryo</name>
-	<description></description>
-	<organization>
-		<name>Danish Maritime Authority</name>
-		<url>http://dma.e-navigation.net</url>
-	</organization>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>dk.dma.arcticweb</groupId>
+  <artifactId>Embryo</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>embryo</name>
+  <description></description>
+  <organization>
+    <name>Danish Maritime Authority</name>
+    <url>http://dma.e-navigation.net</url>
+  </organization>
 
-	<parent>
-		<groupId>dk.dma</groupId>
-		<artifactId>dma-root-pom</artifactId>
-		<version>9</version>
-	</parent>
-
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<wicket.version>6.7.0</wicket.version>
-		<version.org.jboss.spec.javaee6>3.0.2.Final</version.org.jboss.spec.javaee6>
-		<hibernate.version>4.0.1.Final</hibernate.version>
-		<shiro.version>1.2.2</shiro.version>
-		<jslint.predef>embryo</jslint.predef>
-		<!-- <version.net.ftlines.wicket-cdi>1.2</version.net.ftlines.wicket-cdi> -->
-	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jboss.spec</groupId>
-				<artifactId>jboss-javaee-6.0</artifactId>
-				<version>${version.org.jboss.spec.javaee6}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<!-- Wicket -->
-			<dependency>
-				<groupId>org.apache.wicket</groupId>
-				<artifactId>wicket-core</artifactId>
-				<version>${wicket.version}</version>
-			</dependency>
-
-			<!-- Wicket Java EE integration. -->
-			<dependency>
-				<groupId>org.apache.wicket</groupId>
-				<artifactId>wicket-cdi</artifactId>
-				<version>${wicket.version}</version>
-			</dependency>
-
-		</dependencies>
-	</dependencyManagement>
-
-	<dependencies>
-		<!-- Import the CDI API. -->
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Import the Common Annotations API (JSR-250). -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.annotation</groupId>
-			<artifactId>jboss-annotations-api_1.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Import the EJB API. -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.servlet</groupId>
-			<artifactId>jboss-servlet-api_3.0_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Import the JPA API. -->
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Wicket -->
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-datetime</artifactId>
-			<version>${wicket.version}</version>
-		</dependency>
-
-		<!-- Wicket CDI integration. -->
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-cdi</artifactId>
-		</dependency>
+  <parent>
+    <groupId>dk.dma</groupId>
+    <artifactId>dma-root-pom</artifactId>
+    <version>9</version>
+  </parent>
 
 
-		<!-- LOGGING DEPENDENCIES - LOG4J -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${dependencies.slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.0.13</version>
-		</dependency>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-log4j12</artifactId> <version>${log4j.version}</version> 
-			</dependency> -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.21</version>
-		</dependency>
-		<dependency>
-			<groupId>dk.dma.enav</groupId>
-			<artifactId>enav-model</artifactId>
-			<version>0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>dk.dma.enav</groupId>
-			<artifactId>enav-serialization</artifactId>
-			<version>0.1-SNAPSHOT</version>
-		</dependency>
+    <wicket.version>6.7.0</wicket.version>
+    <version.org.jboss.spec.javaee6>3.0.2.Final</version.org.jboss.spec.javaee6>
+    <hibernate.version>4.0.1.Final</hibernate.version>
+    <shiro.version>1.2.2</shiro.version>
+    <jslint.predef>embryo</jslint.predef>
+    <!-- <version.net.ftlines.wicket-cdi>1.2</version.net.ftlines.wicket-cdi> -->
+  </properties>
 
-		<dependency>
-			<groupId>org.jboss.weld.se</groupId>
-			<artifactId>weld-se</artifactId>
-			<version>1.1.10.Final</version>
-			<scope>test</scope>
-		</dependency>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.spec</groupId>
+        <artifactId>jboss-javaee-6.0</artifactId>
+        <version>${version.org.jboss.spec.javaee6}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 
-		<dependency>
-			<groupId>org.jglue.cdi-unit</groupId>
-			<artifactId>cdi-unit</artifactId>
-			<version>2.1.0</version>
-			<scope>test</scope>
-		</dependency>
+      <!-- Wicket -->
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-core</artifactId>
+        <version>${wicket.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.3.172</version>
-			<scope>test</scope>
-		</dependency>
+      <!-- Wicket Java EE integration. -->
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-cdi</artifactId>
+        <version>${wicket.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.unitils</groupId>
-			<artifactId>unitils-core</artifactId>
-			<version>3.3</version>
-			<scope>test</scope>
-		</dependency>
+    </dependencies>
+  </dependencyManagement>
 
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate.version}</version>
-			<scope>test</scope>
-		</dependency>
+  <dependencies>
+    <!-- Import the CDI API. -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-core</artifactId>
-			<version>${shiro.version}</version>
-		</dependency>
+    <!-- Import the Common Annotations API (JSR-250). -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.annotation</groupId>
+      <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-web</artifactId>
-			<version>${shiro.version}</version>
-		</dependency>
+    <!-- Import the EJB API. -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<version>2.2.1.GA</version>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Import the JPA API. -->
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Wicket -->
+    <dependency>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket-datetime</artifactId>
+      <version>${wicket.version}</version>
+    </dependency>
+
+    <!-- Wicket CDI integration. -->
+    <dependency>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket-cdi</artifactId>
+    </dependency>
 
 
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>1.9.5</version>
-			<scope>test</scope>
-		</dependency>
+    <!-- LOGGING DEPENDENCIES - LOG4J -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${dependencies.slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.0.13</version>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.spec.javax.transaction</groupId>
-			<artifactId>jboss-transaction-api_1.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-log4j12</artifactId> <version>${log4j.version}</version> 
+      </dependency> -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.21</version>
+    </dependency>
+    <dependency>
+      <groupId>dk.dma.enav</groupId>
+      <artifactId>enav-model</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>dk.dma.enav</groupId>
+      <artifactId>enav-serialization</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
 
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time-hibernate</artifactId>
-			<version>1.3</version>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se</artifactId>
+      <version>1.1.10.Final</version>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.2.4</version>
-		</dependency>
+    <dependency>
+      <groupId>org.jglue.cdi-unit</groupId>
+      <artifactId>cdi-unit</artifactId>
+      <version>2.1.0</version>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId>
-			<version>1.0</version>
-		</dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.3.172</version>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-core</artifactId>
+      <version>3.3</version>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>4.2.0.Final</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${hibernate.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-	</dependencies>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <version>${shiro.version}</version>
+    </dependency>
 
-	<build>
-		<resources>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/test/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <version>${shiro.version}</version>
+    </dependency>
 
-		<pluginManagement>
-			<plugins>
-            <plugin>
-              <groupId>org.eclipse.m2e</groupId>
-              <artifactId>lifecycle-mapping</artifactId>
-              <version>1.0.0</version>
-              <configuration>
-                <lifecycleMappingMetadata>
-                  <pluginExecutions>
-                    <pluginExecution>
-                      <pluginExecutionFilter>
-                        <groupId>com.googlecode.jslint4java</groupId>
-                        <artifactId>jslint4java-maven-plugin</artifactId>
-                        <versionRange>[2.0,)</versionRange>
-                        <goals>
-                          <goal>lint</goal>
-                        </goals>
-                      </pluginExecutionFilter>
-                      <action>
-                        <ignore />
-                        <!-- <execute /> -->
-                      </action>
-                    </pluginExecution>
-                  </pluginExecutions>
-                </lifecycleMappingMetadata>
-              </configuration>
-            </plugin>
-    
-            <plugin>
-              <!-- http://docs.jslint4java.googlecode.com/git-history/780e260b85a0a5a162eac5e94dc3dd104b433e81/2.0.2/maven.html -->
-              <!-- Using jshint would have been preferable, but existing maven plugins seems unsuitable -->
-              <!-- jshint-mojo : -->
-              <!-- - https://github.com/cjdev/jshint-mojo. -->
-              <!-- - Does not yet supply a checkstyle.xml or jslint.xml file with results. -->
-              <!-- MavenPluginJSHint -->
-              <!-- - http://code.google.com/p/wro4j/wiki/MavenPluginJsHint -->
-              <!-- - Seems to be entangled in other web stuff, which makes it an unsuitable plugin -->
-              <!-- mulesoft/jshint-maven-plugin: -->
-              <!-- - https://github.com/mulesoft/jshint-maven-plugin -->
-              <!-- - no configuration options and no work done on the plugin for many months -->
-              <groupId>com.googlecode.jslint4java</groupId>
-              <artifactId>jslint4java-maven-plugin</artifactId>
-              <version>2.0.2</version>
-              <configuration>
-                <failOnError>false</failOnError>
-                <!-- https://code.google.com/p/jslint4java/issues/detail?id=91 -->
-                <excludes>
-                  <exclude>**/ext/*.js</exclude>
-                </excludes>
-                <options>
-                  <devel>true</devel>
-                  <eqeq>true</eqeq>
-                  <es5>true</es5>
-                  <forin>true</forin>
-                  <indent>4</indent>
-                  <maxerr>1000</maxerr>
-                  <maxlen>120</maxlen>
-                  <node>false</node>
-                  <nomen>false</nomen>
-                  <passfail>false</passfail>
-                  <plusplus>true</plusplus>
-                  <predef>angular,$,jQuery,${jslint.predef}</predef>
-                  <properties>false</properties>
-                  <sloppy>true</sloppy>
-                  <undef>true</undef>
-                  <white>true</white>
-                </options>
-              </configuration>
-            </plugin>
-    		<plugin>
-					<groupId>org.jboss.as.plugins</groupId>
-					<artifactId>jboss-as-maven-plugin</artifactId>
-					<version>7.4.Final</version>
-				</plugin>
-        
-        
-			</plugins>
-		</pluginManagement>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<optimize>true</optimize>
-					<debug>true</debug>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<wtpapplicationxml>true</wtpapplicationxml>
-					<wtpversion>2.0</wtpversion>
-					<downloadSources>true</downloadSources>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jboss.as.plugins</groupId>
-				<artifactId>jboss-as-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<configuration>
-					<target>
-						<property environment="env" />
-						<property name="searchPath" value="META-INF/maven/${project.groupId}/${project.artifactId}/pom.properties" />
-
-						<first id="first">
-							<fileset dir="${env.JBOSS_HOME}/standalone/tmp/vfs/" includes="**/${searchPath}" />
-						</first>
-						<script language="javascript">
-							var before = project.getProperty("toString:first");
-							var replace =
-							project.getProperty("searchPath");
-							project.setProperty("jbossTmpDir", before.replaceAll(replace, ""));
-						</script>
-						<!-- Place any Ant task here. You can add anything you can add between <target> and </target> in a build.xml. -->
-						<echo message="${jbossTmpDir}" />
-						<copy todir="${jbossTmpDir}">
-							<fileset dir="src/main/webapp">
-								<include name="bootstrap/**/*.*" />
-								<include name="js/**/*.*" />
-								<include name="css/**/*.*" />
-								<include name="img/**/*.*" />
-							</fileset>
-						</copy>
-						<copy todir="${jbossTmpDir}/WEB-INF/classes">
-							<fileset dir="src/main/java">
-								<include name="**/*.html" />
-							</fileset>
-						</copy>
-					</target>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <version>2.2.1.GA</version>
+    </dependency>
 
 
-					<macrodef name="find">
-						<attribute name="dir" />
-						<attribute name="name" />
-						<attribute name="property" />
-						<sequential>
-							<pathconvert property="@{property}.matches" pathsep="${line.separator}">
-								<fileset dir="@{dir}">
-									<include name="@{name}" />
-								</fileset>
-							</pathconvert>
-							<loadresource property="@{property}">
-								<string value="${@{property}.matches}" />
-								<filterchain>
-									<headfilter lines="1" />
-								</filterchain>
-							</loadresource>
-						</sequential>
-					</macrodef>
-				</configuration>
-			</plugin>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>1.9.5</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time-hibernate</artifactId>
+      <version>1.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.2.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.collections</groupId>
+      <artifactId>google-collections</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>4.2.0.Final</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/test/java</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>com.googlecode.jslint4java</groupId>
+                    <artifactId>jslint4java-maven-plugin</artifactId>
+                    <versionRange>[2.0,)</versionRange>
+                    <goals>
+                      <goal>lint</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                    <!-- <execute /> -->
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <!-- http://docs.jslint4java.googlecode.com/git-history/780e260b85a0a5a162eac5e94dc3dd104b433e81/2.0.2/maven.html -->
+          <!-- Using jshint would have been preferable, but existing maven plugins seems unsuitable -->
+          <!-- jshint-mojo : -->
+          <!-- - https://github.com/cjdev/jshint-mojo. -->
+          <!-- - Does not yet supply a checkstyle.xml or jslint.xml file with results. -->
+          <!-- MavenPluginJSHint -->
+          <!-- - http://code.google.com/p/wro4j/wiki/MavenPluginJsHint -->
+          <!-- - Seems to be entangled in other web stuff, which makes it an unsuitable plugin -->
+          <!-- mulesoft/jshint-maven-plugin: -->
+          <!-- - https://github.com/mulesoft/jshint-maven-plugin -->
+          <!-- - no configuration options and no work done on the plugin for many months -->
+          <groupId>com.googlecode.jslint4java</groupId>
+          <artifactId>jslint4java-maven-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+            <failOnError>false</failOnError>
+            <!-- https://code.google.com/p/jslint4java/issues/detail?id=91 -->
+            <excludes>
+              <exclude>**/ext/*.js</exclude>
+            </excludes>
+            <options>
+              <devel>true</devel>
+              <eqeq>true</eqeq>
+              <es5>true</es5>
+              <forin>true</forin>
+              <indent>4</indent>
+              <maxerr>1000</maxerr>
+              <maxlen>120</maxlen>
+              <node>false</node>
+              <nomen>false</nomen>
+              <passfail>false</passfail>
+              <plusplus>true</plusplus>
+              <predef>angular,$,jQuery,${jslint.predef}</predef>
+              <properties>false</properties>
+              <sloppy>true</sloppy>
+              <undef>true</undef>
+              <white>true</white>
+            </options>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.jboss.as.plugins</groupId>
+          <artifactId>jboss-as-maven-plugin</artifactId>
+          <version>7.4.Final</version>
+        </plugin>
 
 
-			<plugin>
-				<groupId>com.googlecode.jslint4java</groupId>
-				<artifactId>jslint4java-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
+      </plugins>
+    </pluginManagement>
 
-	</build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <optimize>true</optimize>
+          <debug>true</debug>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <wtpapplicationxml>true</wtpapplicationxml>
+          <wtpversion>2.0</wtpversion>
+          <downloadSources>true</downloadSources>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jboss.as.plugins</groupId>
+        <artifactId>jboss-as-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <configuration>
+          <target>
+            <property environment="env" />
+            <property name="searchPath" value="META-INF/maven/${project.groupId}/${project.artifactId}/pom.properties" />
 
-	<profiles>
-		<profile>
-			<id>fulldeploy</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.jboss.as.plugins</groupId>
-						<artifactId>jboss-as-maven-plugin</artifactId>
-						<version>7.4.Final</version>
-						<executions>
-							<execution>
-								<id>install-undeploy</id>
-								<phase>install</phase>
-								<goals>
-									<goal>undeploy</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>add-datasource</id>
-								<phase>install</phase>
-								<goals>
-									<goal>add-resource</goal>
-								</goals>
-								<configuration>
-									<address>subsystem=datasources,data-source=java:jboss/datasources/embryoDS</address>
-									<resource>
-										<enable-resource>true</enable-resource>
-										<properties>
-											<jndi-name>java:jboss/datasources/embryoDS</jndi-name>
-											<connection-url>jdbc:mysql://localhost:3306/embryo</connection-url>
-											<driver-name>mysql</driver-name>
-											<user-name>embryo</user-name>
-											<password>embryo</password>
-											<pool-name>mypool</pool-name>
-											<enabled>true</enabled>
-											<enable>true</enable>
-										</properties>
-									</resource>
-								</configuration>
-							</execution>
-							<execution>
-								<id>deploy</id>
-								<phase>install</phase>
-								<goals>
-									<goal>deploy</goal>
-								</goals>
-								<configuration>
-									<skipTests>true</skipTests>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+            <first id="first">
+              <fileset dir="${env.JBOSS_HOME}/standalone/tmp/vfs/" includes="**/${searchPath}" />
+            </first>
+            <script language="javascript">
+              var before = project.getProperty("toString:first");
+              var replace =
+              project.getProperty("searchPath");
+              project.setProperty("jbossTmpDir", before.replaceAll(replace, ""));
+            </script>
+            <!-- Place any Ant task here. You can add anything you can add between <target> and </target> in a build.xml. -->
+            <echo message="${jbossTmpDir}" />
+            <copy todir="${jbossTmpDir}">
+              <fileset dir="src/main/webapp">
+                <include name="bootstrap/**/*.*" />
+                <include name="js/**/*.*" />
+                <include name="css/**/*.*" />
+                <include name="img/**/*.*" />
+              </fileset>
+            </copy>
+            <copy todir="${jbossTmpDir}/WEB-INF/classes">
+              <fileset dir="src/main/java">
+                <include name="**/*.html" />
+              </fileset>
+            </copy>
+          </target>
 
-	<repositories>
-		<repository>
-			<id>dma-releases</id>
-			<name>Dma Release Repository</name>
-			<url>http://repository-dma.forge.cloudbees.com/release/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+
+          <macrodef name="find">
+            <attribute name="dir" />
+            <attribute name="name" />
+            <attribute name="property" />
+            <sequential>
+              <pathconvert property="@{property}.matches" pathsep="${line.separator}">
+                <fileset dir="@{dir}">
+                  <include name="@{name}" />
+                </fileset>
+              </pathconvert>
+              <loadresource property="@{property}">
+                <string value="${@{property}.matches}" />
+                <filterchain>
+                  <headfilter lines="1" />
+                </filterchain>
+              </loadresource>
+            </sequential>
+          </macrodef>
+        </configuration>
+      </plugin>
+
+
+      <plugin>
+        <groupId>com.googlecode.jslint4java</groupId>
+        <artifactId>jslint4java-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+
+  </build>
+
+  <profiles>
+    <profile>
+      <id>fulldeploy</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jboss.as.plugins</groupId>
+            <artifactId>jboss-as-maven-plugin</artifactId>
+            <version>7.4.Final</version>
+            <executions>
+              <execution>
+                <id>install-undeploy</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>undeploy</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>add-datasource</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>add-resource</goal>
+                </goals>
+                <configuration>
+                  <address>subsystem=datasources,data-source=java:jboss/datasources/embryoDS</address>
+                  <resource>
+                    <enable-resource>true</enable-resource>
+                    <properties>
+                      <jndi-name>java:jboss/datasources/embryoDS</jndi-name>
+                      <connection-url>jdbc:mysql://localhost:3306/embryo</connection-url>
+                      <driver-name>mysql</driver-name>
+                      <user-name>embryo</user-name>
+                      <password>embryo</password>
+                      <pool-name>mypool</pool-name>
+                      <enabled>true</enabled>
+                      <enable>true</enable>
+                    </properties>
+                  </resource>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+                <configuration>
+                  <skipTests>true</skipTests>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <repositories>
+    <repository>
+      <id>dma-releases</id>
+      <name>Dma Release Repository</name>
+      <url>http://repository-dma.forge.cloudbees.com/release/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>
