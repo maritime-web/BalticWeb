@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>dk.dma</groupId>
 		<artifactId>dma-root-pom</artifactId>
-		<version>10</version>
+		<version>9</version>
 	</parent>
 
 
@@ -282,11 +282,80 @@
 
 		<pluginManagement>
 			<plugins>
-				<plugin>
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>com.googlecode.jslint4java</groupId>
+                        <artifactId>jslint4java-maven-plugin</artifactId>
+                        <versionRange>[2.0,)</versionRange>
+                        <goals>
+                          <goal>lint</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                        <!-- <execute /> -->
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+    
+            <plugin>
+              <!-- http://docs.jslint4java.googlecode.com/git-history/780e260b85a0a5a162eac5e94dc3dd104b433e81/2.0.2/maven.html -->
+              <!-- Using jshint would have been preferable, but existing maven plugins seems unsuitable -->
+              <!-- jshint-mojo : -->
+              <!-- - https://github.com/cjdev/jshint-mojo. -->
+              <!-- - Does not yet supply a checkstyle.xml or jslint.xml file with results. -->
+              <!-- MavenPluginJSHint -->
+              <!-- - http://code.google.com/p/wro4j/wiki/MavenPluginJsHint -->
+              <!-- - Seems to be entangled in other web stuff, which makes it an unsuitable plugin -->
+              <!-- mulesoft/jshint-maven-plugin: -->
+              <!-- - https://github.com/mulesoft/jshint-maven-plugin -->
+              <!-- - no configuration options and no work done on the plugin for many months -->
+              <groupId>com.googlecode.jslint4java</groupId>
+              <artifactId>jslint4java-maven-plugin</artifactId>
+              <version>2.0.2</version>
+              <configuration>
+                <failOnError>false</failOnError>
+                <!-- https://code.google.com/p/jslint4java/issues/detail?id=91 -->
+                <excludes>
+                  <exclude>**/ext/*.js</exclude>
+                </excludes>
+                <options>
+                  <devel>true</devel>
+                  <eqeq>true</eqeq>
+                  <es5>true</es5>
+                  <forin>true</forin>
+                  <indent>4</indent>
+                  <maxerr>1000</maxerr>
+                  <maxlen>120</maxlen>
+                  <node>false</node>
+                  <nomen>false</nomen>
+                  <passfail>false</passfail>
+                  <plusplus>true</plusplus>
+                  <predef>angular,$,jQuery,${jslint.predef}</predef>
+                  <properties>false</properties>
+                  <sloppy>true</sloppy>
+                  <undef>true</undef>
+                  <white>true</white>
+                </options>
+              </configuration>
+            </plugin>
+    		<plugin>
 					<groupId>org.jboss.as.plugins</groupId>
 					<artifactId>jboss-as-maven-plugin</artifactId>
 					<version>7.4.Final</version>
 				</plugin>
+        
+        
 			</plugins>
 		</pluginManagement>
 
