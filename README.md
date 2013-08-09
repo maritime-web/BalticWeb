@@ -35,6 +35,13 @@ http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only avail
 
 ## MySQL setup
 
+## Checkstyle
+See https://github.com/dma-dk/dma-developers
+
+## JSLint
+Execute the following Maven command to lint your JavaScript files:
+    mvn jslint4java:lint
+
 ## Deploy to JBoss
 
 * mvn clean install - Install database drivers environmental variables and deploy application (used for first deploy)
