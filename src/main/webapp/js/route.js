@@ -1,4 +1,3 @@
-
 /*
  * Dependencies:
  * 
@@ -7,16 +6,16 @@
  * ....
  */
 
+"use strict";
+
 embryo.routeUpload = {};
 embryo.routeUpload.Ctrl = function($scope, $element) {
 	
 	//TODO Find out how to reset prefetch/typeahead upon new ship
 	var mmsi = '220443000';
 
-	// c
 	$($element).find('.ngTypeahead').bind(
 			"typeahead:autocompleted typeahead:selected", embryo.routeUpload.selected);
-
 	
 	var vUrl = 'rest/voyage/typeahead/' + mmsi;
 	$scope.voyageData = {
@@ -27,13 +26,53 @@ embryo.routeUpload.Ctrl = function($scope, $element) {
 		},
 		remote : vUrl
 	};
+	
+	$scope.close = function(){
+		$('#routeUpload').find('.modal').modal('hide');
+		
+		console.log('closed modal');
+		
+		if(embryo.routeUpload.onclose){		
+			embryo.routeUpload.onclose();
+			// reset such that it can not be invoked twice
+			embryo.routeUpload.onclose = null;
+		}
+		
+		$scope.clear();
+	};
+	
+	$scope.open = function(){
+		$('#routeUpload').find('.modal').modal('show');
+	};
+	
+	$scope.clear = function(){
+		var scope = $('#routeUpload').find('form').scope();
+		
+		scope.queue = [];
+		
+		$('#routeUpload').find('form').find('input[name="voyageId"]').val('');
+		$('#routeUpload').find('#voyageName').typeahead('setQuery', '');
+		scope.voyageId = null;
+		scope.voyageName = null;
+	};
+
 };
+
 embryo.routeUpload.selected = function(event, datum){
 	console.log(event);
 	console.log(datum.id);
-	$(event.target).parents('form').find('.voyageId').val(datum.id)
-	console.log($('.voyageId'));
+	$(event.target).parents('form').find('input[name="voyageId"]').val(datum.id);
+	console.log($('input[name="voyageId"]'));
 };
+
+$('#routeUpload').find('form').bind('fileuploadsubmit', function (e, data) {
+    var inputs = data.form.find('[name="voyageId"]');
+    if (inputs.filter('[required][value=""]').first().focus().length) {
+        return false;
+    }
+    data.formData = inputs.serializeArray();
+});
+
 
 embryo.routeModal = {};
 embryo.routeModal.modalIdSelector;
@@ -59,7 +98,7 @@ embryo.routeModal.prepareRequest = function(containerSelector) {
 	return false;
 };
 
-var angularApp = angular.module('embryo', ['ngResource', 'siyfion.ngTypeahead']);
+var angularApp = angular.module('embryo', ['ngResource', 'siyfion.ngTypeahead' ,'blueimp.fileupload', 'ui.bootstrap']);
 
 angularApp.factory('Route', function($resource) {
 	return $resource('rest/route/save', {
@@ -87,6 +126,82 @@ angularApp.factory('RouteService', function() {
 		}
 	};
 });
+
+var isOnGitHub = false;
+
+var url = 'rest/routeUpload/single/';
+
+angularApp.config([
+				'$httpProvider',
+				'fileUploadProvider',
+				function($httpProvider, fileUploadProvider) {
+					delete $httpProvider.defaults.headers.common['X-Requested-With'];
+					fileUploadProvider.defaults.redirect = window.location.href
+							.replace(/\/[^\/]*$/, '/cors/result.html?%s');
+					if (isOnGitHub) {
+						// Demo settings:
+						angular
+								.extend(
+										fileUploadProvider.defaults,
+										{
+											// Enable image
+											// resizing, except for
+											// Android and Opera,
+											// which actually
+											// support image
+											// resizing, but fail to
+											// send Blob objects via
+											// XHR requests:
+											disableImageResize : /Android(?!.*Chrome)|Opera/
+													.test(window.navigator.userAgent),
+											maxFileSize : 5000000,
+											acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i
+										});
+					}
+				} ]);
+
+angularApp.controller('DemoFileUploadController', [ '$scope', '$http',
+		'$filter', '$window', function($scope, $http) {
+			$scope.options = {
+				url : url
+			};
+			if (!isOnGitHub) {
+				$scope.loadingFiles = true;
+				$http.get(url).then(function(response) {
+					$scope.loadingFiles = false;
+					$scope.queue = response.data.files || [];
+				}, function() {
+					$scope.loadingFiles = false;
+				});
+			}
+		} ]);
+
+angularApp.controller('FileDestroyController', [ '$scope', '$http',
+		function($scope, $http) {
+			var file = $scope.file, state;
+			if (file.url) {
+				file.$state = function() {
+					return state;
+				};
+				file.$destroy = function() {
+					state = 'pending';
+					return $http({
+						url : file.deleteUrl,
+						method : file.deleteType
+					}).then(function() {
+						state = 'resolved';
+						$scope.clear(file);
+					}, function() {
+						state = 'rejected';
+					});
+				};
+			} else if (!file.$cancel && !file._index) {
+				file.$cancel = function() {
+					$scope.clear(file);
+				};
+			}
+		} ]);
+
 
 embryo.routeModal.Ctrl = function($scope, RouteService, Route) {
 	$scope.route = RouteService.getRoute();
@@ -177,6 +292,11 @@ embryo.modal.close = function(id, action) {
 	if (action) {
 		action();
 	}
+	
+	if(embryo.routeUpload.onclose){
+		embryo.routeUpload.onclose();
+	}
+	
 };
 
 embryo.route = {};
@@ -187,7 +307,6 @@ embryo.route.fetch = function(id, draw) {
 };
 embryo.route.fetchAndDraw = function(id) {
 	return function() {
-		alert('fetch and draw');
 		embryo.route.fetch(id, embryo.route.draw);
 	};
 };

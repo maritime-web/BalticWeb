@@ -1,7 +1,8 @@
 <html lang="en" xmlns:wicket="http://wicket.apache.org">
 <body>
 	<wicket:extend>
-		<div ng-controller="embryo.routeUpload.Ctrl">
+		<!-- id and controller must follow each other -->
+		<div id="routeUpload" ng-controller="embryo.routeUpload.Ctrl">
 			<form wicket:id="uploadForm" class="form-horizontal route">
 				<wicket:enclosure>
 					<div class="alert alert-error" wicket:id="feedback">xxx</div>

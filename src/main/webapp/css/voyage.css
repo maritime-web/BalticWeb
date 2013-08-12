@@ -1,0 +1,7 @@
+/* CSS Styling for all voyage related functionality */
+
+/* Route button dropdown menu*/
+.voyagePlan .btn-group .dropdown-menu{
+	min-width:120px;
+}
+

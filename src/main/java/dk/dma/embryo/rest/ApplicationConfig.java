@@ -22,9 +22,11 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import dk.dma.embryo.site.markup.html.form.modal.RouteUpload;
+
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
-        return new HashSet<Class<?>>(Arrays.asList(RouteService.class, VoyageService.class));
+        return new HashSet<Class<?>>(Arrays.asList(RouteService.class, RouteUploadService.class, VoyageService.class));
     }
 }

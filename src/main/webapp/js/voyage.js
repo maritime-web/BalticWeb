@@ -1,4 +1,3 @@
-
 /*
  * Dependencies:
  * 
@@ -7,6 +6,48 @@
  * route.js
  * ....
  */
+
+"use strict";
+
+embryo.voyageplan = {};
+
+embryo.voyageplan.Ctrl = function($scope){
+	
+	// bad style to access DOM. 
+	// I should pass in the voyage object, when this controller is modified to work without wicket and jQuery
+	$scope.uploadRoute = function($event){
+		
+		var $row = $($event.target).closest('tr');
+		var $td = $($row.find('td')[0]);
+		var voyageName = $td.find('.typeahead-textfield').val();
+		var voyageId = $td.find('input[type="hidden"]').val();;
+		
+		
+		$("#routeUpload").scope().voyageName = voyageName;
+		$("#routeUpload").scope().voyageId = voyageId;
+
+		 
+		embryo.routeUpload.onclose = function(){
+			$('.voyagePlan').modal('show');
+		};
+		
+		$('.voyagePlan').modal('hide');
+		$('#routeUpload').scope().open();		
+		
+	};
+	
+	$scope.drawRoute = function(){
+		
+	};
+	
+	$scope.routeExists = false;
+	
+	$scope.isLast = function(){
+		return false;
+	};
+	
+};
+
 
 embryo.voyagePlanForm = {};
 embryo.voyagePlanForm.init = function(containerSelector) {
@@ -17,7 +58,7 @@ embryo.voyagePlanForm.init = function(containerSelector) {
 	$(containerSelector).find('.emptyRow input[type="text"]').keydown(
 			embryo.voyagePlanForm.copyEmptyRow);
 
-	$rows = $(containerSelector).find('.table tr:not(.emptyRow)');
+	var $rows = $(containerSelector).find('.table tr:not(.emptyRow)');
 	embryo.voyagePlanForm.registerHandlers($rows);
 
 	// Initialize typeahead for all input fields not being empty row

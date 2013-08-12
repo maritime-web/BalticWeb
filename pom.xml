@@ -93,6 +93,20 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Resteasy Multipart support (JAX-RS provider) -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
+      <version>2.3.1.GA</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.3</version>
+    </dependency>
+
     <!-- Wicket -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
