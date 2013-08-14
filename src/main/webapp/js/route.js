@@ -112,7 +112,8 @@ $('#routeUpload').find('form').bind('fileuploadsubmit', function(e, data) {
 });
 
 var angularApp = angular.module('embryo', [ 'ngResource',
-		'siyfion.ngTypeahead', 'blueimp.fileupload', 'ui.bootstrap' ]);
+		'siyfion.ngTypeahead', 'blueimp.fileupload' ]);
+//, 'ui.bootstrap'
 
 var isOnGitHub = false;
 
