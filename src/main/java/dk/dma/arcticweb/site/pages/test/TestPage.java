@@ -15,6 +15,8 @@
  */
 package dk.dma.arcticweb.site.pages.test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -28,11 +30,13 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.wicket.markup.html.WebPage;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.arcticweb.dao.UserDao;
+import dk.dma.arcticweb.service.ShipService;
 import dk.dma.embryo.domain.AuthorityRole;
 import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.IEntity;
@@ -59,6 +63,9 @@ public class TestPage extends WebPage {
     ShipDao shipDao;
 
     @Inject
+    ShipService shipService;
+
+    @Inject
     private transient Logger logger;
 
     @Inject
@@ -70,10 +77,10 @@ public class TestPage extends WebPage {
     public TestPage() {
         init2();
     }
-    
-    public <E extends IEntity<K>, K> void deleteAll(Class<E> type){
+
+    public <E extends IEntity<K>, K> void deleteAll(Class<E> type) {
         List<E> entities = shipDao.getAll(type);
-        for(E entity : entities){
+        for (E entity : entities) {
             shipDao.remove(entity);
         }
     }
@@ -82,7 +89,7 @@ public class TestPage extends WebPage {
 
         try {
             logger.info("Deleting existing entries");
-            
+
             deleteAll(Berth.class);
             deleteAll(Route.class);
             deleteAll(Voyage.class);
@@ -91,9 +98,8 @@ public class TestPage extends WebPage {
             deleteAll(Role.class);
             deleteAll(Ship2.class);
             deleteAll(Permission.class);
-            
-        } catch (SecurityException | IllegalStateException
-                 e) {
+
+        } catch (SecurityException | IllegalStateException e) {
             // TODO Auto-generated catch block
             logger.error("Error deleting existing entries", e);
             throw new RuntimeException(e);
@@ -106,7 +112,7 @@ public class TestPage extends WebPage {
         Ship2 newShip = new Ship2();
         newShip.setName("ORASILA");
         newShip.setMmsi(220443000L);
-        realmDao.saveEntity(newShip);
+        newShip = realmDao.saveEntity(newShip);
 
         Permission ais = new Permission("ais");
         Permission yourShip = new Permission("yourShip");
@@ -148,11 +154,51 @@ public class TestPage extends WebPage {
         shipDao.saveEntity(new Berth("Qeqertarsuaq", "Godhavn", "69 15.0N", "053 33.0W"));
         shipDao.saveEntity(new Berth("Ammassivik", "Sletten", "60 35.8N", "045 23.7W"));
         shipDao.saveEntity(new Berth("Ittaajimmiut", "Kap Hope", "70 27.5N", "022 22.0W"));
-        shipDao.saveEntity(new Berth("Kangersuatsiaq", "Prøven", "72 22.7N","055 33.5W"));
+        shipDao.saveEntity(new Berth("Kangersuatsiaq", "Prøven", "72 22.7N", "055 33.5W"));
+        shipDao.saveEntity(new Berth("Qaanaaq", "Thule", "77 27.8N", "069 14.0W"));
+        shipDao.saveEntity(new Berth("Upernavik", "72 47.5N", "056 09.4W"));
+        
+        LocalDateTime now = LocalDateTime.now();
+        VoyagePlan voyagePlan = new VoyagePlan();
+        newShip.setVoyagePlan(voyagePlan);
 
-        logger.info("AFTER CREATION");
+        voyagePlan.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W",
+                now.minusDays(4).withTime(9, 30, 0, 0), now.minusDays(3).withTime(17, 0, 0, 0)));
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W",
+                now.plusDays(3).withTime(10, 30, 0, 0), now.plusDays(5).withTime(9, 0, 0, 0)));
+        voyagePlan.addVoyageEntry(new Voyage("Thule", "77 27.8N", "069 14.0W",
+                now.plusDays(9).withTime(13, 15, 0, 0), now.plusDays(11).withTime(9, 0, 0, 0)));
+        voyagePlan.addVoyageEntry(new Voyage("Upernavik", "72 47.5N", "056 09.4W",
+                now.plusDays(13).withTime(10, 45, 0, 0), now.plusDays(14).withTime(9, 30, 0, 0)));
+        
+        shipDao.saveEntity(voyagePlan);
+
+        insertDemoRoute(newShip, voyagePlan.getVoyagePlan().get(0), "/demo/routes/Miami-Nuuk.txt", true);
+        insertDemoRoute(newShip, voyagePlan.getVoyagePlan().get(1), "/demo/routes/Nuuk-Thule.txt", false);
+        insertDemoRoute(newShip, voyagePlan.getVoyagePlan().get(2), "/demo/routes/Thule-Upernavik.txt", false);
+        
+
+         logger.info("AFTER CREATION");
         logExistingEntries();
 
+    }
+    
+    private void insertDemoRoute(Ship2 ship, Voyage voyage, String file, boolean activate){
+        InputStream is = getClass().getResourceAsStream(file);
+        try {
+            Route r =  shipService.parseRoute(is);
+            r.setShip(ship);            
+            shipDao.saveEntity(r);
+
+            r.setVoyage(voyage);
+            shipDao.saveEntity(voyage);
+           
+            if(activate){
+                shipService.activateRoute(r.getEnavId());
+            }
+        } catch (IOException e) {
+            logger.error("Failed uploading demo route Miami-Nuuk.txt", e);
+        }
     }
 
     private void logExistingEntries() {

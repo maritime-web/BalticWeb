@@ -230,6 +230,7 @@ public class ShipServiceImpl implements ShipService {
     /**
      * Also sets yourship on route
      */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Route parseRoute(InputStream is) throws IOException{
         RouteParser parser = RouteParser.getSimpleRouteParser(is);
 
