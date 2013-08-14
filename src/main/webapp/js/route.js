@@ -10,171 +10,178 @@
 
 embryo.routeUpload = {};
 embryo.routeUpload.Ctrl = function($scope, $element) {
-	
-	//TODO Find out how to reset prefetch/typeahead upon new ship
+
+	$scope.voyage = {
+		id : null,
+		name : null,
+		isPreselected : false,
+	};
+
+	// TODO Find out how to reset prefetch/typeahead upon new ship
 	var mmsi = '220443000';
 
 	$($element).find('.ngTypeahead').bind(
-			"typeahead:autocompleted typeahead:selected", embryo.routeUpload.selected);
-	
+			"typeahead:autocompleted typeahead:selected",
+			embryo.routeUpload.selected);
+
 	var vUrl = 'rest/voyage/typeahead/' + mmsi;
 	$scope.voyageData = {
 		name : 'voyages_45_' + mmsi,
 		prefetch : {
 			url : vUrl,
-			ttl : 18000000// 1/2 hour
+			ttl : 18000000
+		// 1/2 hour
 		},
 		remote : vUrl
 	};
-	
-	$scope.close = function(){
+
+	$scope.close = function() {
 		$('#routeUpload').find('.modal').modal('hide');
-		
-		console.log('closed modal');
-		
-		if(embryo.routeUpload.onclose){		
-			embryo.routeUpload.onclose();
+
+		if ($scope.onclose) {
+			$scope.onclose({
+				route : $scope.uploadedroute
+			});
 			// reset such that it can not be invoked twice
-			embryo.routeUpload.onclose = null;
+			$scope.onclose = null;
 		}
-		
+
 		$scope.clear();
 	};
-	
-	$scope.open = function(){
+
+	/**
+	 * options object
+	 * 
+	 * @param options.onclose
+	 *            function to be called when route upload closes
+	 * @param options.preSelectedVoyage.name
+	 *            Name of voyage for which to upload a route (new or modified)
+	 * @param options.preSelectedVoyage.id
+	 *            Id of voyage for which to upload a route (new or modified)
+	 */
+	$scope.open = function(options) {
+		if (options.preSelectedVoyage) {
+			$scope.voyage.isPreselected = true;
+
+			if (options.preSelectedVoyage.id) {
+				$scope.voyage.id = options.preSelectedVoyage.id;
+				$('#routeUpload').find('form').find('input[name="voyageId"]')
+						.val(options.preSelectedVoyage.id);
+			}
+			if (options.preSelectedVoyage.name) {
+				$scope.voyage.name = options.preSelectedVoyage.name;
+			}
+		} else {
+			$scope.voyage.isPreselected = false;
+			$scope.voyage.id = null;
+			$scope.voyage.name = null;
+		}
+
+		if (options.onclose) {
+			$scope.onclose = options.onclose;
+		}
 		$('#routeUpload').find('.modal').modal('show');
 	};
-	
-	$scope.clear = function(){
+
+	$scope.clear = function() {
 		var scope = $('#routeUpload').find('form').scope();
-		
+
 		scope.queue = [];
-		
+
 		$('#routeUpload').find('form').find('input[name="voyageId"]').val('');
 		$('#routeUpload').find('#voyageName').typeahead('setQuery', '');
-		scope.voyageId = null;
-		scope.voyageName = null;
+
+		$scope.voyage.isPreselected = false;
+		$scope.voyage.id = null;
+		$scope.voyage.name = null;
 	};
 
 };
 
-embryo.routeUpload.selected = function(event, datum){
-	console.log(event);
-	console.log(datum.id);
-	$(event.target).parents('form').find('input[name="voyageId"]').val(datum.id);
-	console.log($('input[name="voyageId"]'));
+embryo.routeUpload.selected = function(event, datum) {
+	$(event.target).parents('form').find('input[name="voyageId"]')
+			.val(datum.id);
 };
 
-$('#routeUpload').find('form').bind('fileuploadsubmit', function (e, data) {
-    var inputs = data.form.find('[name="voyageId"]');
-    if (inputs.filter('[required][value=""]').first().focus().length) {
-        return false;
-    }
-    data.formData = inputs.serializeArray();
+$('#routeUpload').find('form').bind('fileuploadsubmit', function(e, data) {
+	var inputs = data.form.find('[name="voyageId"]');
+	if (inputs.filter('[required][value=""]').first().focus().length) {
+		return false;
+	}
+	data.formData = inputs.serializeArray();
 });
 
-
-embryo.routeModal = {};
-embryo.routeModal.modalIdSelector;
-embryo.routeModal.prepareRequest = function(containerSelector) {
-
-	console.log('prepareRequest');
-
-	embryo.routeModal.modalIdSelector = containerSelector;
-
-	var $modalBody = $(containerSelector);
-	var $rows = $modalBody.find('tbody tr');
-	$modalBody.find('input[name="routeCount"]').val($rows.length);
-
-	var regex = new RegExp('\\d+', 'g');
-	$rows.each(function(index, row) {
-		$(row).find('input[name]').each(function(indeks, input) {
-			var nameAttr = $(input).attr("name");
-			var result = nameAttr.replace(regex, "" + index);
-			$(input).attr("name", result);
-		});
-	});
-
-	return false;
-};
-
-var angularApp = angular.module('embryo', ['ngResource', 'siyfion.ngTypeahead' ,'blueimp.fileupload', 'ui.bootstrap']);
-
-angularApp.factory('Route', function($resource) {
-	return $resource('rest/route/save', {
-		save : {
-			method : 'POST',
-			headers : [ {
-				'Content-Type' : 'application/json'
-			}, {
-				'Accept' : 'application/json'
-			} ]
-		}
-	});
-});
-
-angularApp.factory('RouteService', function() {
-	var route = {
-		waypoints : []
-	};
-	return {
-		editRoute : function(r) {
-			route = r;
-		},
-		getRoute : function() {
-			return route;
-		}
-	};
-});
+var angularApp = angular.module('embryo', [ 'ngResource',
+		'siyfion.ngTypeahead', 'blueimp.fileupload', 'ui.bootstrap' ]);
 
 var isOnGitHub = false;
 
 var url = 'rest/routeUpload/single/';
 
 angularApp.config([
-				'$httpProvider',
-				'fileUploadProvider',
-				function($httpProvider, fileUploadProvider) {
-					delete $httpProvider.defaults.headers.common['X-Requested-With'];
-					fileUploadProvider.defaults.redirect = window.location.href
-							.replace(/\/[^\/]*$/, '/cors/result.html?%s');
-					if (isOnGitHub) {
-						// Demo settings:
-						angular
-								.extend(
-										fileUploadProvider.defaults,
-										{
-											// Enable image
-											// resizing, except for
-											// Android and Opera,
-											// which actually
-											// support image
-											// resizing, but fail to
-											// send Blob objects via
-											// XHR requests:
-											disableImageResize : /Android(?!.*Chrome)|Opera/
-													.test(window.navigator.userAgent),
-											maxFileSize : 5000000,
-											acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i
-										});
-					}
-				} ]);
-
-angularApp.controller('DemoFileUploadController', [ '$scope', '$http',
-		'$filter', '$window', function($scope, $http) {
-			$scope.options = {
-				url : url
-			};
-			if (!isOnGitHub) {
-				$scope.loadingFiles = true;
-				$http.get(url).then(function(response) {
-					$scope.loadingFiles = false;
-					$scope.queue = response.data.files || [];
-				}, function() {
-					$scope.loadingFiles = false;
+		'$httpProvider',
+		'fileUploadProvider',
+		function($httpProvider, fileUploadProvider) {
+			delete $httpProvider.defaults.headers.common['X-Requested-With'];
+			fileUploadProvider.defaults.redirect = window.location.href
+					.replace(/\/[^\/]*$/, '/cors/result.html?%s');
+			if (isOnGitHub) {
+				// Demo settings:
+				angular.extend(fileUploadProvider.defaults, {
+					// Enable image
+					// resizing, except for
+					// Android and Opera,
+					// which actually
+					// support image
+					// resizing, but fail to
+					// send Blob objects via
+					// XHR requests:
+					disableImageResize : /Android(?!.*Chrome)|Opera/
+							.test(window.navigator.userAgent),
+					maxFileSize : 5000000,
+					acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i
 				});
 			}
 		} ]);
+
+angularApp
+		.controller(
+				'DemoFileUploadController',
+				[
+						'$scope',
+						'$http',
+						'$filter',
+						'$window',
+						function($scope, $http) {
+							$scope.options = {
+								url : url,
+								done : function(e, data) {
+									$
+											.each(
+													data.result.files,
+													function(index, file) {
+														console
+																.log('Uploaded route with success, new routeId: '
+																		+ file.routeId);
+														$scope
+																.$apply(function() {
+																	$scope.$parent.uploadedroute = {
+																		id : file.routeId
+																	};
+																});
+													});
+								}
+							};
+							if (!isOnGitHub) {
+								$scope.loadingFiles = true;
+								$http.get(url).then(function(response) {
+									$scope.loadingFiles = false;
+									$scope.queue = response.data.files || [];
+								}, function() {
+									$scope.loadingFiles = false;
+								});
+							}
+						} ]);
 
 angularApp.controller('FileDestroyController', [ '$scope', '$http',
 		function($scope, $http) {
@@ -202,10 +209,54 @@ angularApp.controller('FileDestroyController', [ '$scope', '$http',
 			}
 		} ]);
 
+angularApp.factory('Route', function($resource) {
+	var defaultParams = {};
 
-embryo.routeModal.Ctrl = function($scope, RouteService, Route) {
-	$scope.route = RouteService.getRoute();
+	var actions = {
+		getActive : {
+			params : {
+				action : 'active'
+			},
+			method : 'GET',
+			isArray : false,
+		},
+		activate : {
+			params : {
+				action : 'activate'
+			},
+			method : 'PUT',
+			isArray : false,
+		}
 
+	};
+
+	return $resource('rest/route/:action/:id', defaultParams, actions);
+});
+
+angularApp.factory('RouteService', function(Route) {
+	var route = new Route();
+	var active = new Route();
+	return {
+		editRoute : function(r) {
+			route = r;
+		},
+		newRoute : function() {
+			route = new Route();
+		},
+		getRoute : function() {
+			return route;
+		},
+		getActive : function() {
+			return active;
+		},
+		setActive : function(r) {
+			active = r;
+		}
+	};
+});
+
+embryo.routeModal = {};
+embryo.routeModal.Ctrl = function($scope, Route, RouteService) {
 	$scope.getRoute = function() {
 		return RouteService.getRoute();
 	};
@@ -213,76 +264,69 @@ embryo.routeModal.Ctrl = function($scope, RouteService, Route) {
 	$scope.save = function() {
 		// validate?
 		Route.save(RouteService.getRoute(), function() {
-			console.log('Saved route' + $scope.route.name);
-			console.log('Saved route' + $scope.route);
-
+			$scope.message="Saved route '" + $scope.getRoute().name + "'";
 		});
 	};
 	$scope.close = function() {
+		$scope.clear();
 		$('#routeEdit').parents('.modal').modal('hide');
+
+		if ($scope.onclose) {
+			$scope.onclose({route : RouteService.getRoute()});
+			$scope.onclose = null;
+		}
+};
+
+	$scope.open = function(options) {
+		if (options && options.onclose) {
+			$scope.onclose = options.onclose;
+		}
+		$('#routeEdit').parents('.modal').modal('show');
+	};
+
+	$scope.edit = function(routeId) {
+		$scope.route = Route.get(routeId);
+		$scope.open();
+	};
+
+	$scope.openYourActive = function() {
+		var route = Route.getActive(function(route) {
+			if (!route.name) {
+				// no active route
+				// should some status code reading be done?
+				$scope.alertMessage = "No route has been activated";
+			}
+			RouteService.editRoute(route);
+		});
+
+		$scope.open();
+	};
+
+	$scope.saveable = function() {
+		if (!$scope.getRoute().name) {
+			return false;
+		}
+
+		if (!($scope.getRoute().waypoints && $scope.getRoute().waypoints.length >= 2)) {
+			return false;
+		}
+
+		return true;
+	};
+
+	$scope.newRoute = function() {
+		RouteService.newRoute();
+		$scope.open();
+	};
+
+	$scope.clear = function() {
+		$scope.alertMessage = null;
+		$scope.message = null;
 	};
 };
 
-embryo.dynamicListView = {};
-embryo.dynamicListView.init = function(listSelector, name, autoExpand) {
-	$(listSelector).append('<input type="hidden" name="' + name + '"/>');
-
-	if (autoExpand) {
-		$(listSelector)
-				.find('tr')
-				.each(
-						function() {
-							$(this)
-									.find('td:last-child')
-									.append(
-											'<td><button type="submit" class="btn btn-danger">Delete</button></td>');
-						});
-
-		$(containerSelector).find('tr:last-child').addClass('emptyRow').find(
-				'button').hide();
-	}
-
-};
-
-/*
- * embryo.dynamicListView.onDelete = function(event) { event.preventDefault();
- * event.stopPropagation(); $rowToDelete = $(event.target).closest('tr');
- * $rowToDelete.next().find("input:first").focus(); $rowToDelete.remove(); };
- * 
- * embryo.dynamicListView.copyEmptyRow = function(event) { var $row =
- * $(event.target).closest('tr'); // create new row by copy and modify before
- * insertion into document var $newRow = $row.clone(true); var columnIndex =
- * $row.find('input').index(event.target);
- * $newRow.find('input').eq(columnIndex).val(""); $row.after($newRow); //
- * enableRow must be called after copying new row
- * embryo.dynamicListView.enableRow($row); };
- * 
- * 
- * embryo.dynamicListView.enableRow = function($row) {
- * embryo.typeahead.create($row.find('input.typeahead-textfield')[0]);
- * 
- * $row.find('button').show(); $row.removeClass('emptyRow'); $row.find('input,
- * button').unbind('keydown', embryo.voyagePlanForm.copyEmptyRow);
- * 
- * //$(this).find('button').click(formObject.onDelete); //
- * embryo.voyagePlanForm.registerHandlers($row); };
- */
-
-embryo.dynamicListView.prepareRequest = function(containerSelector) {
-	var $modalBody = $(containerSelector);
-	var $rows = $modalBody.find('tbody tr');
-	$modalBody.find('input[name="listCount"]').val($rows.length);
-
-	var regex = new RegExp('\\d+', 'g');
-	$rows.each(function(index, row) {
-		$(row).find('input[name]').each(function(indeks, input) {
-			var nameAttr = $(input).attr("name");
-			var result = nameAttr.replace(regex, "" + index);
-			$(input).attr("name", result);
-		});
-	});
-
-	return false;
+embryo.routeModal.editActive = function() {
+	$('#routeEditModal').scope().openYourActive();
 };
 
 embryo.modal = {};
@@ -292,16 +336,17 @@ embryo.modal.close = function(id, action) {
 	if (action) {
 		action();
 	}
-	
-	if(embryo.routeUpload.onclose){
+
+	if (embryo.routeUpload.onclose) {
 		embryo.routeUpload.onclose();
 	}
-	
+
 };
 
 embryo.route = {};
 embryo.route.fetch = function(id, draw) {
 	$.getJSON('rest/route/byId/' + id, function(route) {
+		console.log(route);
 		draw(route);
 	});
 };
@@ -360,6 +405,14 @@ embryo.route.initLayer = function() {
 		"sketchcomplete" : report
 	});
 
+	embryo.route.addModifyControl();
+
+	// START FIXME: Find out how to move this code to initLayer function
+	embryo.route.addSelectFeature();
+	// END FIXME: Find out how to move this code to initLayer function
+	
+	embryo.route.drawActiveRoute();
+
 	var menuItems = [ {
 		text : 'Edit Route',
 		shown4FeatureType : 'route',
@@ -369,9 +422,44 @@ embryo.route.initLayer = function() {
 			service.editRoute(feature.data.route);
 			$('#routeEdit').parents('.modal').modal('show');
 		}
+	}, {
+		text : 'New Route',
+		choose : function(scope, feature) {
+			$('#routeEditModal').scope().newRoute();
+		}
+	}, {
+		text : 'Upload Active Route',
+		choose : function(scope, feature) {
+			$('#routeUpload').scope().newRoute();
+		}
 	} ];
 
 	embryo.contextMenu.addMenuItems(menuItems);
+};
+
+embryo.route.drawActiveRoute = function() {
+	var injector = angular.element(document).injector();
+	var Route = injector.get('Route');
+	var RouteService = injector.get('RouteService');
+	
+	if(!RouteService.getActive().name){
+		var activeRoute = Route.getActive(function(){
+			
+			console.log(activeRoute);
+			RouteService.setActive(activeRoute);
+
+			if(RouteService.getActive().name){
+				console.log('drawing active route: ' + RouteService.getActive().name);
+				embryo.route.draw(RouteService.getActive());
+			}	else{
+				console.log('no active route to draw');
+				console.log(RouteService.getActive());
+			}
+		});
+	}else {
+		console.log('drawing active route: ' + RouteService.getActive().name);
+		embryo.route.draw(RouteService.getActive());
+	}
 };
 
 embryo.route.draw = function(route) {
@@ -387,7 +475,7 @@ embryo.route.draw = function(route) {
 		var points = [];
 		var lines = [];
 
-		for (index in route.waypoints) {
+		for ( var index in route.waypoints) {
 			currentPoint = embryo.route.createPoint(route.waypoints[index]);
 
 			points.push(embryo.route.createWaypointFeature(currentPoint));
@@ -412,13 +500,6 @@ embryo.route.draw = function(route) {
 		// embryo.route.layer.addFeatures(points);
 
 		// Draw features
-
-		// START FIXME: Find out how to move this code to initLayer function
-		// embryo.route.addSelectFeature();
-		// END FIXME: Find out how to move this code to initLayer function
-
-		embryo.route.addModifyControl();
-
 		embryo.route.layer.refresh();
 	}
 };
@@ -458,6 +539,12 @@ embryo.route.addModifyControl = function() {
 };
 
 embryo.route.addSelectFeature = function() {
+
+	// Select feature configuration should be moved into contextmenu section
+	// It must be done after all layers have been initialized
+	// See also
+	// http://gis.stackexchange.com/questions/13886/how-to-select-multiple-features-from-multiple-layers-in-openlayers
+	// and http://openlayers.org/dev/examples/select-feature-multilayer.html
 	embryo.route.select_feature_control = new OpenLayers.Control.SelectFeature(
 			embryo.route.layer, {
 				multiple : false,
@@ -501,4 +588,89 @@ embryo.route.createPoint = function(waypoint) {
 	return new OpenLayers.Geometry.Point(waypoint.longitude, waypoint.latitude)
 			.transform(new OpenLayers.Projection("EPSG:4326"),
 					embryo.mapPanel.map.getProjectionObject());
+};
+
+// /////////////////////////
+// No longer used
+// /////////////////////////
+/*
+ * embryo.dynamicListView.onDelete = function(event) { event.preventDefault();
+ * event.stopPropagation(); $rowToDelete = $(event.target).closest('tr');
+ * $rowToDelete.next().find("input:first").focus(); $rowToDelete.remove(); };
+ * 
+ * embryo.dynamicListView.copyEmptyRow = function(event) { var $row =
+ * $(event.target).closest('tr'); // create new row by copy and modify before
+ * insertion into document var $newRow = $row.clone(true); var columnIndex =
+ * $row.find('input').index(event.target);
+ * $newRow.find('input').eq(columnIndex).val(""); $row.after($newRow); //
+ * enableRow must be called after copying new row
+ * embryo.dynamicListView.enableRow($row); };
+ * 
+ * 
+ * embryo.dynamicListView.enableRow = function($row) {
+ * embryo.typeahead.create($row.find('input.typeahead-textfield')[0]);
+ * 
+ * $row.find('button').show(); $row.removeClass('emptyRow'); $row.find('input,
+ * button').unbind('keydown', embryo.voyagePlanForm.copyEmptyRow);
+ * 
+ * //$(this).find('button').click(formObject.onDelete); //
+ * embryo.voyagePlanForm.registerHandlers($row); };
+ */
+embryo.dynamicListView = {};
+embryo.dynamicListView.init = function(listSelector, name, autoExpand) {
+	$(listSelector).append('<input type="hidden" name="' + name + '"/>');
+
+	if (autoExpand) {
+		$(listSelector)
+				.find('tr')
+				.each(
+						function() {
+							$(this)
+									.find('td:last-child')
+									.append(
+											'<td><button type="submit" class="btn btn-danger">Delete</button></td>');
+						});
+
+		$(containerSelector).find('tr:last-child').addClass('emptyRow').find(
+				'button').hide();
+	}
+
+};
+
+embryo.dynamicListView.prepareRequest = function(containerSelector) {
+	var $modalBody = $(containerSelector);
+	var $rows = $modalBody.find('tbody tr');
+	$modalBody.find('input[name="listCount"]').val($rows.length);
+
+	var regex = new RegExp('\\d+', 'g');
+	$rows.each(function(index, row) {
+		$(row).find('input[name]').each(function(indeks, input) {
+			var nameAttr = $(input).attr("name");
+			var result = nameAttr.replace(regex, "" + index);
+			$(input).attr("name", result);
+		});
+	});
+
+	return false;
+};
+
+embryo.routeModal.modalIdSelector;
+
+embryo.routeModal.prepareRequest = function(containerSelector) {
+	embryo.routeModal.modalIdSelector = containerSelector;
+
+	var $modalBody = $(containerSelector);
+	var $rows = $modalBody.find('tbody tr');
+	$modalBody.find('input[name="routeCount"]').val($rows.length);
+
+	var regex = new RegExp('\\d+', 'g');
+	$rows.each(function(index, row) {
+		$(row).find('input[name]').each(function(indeks, input) {
+			var nameAttr = $(input).attr("name");
+			var result = nameAttr.replace(regex, "" + index);
+			$(input).attr("name", result);
+		});
+	});
+
+	return false;
 };

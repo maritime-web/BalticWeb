@@ -13,34 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.dao;
+package dk.dma.embryo.site.panel;
 
-import javax.ejb.Local;
+import dk.dma.embryo.security.authorization.YourShip;
 
-import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
-import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyagePlan;
+@YourShip
+public class EditActiveRouteExecutor extends JSExecutor {
 
-@Local
-public interface ShipDao extends Dao {
-
-
-    /**
-     * 
-     * @param sailor
-     * @return
-     */
-    Ship2 getShip(Sailor sailor);
-    
-    VoyagePlan getVoyagePlan(Long mmsi);
-    
-    Route getActiveRoute(Long mmsi);
-
-    Long getRouteId(String enavId);
-
-    Route getRouteByEnavId(String enavId);
-
-    Voyage getVoyageByEnavId(String enavId);
+    public EditActiveRouteExecutor() {
+        super("embryo.routeModal.editActive()");
+    }
 }

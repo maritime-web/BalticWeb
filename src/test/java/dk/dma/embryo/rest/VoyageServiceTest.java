@@ -31,7 +31,7 @@ public class VoyageServiceTest {
     public void VoyageTransformerFunction_test() {
         
         Voyage v = new Voyage("MyBerth", "1 1.100N", "1 2.000W", LocalDateTime.now(), LocalDateTime.now());
-        v.setBusinessId("MyKey");
+        v.setEnavId("MyKey");
         VoyageDatum d = new VoyageTransformerFunction().apply(v);
         
         assertEquals("MyBerth - (MyKey)", d.getValue());

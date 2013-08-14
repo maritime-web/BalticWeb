@@ -19,10 +19,14 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 
 import org.joda.time.LocalDateTime;
 
 @Entity
+@NamedQueries({ @NamedQuery(name = "Voyage:getByEnavId", query = "SELECT DISTINCT v FROM Voyage v where v.enavId = :enavId") })
 public class Voyage extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -30,22 +34,26 @@ public class Voyage extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-    private String businessId;
-    
+    private String enavId;
+
     private String berthName;
 
     private Position position;
-    
+
     private LocalDateTime arrival;
 
     private LocalDateTime departure;
-    
+
     private Integer personsOnBoard;
-    
+
     private boolean doctorOnBoard;
-    
+
+    @OneToOne
+    Route route;
+
     @ManyToOne
     VoyagePlan plan;
+
     
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -56,15 +64,15 @@ public class Voyage extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "Voyage [" + baseToString() + ", businessId=" + businessId + ", berthName=" + berthName + ", position=" + position + ", arrival=" + arrival + ", departure="
-                + departure + "]";
+        return "Voyage [" + baseToString() + ", enavId=" + enavId + ", berthName=" + berthName + ", position="
+                + position + ", arrival=" + arrival + ", departure=" + departure + "]";
     }
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
     public Voyage(String key) {
-        this.businessId = key;
+        this.enavId = key;
         position = new Position();
     }
 
@@ -79,6 +87,7 @@ public class Voyage extends BaseEntity<Long> {
         this.arrival = arrival;
         this.departure = departure;
     }
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -109,21 +118,21 @@ public class Voyage extends BaseEntity<Long> {
     public Position getPosition() {
         return position;
     }
-    
-    public void setPosition(Position position){
+
+    public void setPosition(Position position) {
         this.position = position;
     }
 
-    public String getBusinessId() {
-        return businessId;
+    public String getEnavId() {
+        return enavId;
     }
 
-    public void setBusinessId(String key) {
+    public void setEnavId(String key) {
         // hack such that wicket does not overwrite generated key with empty value
-        if(key == null || key.length() == 0){
+        if (key == null || key.length() == 0) {
             return;
         }
-        this.businessId = key;
+        this.enavId = key;
     }
 
     public Integer getPersonsOnBoard() {
@@ -141,5 +150,10 @@ public class Voyage extends BaseEntity<Long> {
     public void setDoctorOnBoard(boolean doctorOnBoard) {
         this.doctorOnBoard = doctorOnBoard;
     }
+
+    public Route getRoute() {
+        return route;
+    }
+
     
 }

@@ -1,6 +1,6 @@
 <html lang="en" xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
-	<div ng-controller="embryo.voyageplan.Ctrl">
+	<div id="voyagePlanController" ng-controller="embryo.voyageplan.Ctrl">
 		<div wicket:id="voyagePlan" class="modal hide fade xlarge voyagePlan" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 			aria-hidden="true">
 			<form wicket:id="voyage_plan_form" class="form-horizontal">
@@ -31,7 +31,7 @@
 						<tbody>
 							<tr wicket:id="voyagePlan">
 								<td><input wicket:id="berthName" class="input-large" type="text" /><input type="hidden"
-									wicket:id="businessId" /></td>
+									wicket:id="enavId" /></td>
 								<td><input wicket:id="position.latitude" type="text" class="input-small lat" /></td>
 								<td><input wicket:id="position.longitude" type="text" class="input-small lon" /></td>
 								<td><input wicket:id="arrival" type="text" class="arrival input-medium" placeholder="MM/dd/yyyy" /></td>
@@ -40,12 +40,13 @@
 								<td><input wicket:id="doctorOnBoard" type="checkbox" /></td>
 								<td>
 									<div class="btn-group pull-left">
-										<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Route <span class="caret"></span>
+										<a wicket:id="route.enavId" class="btn dropdown-toggle" data-toggle="dropdown" href="#">Route <span class="caret"></span>
 										</a>
 										<ul class="dropdown-menu" role="menu">
 											<li><a tabindex="-1" href="#" ng-click="uploadRoute($event)">Upload Route</a></li>
-											<li ng-show="routeExists"><a tabindex="-1" href="#">Edit Route</a></li>
-											<li ng-show="routeExists"><a tabindex="-1" href="#">Draw Route</a></li>
+											<li><a tabindex="-1" href="#" ng-click="editRoute($event)">Edit Route</a></li>
+											<li><a tabindex="-1" href="#" ng-click="drawRoute($event)">Draw Route</a></li>
+											<li><a tabindex="-1" href="#" ng-click="activateRoute($event)">Activate Voyage/Route</a></li>
 										</ul>
 									</div>
 								</td>

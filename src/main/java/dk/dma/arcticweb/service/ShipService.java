@@ -59,13 +59,19 @@ public interface ShipService {
     
     List<Voyage> getVoyages(Long mmsi);
     
-    Long saveRoute(Route route);
-    
+    String saveRoute(Route route, String voyageId, boolean active);
+
+    String saveRoute(Route route);
+
+    Route getYourActiveRoute();
+
     Route getActiveRoute(Long mmsi);
+
+    Route activateRoute(String routeEnavId);
 
     Route getRouteByEnavId(String enavId);
 
-    Voyage getVoyage(Long id);
+    Voyage getVoyage(String businessId);
     
     Route parseRoute(InputStream is) throws IOException;
 

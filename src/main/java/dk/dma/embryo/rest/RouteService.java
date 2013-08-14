@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -26,6 +27,7 @@ import javax.ws.rs.Produces;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ShipService;
+import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.enav.model.voyage.Route;
 
 @Path("/route")
@@ -41,14 +43,6 @@ public class RouteService {
     }
 
     @GET
-    @Path("/current/{mmsi}")
-    @Produces("application/json")
-    public Route getCurrentRoute(@PathParam("mmsi") Long mmsi) {
-        dk.dma.embryo.domain.Route route = shipService.getActiveRoute(mmsi);
-        return route.toEnavModel();
-    }
-
-    @GET
     @Path("/byId/{id}")
     @Produces("application/json")
     public Route getRoute(@PathParam("id") String id) {
@@ -59,14 +53,59 @@ public class RouteService {
         return route != null ? route.toEnavModel() : null;
     }
 
+    /**
+     * Given that mmsi value is supplied, the active route for that ship is returned
+     * 
+     * Given that no mmsi value is supplied, the active route for the authorized user (with {@link YourShip} permission)
+     * is returned.
+     * 
+     * @param mmsi
+     * @return
+     */
+
+    @GET
+    @Path("/active{mmsi : (/mmsi)?}")
+    @Produces("application/json")
+    public Route getActive(@PathParam("mmsi") String mmsi) {
+        logger.debug("getActive({})", mmsi);
+
+        dk.dma.embryo.domain.Route route;
+
+        if (mmsi == null || mmsi.trim().length() == 0) {
+            route = shipService.getYourActiveRoute();
+        } else {
+            route = shipService.getActiveRoute(Long.valueOf(mmsi));
+        }
+
+        Route result = route != null ? route.toEnavModel() : null;
+        
+        logger.debug("getActive({}) : {}", mmsi, result);
+        // TODO replace below with some http status telling resource is not available
+        return result;
+    }
+
     @POST
-    @Path("/save")
     @Consumes("application/json")
     public void save(Route route) {
-        logger.debug("Saving route {}", route);
+        logger.debug("Saving route: {}", route);
 
         dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromEnavModel(route);
         shipService.saveRoute(toBeSaved);
+        // String result = "Product created : " + product;
+        // return Response.status(201).entity(result).build();
+    }
+
+    /*
+     * FIXME This method does not follow rest principles. What should have been done, was to save a ship with current
+     * voyage, which had an activeRoute. 
+     */
+    @PUT
+    @Path("/activate")
+    @Produces("application/json")
+    public void activate(String routeId) {
+        logger.debug("Activating route: {}", routeId);
+
+        shipService.activateRoute(routeId);
         // String result = "Product created : " + product;
         // return Response.status(201).entity(result).build();
     }

@@ -98,14 +98,14 @@ public class RouteUploadModal extends Modal<RouteUploadModal> implements Reached
                     if (voyageId.getObject() != null) {
                         logger.debug("voyageId: {}", voyageId.getObject());
                         
-                        Long id = Long.valueOf(voyageId.getObject());
+                        String id = voyageId.getObject();
                         
                         Voyage voyage = shipService.getVoyage(id);
                         route.setVoyage(voyage);
                     }
 
-                    Long routeId = shipService.saveRoute(route);
-                    appendSaveDialogJS(target, routeId);
+                    String enavId = shipService.saveRoute(route);
+                    appendSaveDialogJS(target, route.getId());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } 

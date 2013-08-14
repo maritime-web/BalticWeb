@@ -64,7 +64,7 @@ public class VoyagePlan extends BaseEntity<Long> {
     public Map<String, Voyage> getVoyagePlanAsMap(){
         Map<String, Voyage> m = new HashMap<>();
         for(Voyage v : voyages){
-            m.put(v.getBusinessId(), v);
+            m.put(v.getEnavId(), v);
         }
         return m;
     }

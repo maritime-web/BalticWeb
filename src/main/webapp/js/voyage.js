@@ -11,43 +11,102 @@
 
 embryo.voyageplan = {};
 
-embryo.voyageplan.Ctrl = function($scope){
-	
-	// bad style to access DOM. 
-	// I should pass in the voyage object, when this controller is modified to work without wicket and jQuery
-	$scope.uploadRoute = function($event){
-		
+embryo.voyageplan.Ctrl = function($scope, RouteService, Route) {
+
+	// bad style to access DOM.
+	// I should pass in the voyage object, when this controller is modified to
+	// work without wicket and jQuery
+	$scope.uploadRoute = function($event) {
+
 		var $row = $($event.target).closest('tr');
 		var $td = $($row.find('td')[0]);
 		var voyageName = $td.find('.typeahead-textfield').val();
-		var voyageId = $td.find('input[type="hidden"]').val();;
-		
-		
-		$("#routeUpload").scope().voyageName = voyageName;
-		$("#routeUpload").scope().voyageId = voyageId;
+		var voyageId = $td.find('input[type="hidden"]').val();
 
-		 
-		embryo.routeUpload.onclose = function(){
-			$('.voyagePlan').modal('show');
-		};
-		
 		$('.voyagePlan').modal('hide');
-		$('#routeUpload').scope().open();		
-		
+
+		var button = $($event.target).closest('div').find('.btn');
+		$('#routeUpload').scope().open({
+			preSelectedVoyage : {
+				id : voyageId,
+				name : voyageName
+			},
+			onclose : function(params) {
+				if (params.route.id) {
+					console.log(params.route.id);
+					button.attr('data-routeId', params.route.id);
+				}
+				$('.voyagePlan').modal('show');
+			}
+		});
+
 	};
-	
-	$scope.drawRoute = function(){
-		
+
+	$scope.drawRoute = function($event) {
+		$('.voyagePlan').modal('hide');
+
+		var button = $($event.target).closest('div').find('.btn');
+		var routeId = button.attr('data-routeId');
+		if (routeId) {
+			console.log("Drawing route with id: " + routeId);
+			embryo.route.fetch(routeId, embryo.route.draw);
+		} else {
+			alert('No route exists for this voyage');
+		}
 	};
-	
-	$scope.routeExists = false;
-	
-	$scope.isLast = function(){
+
+	$scope.activateRoute = function($event) {
+		var button = $($event.target).closest('div').find('.btn');
+		var routeId = button.attr('data-routeId');
+		if (routeId) {
+			console.log("Activating route with id: " + routeId);
+			Route.activate(routeId, function() {
+				var activeRoute = Route.getActive(function() {
+					RouteService.setActive(activeRoute);
+					embryo.route.drawActiveRoute();
+				});
+			});
+		} else {
+			alert('No route exists for this voyage');
+		}
+	};
+
+	$scope.editRoute = function($event) {
+		$('.voyagePlan').modal('hide');
+
+		var $row = $($event.target).closest('tr');
+		var $td = $($row.find('td')[0]);
+		var voyageName = $td.find('.typeahead-textfield').val();
+		var voyageId = $td.find('input[type="hidden"]').val();
+
+		var button = $($event.target).closest('div').find('.btn');
+		var routeId = button.attr('data-routeId');
+		if (routeId) {
+			var route = Route.get({
+				id : routeId
+			}, function() {
+				RouteService.setRoute(route);
+			});
+
+			$('#routeEditModal').scope().open({
+				onclose : function(params) {
+					if (params.route.id) {
+						button.attr('data-routeId', params.route.id);
+					}
+					$('.voyagePlan').modal('show');
+				}
+
+			});
+		} else {
+			alert('No route exists for this voyage');
+		}
+	};
+
+	$scope.isLast = function() {
 		return false;
 	};
-	
-};
 
+};
 
 embryo.voyagePlanForm = {};
 embryo.voyagePlanForm.init = function(containerSelector) {

@@ -1,18 +1,18 @@
 <html lang="en" xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
 	
-	<div ng-controller="embryo.routeModal.Ctrl">
+	<div id="routeEditModal" ng-controller="embryo.routeModal.Ctrl">
 
 		<div wicket:id="myContainer" class="modal hide fade xlarge" tabindex="-1" role="dialog"
 			aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-				<h2 id="myModalLabel">Current Route</h2>
+				<button type="button" class="close" ng-click="close()" data-dismiss="modal" aria-hidden="true">x</button>
+				<h2 id="myModalLabel">Route</h2>
 			</div>
 			<div class="modal-body">
 				<div id="routeEdit">
-					<div ng-show="message" class="alert alert-error">{{message}} XXX</div>
-					<!-- <div ng-show="message" class="alert alert-error">{{message}}</div> -->
+					<div ng-show="message" class="alert">{{message}}</div>
+					<div ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
 
 					<form class="form-horizontal route">
 
@@ -111,7 +111,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<input type="submit" class="btn btn-primary" value="Save" ng-click="save()" />
+				<input type="submit" class="btn btn-primary" value="Save" ng-disabled="!saveable()" ng-click="save()" />
 			</div>
 		</div>
 	</div>

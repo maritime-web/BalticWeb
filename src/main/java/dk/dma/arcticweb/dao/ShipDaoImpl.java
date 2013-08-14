@@ -24,6 +24,7 @@ import javax.persistence.TypedQuery;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 
 @Stateless
@@ -59,12 +60,14 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
 
     @Override
     public Route getActiveRoute(Long mmsi) {
-        TypedQuery<Route> query = em.createNamedQuery("Route:getByMmsi", Route.class);
+        TypedQuery<Ship2> query = em.createNamedQuery("Ship:getByMmsi", Ship2.class);
         query.setParameter("mmsi", mmsi);
         
-        List<Route> result = query.getResultList();
+        List<Ship2> result = query.getResultList();
         
-        return getSingleOrNull(result);
+        Ship2 ship = getSingleOrNull(result); 
+        
+        return ship == null ? null : ship.getActiveRoute();
     }
 
     @Override
@@ -83,6 +86,16 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
         query.setParameter("enavId", enavId);
         
         List<Route> result = query.getResultList();
+        
+        return getSingleOrNull(result);
+    }
+
+    @Override
+    public Voyage getVoyageByEnavId(String enavId) {
+        TypedQuery<Voyage> query = em.createNamedQuery("Voyage:getByEnavId", Voyage.class);
+        query.setParameter("enavId", enavId);
+        
+        List<Voyage> result = query.getResultList();
         
         return getSingleOrNull(result);
     }

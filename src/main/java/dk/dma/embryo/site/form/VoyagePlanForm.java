@@ -23,6 +23,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxCallListener;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
@@ -151,7 +152,7 @@ public class VoyagePlanForm extends EmbryonicForm<VoyagePlanForm> {
 
             @Override
             protected void populateItem(ListItem<Voyage> item) {
-                item.add(new HiddenField<String>("businessId"));
+                item.add(new HiddenField<String>("enavId"));
                 item.add(new TypeaheadTextField<String, BerthDatum>("berthName", new BerthTypeaheadDataSource())
                         .autoInitialize(false));
                 item.add(new LatitudeTextField("position.latitude"));
@@ -166,6 +167,13 @@ public class VoyagePlanForm extends EmbryonicForm<VoyagePlanForm> {
                 // personsOnboard.setRequired(true).add(new MinimumValidator<Integer>(1)).add(new
                 // MaximumValidator<Integer>(10000));
                 item.add(new CheckBox("doctorOnBoard"));
+
+                WebMarkupContainer c = new WebMarkupContainer("route.enavId");
+                item.add(c);
+                if(item.getModelObject().getRoute() != null){
+                    logger.debug("setting data-routeId={}", item.getModelObject().getRoute().getEnavId());
+                    c.add(new AttributeAppender("data-routeId", item.getModelObject().getRoute().getEnavId()));
+                }
             }
         };
         lv.setReuseItems(true);

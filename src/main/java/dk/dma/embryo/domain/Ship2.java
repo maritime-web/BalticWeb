@@ -23,11 +23,15 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 
 @Entity
+@NamedQueries({
+@NamedQuery(name = "Ship:getByMmsi", query = "SELECT s FROM Ship2 s WHERE s.mmsi = :mmsi") })
 public class Ship2 extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 
@@ -77,6 +81,9 @@ public class Ship2 extends BaseEntity<Long> {
     @OneToOne(mappedBy = "ship", cascade = { CascadeType.ALL })
     private VoyagePlan voyagePlan;
 
+    @OneToOne(cascade = { CascadeType.ALL })
+    private Route activeRoute;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = true)
     private ShipOwnerRole owner;
@@ -90,7 +97,6 @@ public class Ship2 extends BaseEntity<Long> {
     public Ship2(Long mmsi) {
         this.mmsi = mmsi;
     }
-
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
@@ -214,9 +220,17 @@ public class Ship2 extends BaseEntity<Long> {
     public VoyagePlan getVoyagePlan() {
         return voyagePlan;
     }
-    
-    public void setVoyagePlan(VoyagePlan plan){
+
+    public void setVoyagePlan(VoyagePlan plan) {
         plan.ship = this;
         this.voyagePlan = plan;
+    }
+
+    public Route getActiveRoute() {
+        return activeRoute;
+    }
+
+    public void setActiveRoute(Route route) {
+        activeRoute = route;
     }
 }

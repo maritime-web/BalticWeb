@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -34,7 +35,6 @@ import dk.dma.enav.model.voyage.Waypoint;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "Route:getByMmsi", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.ship.mmsi = :mmsi"),
         @NamedQuery(name = "Route:getByEnavId", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.enavId = :enavId"),
         @NamedQuery(name = "Route:getId", query = "SELECT r.id FROM Route r WHERE r.enavId = :enavId") })
 public class Route extends BaseEntity<Long> {
@@ -66,7 +66,7 @@ public class Route extends BaseEntity<Long> {
     @OneToOne
     private Ship2 ship;
 
-    @OneToOne
+    @OneToOne(mappedBy="route", cascade={CascadeType.PERSIST, CascadeType.MERGE})
     private Voyage voyage;
 
     // //////////////////////////////////////////////////////////////////////
@@ -188,6 +188,7 @@ public class Route extends BaseEntity<Long> {
 
     public void setVoyage(Voyage voyage) {
         this.voyage = voyage;
+        this.voyage.route = this;
     }
 
     public String getEnavId() {

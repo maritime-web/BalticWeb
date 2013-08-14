@@ -380,6 +380,7 @@ embryo.contextMenu = {
 	menuItems : [],
 
 	addMenuItems : function(newItems) {
+		
 		var context = this;
 		// This method may be called from outside angular.
 		// Make sure angular discovers the update.
@@ -388,7 +389,7 @@ embryo.contextMenu = {
 		});
 	},
 
-	Ctrl : function($scope, RouteService) {
+	Ctrl : function($scope) {
 		$scope.getMenuItems = function() {
 			return embryo.contextMenu.menuItems;
 		};
@@ -400,14 +401,14 @@ embryo.contextMenu = {
 			var featureType = feature && feature.data ? feature.data.featureType
 					: null;
 
-			if (!item.shown4FeatureType)
+			if (!item.shown4FeatureType){
 				return true;
+			}
 
-			return item.shown4FeatureType == featureType;
+			return item.shown4FeatureType === featureType;
 		};
 
 		$scope.choose = function(item, feature) {
-			RouteService.editRoute(feature.data.route);
 			item.choose($scope, feature);
 		};
 	}
@@ -420,7 +421,7 @@ embryo.mapPanel.addLayerInitializer = function(layerInitializer) {
 };
 
 embryo.mapPanel.initLayers = function() {
-	for (x in this.layerInitializers) {
+	for (var x in this.layerInitializers) {
 		this.layerInitializers[x]();
 	}
 };
@@ -442,6 +443,8 @@ embryo.mapPanel.initLayer = function() {
  */
 embryo.vessel = {};
 embryo.vessel.initLayers = function() {
+	
+	console.log('initLayers');
 
 	// Get renderer
 	var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;

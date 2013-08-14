@@ -17,10 +17,6 @@
 		<div id="context-menu" ng-controller="embryo.contextMenu.Ctrl">
 			<ul class="dropdown-menu" role="menu">
 				<li ng-show="shown(item, getSelectedFeature())" ng-repeat="item in getMenuItems()"><a tabindex="-1" href="#" ng-click="choose(item, getSelectedFeature())">{{item.text}}</a></li>
-				<li class="divider"></li>
-				<li><a tabindex="-1" href="#">Always here</a></li>
-				<li><a tabindex="-1" href="#">Another action</a></li>
-				<li><a tabindex="-1" href="#">Something else here</a></li>
 			</ul>
 		</div>
 	</div>

@@ -157,7 +157,24 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public Long saveRoute(Route route) {
+    public String saveRoute(Route route, String voyageId, boolean active) {
+        if(route.getId() == null){
+            Long id = shipRepository.getRouteId(route.getEnavId());
+            route.setId(id);
+        }
+        
+        if (voyageId != null) {
+            Voyage voyage = shipRepository.getVoyageByEnavId(voyageId);
+            route.setVoyage(voyage);
+        }
+
+        shipRepository.saveEntity(route);
+        
+        return route.getEnavId();
+    }
+
+    @Override
+    public String saveRoute(Route route) {
         if(route.getId() == null){
             Long id = shipRepository.getRouteId(route.getEnavId());
             route.setId(id);
@@ -165,7 +182,7 @@ public class ShipServiceImpl implements ShipService {
         
         shipRepository.saveEntity(route);
         
-        return route.getId();
+        return route.getEnavId();
     }
 
     @Override
@@ -173,6 +190,32 @@ public class ShipServiceImpl implements ShipService {
         return shipRepository.getActiveRoute(mmsi);
     }
 
+    @YourShip
+    @Override
+    public Route getYourActiveRoute() {
+        Ship2 ship = getYourShip();
+        if(ship == null){
+            return null;
+        }
+        if(ship.getActiveRoute() != null){
+            // initialize to avoid lazyinitialization exceptions
+            if(ship.getActiveRoute().getWayPoints().size() > 0){
+                ship.getActiveRoute().getWayPoints().get(0);
+            }
+        }
+        return ship.getActiveRoute();
+    }
+
+    @Override
+    public Route activateRoute(String routeEnavId) {
+        logger.debug("activateRoute({})", routeEnavId);
+        Route route = shipRepository.getRouteByEnavId(routeEnavId);
+        Ship2 ship = route.getShip();
+        ship.setActiveRoute(route);
+        shipRepository.saveEntity(ship);
+        return route;
+    }
+    
     @Override
     public Route getRouteByEnavId(String enavId) {
         Route route = shipRepository.getRouteByEnavId(enavId);
@@ -180,8 +223,8 @@ public class ShipServiceImpl implements ShipService {
     }
     
     @Override
-    public Voyage getVoyage(Long id) {
-        return shipRepository.getByPrimaryKey(Voyage.class, id);
+    public Voyage getVoyage(String enavId) {
+        return shipRepository.getVoyageByEnavId(enavId);
     }
     
     /**

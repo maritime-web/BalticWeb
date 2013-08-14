@@ -49,6 +49,18 @@ public class RouteUploadService {
     public RouteUploadService() {
     }
 
+    /**
+     * Handles upload of a single route file.
+     * 
+     * Required request parameter : file - the one file, which contains the new route. Optional request parameter :
+     * active - indicates whether the uploaded route is the new active or not. Optional request parameter : voyageId -
+     * the enav id of the voyage, which the route belongs to (if any).
+     * 
+     * @param req
+     * @return
+     * @throws FileUploadException
+     * @throws IOException
+     */
     @POST
     @Path("/single")
     @Consumes("multipart/form-data")
@@ -59,13 +71,17 @@ public class RouteUploadService {
 
         List<FileItem> items = upload.parseRequest(req);
 
-        Long voyageId = null;
+        String voyageId = null;
+
+        boolean active = false;
 
         for (FileItem item : items) {
             if (item.isFormField()) {
+                logger.debug("Found FORM FIELD: {}={}", item.getFieldName(), item.getString());
                 if ("voyageId".equals(item.getFieldName())) {
-                    logger.debug("Found voyageId as FORM FIELD: {}={}", item.getFieldName(), item.getString());
-                    voyageId = Long.valueOf(item.getString());
+                    voyageId = item.getString();
+                } else if ("active".equals(item.getFieldName())) {
+                    active = "true".equals(item.getString()) || "TRUE".equals(item.getString());
                 }
             }
         }
@@ -82,37 +98,35 @@ public class RouteUploadService {
 
                 dk.dma.embryo.domain.Route route = shipService.parseRoute(item.getInputStream());
 
-                if (voyageId != null) {
-                    Voyage voyage = shipService.getVoyage(voyageId);
-                    route.setVoyage(voyage);
-                }
-                Long routeId = shipService.saveRoute(route);
+                String enavId = shipService.saveRoute(route, voyageId, active);
 
-                result.files.add(new RestFile(item.getName(), item.getSize()));
-                
+                result.files.add(new RestFile(item.getName(), item.getSize(), enavId));
+
                 fileItemCount++;
             }
         }
 
         return result;
     }
-    
-    public static class Files{
+
+    public static class Files {
         List<RestFile> files = new ArrayList<>(2);
-        
-        public List<RestFile> getFiles(){
+
+        public List<RestFile> getFiles() {
             return files;
         }
     }
 
-    public static class RestFile{
+    public static class RestFile {
         private String name;
         private long size;
-        
-        public RestFile(String name, long size) {
+        private String routeId;
+
+        public RestFile(String name, long size, String routeId) {
             super();
             this.name = name;
             this.size = size;
+            this.routeId = routeId;
         }
 
         public String getName() {
@@ -121,6 +135,10 @@ public class RouteUploadService {
 
         public long getSize() {
             return size;
+        }
+
+        public String getRouteId() {
+            return routeId;
         }
     }
 }

@@ -59,30 +59,30 @@ public class VoyageService {
     }
 
     public static class VoyageDatum extends TypeaheadDatum {
-        private Long id;
+        private String id;
 
-        public VoyageDatum(String value, String[] tokens, Long id) {
+        public VoyageDatum(String value, String[] tokens, String id) {
             super(value, tokens);
             this.id = id;
         }
 
-        public Long getId() {
+        public String getId() {
             return id;
         }
     }
 
     public static final class VoyageTransformerFunction implements Function<Voyage, VoyageDatum> {
         private String value(final Voyage input) {
-            return input.getBerthName() + " - (" + input.getBusinessId() + ")";
+            return input.getBerthName() + " - (" + input.getEnavId() + ")";
         }
 
         private String[] tokens(final Voyage input) {
-            return new String[] { input.getBerthName(), input.getBusinessId() };
+            return new String[] { input.getBerthName(), input.getEnavId() };
         }
 
         @Override
         public VoyageDatum apply(final Voyage input) {
-            return new VoyageDatum(value(input), tokens(input), input.getId());
+            return new VoyageDatum(value(input), tokens(input), input.getEnavId());
         }
     }
 

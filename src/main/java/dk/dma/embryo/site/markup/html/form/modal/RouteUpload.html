@@ -38,8 +38,9 @@
 							<div class="control-group">
 								<label class="control-label" for="voyageName">Associated voyage</label>
 								<div class="controls">
-									<input id="voyageName" type="text" class="input-large ngTypeahead" datasets="voyageData" ng-model="voyageName" /> <input
-										name="voyageId" type="hidden" ng-model="voyageId" />
+									<input ng-disabled="$parent.voyage.isPreselected" id="voyageName" type="text" class="input-large ngTypeahead"
+										datasets="voyageData" ng-model="$parent.voyage.name" /> 
+									<input name="voyageId" type="hidden" ng-model="$parent.voyage.id" />
 								</div>
 							</div>
 						</div>
