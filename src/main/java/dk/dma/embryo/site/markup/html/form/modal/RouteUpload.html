@@ -76,6 +76,9 @@
 										<div data-ng-show="file.error">
 											<span class="label label-important">Error</span> {{file.error}}
 										</div>
+										<div data-ng-show="message">
+											<span class="label">Success</span> {{message}}
+										</div>
 									</td>
 									<td>
 										<p class="size">{{file.size | formatFileSize}}</p>
@@ -90,12 +93,12 @@
 											<div class="progress-extended">&nbsp;</div>
 										</div>
 									</td>
-									<td>
+<!-- 									<td>
 										<button data-ng-controller="FileDestroyController" type="button" class="btn btn-danger destroy"
 											data-ng-click="file.$destroy()" data-ng-hide="!file.$destroy">
 											<i class="icon-ban-circle icon-white"></i> <span>Delete</span>
 										</button>
-									</td>
+									</td> -->
 								</tr>
 							</tbody>
 						</table>

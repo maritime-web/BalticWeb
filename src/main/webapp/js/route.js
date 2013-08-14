@@ -26,11 +26,11 @@ embryo.routeUpload.Ctrl = function($scope, $element) {
 
 	var vUrl = 'rest/voyage/typeahead/' + mmsi;
 	$scope.voyageData = {
-		name : 'voyages_45_' + mmsi,
+		name : 'voyages_21_' + mmsi,
 		prefetch : {
 			url : vUrl,
-			ttl : 18000000
-		// 1/2 hour
+			ttl : 60000
+		// 1 minut
 		},
 		remote : vUrl
 	};
@@ -87,6 +87,7 @@ embryo.routeUpload.Ctrl = function($scope, $element) {
 		var scope = $('#routeUpload').find('form').scope();
 
 		scope.queue = [];
+		scope.message = null;
 
 		$('#routeUpload').find('form').find('input[name="voyageId"]').val('');
 		$('#routeUpload').find('#voyageName').typeahead('setQuery', '');
@@ -113,7 +114,7 @@ $('#routeUpload').find('form').bind('fileuploadsubmit', function(e, data) {
 
 var angularApp = angular.module('embryo', [ 'ngResource',
 		'siyfion.ngTypeahead', 'blueimp.fileupload' ]);
-//, 'ui.bootstrap'
+// , 'ui.bootstrap'
 
 var isOnGitHub = false;
 
@@ -161,9 +162,7 @@ angularApp
 											.each(
 													data.result.files,
 													function(index, file) {
-														console
-																.log('Uploaded route with success, new routeId: '
-																		+ file.routeId);
+														$scope.message="Uploaded route";
 														$scope
 																.$apply(function() {
 																	$scope.$parent.uploadedroute = {
@@ -265,8 +264,8 @@ embryo.routeModal.Ctrl = function($scope, Route, RouteService) {
 	$scope.save = function() {
 		// validate?
 		Route.save(RouteService.getRoute(), function() {
-			$scope.message="Saved route '" + $scope.getRoute().name + "'";
-			// Route not fetch from server, which might be a good idea. 
+			$scope.message = "Saved route '" + $scope.getRoute().name + "'";
+			// Route not fetch from server, which might be a good idea.
 			embryo.route.redrawIfVisible(RouteService.getRoute());
 		});
 	};
@@ -275,10 +274,12 @@ embryo.routeModal.Ctrl = function($scope, Route, RouteService) {
 		$('#routeEdit').parents('.modal').modal('hide');
 
 		if ($scope.onclose) {
-			$scope.onclose({route : RouteService.getRoute()});
+			$scope.onclose({
+				route : RouteService.getRoute()
+			});
 			$scope.onclose = null;
 		}
-};
+	};
 
 	$scope.open = function(options) {
 		if (options && options.onclose) {
@@ -361,10 +362,10 @@ embryo.route.fetchAndDraw = function(id) {
 
 embryo.route.redrawIfVisible = function(route) {
 	var toBeRemoved = [];
-	
-	for(var index in embryo.route.layer.features){
+
+	for ( var index in embryo.route.layer.features) {
 		var feature = embryo.route.layer.features[index];
-		if(feature.data.route.id === route.id){
+		if (feature.data.route.id === route.id) {
 			toBeRemoved.push(feature);
 		}
 	}
@@ -372,7 +373,6 @@ embryo.route.redrawIfVisible = function(route) {
 	embryo.route.layer.removeFeatures(toBeRemoved);
 	embryo.route.draw(route);
 };
-
 
 embryo.route.drawTests = function() {
 	embryo.route.fetch('231', embryo.route.draw);
@@ -429,7 +429,7 @@ embryo.route.initLayer = function() {
 	// START FIXME: Find out how to move this code to initLayer function
 	embryo.route.addSelectFeature();
 	// END FIXME: Find out how to move this code to initLayer function
-	
+
 	embryo.route.drawActiveRoute();
 
 	var menuItems = [ {
@@ -451,9 +451,9 @@ embryo.route.initLayer = function() {
 		choose : function(scope, feature) {
 			$('#routeUpload').scope().open();
 		}
-	},{
+	}, {
 		text : 'Clear Drawn Routes',
-		shown : function(feature){
+		shown : function(feature) {
 			return embryo.route.layer.features.length > 1;
 		},
 		choose : function(scope, feature) {
@@ -465,28 +465,27 @@ embryo.route.initLayer = function() {
 	embryo.contextMenu.addMenuItems(menuItems);
 };
 
-
-
 embryo.route.drawActiveRoute = function() {
 	var injector = angular.element(document).injector();
 	var Route = injector.get('Route');
 	var RouteService = injector.get('RouteService');
-	
-	if(!RouteService.getActive().name){
-		var activeRoute = Route.getActive(function(){
-			
+
+	if (!RouteService.getActive().name) {
+		var activeRoute = Route.getActive(function() {
+
 			console.log(activeRoute);
 			RouteService.setActive(activeRoute);
 
-			if(RouteService.getActive().name){
-				console.log('drawing active route: ' + RouteService.getActive().name);
+			if (RouteService.getActive().name) {
+				console.log('drawing active route: '
+						+ RouteService.getActive().name);
 				embryo.route.draw(RouteService.getActive());
-			}	else{
+			} else {
 				console.log('no active route to draw');
 				console.log(RouteService.getActive());
 			}
 		});
-	}else {
+	} else {
 		console.log('drawing active route: ' + RouteService.getActive().name);
 		embryo.route.draw(RouteService.getActive());
 	}
