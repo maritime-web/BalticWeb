@@ -85,7 +85,7 @@ embryo.voyageplan.Ctrl = function($scope, RouteService, Route) {
 			var route = Route.get({
 				id : routeId
 			}, function() {
-				RouteService.setRoute(route);
+				RouteService.editRoute(route);
 			});
 
 			$('#routeEditModal').scope().open({
@@ -175,7 +175,7 @@ embryo.voyagePlanForm.onBerthSelected = function($row) {
 embryo.voyagePlanForm.onDelete = function(event) {
 	event.preventDefault();
 	event.stopPropagation();
-	$rowToDelete = $(event.target).closest('tr');
+	var $rowToDelete = $(event.target).closest('tr');
 	$rowToDelete.next().find("input:first").focus();
 	$rowToDelete.remove();
 };
