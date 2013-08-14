@@ -26,10 +26,10 @@ import dk.dma.embryo.site.markup.html.form.modal.RouteEdit;
 import dk.dma.embryo.site.markup.html.form.modal.RouteUpload;
 import dk.dma.embryo.site.markup.html.menu.MenuHeader;
 import dk.dma.embryo.site.markup.html.menu.MenuPanel;
-import dk.dma.embryo.site.panel.DrawTestRoutesExecutor;
 import dk.dma.embryo.site.panel.EditActiveRouteExecutor;
 import dk.dma.embryo.site.panel.LeftPanel;
 import dk.dma.embryo.site.panel.ShipInformationPanel;
+import dk.dma.embryo.site.panel.UploadActiveRouteExecutor;
 import dk.dma.embryo.site.panel.VoyagePlanPanel;
 import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
 
@@ -68,7 +68,7 @@ public class MainPage extends BasePage implements SecurePage {
         yourShip.addMenuItem(shipReport);
         yourShip.addMenuItem(voyagePlan);
         yourShip.addMenuItem("Edit Active Route", new EditActiveRouteExecutor());
-        yourShip.addMenuItem(routeUpload);
+        yourShip.addMenuItem("Upload Active Route", new UploadActiveRouteExecutor());
 
         add(new JsPanel("js_panel"));
 

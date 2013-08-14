@@ -21,7 +21,7 @@ embryo.voyageplan.Ctrl = function($scope, RouteService, Route) {
 		var $row = $($event.target).closest('tr');
 		var $td = $($row.find('td')[0]);
 		var voyageName = $td.find('.typeahead-textfield').val();
-		var voyageId = $td.find('input[type="hidden"]').val();
+		var voyageId = $td.find('input[type="hidden"]').val();		
 
 		$('.voyagePlan').modal('hide');
 

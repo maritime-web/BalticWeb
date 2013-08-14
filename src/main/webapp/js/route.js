@@ -60,6 +60,7 @@ embryo.routeUpload.Ctrl = function($scope, $element) {
 	 *            Id of voyage for which to upload a route (new or modified)
 	 */
 	$scope.open = function(options) {
+		$scope.clear();
 		if (options && options.preSelectedVoyage) {
 			$scope.voyage.isPreselected = true;
 
@@ -70,6 +71,8 @@ embryo.routeUpload.Ctrl = function($scope, $element) {
 			}
 			if (options.preSelectedVoyage.name) {
 				$scope.voyage.name = options.preSelectedVoyage.name;
+				$('#routeUpload').find('#voyageName').typeahead('setQuery',
+						options.preSelectedVoyage.name);
 			}
 		} else {
 			$scope.voyage.isPreselected = false;
@@ -112,6 +115,10 @@ $('#routeUpload').find('form').bind('fileuploadsubmit', function(e, data) {
 	data.formData = inputs.serializeArray();
 });
 
+embryo.routeUpload.uploadActive = function() {
+	$('#routeUpload').scope().open();
+};
+
 var angularApp = angular.module('embryo', [ 'ngResource',
 		'siyfion.ngTypeahead', 'blueimp.fileupload' ]);
 // , 'ui.bootstrap'
@@ -146,42 +153,31 @@ angularApp.config([
 			}
 		} ]);
 
-angularApp
-		.controller(
-				'DemoFileUploadController',
-				[
-						'$scope',
-						'$http',
-						'$filter',
-						'$window',
-						function($scope, $http) {
-							$scope.options = {
-								url : url,
-								done : function(e, data) {
-									$
-											.each(
-													data.result.files,
-													function(index, file) {
-														$scope.message="Uploaded route";
-														$scope
-																.$apply(function() {
-																	$scope.$parent.uploadedroute = {
-																		id : file.routeId
-																	};
-																});
-													});
-								}
+angularApp.controller('DemoFileUploadController', [ '$scope', '$http',
+		'$filter', '$window', function($scope, $http) {
+			$scope.options = {
+				url : url,
+				done : function(e, data) {
+					$.each(data.result.files, function(index, file) {
+						$scope.message = "Uploaded route";
+						$scope.$apply(function() {
+							$scope.$parent.uploadedroute = {
+								id : file.routeId
 							};
-							if (!isOnGitHub) {
-								$scope.loadingFiles = true;
-								$http.get(url).then(function(response) {
-									$scope.loadingFiles = false;
-									$scope.queue = response.data.files || [];
-								}, function() {
-									$scope.loadingFiles = false;
-								});
-							}
-						} ]);
+						});
+					});
+				}
+			};
+			if (!isOnGitHub) {
+				$scope.loadingFiles = true;
+				$http.get(url).then(function(response) {
+					$scope.loadingFiles = false;
+					$scope.queue = response.data.files || [];
+				}, function() {
+					$scope.loadingFiles = false;
+				});
+			}
+		} ]);
 
 angularApp.controller('FileDestroyController', [ '$scope', '$http',
 		function($scope, $http) {
