@@ -43,7 +43,7 @@ public class RouteService {
     }
 
     @GET
-    @Path("/byId/{id}")
+    @Path("/{id}")
     @Produces("application/json")
     public Route getRoute(@PathParam("id") String id) {
         logger.debug("getRoute({})", id);

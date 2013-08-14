@@ -346,7 +346,7 @@ embryo.modal.close = function(id, action) {
 
 embryo.route = {};
 embryo.route.fetch = function(id, draw) {
-	$.getJSON('rest/route/byId/' + id, function(route) {
+	$.getJSON('rest/route/' + id, function(route) {
 		console.log(route);
 		draw(route);
 	});
