@@ -266,6 +266,8 @@ embryo.routeModal.Ctrl = function($scope, Route, RouteService) {
 		// validate?
 		Route.save(RouteService.getRoute(), function() {
 			$scope.message="Saved route '" + $scope.getRoute().name + "'";
+			// Route not fetch from server, which might be a good idea. 
+			embryo.route.redrawIfVisible(RouteService.getRoute());
 		});
 	};
 	$scope.close = function() {
@@ -356,6 +358,22 @@ embryo.route.fetchAndDraw = function(id) {
 		embryo.route.fetch(id, embryo.route.draw);
 	};
 };
+
+embryo.route.redrawIfVisible = function(route) {
+	var toBeRemoved = [];
+	
+	for(var index in embryo.route.layer.features){
+		var feature = embryo.route.layer.features[index];
+		if(feature.data.route.id === route.id){
+			toBeRemoved.push(feature);
+		}
+	}
+
+	embryo.route.layer.removeFeatures(toBeRemoved);
+	embryo.route.draw(route);
+};
+
+
 embryo.route.drawTests = function() {
 	embryo.route.fetch('231', embryo.route.draw);
 	embryo.route.fetch('235', embryo.route.draw);
