@@ -157,6 +157,7 @@ public class TestPage extends WebPage {
         shipDao.saveEntity(new Berth("Kangersuatsiaq", "Prøven", "72 22.7N", "055 33.5W"));
         shipDao.saveEntity(new Berth("Qaanaaq", "Thule", "77 27.8N", "069 14.0W"));
         shipDao.saveEntity(new Berth("Upernavik", "72 47.5N", "056 09.4W"));
+        shipDao.saveEntity(new Berth("Miami", "25 47.16N", "08 13.27W"));
         
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
