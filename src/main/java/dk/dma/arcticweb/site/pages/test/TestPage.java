@@ -22,7 +22,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -48,7 +47,6 @@ import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyageInformation2;
 import dk.dma.embryo.domain.VoyagePlan;
 
 public class TestPage extends WebPage {
@@ -92,7 +90,6 @@ public class TestPage extends WebPage {
         try {
             logger.info("Deleting existing entries");
 
-            deleteAll(VoyageInformation2.class);
             deleteAll(Berth.class);
             deleteAll(Route.class);
             deleteAll(Voyage.class);
