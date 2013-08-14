@@ -15,6 +15,7 @@
  */
 package dk.dma.embryo.rest;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,6 +31,7 @@ import com.google.common.collect.Lists;
 
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.embryo.domain.Voyage;
+import dk.dma.embryo.rest.util.DateTimeConverter;
 import dk.dma.embryo.site.behavior.TypeaheadDatum;
 
 @Path("/voyage")
@@ -52,7 +54,8 @@ public class VoyageService {
 
         List<Voyage> voyages = shipService.getVoyages(mmsi);
 
-        List<VoyageDatum> transformed = Lists.transform(voyages, new VoyageTransformerFunction());
+        List<VoyageDatum> transformed = Lists.transform(voyages,
+                new VoyageTransformerFunction(DateTimeConverter.getDateTimeConverter()));
 
         logger.debug("getVoyages({}) : {}", mmsi, transformed);
         return transformed;
@@ -69,11 +72,25 @@ public class VoyageService {
         public String getId() {
             return id;
         }
+
+        @Override
+        public String toString() {
+            return "VoyageDatum [id=" + id + ", getValue()=" + getValue() + ", getTokens()="
+                    + Arrays.toString(getTokens()) + "]";
+        }
+
     }
 
     public static final class VoyageTransformerFunction implements Function<Voyage, VoyageDatum> {
+        private final DateTimeConverter converter;
+
+        public VoyageTransformerFunction(DateTimeConverter converter) {
+            this.converter = converter;
+        }
+
         private String value(final Voyage input) {
-            return input.getBerthName() + " - (" + input.getEnavId() + ")";
+            String departure = converter.toString(input.getDeparture(), null);
+            return input.getBerthName() + (departure == null ? "" : " (" + departure + ")");
         }
 
         private String[] tokens(final Voyage input) {

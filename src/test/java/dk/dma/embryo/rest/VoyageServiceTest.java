@@ -17,24 +17,44 @@ package dk.dma.embryo.rest;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Locale;
+
+import org.apache.wicket.Session;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.rest.VoyageService.VoyageDatum;
-
 import dk.dma.embryo.rest.VoyageService.VoyageTransformerFunction;
+import dk.dma.embryo.rest.util.DateTimeConverter;
 
 public class VoyageServiceTest {
 
     @Test
     public void VoyageTransformerFunction_test() {
+
+        LocalDateTime departure = DateTimeConverter.getDateTimeConverter().toObject("10-12-14 12:00", null);
         
-        Voyage v = new Voyage("MyBerth", "1 1.100N", "1 2.000W", LocalDateTime.now(), LocalDateTime.now());
+        Voyage v = new Voyage("MyBerth", "1 1.100N", "1 2.000W", LocalDateTime.now(), departure);
         v.setEnavId("MyKey");
-        VoyageDatum d = new VoyageTransformerFunction().apply(v);
+        VoyageDatum d = new VoyageTransformerFunction(DateTimeConverter.getDateTimeConverter()).apply(v);
         
-        assertEquals("MyBerth - (MyKey)", d.getValue());
+        assertEquals("MyBerth (10-12-14 12:00)", d.getValue());
+        assertEquals("MyBerth", d.getTokens()[0]);
+        assertEquals("MyKey", d.getTokens()[1]);
+    }
+
+    @Test
+    public void VoyageTransformerFunction_testWithNullDate() {
+
+        Voyage v = new Voyage("MyBerth", "1 1.100N", "1 2.000W", LocalDateTime.now(), null);
+        v.setEnavId("MyKey");
+        VoyageDatum d = new VoyageTransformerFunction(DateTimeConverter.getDateTimeConverter()).apply(v);
+        
+        assertEquals("MyBerth", d.getValue());
         assertEquals("MyBerth", d.getTokens()[0]);
         assertEquals("MyKey", d.getTokens()[1]);
     }
