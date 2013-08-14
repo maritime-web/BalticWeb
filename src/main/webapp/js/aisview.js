@@ -401,11 +401,15 @@ embryo.contextMenu = {
 			var featureType = feature && feature.data ? feature.data.featureType
 					: null;
 
-			if (!item.shown4FeatureType){
-				return true;
+			if (item.shown4FeatureType){
+				return item.shown4FeatureType === featureType;
+			}
+			
+			if(item.shown){
+				return item.shown(feature);
 			}
 
-			return item.shown4FeatureType === featureType;
+			return true;
 		};
 
 		$scope.choose = function(item, feature) {

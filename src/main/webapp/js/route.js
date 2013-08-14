@@ -60,7 +60,7 @@ embryo.routeUpload.Ctrl = function($scope, $element) {
 	 *            Id of voyage for which to upload a route (new or modified)
 	 */
 	$scope.open = function(options) {
-		if (options.preSelectedVoyage) {
+		if (options && options.preSelectedVoyage) {
 			$scope.voyage.isPreselected = true;
 
 			if (options.preSelectedVoyage.id) {
@@ -77,7 +77,7 @@ embryo.routeUpload.Ctrl = function($scope, $element) {
 			$scope.voyage.name = null;
 		}
 
-		if (options.onclose) {
+		if (options && options.onclose) {
 			$scope.onclose = options.onclose;
 		}
 		$('#routeUpload').find('.modal').modal('show');
@@ -430,12 +430,23 @@ embryo.route.initLayer = function() {
 	}, {
 		text : 'Upload Active Route',
 		choose : function(scope, feature) {
-			$('#routeUpload').scope().newRoute();
+			$('#routeUpload').scope().open();
+		}
+	},{
+		text : 'Clear Drawn Routes',
+		shown : function(feature){
+			return embryo.route.layer.features.length > 1;
+		},
+		choose : function(scope, feature) {
+			embryo.route.layer.removeAllFeatures();
+			embryo.route.drawActiveRoute();
 		}
 	} ];
 
 	embryo.contextMenu.addMenuItems(menuItems);
 };
+
+
 
 embryo.route.drawActiveRoute = function() {
 	var injector = angular.element(document).injector();
