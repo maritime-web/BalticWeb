@@ -358,16 +358,18 @@ embryo.route.fetchAndDraw = function(id) {
 
 embryo.route.redrawIfVisible = function(route) {
 	var toBeRemoved = [];
+	var active;
 
 	for ( var index in embryo.route.layer.features) {
 		var feature = embryo.route.layer.features[index];
 		if (feature.data.route.id === route.id) {
+			active = feature.attributes.active;
 			toBeRemoved.push(feature);
 		}
 	}
 
 	embryo.route.layer.removeFeatures(toBeRemoved);
-	embryo.route.draw(route);
+	embryo.route.draw(route, active);
 };
 
 embryo.route.drawTests = function() {
@@ -378,24 +380,37 @@ embryo.route.drawTests = function() {
 embryo.route.initLayer = function() {
 	// Create vector layer for routes
 
-	var defaultStyle = OpenLayers.Util.applyDefaults({
-		fillColor : pastTrackColor,
-		strokeColor : pastTrackColor,
-		strokeOpacity : pastTrackOpacity,
-		strokeWidth : pastTrackWidth
+	// Find a better color code. How to convert sRGB to HTML codes?
+	var defTemplate = OpenLayers.Util.applyDefaults({
+		strokeWidth : pastTrackWidth,
+		strokeDashstyle : 'dash',
+		strokeColor : "${getColor}", // using context.getColor(feature)
+		fillColor : "${getColor}" // using context.getColor(feature)
 	}, OpenLayers.Feature.Vector.style["default"]);
 
-	var selectStyle = OpenLayers.Util.applyDefaults({},
+	var context = {
+		getColor : function(feature) {
+			return feature.attributes.active ? 'red ' : '#D5672D';
+		}
+	};
+
+	var defaultStyle = new OpenLayers.Style(defTemplate, {
+		context : context
+	});
+
+	var select = OpenLayers.Util.applyDefaults({},
 			OpenLayers.Feature.Vector.style.select);
+	var selectStyle = new OpenLayers.Style(select);
 
 	var temporary = OpenLayers.Util.applyDefaults({},
 			OpenLayers.Feature.Vector.style.temporary);
+	var temporaryStyle = new OpenLayers.Style(temporary);
 
 	embryo.route.layer = new OpenLayers.Layer.Vector("routeLayer", {
 		styleMap : new OpenLayers.StyleMap({
 			'default' : defaultStyle,
 			'select' : selectStyle,
-			'temporary' : temporary
+			'temporary' : temporaryStyle
 		})
 	});
 	// embryo.route.layer = new OpenLayers.Layer.Vector("routeLayer");
@@ -475,7 +490,7 @@ embryo.route.drawActiveRoute = function() {
 			if (RouteService.getActive().name) {
 				console.log('drawing active route: '
 						+ RouteService.getActive().name);
-				embryo.route.draw(RouteService.getActive());
+				embryo.route.draw(RouteService.getActive(), true);
 			} else {
 				console.log('no active route to draw');
 				console.log(RouteService.getActive());
@@ -483,13 +498,17 @@ embryo.route.drawActiveRoute = function() {
 		});
 	} else {
 		console.log('drawing active route: ' + RouteService.getActive().name);
-		embryo.route.draw(RouteService.getActive());
+		embryo.route.draw(RouteService.getActive(), true);
 	}
 };
 
-embryo.route.draw = function(route) {
+embryo.route.draw = function(route, active) {
 	// Remove old tracks
 	// routeLayer.removeAllFeatures();
+
+	if (!active) {
+		active = false;
+	}
 
 	// Draw tracks
 	if (route && route.waypoints) {
@@ -508,7 +527,6 @@ embryo.route.draw = function(route) {
 				lines
 						.push(embryo.route.createLine(previousPoint,
 								currentPoint));
-				// embryo.route.drawRouteLeg(previousPoint, currentPoint);
 			}
 			firstPoint = false;
 			previousPoint = currentPoint;
@@ -519,7 +537,7 @@ embryo.route.draw = function(route) {
 		embryo.route.layer.addFeatures(new OpenLayers.Feature.Vector(multiLine,
 				{
 					featureType : 'route',
-					routeId : 'empty',
+					active : active,
 					route : route
 				}));
 		// embryo.route.layer.addFeatures(points);
