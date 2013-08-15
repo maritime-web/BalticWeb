@@ -413,9 +413,6 @@ embryo.route.initLayer = function() {
 			'temporary' : temporaryStyle
 		})
 	});
-	// embryo.route.layer = new OpenLayers.Layer.Vector("routeLayer");
-
-	// TODO use Rules and Filters to set different colours on lines.
 
 	embryo.mapPanel.map.addLayer(embryo.route.layer);
 
@@ -438,7 +435,7 @@ embryo.route.initLayer = function() {
 	embryo.route.addModifyControl();
 
 	// START FIXME: Find out how to move this code to initLayer function
-	embryo.route.addSelectFeature();
+//	embryo.route.addSelectFeature();
 	// END FIXME: Find out how to move this code to initLayer function
 
 	embryo.route.drawActiveRoute();
@@ -588,9 +585,12 @@ embryo.route.addSelectFeature = function() {
 	// See also
 	// http://gis.stackexchange.com/questions/13886/how-to-select-multiple-features-from-multiple-layers-in-openlayers
 	// and http://openlayers.org/dev/examples/select-feature-multilayer.html
+	
+	console.log(vesselLayer);
+	
 	embryo.route.select_feature_control = new OpenLayers.Control.SelectFeature(
-			embryo.route.layer, {
-				multiple : false,
+			[vesselLayer, embryo.route.layer],{
+				multiple : true,
 				toggle : true,
 				multipleKey : 'shiftKey'
 			});
