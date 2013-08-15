@@ -113,6 +113,10 @@ embryo.voyagePlanForm.init = function(containerSelector) {
 	// TODO remove when DynamicListView is introduced for voyagePlanForm
 	$(containerSelector).find('tr:last-child').addClass('emptyRow').find(
 			'button').hide();
+	$(containerSelector).find('.emptyRow').find(
+		'a.dropdown-toggle').hide();
+	$(containerSelector).find('.emptyRow').prev('tr').find(
+	'a.dropdown-toggle').hide();
 
 	$(containerSelector).find('.emptyRow input[type="text"]').keydown(
 			embryo.voyagePlanForm.copyEmptyRow);
@@ -208,6 +212,7 @@ embryo.voyagePlanForm.enableRow = function($row) {
 	embryo.typeahead.create($row.find('input.typeahead-textfield')[0]);
 
 	$row.find('button').show();
+	$row.prev('tr').find('a.dropdown-toggle').show();
 	$row.removeClass('emptyRow');
 	$row.find('input, button').unbind('keydown',
 			embryo.voyagePlanForm.copyEmptyRow);
