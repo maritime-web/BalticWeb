@@ -114,7 +114,7 @@ embryo.mapPanel.init = function(defaultProjection) {
 	// Context menu should be initialized on Window onload. This will increase
 	// likelyhood that all other features have been loaded
 	// Even better then load context menu as the very last thing or ?
-	//embryo.contextMenu.init();
+	embryo.contextMenu.init();
 };
 
 /**
