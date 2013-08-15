@@ -24,11 +24,12 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 
 
 @Entity
@@ -49,8 +50,9 @@ public class VoyagePlan extends BaseEntity<Long> {
     @OneToOne(optional = false)
     Ship2 ship;
     
-    @OneToMany(cascade={CascadeType.ALL}, mappedBy="plan")
-    @OrderBy("departure")
+    @OneToMany(cascade={CascadeType.ALL})
+    @OrderColumn(name="voyageIndex")
+    @JoinColumn(name="plan")
     private List<Voyage> voyages = new LinkedList<>(); 
 
     // //////////////////////////////////////////////////////////////////////
