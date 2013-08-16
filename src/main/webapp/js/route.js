@@ -343,6 +343,11 @@ embryo.modal.close = function(id, action) {
 
 };
 
+
+$(document).ready(function() {
+	embryo.route.initLayer();
+});
+
 embryo.route = {};
 embryo.route.fetch = function(id, draw) {
 	$.getJSON('rest/route/' + id, function(route) {
@@ -378,6 +383,9 @@ embryo.route.drawTests = function() {
 };
 
 embryo.route.initLayer = function() {
+	
+	console.log('embryo.route.initLayer');
+	
 	// Create vector layer for routes
 
 	// Find a better color code. How to convert sRGB to HTML codes?
@@ -415,13 +423,16 @@ embryo.route.initLayer = function() {
 	});
 
 	embryo.mapPanel.map.addLayer(embryo.route.layer);
+	embryo.mapPanel.add2SelectFeatureCtrl(embryo.route.layer);
 
 	// testing event functionality
 	function report(event) {
 		console.log(event.type, event.feature ? event.feature.id
 				: event.components);
 	}
-	// move this to initialization of route layer
+
+	
+	// This is how one reacts on select events in the route layer
 	embryo.route.layer.events.on({
 		"beforefeaturemodified" : report,
 		"featuremodified" : report,
@@ -429,17 +440,16 @@ embryo.route.initLayer = function() {
 		"vertexmodified" : report,
 		"sketchmodified" : report,
 		"sketchstarted" : report,
-		"sketchcomplete" : report
+		"sketchcomplete" : report,
+		"featureselected" : report,
+		"featureunselected" : report
 	});
 
-	embryo.route.addModifyControl();
-
-	// START FIXME: Find out how to move this code to initLayer function
-//	embryo.route.addSelectFeature();
-	// END FIXME: Find out how to move this code to initLayer function
+	// embryo.route.addModifyControl();
+	
 
 	embryo.route.drawActiveRoute();
-
+	
 	var menuItems = [ {
 		text : 'Edit Route',
 		shown4FeatureType : 'route',
@@ -576,35 +586,6 @@ embryo.route.addModifyControl = function() {
 		}
 	});
 
-};
-
-embryo.route.addSelectFeature = function() {
-
-	// Select feature configuration should be moved into contextmenu section
-	// It must be done after all layers have been initialized
-	// See also
-	// http://gis.stackexchange.com/questions/13886/how-to-select-multiple-features-from-multiple-layers-in-openlayers
-	// and http://openlayers.org/dev/examples/select-feature-multilayer.html
-	
-	console.log(vesselLayer);
-	
-	embryo.route.select_feature_control = new OpenLayers.Control.SelectFeature(
-			[vesselLayer, embryo.route.layer],{
-				multiple : true,
-				toggle : true,
-				multipleKey : 'shiftKey'
-			});
-
-	embryo.mapPanel.map.addControl(embryo.route.select_feature_control);
-	embryo.route.select_feature_control.activate();
-
-	function selected_feature(event) {
-		console.log(event);
-	}
-	;
-
-	embryo.route.layer.events.register('featureselected', this,
-			selected_feature);
 };
 
 embryo.route.createWaypointFeature = function(point) {

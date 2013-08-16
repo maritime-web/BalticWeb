@@ -49,6 +49,18 @@ embryo.eventbus.VesselSelectedEvent = function(id) {
 	return event;
 };
 
+embryo.eventbus.HighLightEvent = function(feature) {
+	var event = jQuery.Event("HighLightEvent");
+	event.feature = feature;
+	return event;
+};
+
+embryo.eventbus.UnHighLightEvent = function(feature) {
+	var event = jQuery.Event("UnHighLightEvent");
+	event.feature = feature;
+	return event;
+};
+
 /**
  * Initialization fired when DOM has loaded (but before images, stylesheets, etc
  * has been fetched
@@ -68,60 +80,162 @@ $(document).ready(function() {
 
 	embryo.initAngular();
 
-});
+	// TODO projection should be configured else where
+	embryo.mapPanel.init2('EPSG:900913');
 
-embryo.mapPanel = {};
-embryo.mapPanel.map = null;
+});
 
 /**
  * Initialize the map. This method is fired on window load (configured by
  * wicket)
  */
-embryo.mapPanel.init = function(defaultProjection) {
+embryo.mapPanel = {
 
-	this.map = new OpenLayers.Map({
-		div : "map",
-		projection : defaultProjection,
-		fractionalZoom : false
-	});
+	init2 : function(defaultProjection) {
 
-	this.addLayerInitializer(this.initLayer);
-	this.addLayerInitializer(embryo.vessel.initLayers);
-	this.addLayerInitializer(embryo.route.initLayer);
+		this.map = new OpenLayers.Map({
+			div : "map",
+			projection : defaultProjection,
+			fractionalZoom : false
+		});
 
-	embryo.mapPanel.initLayers();
-	//this.map.addControl(new OpenLayers.Control.LayerSwitcher());
+		// Create hover control - indie vessels
+		var hoverControl = new OpenLayers.Control.SelectFeature([], {
+			id : 'HoverCtrl',
+			hover : true,
+			highlightOnly : true,
+			eventListeners : {
+				// OpenLayers does not have a general support for
+				// featurehighlighted and featureunhighlighted events like
+				// layer.events.on({featureselected:function(event){}})
+				// Build our own using embryo.eventbus
+				featurehighlighted : function(event) {
+					embryo.eventbus.fireEvent(embryo.eventbus
+							.HighLightEvent(event.feature));
+				},
+				featureunhighlighted : function(feature) {
+					embryo.eventbus.fireEvent(embryo.eventbus
+							.UnHighLightEvent(feature.feature));
+				}
+			}
+		});
 
-	var center = transformPosition(initialLon, initialLat);
-	this.map.setCenter(center, initialZoom);
-	lastZoomLevel = this.map.zoom;
+		// Add select controller to map and activate
+		embryo.mapPanel.map.addControl(hoverControl);
+		hoverControl.activate();
 
-	setupUI();
+		// Select feature configuration should be moved into contextmenu section
+		// It must be done after all layers have been initialized
 
-	// Load new vessels with an interval
-	setInterval("loadVesselsIfTime()", loadCheckingFrequence);
+		// Create one select control for all layers. This the only way to enable
+		// selection of features in different active layers being shown at the
+		// same
+		// time. Also see below link.
+		// http://gis.stackexchange.com/questions/13886/how-to-select-multiple-features-from-multiple-layers-in-openlayers
+		// and http://openlayers.org/dev/examples/select-feature-multilayer.html
 
-	if (includeEventFeed) {
-		setInterval("loadBehaviors()", loadBehaviorsFrequence);
-		loadBehaviors();
-	}
+		// Reacting on select / unselect is performed like:
+		// someLayer.events.on({
+		// "featureselected" : function(e){ ... },
+		// "featureunselected" : function(e){ ... }
+		// });
 
-	parseFilterQuery();
+		// add select control, registered for no layers
+		// Layers will be registered on control through usage of
+		// addSelectableLayer
+		var selectControl = new OpenLayers.Control.SelectFeature([], {
+			clickout : true,
+			toggle : true,
+			id : 'ClickCtrl'
+		});
 
-	// Load vessels
-	loadVessels();
+		this.map.addControl(selectControl);
+		selectControl.activate();
 
-	// Context menu should be initialized on Window onload. This will increase
-	// likelyhood that all other features have been loaded
-	// Even better then load context menu as the very last thing or ?
-	embryo.contextMenu.init();
+		// Add OpenStreetMap Layer
+		var osm = new OpenLayers.Layer.OSM("OSM",
+				"http://a.tile.openstreetmap.org/${z}/${x}/${y}.png", {
+					'layers' : 'basic',
+					'isBaseLayer' : true
+				});
+		this.map.addLayer(osm);
+
+		// this.addLayerInitializer(embryo.route.initLayer);
+
+		embryo.mapPanel.initLayers();
+		// this.map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+		var center = transformPosition(initialLon, initialLat);
+		this.map.setCenter(center, initialZoom);
+		lastZoomLevel = this.map.zoom;
+
+	},
+
+	addLayer2Ctrl : function(layer, property, testObject) {
+		var controls = this.map.getControlsBy(property, testObject);
+		// FIXME write proper error handling
+		if (controls.length != 1) {
+			console.log('Error. Expected exactly 1 map control with '
+					+ property + '. Found ' + controls.length);
+		}
+		var layers = controls[0].layers;
+		layers.push(layer);
+		controls[0].setLayer(layers);
+
+	},
+
+	add2SelectFeatureCtrl : function(layer) {
+		// TODO make this method a part of OpenLayers.Map object på extending
+		// the prototype
+		// this.addLayer2Ctrl('OpenLayers.Control.SelectFeature', layer);
+		this.addLayer2Ctrl(layer, 'id', {
+			test : function(id) {
+				return 'ClickCtrl' === id;
+			}
+		});
+	},
+
+	add2HoverFeatureCtrl : function(layer) {
+		this.addLayer2Ctrl(layer, 'id', {
+			test : function(id) {
+				return 'HoverCtrl' === id;
+			}
+		});
+	},
+
+	init : function(projection) {
+		this.load();
+	},
+
+	load : function() {
+		setupUI();
+
+		// Load new vessels with an interval
+		setInterval("loadVesselsIfTime()", loadCheckingFrequence);
+
+		if (includeEventFeed) {
+			setInterval("loadBehaviors()", loadBehaviorsFrequence);
+			loadBehaviors();
+		}
+
+		parseFilterQuery();
+
+		// Load vessels
+		loadVessels();
+
+		// Context menu should be initialized on Window onload. This will
+		// increase
+		// likelyhood that all other features have been loaded
+		// Even better then load context menu as the very last thing or ?
+		embryo.contextMenu.init();
+	},
+
 };
 
 /**
  * Sets up the panels, event listeners and selection controllers.
  */
 function setupUI() {
-
 	// Set zoom panel positon
 	$(".olControlZoom").css('left', zoomPanelPositionLeft);
 	$(".olControlZoom").css('top', zoomPanelPositionTop);
@@ -133,157 +247,42 @@ function setupUI() {
 	//
 	embryo.mapPanel.map.events.includeXY = true;
 
-	// Create functions for hovering a vessel
-	var showName = function(e) {
-		var lonlatCenter = e.feature.geometry.getBounds().getCenterLonLat();
-		if (e.feature.attributes.vessel) {
-			$.getJSON(detailsUrl, {
-				past_track : '1',
-				id : e.feature.attributes.id
-			}, function(result) {
-				var pixelTopLeft = new OpenLayers.Pixel(0, 0);
-				var lonlatTopLeft = embryo.mapPanel.map
-						.getLonLatFromPixel(pixelTopLeft);
-				pixelTopLeft = embryo.mapPanel.map
-						.getPixelFromLonLat(lonlatTopLeft);
-
-				var pixel = embryo.mapPanel.map
-						.getPixelFromLonLat(lonlatCenter);
-
-				var x = pixel.x - pixelTopLeft.x;
-				var y = pixel.y - pixelTopLeft.y;
-
-				$("#vesselNameBox").html(result.name);
-				$("#vesselNameBox").css('visibility', 'visible');
-				$("#vesselNameBox").css('top', (y - 26) + 'px');
-				$("#vesselNameBox").css('left', x + 'px');
-			});
-		}
-	};
-
-	var hideName = function(e) {
-		// $("#vesselNameBox").css('visibility', 'hidden');
-	};
-
-	vesselLayer.events.on({
-		"featurehighlighted" : function(e) {
-			alert(e);
-		}
-	});
-
-	// Create hover control - vessels
-	hoverControlVessels = new OpenLayers.Control.SelectFeature(vesselLayer, {
-		hover : true,
-		highlightOnly : true,
-		eventListeners : {
-			featurehighlighted : showName,
-			featureunhighlighted : hideName
-		}
-	});
-
-	// Create hover control - indie vessels
-	hoverControlIndieVessels = new OpenLayers.Control.SelectFeature(
-			indieVesselLayer, {
-				hover : true,
-				highlightOnly : true,
-				eventListeners : {
-					featurehighlighted : showName,
-					featureunhighlighted : hideName
-				}
-			});
-
-	// Create select control - vessels
-	selectControlVessels = new OpenLayers.Control.SelectFeature(
-			vesselLayer,
-			{
-				clickout : true,
-				toggle : true,
-				onSelect : function(feature) {
-					if (embryo.selectedVessel
-							&& embryo.selectedVessel.id == feature.attributes.vessel.id) {
-						selectedFeature = null;
-						embryo.selectedVessel = null;
-						detailsReadyToClose = true;
-						$("#vesselNameBox").css('visibility', 'hidden');
-						redrawSelection();
-						selectControlVessels.unselectAll();
-					} else {
-						selectedFeature = feature;
-						embryo.selectedVessel = feature.attributes.vessel;
-						embryo.eventbus.fireEvent(embryo.eventbus
-								.VesselSelectedEvent(feature.attributes.id));
-						// embryo.vesselDetailsPanel.update(feature.attributes.id);
-
-						$("#vesselNameBox").css('visibility', 'hidden');
-						// selectControlVessels.select(feature);
-						redrawSelection();
-					}
-				},
-				onUnselect : function(feature) {
-					selectedFeature = null;
-					embryo.selectedVessel = null;
-					detailsReadyToClose = true;
-					tracksLayer.removeAllFeatures();
-					timeStampsLayer.removeAllFeatures();
-					redrawSelection();
-					selectControlVessels.unselectAll();
-				}
-			});
-
-	// Create select control - indie vessels
-	selectControlIndieVessels = new OpenLayers.Control.SelectFeature(
-			indieVesselLayer,
-			{
-				clickout : true,
-				toggle : true,
-				onSelect : function(feature) {
-					if (embryo.selectedVessel
-							&& embryo.selectedVessel.id == feature.attributes.vessel.id) {
-						selectedFeature = null;
-						embryo.selectedVessel = null;
-						detailsReadyToClose = true;
-						$("#vesselNameBox").css('visibility', 'hidden');
-						redrawSelection();
-						selectControlIndieVessels.unselectAll();
-					} else {
-						selectedFeature = feature;
-						embryo.selectedVessel = feature.attributes.vessel;
-
-						embryo.eventbus.fireEvent(embryo.eventbus
-								.VesselSelectedEvent(feature.attributes.id));
-						// embryo.vesselDetailsPanel.update(feature.attributes.id);
-
-						$("#vesselNameBox").css('visibility', 'hidden');
-						redrawSelection();
-					}
-				},
-				onUnselect : function(feature) {
-					selectedFeature = null;
-					embryo.selectedVessel = null;
-					detailsReadyToClose = true;
-					tracksLayer.removeAllFeatures();
-					timeStampsLayer.removeAllFeatures();
-					redrawSelection();
-					selectControlIndieVessels.unselectAll();
-				}
-			});
+	// console.log('hoverControlVessels');
+	// // Create hover control - vessels
+	// hoverControlVessels = new OpenLayers.Control.SelectFeature(
+	// embryo.vessel.vesselLayer, {
+	// hover : true,
+	// highlightOnly : true,
+	// eventListeners : {
+	// featurehighlighted : showName,
+	// featureunhighlighted : hideName
+	// }
+	//
+	// });
+	//
+	// console.log('hoverControlIndieVessels');
+	// // Create hover control - indie vessels
+	// hoverControlIndieVessels = new OpenLayers.Control.SelectFeature(
+	// indieVesselLayer, {
+	// hover : true,
+	// highlightOnly : true,
+	// eventListeners : {
+	// featurehighlighted : showName,
+	// featureunhighlighted : hideName
+	// }
+	// });
 
 	// Add select controller to map and activate
-	embryo.mapPanel.map.addControl(hoverControlVessels);
-	embryo.mapPanel.map.addControl(hoverControlIndieVessels);
-	embryo.mapPanel.map.addControl(selectControlVessels);
-	embryo.mapPanel.map.addControl(selectControlIndieVessels);
-	hoverControlVessels.activate();
-	hoverControlIndieVessels.activate();
-	selectControlVessels.activate();
-	selectControlIndieVessels.activate();
+	// embryo.mapPanel.map.addControl(hoverControlVessels);
+	// embryo.mapPanel.map.addControl(hoverControlIndieVessels);
+	// hoverControlVessels.activate();
+	// hoverControlIndieVessels.activate();
 
 	// Register listeners
 	embryo.mapPanel.map.events.register("movestart", map, function() {
 
 	});
 	embryo.mapPanel.map.events.register("moveend", map, function() {
-
 		saveViewCookie();
 		$("#vesselNameBox").css('visibility', 'hidden');
 
@@ -302,7 +301,6 @@ function setupUI() {
 	setInterval("closeEmptyPanels()", 1000);
 
 }
-
 
 embryo.initAngular = function() {
 	angular.bootstrap($('#contextMenuApp'));
@@ -381,7 +379,7 @@ embryo.contextMenu = {
 	menuItems : [],
 
 	addMenuItems : function(newItems) {
-		
+
 		var context = this;
 		// This method may be called from outside angular.
 		// Make sure angular discovers the update.
@@ -402,11 +400,11 @@ embryo.contextMenu = {
 			var featureType = feature && feature.data ? feature.data.featureType
 					: null;
 
-			if (item.shown4FeatureType){
+			if (item.shown4FeatureType) {
 				return item.shown4FeatureType === featureType;
 			}
-			
-			if(item.shown){
+
+			if (item.shown) {
 				return item.shown(feature);
 			}
 
@@ -426,332 +424,10 @@ embryo.mapPanel.addLayerInitializer = function(layerInitializer) {
 };
 
 embryo.mapPanel.initLayers = function() {
-	for (var x in this.layerInitializers) {
+	for ( var x in this.layerInitializers) {
 		this.layerInitializers[x]();
 	}
 };
-
-embryo.mapPanel.initLayer = function() {
-	// Add OpenStreetMap Layer
-	var osm = new OpenLayers.Layer.OSM("OSM",
-			"http://a.tile.openstreetmap.org/${z}/${x}/${y}.png", {
-				'layers' : 'basic',
-				'isBaseLayer' : true
-			});
-
-	// Add OpenStreetMap Layer
-	embryo.mapPanel.map.addLayer(osm);
-};
-
-/**
- * Adds all the layers that will contain graphic.
- */
-embryo.vessel = {};
-embryo.vessel.initLayers = function() {
-	
-	console.log('initLayers');
-
-	// Get renderer
-	var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
-	renderer = (renderer) ? [ renderer ]
-			: OpenLayers.Layer.Vector.prototype.renderers;
-	// renderer = ["Canvas", "SVG", "VML"];
-
-	// Create vector layer with a stylemap for vessels
-	vesselLayer = new OpenLayers.Layer.Vector("Vessels", {
-		styleMap : new OpenLayers.StyleMap({
-			"default" : {
-				externalGraphic : "${image}",
-				graphicWidth : "${imageWidth}",
-				graphicHeight : "${imageHeight}",
-				graphicYOffset : "${imageYOffset}",
-				graphicXOffset : "${imageXOffset}",
-				rotation : "${angle}"
-			},
-			"select" : {
-				cursor : "crosshair",
-				externalGraphic : "${image}"
-			}
-		}),
-		renderers : renderer
-	});
-
-	embryo.mapPanel.map.addLayer(vesselLayer);
-
-	// Create vector layer with a stylemap for the selection image
-	markerLayer = new OpenLayers.Layer.Vector("Markers", {
-		styleMap : new OpenLayers.StyleMap({
-			"default" : {
-				externalGraphic : "${image}",
-				graphicWidth : "${imageWidth}",
-				graphicHeight : "${imageHeight}",
-				graphicYOffset : "${imageYOffset}",
-				graphicXOffset : "${imageXOffset}",
-				rotation : "${angle}"
-			},
-			"select" : {
-				cursor : "crosshair",
-				externalGraphic : "${image}"
-			}
-		}),
-		renderers : renderer
-	});
-
-	embryo.mapPanel.map.addLayer(markerLayer);
-
-	// Create vector layer with a stylemap for the selection image
-	selectionLayer = new OpenLayers.Layer.Vector("Selection", {
-		styleMap : new OpenLayers.StyleMap({
-			"default" : {
-				externalGraphic : "${image}",
-				graphicWidth : "${imageWidth}",
-				graphicHeight : "${imageHeight}",
-				graphicYOffset : "${imageYOffset}",
-				graphicXOffset : "${imageXOffset}",
-				rotation : "${angle}"
-			},
-			"select" : {
-				cursor : "crosshair",
-				externalGraphic : "${image}"
-			}
-		}),
-		renderers : renderer
-	});
-
-	// Create vector layer for past tracks
-	tracksLayer = new OpenLayers.Layer.Vector("trackLayer", {
-		styleMap : new OpenLayers.StyleMap({
-			'default' : {
-				strokeColor : pastTrackColor,
-				strokeOpacity : pastTrackOpacity,
-				strokeWidth : pastTrackWidth
-			}
-		})
-	});
-
-	// Create vector layer for time stamps
-	timeStampsLayer = new OpenLayers.Layer.Vector("timeStampsLayer", {
-		styleMap : new OpenLayers.StyleMap({
-			'default' : {
-				label : "${timeStamp}",
-				fontColor : timeStampColor,
-				fontSize : timeStampFontSize,
-				fontFamily : timeStampFontFamily,
-				fontWeight : timeStampFontWeight,
-				labelAlign : "${align}",
-				labelXOffset : "${xOffset}",
-				labelYOffset : "${yOffset}",
-				labelOutlineColor : timeStamtOutlineColor,
-				labelOutlineWidth : 5,
-				labelOutline : 1
-			}
-		})
-	});
-
-	// Create cluster layer
-	clusterLayer = new OpenLayers.Layer.Vector("Clusters", {
-		styleMap : new OpenLayers.StyleMap({
-			'default' : {
-				fillColor : "${fill}",
-				fillOpacity : clusterFillOpacity,
-				strokeColor : clusterStrokeColor,
-				strokeOpacity : clusterStrokeOpacity,
-				strokeWidth : clusterStrokeWidth
-			}
-		})
-	});
-
-	embryo.mapPanel.map.addLayer(clusterLayer);
-
-	// Create cluster text layer
-	clusterTextLayer = new OpenLayers.Layer.Vector("Cluster text", {
-		styleMap : new OpenLayers.StyleMap({
-			'default' : {
-				label : "${count}",
-				fontColor : clusterFontColor,
-				fontSize : "${fontSize}",
-				fontWeight : clusterFontWeight,
-				fontFamily : clusterFontFamily,
-				labelAlign : "c"
-			}
-		})
-	});
-
-	embryo.mapPanel.map.addLayer(clusterTextLayer);
-
-	// Create layer for individual vessels in cluster
-	indieVesselLayer = new OpenLayers.Layer.Vector("Points", {
-		styleMap : new OpenLayers.StyleMap({
-			"default" : {
-				pointRadius : indieVesselRadius,
-				fillColor : indieVesselColor,
-				strokeColor : indieVesselStrokeColor,
-				strokeWidth : indieVesselStrokeWidth,
-				graphicZIndex : 1
-			},
-			"select" : {
-				pointRadius : indieVesselRadius * 3,
-				fillColor : indieVesselColor,
-				strokeColor : indieVesselStrokeColor,
-				strokeWidth : indieVesselStrokeWidth,
-				graphicZIndex : 1
-			}
-		})
-	});
-
-	embryo.mapPanel.map.addLayer(indieVesselLayer);
-	embryo.mapPanel.map.addLayer(selectionLayer);
-	embryo.mapPanel.map.addLayer(tracksLayer);
-	embryo.mapPanel.map.addControl(new OpenLayers.Control.DrawFeature(
-			tracksLayer, OpenLayers.Handler.Path));
-	embryo.mapPanel.map.addLayer(timeStampsLayer);
-};
-
-/**
- * Loads vessels if time since last update is higher than loadFrequence.
- */
-function loadVesselsIfTime() {
-
-	var timeSinceLastLoad = new Date().getTime() - timeOfLastLoad;
-
-	if (timeOfLastLoad == 0 || timeSinceLastLoad >= loadFrequence) {
-		loadVessels();
-	}
-
-}
-
-/**
- * Loads vessels in the specified amount of time.
- */
-function setTimeToLoad(ms) {
-
-	var timeSinceLastLoad = new Date().getTime() - timeOfLastLoad;
-
-	timeOfLastLoad -= (loadFrequence - timeSinceLastLoad);
-	timeOfLastLoad += ms;
-
-}
-
-/**
- * Loads the vessels using JSON. If the zoom level is higher than or equal to
- * the minimum zoom level it adds each vessel as a vessel instance to the list
- * of vessels. The vessels will be drawn when the JSON is received. If the zoom
- * level is lower than the minumum zoom level, it draws the vesselclusters
- * instead.
- */
-function loadVessels() {
-
-	// Reset list of vessels
-	vessels = [];
-	clusters = [];
-
-	if (embryo.mapPanel.map.zoom >= vesselZoomLevel || loadAllVessels) {
-
-		// Show Loading panel
-		$("#loadingPanel").css('visibility', 'visible');
-
-		loadVesselList();
-
-		clusterLayer.setVisibility(false);
-		clusterTextLayer.setVisibility(false);
-		indieVesselLayer.setVisibility(false);
-
-		vesselLayer.setVisibility(true);
-
-		selectControlVessels.activate();
-		selectControlIndieVessels.deactivate();
-
-	} else {
-
-		if (includeClustering) {
-
-			// Show Loading panel
-			$("#loadingPanel").css('visibility', 'visible');
-
-			loadVesselClusters();
-
-			clusterLayer.setVisibility(true);
-			clusterTextLayer.setVisibility(true);
-			indieVesselLayer.setVisibility(true);
-
-		}
-
-		vesselLayer.setVisibility(false);
-		selectControlVessels.deactivate();
-		selectControlIndieVessels.activate();
-
-	}
-
-	// Set time of load
-	timeOfLastLoad = new Date().getTime();
-
-}
-
-/**
- * Loads and draws all vessels in the view.
- */
-function loadVesselList() {
-
-	saveViewPort();
-
-	// Generate data
-	var data = filterQuery;
-	lastRequestId++;
-	data.requestId = lastRequestId;
-	if (!loadViewportOnly || loadAllVessels) {
-		delete data.topLon;
-		delete data.topLat;
-		delete data.botLon;
-		delete data.botLat;
-	}
-	if (loadFixedAreaSize && !loadAllVessels) {
-		lastLoadArea = getSpecificLoadArea();
-		data.topLon = lastLoadArea.top.lon;
-		data.topLat = lastLoadArea.top.lat;
-		data.botLon = lastLoadArea.bot.lon;
-		data.botLat = lastLoadArea.bot.lat;
-	}
-
-	$.getJSON(listUrl, data, function(result) {
-
-		if (result.requestId != lastRequestId)
-			return;
-
-		// Update vessel counter
-		$("#vesselsTotal").html(result.vesselsInWorld);
-
-		// Load new vessels
-		var JSONVessels = result.vesselList.vessels;
-
-		for (vesselId in JSONVessels) {
-			// Create vessel based on JSON data
-			var vesselJSON = JSONVessels[vesselId];
-			var vessel = new Vessel(vesselId, vesselJSON, 1);
-
-			if (embryo.selectedVessel && vesselId == embryo.selectedVessel.id
-					&& !selectSearchedVessel) {
-				// Update selected vessel
-				embryo.selectedVessel = vessel;
-			} else if (selectSearchedVessel && searchedVessel
-					&& vesselId == searchedVessel.id) {
-				// Update selected vessel
-				embryo.selectedVessel = vessel;
-				vessels.push(vessel);
-			}
-
-			vessels.push(vessel);
-
-		}
-
-		// Draw vessels
-		drawVessels();
-
-		selectSearchedVessel = false;
-
-		// Hide Loading panel
-		$("#loadingPanel").css('visibility', 'hidden');
-	});
-}
 
 /**
  * Loads and draws the vessel clusters.
@@ -926,333 +602,6 @@ function drawIndieVessels(cluster) {
 
 	}
 
-}
-
-/**
- * Draws an individual vessel.
- */
-function drawIndieVessel(vessel) {
-
-	// Add feature
-	var loc = transformPosition(vessel.lon, vessel.lat);
-	var geom = new OpenLayers.Geometry.Point(loc.lon, loc.lat);
-	var attr = {
-		id : vessel.id,
-		type : "indie",
-		vessel : vessel,
-		angle : vessel.degree
-	};
-
-	if (embryo.selectedVessel && vessel.id == embryo.selectedVessel.id
-			&& selectedFeature.attributes.type == "indie") {
-
-		selectedFeature.attributes = attr;
-		selectedFeature.geometry = geom;
-
-	} else {
-
-		feature = new OpenLayers.Feature.Vector(geom, attr);
-		indieVesselLayer.addFeatures([ feature ]);
-
-	}
-
-}
-
-/**
- * Draws all known vessels using vector points styled to show images. Vessels
- * are drawn based on their color, angle and whether they are moored on not.
- */
-function drawVessels() {
-
-	var vesselFeatures = [];
-	var selectionFeatures = [];
-	selectedVesselInView = false;
-
-	// Update number of vessels
-	$("#vesselsView").html("" + vessels.length);
-
-	// Iterate through vessels where value refers to each vessel.
-	$.each(vessels, function(key, value) {
-
-		var attr = {
-			id : value.id,
-			angle : value.degree - 90,
-			opacity : 1,
-			image : "img/" + value.image,
-			imageWidth : value.imageWidth,
-			imageHeight : value.imageHeight,
-			imageYOffset : value.imageYOffset,
-			imageXOffset : value.imageXOffset,
-			type : "vessel",
-			vessel : value
-		}
-
-		var geom = new OpenLayers.Geometry.Point(value.lon, value.lat)
-				.transform(new OpenLayers.Projection("EPSG:4326"), // transform
-				// from WGS
-				// 1984
-				embryo.mapPanel.map.getProjectionObject() // to Spherical
-				// Mercator
-				// Projection
-				);
-
-		if (embryo.selectedVessel && selectedFeature
-				&& value.id == embryo.selectedVessel.id
-				&& selectedFeature.attributes.type == "vessel") {
-
-			selectedFeature.attributes = attr;
-			selectedFeature.geometry = geom;
-
-		} else {
-
-			// Use styled vector points
-			var feature = new OpenLayers.Feature.Vector(geom, attr);
-
-			vesselFeatures.push(feature);
-
-			// Select searched vessel?
-			if (selectSearchedVessel && searchedVessel
-					&& searchedVessel.id == value.id) {
-				selectedFeature = feature;
-			}
-
-			// Select selected vessel?
-			if (embryo.selectedVessel && embryo.selectedVessel.id == value.id
-					&& !selectedFeature) {
-				selectedFeature = feature;
-			}
-
-			// Update marked vessel
-			if (markedVessel && markedVessel.id == value.id) {
-				markedVessel = value;
-			}
-
-		}
-
-	});
-
-	// Draw marker
-	if (markedVessel) {
-		redrawMarker();
-	}
-
-	// Set vessel in focus if selected
-	vesselInFocus(embryo.selectedVessel, selectedFeature);
-
-	// Remove old features except selected feature
-	var arr = vesselLayer.features.slice();
-	var idx = arr.indexOf(selectedFeature);
-	if (idx != -1)
-		arr.splice(idx, 1);
-	vesselLayer.addFeatures(vesselFeatures);
-	vesselLayer.destroyFeatures(arr);
-
-	// Redraw
-	addSelectionFeature();
-	vesselLayer.renderer.clear();
-	vesselLayer.redraw();
-	selectionLayer.redraw();
-	drawPastTrack(null);
-
-}
-
-/**
- * Sets a vessel in focus if it is selected.
- */
-function vesselInFocus(vessel, feature) {
-
-	if (embryo.selectedVessel && feature
-			&& vessel.id == embryo.selectedVessel.id) {
-
-		selectedVesselInView = true;
-
-		// Update selected vessel
-		embryo.selectedVessel = vessel;
-		selectedFeature = feature;
-
-		// Update vessel details
-		embryo.eventbus.fireEvent(embryo.eventbus
-				.VesselSelectedEvent(feature.attributes.id));
-
-		// embryo.vesselDetailsPanel.update(feature.attributes.id);
-
-	}
-
-}
-
-/**
- * Adds the selection feature if a feature is selected.
- */
-function addSelectionFeature() {
-
-	// Add selection
-	if (selectedFeature && selectedVesselInView) {
-		var selectionFeature = new OpenLayers.Feature.Vector(
-				new OpenLayers.Geometry.Point(selectedFeature.geometry.x,
-						selectedFeature.geometry.y), {
-					id : -1,
-					angle : selectedFeature.attributes.angle - 90,
-					opacity : 1,
-					image : "img/selection.png",
-					imageWidth : 32,
-					imageHeight : 32,
-					imageYOffset : -16,
-					imageXOffset : -16,
-					type : "selection"
-				});
-
-		selectionLayer.removeAllFeatures();
-		selectionLayer.addFeatures([ selectionFeature ]);
-
-	}
-
-}
-
-/**
- * Redraws all features in vessel layer and selection layer. Features are
- * vessels.
- */
-function redrawSelection() {
-	var selectionFeature;
-	var selectionFeatures = [];
-	drawPastTrack(null);
-
-	// Set search result in focus
-	if (selectedFeature) {
-		selectionFeature = new OpenLayers.Feature.Vector(
-				new OpenLayers.Geometry.Point(selectedFeature.geometry.x,
-						selectedFeature.geometry.y), {
-					id : -1,
-					angle : selectedFeature.attributes.angle - 90,
-					opacity : 1,
-					image : "img/selection.png",
-					imageWidth : 32,
-					imageHeight : 32,
-					imageYOffset : -16,
-					imageXOffset : -16,
-					type : "selection"
-				});
-
-		selectionFeatures.push(selectionFeature);
-		selectedVesselInView = true;
-
-		// embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(selectedFeature.attributes.id));
-
-		// embryo.vesselDetailsPanel.update(selectedFeature.attributes.id);
-
-	}
-
-	selectionLayer.removeAllFeatures();
-	selectionLayer.addFeatures(selectionFeatures);
-	selectionLayer.redraw();
-}
-
-function redrawMarker() {
-
-	var loc = transformPosition(markedVessel.lon, markedVessel.lat);
-	var geom = new OpenLayers.Geometry.Point(loc.lon, loc.lat);
-
-	var markerFeature = new OpenLayers.Feature.Vector(
-			new OpenLayers.Geometry.Point(geom.x, geom.y), {
-				id : -1,
-				angle : 0,
-				opacity : 1,
-				image : "img/green_marker.png",
-				imageWidth : 32,
-				imageHeight : 32,
-				imageYOffset : -16,
-				imageXOffset : -16,
-				type : "marker"
-			});
-
-	markerLayer.removeAllFeatures();
-	markerLayer.addFeatures(markerFeature);
-	markerLayer.redraw();
-
-}
-
-/**
- * Draws the past track. If tracks are null, it will simply remove all tracks
- * and draw nothing.
- * 
- * @param tracks
- *            Array of tracks
- */
-function drawPastTrack(tracks) {
-
-	// Remove old tracks
-	tracksLayer.removeAllFeatures();
-	timeStampsLayer.removeAllFeatures();
-
-	// Get time stamp distance
-	var CL = false;
-	var tracksBetweenTimeStamps;
-	if (embryo.mapPanel.map.zoom >= vesselZoomLevel) {
-		tracksBetweenTimeStamps = tracksBetweenTimeStampsVL;
-	} else {
-		tracksBetweenTimeStamps = tracksBetweenTimeStampsCL;
-		CL = true;
-	}
-
-	// Draw tracks
-	if (selectedVesselInView && tracks && includePastTracks) {
-		var lastLon;
-		var lastLat;
-		var firstPoint = true;
-		var untilTimeStamp = 0;
-
-		for (track in tracks) {
-			var currentTrack = tracks[track];
-			if (!firstPoint) {
-				// Insert line
-				var points = new Array(new OpenLayers.Geometry.Point(lastLon,
-						lastLat)
-						.transform(new OpenLayers.Projection("EPSG:4326"),
-								embryo.mapPanel.map.getProjectionObject()),
-						new OpenLayers.Geometry.Point(currentTrack.lon,
-								currentTrack.lat).transform(
-								new OpenLayers.Projection("EPSG:4326"),
-								embryo.mapPanel.map.getProjectionObject()));
-
-				var line = new OpenLayers.Geometry.LineString(points);
-				var lineFeature = new OpenLayers.Feature.Vector(line);
-				tracksLayer.addFeatures([ lineFeature ]);
-
-				// Insert timeStamp?
-				if (untilTimeStamp == 0
-						&& parseInt(track) + tracksBetweenTimeStamps < tracks.length
-						&& includeTimeStamps && (includeTimeStampsOnCL || !CL)) {
-
-					var timeStampPos = points[0];
-					var timeStampFeature = new OpenLayers.Feature.Vector(
-							timeStampPos);
-
-					// Remove date from time
-					var time = (new Date(currentTrack.time)).toTimeString();
-
-					// Change to 24h clock
-					time = to24hClock(time);
-
-					timeStampFeature.attributes = {
-						timeStamp : time
-					};
-					timeStampsLayer.addFeatures([ timeStampFeature ]);
-
-					untilTimeStamp = tracksBetweenTimeStamps;
-
-				} else {
-					untilTimeStamp--;
-				}
-			}
-			lastLon = currentTrack.lon;
-			lastLat = currentTrack.lat;
-			firstPoint = false;
-		}
-
-		// Draw features
-		tracksLayer.refresh();
-		timeStampsLayer.refresh();
-	}
 }
 
 /**
