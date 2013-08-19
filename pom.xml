@@ -368,8 +368,18 @@
           <artifactId>jboss-as-maven-plugin</artifactId>
           <version>7.4.Final</version>
         </plugin>
-
-
+        <plugin>
+          <groupId>com.kelveden</groupId>
+          <artifactId>maven-karma-plugin</artifactId>
+          <version>1.3</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>start</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -459,6 +469,14 @@
       <plugin>
         <groupId>com.googlecode.jslint4java</groupId>
         <artifactId>jslint4java-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.kelveden</groupId>
+        <artifactId>maven-karma-plugin</artifactId>
+        <configuration>
+          <browsers>Chrome</browsers>
+          <configFile>${basedir}/src/test/resources/config/karma.conf.js</configFile>
+        </configuration>
       </plugin>
     </plugins>
 
