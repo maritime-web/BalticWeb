@@ -27,6 +27,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.joda.time.LocalDateTime;
@@ -61,6 +62,7 @@ public class Route extends BaseEntity<Long> {
     @ElementCollection
     @CollectionTable(name = "WayPoint")
     @OrderColumn(name = "orderNumber")
+    @Valid
     private List<WayPoint> wayPoints = new ArrayList<>();
 
     @OneToOne

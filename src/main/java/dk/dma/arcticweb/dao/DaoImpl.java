@@ -68,6 +68,8 @@ public abstract class DaoImpl implements Dao {
     }
 
     public <E extends IEntity<?>> List<E> getAll(Class<E> entityType) {
+        em.clear();
+
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> cq = cb.createQuery(entityType);
         cq.from(entityType);

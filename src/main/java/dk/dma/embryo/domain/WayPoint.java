@@ -18,6 +18,7 @@ package dk.dma.embryo.domain;
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import dk.dma.enav.model.voyage.Waypoint;
@@ -34,6 +35,7 @@ public class WayPoint implements Serializable {
     @NotNull
     private String name;
 
+    @Valid
     private Position position;
     
     @NotNull
@@ -42,6 +44,7 @@ public class WayPoint implements Serializable {
     @NotNull
     private Double turnRadius;
     
+    @Valid
     private RouteLeg leg;
 
     // //////////////////////////////////////////////////////////////////////

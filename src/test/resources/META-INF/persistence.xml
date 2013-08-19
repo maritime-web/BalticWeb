@@ -19,7 +19,9 @@
 		<class>dk.dma.embryo.domain.Berth</class>		
 		<class>dk.dma.embryo.domain.Route</class>
 		<class>dk.dma.embryo.domain.WayPoint</class>
-		<class>dk.dma.embryo.domain.RouteLeg</class>		
+		<class>dk.dma.embryo.domain.RouteLeg</class>
+    
+        <validation-mode>CALLBACK</validation-mode>		
 
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />

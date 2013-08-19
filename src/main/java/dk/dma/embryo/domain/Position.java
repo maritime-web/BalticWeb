@@ -20,6 +20,7 @@ import java.io.Serializable;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 @Embeddable
 @Access(AccessType.FIELD)
@@ -30,8 +31,10 @@ public class Position implements Serializable {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
+    @NotNull
     private Double latitude;
 
+    @NotNull
     private Double longitude;
 
     // //////////////////////////////////////////////////////////////////////
