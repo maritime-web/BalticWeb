@@ -38,7 +38,6 @@ public class WayPoint implements Serializable {
     @Valid
     private Position position;
     
-    @NotNull
     private Double rot;
 
     @NotNull

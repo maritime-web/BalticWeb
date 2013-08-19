@@ -244,7 +244,6 @@ public class ShipServiceImplTest {
             expected.add(new ConstraintViolationImpl("wayPoints[0].position.latitude", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].position.longitude", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].turnRadius", null, null));
-            expected.add(new ConstraintViolationImpl("wayPoints[0].rot", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].leg.speed", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].leg.xtdPort", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].leg.xtdStarboard", null, null));
