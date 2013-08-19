@@ -470,19 +470,27 @@
         <groupId>com.googlecode.jslint4java</groupId>
         <artifactId>jslint4java-maven-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>com.kelveden</groupId>
-        <artifactId>maven-karma-plugin</artifactId>
-        <configuration>
-          <browsers>Chrome</browsers>
-          <configFile>${basedir}/src/test/resources/config/karma.conf.js</configFile>
-        </configuration>
-      </plugin>
     </plugins>
 
   </build>
 
   <profiles>
+    <profile>
+      <id>karma</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.kelveden</groupId>
+            <artifactId>maven-karma-plugin</artifactId>
+            <configuration>
+              <browsers>Chrome</browsers>
+              <configFile>${basedir}/src/test/resources/config/karma.conf.js</configFile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
     <profile>
       <id>fulldeploy</id>
       <build>
