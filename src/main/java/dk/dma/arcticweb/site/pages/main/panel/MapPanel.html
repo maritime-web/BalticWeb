@@ -15,10 +15,12 @@
 			<ul class="dropdown-menu" role="menu">
 				<li ng-show="shown(item, getSelectedFeature())" ng-repeat="item in getMenuItems()"><a tabindex="-1" href="#"
 					ng-click="choose(item, getSelectedFeature())">{{item.text}}</a></li>
-
+ 				
+ 				<li class="divider"></li>
+				
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Layers</a>
 					<ul class="dropdown-menu">
-						<li ng-repeat="layer in getLayers()"><a tabindex="-1" href="#" ng-click="toggleLayer(layer)"><i ng-show="layer.getVisible()" class="icon-ok"></i>{{layer.name}}</a></li>
+						<li ng-repeat="layer in getLayers()"><a tabindex="-1" href="#" ng-click="toggleLayer(layer)"><i ng-class="getIcon(layer)"></i><span style="margin-left:20px;">{{layer.name}}</span></a></li>
 					</ul>					
 				</li>
 

@@ -49,4 +49,29 @@ describe('Context Menu Controller', function() {
 			expect(scope.getLayers()[0].getVisibility()).toBe(!beforeToggle);
 		});
 	});
+
+	describe('embryo.contextMenu.Ctrl.getIcon', function() {
+
+		it('Should toggle the visibility of the layer in question', function() {
+			//create map and add base layer
+			embryo.mapPanel.map = new OpenLayers.Map({
+				div : "map",
+				projection : 'EPSG:900913',
+				fractionalZoom : false
+			});
+			
+			// add 2 test layers
+			embryo.mapPanel.map.addLayer(new OpenLayers.Layer.Vector("Layer 1"));
+
+			// Setup controller and data
+			var scope = {};
+			var ctrl = new embryo.contextMenu.Ctrl(scope);
+			
+			expect(scope.getIcon(scope.getLayers()[0])).toBe('icon-ok');
+			// test toggle
+			scope.toggleLayer(scope.getLayers()[0]);
+
+			expect(scope.getIcon(scope.getLayers()[0])).toBe('icon-ban-circle');
+		});
+	});
 });

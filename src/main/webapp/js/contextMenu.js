@@ -116,5 +116,9 @@ embryo.contextMenu = {
 		$scope.toggleLayer = function(layer) {
 			layer.setVisibility(!layer.getVisibility());
 		};
+		
+		$scope.getIcon = function(layer){
+			return layer.getVisibility()? 'icon-ok' : 'icon-ban-circle'; 
+		};
 	}
 };
