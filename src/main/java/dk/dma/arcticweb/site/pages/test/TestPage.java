@@ -64,7 +64,7 @@ public class TestPage extends WebPage {
 
     @Inject
     ShipService shipService;
-    
+
     @Inject
     private transient Logger logger;
 
@@ -79,31 +79,41 @@ public class TestPage extends WebPage {
     }
 
     public <E extends IEntity<K>, K> void deleteAll(Class<E> type) {
-        List<E> entities = shipDao.getAll(type);
-        for (E entity : entities) {
-            shipDao.remove(entity);
+
+        try {
+            tx.begin();
+
+            logger.info("Deleting entities of type {}", type.getName());
+            List<E> entities = shipDao.getAll(type);
+            for (E entity : entities) {
+                logger.info("Deleting entities with id {}", entity.getId());
+                shipDao.remove(entity);
+            }
+
+            tx.commit();
+        } catch (Exception e) {
+            logger.error("Error deleting existing entries", e);
+            try {
+                tx.rollback();
+            } catch (IllegalStateException | SecurityException | SystemException e1) {
+                logger.error("Error rolling back transaction", e1);
+            }
+            throw new RuntimeException(e);
         }
     }
 
     public void init2() {
-        
-        try {
-            logger.info("Deleting existing entries");
 
-            deleteAll(Berth.class);
-            deleteAll(Route.class);
-            deleteAll(Voyage.class);
-            deleteAll(VoyagePlan.class);
-            deleteAll(SecuredUser.class);
-            deleteAll(Role.class);
-            deleteAll(Ship2.class);
-            deleteAll(Permission.class);
+        logger.info("Deleting existing entries");
 
-        } catch (SecurityException | IllegalStateException e) {
-            // TODO Auto-generated catch block
-            logger.error("Error deleting existing entries", e);
-            throw new RuntimeException(e);
-        }
+        deleteAll(Berth.class);
+        deleteAll(Voyage.class);
+        deleteAll(VoyagePlan.class);
+        deleteAll(Route.class);
+        deleteAll(SecuredUser.class);
+        deleteAll(Role.class);
+        deleteAll(Ship2.class);
+        deleteAll(Permission.class);
 
         logger.info("AFTER DELETION");
         logExistingEntries();
@@ -158,43 +168,42 @@ public class TestPage extends WebPage {
         shipDao.saveEntity(new Berth("Qaanaaq", "Thule", "77 27.8N", "069 14.0W"));
         shipDao.saveEntity(new Berth("Upernavik", "72 47.5N", "056 09.4W"));
         shipDao.saveEntity(new Berth("Miami", "25 47.16N", "08 13.27W"));
-        
+
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
         newShip.setVoyagePlan(voyagePlan);
 
-        voyagePlan.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W",
-                now.minusDays(4).withTime(9, 30, 0, 0), now.minusDays(3).withTime(17, 0, 0, 0)));
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W",
-                now.plusDays(3).withTime(10, 30, 0, 0), now.plusDays(5).withTime(9, 0, 0, 0)));
-        voyagePlan.addVoyageEntry(new Voyage("Thule", "77 27.8N", "069 14.0W",
-                now.plusDays(9).withTime(13, 15, 0, 0), now.plusDays(11).withTime(9, 0, 0, 0)));
-        voyagePlan.addVoyageEntry(new Voyage("Upernavik", "72 47.5N", "056 09.4W",
-                now.plusDays(13).withTime(10, 45, 0, 0), now.plusDays(14).withTime(9, 30, 0, 0)));
-        
+        voyagePlan.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
+                now.minusDays(3).withTime(17, 0, 0, 0)));
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
+                now.plusDays(5).withTime(9, 0, 0, 0)));
+        voyagePlan.addVoyageEntry(new Voyage("Thule", "77 27.8N", "069 14.0W", now.plusDays(9).withTime(13, 15, 0, 0),
+                now.plusDays(11).withTime(9, 0, 0, 0)));
+        voyagePlan.addVoyageEntry(new Voyage("Upernavik", "72 47.5N", "056 09.4W", now.plusDays(13).withTime(10, 45, 0,
+                0), now.plusDays(14).withTime(9, 30, 0, 0)));
+
         shipDao.saveEntity(voyagePlan);
 
         insertDemoRoute(newShip, voyagePlan.getVoyagePlan().get(0), "/demo/routes/Miami-Nuuk.txt", true);
         insertDemoRoute(newShip, voyagePlan.getVoyagePlan().get(1), "/demo/routes/Nuuk-Thule.txt", false);
         insertDemoRoute(newShip, voyagePlan.getVoyagePlan().get(2), "/demo/routes/Thule-Upernavik.txt", false);
-        
 
-         logger.info("AFTER CREATION");
+        logger.info("AFTER CREATION");
         logExistingEntries();
 
     }
-    
-    private void insertDemoRoute(Ship2 ship, Voyage voyage, String file, boolean activate){
+
+    private void insertDemoRoute(Ship2 ship, Voyage voyage, String file, boolean activate) {
         InputStream is = getClass().getResourceAsStream(file);
         try {
-            Route r =  shipService.parseRoute(is);
-            r.setShip(ship);            
+            Route r = shipService.parseRoute(is);
+            r.setShip(ship);
             shipDao.saveEntity(r);
 
             r.setVoyage(voyage);
             shipDao.saveEntity(voyage);
-           
-            if(activate){
+
+            if (activate) {
                 shipService.activateRoute(r.getEnavId());
             }
         } catch (IOException e) {

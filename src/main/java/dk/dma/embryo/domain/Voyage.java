@@ -48,6 +48,7 @@ public class Voyage extends BaseEntity<Long> {
 
     private boolean doctorOnBoard;
 
+    // Should cascade be set to e.g. MERGE, REMOVE, PERSIST?
     @OneToOne
     Route route;
 
