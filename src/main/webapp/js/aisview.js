@@ -392,6 +392,13 @@ embryo.contextMenu = {
 		$scope.getMenuItems = function() {
 			return embryo.contextMenu.menuItems;
 		};
+		$scope.getLayers = function() {
+			if(embryo.mapPanel && embryo.mapPanel.map){
+				return embryo.mapPanel.map.layers;
+			}
+			return [];
+		};
+		
 		$scope.getSelectedFeature = function() {
 			return embryo.contextMenu.selectedFeature;
 		};
@@ -413,6 +420,9 @@ embryo.contextMenu = {
 
 		$scope.choose = function(item, feature) {
 			item.choose($scope, feature);
+		};
+		$scope.toggleLayer = function(layer) {
+			layer.setVisibility(!layer.getVisibility());
 		};
 	}
 };
