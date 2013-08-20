@@ -68,7 +68,7 @@ public class Route extends BaseEntity<Long> {
     @OneToOne
     private Ship2 ship;
 
-    @OneToOne(mappedBy="route", cascade={CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(mappedBy="route")
     private Voyage voyage;
 
     // //////////////////////////////////////////////////////////////////////
