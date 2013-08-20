@@ -52,7 +52,7 @@ describe('Context Menu Controller', function() {
 
 	describe('embryo.contextMenu.Ctrl.getIcon', function() {
 
-		it('Should toggle the visibility of the layer in question', function() {
+		it('getIcon should depend on the layer visibility', function() {
 			//create map and add base layer
 			embryo.mapPanel.map = new OpenLayers.Map({
 				div : "map",

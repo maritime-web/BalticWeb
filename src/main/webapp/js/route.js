@@ -258,6 +258,8 @@ embryo.routeModal.Ctrl = function($scope, Route, RouteService) {
 	};
 
 	$scope.save = function() {
+		
+		console.log('save');
 		// validate?
 		Route.save(RouteService.getRoute(), function() {
 			$scope.message = "Saved route '" + $scope.getRoute().name + "'";
@@ -303,10 +305,10 @@ embryo.routeModal.Ctrl = function($scope, Route, RouteService) {
 	};
 
 	$scope.saveable = function() {
-		if (!$scope.getRoute().name) {
-			return false;
-		}
-
+//		if($scope.routeEditForm.$invalid){
+//			return false;
+//		}
+		
 		if (!($scope.getRoute().waypoints && $scope.getRoute().waypoints.length >= 2)) {
 			return false;
 		}
