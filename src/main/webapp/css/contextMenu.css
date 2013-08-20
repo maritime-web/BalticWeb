@@ -1,0 +1,10 @@
+/* CSS Styling for all voyage related functionality */
+
+/* Route button dropdown menu*/
+#context-menu i.icon-ban-circle{
+	color:red;
+}
+
+#context-menu i.icon-ok{
+	color:green;
+}
