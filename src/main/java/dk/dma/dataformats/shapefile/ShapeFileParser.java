@@ -45,6 +45,43 @@ public class ShapeFileParser {
         return wrapper.getDouble();
     }
 
+    public static File parse(InputStream is) throws IOException {
+        try {
+            File f = new File();
+
+            f.header = FileHeader.read(is);
+            f.records = new ArrayList<>();
+
+            long sum = 0;
+
+            do {
+                Record r = new Record();
+
+                r.header = RecordHeader.read(is);
+
+                int shapeId = readIntLittle(is);
+
+                switch (shapeId) {
+                    case 5:
+                        r.shape = PolyLine.read(is);
+                        break;
+                    default:
+                        is.read(new byte[Math.max(0, (int) r.header.contentLength * 2 - 8)]);
+                        r.shape = new Unknown();
+                        break;
+                }
+
+                sum += r.header.contentLength + 4;
+
+                f.records.add(r);
+            } while (sum < f.header.fileLength);
+
+            return f;
+        } finally {
+            is.close();
+        }
+    }
+
     public static class Point {
         private double x;
         private double y;
@@ -206,7 +243,7 @@ public class ShapeFileParser {
         }
     }
 
-    public static abstract class Shape {
+    public abstract static class Shape {
     }
 
     public static class PolyLine extends Shape {
@@ -222,9 +259,13 @@ public class ShapeFileParser {
             pl.numParts = readIntLittle(is);
             pl.numPoints = readIntLittle(is);
             pl.parts = new ArrayList<>();
-            for (int i = 0; i < pl.numParts; i++) pl.parts.add(readIntLittle(is));
+            for (int i = 0; i < pl.numParts; i++) {
+                pl.parts.add(readIntLittle(is));
+            }
             pl.points = new ArrayList<>();
-            for (int i = 0; i < pl.numPoints; i++) pl.points.add(Point.read(is));
+            for (int i = 0; i < pl.numPoints; i++) {
+                pl.points.add(Point.read(is));
+            }
             return pl;
         }
 
@@ -288,43 +329,6 @@ public class ShapeFileParser {
 
         public List<Record> getRecords() {
             return records;
-        }
-    }
-
-    public static File parse(InputStream is) throws IOException {
-        try {
-            File f = new File();
-
-            f.header = FileHeader.read(is);
-            f.records = new ArrayList<>();
-
-            long sum = 0;
-
-            do {
-                Record r = new Record();
-
-                r.header = RecordHeader.read(is);
-
-                int shapeId = readIntLittle(is);
-
-                switch (shapeId) {
-                    case 5:
-                        r.shape = PolyLine.read(is);
-                        break;
-                    default:
-                        is.read(new byte[Math.max(0, (int) r.header.contentLength * 2 - 8)]);
-                        r.shape = new Unknown();
-                        break;
-                }
-
-                sum += r.header.contentLength + 4;
-
-                f.records.add(r);
-            } while (sum < f.header.fileLength);
-
-            return f;
-        } finally {
-            is.close();
         }
     }
 }

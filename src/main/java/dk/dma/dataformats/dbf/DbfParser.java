@@ -105,11 +105,12 @@ public class DbfParser {
     }
 
     private int readHeader() throws IOException {
-        byte abyte0[] = new byte[16];
+        byte[] abyte0 = new byte[16];
         stream.readFully(abyte0);
         int i = abyte0[8];
-        if (i < 0)
+        if (i < 0){
             i += 256;
+        }
         i += 256 * abyte0[9];
         i = --i / 32;
         i--;
@@ -118,7 +119,7 @@ public class DbfParser {
     }
 
     private DbfField readFieldHeader() throws IOException {
-        byte abyte0[] = new byte[16];
+        byte[] abyte0 = new byte[16];
         stream.readFully(abyte0);
 
         if (abyte0[0] == 0X0D || abyte0[0] == 0X00) {
@@ -129,8 +130,9 @@ public class DbfParser {
         StringBuffer stringbuffer = new StringBuffer(10);
         int i = 0;
         for (i = 0; i < 10; i++) {
-            if (abyte0[i] == 0)
+            if (abyte0[i] == 0) {
                 break;
+            }
         }
         stringbuffer.append(new String(abyte0, 0, i));
 
@@ -139,10 +141,12 @@ public class DbfParser {
 
         int j = abyte0[0];
         int k = abyte0[1];
-        if (j < 0)
+        if (j < 0){
             j += 256;
-        if (k < 0)
+        }
+        if (k < 0){
             k += 256;
+        }
         return new DbfField(stringbuffer.toString(), c, j, k);
     }
 
@@ -159,10 +163,11 @@ public class DbfParser {
     }
 
     public Object[] nextRecord() throws IOException {
-        if (!hasNextRecord())
+        if (!hasNextRecord()){
             throw new RuntimeException("No more records available.");
+        }
         //Object aobj[] = new Object[fields.length];
-        Object aobj[] = new Object[nFieldCount];
+        Object[] aobj = new Object[nFieldCount];
         int i = 1;
         for (int j = 0; j < aobj.length; j++) {
             int k = fields[j].getLength();
@@ -188,7 +193,7 @@ public class DbfParser {
     }
 
     private DataInputStream stream;
-    private DbfField fields[];
-    private byte nextRecord[];
+    private DbfField[] fields;
+    private byte[] nextRecord;
     private int nFieldCount;
 }
