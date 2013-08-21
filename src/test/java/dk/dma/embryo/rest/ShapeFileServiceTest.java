@@ -9,22 +9,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 package dk.dma.embryo.rest;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.junit.Test;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import java.io.IOException;
+import java.util.List;
 
-@ApplicationPath("/rest")
-public class ApplicationConfig extends Application {
-    public Set<Class<?>> getClasses() {
-        return new HashSet<Class<?>>(Arrays.asList(RouteService.class, RouteUploadService.class, VoyageService.class, ShapeFileService.class));
+import static junit.framework.Assert.assertEquals;
+
+public class ShapeFileServiceTest {
+    private ShapeFileService service = new ShapeFileService();
+    @Test
+    public void readFileFromDmi() throws IOException {
+        List<ShapeFileService.Fragment> fragments = service.getFile("201304100920_CapeFarewell_RIC", 0, "");
+        assertEquals(23, fragments.size());
     }
 }

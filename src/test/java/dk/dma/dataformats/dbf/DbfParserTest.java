@@ -9,22 +9,27 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.dataformats.dbf;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.junit.Test;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-@ApplicationPath("/rest")
-public class ApplicationConfig extends Application {
-    public Set<Class<?>> getClasses() {
-        return new HashSet<Class<?>>(Arrays.asList(RouteService.class, RouteUploadService.class, VoyageService.class, ShapeFileService.class));
+import static junit.framework.Assert.assertEquals;
+
+public class DbfParserTest {
+    @Test
+    public void readFileFromDmi() throws IOException {
+        List<Map<String,Object>> result = DbfParser.parse(getClass().getResourceAsStream("/ice/201307222045_CapeFarewell_RIC.dbf"));
+
+        assertEquals(10, result.size());
+        assertEquals("3", result.get(0).get("FA"));
+        assertEquals("W", result.get(9).get("POLY_TYPE"));
     }
 }
