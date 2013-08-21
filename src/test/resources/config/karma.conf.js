@@ -31,7 +31,7 @@ module.exports = function(config) {
 		junitReporter : {
 			// will be resolved to basePath (in the same way as files/exclude
 			// patterns)
-			outputFile : 'target/jsTest/unit.xml'
+			outputFile : 'target/surefire-reports/karmaUnit.xml'
 		},
 
 		// web server port
@@ -82,6 +82,6 @@ module.exports = function(config) {
 		},
 
 		plugins : [ 'karma-jasmine', 'karma-chrome-launcher',
-				'karma-firefox-launcher', 'karma-junit-reporter' ]
+				'karma-firefox-launcher', 'karma-junit-reporter', 'karma-phantomjs-launcher' ]
 	});
 };
