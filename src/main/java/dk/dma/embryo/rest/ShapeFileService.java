@@ -36,10 +36,20 @@ public class ShapeFileService {
     @Path("/{id}")
     @Produces("application/json")
     public List<Fragment> getFile(
-            @PathParam("id") String id,
+            @PathParam("id") String ids,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
             @DefaultValue("") @QueryParam("filter") String filter
     ) throws IOException {
+        List<Fragment> result = new ArrayList<>();
+
+        for (String id : ids.split(",")) {
+            result.addAll(readSingleFile(id, resolution, filter));
+        }
+
+        return result;
+    }
+
+    public List<Fragment> readSingleFile(String id, int resolution, String filter) throws IOException {
         List<Fragment> result = new ArrayList<>();
         ShapeFileParser.File file = ShapeFileParser.parse(getClass().getResourceAsStream("/ice/" + id + ".shp"));
         List<Map<String, Object>> data = DbfParser.parse(getClass().getResourceAsStream("/ice/" + id + ".dbf"));
