@@ -372,13 +372,19 @@
           <groupId>com.kelveden</groupId>
           <artifactId>maven-karma-plugin</artifactId>
           <version>1.3</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>start</goal>
-              </goals>
-            </execution>
-          </executions>
+          <configuration>
+            <browsers>PhantomJS</browsers>
+          </configuration>
+            <executions>
+              <execution>
+                <id>karma</id>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <!-- execute karma before test phase to let Jenkins collet the target/surefire-reports/karmaUnit.xml -->
+                <phase>process-test-classes</phase>
+              </execution>
+            </executions>          
         </plugin>
       </plugins>
     </pluginManagement>
@@ -483,7 +489,6 @@
             <groupId>com.kelveden</groupId>
             <artifactId>maven-karma-plugin</artifactId>
             <configuration>
-              <browsers>Chrome</browsers>
               <configFile>${basedir}/src/test/resources/config/karma.conf.js</configFile>
               <browsers>PhantomJS</browsers>
             </configuration>
@@ -491,7 +496,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>fulldeploy</id>
       <build>
