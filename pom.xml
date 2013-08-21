@@ -485,6 +485,7 @@
             <configuration>
               <browsers>Chrome</browsers>
               <configFile>${basedir}/src/test/resources/config/karma.conf.js</configFile>
+              <browsers>PhantomJS</browsers>
             </configuration>
           </plugin>
         </plugins>
