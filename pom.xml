@@ -485,11 +485,14 @@
             <configuration>
               <browsers>Chrome</browsers>
               <configFile>${basedir}/src/test/resources/config/karma.conf.js</configFile>
+              <karmaExecutable>/scratch/jenkins/addons/node/node-0.10.13-x86_64/bin/karma</karmaExecutable>
             </configuration>
           </plugin>
         </plugins>
       </build>
     </profile>
+    
+    
 
     <profile>
       <id>fulldeploy</id>
