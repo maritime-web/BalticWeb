@@ -177,7 +177,7 @@ embryo.vessel.initLayers = function() {
 			selectedFeature = null;
 			embryo.selectedVessel = null;
 			detailsReadyToClose = true;
-			$("#vesselNameBox").css('visibility', 'hidden');
+			// $("#hoveringBox").css('display', 'none');
 			redrawSelection();
 			selectControlVessels.unselectAll();
 		} else {
@@ -187,7 +187,7 @@ embryo.vessel.initLayers = function() {
 					.VesselSelectedEvent(feature.attributes.id));
 			// embryo.vesselDetailsPanel.update(feature.attributes.id);
 
-			$("#vesselNameBox").css('visibility', 'hidden');
+			// $("#hoveringBox").css('display', 'none');
 			// selectControlVessels.select(feature);
 			redrawSelection();
 		}
@@ -215,40 +215,22 @@ embryo.vessel.initLayers = function() {
 	});
 	
 
-	// Create functions for hovering a vessel
-	var showName = function(e) {
-		var lonlatCenter = e.feature.geometry.getBounds().getCenterLonLat();
+    embryo.mapPanel.hoveringHandlers.push(function(e) {
 		if (e.feature.attributes.vessel) {
+		    var id = "name_"+e.feature.attributes.id;
 			$.getJSON(detailsUrl, {
 				past_track : '1',
 				id : e.feature.attributes.id
 			}, function(result) {
-				var pixelTopLeft = new OpenLayers.Pixel(0, 0);
-				var lonlatTopLeft = embryo.mapPanel.map
-						.getLonLatFromPixel(pixelTopLeft);
-				pixelTopLeft = embryo.mapPanel.map
-						.getPixelFromLonLat(lonlatTopLeft);
-
-				var pixel = embryo.mapPanel.map
-						.getPixelFromLonLat(lonlatCenter);
-
-				var x = pixel.x - pixelTopLeft.x;
-				var y = pixel.y - pixelTopLeft.y;
-
-				$("#vesselNameBox").html(result.name);
-				$("#vesselNameBox").css('visibility', 'visible');
-				$("#vesselNameBox").css('top', (y - 26) + 'px');
-				$("#vesselNameBox").css('left', x + 'px');
+				$("#"+id).html(
+				    "<div class='whiteOpacity shadowsIE vesselNameBox'>"+result.name+"</div>"
+				);
 			});
-		}
-	};
-
-	var hideName = function(e) {
-		console.log('hide name');
-		// $("#vesselNameBox").css('visibility', 'hidden');
-	};
-
-	embryo.eventbus.registerHandler(embryo.eventbus.HighLightEvent, showName);
+			return "<div id="+id+"></div>";
+		} else {
+		    return null;
+        }
+    });
 
 };
 

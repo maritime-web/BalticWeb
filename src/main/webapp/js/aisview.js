@@ -229,8 +229,9 @@ embryo.mapPanel = {
 		// Even better then load context menu as the very last thing or ?
 		embryo.contextMenu.init();
 	},
-
+    hoveringHandlers: []
 };
+
 
 /**
  * Sets up the panels, event listeners and selection controllers.
@@ -279,13 +280,40 @@ function setupUI() {
 	// hoverControlIndieVessels.activate();
 
 	// Register listeners
-	embryo.mapPanel.map.events.register("movestart", map, function() {
 
+	embryo.eventbus.registerHandler(embryo.eventbus.HighLightEvent, function(e) {
+    	var lonlatCenter = e.feature.geometry.getBounds().getCenterLonLat();
+    	var pixelTopLeft = new OpenLayers.Pixel(0, 0);
+    	var lonlatTopLeft = embryo.mapPanel.map.getLonLatFromPixel(pixelTopLeft);
+    	pixelTopLeft = embryo.mapPanel.map.getPixelFromLonLat(lonlatTopLeft);
+        var pixel = embryo.mapPanel.map.getPixelFromLonLat(lonlatCenter);
+		var x = pixel.x - pixelTopLeft.x;
+		var y = pixel.y - pixelTopLeft.y;
+
+        var html;
+
+        for (var i in embryo.mapPanel.hoveringHandlers) {
+            var html1 = embryo.mapPanel.hoveringHandlers[i](e);
+            if (html1 != null) html = html1;
+        }
+
+        if (html != null) {
+            $("#hoveringBox").css("top", y + "px");
+        	$("#hoveringBox").css("left", x + "px");
+            $("#hoveringBox").html(html);
+            $("#hoveringBox").css("display", "block");
+        } else {
+            $("#hoveringBox").css("display", "none");
+        }
 	});
+
+
+	embryo.mapPanel.map.events.register("movestart", map, function() {
+		$("#hoveringBox").css('display', 'none');
+	});
+
 	embryo.mapPanel.map.events.register("moveend", map, function() {
 		saveViewCookie();
-		$("#vesselNameBox").css('visibility', 'hidden');
-
 		if (loadAfterMove()) {
 			setTimeToLoad(loadDelay);
 			loadVesselsIfTime();

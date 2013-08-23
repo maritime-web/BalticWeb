@@ -338,11 +338,9 @@ form {
 	-o-user-select: none;
 }
 
-#vesselNameBox {
-	visibility: hidden;
-	position: absolute;
+.vesselNameBox {
+    margin-top: -24px;
 	padding: 2px;
-	top: 0px;
 }
 
 .customizedControlZoom {

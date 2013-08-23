@@ -17,6 +17,27 @@ function createIceLayer() {
         return "#90fba4";
     }
 
+    function createIceEggHtml(p) {
+        function s(v) {
+            return Math.round(v * p.size / 200.0);
+        }
+
+        function f(v) {
+            if (v == -9) return "&middot;";
+            return v;
+        }
+
+        var html = "<div style=\"background-image:url('img/egg.png'); width:"+s(140)+"px; height: "+s(200)+"px; "+
+            "background-size: 100% 100%; text-align:center; font-family:sans-serif; font-size: "+s(20)+"px;\">";
+
+        html += "<div style=\"height: "+s(50)+"px; padding-top: "+s(25)+"px\">"+f(p.CT)+"</div>";
+        html += "<div style=\"height: "+s(45)+"px; padding-top: "+s(15)+"px\">"+f(p.CA)+" "+f(p.CB)+" "+f(p.CC)+"</div>"
+        html += "<div style=\"height: "+s(15)+"px; padding-top: "+s(5)+"px\">"+f(p.SA)+" "+f(p.SB)+" "+f(p.SC)+"</div>";
+        html += "<div style=\"height: "+s(15)+"px; padding-top: "+s(5)+"px\">"+f(p.FA)+" "+f(p.FB)+" "+f(p.FC)+"</div>";
+        html += "</div>";
+        return html;
+    }
+
     function setupLayers(shapes) {
         removeLayerById("Ice");
         removeLayerById("Water");
@@ -96,7 +117,7 @@ function createIceLayer() {
 
                     feature.iceDescription = ice[i].description;
 
-                    iceLayer.addFeatures([ feature ]);
+                    iceLayer.addFeatures([ feature ], { iceDescription: ice[i].description });
                 }
 
             // Water
@@ -168,6 +189,15 @@ function createIceLayer() {
     }
 
     requestShapefile("201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
+
+    embryo.mapPanel.hoveringHandlers.push(function(e) {
+		if (e.feature.iceDescription) {
+		    return createIceEggHtml($.extend(e.feature.iceDescription, { size: 100}));
+		} else {
+		    return null;
+        }
+    });
+
 };
 
 $(document).ready(createIceLayer);
