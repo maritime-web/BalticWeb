@@ -25,32 +25,42 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.DefaultValue;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Path("/shapefile")
 public class ShapeFileService {
     @GET
-    @Path("/{id}")
+    @Path("/single/{id}")
     @Produces("application/json")
-    public List<Fragment> getFile(
-            @PathParam("id") String ids,
+    public Shape getSingleFile(
+            @PathParam("id") String id,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
             @DefaultValue("") @QueryParam("filter") String filter
     ) throws IOException {
-        List<Fragment> result = new ArrayList<>();
+        return readSingleFile(id, resolution, filter);
+    }
+
+    @GET
+    @Path("/multiple/{ids}")
+    @Produces("application/json")
+    public List<Shape> getMultipleFile(
+            @PathParam("ids") String ids,
+            @DefaultValue("0") @QueryParam("resolution") int resolution,
+            @DefaultValue("") @QueryParam("filter") String filter
+    ) throws IOException {
+        List<Shape> result = new ArrayList<>();
 
         for (String id : ids.split(",")) {
-            result.addAll(readSingleFile(id, resolution, filter));
+            result.add(readSingleFile(id, resolution, filter));
         }
 
         return result;
     }
 
-    public List<Fragment> readSingleFile(String id, int resolution, String filter) throws IOException {
-        List<Fragment> result = new ArrayList<>();
+    public Shape readSingleFile(String id, int resolution, String filter) throws IOException {
+        Map<String, Object> shapeDescription = new HashMap<>();
+        shapeDescription.put("id", id);
+        List<Fragment> fragments = new ArrayList<>();
         ShapeFileParser.File file = ShapeFileParser.parse(getClass().getResourceAsStream("/ice/" + id + ".shp"));
         List<Map<String, Object>> data = DbfParser.parse(getClass().getResourceAsStream("/ice/" + id + ".dbf"));
 
@@ -72,12 +82,12 @@ public class ShapeFileService {
                             polygons.add(resample(polygon, resolution));
                         }
                     }
-                    result.add(new Fragment(description, polygons));
+                    fragments.add(new Fragment(description, polygons));
                 }
             }
         }
 
-        return result;
+        return new Shape(shapeDescription, fragments);
     }
 
     private static <T> List<T> resample(List<T> input, int size) {
@@ -131,6 +141,24 @@ public class ShapeFileService {
 
         public List<List<Position>> getPolygons() {
             return polygons;
+        }
+
+        public Map<String, Object> getDescription() {
+            return description;
+        }
+    }
+
+    public static class Shape {
+        private List<Fragment> fragments;
+        private Map<String, Object> description;
+
+        public Shape(Map<String, Object> description, List<Fragment> fragments) {
+            this.fragments = fragments;
+            this.description = description;
+        }
+
+        public List<Fragment> getFragments() {
+            return fragments;
         }
 
         public Map<String, Object> getDescription() {
