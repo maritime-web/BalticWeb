@@ -152,14 +152,16 @@ form {
 	visibility: hidden;
 }
 
-#loadingPanel {
-	width: 150px;
-	padding: 4px;
-	visibility: hidden;
-	vertical-align: middle;
+#messagePanel .error {
+    font-color: red;
+    font-weight: bold;
+}
+
+#messagePanel {
+    z-index: 99999999;
 	position: absolute;
-	top: 8px;
-	vertical-align: middle;
+	bottom: 40px;
+	left: 20px;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;

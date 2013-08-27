@@ -275,9 +275,6 @@ function loadVessels() {
 
 	if (embryo.mapPanel.map.zoom >= vesselZoomLevel || loadAllVessels) {
 
-		// Show Loading panel
-		$("#loadingPanel").css('visibility', 'visible');
-
 		loadVesselList();
 
 		clusterLayer.setVisibility(false);
@@ -292,9 +289,6 @@ function loadVessels() {
 	} else {
 
 		if (includeClustering) {
-
-			// Show Loading panel
-			$("#loadingPanel").css('visibility', 'visible');
 
 			loadVesselClusters();
 
@@ -319,7 +313,6 @@ function loadVessels() {
  * Loads and draws all vessels in the view.
  */
 function loadVesselList() {
-
 	saveViewPort();
 
 	// Generate data
@@ -340,45 +333,54 @@ function loadVesselList() {
 		data.botLat = lastLoadArea.bot.lat;
 	}
 
-	$.getJSON(listUrl, data, function(result) {
+    var messageId = embryo.messagePanel.show( { text: "Loading vessels ..." })
 
-		if (result.requestId != lastRequestId)
-			return;
+    $.ajax({
+        url: listUrl,
+        data: data,
+        success: function (result) {
+        	if (result.requestId != lastRequestId)
+        	    return;
 
-		// Update vessel counter
-		$("#vesselsTotal").html(result.vesselsInWorld);
+        	// Update vessel counter
+        	$("#vesselsTotal").html(result.vesselsInWorld);
 
-		// Load new vessels
-		var JSONVessels = result.vesselList.vessels;
+        	embryo.messagePanel.replace(messageId, { text: result.vesselsInWorld + " vessels loaded.", type: "success" })
 
-		for (vesselId in JSONVessels) {
-			// Create vessel based on JSON data
-			var vesselJSON = JSONVessels[vesselId];
-			var vessel = new Vessel(vesselId, vesselJSON, 1);
+        	// Load new vessels
+        	var JSONVessels = result.vesselList.vessels;
 
-			if (embryo.selectedVessel && vesselId == embryo.selectedVessel.id
-					&& !selectSearchedVessel) {
-				// Update selected vessel
-				embryo.selectedVessel = vessel;
-			} else if (selectSearchedVessel && searchedVessel
-					&& vesselId == searchedVessel.id) {
-				// Update selected vessel
-				embryo.selectedVessel = vessel;
-				vessels.push(vessel);
-			}
+        	for (vesselId in JSONVessels) {
+        	    // Create vessel based on JSON data
+        	    var vesselJSON = JSONVessels[vesselId];
+        	    var vessel = new Vessel(vesselId, vesselJSON, 1);
 
-			vessels.push(vessel);
+        	    if (embryo.selectedVessel && vesselId == embryo.selectedVessel.id
+        		&& !selectSearchedVessel) {
+        		// Update selected vessel
+        		embryo.selectedVessel = vessel;
+        	    } else if (selectSearchedVessel && searchedVessel
+        		       && vesselId == searchedVessel.id) {
+        		// Update selected vessel
+        		embryo.selectedVessel = vessel;
+        		vessels.push(vessel);
+        	    }
 
-		}
+        	    vessels.push(vessel);
 
-		// Draw vessels
-		drawVessels();
+        	}
 
-		selectSearchedVessel = false;
+        	// Draw vessels
+        	drawVessels();
 
-		// Hide Loading panel
-		$("#loadingPanel").css('visibility', 'hidden');
-	});
+        	selectSearchedVessel = false;
+
+        },
+        error: function(data) {
+            embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " loading vessels.", type: "error" });
+            console.log("Server returned error code: " + data.status + " loading vessels.");
+        }
+    });
 }
 /**
  * Draws an individual vessel.

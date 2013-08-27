@@ -241,11 +241,6 @@ function setupUI() {
 	$(".olControlZoom").css('left', zoomPanelPositionLeft);
 	$(".olControlZoom").css('top', zoomPanelPositionTop);
 
-	// Set loading panel positon
-	var x = $(document).width() / 2 - $("#loadingPanel").width() / 2;
-	$("#loadingPanel").css('left', x);
-
-	//
 	embryo.mapPanel.map.events.includeXY = true;
 
 	// console.log('hoverControlVessels');
@@ -376,42 +371,49 @@ function loadVesselClusters() {
 		delete data.botLat;
 	}
 
-	$.getJSON(clusterUrl, data, function(result) {
+    var messageId = embryo.messagePanel.show( { text: "Loading vessel clusters ..." })
 
-		if (result.requestId != lastRequestId)
-			return;
+    $.ajax({
+        url: clusterUrl,
+        data: data,
+        success: function(result) {
+        	if (result.requestId != lastRequestId)
+        	    return;
 
-		// Update vessel counter
-		$("#vesselsTotal").html(result.vesselsInWorld);
+        	// Update vessel counter
+        	$("#vesselsTotal").html(result.vesselsInWorld);
 
-		// Load vessel clusters
-		var JSONClusters = result.clusters;
+                embryo.messagePanel.replace(messageId, { text: result.vesselsInWorld + " vessels loaded.", type: "success" });
 
-		for (clusterId in JSONClusters) {
+        	// Load vessel clusters
+        	var JSONClusters = result.clusters;
 
-			// Create vessel based on JSON data
-			var JSONCluster = JSONClusters[clusterId];
-			var from = transformPosition(JSONCluster.from.longitude,
-					JSONCluster.from.latitude);
-			var to = transformPosition(JSONCluster.to.longitude,
-					JSONCluster.to.latitude);
-			var count = JSONCluster.count;
-			var density = JSONCluster.density;
-			var vessels = JSONCluster.vessels.vessels;
+        	for (clusterId in JSONClusters) {
 
-			var cluster = new Cluster(from, to, count, density, vessels);
-			clusters.push(cluster);
+        	    // Create vessel based on JSON data
+        	    var JSONCluster = JSONClusters[clusterId];
+        	    var from = transformPosition(JSONCluster.from.longitude,
+        					 JSONCluster.from.latitude);
+        	    var to = transformPosition(JSONCluster.to.longitude,
+        				       JSONCluster.to.latitude);
+        	    var count = JSONCluster.count;
+        	    var density = JSONCluster.density;
+        	    var vessels = JSONCluster.vessels.vessels;
 
-		}
+        	    var cluster = new Cluster(from, to, count, density, vessels);
+        	    clusters.push(cluster);
 
-		// Draw clusters
-		drawClusters();
+        	}
 
-		// Hide Loading panel
-		$("#loadingPanel").css('visibility', 'hidden');
+        	// Draw clusters
+        	drawClusters();
 
-	});
-
+        },
+        error: function(data) {
+            embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " loading vessel clusters.", type: "error" });
+            console.log("Server returned error code: " + data.status + " loading vessels.");
+        }
+    });
 }
 
 /**
@@ -919,4 +921,40 @@ function getCookie(c_name) {
 			return unescape(y);
 		}
 	}
+}
+
+embryo.messagePanel = {
+    render: function(id, msg) {
+        switch (msg.type) {
+        case "error":
+            setTimeout(function() {
+                embryo.messagePanel.remove(id);
+            }, 30000);
+            return "<div id="+id+" class='alert alert-error'>"+msg.text+"</div>";
+        case "success":
+            setTimeout(function() {
+                embryo.messagePanel.remove(id);
+            }, 10000);
+            return "<div id="+id+" class='alert alert-success'>"+msg.text+"</div>";
+        default:
+            return "<div id="+id+" class='alert'>"+msg.text+"</div>";
+        }
+    },
+    show: function(msg) {
+        var html = $("#messagePanel").html();
+        var id = ("_"+Math.random()).replace(".", "_");
+        html += embryo.messagePanel.render(id, msg);
+        $("#messagePanel").html(html);
+        return id;
+    },
+    replace: function(id, msg) {
+        embryo.messagePanel.remove(id);
+        var html = $("#messagePanel").html();
+        html += embryo.messagePanel.render(id, msg);
+        $("#messagePanel").html(html);
+        return id;
+    },
+    remove: function(id) {
+        $("#"+id).remove();
+    }
 }

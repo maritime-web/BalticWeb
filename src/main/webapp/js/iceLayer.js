@@ -165,6 +165,8 @@ function createIceLayer() {
     function requestShapefile(name) {
         console.log("Requesting " + name + " data ...");
 
+        var messageId = embryo.messagePanel.show( { text: "Requesting " + name + " data ..." })
+
         $.ajax({
             url: "rest/shapefile/multiple/" + name,
             data: { },
@@ -179,11 +181,13 @@ function createIceLayer() {
                             totalPoints += s.fragments[i].polygons[j].length;
                     }
                 }
+                embryo.messagePanel.replace(messageId, { text: totalPolygons + " polygons. "+totalPoints+" points returned.", type: "success" })
                 console.log(totalPolygons + " polygons. "+totalPoints+" points returned.");
                 setupLayers(data);
             },
             error: function(data) {
-                console.log("Server returned error code: " + data.status);
+                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " requesting ice data.", type: "error" })
+                console.log("Server returned error code: " + data.status + " requesting ice data.");
             }
         });
     }
