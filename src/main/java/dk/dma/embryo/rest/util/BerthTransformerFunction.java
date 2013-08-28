@@ -13,13 +13,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.site.markup.html.form.modal;
+package dk.dma.embryo.rest.util;
 
 import com.google.common.base.Function;
 
 import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.site.behavior.TypeaheadDataSource;
-import dk.dma.embryo.site.behavior.TypeaheadDatum;
 
 /**
  * Transformer, which transforms {@link Berth} instances to {@link TypeaheadDatum} instances used type

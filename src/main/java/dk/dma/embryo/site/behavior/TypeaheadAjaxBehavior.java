@@ -28,6 +28,8 @@ import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.rest.util.TypeaheadDatum;
+
 /**
  * Abstract class which enables Bootstrap behavior selector.
  * 

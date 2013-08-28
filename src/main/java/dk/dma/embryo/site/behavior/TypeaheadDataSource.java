@@ -18,6 +18,8 @@ package dk.dma.embryo.site.behavior;
 import java.io.Serializable;
 import java.util.List;
 
+import dk.dma.embryo.rest.util.TypeaheadDatum;
+
 public interface TypeaheadDataSource<D extends TypeaheadDatum> extends Serializable {
 
     List<D> prefetch();

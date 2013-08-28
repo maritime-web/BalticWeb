@@ -46,9 +46,9 @@ public class VoyagePlanPanelTest extends CdiUnitTestBase {
         // ///////////////////////////////////////////////////
         Ship2 ship = new Ship2();
 
-        VoyagePlan voaygePlan = new VoyagePlan(12, false);
+        VoyagePlan voaygePlan = new VoyagePlan();
         voaygePlan.addVoyageEntry(new Voyage("City1", "1 1.000N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
-                LocalDateTime.parse("2013-06-20T11:56")));
+                LocalDateTime.parse("2013-06-20T11:56"), 12, false));
 //        voaygeInformation.addVoyageEntry(new Voyage("City2", "3.300", "6.000", LocalDateTime.parse("2013-06-23T22:08"),
 //                LocalDateTime.parse("2013-06-25T20:19")));
 

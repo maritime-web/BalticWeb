@@ -15,8 +15,9 @@ module.exports = function(config) {
 				'src/main/webapp/js/ext/angular.js',
 				'src/main/webapp/js/ext/*.js',
 				'src/test/lib/angular-1.0.7/angular-mocks.js',
-				'src/test/jsUnit/embryoForTest.js', 
+				'src/main/webapp/js/embryoForTest.js', 
 				'src/main/webapp/js/contextMenu.js', 
+				'src/main/webapp/js/menu.js', 
 				'src/test/jsUnit/**/*.js' ],
 
 		// list of files to exclude
