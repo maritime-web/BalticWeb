@@ -23,9 +23,9 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import dk.dma.embryo.rest.util.TypeaheadDatum;
 import dk.dma.embryo.site.behavior.TypeaheadAjaxBehavior;
 import dk.dma.embryo.site.behavior.TypeaheadDataSource;
-import dk.dma.embryo.site.behavior.TypeaheadDatum;
 
 /**
  * 
