@@ -1,3 +1,0 @@
-var embryo = {};
-
-embryo.mapPanel = {};
