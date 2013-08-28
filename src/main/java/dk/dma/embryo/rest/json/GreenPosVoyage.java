@@ -13,91 +13,93 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.domain;
+package dk.dma.embryo.rest.json;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
+import java.io.Serializable;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.joda.time.LocalDateTime;
 
+import dk.dma.enav.model.geometry.Position;
 
-@Entity
-@NamedQueries({@NamedQuery(name="VoyagePlan:getByMmsi", query="SELECT DISTINCT v FROM VoyagePlan v LEFT JOIN FETCH v.voyages where v.ship.mmsi = :mmsi")})
-public class VoyagePlan extends BaseEntity<Long> {
+public class GreenPosVoyage implements Serializable{
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7205030526506222850L;
 
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-    @OneToOne(optional = false)
-    Ship2 ship;
+    private String maritimeId;
+
+    private String berthName;
+
+    private Position position;
+
+    private LocalDateTime arrival;
+
+    private LocalDateTime departure;
+
+    private Integer personsOnBoard;
+
+    private boolean doctorOnBoard;
     
-    @OneToMany(cascade={CascadeType.ALL})
-    @OrderColumn(name="voyageIndex")
-    @JoinColumn(name="plan")
-    private List<Voyage> voyages = new LinkedList<>(); 
+    // //////////////////////////////////////////////////////////////////////
+    // business logic
+    // //////////////////////////////////////////////////////////////////////
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public void addVoyageEntry(Voyage entry){
-        voyages.add(entry);
-        entry.plan = this;
-    }
-    
-    public Map<String, Voyage> getVoyagePlanAsMap(){
-        Map<String, Voyage> m = new HashMap<>();
-        for(Voyage v : voyages){
-            m.put(v.getEnavId(), v);
-        }
-        return m;
-    }
-    
-    public void removeLastVoyage(){
-        voyages.remove(voyages.size()-1).plan = null;
-    }
-    
-
-    public void removeVoyage(Voyage v){
-        v.plan = null;
-        voyages.remove(v);
-    }
-
-    
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }
 
-
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public VoyagePlan() {
+    public GreenPosVoyage() {
+    }
 
+    public GreenPosVoyage(String maritimeId, String name, Position position, LocalDateTime arrival,
+            LocalDateTime departure, Integer personsOnBoard, boolean doctorOnBoard) {
+        this();
+        this.berthName = name;
+        this.position = position;
+        this.arrival = arrival;
+        this.departure = departure;
+        this.personsOnBoard = personsOnBoard;
+        this.doctorOnBoard = doctorOnBoard;
     }
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public Ship2 getShip() {
-        return ship;
+    public LocalDateTime getArrival() {
+        return arrival;
     }
-    
-    public List<Voyage> getVoyagePlan(){
-        return Collections.unmodifiableList(voyages);
+
+    public LocalDateTime getDeparture() {
+        return departure;
+    }
+
+    public String getBerthName() {
+        return berthName;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public String getMaritimeId() {
+        return maritimeId;
+    }
+
+    public Integer getPersonsOnBoard() {
+        return personsOnBoard;
+    }
+
+    public boolean getDoctorOnBoard() {
+        return doctorOnBoard;
     }
 }

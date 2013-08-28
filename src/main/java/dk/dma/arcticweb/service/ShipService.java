@@ -58,6 +58,8 @@ public interface ShipService {
     VoyagePlan getVoyagePlan(Long mmsi);
     
     List<Voyage> getVoyages(Long mmsi);
+
+    Voyage getActiveVoyage(String maritimeId);
     
     String saveRoute(Route route, String voyageId, boolean active);
 

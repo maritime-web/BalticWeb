@@ -26,16 +26,19 @@ import dk.dma.embryo.domain.VoyagePlan;
 @Local
 public interface ShipDao extends Dao {
 
-
     /**
      * 
      * @param sailor
      * @return
      */
     Ship2 getShip(Sailor sailor);
-    
+
+    Ship2 getShipByMaritimeId(String id);
+
+    Ship2 getShipByCallsign(String callsign);
+
     VoyagePlan getVoyagePlan(Long mmsi);
-    
+
     Route getActiveRoute(Long mmsi);
 
     Long getRouteId(String enavId);

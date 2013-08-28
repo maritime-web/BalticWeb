@@ -13,19 +13,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.arcticweb.dao;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+@Stateless
+public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
 
-@ApplicationPath("/rest")
-public class ApplicationConfig extends Application {
-    public Set<Class<?>> getClasses() {
-        return new HashSet<Class<?>>(Arrays.asList(RouteService.class, RouteUploadService.class, VoyageService.class,
-                ShapeFileService.class, GreenPosRestService.class, ShipRestService.class));
+    public GreenPosDaoImpl() {
+        super();
     }
+
+    public GreenPosDaoImpl(EntityManager entityManager) {
+        super(entityManager);
+    }
+
+
 }

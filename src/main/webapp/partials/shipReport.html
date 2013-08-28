@@ -1,0 +1,128 @@
+
+<div id="shipReportPanel">
+
+	<div>
+		<button type="button" class="close" aria-hidden="true">x</button>
+		<h2 id="myModalLabel">Ship report</h2>
+	</div>
+	<div>
+		<div ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+		<div ng-show="message" class="alert alert-info">{{message}}</div>
+
+		<div class="row-fluid">
+			<div class="span6">
+				<form class="form-horizontal" ng-submit="sendReport()">
+					<div class="row-fluid">
+						<div class="span12">
+							<div class="control-group">
+								<label class="control-label" for="report.reportType">Report type</label>
+								<div class="controls">
+									<select id="report.reportType" ng-model="report.reportType" class="input-large" required>
+										<option value="SP">Sailing Plan Report</option>
+										<option value="PR">Position Report</option>
+										<option value="FR">Final Report</option>
+										<option value="DR">Deviation Report</option>
+									</select>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="lon">Ship name</label>
+								<div class="controls">
+									<input type="text" ng-model="report.shipName" /> <input type="hidden" ng-model="report.shipMaritimeId" />
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="lon">MMSI</label>
+								<div class="controls">
+									<input type="text" class="input-medium" ng-model="report.shipMmsi" />
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="lon">Call sign</label>
+								<div class="controls">
+									<input type="text" class="input-medium" ng-model="report.shipCallSign" />
+								</div>
+							</div>
+							<div class="control-group" ng-show="chosenType(['SP'])">
+								<label class="control-label" for="lat">Destination</label>
+								<div class="controls">
+									<input type="text" class="input-medium" ng-model="report.destination" required/>
+								</div>
+							</div>
+							<div class="control-group" ng-show="chosenType(['SP'])">
+								<label class="control-label" for="lat">Estimated time of arrival</label>
+								<div class="controls">
+									<input type="text" class="input-medium" ng-model="report.etaOfArrival" required/>
+								</div>
+							</div>
+							<div class="control-group" ng-show="chosenType(['SP'])">
+								<label class="control-label" for="lon">Persons on board</label>
+								<div class="controls">
+									<input type="number" class="input-small" ng-model="report.personsOnBoard" required/>
+								</div>
+							</div>
+							<div class="control-group" ng-show="chosenType(['SP', 'PR'])">
+								<label class="control-label" for="lat">Course</label>
+								<div class="controls">
+									<input type="text" class="input-small" ng-model="report.course" required/>
+								</div>
+							</div>
+							<div class="control-group" ng-show="chosenType(['SP', 'PR'])">
+								<label class="control-label" for="lon">Speed</label>
+								<div class="controls">
+									<input type="text" class="input-small" ng-model="report.speed" required/>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="report_lat">Latitude</label>
+								<div class="controls">
+									<input type="text" id="report_lat" class="input-medium" ng-model="report.latitude" required/>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="lon">Longitude</label>
+								<div class="controls">
+									<input type="text" class="input-medium" ng-model="report.longitude" required/>
+								</div>
+							</div>
+							<div class="control-group" ng-show="chosenType(['SP', 'FR', 'PR'])">
+								<label class="control-label" for="weather">Weather</label>
+								<div class="controls">
+									<textarea rows="3" ng-model="report.weather" required></textarea>
+								</div>
+							</div>
+							<div class="control-group" ng-show="chosenType(['SP', 'FR', 'PR'])">
+								<label class="control-label" for="iceObservations">Ice observations</label>
+								<div class="controls">
+									<textarea rows="3" ng-model="report.iceInformation" required></textarea>
+								</div>
+							</div>
+							<div class="control-group" ng-show="chosenType(['DR'])">
+								<label class="control-label" for="report.deviation">Deviation Description</label>
+								<div class="controls">
+									<textarea rows="3" id="report.deviation" ng-model="report.deviation" required></textarea>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="reportTime">Report time</label>
+								<div class="controls">
+									<div></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row-fluid">
+						<div class="span12">
+							<span class="pull-right">
+								<button class="btn" ng-click="clear">Clear</button>
+								<button class="btn" ng-click="cancel">Cancel</button>
+								<button type="submit" class="btn btn-primary">Save</button>
+							</span>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="span6"></div>
+		</div>
+	</div>
+</div>

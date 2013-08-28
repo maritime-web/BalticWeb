@@ -84,10 +84,7 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public void saveVoyagePlan(VoyagePlan toBeUpdated) {
-
         VoyagePlan fresh = getVoyagePlan(toBeUpdated.getShip().getMmsi());
-        fresh.setDoctorOnboard(toBeUpdated.getDoctorOnboard());
-        fresh.setPersonsOnboard(toBeUpdated.getPersonsOnboard());
 
         Map<String, Voyage> voyagePlanToBeUpdated = toBeUpdated.getVoyagePlanAsMap();
         Map<String, Voyage> freshVoyagePlan = fresh.getVoyagePlanAsMap();
@@ -121,6 +118,15 @@ public class ShipServiceImpl implements ShipService {
         }
 
         shipRepository.saveEntity(fresh);
+    }
+
+    public Voyage getActiveVoyage(String maritimeShipId) {
+        Ship2 ship = shipRepository.getShipByMaritimeId(maritimeShipId);
+        if(ship == null){
+            return null;
+        }
+        Voyage voyage = ship.getActiveVoyage();
+        return voyage;
     }
 
     public Ship2 getYourShip() {
@@ -197,21 +203,24 @@ public class ShipServiceImpl implements ShipService {
         if(ship == null){
             return null;
         }
-        if(ship.getActiveRoute() != null){
+        Voyage active = ship.getActiveVoyage(); 
+        if(active != null && active.getRoute() != null){
             // initialize to avoid lazyinitialization exceptions
-            if(ship.getActiveRoute().getWayPoints().size() > 0){
-                ship.getActiveRoute().getWayPoints().get(0);
+            if(active.getRoute().getWayPoints().size() > 0){
+                active.getRoute().getWayPoints().get(0);
             }
+            return active.getRoute();
         }
-        return ship.getActiveRoute();
+        return null;
     }
 
     @Override
     public Route activateRoute(String routeEnavId) {
         logger.debug("activateRoute({})", routeEnavId);
         Route route = shipRepository.getRouteByEnavId(routeEnavId);
+        Voyage v = route.getVoyage();
         Ship2 ship = route.getShip();
-        ship.setActiveRoute(route);
+        ship.setActiveVoyage(v);
         shipRepository.saveEntity(ship);
         return route;
     }

@@ -140,6 +140,14 @@
 
     <!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-log4j12</artifactId> <version>${log4j.version}</version> 
       </dependency> -->
+
+    <!-- APACHE COMMONS -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
+    </dependency>
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -375,16 +383,16 @@
           <configuration>
             <browsers>PhantomJS</browsers>
           </configuration>
-            <executions>
-              <execution>
-                <id>karma</id>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-                <!-- execute karma before test phase to let Jenkins collet the target/surefire-reports/karmaUnit.xml -->
-                <phase>process-test-classes</phase>
-              </execution>
-            </executions>          
+          <executions>
+            <execution>
+              <id>karma</id>
+              <goals>
+                <goal>start</goal>
+              </goals>
+              <!-- execute karma before test phase to let Jenkins collet the target/surefire-reports/karmaUnit.xml -->
+              <phase>process-test-classes</phase>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -440,6 +448,7 @@
                 <include name="js/**/*.*" />
                 <include name="css/**/*.*" />
                 <include name="img/**/*.*" />
+                <include name="**/*.html" />
               </fileset>
             </copy>
             <copy todir="${jbossTmpDir}/WEB-INF/classes">

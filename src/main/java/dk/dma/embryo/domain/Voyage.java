@@ -17,7 +17,6 @@ package dk.dma.embryo.domain;
 
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -25,6 +24,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 import org.joda.time.LocalDateTime;
+
+import dk.dma.embryo.rest.util.DateTimeConverter;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = "Voyage:getByEnavId", query = "SELECT DISTINCT v FROM Voyage v where v.enavId = :enavId") })
@@ -56,18 +57,17 @@ public class Voyage extends BaseEntity<Long> {
     @ManyToOne
     VoyagePlan plan;
 
-    
-    // //////////////////////////////////////////////////////////////////////
-    // business logic
-    // //////////////////////////////////////////////////////////////////////
-
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return "Voyage [" + baseToString() + ", enavId=" + enavId + ", berthName=" + berthName + ", position="
-                + position + ", arrival=" + arrival + ", departure=" + departure + "]";
+    public dk.dma.embryo.rest.json.Voyage toJsonModel() {
+        String arrival = DateTimeConverter.getDateTimeConverter().toString(getArrival(), null);
+        String departure = DateTimeConverter.getDateTimeConverter().toString(getDeparture(), null);
+
+        dk.dma.embryo.rest.json.Voyage voyage = new dk.dma.embryo.rest.json.Voyage(getEnavId(), getBerthName(),
+                getPosition().getLatitudeAsString(), getPosition().getLongitudeAsString(), arrival, departure,
+                getPersonsOnBoard(), getDoctorOnBoard());
+        return voyage;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -88,6 +88,26 @@ public class Voyage extends BaseEntity<Long> {
         this.position = new Position(latitude, longitude);
         this.arrival = arrival;
         this.departure = departure;
+    }
+
+    public Voyage(String name, String latitude, String longitude, LocalDateTime arrival, LocalDateTime departure,
+            Integer personsOnBoard, boolean doctorOnBoard) {
+        this();
+        this.berthName = name;
+        this.position = new Position(latitude, longitude);
+        this.arrival = arrival;
+        this.departure = departure;
+        this.personsOnBoard = personsOnBoard;
+        this.doctorOnBoard = doctorOnBoard;
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return "Voyage [" + baseToString() + ", enavId=" + enavId + ", berthName=" + berthName + ", position="
+                + position + ", arrival=" + arrival + ", departure=" + departure + "]";
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -157,5 +177,4 @@ public class Voyage extends BaseEntity<Long> {
         return route;
     }
 
-    
 }

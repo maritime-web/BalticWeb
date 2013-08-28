@@ -16,6 +16,7 @@
 package dk.dma.embryo.domain;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,15 +29,23 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.validation.constraints.NotNull;
+
+import dk.dma.embryo.rest.json.Ship;
 
 @Entity
-@NamedQueries({
-@NamedQuery(name = "Ship:getByMmsi", query = "SELECT s FROM Ship2 s WHERE s.mmsi = :mmsi") })
+@NamedQueries({ @NamedQuery(name = "Ship:getByMmsi", query = "SELECT s FROM Ship2 s WHERE s.mmsi = :mmsi"),
+        @NamedQuery(name = "Ship:getByMaritimeId", query = "SELECT s FROM Ship2 s WHERE s.maritimeId = :maritimeId"),
+        @NamedQuery(name = "Ship:getByCallsign", query = "SELECT s FROM Ship2 s WHERE s.callsign = :callsign") })
 public class Ship2 extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 
     @Column(nullable = true, length = 128)
     private String name;
+
+    @NotNull
+    @Column(unique = true)
+    private String maritimeId;
 
     @Column(nullable = true)
     private Long mmsi;
@@ -82,25 +91,44 @@ public class Ship2 extends BaseEntity<Long> {
     private VoyagePlan voyagePlan;
 
     @OneToOne(cascade = { CascadeType.ALL })
-    private Route activeRoute;
-
+    private Voyage activeVoyage;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = true)
     private ShipOwnerRole owner;
 
     // //////////////////////////////////////////////////////////////////////
+    // Utility methods
+    // //////////////////////////////////////////////////////////////////////
+
+    public Ship toJsonModel(){
+        Ship ship = new Ship(getMaritimeId(), getName(), getMmsi(), getCallsign());
+        return ship;
+    }
+    
+    // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
+    public Ship2(String maritimeId) {
+        this.maritimeId = maritimeId;
+    }
+
     public Ship2() {
+        this(UUID.randomUUID().toString());
     }
 
     public Ship2(Long mmsi) {
+        this();
         this.mmsi = mmsi;
     }
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
+    public String getMaritimeId() {
+        return maritimeId;
+    }
+    
     public String getName() {
         return name;
     }
@@ -226,11 +254,11 @@ public class Ship2 extends BaseEntity<Long> {
         this.voyagePlan = plan;
     }
 
-    public Route getActiveRoute() {
-        return activeRoute;
+    public Voyage getActiveVoyage() {
+        return activeVoyage;
     }
 
-    public void setActiveRoute(Route route) {
-        activeRoute = route;
+    public void setActiveVoyage(Voyage activeVoyage) {
+        this.activeVoyage = activeVoyage;
     }
 }

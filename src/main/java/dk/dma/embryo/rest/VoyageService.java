@@ -32,7 +32,7 @@ import com.google.common.collect.Lists;
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.rest.util.DateTimeConverter;
-import dk.dma.embryo.site.behavior.TypeaheadDatum;
+import dk.dma.embryo.rest.util.TypeaheadDatum;
 
 @Path("/voyage")
 public class VoyageService {
@@ -47,10 +47,29 @@ public class VoyageService {
     }
 
     @GET
+    @Path("/active/{maritimeShipId}")
+    @Produces("application/json")
+    public dk.dma.embryo.rest.json.Voyage getActive(@PathParam("maritimeShipId")String maritimeShipId) {
+        logger.trace("getVoyages({})", maritimeShipId);
+
+        Voyage voyage = shipService.getActiveVoyage(maritimeShipId);
+        
+        
+        dk.dma.embryo.rest.json.Voyage result = null;
+        
+        if(voyage != null){
+            result = voyage.toJsonModel();
+        }
+        
+        logger.debug("getVoyages({}) : {}", maritimeShipId, result);
+        return result;
+    }
+
+    @GET
     @Path("/typeahead/{mmsi}")
     @Produces("application/json")
     public List<VoyageDatum> getVoyages(@PathParam("mmsi") Long mmsi) {
-        logger.trace("getVoyages({})", mmsi);
+        logger.debug("getVoyages({})", mmsi);
 
         List<Voyage> voyages = shipService.getVoyages(mmsi);
 

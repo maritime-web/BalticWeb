@@ -122,6 +122,7 @@ public class TestPage extends WebPage {
         Ship2 newShip = new Ship2();
         newShip.setName("ORASILA");
         newShip.setMmsi(220443000L);
+        newShip.setCallsign("OYDK2");
         newShip = realmDao.saveEntity(newShip);
 
         Permission ais = new Permission("ais");

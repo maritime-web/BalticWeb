@@ -30,6 +30,10 @@ import dk.dma.arcticweb.service.ShipService;
 import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.enav.model.voyage.Route;
 
+/**
+ * 
+ * @author Jesper Tejlgaard
+ */
 @Path("/route")
 public class RouteService {
 

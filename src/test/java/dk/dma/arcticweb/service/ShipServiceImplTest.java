@@ -76,11 +76,11 @@ public class ShipServiceImplTest {
         Ship2 ship = new Ship2(10L);
         entityManager.persist(ship);
 
-        VoyagePlan voyagePlan = new VoyagePlan(12, true);
+        VoyagePlan voyagePlan = new VoyagePlan();
         voyagePlan.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
-                LocalDateTime.parse("2013-06-20T11:56")));
+                LocalDateTime.parse("2013-06-20T11:56"), 12, true));
         voyagePlan.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime.parse("2013-06-23T22:08"),
-                LocalDateTime.parse("2013-06-25T20:19")));
+                LocalDateTime.parse("2013-06-25T20:19"), 11, false));
 
         ship.setVoyagePlan(voyagePlan);
         entityManager.persist(voyagePlan);
@@ -97,7 +97,7 @@ public class ShipServiceImplTest {
         ship = new Ship2(20L);
         entityManager.persist(ship);
 
-        voyagePlan = new VoyagePlan(20, true);
+        voyagePlan = new VoyagePlan();
 
         ship.setVoyagePlan(voyagePlan);
         entityManager.persist(voyagePlan);
@@ -120,8 +120,6 @@ public class ShipServiceImplTest {
         entityManager.clear();
 
         Assert.assertNotNull(info);
-        Assert.assertEquals(Integer.valueOf(20), info.getPersonsOnboard());
-        Assert.assertTrue(info.getDoctorOnboard().booleanValue());
         Assert.assertEquals(0, info.getVoyagePlan().size());
     }
 
@@ -132,8 +130,6 @@ public class ShipServiceImplTest {
         entityManager.clear();
 
         Assert.assertNotNull(info);
-        Assert.assertEquals(Integer.valueOf(12), info.getPersonsOnboard());
-        Assert.assertTrue(info.getDoctorOnboard().booleanValue());
 
         ReflectionAssert.assertPropertyLenientEquals("arrival",
                 asList(LocalDateTime.parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-23T22:08")),

@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
+  xsi:schemaLocation="
         http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-	<persistence-unit name="componentTest" transaction-type="RESOURCE_LOCAL">
-		<class>dk.dma.embryo.domain.SecuredUser</class>
-		<class>dk.dma.embryo.domain.Role</class>
-		<class>dk.dma.embryo.domain.Permission</class>
-		<class>dk.dma.embryo.domain.Text</class>
-		<class>dk.dma.embryo.domain.Sailor</class>
-		<class>dk.dma.embryo.domain.ShoreRole</class>
-		<class>dk.dma.embryo.domain.ShipOwnerRole</class>
-		<class>dk.dma.embryo.domain.AuthorityRole</class>
-		<class>dk.dma.embryo.domain.Ship2</class>
-		<class>dk.dma.embryo.domain.ShipReport</class>
-		<class>dk.dma.embryo.domain.VoyagePlan</class>
-		<class>dk.dma.embryo.domain.Voyage</class>
-		<class>dk.dma.embryo.domain.Berth</class>		
-		<class>dk.dma.embryo.domain.Route</class>
-		<class>dk.dma.embryo.domain.WayPoint</class>
-		<class>dk.dma.embryo.domain.RouteLeg</class>
-    
-        <validation-mode>CALLBACK</validation-mode>		
+  <persistence-unit name="componentTest" transaction-type="RESOURCE_LOCAL">
+    <class>dk.dma.embryo.domain.SecuredUser</class>
+    <class>dk.dma.embryo.domain.Role</class>
+    <class>dk.dma.embryo.domain.Permission</class>
+    <class>dk.dma.embryo.domain.Text</class>
+    <class>dk.dma.embryo.domain.Sailor</class>
+    <class>dk.dma.embryo.domain.ShoreRole</class>
+    <class>dk.dma.embryo.domain.ShipOwnerRole</class>
+    <class>dk.dma.embryo.domain.AuthorityRole</class>
+    <class>dk.dma.embryo.domain.Ship2</class>
+    <class>dk.dma.embryo.domain.ShipReport</class>
+    <class>dk.dma.embryo.domain.VoyagePlan</class>
+    <class>dk.dma.embryo.domain.Voyage</class>
+    <class>dk.dma.embryo.domain.Berth</class>
+    <class>dk.dma.embryo.domain.Route</class>
+    <class>dk.dma.embryo.domain.WayPoint</class>
+    <class>dk.dma.embryo.domain.RouteLeg</class>
+    <class>dk.dma.embryo.domain.ReportedVoyage</class>
+    <class>dk.dma.embryo.domain.GreenPosDeviationReport</class>
+    <class>dk.dma.embryo.domain.GreenPosFinalReport</class>
+    <class>dk.dma.embryo.domain.GreenPosPositionReport</class>
+    <class>dk.dma.embryo.domain.GreenPosReport</class>
+    <class>dk.dma.embryo.domain.GreenPosSailingPlanReport</class>
 
-		<properties>
-			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:h2:file:target/h2/testdb;create=true" />
-			<property name="javax.persistence.jdbc.user" value="embryo" />
-			<property name="javax.persistence.jdbc.password" value="embryo" />
+    <validation-mode>CALLBACK</validation-mode>
 
-			<!-- Properties for Hibernate -->
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-		</properties>
-		
-	</persistence-unit>
+    <properties>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:target/h2/testdb;create=true" />
+      <property name="javax.persistence.jdbc.user" value="embryo" />
+      <property name="javax.persistence.jdbc.password" value="embryo" />
+
+      <!-- Properties for Hibernate -->
+      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+      <property name="hibernate.show_sql" value="true" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+    </properties>
+
+  </persistence-unit>
 </persistence>

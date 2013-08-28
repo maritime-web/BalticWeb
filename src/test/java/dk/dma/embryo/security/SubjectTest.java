@@ -49,7 +49,7 @@ import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.authorization.Permission;
 
 // DummyHttpSession and DummyHttpRequest are necessary to test SessionScoped Subject
-@AdditionalClasses({ Subject.class, PermissionExtractor.class, DummyHttpSession.class, DummyHttpRequest.class })
+@AdditionalClasses({ SubjectImpl.class, PermissionExtractor.class, DummyHttpSession.class, DummyHttpRequest.class })
 public class SubjectTest extends AbstractShiroTest {
 
     private static final String PERMITTED_PERMISSION = "permission";

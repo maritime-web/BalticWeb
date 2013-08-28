@@ -35,8 +35,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ShipService;
-import dk.dma.embryo.domain.Voyage;
 
+/**
+ * 
+ * @author Jesper Tejlgaard
+ */
 @Path("/routeUpload")
 public class RouteUploadService {
 

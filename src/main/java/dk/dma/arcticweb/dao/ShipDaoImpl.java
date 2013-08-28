@@ -38,45 +38,65 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
         super(entityManager);
     }
 
-
     @Override
     public Ship2 getShip(Sailor sailor) {
         Long shipId = sailor.getShip().getId();
-        return (Ship2)getByPrimaryKey(Ship2.class, shipId);
+        return (Ship2) getByPrimaryKey(Ship2.class, shipId);
     }
 
+    @Override
+    public Ship2 getShipByCallsign(String callsign) {
+        TypedQuery<Ship2> query = em.createNamedQuery("Ship:getByCallsign", Ship2.class);
+        query.setParameter("callsign", callsign);
+
+        List<Ship2> result = query.getResultList();
+
+        return getSingleOrNull(result);
+    }
+
+    @Override
+    public Ship2 getShipByMaritimeId(String callsign) {
+        TypedQuery<Ship2> query = em.createNamedQuery("Ship:getByMaritimeId", Ship2.class);
+        query.setParameter("maritimeId", callsign);
+
+        List<Ship2> result = query.getResultList();
+
+        return getSingleOrNull(result);
+    }
 
     @Override
     public VoyagePlan getVoyagePlan(Long mmsi) {
         TypedQuery<VoyagePlan> query = em.createNamedQuery("VoyagePlan:getByMmsi", VoyagePlan.class);
         query.setParameter("mmsi", mmsi);
-        
+
         List<VoyagePlan> result = query.getResultList();
-        
+
         return getSingleOrNull(result);
     }
-
-
 
     @Override
     public Route getActiveRoute(Long mmsi) {
         TypedQuery<Ship2> query = em.createNamedQuery("Ship:getByMmsi", Ship2.class);
         query.setParameter("mmsi", mmsi);
-        
+
         List<Ship2> result = query.getResultList();
-        
-        Ship2 ship = getSingleOrNull(result); 
-        
-        return ship == null ? null : ship.getActiveRoute();
+
+        Ship2 ship = getSingleOrNull(result);
+
+        if (ship == null || ship.getActiveVoyage() == null) {
+            return null;
+        }
+
+        return ship.getActiveVoyage().getRoute();
     }
 
     @Override
     public Long getRouteId(String enavId) {
         TypedQuery<Long> query = em.createNamedQuery("Route:getId", Long.class);
         query.setParameter("enavId", enavId);
-        
+
         List<Long> result = query.getResultList();
-        
+
         return getSingleOrNull(result);
     }
 
@@ -84,9 +104,9 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
     public Route getRouteByEnavId(String enavId) {
         TypedQuery<Route> query = em.createNamedQuery("Route:getByEnavId", Route.class);
         query.setParameter("enavId", enavId);
-        
+
         List<Route> result = query.getResultList();
-        
+
         return getSingleOrNull(result);
     }
 
@@ -94,9 +114,10 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
     public Voyage getVoyageByEnavId(String enavId) {
         TypedQuery<Voyage> query = em.createNamedQuery("Voyage:getByEnavId", Voyage.class);
         query.setParameter("enavId", enavId);
-        
+
         List<Voyage> result = query.getResultList();
-        
+
         return getSingleOrNull(result);
     }
+
 }
