@@ -18,15 +18,14 @@ package dk.dma.embryo.rest;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class ShapeFileServiceTest {
     private ShapeFileService service = new ShapeFileService();
     @Test
     public void readFileFromDmi() throws IOException {
-        List<ShapeFileService.Fragment> fragments = service.getFile("201304100920_CapeFarewell_RIC", 0, "");
-        assertEquals(23, fragments.size());
+        ShapeFileService.Shape file = service.getSingleFile("201304100920_CapeFarewell_RIC", 0, "");
+        assertEquals(23, file.getFragments().size());
     }
 }
