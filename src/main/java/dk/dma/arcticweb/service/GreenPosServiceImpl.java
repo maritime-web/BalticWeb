@@ -63,11 +63,6 @@ public class GreenPosServiceImpl implements GreenPosService {
     @Override
     public List<GreenPosReport> listReports() {
         // TODO Should current ship only be able to list reports for own ship ?
-        
-        System.out.println("LISTING");
-        
-        System.out.println(greenPosDao.getClass());
-        
         return greenPosDao.getAll(GreenPosReport.class);
     }
 
@@ -77,11 +72,6 @@ public class GreenPosServiceImpl implements GreenPosService {
     @Override
     @YourShip
     public String saveReport(GreenPosReport report) {
-
-        System.out.println("SAVE REPORT");
-        
-        System.out.println(greenPosDao.getClass());
-
         checkIfAlreadySaved(report);
 
         Ship2 ship = null;
@@ -97,10 +87,7 @@ public class GreenPosServiceImpl implements GreenPosService {
             GreenPosSailingPlanReport spReport = (GreenPosSailingPlanReport)report;
             report = spReport.withVoyages(ship.getVoyagePlan().getVoyagePlan());
         }else if(report instanceof GreenPosDeviationReport){
-            GreenPosDeviationReport spReport = (GreenPosDeviationReport)report;
-            
-            throw new IllegalArgumentException("GreenPosDeviationReport not yet supported");
-//            report = spReport.withVoyages(ship.getVoyagePlan().getVoyagePlan());
+            GreenPosDeviationReport spReport = (GreenPosDeviationReport)report;            
         }
         
         report.setReportedBy(subject.getUser().getUserName());

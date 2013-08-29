@@ -56,12 +56,6 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     private Position position;
 
     @NotNull
-    private String weather;
-
-    @NotNull
-    private String iceInformation;
-
-    @NotNull
     private String reportedBy;
 
     // //////////////////////////////////////////////////////////////////////
@@ -71,13 +65,13 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     public static GreenPosReport from(GreenPos from) {
         switch (from.getReportType()) {
         case "SP":
-            return GreenPosSailingPlanReport.fromRestModel(from);
-//        case "PR":
-//            return GreenPosPositionReport.fromRestModel(from);
-//        case "FR":
-//            return GreenPosFinalReport.fromRestModel(from);
-//        case "DR":
-//            return GreenPosDeviationReport.fromRestModel(from);
+            return GreenPosSailingPlanReport.fromJsonModel(from);
+        case "PR":
+            return GreenPosPositionReport.fromJsonModel(from);
+        case "FR":
+            return GreenPosFinalReport.fromJsonModel(from);
+        case "DR":
+            return GreenPosDeviationReport.fromJsonModel(from);
         default:
             throw new IllegalArgumentException("Unknown value '" + from.getReportType() + "' for reportType");
         }
@@ -105,27 +99,23 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     }
 
     public GreenPosReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId, String latitude,
-            String longitude, String weather, String iceInformation) {
+            String longitude) {
         this();
         this.shipName = shipName;
         this.shipMmsi = shipMmsi;
         this.shipCallSign = shipCallSign;
         this.shipMaritimeId = shipMaritimeId;
         this.position = new Position(latitude, longitude);
-        this.weather = weather;
-        this.iceInformation = iceInformation;
     }
 
     public GreenPosReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
-            Position position, String weather, String iceInformation) {
+            Position position) {
         this();
         this.shipName = shipName;
         this.shipMmsi = shipMmsi;
         this.shipCallSign = shipCallSign;
         this.shipMaritimeId = shipMaritimeId;
         this.position = position;
-        this.weather = weather;
-        this.iceInformation = iceInformation;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -161,14 +151,6 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
 
     public Position getPosition() {
         return position;
-    }
-
-    public String getWeather() {
-        return weather;
-    }
-
-    public String getIceInformation() {
-        return iceInformation;
     }
 
     public void setReportedBy(String userName) {

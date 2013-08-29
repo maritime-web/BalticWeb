@@ -9,7 +9,15 @@
 "use strict";
 
 embryo.greenPos = {};
-embryo.greenPos.Ctrl = function($scope, ShipService, GreenPos, VoyageService) {
+embryo.greenPos.Ctrl = function($scope, ShipService, VoyageService, GreenPos) {
+
+	$scope.visibility = {
+		"SP" : [ "destination", "etaOfArrival", "personsOnBoard", "course",
+				"speed", "weather", "ice" ],
+		"PR" : [ "course", "speed", "weather", "ice" ],
+		"FR" : [ "weather", "ice" ],
+		"DR" : [ "deviation" ]
+	};
 
 	$scope.report = {
 		reportType : "SP",
@@ -23,14 +31,22 @@ embryo.greenPos.Ctrl = function($scope, ShipService, GreenPos, VoyageService) {
 	});
 
 	VoyageService.getYourActive(function(voyage) {
-		console.log(voyage);
 		$scope.report.destination = voyage.berthName;
 		$scope.report.etaOfArrival = voyage.arrival;
 		$scope.report.personsOnBoard = voyage.personsOnBoard;
 	});
 
-	// can speed and course be preset with ais data? 
-	
+	$scope.isVisible = function(fieldName) {
+		if (!$scope.report || !$scope.report.reportType) {
+			return true;
+		}
+		var fields = $scope.visibility[$scope.report.reportType];
+
+		return fields.indexOf(fieldName) > -1;
+	};
+
+	// can speed and course be preset with ais data?
+
 	$scope.isShip = function() {
 		return true;
 	};
@@ -38,21 +54,22 @@ embryo.greenPos.Ctrl = function($scope, ShipService, GreenPos, VoyageService) {
 	$scope.sendReport = function() {
 		console.log('trying to send report');
 		GreenPos.save($scope.report, function() {
-			$scope.message="GreenPos report successfully submitted";
+			$scope.message = "GreenPos report successfully submitted";
 			console.log("GreenPos successfully submitted");
-		 });
+		});
 	};
 
 	$scope.chosenType = function(types) {
 		return jQuery.inArray($scope.report.reportType, types) > -1;
 	};
-	
-	$scope.cancel = function(){
-		
+
+	$scope.cancel = function() {
+		console.log($scope.greenPosForm.gpCourse.$error.required);
+		console.log($scope.greenPosForm.gpCourse.$error);
 	};
 
-	$scope.clear = function(){
-		
+	$scope.clear = function() {
+
 	};
 };
 
@@ -119,14 +136,16 @@ angularApp.factory('VoyageService', function(VoyageRestService, ShipService) {
 		getYourActive : function(onSuccess) {
 			var voyageStr = sessionStorage.getItem('activeVoyage');
 			if (!voyageStr) {
-				ShipService.getYourShip(function(yourShip){
+				ShipService.getYourShip(function(yourShip) {
 					console.log(yourShip.maritimeId);
-					var voyage = VoyageRestService.getActive({id:yourShip.maritimeId}, function() {
+					var voyage = VoyageRestService.getActive({
+						id : yourShip.maritimeId
+					}, function() {
 						var voyageStr = JSON.stringify(voyage);
 						sessionStorage.setItem('activeVoyage', voyageStr);
 						onSuccess(voyage);
 					});
-				});				
+				});
 			} else {
 				var voyage = JSON.parse(voyageStr);
 				onSuccess(voyage);
@@ -166,3 +185,29 @@ angularApp.config([ '$routeProvider', function($routeProvider) {
 		redirectTo : '/report'
 	});
 } ]);
+
+angularApp.directive('msgRequired', function() {
+	return {
+		link : function(scope, element, attrs) {
+			element.text('Value required');
+			element.addClass('msg-invalid');
+
+			attrs.$set('ngShow', attrs.msgRequired + '$error.required'
+					&& greenPosForm.gpPersons + '.$dirty');
+
+			// watch the expression, and update the UI on change.
+			scope.$watch('greenPosForm.gpPersons', function(value, oldValue) {
+				console.log(value);
+				// console.log(value.$dirty);
+				// console.log(value.$error.required);
+
+				// if(value.$dirty && value.$error.required){
+				// element.show();
+				// }else{
+				// element.hide();
+				// }
+			});
+		}
+	};
+
+});

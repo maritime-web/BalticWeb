@@ -18,6 +18,7 @@ module.exports = function(config) {
 				'src/main/webapp/js/embryoForTest.js', 
 				'src/main/webapp/js/contextMenu.js', 
 				'src/main/webapp/js/menu.js', 
+				'src/main/webapp/js/greenpos.js', 
 				'src/test/jsUnit/**/*.js' ],
 
 		// list of files to exclude

@@ -15,16 +15,11 @@
  */
 package dk.dma.embryo.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.validation.Valid;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import dk.dma.embryo.rest.json.GreenPos;
 
 /**
  * Deviation may be reported as either a free form textual description {@link #deviation} or a modified voyage plan
@@ -46,33 +41,22 @@ public class GreenPosDeviationReport extends GreenPosReport {
 
     private String deviation;
 
-//    @Valid
-//    @OneToMany(cascade=CascadeType.ALL)
-//    @OrderColumn(name = "orderNumber")
-//    private List<ReportedVoyage> modifiedPlan = new ArrayList<>();
+    // @Valid
+    // @OneToMany(cascade=CascadeType.ALL)
+    // @OrderColumn(name = "orderNumber")
+    // private List<ReportedVoyage> modifiedPlan = new ArrayList<>();
 
-    // public static Report fromEnavModel(dk.dma.enav.model.voyage.Route from) {
-    // Report route = new Report(from.getId(), from.getName(), from.getDeparture(), from.getDestination());
-    //
-    // for (Waypoint wayPoint : from.getWaypoints()) {
-    // route.addWayPoint(WayPoint.fromEnavModel(wayPoint));
-    // }
-    //
-    // return route;
-    // }
-    //
-    // public dk.dma.enav.model.voyage.Route toEnavModel() {
-    // dk.dma.enav.model.voyage.Route toRoute = new dk.dma.enav.model.voyage.Route(this.enavId);
-    // toRoute.setName(this.name);
-    // toRoute.setDeparture(this.origin);
-    // toRoute.setDestination(this.destination);
-    //
-    // for (WayPoint wp : this.getWayPoints()) {
-    // toRoute.getWaypoints().add(wp.toEnavModel());
-    // }
-    //
-    // return toRoute;
-    // }
+    // //////////////////////////////////////////////////////////////////////
+    // Utility methods
+    // //////////////////////////////////////////////////////////////////////
+    public static GreenPosDeviationReport fromJsonModel(GreenPos from) {
+        Position pos = new Position(from.getLatitude(), from.getLongitude());
+
+        GreenPosDeviationReport report = new GreenPosDeviationReport(from.getShipName(), from.getShipMmsi(),
+                from.getShipCallSign(), from.getShipMaritimeId(), pos, from.getDeviation());
+
+        return report;
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -82,21 +66,11 @@ public class GreenPosDeviationReport extends GreenPosReport {
     }
 
     public GreenPosDeviationReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
-            String latitude, String longitude, String deviation,
-            List<ReportedVoyage> deviatedPlan) {
-        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, latitude, longitude, null, null);
+            Position pos, String deviation) {
+        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, pos);
 
         this.deviation = deviation;
-//        this.modifiedPlan = deviatedPlan;
-    }
-
-    public GreenPosDeviationReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
-            Position position, String deviation,
-            List<ReportedVoyage> deviatedPlan) {
-        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, position, null, null);
-
-        this.deviation = deviation;
-//        this.modifiedPlan = deviatedPlan;
+        // this.modifiedPlan = deviatedPlan;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -111,7 +85,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         return deviation;
     }
 
-//    public List<ReportedVoyage> getModifiedPlan() {
-//        return modifiedPlan;
-//    }
+    // public List<ReportedVoyage> getModifiedPlan() {
+    // return modifiedPlan;
+    // }
 }

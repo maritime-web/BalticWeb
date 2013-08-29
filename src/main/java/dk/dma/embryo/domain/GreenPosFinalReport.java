@@ -19,47 +19,39 @@ import javax.persistence.Entity;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import dk.dma.embryo.rest.json.GreenPos;
+
 /**
  * 
  * @author Jesper Tejlgaard
  */
 @Entity
-public class GreenPosFinalReport extends GreenPosReport {
+public class GreenPosFinalReport extends GreenPosDMIReport {
 
     private static final long serialVersionUID = -7205030526506222850L;
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
+    public static GreenPosFinalReport fromJsonModel(GreenPos from) {
+        Position pos = new Position(from.getLatitude(), from.getLongitude());
 
-//    public static Report fromEnavModel(dk.dma.enav.model.voyage.Route from) {
-//        Report route = new Report(from.getId(), from.getName(), from.getDeparture(), from.getDestination());
-//
-//        for (Waypoint wayPoint : from.getWaypoints()) {
-//            route.addWayPoint(WayPoint.fromEnavModel(wayPoint));
-//        }
-//
-//        return route;
-//    }
-//
-//    public dk.dma.enav.model.voyage.Route toEnavModel() {
-//        dk.dma.enav.model.voyage.Route toRoute = new dk.dma.enav.model.voyage.Route(this.enavId);
-//        toRoute.setName(this.name);
-//        toRoute.setDeparture(this.origin);
-//        toRoute.setDestination(this.destination);
-//
-//        for (WayPoint wp : this.getWayPoints()) {
-//            toRoute.getWaypoints().add(wp.toEnavModel());
-//        }
-//
-//        return toRoute;
-//    }
+        GreenPosFinalReport report = new GreenPosFinalReport(from.getShipName(), from.getShipMmsi(),
+                from.getShipCallSign(), from.getShipMaritimeId(), pos, from.getWeather(), from.getIce());
+
+        return report;
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
     public GreenPosFinalReport() {
         super();
+    }
+
+    public GreenPosFinalReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
+            Position position, String weather, String iceInformation) {
+        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, position, weather, iceInformation);
     }
 
     // //////////////////////////////////////////////////////////////////////

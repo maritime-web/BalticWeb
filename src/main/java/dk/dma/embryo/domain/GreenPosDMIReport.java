@@ -20,14 +20,12 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import dk.dma.embryo.rest.json.GreenPos;
-
 /**
  * 
  * @author Jesper Tejlgaard
  */
 @Entity
-public class GreenPosPositionReport extends GreenPosDMIReport {
+public abstract class GreenPosDMIReport extends GreenPosReport {
 
     private static final long serialVersionUID = -7205030526506222850L;
 
@@ -35,49 +33,32 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     @NotNull
-    private Double speed;
+    private String weather;
 
     @NotNull
-    private Integer course;
-    
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
-    public static GreenPosPositionReport fromJsonModel(GreenPos from) {
-        Position pos = new Position(from.getLatitude(), from.getLongitude());
-
-        GreenPosPositionReport report = new GreenPosPositionReport(from.getShipName(), from.getShipMmsi(),
-                from.getShipCallSign(), from.getShipMaritimeId(), pos, from.getWeather(), from.getIce(),
-                from.getSpeed(), from.getCourse());
-
-        return report;
-    }
-
+    private String iceInformation;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public GreenPosPositionReport() {
+    public GreenPosDMIReport() {
         super();
     }
 
-    public GreenPosPositionReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
-            String latitude, String longitude, String weather, String iceInformation, Double speed, Integer course) {
-        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, latitude, longitude, weather, iceInformation);
-        
-        this.speed = speed;
-        this.course = course;
+    public GreenPosDMIReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
+            String latitude, String longitude, String weather, String iceInformation) {
+        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, latitude, longitude);
+        this.weather = weather;
+        this.iceInformation = iceInformation;
     }
 
-    public GreenPosPositionReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
-            Position position, String weather, String iceInformation, Double speed, Integer course) {
-        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, position, weather, iceInformation);
-        
-        this.speed = speed;
-        this.course = course;
+    public GreenPosDMIReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
+            Position position, String weather, String iceInformation) {
+        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, position);
+        this.weather = weather;
+        this.iceInformation = iceInformation;
     }
 
-    
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
@@ -89,12 +70,11 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public Double getSpeed() {
-        return speed;
+    public String getWeather() {
+        return weather;
     }
 
-    public Integer getCourse() {
-        return course;
+    public String getIceInformation() {
+        return iceInformation;
     }
-
 }

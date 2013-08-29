@@ -38,7 +38,7 @@ public class GreenPos {
     
     private String weather;
     
-    private String iceInformation;
+    private String ice;
     
     private String reportedBy;
 
@@ -122,12 +122,12 @@ public class GreenPos {
         this.weather = weather;
     }
 
-    public String getIceInformation() {
-        return iceInformation;
+    public String getIce() {
+        return ice;
     }
 
-    public void setIceInformation(String iceInformation) {
-        this.iceInformation = iceInformation;
+    public void setIce(String iceInformation) {
+        this.ice = iceInformation;
     }
 
     public String getReportedBy() {

@@ -65,12 +65,12 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
 
-    public static GreenPosSailingPlanReport fromRestModel(GreenPos from) {
+    public static GreenPosSailingPlanReport fromJsonModel(GreenPos from) {
         LocalDateTime eta = DateTimeConverter.getDateTimeConverter().toObject(from.getEtaOfArrival(), null);
         Position pos = new Position(from.getLatitude(), from.getLongitude());
 
         GreenPosSailingPlanReport report = new GreenPosSailingPlanReport(from.getShipName(), from.getShipMmsi(),
-                from.getShipCallSign(), from.getShipMaritimeId(), pos, from.getWeather(), from.getIceInformation(),
+                from.getShipCallSign(), from.getShipMaritimeId(), pos, from.getWeather(), from.getIce(),
                 from.getSpeed(), from.getCourse(), from.getDestination(), eta, from.getPersonsOnBoard());
         return report;
     }
