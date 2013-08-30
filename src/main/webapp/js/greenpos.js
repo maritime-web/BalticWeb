@@ -121,21 +121,9 @@ embryo.GreenPosCtrl = function($scope, ShipService, VoyageService, GreenPos,
 	}, true);
 
 	$scope.setVesselsOnMap = function(vessels) {
-
-		if (!$scope.map) {
-			return;
-		}
-
 		var features = [];
-
-		console.log(vessels);
-		console.log(vessels.length);
-
 		for ( var index in vessels) {
 			var value = vessels[index];
-
-			console.log(value);
-
 			var attr = {
 				id : value.id,
 				angle : value.degree - 90,
@@ -249,15 +237,6 @@ embryo.GreenPosCtrl = function($scope, ShipService, VoyageService, GreenPos,
 	};
 };
 
-embryo.ShipService = {
-	getYourShipRemote : function(onSuccess) {
-		$.getJSON('rest/ship/yourship', function(data) {
-			console.log(data);
-			onSuccess(data.ship);
-		});
-	}
-};
-
 var angularApp = angular.module('embryo', [ 'ngResource' ]);
 // , 'ui.bootstrap'
 
@@ -329,7 +308,6 @@ angularApp.factory('VoyageService', function(VoyageRestService, ShipService) {
 			var voyageStr = sessionStorage.getItem('activeVoyage');
 			if (!voyageStr) {
 				ShipService.getYourShip(function(yourShip) {
-					console.log(yourShip.maritimeId);
 					var voyage = VoyageRestService.getActive({
 						id : yourShip.maritimeId
 					}, function() {
