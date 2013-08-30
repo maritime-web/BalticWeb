@@ -36,7 +36,15 @@ embryo.greenPos.Ctrl = function($scope, ShipService, VoyageService, GreenPos) {
 		$scope.report.personsOnBoard = voyage.personsOnBoard;
 	});
 
-	$scope.$on('$viewContentLoaded', embryo.greenPos.showMap);
+	$scope.$on('$viewContentLoaded', function(){
+		var greenPos = embryo.greenPos;
+		if (!greenPos.map) {
+			// postpone map loading sligtly, to let the resize directive set the
+			// sizes of the map container divs, before map loading. If not done, the
+			// map is not loaded in correct size
+			setTimeout(embryo.greenPos.loadMap, 100);
+		}
+	});
 
 	$scope.isVisible = function(fieldName) {
 		if (!$scope.report || !$scope.report.reportType) {
@@ -61,10 +69,6 @@ embryo.greenPos.Ctrl = function($scope, ShipService, VoyageService, GreenPos) {
 		});
 	};
 
-	$scope.chosenType = function(types) {
-		return jQuery.inArray($scope.report.reportType, types) > -1;
-	};
-
 	$scope.cancel = function() {
 		console.log($scope.greenPosForm.gpCourse.$error.required);
 		console.log($scope.greenPosForm.gpCourse.$error);
@@ -74,16 +78,19 @@ embryo.greenPos.Ctrl = function($scope, ShipService, VoyageService, GreenPos) {
 
 	};
 
-};
+	$scope.getLatLon = function() {
+		return {
+			lat : $scope.report.latitude,
+			lon : $scope.report.longitude
+		};
+	};
 
-embryo.greenPos.showMap = function(event) {
-	var greenPos = embryo.greenPos;
-	if (!greenPos.map) {
-		// postpone map loading sligtly, to let the resize directive set the
-		// sizes of the map container divs, before map loading. If not done, the
-		// map is not loaded in correct size 
-		setTimeout(embryo.greenPos.loadMap, 100);
-	}
+	$scope.$watch($scope.getLatLon, function(newValue, oldValue) {
+		if (newValue.lat && newValue.lon) {
+			embryo.greenPos.drawPosition(newValue.lat, newValue.lon);
+		}
+	}, true);
+
 };
 
 embryo.greenPos.loadMap = function() {
@@ -104,7 +111,22 @@ embryo.greenPos.loadMap = function() {
 	renderer = (renderer) ? [ renderer ]
 			: OpenLayers.Layer.Vector.prototype.renderers;
 
-	this.graphicsLayer = new OpenLayers.Layer.Vector("graphics", {
+	var defTemplate = OpenLayers.Util.applyDefaults({
+		strokeWidth : 2,
+		strokeColor : "blue", // using context.getColor(feature)
+		fillColor : "blue", // using context.getColor(feature)
+		graphicName : "x",
+		pointRadius : 5
+	}, OpenLayers.Feature.Vector.style["default"]);
+
+	var pointLayer = new OpenLayers.Layer.Vector("pointLayer", {
+		styleMap : new OpenLayers.StyleMap({
+			'default' : defTemplate
+		}),
+		renderes : renderer
+	});
+
+	this.vesselLayer = new OpenLayers.Layer.Vector("staticLayer", {
 		styleMap : new OpenLayers.StyleMap({
 			"default" : {
 				externalGraphic : "${image}",
@@ -112,7 +134,11 @@ embryo.greenPos.loadMap = function() {
 				graphicHeight : "${imageHeight}",
 				graphicYOffset : "${imageYOffset}",
 				graphicXOffset : "${imageXOffset}",
-				rotation : "${angle}"
+				rotation : "${angle}",
+				strokeDashstyle : 'dash',
+				strokeColor : "red", // using context.getColor(feature)
+				strokeWidth : 3
+			// strokeOpacity
 			},
 			"select" : {
 				cursor : "crosshair",
@@ -121,16 +147,33 @@ embryo.greenPos.loadMap = function() {
 		}),
 		renderers : renderer
 	});
-	this.map.addLayer(this.graphicsLayer);
+	this.map.addLayer(this.vesselLayer);
+	this.map.addLayer(pointLayer);
 
+	embryo.greenPos.pointLayer = pointLayer;
+	embryo.greenPos.map = this.map;
+	
 	var initialLat = 74.00;
 	var initialLon = -40.0;
 	var initialZoom = 3;
-	
 
 	var center = transformPosition(initialLon, initialLat, this.map);
 	this.map.setCenter(center, initialZoom);
 	this.lastZoomLevel = this.map.zoom;
+
+};
+
+embryo.greenPos.drawPosition = function(lat, lon) {
+	if (embryo.greenPos.pointLayer) {
+		var point = new OpenLayers.Geometry.Point(lon, lat).transform(
+				new OpenLayers.Projection("EPSG:4326"), embryo.greenPos.map
+						.getProjectionObject());
+
+		var pointFeature = new OpenLayers.Feature.Vector(point);
+		embryo.greenPos.pointLayer.removeAllFeatures();
+		embryo.greenPos.pointLayer.addFeatures([ pointFeature ]);
+		embryo.greenPos.pointLayer.refresh();
+	}
 
 };
 
@@ -283,6 +326,9 @@ angularApp.directive('msgRequired', function() {
 
 });
 
+/*
+ * Inspired by http://jsfiddle.net/zbjLh/2/
+ */
 angularApp.directive('resize', function($window) {
 	return {
 		restrict : 'A',
