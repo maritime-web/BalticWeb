@@ -25,8 +25,16 @@ describe('GreenPos Controller', function() {
 				}
 			};
 
-			var scope = {};
-			var ctrl = new embryo.greenPos.Ctrl(scope, shipService, voyageService);
+			var scope = {
+				$on : function(eventType, callback) {
+
+				},
+				$watch : function(expr, callback){
+					
+				}
+			};
+			var ctrl = new embryo.greenPos.Ctrl(scope, shipService,
+					voyageService);
 
 			expect(scope.isVisible("destination")).toBe(true);
 			expect(scope.isVisible("etaOfArrival")).toBe(true);
