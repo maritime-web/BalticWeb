@@ -36,6 +36,8 @@ embryo.greenPos.Ctrl = function($scope, ShipService, VoyageService, GreenPos) {
 		$scope.report.personsOnBoard = voyage.personsOnBoard;
 	});
 
+	$scope.$on('$viewContentLoaded', embryo.greenPos.showMap);
+
 	$scope.isVisible = function(fieldName) {
 		if (!$scope.report || !$scope.report.reportType) {
 			return true;
@@ -71,7 +73,74 @@ embryo.greenPos.Ctrl = function($scope, ShipService, VoyageService, GreenPos) {
 	$scope.clear = function() {
 
 	};
+
 };
+
+embryo.greenPos.showMap = function(event) {
+	var greenPos = embryo.greenPos;
+	if (!greenPos.map) {
+		// postpone map loading sligtly, to let the resize directive set the
+		// sizes of the map container divs, before map loading. If not done, the
+		// map is not loaded in correct size 
+		setTimeout(embryo.greenPos.loadMap, 100);
+	}
+};
+
+embryo.greenPos.loadMap = function() {
+	this.map = new OpenLayers.Map({
+		div : "greenPosMap",
+		projection : 'EPSG:900913',
+		fractionalZoom : false
+	});
+
+	var osm = new OpenLayers.Layer.OSM("OSM",
+			"http://a.tile.openstreetmap.org/${z}/${x}/${y}.png", {
+				'layers' : 'basic',
+				'isBaseLayer' : true
+			});
+	this.map.addLayer(osm);
+
+	var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+	renderer = (renderer) ? [ renderer ]
+			: OpenLayers.Layer.Vector.prototype.renderers;
+
+	this.graphicsLayer = new OpenLayers.Layer.Vector("graphics", {
+		styleMap : new OpenLayers.StyleMap({
+			"default" : {
+				externalGraphic : "${image}",
+				graphicWidth : "${imageWidth}",
+				graphicHeight : "${imageHeight}",
+				graphicYOffset : "${imageYOffset}",
+				graphicXOffset : "${imageXOffset}",
+				rotation : "${angle}"
+			},
+			"select" : {
+				cursor : "crosshair",
+				externalGraphic : "${image}"
+			}
+		}),
+		renderers : renderer
+	});
+	this.map.addLayer(this.graphicsLayer);
+
+	var initialLat = 74.00;
+	var initialLon = -40.0;
+	var initialZoom = 3;
+	
+
+	var center = transformPosition(initialLon, initialLat, this.map);
+	this.map.setCenter(center, initialZoom);
+	this.lastZoomLevel = this.map.zoom;
+
+};
+
+function transformPosition(lon, lat, map) {
+	return new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection(
+			"EPSG:4326"), // transform from WGS 1984
+	map.getProjectionObject() // to Spherical Mercator
+	// Projection
+	);
+}
 
 embryo.ShipService = {
 	getYourShipRemote : function(onSuccess) {
@@ -184,6 +253,8 @@ angularApp.config([ '$routeProvider', function($routeProvider) {
 	}).otherwise({
 		redirectTo : '/report'
 	});
+
+	// $locationProvider.html5Mode(true);
 } ]);
 
 angularApp.directive('msgRequired', function() {
@@ -210,4 +281,36 @@ angularApp.directive('msgRequired', function() {
 		}
 	};
 
+});
+
+angularApp.directive('resize', function($window) {
+	return {
+		restrict : 'A',
+		link : function(scope, element, attrs) {
+
+			var elemToMatch = $('#' + attrs.resize);
+			scope.getElementDimensions = function() {
+				return {
+					'h' : elemToMatch.height(),
+					'w' : elemToMatch.width(),
+				};
+			};
+			scope.$watch(scope.getElementDimensions, function(newValue,
+					oldValue) {
+
+				scope.style = function() {
+					return {
+						'height' : (newValue.h) + 'px',
+						'width' : (newValue.w) + 'px'
+					};
+				};
+			}, true);
+
+			var window = angular.element($window);
+			window.bind('resize', function() {
+				scope.$apply(function() {
+				});
+			});
+		}
+	};
 });
