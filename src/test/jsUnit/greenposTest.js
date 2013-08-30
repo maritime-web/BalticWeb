@@ -29,11 +29,11 @@ describe('GreenPos Controller', function() {
 				$on : function(eventType, callback) {
 
 				},
-				$watch : function(expr, callback){
-					
+				$watch : function(expr, callback) {
+
 				}
 			};
-			var ctrl = new embryo.greenPos.Ctrl(scope, shipService,
+			var ctrl = new embryo.GreenPosCtrl(scope, shipService,
 					voyageService);
 
 			expect(scope.isVisible("destination")).toBe(true);
