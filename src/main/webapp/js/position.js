@@ -18,7 +18,7 @@ embryo.geographic.parseLatitude = function() {
 	}
 
 	// TODO validate latitude format
-	var h = parseInt(arguments[0]);
+	var h = parseInt(arguments[0], 10);
 	var m = parseFloat(arguments[1]);
 	var ns = arguments[2].trim();
 
@@ -56,7 +56,7 @@ embryo.geographic.parseLongitude = function() {
 		return null;
 	}
 
-	var h = parseInt(arguments[0]);
+	var h = parseInt(arguments[0], 10);
 	var m = parseFloat(arguments[1]);
 	var ew = arguments[2].trim();
 
