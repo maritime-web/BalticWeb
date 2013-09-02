@@ -360,10 +360,10 @@ angularApp.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'partials/testPartial.html',
 		controller : embryo.GreenPosCtrl
 	}).when('/report', {
-		templateUrl : 'partials/shipReport.html',
+		templateUrl : 'partials/greenposReport.html',
 		controller : embryo.GreenPosCtrl
 	}).when('/report/:mmsi', {
-		templateUrl : 'partials/shipReport.html',
+		templateUrl : 'partials/greenposReport.html',
 		controller : embryo.GreenPosCtrl
 	}).otherwise({
 		redirectTo : '/report'
