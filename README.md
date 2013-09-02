@@ -3,8 +3,16 @@ Embryo
 
 Web portal for maritime stakeholders in the arctic area
 
-## Demo of Latest and Greatest ##
+
+## Alpha test server ## 
+More stable alpha releases can be demoed from this test server
+
 http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only available to development team)
+
+## CI Test Server - Latest and Greatest ##
+The CI server continuously deployes the latest and greatest to a separate test server: 
+
+http://test.e-navigation.net/arcticweb (requires credentials only available to development team)
 
 ## Prerequisites ##
 
