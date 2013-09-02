@@ -262,8 +262,11 @@ angularApp.factory('ShipService', function(ShipRestService) {
 			var shipStr = sessionStorage.getItem('yourShip');
 			if (!shipStr) {
 				var ship = ShipRestService.getYourShip(function() {
-					var shipStr = JSON.stringify(ship);
-					sessionStorage.setItem('yourShip', shipStr);
+					// only cache objects with values (empty objects has ngResource REST methods). 
+					if(ship.maritimeId){
+						var shipStr = JSON.stringify(ship);
+						sessionStorage.setItem('yourShip', shipStr);
+					}					
 					onSuccess(ship);
 				});
 			} else {
@@ -289,6 +292,31 @@ angularApp.factory('VoyageRestService', function($resource) {
 	return $resource('rest/voyage/:action/:id', defaultParams, actions);
 });
 
+angularApp.factory('VoyageService', function(VoyageRestService, ShipService) {
+	return {
+		getYourActive : function(onSuccess) {
+			var voyageStr = sessionStorage.getItem('activeVoyage');
+			if (!voyageStr) {
+				ShipService.getYourShip(function(yourShip) {
+					var voyage = VoyageRestService.getActive({
+						id : yourShip.maritimeId
+					}, function() {
+						// only cache objects with values (empty objects has ngResource REST methods). 
+						if(voyage.maritimeId){
+							var voyageStr = JSON.stringify(voyage);
+							sessionStorage.setItem('activeVoyage', voyageStr);
+						}
+						onSuccess(voyage);
+					});
+				});
+			} else {
+				var voyage = JSON.parse(voyageStr);
+				onSuccess(voyage);
+			}
+		}
+	};
+});
+
 angularApp.factory('AisRestService', function($resource) {
 	var defaultParams = {};
 	var actions = {
@@ -304,27 +332,7 @@ angularApp.factory('AisRestService', function($resource) {
 			actions);
 });
 
-angularApp.factory('VoyageService', function(VoyageRestService, ShipService) {
-	return {
-		getYourActive : function(onSuccess) {
-			var voyageStr = sessionStorage.getItem('activeVoyage');
-			if (!voyageStr) {
-				ShipService.getYourShip(function(yourShip) {
-					var voyage = VoyageRestService.getActive({
-						id : yourShip.maritimeId
-					}, function() {
-						var voyageStr = JSON.stringify(voyage);
-						sessionStorage.setItem('activeVoyage', voyageStr);
-						onSuccess(voyage);
-					});
-				});
-			} else {
-				var voyage = JSON.parse(voyageStr);
-				onSuccess(voyage);
-			}
-		}
-	};
-});
+
 
 angularApp.factory('GreenPos', function($resource) {
 	var defaultParams = {};
