@@ -3,6 +3,7 @@
  * 
  * aisview.js
  * aisviewUI.js
+ * position.js
  * ....
  */
 
@@ -218,8 +219,11 @@ embryo.GreenPosCtrl = function($scope, ShipService, VoyageService, GreenPos,
 		$scope.map.setCenter(center, initialZoom);
 	};
 
-	$scope.setPositionOnMap = function(lat, lon) {
+	$scope.setPositionOnMap = function(latitude, longitude) {
 		if ($scope.pointLayer) {
+			var lat = embryo.geographic.parseLatitude(latitude);
+			var lon = embryo.geographic.parseLongitude(longitude);
+			
 			var point = new OpenLayers.Geometry.Point(lon, lat).transform(
 					new OpenLayers.Projection($scope.projection), $scope.map
 							.getProjectionObject());
