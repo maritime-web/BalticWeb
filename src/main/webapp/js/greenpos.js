@@ -11,6 +11,8 @@
 embryo.GreenPosCtrl = function($scope, ShipService, VoyageService, GreenPos,
 		AisRestService) {
 
+	$scope.projection = "EPSG:4326";
+	
 	$scope.visibility = {
 		"SP" : [ "destination", "etaOfArrival", "personsOnBoard", "course",
 				"speed", "weather", "ice" ],
@@ -139,7 +141,7 @@ embryo.GreenPosCtrl = function($scope, ShipService, VoyageService, GreenPos,
 
 			// transform from WGS 1984 to Spherical Mercator Projection
 			var geom = new OpenLayers.Geometry.Point(value.lon, value.lat)
-					.transform(new OpenLayers.Projection("EPSG:4326"),
+					.transform(new OpenLayers.Projection($scope.projection),
 							$scope.map.getProjectionObject());
 
 			// Use styled vector points
@@ -219,7 +221,7 @@ embryo.GreenPosCtrl = function($scope, ShipService, VoyageService, GreenPos,
 	$scope.setPositionOnMap = function(lat, lon) {
 		if ($scope.pointLayer) {
 			var point = new OpenLayers.Geometry.Point(lon, lat).transform(
-					new OpenLayers.Projection("EPSG:4326"), $scope.map
+					new OpenLayers.Projection($scope.projection), $scope.map
 							.getProjectionObject());
 
 			var pointFeature = new OpenLayers.Feature.Vector(point);
@@ -232,7 +234,7 @@ embryo.GreenPosCtrl = function($scope, ShipService, VoyageService, GreenPos,
 	$scope.transformPosition = function(lon, lat) {
 		// transform from WGS 1984 to Spherical Mercator Projection
 		return new OpenLayers.LonLat(lon, lat).transform(
-				new OpenLayers.Projection("EPSG:4326"), $scope.map
+				new OpenLayers.Projection($scope.projection), $scope.map
 						.getProjectionObject());
 	};
 };

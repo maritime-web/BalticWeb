@@ -1,10 +1,11 @@
 describe('GreenPos Controller', function() {
 
-	describe('embryo.greenPos.Ctrl', function() {
+	describe('embryo.GreenPosCtrl', function() {
 
-		it('Visibility must change depending on report type', function() {
+		var $compile, scope, shipService, voyageService;
 
-			var shipService = {
+		beforeEach(inject(function($injector, $sniffer) {
+			shipService = {
 				getYourShip : function() {
 					return {
 						mmsi : "2200",
@@ -15,7 +16,7 @@ describe('GreenPos Controller', function() {
 				}
 			};
 
-			var voyageService = {
+			voyageService = {
 				getYourActive : function(callback) {
 					callback({
 						berthName : "Nuuk",
@@ -25,7 +26,19 @@ describe('GreenPos Controller', function() {
 				}
 			};
 
-			var scope = {
+			$compile = $injector.get('$compile');
+			scope = $injector.get('$rootScope');
+
+			changeInputValue = function(elm, value) {
+				elm.val(value);
+				browserTrigger(elm, $sniffer.hasEvent('input') ? 'input'
+						: 'change');
+			};
+		}));
+
+		it('Visibility must change depending on report type', function() {
+
+			var scopeLocal = {
 				$on : function(eventType, callback) {
 
 				},
@@ -33,22 +46,55 @@ describe('GreenPos Controller', function() {
 
 				}
 			};
-			var ctrl = new embryo.GreenPosCtrl(scope, shipService,
+			var ctrl = new embryo.GreenPosCtrl(scopeLocal, shipService,
 					voyageService);
 
-			expect(scope.isVisible("destination")).toBe(true);
-			expect(scope.isVisible("etaOfArrival")).toBe(true);
-			expect(scope.isVisible("deviation")).toBe(false);
+			expect(scopeLocal.isVisible("destination")).toBe(true);
+			expect(scopeLocal.isVisible("etaOfArrival")).toBe(true);
+			expect(scopeLocal.isVisible("deviation")).toBe(false);
 
-			scope.report.reportType = "FR";
-			expect(scope.isVisible("destination")).toBe(false);
-			expect(scope.isVisible("personsOnBoard")).toBe(false);
-			expect(scope.isVisible("weather")).toBe(true);
+			scopeLocal.report.reportType = "FR";
+			expect(scopeLocal.isVisible("destination")).toBe(false);
+			expect(scopeLocal.isVisible("personsOnBoard")).toBe(false);
+			expect(scopeLocal.isVisible("weather")).toBe(true);
 
-			scope.report.reportType = "DR";
-			expect(scope.isVisible("destination")).toBe(false);
-			expect(scope.isVisible("iceInformation")).toBe(false);
-			expect(scope.isVisible("deviation")).toBe(true);
+			scopeLocal.report.reportType = "DR";
+			expect(scopeLocal.isVisible("destination")).toBe(false);
+			expect(scopeLocal.isVisible("iceInformation")).toBe(false);
+			expect(scopeLocal.isVisible("deviation")).toBe(true);
+		});
+
+		it('Loading ng-view content loads the map', function() {
+			var ctrl = new embryo.GreenPosCtrl(scope, shipService,
+					voyageService);
+			scope.loadMap();
+
+			// expect empty array when longitude and latitude has not been set
+			expect(scope.pointLayer.features.length).toBe(0);
+
+		});
+
+		it('Point is shown on map', function() {
+			var ctrl = new embryo.GreenPosCtrl(scope, shipService,
+					voyageService);
+			scope.loadMap();
+
+			// expect empty array when longitude and latitude has not been set
+			expect(scope.pointLayer.features.length).toBe(0);
+
+			// set data to provoke change
+			scope.$apply(function() {
+				scope.report.longitude = -35.0;
+				scope.report.latitude = 74.0;
+			});
+
+			expect(scope.pointLayer.features.length).toBe(1);
+			var transformedPoint = scope.pointLayer.features[0].geometry
+					.transform(scope.map.getProjectionObject(),
+							new OpenLayers.Projection(scope.projection));
+
+			expect(transformedPoint.x).toBeCloseTo(-35.0);
+			expect(transformedPoint.y).toBeCloseTo(74.0);
 		});
 	});
 
