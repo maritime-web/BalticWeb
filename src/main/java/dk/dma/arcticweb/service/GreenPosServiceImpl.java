@@ -136,4 +136,9 @@ public class GreenPosServiceImpl implements GreenPosService {
         }
         return ship;
     }
+
+    @Override
+    public List<GreenPosReport> findReports() {
+        return greenPosDao.getAll(GreenPosReport.class);
+    }
 }

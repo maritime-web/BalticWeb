@@ -15,10 +15,14 @@
  */
 package dk.dma.embryo.rest;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 import org.slf4j.Logger;
 
@@ -55,4 +59,19 @@ public class GreenPosRestService {
         logger.debug("save() - done", report);
     }
 
+
+    @GET
+    @Path("/list")
+    @Produces("application/json")
+    public GreenPos[] list() {
+        logger.debug("findReports()");
+
+        List<GreenPosReport> reports = reportingService.findReports();
+        
+        GreenPos[] result = GreenPosReport.toJsonModel(reports);
+     
+        logger.debug("findReports() - {}", result);
+        
+        return result;
+    }
 }

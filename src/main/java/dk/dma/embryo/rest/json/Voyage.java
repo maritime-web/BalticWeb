@@ -39,7 +39,7 @@ public class Voyage {
 
     private Integer personsOnBoard;
 
-    private boolean doctor;
+    private Boolean doctor;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -48,6 +48,18 @@ public class Voyage {
         super();
     }
     
+    public Voyage(String maritimeId, String berthName, String latitude, String longitude, String arrival,
+            String departure, Integer personsOnBoard) {
+        super();
+        this.maritimeId = maritimeId;
+        this.berthName = berthName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.arrival = arrival;
+        this.departure = departure;
+        this.personsOnBoard = personsOnBoard;
+    }
+
     public Voyage(String maritimeId, String berthName, String latitude, String longitude, String arrival,
             String departure, Integer personsOnBoard, boolean doctor) {
         super();
@@ -129,11 +141,11 @@ public class Voyage {
         this.personsOnBoard = personsOnBoard;
     }
 
-    public boolean isDoctor() {
+    public Boolean isDoctor() {
         return doctor;
     }
 
-    public void setDoctor(boolean doctor) {
+    public void setDoctor(Boolean doctor) {
         this.doctor = doctor;
     }
 

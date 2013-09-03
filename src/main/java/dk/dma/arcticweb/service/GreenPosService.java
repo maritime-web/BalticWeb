@@ -19,7 +19,6 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import dk.dma.arcticweb.dao.Dao;
 import dk.dma.embryo.domain.GreenPosReport;
 
 @Local
@@ -28,4 +27,6 @@ public interface GreenPosService{
     List<GreenPosReport> listReports();
     
     String saveReport(GreenPosReport report);
+    
+    List<GreenPosReport> findReports();
 }

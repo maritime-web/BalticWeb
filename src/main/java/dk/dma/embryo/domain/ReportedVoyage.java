@@ -15,12 +15,16 @@
  */
 package dk.dma.embryo.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Entity;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.joda.time.LocalDateTime;
+
+import dk.dma.embryo.rest.util.DateTimeConverter;
 
 @Entity
 public class ReportedVoyage extends BaseEntity<Long> {
@@ -43,7 +47,7 @@ public class ReportedVoyage extends BaseEntity<Long> {
     private Integer personsOnBoard;
 
     private boolean doctorOnBoard;
-    
+
     // //////////////////////////////////////////////////////////////////////
     // business logic
     // //////////////////////////////////////////////////////////////////////
@@ -54,6 +58,23 @@ public class ReportedVoyage extends BaseEntity<Long> {
     public static ReportedVoyage from(Voyage voyage) {
         return new ReportedVoyage(voyage.getEnavId(), voyage.getBerthName(), voyage.getPosition(), voyage.getArrival(),
                 voyage.getDeparture(), voyage.getPersonsOnBoard(), voyage.getDoctorOnBoard());
+    }
+
+    public dk.dma.embryo.rest.json.Voyage toJsonModel() {
+        String arrival = DateTimeConverter.getDateTimeConverter().toString(getArrival(), null);
+        String departure = DateTimeConverter.getDateTimeConverter().toString(getDeparture(), null);
+        
+        return new dk.dma.embryo.rest.json.Voyage(getMaritimeId(), getBerthName(), getPosition().getLatitudeAsString(),
+                getPosition().getLongitudeAsString(), arrival, departure, getPersonsOnBoard());
+    }
+
+    public static List<dk.dma.embryo.rest.json.Voyage> toJsonModel(List<ReportedVoyage> voyages) {
+        List<dk.dma.embryo.rest.json.Voyage> transformed = new ArrayList<dk.dma.embryo.rest.json.Voyage>(voyages.size());
+        for (ReportedVoyage v : voyages) {
+            transformed.add(v.toJsonModel());
+        }
+
+        return transformed;
     }
 
     @Override

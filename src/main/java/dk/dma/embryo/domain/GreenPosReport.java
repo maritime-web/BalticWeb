@@ -15,6 +15,7 @@
  */
 package dk.dma.embryo.domain;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -77,6 +78,31 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         }
     }
 
+    public static GreenPos[] toJsonModel(List<GreenPosReport> reports) {
+        GreenPos[] result = new GreenPos[reports.size()];
+        int index = 0;
+        for (GreenPosReport report : reports) {
+            result[index++] = report.toJsonModel();
+        }
+
+        return result;
+    }
+
+    public abstract GreenPos toJsonModel();
+
+    public String getReportType() {
+        if (getClass() == GreenPosSailingPlanReport.class) {
+            return "SP";
+        } else if (getClass() == GreenPosPositionReport.class) {
+            return "PR";
+        } else if (getClass() == GreenPosFinalReport.class) {
+            return "FR";
+        } else if (getClass() == GreenPosDeviationReport.class) {
+            return "DR";
+        }
+        throw new IllegalStateException("Unknown GreenPosReport instance class. '" + getClass().getName() + "'.");
+    }
+
     //
     // public dk.dma.enav.model.voyage.Route toEnavModel() {
     // dk.dma.enav.model.voyage.Route toRoute = new dk.dma.enav.model.voyage.Route(this.enavId);
@@ -108,8 +134,7 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         this.position = new Position(latitude, longitude);
     }
 
-    public GreenPosReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
-            Position position) {
+    public GreenPosReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId, Position position) {
         this();
         this.shipName = shipName;
         this.shipMmsi = shipMmsi;
@@ -155,6 +180,10 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
 
     public void setReportedBy(String userName) {
         this.reportedBy = userName;
+    }
+
+    public String getReportedBy() {
+        return reportedBy;
     }
 
 }

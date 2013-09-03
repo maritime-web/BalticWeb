@@ -15,18 +15,24 @@
  */
 package dk.dma.embryo.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import dk.dma.embryo.rest.json.GreenPos;
+import dk.dma.embryo.rest.util.DateTimeConverter;
 
 /**
  * 
  * @author Jesper Tejlgaard
  */
 @Entity
+@DiscriminatorValue("PR")
 public class GreenPosPositionReport extends GreenPosDMIReport {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -53,6 +59,24 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         return report;
     }
 
+    @Override
+    public GreenPos toJsonModel() {
+        GreenPos result = new GreenPos();
+        result.setReportType(getReportType());
+        result.setShipName(getShipName());
+        result.setShipMaritimeId(getShipMaritimeId());
+        result.setShipMmsi(getShipMmsi());
+        result.setShipCallSign(getShipCallSign());
+        result.setLongitude(getPosition().getLongitudeAsString());
+        result.setLatitude(getPosition().getLatitudeAsString());
+        result.setWeather(getWeather());
+        result.setIce(getIceInformation());
+        result.setSpeed(getSpeed());
+        result.setCourse(getCourse());
+        result.setReportedBy(getReportedBy());
+        
+        return result;
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -96,5 +120,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     public Integer getCourse() {
         return course;
     }
+
+
 
 }

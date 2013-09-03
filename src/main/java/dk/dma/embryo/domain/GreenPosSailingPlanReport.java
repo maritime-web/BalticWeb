@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -36,6 +37,7 @@ import dk.dma.embryo.rest.util.DateTimeConverter;
  * @author Jesper Tejlgaard
  */
 @Entity
+@DiscriminatorValue("SP")
 public class GreenPosSailingPlanReport extends GreenPosPositionReport {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -75,19 +77,35 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         return report;
     }
 
-    //
-    // public dk.dma.enav.model.voyage.Route toEnavModel() {
-    // dk.dma.enav.model.voyage.Route toRoute = new dk.dma.enav.model.voyage.Route(this.enavId);
-    // toRoute.setName(this.name);
-    // toRoute.setDeparture(this.origin);
-    // toRoute.setDestination(this.destination);
-    //
-    // for (WayPoint wp : this.getWayPoints()) {
-    // toRoute.getWaypoints().add(wp.toEnavModel());
-    // }
-    //
-    // return toRoute;
-    // }
+    @Override
+    public GreenPos toJsonModel() {
+        String eta = DateTimeConverter.getDateTimeConverter().toString(getEtaOfArrival(), null);
+        
+        List<dk.dma.embryo.rest.json.Voyage> transformed = new ArrayList<dk.dma.embryo.rest.json.Voyage>(getVoyages().size());
+        for(ReportedVoyage v : getVoyages()){
+            transformed.add(v.toJsonModel());
+        }
+        
+        GreenPos result = new GreenPos();
+        result.setReportType(getReportType());
+        result.setShipName(getShipName());
+        result.setShipMaritimeId(getShipMaritimeId());
+        result.setShipMmsi(getShipMmsi());
+        result.setShipCallSign(getShipCallSign());
+        result.setLongitude(getPosition().getLongitudeAsString());
+        result.setLatitude(getPosition().getLatitudeAsString());
+        result.setWeather(getWeather());
+        result.setIce(getIceInformation());
+        result.setSpeed(getSpeed());
+        result.setCourse(getCourse());
+        result.setDestination(getDestination());
+        result.setPersonsOnBoard(getPersonsOnBoard());
+        result.setEtaOfArrival(eta);
+        result.setVoyages(transformed);
+        result.setReportedBy(getReportedBy());
+        
+        return result;
+    }
 
     public GreenPosSailingPlanReport withVoyages(List<Voyage> voyages) {
         List<ReportedVoyage> transformed = new ArrayList<>(voyages.size());
@@ -148,5 +166,11 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     public Integer getPersonsOnBoard() {
         return personsOnBoard;
     }
+
+    public List<ReportedVoyage> getVoyages() {
+        return voyages;
+    }
+    
+    
 
 }

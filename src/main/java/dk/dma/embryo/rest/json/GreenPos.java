@@ -17,13 +17,14 @@ package dk.dma.embryo.rest.json;
 
 import java.util.List;
 
-import dk.dma.enav.model.voyage.Voyage;
-
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 public class GreenPos {
-    
+
+    private String reportType;
+
     private String shipName;
-    
+
     private Long shipMmsi;
 
     private String shipCallSign;
@@ -34,30 +35,43 @@ public class GreenPos {
 
     private String longitude;
 
-    private String reportType;
-    
     private String weather;
-    
+
     private String ice;
-    
-    private String reportedBy;
 
     private Double speed;
-    
+
     private Integer course;
-    
+
     private String destination;
-    
+
     private Integer personsOnBoard;
-    
+
     private String etaOfArrival;
-    
+
     private String deviation;
 
     private List<Voyage> voyages;
 
-    
-    
+    private String reportedBy;
+
+    // //////////////////////////////////////////////////////////////////////
+    // Constructors
+    // //////////////////////////////////////////////////////////////////////
+    public GreenPos() {
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // Property methods
+    // //////////////////////////////////////////////////////////////////////
     public String getShipName() {
         return shipName;
     }
@@ -193,6 +207,5 @@ public class GreenPos {
     public void setVoyages(List<Voyage> voyages) {
         this.voyages = voyages;
     }
-   
 
 }

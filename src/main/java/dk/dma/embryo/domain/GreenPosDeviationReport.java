@@ -15,6 +15,7 @@
  */
 package dk.dma.embryo.domain;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -31,13 +32,10 @@ import dk.dma.embryo.rest.json.GreenPos;
  * @author Jesper Tejlgaard
  */
 @Entity
+@DiscriminatorValue("DR")
 public class GreenPosDeviationReport extends GreenPosReport {
 
     private static final long serialVersionUID = -7205030526506222850L;
-
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
 
     private String deviation;
 
@@ -58,6 +56,23 @@ public class GreenPosDeviationReport extends GreenPosReport {
         return report;
     }
 
+    @Override
+    public GreenPos toJsonModel() {
+        GreenPos result = new GreenPos();
+        result.setReportType(getReportType());
+        result.setShipName(getShipName());
+        result.setShipMaritimeId(getShipMaritimeId());
+        result.setShipMmsi(getShipMmsi());
+        result.setShipCallSign(getShipCallSign());
+        result.setLongitude(getPosition().getLongitudeAsString());
+        result.setLatitude(getPosition().getLatitudeAsString());
+        result.setDeviation(getDeviation());
+        result.setReportedBy(getReportedBy());
+        
+        return result;
+    }
+
+    
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
