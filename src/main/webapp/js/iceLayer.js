@@ -157,9 +157,9 @@ function createIceLayer() {
         map.addLayer(iceLayer);
         map.addLayer(waterLayer);
 
-    	embryo.mapPanel.add2HoverFeatureCtrl(iceLayer);
+//    	embryo.mapPanel.add2HoverFeatureCtrl(iceLayer);
 
-        console.log("Ice and water layers addded.")
+        console.log("Ice and water layers addded.");
     }
 
     function requestShapefile(name) {
