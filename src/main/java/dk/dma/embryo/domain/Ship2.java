@@ -68,6 +68,7 @@ public class Ship2 extends BaseEntity<Long> {
     @Column(nullable = true, length = 32)
     private String commCapabilities;
 
+    // TODO REMOVE ?
     @Column(nullable = true)
     private Integer rescueCapacity;
 
@@ -100,11 +101,45 @@ public class Ship2 extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-
     public Ship toJsonModel(){
-        Ship ship = new Ship(getMaritimeId(), getName(), getMmsi(), getCallsign());
+        Ship ship = new Ship();
+
+        ship.setName(getName());
+        ship.setCallSign(getCallsign());
+        ship.setMmsi(getMmsi());
+        ship.setMaritimeId(getMaritimeId());
+        ship.setImo(getImoNo());
+        ship.setType(getType());
+        ship.setCommCapabilities(getCommCapabilities());
+        ship.setLength(getLength());
+        ship.setWidth(getWidth());
+        ship.setTonnage(getTonnage());
+        ship.setMaxSpeed(getMaxSpeed());
+        ship.setIceClass(getIceClass());
+        ship.setHelipad(getHelipad());
+        
         return ship;
     }
+
+    public static Ship2 fromJsonModel(Ship ship){
+        Ship2 result = new Ship2(ship.getMaritimeId());
+
+        result.setName(ship.getName());
+        result.setCallsign(ship.getCallSign());
+        result.setMmsi(ship.getMmsi());
+        result.setImoNo(ship.getImo());
+        result.setType(ship.getType());
+        result.setCommCapabilities(ship.getCommCapabilities());
+        result.setLength(ship.getLength());
+        result.setWidth(ship.getWidth());
+        result.setTonnage(ship.getTonnage());
+        result.setMaxSpeed(ship.getMaxSpeed());
+        result.setIceClass(ship.getIceClass());
+        result.setHelipad(ship.getHelipad());
+        
+        return result;
+    }
+
     
     // //////////////////////////////////////////////////////////////////////
     // Constructors

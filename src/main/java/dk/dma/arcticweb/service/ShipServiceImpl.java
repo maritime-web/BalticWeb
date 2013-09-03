@@ -57,8 +57,8 @@ public class ShipServiceImpl implements ShipService {
 
     @Inject
     private Subject subject;
-    
-    @Inject 
+
+    @Inject
     private Logger logger;
 
     public ShipServiceImpl() {
@@ -80,6 +80,34 @@ public class ShipServiceImpl implements ShipService {
         shipReport.setShip(ship);
 
         shipRepository.saveEntity(shipReport);
+    }
+
+    @Override
+    @YourShip
+    public String save(Ship2 ship) {
+        Ship2 managed = shipRepository.getShipByMaritimeId(ship.getMaritimeId());
+
+        if (managed != null) {
+            // copying all values to managed entity to avoid resetting JPA association fields.
+            managed.setName(ship.getName());
+            managed.setMmsi(ship.getMmsi());
+            managed.setImoNo(ship.getImoNo());
+            managed.setCallsign(ship.getCallsign());
+            managed.setCommCapabilities(ship.getCommCapabilities());
+            managed.setHelipad(ship.getHelipad());
+            managed.setLength(ship.getLength());
+            managed.setMaxSpeed(ship.getMaxSpeed());
+            managed.setWidth(ship.getWidth());
+            managed.setRescueCapacity(ship.getRescueCapacity());
+            managed.setType(ship.getType());
+            managed.setTonnage(ship.getTonnage());
+
+            managed = shipRepository.saveEntity(managed);
+            return managed.getMaritimeId();
+        } else {
+            ship = shipRepository.saveEntity(ship);
+            return ship.getMaritimeId();
+        }
     }
 
     @Override
@@ -122,7 +150,7 @@ public class ShipServiceImpl implements ShipService {
 
     public Voyage getActiveVoyage(String maritimeShipId) {
         Ship2 ship = shipRepository.getShipByMaritimeId(maritimeShipId);
-        if(ship == null){
+        if (ship == null) {
             return null;
         }
         Voyage voyage = ship.getActiveVoyage();
@@ -149,14 +177,13 @@ public class ShipServiceImpl implements ShipService {
         }
         return voyagePlan;
     }
-    
 
     @YourShip
     @Override
     public List<Voyage> getVoyages(Long mmsi) {
         // TODO fix to work for several voyage plans
         VoyagePlan plan = shipRepository.getVoyagePlan(mmsi);
-        if(plan == null){
+        if (plan == null) {
             return Collections.emptyList();
         }
         return plan.getVoyagePlan();
@@ -164,30 +191,30 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public String saveRoute(Route route, String voyageId, boolean active) {
-        if(route.getId() == null){
+        if (route.getId() == null) {
             Long id = shipRepository.getRouteId(route.getEnavId());
             route.setId(id);
         }
-        
+
         if (voyageId != null) {
             Voyage voyage = shipRepository.getVoyageByEnavId(voyageId);
             route.setVoyage(voyage);
         }
 
         shipRepository.saveEntity(route);
-        
+
         return route.getEnavId();
     }
 
     @Override
     public String saveRoute(Route route) {
-        if(route.getId() == null){
+        if (route.getId() == null) {
             Long id = shipRepository.getRouteId(route.getEnavId());
             route.setId(id);
         }
-        
+
         shipRepository.saveEntity(route);
-        
+
         return route.getEnavId();
     }
 
@@ -200,13 +227,13 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public Route getYourActiveRoute() {
         Ship2 ship = getYourShip();
-        if(ship == null){
+        if (ship == null) {
             return null;
         }
-        Voyage active = ship.getActiveVoyage(); 
-        if(active != null && active.getRoute() != null){
+        Voyage active = ship.getActiveVoyage();
+        if (active != null && active.getRoute() != null) {
             // initialize to avoid lazyinitialization exceptions
-            if(active.getRoute().getWayPoints().size() > 0){
+            if (active.getRoute().getWayPoints().size() > 0) {
                 active.getRoute().getWayPoints().get(0);
             }
             return active.getRoute();
@@ -224,29 +251,29 @@ public class ShipServiceImpl implements ShipService {
         shipRepository.saveEntity(ship);
         return route;
     }
-    
+
     @Override
     public Route getRouteByEnavId(String enavId) {
         Route route = shipRepository.getRouteByEnavId(enavId);
         return route;
     }
-    
+
     @Override
     public Voyage getVoyage(String enavId) {
         return shipRepository.getVoyageByEnavId(enavId);
     }
-    
+
     /**
      * Also sets yourship on route
      */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Route parseRoute(InputStream is) throws IOException{
+    public Route parseRoute(InputStream is) throws IOException {
         RouteParser parser = RouteParser.getSimpleRouteParser(is);
 
         dk.dma.enav.model.voyage.Route enavRoute = parser.parse();
         Route route = Route.fromEnavModel(enavRoute);
         route.setShip(getYourShip());
-        
+
         return route;
     }
 }

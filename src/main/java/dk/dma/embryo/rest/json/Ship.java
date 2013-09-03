@@ -23,8 +23,6 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  */
 public class Ship {
 
-    // Properties relevant for current functionality. Extra can be added.
-
     private String name;
 
     private Long mmsi;
@@ -32,6 +30,24 @@ public class Ship {
     private String callSign;
 
     private String maritimeId;
+    
+    private Long imo;
+    
+    private String type;
+    
+    private String commCapabilities;
+    
+    private Integer width;
+    
+    private Integer length;
+    
+    private Integer maxSpeed;
+
+    private Integer tonnage;
+
+    private String iceClass;
+    
+    private Boolean helipad;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -40,14 +56,6 @@ public class Ship {
         super();
     }
     
-    public Ship(String maritimeId, String name, Long mmsi, String callSign) {
-        super();
-        this.name = name;
-        this.mmsi = mmsi;
-        this.callSign = callSign;
-        this.maritimeId = maritimeId;
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
@@ -90,5 +98,77 @@ public class Ship {
     public void setMaritimeId(String shipMaritimeId) {
         this.maritimeId = shipMaritimeId;
     }
+
+    public Long getImo() {
+        return imo;
+    }
+
+    public void setImo(Long imo) {
+        this.imo = imo;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getCommCapabilities() {
+        return commCapabilities;
+    }
+
+    public void setCommCapabilities(String commCapabilities) {
+        this.commCapabilities = commCapabilities;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public Integer getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(Integer maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public Integer getTonnage() {
+        return tonnage;
+    }
+
+    public void setTonnage(Integer tonnage) {
+        this.tonnage = tonnage;
+    }
+
+    public String getIceClass() {
+        return iceClass;
+    }
+
+    public void setIceClass(String iceClass) {
+        this.iceClass = iceClass;
+    }
+
+    public Boolean getHelipad() {
+        return helipad;
+    }
+
+    public void setHelipad(Boolean helipad) {
+        this.helipad = helipad;
+    }    
 
 }

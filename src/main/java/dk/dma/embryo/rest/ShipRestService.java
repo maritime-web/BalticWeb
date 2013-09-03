@@ -15,8 +15,12 @@
  */
 package dk.dma.embryo.rest;
 
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -25,6 +29,7 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.rest.json.Ship;
+import dk.dma.enav.model.ship.ShipType;
 
 /**
  * 
@@ -58,6 +63,33 @@ public class ShipRestService {
         logger.debug("getYourShip(): {}", result);
         
         return result;
+    }
+
+    @GET
+    @Path("/shiptypes")
+    @Produces("application/json")
+    public List<String> getShipTypes() {
+        logger.debug("getShipTypes()");
+
+        List<String> result = ShipType.getStringList(); 
+
+        logger.debug("getShipTypes(): {}", result);
+        
+        return result;
+    }
+
+    @PUT
+    @Consumes("application/json")
+    public String save(Ship ship) {
+        logger.debug("save({})", ship);
+
+        Ship2 toBeSaved = Ship2.fromJsonModel(ship);
+        
+        String maritimeId = shipService.save(toBeSaved);
+        
+        logger.debug("save(): {}", maritimeId);
+        
+        return maritimeId;
     }
 
 //    @GET

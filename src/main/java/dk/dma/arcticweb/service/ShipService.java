@@ -38,7 +38,14 @@ public interface ShipService {
      * @return
      */
     Ship2 getYourShip();
-    
+
+    /**
+     * 
+     * @param ship
+     * @return
+     */
+    String save(Ship2 ship);
+
     /**
      * Add ship report for ship
      * 
@@ -60,7 +67,7 @@ public interface ShipService {
     List<Voyage> getVoyages(Long mmsi);
 
     Voyage getActiveVoyage(String maritimeId);
-    
+
     String saveRoute(Route route, String voyageId, boolean active);
 
     String saveRoute(Route route);
