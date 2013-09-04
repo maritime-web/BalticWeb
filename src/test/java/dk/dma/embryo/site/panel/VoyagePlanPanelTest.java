@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 import dk.dma.arcticweb.service.GeographicService;
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.CdiUnitTestBase;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 
@@ -44,7 +44,7 @@ public class VoyagePlanPanelTest extends CdiUnitTestBase {
         // ///////////////////////////////////////////////////
         // Setup test data
         // ///////////////////////////////////////////////////
-        Ship2 ship = new Ship2();
+        Ship ship = new Ship();
 
         VoyagePlan voaygePlan = new VoyagePlan();
         voaygePlan.addVoyageEntry(new Voyage("City1", "1 1.000N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),

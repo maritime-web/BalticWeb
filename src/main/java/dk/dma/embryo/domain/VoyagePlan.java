@@ -43,7 +43,7 @@ public class VoyagePlan extends BaseEntity<Long> {
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     @OneToOne(optional = false)
-    Ship2 ship;
+    Ship ship;
     
     @OneToMany(cascade={CascadeType.ALL})
     @OrderColumn(name="voyageIndex")
@@ -93,7 +93,7 @@ public class VoyagePlan extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public Ship2 getShip() {
+    public Ship getShip() {
         return ship;
     }
     

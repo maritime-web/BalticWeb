@@ -27,7 +27,6 @@ import javax.ws.rs.Produces;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ShipService;
-import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.rest.json.Ship;
 import dk.dma.enav.model.ship.ShipType;
 
@@ -53,7 +52,7 @@ public class ShipRestService {
     public Ship getYourShip() {
         logger.debug("getYourShip()");
 
-        Ship2 ship = shipService.getYourShip();
+        dk.dma.embryo.domain.Ship ship = shipService.getYourShip();
         
         Ship result = null;
         if(ship != null){
@@ -83,7 +82,7 @@ public class ShipRestService {
     public String save(Ship ship) {
         logger.debug("save({})", ship);
 
-        Ship2 toBeSaved = Ship2.fromJsonModel(ship);
+        dk.dma.embryo.domain.Ship toBeSaved = dk.dma.embryo.domain.Ship.fromJsonModel(ship);
         
         String maritimeId = shipService.save(toBeSaved);
         

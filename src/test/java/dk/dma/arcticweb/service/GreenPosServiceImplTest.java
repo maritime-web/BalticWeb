@@ -39,7 +39,7 @@ import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.Position;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.security.Subject;
@@ -60,7 +60,7 @@ public class GreenPosServiceImplTest {
 
     GreenPosService greenPosService;
 
-    static Ship2 ship;
+    static Ship ship;
 
     ShipDao shipDao;
 
@@ -73,7 +73,7 @@ public class GreenPosServiceImplTest {
         EntityManager entityManager = factory.createEntityManager();
         entityManager.getTransaction().begin();
 
-        ship = new Ship2();
+        ship = new Ship();
         ship.setName("MyShip");
         ship.setCallsign("AA");
         ship.setMmsi(0L);

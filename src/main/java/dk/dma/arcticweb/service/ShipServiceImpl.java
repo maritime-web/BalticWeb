@@ -37,7 +37,7 @@ import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.ShipReport;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
@@ -72,7 +72,7 @@ public class ShipServiceImpl implements ShipService {
     @Override
     @YourShip
     public void reportForCurrentShip(ShipReport shipReport) {
-        Ship2 ship = subject.getRole(Sailor.class).getShip();
+        Ship ship = subject.getRole(Sailor.class).getShip();
 
         // TODO Should report time be modified
         shipReport.setReportTime(new Date());
@@ -84,8 +84,8 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     @YourShip
-    public String save(Ship2 ship) {
-        Ship2 managed = shipRepository.getShipByMaritimeId(ship.getMaritimeId());
+    public String save(Ship ship) {
+        Ship managed = shipRepository.getShipByMaritimeId(ship.getMaritimeId());
 
         if (managed != null) {
             // copying all values to managed entity to avoid resetting JPA association fields.
@@ -149,7 +149,7 @@ public class ShipServiceImpl implements ShipService {
     }
 
     public Voyage getActiveVoyage(String maritimeShipId) {
-        Ship2 ship = shipRepository.getShipByMaritimeId(maritimeShipId);
+        Ship ship = shipRepository.getShipByMaritimeId(maritimeShipId);
         if (ship == null) {
             return null;
         }
@@ -157,12 +157,12 @@ public class ShipServiceImpl implements ShipService {
         return voyage;
     }
 
-    public Ship2 getYourShip() {
+    public Ship getYourShip() {
         if (subject.hasRole(Sailor.class)) {
             Sailor sailor = realmDao.getSailor(subject.getUserId());
             return sailor.getShip();
         }
-        return new Ship2();
+        return new Ship();
     }
 
     @YourShip
@@ -172,7 +172,7 @@ public class ShipServiceImpl implements ShipService {
         if (voyagePlan == null) {
             voyagePlan = new VoyagePlan();
             // FIXME: Hack only works for YourShip feature
-            Ship2 ship = shipRepository.getShip(subject.getRole(Sailor.class));
+            Ship ship = shipRepository.getShip(subject.getRole(Sailor.class));
             ship.setVoyagePlan(voyagePlan);
         }
         return voyagePlan;
@@ -226,7 +226,7 @@ public class ShipServiceImpl implements ShipService {
     @YourShip
     @Override
     public Route getYourActiveRoute() {
-        Ship2 ship = getYourShip();
+        Ship ship = getYourShip();
         if (ship == null) {
             return null;
         }
@@ -246,7 +246,7 @@ public class ShipServiceImpl implements ShipService {
         logger.debug("activateRoute({})", routeEnavId);
         Route route = shipRepository.getRouteByEnavId(routeEnavId);
         Voyage v = route.getVoyage();
-        Ship2 ship = route.getShip();
+        Ship ship = route.getShip();
         ship.setActiveVoyage(v);
         shipRepository.saveEntity(ship);
         return route;

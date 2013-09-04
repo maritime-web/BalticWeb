@@ -23,7 +23,7 @@ import javax.persistence.TypedQuery;
 
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 
@@ -39,27 +39,27 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
     }
 
     @Override
-    public Ship2 getShip(Sailor sailor) {
+    public Ship getShip(Sailor sailor) {
         Long shipId = sailor.getShip().getId();
-        return (Ship2) getByPrimaryKey(Ship2.class, shipId);
+        return (Ship) getByPrimaryKey(Ship.class, shipId);
     }
 
     @Override
-    public Ship2 getShipByCallsign(String callsign) {
-        TypedQuery<Ship2> query = em.createNamedQuery("Ship:getByCallsign", Ship2.class);
+    public Ship getShipByCallsign(String callsign) {
+        TypedQuery<Ship> query = em.createNamedQuery("Ship:getByCallsign", Ship.class);
         query.setParameter("callsign", callsign);
 
-        List<Ship2> result = query.getResultList();
+        List<Ship> result = query.getResultList();
 
         return getSingleOrNull(result);
     }
 
     @Override
-    public Ship2 getShipByMaritimeId(String callsign) {
-        TypedQuery<Ship2> query = em.createNamedQuery("Ship:getByMaritimeId", Ship2.class);
+    public Ship getShipByMaritimeId(String callsign) {
+        TypedQuery<Ship> query = em.createNamedQuery("Ship:getByMaritimeId", Ship.class);
         query.setParameter("maritimeId", callsign);
 
-        List<Ship2> result = query.getResultList();
+        List<Ship> result = query.getResultList();
 
         return getSingleOrNull(result);
     }
@@ -76,12 +76,12 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
 
     @Override
     public Route getActiveRoute(Long mmsi) {
-        TypedQuery<Ship2> query = em.createNamedQuery("Ship:getByMmsi", Ship2.class);
+        TypedQuery<Ship> query = em.createNamedQuery("Ship:getByMmsi", Ship.class);
         query.setParameter("mmsi", mmsi);
 
-        List<Ship2> result = query.getResultList();
+        List<Ship> result = query.getResultList();
 
-        Ship2 ship = getSingleOrNull(result);
+        Ship ship = getSingleOrNull(result);
 
         if (ship == null || ship.getActiveVoyage() == null) {
             return null;

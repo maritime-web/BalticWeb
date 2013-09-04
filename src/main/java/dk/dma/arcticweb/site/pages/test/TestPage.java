@@ -45,7 +45,7 @@ import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 
@@ -112,14 +112,14 @@ public class TestPage extends WebPage {
         deleteAll(Route.class);
         deleteAll(SecuredUser.class);
         deleteAll(Role.class);
-        deleteAll(Ship2.class);
+        deleteAll(Ship.class);
         deleteAll(Permission.class);
 
         logger.info("AFTER DELETION");
         logExistingEntries();
 
         // Create ship and user
-        Ship2 newShip = new Ship2();
+        Ship newShip = new Ship();
         newShip.setName("ORASILA");
         newShip.setMmsi(220443000L);
         newShip.setCallsign("OYDK2");
@@ -194,7 +194,7 @@ public class TestPage extends WebPage {
 
     }
 
-    private void insertDemoRoute(Ship2 ship, Voyage voyage, String file, boolean activate) {
+    private void insertDemoRoute(Ship ship, Voyage voyage, String file, boolean activate) {
         InputStream is = getClass().getResourceAsStream(file);
         try {
             Route r = shipService.parseRoute(is);
@@ -218,7 +218,7 @@ public class TestPage extends WebPage {
             logger.info("Permissions: {} ", realmDao.getAll(Permission.class));
             logger.info("Roles: {} ", realmDao.getAll(Role.class));
             logger.info("Users: {} ", realmDao.getAll(SecuredUser.class));
-            logger.info("Ships: {} ", realmDao.getAll(Ship2.class));
+            logger.info("Ships: {} ", realmDao.getAll(Ship.class));
             logger.info("VoyagePlans: {} ", realmDao.getAll(VoyagePlan.class));
             logger.info("Voyage: {} ", realmDao.getAll(Voyage.class));
             logger.info("Berth: {} ", realmDao.getAll(Berth.class));

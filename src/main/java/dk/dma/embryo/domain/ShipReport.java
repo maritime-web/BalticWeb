@@ -47,7 +47,7 @@ public class ShipReport extends BaseEntity<Long> {
     private Date created;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Ship2 ship;
+    private Ship ship;
 
     public ShipReport() {
     }
@@ -100,11 +100,11 @@ public class ShipReport extends BaseEntity<Long> {
         this.created = created;
     }
 
-    public Ship2 getShip() {
+    public Ship getShip() {
         return ship;
     }
 
-    public void setShip(Ship2 ship) {
+    public void setShip(Ship ship) {
         this.ship = ship;
     }
 

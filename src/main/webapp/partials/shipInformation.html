@@ -6,7 +6,7 @@
 		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
 		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-		<form class="form-horizontal">
+		<form name="shipForm" class="form-horizontal" novalidate>
 			<div class="row-fluid">
 				<div class="span7">
 					<input type="hidden" x-ng-model="ship.maritimeId" />
@@ -19,7 +19,8 @@
 					<div class="control-group">
 						<label class="control-label" for="name">Name</label>
 						<div class="controls">
-							<input type="text" id="name" class="input-large" x-ng-model="ship.name" />
+							<input type="text" id="name" name="name" class="input-large" x-ng-model="ship.name" required /> <span
+								x-ng-show="shipForm.name.$error.required && shipForm.name.$dirty" class="msg-invalid">Value required</span>
 						</div>
 					</div>
 					<div class="control-group">
@@ -52,25 +53,31 @@
 					<div class="control-group">
 						<label class="control-label" for="width">Width (m)</label>
 						<div class="controls">
-							<input type="text" id="width" class="input-mini" x-ng-model="ship.width" />
+							<input type="number" id="width" name="width" class="input-mini" x-ng-model="ship.width" min="0" /> <span
+								x-ng-show="shipForm.width.$error.min" class="msg-invalid">Expected positive number</span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="length">Length (m)</label>
 						<div class="controls">
-							<input type="text" id="length" class="input-mini" x-ng-model="ship.length" />
+							<input type="number" id="length" name="length" class="input-mini" x-ng-model="ship.length" min="0" /> <span
+								x-ng-show="shipForm.length.$error.min" class="msg-invalid">Expected positive number</span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="maxSpeed">Max speed (kn)</label>
 						<div class="controls">
-							<input type="text" id="maxSpeed" class="input-mini" x-ng-model="ship.maxSpeed" />
+							<input type="number" id="maxSpeed" name="maxSpeed" class="input-mini" x-ng-model="ship.maxSpeed" min="0"
+								max="200" /> <span x-ng-show="shipForm.maxSpeed.$error.min || shipForm.maxSpeed.$error.max" class="msg-invalid">Must
+								be between 0 and 200</span>
+
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="tonnage">Tonnage</label>
 						<div class="controls">
-							<input type="text" id="tonnage" class="input-mini" x-ng-model="ship.tonnage" />
+							<input type="number" id="tonnage" name="tonnage" class="input-mini" x-ng-model="ship.tonnage" min="0" /> <span
+								x-ng-show="shipForm.tonnage.$error.min" class="msg-invalid">Expected positive number</span>
 						</div>
 					</div>
 					<div class="control-group">

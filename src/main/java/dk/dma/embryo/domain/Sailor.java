@@ -27,17 +27,17 @@ public class Sailor extends Role {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Ship2 ship;
+    private Ship ship;
 
     public Sailor() {
         super("sailor");
     }
 
-    public Ship2 getShip() {
+    public Ship getShip() {
         return ship;
     }
 
-    public void setShip(Ship2 ship) {
+    public void setShip(Ship ship) {
         this.ship = ship;
     }
 }

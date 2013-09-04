@@ -35,7 +35,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.pages.MainPage;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.site.panel.EmbryonicForm;
 import dk.dma.enav.model.ship.ShipType;
 
@@ -71,8 +71,8 @@ public class ShipInformationForm extends EmbryonicForm<ShipInformationForm> {
     public ShipInformationForm(String id) {
         super(id, "Ship Information");
         
-        final Ship2 ship = shipService.getYourShip();
-        setDefaultModel(new CompoundPropertyModel<Ship2>(ship));
+        final Ship ship = shipService.getYourShip();
+        setDefaultModel(new CompoundPropertyModel<Ship>(ship));
 
         mmsi = new TextField<>("mmsi");
 

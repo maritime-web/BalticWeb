@@ -27,17 +27,17 @@ public class ShipOwnerRole extends Role {
     private static final long serialVersionUID = 1L;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
-    private Set<Ship2> ships = new HashSet<Ship2>();
+    private Set<Ship> ships = new HashSet<Ship>();
 
     public ShipOwnerRole() {
         super("shipOwner");
     }
 
-    public Set<Ship2> getShips() {
+    public Set<Ship> getShips() {
         return ships;
     }
 
-    public void setShips(Set<Ship2> ships) {
+    public void setShips(Set<Ship> ships) {
         this.ships = ships;
     }
 

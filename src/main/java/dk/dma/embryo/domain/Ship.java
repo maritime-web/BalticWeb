@@ -29,15 +29,15 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import dk.dma.embryo.rest.json.Ship;
-
 @Entity
-@NamedQueries({ @NamedQuery(name = "Ship:getByMmsi", query = "SELECT s FROM Ship2 s WHERE s.mmsi = :mmsi"),
-        @NamedQuery(name = "Ship:getByMaritimeId", query = "SELECT s FROM Ship2 s WHERE s.maritimeId = :maritimeId"),
-        @NamedQuery(name = "Ship:getByCallsign", query = "SELECT s FROM Ship2 s WHERE s.callsign = :callsign") })
-public class Ship2 extends BaseEntity<Long> {
+@NamedQueries({ @NamedQuery(name = "Ship:getByMmsi", query = "SELECT s FROM Ship s WHERE s.mmsi = :mmsi"),
+        @NamedQuery(name = "Ship:getByMaritimeId", query = "SELECT s FROM Ship s WHERE s.maritimeId = :maritimeId"),
+        @NamedQuery(name = "Ship:getByCallsign", query = "SELECT s FROM Ship s WHERE s.callsign = :callsign") })
+public class Ship extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 
     @Column(nullable = true, length = 128)
@@ -59,9 +59,12 @@ public class Ship2 extends BaseEntity<Long> {
     @Column(nullable = true, length = 32)
     private String type;
 
+    @Min(0)
+    @Max(200)
     @Column(nullable = true)
-    private Integer maxSpeed;
+    private Short maxSpeed;
 
+    @Min(0)
     @Column(nullable = true)
     private Integer tonnage;
 
@@ -69,12 +72,15 @@ public class Ship2 extends BaseEntity<Long> {
     private String commCapabilities;
 
     // TODO REMOVE ?
+    @Min(0)
     @Column(nullable = true)
     private Integer rescueCapacity;
 
+    @Min(0)
     @Column(nullable = true)
     private Integer width;
 
+    @Min(0)
     @Column(nullable = true)
     private Integer length;
 
@@ -101,8 +107,8 @@ public class Ship2 extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public Ship toJsonModel(){
-        Ship ship = new Ship();
+    public dk.dma.embryo.rest.json.Ship toJsonModel(){
+        dk.dma.embryo.rest.json.Ship ship = new dk.dma.embryo.rest.json.Ship();
 
         ship.setName(getName());
         ship.setCallSign(getCallsign());
@@ -121,8 +127,8 @@ public class Ship2 extends BaseEntity<Long> {
         return ship;
     }
 
-    public static Ship2 fromJsonModel(Ship ship){
-        Ship2 result = new Ship2(ship.getMaritimeId());
+    public static Ship fromJsonModel(dk.dma.embryo.rest.json.Ship ship){
+        Ship result = new Ship(ship.getMaritimeId());
 
         result.setName(ship.getName());
         result.setCallsign(ship.getCallSign());
@@ -144,15 +150,15 @@ public class Ship2 extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Ship2(String maritimeId) {
+    public Ship(String maritimeId) {
         this.maritimeId = maritimeId;
     }
 
-    public Ship2() {
+    public Ship() {
         this(UUID.randomUUID().toString());
     }
 
-    public Ship2(Long mmsi) {
+    public Ship(Long mmsi) {
         this();
         this.mmsi = mmsi;
     }
@@ -212,11 +218,11 @@ public class Ship2 extends BaseEntity<Long> {
         this.type = type;
     }
 
-    public Integer getMaxSpeed() {
+    public Short getMaxSpeed() {
         return maxSpeed;
     }
 
-    public void setMaxSpeed(Integer maxSpeed) {
+    public void setMaxSpeed(Short maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 

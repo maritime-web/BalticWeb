@@ -23,7 +23,7 @@ import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.ShipReport;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
@@ -37,14 +37,14 @@ public interface ShipService {
      * 
      * @return
      */
-    Ship2 getYourShip();
+    Ship getYourShip();
 
     /**
      * 
      * @param ship
      * @return
      */
-    String save(Ship2 ship);
+    String save(Ship ship);
 
     /**
      * Add ship report for ship

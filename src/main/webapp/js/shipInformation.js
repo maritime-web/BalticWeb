@@ -107,6 +107,7 @@
 		};
 
 		$scope.reset = function() {
+			// TODO find a way to hide these
 			$scope.message = null;
 			$scope.alertMessage = null;
 			loadData();

@@ -12,7 +12,7 @@
     <class>dk.dma.embryo.domain.ShoreRole</class>
     <class>dk.dma.embryo.domain.ShipOwnerRole</class>
     <class>dk.dma.embryo.domain.AuthorityRole</class>
-    <class>dk.dma.embryo.domain.Ship2</class>
+    <class>dk.dma.embryo.domain.Ship</class>
     <class>dk.dma.embryo.domain.ShipReport</class>
     <class>dk.dma.embryo.domain.VoyagePlan</class>
     <class>dk.dma.embryo.domain.Voyage</class>

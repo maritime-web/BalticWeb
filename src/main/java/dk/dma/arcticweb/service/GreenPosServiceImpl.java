@@ -30,7 +30,7 @@ import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
 
@@ -74,7 +74,7 @@ public class GreenPosServiceImpl implements GreenPosService {
     public String saveReport(GreenPosReport report) {
         checkIfAlreadySaved(report);
 
-        Ship2 ship = null;
+        Ship ship = null;
 
         if (subject.hasRole(Sailor.class)) {
             ship = shipService.getYourShip();
@@ -103,7 +103,7 @@ public class GreenPosServiceImpl implements GreenPosService {
         }
     }
 
-    private void validateShipData(GreenPosReport report, Ship2 ship) {
+    private void validateShipData(GreenPosReport report, Ship ship) {
         // If report is send by sailor, then validate, that he is reporting on behalf of his own ship
         // Validation if his ship name is still not registered in the system.
         if (ship.getCallsign() != null && !ship.getCallsign().equals(report.getShipCallSign())) {
@@ -120,8 +120,8 @@ public class GreenPosServiceImpl implements GreenPosService {
         }
     }
 
-    private Ship2 getShipFromReport(GreenPosReport report) {
-        Ship2 ship = null;
+    private Ship getShipFromReport(GreenPosReport report) {
+        Ship ship = null;
         if (StringUtils.isNotBlank(report.getShipMaritimeId())) {
             ship = shipDao.getShipByMaritimeId(report.getShipMaritimeId());
         }

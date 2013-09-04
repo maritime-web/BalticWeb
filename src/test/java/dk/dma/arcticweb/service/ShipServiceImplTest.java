@@ -43,7 +43,7 @@ import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.RouteLeg;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.domain.WayPoint;
@@ -73,7 +73,7 @@ public class ShipServiceImplTest {
         user.addRole(sailor);
         entityManager.persist(user);
 
-        Ship2 ship = new Ship2(10L);
+        Ship ship = new Ship(10L);
         entityManager.persist(ship);
 
         VoyagePlan voyagePlan = new VoyagePlan();
@@ -94,7 +94,7 @@ public class ShipServiceImplTest {
         user.addRole(sailor);
         entityManager.persist(user);
 
-        ship = new Ship2(20L);
+        ship = new Ship(20L);
         entityManager.persist(ship);
 
         voyagePlan = new VoyagePlan();

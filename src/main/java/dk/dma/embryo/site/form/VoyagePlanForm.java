@@ -52,7 +52,7 @@ import dk.dma.arcticweb.service.GeographicService;
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.arcticweb.site.pages.MainPage;
 import dk.dma.embryo.domain.Berth;
-import dk.dma.embryo.domain.Ship2;
+import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.rest.util.TypeaheadDatum;
@@ -225,7 +225,7 @@ public class VoyagePlanForm extends EmbryonicForm<VoyagePlanForm> {
                 // create empty voyage information objects as of no value to load them from database. They will be
                 // overwritten later on in any case.
                 Integer count = parameters.getParameterValue("voyageCount").toInteger();
-                Ship2 ship = shipService.getYourShip();
+                Ship ship = shipService.getYourShip();
                 VoyagePlan info = new VoyagePlan();
                 ship.setVoyagePlan(info);
                 for (int i = 0; i < count; i++) {
@@ -245,7 +245,7 @@ public class VoyagePlanForm extends EmbryonicForm<VoyagePlanForm> {
         @Override
         protected VoyagePlan load() {
             // Initial request. Load voyage information from database.
-            Ship2 ship = shipService.getYourShip();
+            Ship ship = shipService.getYourShip();
             VoyagePlan info = shipService.getVoyagePlan(ship.getMmsi());
             // HACK: Add empty voyage to generate empty row in case the user creates new voyages
             info.addVoyageEntry(new Voyage(null));
