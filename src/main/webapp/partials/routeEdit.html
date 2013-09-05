@@ -1,0 +1,111 @@
+
+<div>
+	<div>
+		<h2>Route</h2>
+	</div>
+	<div id="routeEdit">
+		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+		<form name="routeEditForm" class="form-horizontal route" ng-submit="save()">
+
+			<div class="row-fluid">
+				<div class="span5">
+					<div class="control-group">
+						<label class="control-label" for="name">Name</label>
+						<div class="controls">
+							<input ng-model="route.name" type="text" id="name" name="name" class="input-large" required /> <span
+								x-ng-show="routeEditForm.name.$error.required && routeEditForm.name.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+				</div>
+				<div class="span7">
+					<div class="control-group">
+						<label class="control-label" for="voyageName">Associated voyage</label>
+						<div class="controls">
+							<input ng-model="voyageId" type="hidden" id="voyageId" /> <input type="text" id="voyageName" class="input-large" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row-fluid">
+				<div class="span5">
+					<div class="control-group">
+						<label class="control-label" for="origin">Origin</label>
+						<div class="controls">
+							<input ng-model="route.departure" type="text" id="origin" class="input-large" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="destination">Destination</label>
+						<div class="controls">
+							<input ng-model="route.destination" type="text" id="destination" class="input-large" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="distance">Total Distance</label>
+						<div class="controls">
+							<span id="distance"></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="span7 long-label">
+					<div class="control-group">
+						<label class="control-label long" for="etaOfDeparture">Estimated time of Departure</label>
+						<div class="controls">
+							<input type="text" id="etaOfDeparture" class="input-medium" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label long" for="etaOfArrival">Estimated time of Arrival</label>
+						<div class="controls">
+							<input type="text" id="etaOfArrival" class="input-medium" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label long" for="timeBetween">Estimated time in between</label>
+						<div class="controls">
+							<input type="text" id="timeBetween" class="input-medium" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Latitude</th>
+						<th>Longitude</th>
+						<th>Rad</th>
+						<th>Rot</th>
+						<th>TTG</th>
+						<th>ETA</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr name="wayPointsNestedForm" ng-form ng-repeat="wp in route.waypoints">
+						<td><input ng-model="wp.name" class="input-medium" type="text" required /></td>
+						<td><input ng-model="wp.latitude" class="input-small" type="text" required /></td>
+						<td><input ng-model="wp.longitude" class="input-small" type="text" required /></td>
+						<td><input ng-model="wp.turnRad" class="input-small" type="text" required /></td>
+						<td><input ng-model="wp.rot" class="input-small" type="text" /></td>
+						<td><input class="input-small" type="text" /></td>
+						<td><input class="input-small" type="text" /></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div>
+				<span class="pull-right">
+					<button type="button" class="btn" x-ng-click="reset()" x-ng-disabled="active()">Reset</button>
+					<button type="submit" class="btn btn-primary start" x-ng-click="submit()" x-ng-disabled="!saveable()">
+						Save</button>
+				</span>
+			</div>
+		</form>
+	</div>
+</div>

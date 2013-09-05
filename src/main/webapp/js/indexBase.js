@@ -81,13 +81,18 @@
 		};
 	});
 
-	embryo.angular.config([ '$routeProvider', function($routeProvider) {
-		$routeProvider.when('/test', {
-			templateUrl : 'partials/testPartial.html',
-			controller : embryo.GreenPosCtrl
-		}).when('/ship', {
+	embryo.angular.config([ '$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+		// $locationProvider.html5Mode(true);
+
+		$routeProvider.when('/ship', {
 			templateUrl : 'partials/shipInformation.html',
 			controller : embryo.ShipInformationCtrl
+		}).when('/routeEdit/', {
+			templateUrl : 'partials/routeEdit.html',
+			controller : embryo.RouteEditCtrl
+		}).when('/routeEdit/:routeId', {
+			templateUrl : 'partials/routeEdit.html',
+			controller : embryo.RouteEditCtrl
 		}).when('/routeUpload/:mmsi', {
 			templateUrl : 'partials/routeUpload.html'// ,
 		// controller : embryo.GreenPosListCtrl
@@ -97,14 +102,13 @@
 		}).when('/reportlist', {
 			templateUrl : 'partials/greenposList.html',
 			controller : embryo.GreenPosListCtrl
-		}).when('/report/:mmsi', {
+		}).when('/report', {
 			templateUrl : 'partials/greenposReport.html',
 			controller : embryo.GreenPosCtrl
 		}).otherwise({
 			redirectTo : '/report'
 		});
 
-		// $locationProvider.html5Mode(true);
 	} ]);
 
 	embryo.angular.directive('msgRequired', function() {

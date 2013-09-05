@@ -88,10 +88,22 @@ public class RouteService {
         return result;
     }
 
-    @POST
+    @PUT
     @Consumes("application/json")
     public void save(Route route) {
-        logger.debug("Saving route: {}", route);
+        logger.debug("save({})", route);
+
+        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromEnavModel(route);
+        shipService.saveRoute(toBeSaved);
+        // String result = "Product created : " + product;
+        // return Response.status(201).entity(result).build();
+    }
+
+    // TODO Remove, when wicket has been removed
+    @POST
+    @Consumes("application/json")
+    public void save2(Route route) {
+        logger.debug("save2({})", route);
 
         dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromEnavModel(route);
         shipService.saveRoute(toBeSaved);
