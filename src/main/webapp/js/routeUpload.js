@@ -33,10 +33,11 @@
 		}
 	} ]);
 
-	//embryo.angular.controller('embryo.RouteUploadCtrl', [ '$scope', function($scope) {
+	// embryo.angular.controller('embryo.RouteUploadCtrl', [ '$scope',
+	// function($scope) {
 
-	embryo.RouteUploadCtrl = function($scope){
-		
+	embryo.RouteUploadCtrl = function($scope, $routeParams) {
+
 		// Choosing a new file will replace the old one
 		$scope.$on('fileuploadadd', function(e, data) {
 			$scope.queue = [];
@@ -63,8 +64,19 @@
 			$scope.cancel();
 		};
 
-		// TODO Find out how to reset prefetch/typeahead upon new ship
-		var mmsi = '220443000';
+		$scope.$on('fileuploadsubmit', function(e, data) {
+			if (typeof $scope.voyageDatum !== "undefined") {
+				data.formData = {
+					voyageId : $scope.voyageDatum.id
+				};
+			}
+		});
+
+		
+		var mmsi = $routeParams.mmsi;
+		if(!mmsi){
+			$scope.message = "Add mmsi to URL, e.g. ../routeUpload/mmsi";
+		}
 		var vUrl = 'rest/voyage/typeahead/' + mmsi;
 		$scope.voyageData = {
 			name : 'routeupload_voyages' + mmsi,
@@ -76,17 +88,12 @@
 			remote : vUrl
 		};
 
-		$scope.$on('fileuploadsubmit', function(e, data) {
-			if (typeof $scope.voyageDatum !== "undefined") {
-				data.formData = {
-					voyageId : $scope.voyageDatum.id
-				};
-			}
-		});
-
-		$scope.$on('$viewContentLoaded', function() {
-			$scope.reset();
-		});
+//		var voyageId = $routeParams.voyageId;
+//		
+//		console.log(voyageId);
+//		console.log($('#routeUpload').find('#voyageName').length);
+//		$('#routeUpload').find('#voyageName').typeahead('setQuery', 'Miami');
+		
 	};
 
 	embryo.routeUpload = {};

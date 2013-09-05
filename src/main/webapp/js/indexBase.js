@@ -88,7 +88,10 @@
 		}).when('/ship', {
 			templateUrl : 'partials/shipInformation.html',
 			controller : embryo.ShipInformationCtrl
-		}).when('/routeUpload', {
+		}).when('/routeUpload/:mmsi', {
+			templateUrl : 'partials/routeUpload.html'// ,
+		// controller : embryo.GreenPosListCtrl
+		}).when('/routeUpload/:mmsi/:voyageId', {
 			templateUrl : 'partials/routeUpload.html'// ,
 		// controller : embryo.GreenPosListCtrl
 		}).when('/reportlist', {
