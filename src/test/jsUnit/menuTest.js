@@ -15,17 +15,17 @@ describe('Menu Controller', function() {
 					onClick : ''
 				}, {
 					text : 'Ship Information',
-					href : '#',
+					href : '#'
 				} ]
 			}, {
 				text : 'Selected Ship',
 				required : [ 'yourShip', 'selectedShip' ],
 				menuItems : [ {
 					text : 'VoyagePlan',
-					href : '#',
+					href : '#'
 				}, {
 					text : 'Ship Information',
-					href : '#',
+					href : '#'
 				} ]
 			} ];
 			
@@ -59,7 +59,7 @@ describe('Menu Controller', function() {
 					onClick : ''
 				}, {
 					text : 'Ship Information',
-					href : '#',
+					href : '#'
 				} ]
 			} ];
 			
