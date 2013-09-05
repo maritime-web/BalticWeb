@@ -166,4 +166,14 @@ input.ng-dirty.ng-invalid {
 span.msg-invalid{
 	color : #e9322d;	
 }
+
+.data-label{
+	padding-top:5px;
+	float:left;
+}
+
+/** Route upload **/
+.progress{
+	margin-top: 7px;
+}
 ​

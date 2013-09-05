@@ -10,9 +10,8 @@
 (function() {
 	"use strict";
 
-	embryo.angular = angular.module('embryo', [ 'ngResource' ]);
+	embryo.angular = angular.module('embryo', [ 'ngResource', 'siyfion.ngTypeahead', 'blueimp.fileupload' ]);
 	// , 'ui.bootstrap'
-
 
 	embryo.angular.factory('AisRestService', function($resource) {
 		var defaultParams = {};
@@ -25,10 +24,9 @@
 				isArray : false,
 			}
 		};
-		return $resource('json_proxy/:action?argument=:mmsi', defaultParams,
-				actions);
+		return $resource('json_proxy/:action?argument=:mmsi', defaultParams, actions);
 	});
-	
+
 	embryo.angular.factory('SessionStorageService', function() {
 		return {
 			getItem : function(key, callback, remoteCall) {
@@ -83,7 +81,6 @@
 		};
 	});
 
-
 	embryo.angular.config([ '$routeProvider', function($routeProvider) {
 		$routeProvider.when('/test', {
 			templateUrl : 'partials/testPartial.html',
@@ -91,6 +88,9 @@
 		}).when('/ship', {
 			templateUrl : 'partials/shipInformation.html',
 			controller : embryo.ShipInformationCtrl
+		}).when('/routeUpload', {
+			templateUrl : 'partials/routeUpload.html'// ,
+		// controller : embryo.GreenPosListCtrl
 		}).when('/reportlist', {
 			templateUrl : 'partials/greenposList.html',
 			controller : embryo.GreenPosListCtrl
@@ -100,7 +100,7 @@
 		}).otherwise({
 			redirectTo : '/report'
 		});
-		
+
 		// $locationProvider.html5Mode(true);
 	} ]);
 
@@ -110,22 +110,20 @@
 				element.text('Value required');
 				element.addClass('msg-invalid');
 
-				attrs.$set('ngShow', attrs.msgRequired + '$error.required'
-						&& greenPosForm.gpPersons + '.$dirty');
+				attrs.$set('ngShow', attrs.msgRequired + '$error.required' && greenPosForm.gpPersons + '.$dirty');
 
 				// watch the expression, and update the UI on change.
-				scope.$watch('greenPosForm.gpPersons',
-						function(value, oldValue) {
-							console.log(value);
-							// console.log(value.$dirty);
-							// console.log(value.$error.required);
+				scope.$watch('greenPosForm.gpPersons', function(value, oldValue) {
+					console.log(value);
+					// console.log(value.$dirty);
+					// console.log(value.$error.required);
 
-							// if(value.$dirty && value.$error.required){
-							// element.show();
-							// }else{
-							// element.hide();
-							// }
-						});
+					// if(value.$dirty && value.$error.required){
+					// element.show();
+					// }else{
+					// element.hide();
+					// }
+				});
 			}
 		};
 

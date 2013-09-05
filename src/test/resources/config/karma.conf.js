@@ -20,6 +20,7 @@ module.exports = function(config) {
 				'src/main/webapp/js/contextMenu.js', 
 				'src/main/webapp/js/menu.js', 
 				'src/main/webapp/js/position.js', 
+				'src/main/webapp/js/routeUpload.js', 
 				'src/main/webapp/js/greenpos.js', 
 				'src/test/jsUnit/**/*.js' ],
 
@@ -66,7 +67,7 @@ module.exports = function(config) {
 		// - PhantomJS
 		// - IE (only Windows)
 		// CLI --browsers Chrome,Firefox,Safari
-		browsers : [ process.env.TRAVIS ? 'Firefox' : 'Chrome' ],
+		browsers : [ process.env.TRAVIS ? 'Firefox' : 'Chrome', 'PhantomJS' ],
 
 		// If browser does not capture in given timeout [ms], kill it
 		// CLI --capture-timeout 5000

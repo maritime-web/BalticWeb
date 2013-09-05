@@ -1,0 +1,62 @@
+<div>
+	<div>
+		<h2>Route upload</h2>
+	</div>
+	<div id="routeUpload" x-ng-controller="embryo.RouteUploadCtrl">
+
+		<div x-ng-show="queue[0].error" class="alert alert-error">{{queue[0].error}}</div>
+		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+		<form name="uploadRouteForm" action="//jquery-file-upload.appspot.com/" method="POST" enctype="multipart/form-data"
+			x-file-upload="options" x-ng-class="{'fileupload-processing' : processing() || loadFiles}"
+			class="form-horizontal ng-scope ng-pristine ng-valid">
+
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="control-group">
+						<label class="control-label" for="voyageName">Associated voyage</label>
+						<div class="controls">
+							<input x-ng-disabled="voyage.isPreselected" id="voyageName" type="text" class="input-large ngTypeahead"
+								datasets="voyageData" ng-model="voyageDatum" /> <input name="voyageId" type="hidden"
+								x-ng-model="voyageId" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row-fluid">
+				<!-- The global progress information-->
+				<div class="span5">
+					<span class="control-label"> <span class="btn fileinput-button" x-ng-disabled="active()"
+						x-ng-class="{disabled: disabled}"> <i class="icon-plus icon-white"></i> <span>Choose file</span> <input
+							type="file" name="files[]" x-ng-disabled="disabled">
+					</span>
+					</span>
+					<div class="controls">
+						<span class="data-label" x-ng-show="queue[0]"> <span>{{queue[0].name}}</span> <span class="size">{{queue[0].size
+								| formatFileSize}}</span></span>
+					</div>
+				</div>
+
+				<div class="span7 fade" x-ng-class="{in: active()}">
+					<!-- The global progress bar -->
+					<div class="progress progress-success progress-striped active" x-file-upload-progress="progress()" x-ng-show="queue[0]">
+						<div class="bar" x-ng-style="{width: num + '%'}"></div>
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<span class="pull-right fileupload-buttonbar">
+					<button type="button" class="btn" x-ng-click="reset()" x-ng-disabled="active()">Reset</button>
+					<button type="button" class="btn btn-danger cancel" x-ng-click="cancel()" x-ng-disabled="!active() || uploaded()">
+						<i class="icon-ban-circle icon-white"></i> <span>Cancel upload</span>
+					</button>
+					<button type="button" class="btn btn-primary start" x-ng-click="submit()" x-ng-disabled="!queue[0] || active() || uploaded()">
+						<i class="icon-upload icon-white"></i> <span>Upload route</span>
+					</button>
+				</span>
+			</div>
+		</form>
+	</div>
+
+</div>
