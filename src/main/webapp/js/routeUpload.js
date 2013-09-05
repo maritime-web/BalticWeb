@@ -73,11 +73,11 @@
 		});
 
 		
-		var mmsi = $routeParams.mmsi;
+		var vUrl, mmsi = $routeParams.mmsi;
 		if(!mmsi){
 			$scope.message = "Add mmsi to URL, e.g. ../routeUpload/mmsi";
 		}
-		var vUrl = 'rest/voyage/typeahead/' + mmsi;
+		vUrl = 'rest/voyage/typeahead/' + mmsi;
 		$scope.voyageData = {
 			name : 'routeupload_voyages' + mmsi,
 			prefetch : {

@@ -78,8 +78,7 @@
 						});
 					});
 				} else {
-					var voyage = JSON.parse(voyageStr);
-					onSuccess(voyage);
+					onSuccess(JSON.parse(voyageStr));
 				}
 			}
 		};

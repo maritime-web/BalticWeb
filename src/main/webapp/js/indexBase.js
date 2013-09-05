@@ -70,8 +70,7 @@
 
 					remoteCall(onSuccess);
 				} else {
-					var data = JSON.parse(dataStr);
-					callback(data);
+					callback(JSON.parse(dataStr));
 				}
 			},
 			setItem : function(key, data) {

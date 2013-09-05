@@ -6,7 +6,7 @@ describe('Menu Controller', function() {
 			// create map and add base layer
 			// add 2 test layers
 
-			user.menu = embryo.menu = [ {
+			embryo.user.menu = embryo.menu = [ {
 				text : 'Your Ship',
 				required : [ 'yourShip' ],
 				menuItems : [ {
@@ -30,7 +30,7 @@ describe('Menu Controller', function() {
 			} ];
 			
 			
-			user.features = [ 'yourShip' ];
+			embryo.user.features = [ 'yourShip' ];
 			var scope = {};
 			var ctrl = new embryo.MenuCtrl(scope);
 
@@ -50,7 +50,7 @@ describe('Menu Controller', function() {
 			// create map and add base layer
 			// add 2 test layers
 
-			user.menu = embryo.menu = [ {
+			embryo.user.menu = embryo.menu = [ {
 				text : 'Your Ship',
 				required : [ 'yourShip' ],
 				menuItems : [ {
@@ -63,7 +63,7 @@ describe('Menu Controller', function() {
 				} ]
 			} ];
 			
-			user.features = [ 'yourShip' ];
+			embryo.user.features = [ 'yourShip' ];
 			var scope = {};
 			var ctrl = new embryo.MenuCtrl(scope);
 
