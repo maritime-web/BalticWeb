@@ -304,9 +304,9 @@
 
 		$scope.$on('$viewContentLoaded', function() {
 			if (!$scope.map) {
-				var reports = GreenPosRest.list(function() {
-					$scope.reports = reports;
-				});
+//				var reports = GreenPosRest.list(function() {
+//					$scope.reports = reports;
+//				});
 
 				// postpone map loading sligtly, to let the resize directive set
 				// the sizes of the map container divs, before map loading. If
