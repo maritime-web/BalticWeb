@@ -71,15 +71,10 @@
 	});
 
 	embryo.RouteEditCtrl = function($scope, $routeParams, RouteService) {
-		console.log($routeParams);
-		console.log("hej");
-
 		var initRoute = function() {
 			if ($routeParams.routeId) {
 				RouteService.getRoute($routeParams.routeId, function(route) {
 					$scope.route = route;
-
-					console.log(route);
 				});
 			} else {
 				$scope.route = {};
