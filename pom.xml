@@ -363,7 +363,7 @@
               <nomen>false</nomen>
               <passfail>false</passfail>
               <plusplus>true</plusplus>
-              <predef>angular,$,jQuery,${jslint.predef}</predef>
+              <predef>angular,$,jQuery,${jslint.predef},sessionStorage,localStorage</predef>
               <properties>false</properties>
               <sloppy>true</sloppy>
               <undef>true</undef>
