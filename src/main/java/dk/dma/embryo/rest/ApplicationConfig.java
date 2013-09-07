@@ -26,6 +26,6 @@ import javax.ws.rs.core.Application;
 public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
         return new HashSet<Class<?>>(Arrays.asList(RouteService.class, RouteUploadService.class, VoyageService.class,
-                ShapeFileService.class, GreenPosRestService.class, ShipRestService.class));
+                ShapeFileService.class, GreenPosRestService.class, ShipRestService.class, AuthenticationService.class));
     }
 }
