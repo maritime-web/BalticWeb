@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>ArcticWeb - Greenland</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
+    <link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+    <link href="css/ext/typeahead-0.9.3.css" rel="stylesheet" type="text/css">
+    <link href="css/ext/jquery.fileupload-ui.css" rel="stylesheet" type="text/css">
+    <link href="css/map.css" rel="stylesheet" type="text/css">
+
+    <script src="js/ext/jquery-1.9.1.min.js"></script>
+    <script src="http://openlayers.org/api/OpenLayers.js"></script>
+    <script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+
+    <script src="js/ext/bootstrap.min.js"></script>
+    <script src="js/ext/typeahead-0.9.3.min.js" type="text/javascript"></script>
+    <script src="js/ext/bootstrap-contextmenu.js"></script>
+
+    <!-- The main application script -->
+    <script src="js/settings.js" defer="defer"></script>
+    <script src="js/utils.js" defer="defer"></script>
+    <script src="js/embryo.js" defer="defer"></script>
+    <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
+    <script src="js/groups.js" defer="defer" type="text/javascript"></script>
+    <script src="js/map.js" defer="defer"></script>
+    <script src="js/hovering.js" defer="defer"></script>
+    <script src="js/vesselLayer-1.js" defer="defer"></script>
+    <script src="js/vesselInformation.js" defer="defer"></script>
+    <script src="js/vesselSearch.js" defer="defer"></script>
+    <script src="js/yourShip.js" type="text/javascript" defer="defer"></script>
+    <script src="js/iceLayer-1.js" defer="defer" type="text/javascript"></script>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-th-list"></i>
+            </button>
+            <a class="brand" href="front">
+                <font color="#0080C0">ArcticWeb</font><font color="#888888" size="3">Greenland</font>
+            </a>
+            <div class="nav-collapse collapse" id="navigationBar">
+                <p class="navbar-text pull-right" id="authentication"></p>
+
+                <ul class="nav navtabs">
+                    <li class="active">
+                        <a href="#vessels">
+                            <i class="icon-globe icon-white" style="vertical-align:middle; margin-bottom: 4px"></i>
+                            Vessels
+                        </a>
+                    </li>
+                    <!-- li class="">
+                        <a href="#route">
+                            <i class="icon-random icon-white" style="vertical-align:middle; margin-bottom: 4px"></i>
+                            Route
+                        </a>
+                    </li -->
+                    <li class="">
+                        <a href="#ice">
+                            <i class="icon-asterisk icon-white" style="vertical-align:middle; margin-bottom: 4px"></i>
+                            Ice
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="hoveringBox"></div>
+
+<div id="messagePanel"></div>
+
+<div>
+    <div id="context-menu" ng-controller="embryo.contextMenu.Ctrl">
+        <ul class="dropdown-menu" role="menu">
+            <li ng-show="shown(item, getSelectedFeature())" ng-repeat="item in getMenuItems()">
+                <a tabindex="-1" href="#" ng-click="choose(item, getSelectedFeature())">{{item.text}}</a>
+            </li>
+
+            <li class="divider"></li>
+
+            <li class="dropdown-submenu"><a tabindex="-1" href="#">Layers</a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="layer in getLayers()"><a tabindex="-1" href="#" ng-click="toggleLayer(layer)"><i ng-class="getIcon(layer)"></i><span style="margin-left:20px;">{{layer.name}}</span></a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+</div>
+
+
+<!-- Login modal ================================================== -->
+
+<div id="login" class="modal hide fade" tabindex="-1" role="dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h2>Sign in</h2>
+    </div>
+    <div class="modal-body">
+        <form class="form-signin" name="login_form">
+            <input type="text" class="input-block-level" placeholder="User Name" id="userName">
+            <input type="password" class="input-block-level" placeholder="Password" id="password"/>
+            <label class="checkbox">
+                <input type="checkbox" value="remember-me"/> Remember me
+            </label>
+            <div style="margin-top:24px">
+                <button type="submit" class="btn btn-primary">Sign in</button>
+                <a href="#forgot" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Forgot password</a>
+                <a href="#request" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Request login</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Request login modal ================================================== -->
+
+<div id="request" class="modal hide fade" tabindex="-1" role="dialog" >
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"></button>
+        <h2>Request login</h2>
+    </div>
+    <div class="modal-body">
+        <form class="form-signin">
+            <input type="text" class="input-block-level" placeholder="Organization">
+            <input type="text" class="input-block-level" placeholder="Country">
+            <input type="text" class="input-block-level" placeholder="Contact person">
+            <input type="text" class="input-block-level" placeholder="Phone number">
+            <input type="text" class="input-block-level" placeholder="Email address">
+            <input type="text" class="input-block-level" placeholder="IMO number">
+            <div style="margin-top:24px">
+                <button class="btn btn-primary">Send request</button>
+                <button class="btn" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- AES information modal ================================================== -->
+
+<div id="aesModal" class="modal hide fade" tabindex="-1" role="dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h2>AES Information</h2>
+    </div>
+    <div class="modal-body">
+        <p>
+            <table class="table table-condensed"></table>
+        </p>
+        <p>
+            <form>
+                <button class="btn btn-primary" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
+            </form>
+        </p>
+    </div>
+</div>
+
+<div id="routeControlPanel" class="controlPanel well">
+    <h3>Route</h3>
+</div>
+
+<div id="iceControlPanel" class="controlPanel">
+    <div class="accordion" id="icpAccordion">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <h4>
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpIceMaps">
+                        Ice Maps
+                    </a>
+                </h4>
+            </div>
+            <div id="icpIceMaps" class="accordion-body collapse in">
+                <div class="accordion-inner">
+                    <h4>Available Ice Maps</h4>
+
+                     <table class="table table-condensed">
+                         <tr>
+                             <th>Cape Farewell</th>
+                             <th>10-04-2013</th>
+                         </tr>
+                         <tr>
+                             <th>Greenland WA</th>
+                             <th>14-08-2013</th>
+                         </tr>
+                         <tr>
+                             <th>Qaanaaq</th>
+                             <th>13-08-2013</th>
+                         </tr>
+                         <tr>
+                             <th>North East</th>
+                             <th>07-08-2013</th>
+                         </tr>
+                     </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <h4>
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpSelectedIce">
+                        Selected Ice Observation
+                    </a>
+                </h4>
+            </div>
+            <div id="icpSelectedIce" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    <h4>Ice Properties</h4>
+
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Dyt</th>
+                            <td>Båt</td>
+                        </tr>
+                        <tr>
+                            <th>Dyt</th>
+                            <td>Båt</td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <h4>
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpLegends">
+                        Legends
+                    </a>
+                </h4>
+            </div>
+            <div id="icpLegends" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    <table class="table table-condensed">
+                        <tr><th>Color</th><th>Total Ice Concentration</th></tr>
+                        <tr><td><span style="background-color: #ff0000; width: 30px; display: block;">&nbsp;</span></td><td>80%-100%</td></tr>
+                        <tr><td><span style="background-color: #e57425; width: 30px; display: block;">&nbsp;</span></td><td>60%-80%</td></tr>
+                        <tr><td><span style="background-color: #ffc05e; width: 30px; display: block;">&nbsp;</span></td><td>40%-60%</td></tr>
+                        <tr><td><span style="background-color: #fdfc39; width: 30px; display: block;">&nbsp;</span></td><td>20%-40%</td></tr>
+                        <tr><td><span style="background-color: #90fba4; width: 30px; display: block;">&nbsp;</span></td><td>0%-20%</td></tr>
+                        <tr><td><span style="background-color: #5599ff; width: 30px; display: block;">&nbsp;</span></td><td>0%</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="vesselControlPanel" class="controlPanel">
+    <div class="accordion" id="ycpAccordion">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <h4>
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpYourShip">
+                        Your Ship
+                    </a>
+                </h4>
+            </div>
+            <div id="vcpYourShip" class="accordion-body collapse in">
+                <div class="accordion-inner">
+                    <div id="yourShipAesInformation">
+                        <h4><small style="float:right"><a href="#" id="yourShipAesInformationLink">view all</a></small>AES Information</h4>
+                        <table class="table table-condensed"></table>
+                    </div>
+
+                    <h4>Reporting</h4>
+
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Ship Information</th>
+                            <td><span class="label label-success">OK</span></td>
+                            <td><a href="#">edit</a></td>
+                        </tr>
+                        <tr>
+                            <th>Ship Report</th>
+                            <td><span class="label label-warning">DUE NOW</span></td>
+                            <td><a href="#">report</a></td>
+                        </tr>
+                        <tr>
+                            <th>Voyage Plan</th>
+                            <td><span class="label label-success">OK</span></td>
+                            <td><a href="#">edit</a></td>
+                        </tr>
+                        <tr>
+                            <th>Active Route</th>
+                            <td><span class="label label-success">OK</span></td>
+                            <td><a href="#">edit</a> - <a href="#">upload</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <h4>
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSearch">
+                        Search Ships
+                    </a>
+                </h4>
+            </div>
+            <div id="vcpSearch" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    <form>
+                        <p>
+                            <input type="text" id="searchField" class="input-medium search-query" style="width: 235px">
+                        </p>
+
+                        <p id="searchLoad">
+                            <img src="img/load.gif">
+                        </p>
+                        <div id="searchResultsContainer"></div>
+                        <p id="searchMatch"></p>
+
+                        <!-- div id="searchResultsTop"></div -->
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <h4>
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSelectedShip">
+                        Selected Ship
+                    </a>
+                </h4>
+            </div>
+            <div id="vcpSelectedShip" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    <div id="selectedAesInformation">
+                        <h4><small style="float:right"><a href="#" id="selectedAesInformationLink">view all</a></small>AES Information</h4>
+                        <table class="table table-condensed"></table>
+                    </div>
+
+                    <h4>Additional Information</h4>
+
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Historical Track</th>
+                            <td><span class="label label-success">AVAILABLE</span></td>
+                            <td><a href="#">view</a></td>
+                        </tr>
+                        <tr>
+                            <th>Planned Route</th>
+                            <td><span class="label">NOT AVAILABLE</span></td>
+                            <td></td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <h4>
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpLegends">
+                        Legends
+                    </a>
+                </h4>
+            </div>
+            <div id="vcpLegends" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    <table class="table table-condensed">
+                        <tr><td><img src="img/vessel_blue.png"/></td><td>Passenger</td></tr>
+                        <tr><td><img src="img/vessel_green.png"/></td><td>Cargo</td></tr>
+                        <tr><td><img src="img/vessel_red.png"/></td><td>Tanker</td></tr>
+                        <tr><td><img src="img/vessel_yellow.png"/></td><td>High speed craft and WIG</td></tr>
+                        <tr><td><img src="img/vessel_orange.png"/></td><td>Fishing</td></tr>
+                        <tr><td><img src="img/vessel_purple.png"/></td><td>Sailing and pleasure</td></tr>
+                        <tr><td><img src="img/vessel_turquoise.png"/></td><td>Pilot, tug and others</td></tr>
+                        <tr><td><img src="img/vessel_gray.png"/></td><td>Undefined / unknown</td></tr>
+                        <tr><td><img src="img/vessel_white.png"/></td><td>Sailing</td></tr>
+                        <tr><td><img src="img/vessel_white_moored.png"/></td><td>Anchored/Moored</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="zoomControlPanel">
+    <p>
+        <button class="btn btn-small" id="zoomAll">Zoom All Arctic</button>
+    </p>
+    <p>
+        <button class="btn btn-small" id="zoomToYourShip">Zoom to Your Ship</button>
+    </p>
+</div>
+
+</body>
+</html>
