@@ -10,7 +10,7 @@
 (function() {
 	"use strict";
 
-	embryo.angular = angular.module('embryo', [ 'ngResource', 'siyfion.ngTypeahead', 'blueimp.fileupload' ]);
+	embryo.angular = angular.module('embryo', [ 'ngResource', 'ui.bootstrap','siyfion.ngTypeahead', 'blueimp.fileupload' ]);
 	// , 'ui.bootstrap'
 
 	embryo.angular.factory('AisRestService', function($resource) {
@@ -86,10 +86,16 @@
 		$routeProvider.when('/ship', {
 			templateUrl : 'partials/shipInformation.html',
 			controller : embryo.ShipInformationCtrl
-		}).when('/routeEdit/', {
+		}).when('/voyagePlan/:mmsi', {
+			templateUrl : 'partials/voyagePlan.html',
+			controller : embryo.VoyagePlanCtrl
+		}).when('/voyagePlan/:mmsi/:voyage', {
+			templateUrl : 'partials/voyagePlan.html',
+			controller : embryo.VoyagePlanCtrl
+		}).when('/routeEdit/:mmsi', {
 			templateUrl : 'partials/routeEdit.html',
 			controller : embryo.RouteEditCtrl
-		}).when('/routeEdit/:routeId', {
+		}).when('/routeEdit/:mmsi/:routeId', {
 			templateUrl : 'partials/routeEdit.html',
 			controller : embryo.RouteEditCtrl
 		}).when('/routeUpload/:mmsi', {

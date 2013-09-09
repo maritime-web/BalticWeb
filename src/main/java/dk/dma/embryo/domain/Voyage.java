@@ -67,19 +67,41 @@ public class Voyage extends BaseEntity<Long> {
         dk.dma.embryo.rest.json.Voyage voyage = new dk.dma.embryo.rest.json.Voyage(getEnavId(), getBerthName(),
                 getPosition().getLatitudeAsString(), getPosition().getLongitudeAsString(), arrival, departure,
                 getPersonsOnBoard(), getDoctorOnBoard());
+        
+        if(getRoute() != null){
+            voyage.setRouteId(getRoute().getEnavId());
+        }
         return voyage;
+    }
+
+    public static Voyage fromJsonModel(dk.dma.embryo.rest.json.Voyage voyage) {
+        LocalDateTime arrival = DateTimeConverter.getDateTimeConverter().toObject(voyage.getArrival(), null);
+        LocalDateTime departure = DateTimeConverter.getDateTimeConverter().toObject(voyage.getDeparture(), null);
+        Position position = new Position(voyage.getLatitude(), voyage.getLongitude());
+        
+        Voyage result = new Voyage(voyage.getMaritimeId());
+        result.setBerthName(voyage.getBerthName());
+        result.setPosition(position);
+        result.setArrival(arrival);
+        result.setDeparture(departure);
+        result.setPersonsOnBoard(voyage.getPersonsOnBoard());
+        result.setDoctorOnBoard(voyage.isDoctor());
+        return result;
     }
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
     public Voyage(String key) {
+        if (key == null || key.trim().length() == 0) {
+            key = UUID.randomUUID().toString();
+        }
         this.enavId = key;
         position = new Position();
     }
 
     public Voyage() {
-        this(UUID.randomUUID().toString());
+        this(null);
     }
 
     public Voyage(String name, String latitude, String longitude, LocalDateTime arrival, LocalDateTime departure) {
@@ -176,5 +198,4 @@ public class Voyage extends BaseEntity<Long> {
     public Route getRoute() {
         return route;
     }
-
 }

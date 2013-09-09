@@ -1,0 +1,59 @@
+
+<div>
+	<div>
+		<h2>Voyage plan</h2>
+	</div>
+	<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+	<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+	<form class="form-horizontal">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Berth</th>
+					<th>Latitude</th>
+					<th>Longitude</th>
+					<th>Arrival</th>
+					<th>Departure</th>
+					<th>Persons</th>
+					<th>Doctor</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr x-ng-repeat="voyage in voyages">
+					<td><input ng-model="voyage.berthName" fn-selected="berthSelected(voyage, datum)"
+						fn-autocompleted="berthSelected(voyage, datum)" class="input-large ngTypeahead" datasets="berths" type="text" /></td>
+					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
+					<td><input x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
+					<td><input x-ng-model="voyage.arrival" type="text" class="arrival input-medium" placeholder="dd-MM-yyyy hh:mm" /></td>
+					<td><input x-ng-model="voyage.departure" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
+					<td><input x-ng-model="voyage.personsOnBoard" type="text" class="input-small" /></td>
+					<td><input x-ng-model="voyage.doctorOnBoard" type="checkbox" /></td>
+					<td>
+						<div class="btn-group pull-left" x-ng-show="!$last">
+							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Route <span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a tabindex="-1" href="#" x-ng-click="uploadRoute(voyage)">Upload Route</a></li>
+								<li><a tabindex="-1" href="#" x-ng-click="editRoute(voyage)">Edit Route</a></li>
+								<li x-ng-show="voyage.routeId"><a tabindex="-1" href="#" x-ng-click="drawRoute(voyage)">Draw Route</a></li>
+								<li x-ng-show="voyage.routeId"><a tabindex="-1" href="#" x-ng-click="activateRoute(voyage)">Activate
+										Voyage/Route</a></li>
+							</ul>
+						</div>
+					</td>
+					<td><button class="btn btn-danger" x-ng-show="!$last" x-ng-click="del($index)">Delete</button></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div>
+			<span class="pull-right">
+				<button class="btn" x-ng-click="reset()">Reset</button>
+				<button type="submit" class="btn btn-primary" x-ng-click="save()">Save</button>
+			</span>
+		</div>
+	</form>
+</div>

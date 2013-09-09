@@ -24,7 +24,8 @@
 					<div class="control-group">
 						<label class="control-label" for="voyageName">Associated voyage</label>
 						<div class="controls">
-							<input ng-model="voyageId" type="hidden" id="voyageId" /> <input type="text" id="voyageName" class="input-large" />
+							<input type="text" id="voyageName" class="input-large" ng-model="selectedVoyage"
+								typeahead="voyage as voyage.value for voyage in voyages | filter:$viewValue | limitTo:10" />
 						</div>
 					</div>
 				</div>

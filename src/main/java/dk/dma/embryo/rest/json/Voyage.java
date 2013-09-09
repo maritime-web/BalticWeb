@@ -40,6 +40,8 @@ public class Voyage {
     private Integer personsOnBoard;
 
     private Boolean doctor;
+    
+    private String routeId;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -149,4 +151,11 @@ public class Voyage {
         this.doctor = doctor;
     }
 
+    public String getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(String routeId) {
+        this.routeId = routeId;
+    }
 }

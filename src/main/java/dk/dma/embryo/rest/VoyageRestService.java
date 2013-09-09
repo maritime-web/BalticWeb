@@ -19,7 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -31,11 +33,12 @@ import com.google.common.collect.Lists;
 
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.embryo.domain.Voyage;
+import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.rest.util.DateTimeConverter;
 import dk.dma.embryo.rest.util.TypeaheadDatum;
 
 @Path("/voyage")
-public class VoyageService {
+public class VoyageRestService {
 
     @Inject
     private ShipService shipService;
@@ -43,26 +46,53 @@ public class VoyageService {
     @Inject
     private Logger logger;
 
-    public VoyageService() {
+    public VoyageRestService() {
+    }
+
+    @GET
+    @Path("/{mmsi}/current")
+    @Produces("application/json")
+    public dk.dma.embryo.rest.json.VoyagePlan getCurrentVoyagePlan(@PathParam("mmsi") Long mmsi) {
+        logger.trace("getCurrentVoyagePlan({})", mmsi);
+
+        VoyagePlan plan = shipService.getVoyagePlan(mmsi);
+        dk.dma.embryo.rest.json.VoyagePlan result = null;
+        if (plan != null) {
+            result = plan.toJsonModel();
+        }
+
+        logger.debug("getCurrentVoyagePlan({}) : {}", mmsi, plan);
+        return result;
     }
 
     @GET
     @Path("/active/{maritimeShipId}")
     @Produces("application/json")
-    public dk.dma.embryo.rest.json.Voyage getActive(@PathParam("maritimeShipId")String maritimeShipId) {
+    public dk.dma.embryo.rest.json.Voyage getActive(@PathParam("maritimeShipId") String maritimeShipId) {
         logger.trace("getVoyages({})", maritimeShipId);
 
         Voyage voyage = shipService.getActiveVoyage(maritimeShipId);
-        
-        
+
         dk.dma.embryo.rest.json.Voyage result = null;
-        
-        if(voyage != null){
+
+        if (voyage != null) {
             result = voyage.toJsonModel();
         }
-        
+
         logger.debug("getVoyages({}) : {}", maritimeShipId, result);
         return result;
+    }
+
+    @PUT
+    @Path("/savePlan")
+    @Consumes("application/json")
+    public void savePlan(dk.dma.embryo.rest.json.VoyagePlan plan) {
+        logger.trace("savePlan({})", plan);
+
+        VoyagePlan toBeSaved = VoyagePlan.fromJsonModel(plan);
+        shipService.saveVoyagePlan(toBeSaved);
+
+        logger.trace("savePlan()");
     }
 
     @GET

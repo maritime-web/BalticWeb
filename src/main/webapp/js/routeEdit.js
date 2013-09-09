@@ -70,7 +70,16 @@
 		};
 	});
 
-	embryo.RouteEditCtrl = function($scope, $routeParams, RouteService) {
+	embryo.RouteEditCtrl = function($scope, $routeParams, RouteService, VoyageService) {
+
+		if ($routeParams.mmsi) {
+			VoyageService.getVoyages($routeParams.mmsi, function(voyages){
+				$scope.voyages = voyages;
+			});
+		}
+		
+		console.log('after voyages');
+		
 		var initRoute = function() {
 			if ($routeParams.routeId) {
 				RouteService.getRoute($routeParams.routeId, function(route) {
@@ -85,10 +94,13 @@
 
 		$scope.save = function() {
 			// validate?
+
+			console.log($scope.selectedVoyage);
+			
 			RouteService.save($scope.route, function() {
 				$scope.message = "Saved route '" + $scope.route.name + "'";
 				// Route not fetch from server, which might be a good idea.
-
+				
 				// TODO replace this with a thrown event
 				// embryo.route.redrawIfVisible(RouteService.getRoute());
 			});
