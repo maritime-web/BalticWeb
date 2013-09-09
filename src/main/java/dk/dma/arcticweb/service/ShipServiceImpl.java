@@ -112,16 +112,17 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public void saveVoyagePlan(VoyagePlan toBeUpdated) {
-        VoyagePlan fresh = null; 
-        
-        if(toBeUpdated.getId() != null){
-            fresh = shipRepository.getByPrimaryKey(VoyagePlan.class, toBeUpdated.getId()); 
+        VoyagePlan fresh = null;
+
+        if (toBeUpdated.getId() != null) {
+            fresh = shipRepository.getByPrimaryKey(VoyagePlan.class, toBeUpdated.getId());
         }
-        if(fresh == null){
-           // Voyage Plan does not exist in the database. Create a new Voyage Plan
-           fresh = new VoyagePlan();;
+
+        if (fresh == null) {
+            // Voyage Plan does not exist in the database. Create a new Voyage Plan
+            fresh = new VoyagePlan();
         }
-        
+
         Map<String, Voyage> voyagePlanToBeUpdated = toBeUpdated.getVoyagePlanAsMap();
         Map<String, Voyage> freshVoyagePlan = fresh.getVoyagePlanAsMap();
 
@@ -183,11 +184,11 @@ public class ShipServiceImpl implements ShipService {
             Ship ship = shipRepository.getShip(subject.getRole(Sailor.class));
             ship.setVoyagePlan(voyagePlan);
         }
-        
-        for(Voyage voyage : voyagePlan.getVoyagePlan()){
+
+        for (Voyage voyage : voyagePlan.getVoyagePlan()) {
             voyage.getRoute();
         }
-        
+
         return voyagePlan;
     }
 
