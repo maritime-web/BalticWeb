@@ -34,7 +34,7 @@ $(function() {
 
     $(window).on('hashchange', updateNavs);
     embryo.authenticated(function() {
-        updateNavs();
+        setTimeout(updateNavs, 500); // indtil vi finder paa noget bedre
     });
 });
 
