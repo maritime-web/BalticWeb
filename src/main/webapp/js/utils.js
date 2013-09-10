@@ -90,3 +90,28 @@ function setLayerOpacityById(id, value) {
     }
 }
 
+// de her to er lidt vilde, men altsaa noedvendige
+
+function openCollapse(id) {
+    if (!$(id).hasClass("in") && !$(id).hasClass("collapse-opening")) {
+        $(id).addClass("collapse-opening");
+        $("a[href="+id+"]").click();
+        setTimeout(function() {
+            $(id).removeClass("collapse-opening");
+        }, 500);
+    }
+    $(id).removeClass("collapse-closing");
+}
+
+function closeCollapse(id) {
+    if ($(id).hasClass("in") && !$(id).hasClass("collapse-opening")) {
+        $(id).addClass("collapse-closing");
+        setTimeout(function() { 
+            if ($(id).hasClass("collapse-closing")) {
+                $("a[href="+id+"]").click();
+                $(id).removeClass("collapse-closing");
+            }
+        }, 500);
+    }
+}
+

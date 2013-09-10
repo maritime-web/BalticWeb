@@ -147,15 +147,6 @@ $(function() {
         }
     }
 
-    function openCollapse(id) {
-        // $(id).parents(".accordion").find(".collapse[id!="+id.substring(1)+"]").collapse({ toggle: false, parent: "#accordion2"});
-        if (!$(id).hasClass("in")) $("a[href="+id+"]").click();
-    }
-
-    function closeCollapse(id) {
-        if ($(id).hasClass("in")) $("a[href="+id+"]").click();
-    }
-
     function showVesselInformation(data) {
         $("a[href=#vcpSelectedShip]").html("Selected Ship - "+data.name);
         $("#selectedAesInformation table").html(embryo.vesselInformation.renderShortTable(data));
@@ -164,7 +155,6 @@ $(function() {
         $("#selectedAesInformationLink").on("click", function() {
             embryo.vesselInformation.showAesDialog(data);
         });
-
     }
     
     var tracksLayer = new OpenLayers.Layer.Vector("trackLayer", {
