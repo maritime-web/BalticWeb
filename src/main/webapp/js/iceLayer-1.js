@@ -38,6 +38,159 @@ $(function() {
         return html;
     }
 
+    function createIceTable(d) {
+        function c(v) {
+            switch (v) {
+            case "00": return "Ice Free";
+            case "01": return "Open Water (< 1/10)";
+            case "02": return "Bergy Water";
+            case "10": return "1/10";
+            case "12": return "1/10 to 2/10";
+            case "13": return "1/10 to 3/10";
+            case "20": return "2/10";
+            case "23": return "2/10 to 3/10";
+            case "24": return "2/10 to 4/10";
+            case "30": return "3/10";
+            case "34": return "3/10 to 4/10";
+            case "35": return "3/10 to 5/10";
+            case "40": return "4/10";
+            case "45": return "4/10 to 5/10";
+            case "46": return "4/10 to 6/10";
+            case "50": return "5/10";
+            case "56": return "5/10 to 6/10";
+            case "57": return "5/10 to 7/10";
+            case "60": return "6/10";
+            case "67": return "6/10 to 7/10";
+            case "68": return "6/10 to 8/10";
+            case "70": return "7/10";
+            case "78": return "7/10 to 8/10";
+            case "79": return "7/10 to 9/10";
+            case "80": return "8/10";
+            case "81": return "8/10 to 10/10";
+            case "89": return "8/10 to 9/10";
+            case "90": return "9/10";
+            case "91": return "9/10 to 10/10, 9+/10";
+            case "92": return "10/10";
+            // case "99": return "Unknown/Undetermined";
+            // case "-9": return "Null Value";
+            default: return "n/a";
+            }
+        }
+
+        function s(v) {
+            switch (v) {
+            case "00": return "Ice Free";
+            case "80": return "No stage of development";
+            case "81": return "New Ice (<10 cm)";
+            case "82": return "Nilas Ice Rind (<10 cm)";
+            case "83": return "Young Ice (10 to 30 cm)";
+            case "84": return "Grey Ice (10 to 15 cm)";
+            case "85": return "Grey – White Ice (15 to 30 cm)";
+            case "86": return "First Year Ice (>30 cm) or Brash Ice";
+            case "87": return "Thin First Year Ice (30 to 70 cm)";
+            case "88": return "Thin First Year Ice (stage 1)";
+            case "89": return "Thin First Year Ice (stage 2)";
+            case "90": return "Code not currently assigned";
+            case "91": return "Medium First Year Ice (70 to 120 cm)";
+            case "92": return "Code not currently assigned";
+            case "93": return "Thick First Year Ice (>120 cm)";
+            case "94": return "Code not currently assigned";
+            case "95": return "Old Ice";
+            case "96": return "Second Year Ice";
+            case "97": return "Multi-Year Ice";
+            case "98": return "Glacier Ice (Icebergs)";
+            // case "99": return "Unknown/Undetermined";
+            // case "-9": return "";
+            default: return "n/a";
+            }
+        }
+
+        function f(v) {
+            switch (parseFloat(v)) {
+            case 11: return "Strips and Patches (1/10)";
+            case 12: return "Strips and Patches (2/10)";
+            case 13: return "Strips and Patches (3/10)";
+            case 14: return "Strips and Patches (4/10)";
+            case 15: return "Strips and Patches (5/10)";
+            case 16: return "Strips and Patches (6/10)";
+            case 17: return "Strips and Patches (7/10)";
+            case 18: return "Strips and Patches (8/10)";
+            case 19: return "Strips and Patches (9/10)";
+            case 20: return "Strips and Patches (10/10)";
+            case 0: return "Pancake Ice";
+            case 1: return "Shuga/Small Ice Cake, Brash Ice";
+            case 2: return "Ice Cake";
+            case 3: return "Small Floe";
+            case 4: return "Medium Floe";
+            case 5: return "Big Floe";
+            case 6: return "Vast Floe";
+            case 7: return "Giant Floe";
+            case 8: return "Fastened (Fast) Floe";
+            case 9: return "Growlers, Floebergs, Floebits";
+            case 10: return "Icebergs";
+            default: return "n/a";
+            }
+            return v;
+        }
+
+        var html = "";
+
+        function o(egenskaber) {
+            $.each(egenskaber, function(k,v) {
+                html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
+            });
+        }
+
+        html += "<tr><th colspan=2 style=background-color:#eee>Total</th></tr>";
+        
+        o({ 
+            "Concentration": c(d.CT),
+            "Stage of Development (S0)": s(d.CN),
+            "Stage of Development (Sd)": s(d.CD),
+            "Form of Ice": f(d.CF)
+        });
+
+        html += "<tr><th colspan=2 style=background-color:#eee>Thickest Partial</th></tr>";
+
+        o({
+            "Concentration": c(d.CA),
+            "Stage of Development": s(d.SA),
+            "Form of Ice": f(d.FA)
+        });
+
+        html += "<tr><th colspan=2 style=background-color:#eee>Second Thickest Partial</th></tr>";
+
+        o({
+            "Concentration": c(d.CB),
+            "Stage of Development": s(d.SB),
+            "Form of Ice": f(d.FB)
+        });
+        
+        html += "<tr><th colspan=2 style=background-color:#eee>Third Thickest Partial</th></tr>";
+
+        o({
+            "Concentration": c(d.CC),
+            "Stage of Development": s(d.SC),
+            "Form of Ice": f(d.FC)
+        });
+        
+
+        return html;
+    }
+    
+
+    function showIceInformation(iceDescription) {
+        $("a[href=#icpSelectedIce]").html("Selected Ice Observation");
+        // $("#icpSelectedIce p").html(createIceEggHtml($.extend(iceDescription, { size: 160})));
+        $("#icpSelectedIce table").html(createIceTable($.extend(iceDescription, { size: 160})));
+        $("#icpSelectedIce p").html("Source: "+iceDescription.source);
+        openCollapse("#icpSelectedIce");
+    }
+
+    function hideIceInformation() {
+        closeCollapse("#icpSelectedIce");
+    }
+
     function setupLayers(shapes) {
         removeLayerById("Ice");
         removeLayerById("Water");
@@ -62,8 +215,8 @@ $(function() {
                     fillColor: "${fillColor}",
                     fillOpacity: 0.4,
                     strokeWidth: 1,
-                    strokeColor: "#0033ff",
-                    strokeOpacity: 0.7
+                    strokeColor: "#000",
+                    strokeOpacity: 1
                 })
             })
         });
@@ -112,12 +265,13 @@ $(function() {
                     var feature = new OpenLayers.Feature.Vector(
                         new OpenLayers.Geometry.Polygon(rings), {
                             fillColor: colorByDescription(ice[i].description),
+                            iceDescription: ice[i].description
                         }
                     );
 
-                    feature.iceDescription = ice[i].description;
+                    feature.iceDescription = $.extend(ice[i].description, { source: shape.description.id });
 
-                    iceLayer.addFeatures([ feature ], { iceDescription: ice[i].description });
+                    iceLayer.addFeatures([ feature ]);
                 }
 
             // Water
@@ -157,7 +311,16 @@ $(function() {
         map.addLayer(iceLayer);
         map.addLayer(waterLayer);
         
-    	// embryo.mapPanel.add2HoverFeatureCtrl(iceLayer);
+    	embryo.mapPanel.add2SelectFeatureCtrl(iceLayer);
+
+        iceLayer.events.on({
+            featureselected: function(e) {
+                showIceInformation(e.feature.attributes.iceDescription);
+            },
+            featureunselected: function(e) {
+                hideIceInformation();
+            }
+        });
 
         console.log("Ice and water layers addded.")
     }
@@ -215,6 +378,5 @@ $(function() {
         setLayerOpacityById("Water", 0.3);
         $("#iceControlPanel").css("display", "none");
     });
-
 });
 
