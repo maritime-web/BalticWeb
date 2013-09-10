@@ -176,4 +176,10 @@ span.msg-invalid{
 .progress{
 	margin-top: 7px;
 }
+
+/**Voyage Plan*/
+tr.activerow td{
+	background-color :  rgba(98,196,98,0.08);
+}
+
 ​

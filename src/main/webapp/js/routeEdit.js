@@ -18,9 +18,9 @@
 		};
 
 		return {
-			getActive : function(callback) {
+			getActive : function(mmsi, callback) {
 				var remoteCall = function(onSuccess) {
-					$http.get('rest/route/active', {
+					$http.get('rest/route/active/' + mmsi, {
 						responseType : 'json'
 					}).success(onSuccess);
 				};
@@ -34,18 +34,27 @@
 						SessionStorageService.getItem(routeKey(routeId), callback, remoteCall);
 					} else {
 						var setActiveCallback = function(route) {
-							SessionStorageService.setActive(active, route.id);
+							SessionStorageService.setItem(active, route.id);
 							callback(route);
 						};
 						SessionStorageService.getItem(routeKey(routeId), setActiveCallback, remoteCall);
 					}
 				});
 			},
-			activate : function(routeId, callback) {
-				$http.get('rest/route/activate/' + routeId, {
+			setActiveRoute : function(routeId, activity, callback) {
+				var activeRoute = {
+					routeId : routeId,
+					active : activity
+				};
+
+				$http.put('rest/route/activate/', activeRoute, {
 					responseType : 'json'
 				}).success(function() {
-					SessionStorageService.setItem(active, routeId);
+					if (activity) {
+						SessionStorageService.setItem(active, routeId);
+					} else {
+						SessionStorageService.removeItem(active);
+					}
 					callback();
 				});
 			},
@@ -73,13 +82,11 @@
 	embryo.RouteEditCtrl = function($scope, $routeParams, RouteService, VoyageService) {
 
 		if ($routeParams.mmsi) {
-			VoyageService.getVoyages($routeParams.mmsi, function(voyages){
+			VoyageService.getVoyages($routeParams.mmsi, function(voyages) {
 				$scope.voyages = voyages;
 			});
 		}
-		
-		console.log('after voyages');
-		
+
 		var initRoute = function() {
 			if ($routeParams.routeId) {
 				RouteService.getRoute($routeParams.routeId, function(route) {
@@ -95,12 +102,10 @@
 		$scope.save = function() {
 			// validate?
 
-			console.log($scope.selectedVoyage);
-			
 			RouteService.save($scope.route, function() {
 				$scope.message = "Saved route '" + $scope.route.name + "'";
 				// Route not fetch from server, which might be a good idea.
-				
+
 				// TODO replace this with a thrown event
 				// embryo.route.redrawIfVisible(RouteService.getRoute());
 			});

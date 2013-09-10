@@ -36,7 +36,13 @@
 	// embryo.angular.controller('embryo.RouteUploadCtrl', [ '$scope',
 	// function($scope) {
 
-	embryo.RouteUploadCtrl = function($scope, $routeParams) {
+	embryo.RouteUploadCtrl = function($scope, $routeParams, VoyageService) {
+
+		if ($routeParams.mmsi) {
+			VoyageService.getVoyages($routeParams.mmsi, function(voyages) {
+				$scope.voyages = voyages;
+			});
+		}
 
 		// Choosing a new file will replace the old one
 		$scope.$on('fileuploadadd', function(e, data) {
@@ -73,20 +79,6 @@
 		});
 
 		
-		var vUrl, mmsi = $routeParams.mmsi;
-		if(!mmsi){
-			$scope.message = "Add mmsi to URL, e.g. ../routeUpload/mmsi";
-		}
-		vUrl = 'rest/voyage/typeahead/' + mmsi;
-		$scope.voyageData = {
-			name : 'routeupload_voyages' + mmsi,
-			prefetch : {
-				url : vUrl,
-				// 1 minut
-				ttl : 60000
-			},
-			remote : vUrl
-		};
 
 //		var voyageId = $routeParams.voyageId;
 //		

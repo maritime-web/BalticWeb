@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ShipService;
+import dk.dma.embryo.rest.json.ActiveRoute;
 import dk.dma.embryo.security.authorization.YourShip;
 import dk.dma.enav.model.voyage.Route;
 
@@ -35,7 +36,7 @@ import dk.dma.enav.model.voyage.Route;
  * @author Jesper Tejlgaard
  */
 @Path("/route")
-public class RouteService {
+public class RouteRestService {
 
     @Inject
     private ShipService shipService;
@@ -43,7 +44,7 @@ public class RouteService {
     @Inject
     private Logger logger;
 
-    public RouteService() {
+    public RouteRestService() {
     }
 
     @GET
@@ -68,22 +69,35 @@ public class RouteService {
      */
 
     @GET
-    @Path("/active{mmsi : (/mmsi)?}")
+    @Path("/active")
     @Produces("application/json")
-    public Route getActive(@PathParam("mmsi") String mmsi) {
-        logger.debug("getActive({})", mmsi);
+    public Route getActive() {
+        logger.debug("getActive()");
 
         dk.dma.embryo.domain.Route route;
 
-        if (mmsi == null || mmsi.trim().length() == 0) {
-            route = shipService.getYourActiveRoute();
-        } else {
-            route = shipService.getActiveRoute(Long.valueOf(mmsi));
-        }
+        route = shipService.getYourActiveRoute();
 
         Route result = route != null ? route.toEnavModel() : null;
-        
-        logger.debug("getActive({}) : {}", mmsi, result);
+
+        logger.debug("getActive({}) : {}", result);
+        // TODO replace below with some http status telling resource is not available
+        return result;
+    }
+
+    @GET
+    @Path("/active/{mmsi}")
+    @Produces("application/json")
+    public Route getActiveByMmsi(@PathParam("mmsi") String mmsi) {
+        logger.debug("getActiveByMmsi({})", mmsi);
+
+        dk.dma.embryo.domain.Route route;
+
+        route = shipService.getActiveRoute(Long.valueOf(mmsi));
+
+        Route result = route != null ? route.toEnavModel() : null;
+
+        logger.debug("getActiveByMmsi({}) : {}", mmsi, result);
         // TODO replace below with some http status telling resource is not available
         return result;
     }
@@ -113,15 +127,15 @@ public class RouteService {
 
     /*
      * FIXME This method does not follow rest principles. What should have been done, was to save a ship with current
-     * voyage, which had an activeRoute. 
+     * voyage, which had an activeRoute.
      */
     @PUT
     @Path("/activate")
-    @Produces("application/json")
-    public void activate(String routeId) {
-        logger.debug("Activating route: {}", routeId);
+    @Consumes("application/json")
+    public void activate(ActiveRoute activeRoute) {
+        logger.debug("Activating route: {}", activeRoute);
 
-        shipService.activateRoute(routeId);
+        shipService.activateRoute(activeRoute.getRouteId(), activeRoute.getActive());
         // String result = "Product created : " + product;
         // return Response.status(201).entity(result).build();
     }

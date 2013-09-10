@@ -10,7 +10,8 @@
 (function() {
 	"use strict";
 
-	embryo.angular = angular.module('embryo', [ 'ngResource', 'ui.bootstrap','siyfion.ngTypeahead', 'blueimp.fileupload' ]);
+	embryo.angular = angular.module('embryo', [ 'ngResource', 'ui.bootstrap', 'siyfion.ngTypeahead',
+			'blueimp.fileupload' ]);
 	// , 'ui.bootstrap'
 
 	embryo.angular.factory('AisRestService', function($resource) {
@@ -32,16 +33,21 @@
 			getItem : function(key, callback, remoteCall) {
 				var dataStr = sessionStorage.getItem(key);
 				if (!dataStr) {
-					var onSuccess = function(data) {
-						// only cache objects with values
-						if (data && Object.keys(data).length > 0) {
-							var dataStr = JSON.stringify(data);
-							sessionStorage.setItem(key, dataStr);
-						}
-						callback(data);
-					};
+					if (remoteCall) {
+						var onSuccess = function(data) {
+							// only cache objects with values
+							if (data && Object.keys(data).length > 0) {
+								var dataStr = JSON.stringify(data);
+								sessionStorage.setItem(key, dataStr);
+							}
+							callback(data);
+						};
 
-					remoteCall(onSuccess);
+						remoteCall(onSuccess);
+
+					} else {
+						callback(null);
+					}
 				} else {
 					var data = JSON.parse(dataStr);
 					callback(data);
@@ -50,6 +56,9 @@
 			setItem : function(key, data) {
 				var dataStr = JSON.stringify(data);
 				sessionStorage.setItem(key, dataStr);
+			},
+			removeItem : function (key){
+				sessionStorage.removeItem(key);
 			}
 		};
 	});
