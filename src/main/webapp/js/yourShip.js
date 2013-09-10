@@ -18,7 +18,34 @@ $(function() {
                     });
                 }
             });
+            
+            updateReportStatus();
         }
+        
+
+    	function updateReportStatus() {
+    		var injector = angular.element(document).injector();
+
+    		$("#shipInfo").attr('href', 'index.html#/ship/');
+    		$("#greenposReport").attr('href', 'index.html#/report');
+
+    		var VoyageService = injector.get('VoyageService');
+    		var RouteService = injector.get('RouteService');
+    		var ShipService = injector.get('ShipService');
+
+    		ShipService.getYourShip(function(ship) {
+    			$("#voyagePlan").attr('href', 'index.html#/voyagePlan/' + ship.mmsi + '/current');
+    			
+    			RouteService.getActive(ship.mmsi, function(route) {
+    				$("#routeEdit").attr('href', 'index.html#/routeEdit/' + ship.mmsi + "/" + route.id);
+    			});
+
+    			VoyageService.getYourActive(function(voyage) {
+    				$("#routeUpload").attr('href', 'index.html#/routeUpload/' + ship.mmsi + "/" + voyage.maritimeId);
+    			});
+    		});
+
+    	}
 
         $.getJSON(embryo.baseUrl + searchUrl, { argument: embryo.authentication.shipMmsi }, function (result) {
 	    var searchResults = [];
