@@ -12,79 +12,8 @@
 
 	var berthUrl = 'rest/berth/search';
 
-	embryo.angular.factory('VoyageRestService', function($resource) {
-		var defaultParams = {};
-		var actions = {
-			getActive : {
-				params : {
-					action : 'active'
-				},
-				method : 'GET',
-				isArray : false,
-			}
-		};
-		return $resource('rest/voyage/:action/:id', defaultParams, actions);
-	});
-
-	embryo.angular.factory('VoyageService', function($http, VoyageRestService, ShipService, SessionStorageService) {
-
-		var currentPlan = 'voyagePlan_current';
-		var activeVoyage = 'voyage_active';
-
-		return {
-			getYourActive : function(onSuccess) {
-				var voyageStr = sessionStorage.getItem('activeVoyage');
-				if (!voyageStr) {
-					ShipService.getYourShip(function(yourShip) {
-						var voyage = VoyageRestService.getActive({
-							id : yourShip.maritimeId
-						}, function() {
-							// only cache objects with values (empty
-							// objects has ngResource REST methods).
-							if (voyage.maritimeId) {
-								var voyageStr = JSON.stringify(voyage);
-								sessionStorage.setItem('activeVoyage', voyageStr);
-							}
-							onSuccess(voyage);
-						});
-					});
-				} else {
-					onSuccess(JSON.parse(voyageStr));
-				}
-			},
-			getActiveVoyage : function(mmsi, callback) {
-				SessionStorageService.getItem(activeVoyage, function(voyageId) {
-					if (voyageId && typeof voyageId !== 'undefined') {
-						SessionStorageService.getItem()
-
-					}
-				});
-
-			},
-			getCurrent : function(mmsi, callback) {
-				var remoteCall = function(onSuccess) {
-					$http.get('rest/voyage/' + mmsi + '/current', {
-						responseType : 'json'
-					}).success(onSuccess);
-				};
-				SessionStorageService.getItem(currentPlan, callback, remoteCall);
-			},
-			getVoyages : function(mmsi, callback) {
-				$http.get('rest/voyage/typeahead/' + mmsi, {
-					responseType : 'json'
-				}).success(callback);
-			},
-			save : function(plan, callback) {
-				$http.put('rest/voyage/savePlan', plan, {
-					responseType : 'json'
-				}).success(function() {
-					SessionStorageService.removeItem(currentPlan);
-					callback();
-				});
-			}
-		};
-	});
-
+	var voyagePlanModule = angular.module('embryo.voyagePlan',['embryo.voyageService', 'embryo.routeService', 'siyfion.ngTypeahead']);
+	
 	embryo.VoyagePlanCtrl = function($scope, $routeParams, VoyageService, RouteService) {
 		var voyagePlan;
 

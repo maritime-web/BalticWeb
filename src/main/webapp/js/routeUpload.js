@@ -12,7 +12,9 @@
 
 	var url = 'rest/routeUpload/single/';
 
-	embryo.angular.config([ '$httpProvider', 'fileUploadProvider', function($httpProvider, fileUploadProvider) {
+	var module = angular.module('embryo.routeUpload',['embryo.voyageService', 'ui.bootstrap', 'blueimp.fileupload']);
+	
+	module.config([ '$httpProvider', 'fileUploadProvider', function($httpProvider, fileUploadProvider) {
 		delete $httpProvider.defaults.headers.common['X-Requested-With'];
 		fileUploadProvider.defaults.redirect = window.location.href.replace(/\/[^\/]*$/, '/cors/result.html?%s');
 		if (false) {

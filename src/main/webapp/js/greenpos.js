@@ -10,26 +10,12 @@
 (function() {
 	"use strict";
 
-	embryo.angular.factory('GreenPosRest', function($resource) {
-		var defaultParams = {};
-
-		var actions = {
-			activate : {
-				params : {
-					action : 'activate'
-				},
-				method : 'PUT',
-				isArray : false,
-			}
-		};
-
-		return $resource('rest/greenpos/:action/:id', defaultParams, actions);
-	});
+	var greenposModule = angular.module('embryo.greenpos',['embryo.voyageService', 'embryo.greenposService', 'embryo.shipService']);
 
 	/*
 	 * Inspired by http://jsfiddle.net/zbjLh/2/
 	 */
-	embryo.angular.directive('resize', function($window) {
+	greenposModule.directive('resize', function($window) {
 		return {
 			restrict : 'A',
 			link : function(scope, element, attrs) {
