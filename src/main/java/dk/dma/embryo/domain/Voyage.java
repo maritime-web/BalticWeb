@@ -48,7 +48,7 @@ public class Voyage extends BaseEntity<Long> {
 
     private Integer personsOnBoard;
 
-    private boolean doctorOnBoard;
+    private Boolean doctorOnBoard;
 
     // Should cascade be set to e.g. MERGE, REMOVE, PERSIST?
     @OneToOne
@@ -67,8 +67,8 @@ public class Voyage extends BaseEntity<Long> {
         dk.dma.embryo.rest.json.Voyage voyage = new dk.dma.embryo.rest.json.Voyage(getEnavId(), getBerthName(),
                 getPosition().getLatitudeAsString(), getPosition().getLongitudeAsString(), arrival, departure,
                 getPersonsOnBoard(), getDoctorOnBoard());
-        
-        if(getRoute() != null){
+
+        if (getRoute() != null) {
             voyage.setRouteId(getRoute().getEnavId());
         }
         return voyage;
@@ -78,7 +78,7 @@ public class Voyage extends BaseEntity<Long> {
         LocalDateTime arrival = DateTimeConverter.getDateTimeConverter().toObject(voyage.getArrival(), null);
         LocalDateTime departure = DateTimeConverter.getDateTimeConverter().toObject(voyage.getDeparture(), null);
         Position position = new Position(voyage.getLatitude(), voyage.getLongitude());
-        
+
         Voyage result = new Voyage(voyage.getMaritimeId());
         result.setBerthName(voyage.getBerthName());
         result.setPosition(position);
@@ -129,7 +129,8 @@ public class Voyage extends BaseEntity<Long> {
     @Override
     public String toString() {
         return "Voyage [" + baseToString() + ", enavId=" + enavId + ", berthName=" + berthName + ", position="
-                + position + ", arrival=" + arrival + ", departure=" + departure + "]";
+                + position + ", arrival=" + arrival + ", departure=" + departure + ", personsOnBoard=" + personsOnBoard
+                + ", doctorOnBoard=" + doctorOnBoard + "]";
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -187,11 +188,11 @@ public class Voyage extends BaseEntity<Long> {
         this.personsOnBoard = personsOnBoard;
     }
 
-    public boolean getDoctorOnBoard() {
+    public Boolean getDoctorOnBoard() {
         return doctorOnBoard;
     }
 
-    public void setDoctorOnBoard(boolean doctorOnBoard) {
+    public void setDoctorOnBoard(Boolean doctorOnBoard) {
         this.doctorOnBoard = doctorOnBoard;
     }
 

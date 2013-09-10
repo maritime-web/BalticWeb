@@ -63,7 +63,7 @@ public class Voyage {
     }
 
     public Voyage(String maritimeId, String berthName, String latitude, String longitude, String arrival,
-            String departure, Integer personsOnBoard, boolean doctor) {
+            String departure, Integer personsOnBoard, Boolean doctor) {
         super();
         this.maritimeId = maritimeId;
         this.berthName = berthName;
