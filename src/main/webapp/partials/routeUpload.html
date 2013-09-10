@@ -16,8 +16,8 @@
 					<div class="control-group">
 						<label class="control-label" for="voyageName">Associated voyage</label>
 						<div class="controls">
-							<input x-ng-disabled="voyage.isPreselected" id="voyageName" type="text" class="input-large ngTypeahead"
-								datasets="voyageData" ng-model="voyageDatum" /> 
+							<input id="voyageName" type="text" class="input-large" ng-model="selectedVoyage"
+								typeahead="voyage for voyage in voyages |  filter:$viewValue | limitTo:8" />
 						</div>
 					</div>
 				</div>
@@ -38,7 +38,8 @@
 
 				<div class="span7 fade" x-ng-class="{in: active()}">
 					<!-- The global progress bar -->
-					<div class="progress progress-success progress-striped active" x-file-upload-progress="progress()" x-ng-show="queue[0]">
+					<div class="progress progress-success progress-striped active" x-file-upload-progress="progress()"
+						x-ng-show="queue[0]">
 						<div class="bar" x-ng-style="{width: num + '%'}"></div>
 					</div>
 				</div>
@@ -50,7 +51,8 @@
 					<button type="button" class="btn btn-danger cancel" x-ng-click="cancel()" x-ng-disabled="!active() || uploaded()">
 						<i class="icon-ban-circle icon-white"></i> <span>Cancel upload</span>
 					</button>
-					<button type="button" class="btn btn-primary start" x-ng-click="submit()" x-ng-disabled="!queue[0] || active() || uploaded()">
+					<button type="button" class="btn btn-primary start" x-ng-click="submit()"
+						x-ng-disabled="!queue[0] || active() || uploaded()">
 						<i class="icon-upload icon-white"></i> <span>Upload route</span>
 					</button>
 				</span>

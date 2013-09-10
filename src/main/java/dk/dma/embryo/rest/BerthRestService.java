@@ -15,26 +15,20 @@
  */
 package dk.dma.embryo.rest;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.slf4j.Logger;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import dk.dma.arcticweb.service.GeographicService;
-import dk.dma.arcticweb.service.ShipService;
 import dk.dma.embryo.domain.Berth;
-import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.rest.util.DateTimeConverter;
-import dk.dma.embryo.rest.util.TypeaheadDatum;
 import dk.dma.embryo.site.form.VoyagePlanForm.BerthDatum;
 import dk.dma.embryo.site.form.VoyagePlanForm.BerthTransformerFunction;
 
@@ -43,7 +37,7 @@ import dk.dma.embryo.site.form.VoyagePlanForm.BerthTransformerFunction;
  * @author Jesper Tejlgaard
  */
 @Path("/berth")
-public class BerthService {
+public class BerthRestService {
 
     @Inject
     private GeographicService geoService;
@@ -51,36 +45,26 @@ public class BerthService {
     @Inject
     private Logger logger;
 
-    public BerthService() {
-    }
-    
-//    @GET
-//    @Path("/list/{mmsi}")
-//    @Produces("application/json")
-//    public List<BerthDatum> remote(String query) {
-//        logger.trace("remoteFetch({})", query);
-//
-//        List<Berth> berths = geoService.findBerths(query);
-//        List<BerthDatum> transformed = Lists.transform(berths, new BerthTransformerFunction());
-//
-//        logger.trace("berths={}", transformed);
-//
-//        return transformed;
-//    }
-//
-//    @GET
-//    @Path("/remote/{mmsi}")
-//    @Produces("application/json")
-//    @Override
-//    public List<BerthDatum> prefetch() {
-//        logger.trace("prefetch()");
-//
-//        List<Berth> berths = geoService.findBerths("");
-//        List<BerthDatum> transformed = Lists.transform(berths, new BerthTransformerFunction());
-//
-//        logger.trace("berths={}", transformed);
-//
-//        return transformed;
-//    }
+    @GET
+    @Path("/search")
+    @Produces("application/json")
+    public List<BerthDatum> remote(@QueryParam("QUERY") String query) {
+        logger.trace("remoteFetch({})", query);
 
+        List<Berth> berths = null;
+        List<BerthDatum> transformed = null;
+        
+        if(query != null && query.trim().length() > 0){
+            berths = geoService.findBerths(query);
+        }else{
+            berths = geoService.findBerths("");
+        }
+        
+        if(berths != null){
+            transformed = Lists.transform(berths, new BerthTransformerFunction());
+        }
+
+        logger.trace("berths={}", transformed);
+        return transformed;
+    }
 }

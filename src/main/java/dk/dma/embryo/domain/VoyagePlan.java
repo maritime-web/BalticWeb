@@ -32,9 +32,8 @@ import javax.persistence.OrderColumn;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-
 @Entity
-@NamedQueries({@NamedQuery(name="VoyagePlan:getByMmsi", query="SELECT DISTINCT v FROM VoyagePlan v LEFT JOIN FETCH v.voyages where v.ship.mmsi = :mmsi")})
+@NamedQueries({ @NamedQuery(name = "VoyagePlan:getByMmsi", query = "SELECT DISTINCT v FROM VoyagePlan v LEFT JOIN FETCH v.voyages where v.ship.mmsi = :mmsi") })
 public class VoyagePlan extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 1L;
@@ -44,44 +43,63 @@ public class VoyagePlan extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     @OneToOne(optional = false)
     Ship ship;
-    
-    @OneToMany(cascade={CascadeType.ALL})
-    @OrderColumn(name="voyageIndex")
-    @JoinColumn(name="plan")
-    private List<Voyage> voyages = new LinkedList<>(); 
+
+    @OneToMany(cascade = { CascadeType.ALL })
+    @OrderColumn(name = "voyageIndex")
+    @JoinColumn(name = "plan")
+    private List<Voyage> voyages = new LinkedList<>();
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public void addVoyageEntry(Voyage entry){
+    public void addVoyageEntry(Voyage entry) {
         voyages.add(entry);
         entry.plan = this;
     }
-    
-    public Map<String, Voyage> getVoyagePlanAsMap(){
+
+    public Map<String, Voyage> getVoyagePlanAsMap() {
         Map<String, Voyage> m = new HashMap<>();
-        for(Voyage v : voyages){
+        for (Voyage v : voyages) {
             m.put(v.getEnavId(), v);
         }
         return m;
     }
-    
-    public void removeLastVoyage(){
-        voyages.remove(voyages.size()-1).plan = null;
-    }
-    
 
-    public void removeVoyage(Voyage v){
+    public void removeLastVoyage() {
+        voyages.remove(voyages.size() - 1).plan = null;
+    }
+
+    public void removeVoyage(Voyage v) {
         v.plan = null;
         voyages.remove(v);
     }
 
-    
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+    // //////////////////////////////////////////////////////////////////////
+    // Utility Methods
+    // //////////////////////////////////////////////////////////////////////
+    public dk.dma.embryo.rest.json.VoyagePlan toJsonModel() {
+        dk.dma.embryo.rest.json.VoyagePlan result = new dk.dma.embryo.rest.json.VoyagePlan(getId());
+
+        dk.dma.embryo.rest.json.Voyage[] voyages = new dk.dma.embryo.rest.json.Voyage[getVoyagePlan().size()];
+        int index = 0;
+
+        for (Voyage voyage : getVoyagePlan()) {
+            voyages[index++] = voyage.toJsonModel();
+        }
+        result.setVoyages(voyages);
+
+        return result;
     }
 
+    public static VoyagePlan fromJsonModel(dk.dma.embryo.rest.json.VoyagePlan plan) {
+        VoyagePlan result = new VoyagePlan(plan.getId());
+
+        for (dk.dma.embryo.rest.json.Voyage voyage : plan.getVoyages()) {
+            Voyage v = Voyage.fromJsonModel(voyage);
+            result.addVoyageEntry(v);
+        }
+        return result;
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -90,14 +108,26 @@ public class VoyagePlan extends BaseEntity<Long> {
 
     }
 
+    public VoyagePlan(Long id) {
+        this.id = id;
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
     public Ship getShip() {
         return ship;
     }
-    
-    public List<Voyage> getVoyagePlan(){
+
+    public List<Voyage> getVoyagePlan() {
         return Collections.unmodifiableList(voyages);
     }
 }

@@ -17,18 +17,12 @@ package dk.dma.embryo.rest;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Locale;
-
-import org.apache.wicket.Session;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.rest.VoyageService.VoyageDatum;
-import dk.dma.embryo.rest.VoyageService.VoyageTransformerFunction;
+import dk.dma.embryo.rest.VoyageRestService.VoyageDatum;
+import dk.dma.embryo.rest.VoyageRestService.VoyageTransformerFunction;
 import dk.dma.embryo.rest.util.DateTimeConverter;
 
 public class VoyageServiceTest {

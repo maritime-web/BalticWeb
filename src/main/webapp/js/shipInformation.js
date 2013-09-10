@@ -45,45 +45,6 @@
 		};
 	});
 
-	embryo.angular.factory('VoyageRestService', function($resource) {
-		var defaultParams = {};
-		var actions = {
-			getActive : {
-				params : {
-					action : 'active'
-				},
-				method : 'GET',
-				isArray : false,
-			}
-		};
-		return $resource('rest/voyage/:action/:id', defaultParams, actions);
-	});
-
-	embryo.angular.factory('VoyageService', function(VoyageRestService, ShipService) {
-		return {
-			getYourActive : function(onSuccess) {
-				var voyageStr = sessionStorage.getItem('activeVoyage');
-				if (!voyageStr) {
-					ShipService.getYourShip(function(yourShip) {
-						var voyage = VoyageRestService.getActive({
-							id : yourShip.maritimeId
-						}, function() {
-							// only cache objects with values (empty
-							// objects has ngResource REST methods).
-							if (voyage.maritimeId) {
-								var voyageStr = JSON.stringify(voyage);
-								sessionStorage.setItem('activeVoyage', voyageStr);
-							}
-							onSuccess(voyage);
-						});
-					});
-				} else {
-					onSuccess(JSON.parse(voyageStr));
-				}
-			}
-		};
-	});
-
 	embryo.ShipInformationCtrl = function($scope, ShipService) {
 		var loadData = function(){
 			ShipService.getYourShip(function(ship) {
