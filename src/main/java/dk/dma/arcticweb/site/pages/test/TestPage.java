@@ -205,7 +205,7 @@ public class TestPage extends WebPage {
             shipDao.saveEntity(voyage);
 
             if (activate) {
-                shipService.activateRoute(r.getEnavId());
+                shipService.activateRoute(r.getEnavId(), true);
             }
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);
