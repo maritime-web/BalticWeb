@@ -76,7 +76,7 @@ public interface ShipService {
 
     Route getActiveRoute(Long mmsi);
 
-    Route activateRoute(String routeEnavId);
+    Route activateRoute(String routeEnavId, Boolean activate);
 
     Route getRouteByEnavId(String enavId);
 

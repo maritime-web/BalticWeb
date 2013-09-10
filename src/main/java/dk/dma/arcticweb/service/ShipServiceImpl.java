@@ -234,7 +234,13 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public Route getActiveRoute(Long mmsi) {
-        return shipRepository.getActiveRoute(mmsi);
+        Route r = shipRepository.getActiveRoute(mmsi);
+        if(r != null){
+            if (r.getWayPoints().size() > 0) {
+                r.getWayPoints().get(0);
+            }
+        }
+        return r;
     }
 
     @YourShip
@@ -255,13 +261,21 @@ public class ShipServiceImpl implements ShipService {
         return null;
     }
 
+    @YourShip
     @Override
-    public Route activateRoute(String routeEnavId) {
-        logger.debug("activateRoute({})", routeEnavId);
+    public Route activateRoute(String routeEnavId, Boolean activate) {
+        logger.debug("activateRoute({}, {})", routeEnavId, activate);
         Route route = shipRepository.getRouteByEnavId(routeEnavId);
-        Voyage v = route.getVoyage();
-        Ship ship = route.getShip();
-        ship.setActiveVoyage(v);
+        
+        Ship ship = getYourShip();
+        
+        logger.debug("Ship:{}",ship.getMmsi());
+        
+        if (activate) {
+            ship.setActiveVoyage(route.getVoyage());
+        } else {
+            ship.setActiveVoyage(null);
+        }
         shipRepository.saveEntity(ship);
         return route;
     }
