@@ -11,8 +11,14 @@ describe('Route Upload Controller', function() {
 				mmsi : '220443000'
 			};
 
+			var VoyageService = {
+				getVoyages : function(mmsi) {
+					return []
+				}
+			};
+
 			// var ctrl = $controller(embryo.RouteUploadCtrl, {$scope: scope});
-			new embryo.RouteUploadCtrl(scope, routeParams);
+			new embryo.RouteUploadCtrl(scope, routeParams, VoyageService);
 
 		}));
 
