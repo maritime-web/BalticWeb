@@ -14,6 +14,29 @@ embryo.eventbus.registerShorthand(embryo.eventbus.HighLightEvent, "highlight");
 embryo.eventbus.registerShorthand(embryo.eventbus.UnHighLightEvent, "unhighlight");
 
 $(function() {
+    embryo.map = {
+        add: function(d) {
+            if (d.layer) {
+                embryo.mapPanel.map.addLayer(d.layer);
+                if (d.select) embryo.mapPanel.add2SelectFeatureCtrl(d.layer);
+            }
+            if (d.control) {
+                embryo.mapPanel.map.addControl(d.control);
+            }
+        },
+        remove: function(id) {
+            var layers = embryo.mapPanel.map.getLayersByName(id);
+            
+            for (var k in layers) {
+                embryo.mapPanel.map.removeLayer(layers[k]);
+            }
+        },
+        createPoint: function(longitude, latitude) {
+            return new OpenLayers.Geometry.Point(longitude, latitude)
+                .transform(new OpenLayers.Projection("EPSG:4326"), embryo.mapPanel.map.getProjectionObject());
+        }
+    };
+
     embryo.mapPanel = {
         add2SelectFeatureCtrl : function(layer) {
             var layers = this.selectControl.layers;
@@ -82,6 +105,23 @@ $(function() {
     embryo.mapPanel.map.addControl(embryo.mapPanel.selectControl);
     embryo.mapPanel.selectControl.activate();
     
+    /**
+     * Transforms a position to a position that can be used by OpenLayers. The
+     * transformation uses OpenLayers.Projection("EPSG:4326").
+     *
+     * @param lon
+     *            The longitude of the position to transform
+     * @param lat
+     *            The latitude of the position to transform
+     * @returns The transformed position as a OpenLayers.LonLat instance.
+     */
+    function transformPosition(lon, lat) {
+        return new OpenLayers.LonLat(lon, lat).transform(
+            new OpenLayers.Projection("EPSG:4326"),
+            embryo.mapPanel.map.getProjectionObject()
+        );
+    }
+
     /**
      * Method for saving the current view into a cookie.
      */

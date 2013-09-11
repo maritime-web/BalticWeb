@@ -33,7 +33,12 @@ span.msg-invalid{
 }
 
 .menuDivider {
-	height: 42px;
+	height: 20px;
 	width: 100%;
+}
+
+.pagecontainer {
+    margin-top:0px;
+    margin-bottom:100px;
 }
 

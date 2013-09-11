@@ -58,7 +58,7 @@ embryo.vesselInformation = {
             if (v != null) html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
         });
 
-        $("#aesModal h2").html("AES Information - " + data.name);
+        $("#aesModal h2").html("AIS Information - " + data.name);
         $("#aesModal table").html(html);
         $("#aesModal").modal("show");
     }
@@ -100,10 +100,8 @@ $(function() {
                 if (!firstPoint) {
                     // Insert line
                     var points = new Array(
-                        new OpenLayers.Geometry.Point(lastLon,lastLat).
-                            transform(new OpenLayers.Projection("EPSG:4326"), embryo.mapPanel.map.getProjectionObject()),
-                        new OpenLayers.Geometry.Point(currentTrack.lon, currentTrack.lat).
-                            transform(new OpenLayers.Projection("EPSG:4326"), embryo.mapPanel.map.getProjectionObject())
+                        embryo.map.createPoint(lastLon,lastLat),
+                        embryo.map.createPoint(currentTrack.lon, currentTrack.lat)
                     );
                     
                     var line = new OpenLayers.Geometry.LineString(points);
@@ -185,9 +183,25 @@ $(function() {
         })
     });
     
-    embryo.mapPanel.map.addControl(new OpenLayers.Control.DrawFeature(tracksLayer, OpenLayers.Handler.Path));
-    embryo.mapPanel.map.addLayer(timeStampsLayer);
-    embryo.mapPanel.map.addLayer(tracksLayer);
+    embryo.map.add({
+        group: "vessel",
+        layer: timeStampsLayer,
+    });
+
+    embryo.map.add({
+        group: "vessel",
+        layer: tracksLayer,
+    });
+
+    embryo.map.add({
+        group: "vessel",
+        control: new OpenLayers.Control.DrawFeature(tracksLayer, OpenLayers.Handler.Path)
+    });
+
+    // embryo.mapPanel.map.addControl(new OpenLayers.Control.DrawFeature(tracksLayer, OpenLayers.Handler.Path));
+
+    // embryo.mapPanel.map.addLayer(timeStampsLayer);
+    // embryo.mapPanel.map.addLayer(tracksLayer);
 
     embryo.vesselSelected(function(e) {
         $("#vesselInformationPanel").css("display", "none");
@@ -204,6 +218,7 @@ $(function() {
             success: function (result) {
 	        if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
                 showVesselInformation(result);
+                // embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
 
                 // embryo.messagePanel.replace(messageId, { text: "Vessel data loaded.", type: "success" })
                 
@@ -222,11 +237,11 @@ $(function() {
         drawPastTrack(null);
     });
 
-    embryo.focusGroup("vessels", function() {
+    embryo.focusGroup("vessel", function() {
         $("#vesselControlPanel").css("display", "block");
     });
     
-    embryo.unfocusGroup("vessels", function() {
+    embryo.unfocusGroup("vessel", function() {
         $("#vesselControlPanel").css("display", "none");
     });
 
