@@ -15,9 +15,6 @@
  */
 package dk.dma.embryo.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -25,7 +22,6 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import dk.dma.embryo.rest.json.GreenPos;
-import dk.dma.embryo.rest.util.DateTimeConverter;
 
 /**
  * 
