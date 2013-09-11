@@ -27,6 +27,8 @@ embryo.vesselInformation = {
     showAesDialog: function (data) {
         var html = "";
         
+        var link = "http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi="+data.mmsi;
+
         var egenskaber = {
             "MMSI": data.mmsi,
             "Class": data["class"],
@@ -51,7 +53,7 @@ embryo.vesselInformation = {
             "ETA": data.eta,
             "Pos acc": data.posAcc,
             "Last report": data.lastReport,
-            "More information": ((data.link != null) ? "<a href=\""+data.link+"\" target=new>"+data.link+"</a>" : null)
+            "More information": "<a href='"+link+"' target='new_window'>"+link+"</a>"
         }
         
         $.each(egenskaber, function(k,v) {
