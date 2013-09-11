@@ -12,6 +12,7 @@
 
 <link href="css/ext/typeahead-0.9.3.css" rel="stylesheet" type="text/css">
 <link href="css/ext/jquery.fileupload-ui.css" rel="stylesheet" type="text/css">
+<link href="css/style.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet" type="text/css">
 
 <script src="js/ext/jquery-1.9.1.min.js"></script>
@@ -51,6 +52,7 @@
 </head>
 
 <body>
+    <ng-include src="'partials/authentication.html'"></ng-include>
 
 	<div id="map"></div>
 
@@ -66,18 +68,18 @@
 					<p class="navbar-text pull-right" id="authentication"></p>
 
 					<ul class="nav navtabs">
-						<li class="active"><a href="#vessels"> <i class="icon-globe icon-white"
+                        <li><a href="front.html">
+                            <i class="icon-home icon-white" style="vertical-align: middle; margin-bottom: 4px"></i> About
+                        </a></li>
+						<li><a href="map.html#/vessel"> <i class="icon-globe icon-white"
 								style="vertical-align: middle; margin-bottom: 4px"></i> Vessels
 						</a></li>
-						<!-- li class="">
-                        <a href="#route">
-                            <i class="icon-random icon-white" style="vertical-align:middle; margin-bottom: 4px"></i>
-                            Route
-                        </a>
-                    </li -->
-						<li class=""><a href="#ice"> <i class="icon-asterisk icon-white"
+						<li><a href="map.html#/ice"> <i class="icon-asterisk icon-white"
 								style="vertical-align: middle; margin-bottom: 4px"></i> Ice
 						</a></li>
+                        <li class=""><a href="report.html#/ship">
+                            <i class="icon-tasks icon-white" style="vertical-align: middle; margin-bottom: 4px"></i> Report
+                        </a></li>
 					</ul>
 				</div>
 			</div>
@@ -88,75 +90,12 @@
 
 	<div id="messagePanel"></div>
 
-	<div>
-		<div id="context-menu" ng-controller="embryo.contextMenu.Ctrl">
-			<ul class="dropdown-menu" role="menu">
-				<li ng-show="shown(item, getSelectedFeature())" ng-repeat="item in getMenuItems()"><a tabindex="-1" href="#"
-					ng-click="choose(item, getSelectedFeature())">{{item.text}}</a></li>
-
-				<li class="divider"></li>
-
-				<li class="dropdown-submenu"><a tabindex="-1" href="#">Layers</a>
-					<ul class="dropdown-menu">
-						<li ng-repeat="layer in getLayers()"><a tabindex="-1" href="#" ng-click="toggleLayer(layer)"><i
-								ng-class="getIcon(layer)"></i><span style="margin-left: 20px;">{{layer.name}}</span></a></li>
-					</ul></li>
-
-			</ul>
-		</div>
-	</div>
-
-
-	<!-- Login modal ================================================== -->
-
-	<div id="login" class="modal hide fade" tabindex="-1" role="dialog">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">x</button>
-			<h2>Sign in</h2>
-		</div>
-		<div class="modal-body">
-			<form class="form-signin" name="login_form">
-				<input type="text" class="input-block-level" placeholder="User Name" id="userName"> <input type="password"
-					class="input-block-level" placeholder="Password" id="password" /> <label class="checkbox"> <input
-					type="checkbox" value="remember-me" /> Remember me
-				</label>
-				<div style="margin-top: 24px">
-					<button type="submit" class="btn btn-primary">Sign in</button>
-					<a href="#forgot" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Forgot password</a> <a
-						href="#request" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Request login</a>
-				</div>
-			</form>
-		</div>
-	</div>
-
-	<!-- Request login modal ================================================== -->
-
-	<div id="request" class="modal hide fade" tabindex="-1" role="dialog">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal"></button>
-			<h2>Request login</h2>
-		</div>
-		<div class="modal-body">
-			<form class="form-signin">
-				<input type="text" class="input-block-level" placeholder="Organization"> <input type="text"
-					class="input-block-level" placeholder="Country"> <input type="text" class="input-block-level"
-					placeholder="Contact person"> <input type="text" class="input-block-level" placeholder="Phone number">
-				<input type="text" class="input-block-level" placeholder="Email address"> <input type="text"
-					class="input-block-level" placeholder="IMO number">
-				<div style="margin-top: 24px">
-					<button class="btn btn-primary">Send request</button>
-					<button class="btn" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
-				</div>
-			</form>
-		</div>
-	</div>
-
 	<!-- AES information modal ================================================== -->
 
 	<div id="aesModal" class="modal hide fade" tabindex="-1" role="dialog">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">x</button>
-			<h2>AES Information</h2>
+			<h2>AIS Information</h2>
 		</div>
 		<div class="modal-body">
 			<p>

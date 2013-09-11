@@ -7,19 +7,55 @@ embryo.unfocusGroup = function(id, handler) {
 }
 
 $(function() {
-    function updateNavs() {
-        var hash = window.location.hash;
-        if (hash == "") hash = "#vessels";
-        $("#navigationBar li").removeClass("active");
-        $("#navigationBar a[href=\""+hash+"\"]").parents("li").addClass("active");
+    var hash = window.location.hash;
+
+    $("#navigationBar li").removeClass("active");
+    
+    var selectedId = null;
+    
+    if (hash.indexOf("#/") == 0)
+        selectedId = hash.substring(2);
+    
+    var groups = [];
+    
+    $("#navigationBar ul a").each(function(k, v) {
+        var j = $(v).attr("href");
         
+        if (j.indexOf("map.html#/") == 0) {
+            if (j.substring(10) == selectedId) {
+                $(v).parents("li").addClass("active");
+            }
+        }
+        
+    });
+});
+
+embryo.ready(function() {
+    function updateNavs() {
+        embryo.mapPanel.selectControl.unselectAll();
+        var hash = window.location.hash;
+
+        $("#navigationBar li").removeClass("active");
+        
+        var selectedId = null;
+
+        if (hash.indexOf("#/") == 0)
+            selectedId = hash.substring(2);
+
         var groups = [];
 
         $("#navigationBar ul a").each(function(k, v) {
-            groups.push($(v).attr("href").substring(1));
-        });
+            var j = $(v).attr("href");
 
-        var selectedId = hash.substring(1);
+            if (j.indexOf("map.html#/") == 0) {
+                groups.push(j.substring(10));
+                if (j.substring(10) == selectedId) {
+                    $(v).parents("li").addClass("active");
+                }
+
+            }
+
+        });
 
         for (var i in groups) {
             var j = groups[i];
@@ -32,7 +68,14 @@ $(function() {
         }
     }
 
-    $(window).on('hashchange', updateNavs);
+    // angular kills hashchange - temp work around
+
+    $("#navigationBar a").click(function() {
+        setTimeout(updateNavs, 100);
+    });
+
+    // $(window).on('hashchange', updateNavs);
+
     embryo.authenticated(function() {
         setTimeout(updateNavs, 500); // indtil vi finder paa noget bedre
     });

@@ -1,4 +1,6 @@
-embryo.authentication = {};
+embryo.authentication = {
+    currentPageRequiresAuthentication: true
+};
 
 embryo.eventbus.AuthenticatedEvent = function() {
     var event = jQuery.Event("AuthenticatedEvent");
@@ -7,7 +9,7 @@ embryo.eventbus.AuthenticatedEvent = function() {
 
 embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authenticated");
 
-$(function() {
+embryo.ready(function() {
     
     function updateNavigationBar() {
         // is user logged in ?
@@ -103,7 +105,7 @@ $(function() {
     
     updateNavigationBar();
     
-    if (embryo.authentication.userName == null) {
+    if (embryo.authentication.userName == null && embryo.authentication.currentPageRequiresAuthentication) {
         var messageId = embryo.messagePanel.show( { text: "Refreshing ..." })
 
         $.ajax({

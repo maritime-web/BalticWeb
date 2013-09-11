@@ -65,23 +65,6 @@ function to24hClock(time) {
     return hour + ":" + min + ":" + sec;
 }
 
-/**
- * Transforms a position to a position that can be used by OpenLayers. The
- * transformation uses OpenLayers.Projection("EPSG:4326").
- *
- * @param lon
- *            The longitude of the position to transform
- * @param lat
- *            The latitude of the position to transform
- * @returns The transformed position as a OpenLayers.LonLat instance.
- */
-function transformPosition(lon, lat) {
-    return new OpenLayers.LonLat(lon, lat).transform(
-        new OpenLayers.Projection("EPSG:4326"),
-        embryo.mapPanel.map.getProjectionObject()
-    );
-}
-
 function setLayerOpacityById(id, value) {
     var layers = embryo.mapPanel.map.getLayersByName(id);
     

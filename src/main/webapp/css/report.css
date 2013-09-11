@@ -1,0 +1,39 @@
+/** Route upload **/
+.progress{
+	margin-top: 7px;
+}
+
+/**Voyage Plan*/
+tr.activerow td{
+	background-color :  rgba(98,196,98,0.08);
+}
+
+​
+.leftForm {
+	float: left;
+	width: 430px;
+}
+
+.rightForm {
+	float: left;
+	width: 430px;
+}
+
+input.ng-dirty.ng-invalid {
+	border-color: #e9322d;
+}
+
+span.msg-invalid{
+	color : #e9322d;
+}
+
+.data-label{
+	padding-top:5px;
+	float:left;
+}
+
+.menuDivider {
+	height: 42px;
+	width: 100%;
+}
+

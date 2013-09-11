@@ -1,14 +1,6 @@
 $(function() {
     var map = embryo.mapPanel.map;
 
-    function removeLayerById(id) {
-        var layers = map.getLayersByName(id);
-
-        for (var k in layers) {
-            map.removeLayer(layers[k]);
-        }
-    }
-
     function colorByDescription(description) {
         if (description.CT > 80) return "#ff0000";
         if (description.CT > 60) return "#e57425";
@@ -192,8 +184,10 @@ $(function() {
     }
 
     function setupLayers(shapes) {
-        removeLayerById("Ice");
-        removeLayerById("Water");
+        var start = new Date().getTime();
+
+        embryo.map.remove("Ice");
+        embryo.map.remove("Water");
 
         var iceLayer = new OpenLayers.Layer.Vector("Ice", {
             styleMap: new OpenLayers.StyleMap({
@@ -253,10 +247,8 @@ $(function() {
                         var points = [];
 
                         for (var j in polygon) {
-                            var point = polygon[j];
-                            var pointMapped = new OpenLayers.Geometry.Point(point.x, point.y);
-                            pointMapped.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-                            points.push(pointMapped);
+                            var p = polygon[j];
+                            points.push(embryo.map.createPoint(p.x, p.y));
                         }
 
                         rings.push(new OpenLayers.Geometry.LinearRing(points));
@@ -288,10 +280,8 @@ $(function() {
                         var points = [];
 
                         for (var j in polygon) {
-                            var point = polygon[j];
-                            var pointMapped = new OpenLayers.Geometry.Point(point.x, point.y);
-                            pointMapped.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-                            points.push(pointMapped);
+                            var p = polygon[j];
+                            points.push(embryo.map.createPoint(p.x, p.y));
                         }
 
                         rings.push(new OpenLayers.Geometry.LinearRing(points));
@@ -307,11 +297,25 @@ $(function() {
 
             waterLayer.addFeatures([ feature ]);
         }
+        
+        embryo.map.add({
+            group: "ice",
+            layer: iceLayer, 
+            select: true 
+        });
 
+        embryo.map.add({
+            group: "ice",
+            layer: waterLayer
+        });
+        
+        /*
         map.addLayer(iceLayer);
         map.addLayer(waterLayer);
         
     	embryo.mapPanel.add2SelectFeatureCtrl(iceLayer);
+        */
+
 
         iceLayer.events.on({
             featureselected: function(e) {
@@ -322,7 +326,7 @@ $(function() {
             }
         });
 
-        console.log("Ice and water layers addded.")
+        console.log("Ice and water layers addded. - "+(new Date().getTime() - start));
     }
 
     function requestShapefile(name) {
@@ -368,13 +372,11 @@ $(function() {
     });
 
     embryo.focusGroup("ice", function() {
-        setLayerOpacityById("Ice", 1);
         setLayerOpacityById("Water", 1);
         $("#iceControlPanel").css("display", "block");
     });
     
     embryo.unfocusGroup("ice", function() {
-        setLayerOpacityById("Ice", 0.3);
         setLayerOpacityById("Water", 0.3);
         $("#iceControlPanel").css("display", "none");
     });

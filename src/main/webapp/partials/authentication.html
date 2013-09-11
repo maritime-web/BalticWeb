@@ -1,0 +1,44 @@
+
+<!-- Login modal ================================================== -->
+
+<div id="login" class="modal hide fade" tabindex="-1" role="dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h2>Sign in</h2>
+    </div>
+    <div class="modal-body">
+        <form class="form-signin" name="login_form">
+            <input type="text" class="input-block-level" placeholder="User Name" id="userName"> <input type="password"
+                                                                                                       class="input-block-level" placeholder="Password" id="password" /> <label class="checkbox"> <input
+                type="checkbox" value="remember-me" /> Remember me
+        </label>
+            <div style="margin-top: 24px">
+                <button type="submit" class="btn btn-primary">Sign in</button>
+                <a href="#forgot" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Forgot password</a> <a
+                    href="#request" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Request login</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Request login modal ================================================== -->
+
+<div id="request" class="modal hide fade" tabindex="-1" role="dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"></button>
+        <h2>Request login</h2>
+    </div>
+    <div class="modal-body">
+        <form class="form-signin">
+            <input type="text" class="input-block-level" placeholder="Organization"> <input type="text"
+                                                                                            class="input-block-level" placeholder="Country"> <input type="text" class="input-block-level"
+                                                                                                                                                    placeholder="Contact person"> <input type="text" class="input-block-level" placeholder="Phone number">
+            <input type="text" class="input-block-level" placeholder="Email address"> <input type="text"
+                                                                                             class="input-block-level" placeholder="IMO number">
+            <div style="margin-top: 24px">
+                <button class="btn btn-primary">Send request</button>
+                <button class="btn" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>

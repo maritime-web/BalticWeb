@@ -152,8 +152,10 @@ $(function() {
                 vessel : value
             }
 
-            var geom = new OpenLayers.Geometry.Point(value.lon, value.lat)
-                .transform(new OpenLayers.Projection("EPSG:4326"), embryo.mapPanel.map.getProjectionObject());
+            // var geom = new OpenLayers.Geometry.Point(value.lon, value.lat)
+            //    .transform(new OpenLayers.Projection("EPSG:4326"), embryo.mapPanel.map.getProjectionObject());
+
+            var geom = embryo.map.createPoint(value.lon, value.lat);
 
             var feature = new OpenLayers.Feature.Vector(geom, attr);
 
@@ -209,9 +211,12 @@ $(function() {
         markerLayer.removeAllFeatures();
 
         if (embryo.vessel.markedVessel) {
+            var geom = embryo.map.createPoint(embryo.vessel.markedVessel.lon, embryo.vessel.markedVessel.lat);
+            /*
             var loc = transformPosition(embryo.vessel.markedVessel.lon, embryo.vessel.markedVessel.lat);
             var geom = new OpenLayers.Geometry.Point(loc.lon, loc.lat);
-            
+            */
+
             markerLayer.addFeatures([
                 new OpenLayers.Feature.Vector(
                     new OpenLayers.Geometry.Point(geom.x, geom.y), {
@@ -249,9 +254,16 @@ $(function() {
         })
     });
     
-    embryo.mapPanel.map.addLayer(vesselLayer);
-    embryo.mapPanel.add2SelectFeatureCtrl(vesselLayer);
-    embryo.mapPanel.add2HoverFeatureCtrl(vesselLayer);
+    embryo.map.add({
+        group: "vessel",
+        layer: vesselLayer,
+        select: true,
+        hoved: true
+    });
+
+    // embryo.mapPanel.map.addLayer(vesselLayer);
+    // embryo.mapPanel.add2SelectFeatureCtrl(vesselLayer);
+    // embryo.mapPanel.add2HoverFeatureCtrl(vesselLayer);
     
     // Create vector layer with a stylemap for the selection image
     markerLayer = new OpenLayers.Layer.Vector("Markers", {
@@ -271,7 +283,10 @@ $(function() {
         })
     });
     
-    embryo.mapPanel.map.addLayer(markerLayer);
+    embryo.map.add({ 
+        group: "vessel",
+        layer: markerLayer 
+    });
     
     // Create vector layer with a stylemap for the selection image
     selectionLayer = new OpenLayers.Layer.Vector("Selection", {
@@ -291,7 +306,10 @@ $(function() {
         })
     });
 
-    embryo.mapPanel.map.addLayer(selectionLayer);
+    embryo.map.add({
+        group: "vessel",
+        layer: selectionLayer 
+    });
         
     function onSelect(event) {
         var feature = event.feature;
@@ -321,13 +339,13 @@ $(function() {
         loadVesselList();
     });
 
-    embryo.focusGroup("vessels", function() {
+    embryo.focusGroup("vessel", function() {
         vesselSize = 1;
         drawVessels();
         setLayerOpacityById("Vessels", 1);
     });
     
-    embryo.unfocusGroup("vessels", function() {
+    embryo.unfocusGroup("vessel", function() {
         vesselSize = 0.5;
         drawVessels();
         setLayerOpacityById("Vessels", 0.3);

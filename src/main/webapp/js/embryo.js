@@ -28,6 +28,30 @@ embryo.eventbus.registerShorthand = function(eventType, name) {
     }
 };
 
+embryo.eventbus.EmbryoReadyEvent = function() {
+    var event = jQuery.Event("EmbryoReadyEvent");
+    return event;
+};
+
+embryo.eventbus.registerShorthand(embryo.eventbus.EmbryoReadyEvent, "ready");
+
+$(function() {
+    var interval = setInterval(function() {
+        var allIncludesLoaded = true;
+
+        $("ng-include").each(function (k, v) {
+            var l = $(v).html().trim().length;
+            if (l == 0) allIncludesLoaded = false;
+        });
+
+        if (allIncludesLoaded) {
+            clearInterval(interval);
+            embryo.eventbus.fireEvent(embryo.eventbus.EmbryoReadyEvent());
+        }
+        
+    }, 100);
+});
+
 embryo.messagePanel = {
     render: function(id, msg) {
         switch (msg.type) {
