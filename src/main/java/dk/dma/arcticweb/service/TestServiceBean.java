@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.embryo.domain.AuthorityRole;
 import dk.dma.embryo.domain.Berth;
+import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.IEntity;
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
@@ -38,6 +39,7 @@ import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 
@@ -64,7 +66,9 @@ public class TestServiceBean {
         deleteAll(SecuredUser.class);
         deleteAll(Role.class);
         deleteAll(Ship.class);
+        deleteAll(Ship2.class);
         deleteAll(Permission.class);
+        deleteAll(GreenPosReport.class);
 
         logger.info("AFTER DELETION");
     }
