@@ -142,6 +142,9 @@ $(function() {
             // Draw features
             tracksLayer.refresh();
             timeStampsLayer.refresh();
+            setLayerOpacityById("timeStampsLayer", 0);
+            setLayerOpacityById("trackLayer", 0.4);
+
         }
     }
 
@@ -159,7 +162,7 @@ $(function() {
         styleMap : new OpenLayers.StyleMap({
             'default' : {
                 strokeColor : pastTrackColor,
-                strokeOpacity : pastTrackOpacity,
+                // strokeOpacity : pastTrackOpacity,
                 strokeWidth : pastTrackWidth
             }
         })
@@ -218,7 +221,12 @@ $(function() {
             success: function (result) {
 	        if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
                 showVesselInformation(result);
-                // embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
+                $("#viewHistoricalTrack").off("click");
+                $("#viewHistoricalTrack").on("click", function() {
+                    embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
+                    setLayerOpacityById("timeStampsLayer", 1);
+                    setLayerOpacityById("trackLayer", 1);
+                });
 
                 // embryo.messagePanel.replace(messageId, { text: "Vessel data loaded.", type: "success" })
                 
