@@ -26,22 +26,22 @@ $(function() {
     	function updateReportStatus() {
     		var injector = angular.element(document).injector();
 
-    		$("#shipInfo").attr('href', 'index.html#/ship/');
-    		$("#greenposReport").attr('href', 'index.html#/report');
+    		$("#shipInfo").attr('href', 'report.html#/ship/');
+    		$("#greenposReport").attr('href', 'report.html#/report');
 
     		var VoyageService = injector.get('VoyageService');
     		var RouteService = injector.get('RouteService');
     		var ShipService = injector.get('ShipService');
 
     		ShipService.getYourShip(function(ship) {
-    			$("#voyagePlan").attr('href', 'index.html#/voyagePlan/' + ship.mmsi + '/current');
+    			$("#voyagePlan").attr('href', 'report.html#/voyagePlan/' + ship.mmsi + '/current');
     			
     			RouteService.getActive(ship.mmsi, function(route) {
-    				$("#routeEdit").attr('href', 'index.html#/routeEdit/' + ship.mmsi + "/" + route.id);
+    				$("#routeEdit").attr('href', 'report.html#/routeEdit/' + ship.mmsi + "/" + route.id);
     			});
 
     			VoyageService.getYourActive(function(voyage) {
-    				$("#routeUpload").attr('href', 'index.html#/routeUpload/' + ship.mmsi + "/" + voyage.maritimeId);
+    				$("#routeUpload").attr('href', 'report.html#/routeUpload/' + ship.mmsi + "/" + voyage.maritimeId);
     			});
     		});
 
