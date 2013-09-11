@@ -79,45 +79,12 @@
 				};
 			}
 		});
-
-		
-
 //		var voyageId = $routeParams.voyageId;
 //		
 //		console.log(voyageId);
 //		console.log($('#routeUpload').find('#voyageName').length);
 //		$('#routeUpload').find('#voyageName').typeahead('setQuery', 'Miami');
 		
-	};
-
-	embryo.routeUpload = {};
-	embryo.routeUpload.Ctrl = function($scope, $element) {
-
-		$scope.open = function(options) {
-			$scope.clear();
-			if (options && options.preSelectedVoyage) {
-				$scope.voyage.isPreselected = true;
-
-				if (options.preSelectedVoyage.id) {
-					$scope.voyage.id = options.preSelectedVoyage.id;
-					$('#routeUpload').find('form').find('input[name="voyageId"]').val(options.preSelectedVoyage.id);
-				}
-				if (options.preSelectedVoyage.name) {
-					$scope.voyage.name = options.preSelectedVoyage.name;
-					$('#routeUpload').find('#voyageName').typeahead('setQuery', options.preSelectedVoyage.name);
-				}
-			} else {
-				$scope.voyage.isPreselected = false;
-				$scope.voyage.id = null;
-				$scope.voyage.name = null;
-			}
-
-			if (options && options.onclose) {
-				$scope.onclose = options.onclose;
-			}
-			$('#routeUpload').find('.modal').modal('show');
-		};
-
 	};
 
 }());
