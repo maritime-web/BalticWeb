@@ -16,7 +16,7 @@
 		return {
 			getItem : function(key, callback, remoteCall) {
 				var dataStr = sessionStorage.getItem(key);
-				if (!dataStr) {
+				if (typeof dataStr !== 'undefined') {
 					if (remoteCall) {
 						var onSuccess = function(data) {
 							// only cache objects with values
@@ -51,7 +51,7 @@
 		return {
 			getItem : function(key, callback, remoteCall) {
 				var dataStr = localStorage.getItem(key);
-				if (!dataStr) {
+				if (typeof dataStr !== 'undefined') {
 					var onSuccess = function(data) {
 						// only cache objects with values
 						if (data && Object.keys(data).length > 0) {
