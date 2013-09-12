@@ -72,6 +72,7 @@ function Vessel(vesselId, vessel, markerScale) {
     
 $(function() {
     var vesselSize = 1;
+    var vesselTransparency = 0.3;
     var vessels = [];
     var lastRequestId = 0;
 
@@ -142,12 +143,12 @@ $(function() {
             var attr = {
                 id : value.id,
                 angle : value.degree - 90,
-                opacity : 1,
+                opacity : function() { return vesselTransparency },
                 image : "img/" + value.image,
-                imageWidth : value.imageWidth * vesselSize,
-                imageHeight : value.imageHeight * vesselSize,
-                imageYOffset : value.imageYOffset * vesselSize,
-                imageXOffset : value.imageXOffset * vesselSize,
+                imageWidth : function() { return value.imageWidth * vesselSize },
+                imageHeight : function() { return value.imageHeight * vesselSize },
+                imageYOffset : function() { return value.imageYOffset * vesselSize },
+                imageXOffset : function() { return value.imageXOffset * vesselSize },
                 type : "vessel",
                 vessel : value
             }
@@ -245,7 +246,8 @@ $(function() {
                 graphicHeight : "${imageHeight}",
                 graphicYOffset : "${imageYOffset}",
                 graphicXOffset : "${imageXOffset}",
-                rotation : "${angle}"
+                rotation : "${angle}",
+                graphicOpacity : "${opacity}"
             },
             "select" : {
                 cursor : "crosshair",
@@ -340,15 +342,13 @@ $(function() {
     });
 
     embryo.focusGroup("vessel", function() {
-        vesselSize = 1;
-        drawVessels();
-        setLayerOpacityById("Vessels", 1);
+        vesselTransparency = 1;
+        vesselLayer.redraw();
     });
     
     embryo.unfocusGroup("vessel", function() {
-        vesselSize = 0.5;
-        drawVessels();
-        setLayerOpacityById("Vessels", 0.3);
+        vesselTransparency = 0.3;
+        vesselLayer.redraw();
     });
 
     embryo.hover(function(e) {
@@ -367,4 +367,17 @@ $(function() {
             return null;
         }
     });
+
+    embryo.mapPanel.map.events.register("zoomend", embryo.mapPanel.map, function() {
+        var newVesselSize = 0.5;
+        if (embryo.mapPanel.map.zoom >= 4) newVesselSize = 0.75;
+        if (embryo.mapPanel.map.zoom >= 6) newVesselSize = 1;
+
+        if (vesselSize != newVesselSize) {
+            vesselSize = newVesselSize;
+            vesselLayer.redraw();
+        }
+    });
+
+
 });
