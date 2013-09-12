@@ -181,7 +181,7 @@ $(function() {
     });
 
     $("#zoomAll").click(function() {
-        embryo.mapPanel.map.setCenter(transformPosition(-70, 73), 3);
+        embryo.mapPanel.map.setCenter(transformPosition(-70, 72), 3);
     });
 });
 

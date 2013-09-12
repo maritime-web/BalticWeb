@@ -1,5 +1,5 @@
 $(function() {
-    var map = embryo.mapPanel.map;
+    var waterOpacity = 0.3;
 
     function colorByDescription(description) {
         if (description.CT > 80) return "#ff0000";
@@ -219,7 +219,7 @@ $(function() {
             styleMap: new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style({
                     fillColor: "#5599ff",
-                    fillOpacity: 0.2,
+                    fillOpacity: waterOpacity,
                     strokeWidth: 0,
                     strokeColor: "#000000",
                     strokeOpacity: 0,
@@ -371,14 +371,16 @@ $(function() {
         }
     });
 
-    embryo.focusGroup("ice", function() {
-        setLayerOpacityById("Water", 1);
-        $("#iceControlPanel").css("display", "block");
-    });
-    
-    embryo.unfocusGroup("ice", function() {
-        setLayerOpacityById("Water", 0.3);
-        $("#iceControlPanel").css("display", "none");
+    embryo.groupChanged(function(e) {
+        if (e.groupId == "ice") {
+            waterOpacity = 1;
+            setLayerOpacityById("Water", waterOpacity);
+            $("#iceControlPanel").css("display", "block");
+        } else {
+            waterOpacity = 0.3;
+            setLayerOpacityById("Water", waterOpacity);
+            $("#iceControlPanel").css("display", "none");
+        }
     });
 });
 

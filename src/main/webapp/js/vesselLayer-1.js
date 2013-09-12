@@ -341,14 +341,14 @@ $(function() {
         loadVesselList();
     });
 
-    embryo.focusGroup("vessel", function() {
-        vesselTransparency = 1;
-        vesselLayer.redraw();
-    });
-    
-    embryo.unfocusGroup("vessel", function() {
-        vesselTransparency = 0.3;
-        vesselLayer.redraw();
+    embryo.groupChanged(function(e) {
+        if (e.groupId == "vessel") {
+            vesselTransparency = 1;
+            vesselLayer.redraw();
+        } else {
+            vesselTransparency = 0.3;
+            vesselLayer.redraw();
+        }
     });
 
     embryo.hover(function(e) {

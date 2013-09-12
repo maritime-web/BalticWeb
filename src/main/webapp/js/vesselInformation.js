@@ -26,7 +26,9 @@ embryo.vesselInformation = {
     },
     showAesDialog: function (data) {
         var html = "";
-        
+
+        var link = "http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi="+data.mmsi;
+
         var egenskaber = {
             "MMSI": data.mmsi,
             "Class": data["class"],
@@ -51,7 +53,7 @@ embryo.vesselInformation = {
             "ETA": data.eta,
             "Pos acc": data.posAcc,
             "Last report": data.lastReport,
-            "More information": ((data.link != null) ? "<a href=\""+data.link+"\" target=new>"+data.link+"</a>" : null)
+            "More information": "<a href='"+link+"' target='new_window'>"+link+"</a>"
         }
         
         $.each(egenskaber, function(k,v) {
@@ -142,6 +144,8 @@ $(function() {
             // Draw features
             tracksLayer.refresh();
             timeStampsLayer.refresh();
+            setLayerOpacityById("timeStampsLayer", 0);
+            setLayerOpacityById("trackLayer", 0.4);
         }
     }
 
@@ -216,12 +220,20 @@ $(function() {
                 past_track: 1 
             },
             success: function (result) {
-	        if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
+	            if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
                 showVesselInformation(result);
-                // embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
 
-                // embryo.messagePanel.replace(messageId, { text: "Vessel data loaded.", type: "success" })
-                
+                $("#viewHistoricalTrack").off("click");
+                if (result.pastTrack != null) {
+                    $("#viewHistoricalTrack").attr("href", "#");
+                    $("#viewHistoricalTrack").on("click", function() {
+                        embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
+                        setLayerOpacityById("timeStampsLayer", 1);
+                        setLayerOpacityById("trackLayer", 1);
+                    });
+                } else {
+                    $("#viewHistoricalTrack").attr("href", "");
+                }
             },
             error: function(data) {
                 // embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " loading vessel data.", type: "error" });
@@ -237,12 +249,12 @@ $(function() {
         drawPastTrack(null);
     });
 
-    embryo.focusGroup("vessel", function() {
-        $("#vesselControlPanel").css("display", "block");
-    });
-    
-    embryo.unfocusGroup("vessel", function() {
-        $("#vesselControlPanel").css("display", "none");
+    embryo.groupChanged(function(e) {
+        if (e.groupId == "vessel") {
+            $("#vesselControlPanel").css("display", "block");
+        } else {
+            $("#vesselControlPanel").css("display", "none");
+        }
     });
 
 });

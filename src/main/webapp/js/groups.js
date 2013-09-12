@@ -1,10 +1,10 @@
-embryo.focusGroup = function(id, handler) {
-    $(document).on("focusGroup"+id, handler);
-}
+embryo.eventbus.GroupChangedEvent = function(id) {
+    var event = jQuery.Event("GroupChangedEvent");
+    event.groupId = id;
+    return event;
+};
 
-embryo.unfocusGroup = function(id, handler) {
-    $(document).on("unfocusGroup"+id, handler);
-}
+embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChanged");
 
 $(function() {
     var hash = window.location.hash;
@@ -57,15 +57,8 @@ embryo.ready(function() {
 
         });
 
-        for (var i in groups) {
-            var j = groups[i];
-                
-            if (j == selectedId) {
-                $(document).trigger($.Event("focusGroup"+j));
-            } else {
-                $(document).trigger($.Event("unfocusGroup"+j));
-            }
-        }
+        embryo.eventbus.fireEvent(embryo.eventbus.GroupChangedEvent(selectedId));
+        
     }
 
     // angular kills hashchange - temp work around
