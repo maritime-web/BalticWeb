@@ -1,6 +1,5 @@
 $(function() {
     var map = embryo.mapPanel.map;
-    var waterOpacity = 0.3;
 
     function colorByDescription(description) {
         if (description.CT > 80) return "#ff0000";
@@ -220,7 +219,7 @@ $(function() {
             styleMap: new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style({
                     fillColor: "#5599ff",
-                    fillOpacity: waterOpacity,
+                    fillOpacity: 0.2,
                     strokeWidth: 0,
                     strokeColor: "#000000",
                     strokeOpacity: 0,
@@ -373,14 +372,12 @@ $(function() {
     });
 
     embryo.focusGroup("ice", function() {
-        waterOpacity = 1;
-        setLayerOpacityById("Water", waterOpacity);
+        setLayerOpacityById("Water", 1);
         $("#iceControlPanel").css("display", "block");
     });
     
     embryo.unfocusGroup("ice", function() {
-        waterOpacity = 0.3;
-        setLayerOpacityById("Water", waterOpacity);
+        setLayerOpacityById("Water", 0.3);
         $("#iceControlPanel").css("display", "none");
     });
 });

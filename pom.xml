@@ -28,7 +28,9 @@
     <hibernate.version>4.0.1.Final</hibernate.version>
     <shiro.version>1.2.2</shiro.version>
     <jslint.predef>embryo</jslint.predef>
-    <!-- <version.net.ftlines.wicket-cdi>1.2</version.net.ftlines.wicket-cdi> -->
+
+    <!-- developer setting -->
+    <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
   </properties>
 
   <dependencyManagement>
@@ -277,9 +279,20 @@
   <build>
     <resources>
       <resource>
-        <filtering>false</filtering>
         <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/persistence.xml</include>
+        </includes>
       </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>**/persistence.xml</exclude>
+        </excludes>
+      </resource>
+      <!-- For the sake of wicket. remove later -->
       <resource>
         <filtering>false</filtering>
         <directory>src/main/java</directory>

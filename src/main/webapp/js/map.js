@@ -135,8 +135,6 @@ $(function() {
             );
         setCookie("dma-ais-lat", lonlat.lat, 30);
         setCookie("dma-ais-lon", lonlat.lon, 30);
-
-        // console.log("zoom: " + embryo.mapPanel.map.zoom + " " + lonlat.lat + " " + lonlat.lon);
     }
     
     /**
@@ -183,7 +181,7 @@ $(function() {
     });
 
     $("#zoomAll").click(function() {
-        embryo.mapPanel.map.setCenter(transformPosition(-70, 72), 3);
+        embryo.mapPanel.map.setCenter(transformPosition(-70, 73), 3);
     });
 });
 

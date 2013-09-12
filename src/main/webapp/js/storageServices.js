@@ -33,9 +33,7 @@
 						callback(null);
 					}
 				} else {
-					console.log(dataStr);
 					var data = JSON.parse(dataStr);
-					console.log(data);
 					callback(data);
 				}
 			},

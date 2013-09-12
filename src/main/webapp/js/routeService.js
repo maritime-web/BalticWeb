@@ -21,7 +21,7 @@
 				return {
 					getActive : function(mmsi, callback) {
 						var remoteCall = function(onSuccess) {
-							$http.get('rest/route/active/' + mmsi, {
+							$http.get('rest/route/active/220443000', {
 								responseType : 'json'
 							}).success(onSuccess);
 						};
@@ -39,6 +39,7 @@
 									SessionStorageService.setItem(active, route.id);
 									callback(route);
 								};
+								
 								SessionStorageService.getItem(routeKey(routeId), setActiveCallback, remoteCall);
 							}
 						});

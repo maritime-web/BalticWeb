@@ -27,8 +27,6 @@ embryo.vesselInformation = {
     showAesDialog: function (data) {
         var html = "";
         
-        var link = "http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi="+data.mmsi;
-
         var egenskaber = {
             "MMSI": data.mmsi,
             "Class": data["class"],
@@ -53,7 +51,7 @@ embryo.vesselInformation = {
             "ETA": data.eta,
             "Pos acc": data.posAcc,
             "Last report": data.lastReport,
-            "More information": "<a href='"+link+"' target='new_window'>"+link+"</a>"
+            "More information": ((data.link != null) ? "<a href=\""+data.link+"\" target=new>"+data.link+"</a>" : null)
         }
         
         $.each(egenskaber, function(k,v) {
@@ -144,9 +142,6 @@ $(function() {
             // Draw features
             tracksLayer.refresh();
             timeStampsLayer.refresh();
-            setLayerOpacityById("timeStampsLayer", 0);
-            setLayerOpacityById("trackLayer", 0.4);
-
         }
     }
 
@@ -164,7 +159,7 @@ $(function() {
         styleMap : new OpenLayers.StyleMap({
             'default' : {
                 strokeColor : pastTrackColor,
-                // strokeOpacity : pastTrackOpacity,
+                strokeOpacity : pastTrackOpacity,
                 strokeWidth : pastTrackWidth
             }
         })
@@ -223,12 +218,7 @@ $(function() {
             success: function (result) {
 	        if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
                 showVesselInformation(result);
-                $("#viewHistoricalTrack").off("click");
-                $("#viewHistoricalTrack").on("click", function() {
-                    embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
-                    setLayerOpacityById("timeStampsLayer", 1);
-                    setLayerOpacityById("trackLayer", 1);
-                });
+                // embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
 
                 // embryo.messagePanel.replace(messageId, { text: "Vessel data loaded.", type: "success" })
                 
