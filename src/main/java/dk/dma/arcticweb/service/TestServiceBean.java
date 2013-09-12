@@ -58,6 +58,7 @@ public class TestServiceBean {
     public void clearAllData() {
         logger.info("Deleting existing entries");
 
+        deleteAll(Ship2.class);
         deleteAll(Berth.class);
         deleteAll(VoyagePlan.class);
         // delete any other voyages
@@ -66,7 +67,6 @@ public class TestServiceBean {
         deleteAll(SecuredUser.class);
         deleteAll(Role.class);
         deleteAll(Ship.class);
-        deleteAll(Ship2.class);
         deleteAll(Permission.class);
         deleteAll(GreenPosReport.class);
 

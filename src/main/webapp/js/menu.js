@@ -10,32 +10,11 @@
 	"use strict";
 
 	embryo.menu = [ {
-		text : 'Your Ship',
+		text : 'Vessels',
 		required : [ 'yourShip' ],
-		menuItems : [ {
-			text : 'Zoom to Ship',
-			href : '#',
-			onClick : ''
-		}, {
-			text : 'Ship Information',
-			href : '#',
-		}, {
-			text : 'Ship Report',
-			href : 'index.html#/report',
-			onClick : ''
-		}, {
-			text : 'Voyage Plan',
-			href : '#',
-			onClick : ''
-		}, {
-			text : 'Edit Active Route',
-			href : '#',
-			onClick : ''
-		}, {
-			text : 'Upload Active Route',
-			href : '#',
-			onClick : ''
-		} ]
+	}, {
+		text : 'Ice',
+		required : [ 'yourShip' ],
 	}
 
 	];
