@@ -208,7 +208,6 @@ $(function() {
         $("#vesselInformationPanel").css("display", "none");
 
         // var messageId = embryo.messagePanel.show( { text: "Loading vessel data ..." })
-            console.log("e.vesselId is "+e.vesselId);
         
         $.ajax({
             url: embryo.baseUrl+detailsUrl,
