@@ -67,6 +67,18 @@ embryo.vesselInformation = {
 }
 
 $(function() {
+    function formatDate(dato) {
+        if (dato == null) return "-";
+        var d = new Date(dato);
+        return d.getFullYear()+"-"+(""+(101+d.getMonth())).slice(1,3)+"-"+(""+(100+d.getDate())).slice(1,3);
+    }
+    
+    function formatTime(dato) {
+        if (dato == null) return "-";
+        var d = new Date(dato);
+        return formatDate(dato) + " " + d.getHours()+":"+(""+(100+d.getMinutes())).slice(1,3);
+    }
+
     /**
      * Draws the past track. If tracks are null, it will simply remove all tracks
      * and draw nothing.
@@ -77,76 +89,62 @@ $(function() {
     function drawPastTrack(tracks) {
         
         // Remove old tracks
+
         tracksLayer.removeAllFeatures();
         timeStampsLayer.removeAllFeatures();
+
+        if (tracks == null || tracks.length < 2) return;
         
-        // Get time stamp distance
-        var CL = false;
-        var tracksBetweenTimeStamps;
-        if (embryo.mapPanel.map.zoom >= vesselZoomLevel) {
-            tracksBetweenTimeStamps = tracksBetweenTimeStampsVL;
-        } else {
-            tracksBetweenTimeStamps = tracksBetweenTimeStampsCL;
-            CL = true;
+        // Draw tracks layer
+
+        for (var i = 1; i < tracks.length; i++) {
+            // Insert line
+            var points = new Array(
+                embryo.map.createPoint(tracks[i-1].lon, tracks[i-1].lat),
+                embryo.map.createPoint(tracks[i].lon, tracks[i].lat)
+            );
+            
+            var line = new OpenLayers.Geometry.LineString(points);
+            var lineFeature = new OpenLayers.Feature.Vector(line);
+            tracksLayer.addFeatures([ lineFeature ]);
         }
         
-        // Draw tracks
-        if (tracks && includePastTracks) {
-            var lastLon;
-            var lastLat;
-            var firstPoint = true;
-            var untilTimeStamp = 0;
-            
-            for (track in tracks) {
-                var currentTrack = tracks[track];
-                if (!firstPoint) {
-                    // Insert line
-                    var points = new Array(
-                        embryo.map.createPoint(lastLon,lastLat),
-                        embryo.map.createPoint(currentTrack.lon, currentTrack.lat)
-                    );
-                    
-                    var line = new OpenLayers.Geometry.LineString(points);
-                    var lineFeature = new OpenLayers.Feature.Vector(line);
-                    tracksLayer.addFeatures([ lineFeature ]);
-                    
-                    // Insert timeStamp?
-                    if (untilTimeStamp == 0
-                        && parseInt(track) + tracksBetweenTimeStamps < tracks.length
-                        && includeTimeStamps && (includeTimeStampsOnCL || !CL)) {
-                        
-                        var timeStampPos = points[0];
-                        var timeStampFeature = new OpenLayers.Feature.Vector(
-                            timeStampPos);
-                        
-                        // Remove date from time
-                        var time = (new Date(currentTrack.time)).toTimeString();
-                        
-                        // Change to 24h clock
-                        time = to24hClock(time);
-                        
-                        timeStampFeature.attributes = {
-                            timeStamp : time
-                        };
-                        timeStampsLayer.addFeatures([ timeStampFeature ]);
-                        
-                        untilTimeStamp = tracksBetweenTimeStamps;
-                        
-                    } else {
-                        untilTimeStamp--;
-                    }
-                }
-                lastLon = currentTrack.lon;
-                lastLat = currentTrack.lat;
-                firstPoint = false;
+        // Draw timestamps layer
+
+        var maxNoTimestampsToDraw = 5;
+
+        var delta = (maxNoTimestampsToDraw - 1) / (tracks[tracks.length - 1].time - tracks[0].time - 1);
+        
+        var oldHatCounter = -1;
+
+        for (var i in tracks) {
+            var track = tracks[i];
+
+            var hatCounter = Math.floor((track.time - tracks[0].time) * delta);
+
+            if (oldHatCounter != hatCounter) {
+                oldHatCounter = hatCounter;
+ 
+                var timeStampFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(track.lon, track.lat));
+                
+                time = formatTime(track.time);
+                
+                timeStampFeature.attributes = {
+                    timeStamp : time,
+                    align: "lm",
+                    xOffset: 10
+                };
+                
+                timeStampsLayer.addFeatures([ timeStampFeature ]);
             }
-            
-            // Draw features
-            tracksLayer.refresh();
-            timeStampsLayer.refresh();
-            setLayerOpacityById("timeStampsLayer", 0);
-            setLayerOpacityById("trackLayer", 0.4);
         }
+        
+        // Draw features
+        tracksLayer.refresh();
+        timeStampsLayer.refresh();
+
+        setLayerOpacityById("timeStampsLayer", 0);
+        setLayerOpacityById("trackLayer", 0.4);
     }
 
     function showVesselInformation(data) {
@@ -163,7 +161,6 @@ $(function() {
         styleMap : new OpenLayers.StyleMap({
             'default' : {
                 strokeColor : pastTrackColor,
-                strokeOpacity : pastTrackOpacity,
                 strokeWidth : pastTrackWidth
             }
         })
@@ -180,9 +177,14 @@ $(function() {
                 labelAlign : "${align}",
                 labelXOffset : "${xOffset}",
                 labelYOffset : "${yOffset}",
-                labelOutlineColor : timeStamtOutlineColor,
-                labelOutlineWidth : 5,
-                labelOutline : 1
+                labelOutlineColor : "#fff",
+                labelOutlineWidth : 2,
+                labelOutline : 1,
+                pointRadius: 3,
+                fill: true,
+                fillColor : pastTrackColor,
+                strokeColor : pastTrackColor,
+                stroke: true
             }
         })
     });
@@ -202,11 +204,6 @@ $(function() {
         control: new OpenLayers.Control.DrawFeature(tracksLayer, OpenLayers.Handler.Path)
     });
 
-    // embryo.mapPanel.map.addControl(new OpenLayers.Control.DrawFeature(tracksLayer, OpenLayers.Handler.Path));
-
-    // embryo.mapPanel.map.addLayer(timeStampsLayer);
-    // embryo.mapPanel.map.addLayer(tracksLayer);
-
     embryo.vesselSelected(function(e) {
         $("#vesselInformationPanel").css("display", "none");
 
@@ -220,16 +217,16 @@ $(function() {
                 past_track: 1 
             },
             success: function (result) {
-	            if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
+	        if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
                 showVesselInformation(result);
-
+                
                 $("#viewHistoricalTrack").off("click");
                 if (result.pastTrack != null) {
                     $("#viewHistoricalTrack").attr("href", "#");
                     $("#viewHistoricalTrack").on("click", function() {
                         embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
-                        setLayerOpacityById("timeStampsLayer", 1);
-                        setLayerOpacityById("trackLayer", 1);
+                        setLayerOpacityById("timeStampsLayer", 0.8);
+                        setLayerOpacityById("trackLayer", 0.4);
                     });
                 } else {
                     $("#viewHistoricalTrack").attr("href", "");

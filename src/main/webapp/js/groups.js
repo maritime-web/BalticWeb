@@ -32,7 +32,6 @@ $(function() {
 
 embryo.ready(function() {
     function updateNavs() {
-        embryo.mapPanel.selectControl.unselectAll();
         var hash = window.location.hash;
 
         $("#navigationBar li").removeClass("active");

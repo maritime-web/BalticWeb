@@ -14,21 +14,22 @@ embryo.eventbus.registerShorthand(embryo.eventbus.HighLightEvent, "highlight");
 embryo.eventbus.registerShorthand(embryo.eventbus.UnHighLightEvent, "unhighlight");
 
 $(function() {
+    var selectLayerByGroup = { };
+
     embryo.map = {
         add: function(d) {
             if (d.layer) {
                 embryo.mapPanel.map.addLayer(d.layer);
-                if (d.select) embryo.mapPanel.add2SelectFeatureCtrl(d.layer);
+
+                if (selectLayerByGroup[d.group] == null)
+                    selectLayerByGroup[d.group] = [];
+
+                if (d.select)
+                    selectLayerByGroup[d.group].push(d.layer);
+
             }
             if (d.control) {
                 embryo.mapPanel.map.addControl(d.control);
-            }
-        },
-        remove: function(id) {
-            var layers = embryo.mapPanel.map.getLayersByName(id);
-            
-            for (var k in layers) {
-                embryo.mapPanel.map.removeLayer(layers[k]);
             }
         },
         createPoint: function(longitude, latitude) {
@@ -182,6 +183,11 @@ $(function() {
 
     $("#zoomAll").click(function() {
         embryo.mapPanel.map.setCenter(transformPosition(-70, 72), 3);
+    });
+
+    embryo.groupChanged(function(e) {
+        embryo.mapPanel.selectControl.unselectAll();
+        embryo.mapPanel.selectControl.setLayer(selectLayerByGroup[e.groupId]);
     });
 });
 

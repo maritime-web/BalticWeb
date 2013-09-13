@@ -183,54 +183,77 @@ $(function() {
         closeCollapse("#icpSelectedIce");
     }
 
+    var iceLayer = new OpenLayers.Layer.Vector("Ice", {
+        styleMap: new OpenLayers.StyleMap({
+            "default": new OpenLayers.Style({
+                fillColor: "${fillColor}",
+                fillOpacity: 0.4,
+                strokeWidth: 1,
+                strokeColor: "#000000",
+                strokeOpacity: 0.2,
+            }),
+            "temporary": new OpenLayers.Style({
+                fillColor: "${fillColor}",
+                fillOpacity: 0.4,
+                strokeWidth: 1,
+                strokeColor: "#000000",
+                strokeOpacity: 0.7,
+            }),
+            "select": new OpenLayers.Style({
+                fillColor: "${fillColor}",
+                fillOpacity: 0.4,
+                strokeWidth: 1,
+                strokeColor: "#000",
+                strokeOpacity: 1
+            })
+        })
+    });
+
+    var waterLayer = new OpenLayers.Layer.Vector("Water", {
+        styleMap: new OpenLayers.StyleMap({
+            "default": new OpenLayers.Style({
+                fillColor: "#5599ff",
+                fillOpacity: waterOpacity,
+                strokeWidth: 0,
+                strokeColor: "#000000",
+                strokeOpacity: 0,
+                fontColor: "#000000",
+                fontSize: "12px",
+                fontFamily: "Courier New, monospace",
+                label : "${description}",
+                fontWeight: "bold"
+            })
+        })
+    });
+
+    embryo.map.add({
+        group: "ice",
+        layer: iceLayer, 
+        select: true 
+    });
+
+    embryo.map.add({
+        group: "ice",
+        layer: waterLayer
+    });
+    
+    iceLayer.events.on({
+        featureselected: function(e) {
+            showIceInformation(e.feature.attributes.iceDescription);
+        },
+        featureunselected: function(e) {
+            hideIceInformation();
+        }
+    });
+
     function setupLayers(shapes) {
         var start = new Date().getTime();
 
-        embryo.map.remove("Ice");
-        embryo.map.remove("Water");
+        iceLayer.removeAllFeatures();
+        waterLayer.removeAllFeatures();
 
-        var iceLayer = new OpenLayers.Layer.Vector("Ice", {
-            styleMap: new OpenLayers.StyleMap({
-                "default": new OpenLayers.Style({
-                    fillColor: "${fillColor}",
-                    fillOpacity: 0.4,
-                    strokeWidth: 1,
-                    strokeColor: "#000000",
-                    strokeOpacity: 0.2,
-                }),
-                "temporary": new OpenLayers.Style({
-                    fillColor: "${fillColor}",
-                    fillOpacity: 0.4,
-                    strokeWidth: 1,
-                    strokeColor: "#000000",
-                    strokeOpacity: 0.7,
-                }),
-                "select": new OpenLayers.Style({
-                    fillColor: "${fillColor}",
-                    fillOpacity: 0.4,
-                    strokeWidth: 1,
-                    strokeColor: "#000",
-                    strokeOpacity: 1
-                })
-            })
-        });
-
-        var waterLayer = new OpenLayers.Layer.Vector("Water", {
-            styleMap: new OpenLayers.StyleMap({
-                "default": new OpenLayers.Style({
-                    fillColor: "#5599ff",
-                    fillOpacity: waterOpacity,
-                    strokeWidth: 0,
-                    strokeColor: "#000000",
-                    strokeOpacity: 0,
-                    fontColor: "#000000",
-                    fontSize: "12px",
-                    fontFamily: "Courier New, monospace",
-                    label : "${description}",
-                    fontWeight: "bold"
-                })
-            })
-        });
+        // embryo.map.remove("Ice");
+        // embryo.map.remove("Water");
 
         for (var l in shapes) {
             var shape = shapes[l];
@@ -298,17 +321,6 @@ $(function() {
             waterLayer.addFeatures([ feature ]);
         }
         
-        embryo.map.add({
-            group: "ice",
-            layer: iceLayer, 
-            select: true 
-        });
-
-        embryo.map.add({
-            group: "ice",
-            layer: waterLayer
-        });
-        
         /*
         map.addLayer(iceLayer);
         map.addLayer(waterLayer);
@@ -316,17 +328,7 @@ $(function() {
     	embryo.mapPanel.add2SelectFeatureCtrl(iceLayer);
         */
 
-
-        iceLayer.events.on({
-            featureselected: function(e) {
-                showIceInformation(e.feature.attributes.iceDescription);
-            },
-            featureunselected: function(e) {
-                hideIceInformation();
-            }
-        });
-
-        console.log("Ice and water layers addded. - "+(new Date().getTime() - start));
+        console.log("Ice and water features addded. - "+(new Date().getTime() - start));
     }
 
     function requestShapefile(name) {

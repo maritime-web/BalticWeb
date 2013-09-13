@@ -24,47 +24,6 @@ function getCookie(c_name) {
     }
 }
 
-/**
- * Converts a string in 12hr format to 24h format.
- *
- * @param time
- *            a string in the following format: "12:36:26 PM"
- */
-function to24hClock(time) {
-
-    // Parse data
-    var hour = parseInt(time.split(":")[0]);
-    var min = parseInt(time.split(":")[1]);
-    var sec = parseInt(time.split(":")[2]);
-    var ampm = time.split(" ")[1];
-
-	// AM?
-    if (ampm == "PM") {
-	hour += 12;
-	if (hour == 24) {
-	    hour = 12;
-	}
-    } else if (hour == 12) {
-	hour = 0;
-    }
-    
-    // Insert zeroes
-    hour = hour += "";
-    min = min += "";
-    sec = sec += "";
-    if (hour.length == 1) {
-	hour = "0" + hour;
-    }
-    if (min.length == 1) {
-	min = "0" + min;
-    }
-    if (sec.length == 1) {
-	sec = "0" + sec;
-    }
-    
-    return hour + ":" + min + ":" + sec;
-}
-
 function setLayerOpacityById(id, value) {
     var layers = embryo.mapPanel.map.getLayersByName(id);
     
