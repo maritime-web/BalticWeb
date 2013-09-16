@@ -105,7 +105,7 @@ embryo.ready(function() {
     
     updateNavigationBar();
     
-    if (embryo.authentication.userName == null && embryo.authentication.currentPageRequiresAuthentication) {
+    if (embryo.authentication.userName == null) {
         var messageId = embryo.messagePanel.show( { text: "Refreshing ..." })
 
         $.ajax({
@@ -119,7 +119,7 @@ embryo.ready(function() {
                 embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
             },
             error: function(data) {
-                if (data.status == 401) {
+                if (data.status == 401 && embryo.authentication.currentPageRequiresAuthentication) {
                     embryo.messagePanel.remove(messageId);
                     $("#login").modal("show");
                 } else {
