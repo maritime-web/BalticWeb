@@ -1,57 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
-	<display-name>ArcticWeb - Greenland</display-name>
+  <display-name>ArcticWeb - Greenland</display-name>
 
-	<context-param>
-		<param-name>shiroEnvironmentClass</param-name>
-		<param-value>dk.dma.arcticweb.site.ShiroWebEnvironment</param-value>
-	</context-param>
+  <context-param>
+    <param-name>shiroEnvironmentClass</param-name>
+    <param-value>dk.dma.arcticweb.site.ShiroWebEnvironment</param-value>
+  </context-param>
 
-	<listener>
-		<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
-	</listener>
+  <listener>
+    <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+  </listener>
 
-	<filter>
-		<filter-name>ShiroFilter</filter-name>
-		<filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
-	</filter>
+  <filter>
+    <filter-name>ShiroFilter</filter-name>
+    <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+  </filter>
 
-	<filter-mapping>
-		<filter-name>ShiroFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>INCLUDE</dispatcher>
-		<dispatcher>ERROR</dispatcher>
-	</filter-mapping>
+  <filter-mapping>
+    <filter-name>ShiroFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
 
-	<!-- Enable Wicket -->
-	<filter>
-		<filter-name>Wicket</filter-name>
-		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
-		<init-param>
-			<!-- Specify the "entry point" for Wicket to configure itself from -->
-			<param-name>applicationClassName</param-name>
-			<param-value>dk.dma.arcticweb.site.ArcticWebApplication</param-value>
-		</init-param>
-	</filter>
+  <welcome-file-list>
+    <welcome-file>front.html</welcome-file>
+  </welcome-file-list>
 
-	<!-- Have wicket manage the context root -->
-	<filter-mapping>
-		<filter-name>Wicket</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<servlet>
-		<description></description>
-		<servlet-name>JsonProxyServlet</servlet-name>
-		<servlet-class>dk.dma.arcticweb.site.proxy.JsonProxyServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>JsonProxyServlet</servlet-name>
-		<url-pattern>/json_proxy/*</url-pattern>
-	</servlet-mapping>
+  <servlet>
+    <description></description>
+    <servlet-name>JsonProxyServlet</servlet-name>
+    <servlet-class>dk.dma.arcticweb.site.proxy.JsonProxyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>JsonProxyServlet</servlet-name>
+    <url-pattern>/json_proxy/*</url-pattern>
+  </servlet-mapping>
 
 </web-app>
