@@ -23,7 +23,6 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <wicket.version>6.7.0</wicket.version>
     <version.org.jboss.spec.javaee6>3.0.2.Final</version.org.jboss.spec.javaee6>
     <hibernate.version>4.0.1.Final</hibernate.version>
     <shiro.version>1.2.2</shiro.version>
@@ -41,20 +40,6 @@
         <version>${version.org.jboss.spec.javaee6}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-
-      <!-- Wicket -->
-      <dependency>
-        <groupId>org.apache.wicket</groupId>
-        <artifactId>wicket-core</artifactId>
-        <version>${wicket.version}</version>
-      </dependency>
-
-      <!-- Wicket Java EE integration. -->
-      <dependency>
-        <groupId>org.apache.wicket</groupId>
-        <artifactId>wicket-cdi</artifactId>
-        <version>${wicket.version}</version>
       </dependency>
 
     </dependencies>
@@ -109,22 +94,16 @@
       <version>1.3</version>
     </dependency>
 
-    <!-- Wicket -->
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-core</artifactId>
-    </dependency>
 
     <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-datetime</artifactId>
-      <version>${wicket.version}</version>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time-hibernate</artifactId>
+      <version>1.3</version>
     </dependency>
-
-    <!-- Wicket CDI integration. -->
     <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-cdi</artifactId>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.0</version>
     </dependency>
 
 
@@ -245,12 +224,6 @@
     </dependency>
 
     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time-hibernate</artifactId>
-      <version>1.3</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.2.4</version>
@@ -290,27 +263,6 @@
         <filtering>false</filtering>
         <excludes>
           <exclude>**/persistence.xml</exclude>
-        </excludes>
-      </resource>
-      <!-- For the sake of wicket. remove later -->
-      <resource>
-        <filtering>false</filtering>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**</include>
-        </includes>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </resource>
-      <resource>
-        <filtering>false</filtering>
-        <directory>src/test/java</directory>
-        <includes>
-          <include>**</include>
-        </includes>
-        <excludes>
-          <exclude>**/*.java</exclude>
         </excludes>
       </resource>
     </resources>

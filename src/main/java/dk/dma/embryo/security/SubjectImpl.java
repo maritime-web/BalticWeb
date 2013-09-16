@@ -20,14 +20,11 @@ import javax.inject.Inject;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.wicket.MarkupContainer;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.security.authorization.DependsOnChildPermissionContainers;
-import dk.dma.embryo.security.authorization.IsChildPermissionContainersAuthorized;
 import dk.dma.embryo.security.authorization.Permission;
 
 /**
@@ -140,14 +137,6 @@ public class SubjectImpl implements Subject {
             }
             // fall through to security by original object
             // should this instead just return true ?
-        }
-
-        if (secured.getClass().getAnnotation(DependsOnChildPermissionContainers.class) != null) {
-            logger.debug("Checking child permission container for object {}", secured);
-            MarkupContainer component = (MarkupContainer) secured;
-            IsChildPermissionContainersAuthorized visitor = new IsChildPermissionContainersAuthorized(this, permissionExtractor);
-            component.visitChildren(PermissionContainer.class, visitor);
-            return visitor.getResult();
         }
 
         // // DEAD CODE?
