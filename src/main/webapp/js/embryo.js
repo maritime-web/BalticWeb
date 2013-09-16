@@ -5,6 +5,8 @@ embryo = {};
 
 embryo.baseUrl = "";
 // embryo.baseUrl = "http://localhost:8080/arcticweb/";
+embryo.baseUrlForAngularResource = "";
+// embryo.baseUrlForAngularResource = "http://localhost\\:8080/arcticweb/";
 
 // embryo.eventbus is necessary to construct a completely loose coupling between
 // all components in the application.

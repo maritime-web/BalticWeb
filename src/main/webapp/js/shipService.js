@@ -32,7 +32,7 @@
 			getYourShip : function(callback) {
 
 				var remoteCall = function(onSuccess) {
-					$http.get('rest/ship/yourship', {
+					$http.get(embryo.baseUrl + 'rest/ship/yourship', {
 						responseType : 'json'
 					}).success(onSuccess);
 				};
@@ -41,7 +41,7 @@
 			},
 			getShipTypes : function(callback) {
 				var remoteCall = function(onSuccess) {
-					$http.get('rest/ship/shiptypes', {
+					$http.get(embryo.baseUrl + 'rest/ship/shiptypes', {
 						responseType : 'json'
 					}).success(onSuccess);
 				};
@@ -49,7 +49,7 @@
 				LocalStorageService.getItem('shipTypes', callback, remoteCall);
 			},
 			save : function(ship, callback) {
-				$http.put('rest/ship', ship, {
+				$http.put(embryo.baseUrl + 'rest/ship', ship, {
 					responseType : 'json'
 				}).success(function(maritimeId) {
 					if (maritimeId) {

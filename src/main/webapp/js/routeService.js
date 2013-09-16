@@ -21,7 +21,7 @@
 				return {
 					getActive : function(mmsi, callback) {
 						var remoteCall = function(onSuccess) {
-							var url = 'rest/route/active/' + mmsi;
+							var url = embryo.baseUrl + 'rest/route/active/' + mmsi;
 							$http.get(url, {
 								responseType : 'json'
 							}).success(onSuccess);
@@ -53,7 +53,7 @@
 							active : activity
 						};
 
-						$http.put('rest/route/activate/', activeRoute, {
+						$http.put(embryo.baseUrl + 'rest/route/activate/', activeRoute, {
 							responseType : 'json'
 						}).success(function() {
 							if (activity) {
@@ -67,7 +67,7 @@
 					getRoute : function(routeId, callback) {
 						// should routes be cached?
 						var remoteCall = function(onSuccess) {
-							$http.get('rest/route/' + routeId, {
+							$http.get(embryo.baseUrl + 'rest/route/' + routeId, {
 								responseType : 'json'
 							}).success(onSuccess);
 						};
@@ -75,7 +75,7 @@
 						SessionStorageService.getItem(routeKey(routeId), callback, remoteCall);
 					},
 					save : function(route, callback) {
-						$http.put('rest/route', route, {
+						$http.put(embryo.baseUrl + 'rest/route', route, {
 							responseType : 'json'
 						}).success(function() {
 							SessionStorageService.setItem(routeKey(route.id), route);

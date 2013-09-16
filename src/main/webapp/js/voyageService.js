@@ -10,7 +10,7 @@
 (function() {
 	"use strict";
 
-	var voyageUrl = 'rest/voyage/', voyageTypeaheadUrl = 'rest/voyage/typeahead/';
+	var voyageUrl = embryo.baseUrl + 'rest/voyage/', voyageTypeaheadUrl = embryo.baseUrl + 'rest/voyage/typeahead/';
 
 	var voyageServiceModule = angular.module('embryo.voyageService',['embryo.storageServices', 'ngResource']);
 
@@ -25,7 +25,7 @@
 				isArray : false,
 			}
 		};
-		return $resource('rest/voyage/:action/:id', defaultParams, actions);
+		return $resource(embryo.baseUrlForAngularResource + 'rest/voyage/:action/:id', defaultParams, actions);
 	});
 
 	voyageServiceModule.factory('VoyageService', function($http, VoyageRestService, ShipService, SessionStorageService) {
