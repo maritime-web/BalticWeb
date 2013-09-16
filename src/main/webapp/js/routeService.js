@@ -8,7 +8,7 @@
 
 (function() {
 	"use strict";
-	
+
 	angular.module('embryo.routeService', [ 'embryo.storageServices' ]).factory('RouteService',
 			function($http, SessionStorageService, LocalStorageService) {
 
@@ -21,7 +21,8 @@
 				return {
 					getActive : function(mmsi, callback) {
 						var remoteCall = function(onSuccess) {
-							$http.get('rest/route/active/220443000', {
+							var url = 'rest/route/active/' + mmsi;
+							$http.get(url, {
 								responseType : 'json'
 							}).success(onSuccess);
 						};
@@ -35,12 +36,14 @@
 							if (routeId) {
 								SessionStorageService.getItem(routeKey(routeId), callback, remoteCall);
 							} else {
-								var setActiveCallback = function(route) {
-									SessionStorageService.setItem(active, route.id);
-									callback(route);
-								};
-								
-								SessionStorageService.getItem(routeKey(routeId), setActiveCallback, remoteCall);
+								remoteCall(function(activeRoute){
+									if (typeof activeRoute !== 'undefined') {
+										SessionStorageService.setItem(active, activeRoute.id);
+										SessionStorageService.setItem(routeKey(activeRoute.id), activeRoute);
+									} else {
+										SessionStorageService.removeItem(active);
+									}
+								});
 							}
 						});
 					},
