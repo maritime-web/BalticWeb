@@ -13,65 +13,45 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
-
-import java.util.List;
+package dk.dma.arcticweb.rest;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.GreenPosService;
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.rest.json.GreenPos;
+import dk.dma.arcticweb.service.TestServiceBean;
 
 /**
  * 
  * @author Jesper Tejlgaard
  */
-@Path("/greenpos")
-public class GreenPosRestService {
+@Path("/testData")
+public class TestDataRestService {
 
     @Inject
-    private GreenPosService reportingService;
+    private TestServiceBean testService;
 
     @Inject
     private Logger logger;
 
-    public GreenPosRestService() {
+    public TestDataRestService() {
     }
 
-    @POST
-    @Consumes("application/json")
-    public void save(GreenPos report) {
-        logger.debug("save({})", report);
+    @PUT
+    public String reInitializeTestData() {
+        logger.debug("save({})");
         
-        GreenPosReport toBeSaved = GreenPosReport.from(report);
+        testService.clearAllData();
+        testService.createTestData();
         
-        reportingService.saveReport(toBeSaved);
+        String result = "SUCCESS";
         // String result = "Product created : " + product;
         // return Response.status(201).entity(result).build();
-        logger.debug("save() - done", report);
-    }
-
-
-    @GET
-    @Path("/list")
-    @Produces("application/json")
-    public GreenPos[] list() {
-        logger.debug("findReports()");
-
-        List<GreenPosReport> reports = reportingService.findReports();
-        
-        GreenPos[] result = GreenPosReport.toJsonModel(reports);
-     
-        logger.debug("findReports() - {}", result);
+        logger.debug("reInitializeTestData(): {}", result);
         
         return result;
     }
+
 }

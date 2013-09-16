@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="embryo.testdata">
+
+<head>
+<meta charset="utf-8" />
+<title>ArcticWeb - Greenland</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="css/ext/bootstrap.css" rel="stylesheet">
+<link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+
+<link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
+<link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+<link href="css/style.css" rel="stylesheet">
+<link href="css/front.css" rel="stylesheet">
+
+<script src="js/ext/jquery-1.9.1.min.js"></script>
+
+<script src="js/ext/bootstrap.min.js"></script>
+
+<script src="js/ext/angular.min.js"></script>
+
+
+<script type="text/javascript">
+    var app = angular.module('embryo.testdata', []);
+    
+    app.controller('TestDataController', function($scope, $http) {
+        $scope.reInitialize = function() {
+            $scope.message = null;
+            $http.put('rest/testData', {
+                responseType : 'json'
+            }).success(function(response) {
+                $scope.message = response;
+            });
+
+        }
+    });
+
+</script>
+
+</head>
+
+<body>
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<i class="icon-th-list"></i>
+				</button>
+				<a class="brand" href="front"> <font color="#0080C0">ArcticWeb</font><font color="#888888" size="3">Greenland</font>
+				</a>
+				<div class="nav-collapse collapse" id="navigationBar">
+					<p class="navbar-text pull-right" id="authentication"></p>
+
+					<ul class="nav navtabs">
+						<li class="active"><a href="front.html"> <i class="icon-home icon-white"
+								style="vertical-align: middle; margin-bottom: 4px"></i> About
+						</a></li>
+						<li><a href="map.html#/vessel"> <i class="icon-globe icon-white"
+								style="vertical-align: middle; margin-bottom: 4px"></i> Vessels
+						</a></li>
+						<li class=""><a href="map.html#/ice"> <i class="icon-asterisk icon-white"
+								style="vertical-align: middle; margin-bottom: 4px"></i> Ice
+						</a></li>
+						<li class=""><a href="report.html#/ship"> <i class="icon-tasks icon-white"
+								style="vertical-align: middle; margin-bottom: 4px"></i> Report
+						</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ============================================= -->
+
+	<div class="container" x-ng-controller="TestDataController">
+		<div>
+			<h2>Test data</h2>
+		</div>
+
+		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+		<form class="form-horizontal" >
+			<button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize test data</button>
+		</form>
+
+	</div>
+
+</body>
+</html>

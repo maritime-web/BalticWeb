@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.arcticweb.rest;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,10 +22,19 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import dk.dma.embryo.rest.AuthenticationService;
+import dk.dma.embryo.rest.BerthRestService;
+import dk.dma.embryo.rest.RouteRestService;
+import dk.dma.embryo.rest.RouteUploadService;
+import dk.dma.embryo.rest.ShapeFileService;
+import dk.dma.embryo.rest.ShipRestService;
+import dk.dma.embryo.rest.VoyageRestService;
+
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
-        return new HashSet<Class<?>>(Arrays.asList(RouteRestService.class, RouteUploadService.class, VoyageRestService.class,
-                ShapeFileService.class, GreenPosRestService.class, ShipRestService.class, BerthRestService.class, AuthenticationService.class));
+        return new HashSet<Class<?>>(Arrays.asList(RouteRestService.class, RouteUploadService.class,
+                VoyageRestService.class, ShapeFileService.class, GreenPosRestService.class, ShipRestService.class,
+                BerthRestService.class, AuthenticationService.class, TestDataRestService.class));
     }
 }
