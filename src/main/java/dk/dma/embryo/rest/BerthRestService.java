@@ -25,12 +25,12 @@ import javax.ws.rs.QueryParam;
 
 import org.slf4j.Logger;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import dk.dma.arcticweb.service.GeographicService;
 import dk.dma.embryo.domain.Berth;
-import dk.dma.embryo.site.form.VoyagePlanForm.BerthDatum;
-import dk.dma.embryo.site.form.VoyagePlanForm.BerthTransformerFunction;
+import dk.dma.embryo.rest.util.TypeaheadDatum;
 
 /**
  * 
@@ -66,5 +66,44 @@ public class BerthRestService {
 
         logger.trace("berths={}", transformed);
         return transformed;
+    }
+    
+    public static class BerthDatum extends TypeaheadDatum {
+        private String latitude;
+        private String longitude;
+
+        public BerthDatum(String value, String[] tokens, String latitude, String longitude) {
+            super(value, tokens);
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
+        public String getLatitude() {
+            return latitude;
+        }
+
+        public String getLongitude() {
+            return longitude;
+        }
+    }
+    
+
+    public static final class BerthTransformerFunction implements Function<Berth, BerthDatum> {
+        private String value(final Berth input) {
+            return input.getName() + (input.getAlias() != null ? " (" + input.getAlias() + ")" : "");
+        }
+
+        private String[] tokens(final Berth input) {
+            if (input.getAlias() != null) {
+                return new String[] { input.getName(), input.getAlias() };
+            }
+            return new String[] { input.getName() };
+        }
+
+        @Override
+        public BerthDatum apply(final Berth input) {
+            return new BerthDatum(value(input), tokens(input), input.getPosition().getLatitudeAsString(), input
+                    .getPosition().getLongitudeAsString());
+        }
     }
 }

@@ -18,11 +18,9 @@ package dk.dma.embryo.rest.util;
 import com.google.common.base.Function;
 
 import dk.dma.embryo.domain.Berth;
-import dk.dma.embryo.site.behavior.TypeaheadDataSource;
 
 /**
- * Transformer, which transforms {@link Berth} instances to {@link TypeaheadDatum} instances used type
- * {@link TypeaheadDataSource}.
+ * Transformer, which transforms {@link Berth} instances to {@link TypeaheadDatum}.
  * 
  * @author Jesper Tejlgaard
  */

@@ -22,16 +22,10 @@ import dk.dma.arcticweb.site.pages.main.panel.SelectedShipInformationPanel;
 import dk.dma.arcticweb.site.pages.main.panel.ShipReportPanel;
 import dk.dma.arcticweb.site.pages.main.panel.StatusPanel;
 import dk.dma.arcticweb.site.pages.main.panel.UserPanel;
-import dk.dma.embryo.site.markup.html.form.modal.RouteEdit;
-import dk.dma.embryo.site.markup.html.form.modal.RouteUpload;
 import dk.dma.embryo.site.markup.html.menu.MenuHeader;
 import dk.dma.embryo.site.markup.html.menu.MenuPanel;
-import dk.dma.embryo.site.panel.EditActiveRouteExecutor;
 import dk.dma.embryo.site.panel.LeftPanel;
 import dk.dma.embryo.site.panel.ShipInformationPanel;
-import dk.dma.embryo.site.panel.UploadActiveRouteExecutor;
-import dk.dma.embryo.site.panel.VoyagePlanPanel;
-import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
 
 public class MainPage extends BasePage implements SecurePage {
 
@@ -49,12 +43,7 @@ public class MainPage extends BasePage implements SecurePage {
 
         ShipInformationPanel shipInformation = new ShipInformationPanel("ship_information");
         ShipReportPanel shipReport = new ShipReportPanel("ship_report");
-        VoyagePlanPanel voyagePlan = new VoyagePlanPanel("voyage_plan");
 
-        RouteEdit routeModal = new RouteEdit("routeModule");
-        RouteUpload routeUpload = new RouteUpload("routeUpload");
-
-        
         // /////////////////////////////////////////////////
         // Build up menu
         // /////////////////////////////////////////////////
@@ -63,19 +52,15 @@ public class MainPage extends BasePage implements SecurePage {
 
         // Your Ship
         MenuHeader yourShip = menuPanel.addMenuHeader("Your Ship");
-        yourShip.addMenuItem("Zoom to ship", new ZoomToShipJSExecutor());
         yourShip.addMenuItem(shipInformation);
         yourShip.addMenuItem(shipReport);
-        yourShip.addMenuItem(voyagePlan);
-        yourShip.addMenuItem("Edit Active Route", new EditActiveRouteExecutor());
-        yourShip.addMenuItem("Upload Active Route", new UploadActiveRouteExecutor());
 
         add(new JsPanel("js_panel"));
 
         // add(new LeftPanel2("left"));
         // add(new StatusPanel("status"));
 
-        add(shipInformation, shipReport, voyagePlan, routeModal, routeUpload);
+        add(shipInformation, shipReport);
 
         add(new SelectedShipInformationPanel("selected_ship_information"));
     }

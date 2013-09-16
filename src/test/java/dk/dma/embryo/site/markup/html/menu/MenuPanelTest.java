@@ -20,7 +20,6 @@ import org.junit.Test;
 
 import dk.dma.arcticweb.site.CdiUnitTestBase;
 import dk.dma.embryo.security.PermissionExtractor;
-import dk.dma.embryo.site.panel.ZoomToShipJSExecutor;
 
 @AdditionalClasses({PermissionExtractor.class})
 public class MenuPanelTest extends CdiUnitTestBase{
@@ -30,7 +29,6 @@ public class MenuPanelTest extends CdiUnitTestBase{
         MenuPanel menuPanel = new MenuPanel("someId");
 
         MenuHeader header1 = menuPanel.addMenuHeader("Header 1");
-        header1.addMenuItem("Item 1", new ZoomToShipJSExecutor());
         header1.addMenuItem(new MenuTestPanel("someId2", "Item 2"));
         header1.addMenuItem(new MenuTestPanel("someId3", "Item 3"));
 
@@ -44,9 +42,8 @@ public class MenuPanelTest extends CdiUnitTestBase{
         getTester().assertComponent(header1.getPageRelativePath(), MenuHeader.class);
         getTester().assertLabel(header1.getPageRelativePath() + ":menuHeaderText", "Header 1");
 
-        getTester().assertLabel(header1.getPageRelativePath() + ":menuItem:1:menuItemLink:menuItemText", "Item 1");
-        getTester().assertLabel(header1.getPageRelativePath() + ":menuItem:2:menuItemLink:menuItemText", "Item 2");
-        getTester().assertLabel(header1.getPageRelativePath() + ":menuItem:3:menuItemLink:menuItemText", "Item 3");
+        getTester().assertLabel(header1.getPageRelativePath() + ":menuItem:1:menuItemLink:menuItemText", "Item 2");
+        getTester().assertLabel(header1.getPageRelativePath() + ":menuItem:2:menuItemLink:menuItemText", "Item 3");
 
         getTester().assertComponent(header2.getPageRelativePath(), MenuHeader.class);
         getTester().assertLabel(header2.getPageRelativePath() + ":menuHeaderText", "Header 2");
