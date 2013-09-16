@@ -336,7 +336,7 @@ $(function() {
         featureunselected : onUnselect
     });
     
-    embryo.authenticated(function() {
+    embryo.mapInitialized(function() {
         setInterval(loadVesselList, loadFrequence);
         loadVesselList();
     });

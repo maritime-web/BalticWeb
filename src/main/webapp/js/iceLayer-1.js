@@ -361,7 +361,7 @@ $(function() {
         });
     }
 
-    embryo.authenticated(function() {
+    embryo.mapInitialized(function() {
         requestShapefile("201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
     });
     

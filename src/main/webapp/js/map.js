@@ -1,3 +1,8 @@
+embryo.eventbus.MapInitialized = function() {
+    var event = jQuery.Event("MapInitializedEvent");
+    return event;
+};
+
 embryo.eventbus.HighLightEvent = function(feature) {
     var event = jQuery.Event("HighLightEvent");
     event.feature = feature;
@@ -12,6 +17,7 @@ embryo.eventbus.UnHighLightEvent = function(feature) {
 
 embryo.eventbus.registerShorthand(embryo.eventbus.HighLightEvent, "highlight");
 embryo.eventbus.registerShorthand(embryo.eventbus.UnHighLightEvent, "unhighlight");
+embryo.eventbus.registerShorthand(embryo.eventbus.MapInitialized, "mapInitialized");
 
 $(function() {
     var selectLayerByGroup = { };
@@ -179,6 +185,8 @@ $(function() {
         embryo.mapPanel.map.addLayer(osm);
 
         loadViewCookie();
+
+        embryo.eventbus.fireEvent(embryo.eventbus.MapInitialized());
     });
 
     $("#zoomAll").click(function() {

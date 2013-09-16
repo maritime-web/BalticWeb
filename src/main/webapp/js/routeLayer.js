@@ -160,7 +160,5 @@ embryo.route = {};
 				null, style_green);
 	};
 
-	setTimeout(embryo.route.initLayer,1000);
-	
-//	embryo.authenticated(embryo.route.initLayer);
+    embryo.mapInitialized(embryo.route.initLayer);
 }());

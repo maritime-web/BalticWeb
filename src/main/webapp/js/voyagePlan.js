@@ -10,7 +10,7 @@
 (function() {
 	"use strict";
 
-	var berthUrl = 'rest/berth/search';
+	var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
 	var voyagePlanModule = angular.module('embryo.voyagePlan',['embryo.voyageService', 'embryo.routeService', 'siyfion.ngTypeahead']);
 	
