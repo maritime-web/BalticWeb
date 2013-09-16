@@ -12,46 +12,15 @@ embryo.route = {};
 
 	"use strict";
 
-	
-	embryo.route.fetch = function(id, draw) {
-		$.getJSON('rest/route/' + id, function(route) {
-			console.log(route);
-			draw(route);
-		});
-	};
-	
-	embryo.route.fetchAndDraw = function(id) {
-		return function() {
-			embryo.route.fetch(id, embryo.route.draw);
-		};
-	};
-
-	embryo.route.redrawIfVisible = function(route) {
-		var toBeRemoved = [];
-		var active;
-
-		for ( var index in embryo.route.layer.features) {
-			var feature = embryo.route.layer.features[index];
-			if (feature.data.route.id === route.id) {
-				active = feature.attributes.active;
-				toBeRemoved.push(feature);
-			}
-		}
-
-		embryo.route.layer.removeFeatures(toBeRemoved);
-		embryo.route.draw(route, active);
-	};
-
 	embryo.route.initLayer = function() {
-
-		console.log('embryo.route.initLayer');
+		console.log('Initialization of Route Layer');
 
 		// Create vector layer for routes
 
 		// Find a better color code. How to convert sRGB to HTML codes?
 		var defTemplate = OpenLayers.Util.applyDefaults({
-			strokeWidth : pastTrackWidth,
-			strokeDashstyle : 'dash',
+			strokeWidth : 2,
+			strokeDashstyle : 'dashdot',
 			strokeColor : "${getColor}", // using context.getColor(feature)
 			fillColor : "${getColor}" // using context.getColor(feature)
 		}, OpenLayers.Feature.Vector.style["default"]);
@@ -82,12 +51,10 @@ embryo.route = {};
 
 		embryo.map.add({
 			layer : embryo.route.layer,
-			select : true,
-			group : "routes"
+			select : false
 		});
 
 		embryo.route.drawActiveRoute();
-
 	};
 
 	embryo.route.drawActiveRoute = function() {
@@ -96,26 +63,17 @@ embryo.route = {};
 		var ShipService = injector.get('ShipService');
 
 		ShipService.getYourShip(function(ship) {
-			console.log('Found ship:');
-			console.log(ship);
-
-			var mmsi = ship.mmsi;
-
 			function callback(route) {
-				console.log('Found route:');
-				console.log(route);
 				if (typeof route !== 'undefined') {
 					embryo.route.draw(route, true);
 				}
-
 			}
 
-			RouteService.getActive(mmsi, callback);
+			RouteService.getActive(ship.mmsi, callback);
 		});
 	};
 
 	embryo.route.draw = function(route, active) {
-		
 		// Remove old tracks
 		// routeLayer.removeAllFeatures();
 
@@ -137,7 +95,7 @@ embryo.route = {};
 
 				//points.push(embryo.route.createWaypointFeature(currentPoint));
 				if (!firstPoint) {
-					lines.push(embryo.route.createLine(previousPoint, currentPoint));
+					lines.push(new OpenLayers.Geometry.LineString([previousPoint, currentPoint]));
 				}
 				firstPoint = false;
 				previousPoint = currentPoint;
@@ -188,7 +146,6 @@ embryo.route = {};
 				console.log('featureunselected' + feature);
 			}
 		});
-
 	};
 
 	embryo.route.createWaypointFeature = function(point) {
@@ -201,14 +158,6 @@ embryo.route = {};
 
 		return new OpenLayers.Feature.Vector(OpenLayers.Geometry.Polygon.createRegularPolygon(point, 20.0, 30, 0.0),
 				null, style_green);
-	};
-
-	embryo.route.createLine = function(firstPoint, secondPoint) {
-		var points = new Array(firstPoint, secondPoint);
-		var line = new OpenLayers.Geometry.LineString(points);
-		return line;
-		// var lineFeature = new OpenLayers.Feature.Vector(line);
-		// return lineFeature;
 	};
 
 	setTimeout(embryo.route.initLayer,1000);
