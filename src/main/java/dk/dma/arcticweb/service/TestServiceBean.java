@@ -18,12 +18,16 @@ package dk.dma.arcticweb.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.persistence.EntityManagerFactory;
 
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -39,34 +43,49 @@ import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship;
-import dk.dma.embryo.domain.Ship2;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 
-@Stateless
+@Singleton
+@Startup
 public class TestServiceBean {
 
     @EJB
     private ShipDao shipDao;
-    
+
     @EJB
     private ShipService shipService;
 
     @Inject
-    Logger logger;
+    private Logger logger;
 
+    @Inject
+    private EntityManagerFactory emf;
+
+    @PostConstruct
+    public void startup() {
+        Map<String, Object> props = emf.getProperties();
+
+        String hbm2dllAuto = (String) props.get("hibernate.hbm2ddl.auto");
+        logger.info("Detected database auto update setting: {}", hbm2dllAuto);
+
+        if ("create-drop".equals(hbm2dllAuto)) {
+            createTestData();
+        }
+    }
+
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void clearAllData() {
         logger.info("Deleting existing entries");
 
-        deleteAll(Ship2.class);
         deleteAll(Berth.class);
+        deleteAll(Ship.class);
         deleteAll(VoyagePlan.class);
         // delete any other voyages
         deleteAll(Voyage.class);
         deleteAll(Route.class);
         deleteAll(SecuredUser.class);
         deleteAll(Role.class);
-        deleteAll(Ship.class);
         deleteAll(Permission.class);
         deleteAll(GreenPosReport.class);
 
@@ -88,8 +107,16 @@ public class TestServiceBean {
             throw e;
         }
     }
-    
-    public void createTestData(){
+
+    public void createTestData() {
+        createOraTestData();
+        uploadOraRoutes();
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createOraTestData() {
+        logger.info("BEFORE CREATION - ORASILA");
+
         // Create ship and user
         Ship newShip = new Ship();
         newShip.setName("ORASILA");
@@ -157,12 +184,16 @@ public class TestServiceBean {
 
         shipDao.saveEntity(voyagePlan);
 
-        insertDemoRoute(newShip, voyagePlan.getVoyagePlan().get(0), "/demo/routes/Miami-Nuuk.txt", true);
-        insertDemoRoute(newShip, voyagePlan.getVoyagePlan().get(1), "/demo/routes/Nuuk-Thule.txt", false);
-        insertDemoRoute(newShip, voyagePlan.getVoyagePlan().get(2), "/demo/routes/Thule-Upernavik.txt", false);
+    }
 
-        logger.info("AFTER CREATION");
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void uploadOraRoutes() {
+        logger.info("BEFORE UPLOAD - ORASILA");
 
+        VoyagePlan voyagePlan = shipService.getVoyagePlan(220443000L);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/Miami-Nuuk.txt", true);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(1).getEnavId(), "/demo/routes/Nuuk-Thule.txt", false);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(2).getEnavId(), "/demo/routes/Thule-Upernavik.txt", false);
     }
 
     public void logExistingEntries() {
@@ -175,19 +206,11 @@ public class TestServiceBean {
         logger.info("Berth: {} ", shipDao.getAll(Berth.class));
     }
 
-    private void insertDemoRoute(Ship ship, Voyage voyage, String file, boolean activate) {
+    private void insertDemoRoute(String voyageId, String file, boolean activate) {
         InputStream is = getClass().getResourceAsStream(file);
         try {
             Route r = shipService.parseRoute(is);
-            r.setShip(ship);
-            shipDao.saveEntity(r);
-
-            r.setVoyage(voyage);
-            shipDao.saveEntity(voyage);
-
-            if (activate) {
-                shipService.activateRoute(r.getEnavId(), true);
-            }
+            shipService.saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);
         }

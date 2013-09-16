@@ -24,7 +24,9 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 
 public class Configuration implements Serializable {
 
@@ -34,6 +36,11 @@ public class Configuration implements Serializable {
     @PersistenceContext(name = "arcticweb")
     EntityManager entityManager;
 
+    @Produces
+    @PersistenceUnit(name = "arcticweb")
+    EntityManagerFactory entityManagerFactory;
+
+    
     public static BeanManager getContainerBeanManager() {
         BeanManager bm;
         try {

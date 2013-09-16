@@ -64,9 +64,6 @@ public class Route extends BaseEntity<Long> {
     @Valid
     private List<WayPoint> wayPoints = new ArrayList<>();
 
-    @OneToOne
-    private Ship ship;
-
     @OneToOne(mappedBy="route")
     private Voyage voyage;
 
@@ -173,14 +170,6 @@ public class Route extends BaseEntity<Long> {
 
     public List<WayPoint> getWayPoints() {
         return wayPoints;
-    }
-
-    public Ship getShip() {
-        return ship;
-    }
-
-    public void setShip(Ship ship) {
-        this.ship = ship;
     }
 
     public Voyage getVoyage() {

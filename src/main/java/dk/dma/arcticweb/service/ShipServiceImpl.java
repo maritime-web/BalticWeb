@@ -235,7 +235,7 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public Route getActiveRoute(Long mmsi) {
         Route r = shipRepository.getActiveRoute(mmsi);
-        if(r != null){
+        if (r != null) {
             if (r.getWayPoints().size() > 0) {
                 r.getWayPoints().get(0);
             }
@@ -266,11 +266,11 @@ public class ShipServiceImpl implements ShipService {
     public Route activateRoute(String routeEnavId, Boolean activate) {
         logger.debug("activateRoute({}, {})", routeEnavId, activate);
         Route route = shipRepository.getRouteByEnavId(routeEnavId);
-        
+
         Ship ship = getYourShip();
-        
-        logger.debug("Ship:{}",ship.getMmsi());
-        
+
+        logger.debug("Ship:{}", ship.getMmsi());
+
         if (activate) {
             ship.setActiveVoyage(route.getVoyage());
         } else {
@@ -300,7 +300,6 @@ public class ShipServiceImpl implements ShipService {
 
         dk.dma.enav.model.voyage.Route enavRoute = parser.parse();
         Route route = Route.fromEnavModel(enavRoute);
-        route.setShip(getYourShip());
 
         return route;
     }
