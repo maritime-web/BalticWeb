@@ -23,6 +23,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
 
 import dk.dma.embryo.rest.util.DateTimeConverter;
@@ -42,8 +43,10 @@ public class Voyage extends BaseEntity<Long> {
 
     private Position position;
 
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime arrival;
 
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime departure;
 
     private Integer personsOnBoard;
