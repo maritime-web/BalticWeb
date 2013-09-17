@@ -16,8 +16,10 @@
 					<div class="control-group">
 						<label class="control-label" for="voyageName">Associated voyage</label>
 						<div class="controls">
-							<input id="voyageName" type="text" class="input-large" ng-model="selectedVoyage"
-								typeahead="voyage as voyage.value for voyage in voyages | filter:$viewValue | limitTo:10" />
+							<input id="voyageName" name="voyageName" type="text" class="input-large" x-ng-model="selectedVoyage"
+								x-typeahead="voyage as voyage.value for voyage in voyages | filter:$viewValue | limitTo:10" required /> 
+							<span x-ng-show="uploadRouteForm.voyageName.$error.required && uploadRouteForm.voyageName.$dirty" class="msg-invalid">Value
+								required</span>
 						</div>
 					</div>
 				</div>
@@ -52,7 +54,7 @@
 						<i class="icon-ban-circle icon-white"></i> <span>Cancel upload</span>
 					</button>
 					<button type="button" class="btn btn-primary start" x-ng-click="submit()"
-						x-ng-disabled="!queue[0] || active() || uploaded()">
+						x-ng-disabled="!queue[0] || active() || uploaded() || uploadRouteForm.$invalid">
 						<i class="icon-upload icon-white"></i> <span>Upload route</span>
 					</button>
 				</span>
