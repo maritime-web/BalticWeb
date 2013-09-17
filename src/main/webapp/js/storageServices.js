@@ -14,38 +14,6 @@
 
 	storageModule.factory('SessionStorageService', function() {
 		return {
-			getItemNew : function(params) {
-				
-				console.log('getItem');
-				console.log(params);
-				
-				var dataStr = sessionStorage.getItem(params.key);
-				console.log(dataStr);
-				
-				if (!dataStr) {
-					if (params.remoteCall) {
-						var onSuccess = function(data) {
-							// only cache objects with values
-							if (data && Object.keys(data).length > 0) {
-								var dataStr = JSON.stringify(data);
-								
-								if(params.key){
-									sessionStorage.setItem(params.key, dataStr);
-								}else if (params.keyFn){
-									sessionStorage.setItem(params.createKey(data), dataStr);
-								}
-							}
-							params.callback(data);
-						};
-						params.remoteCall(onSuccess);
-					} else {
-						params.callback(null);
-					}
-				} else {
-					var data = JSON.parse(dataStr);
-					params.callback(data);
-				}
-			},
 			getItem : function(key, callback, remoteCall) {
 				var dataStr = sessionStorage.getItem(key);
 				if (!dataStr || dataStr === 'undefined') {
