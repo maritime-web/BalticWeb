@@ -53,39 +53,10 @@
 </head>
 
 <body>
-    <ng-include src="'partials/authentication.html'"></ng-include>
+    <div x-ng-include="'partials/authentication.html'"></div>
+    <div x-ng-include="'partials/menu.html'"></div>
 
 	<div id="map"></div>
-
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-					<i class="icon-th-list"></i>
-				</button>
-				<a class="brand" href="front.html"> <font color="#0080C0">ArcticWeb</font><font color="#888888" size="3">Greenland</font>
-				</a>
-				<div class="nav-collapse collapse" id="navigationBar">
-					<p class="navbar-text pull-right" id="authentication"></p>
-
-					<ul class="nav navtabs">
-                        <li><a href="front.html">
-                            <i class="icon-home icon-white" style="vertical-align: middle; margin-bottom: 4px"></i> About
-                        </a></li>
-						<li><a href="map.html#/vessel"> <i class="icon-globe icon-white"
-								style="vertical-align: middle; margin-bottom: 4px"></i> Vessels
-						</a></li>
-						<li><a href="map.html#/ice"> <i class="icon-asterisk icon-white"
-								style="vertical-align: middle; margin-bottom: 4px"></i> Ice
-						</a></li>
-                        <li class=""><a href="report.html#/ship">
-                            <i class="icon-tasks icon-white" style="vertical-align: middle; margin-bottom: 4px"></i> Report
-                        </a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<div id="hoveringBox"></div>
 
