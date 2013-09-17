@@ -210,10 +210,16 @@ public class ShipServiceImpl implements ShipService {
             route.setId(id);
         }
 
-        if (voyageId != null) {
-            Voyage voyage = shipRepository.getVoyageByEnavId(voyageId);
-            route.setVoyage(voyage);
+        if (voyageId == null) {
+            throw new IllegalArgumentException("Missing 'voyageId'");
         }
+        Voyage voyage = shipRepository.getVoyageByEnavId(voyageId);
+
+        if(voyage == null){
+            throw new IllegalArgumentException("Unknown 'voyageId' value '" + voyageId + "'");
+        }
+        
+        route.setVoyage(voyage);
 
         shipRepository.saveEntity(route);
 
