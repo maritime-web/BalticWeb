@@ -22,7 +22,7 @@
 				var dataStr = sessionStorage.getItem(params.key);
 				console.log(dataStr);
 				
-				if (typeof dataStr === 'undefined' || dataStr === null) {
+				if (!dataStr) {
 					if (params.remoteCall) {
 						var onSuccess = function(data) {
 							// only cache objects with values
@@ -48,7 +48,7 @@
 			},
 			getItem : function(key, callback, remoteCall) {
 				var dataStr = sessionStorage.getItem(key);
-				if (typeof dataStr === 'undefined' || dataStr === null) {
+				if (!dataStr || dataStr === 'undefined') {
 					if (remoteCall) {
 						var onSuccess = function(data) {
 							// only cache objects with values
