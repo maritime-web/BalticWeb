@@ -109,7 +109,7 @@
 		};
 
 		$scope.sendReport = function() {
-			console.log('trying to send report');
+            $scope.message = null;
 			GreenPosRest.save($scope.report, function() {
 				$scope.message = "GreenPos report successfully submitted";
 				console.log("GreenPos successfully submitted");
