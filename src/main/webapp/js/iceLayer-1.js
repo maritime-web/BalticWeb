@@ -362,7 +362,70 @@ $(function() {
     }
 
     embryo.mapInitialized(function() {
-        requestShapefile("201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
+    });
+
+    embryo.authenticated(function() {
+        var messageId = embryo.messagePanel.show( { text: "Requesting list of ice observations ..." })
+
+        $.ajax({
+            url: embryo.baseUrl+"rest/ice/list",
+            data: { },
+            success: function(data) {
+                embryo.messagePanel.replace(messageId, { text: "List of "+data.length+" ice observations downloaded.", type: "success" })
+
+                function formatDate(dato) {
+                    if (dato == null) return "-";
+                    var d = new Date(dato);
+                    return d.getFullYear()+"-"+(""+(101+d.getMonth())).slice(1,3)+"-"+(""+(100+d.getDate())).slice(1,3);
+                }
+                
+                function formatTime(dato) {
+                    if (dato == null) return "-";
+                    var d = new Date(dato);
+                    return formatDate(dato) + " " + d.getHours()+":"+(""+(100+d.getMinutes())).slice(1,3);
+                }
+
+                function formatSize(size) {
+                    if (size < 1024*1024) return Math.round(size / 1024) + " KB";
+                    return (Math.round(size / 1024 / 1024 * 10) / 10) + " MB";
+                }
+
+                data.sort(function(a,b) {
+                    return b.date - a.date;
+                });
+
+                var regions = {};
+
+                for (var i in data) {
+                    regions[data[i].region] = true;
+                }
+                
+                var html = "";
+
+                for (var region in regions) {
+                    html += "<tr><td colspan=4><h5>"+region+"</h5></td></tr>";
+                    
+                    for (var i in data) {
+                        if (data[i].region == region)
+                            html += "<tr><td>"+data[i].source+"</td><td>"+formatTime(data[i].date)+"</td><td>"+formatSize(data[i].size)+"</td><td><a href="+i+">download</a></td></tr>";
+                    }
+                    
+                }
+
+                $("#icpIceMaps table").html(html);
+
+                $("#icpIceMaps table a").click(function(e) { 
+                    e.preventDefault();
+                    requestShapefile(data[$(this).attr("href")].shapeFileName);
+                    // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
+                    // alert(data[$(this).attr("href")].shapeFileName);
+                });
+            },
+            error: function(data) {
+                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " requesting list of ice observations.", type: "error" })
+            }
+        });
+
     });
     
     embryo.hover(function(e) {
@@ -384,5 +447,14 @@ $(function() {
             $("#iceControlPanel").css("display", "none");
         }
     });
+    
+    function fixAccordionSize() {
+        $("#icpIceMaps .accordion-inner").css("overflow", "auto");
+        $("#icpIceMaps .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px"); 
+    }
+
+    $(window).resize(fixAccordionSize);
+
+    fixAccordionSize();
 });
 

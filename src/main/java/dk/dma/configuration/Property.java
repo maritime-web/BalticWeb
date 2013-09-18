@@ -13,19 +13,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.configuration;
 
-import org.junit.Test;
+import javax.enterprise.util.Nonbinding;
+import javax.inject.Qualifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-
-public class ShapeFileServiceTest {
-    private ShapeFileService service = new ShapeFileService();
-    // @Test - disabled since shapefiles are no longer static resources
-    public void readFileFromDmi() throws IOException {
-        ShapeFileService.Shape file = service.getSingleFile("201304100920_CapeFarewell_RIC", 0, "");
-        assertEquals(23, file.getFragments().size());
-    }
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Property {
+    @Nonbinding String value() default "";
+    @Nonbinding String defaultValue() default "";
+    @Nonbinding boolean substituteSystemProperties() default false;
 }

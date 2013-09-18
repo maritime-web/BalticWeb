@@ -15,17 +15,24 @@
  */
 package dk.dma.embryo.rest;
 
-import org.junit.Test;
+import dk.dma.arcticweb.service.IceObservationService;
+import dk.dma.embryo.domain.IceObservation;
 
-import java.io.IOException;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+@Path("/ice")
+public class IceObservationRestService {
+    @Inject
+    private IceObservationService iceObservationService;
 
-public class ShapeFileServiceTest {
-    private ShapeFileService service = new ShapeFileService();
-    // @Test - disabled since shapefiles are no longer static resources
-    public void readFileFromDmi() throws IOException {
-        ShapeFileService.Shape file = service.getSingleFile("201304100920_CapeFarewell_RIC", 0, "");
-        assertEquals(23, file.getFragments().size());
+    @GET
+    @Path("/list")
+    @Produces("application/json")
+    public List<IceObservation> listIceObservations() {
+        return iceObservationService.listAvailableIceObservations();
     }
 }
