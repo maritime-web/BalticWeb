@@ -96,3 +96,8 @@ hr.soften {
 .hero-content p {
     font-size: 12px;
 }
+
+.pagecontainer {
+	font-size: 16px;
+	line-height: 24px;
+}

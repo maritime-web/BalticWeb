@@ -37,8 +37,23 @@ span.msg-invalid{
 	width: 100%;
 }
 
+.ctrlContainer{
+	width:270px!important;
+}
+
 .pagecontainer {
     margin-top:0px;
     margin-bottom:100px;
+	min-width:270px!important;
 }
 
+.pagecontainer {
+    margin-top:0px;
+    margin-bottom:100px;
+	min-width:270px!important;
+}
+
+#shipInformation{
+	min-width:580px;
+	max-width:720px;
+}
