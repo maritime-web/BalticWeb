@@ -87,6 +87,8 @@
         };
 
         $scope.$on('fileuploadsubmit', function(e, data) {
+            $scope.message = null;
+            
             if (typeof $scope.selectedVoyage !== "undefined") {
                 data.formData = {
                     voyageId : $scope.selectedVoyage.id
