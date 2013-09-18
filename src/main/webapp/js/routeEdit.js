@@ -32,7 +32,7 @@
 		initRoute();
 
 		$scope.save = function() {
-			// validate?
+            $scope.message = null;
 
 			RouteService.save($scope.route, function() {
 				$scope.message = "Saved route '" + $scope.route.name + "'";
