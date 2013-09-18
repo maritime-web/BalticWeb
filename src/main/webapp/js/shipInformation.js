@@ -28,6 +28,7 @@
 		});
 
 		$scope.save = function() {
+            $scope.message = null;
 			ShipService.save($scope.ship, function() {
 				$scope.message = "Ship information successfully submitted";
 			});
