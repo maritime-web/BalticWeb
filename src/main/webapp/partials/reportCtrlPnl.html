@@ -1,0 +1,42 @@
+<div id="reportCtrlPnl" class="controlPanel">
+	<div class="accordion" id="ycpAccordion">
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<h4>
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpYourShip"> Your Ship </a>
+				</h4>
+			</div>
+			<div id="vcpYourShip" class="accordion-body collapse in">
+				<div class="accordion-inner">
+					<div x-ng-include="'partials/reportComp.html'"></div>
+				</div>
+			</div>
+		</div>
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<h4>
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSearch"> Search Ships
+					</a>
+				</h4>
+			</div>
+			<div id="vcpSearch" class="accordion-body collapse">
+				<div class="accordion-inner">
+					<form>
+						<p>
+							<input type="text" id="searchField" class="input-medium search-query" style="width: 235px">
+						</p>
+
+						<p id="searchLoad">
+							<img src="img/load.gif">
+						</p>
+						<div id="searchResultsContainer"></div>
+						<p id="searchMatch"></p>
+
+						<!-- div id="searchResultsTop"></div -->
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
