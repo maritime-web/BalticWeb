@@ -18,12 +18,13 @@ package dk.dma.embryo.rest;
 import dk.dma.dataformats.dbf.DbfParser;
 import dk.dma.dataformats.shapefile.ShapeFileParser;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.DefaultValue;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,16 @@ import java.util.Map;
 
 @Path("/shapefile")
 public class ShapeFileService {
+    private String localDmiDirectory = "{user.home}/sfs/test";
+
+    public ShapeFileService() {
+        init();
+    }
+
+    private void init() {
+        localDmiDirectory = localDmiDirectory.replaceAll("\\{user\\.home\\}", System.getProperty("user.home"));
+    }
+
     @GET
     @Path("/single/{id}")
     @Produces("application/json")
@@ -65,8 +76,9 @@ public class ShapeFileService {
         Map<String, Object> shapeDescription = new HashMap<>();
         shapeDescription.put("id", id);
         List<Fragment> fragments = new ArrayList<>();
-        ShapeFileParser.File file = ShapeFileParser.parse(getClass().getResourceAsStream("/ice/" + id + ".shp"));
-        List<Map<String, Object>> data = DbfParser.parse(getClass().getResourceAsStream("/ice/" + id + ".dbf"));
+
+        ShapeFileParser.File file = ShapeFileParser.parse(new FileInputStream(localDmiDirectory + "/" + id + ".shp"));
+        List<Map<String, Object>> data = DbfParser.parse(new FileInputStream(localDmiDirectory + "/" + id + ".dbf"));
 
         for (ShapeFileParser.Record r : file.getRecords()) {
             if (r.getShape() instanceof ShapeFileParser.PolyLine) {

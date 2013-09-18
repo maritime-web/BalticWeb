@@ -60,16 +60,18 @@ embryo.ready(function() {
         
     }
 
-    // angular kills hashchange - temp work around
-
-    $("#navigationBar a").click(function() {
-        setTimeout(updateNavs, 100);
-    });
-
     // $(window).on('hashchange', updateNavs);
 
     embryo.authenticated(function() {
-        setTimeout(updateNavs, 500); // indtil vi finder paa noget bedre
+        setTimeout(function() { 
+            // angular kills hashchange - temp work around
+            
+            $("#navigationBar a").click(function() {
+                setTimeout(updateNavs, 100);
+            });
+            
+            updateNavs();
+        }, 500); // indtil vi finder paa noget bedre
     });
 });
 

@@ -25,13 +25,17 @@ import java.util.List;
 public class ShapeFileParser {
     private static int readInt(InputStream is) throws IOException {
         byte[] bytes = new byte[4];
-        is.read(bytes);
+        if (is.read(bytes) != 4) {
+            throw new RuntimeException("Expected to read 4 bytes");
+        }
         return ByteBuffer.wrap(bytes).getInt();
     }
 
     private static int readIntLittle(InputStream is) throws IOException {
         byte[] bytes = new byte[4];
-        is.read(bytes);
+        if (is.read(bytes) != 4) {
+            throw new RuntimeException("Expected to read 4 bytes");
+        }
         ByteBuffer wrapper = ByteBuffer.wrap(bytes);
         wrapper.order(ByteOrder.LITTLE_ENDIAN);
         return wrapper.getInt();
@@ -39,7 +43,9 @@ public class ShapeFileParser {
 
     private static double readDoubleLittle(InputStream is) throws IOException {
         byte[] bytes = new byte[8];
-        is.read(bytes);
+        if (is.read(bytes) != 8) {
+            throw new RuntimeException("Expected to read 8 bytes");
+        }
         ByteBuffer wrapper = ByteBuffer.wrap(bytes);
         wrapper.order(ByteOrder.LITTLE_ENDIAN);
         return wrapper.getDouble();
@@ -52,26 +58,33 @@ public class ShapeFileParser {
             f.header = FileHeader.read(is);
             f.records = new ArrayList<>();
 
-            long sum = 0;
+            long sum = 50;
 
             do {
                 Record r = new Record();
 
-                r.header = RecordHeader.read(is);
+                r.header = RecordHeader.read(is); // 8
 
-                int shapeId = readIntLittle(is);
+                int shapeId = readIntLittle(is); // 4
 
                 switch (shapeId) {
                     case 5:
                         r.shape = PolyLine.read(is);
                         break;
-                    default:
-                        is.read(new byte[Math.max(0, (int) r.header.contentLength * 2 - 8)]);
+                    case 0:
+                        is.read(new byte[Math.max(0, (int) r.header.contentLength * 2 - 4)]);
                         r.shape = new Unknown();
                         break;
+                    default:
+                        throw new RuntimeException("Unknown shape id: " + shapeId + " in stream " + is + " position: " + sum);
+
                 }
 
-                sum += r.header.contentLength + 4;
+                if (shapeId == 0) {
+                    sum += 6;
+                } else {
+                    sum += r.header.contentLength + 4;
+                }
 
                 f.records.add(r);
             } while (sum < f.header.fileLength);

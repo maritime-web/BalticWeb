@@ -26,7 +26,7 @@ public class ShapeFileParserTest {
     @Test
     public void readFileFromDmi() throws IOException {
         ShapeFileParser.File f = ShapeFileParser.parse(getClass().getResourceAsStream("/ice/201304100920_CapeFarewell_RIC.shp"));
-        assertEquals("Expected number of records", 36, f.getRecords().size());
+        assertEquals("Expected number of records", 23, f.getRecords().size());
         assertEquals("PolyLine expected", true, f.getRecords().get(0).getShape() instanceof ShapeFileParser.PolyLine);
         assertEquals("Expected number of points in first PolyLine", 687, ((ShapeFileParser.PolyLine) f.getRecords().get(0).getShape()).getNumPoints());
         assertEquals("Actual number of points in first PolyLine", ((ShapeFileParser.PolyLine) f.getRecords().get(0).getShape()).getNumPoints(),
