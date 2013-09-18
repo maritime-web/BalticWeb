@@ -17,27 +17,27 @@
 	embryo.VoyagePlanCtrl = function($scope, $routeParams, VoyageService, RouteService) {
 		var voyagePlan;
 
-		$scope.mmsi = $routeParams.mmsi;
+        var loadVoyage = function() {
+            if ($routeParams.voyage === 'current') {
+                VoyageService.getCurrent($scope.mmsi, function(plan) {
+                    voyagePlan = plan;
+                    $scope.voyages = voyagePlan.voyages.slice();
+                    $scope.voyages.push({});
+                });
+            }
+
+        };
+        var loadActiveRoute = function() {
+            RouteService.getActive($scope.mmsi, function(route) {
+                $scope.activeRoute = route;
+            });
+        };
+
+        $scope.mmsi = $routeParams.mmsi;
 		
 		$scope.options = {
 				"Yes" : true,
 				"No" : false
-		};
-
-		var loadVoyage = function() {
-			if ($routeParams.voyage === 'current') {
-				VoyageService.getCurrent($scope.mmsi, function(plan) {
-					voyagePlan = plan;
-					$scope.voyages = voyagePlan.voyages.slice();
-					$scope.voyages.push({});
-				});
-			}
-
-		};
-		var loadActiveRoute = function() {
-			RouteService.getActive($scope.mmsi, function(route) {
-				$scope.activeRoute = route;
-			});
 		};
 
 		$scope.berths = {
