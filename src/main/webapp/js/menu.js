@@ -1,46 +1,30 @@
-/*
- * Dependencies:
- * 
- * aisview.js
- * aisviewUI.js
- * ....
- */
+embryo.eventbus.GroupChangedEvent = function(id) {
+    var event = jQuery.Event("GroupChangedEvent");
+    event.groupId = id;
+    return event;
+};
+
+embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChanged");
 
 (function() {
-	"use strict";
-
-	embryo.menu = [ {
-		text : 'Vessels',
-		required : [ 'yourShip' ],
-	}, {
-		text : 'Ice',
-		required : [ 'yourShip' ],
-	}
-
-	];
-
-	embryo.user = {
-		features : [ 'yourShip', 'selectedShip' ]
-	};
-
-	embryo.MenuCtrl = function($scope) {
-		$scope.getMenuHeaders = function() {
-			return embryo.menu;
-		};
-
-		$scope.isVisible = function(menuItem) {
-			var index;
-			if (!menuItem.required) {
-				return true;
-			}
-
-			for (index in menuItem.required) {
-				if ($.inArray(menuItem.required[index], embryo.user.features) >= 0) {
-					return true;
-				}
-			}
-
-			return false;
-		};
-	};
-}());
+    "use strict";
+    
+    var menuModule = angular.module('embryo.menu',[]);
+    
+    embryo.MenuCtrl = function($scope, $location, $element) {
+        $scope.$watch(function() {
+            return $location.absUrl();
+        }, function (url) {
+            $(".navtabs a", $element).each(function(k, v) {
+                var href = $(v).attr("href");
+                if (url.indexOf(href, url.length - href.length) >= 0) {
+                    $(v).parent("li").addClass("active");
+                } else {
+                    $(v).parent("li").removeClass("active");
+                }
+            });
+            
+            embryo.eventbus.fireEvent(embryo.eventbus.GroupChangedEvent(url.substring(url.lastIndexOf("/")+1)));
+        });
+    }
+})();

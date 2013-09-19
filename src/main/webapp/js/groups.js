@@ -1,10 +1,4 @@
-embryo.eventbus.GroupChangedEvent = function(id) {
-    var event = jQuery.Event("GroupChangedEvent");
-    event.groupId = id;
-    return event;
-};
-
-embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChanged");
+/*
 
 $(function() {
     var hash = window.location.hash;
@@ -75,6 +69,4 @@ embryo.ready(function() {
     });
 });
 
-
-
-
+*/
