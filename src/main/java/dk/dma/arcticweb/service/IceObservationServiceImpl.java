@@ -31,7 +31,7 @@ import java.util.Set;
 
 public class IceObservationServiceImpl implements IceObservationService {
     @Inject
-    @Property(value = "embryo.iceCharts.localDmiDirectory", substituteSystemProperties = true)
+    @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
     private String localDmiDirectory;
 
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shp.xml", ".shx");

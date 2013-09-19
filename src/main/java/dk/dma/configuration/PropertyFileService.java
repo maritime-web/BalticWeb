@@ -15,6 +15,9 @@
  */
 package dk.dma.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -29,6 +32,8 @@ import java.util.Properties;
 
 @Singleton
 public class PropertyFileService {
+    private final Logger logger = LoggerFactory.getLogger(PropertyFileService.class);
+
     private static String DEFAULT_CONFIGURATION_RESOURCE_NAME = "/default-configuration.properties";
     private static String OVERRIDING_CONFIGURATION_SYSTEM_PROPERTY_NAME = "configuration";
 
@@ -41,10 +46,13 @@ public class PropertyFileService {
         }
 
         if (System.getProperty(OVERRIDING_CONFIGURATION_SYSTEM_PROPERTY_NAME) != null) {
+            logger.info("Reading configuration from: " + System.getProperty(OVERRIDING_CONFIGURATION_SYSTEM_PROPERTY_NAME));
             FileInputStream fis = new FileInputStream(
                     new File(new URI(System.getProperty(OVERRIDING_CONFIGURATION_SYSTEM_PROPERTY_NAME)))
             );
             properties.load(fis);
+        } else {
+            logger.info("System property " + OVERRIDING_CONFIGURATION_SYSTEM_PROPERTY_NAME + " is not set. Not reading external configuration.");
         }
     }
 

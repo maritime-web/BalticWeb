@@ -33,7 +33,7 @@ public class PropertyConfigurationTest {
     ConfiguredClass service;
 
     @Inject
-    @Property("embryo.iceCharts.localDmiDirectory")
+    @Property("embryo.iceMaps.localDmiDirectory")
     String test;
 
     static {
