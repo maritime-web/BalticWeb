@@ -1,5 +1,5 @@
 
-embryo.mapPanel.contextMenu = function(params) {
+embryo.map.contextMenu = function(params) {
 	// A control class for capturing click events...
 	// OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 	//
