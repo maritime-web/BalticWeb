@@ -82,6 +82,13 @@ $(function() {
     
     var selectedFeature;
 
+    embryo.vessel.lookupVessel = function(id) {
+        for (var i in vessels) {
+            if (vessels[i].id == id) return vessels[i];
+        }
+        return null;
+    }
+
     embryo.vessel.goToVesselLocation = function (vessel) {
 	var center = new OpenLayers.LonLat(vessel.lon, vessel.lat).transform(
 	    new OpenLayers.Projection("EPSG:4326"), embryo.map.internalMap.getProjectionObject());
@@ -209,12 +216,9 @@ $(function() {
     function redrawMarker() {
         markerLayer.removeAllFeatures();
 
-        if (embryo.vessel.markedVessel) {
-            var geom = embryo.map.createPoint(embryo.vessel.markedVessel.lon, embryo.vessel.markedVessel.lat);
-            /*
-            var loc = transformPosition(embryo.vessel.markedVessel.lon, embryo.vessel.markedVessel.lat);
-            var geom = new OpenLayers.Geometry.Point(loc.lon, loc.lat);
-            */
+        if (embryo.vessel.markedVesselId) {
+            var markedVessel = embryo.vessel.lookupVessel(embryo.vessel.markedVesselId);
+            var geom = embryo.map.createPoint(markedVessel.lon, markedVessel.lat);
 
             markerLayer.addFeatures([
                 new OpenLayers.Feature.Vector(
