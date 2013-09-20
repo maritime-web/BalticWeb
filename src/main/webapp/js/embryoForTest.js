@@ -1,6 +1,6 @@
 var embryo = {};
 
-embryo.mapPanel = {};
+embryo.map = {};
 
 // embryo.eventbus is necessary to construct a completely loose coupling between
 // all components in the application.
