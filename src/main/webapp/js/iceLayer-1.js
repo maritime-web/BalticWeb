@@ -1,5 +1,5 @@
 $(function() {
-    var waterOpacity = 0.3;
+    var groupOpacity = 0.5;
 
     function colorByDescription(description) {
         if (description.CT > 80) return "#ff0000";
@@ -187,21 +187,21 @@ $(function() {
         styleMap: new OpenLayers.StyleMap({
             "default": new OpenLayers.Style({
                 fillColor: "${fillColor}",
-                fillOpacity: 0.4,
+                fillOpacity: "${fillOpacity}",
                 strokeWidth: 1,
                 strokeColor: "#000000",
                 strokeOpacity: 0.2,
             }),
             "temporary": new OpenLayers.Style({
                 fillColor: "${fillColor}",
-                fillOpacity: 0.4,
+                fillOpacity: "${fillOpacity}",
                 strokeWidth: 1,
                 strokeColor: "#000000",
                 strokeOpacity: 0.7,
             }),
             "select": new OpenLayers.Style({
                 fillColor: "${fillColor}",
-                fillOpacity: 0.4,
+                fillOpacity: "${fillOpacity}",
                 strokeWidth: 1,
                 strokeColor: "#000",
                 strokeOpacity: 1
@@ -213,7 +213,7 @@ $(function() {
         styleMap: new OpenLayers.StyleMap({
             "default": new OpenLayers.Style({
                 fillColor: "#5599ff",
-                fillOpacity: waterOpacity,
+                fillOpacity: "${fillOpacity}",
                 strokeWidth: 0,
                 strokeColor: "#000000",
                 strokeOpacity: 0,
@@ -279,6 +279,7 @@ $(function() {
 
                     var feature = new OpenLayers.Feature.Vector(
                         new OpenLayers.Geometry.Polygon(rings), {
+                            fillOpacity: function() { return 0.4 * groupOpacity; },
                             fillColor: colorByDescription(ice[i].description),
                             iceDescription: ice[i].description
                         }
@@ -314,7 +315,8 @@ $(function() {
 
             var feature = new OpenLayers.Feature.Vector(
                 new OpenLayers.Geometry.Polygon(rings), {
-                    description: shape.description.id
+                    description: shape.description.id,
+                    fillOpacity: function() { return 0.2 * groupOpacity; }
                 }
             );
 
@@ -446,12 +448,14 @@ $(function() {
 
     embryo.groupChanged(function(e) {
         if (e.groupId == "ice") {
-            waterOpacity = 1;
-            setLayerOpacityById("Water", waterOpacity);
+            groupOpacity = 1;
+            iceLayer.redraw();
+            waterLayer.redraw();
             $("#iceControlPanel").css("display", "block");
         } else {
-            waterOpacity = 0.3;
-            setLayerOpacityById("Water", waterOpacity);
+            groupOpacity = 0.5;
+            iceLayer.redraw();
+            waterLayer.redraw();
             $("#iceControlPanel").css("display", "none");
         }
     });
