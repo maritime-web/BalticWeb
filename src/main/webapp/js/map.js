@@ -22,10 +22,39 @@ embryo.eventbus.registerShorthand(embryo.eventbus.MapInitialized, "mapInitialize
 $(function() {
     var selectLayerByGroup = { };
 
+    var map = new OpenLayers.Map({
+        div : "map",
+        fractionalZoom : false
+    });
+
+    var selectControl = new OpenLayers.Control.SelectFeature([], {
+        clickout : true,
+        toggle : true,
+        id : 'ClickCtrl'
+    });
+
+    var hoverControl = new OpenLayers.Control.SelectFeature([], {
+        id : 'HoverCtrl',
+        hover : true,
+        // highlightOnly : true,
+        eventListeners : {
+            // OpenLayers does not have a general support for
+            // featurehighlighted and featureunhighlighted events like
+            // layer.events.on({featureselected:function(event){}})
+            // Build our own using embryo.eventbus
+            featurehighlighted : function(event) {
+                embryo.eventbus.fireEvent(embryo.eventbus.HighLightEvent(event.feature));
+            },
+            featureunhighlighted : function(feature) {
+                embryo.eventbus.fireEvent(embryo.eventbus.UnHighLightEvent(feature.feature));
+            }
+        }
+    });
+
     embryo.map = {
         add: function(d) {
             if (d.layer) {
-                embryo.mapPanel.map.addLayer(d.layer);
+                map.addLayer(d.layer);
 
                 if (selectLayerByGroup[d.group] == null)
                     selectLayerByGroup[d.group] = [];
@@ -35,56 +64,14 @@ $(function() {
 
             }
             if (d.control) {
-                embryo.mapPanel.map.addControl(d.control);
+                map.addControl(d.control);
             }
         },
         createPoint: function(longitude, latitude) {
             return new OpenLayers.Geometry.Point(longitude, latitude)
-                .transform(new OpenLayers.Projection("EPSG:4326"), embryo.mapPanel.map.getProjectionObject());
-        }
-    };
-
-    embryo.mapPanel = {
-        add2SelectFeatureCtrl : function(layer) {
-            var layers = this.selectControl.layers;
-            layers.push(layer);
-            this.selectControl.setLayer(layers);
+                .transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         },
-        
-        add2HoverFeatureCtrl : function(layer) {
-            /*var layers = this.hoverControl.layers;
-            layers.push(layer);
-            this.hoverControl.setLayer(layers);*/
-        },
-
-        map: new OpenLayers.Map({
-            div : "map",
-            fractionalZoom : false
-        }),
-
-        selectControl: new OpenLayers.Control.SelectFeature([], {
-            clickout : true,
-            toggle : true,
-            id : 'ClickCtrl'
-        }),
-
-        hoverControl: new OpenLayers.Control.SelectFeature([], {
-            id : 'HoverCtrl',
-            hover : true,
-            // highlightOnly : true,
-            eventListeners : {
-                // OpenLayers does not have a general support for
-                // featurehighlighted and featureunhighlighted events like
-                // layer.events.on({featureselected:function(event){}})
-                // Build our own using embryo.eventbus
-                featurehighlighted : function(event) {
-                    embryo.eventbus.fireEvent(embryo.eventbus.HighLightEvent(event.feature));
-                },
-                featureunhighlighted : function(feature) {
-                    embryo.eventbus.fireEvent(embryo.eventbus.UnHighLightEvent(feature.feature));
-                }
-            }
-        })
+        internalMap: map
     };
 
     // Create one select control for all layers. This the only way to enable
@@ -104,13 +91,13 @@ $(function() {
     // Layers will be registered on control through usage of
     // addSelectableLayer
     
-    embryo.mapPanel.map.events.includeXY = true;
+    map.events.includeXY = true;
     
-    embryo.mapPanel.map.addControl(embryo.mapPanel.hoverControl);
-    embryo.mapPanel.hoverControl.activate();
+    map.addControl(hoverControl);
+    hoverControl.activate();
     
-    embryo.mapPanel.map.addControl(embryo.mapPanel.selectControl);
-    embryo.mapPanel.selectControl.activate();
+    map.addControl(selectControl);
+    selectControl.activate();
     
     /**
      * Transforms a position to a position that can be used by OpenLayers. The
@@ -125,7 +112,7 @@ $(function() {
     function transformPosition(lon, lat) {
         return new OpenLayers.LonLat(lon, lat).transform(
             new OpenLayers.Projection("EPSG:4326"),
-            embryo.mapPanel.map.getProjectionObject()
+            map.getProjectionObject()
         );
     }
 
@@ -133,11 +120,11 @@ $(function() {
      * Method for saving the current view into a cookie.
      */
     function saveViewCookie() {
-        var center = embryo.mapPanel.map.getCenter();
-        setCookie("dma-ais-zoom", embryo.mapPanel.map.zoom, 30);
-        var lonlat = new OpenLayers.LonLat(embryo.mapPanel.map.center.lon, embryo.mapPanel.map.center.lat).
+        var center = map.getCenter();
+        setCookie("dma-ais-zoom", map.zoom, 30);
+        var lonlat = new OpenLayers.LonLat(map.center.lon, map.center.lat).
             transform(
-                embryo.mapPanel.map.getProjectionObject(), // from Spherical Mercator Projection
+                map.getProjectionObject(), // from Spherical Mercator Projection
                 new OpenLayers.Projection("EPSG:4326") // to WGS 1984
             );
         setCookie("dma-ais-lat", lonlat.lat, 30);
@@ -152,15 +139,15 @@ $(function() {
         var lat = getCookie("dma-ais-lat");
         var lon = getCookie("dma-ais-lon");
         if (zoom && lat && lon) {
-            embryo.mapPanel.map.setCenter(transformPosition(parseFloat(lon), parseFloat(lat)), parseInt(zoom));
+            map.setCenter(transformPosition(parseFloat(lon), parseFloat(lat)), parseInt(zoom));
         }
     }
     
-    embryo.mapPanel.map.events.register("movestart", embryo.mapPanel.map, function() {
+    map.events.register("movestart", map, function() {
         embryo.eventbus.fireEvent(embryo.eventbus.UnHighLightEvent(null));
     });
 
-    embryo.mapPanel.map.events.register("moveend", embryo.mapPanel.map, saveViewCookie);
+    map.events.register("moveend", map, saveViewCookie);
     
     // Position zoom control to the right
     
@@ -172,7 +159,7 @@ $(function() {
     moveZoomControl();
     
     embryo.authenticated(function() {
-        embryo.mapPanel.map.projection = new OpenLayers.Projection(embryo.authentication.projection);
+        map.projection = new OpenLayers.Projection(embryo.authentication.projection);
         
         var osm = new OpenLayers.Layer.OSM(
             "OSM",
@@ -182,7 +169,7 @@ $(function() {
             }
         );
 
-        embryo.mapPanel.map.addLayer(osm);
+        map.addLayer(osm);
 
         loadViewCookie();
 
@@ -190,12 +177,12 @@ $(function() {
     });
 
     $("#zoomAll").click(function() {
-        embryo.mapPanel.map.setCenter(transformPosition(-70, 72), 3);
+        map.setCenter(transformPosition(-70, 72), 3);
     });
 
     embryo.groupChanged(function(e) {
-        embryo.mapPanel.selectControl.unselectAll();
-        embryo.mapPanel.selectControl.setLayer(selectLayerByGroup[e.groupId]);
+        selectControl.unselectAll();
+        selectControl.setLayer(selectLayerByGroup[e.groupId]);
     });
 });
 

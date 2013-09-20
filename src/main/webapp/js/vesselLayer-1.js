@@ -84,10 +84,8 @@ $(function() {
 
     embryo.vessel.goToVesselLocation = function (vessel) {
 	var center = new OpenLayers.LonLat(vessel.lon, vessel.lat).transform(
-	    new OpenLayers.Projection("EPSG:4326"), embryo.mapPanel.map
-		.getProjectionObject());
-        
-	embryo.mapPanel.map.setCenter(center, focusZoom);
+	    new OpenLayers.Projection("EPSG:4326"), embryo.map.internalMap.getProjectionObject());
+        embryo.map.internalMap.setCenter(center, focusZoom);
     }
 
     embryo.vessel.selectVessel = function (vessel) {
@@ -263,10 +261,6 @@ $(function() {
         hoved: true
     });
 
-    // embryo.mapPanel.map.addLayer(vesselLayer);
-    // embryo.mapPanel.add2SelectFeatureCtrl(vesselLayer);
-    // embryo.mapPanel.add2HoverFeatureCtrl(vesselLayer);
-    
     // Create vector layer with a stylemap for the selection image
     markerLayer = new OpenLayers.Layer.Vector("Markers", {
         styleMap : new OpenLayers.StyleMap({
@@ -315,14 +309,10 @@ $(function() {
         
     function onSelect(event) {
         var feature = event.feature;
-        if (selectedFeature && selectedFeature.attributes.vessel.id == feature.attributes.vessel.id) {
-            embryo.mapPanel.selectControl.unselectAll();
-        } else {
-            if (selectedFeature != null) onUnselect();
-            selectedFeature = feature;
-            redrawSelection();
-            embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(feature.attributes.id));
-        }
+        if (selectedFeature != null) onUnselect();
+        selectedFeature = feature;
+        redrawSelection();
+        embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(feature.attributes.id));
     };
     
     function onUnselect(event) {
@@ -368,10 +358,10 @@ $(function() {
         }
     });
 
-    embryo.mapPanel.map.events.register("zoomend", embryo.mapPanel.map, function() {
+    embryo.map.internalMap.events.register("zoomend", embryo.map.internalMap, function() {
         var newVesselSize = 0.5;
-        if (embryo.mapPanel.map.zoom >= 4) newVesselSize = 0.75;
-        if (embryo.mapPanel.map.zoom >= 6) newVesselSize = 1;
+        if (embryo.map.internalMap.zoom >= 4) newVesselSize = 0.75;
+        if (embryo.map.internalMap.zoom >= 6) newVesselSize = 1;
 
         if (vesselSize != newVesselSize) {
             vesselSize = newVesselSize;

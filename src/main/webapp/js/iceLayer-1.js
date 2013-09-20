@@ -321,13 +321,6 @@ $(function() {
             waterLayer.addFeatures([ feature ]);
         }
         
-        /*
-        map.addLayer(iceLayer);
-        map.addLayer(waterLayer);
-        
-    	embryo.mapPanel.add2SelectFeatureCtrl(iceLayer);
-        */
-
         console.log("Ice and water features addded. - "+(new Date().getTime() - start));
     }
 

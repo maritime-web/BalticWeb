@@ -85,8 +85,8 @@ embryo.contextMenu = {
 			return embryo.contextMenu.menuItems;
 		};
 		$scope.getLayers = function() {
-			if(embryo.mapPanel && embryo.mapPanel.map){
-				return embryo.mapPanel.map.layers;
+			if(embryo.map.internalMap){
+				return embryo.map.internalMap.layers;
 			}
 			return [];
 		};

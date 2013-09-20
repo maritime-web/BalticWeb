@@ -225,7 +225,7 @@ $(function() {
                     $("#viewHistoricalTrack").attr("href", "#");
                     $("#viewHistoricalTrack").on("click", function(e) {
                         e.preventDefault();
-                        embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
+                        embryo.map.internalMap.zoomToExtent(tracksLayer.getDataExtent());
                         setLayerOpacityById("timeStampsLayer", 0.8);
                         setLayerOpacityById("trackLayer", 0.4);
                     });

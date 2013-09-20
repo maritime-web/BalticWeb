@@ -132,8 +132,10 @@ embryo.route = {};
 			createVertices : true,
 			mode : OpenLayers.Control.ModifyFeature.RESHAPE
 		});
-		embryo.mapPanel.map.addControl(embryo.route.modCtrl);
-		embryo.route.modCtrl.activate();
+
+		embryo.map.add({
+    		control: embryo.route.modCtrl
+		});
 
 		embryo.route.layer.events.on({
 			"beforefeaturemodified" : function(feature) {
