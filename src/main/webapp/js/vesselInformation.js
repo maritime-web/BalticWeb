@@ -152,7 +152,8 @@ $(function() {
         $("#selectedAesInformation table").html(embryo.vesselInformation.renderShortTable(data));
         openCollapse("#vcpSelectedShip");
         $("#selectedAesInformationLink").off("click");
-        $("#selectedAesInformationLink").on("click", function() {
+        $("#selectedAesInformationLink").on("click", function(e) {
+            e.preventDefault();
             embryo.vesselInformation.showAesDialog(data);
         });
     }
@@ -222,7 +223,8 @@ $(function() {
                 $("#viewHistoricalTrack").off("click");
                 if (result.pastTrack != null) {
                     $("#viewHistoricalTrack").attr("href", "#");
-                    $("#viewHistoricalTrack").on("click", function() {
+                    $("#viewHistoricalTrack").on("click", function(e) {
+                        e.preventDefault();
                         embryo.mapPanel.map.zoomToExtent(tracksLayer.getDataExtent());
                         setLayerOpacityById("timeStampsLayer", 0.8);
                         setLayerOpacityById("trackLayer", 0.4);

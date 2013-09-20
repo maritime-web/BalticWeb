@@ -13,7 +13,8 @@ $(function() {
                     $("a[href=#vcpYourShip]").html("Your Ship - "+result.name);
                     $("#yourShipAesInformation table").html(embryo.vesselInformation.renderShortTable(result));
                     $("#yourShipAesInformationLink").off("click");
-                    $("#yourShipAesInformationLink").on("click", function() {
+                    $("#yourShipAesInformationLink").on("click", function(e) {
+                        e.preventDefault();
                         embryo.vesselInformation.showAesDialog(result);
                     });
                 }
