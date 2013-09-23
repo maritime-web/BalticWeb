@@ -275,7 +275,8 @@
 
     <pluginManagement>
       <plugins>
-        <plugin>
+
+          <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
           <version>1.0.0</version>
@@ -369,7 +370,54 @@
     </pluginManagement>
 
     <plugins>
-      <plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>jaxws-maven-plugin</artifactId>
+            <version>1.12</version>
+            <dependencies>
+                <dependency>
+                    <groupId>com.sun.xml.ws</groupId>
+                    <artifactId>jaxws-rt</artifactId>
+                    <version>2.2.3</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.xml.ws</groupId>
+                    <artifactId>jaxws-tools</artifactId>
+                    <version>2.2.3</version>
+                    <scope>compile</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-xjc</artifactId>
+                    <version>2.2.3-1</version>
+                    <scope>compile</scope>
+                </dependency>
+            </dependencies>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>wsimport</goal>
+                    </goals>
+                    <configuration>
+                        <verbose>true</verbose>
+                        <target>2.0</target>
+                        <sei/>
+                        <keep>true</keep>
+                        <sourceDestDir>${project.build.directory}/generated</sourceDestDir>
+                        <wsdlDirectory>${basedir}/src/main/wsdl</wsdlDirectory>
+                        <wsdlFiles>
+                            <wsdlFile>warning.wsdl</wsdlFile>
+                        </wsdlFiles>
+                        <extension>true</extension>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+
+
+        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.5.1</version>

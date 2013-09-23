@@ -25,6 +25,7 @@ import javax.ws.rs.core.Application;
 import dk.dma.embryo.rest.AuthenticationService;
 import dk.dma.embryo.rest.BerthRestService;
 import dk.dma.embryo.rest.IceObservationRestService;
+import dk.dma.embryo.rest.MsiRestService;
 import dk.dma.embryo.rest.RouteRestService;
 import dk.dma.embryo.rest.RouteUploadService;
 import dk.dma.embryo.rest.ShapeFileService;
@@ -36,6 +37,7 @@ public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
         return new HashSet<Class<?>>(Arrays.asList(RouteRestService.class, RouteUploadService.class,
                 VoyageRestService.class, ShapeFileService.class, GreenPosRestService.class, ShipRestService.class,
-                BerthRestService.class, AuthenticationService.class, TestDataRestService.class, IceObservationRestService.class));
+                BerthRestService.class, AuthenticationService.class, TestDataRestService.class,
+                IceObservationRestService.class, MsiRestService.class));
     }
 }
