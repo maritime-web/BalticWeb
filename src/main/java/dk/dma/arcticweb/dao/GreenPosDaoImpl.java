@@ -15,8 +15,13 @@
  */
 package dk.dma.arcticweb.dao;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+import dk.dma.embryo.domain.GreenPosReport;
 
 @Stateless
 public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
@@ -29,5 +34,16 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
         super(entityManager);
     }
 
+    @Override
+    public GreenPosReport findLatest(String shipMaritimeId) {
+
+        TypedQuery<GreenPosReport> query = em.createNamedQuery("GreenPosReport:findLatest", GreenPosReport.class);
+        query.setParameter("shipMaritimeId", shipMaritimeId);
+        query.setMaxResults(1);
+
+        List<GreenPosReport> result = query.getResultList();
+
+        return getSingleOrNull(result);
+    }
 
 }

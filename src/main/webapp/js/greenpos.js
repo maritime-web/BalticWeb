@@ -48,7 +48,7 @@
 	});
 
 	embryo.GreenPosCtrl = function($scope, ShipService, VoyageService,
-			GreenPosRest, AisRestService) {
+			GreenposService, AisRestService) {
 
 		$scope.projection = "EPSG:4326";
 
@@ -110,9 +110,8 @@
 
 		$scope.sendReport = function() {
             $scope.message = null;
-			GreenPosRest.save($scope.report, function() {
+			GreenposService.save($scope.report, function() {
 				$scope.message = "GreenPos report successfully submitted";
-				console.log("GreenPos successfully submitted");
 			});
 		};
 
@@ -283,28 +282,6 @@
 					new OpenLayers.Projection($scope.projection), $scope.map
 							.getProjectionObject());
 		};
-	};
-
-	embryo.GreenPosListCtrl = function($scope, ShipService, VoyageService,
-			GreenPosRest, AisRestService) {
-
-		$scope.$on('$viewContentLoaded', function() {
-			if (!$scope.map) {
-//				var reports = GreenPosRest.list(function() {
-//					$scope.reports = reports;
-//				});
-
-				// postpone map loading sligtly, to let the resize directive set
-				// the sizes of the map container divs, before map loading. If
-				// not done, the map is not loaded in correct size
-//				setTimeout(function() {
-//					$scope.$apply(function() {
-//						$scope.loadMap();
-//					});
-//				}, 100);
-			}
-		});
-
 	};
 
 }());

@@ -141,4 +141,9 @@ public class GreenPosServiceImpl implements GreenPosService {
     public List<GreenPosReport> findReports() {
         return greenPosDao.getAll(GreenPosReport.class);
     }
+
+    @Override
+    public GreenPosReport getLatest(String shipMaritimeId) {
+        return greenPosDao.findLatest(shipMaritimeId);
+    }
 }

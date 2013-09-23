@@ -22,6 +22,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.slf4j.Logger;
@@ -60,6 +61,25 @@ public class GreenPosRestService {
     }
 
 
+    @GET
+    @Path("/latest/{shipMaritimeId}")
+    @Produces("application/json")
+    public GreenPos latest(@PathParam("shipMaritimeId") String shipMaritimeId) {
+        logger.debug("latest({})", shipMaritimeId);
+        
+        GreenPos result = null;
+
+        GreenPosReport report = reportingService.getLatest(shipMaritimeId);
+        
+        if(report != null){
+            result = report.toJsonModel();
+        }
+     
+        logger.debug("latest({}) - {}", shipMaritimeId, result);
+        
+        return result;
+    }
+    
     @GET
     @Path("/list")
     @Produces("application/json")

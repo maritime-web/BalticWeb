@@ -15,12 +15,12 @@
     var voyagePlanModule = angular.module('embryo.voyagePlan', [ 'embryo.voyageService', 'embryo.routeService',
             'siyfion.ngTypeahead' ]);
 
-    embryo.VoyagePlanCtrl = function($scope, $routeParams, VoyageService, RouteService) {
+    embryo.VoyagePlanCtrl = function($scope, $rootScope, $routeParams, VoyageService, RouteService) {
         var voyagePlan;
 
         var loadVoyage = function() {
             if ($routeParams.voyage === 'current') {
-                VoyageService.getCurrent($scope.mmsi, function(plan) {
+                VoyageService.getCurrentPlan($scope.mmsi, function(plan) {
                     voyagePlan = plan;
                     $scope.voyages = voyagePlan.voyages.slice();
                     $scope.voyages.push({});
@@ -135,6 +135,7 @@
             voyagePlan.voyages = $scope.voyages.slice(0, $scope.voyages.length - 1);
 
             VoyageService.save(voyagePlan, function() {
+                $rootScope.$broadcast('yourshipDataUpdated');
                 $scope.message = "Voyage plan saved successfully";
                 loadVoyage();
                 loadActiveRoute();

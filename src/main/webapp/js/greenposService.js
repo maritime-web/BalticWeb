@@ -8,24 +8,37 @@
  */
 
 (function() {
-	"use strict";
+    "use strict";
 
-	var serviceModule = angular.module('embryo.greenposService',['embryo.storageServices']);
-	
-	serviceModule.factory('GreenPosRest', function($resource) {
-		var defaultParams = {};
+    var serviceModule = angular.module('embryo.greenposService', [ 'embryo.storageServices' ]);
 
-		var actions = {
-			activate : {
-				params : {
-					action : 'activate'
-				},
-				method : 'PUT',
-				isArray : false,
-			}
-		};
+    serviceModule.factory('GreenposService', function($rootScope, $http, SessionStorageService) {
+        var latestGreenposKey = function(maritimeId) {
+            return 'latestgreenpos_' + maritimeId;
+        };
 
-		return $resource('rest/greenpos/:action/:id', defaultParams, actions);
-	});
+        return {
+            getLatestReport : function(shipMaritimeId, callback) {
+                var remoteCall = function(onSuccess) {
+                    var url = embryo.baseUrl + 'rest/greenpos/latest/' + shipMaritimeId;
+                    $http.get(url, {
+                        responseType : 'json'
+                    }).success(onSuccess);
+                };
 
+                // last report maintained in SessionStorage as
+                // 'latestgreenpos_shipMaritimeId' -> report
+                SessionStorageService.getItem(latestGreenposKey(shipMaritimeId), callback, remoteCall);
+            },
+            save : function(greenpos, callback) {
+                $http.post(embryo.baseUrl + 'rest/greenpos', greenpos, {
+                    responseType : 'json'
+                }).success(function() {
+                    SessionStorageService.removeItem(latestGreenposKey(greenpos.shipMaritimeId));
+                    callback();
+                    $rootScope.$broadcast('yourshipDataUpdated');
+                });
+            }
+        };
+    });
 }());

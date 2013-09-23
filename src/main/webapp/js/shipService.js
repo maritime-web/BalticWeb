@@ -27,7 +27,9 @@
 	});
 
 	
-	serviceModule.factory('ShipService', function($http, SessionStorageService, LocalStorageService) {
+	serviceModule.factory('ShipService', function($rootScope, $http, SessionStorageService, LocalStorageService) {
+	    var yourShipKey = 'yourShip';
+	    
 		return {
 			getYourShip : function(callback) {
 
@@ -37,7 +39,7 @@
 					}).success(onSuccess);
 				};
 
-				SessionStorageService.getItem('yourShip', callback, remoteCall);
+				SessionStorageService.getItem(yourShipKey, callback, remoteCall);
 			},
 			getShipTypes : function(callback) {
 				var remoteCall = function(onSuccess) {
@@ -52,11 +54,13 @@
 				$http.put(embryo.baseUrl + 'rest/ship', ship, {
 					responseType : 'json'
 				}).success(function(maritimeId) {
+				    console.log(maritimeId);
 					if (maritimeId) {
 						ship.maritimeId = maritimeId;
-						SessionStorageService.setItem('yourShip', ship);
+						SessionStorageService.setItem(yourShipKey, ship);
 					}
 					callback();
+                    $rootScope.$broadcast('yourshipDataUpdated');
 				});
 			}
 		};

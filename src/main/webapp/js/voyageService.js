@@ -29,8 +29,7 @@
     });
 
     voyageServiceModule.factory('VoyageService',
-            function($http, VoyageRestService, ShipService, SessionStorageService) {
-
+            function($rootScope, $http, VoyageRestService, ShipService, SessionStorageService) {
                 var currentPlan = 'voyagePlan_current';
                 var activeVoyage = 'voyage_active';
 
@@ -55,7 +54,7 @@
                             onSuccess(JSON.parse(voyageStr));
                         }
                     },
-                    getCurrent : function(mmsi, callback) {
+                    getCurrentPlan : function(mmsi, callback) {
                         var remoteCall = function(onSuccess) {
                             $http.get(voyageUrl + mmsi + '/current', {
                                 responseType : 'json'
@@ -74,6 +73,7 @@
                         }).success(function() {
                             SessionStorageService.removeItem(currentPlan);
                             callback();
+                            $rootScope.$broadcast('yourshipDataUpdated');
                         });
                     }
                 };

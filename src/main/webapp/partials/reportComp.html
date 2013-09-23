@@ -4,22 +4,22 @@
 	<table class="table table-condensed">
 		<tr>
 			<th>Ship Information</th>
-			<td><span class="label label-success">OK</span></td>
+			<td><span x-ng-class="shipLabel" class="label">{{shipTxt}}</span></td>
 			<td><a id="shipInfo" href="report.html#/ship/">edit</a></td>
 		</tr>
 		<tr>
 			<th>Voyage Plan</th>
-			<td><span class="label label-success">OK</span></td>
+			<td><span x-ng-class="voyageLabel" class="label">{{voyageTxt}}</span></td>
 			<td><a id="voyagePlan" x-ng-href="report.html#/voyagePlan/{{ship.mmsi}}/current">edit</a></td>
 		</tr>
 		<tr>
 			<th>Active Route</th>
-			<td><span class="label label-success">OK</span></td>
-			<td><a id="routeEdit" x-ng-href="report.html#/routeEdit/{{ship.mmsi}}/{{voyage.routeId}}">edit</a> - <a id="routeUpload" href="report.html#/routeUpload/{{ship.mmsi}}/{{voyage.maritimeId}}">upload</a></td>
+			<td><span x-ng-class="routeLabel" class="label">{{routeTxt}}</span></td>
+			<td><span x-ng-show="routeEditTxt" ><a id="routeEdit" x-ng-href="report.html#/routeEdit/{{ship.mmsi}}/{{route.id}}">{{routeEditTxt}}</a> - </span><a id="routeUpload" href="report.html#/routeUpload/{{ship.mmsi}}/{{voyage.maritimeId}}">upload</a></td>
 		</tr>
 		<tr>
-			<th>Ship Report</th>
-			<td><span class="label label-warning">DUE NOW</span></td>
+			<th>Greenpos Report</th>
+			<td><span x-ng-class="greenposLabel" class="label blink">{{greenposTxt}}</span></td>
 			<td><a id="greenposReport" href="report.html#/report">report</a></td>
 		</tr>
 	</table>

@@ -38,7 +38,7 @@
     // embryo.angular.controller('embryo.RouteUploadCtrl', [ '$scope',
     // function($scope) {
 
-    embryo.RouteUploadCtrl = function($scope, $routeParams, VoyageService) {
+    embryo.RouteUploadCtrl = function($scope, $rootScope, $routeParams, VoyageService) {
         var initUpload = function() {
             var index;
             if ($routeParams.mmsi) {
@@ -70,6 +70,7 @@
                 $.each(data.result.files, function(index, file) {
                     $scope.message = "Uploaded route '" + file.name + "'";
                     $scope.uploadedFile = file;
+                    $rootScope.$broadcast('yourshipDataUpdated');
                 });
             }
         };
@@ -88,12 +89,15 @@
 
         $scope.$on('fileuploadsubmit', function(e, data) {
             $scope.message = null;
-            
+
             if (typeof $scope.selectedVoyage !== "undefined") {
                 data.formData = {
                     voyageId : $scope.selectedVoyage.id
                 };
             }
+
+            $rootScope.$broadcast('yourshipDataUpdated');
+
         });
     };
 

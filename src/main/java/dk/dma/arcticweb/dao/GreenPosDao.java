@@ -17,7 +17,10 @@ package dk.dma.arcticweb.dao;
 
 import javax.ejb.Local;
 
+import dk.dma.embryo.domain.GreenPosReport;
+
 @Local
 public interface GreenPosDao extends Dao {
 
+    GreenPosReport findLatest(String shipMaritimeId);
 }

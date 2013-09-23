@@ -10,7 +10,7 @@
 	"use strict";
 
 	angular.module('embryo.routeService', [ 'embryo.storageServices' ]).factory('RouteService',
-			function($http, SessionStorageService, LocalStorageService) {
+			function($rootScope, $http, SessionStorageService, LocalStorageService) {
 
 				var active = 'route_active';
 
@@ -33,16 +33,17 @@
 						// 'route_active' -> someRouteId
 						// 'route_someRouteId' -> Route (stringified JS object)
 						SessionStorageService.getItem(active, function(routeId) {
-							if (routeId) {
+						    if (routeId) {
 								SessionStorageService.getItem(routeKey(routeId), callback, remoteCall);
 							} else {
 								remoteCall(function(activeRoute){
-									if (typeof activeRoute !== 'undefined') {
+									if (activeRoute && Object.keys(activeRoute) > 0) {
 										SessionStorageService.setItem(active, activeRoute.id);
 										SessionStorageService.setItem(routeKey(activeRoute.id), activeRoute);
 									} else {
 										SessionStorageService.removeItem(active);
 									}
+									callback(null);
 								});
 							}
 						});
@@ -62,6 +63,7 @@
 								SessionStorageService.removeItem(active);
 							}
 							callback();
+		                    $rootScope.$broadcast('yourshipDataUpdated');
 						});
 					},
 					getRoute : function(routeId, callback) {
@@ -80,6 +82,7 @@
 						}).success(function() {
 							SessionStorageService.setItem(routeKey(route.id), route);
 							callback();
+		                    $rootScope.$broadcast('yourshipDataUpdated');
 						});
 					}
 				};

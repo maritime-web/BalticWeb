@@ -25,7 +25,9 @@ import dk.dma.embryo.domain.GreenPosReport;
 public interface GreenPosService{
 
     List<GreenPosReport> listReports();
-    
+
+    GreenPosReport getLatest(String shipMaritimeId);
+
     String saveReport(GreenPosReport report);
     
     List<GreenPosReport> findReports();

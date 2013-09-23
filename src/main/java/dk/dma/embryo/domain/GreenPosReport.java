@@ -21,10 +21,14 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.hibernate.annotations.Type;
+import org.joda.time.LocalDateTime;
 
 import dk.dma.embryo.rest.json.GreenPos;
 
@@ -34,6 +38,7 @@ import dk.dma.embryo.rest.json.GreenPos;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@NamedQueries({ @NamedQuery(name = "GreenPosReport:findLatest", query = "SELECT DISTINCT g FROM GreenPosReport g where g.shipMaritimeId = :shipMaritimeId ORDER By g.ts ASC") })
 public abstract class GreenPosReport extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -58,6 +63,9 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
 
     @NotNull
     private String reportedBy;
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    private LocalDateTime ts;
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
