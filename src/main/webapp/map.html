@@ -45,10 +45,11 @@
 <script src="js/yourShip.js" type="text/javascript" defer="defer"></script>
 <script src="js/iceLayer-1.js" defer="defer" type="text/javascript"></script>
 <script src="js/routeLayer.js" defer="defer" type="text/javascript"></script>
+<script src="js/reportComp.js" defer="defer" type="text/javascript"></script>
 <script src="js/menu.js" defer="defer" type="text/javascript"></script>
 
 <script type="text/javascript">
-	angular.module('embryo.map', [ 'embryo.shipService', 'embryo.voyageService', 'embryo.routeService', 'embryo.greenposService']);
+	angular.module('embryo.map', [ 'embryo.shipService', 'embryo.voyageService', 'embryo.routeService', 'embryo.greenposService', 'embryo.reportComp']);
 </script>
 </head>
 
@@ -195,30 +196,7 @@
 							<table class="table table-condensed"></table>
 						</div>
 
-						<h4>Reporting</h4>
-
-						<table class="table table-condensed">
-							<tr>
-								<th>Ship Information</th>
-								<td><span class="label label-success">OK</span></td>
-								<td><a id="shipInfo" href="#">edit</a></td>
-							</tr>
-							<tr>
-								<th>Ship Report</th>
-								<td><span class="label label-warning">DUE NOW</span></td>
-								<td><a id="greenposReport" href="#">report</a></td>
-							</tr>
-							<tr>
-								<th>Voyage Plan</th>
-								<td><span class="label label-success">OK</span></td>
-								<td><a id="voyagePlan" href="#">edit</a></td>
-							</tr>
-							<tr>
-								<th>Active Route</th>
-								<td><span class="label label-success">OK</span></td>
-								<td><a id="routeEdit" href="#">edit</a> - <a id="routeUpload" href="#">upload</a></td>
-							</tr>
-						</table>
+						<div x-ng-include="'partials/reportComp.html'"></div>
 					</div>
 				</div>
 			</div>

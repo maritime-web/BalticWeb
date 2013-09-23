@@ -19,6 +19,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.rest.json.GreenPos;
 
@@ -68,6 +69,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setLatitude(getPosition().getLatitudeAsString());
         result.setDeviation(getDeviation());
         result.setReportedBy(getReportedBy());
+        result.setReportedTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
         
         return result;
     }

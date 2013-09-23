@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
 import dk.dma.embryo.rest.json.GreenPos;
@@ -103,7 +104,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setEtaOfArrival(eta);
         result.setVoyages(transformed);
         result.setReportedBy(getReportedBy());
-        
+        result.setReportedTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
         return result;
     }
 

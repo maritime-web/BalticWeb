@@ -20,6 +20,7 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.rest.json.GreenPos;
 
@@ -70,6 +71,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setSpeed(getSpeed());
         result.setCourse(getCourse());
         result.setReportedBy(getReportedBy());
+        result.setReportedTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
         
         return result;
     }

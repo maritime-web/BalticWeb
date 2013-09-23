@@ -19,6 +19,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.rest.json.GreenPos;
 
@@ -57,6 +58,7 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
         result.setReportedBy(getReportedBy());
+        result.setReportedTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
         
         return result;
     }

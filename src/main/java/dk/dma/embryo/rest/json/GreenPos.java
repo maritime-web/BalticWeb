@@ -55,7 +55,7 @@ public class GreenPos {
 
     private String reportedBy;
 
-    private String reportedTs;
+    private Long reportedTs;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -210,4 +210,11 @@ public class GreenPos {
         this.voyages = voyages;
     }
 
+    public Long getReportedTs() {
+        return reportedTs;
+    }
+
+    public void setReportedTs(Long reportedTs) {
+        this.reportedTs = reportedTs;
+    }
 }

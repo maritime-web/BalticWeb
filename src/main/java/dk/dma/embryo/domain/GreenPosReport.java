@@ -65,6 +65,7 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     private String reportedBy;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @NotNull
     private LocalDateTime ts;
 
     // //////////////////////////////////////////////////////////////////////
@@ -194,4 +195,13 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         return reportedBy;
     }
 
+    public LocalDateTime getTs() {
+        return ts;
+    }
+
+    public void setTs(LocalDateTime ts) {
+        this.ts = ts;
+    }
+
+    
 }

@@ -23,6 +23,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDateTime;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.ShipDao;
@@ -91,6 +92,7 @@ public class GreenPosServiceImpl implements GreenPosService {
         }
         
         report.setReportedBy(subject.getUser().getUserName());
+        report.setTs(LocalDateTime.now());
         
         greenPosDao.saveEntity(report);
 
