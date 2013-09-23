@@ -71,6 +71,10 @@ $(function() {
             return new OpenLayers.Geometry.Point(longitude, latitude)
                 .transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         },
+        select: function(feature) {
+            selectControl.unselectAll();
+            selectControl.select(feature);
+        },
         internalMap: map
     };
 
