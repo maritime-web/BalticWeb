@@ -8,9 +8,9 @@ $(function() {
     embryo.highlight(function(e) {
         var lonlatCenter = e.feature.geometry.getBounds().getCenterLonLat();
         var pixelTopLeft = new OpenLayers.Pixel(0, 0);
-        var lonlatTopLeft = embryo.mapPanel.map.getLonLatFromPixel(pixelTopLeft);
-        pixelTopLeft = embryo.mapPanel.map.getPixelFromLonLat(lonlatTopLeft);
-        var pixel = embryo.mapPanel.map.getPixelFromLonLat(lonlatCenter);
+        var lonlatTopLeft = embryo.map.internalMap.getLonLatFromPixel(pixelTopLeft);
+        pixelTopLeft = embryo.map.internalMap.getPixelFromLonLat(lonlatTopLeft);
+        var pixel = embryo.map.internalMap.getPixelFromLonLat(lonlatCenter);
         
         var x = pixel.x - pixelTopLeft.x + $("#map").position().left;
         var y = pixel.y - pixelTopLeft.y + $("#map").position().top;

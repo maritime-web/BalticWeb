@@ -1,5 +1,5 @@
 $(function() {
-    var waterOpacity = 0.3;
+    var groupOpacity = 0.5;
 
     function colorByDescription(description) {
         if (description.CT > 80) return "#ff0000";
@@ -187,21 +187,21 @@ $(function() {
         styleMap: new OpenLayers.StyleMap({
             "default": new OpenLayers.Style({
                 fillColor: "${fillColor}",
-                fillOpacity: 0.4,
+                fillOpacity: "${fillOpacity}",
                 strokeWidth: 1,
                 strokeColor: "#000000",
                 strokeOpacity: 0.2,
             }),
             "temporary": new OpenLayers.Style({
                 fillColor: "${fillColor}",
-                fillOpacity: 0.4,
+                fillOpacity: "${fillOpacity}",
                 strokeWidth: 1,
                 strokeColor: "#000000",
                 strokeOpacity: 0.7,
             }),
             "select": new OpenLayers.Style({
                 fillColor: "${fillColor}",
-                fillOpacity: 0.4,
+                fillOpacity: "${fillOpacity}",
                 strokeWidth: 1,
                 strokeColor: "#000",
                 strokeOpacity: 1
@@ -213,7 +213,7 @@ $(function() {
         styleMap: new OpenLayers.StyleMap({
             "default": new OpenLayers.Style({
                 fillColor: "#5599ff",
-                fillOpacity: waterOpacity,
+                fillOpacity: "${fillOpacity}",
                 strokeWidth: 0,
                 strokeColor: "#000000",
                 strokeOpacity: 0,
@@ -279,6 +279,7 @@ $(function() {
 
                     var feature = new OpenLayers.Feature.Vector(
                         new OpenLayers.Geometry.Polygon(rings), {
+                            fillOpacity: function() { return 0.4 * groupOpacity; },
                             fillColor: colorByDescription(ice[i].description),
                             iceDescription: ice[i].description
                         }
@@ -314,24 +315,18 @@ $(function() {
 
             var feature = new OpenLayers.Feature.Vector(
                 new OpenLayers.Geometry.Polygon(rings), {
-                    description: shape.description.id
+                    description: shape.description.id,
+                    fillOpacity: function() { return 0.2 * groupOpacity; }
                 }
             );
 
             waterLayer.addFeatures([ feature ]);
         }
         
-        /*
-        map.addLayer(iceLayer);
-        map.addLayer(waterLayer);
-        
-    	embryo.mapPanel.add2SelectFeatureCtrl(iceLayer);
-        */
-
         console.log("Ice and water features addded. - "+(new Date().getTime() - start));
     }
 
-    function requestShapefile(name) {
+    function requestShapefile(name, onSuccess) {
         console.log("Requesting " + name + " data ...");
 
         var messageId = embryo.messagePanel.show( { text: "Requesting " + name + " data ..." })
@@ -353,6 +348,7 @@ $(function() {
                 embryo.messagePanel.replace(messageId, { text: totalPolygons + " polygons. "+totalPoints+" points returned.", type: "success" })
                 console.log(totalPolygons + " polygons. "+totalPoints+" points returned.");
                 setupLayers(data);
+                if (onSuccess) onSuccess();
             },
             error: function(data) {
                 embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " requesting ice data.", type: "error" })
@@ -407,19 +403,33 @@ $(function() {
                     
                     for (var i in data) {
                         if (data[i].region == region)
-                            html += "<tr><td>"+data[i].source+"</td><td>"+formatTime(data[i].date)+"</td><td>"+formatSize(data[i].size)+"</td><td><a href="+i+">download</a></td></tr>";
+                            html += "<tr><td>"+data[i].source+"</td><td>"+formatTime(data[i].date)+"</td><td>"+formatSize(data[i].size)+"</td><td><a href="+i+" class=download>download</a><a href="+i+" class=zoom>zoom</a></td></tr>";
                     }
                     
                 }
 
                 $("#icpIceMaps table").html(html);
 
-                $("#icpIceMaps table a").click(function(e) { 
+                $("#icpIceMaps table a.download").click(function(e) { 
                     e.preventDefault();
-                    requestShapefile(data[$(this).attr("href")].shapeFileName);
+                    var row = $(this).parents("tr");
+                    requestShapefile(data[$(this).attr("href")].shapeFileName, function() {
+                        $("#icpIceMaps table tr").removeClass("alert");
+                        $(row).addClass("alert");
+                        $("#icpIceMaps table a.zoom").css("display", "none");
+                        $("#icpIceMaps table a.download").css("display", "block");
+                        $("a.zoom", row).css("display", "block");
+                        $("a.download", row).css("display", "none");
+                    });
                     // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
                     // alert(data[$(this).attr("href")].shapeFileName);
                 });
+
+                $("#icpIceMaps table a.zoom").click(function(e) { 
+                    e.preventDefault();
+                    embryo.map.internalMap.zoomToExtent(iceLayer.getDataExtent());
+                });
+                $("#icpIceMaps table a.zoom").css("display", "none");
             },
             error: function(data) {
                 embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " requesting list of ice observations.", type: "error" })
@@ -438,12 +448,14 @@ $(function() {
 
     embryo.groupChanged(function(e) {
         if (e.groupId == "ice") {
-            waterOpacity = 1;
-            setLayerOpacityById("Water", waterOpacity);
+            groupOpacity = 1;
+            iceLayer.redraw();
+            waterLayer.redraw();
             $("#iceControlPanel").css("display", "block");
         } else {
-            waterOpacity = 0.3;
-            setLayerOpacityById("Water", waterOpacity);
+            groupOpacity = 0.5;
+            iceLayer.redraw();
+            waterLayer.redraw();
             $("#iceControlPanel").css("display", "none");
         }
     });

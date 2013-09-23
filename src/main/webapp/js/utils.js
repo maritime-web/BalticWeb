@@ -25,7 +25,7 @@ function getCookie(c_name) {
 }
 
 function setLayerOpacityById(id, value) {
-    var layers = embryo.mapPanel.map.getLayersByName(id);
+    var layers = embryo.map.internalMap.getLayersByName(id);
     
     for (var k in layers) {
         layers[k].setOpacity(value);

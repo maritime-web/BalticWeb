@@ -14,7 +14,7 @@ var loadFixedAreaSize = true;		// Whether or not to load a fixed area size when 
 									// viewport. If set to true it will always load the area size specified
 									// by the fixedLoadAreaSize variable below.
 var fixedLoadAreaSize = 15;			// The size of the area to load in earth longitude and latitude.
-var loadFrequence = 20*1000;		// The number of milliseconds between auto load*
+var loadFrequence = 120*1000;		// The number of milliseconds between auto load*
 var loadDelay = 400;				// The number of milliseconds between movement and load*
 var loadCheckingFrequence = 100;	// The number of milliseconds between each check to see if it should load
 var loadViewportOnly = true;

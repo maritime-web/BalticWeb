@@ -23,8 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Startup;
+import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,20 +51,22 @@ public class DmiFtpReader {
     private final Logger logger = LoggerFactory.getLogger(DmiFtpReader.class);
 
     @Inject
-    @Property("embryo.iceCharts.dmiFtpServerName")
+    @Property("embryo.iceMaps.dmiFtpServerName")
     private String dmiServer;
     @Inject
-    @Property("embryo.iceCharts.dmiFtpLogin")
+    @Property("embryo.iceMaps.dmiFtpLogin")
     private String dmiLogin;
     @Inject
-    @Property("embryo.iceCharts.dmiFtpPassword")
+    @Property("embryo.iceMaps.dmiFtpPassword")
     private String dmiPassword;
     @Inject
-    @Property("embryo.iceCharts.dmiFtpBaseDirectory")
+    @Property("embryo.iceMaps.dmiFtpBaseDirectory")
     private String dmiBaseDirectory;
     @Inject
-    @Property(value = "embryo.iceCharts.localDmiDirectory", substituteSystemProperties = true)
+    @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
     private String localDmiDirectory;
+
+    private Thread transferFileThread;
 
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shp.xml", ".shx");
 
@@ -71,19 +74,39 @@ public class DmiFtpReader {
     public void init() {
         if (!dmiServer.trim().equals("")) {
             logger.info("Spawning update DMI directory job.");
-            new Thread() {
+            transferFileThread = new Thread() {
                 public void run() {
                     try {
+                        logger.info("Making directory if necessary ...");
+                        if (!new File(localDmiDirectory).exists()) {
+                            logger.info("Making local directort for DMI files: " + localDmiDirectory);
+                            new File(localDmiDirectory).mkdirs();
+                        }
+                        logger.info("Calling transfer files ...");
                         transferFiles();
                     } catch (Throwable t) {
-                        logger.error("Unhandled error transfering files from dmi: "+t, t);
+                        logger.error("Unhandled error transfering files from dmi: " + t, t);
+                    } finally {
+                        transferFileThread = null;
+                        logger.info("Transfer file thread finished.");
                     }
                 }
-            }.start();
+            };
+            transferFileThread.setDaemon(true);
+            transferFileThread.start();
         } else {
             logger.info("DMI FTP site is not configured - DMI directory job not spawned.");
         }
+    }
 
+    @PreDestroy
+    public void shutdown() throws InterruptedException {
+        logger.info("Shutdown called.");
+        if (transferFileThread != null) {
+            logger.info("Stopping transfer file thread ...");
+            transferFileThread.interrupt();
+            // transferFileThread.join();
+        }
     }
 
     private boolean isIceObservationFullyDownloaded(String name) {
@@ -106,8 +129,10 @@ public class DmiFtpReader {
         return result;
     }
 
-    public void transferFiles() throws IOException {
+    public void transferFiles() throws IOException, InterruptedException {
         FTPClient ftp = new FTPClient();
+        logger.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
+
         ftp.setDefaultTimeout(30000);
         ftp.connect(dmiServer);
         ftp.login(dmiLogin, dmiPassword);
@@ -119,7 +144,9 @@ public class DmiFtpReader {
 
             List<String> subdirectoriesAtServer = new ArrayList<String>();
 
-            logger.debug("Reading files in: " + dmiBaseDirectory);
+            Thread.sleep(10);
+
+            logger.info("Reading files in: " + dmiBaseDirectory);
 
             for (FTPFile f : ftp.listFiles()) {
                 if (filter(f.getName()) && !isIceObservationFullyDownloaded(f.getName())) {
@@ -128,7 +155,9 @@ public class DmiFtpReader {
             }
 
             for (String subdirectory : subdirectoriesAtServer) {
-                logger.debug("Reading files from subdirectories: " + subdirectory);
+                Thread.sleep(10);
+
+                logger.info("Reading files from subdirectories: " + subdirectory);
 
                 ftp.changeWorkingDirectory(subdirectory);
 
@@ -155,11 +184,11 @@ public class DmiFtpReader {
 
     }
 
-    private void transferFile(FTPClient ftp, String name) throws IOException {
+    private void transferFile(FTPClient ftp, String name) throws IOException, InterruptedException {
         String localName = localDmiDirectory + "/" + name;
 
         if (new File(localName).exists()) {
-            logger.debug("Not transfering " + name + " since the file already exists in " + localName);
+            logger.info("Not transfering " + name + " since the file already exists in " + localName);
             return;
         }
 
@@ -168,7 +197,7 @@ public class DmiFtpReader {
         FileOutputStream fos = new FileOutputStream(fn);
 
         try {
-            logger.debug("Transfering " + name + " to " + fn);
+            logger.info("Transfering " + name + " to " + fn);
             if (!ftp.retrieveFile(name, fos)) {
                 throw new RuntimeException("File transfer failed (" + name + ")");
             }
@@ -176,7 +205,9 @@ public class DmiFtpReader {
             fos.close();
         }
 
-        logger.debug("Moving " + fn + " to " + localName);
+        Thread.sleep(10);
+
+        logger.info("Moving " + fn + " to " + localName);
         new File(fn).renameTo(new File(localName));
     }
 }

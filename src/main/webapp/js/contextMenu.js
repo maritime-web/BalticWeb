@@ -1,5 +1,5 @@
 
-embryo.mapPanel.contextMenu = function(params) {
+embryo.map.contextMenu = function(params) {
 	// A control class for capturing click events...
 	// OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 	//
@@ -85,8 +85,8 @@ embryo.contextMenu = {
 			return embryo.contextMenu.menuItems;
 		};
 		$scope.getLayers = function() {
-			if(embryo.mapPanel && embryo.mapPanel.map){
-				return embryo.mapPanel.map.layers;
+			if(embryo.map.internalMap){
+				return embryo.map.internalMap.layers;
 			}
 			return [];
 		};

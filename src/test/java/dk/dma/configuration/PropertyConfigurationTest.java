@@ -32,14 +32,10 @@ public class PropertyConfigurationTest {
     @Inject
     ConfiguredClass service;
 
-    @Inject
-    @Property("embryo.iceCharts.localDmiDirectory")
-    String test;
-
     static {
         try {
             String name = PropertyConfigurationTest.class.getResource("/configuration-test.properties").toURI().toString();
-            System.setProperty("configuration", name);
+            System.setProperty("arcticweb.configuration", name);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -50,7 +46,5 @@ public class PropertyConfigurationTest {
         assertEquals(42, service.getSomeNumber());
         assertEquals("Ib", service.getSomeString());
         assertEquals(System.getProperty("user.home") + "/test", service.getSomeDirectory());
-
-        System.out.println(test);
     }
 }

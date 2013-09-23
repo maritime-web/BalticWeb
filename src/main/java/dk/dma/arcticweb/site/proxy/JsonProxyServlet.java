@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dk.dma.configuration.Property;
 import org.slf4j.Logger;
 
 /**
@@ -39,6 +40,10 @@ public class JsonProxyServlet extends HttpServlet {
 
     @Inject
     private transient Logger logger;
+
+    @Inject
+    @Property("embryo.aisview.baseUrl")
+    private String baseUrl;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -57,7 +62,6 @@ public class JsonProxyServlet extends HttpServlet {
 
         // String baseUrl = "http://linux06.fomfrv.dk:8081/aisview/rest";
         // String baseUrl = "http://localhost:8092/aisview/rest";
-        String baseUrl = "http://service.e-navigation.net:8092/aisview/rest";
         String url = baseUrl;
         if (request.getPathInfo() != null) {
             url += request.getPathInfo();
@@ -100,5 +104,4 @@ public class JsonProxyServlet extends HttpServlet {
         conn.disconnect();
         return sb.toString();
     }
-
 }

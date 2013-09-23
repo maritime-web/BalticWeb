@@ -5,15 +5,15 @@ describe('Context Menu Controller', function() {
 
 		it('Should create context menu with 2 layers', function() {
 			//create map and add base layer
-			embryo.mapPanel.map = new OpenLayers.Map({
+			embryo.map.internalMap = new OpenLayers.Map({
 				div : "map",
 				projection : 'EPSG:900913',
 				fractionalZoom : false
 			});
 			
 			// add 2 test layers
-			embryo.mapPanel.map.addLayer(new OpenLayers.Layer.Vector("Layer 1"));
-			embryo.mapPanel.map.addLayer(new OpenLayers.Layer.Vector("Layer 2"));
+			embryo.map.internalMap.addLayer(new OpenLayers.Layer.Vector("Layer 1"));
+			embryo.map.internalMap.addLayer(new OpenLayers.Layer.Vector("Layer 2"));
 
 			var scope = {};
 			
@@ -29,15 +29,15 @@ describe('Context Menu Controller', function() {
 
 		it('Should toggle the visibility of the layer in question', function() {
 			//create map and add base layer
-			embryo.mapPanel.map = new OpenLayers.Map({
+			embryo.map.internalMap = new OpenLayers.Map({
 				div : "map",
 				projection : 'EPSG:900913',
 				fractionalZoom : false
 			});
 			
 			// add 2 test layers
-			embryo.mapPanel.map.addLayer(new OpenLayers.Layer.Vector("Layer 1"));
-			embryo.mapPanel.map.addLayer(new OpenLayers.Layer.Vector("Layer 2"));
+			embryo.map.internalMap.addLayer(new OpenLayers.Layer.Vector("Layer 1"));
+			embryo.map.internalMap.addLayer(new OpenLayers.Layer.Vector("Layer 2"));
 
 			// Setup controller and data
 			var scope = {};
@@ -54,14 +54,14 @@ describe('Context Menu Controller', function() {
 
 		it('getIcon should depend on the layer visibility', function() {
 			//create map and add base layer
-			embryo.mapPanel.map = new OpenLayers.Map({
+			embryo.map.internalMap = new OpenLayers.Map({
 				div : "map",
 				projection : 'EPSG:900913',
 				fractionalZoom : false
 			});
 			
 			// add 2 test layers
-			embryo.mapPanel.map.addLayer(new OpenLayers.Layer.Vector("Layer 1"));
+			embryo.map.internalMap.addLayer(new OpenLayers.Layer.Vector("Layer 1"));
 
 			// Setup controller and data
 			var scope = {};

@@ -1,3 +1,5 @@
+/*
+
 describe('Menu Controller', function() {
 
 	describe('embryo.MenuCtrl', function() {
@@ -76,3 +78,4 @@ describe('Menu Controller', function() {
 	});
 
 });
+*/
