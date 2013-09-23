@@ -15,10 +15,11 @@
  */
 package dk.dma.embryo.msi;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class MsiClientTest {
-    @Test
+    @Test @Ignore
     public void test() {
         MsiClientImpl msiClientImpl = new MsiClientImpl();
 
