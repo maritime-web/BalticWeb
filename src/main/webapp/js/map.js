@@ -85,14 +85,19 @@ $(function() {
             
             for (var i in layers) {
                 var e = layers[i].getDataExtent();
-                extent.bottom = Math.min(extent.bottom, e.bottom);
-                extent.left = Math.min(extent.left, e.left);
-                extent.top = Math.max(extent.top, e.top);
-                extent.right = Math.max(extent.right, e.right);
+                if (e != null) {
+                    extent.bottom = Math.min(extent.bottom, e.bottom);
+                    extent.left = Math.min(extent.left, e.left);
+                    extent.top = Math.max(extent.top, e.top);
+                    extent.right = Math.max(extent.right, e.right);
+                }
             }
             
             map.zoomToExtent(extent);
         },
+        setCenter: function(longitude, latitude, zoom) {
+            
+        }, 
         internalMap: map
     };
 
