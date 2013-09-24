@@ -15,9 +15,11 @@
  */
 package dk.dma.embryo.rest;
 
+import dk.dma.configuration.Property;
 import dk.dma.dataformats.dbf.DbfParser;
 import dk.dma.dataformats.shapefile.ShapeFileParser;
 
+import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -34,15 +36,9 @@ import java.util.Map;
 
 @Path("/shapefile")
 public class ShapeFileService {
-    private String localDmiDirectory = "{user.home}/sfs/test";
-
-    public ShapeFileService() {
-        init();
-    }
-
-    private void init() {
-        localDmiDirectory = localDmiDirectory.replaceAll("\\{user\\.home\\}", System.getProperty("user.home"));
-    }
+    @Inject
+    @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
+    private String localDmiDirectory;
 
     @GET
     @Path("/single/{id}")
