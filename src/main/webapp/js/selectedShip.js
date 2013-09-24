@@ -5,8 +5,12 @@
             'embryo.routeService' ]);
 
     module.controller('SelectedShipCtrl', function($scope, ShipService, RouteService) {
-        ShipService.getYourShip(function(ship){
-           $scope.yourMmsi = ship.mmsi; 
+        embryo.authenticated(function() {
+            $scope.$apply(function() {
+                ShipService.getYourShip(function(ship) {
+                    $scope.yourMmsi = ship.mmsi;
+                });
+            });
         });
 
         function updateData() {
@@ -16,13 +20,13 @@
             $scope.routeLinkTxt = null;
 
             if ($scope.mmsi) {
-                if($scope.mmsi == $scope.yourMmsi){
+                if ($scope.mmsi == $scope.yourMmsi) {
                     $scope.routeLabel = 'label-success';
                     $scope.routeTxt = 'ACTIVE';
                     $scope.routeLinkTxt = null;
                     return;
                 }
-                
+
                 // query the server (or fetched cached data)
                 RouteService.getActive($scope.mmsi, function(route) {
                     $scope.route = route;
@@ -45,7 +49,7 @@
 
         embryo.vesselSelected(function(e) {
             var vessel = embryo.vessel.lookupVessel(e.vesselId);
-            
+
             $scope.$apply(function() {
                 $scope.mmsi = vessel.mmsi;
             });
