@@ -220,9 +220,14 @@ public class ShipServiceImpl implements ShipService {
         }
         
         route.setVoyage(voyage);
-
         shipRepository.saveEntity(route);
 
+        if(active){
+            Ship ship = voyage.getPlan().getShip();
+            ship.setActiveVoyage(voyage);
+            shipRepository.saveEntity(ship);
+        }
+        
         return route.getEnavId();
     }
 

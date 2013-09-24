@@ -202,4 +202,9 @@ public class Voyage extends BaseEntity<Long> {
     public Route getRoute() {
         return route;
     }
+
+    public VoyagePlan getPlan() {
+        return plan;
+    }
+    
 }
