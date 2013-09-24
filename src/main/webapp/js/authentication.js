@@ -54,6 +54,7 @@ embryo.ready(function() {
                     },
                     success: function(data) {
                         location.reload();
+                        sessionStorage.clear();
                         
                         /*
                         embryo.authentication = {};
