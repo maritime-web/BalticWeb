@@ -41,15 +41,12 @@ $(function() {
     var interval = setInterval(function() {
         var allIncludesLoaded = true;
 
-        console.log("hej fra interval");
-
         $("ng-include").each(function (k, v) {
             var l = $(v).html().trim().length;
             if (l == 0) allIncludesLoaded = false;
         });
 
         $("div[x-ng-include]").each(function (k, v) {
-            console.log($(this));
             var l = $(v).html().trim().length;
             if (l == 0) allIncludesLoaded = false;
         });
