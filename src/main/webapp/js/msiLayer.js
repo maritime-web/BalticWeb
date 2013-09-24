@@ -93,6 +93,8 @@ $(function() {
                     return b.created-a.created;
                 });
 
+                for (var i in data) data[i].id = i;
+
                 // Update overview table
 
                 var html = "<tr><th>Date</th><th>Type</th><th>Area</th></tr>";
@@ -167,6 +169,8 @@ $(function() {
         $("#msiSelectedItem p").html(msi.text);
         $("a[href=#msiSelectedItem]").html("Selected Warning - "+msi.enctext);
         openCollapse("#msiSelectedItem");
+        $("#msiOverview tr").removeClass("alert");
+        $("#msiOverview tr[index="+msi.id+"]").addClass("alert");
     }
 
     function hideMsiInformation() {
