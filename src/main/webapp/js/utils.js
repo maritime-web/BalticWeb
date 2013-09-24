@@ -50,8 +50,10 @@ function closeCollapse(id) {
         $(id).addClass("collapse-closing");
         setTimeout(function() { 
             if ($(id).hasClass("collapse-closing")) {
-                $("a[href="+id+"]").click();
                 $(id).removeClass("collapse-closing");
+                if ($(id).is(":visible")) {
+                    $("a[href="+id+"]").click();
+                }
             }
         }, 500);
     }

@@ -230,7 +230,7 @@ $(function() {
                     $("#viewHistoricalTrack").attr("href", "#");
                     $("#viewHistoricalTrack").on("click", function(e) {
                         e.preventDefault();
-                        embryo.map.internalMap.zoomToExtent(tracksLayer.getDataExtent());
+                        embryo.map.zoomToExtent([tracksLayer]);
                         setLayerOpacityById("timeStampsLayer", 0.8);
                         setLayerOpacityById("trackLayer", 0.4);
                     });
