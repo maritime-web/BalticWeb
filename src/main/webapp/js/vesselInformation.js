@@ -153,9 +153,9 @@ $(function() {
     }
 
     function showVesselInformation(data) {
+        openCollapse("#vcpSelectedShip");
         $("a[href=#vcpSelectedShip]").html("Selected Ship - "+data.name);
         $("#selectedAesInformation table").html(embryo.vesselInformation.renderShortTable(data));
-        openCollapse("#vcpSelectedShip");
         $("#selectedAesInformationLink").off("click");
         $("#selectedAesInformationLink").on("click", function(e) {
             e.preventDefault();
