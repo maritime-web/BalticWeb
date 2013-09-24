@@ -62,6 +62,7 @@ $(function() {
             groupSelected = true;
             $("#msiControlPanel").css("display", "block");
             msiLayer.redraw();
+            openCollapse("#msiControlPanel .accordion-body:first");
         } else {
             groupSelected = false;
             $("#msiControlPanel").css("display", "none");
@@ -91,6 +92,8 @@ $(function() {
                 data = data.sort(function(a,b) {
                     return b.created-a.created;
                 });
+
+                for (var i in data) data[i].id = i;
 
                 // Update overview table
 
@@ -142,15 +145,17 @@ $(function() {
             }
         });
     });
-
-    function fixAccordionSize() {
-        $("#msiOverview .accordion-inner").css("overflow", "auto");
-        $("#msiOverview .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px"); 
-    }
-
-    $(window).resize(fixAccordionSize);
-
-    fixAccordionSize();
+    
+    embryo.ready(function() {
+        function fixAccordionSize() {
+            $("#msiOverview .accordion-inner").css("overflow", "auto");
+            $("#msiOverview .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px"); 
+        }
+        
+        $(window).resize(fixAccordionSize);
+        
+        fixAccordionSize();
+    });
 
     function showMsiInformation(msi) {
         var html = "";
@@ -164,6 +169,8 @@ $(function() {
         $("#msiSelectedItem p").html(msi.text);
         $("a[href=#msiSelectedItem]").html("Selected Warning - "+msi.enctext);
         openCollapse("#msiSelectedItem");
+        $("#msiOverview tr").removeClass("alert");
+        $("#msiOverview tr[index="+msi.id+"]").addClass("alert");
     }
 
     function hideMsiInformation() {
@@ -192,6 +199,3 @@ $(function() {
     });
 
 });
-
-
-

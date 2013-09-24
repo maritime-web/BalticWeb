@@ -37,7 +37,7 @@ function setLayerOpacityById(id, value) {
 function openCollapse(id) {
     if (!$(id).hasClass("in") && !$(id).hasClass("collapse-opening")) {
         $(id).addClass("collapse-opening");
-        $("a[href="+id+"]").click();
+        $("a[href=#"+$(id).attr("id")+"]").click();
         setTimeout(function() {
             $(id).removeClass("collapse-opening");
         }, 500);

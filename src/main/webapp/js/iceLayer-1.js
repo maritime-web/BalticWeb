@@ -452,6 +452,7 @@ $(function() {
             iceLayer.redraw();
             waterLayer.redraw();
             $("#iceControlPanel").css("display", "block");
+            openCollapse("#iceControlPanel .accordion-body:first");
         } else {
             groupOpacity = 0.5;
             iceLayer.redraw();
@@ -460,13 +461,15 @@ $(function() {
         }
     });
     
-    function fixAccordionSize() {
-        $("#icpIceMaps .accordion-inner").css("overflow", "auto");
-        $("#icpIceMaps .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px"); 
-    }
-
-    $(window).resize(fixAccordionSize);
-
-    fixAccordionSize();
+    embryo.ready(function() {
+        function fixAccordionSize() {
+            $("#icpIceMaps .accordion-inner").css("overflow", "auto");
+            $("#icpIceMaps .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px"); 
+        }
+        
+        $(window).resize(fixAccordionSize);
+        
+        fixAccordionSize();
+    });
 });
 
