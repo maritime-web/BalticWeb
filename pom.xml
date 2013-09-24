@@ -141,14 +141,14 @@
       <version>${hibernate.version}</version>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- MYSQL DB DRIVER -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.21</version>
     </dependency>
-    
+
 
     <!-- LOGGING DEPENDENCIES - LOG4J -->
     <dependency>
@@ -276,7 +276,7 @@
     <pluginManagement>
       <plugins>
 
-          <plugin>
+        <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
           <version>1.0.0</version>
@@ -295,6 +295,19 @@
                   <action>
                     <ignore />
                     <!-- <execute /> -->
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>jaxws-maven-plugin</artifactId>
+                    <versionRange>[1,)</versionRange>
+                    <goals>
+                      <goal>wsimport</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute />
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -370,54 +383,73 @@
     </pluginManagement>
 
     <plugins>
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>jaxws-maven-plugin</artifactId>
-            <version>1.12</version>
-            <dependencies>
-                <dependency>
-                    <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>jaxws-rt</artifactId>
-                    <version>2.2.3</version>
-                    <scope>compile</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>jaxws-tools</artifactId>
-                    <version>2.2.3</version>
-                    <scope>compile</scope>
-                </dependency>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>1.12</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
+            <version>2.2.3</version>
+            <scope>compile</scope>
+          </dependency>
+          <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-tools</artifactId>
+            <version>2.2.3</version>
+            <scope>compile</scope>
+          </dependency>
 
-                <dependency>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-xjc</artifactId>
-                    <version>2.2.3-1</version>
-                    <scope>compile</scope>
-                </dependency>
-            </dependencies>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>wsimport</goal>
-                    </goals>
-                    <configuration>
-                        <verbose>true</verbose>
-                        <target>2.0</target>
-                        <sei/>
-                        <keep>true</keep>
-                        <sourceDestDir>${project.build.directory}/generated</sourceDestDir>
-                        <wsdlDirectory>${basedir}/src/main/wsdl</wsdlDirectory>
-                        <wsdlFiles>
-                            <wsdlFile>warning.wsdl</wsdlFile>
-                        </wsdlFiles>
-                        <extension>true</extension>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
+          <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>2.2.3-1</version>
+            <scope>compile</scope>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <goals>
+              <goal>wsimport</goal>
+            </goals>
+            <configuration>
+              <verbose>true</verbose>
+              <target>2.0</target>
+              <sei />
+              <keep>true</keep>
+              <sourceDestDir>${project.build.directory}/generated</sourceDestDir>
+              <wsdlDirectory>${basedir}/src/main/wsdl</wsdlDirectory>
+              <wsdlFiles>
+                <wsdlFile>warning.wsdl</wsdlFile>
+              </wsdlFiles>
+              <extension>true</extension>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
 
-        <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.5.1</version>

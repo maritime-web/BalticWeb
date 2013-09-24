@@ -12,7 +12,6 @@
 	var module = angular.module('embryo.routeEdit',['embryo.voyageService', 'embryo.routeService', 'ui.bootstrap']);
 
 	embryo.RouteEditCtrl = function($scope, $routeParams, RouteService, VoyageService) {
-
 		if ($routeParams.mmsi) {
 			VoyageService.getVoyages($routeParams.mmsi, function(voyages) {
 				$scope.voyages = voyages;

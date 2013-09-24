@@ -109,12 +109,14 @@ public class TestServiceBean {
     }
 
     public void createTestData() {
-        createOraTestData();
-        uploadOraRoutes();
+        createOrasilaTestData();
+        uploadOrasilaRoutes();
+        createOraTankTestData();
+        uploadOraTankRoutes();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    private void createOraTestData() {
+    private void createOrasilaTestData() {
         logger.info("BEFORE CREATION - ORASILA");
 
         // Create ship and user
@@ -187,13 +189,62 @@ public class TestServiceBean {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    private void uploadOraRoutes() {
+    private void uploadOrasilaRoutes() {
         logger.info("BEFORE UPLOAD - ORASILA");
 
         VoyagePlan voyagePlan = shipService.getVoyagePlan(220443000L);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/Miami-Nuuk.txt", true);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(1).getEnavId(), "/demo/routes/Nuuk-Thule.txt", false);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(2).getEnavId(), "/demo/routes/Thule-Upernavik.txt", false);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createOraTankTestData() {
+        logger.info("BEFORE CREATION - ORATANK");
+
+        // Create ship and user
+        Ship newShip = new Ship();
+        newShip.setName("ORATANK");
+        newShip.setMmsi(220516000L);
+        newShip.setCallsign("OXPJ2");
+        newShip = shipDao.saveEntity(newShip);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        shipDao.saveEntity(ais);
+        shipDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setShip(newShip);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        shipDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("oratank", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        shipDao.saveEntity(user);
+
+        LocalDateTime now = LocalDateTime.now();
+        VoyagePlan voyagePlan = new VoyagePlan();
+        newShip.setVoyagePlan(voyagePlan);
+
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
+                now.plusDays(5).withTime(9, 0, 0, 0)));
+        voyagePlan.addVoyageEntry(new Voyage("X", "63 41.81N", "051 29.00W", now.minusDays(4).withTime(9, 30, 0, 0),
+                now.minusDays(3).withTime(17, 0, 0, 0)));
+
+        shipDao.saveEntity(voyagePlan);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void uploadOraTankRoutes() {
+        logger.info("BEFORE UPLOAD - ORATANK");
+
+        VoyagePlan voyagePlan = shipService.getVoyagePlan(220516000L);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/Oratank-Nuuk.txt", true);
     }
 
     public void logExistingEntries() {

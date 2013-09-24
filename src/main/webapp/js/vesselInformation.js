@@ -2,6 +2,8 @@
 // Listens for vessel selected events.
 
 embryo.vesselInformation = {
+    mmsi : null,    
+        
     renderShortTable: function (data) {
         var html = "";
         
@@ -25,6 +27,8 @@ embryo.vesselInformation = {
         return html;
     },
     showAesDialog: function (data) {
+        embryo.vesselInformation.mmsi = data.mmsi;
+        
         var html = "";
 
         var link = "http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi="+data.mmsi;
@@ -65,6 +69,7 @@ embryo.vesselInformation = {
         $("#aesModal").modal("show");
     }
 }
+var module = angular.module('embryo.vesselControl', ['embryo.selectedShip', 'embryo.reportComp']);
 
 $(function() {
     function formatDate(dato) {

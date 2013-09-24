@@ -17,12 +17,10 @@
                     $scope.greenpos = latestReport;
                 });
 
-                RouteService.getActive(ship.mmsi, function(route) {
+                RouteService.getYourActive(ship.mmsi, function(route) {
                     $scope.route = route;
                 });
             });
-
-
         }
 
         updateData();
@@ -64,8 +62,6 @@
                 $scope.voyageLabel = 'label-warning';
                 return;
             }
-
-            console.log(newPlan);
 
             if (!newPlan.voyages || newPlan.voyages.length === 0) {
                 $scope.voyageTxt = 'INVALID';
@@ -120,14 +116,17 @@
         }
         
         function evalGreenpos(greenpos){
-            console.log(greenpos);
-            
             if (!greenpos || !greenpos.reportedTs) {
                 $scope.greenposTxt = 'DUE NOW';
                 $scope.greenposLabel = 'label-warning blink';
                 return;
             }
 
+            if(greenpos.reportType === 'FR'){
+                $scope.greenposTxt = 'OK';
+                $scope.greenposLabel = 'label-success';
+            }
+            
             var now = Date.now();
             var period = getPeriod(now);
 
