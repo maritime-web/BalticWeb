@@ -75,6 +75,24 @@ $(function() {
             selectControl.unselectAll();
             selectControl.select(feature);
         },
+        zoomToExtent: function(layers) {
+            var extent = new OpenLayers.Bounds();
+            
+            extent.bottom= 9999999;
+            extent.left= 9999999;
+            extent.right= -9999999;
+            extent.top= -9999999;
+            
+            for (var i in layers) {
+                var e = layers[i].getDataExtent();
+                extent.bottom = Math.min(extent.bottom, e.bottom);
+                extent.left = Math.min(extent.left, e.left);
+                extent.top = Math.max(extent.top, e.top);
+                extent.right = Math.max(extent.right, e.right);
+            }
+            
+            map.zoomToExtent(extent);
+        },
         internalMap: map
     };
 

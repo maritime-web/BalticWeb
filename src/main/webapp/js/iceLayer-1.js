@@ -427,7 +427,7 @@ $(function() {
 
                 $("#icpIceMaps table a.zoom").click(function(e) { 
                     e.preventDefault();
-                    embryo.map.internalMap.zoomToExtent(iceLayer.getDataExtent());
+                    embryo.map.zoomToExtent([iceLayer, waterLayer]);
                 });
                 $("#icpIceMaps table a.zoom").css("display", "none");
             },
@@ -437,7 +437,7 @@ $(function() {
         });
 
     });
-    
+
     embryo.hover(function(e) {
 	if (e.feature.iceDescription) {
 	    return createIceEggHtml($.extend(e.feature.iceDescription, { size: 100}));
