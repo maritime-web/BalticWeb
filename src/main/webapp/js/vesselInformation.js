@@ -250,6 +250,7 @@ $(function() {
     embryo.groupChanged(function(e) {
         if (e.groupId == "vessel") {
             $("#vesselControlPanel").css("display", "block");
+            openCollapse("#vesselControlPanel .accordion-body:first");
         } else {
             $("#vesselControlPanel").css("display", "none");
         }
