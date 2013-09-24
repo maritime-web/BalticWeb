@@ -99,13 +99,14 @@ $(function() {
         }, 200);
     });
 
-    $('#vcpSearch').on('hidden', function () {
-        $("#searchField").blur();
+    embryo.ready(function() {
+        $('#vcpSearch').on('hidden', function () {
+            $("#searchField").blur();
+        });
+        
+        $('#vcpSearch').on('shown', function () {
+            $("#searchField").focus();
+        });
     });
-
-    $('#vcpSearch').on('shown', function () {
-        $("#searchField").focus();
-    });
-
     
 });
