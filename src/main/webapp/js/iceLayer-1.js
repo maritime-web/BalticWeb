@@ -461,13 +461,15 @@ $(function() {
         }
     });
     
-    function fixAccordionSize() {
-        $("#icpIceMaps .accordion-inner").css("overflow", "auto");
-        $("#icpIceMaps .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px"); 
-    }
-
-    $(window).resize(fixAccordionSize);
-
-    fixAccordionSize();
+    embryo.ready(function() {
+        function fixAccordionSize() {
+            $("#icpIceMaps .accordion-inner").css("overflow", "auto");
+            $("#icpIceMaps .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px"); 
+        }
+        
+        $(window).resize(fixAccordionSize);
+        
+        fixAccordionSize();
+    });
 });
 

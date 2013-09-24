@@ -143,15 +143,17 @@ $(function() {
             }
         });
     });
-
-    function fixAccordionSize() {
-        $("#msiOverview .accordion-inner").css("overflow", "auto");
-        $("#msiOverview .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px"); 
-    }
-
-    $(window).resize(fixAccordionSize);
-
-    fixAccordionSize();
+    
+    embryo.ready(function() {
+        function fixAccordionSize() {
+            $("#msiOverview .accordion-inner").css("overflow", "auto");
+            $("#msiOverview .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px"); 
+        }
+        
+        $(window).resize(fixAccordionSize);
+        
+        fixAccordionSize();
+    });
 
     function showMsiInformation(msi) {
         var html = "";
@@ -193,6 +195,3 @@ $(function() {
     });
 
 });
-
-
-
