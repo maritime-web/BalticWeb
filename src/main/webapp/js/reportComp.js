@@ -4,7 +4,9 @@
     var module = angular.module('embryo.reportComp', [ 'embryo.shipService', 'embryo.voyageService',
             'embryo.routeService', 'embryo.greenposService' ]);
 
-    module.controller('ReportCompCtrl', function($scope, $timeout, ShipService, VoyageService, RouteService, GreenposService) {
+    module.controller('ReportCompCtrl', function($scope, $timeout, ShipService, VoyageService, RouteService,
+            GreenposService) {
+        
         function updateData() {
             ShipService.getYourShip(function(ship) {
                 $scope.ship = ship;
@@ -22,8 +24,12 @@
                 });
             });
         }
-
-        updateData();
+        
+        embryo.authenticated(function() {
+            $scope.$apply(function() {
+                updateData();
+            });
+        });
 
         $scope.$on("yourshipDataUpdated", function() {
             updateData();
@@ -85,61 +91,62 @@
             $scope.routeEditTxt = 'deactivate';
             $scope.routeLabel = 'label-success';
         }, true);
-        
-        
-        
-        function getPeriod(dateLong){
+
+        function getPeriod(dateLong) {
             var date = new Date(dateLong);
-            if(date.getUTCHours() >= 0 && date.getUTCHours() < 6){
+            if (date.getUTCHours() >= 0 && date.getUTCHours() < 6) {
                 return {
-                    from:Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0),
-                    to:Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 6, 0),
+                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0),
+                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 6, 0),
                 };
-            }else if(date.getUTCHours() >= 6 && date.getUTCHours() < 12){
+            } else if (date.getUTCHours() >= 6 && date.getUTCHours() < 12) {
                 return {
-                    from:Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 6, 0),
-                    to:Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12, 0),
-                };
-            }
-            if(date.getUTCHours() >= 12 && date.getUTCHours() < 18){
-                return {
-                    from:Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12, 0),
-                    to:Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 18, 0),
+                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 6, 0),
+                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12, 0),
                 };
             }
-            if(date.getUTCHours() >= 18 && date.getUTCHours() <= 23){
+            if (date.getUTCHours() >= 12 && date.getUTCHours() < 18) {
                 return {
-                    from:Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 18, 0),
-                    to:Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1, 0, 0),
+                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12, 0),
+                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 18, 0),
+                };
+            }
+            if (date.getUTCHours() >= 18 && date.getUTCHours() <= 23) {
+                return {
+                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 18, 0),
+                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1, 0, 0),
                 };
             }
         }
-        
-        function evalGreenpos(greenpos){
+
+        function evalGreenpos(greenpos) {
             if (!greenpos || !greenpos.reportedTs) {
                 $scope.greenposTxt = 'DUE NOW';
                 $scope.greenposLabel = 'label-warning blink';
                 return;
             }
 
-            if(greenpos.reportType === 'FR'){
+            if (greenpos.reportType === 'FR') {
                 $scope.greenposTxt = 'OK';
                 $scope.greenposLabel = 'label-success';
             }
-            
+
             var now = Date.now();
             var period = getPeriod(now);
 
-            // Allow for reports to be performed 15 minutes before reporting hour. 
-            // if last report performed more than 15 minutes before reporting period then perform new report
-            if(greenpos.reportedTs < (period.from - 900000) && now < (period.from + 1800000)){
+            // Allow for reports to be performed 15 minutes before reporting
+            // hour.
+            // if last report performed more than 15 minutes before reporting
+            // period then perform new report
+            if (greenpos.reportedTs < (period.from - 900000) && now < (period.from + 1800000)) {
                 $scope.greenposTxt = 'DUE NOW';
                 $scope.greenposLabel = 'label-warning blink';
                 return;
             }
-            
-            // if last report not performed more than ½ later than reporting hour, then highlight.
-            if(greenpos.reportedTs < (period.from - 900000) && now >= (period.from + 1800000)){
+
+            // if last report not performed more than ½ later than reporting
+            // hour, then highlight.
+            if (greenpos.reportedTs < (period.from - 900000) && now >= (period.from + 1800000)) {
                 $scope.greenposTxt = 'DUE NOW';
                 $scope.greenposLabel = 'label-important blink';
                 return;
@@ -147,17 +154,18 @@
 
             $scope.greenposTxt = 'OK';
             $scope.greenposLabel = 'label-success';
-        };
-        
+        }
+        ;
+
         $scope.$watch('greenpos', function(lastGreenpos, old) {
             evalGreenpos(lastGreenpos);
         }, true);
-        
-        function timedEvaluation(){
+
+        function timedEvaluation() {
             evalGreenpos($scope.greenpos);
             $timeout(timedEvaluation, 15000);
         }
-        
+
         $timeout(timedEvaluation, 15000);
     });
 

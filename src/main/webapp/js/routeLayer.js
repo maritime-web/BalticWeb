@@ -63,13 +63,11 @@ embryo.route = {};
         var ShipService = injector.get('ShipService');
 
         ShipService.getYourShip(function(ship) {
-            function callback(route) {
+            RouteService.getYourActive(ship.mmsi, function(route) {
                 if (typeof route !== 'undefined') {
                     embryo.route.draw(route, true);
                 }
-            }
-
-            RouteService.getYourActive(ship.mmsi, callback);
+            });
         });
     };
 

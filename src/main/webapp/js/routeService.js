@@ -47,13 +47,14 @@
                                 SessionStorageService.getItem(routeKey(routeId), callback, remoteCall);
                             } else {
                                 remoteCall(function(activeRoute) {
-                                    if (activeRoute && Object.keys(activeRoute) > 0) {
+                                    if (activeRoute && Object.keys(activeRoute).length > 0) {
                                         SessionStorageService.setItem(active, activeRoute.id);
                                         SessionStorageService.setItem(routeKey(activeRoute.id), activeRoute);
+                                        callback(activeRoute);
                                     } else {
                                         SessionStorageService.removeItem(active);
+                                        callback(null);
                                     }
-                                    callback(null);
                                 });
                             }
                         });
