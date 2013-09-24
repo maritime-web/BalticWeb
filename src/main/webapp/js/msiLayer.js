@@ -88,6 +88,10 @@ $(function() {
             url: embryo.baseUrl+"rest/msi/list",
             data: { },
             success: function(data) {
+                data = data.sort(function(a,b) {
+                    return b.created-a.created;
+                });
+
                 // Update overview table
 
                 var html = "<tr><th>Date</th><th>Type</th><th>Area</th></tr>";
