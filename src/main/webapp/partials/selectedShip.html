@@ -1,0 +1,24 @@
+<div x-ng-controller="SelectedShipCtrl">
+	<div id="selectedAesInformation">
+		<h4>
+			<small style="float: right"><a href="#" id="selectedAesInformationLink">view all</a></small>AIS Information
+		</h4>
+		<table class="table table-condensed"></table>
+	</div>
+
+	<h4>Additional Information</h4>
+
+	<table class="table table-condensed">
+		<tr>
+			<th>Historical Track</th>
+			<td><span class="label label-success">AVAILABLE</span></td>
+			<td><a id="viewHistoricalTrack">view</a></td>
+		</tr>
+		<tr>
+			<th>Planned Route</th>
+			<td><span x-ng-class="routeLabel" class="label">{{routeTxt}}</span></td>
+			<td><a x-ng-click="toggleShow()" x-ng-show="routeLinkTxt">{{routeLinkTxt}}</a></td>
+		</tr>
+
+	</table>
+</div>

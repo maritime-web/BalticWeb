@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="embryo.map">
+<html lang="en" x-ng-app="embryo.map">
 <head>
 <meta charset="utf-8" />
 <title>ArcticWeb - Greenland</title>
@@ -46,17 +46,20 @@
 <script src="js/iceLayer-1.js" defer="defer" type="text/javascript"></script>
 <script src="js/routeLayer.js" defer="defer" type="text/javascript"></script>
 <script src="js/reportComp.js" defer="defer" type="text/javascript"></script>
+<script src="js/selectedShip.js" defer="defer" type="text/javascript"></script>
 <script src="js/menu.js" defer="defer" type="text/javascript"></script>
 <script src="js/msiLayer.js" defer="defer" type="text/javascript"></script>
 
-<script type="text/javascript">
-	angular.module('embryo.map', [ 'embryo.shipService', 'embryo.voyageService', 'embryo.routeService', 'embryo.greenposService', 'embryo.reportComp']);
+<script defer="defer" type="text/javascript">
+    angular.module('embryo.map', [ 'embryo.shipService', 'embryo.voyageService',
+            'embryo.routeService', 'embryo.greenposService', 'embryo.vesselControl' ]);
 </script>
+
 </head>
 
 <body>
-    <div x-ng-include="'partials/authentication.html'"></div>
-    <div x-ng-include="'partials/menu.html'"></div>
+	<div x-ng-include="'partials/authentication.html'"></div>
+	<div x-ng-include="'partials/menu.html'"></div>
 
 	<div id="map"></div>
 
@@ -65,333 +68,10 @@
 	<div id="messagePanel"></div>
 
 	<!-- AES information modal ================================================== -->
+	<div x-ng-include="'partials/vesselControl.html'"></div>
+	<div x-ng-include="'partials/iceControl.html'"></div>
+	<div x-ng-include="'partials/msiControl.html'"></div>
 
-	<div id="aesModal" class="modal hide fade" tabindex="-1" role="dialog">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">x</button>
-			<h2>AIS Information</h2>
-		</div>
-		<div class="modal-body">
-			<p>
-			<table class="table table-condensed"></table>
-			</p>
-			<p>
-			<form>
-				<button class="btn btn-primary" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
-			</form>
-			</p>
-		</div>
-	</div>
-
-	<div id="routeControlPanel" class="controlPanel well">
-		<h3>Route</h3>
-	</div>
-
-	<div id="iceControlPanel" class="controlPanel">
-		<div class="accordion" id="icpAccordion">
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<h4>
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpIceMaps"> Ice Maps </a>
-					</h4>
-				</div>
-				<div id="icpIceMaps" class="accordion-body collapse in">
-					<div class="accordion-inner">
-						<h4>Available Ice Maps</h4>
-
-						<table class="table table-condensed">
-							<tr>
-								<th>Cape Farewell</th>
-								<th>10-04-2013</th>
-							</tr>
-							<tr>
-								<th>Greenland WA</th>
-								<th>14-08-2013</th>
-							</tr>
-							<tr>
-								<th>Qaanaaq</th>
-								<th>13-08-2013</th>
-							</tr>
-							<tr>
-								<th>North East</th>
-								<th>07-08-2013</th>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</div>
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<h4>
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpSelectedIce">
-							Selected Ice Observation </a>
-					</h4>
-				</div>
-				<div id="icpSelectedIce" class="accordion-body collapse">
-					<div class="accordion-inner">
-						<p></p>
-						<table class="table table-condensed">
-						</table>
-					</div>
-				</div>
-			</div>
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<h4>
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpLegends"> Legends </a>
-					</h4>
-				</div>
-				<div id="icpLegends" class="accordion-body collapse">
-					<div class="accordion-inner">
-						<table class="table table-condensed">
-							<tr>
-								<th>Color</th>
-								<th>Total Ice Concentration</th>
-							</tr>
-							<tr>
-								<td><span style="background-color: #ff0000; width: 30px; display: block;">&nbsp;</span></td>
-								<td>80%-100%</td>
-							</tr>
-							<tr>
-								<td><span style="background-color: #e57425; width: 30px; display: block;">&nbsp;</span></td>
-								<td>60%-80%</td>
-							</tr>
-							<tr>
-								<td><span style="background-color: #ffc05e; width: 30px; display: block;">&nbsp;</span></td>
-								<td>40%-60%</td>
-							</tr>
-							<tr>
-								<td><span style="background-color: #fdfc39; width: 30px; display: block;">&nbsp;</span></td>
-								<td>20%-40%</td>
-							</tr>
-							<tr>
-								<td><span style="background-color: #90fba4; width: 30px; display: block;">&nbsp;</span></td>
-								<td>0%-20%</td>
-							</tr>
-							<tr>
-								<td><span style="background-color: #5599ff; width: 30px; display: block;">&nbsp;</span></td>
-								<td>0%</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div id="vesselControlPanel" class="controlPanel">
-		<div class="accordion" id="ycpAccordion">
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<h4>
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpYourShip"> Your Ship
-						</a>
-					</h4>
-				</div>
-				<div id="vcpYourShip" class="accordion-body collapse in">
-					<div class="accordion-inner">
-						<div id="yourShipAesInformation">
-							<h4>
-								<small style="float: right"><a href="#" id="yourShipAesInformationLink">view all</a></small>AIS Information
-							</h4>
-							<table class="table table-condensed"></table>
-						</div>
-
-						<div x-ng-include="'partials/reportComp.html'"></div>
-					</div>
-				</div>
-			</div>
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<h4>
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSearch"> Search Ships
-						</a>
-					</h4>
-				</div>
-				<div id="vcpSearch" class="accordion-body collapse">
-					<div class="accordion-inner">
-						<form>
-							<p>
-								<input type="text" id="searchField" class="input-medium search-query" style="width: 235px">
-							</p>
-
-							<p id="searchLoad">
-								<img src="img/load.gif">
-							</p>
-							<div id="searchResultsContainer"></div>
-							<p id="searchMatch"></p>
-
-							<!-- div id="searchResultsTop"></div -->
-
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<h4>
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSelectedShip">
-							Selected Ship </a>
-					</h4>
-				</div>
-				<div id="vcpSelectedShip" class="accordion-body collapse">
-					<div class="accordion-inner">
-						<div id="selectedAesInformation">
-							<h4>
-								<small style="float: right"><a href="#" id="selectedAesInformationLink">view all</a></small>AIS Information
-							</h4>
-							<table class="table table-condensed"></table>
-						</div>
-
-						<h4>Additional Information</h4>
-
-						<table class="table table-condensed">
-							<tr>
-								<th>Historical Track</th>
-								<td><span class="label label-success">AVAILABLE</span></td>
-								<td><a href="#" id="viewHistoricalTrack">view</a></td>
-							</tr>
-							<tr>
-								<th>Planned Route</th>
-								<td><span class="label">NOT AVAILABLE</span></td>
-								<td></td>
-							</tr>
-
-						</table>
-
-					</div>
-				</div>
-			</div>
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<h4>
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpLegends"> Legends </a>
-					</h4>
-				</div>
-				<div id="vcpLegends" class="accordion-body collapse">
-					<div class="accordion-inner">
-						<table class="table table-condensed">
-							<tr>
-								<td><img src="img/vessel_blue.png" /></td>
-								<td>Passenger</td>
-							</tr>
-							<tr>
-								<td><img src="img/vessel_green.png" /></td>
-								<td>Cargo</td>
-							</tr>
-							<tr>
-								<td><img src="img/vessel_red.png" /></td>
-								<td>Tanker</td>
-							</tr>
-							<tr>
-								<td><img src="img/vessel_yellow.png" /></td>
-								<td>High speed craft and WIG</td>
-							</tr>
-							<tr>
-								<td><img src="img/vessel_orange.png" /></td>
-								<td>Fishing</td>
-							</tr>
-							<tr>
-								<td><img src="img/vessel_purple.png" /></td>
-								<td>Sailing and pleasure</td>
-							</tr>
-							<tr>
-								<td><img src="img/vessel_turquoise.png" /></td>
-								<td>Pilot, tug and others</td>
-							</tr>
-							<tr>
-								<td><img src="img/vessel_gray.png" /></td>
-								<td>Undefined / unknown</td>
-							</tr>
-							<tr>
-								<td><img src="img/vessel_white.png" /></td>
-								<td>Sailing</td>
-							</tr>
-							<tr>
-								<td><img src="img/vessel_white_moored.png" /></td>
-								<td>Anchored/Moored</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-    <div id="msiControlPanel" class="controlPanel">
-        <div class="accordion" id="msiAccordion">
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <h4>
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#msiAccordion" href="#msiOverview"> Maritime Safety Information </a>
-                    </h4>
-                </div>
-                <div id="msiOverview" class="accordion-body collapse in">
-                    <div class="accordion-inner">
-                        <h4>Active Warnings</h4>
-
-                        <table class="table table-condensed">
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <h4>
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#msiAccordion" href="#msiSelectedItem">
-                            Selected Warning </a>
-                    </h4>
-                </div>
-                <div id="msiSelectedItem" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <p></p>
-                        <table class="table table-condensed">
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <h4>
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#msiAccordion" href="#msiLegends"> Legends </a>
-                    </h4>
-                </div>
-                <div id="msiLegends" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <table class="table table-condensed">
-                            <tr>
-                                <th>Color</th>
-                                <th>Total Ice Concentration</th>
-                            </tr>
-                            <tr>
-                                <td><span style="background-color: #ff0000; width: 30px; display: block;">&nbsp;</span></td>
-                                <td>80%-100%</td>
-                            </tr>
-                            <tr>
-                                <td><span style="background-color: #e57425; width: 30px; display: block;">&nbsp;</span></td>
-                                <td>60%-80%</td>
-                            </tr>
-                            <tr>
-                                <td><span style="background-color: #ffc05e; width: 30px; display: block;">&nbsp;</span></td>
-                                <td>40%-60%</td>
-                            </tr>
-                            <tr>
-                                <td><span style="background-color: #fdfc39; width: 30px; display: block;">&nbsp;</span></td>
-                                <td>20%-40%</td>
-                            </tr>
-                            <tr>
-                                <td><span style="background-color: #90fba4; width: 30px; display: block;">&nbsp;</span></td>
-                                <td>0%-20%</td>
-                            </tr>
-                            <tr>
-                                <td><span style="background-color: #5599ff; width: 30px; display: block;">&nbsp;</span></td>
-                                <td>0%</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 	<div id="zoomControlPanel">
 		<p>

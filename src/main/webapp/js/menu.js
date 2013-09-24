@@ -11,7 +11,10 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
     
     var menuModule = angular.module('embryo.menu',[]);
     
-    embryo.MenuCtrl = function($scope, $location, $element) {
+    embryo.MenuCtrl = function($scope, $location, $element, $timeout) {
+        
+        $scope.initialLoad = true;
+        
         $scope.$watch(function() {
             return $location.absUrl();
         }, function (url) {
@@ -23,8 +26,16 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
                     $(v).parent("li").removeClass("active");
                 }
             });
-            
-            embryo.eventbus.fireEvent(embryo.eventbus.GroupChangedEvent(url.substring(url.lastIndexOf("/")+1)));
+
+            // hack to the fact, that this is loaded before included controllers
+            if($scope.initialLoad){
+                $scope.initialLoad = false;
+                $timeout(function(){
+                    embryo.eventbus.fireEvent(embryo.eventbus.GroupChangedEvent(url.substring(url.lastIndexOf("/")+1)));
+                }, 100);
+            }else{
+                embryo.eventbus.fireEvent(embryo.eventbus.GroupChangedEvent(url.substring(url.lastIndexOf("/")+1)));
+            }
         });
     };
 })();
