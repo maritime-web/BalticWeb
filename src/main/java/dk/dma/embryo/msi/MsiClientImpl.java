@@ -22,6 +22,7 @@ import dk.frv.msiedit.core.webservice.message.MsiDtoLight;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,8 @@ public class MsiClientImpl implements MsiClient {
 
     @PostConstruct
     public void init() {
-        msiService = new WarningService().getMsiServiceBeanPort();
+        msiService = new WarningService(getClass().getResource("/wsdl/warning.wsdl"),
+                new QName("http://enav.frv.dk/msi/ws/warning", "WarningService")).getMsiServiceBeanPort();
 
         ((BindingProvider) msiService).getRequestContext().put(
                 BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpoint
