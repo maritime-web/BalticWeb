@@ -168,7 +168,7 @@ $(function() {
         if (zoom && lat && lon) {
             embryo.map.setCenter(parseFloat(lon), parseFloat(lat), parseInt(zoom));
         } else {
-            embryo.map.setCenter(-65, 71, 3);
+            embryo.map.setCenter(-65, 70, 3);
         }
     }
     
@@ -206,7 +206,7 @@ $(function() {
     });
 
     $("#zoomAll").click(function() {
-        embryo.map.setCenter(-65, 71, 3);
+        embryo.map.setCenter(-65, 70, 3);
     });
 
     embryo.groupChanged(function(e) {
