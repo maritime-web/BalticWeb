@@ -42,7 +42,7 @@
 							<ul class="dropdown-menu" role="menu" >
 								<li><a tabindex="-1" x-ng-href="{{uploadLink(voyage)}}">Upload Route</a></li>
 								<li><a tabindex="-1" x-ng-href="{{editRouteLink(voyage)}}">Edit Route</a></li>
-								<li x-ng-show="voyage.routeId"><a tabindex="-1" href="#" x-ng-click="drawRoute(voyage)">Draw Route</a></li>
+								<!-- <li x-ng-show="voyage.routeId"><a tabindex="-1" href="#" x-ng-click="drawRoute(voyage)">Draw Route</a></li> -->
 								<li x-ng-show="voyage.routeId && !isActive(voyage)"><a tabindex="-1" x-ng-click="activate(voyage)">Activate
 										Voyage/Route</a></li>
 								<li x-ng-show="voyage.routeId && isActive(voyage)"><a tabindex="-1" x-ng-click="deactivate(voyage)">Deactivate
