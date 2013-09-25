@@ -62,6 +62,7 @@ $(function() {
             groupSelected = true;
             $("#msiControlPanel").css("display", "block");
             msiLayer.redraw();
+            $("#msiControlPanel .collapse").data("collapse", null)
             openCollapse("#msiControlPanel .accordion-body:first");
         } else {
             groupSelected = false;

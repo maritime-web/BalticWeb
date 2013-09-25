@@ -452,6 +452,7 @@ $(function() {
             iceLayer.redraw();
             waterLayer.redraw();
             $("#iceControlPanel").css("display", "block");
+            $("#iceControlPanel .collapse").data("collapse", null)
             openCollapse("#iceControlPanel .accordion-body:first");
         } else {
             groupOpacity = 0.5;

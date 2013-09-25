@@ -51,9 +51,9 @@ function closeCollapse(id) {
         setTimeout(function() { 
             if ($(id).hasClass("collapse-closing")) {
                 $(id).removeClass("collapse-closing");
-                if ($(id).is(":visible")) {
+                //if ($(id).is(":visible")) {
                     $("a[href="+id+"]").click();
-                }
+                //}
             }
         }, 500);
     }
