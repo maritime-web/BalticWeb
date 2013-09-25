@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
 import org.joda.time.LocalDateTime;
+import org.joda.time.Period;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.ShipDao;
@@ -45,6 +46,7 @@ import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
+import dk.dma.embryo.rest.util.DateTimeConverter;
 
 @Singleton
 @Startup
@@ -113,6 +115,8 @@ public class TestServiceBean {
         uploadOrasilaRoutes();
         createOraTankTestData();
         uploadOraTankRoutes();
+        createSarfaqTestData();
+        uploadSarfaqRoutes();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -245,6 +249,89 @@ public class TestServiceBean {
 
         VoyagePlan voyagePlan = shipService.getVoyagePlan(220516000L);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/Oratank-Nuuk.txt", true);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createSarfaqTestData() {
+        logger.info("BEFORE CREATION - SARFAQ ITTUK");
+
+        // Create ship and user
+        Ship newShip = new Ship();
+        newShip.setName("SARFAQ ITTUK");
+        newShip.setMmsi(331037000L);
+        newShip.setCallsign("OWDD");
+        newShip = shipDao.saveEntity(newShip);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        shipDao.saveEntity(ais);
+        shipDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setShip(newShip);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        shipDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("sarfaq", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        shipDao.saveEntity(user);
+
+        LocalDateTime now = LocalDateTime.now();
+        VoyagePlan voyagePlan = new VoyagePlan();
+        newShip.setVoyagePlan(voyagePlan);
+        
+        DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
+
+        LocalDateTime firstDeparture = converter.toObject("27-09-2013 21:00", null);
+        
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", null, firstDeparture));
+        voyagePlan.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("28-09-2013 07:00", null), converter.toObject("28-09-2013 07:30", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("28-09-2013 10:45", null), converter.toObject("28-09-2013 11:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("28-09-2013 18:00", null), converter.toObject("28-09-2013 21:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 08:00", null), converter.toObject("29-09-2013 08:30", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Ilulissat", "69 13.5N", "051 06.0W", converter.toObject("29-09-2013 13:00", null), converter.toObject("29-09-2013 17:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 21:30", null), converter.toObject("29-09-2013 22:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("30-09-2013 09:00", null), converter.toObject("30-09-2013 10:30", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("30-09-2013 17:30", null), converter.toObject("30-09-2013 17:45", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("30-09-2013 21:30", null), converter.toObject("30-09-2013 22:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("01-10-2013 06:30", null), converter.toObject("01-10-2013 09:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject("01-10-2013 16:30", null), converter.toObject("01-10-2013 16:45", null)));
+        
+        voyagePlan.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("01-10-2013 23:30", null), converter.toObject("02-10-2013 00:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.1W", converter.toObject("02-10-2013 06:45", null), converter.toObject("02-10-2013 07:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Qaqortoq", "60 43.1N", "046 02.4W", converter.toObject("02-10-2013 15:30", null), converter.toObject("02-10-2013 19:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Narsaq", "60 54.5N", "046 03.0W", converter.toObject("02-10-2013 21:00", null), converter.toObject("02-10-2013 21:30", null)));
+
+        voyagePlan.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.2W", converter.toObject("03-10-2013 06:45", null), converter.toObject("03-10-2013 07:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("03-10-2013 13:30", null), converter.toObject("03-10-2013 14:30", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject("03-10-2013 22:30", null), converter.toObject("03-10-2013 22:45", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00", null), null));
+
+        //firstDeparture.
+        
+        Period p = new Period(firstDeparture, now);
+        if(p.getWeeks() > 0){
+            for(Voyage v : voyagePlan.getVoyagePlan()){
+                v.setArrival(v.getArrival().plusWeeks(p.getWeeks()));
+                v.setDeparture(v.getDeparture().plusWeeks(p.getWeeks()));
+            }
+        }
+        
+        shipDao.saveEntity(voyagePlan);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void uploadSarfaqRoutes() {
+        logger.info("BEFORE UPLOAD - SARFAQ");
+
+        VoyagePlan voyagePlan = shipService.getVoyagePlan(331037000L);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt", false);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt", false);
     }
 
     public void logExistingEntries() {
