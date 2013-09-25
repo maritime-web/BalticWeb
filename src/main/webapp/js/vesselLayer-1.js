@@ -90,9 +90,7 @@ $(function() {
     }
 
     embryo.vessel.goToVesselLocation = function (vessel) {
-	var center = new OpenLayers.LonLat(vessel.lon, vessel.lat).transform(
-	    new OpenLayers.Projection("EPSG:4326"), embryo.map.internalMap.getProjectionObject());
-        embryo.map.internalMap.setCenter(center, focusZoom);
+        embryo.map.setCenter(vessel.lon, vessel.lat, focusZoom);
     }
 
     embryo.vessel.selectVessel = function (vessel) {

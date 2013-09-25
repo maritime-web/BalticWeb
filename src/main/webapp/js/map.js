@@ -96,7 +96,7 @@ $(function() {
             map.zoomToExtent(extent);
         },
         setCenter: function(longitude, latitude, zoom) {
-            
+            map.setCenter(transformPosition(longitude, latitude), zoom);
         }, 
         internalMap: map
     };
@@ -166,7 +166,7 @@ $(function() {
         var lat = getCookie("dma-ais-lat");
         var lon = getCookie("dma-ais-lon");
         if (zoom && lat && lon) {
-            map.setCenter(transformPosition(parseFloat(lon), parseFloat(lat)), parseInt(zoom));
+            embryo.map.setCenter(parseFloat(lon), parseFloat(lat), parseInt(zoom));
         }
     }
     
@@ -204,7 +204,7 @@ $(function() {
     });
 
     $("#zoomAll").click(function() {
-        map.setCenter(transformPosition(-70, 72), 3);
+        embryo.map.setCenter(-70, 72, 3);
     });
 
     embryo.groupChanged(function(e) {

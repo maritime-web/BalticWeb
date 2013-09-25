@@ -142,14 +142,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- MYSQL DB DRIVER -->
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.21</version>
-    </dependency>
-
-
     <!-- LOGGING DEPENDENCIES - LOG4J -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -419,7 +411,7 @@
               <sei />
               <keep>true</keep>
               <sourceDestDir>${project.build.directory}/generated</sourceDestDir>
-              <wsdlDirectory>${basedir}/src/main/wsdl</wsdlDirectory>
+              <wsdlDirectory>${basedir}/src/main/resources/wsdl</wsdlDirectory>
               <wsdlFiles>
                 <wsdlFile>warning.wsdl</wsdlFile>
               </wsdlFiles>

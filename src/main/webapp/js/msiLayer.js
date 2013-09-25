@@ -107,16 +107,13 @@ $(function() {
                 $("#msiOverview tr").click(function(e) {
                     var msi = data[$(this).attr("index")];
                     // showMsiInformation(msi);
-	            var center = new OpenLayers.LonLat(msi.longitude, msi.latitude).transform(
-	                new OpenLayers.Projection("EPSG:4326"), embryo.map.internalMap.getProjectionObject());
-                    
                     for (var i in msiLayer.features) {
                         if (msiLayer.features[i].attributes.msi == msi) {
                             embryo.map.select(msiLayer.features[i]);
                         }
                     }
 
-                    embryo.map.internalMap.setCenter(center, 8);
+                    embryo.map.setCenter(msi.longitude, msi.latitude, 8);
                 });
 
                 // Add features

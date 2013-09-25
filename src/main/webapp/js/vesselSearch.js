@@ -63,8 +63,6 @@ $(function() {
 
                 $("#searchResultsContainer").html(html);
                 
-                console.log(html);
-                
 		$("#searchMatch").html(result.vesselCount + " vessel" + s + " match.");
                 
 		// Hide loader

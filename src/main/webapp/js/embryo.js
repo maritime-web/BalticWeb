@@ -46,6 +46,11 @@ $(function() {
             if (l == 0) allIncludesLoaded = false;
         });
 
+        $("div[x-ng-include]").each(function (k, v) {
+            var l = $(v).html().trim().length;
+            if (l == 0) allIncludesLoaded = false;
+        });
+
         if (allIncludesLoaded) {
             clearInterval(interval);
             embryo.eventbus.fireEvent(embryo.eventbus.EmbryoReadyEvent());
