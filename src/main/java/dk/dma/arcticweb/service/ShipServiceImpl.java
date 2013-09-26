@@ -98,7 +98,6 @@ public class ShipServiceImpl implements ShipService {
             managed.setLength(ship.getLength());
             managed.setMaxSpeed(ship.getMaxSpeed());
             managed.setWidth(ship.getWidth());
-            managed.setRescueCapacity(ship.getRescueCapacity());
             managed.setType(ship.getType());
             managed.setTonnage(ship.getTonnage());
 

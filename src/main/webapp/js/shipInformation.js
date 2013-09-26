@@ -8,38 +8,43 @@
  */
 
 (function() {
-	"use strict";
+    "use strict";
 
-	var shipModule = angular.module('embryo.shipInformation',['embryo.shipService']);
+    var shipModule = angular.module('embryo.shipInformation', [ 'embryo.shipService' ]);
 
-	embryo.ShipInformationCtrl = function($scope, ShipService) {
-		var loadData = function(){
-			ShipService.getYourShip(function(ship) {
-				$scope.ship = ship;
-			});
+    embryo.ShipInformationCtrl = function($scope, ShipService) {
+        $scope.helipadOptions = {
+            "Yes" : true,
+            "No" : false
+        };
 
-			ShipService.getShipTypes(function(types) {
-				$scope.types = types;
-			});
-		};
-		
-		$scope.$on('$viewContentLoaded', function(event) {
-			loadData();
-		});
+        var loadData = function() {
+            ShipService.getYourShip(function(ship) {
+                $scope.ship = ship;
+            });
 
-		$scope.save = function() {
+            ShipService.getShipTypes(function(types) {
+                $scope.types = types;
+            });
+        };
+
+        $scope.$on('$viewContentLoaded', function(event) {
+            loadData();
+        });
+
+        $scope.save = function() {
             $scope.message = null;
-			ShipService.save($scope.ship, function() {
-				$scope.message = "Ship information successfully submitted";
-			});
-		};
+            ShipService.save($scope.ship, function() {
+                $scope.message = "Ship information successfully submitted";
+            });
+        };
 
-		$scope.reset = function() {
-			// TODO find a way to hide these
-			$scope.message = null;
-			$scope.alertMessage = null;
-			loadData();
-		};
-	};
+        $scope.reset = function() {
+            // TODO find a way to hide these
+            $scope.message = null;
+            $scope.alertMessage = null;
+            loadData();
+        };
+    };
 
 }());

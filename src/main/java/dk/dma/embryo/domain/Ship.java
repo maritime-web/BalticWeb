@@ -15,6 +15,7 @@
  */
 package dk.dma.embryo.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,19 +63,18 @@ public class Ship extends BaseEntity<Long> {
     @Min(0)
     @Max(200)
     @Column(nullable = true)
-    private Short maxSpeed;
+    private BigDecimal maxSpeed;
 
     @Min(0)
     @Column(nullable = true)
     private Integer tonnage;
 
-    @Column(nullable = true, length = 32)
+    @Column(nullable = true, length = 64)
     private String commCapabilities;
 
-    // TODO REMOVE ?
     @Min(0)
     @Column(nullable = true)
-    private Integer rescueCapacity;
+    private Integer persons;
 
     @Min(0)
     @Column(nullable = true)
@@ -120,7 +120,7 @@ public class Ship extends BaseEntity<Long> {
         ship.setLength(getLength());
         ship.setWidth(getWidth());
         ship.setTonnage(getTonnage());
-        ship.setMaxSpeed(getMaxSpeed());
+        ship.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
         ship.setIceClass(getIceClass());
         ship.setHelipad(getHelipad());
         
@@ -139,7 +139,7 @@ public class Ship extends BaseEntity<Long> {
         result.setLength(ship.getLength());
         result.setWidth(ship.getWidth());
         result.setTonnage(ship.getTonnage());
-        result.setMaxSpeed(ship.getMaxSpeed());
+        result.setMaxSpeed(ship.getMaxSpeed() == null ? null : BigDecimal.valueOf(ship.getMaxSpeed()));
         result.setIceClass(ship.getIceClass());
         result.setHelipad(ship.getHelipad());
         
@@ -218,11 +218,11 @@ public class Ship extends BaseEntity<Long> {
         this.type = type;
     }
 
-    public Short getMaxSpeed() {
+    public BigDecimal getMaxSpeed() {
         return maxSpeed;
     }
 
-    public void setMaxSpeed(Short maxSpeed) {
+    public void setMaxSpeed(BigDecimal maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
@@ -240,14 +240,6 @@ public class Ship extends BaseEntity<Long> {
 
     public void setCommCapabilities(String commCapabilities) {
         this.commCapabilities = commCapabilities;
-    }
-
-    public Integer getRescueCapacity() {
-        return rescueCapacity;
-    }
-
-    public void setRescueCapacity(Integer rescueCapacity) {
-        this.rescueCapacity = rescueCapacity;
     }
 
     public Integer getWidth() {
