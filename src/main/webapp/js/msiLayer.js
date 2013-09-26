@@ -174,6 +174,7 @@ $(function() {
     function hideMsiInformation() {
         closeCollapse("#msiSelectedItem");
         $("a[href=#msiSelectedItem]").html("Selected Warning");
+        $("#msiOverview tr").removeClass("alert");
     }
 
     msiLayer.events.on({
