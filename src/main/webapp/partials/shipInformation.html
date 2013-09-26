@@ -67,10 +67,7 @@
 					<div class="control-group">
 						<label class="control-label" for="maxSpeed">Max speed (kn)</label>
 						<div class="controls">
-							<input type="number" id="maxSpeed" name="maxSpeed" class="input-mini" x-ng-model="ship.maxSpeed" min="0"
-								max="200" /> <span x-ng-show="shipForm.maxSpeed.$error.min || shipForm.maxSpeed.$error.max" class="msg-invalid">Must
-								be between 0 and 200</span>
-
+							<input type="text" id="maxSpeed" name="maxSpeed" class="input-mini" x-ng-model="ship.maxSpeed" />
 						</div>
 					</div>
 					<div class="control-group">
@@ -89,7 +86,9 @@
 					<div class="control-group">
 						<label class="control-label" for="helipad">Helipad</label>
 						<div class="controls">
-							<input type="checkbox" id="helipad" x-ng-model="ship.helipad" />
+							<select x-ng-model="ship.helipad" class="input-small" ng-options="value as key for (key, value) in helipadOptions">
+								<option></option>
+							</select>
 						</div>
 					</div>
 				</div>

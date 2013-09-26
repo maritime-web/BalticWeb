@@ -17,6 +17,7 @@ package dk.dma.arcticweb.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -128,6 +129,17 @@ public class TestServiceBean {
         newShip.setName("ORASILA");
         newShip.setMmsi(220443000L);
         newShip.setCallsign("OYDK2");
+        newShip.setImoNo(9336725L);
+        newShip.setType("TANKER");
+        newShip.setCommCapabilities("Sat C 0581 422044310, GMDSS A1+A2+A3");
+        newShip.setWidth(14);
+        newShip.setLength(77);
+        newShip.setMaxSpeed(BigDecimal.valueOf(12.6));
+        newShip.setTonnage(2194);
+        newShip.setIceClass("A1");
+        newShip.setHelipad(Boolean.FALSE);
+        
+        
         newShip = shipDao.saveEntity(newShip);
 
         Permission ais = new Permission("ais");
@@ -180,9 +192,9 @@ public class TestServiceBean {
         newShip.setVoyagePlan(voyagePlan);
 
         voyagePlan.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
-                now.minusDays(3).withTime(17, 0, 0, 0)));
+                now.minusDays(3).withTime(17, 0, 0, 0), 12, true));
         voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
-                now.plusDays(5).withTime(9, 0, 0, 0)));
+                now.plusDays(5).withTime(9, 0, 0, 0), 12, true));
         voyagePlan.addVoyageEntry(new Voyage("Thule", "77 27.8N", "069 14.0W", now.plusDays(9).withTime(13, 15, 0, 0),
                 now.plusDays(11).withTime(9, 0, 0, 0)));
         voyagePlan.addVoyageEntry(new Voyage("Upernavik", "72 47.5N", "056 09.4W", now.plusDays(13).withTime(10, 45, 0,

@@ -41,7 +41,7 @@ public class Ship {
     
     private Integer length;
     
-    private Short maxSpeed;
+    private Float maxSpeed;
 
     private Integer tonnage;
 
@@ -139,11 +139,11 @@ public class Ship {
         this.length = length;
     }
 
-    public Short getMaxSpeed() {
+    public Float getMaxSpeed() {
         return maxSpeed;
     }
 
-    public void setMaxSpeed(Short maxSpeed) {
+    public void setMaxSpeed(Float maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
