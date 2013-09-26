@@ -200,6 +200,7 @@ $(function() {
 
     embryo.groupChanged(function(e) {
         if (e.groupId == "adt") {
+            $("#adtDistance h4").html("");
             selectedControl = "distance";
             groupSelected = true;
             $("#adtControlPanel").css("display", "block");
@@ -212,7 +213,6 @@ $(function() {
         updateSelectedControl();
     });
 
-    console.log("waiting")
     embryo.ready(function() {
         $("#adtDistance").on("show", function(e) {
             selectedControl = "distance";
