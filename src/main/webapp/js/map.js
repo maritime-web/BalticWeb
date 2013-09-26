@@ -21,6 +21,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.MapInitialized, "mapInitialize
 
 $(function() {
     var selectLayerByGroup = { };
+    var controlsByGroup = { };
 
     var map = new OpenLayers.Map({
         div : "map",
@@ -53,18 +54,19 @@ $(function() {
 
     embryo.map = {
         add: function(d) {
+            if (d.group && selectLayerByGroup[d.group] == null) {
+                selectLayerByGroup[d.group] = [];
+                controlsByGroup[d.group] = [];
+            }
+
             if (d.layer) {
                 map.addLayer(d.layer);
-
-                if (selectLayerByGroup[d.group] == null)
-                    selectLayerByGroup[d.group] = [];
-
-                if (d.select)
-                    selectLayerByGroup[d.group].push(d.layer);
-
+                if (d.select && d.group) selectLayerByGroup[d.group].push(d.layer);
             }
+
             if (d.control) {
                 map.addControl(d.control);
+                if (d.group) controlsByGroup[d.group].push(d.control);
             }
         },
         createPoint: function(longitude, latitude) {
@@ -212,6 +214,13 @@ $(function() {
     embryo.groupChanged(function(e) {
         selectControl.unselectAll();
         selectControl.setLayer(selectLayerByGroup[e.groupId]);
+        for (var i in controlsByGroup) {
+            if (i == e.groupId) {
+                for (var j in controlsByGroup[i]) controlsByGroup[i][j].activate();
+            } else {
+                for (var j in controlsByGroup[i]) controlsByGroup[i][j].deactivate();
+            }
+        }
     });
 });
 
