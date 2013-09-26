@@ -21,19 +21,19 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 public class GreenPos {
 
-    private String reportType;
+    private String type;
 
     private String shipName;
 
-    private Long shipMmsi;
+    private Long mmsi;
 
-    private String shipCallSign;
+    private String callSign;
 
     private String shipMaritimeId;
 
-    private String latitude;
+    private String lat;
 
-    private String longitude;
+    private String lon;
 
     private String weather;
 
@@ -53,9 +53,9 @@ public class GreenPos {
 
     private List<Voyage> voyages;
 
-    private String reportedBy;
+    private String reporter;
 
-    private Long reportedTs;
+    private Long ts;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -82,20 +82,20 @@ public class GreenPos {
         this.shipName = shipName;
     }
 
-    public Long getShipMmsi() {
-        return shipMmsi;
+    public Long getMmsi() {
+        return mmsi;
     }
 
-    public void setShipMmsi(Long shipMmsi) {
-        this.shipMmsi = shipMmsi;
+    public void setMmsi(Long shipMmsi) {
+        this.mmsi = shipMmsi;
     }
 
-    public String getShipCallSign() {
-        return shipCallSign;
+    public String getCallSign() {
+        return callSign;
     }
 
-    public void setShipCallSign(String shipCallSign) {
-        this.shipCallSign = shipCallSign;
+    public void setCallSign(String shipCallSign) {
+        this.callSign = shipCallSign;
     }
 
     public String getShipMaritimeId() {
@@ -106,28 +106,28 @@ public class GreenPos {
         this.shipMaritimeId = shipMaritimeId;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public String getLat() {
+        return lat;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
+    public void setLat(String latitude) {
+        this.lat = latitude;
     }
 
-    public String getLongitude() {
-        return longitude;
+    public String getLon() {
+        return lon;
     }
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
+    public void setLon(String longitude) {
+        this.lon = longitude;
     }
 
-    public String getReportType() {
-        return reportType;
+    public String getType() {
+        return type;
     }
 
-    public void setReportType(String reportType) {
-        this.reportType = reportType;
+    public void setType(String reportType) {
+        this.type = reportType;
     }
 
     public String getWeather() {
@@ -146,12 +146,12 @@ public class GreenPos {
         this.ice = iceInformation;
     }
 
-    public String getReportedBy() {
-        return reportedBy;
+    public String getReporter() {
+        return reporter;
     }
 
-    public void setReportedBy(String reportedBy) {
-        this.reportedBy = reportedBy;
+    public void setReporter(String reportedBy) {
+        this.reporter = reportedBy;
     }
 
     public Double getSpeed() {
@@ -210,11 +210,11 @@ public class GreenPos {
         this.voyages = voyages;
     }
 
-    public Long getReportedTs() {
-        return reportedTs;
+    public Long getTs() {
+        return ts;
     }
 
-    public void setReportedTs(Long reportedTs) {
-        this.reportedTs = reportedTs;
+    public void setTs(Long reportedTs) {
+        this.ts = reportedTs;
     }
 }

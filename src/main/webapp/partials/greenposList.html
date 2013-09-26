@@ -2,32 +2,47 @@
 
 <div>
 	<div>
-		<h2>Submitted Reports</h2>
+		<h2>Greenpos Reports</h2>
 	</div>
 	<div>
 
 		<div class="row-fluid">
-			<div class="span3" id="greenPosList_list">
+			<div class="span12" id="greenPosList_list">
 
-				<table>
-					<tbody>
+				<table class="table">
+					<thead>
 						<tr>
-							<td>
-								<div>Hej</div>
-								<div>Første række</div>
-							</td>
+							<th>Report type</th>
+							<th>Ship name</th>
+							<th>Mmsi</th>
+							<th>Call sign</th>
+							<th>Longitude</th>
+							<th>Latitude</th>
+							<th>Course</th>
+							<th>Speed</th>
+							<th>Report time</th>
+							<th>Reported by</th>
 						</tr>
-						<tr>
-							<td>
-								<div>Hej</div>
-								<div>Første række</div>
-							</td>
+					</thead>
+
+					<tbody>
+						<tr x-ng-repeat="report in reports">
+							<td>{{report.type}}</td>
+							<td>{{report.shipName}}</td>
+							<td>{{report.mmsi}}</td>
+							<td>{{report.callSign}}</td>
+							<td>{{report.lon}}</td>
+							<td>{{report.lat}}</td>
+							<td>{{report.course}}</td>
+							<td>{{report.speed}}</td>
+							<td>{{utc(report.ts) | date:'dd-MM-yy HH:mm'}}</td>
+							<td>{{report.reporter}}</td>
 						</tr>
 					</tbody>
 				</table>
 
 			</div>
-			<div class="span9">
+			<div >
 
 				<!-- 					<div class="row-fluid">
 						<div class="span12">

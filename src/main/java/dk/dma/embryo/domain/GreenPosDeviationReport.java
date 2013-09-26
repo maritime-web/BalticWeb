@@ -49,10 +49,10 @@ public class GreenPosDeviationReport extends GreenPosReport {
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
     public static GreenPosDeviationReport fromJsonModel(GreenPos from) {
-        Position pos = new Position(from.getLatitude(), from.getLongitude());
+        Position pos = new Position(from.getLat(), from.getLon());
 
-        GreenPosDeviationReport report = new GreenPosDeviationReport(from.getShipName(), from.getShipMmsi(),
-                from.getShipCallSign(), from.getShipMaritimeId(), pos, from.getDeviation());
+        GreenPosDeviationReport report = new GreenPosDeviationReport(from.getShipName(), from.getMmsi(),
+                from.getCallSign(), from.getShipMaritimeId(), pos, from.getDeviation());
 
         return report;
     }
@@ -60,16 +60,16 @@ public class GreenPosDeviationReport extends GreenPosReport {
     @Override
     public GreenPos toJsonModel() {
         GreenPos result = new GreenPos();
-        result.setReportType(getReportType());
+        result.setType(getReportType());
         result.setShipName(getShipName());
         result.setShipMaritimeId(getShipMaritimeId());
-        result.setShipMmsi(getShipMmsi());
-        result.setShipCallSign(getShipCallSign());
-        result.setLongitude(getPosition().getLongitudeAsString());
-        result.setLatitude(getPosition().getLatitudeAsString());
+        result.setMmsi(getShipMmsi());
+        result.setCallSign(getShipCallSign());
+        result.setLon(getPosition().getLongitudeAsString());
+        result.setLat(getPosition().getLatitudeAsString());
         result.setDeviation(getDeviation());
-        result.setReportedBy(getReportedBy());
-        result.setReportedTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setReporter(getReportedBy());
+        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
         
         return result;
     }

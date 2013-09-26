@@ -88,6 +88,7 @@ embryo.ready(function() {
                 password: $("#password").val()
             },
             success: function(data) {
+                sessionStorage.clear();
                 console.log("Logged in.");
                 embryo.authentication = data;
                 embryo.messagePanel.replace(messageId, { text: "Succesfully logged in.", type: "success" });

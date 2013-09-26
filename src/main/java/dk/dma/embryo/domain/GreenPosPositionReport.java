@@ -47,10 +47,10 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
     public static GreenPosPositionReport fromJsonModel(GreenPos from) {
-        Position pos = new Position(from.getLatitude(), from.getLongitude());
+        Position pos = new Position(from.getLat(), from.getLon());
 
-        GreenPosPositionReport report = new GreenPosPositionReport(from.getShipName(), from.getShipMmsi(),
-                from.getShipCallSign(), from.getShipMaritimeId(), pos, from.getWeather(), from.getIce(),
+        GreenPosPositionReport report = new GreenPosPositionReport(from.getShipName(), from.getMmsi(),
+                from.getCallSign(), from.getShipMaritimeId(), pos, from.getWeather(), from.getIce(),
                 from.getSpeed(), from.getCourse());
 
         return report;
@@ -59,19 +59,19 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     @Override
     public GreenPos toJsonModel() {
         GreenPos result = new GreenPos();
-        result.setReportType(getReportType());
+        result.setType(getReportType());
         result.setShipName(getShipName());
         result.setShipMaritimeId(getShipMaritimeId());
-        result.setShipMmsi(getShipMmsi());
-        result.setShipCallSign(getShipCallSign());
-        result.setLongitude(getPosition().getLongitudeAsString());
-        result.setLatitude(getPosition().getLatitudeAsString());
+        result.setMmsi(getShipMmsi());
+        result.setCallSign(getShipCallSign());
+        result.setLon(getPosition().getLongitudeAsString());
+        result.setLat(getPosition().getLatitudeAsString());
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
         result.setSpeed(getSpeed());
         result.setCourse(getCourse());
-        result.setReportedBy(getReportedBy());
-        result.setReportedTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setReporter(getReportedBy());
+        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
         
         return result;
     }

@@ -1,0 +1,42 @@
+<div class="controlPanel" x-ng-controller="embryo.ReportController">
+	<div class="accordion" id="ycpAccordion">
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<h4>
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpYourShip"> Your Ship </a>
+				</h4>
+			</div>
+			<div id="vcpYourShip" class="accordion-body collapse in">
+				<div class="accordion-inner">
+					<div x-ng-include="'partials/reportComp.html'"></div>
+				</div>
+			</div>
+		</div>
+		<div class="accordion-group" x-ng-show="authenticated('arcticcommand')">
+			<div class="accordion-heading">
+				<h4>
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpGreenpos">Greenpos
+						reports</a>
+				</h4>
+			</div>
+			<div id="vcpGreenpos" class="accordion-body collapse">
+				<div class="accordion-inner">
+					<table class="table table-condensed">
+						<tr>
+							<th>Create report</th>
+							<td><a id="shipInfo" href="report.html#/report/">create</a></td>
+						</tr>
+						<tr>
+							<th>Reports</th>
+							<td><a href="report.html#/reportlist/">view list</a></td>
+						</tr>
+						<tr>
+							<th>Last known positions</th>
+							<td><a x-ng-href="report.html#/reportlist/last">list</a> - <a x-ng-href="report.html#/voyagePlan/{{ship.mmsi}}/current">map</a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

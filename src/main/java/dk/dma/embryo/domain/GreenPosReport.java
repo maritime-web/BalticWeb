@@ -73,7 +73,7 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
 
     public static GreenPosReport from(GreenPos from) {
-        switch (from.getReportType()) {
+        switch (from.getType()) {
         case "SP":
             return GreenPosSailingPlanReport.fromJsonModel(from);
         case "PR":
@@ -83,7 +83,7 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         case "DR":
             return GreenPosDeviationReport.fromJsonModel(from);
         default:
-            throw new IllegalArgumentException("Unknown value '" + from.getReportType() + "' for reportType");
+            throw new IllegalArgumentException("Unknown value '" + from.getType() + "' for reportType");
         }
     }
 

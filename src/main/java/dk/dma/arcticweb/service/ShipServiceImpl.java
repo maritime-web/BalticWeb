@@ -276,6 +276,10 @@ public class ShipServiceImpl implements ShipService {
     public Route activateRoute(String routeEnavId, Boolean activate) {
         logger.debug("activateRoute({}, {})", routeEnavId, activate);
         Route route = shipRepository.getRouteByEnavId(routeEnavId);
+        
+        if(route == null){
+            throw new IllegalArgumentException("Unknown route with id '" + routeEnavId);
+        }
 
         Ship ship = getYourShip();
 

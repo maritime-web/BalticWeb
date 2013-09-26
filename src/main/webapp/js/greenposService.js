@@ -17,6 +17,8 @@
             return 'latestgreenpos_' + maritimeId;
         };
 
+        var findReportsUrl = embryo.baseUrl + 'rest/greenpos/list/';
+
         return {
             getLatestReport : function(shipMaritimeId, callback) {
                 var remoteCall = function(onSuccess) {
@@ -29,6 +31,11 @@
                 // last report maintained in SessionStorage as
                 // 'latestgreenpos_shipMaritimeId' -> report
                 SessionStorageService.getItem(latestGreenposKey(shipMaritimeId), callback, remoteCall);
+            },
+            findReports : function(params, callback){
+                $http.get(findReportsUrl, {
+                    responseType : 'json'
+                }).success(callback);
             },
             save : function(greenpos, callback) {
                 $http.post(embryo.baseUrl + 'rest/greenpos', greenpos, {

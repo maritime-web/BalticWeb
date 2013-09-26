@@ -11,7 +11,7 @@
     "use strict";
 
     embryo.angular = angular.module('embryo', [ 'embryo.shipInformation', 'embryo.voyagePlan', 'embryo.routeEdit',
-            'embryo.routeUpload', 'embryo.greenpos', 'embryo.reportComp' ]);
+            'embryo.routeUpload', 'embryo.greenpos', 'embryo.reportControl' ]);
     // , 'ui.bootstrap'
 
     embryo.angular.config([ '$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
@@ -37,10 +37,9 @@
         // controller : embryo.GreenPosListCtrl
         }).when('/routeUpload/:mmsi/:voyageId', {
             templateUrl : 'partials/routeUpload.html'// ,
-        // controller : embryo.GreenPosListCtrl
         }).when('/reportlist', {
             templateUrl : 'partials/greenposList.html',
-            controller : embryo.GreenPosListCtrl
+            controller : embryo.GreenposListCtrl
         }).when('/report', {
             templateUrl : 'partials/greenposReport.html',
             controller : embryo.GreenPosCtrl
