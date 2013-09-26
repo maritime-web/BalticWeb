@@ -46,7 +46,7 @@
                 var property, values = [];
                 var propertyNames = Object.keys(newShip);
                 for (property in newShip) {
-                    if (newShip[property]) {
+                    if (newShip[property] || newShip[property] == false) {
                         values.push(newShip[property]);
                     }
                 }
