@@ -105,7 +105,7 @@ $(function() {
             return;
         }
 
-        $("#adtRings h4").html("Ring placed at "+ringPosition.lon.toFixed(3)+" "+ringPosition.lat.toFixed(3));
+        $("#adtRings h4").html("Ring placed at " + formatLonLat(ringPosition));
 
         var longitude = ringPosition.lon;
         var latitude = ringPosition.lat
