@@ -67,7 +67,7 @@ public class Ship extends BaseEntity<Long> {
 
     @Min(0)
     @Column(nullable = true)
-    private Integer tonnage;
+    private Integer grossTonnage;
 
     @Column(nullable = true, length = 64)
     private String commCapabilities;
@@ -119,7 +119,7 @@ public class Ship extends BaseEntity<Long> {
         ship.setCommCapabilities(getCommCapabilities());
         ship.setLength(getLength());
         ship.setWidth(getWidth());
-        ship.setTonnage(getTonnage());
+        ship.setGTon(getGrossTonnage());
         ship.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
         ship.setIceClass(getIceClass());
         ship.setHelipad(getHelipad());
@@ -138,7 +138,7 @@ public class Ship extends BaseEntity<Long> {
         result.setCommCapabilities(ship.getCommCapabilities());
         result.setLength(ship.getLength());
         result.setWidth(ship.getWidth());
-        result.setTonnage(ship.getTonnage());
+        result.setGrossTonnage(ship.getGTon());
         result.setMaxSpeed(ship.getMaxSpeed() == null ? null : BigDecimal.valueOf(ship.getMaxSpeed()));
         result.setIceClass(ship.getIceClass());
         result.setHelipad(ship.getHelipad());
@@ -226,12 +226,12 @@ public class Ship extends BaseEntity<Long> {
         this.maxSpeed = maxSpeed;
     }
 
-    public Integer getTonnage() {
-        return tonnage;
+    public Integer getGrossTonnage() {
+        return grossTonnage;
     }
 
-    public void setTonnage(Integer tonnage) {
-        this.tonnage = tonnage;
+    public void setGrossTonnage(Integer tonnage) {
+        this.grossTonnage = tonnage;
     }
 
     public String getCommCapabilities() {

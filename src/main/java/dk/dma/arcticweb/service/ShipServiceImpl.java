@@ -99,7 +99,7 @@ public class ShipServiceImpl implements ShipService {
             managed.setMaxSpeed(ship.getMaxSpeed());
             managed.setWidth(ship.getWidth());
             managed.setType(ship.getType());
-            managed.setTonnage(ship.getTonnage());
+            managed.setGrossTonnage(ship.getGrossTonnage());
 
             managed = shipRepository.saveEntity(managed);
             return managed.getMaritimeId();

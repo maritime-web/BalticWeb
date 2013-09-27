@@ -142,7 +142,7 @@ public class TestServiceBean {
         newShip.setWidth(14);
         newShip.setLength(77);
         newShip.setMaxSpeed(BigDecimal.valueOf(12.6));
-        newShip.setTonnage(2194);
+        newShip.setGrossTonnage(2194);
         newShip.setIceClass("A1");
         newShip.setHelipad(Boolean.FALSE);
 
