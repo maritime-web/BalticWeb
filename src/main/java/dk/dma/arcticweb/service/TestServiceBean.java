@@ -161,7 +161,7 @@ public class TestServiceBean {
 
         shipDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("ora", "qwerty", "obo@dma.dk");
+        SecuredUser user = new SecuredUser("orasila", "qwerty", "obo@dma.dk");
         user.addRole(sailorRole);
 
         shipDao.saveEntity(user);
@@ -409,7 +409,38 @@ public class TestServiceBean {
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("19-09-2013 10:15"));
         shipDao.saveEntity(report);
-    }
+
+    
+        ship = shipDao.getShipByCallsign("OYDK2");
+
+        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("63 80.01N", "051 58.04W"), "Sun shine", "NO ICE", 11.6, 350);
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("24-09-2013 12:00"));
+        shipDao.saveEntity(report);
+
+        report = new GreenPosFinalReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("24-09-2013 16:02"));
+        shipDao.saveEntity(report);
+        
+        voyages = null;
+        report = new GreenPosSailingPlanReport(ship.getName(), ship.getMmsi(), ship.getCallsign(),
+                ship.getMaritimeId(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150, "KYSTFART",
+                converter.toObject("26-09-2013 10:30"), 6, voyages);
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("24-09-2013 23:12"));
+        shipDao.saveEntity(report);
+
+        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("64 10.068N", "051 64.78W"), "Sun shine", "NO ICE", 11.6, 162);
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("25-09-2013 00:00"));
+        shipDao.saveEntity(report);
+
+
+}
 
     public void logExistingEntries() {
         logger.info("Permissions: {} ", shipDao.getAll(Permission.class));
