@@ -44,6 +44,10 @@ public class DateTimeConverter {
         this.defaultFormatter = formatter.withLocale(DEFAULT_LOCALE);
     }
     
+    public LocalDateTime toObject(String value){
+        return toObject(value, null);
+    }
+
     public LocalDateTime toObject(String value, Locale locale){
         if(value == null){
             return null;
@@ -66,4 +70,7 @@ public class DateTimeConverter {
         return defaultFormatter.print(value);
     }
 
+     public String toString(LocalDateTime value){
+         return toString(value, null);
+     }
 }

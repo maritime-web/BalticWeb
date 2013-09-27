@@ -37,9 +37,14 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.embryo.domain.AuthorityRole;
 import dk.dma.embryo.domain.Berth;
+import dk.dma.embryo.domain.GreenPosFinalReport;
+import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.IEntity;
 import dk.dma.embryo.domain.Permission;
+import dk.dma.embryo.domain.Position;
+import dk.dma.embryo.domain.ReportedVoyage;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
@@ -118,6 +123,8 @@ public class TestServiceBean {
         uploadOraTankRoutes();
         createSarfaqTestData();
         uploadSarfaqRoutes();
+        
+        createGreenposReports();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -138,8 +145,7 @@ public class TestServiceBean {
         newShip.setTonnage(2194);
         newShip.setIceClass("A1");
         newShip.setHelipad(Boolean.FALSE);
-        
-        
+
         newShip = shipDao.saveEntity(newShip);
 
         Permission ais = new Permission("ais");
@@ -155,7 +161,7 @@ public class TestServiceBean {
 
         shipDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("ora", "qwerty", "obo@dma.dk");
+        SecuredUser user = new SecuredUser("orasila", "qwerty", "obo@dma.dk");
         user.addRole(sailorRole);
 
         shipDao.saveEntity(user);
@@ -295,44 +301,63 @@ public class TestServiceBean {
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
         newShip.setVoyagePlan(voyagePlan);
-        
+
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
 
         LocalDateTime firstDeparture = converter.toObject("27-09-2013 21:00", null);
-        
+
         voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", null, firstDeparture));
-        voyagePlan.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("28-09-2013 07:00", null), converter.toObject("28-09-2013 07:30", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("28-09-2013 10:45", null), converter.toObject("28-09-2013 11:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("28-09-2013 18:00", null), converter.toObject("28-09-2013 21:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 08:00", null), converter.toObject("29-09-2013 08:30", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Ilulissat", "69 13.5N", "051 06.0W", converter.toObject("29-09-2013 13:00", null), converter.toObject("29-09-2013 17:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 21:30", null), converter.toObject("29-09-2013 22:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("30-09-2013 09:00", null), converter.toObject("30-09-2013 10:30", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("30-09-2013 17:30", null), converter.toObject("30-09-2013 17:45", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("30-09-2013 21:30", null), converter.toObject("30-09-2013 22:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("01-10-2013 06:30", null), converter.toObject("01-10-2013 09:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject("01-10-2013 16:30", null), converter.toObject("01-10-2013 16:45", null)));
-        
-        voyagePlan.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("01-10-2013 23:30", null), converter.toObject("02-10-2013 00:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.1W", converter.toObject("02-10-2013 06:45", null), converter.toObject("02-10-2013 07:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Qaqortoq", "60 43.1N", "046 02.4W", converter.toObject("02-10-2013 15:30", null), converter.toObject("02-10-2013 19:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Narsaq", "60 54.5N", "046 03.0W", converter.toObject("02-10-2013 21:00", null), converter.toObject("02-10-2013 21:30", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject(
+                "28-09-2013 07:00", null), converter.toObject("28-09-2013 07:30", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject(
+                "28-09-2013 10:45", null), converter.toObject("28-09-2013 11:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject(
+                "28-09-2013 18:00", null), converter.toObject("28-09-2013 21:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 08:00",
+                null), converter.toObject("29-09-2013 08:30", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Ilulissat", "69 13.5N", "051 06.0W", converter.toObject(
+                "29-09-2013 13:00", null), converter.toObject("29-09-2013 17:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 21:30",
+                null), converter.toObject("29-09-2013 22:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject(
+                "30-09-2013 09:00", null), converter.toObject("30-09-2013 10:30", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject(
+                "30-09-2013 17:30", null), converter.toObject("30-09-2013 17:45", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject(
+                "30-09-2013 21:30", null), converter.toObject("30-09-2013 22:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("01-10-2013 06:30",
+                null), converter.toObject("01-10-2013 09:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject(
+                "01-10-2013 16:30", null), converter.toObject("01-10-2013 16:45", null)));
 
-        voyagePlan.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.2W", converter.toObject("03-10-2013 06:45", null), converter.toObject("03-10-2013 07:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("03-10-2013 13:30", null), converter.toObject("03-10-2013 14:30", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject("03-10-2013 22:30", null), converter.toObject("03-10-2013 22:45", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00", null), null));
+        voyagePlan.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("01-10-2013 23:30",
+                null), converter.toObject("02-10-2013 00:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.1W", converter.toObject("02-10-2013 06:45",
+                null), converter.toObject("02-10-2013 07:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Qaqortoq", "60 43.1N", "046 02.4W", converter.toObject(
+                "02-10-2013 15:30", null), converter.toObject("02-10-2013 19:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Narsaq", "60 54.5N", "046 03.0W", converter.toObject("02-10-2013 21:00",
+                null), converter.toObject("02-10-2013 21:30", null)));
 
-        //firstDeparture.
-        
+        voyagePlan.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.2W", converter.toObject("03-10-2013 06:45",
+                null), converter.toObject("03-10-2013 07:00", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("03-10-2013 13:30",
+                null), converter.toObject("03-10-2013 14:30", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject(
+                "03-10-2013 22:30", null), converter.toObject("03-10-2013 22:45", null)));
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00",
+                null), null));
+
+        // firstDeparture.
+
         Period p = new Period(firstDeparture, now);
-        if(p.getWeeks() > 0){
-            for(Voyage v : voyagePlan.getVoyagePlan()){
+        if (p.getWeeks() > 0) {
+            for (Voyage v : voyagePlan.getVoyagePlan()) {
                 v.setArrival(v.getArrival().plusWeeks(p.getWeeks()));
                 v.setDeparture(v.getDeparture().plusWeeks(p.getWeeks()));
             }
         }
-        
+
         shipDao.saveEntity(voyagePlan);
     }
 
@@ -342,9 +367,80 @@ public class TestServiceBean {
 
         VoyagePlan voyagePlan = shipService.getVoyagePlan(331037000L);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt", false);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt", false);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt",
+                false);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt",
+                false);
     }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createGreenposReports() {
+        DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
+        Ship ship = shipDao.getShipByCallsign("OXPJ2");
+
+        List<ReportedVoyage> voyages = null;
+        GreenPosReport report = new GreenPosSailingPlanReport(ship.getName(), ship.getMmsi(), ship.getCallsign(),
+                ship.getMaritimeId(), new Position("66 56.5N", "053 40.50W"), "Sun shine", "NO ICE", 4.1, 10, "Nuuk",
+                converter.toObject("19-09-2013 10:30"), 6, voyages);
+        report.setReportedBy("oratank");
+        report.setTs(converter.toObject("18-09-2013 13:09"));
+        shipDao.saveEntity(report);
+
+        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("66 03.772N", "053 46.3W"), "Sun shine", "NO ICE", 10.0, 10);
+        report.setReportedBy("oratank");
+        report.setTs(converter.toObject("18-09-2013 18:00"));
+        shipDao.saveEntity(report);
+
+        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("65 19.926N", "052 57.483W"), "Sun shine", "NO ICE", 10.0, 10);
+        report.setReportedBy("oratank");
+        report.setTs(converter.toObject("19-09-2013 00:00"));
+        shipDao.saveEntity(report);
+
+        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("64 29.198N", "052 29.507W"), "Sun shine", "NO ICE", 10.0, 10);
+        report.setReportedBy("oratank");
+        report.setTs(converter.toObject("19-09-2013 06:00"));
+        shipDao.saveEntity(report);
+
+        report = new GreenPosFinalReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
+        report.setReportedBy("oratank");
+        report.setTs(converter.toObject("19-09-2013 10:15"));
+        shipDao.saveEntity(report);
+
+    
+        ship = shipDao.getShipByCallsign("OYDK2");
+
+        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("63 80.01N", "051 58.04W"), "Sun shine", "NO ICE", 11.6, 350);
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("24-09-2013 12:00"));
+        shipDao.saveEntity(report);
+
+        report = new GreenPosFinalReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("24-09-2013 16:02"));
+        shipDao.saveEntity(report);
+        
+        voyages = null;
+        report = new GreenPosSailingPlanReport(ship.getName(), ship.getMmsi(), ship.getCallsign(),
+                ship.getMaritimeId(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150, "KYSTFART",
+                converter.toObject("26-09-2013 10:30"), 6, voyages);
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("24-09-2013 23:12"));
+        shipDao.saveEntity(report);
+
+        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+                new Position("64 10.068N", "051 64.78W"), "Sun shine", "NO ICE", 11.6, 162);
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("25-09-2013 00:00"));
+        shipDao.saveEntity(report);
+
+
+}
 
     public void logExistingEntries() {
         logger.info("Permissions: {} ", shipDao.getAll(Permission.class));

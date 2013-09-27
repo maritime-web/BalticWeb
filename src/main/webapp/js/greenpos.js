@@ -283,8 +283,6 @@
             start : 0,
             max : $scope.max
         }, function(reports) {
-            console.log('response returned');
-            console.log(reports);
             $scope.reports = reports;
         });
 

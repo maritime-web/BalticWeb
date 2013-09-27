@@ -82,10 +82,10 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     public GreenPos toJsonModel() {
         String eta = DateTimeConverter.getDateTimeConverter().toString(getEtaOfArrival(), null);
         
-        List<dk.dma.embryo.rest.json.Voyage> transformed = new ArrayList<dk.dma.embryo.rest.json.Voyage>(getVoyages().size());
-        for(ReportedVoyage v : getVoyages()){
-            transformed.add(v.toJsonModel());
-        }
+//        List<dk.dma.embryo.rest.json.Voyage> transformed = new ArrayList<dk.dma.embryo.rest.json.Voyage>(getVoyages().size());
+//        for(ReportedVoyage v : getVoyages()){
+//            transformed.add(v.toJsonModel());
+//        }
         
         GreenPos result = new GreenPos();
         result.setType(getReportType());
@@ -102,7 +102,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setDestination(getDestination());
         result.setPersonsOnBoard(getPersonsOnBoard());
         result.setEtaOfArrival(eta);
-        result.setVoyages(transformed);
+//        result.setVoyages(transformed);
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
         return result;
