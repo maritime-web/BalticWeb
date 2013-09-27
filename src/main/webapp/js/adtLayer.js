@@ -1,4 +1,21 @@
+embryo.adt = {
+}
+
 $(function() {
+    embryo.adt.createRing = function(longitude, latitude, radius, noRings) {
+        var result = [];
+        for (var l = 1; l <= noRings; l ++) {
+            var points = calculateRing(longitude, latitude, l*radius, 200);
+
+            var feature = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(points)])
+            );
+
+            result.push(feature);
+        }
+        return result;
+    }
+
     var groupSelected = false;
 
     var selectedControl = null;
@@ -120,16 +137,8 @@ $(function() {
         noRings = Math.min(5, noRings);
         noRings = Math.max(0, noRings);
 
-        for (var l = 1; l <= noRings; l ++) {
-            var points = calculateRing(longitude, latitude, l*distance, 200);
+        layers.rings.addFeatures(embryo.adt.createRing(longitude, latitude, distance, noRings));
 
-            var feature = new OpenLayers.Feature.Vector(
-                new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(points)])
-            );
-
-            layers.rings.addFeatures([ feature ]);
-
-        }
     }
 
     function updateSelectedControl() {
