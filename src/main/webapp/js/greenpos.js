@@ -281,7 +281,8 @@
         
         GreenposService.findReports({
             start : 0,
-            max : $scope.max
+            max : $scope.max,
+            sort: 'time'
         }, function(reports) {
             $scope.reports = reports;
         });
@@ -291,7 +292,23 @@
             date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
             return date;
         };
-        
+
+        $scope.reportText = function(type){
+            if(type === 'SP'){
+                return 'Sailing plan';
+            }
+            if(type === 'DR'){
+                return 'Deviation';
+            }
+            if(type === 'FR'){
+                return 'Final';
+            }
+            if(type === 'PR'){
+                return 'Position';
+            }
+            return null;
+        };
+    
     };
 
 }());

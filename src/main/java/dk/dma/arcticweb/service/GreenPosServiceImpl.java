@@ -30,6 +30,7 @@ import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
+import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.security.Subject;
@@ -134,14 +135,14 @@ public class GreenPosServiceImpl implements GreenPosService {
         if (ship == null) {
             // TODO relax this. it should be possible to save report in any case, but with below message as a report
             // comment.
-            throw new IllegalArgumentException("Could not identify ship from report data. ");
+            throw new IllegalArgumentException("Could not identify ship from report data.");
         }
         return ship;
     }
 
     @Override
-    public List<GreenPosReport> findReports() {
-        return greenPosDao.getAll(GreenPosReport.class);
+    public List<GreenPosReport> findReports(GreenposSearch search) {
+        return greenPosDao.find(search);
     }
 
     @Override

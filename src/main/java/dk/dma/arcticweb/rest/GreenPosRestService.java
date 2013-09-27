@@ -24,12 +24,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.GreenPosService;
 import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.rest.json.GreenPos;
+import dk.dma.embryo.rest.util.DateTimeConverter;
 
 /**
  * 
@@ -51,47 +55,54 @@ public class GreenPosRestService {
     @Consumes("application/json")
     public void save(GreenPos report) {
         logger.debug("save({})", report);
-        
+
         GreenPosReport toBeSaved = GreenPosReport.from(report);
-        
+
         reportingService.saveReport(toBeSaved);
         // String result = "Product created : " + product;
         // return Response.status(201).entity(result).build();
         logger.debug("save() - done", report);
     }
 
-
     @GET
     @Path("/latest/{shipMaritimeId}")
     @Produces("application/json")
     public GreenPos latest(@PathParam("shipMaritimeId") String shipMaritimeId) {
         logger.debug("latest({})", shipMaritimeId);
-        
+
         GreenPos result = null;
 
         GreenPosReport report = reportingService.getLatest(shipMaritimeId);
-        
-        if(report != null){
+
+        if (report != null) {
             result = report.toJsonModel();
         }
-     
+
         logger.debug("latest({}) - {}", shipMaritimeId, result);
-        
+
         return result;
     }
-    
+
     @GET
     @Path("/list")
     @Produces("application/json")
-    public GreenPos[] list() {
-        logger.debug("findReports()");
+    public GreenPos[] list(@QueryParam("name") String type, @QueryParam("name") String name,
+            @QueryParam("mmsi") Long mmsi, @QueryParam("callSign") String callSign,
+            @QueryParam("reporter") String reporter, @QueryParam("ts") String ts, @QueryParam("sortBy") String sortBy,
+            @QueryParam("sortOrder") String sortOrder, @QueryParam("start") Integer start, @QueryParam("max") Integer max) {
+        logger.debug("list({})");
 
-        List<GreenPosReport> reports = reportingService.findReports();
-        
+        LocalDateTime dateTime = null;
+        if (ts != null && ts.trim().length() > 0) {
+            dateTime = DateTimeConverter.getDateTimeConverter().toObject(ts);
+        }
+
+        List<GreenPosReport> reports = reportingService.findReports(new GreenposSearch(type, name, mmsi, callSign,
+                reporter, dateTime, sortBy, sortOrder, start, max));
+
         GreenPos[] result = GreenPosReport.toJsonModel(reports);
-     
-        logger.debug("findReports() - {}", result);
-        
+
+        logger.debug("list() - {}", (Object[]) result);
         return result;
     }
 }

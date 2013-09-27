@@ -13,23 +13,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.service;
+package dk.dma.embryo.domain;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
-import javax.ejb.Local;
+import org.junit.Test;
 
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.domain.GreenposSearch;
+public class GreenposSearchTest {
 
-@Local
-public interface GreenPosService{
+    @Test
+    public void testDefaultSortValues() {
+        GreenposSearch search = new GreenposSearch();
 
-    List<GreenPosReport> listReports();
+        assertEquals("ts", search.getSortByField());
+        assertEquals("DESC", search.getSortOrder());
 
-    GreenPosReport getLatest(String shipMaritimeId);
+        search = new GreenposSearch(null, null, null, null, null, null, null, null, null, null);
 
-    String saveReport(GreenPosReport report);
-    
-    List<GreenPosReport> findReports(GreenposSearch search);
+        assertEquals("ts", search.getSortByField());
+        assertEquals("DESC", search.getSortOrder());
+    }
+
 }
