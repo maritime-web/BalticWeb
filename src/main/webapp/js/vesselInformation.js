@@ -205,10 +205,10 @@ $(function() {
         layer: tracksLayer,
     });
 
-    embryo.map.add({
+    /*embryo.map.add({
         group: "vessel",
         control: new OpenLayers.Control.DrawFeature(tracksLayer, OpenLayers.Handler.Path)
-    });
+    });*/
 
     embryo.vesselSelected(function(e) {
         $("#vesselInformationPanel").css("display", "none");
