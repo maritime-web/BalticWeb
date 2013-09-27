@@ -100,7 +100,42 @@ $(function() {
         setCenter: function(longitude, latitude, zoom) {
             map.setCenter(transformPosition(longitude, latitude), zoom);
         }, 
-        internalMap: map
+        internalMap: map,
+        createClickControl: function(handler) {
+            var Control = OpenLayers.Class(OpenLayers.Control, {
+                defaultHandlerOptions: {
+                    'single': true,
+                    'double': false,
+                    'pixelTolerance': 0,
+                    'stopSingle': false,
+                    'stopDouble': false
+                },
+
+                initialize: function(options) {
+                    this.handlerOptions = OpenLayers.Util.extend(
+                        {}, this.defaultHandlerOptions
+                    );
+                    OpenLayers.Control.prototype.initialize.apply(
+                        this, arguments
+                    );
+                    this.handler = new OpenLayers.Handler.Click(
+                        this, {
+                            'click': this.trigger
+                        }, this.handlerOptions
+                    );
+                },
+
+                trigger: function(e) {
+                    var lonlat1 = this.map.getLonLatFromPixel(e.xy);
+                    var lonlat = new OpenLayers.LonLat(lonlat1.lon, lonlat1.lat).transform(
+                        this.map.getProjectionObject(),
+                        new OpenLayers.Projection("EPSG:4326")
+                    );
+                    return handler(lonlat);
+                }
+            });
+            return new Control();
+        }
     };
 
     // Create one select control for all layers. This the only way to enable
