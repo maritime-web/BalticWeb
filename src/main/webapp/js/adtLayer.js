@@ -11,50 +11,15 @@ $(function() {
         rings: new OpenLayers.Layer.Vector("Rings Layer", {
             styleMap: new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style({
-                    fillColor: "#ff9955",
-                    fillOpacity: 0.35,
-                    strokeWidth: 0,
-                    strokeColor: "#000000",
-                    strokeOpacity: 0
+                    fillColor: "#f80",
+                    fillOpacity: 0.1,
+                    strokeWidth: 2,
+                    strokeColor: "#f80",
+                    strokeOpacity: 0.7
                 })
             })
         })
     }
-
-    OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
-        defaultHandlerOptions: {
-            'single': true,
-            'double': false,
-            'pixelTolerance': 0,
-            'stopSingle': false,
-            'stopDouble': false
-        },
-
-        initialize: function(options) {
-            this.handlerOptions = OpenLayers.Util.extend(
-                {}, this.defaultHandlerOptions
-            );
-            OpenLayers.Control.prototype.initialize.apply(
-                this, arguments
-            );
-            this.handler = new OpenLayers.Handler.Click(
-                this, {
-                    'click': this.trigger
-                }, this.handlerOptions
-            );
-        },
-
-        trigger: function(e) {
-            var lonlat1 = this.map.getLonLatFromPixel(e.xy);
-
-            ringPosition = new OpenLayers.LonLat(lonlat1.lon, lonlat1.lat).transform(
-                this.map.getProjectionObject(),
-                new OpenLayers.Projection("EPSG:4326")
-            );
-
-            drawRing();
-        }
-    });
 
     var controls = {
         distance: new OpenLayers.Control.Measure(
@@ -69,7 +34,10 @@ $(function() {
                 layer: layers.area
             }
         ),
-        rings: new OpenLayers.Control.Click()
+        rings: embryo.map.createClickControl(function (lonlat) {
+            ringPosition = lonlat;
+            drawRing();
+        })
     }
 
     controls.distance.events.on({
@@ -129,26 +97,6 @@ $(function() {
         return points;
     }
 
-    function drawTest() {
-        var overlay = layers.rings;
-
-        var points = [
-            embryo.map.createPoint(-60, 60),
-            embryo.map.createPoint(-30, 60),
-            embryo.map.createPoint(-30, 30),
-            embryo.map.createPoint(-60, 30)
-        ];
-
-        var points = calculateRing(-50, 50, 500, 20);
-        var ring = new OpenLayers.Geometry.LinearRing(points);
-
-        var polygon = new OpenLayers.Geometry.Polygon([ ring ]);
-
-        var feature = new OpenLayers.Feature.Vector(polygon);
-
-        overlay.addFeatures([ feature ]);
-    }
-
     function drawRing() {
         layers.rings.removeAllFeatures();
 
@@ -157,7 +105,7 @@ $(function() {
             return;
         }
 
-        $("#adtRings h4").html("Ring placed at "+ringPosition.lon.toFixed(3)+" "+ringPosition.lat.toFixed(3));
+        $("#adtRings h4").html("Ring placed at " + formatLonLat(ringPosition));
 
         var longitude = ringPosition.lon;
         var latitude = ringPosition.lat
