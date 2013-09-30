@@ -46,7 +46,7 @@ public class Ship {
     private Float maxSpeed;
 
     /** Gross tonnage */
-    private Integer gTon;
+    private Integer grossTon;
 
     private String iceClass;
 
@@ -153,15 +153,15 @@ public class Ship {
     /**
      * @return gross tonnage
      */
-    public Integer getGTon() {
-        return gTon;
+    public Integer getGrossTon() {
+        return grossTon;
     }
 
     /**
      * Set gross tonnage
      */
-    public void setGTon(Integer tonnage) {
-        this.gTon = tonnage;
+    public void setGrossTon(Integer tonnage) {
+        this.grossTon = tonnage;
     }
 
     public String getIceClass() {

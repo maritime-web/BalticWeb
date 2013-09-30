@@ -119,7 +119,7 @@ public class Ship extends BaseEntity<Long> {
         ship.setCommCapabilities(getCommCapabilities());
         ship.setLength(getLength());
         ship.setWidth(getWidth());
-        ship.setGTon(getGrossTonnage());
+        ship.setGrossTon(getGrossTonnage());
         ship.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
         ship.setIceClass(getIceClass());
         ship.setHelipad(getHelipad());
@@ -138,7 +138,7 @@ public class Ship extends BaseEntity<Long> {
         result.setCommCapabilities(ship.getCommCapabilities());
         result.setLength(ship.getLength());
         result.setWidth(ship.getWidth());
-        result.setGrossTonnage(ship.getGTon());
+        result.setGrossTonnage(ship.getGrossTon());
         result.setMaxSpeed(ship.getMaxSpeed() == null ? null : BigDecimal.valueOf(ship.getMaxSpeed()));
         result.setIceClass(ship.getIceClass());
         result.setHelipad(ship.getHelipad());
