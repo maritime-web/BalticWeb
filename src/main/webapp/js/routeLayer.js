@@ -8,9 +8,11 @@
 
 embryo.route = {};
 
-(function() {
+$(function() {
 
     "use strict";
+
+    var groupSelected;
 
     embryo.route.initLayer = function() {
         console.log('Initialization of Route Layer');
@@ -22,12 +24,17 @@ embryo.route = {};
             strokeWidth : 2,
             strokeDashstyle : 'dashdot',
             strokeColor : "${getColor}", // using context.getColor(feature)
-            fillColor : "${getColor}" // using context.getColor(feature)
+            strokeOpacity : "${getOpacity}",
+            fillColor : "${getColor}", // using context.getColor(feature)
+            fillOpacity : "${getOpacity}"
         }, OpenLayers.Feature.Vector.style["default"]);
 
         var context = {
             getColor : function(feature) {
                 return feature.attributes.active ? 'red ' : '#D5672D';
+            },
+            getOpacity : function() {
+                return groupSelected ? 1 : 0.3;
             }
         };
 
@@ -50,6 +57,7 @@ embryo.route = {};
         });
 
         embryo.map.add({
+            group: "vessel",
             layer : embryo.route.layer,
             select : false
         });
@@ -184,4 +192,9 @@ embryo.route = {};
     };
 
     embryo.mapInitialized(embryo.route.initLayer);
-}());
+
+    embryo.groupChanged(function (e) {
+        groupSelected = (e.groupId == "vessel");
+        if (embryo.route.layer) embryo.route.layer.redraw();
+    })
+});
