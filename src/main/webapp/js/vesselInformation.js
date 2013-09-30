@@ -72,6 +72,7 @@ embryo.vesselInformation = {
 var module = angular.module('embryo.vesselControl', ['embryo.selectedShip', 'embryo.reportComp']);
 
 $(function() {
+    var shipSelected = false;
     function formatDate(dato) {
         if (dato == null) return "-";
         var d = new Date(dato);
@@ -228,6 +229,7 @@ $(function() {
     });*/
 
     embryo.vesselSelected(function(e) {
+        shipSelected = true;
         // var messageId = embryo.messagePanel.show( { text: "Loading vessel data ..." })
 
         function setupAdditionalInformation(id, click) {
@@ -257,7 +259,8 @@ $(function() {
                 past_track: 1 
             },
             success: function (result) {
-	        if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
+                if (shipSelected == false) return;
+	            if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
                 showVesselInformation(result);
                 setupAdditionalInformation("#viewHistoricalTrack", function(e) {
                     e.preventDefault();
@@ -285,6 +288,7 @@ $(function() {
     });
 
     embryo.vesselUnselected(function() {
+        shipSelected = false;
         closeCollapse("#vcpSelectedShip");
         $("a[href=#vcpSelectedShip]").html("Selected Ship");
         drawPastTrack(null);
