@@ -23,6 +23,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  */
 public class Ship {
 
+    /** Ship name */
     private String name;
 
     private Long mmsi;
@@ -30,40 +31,42 @@ public class Ship {
     private String callSign;
 
     private String maritimeId;
-    
+
     private Long imo;
-    
+
     private String type;
-    
+
+    /** Communication capabilities */
     private String commCapabilities;
-    
+
     private Integer width;
-    
+
     private Integer length;
-    
+
     private Float maxSpeed;
 
-    private Integer tonnage;
+    /** Gross tonnage */
+    private Integer gTon;
 
     private String iceClass;
-    
+
     private Boolean helipad;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Ship(){
+    public Ship() {
         super();
     }
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
     @Override
-    public String toString(){
-        return ReflectionToStringBuilder.toString(this); 
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
     }
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -147,12 +150,18 @@ public class Ship {
         this.maxSpeed = maxSpeed;
     }
 
-    public Integer getTonnage() {
-        return tonnage;
+    /**
+     * @return gross tonnage
+     */
+    public Integer getGTon() {
+        return gTon;
     }
 
-    public void setTonnage(Integer tonnage) {
-        this.tonnage = tonnage;
+    /**
+     * Set gross tonnage
+     */
+    public void setGTon(Integer tonnage) {
+        this.gTon = tonnage;
     }
 
     public String getIceClass() {
@@ -169,6 +178,6 @@ public class Ship {
 
     public void setHelipad(Boolean helipad) {
         this.helipad = helipad;
-    }    
+    }
 
 }

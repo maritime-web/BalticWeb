@@ -20,8 +20,14 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Root;
 
 import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenposSearch;
 
 @Stateless
 public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
@@ -44,6 +50,23 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
         List<GreenPosReport> result = query.getResultList();
 
         return getSingleOrNull(result);
+    }
+
+    @Override
+    public List<GreenPosReport> find(GreenposSearch search) {
+        CriteriaBuilder builder = em.getCriteriaBuilder(); 
+        CriteriaQuery<GreenPosReport> criteriaQuery = builder.createQuery(GreenPosReport.class);
+        Root<GreenPosReport> root = criteriaQuery.from(GreenPosReport.class);
+        
+        Expression<String> field = root.get(search.getSortByField());
+        Order order = "ASC".equals(search.getSortOrder()) ? builder.asc(field) : builder.desc(field);
+        criteriaQuery.orderBy(order);
+        
+        TypedQuery<GreenPosReport> reports = em.createQuery(criteriaQuery);
+        reports.setFirstResult(search.getFirst());
+        reports.setMaxResults(search.getNumberOfReports());
+        
+        return reports.getResultList();
     }
 
 }
