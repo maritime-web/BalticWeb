@@ -47,14 +47,27 @@
         };
     });
 
-    embryo.GreenPosCtrl = function($scope, $routeParams, ShipService, VoyageService, GreenposService, AisRestService) {
+    embryo.GreenPosCtrl = function($scope, $routeParams, ShipService, VoyageService, GreenposService, AisRestService,
+            $timeout) {
         $scope.editable = true;
 
         $scope.report = {
             type : "SP",
         };
         
-
+        $scope.$on('$viewContentLoaded', function() {
+            if (!$scope.map) {
+                // postpone map loading sligtly, to let the resize directive set
+                // the
+                // sizes of the map container divs, before map loading. If not
+                // done,
+                // the
+                // map is not loaded in correct size
+                $timeout(function() {
+                    $scope.loadMap();
+                }, 50);
+            }
+        });
 
         if ($routeParams.id) {
             $scope.editable = false;
@@ -62,6 +75,7 @@
             GreenposService.get($routeParams.id, function(report) {
                 $scope.report = report;
             });
+            
 
         } else {
             ShipService.getYourShip(function(yourShip) {
@@ -87,22 +101,6 @@
             "DR" : [ "deviation" ]
         };
 
-        $scope.$on('$viewContentLoaded', function() {
-            if (!$scope.map) {
-                // postpone map loading sligtly, to let the resize directive set
-                // the
-                // sizes of the map container divs, before map loading. If not
-                // done,
-                // the
-                // map is not loaded in correct size
-                setTimeout(function() {
-                    $scope.$apply(function() {
-                        $scope.loadMap();
-                    });
-                }, 100);
-            }
-        });
-        
         $scope.getLatLon = function() {
             return {
                 lat : $scope.report.lat,
@@ -262,6 +260,10 @@
 
             var center = $scope.transformPosition(initialLon, initialLat);
             $scope.map.setCenter(center, initialZoom);
+            
+            if($scope.report.lat && $scope.report.lon){
+                $scope.setPositionOnMap($scope.report.lat, $scope.report.lon);
+            }
         };
 
         $scope.setPositionOnMap = function(latitude, longitude) {
