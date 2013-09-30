@@ -59,12 +59,12 @@
         };
 
         $scope.report = {
-            reportType : "SP",
+            type : "SP",
         };
 
         ShipService.getYourShip(function(yourShip) {
-            $scope.report.shipMmsi = yourShip.mmsi;
-            $scope.report.shipCallSign = yourShip.callSign;
+            $scope.report.mmsi = yourShip.mmsi;
+            $scope.report.callSign = yourShip.callSign;
             $scope.report.shipName = yourShip.name;
             $scope.report.shipMaritimeId = yourShip.maritimeId;
         });
@@ -92,10 +92,10 @@
         });
 
         $scope.isVisible = function(fieldName) {
-            if (!$scope.report || !$scope.report.reportType) {
+            if (!$scope.report || !$scope.report.type) {
                 return true;
             }
-            var fields = $scope.visibility[$scope.report.reportType];
+            var fields = $scope.visibility[$scope.report.type];
 
             return fields.indexOf(fieldName) > -1;
         };
@@ -124,8 +124,8 @@
 
         $scope.getLatLon = function() {
             return {
-                lat : $scope.report.latitude,
-                lon : $scope.report.longitude
+                lat : $scope.report.lat,
+                lon : $scope.report.lon
             };
         };
 
@@ -139,8 +139,8 @@
             return {
                 maritimeId : $scope.report.shipMaritimeId,
                 name : $scope.report.shipName,
-                mmsi : $scope.report.shipMmsi,
-                callSign : $scope.report.shipCallSign
+                mmsi : $scope.report.mmsi,
+                callSign : $scope.report.callSign
             };
         };
 

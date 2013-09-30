@@ -14,7 +14,7 @@
 							<div class="control-group">
 								<label class="control-label" for="gReportType">Report type</label>
 								<div class="controls">
-									<select id="gReportType" name="gpReportType" x-ng-model="report.reportType" class="input-large" required>
+									<select id="gReportType" name="gpReportType" x-ng-model="report.type" class="input-large" required>
 										<option value="SP">Sailing Plan Report</option>
 										<option value="PR">Position Report</option>
 										<option value="FR">Final Report</option>
@@ -35,13 +35,13 @@
 							<div class="control-group">
 								<label class="control-label" for="lon">MMSI</label>
 								<div class="controls">
-									<input type="text" class="input-medium" x-ng-model="report.shipMmsi" />
+									<input type="text" class="input-medium" x-ng-model="report.mmsi" />
 								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="lon">Call sign</label>
 								<div class="controls">
-									<input type="text" class="input-medium" x-ng-model="report.shipCallSign" />
+									<input type="text" class="input-medium" x-ng-model="report.callSign" />
 								</div>
 							</div>
 							<div class="control-group" x-ng-show="isVisible('destination')">
@@ -93,7 +93,7 @@
 							<div class="control-group">
 								<label class="control-label" for="gpLon">Longitude</label>
 								<div class="controls">
-									<input id="gpLon" name="gpLon" type="text" class="input-medium" x-ng-model="report.longitude" required /> <span
+									<input id="gpLon" name="gpLon" type="text" class="input-medium" x-ng-model="report.lon" required /> <span
 										x-ng-show="greenPosForm.gpLon.$error.required && greenPosForm.gpLon.$dirty" class="msg-invalid">Value
 										required</span>
 								</div>
@@ -101,7 +101,7 @@
 							<div class="control-group">
 								<label class="control-label" for="gpLat">Latitude</label>
 								<div class="controls">
-									<input id="gpLat" name="gpLat" type="text" class="input-medium" x-ng-model="report.latitude" required /> <span
+									<input id="gpLat" name="gpLat" type="text" class="input-medium" x-ng-model="report.lat" required /> <span
 										x-ng-show="greenPosForm.gpLat.$error.required && greenPosForm.gpLat.$dirty" class="msg-invalid">Value
 										required</span>
 								</div>

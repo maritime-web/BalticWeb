@@ -111,9 +111,9 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     public GreenPosSailingPlanReport withVoyages(List<Voyage> voyages) {
         List<ReportedVoyage> transformed = new ArrayList<>(voyages.size());
 
-        for (Voyage voyage : voyages) {
-            transformed.add(ReportedVoyage.from(voyage));
-        }
+//        for (Voyage voyage : voyages) {
+//            transformed.add(ReportedVoyage.from(voyage));
+//        }
 
         return new GreenPosSailingPlanReport(getShipName(), getShipMmsi(), getShipCallSign(), getShipMaritimeId(),
                 getPosition(), getWeather(), getIceInformation(), getSpeed(), getCourse(), getDestination(),
