@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.ShipDao;
@@ -149,4 +150,11 @@ public class GreenPosServiceImpl implements GreenPosService {
     public GreenPosReport getLatest(String shipMaritimeId) {
         return greenPosDao.findLatest(shipMaritimeId);
     }
+
+    @Override
+    public GreenPosReport get(String id) {
+        return greenPosDao.findById(id);
+    }
+    
+    
 }

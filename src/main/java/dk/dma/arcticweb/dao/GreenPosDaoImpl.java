@@ -15,6 +15,7 @@
  */
 package dk.dma.arcticweb.dao;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -24,6 +25,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import dk.dma.embryo.domain.GreenPosReport;
@@ -42,7 +44,6 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
 
     @Override
     public GreenPosReport findLatest(String shipMaritimeId) {
-
         TypedQuery<GreenPosReport> query = em.createNamedQuery("GreenPosReport:findLatest", GreenPosReport.class);
         query.setParameter("shipMaritimeId", shipMaritimeId);
         query.setMaxResults(1);
@@ -57,6 +58,19 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
         CriteriaBuilder builder = em.getCriteriaBuilder(); 
         CriteriaQuery<GreenPosReport> criteriaQuery = builder.createQuery(GreenPosReport.class);
         Root<GreenPosReport> root = criteriaQuery.from(GreenPosReport.class);
+        criteriaQuery.select(root);
+
+        
+        List<Predicate> criterias = new LinkedList<>();
+        
+        if(search.getShipMmsi() != null){
+            criterias.add(builder.equal(root.get("shipMmsi"), search.getShipMmsi()));
+        }
+        
+        Predicate[] criteriaArr = new Predicate[criterias.size()];
+        criteriaArr = criterias.toArray(criteriaArr);
+        
+        criteriaQuery.where(criteriaArr);
         
         Expression<String> field = root.get(search.getSortByField());
         Order order = "ASC".equals(search.getSortOrder()) ? builder.asc(field) : builder.desc(field);
@@ -69,4 +83,16 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
         return reports.getResultList();
     }
 
+    @Override
+    public GreenPosReport findById(String id) {
+        TypedQuery<GreenPosReport> query = em.createNamedQuery("GreenPosReport:findById", GreenPosReport.class);
+        query.setParameter("id", id);
+        query.setMaxResults(1);
+
+        List<GreenPosReport> result = query.getResultList();
+
+        return getSingleOrNull(result);
+    }
+
+    
 }

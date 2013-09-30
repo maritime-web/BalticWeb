@@ -142,12 +142,8 @@ embryo.ready(function() {
             isPermitted : function(permission) {
                 var index, permissions = embryo.authentication.permissions;
                 
-                console.log(permission + ":" + typeof permission);
-                
                 for(index in permissions){
-                    console.log(permissions[index]);
                     if(permissions[index] == permission){
-                        console.log('returning true');
                         return true;
                     }
                 }

@@ -1,7 +1,7 @@
 <div class="controlPanel" x-ng-controller="embryo.ReportController">
 	<div class="accordion" id="ycpAccordion">
-		<div class="accordion-group">
-			<div class="accordion-heading">
+		<div class="accordion-group" x-ng-show="user.isPermitted('yourShip')">
+			<div class="accordion-heading" >
 				<h4>
 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpYourShip"> Your Ship </a>
 				</h4>
@@ -12,7 +12,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="accordion-group" x-ng-show="authenticated('arcticcommand')">
+		<div class="accordion-group" x-ng-show="user.isPermitted('greenpos')">
 			<div class="accordion-heading">
 				<h4>
 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpGreenpos">Greenpos
@@ -29,10 +29,6 @@
 						<tr>
 							<th>Reports</th>
 							<td><a href="report.html#/reportlist/">view list</a></td>
-						</tr>
-						<tr>
-							<th>Last known positions</th>
-							<td><a x-ng-href="report.html#/reportlist/last">list</a> - <a x-ng-href="report.html#/voyagePlan/{{ship.mmsi}}/current">map</a></td>
 						</tr>
 					</table>
 				</div>

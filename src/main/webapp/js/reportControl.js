@@ -5,6 +5,7 @@
 
     embryo.ReportController = function($scope, GreenposService, UserService) {
         $scope.user = UserService;
+        
     };
 
     

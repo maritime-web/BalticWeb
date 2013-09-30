@@ -143,9 +143,10 @@
 					<div class="row-fluid">
 						<div class="span12">
 							<span class="pull-right">
-								<button class="btn" x-ng-click="clear()">Clear</button>
-								<button class="btn" x-ng-click="cancel()">Cancel</button>
-								<button type="submit" x-ng-click="sendReport()" x-ng-disabled="greenPosForm.$invalid" class="btn btn-primary">Send</button>
+								<button x-ng-show="!editable" class="btn btn-primary" x-ng-click="back()">Close</button>
+								<button x-ng-show="editable" class="btn" x-ng-click="clear()">Clear</button>
+								<button x-ng-show="editable" class="btn" x-ng-click="cancel()">Cancel</button>
+								<button x-ng-show="editable" type="submit" x-ng-click="sendReport()" x-ng-disabled="greenPosForm.$invalid" class="btn btn-primary">Send</button>
 							</span>
 						</div>
 					</div>
