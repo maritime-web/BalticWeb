@@ -390,15 +390,18 @@ $(function() {
                     return b.date - a.date;
                 });
 
-                var regions = {};
+                var regions = [];
 
                 for (var i in data) {
-                    regions[data[i].region] = true;
+                    if (regions.indexOf(data[i].region) < 0) regions.push(data[i].region);
                 }
-                
+
+                regions.sort();
+
                 var html = "";
 
-                for (var region in regions) {
+                for (var j in regions) {
+                    var region = regions[j];
                     html += "<tr><td colspan=4><h5>"+region+"</h5></td></tr>";
                     
                     for (var i in data) {
