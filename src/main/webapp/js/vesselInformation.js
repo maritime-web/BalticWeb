@@ -194,7 +194,19 @@ $(function() {
             }
         })
     });
-    
+
+    var ringsLayer = new OpenLayers.Layer.Vector("Vessel - Rings Layer", {
+        styleMap: new OpenLayers.StyleMap({
+            "default": new OpenLayers.Style({
+                fillColor: "#f80",
+                fillOpacity: 0.1,
+                strokeWidth: 2,
+                strokeColor: "#f80",
+                strokeOpacity: 0.7
+            })
+        })
+    });
+
     embryo.map.add({
         group: "vessel",
         layer: timeStampsLayer,
@@ -205,16 +217,39 @@ $(function() {
         layer: tracksLayer,
     });
 
+    embryo.map.add({
+        group: "vessel",
+        layer: ringsLayer,
+    });
+
     /*embryo.map.add({
         group: "vessel",
         control: new OpenLayers.Control.DrawFeature(tracksLayer, OpenLayers.Handler.Path)
     });*/
 
     embryo.vesselSelected(function(e) {
-        $("#vesselInformationPanel").css("display", "none");
-
         // var messageId = embryo.messagePanel.show( { text: "Loading vessel data ..." })
-        
+
+        function setupAdditionalInformation(id, click) {
+            $(id+" a").off("click");
+            if (click != null) {
+                $(id+" a").css("display", "block");
+                $(id+" span").addClass("label-success");
+                $(id+" span").html("AVAILABLE");
+                $(id+" a").attr("href", "#");
+                $(id+" a").on("click", click);
+            } else {
+                $(id+" a").css("display", "none");
+                $(id+" span").removeClass("label-success");
+                $(id+" span").html("NOT AVAILABLE");
+            }
+        }
+
+        /*function(e) {
+            e.preventDefault();
+            alert("davs");
+        })*/
+
         $.ajax({
             url: embryo.baseUrl+detailsUrl,
             data: { 
@@ -224,19 +259,22 @@ $(function() {
             success: function (result) {
 	        if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
                 showVesselInformation(result);
-                
-                $("#viewHistoricalTrack").off("click");
-                if (result.pastTrack != null) {
-                    $("#viewHistoricalTrack").attr("href", "#");
-                    $("#viewHistoricalTrack").on("click", function(e) {
-                        e.preventDefault();
-                        embryo.map.zoomToExtent([tracksLayer]);
-                        setLayerOpacityById("timeStampsLayer", 0.8);
-                        setLayerOpacityById("trackLayer", 0.4);
-                    });
-                } else {
-                    $("#viewHistoricalTrack").attr("href", "");
-                }
+                setupAdditionalInformation("#viewHistoricalTrack", function(e) {
+                    e.preventDefault();
+                    embryo.map.zoomToExtent([tracksLayer]);
+                    setLayerOpacityById("timeStampsLayer", 0.8);
+                    setLayerOpacityById("trackLayer", 0.4);
+                });
+
+                var vessel = embryo.vessel.lookupVessel(e.vesselId);
+
+                setupAdditionalInformation("#viewDistanceCircleSog", (result.sog == null || result.sog == 0) ?  null : function(e) {
+                    e.preventDefault();
+                    ringsLayer.removeAllFeatures();
+                    ringsLayer.addFeatures(embryo.adt.createRing(vessel.lon, vessel.lat, result.sog * 3 * 1.852, 3));
+                    embryo.map.zoomToExtent([ringsLayer]);
+
+                });
             },
             error: function(data) {
                 // embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " loading vessel data.", type: "error" });
@@ -250,6 +288,7 @@ $(function() {
         closeCollapse("#vcpSelectedShip");
         $("a[href=#vcpSelectedShip]").html("Selected Ship");
         drawPastTrack(null);
+        ringsLayer.removeAllFeatures();
     });
 
     embryo.groupChanged(function(e) {
