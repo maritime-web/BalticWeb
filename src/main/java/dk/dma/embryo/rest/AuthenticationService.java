@@ -15,11 +15,7 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.security.Subject;
-import org.slf4j.Logger;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -28,6 +24,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+
+import org.slf4j.Logger;
+
+import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.embryo.domain.Permission;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SecuredUser;
+import dk.dma.embryo.security.Subject;
 
 @Path("/authentication")
 public class AuthenticationService {
@@ -56,8 +60,17 @@ public class AuthenticationService {
             details.setShipMmsi("" + sailor.getShip().getMmsi());
         }
 
+        Set<Permission> perms = user.getPermissions();
+        String[] permissions = new String[perms.size()];
+        int count = 0;
+        for(Permission permission : perms){
+            permissions[count++] = permission.getLogicalName(); 
+        }
+                
         details.setProjection("EPSG:900913");
         details.setUserName(user.getUserName());
+        details.setPermissions(permissions);
+        
         return details;
     }
 
@@ -84,6 +97,8 @@ public class AuthenticationService {
     }
 
     public static class UserNotAuthenticated extends WebApplicationException {
+        private static final long serialVersionUID = 7940360206022406100L;
+
         public UserNotAuthenticated() {
             super(Response.Status.UNAUTHORIZED);
         }
@@ -93,6 +108,7 @@ public class AuthenticationService {
         private String shipMmsi;
         private String projection;
         private String userName;
+        private String[] permissions;
 
         public String getShipMmsi() {
             return shipMmsi;
@@ -116,6 +132,14 @@ public class AuthenticationService {
 
         public void setUserName(String userName) {
             this.userName = userName;
+        }
+
+        public String[] getPermissions() {
+            return permissions;
+        }
+
+        public void setPermissions(String[] permissions) {
+            this.permissions = permissions;
         }
     }
 }
