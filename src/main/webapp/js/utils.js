@@ -32,30 +32,17 @@ function setLayerOpacityById(id, value) {
     }
 }
 
-// de her to er lidt vilde, men altsaa noedvendige
-
 function openCollapse(id) {
-    if (!$(id).hasClass("in") && !$(id).hasClass("collapse-opening")) {
-        $(id).addClass("collapse-opening");
+    $(".collapse", $(id).parents(".accordion")).data("collapse", null);
+    if (!$(id).hasClass("in")) {
         $("a[href=#"+$(id).attr("id")+"]").click();
-        setTimeout(function() {
-            $(id).removeClass("collapse-opening");
-        }, 500);
     }
-    $(id).removeClass("collapse-closing");
 }
 
 function closeCollapse(id) {
-    if ($(id).hasClass("in") && !$(id).hasClass("collapse-opening")) {
-        $(id).addClass("collapse-closing");
-        setTimeout(function() { 
-            if ($(id).hasClass("collapse-closing")) {
-                $(id).removeClass("collapse-closing");
-                //if ($(id).is(":visible")) {
-                    $("a[href="+id+"]").click();
-                //}
-            }
-        }, 500);
+    $(".collapse", $(id).parents(".accordion")).data("collapse", null);
+    if ($(id).hasClass("in")) {
+        $("a[href=#"+$(id).attr("id")+"]").click();
     }
 }
 
