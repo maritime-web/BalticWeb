@@ -81,5 +81,5 @@ function formatLatitude(latitude) {
 }
 
 function formatLonLat(lonlat) {
-    return formatLatitude(lonlat.lat) + " " + formatLatitude(lonlat.lon);
+    return formatLatitude(lonlat.lat) + " " + formatLongitude(lonlat.lon);
 }
