@@ -18,6 +18,7 @@ package dk.dma.embryo.rest;
 import dk.dma.configuration.Property;
 import dk.dma.dataformats.dbf.DbfParser;
 import dk.dma.dataformats.shapefile.ShapeFileParser;
+import org.jboss.resteasy.annotations.GZIP;
 
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -43,6 +44,7 @@ public class ShapeFileService {
     @GET
     @Path("/single/{id}")
     @Produces("application/json")
+    @GZIP
     public Shape getSingleFile(
             @PathParam("id") String id,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
@@ -54,6 +56,7 @@ public class ShapeFileService {
     @GET
     @Path("/multiple/{ids}")
     @Produces("application/json")
+    @GZIP
     public List<Shape> getMultipleFile(
             @PathParam("ids") String ids,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
