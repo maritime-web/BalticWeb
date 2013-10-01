@@ -23,33 +23,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {RestClientFactory.class, PropertyFileService.class})
-public class DmiSejlRuteTest {
+public class DmiSejlRuteServiceTest {
     @Inject
     DmiSejlRuteService dmiSejlRuteService;
 
     @Ignore
     @Test
     public void test() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.000Z");
-
         DmiSejlRuteService.SejlRuteRequest request = new DmiSejlRuteService.SejlRuteRequest();
         request.setMssi(999999999);
         request.setDatatypes(new String[]{"sealevel", "current", "wave", "wind", "density"});
         request.setDt(15);
 
         DmiSejlRuteService.Waypoint wp1 = new DmiSejlRuteService.Waypoint();
-        wp1.setEta(sdf.format(new Date(System.currentTimeMillis() + 1000L * 3600 * 0)));
+        wp1.setEta(DmiSejlRuteService.DATE_FORMAT.format(new Date(System.currentTimeMillis() + 1000L * 3600 * 0)));
         wp1.setHeading("RL");
         wp1.setLat(55.70816666666666);
         wp1.setLon(12.3115);
 
         DmiSejlRuteService.Waypoint wp2 = new DmiSejlRuteService.Waypoint();
-        wp2.setEta(sdf.format(new Date(System.currentTimeMillis() + 1000L * 3600 * 3)));
+        wp2.setEta(DmiSejlRuteService.DATE_FORMAT.format(new Date(System.currentTimeMillis() + 1000L * 3600 * 3)));
         wp2.setHeading("RL");
         wp2.setLat(55.725183333333334);
         wp2.setLon(12.648666666666667);
