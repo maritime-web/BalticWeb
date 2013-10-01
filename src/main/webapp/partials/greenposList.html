@@ -12,23 +12,23 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Report type <span></span></th>
-							<th>Ship name</th>
-							<th>Mmsi</th>
-							<th>Call sign</th>
+							<th x-sort="type" options="{options}">Report type</th>
+							<th x-sort="name" options="options">Ship name</th>
+							<th x-sort="mmsi" options="options">Mmsi</th>
+							<th x-sort="callSign" options="options">Call sign</th>
 							<th>Longitude</th>
 							<th>Latitude</th>
 							<th>Course</th>
 							<th>Speed</th>
-							<th>Report time</th>
-							<th>Reported by</th>
+							<th x-sort="ts" options="sortOptions">Report time</th>
+							<th x-sort="reporter" options="sortOptions">Reported by</th>
 						</tr>
 					</thead>
 
 					<tbody>
 						<tr x-ng-repeat="report in reports">
 							<td ><a x-ng-href="report.html#/report/view/{{report.id}}">{{reportText(report.type)}}</a></td>
-							<td><a x-ng-href="report.html#/ship/view/{{report.mmsi}})">{{report.shipName}}</a></td>
+							<td>{{report.shipName}}</td>
 							<td>{{report.mmsi}}</td>
 							<td>{{report.callSign}}</td>
 							<td>{{report.lon}}</td>

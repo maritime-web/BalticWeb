@@ -12,7 +12,8 @@
 
     var greenposModule = angular.module('embryo.greenpos', [ 'embryo.voyageService', 'embryo.greenposService',
             'embryo.shipService' ]);
-
+    
+    
     /*
      * Inspired by http://jsfiddle.net/zbjLh/2/
      */
@@ -288,8 +289,56 @@
         };
     };
 
+    greenposModule.directive('sort', function() {
+        return {
+            restrict : 'A',
+            scope : {
+                options : '@', 
+                sort : '='
+            },
+            link : function(scope, element, attrs) {
+                var sort, order;
+
+                element.bind('click', function() {
+                    console.log(scope.sort);
+                    console.log(scope.order);
+                    console.log(attrs.sort);
+                    
+                    if(!scope.sort || scope.sort != attrs.sort){
+                        scope.sort = attrs.sort;
+                        scope.order = attrs.options && attrs.options.defaultorder ? attrs.options.defaultorder : 'DESC';
+                        element.find('i').addClass('icon-chevron-up');
+                    }else{
+                        console.log('else');
+                        scope.order = (scope.order == 'ASC' ? 'DESC' : 'ASC');
+                        element.find('i').toggleClass('icon-chevron-up icon-chevron-down');
+                    }
+                    
+                    console.log(order);
+                    
+                    console.log(scope.options);
+                    console.log(attrs.options);
+                    scope.options.fnSort(sort, order);
+                });
+                
+                scope.$watch('sort', function(newValue){
+//                    elem.find('i').toggleClass('');
+                    console.log('wathcing:' + newValue);
+                });
+                
+                element.append(' <i class="" style="vertical-align: middle; margin-bottom: 4px">');
+            }
+        };
+    });
+    
     embryo.GreenposListCtrl = function($scope, GreenposService) {
         $scope.max = 20;
+        
+        $scope.options = {
+                fnSort : function(sort, order){
+                    console.log('fnSort' + sort + order);
+                }
+        };
 
         GreenposService.findReports({
             start : 0,
