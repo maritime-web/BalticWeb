@@ -38,7 +38,9 @@ import dk.dma.embryo.rest.json.GreenPos;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@NamedQueries({ @NamedQuery(name = "GreenPosReport:findLatest", query = "SELECT DISTINCT g FROM GreenPosReport g where g.shipMaritimeId = :shipMaritimeId ORDER By g.ts ASC") })
+@NamedQueries({
+        @NamedQuery(name = "GreenPosReport:findLatest", query = "SELECT DISTINCT g FROM GreenPosReport g where g.shipMaritimeId = :shipMaritimeId ORDER By g.ts ASC"),
+        @NamedQuery(name = "GreenPosReport:findById", query = "SELECT g FROM GreenPosReport g where g.enavId = :id") })
 public abstract class GreenPosReport extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -203,5 +205,4 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         this.ts = ts;
     }
 
-    
 }

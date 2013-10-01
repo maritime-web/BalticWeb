@@ -12,7 +12,8 @@
 
     var greenposModule = angular.module('embryo.greenpos', [ 'embryo.voyageService', 'embryo.greenposService',
             'embryo.shipService' ]);
-
+    
+    
     /*
      * Inspired by http://jsfiddle.net/zbjLh/2/
      */
@@ -47,7 +48,50 @@
         };
     });
 
-    embryo.GreenPosCtrl = function($scope, ShipService, VoyageService, GreenposService, AisRestService) {
+    embryo.GreenPosCtrl = function($scope, $routeParams, ShipService, VoyageService, GreenposService, AisRestService,
+            $timeout) {
+        $scope.editable = true;
+
+        $scope.report = {
+            type : "SP",
+        };
+        
+        $scope.$on('$viewContentLoaded', function() {
+            if (!$scope.map) {
+                // postpone map loading sligtly, to let the resize directive set
+                // the
+                // sizes of the map container divs, before map loading. If not
+                // done,
+                // the
+                // map is not loaded in correct size
+                $timeout(function() {
+                    $scope.loadMap();
+                }, 50);
+            }
+        });
+
+        if ($routeParams.id) {
+            $scope.editable = false;
+
+            GreenposService.get($routeParams.id, function(report) {
+                $scope.report = report;
+            });
+            
+
+        } else {
+            ShipService.getYourShip(function(yourShip) {
+                $scope.report.mmsi = yourShip.mmsi;
+                $scope.report.callSign = yourShip.callSign;
+                $scope.report.shipName = yourShip.name;
+                $scope.report.shipMaritimeId = yourShip.maritimeId;
+            });
+
+            VoyageService.getYourActive(function(voyage) {
+                $scope.report.destination = voyage.berthName;
+                $scope.report.etaOfArrival = voyage.arrival;
+                $scope.report.personsOnBoard = voyage.personsOnBoard;
+            });
+        }
 
         $scope.projection = "EPSG:4326";
 
@@ -58,38 +102,18 @@
             "DR" : [ "deviation" ]
         };
 
-        $scope.report = {
-            type : "SP",
+        $scope.getLatLon = function() {
+            return {
+                lat : $scope.report.lat,
+                lon : $scope.report.lon
+            };
         };
 
-        ShipService.getYourShip(function(yourShip) {
-            $scope.report.mmsi = yourShip.mmsi;
-            $scope.report.callSign = yourShip.callSign;
-            $scope.report.shipName = yourShip.name;
-            $scope.report.shipMaritimeId = yourShip.maritimeId;
-        });
-
-        VoyageService.getYourActive(function(voyage) {
-            $scope.report.destination = voyage.berthName;
-            $scope.report.etaOfArrival = voyage.arrival;
-            $scope.report.personsOnBoard = voyage.personsOnBoard;
-        });
-
-        $scope.$on('$viewContentLoaded', function() {
-            if (!$scope.map) {
-                // postpone map loading sligtly, to let the resize directive set
-                // the
-                // sizes of the map container divs, before map loading. If not
-                // done,
-                // the
-                // map is not loaded in correct size
-                setTimeout(function() {
-                    $scope.$apply(function() {
-                        $scope.loadMap();
-                    });
-                }, 100);
+        $scope.$watch($scope.getLatLon, function(newValue, oldValue) {
+            if (newValue.lat && newValue.lon) {
+                $scope.setPositionOnMap(newValue.lat, newValue.lon);
             }
-        });
+        }, true);
 
         $scope.isVisible = function(fieldName) {
             if (!$scope.report || !$scope.report.type) {
@@ -101,10 +125,6 @@
         };
 
         // can speed and course be preset with ais data?
-
-        $scope.isShip = function() {
-            return true;
-        };
 
         $scope.sendReport = function() {
             $scope.message = null;
@@ -122,73 +142,62 @@
 
         };
 
-        $scope.getLatLon = function() {
-            return {
-                lat : $scope.report.lat,
-                lon : $scope.report.lon
-            };
-        };
-
-        $scope.$watch($scope.getLatLon, function(newValue, oldValue) {
-            if (newValue.lat && newValue.lon) {
-                $scope.setPositionOnMap(newValue.lat, newValue.lon);
-            }
-        }, true);
-
-        $scope.getShip = function() {
-            return {
-                maritimeId : $scope.report.shipMaritimeId,
-                name : $scope.report.shipName,
-                mmsi : $scope.report.mmsi,
-                callSign : $scope.report.callSign
-            };
-        };
-
-        $scope.$watch($scope.getShip, function(newValue, oldValue) {
-            if (newValue.mmsi) {
-                var searchResult = AisRestService.findVesselsByMmsi({
-                    mmsi : newValue.mmsi
-                }, function() {
-                    var vessels = [];
-                    for ( var vesselId in searchResult.vessels) {
-                        var vesselJSON = searchResult.vessels[vesselId];
-                        var vessel = new Vessel(vesselId, vesselJSON, 1);
-                        vessels.push(vessel);
-                    }
-                    $scope.setVesselsOnMap(vessels);
-                });
-            }
-        }, true);
-
-        $scope.setVesselsOnMap = function(vessels) {
-            var features = [];
-            for ( var index in vessels) {
-                var value = vessels[index];
-                var attr = {
-                    id : value.id,
-                    angle : value.degree - 90,
-                    opacity : 1,
-                    image : "img/" + value.image,
-                    imageWidth : value.imageWidth,
-                    imageHeight : value.imageHeight,
-                    imageYOffset : value.imageYOffset,
-                    imageXOffset : value.imageXOffset,
-                    type : "vessel",
-                    vessel : value
+        if ($scope.editable) {
+            $scope.getShip = function() {
+                return {
+                    maritimeId : $scope.report.shipMaritimeId,
+                    name : $scope.report.shipName,
+                    mmsi : $scope.report.mmsi,
+                    callSign : $scope.report.callSign
                 };
+            };
 
-                // transform from WGS 1984 to Spherical Mercator Projection
-                var geom = new OpenLayers.Geometry.Point(value.lon, value.lat).transform(new OpenLayers.Projection(
-                        $scope.projection), $scope.map.getProjectionObject());
+            $scope.$watch($scope.getShip, function(newValue, oldValue) {
+                if (newValue.mmsi) {
+                    var searchResult = AisRestService.findVesselsByMmsi({
+                        mmsi : newValue.mmsi
+                    }, function() {
+                        var vessels = [];
+                        for ( var vesselId in searchResult.vessels) {
+                            var vesselJSON = searchResult.vessels[vesselId];
+                            var vessel = new Vessel(vesselId, vesselJSON, 1);
+                            vessels.push(vessel);
+                        }
+                        $scope.setVesselsOnMap(vessels);
+                    });
+                }
+            }, true);
 
-                // Use styled vector points
-                features.push(new OpenLayers.Feature.Vector(geom, attr));
-            }
+            $scope.setVesselsOnMap = function(vessels) {
+                var features = [];
+                for ( var index in vessels) {
+                    var value = vessels[index];
+                    var attr = {
+                        id : value.id,
+                        angle : value.degree - 90,
+                        opacity : 1,
+                        image : "img/" + value.image,
+                        imageWidth : value.imageWidth,
+                        imageHeight : value.imageHeight,
+                        imageYOffset : value.imageYOffset,
+                        imageXOffset : value.imageXOffset,
+                        type : "vessel",
+                        vessel : value
+                    };
 
-            $scope.vesselLayer.removeAllFeatures();
-            $scope.vesselLayer.addFeatures(features);
-            $scope.vesselLayer.refresh();
-        };
+                    // transform from WGS 1984 to Spherical Mercator Projection
+                    var geom = new OpenLayers.Geometry.Point(value.lon, value.lat).transform(new OpenLayers.Projection(
+                            $scope.projection), $scope.map.getProjectionObject());
+
+                    // Use styled vector points
+                    features.push(new OpenLayers.Feature.Vector(geom, attr));
+                }
+
+                $scope.vesselLayer.removeAllFeatures();
+                $scope.vesselLayer.addFeatures(features);
+                $scope.vesselLayer.refresh();
+            };
+        }
 
         $scope.loadMap = function() {
             $scope.map = new OpenLayers.Map({
@@ -252,6 +261,10 @@
 
             var center = $scope.transformPosition(initialLon, initialLat);
             $scope.map.setCenter(center, initialZoom);
+            
+            if($scope.report.lat && $scope.report.lon){
+                $scope.setPositionOnMap($scope.report.lat, $scope.report.lon);
+            }
         };
 
         $scope.setPositionOnMap = function(latitude, longitude) {
@@ -276,39 +289,86 @@
         };
     };
 
+    greenposModule.directive('sort', function() {
+        return {
+            restrict : 'A',
+            scope : {
+                options : '@', 
+                sort : '='
+            },
+            link : function(scope, element, attrs) {
+                var sort, order;
+
+                element.bind('click', function() {
+                    console.log(scope.sort);
+                    console.log(scope.order);
+                    console.log(attrs.sort);
+                    
+                    if(!scope.sort || scope.sort != attrs.sort){
+                        scope.sort = attrs.sort;
+                        scope.order = attrs.options && attrs.options.defaultorder ? attrs.options.defaultorder : 'DESC';
+                        element.find('i').addClass('icon-chevron-up');
+                    }else{
+                        console.log('else');
+                        scope.order = (scope.order == 'ASC' ? 'DESC' : 'ASC');
+                        element.find('i').toggleClass('icon-chevron-up icon-chevron-down');
+                    }
+                    
+                    console.log(order);
+                    
+                    console.log(scope.options);
+                    console.log(attrs.options);
+                    scope.options.fnSort(sort, order);
+                });
+                
+                scope.$watch('sort', function(newValue){
+//                    elem.find('i').toggleClass('');
+                    console.log('wathcing:' + newValue);
+                });
+                
+                element.append(' <i class="" style="vertical-align: middle; margin-bottom: 4px">');
+            }
+        };
+    });
+    
     embryo.GreenposListCtrl = function($scope, GreenposService) {
         $scope.max = 20;
         
+        $scope.options = {
+                fnSort : function(sort, order){
+                    console.log('fnSort' + sort + order);
+                }
+        };
+
         GreenposService.findReports({
             start : 0,
             max : $scope.max,
-            sort: 'time'
+            sort : 'time'
         }, function(reports) {
             $scope.reports = reports;
         });
 
-        $scope.utc = function(dateValue){
+        $scope.utc = function(dateValue) {
             var date = new Date(dateValue);
             date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
             return date;
         };
 
-        $scope.reportText = function(type){
-            if(type === 'SP'){
+        $scope.reportText = function(type) {
+            if (type === 'SP') {
                 return 'Sailing plan';
             }
-            if(type === 'DR'){
+            if (type === 'DR') {
                 return 'Deviation';
             }
-            if(type === 'FR'){
+            if (type === 'FR') {
                 return 'Final';
             }
-            if(type === 'PR'){
+            if (type === 'PR') {
                 return 'Position';
             }
             return null;
         };
-    
     };
 
 }());

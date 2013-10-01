@@ -21,6 +21,8 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 public class GreenPos {
 
+    private String id;
+
     private String type;
 
     private String shipName;
@@ -216,5 +218,13 @@ public class GreenPos {
 
     public void setTs(Long reportedTs) {
         this.ts = reportedTs;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -22,7 +22,7 @@ public class AuthorityRole extends Role {
     private static final long serialVersionUID = 1L;
 
     public AuthorityRole() {
-
+        super("authority");
     }
 
 }

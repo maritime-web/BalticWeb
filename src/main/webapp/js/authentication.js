@@ -129,5 +129,29 @@ embryo.ready(function() {
                 }
             }
         });
-    }
+    }    
 });
+
+(function() {
+    "use strict";
+
+    var userModule = angular.module('embryo.UserService', []);
+
+    userModule.factory('UserService', function() {
+        return {
+            isPermitted : function(permission) {
+                var index, permissions = embryo.authentication.permissions;
+                
+                for(index in permissions){
+                    if(permissions[index] == permission){
+                        return true;
+                    }
+                }
+                return false;
+            }
+       };
+    });
+
+}());
+
+

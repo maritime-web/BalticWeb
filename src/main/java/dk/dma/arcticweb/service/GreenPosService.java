@@ -32,4 +32,6 @@ public interface GreenPosService{
     String saveReport(GreenPosReport report);
     
     List<GreenPosReport> findReports(GreenposSearch search);
+
+    GreenPosReport get(String id);
 }

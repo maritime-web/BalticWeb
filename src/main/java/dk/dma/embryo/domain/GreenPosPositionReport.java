@@ -59,6 +59,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     @Override
     public GreenPos toJsonModel() {
         GreenPos result = new GreenPos();
+        result.setId(getEnavId());
         result.setType(getReportType());
         result.setShipName(getShipName());
         result.setShipMaritimeId(getShipMaritimeId());

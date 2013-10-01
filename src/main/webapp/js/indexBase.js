@@ -13,6 +13,12 @@
     embryo.angular = angular.module('embryo', [ 'embryo.shipInformation', 'embryo.voyagePlan', 'embryo.routeEdit',
             'embryo.routeUpload', 'embryo.greenpos', 'embryo.reportControl' ]);
     // , 'ui.bootstrap'
+    
+    embryo.AppReportController = function($scope, $window){
+        $scope.back = function(){
+            $window.history.back();
+        };
+    };
 
     embryo.angular.config([ '$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
@@ -41,6 +47,9 @@
             templateUrl : 'partials/greenposList.html',
             controller : embryo.GreenposListCtrl
         }).when('/report', {
+            templateUrl : 'partials/greenposReport.html',
+            controller : embryo.GreenPosCtrl
+        }).when('/report/view/:id', {
             templateUrl : 'partials/greenposReport.html',
             controller : embryo.GreenPosCtrl
         }).otherwise({

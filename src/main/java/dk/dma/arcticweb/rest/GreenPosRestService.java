@@ -84,21 +84,46 @@ public class GreenPosRestService {
     }
 
     @GET
+    @Path("/{id}")
+    @Produces("application/json")
+    public GreenPos get(@PathParam("id") String id) {
+        logger.debug("get({})", id);
+
+        GreenPosReport report = reportingService.get(id);
+
+        GreenPos result = report.toJsonModel();
+
+        logger.debug("get() - {}", result);
+        return result;
+    }
+
+    @GET
     @Path("/list")
     @Produces("application/json")
     public GreenPos[] list(@QueryParam("name") String type, @QueryParam("name") String name,
             @QueryParam("mmsi") Long mmsi, @QueryParam("callSign") String callSign,
             @QueryParam("reporter") String reporter, @QueryParam("ts") String ts, @QueryParam("sortBy") String sortBy,
-            @QueryParam("sortOrder") String sortOrder, @QueryParam("start") Integer start, @QueryParam("max") Integer max) {
+            @QueryParam("sortOrder") String sortOrder, @QueryParam("start") Integer start,
+            @QueryParam("max") Integer max) {
         logger.debug("list({})");
 
         LocalDateTime dateTime = null;
         if (ts != null && ts.trim().length() > 0) {
-            dateTime = DateTimeConverter.getDateTimeConverter().toObject(ts);
+            try {
+                long lts = Long.parseLong(ts);
+                dateTime = new LocalDateTime(lts);
+
+            } catch (NumberFormatException e) {
+                dateTime = DateTimeConverter.getDateTimeConverter().toObject(ts);
+            }
         }
 
-        List<GreenPosReport> reports = reportingService.findReports(new GreenposSearch(type, name, mmsi, callSign,
-                reporter, dateTime, sortBy, sortOrder, start, max));
+        GreenposSearch search = new GreenposSearch(type, name, mmsi, callSign, reporter, dateTime, sortBy, sortOrder,
+                start, max);
+
+        logger.debug("Searching with {}", search);
+
+        List<GreenPosReport> reports = reportingService.findReports(search);
 
         GreenPos[] result = GreenPosReport.toJsonModel(reports);
 

@@ -17,6 +17,7 @@ package dk.dma.embryo.domain;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -34,6 +35,16 @@ public class SecuredUser extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;
 
+    // //////////////////////////////////////////////////////////////////////
+    // Entity fields (also see super class)
+    // //////////////////////////////////////////////////////////////////////
+
+    private String password;
+
+    private String userName;
+
+    private String email;
+
     public SecuredUser() {
     }
 
@@ -47,16 +58,6 @@ public class SecuredUser extends BaseEntity<Long> {
         setEmail(email);
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Entity fields (also see super class)
-    // //////////////////////////////////////////////////////////////////////
-
-    private String password;
-
-    private String userName;
-
-    private String email;
-
     //@ManyToMany(mappedBy = "users")
     //private Set<Permission> permissions;
 
@@ -66,15 +67,47 @@ public class SecuredUser extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // business logic
     // //////////////////////////////////////////////////////////////////////
+    public Role getRole(String name){
+        for(Role role : roles){
+            if(role.getLogicalName().equals(name)){
+                return role;
+            }
+        }
+        
+        return null;
+    }
 
+    // TODO For now we only expect one of each role type
+    // with time this will not hold and the implementation must be changed. 
+    public <R extends Role> R getRole(Class<R> type){
+        for(Role role : roles){
+            if(role.getClass() == type){
+                return (R)role;
+            }
+        }
+        
+        return null;
+    
+    }
+    
+    public Set<Permission> getPermissions(){
+        Set<Permission> permissions = new HashSet<Permission>();
+        
+        for(Role role : getRoles()){
+            permissions.addAll(role.getPermissions());
+        }
+        
+        return permissions;
+    }
     // //////////////////////////////////////////////////////////////////////
-    // Utility methods
+    // Object methods
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
         return "SecuredUser [password=" + password + ", userName=" + userName + ", id=" + id + "]";
     }
-    
+
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -114,26 +147,5 @@ public class SecuredUser extends BaseEntity<Long> {
         roles.add(role);
         role.users.add(this);
     }
-    
-    public Role getRole(String name){
-        for(Role role : roles){
-            if(role.getLogicalName().equals(name)){
-                return role;
-            }
-        }
-        
-        return null;
-    }
 
-    // TODO For now we only expect one of each role type
-    // with time this will not hold and the implementation must be changed. 
-    public <R extends Role> R getRole(Class<R> type){
-        for(Role role : roles){
-            if(role.getClass() == type){
-                return (R)role;
-            }
-        }
-        
-        return null;
-    }
 }

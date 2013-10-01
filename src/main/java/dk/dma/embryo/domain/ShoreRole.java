@@ -24,5 +24,4 @@ public class ShoreRole extends Role {
     public ShoreRole() {
         super("shore");
     }
-
 }

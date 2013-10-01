@@ -27,5 +27,7 @@ public interface GreenPosDao extends Dao {
 
     List<GreenPosReport> find(GreenposSearch search);
 
+    GreenPosReport findById(String id);
+
     GreenPosReport findLatest(String shipMaritimeId);
 }
