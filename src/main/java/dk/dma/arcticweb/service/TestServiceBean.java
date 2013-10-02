@@ -50,6 +50,7 @@ import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.ShoreRole;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.rest.util.DateTimeConverter;
@@ -124,6 +125,7 @@ public class TestServiceBean {
         createSarfaqTestData();
         uploadSarfaqRoutes();
         
+        createArcticCommandLogin();
         createGreenposReports();
     }
 
@@ -373,6 +375,39 @@ public class TestServiceBean {
                 false);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createArcticCommandLogin(){
+        logger.info("BEFORE CREATION - Arctic Command");
+
+        // Create ship and user
+        Permission ais = new Permission("ais");
+        Permission ice = new Permission("ice");
+        Permission msi = new Permission("msi");
+        Permission assistance = new Permission("assistance");
+        Permission greenpos = new Permission("greenpos");
+
+        shipDao.saveEntity(ais);
+        shipDao.saveEntity(ice);
+        shipDao.saveEntity(msi);
+        shipDao.saveEntity(assistance);
+        shipDao.saveEntity(greenpos);
+
+        ShoreRole role = new ShoreRole();
+        role.add(ais);
+        role.add(ice);
+        role.add(msi);
+        role.add(assistance);
+        role.add(greenpos);
+
+        shipDao.saveEntity(role);
+
+        SecuredUser user = new SecuredUser("arcticCommand", "qwerty", "obo@dma.dk");
+        user.addRole(role);
+
+        shipDao.saveEntity(user);
+        
+    }
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createGreenposReports() {
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
