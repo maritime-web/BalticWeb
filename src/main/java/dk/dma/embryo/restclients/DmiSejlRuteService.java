@@ -32,19 +32,7 @@ public interface DmiSejlRuteService {
     @Path("/SR")
     SejlRuteResponse sejlRute(@FormParam("req") SejlRuteRequest request);
 
-    public static class WindDir {
-        private double forecast;
-
-        public double getForecast() {
-            return forecast;
-        }
-
-        public void setForecast(double forecast) {
-            this.forecast = forecast;
-        }
-    }
-
-    public static class WindSpeed {
+    public static class ForecastValue {
         private double forecast;
 
         public double getForecast() {
@@ -61,10 +49,23 @@ public interface DmiSejlRuteService {
         private double lat;
         private double lon;
         private String time;
+        
         @JsonProperty("wind-dir")
-        private WindDir windDir;
+        private ForecastValue windDir;
         @JsonProperty("wind-speed")
-        private WindSpeed windSpeed;
+        private ForecastValue windSpeed;
+        @JsonProperty("current-dir")
+        private ForecastValue currentDir;
+        @JsonProperty("current-speed")
+        private ForecastValue currentSpeed;
+        @JsonProperty("wave-dir")
+        private ForecastValue waveDir;
+        @JsonProperty("wave-height")
+        private ForecastValue waveHeight;
+        @JsonProperty("wave-period")
+        private ForecastValue wavePeriod;
+        @JsonProperty("sealevel")
+        private ForecastValue sealevel;
 
         public double getLat() {
             return lat;
@@ -90,20 +91,68 @@ public interface DmiSejlRuteService {
             this.time = time;
         }
 
-        public WindDir getWindDir() {
+        public ForecastValue getWindDir() {
             return windDir;
         }
 
-        public void setWindDir(WindDir windDir) {
+        public void setWindDir(ForecastValue windDir) {
             this.windDir = windDir;
         }
 
-        public WindSpeed getWindSpeed() {
+        public ForecastValue getWindSpeed() {
             return windSpeed;
         }
 
-        public void setWindSpeed(WindSpeed windSpeed) {
+        public void setWindSpeed(ForecastValue windSpeed) {
             this.windSpeed = windSpeed;
+        }
+
+        public ForecastValue getCurrentDir() {
+            return currentDir;
+        }
+
+        public void setCurrentDir(ForecastValue currentDir) {
+            this.currentDir = currentDir;
+        }
+
+        public ForecastValue getCurrentSpeed() {
+            return currentSpeed;
+        }
+
+        public void setCurrentSpeed(ForecastValue currentSpeed) {
+            this.currentSpeed = currentSpeed;
+        }
+
+        public ForecastValue getWaveDir() {
+            return waveDir;
+        }
+
+        public void setWaveDir(ForecastValue waveDir) {
+            this.waveDir = waveDir;
+        }
+
+        public ForecastValue getWaveHeight() {
+            return waveHeight;
+        }
+
+        public void setWaveHeight(ForecastValue waveHeight) {
+            this.waveHeight = waveHeight;
+        }
+
+        public ForecastValue getWavePeriod() {
+            return wavePeriod;
+        }
+
+        public void setWavePeriod(ForecastValue wavePeriod) {
+            this.wavePeriod = wavePeriod;
+        }
+
+        public ForecastValue getSealevel() {
+            return sealevel;
+        }
+
+        public void setSealevel(ForecastValue sealevel) {
+            this.sealevel = sealevel;
         }
     }
 

@@ -15,15 +15,16 @@
  */
 package dk.dma.embryo.restclients;
 
-import dk.dma.configuration.PropertyFileService;
+import java.util.Date;
+
+import javax.inject.Inject;
+
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
-import java.util.Date;
+import dk.dma.configuration.PropertyFileService;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {RestClientFactory.class, PropertyFileService.class})
@@ -31,7 +32,6 @@ public class DmiSejlRuteServiceTest {
     @Inject
     DmiSejlRuteService dmiSejlRuteService;
 
-    @Ignore
     @Test
     public void test() {
         DmiSejlRuteService.SejlRuteRequest request = new DmiSejlRuteService.SejlRuteRequest();
@@ -52,6 +52,8 @@ public class DmiSejlRuteServiceTest {
         wp2.setLon(12.648666666666667);
         request.setWaypoints(new DmiSejlRuteService.Waypoint[]{wp1, wp2});
 
+        System.out.println(request);
+        
         DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
         System.out.println("" + sejlRuteResponse);
     }

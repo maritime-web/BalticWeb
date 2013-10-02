@@ -69,7 +69,35 @@ embryo.vesselInformation = {
         $("#aesModal").modal("show");
     }
 }
-var module = angular.module('embryo.vesselControl', ['embryo.selectedShip', 'embryo.reportComp']);
+var module = angular.module('embryo.vesselControl', ['embryo.selectedShip', 'embryo.reportComp', 'embryo.metoc']);
+
+embryo.VesselControl = function($scope, MetocService, RouteService){
+
+    $scope.metocTxt = 'NOT SHOWN';
+    $scope.metocLabel = '';
+    $scope.metocLinkTxt = 'view';
+
+    $scope.toggleShowMetoc = function() {
+        if ($scope.metocLinkTxt === 'view') {
+            
+            RouteService.getYourActive(embryo.authentication.shipMmsi, function(route){
+                MetocService.getMetoc(route.id, function(metoc) {
+                    $scope.metoc = metoc;
+                    embryo.metoc.draw(metoc);
+                });
+            });
+            $scope.metocTxt = 'SHOWN';
+            $scope.metocLabel = 'label-success';
+            $scope.metocLinkTxt = 'hide';
+        } else {
+            $scope.metocTxt = 'NOT SNOWN';
+            $scope.metocLabel = '';
+            $scope.metocLinkTxt = 'view';
+            embryo.metoc.remove($scope.metoc);
+        }
+    };
+
+};
 
 $(function() {
     var shipSelected = false;

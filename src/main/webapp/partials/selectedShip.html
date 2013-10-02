@@ -21,6 +21,12 @@
 			<td><a x-ng-click="toggleShow()" x-ng-show="routeLinkTxt">{{routeLinkTxt}}</a></td>
 		</tr>
 
+        <tr>
+			<th>METOC</th>
+			<td><span x-ng-class="metocLabel" class="label">{{metocTxt}}</span></td>
+			<td><a x-ng-click="toggleShowMetoc()" x-ng-show="metocLinkTxt">{{metocLinkTxt}}</a></td>
+		</tr>
+
         <tr id="viewDistanceCircleSog">
             <th>3-6-9 hour distance circle based on SOG</th>
             <td><span class="label"></span></td>

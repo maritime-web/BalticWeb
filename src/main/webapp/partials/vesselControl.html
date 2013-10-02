@@ -15,7 +15,7 @@
 	</div>
 </div>
 
-<div id="vesselControlPanel" class="controlPanel">
+<div id="vesselControlPanel" class="controlPanel" x-ng-controller="embryo.VesselControl">
 	<div class="accordion" id="ycpAccordion">
 		<div class="accordion-group">
 			<div class="accordion-heading">
@@ -33,6 +33,17 @@
 					</div>
 
 					<div x-ng-include="'partials/reportComp.html'"></div>
+
+					<h4>Additional Information</h4>
+
+					<table class="table table-condensed">
+						<tr>
+							<th>METOC</th>
+							<td><span x-ng-class="metocLabel" class="label">{{metocTxt}}</span></td>
+							<td><a x-ng-click="toggleShowMetoc()" x-ng-show="metocLinkTxt">{{metocLinkTxt}}</a></td>
+						</tr>
+					</table>
+
 				</div>
 			</div>
 		</div>
