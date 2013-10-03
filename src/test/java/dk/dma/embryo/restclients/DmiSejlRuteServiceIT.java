@@ -28,7 +28,7 @@ import dk.dma.configuration.PropertyFileService;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {RestClientFactory.class, PropertyFileService.class})
-public class DmiSejlRuteServiceTest {
+public class DmiSejlRuteServiceIT {
     @Inject
     DmiSejlRuteService dmiSejlRuteService;
 
