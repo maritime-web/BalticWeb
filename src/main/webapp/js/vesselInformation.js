@@ -114,7 +114,7 @@ $(function() {
     }
 
     function formatHour(hour) {
-        return Math.floor(hour) + ":" + (60 * (hour - Math.floor(hour))).toFixed(0);
+        return Math.floor(hour) + ":" + (0.6 * (hour - Math.floor(hour))).toFixed(2).substring(2);
     }
 
     /**
