@@ -34,6 +34,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 
+import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ShipDao;
 import dk.dma.embryo.domain.AuthorityRole;
 import dk.dma.embryo.domain.Berth;
@@ -58,6 +59,9 @@ import dk.dma.embryo.rest.util.DateTimeConverter;
 @Singleton
 @Startup
 public class TestServiceBean {
+
+    @Inject
+    RealmDao realmDao;
 
     @EJB
     private ShipDao shipDao;
@@ -124,7 +128,11 @@ public class TestServiceBean {
         uploadOraTankRoutes();
         createSarfaqTestData();
         uploadSarfaqRoutes();
-        
+        createCarnivalLegendTestData();
+        uploadCarnivalLegendRoutes();
+
+        createDmiLogin();
+        createIceCenterLogin();
         createArcticCommandLogin();
         createGreenposReports();
     }
@@ -376,7 +384,62 @@ public class TestServiceBean {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    private void createArcticCommandLogin(){
+    private void createCarnivalLegendTestData() {
+        logger.info("BEFORE CREATION - CARNIVAL LEGEND");
+
+        // Create ship and user
+        Ship newShip = new Ship();
+        newShip.setName("CARNIVAL LEGEND");
+        newShip.setMmsi(354237000L);
+        newShip.setCallsign("H3VT");
+        newShip.setImoNo(9224726L);
+        newShip.setLength(293);
+        newShip.setWidth(32);
+        newShip.setGrossTonnage(85942);
+        newShip = shipDao.saveEntity(newShip);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        shipDao.saveEntity(ais);
+        shipDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setShip(newShip);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        shipDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("carnivalLegend", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        shipDao.saveEntity(user);
+
+        LocalDateTime now = LocalDateTime.now();
+        VoyagePlan voyagePlan = new VoyagePlan();
+        newShip.setVoyagePlan(voyagePlan);
+
+        voyagePlan.addVoyageEntry(new Voyage("Copenhagen", "55 67.61N", "12 56.83E", null, now.withTime(12, 57, 0, 0),
+                300, true));
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(10).withTime(7, 10, 0, 0),
+                null));
+
+        // firstDeparture.
+
+        shipDao.saveEntity(voyagePlan);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void uploadCarnivalLegendRoutes() {
+        logger.info("BEFORE UPLOAD - CARNIVAL LEGEND");
+
+        VoyagePlan voyagePlan = shipService.getVoyagePlan(354237000L);
+        insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/CARNIVAL-LEGEND-Cph-Nuuk.txt", true);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createArcticCommandLogin() {
         logger.info("BEFORE CREATION - Arctic Command");
 
         // Create ship and user
@@ -405,9 +468,66 @@ public class TestServiceBean {
         user.addRole(role);
 
         shipDao.saveEntity(user);
-        
     }
-    
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createDmiLogin() {
+        logger.info("BEFORE CREATION - DMI");
+
+        // Create ship and user
+        Permission ais = new Permission("ais");
+        Permission ice = new Permission("ice");
+        Permission msi = new Permission("msi");
+        Permission assistance = new Permission("assistance");
+
+        shipDao.saveEntity(ais);
+        shipDao.saveEntity(ice);
+        shipDao.saveEntity(msi);
+        shipDao.saveEntity(assistance);
+
+        ShoreRole role = new ShoreRole();
+        role.add(ais);
+        role.add(ice);
+        role.add(msi);
+        role.add(assistance);
+
+        shipDao.saveEntity(role);
+
+        SecuredUser user = new SecuredUser("dmi", "qwerty", "obo@dma.dk");
+        user.addRole(role);
+
+        shipDao.saveEntity(user);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createIceCenterLogin() {
+        logger.info("BEFORE CREATION - Istjejenesten");
+
+        // Create ship and user
+        Permission ais = new Permission("ais");
+        Permission ice = new Permission("ice");
+        Permission msi = new Permission("msi");
+        Permission assistance = new Permission("assistance");
+
+        shipDao.saveEntity(ais);
+        shipDao.saveEntity(ice);
+        shipDao.saveEntity(msi);
+        shipDao.saveEntity(assistance);
+
+        ShoreRole role = new ShoreRole();
+        role.add(ais);
+        role.add(ice);
+        role.add(msi);
+        role.add(assistance);
+
+        shipDao.saveEntity(role);
+
+        SecuredUser user = new SecuredUser("iceCenter", "qwerty", "obo@dma.dk");
+        user.addRole(role);
+
+        shipDao.saveEntity(user);
+    }
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createGreenposReports() {
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
@@ -445,7 +565,6 @@ public class TestServiceBean {
         report.setTs(converter.toObject("19-09-2013 10:15"));
         shipDao.saveEntity(report);
 
-    
         ship = shipDao.getShipByCallsign("OYDK2");
 
         report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
@@ -459,11 +578,11 @@ public class TestServiceBean {
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("24-09-2013 16:02"));
         shipDao.saveEntity(report);
-        
+
         voyages = null;
         report = new GreenPosSailingPlanReport(ship.getName(), ship.getMmsi(), ship.getCallsign(),
-                ship.getMaritimeId(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150, "KYSTFART",
-                converter.toObject("26-09-2013 10:30"), 6, voyages);
+                ship.getMaritimeId(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150,
+                "KYSTFART", converter.toObject("26-09-2013 10:30"), 6, voyages);
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("24-09-2013 23:12"));
         shipDao.saveEntity(report);
@@ -474,8 +593,7 @@ public class TestServiceBean {
         report.setTs(converter.toObject("25-09-2013 00:00"));
         shipDao.saveEntity(report);
 
-
-}
+    }
 
     public void logExistingEntries() {
         logger.info("Permissions: {} ", shipDao.getAll(Permission.class));
