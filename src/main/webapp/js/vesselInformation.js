@@ -113,6 +113,10 @@ $(function() {
         return formatDate(dato) + " " + d.getHours()+":"+(""+(100+d.getMinutes())).slice(1,3);
     }
 
+    function formatHour(hour) {
+        return Math.floor(hour) + ":" + (60 * (hour - Math.floor(hour))).toFixed(0);
+    }
+
     /**
      * Draws the past track. If tracks are null, it will simply remove all tracks
      * and draw nothing.
@@ -236,6 +240,34 @@ $(function() {
         })
     });
 
+    var nearestLayer = new OpenLayers.Layer.Vector("Vessel - Nearest Layer - Line", {
+        styleMap: new OpenLayers.StyleMap({
+            "default": new OpenLayers.Style({
+                strokeWidth: 2,
+                strokeColor: "#f80",
+                strokeOpacity: 0.7
+            })
+        })
+    });
+
+    var nearestLayerLabels = new OpenLayers.Layer.Vector("Vessel - Nearest Layer - Labels", {
+        styleMap: new OpenLayers.StyleMap({
+            "default": new OpenLayers.Style({
+                label : "${label}",
+                fontColor : timeStampColor,
+                fontSize : timeStampFontSize,
+                fontFamily : timeStampFontFamily,
+                fontWeight : timeStampFontWeight,
+                labelAlign : "cm",
+                labelXOffset : 0,
+                labelYOffset : -15,
+                labelOutlineColor : "#fff",
+                labelOutlineWidth : 2,
+                labelOutline : 1
+            })
+        })
+    });
+
     embryo.map.add({
         group: "vessel",
         layer: timeStampsLayer,
@@ -250,6 +282,17 @@ $(function() {
         group: "vessel",
         layer: ringsLayer,
     });
+
+    embryo.map.add({
+        group: "vessel",
+        layer: nearestLayer,
+    });
+
+    embryo.map.add({
+        group: "vessel",
+        layer: nearestLayerLabels,
+    });
+
 
     /*embryo.map.add({
         group: "vessel",
@@ -274,11 +317,6 @@ $(function() {
                 $(id+" span").html("NOT AVAILABLE");
             }
         }
-
-        /*function(e) {
-            e.preventDefault();
-            alert("davs");
-        })*/
 
         $.ajax({
             url: embryo.baseUrl+detailsUrl,
@@ -306,6 +344,56 @@ $(function() {
                     embryo.map.zoomToExtent([ringsLayer]);
 
                 });
+
+                setupAdditionalInformation("#viewNearestShips", function(e) {
+                    e.preventDefault();
+
+                    nearestLayer.removeAllFeatures();
+                    nearestLayerLabels.removeAllFeatures();
+
+                    var vessels = [];
+
+                    $.each(embryo.vessel.allVessels(), function (k,v) {
+                        if (v.id != vessel.id) {
+                            var o = {
+                                distance : embryo.adt.measureDistanceGc(vessel.lon, vessel.lat, v.lon, v.lat),
+                                vessel : v
+                            }
+                            if (o.distance > 0) {
+                                vessels.push(o);
+                            }
+                        }
+                    });
+
+                    vessels.sort(function(a, b) {
+                        return a.distance - b.distance;
+                    });
+
+                    for (var i = 0; i < 5; i++) {
+                        var v = vessels[i];
+
+                        nearestLayer.addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([
+                            embryo.map.createPoint(vessel.lon, vessel.lat), embryo.map.createPoint(v.vessel.lon, v.vessel.lat)
+                        ]))]);
+
+                        var labelFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(
+                            v.vessel.lon, v.vessel.lat
+                            // (parseFloat(vessel.lon) + parseFloat(v.vessel.lon)) / 2, (parseFloat(vessel.lat) + parseFloat(v.vessel.lat)) / 2
+                        ));
+
+                        labelFeature.attributes = {
+                            label: v.distance.toFixed(1) + " km " + formatHour(v.distance / (result.sog * 1.852))+ " hours"
+                        }
+
+                        nearestLayerLabels.addFeatures([
+                            labelFeature
+                        ])
+                    }
+
+                    embryo.map.zoomToExtent([nearestLayer]);
+
+                });
+
             },
             error: function(data) {
                 // embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " loading vessel data.", type: "error" });
@@ -321,6 +409,8 @@ $(function() {
         $("a[href=#vcpSelectedShip]").html("Selected Ship");
         drawPastTrack(null);
         ringsLayer.removeAllFeatures();
+        nearestLayer.removeAllFeatures();
+        nearestLayerLabels.removeAllFeatures();
     });
 
     embryo.groupChanged(function(e) {

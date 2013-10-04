@@ -2,6 +2,21 @@ embryo.adt = {
 }
 
 $(function() {
+    embryo.adt.measureDistanceGc = function(lon1, lat1, lon2, lat2) {
+        // From http://www.movable-type.co.uk/scripts/latlong.html
+        var R = 6371; // km
+        var dLat = toRad(lat2-lat1);
+        var dLon = toRad(lon2-lon1);
+        var lat1 = toRad(lat1);
+        var lat2 = toRad(lat2);
+
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        return d;
+    }
+
     embryo.adt.createRing = function(longitude, latitude, radius, noRings) {
         var result = [];
         for (var l = 1; l <= noRings; l ++) {
