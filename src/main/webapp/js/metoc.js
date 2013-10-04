@@ -34,6 +34,15 @@ console.log('after');
 
 embryo.metoc = {};
 
+var defaultCurrentLow=1.0;
+var defaultCurrentMedium=2.0;
+var defaultCurrentWarnLimit=4.0;
+var defaultWaveLow=1.0;
+var defaultWaveMedium=2.0;
+var defaultWaveWarnLimit=3.0;
+var defaultWindWarnLimit=10.0;
+
+
 embryo.metoc.draw = function(metoc) {
     var index, attr, geom, forecast, features = [];
     console.log('drawing metoc');
@@ -130,11 +139,8 @@ embryo.metoc.initLayer = function() {
         graphic : function(feature){
             if(feature.attributes.type === 'wave'){
                 var waveHeight = feature.attributes.forecast.waveHeight;
-                var defaultWaveLow = 1;// TODO get default value
-                var defaultWaveMedium = 5; // TODO get default value
-                var waveWarnLimit = 100; // TODO get current warn limit
                 var markerDir = 'img/wave/mark';
-
+                
                 if(waveHeight >= 0 && waveHeight <= defaultWaveLow){
                     markerDir += "01";
                 } else if (waveHeight > defaultWaveLow && waveHeight <= defaultWaveMedium){
@@ -143,7 +149,7 @@ embryo.metoc.initLayer = function() {
                     markerDir += "03";
                 }
                 
-                if(waveHeight >= waveWarnLimit){
+                if(waveHeight >= defaultWaveWarnLimit){
                     markerDir += "red.png";
                 } else {
                     markerDir += ".png";
@@ -153,14 +159,8 @@ embryo.metoc.initLayer = function() {
             }
             if(feature.attributes.type === 'current'){
                 var currentSpeedMs = feature.attributes.forecast.curSpeed;
-                var defaultCurrentLow = 1;// TODO get default value
-                var defaultCurrentMedium = 5; // TODO get default value
-                var currentWarnLimit = 100; // TODO get current warn limit
                 var markerDir = 'img/current/mark';
-                
                 var currentSpeedKn = currentSpeedMs * (3.6/1.852);
-                
-                console.log(currentSpeedKn);
                 
                 if(currentSpeedKn >= 0 && currentSpeedKn <= defaultCurrentLow){
                     markerDir += "01";
@@ -170,7 +170,7 @@ embryo.metoc.initLayer = function() {
                     markerDir += "03";
                 }
                 
-                if(currentSpeedKn >= currentWarnLimit){
+                if(currentSpeedKn >= defaultCurrentWarnLimit){
                     markerDir += "red.png";
                 } else {
                     markerDir += ".png";
@@ -181,8 +181,7 @@ embryo.metoc.initLayer = function() {
             if(feature.attributes.type === 'wind'){
                 var markerDir = 'img/wind/mark';                
                 var windSpeed = feature.attributes.forecast.windSpeed;
-                var windWarnLimit = 100; // TODO get current warn limit
-                
+
                 var windSpeedKnots = windSpeed * (3.6/1.852);
 
                 if(windSpeedKnots >= 0 && windSpeedKnots <= 5){
@@ -231,7 +230,7 @@ embryo.metoc.initLayer = function() {
                     markerDir += "105";
                 }
 
-                if(windSpeed >= windWarnLimit){
+                if(windSpeed >= defaultWindWarnLimit){
                     markerDir += "red.png";
                 } else {
                     markerDir += ".png";
