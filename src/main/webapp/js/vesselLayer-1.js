@@ -89,6 +89,11 @@ $(function() {
         return null;
     }
 
+    embryo.vessel.allVessels = function() {
+        return vessels;
+    }
+
+
     embryo.vessel.goToVesselLocation = function (vessel) {
         embryo.map.setCenter(vessel.lon, vessel.lat, focusZoom);
     }

@@ -65,35 +65,63 @@ public class DmiFtpReader {
     @Inject
     @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
     private String localDmiDirectory;
+    @Inject
+    @Property("embryo.iceMaps.deltaSpawnTransferFile")
+    private int deltaSpawnTransferFile;
 
     private Thread transferFileThread;
+    private Thread periodicallySpawnTransferFileThread;
 
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shp.xml", ".shx");
+
+    private void spawnTransferFileThread() {
+        transferFileThread = new Thread() {
+            public void run() {
+                try {
+                    logger.info("Making directory if necessary ...");
+                    if (!new File(localDmiDirectory).exists()) {
+                        logger.info("Making local directort for DMI files: " + localDmiDirectory);
+                        new File(localDmiDirectory).mkdirs();
+                    }
+                    logger.info("Calling transfer files ...");
+                    transferFiles();
+                } catch (Throwable t) {
+                    logger.error("Unhandled error transfering files from dmi: " + t, t);
+                } finally {
+                    transferFileThread = null;
+                    logger.info("Transfer file thread finished.");
+                }
+            }
+        };
+        transferFileThread.setDaemon(true);
+        transferFileThread.start();
+    }
 
     @PostConstruct
     public void init() {
         if (!dmiServer.trim().equals("")) {
-            logger.info("Spawning update DMI directory job.");
-            transferFileThread = new Thread() {
+            periodicallySpawnTransferFileThread = new Thread() {
                 public void run() {
                     try {
-                        logger.info("Making directory if necessary ...");
-                        if (!new File(localDmiDirectory).exists()) {
-                            logger.info("Making local directort for DMI files: " + localDmiDirectory);
-                            new File(localDmiDirectory).mkdirs();
+                        while (!Thread.currentThread().isInterrupted()) {
+                            if (transferFileThread == null) {
+                                logger.info("Spawning update DMI directory job.");
+                                spawnTransferFileThread();
+                            } else {
+                                logger.info("Update DMI directory job already running.");
+                            }
+                            Thread.sleep(deltaSpawnTransferFile * 60 * 1000L);
+
                         }
-                        logger.info("Calling transfer files ...");
-                        transferFiles();
-                    } catch (Throwable t) {
-                        logger.error("Unhandled error transfering files from dmi: " + t, t);
+                    } catch (InterruptedException e) {
+                        // ignored
                     } finally {
-                        transferFileThread = null;
-                        logger.info("Transfer file thread finished.");
+                        logger.info("Periodically spawn transfer file thread finished.");
                     }
                 }
             };
-            transferFileThread.setDaemon(true);
-            transferFileThread.start();
+            periodicallySpawnTransferFileThread.setDaemon(true);
+            periodicallySpawnTransferFileThread.start();
         } else {
             logger.info("DMI FTP site is not configured - DMI directory job not spawned.");
         }
@@ -102,6 +130,12 @@ public class DmiFtpReader {
     @PreDestroy
     public void shutdown() throws InterruptedException {
         logger.info("Shutdown called.");
+
+        if (periodicallySpawnTransferFileThread != null) {
+            logger.info("Stopping periodically spawn transfer file thread ...");
+            periodicallySpawnTransferFileThread.interrupt();
+        }
+
         if (transferFileThread != null) {
             logger.info("Stopping transfer file thread ...");
             transferFileThread.interrupt();

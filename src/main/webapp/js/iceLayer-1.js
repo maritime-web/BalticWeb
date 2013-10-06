@@ -1,4 +1,4 @@
-$(function() {
+ $(function() {
     var groupOpacity = 0.5;
 
     function colorByDescription(description) {
@@ -357,10 +357,7 @@ $(function() {
         });
     }
 
-    embryo.mapInitialized(function() {
-    });
-
-    embryo.authenticated(function() {
+    function requestIceObservations() {
         var messageId = embryo.messagePanel.show( { text: "Requesting list of ice observations ..." })
 
         $.ajax({
@@ -438,14 +435,19 @@ $(function() {
                 embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " requesting list of ice observations.", type: "error" })
             }
         });
+    }
 
+
+    embryo.authenticated(function() {
+        setInterval(requestIceObservations, 60 * 1000 * 10);
+        requestIceObservations();
     });
 
     embryo.hover(function(e) {
-	if (e.feature.iceDescription) {
-	    return createIceEggHtml($.extend(e.feature.iceDescription, { size: 100}));
-	} else {
-	    return null;
+        if (e.feature.iceDescription) {
+            return createIceEggHtml($.extend(e.feature.iceDescription, { size: 100}));
+        } else {
+            return null;
         }
     });
 
