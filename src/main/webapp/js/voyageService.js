@@ -12,46 +12,28 @@
 
     var voyageUrl = embryo.baseUrl + 'rest/voyage/', voyageTypeaheadUrl = embryo.baseUrl + 'rest/voyage/typeahead/';
 
-    var voyageServiceModule = angular.module('embryo.voyageService', [ 'embryo.storageServices', 'ngResource' ]);
-
-    voyageServiceModule.factory('VoyageRestService', function($resource) {
-        var defaultParams = {};
-        var actions = {
-            getActive : {
-                params : {
-                    action : 'active'
-                },
-                method : 'GET',
-                isArray : false,
-            }
-        };
-        return $resource(embryo.baseUrlForAngularResource + 'rest/voyage/:action/:id', defaultParams, actions);
-    });
+    var voyageServiceModule = angular.module('embryo.voyageService', [ 'embryo.storageServices' ]);
 
     voyageServiceModule.factory('VoyageService',
-            function($rootScope, $http, VoyageRestService, ShipService, SessionStorageService) {
+            function($rootScope, $http, ShipService, SessionStorageService) {
                 var currentPlan = 'voyagePlan_current';
                 var activeVoyage = 'voyage_active';
 
                 return {
-                    getYourActive : function(onSuccess) {
-                        var voyageStr = sessionStorage.getItem('activeVoyage');
+                    getYourActive : function(callback) {
+                        var voyageStr = sessionStorage.getItem(activeVoyage);
                         if (!voyageStr) {
                             ShipService.getYourShip(function(yourShip) {
-                                var voyage = VoyageRestService.getActive({
-                                    id : yourShip.maritimeId
-                                }, function() {
-                                    // only cache objects with values (empty
-                                    // objects has ngResource REST methods).
-                                    if (voyage.maritimeId) {
-                                        var voyageStr = JSON.stringify(voyage);
-                                        sessionStorage.setItem('activeVoyage', voyageStr);
-                                    }
-                                    onSuccess(voyage);
-                                });
+                                var remoteCall = function(onSuccess) {
+                                    $http.get(voyageUrl + 'active/' + yourShip.maritimeId, {
+                                        responseType : 'json'
+                                    }).success(onSuccess);
+                                };
+                                
+                                SessionStorageService.getItem(activeVoyage, callback, remoteCall);
                             });
                         } else {
-                            onSuccess(JSON.parse(voyageStr));
+                            callback(JSON.parse(voyageStr));
                         }
                     },
                     getCurrentPlan : function(mmsi, callback) {
