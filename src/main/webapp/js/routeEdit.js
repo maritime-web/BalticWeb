@@ -9,7 +9,7 @@
 (function() {
 	"use strict";
 
-	var module = angular.module('embryo.routeEdit',['embryo.voyageService', 'embryo.routeService', 'ui.bootstrap']);
+	var module = angular.module('embryo.routeEdit',['embryo.voyageService', 'embryo.routeService', 'ui.bootstrap', 'ui.bootstrap.datetimepicker']);
 
 	embryo.RouteEditCtrl = function($scope, $routeParams, RouteService, VoyageService) {
 		if ($routeParams.mmsi) {
@@ -22,6 +22,7 @@
 			if ($routeParams.routeId) {
 				RouteService.getRoute($routeParams.routeId, function(route) {
 					$scope.route = route;
+					$scope.date = new Date(route.etaDeparture);
 				});
 			} else {
 				$scope.route = {};

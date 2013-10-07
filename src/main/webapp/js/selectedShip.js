@@ -1,12 +1,10 @@
 (function() {
     "use strict";
 
-    console.log('before loading selected ship');
-
     var module = angular.module('embryo.selectedShip', [ 'embryo.shipService', 'embryo.voyageService',
-            'embryo.routeService']);
+            'embryo.routeService', 'embryo.metoc' ]);
 
-    module.controller('SelectedShipCtrl', function($scope, ShipService, RouteService) {
+    module.controller('SelectedShipCtrl', function($scope, ShipService, RouteService, MetocService) {
         embryo.authenticated(function() {
             $scope.$apply(function() {
                 ShipService.getYourShip(function(ship) {
@@ -49,6 +47,23 @@
             updateData();
         });
 
+        $scope.$watch('routeLinkTxt', function(newValue, oldValue) {
+            if (newValue == 'hide') {
+                // I can now see a route
+                $scope.metocTxt = 'NOT SHOWN';
+                $scope.metocLabel = '';
+                $scope.metocLinkTxt = 'view';
+            } else {
+                $scope.metocTxt = 'NOT AVAILABLE';
+                $scope.metocLabel = '';
+                $scope.metocLinkTxt = null;
+                // route hidden visible
+                if ($scope.metoc) {
+                    embryo.metoc.remove($scope.metoc);
+                }
+            }
+        });
+
         embryo.vesselSelected(function(e) {
             var vessel = embryo.vessel.lookupVessel(e.vesselId);
 
@@ -56,6 +71,23 @@
                 $scope.mmsi = vessel.mmsi;
             });
         });
+
+        $scope.toggleShowMetoc = function() {
+            if ($scope.metocLinkTxt === 'view') {
+                MetocService.getMetoc($scope.route.id, function(metoc) {
+                    $scope.metoc = metoc;
+                    embryo.metoc.draw(metoc);
+                });
+                $scope.metocTxt = 'SHOWN';
+                $scope.metocLabel = 'label-success';
+                $scope.metocLinkTxt = 'hide';
+            } else {
+                $scope.metocTxt = 'NOT SNOWN';
+                $scope.metocLabel = '';
+                $scope.metocLinkTxt = 'view';
+                embryo.metoc.remove($scope.metoc);
+            }
+        };
 
         $scope.toggleShow = function() {
             if ($scope.routeLinkTxt === 'view') {
