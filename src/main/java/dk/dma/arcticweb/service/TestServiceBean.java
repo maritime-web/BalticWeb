@@ -61,7 +61,7 @@ import dk.dma.embryo.rest.util.DateTimeConverter;
 public class TestServiceBean {
 
     @Inject
-    RealmDao realmDao;
+    private RealmDao realmDao;
 
     @EJB
     private ShipDao shipDao;
@@ -354,17 +354,16 @@ public class TestServiceBean {
         voyagePlan.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("03-10-2013 13:30",
                 null), converter.toObject("03-10-2013 14:30", null)));
         voyagePlan.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject(
-                "03-10-2013 22:30", null), converter.toObject("03-10-2013 22:45", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00",
-                null), null));
+                "03-10-2013 22:30"), converter.toObject("03-10-2013 22:45")));
+        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00"), null));
 
         // firstDeparture.
 
         Period p = new Period(firstDeparture, now);
         if (p.getWeeks() > 0) {
             for (Voyage v : voyagePlan.getVoyagePlan()) {
-                v.setArrival(v.getArrival().plusWeeks(p.getWeeks()));
-                v.setDeparture(v.getDeparture().plusWeeks(p.getWeeks()));
+                v.setArrival(v.getArrival() == null ? null : v.getArrival().plusWeeks(p.getWeeks()));
+                v.setDeparture(v.getDeparture() == null ? null : v.getDeparture().plusWeeks(p.getWeeks()));
             }
         }
 
