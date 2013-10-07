@@ -48,6 +48,7 @@ import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.validation.ConstraintViolationImpl;
+import dk.dma.enav.model.voyage.RouteLeg.Heading;
 
 public class ShipServiceImplTest {
 
@@ -165,11 +166,11 @@ public class ShipServiceImplTest {
         Route route = new Route("key", "name", "origin", "destination");
 
         WayPoint wp = new WayPoint("wp1", 61.0, 54.0, 0.5, 0.5);
-        wp.setLeg(new RouteLeg(10.0, 1.0, 1.0));
+        wp.setLeg(new RouteLeg(10.0, 1.0, 1.0, Heading.RL));
         route.addWayPoint(wp);
 
         wp = new WayPoint("wp2", 61.0, 54.0, 1.0, 1.0);
-        wp.setLeg(new RouteLeg(20.0, 2.0, 2.0));
+        wp.setLeg(new RouteLeg(20.0, 2.0, 2.0, Heading.RL));
         route.addWayPoint(wp);
 
         shipService.saveRoute(route);
@@ -222,7 +223,7 @@ public class ShipServiceImplTest {
         Double xtdStarPort = null;
 
         WayPoint wp = new WayPoint(wp_name, latitude, longitude, rotation, turnRadius);
-        wp.setLeg(new RouteLeg(speed, xtdPort, xtdStarPort));
+        wp.setLeg(new RouteLeg(speed, xtdPort, xtdStarPort, Heading.RL));
         route.addWayPoint(wp);
 
         try {
@@ -241,8 +242,6 @@ public class ShipServiceImplTest {
             expected.add(new ConstraintViolationImpl("wayPoints[0].position.longitude", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].turnRadius", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].leg.speed", null, null));
-            expected.add(new ConstraintViolationImpl("wayPoints[0].leg.xtdPort", null, null));
-            expected.add(new ConstraintViolationImpl("wayPoints[0].leg.xtdStarboard", null, null));
 
             Set<ConstraintViolation<?>> violations = ((ConstraintViolationException) e.getCause())
                     .getConstraintViolations();
