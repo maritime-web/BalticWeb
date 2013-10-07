@@ -27,8 +27,8 @@
 						fn-autocompleted="berthSelected(voyage, datum)" class="input-large ngTypeahead" datasets="berths" type="text" /></td>
 					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
 					<td><input x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
-					<td><input x-ng-model="voyage.arrival" type="text" class="arrival input-medium" placeholder="dd-MM-yyyy hh:mm" /></td>
-					<td><input x-ng-model="voyage.departure" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
+					<td><input x-ng-model="voyage.arrival" type="text" class="input-small" placeholder="dd-MM-yyyy hh:mm" /></td>
+					<td><input x-ng-model="voyage.departure" type="text" class="input-small" placeholder="dd-MM-yy hh:mm" /></td>
 					<td><input x-ng-model="voyage.personsOnBoard" type="text" class="input-small" /></td>
 					<td><select x-ng-model="voyage.doctor" class="input-small" ng-options="value as key for (key, value) in options">
 							<option value="">---</option>
