@@ -9,7 +9,8 @@
 		<div class="row-fluid">
 			<div class="span6" id="formColumn">
 				<form id="greenPosForm" name="greenPosForm" class="form-horizontal" novalidate>
-					<div class="row-fluid">
+					<div class="row
+					">
 						<div class="span12">
 							<div class="control-group">
 								<label class="control-label" for="gReportType">Report type</label>
@@ -91,18 +92,18 @@
 								</div>
 							</div>
 							<div class="control-group">
-								<label class="control-label" for="gpLon">Longitude</label>
-								<div class="controls">
-									<input id="gpLon" name="gpLon" type="text" class="input-medium" x-ng-model="report.lon" required /> <span
-										x-ng-show="greenPosForm.gpLon.$error.required && greenPosForm.gpLon.$dirty" class="msg-invalid">Value
-										required</span>
-								</div>
-							</div>
-							<div class="control-group">
 								<label class="control-label" for="gpLat">Latitude</label>
 								<div class="controls">
 									<input id="gpLat" name="gpLat" type="text" class="input-medium" x-ng-model="report.lat" required /> <span
 										x-ng-show="greenPosForm.gpLat.$error.required && greenPosForm.gpLat.$dirty" class="msg-invalid">Value
+										required</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="gpLon">Longitude</label>
+								<div class="controls">
+									<input id="gpLon" name="gpLon" type="text" class="input-medium" x-ng-model="report.lon" required /> <span
+										x-ng-show="greenPosForm.gpLon.$error.required && greenPosForm.gpLon.$dirty" class="msg-invalid">Value
 										required</span>
 								</div>
 							</div>

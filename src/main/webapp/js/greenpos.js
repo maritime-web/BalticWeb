@@ -25,7 +25,6 @@
                 scope.getElementDimensions = function() {
                     return {
                         'h' : elemToMatch.height(),
-                        'w' : elemToMatch.width(),
                     };
                 };
                 scope.$watch(scope.getElementDimensions, function(newValue, oldValue) {
@@ -33,7 +32,6 @@
                     scope.style = function() {
                         return {
                             'height' : (newValue.h) + 'px',
-                            'width' : (newValue.w) + 'px'
                         };
                     };
                 }, true);
