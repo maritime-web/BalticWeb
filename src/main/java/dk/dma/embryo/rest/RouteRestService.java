@@ -28,8 +28,8 @@ import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.embryo.rest.json.ActiveRoute;
+import dk.dma.embryo.rest.json.Route;
 import dk.dma.embryo.security.authorization.YourShip;
-import dk.dma.enav.model.voyage.Route;
 
 /**
  * 
@@ -55,7 +55,7 @@ public class RouteRestService {
         dk.dma.embryo.domain.Route route = shipService.getRouteByEnavId(id);
 
         // TODO replace below with some http status telling resource is not available
-        return route != null ? route.toEnavModel() : null;
+        return route != null ? route.toJsonModel() : null;
     }
 
     /**
@@ -78,7 +78,7 @@ public class RouteRestService {
 
         route = shipService.getYourActiveRoute();
 
-        Route result = route != null ? route.toEnavModel() : null;
+        Route result = route != null ? route.toJsonModel() : null;
 
         logger.debug("getActive({}) : {}", result);
         // TODO replace below with some http status telling resource is not available
@@ -95,7 +95,7 @@ public class RouteRestService {
 
         route = shipService.getActiveRoute(Long.valueOf(mmsi));
 
-        Route result = route != null ? route.toEnavModel() : null;
+        Route result = route != null ? route.toJsonModel() : null;
 
         logger.debug("getActiveByMmsi({}) : {}", mmsi, result);
         // TODO replace below with some http status telling resource is not available
@@ -107,7 +107,7 @@ public class RouteRestService {
     public void save(Route route) {
         logger.debug("save({})", route);
 
-        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromEnavModel(route);
+        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromJsonModel(route);
         shipService.saveRoute(toBeSaved);
         // String result = "Product created : " + product;
         // return Response.status(201).entity(result).build();
@@ -119,7 +119,7 @@ public class RouteRestService {
     public void save2(Route route) {
         logger.debug("save2({})", route);
 
-        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromEnavModel(route);
+        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromJsonModel(route);
         shipService.saveRoute(toBeSaved);
         // String result = "Product created : " + product;
         // return Response.status(201).entity(result).build();

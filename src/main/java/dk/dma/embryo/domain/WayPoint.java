@@ -21,6 +21,9 @@ import javax.persistence.Embeddable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+import org.joda.time.LocalDateTime;
+
 import dk.dma.enav.model.voyage.Waypoint;
 
 @Embeddable
@@ -43,6 +46,9 @@ public class WayPoint implements Serializable {
     @NotNull
     private Double turnRadius;
     
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    private LocalDateTime eta;
+    
     @Valid
     private RouteLeg leg;
 
@@ -53,6 +59,35 @@ public class WayPoint implements Serializable {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
+
+    public static WayPoint fromJsonModel(dk.dma.embryo.rest.json.Waypoint wayPoint){
+        WayPoint transformed = new WayPoint();
+        transformed.setName(wayPoint.getName());
+        transformed.setPosition(new Position(wayPoint.getLatitude(), wayPoint.getLongitude()));
+        transformed.setRot(wayPoint.getRot());
+        transformed.setTurnRadius(wayPoint.getTurnRad());
+        
+        transformed.setLeg(RouteLeg.fromJsonModel(wayPoint.getLeg()));
+        
+        return transformed;
+    }
+    
+    public dk.dma.embryo.rest.json.Waypoint toJsonModel(){
+        dk.dma.embryo.rest.json.Waypoint toWaypoint = new dk.dma.embryo.rest.json.Waypoint();
+        toWaypoint.setName(this.getName());
+        toWaypoint.setLatitude(this.getPosition().getLatitude());
+        toWaypoint.setLongitude(this.getPosition().getLongitude());
+        toWaypoint.setRot(this.getRot());
+        toWaypoint.setTurnRad(this.getTurnRadius());
+        
+        if(this.getLeg() != null){
+            toWaypoint.setLeg(this.getLeg().toJsonModel());
+        }
+        
+        return toWaypoint;
+    }
+    
+    
     public static WayPoint fromEnavModel(Waypoint wayPoint){
         WayPoint transformed = new WayPoint();
         transformed.setName(wayPoint.getName());
@@ -60,7 +95,7 @@ public class WayPoint implements Serializable {
         transformed.setRot(wayPoint.getRot());
         transformed.setTurnRadius(wayPoint.getTurnRad());
         
-        transformed.setLeg(RouteLeg.from(wayPoint.getRouteLeg()));
+        transformed.setLeg(RouteLeg.fromEnavModel(wayPoint.getRouteLeg()));
         
         return transformed;
     }
@@ -72,6 +107,7 @@ public class WayPoint implements Serializable {
         toWaypoint.setLongitude(this.getPosition().getLongitude());
         toWaypoint.setRot(this.getRot());
         toWaypoint.setTurnRad(this.getTurnRadius());
+        toWaypoint.setEta(getEta() == null ? null : getEta().toDate());
         
         if(this.getLeg() != null){
             toWaypoint.setRouteLeg(this.getLeg().toEnavModel());
@@ -147,4 +183,11 @@ public class WayPoint implements Serializable {
         this.turnRadius = turnRadius;
     }
 
+    public LocalDateTime getEta() {
+        return eta;
+    }
+
+    public void setEta(LocalDateTime eta) {
+        this.eta = eta;
+    }
 }

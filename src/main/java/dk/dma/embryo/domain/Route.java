@@ -64,7 +64,7 @@ public class Route extends BaseEntity<Long> {
     @Valid
     private List<WayPoint> wayPoints = new ArrayList<>();
 
-    @OneToOne(mappedBy="route")
+    @OneToOne(mappedBy = "route")
     private Voyage voyage;
 
     // //////////////////////////////////////////////////////////////////////
@@ -76,6 +76,32 @@ public class Route extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     public void addWayPoint(WayPoint wPoint) {
         wayPoints.add(wPoint);
+    }
+
+    public static Route fromJsonModel(dk.dma.embryo.rest.json.Route from) {
+        Route route = new Route(from.getId(), from.getName(), from.getDeparture(), from.getDestination());
+        route.setEtaOfArrival(from.getEtaDeparture() == null ? null : LocalDateTime.fromDateFields(from
+                .getEtaDeparture()));
+
+        for (dk.dma.embryo.rest.json.Waypoint wayPoint : from.getWaypoints()) {
+            route.addWayPoint(WayPoint.fromJsonModel(wayPoint));
+        }
+
+        return route;
+    }
+
+    public dk.dma.embryo.rest.json.Route toJsonModel() {
+        dk.dma.embryo.rest.json.Route toRoute = new dk.dma.embryo.rest.json.Route(this.enavId);
+        toRoute.setName(this.name);
+        toRoute.setDeparture(this.origin);
+        toRoute.setDestination(this.destination);
+        toRoute.setEtaDeparture(getEtaOfDeparture() == null ? null : getEtaOfDeparture().toDate());
+
+        for (WayPoint wp : this.getWayPoints()) {
+            toRoute.getWaypoints().add(wp.toJsonModel());
+        }
+
+        return toRoute;
     }
 
     public static Route fromEnavModel(dk.dma.enav.model.voyage.Route from) {

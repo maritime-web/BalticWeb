@@ -20,6 +20,8 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
+import dk.dma.enav.model.voyage.RouteLeg.Heading;
+
 @Embeddable
 public class RouteLeg implements Serializable {
 
@@ -33,11 +35,12 @@ public class RouteLeg implements Serializable {
     private Double speed;
 
     /** Port XTD. */
-    @NotNull
     private Double xtdPort;
 
+    /** Heading. */
+    private Heading heading;
+    
     /** Starboard XTD. */
-    @NotNull
     private Double xtdStarboard;
 
     /** Safe Haven Width */
@@ -46,15 +49,12 @@ public class RouteLeg implements Serializable {
     /** Safe Haven Length */
     private Double SFLen;
 
-    // //////////////////////////////////////////////////////////////////////
-    // business logic
-    // //////////////////////////////////////////////////////////////////////
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public static RouteLeg from(dk.dma.enav.model.voyage.RouteLeg leg){
-        return new RouteLeg(leg.getSpeed(), leg.getXtdPort(), leg.getXtdStarboard());
+    public static RouteLeg fromEnavModel(dk.dma.enav.model.voyage.RouteLeg leg){
+        return new RouteLeg(leg.getSpeed(), leg.getXtdPort(), leg.getXtdStarboard(), leg.getHeading());
     }
     
     public dk.dma.enav.model.voyage.RouteLeg toEnavModel(){
@@ -62,21 +62,37 @@ public class RouteLeg implements Serializable {
         toLeg.setSpeed(this.getSpeed());
         toLeg.setXtdPort(this.getXtdPort());
         toLeg.setXtdStarboard(this.getXtdStarboard());
+        toLeg.setHeading(this.getHeading());
         return toLeg;
     }
+
+    public static RouteLeg fromJsonModel(dk.dma.embryo.rest.json.RouteLeg leg){
+        RouteLeg result = new RouteLeg();
+        result.setHeading(leg.getHeading());
+        result.setSpeed(leg.getSpeed());
+        return result;
+        
+    }
     
+    public dk.dma.embryo.rest.json.RouteLeg toJsonModel(){
+        dk.dma.embryo.rest.json.RouteLeg toLeg = new dk.dma.embryo.rest.json.RouteLeg();
+        toLeg.setSpeed(this.getSpeed());
+        toLeg.setHeading(this.getHeading());
+        return toLeg;
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
     public RouteLeg() {
     }
 
-    
-    public RouteLeg(Double speed, Double xtdPort, Double xtdStarboard) {
+    public RouteLeg(Double speed, Double xtdPort, Double xtdStarboard, Heading heading) {
         super();
         this.speed = speed;
         this.xtdPort = xtdPort;
         this.xtdStarboard = xtdStarboard;
+        this.heading = heading;
     }
 
 
@@ -128,5 +144,12 @@ public class RouteLeg implements Serializable {
         SFLen = sFLen;
     }
 
+    public Heading getHeading() {
+        return heading;
+    }
+
+    public void setHeading(Heading heading) {
+        this.heading = heading;
+    }
     
 }
