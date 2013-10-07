@@ -15,9 +15,7 @@
 	serviceModule.factory('AisRestService', function($http) {
         return {
             findVesselsByMmsi : function(mmsi, callback) {
-                $http.get(embryo.baseUrl + 'json_proxy/vessel_search?argument=' + mmsi, {
-                    responseType : 'json'
-                }).success(callback);
+                $http.get(embryo.baseUrl + 'json_proxy/vessel_search?argument=' + mmsi).success(callback);
             }
         };
 	});
@@ -29,27 +27,20 @@
 			getYourShip : function(callback) {
 
 				var remoteCall = function(onSuccess) {
-					$http.get(embryo.baseUrl + 'rest/ship/yourship', {
-						responseType : 'json'
-					}).success(onSuccess);
+					$http.get(embryo.baseUrl + 'rest/ship/yourship').success(onSuccess);
 				};
 
 				SessionStorageService.getItem(yourShipKey, callback, remoteCall);
 			},
 			getShipTypes : function(callback) {
 				var remoteCall = function(onSuccess) {
-					$http.get(embryo.baseUrl + 'rest/ship/shiptypes', {
-						responseType : 'json'
-					}).success(onSuccess);
+					$http.get(embryo.baseUrl + 'rest/ship/shiptypes').success(onSuccess);
 				};
 
 				LocalStorageService.getItem('shipTypes', callback, remoteCall);
 			},
 			save : function(ship, callback) {
-				$http.put(embryo.baseUrl + 'rest/ship', ship, {
-					responseType : 'json'
-				}).success(function(maritimeId) {
-				    console.log(maritimeId);
+				$http.put(embryo.baseUrl + 'rest/ship', ship).success(function(maritimeId) {
 					if (maritimeId) {
 						ship.maritimeId = maritimeId;
 						SessionStorageService.setItem(yourShipKey, ship);

@@ -25,9 +25,7 @@
                         if (!voyageStr) {
                             ShipService.getYourShip(function(yourShip) {
                                 var remoteCall = function(onSuccess) {
-                                    $http.get(voyageUrl + 'active/' + yourShip.maritimeId, {
-                                        responseType : 'json'
-                                    }).success(onSuccess);
+                                    $http.get(voyageUrl + 'active/' + yourShip.maritimeId).success(onSuccess);
                                 };
                                 
                                 SessionStorageService.getItem(activeVoyage, callback, remoteCall);
@@ -38,21 +36,15 @@
                     },
                     getCurrentPlan : function(mmsi, callback) {
                         var remoteCall = function(onSuccess) {
-                            $http.get(voyageUrl + mmsi + '/current', {
-                                responseType : 'json'
-                            }).success(onSuccess);
+                            $http.get(voyageUrl + mmsi + '/current').success(onSuccess);
                         };
                         SessionStorageService.getItem(currentPlan, callback, remoteCall);
                     },
                     getVoyages : function(mmsi, callback) {
-                        $http.get(voyageTypeaheadUrl + mmsi, {
-                            responseType : 'json'
-                        }).success(callback);
+                        $http.get(voyageTypeaheadUrl + mmsi).success(callback);
                     },
                     save : function(plan, callback) {
-                        $http.put(voyageUrl + 'savePlan', plan, {
-                            responseType : 'json'
-                        }).success(function() {
+                        $http.put(voyageUrl + 'savePlan', plan).success(function() {
                             SessionStorageService.removeItem(currentPlan);
                             callback();
                             $rootScope.$broadcast('yourshipDataUpdated');

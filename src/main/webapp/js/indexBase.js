@@ -68,9 +68,6 @@
 
                 // watch the expression, and update the UI on change.
                 scope.$watch('greenPosForm.gpPersons', function(value, oldValue) {
-                    console.log(value);
-                    // console.log(value.$dirty);
-                    // console.log(value.$error.required);
 
                     // if(value.$dirty && value.$error.required){
                     // element.show();

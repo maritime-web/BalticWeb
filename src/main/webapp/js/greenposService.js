@@ -24,9 +24,7 @@
             getLatestReport : function(shipMaritimeId, callback) {
                 var remoteCall = function(onSuccess) {
                     var url = embryo.baseUrl + 'rest/greenpos/latest/' + shipMaritimeId;
-                    $http.get(url, {
-                        responseType : 'json'
-                    }).success(onSuccess);
+                    $http.get(url).success(onSuccess);
                 };
 
                 // last report maintained in SessionStorage as
@@ -35,9 +33,7 @@
             },
             get : function(id, callback) {
                 var url = reportsUrl + "/" + id;
-                $http.get(url, {
-                    responseType : 'json'
-                }).success(callback);
+                $http.get(url).success(callback);
             },
             findReports : function(params, callback) {
                 var key, url = findReportsUrl;
@@ -54,14 +50,10 @@
                     url = url.substring(0, url.length - 1);
                 }
 
-                $http.get(url, {
-                    responseType : 'json'
-                }).success(callback);
+                $http.get(url).success(callback);
             },
             save : function(greenpos, callback) {
-                $http.post(embryo.baseUrl + 'rest/greenpos', greenpos, {
-                    responseType : 'json'
-                }).success(function() {
+                $http.post(embryo.baseUrl + 'rest/greenpos', greenpos).success(function() {
                     SessionStorageService.removeItem(latestGreenposKey(greenpos.shipMaritimeId));
                     callback();
                     $rootScope.$broadcast('yourshipDataUpdated');

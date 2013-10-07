@@ -22,9 +22,7 @@
                     getActive : function(mmsi, callback) {
                         var remoteCall = function(onSuccess) {
                             var url = embryo.baseUrl + 'rest/route/active/' + mmsi;
-                            $http.get(url, {
-                                responseType : 'json'
-                            }).success(onSuccess);
+                            $http.get(url).success(onSuccess);
                         };
                         
                         remoteCall(callback);
@@ -32,9 +30,7 @@
                     getYourActive : function(mmsi, callback) {
                         var remoteCall = function(onSuccess) {
                             var url = embryo.baseUrl + 'rest/route/active/' + mmsi;
-                            $http.get(url, {
-                                responseType : 'json'
-                            }).success(onSuccess);
+                            $http.get(url).success(onSuccess);
                         };
 
                         // active route is maintained in SessionStorage as two
@@ -65,9 +61,7 @@
                             active : activity
                         };
 
-                        $http.put(embryo.baseUrl + 'rest/route/activate/', activeRoute, {
-                            responseType : 'json'
-                        }).success(function() {
+                        $http.put(embryo.baseUrl + 'rest/route/activate/', activeRoute).success(function() {
                             if (activity) {
                                 SessionStorageService.setItem(active, routeId);
                             } else {
@@ -80,17 +74,13 @@
                     getRoute : function(routeId, callback) {
                         // should routes be cached?
                         var remoteCall = function(onSuccess) {
-                            $http.get(embryo.baseUrl + 'rest/route/' + routeId, {
-                                responseType : 'json'
-                            }).success(onSuccess);
+                            $http.get(embryo.baseUrl + 'rest/route/' + routeId).success(onSuccess);
                         };
 
                         SessionStorageService.getItem(routeKey(routeId), callback, remoteCall);
                     },
                     save : function(route, callback) {
-                        $http.put(embryo.baseUrl + 'rest/route', route, {
-                            responseType : 'json'
-                        }).success(function() {
+                        $http.put(embryo.baseUrl + 'rest/route', route).success(function() {
                             SessionStorageService.setItem(routeKey(route.id), route);
                             callback();
                             $rootScope.$broadcast('yourshipDataUpdated');

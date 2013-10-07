@@ -1,4 +1,3 @@
-console.log('before loading metoc layer');
 
 var metocModule = angular.module('embryo.metoc', []);
 
@@ -30,7 +29,6 @@ metocModule.factory('MetocService', function($http) {
         }
     };
 });
-console.log('after');
 
 embryo.metoc = {};
 
@@ -45,9 +43,6 @@ var defaultWindWarnLimit=10.0;
 
 embryo.metoc.draw = function(metoc) {
     var index, attr, geom, forecast, features = [];
-    console.log('drawing metoc');
-
-    console.log(metoc);
 
     for ( var index in metoc.forecasts) {
         forecast = metoc.forecasts[index];

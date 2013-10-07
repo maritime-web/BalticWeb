@@ -129,9 +129,6 @@ $(function() {
         if (route) {
             for (key in embryo.route.layer.features) {
 
-                console.log(key);
-                console.log(embryo.route.layer.features[key]);
-
                 feature = embryo.route.layer.features[key];
 
                 if (feature.data && feature.data.route && feature.data.route.id === route.id) {

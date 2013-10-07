@@ -27,11 +27,8 @@ embryo.map.contextMenu = function(params) {
 	// var oClick = new OpenLayers.Control.Click({
 	// eventMethods : {
 	// 'rightclick' : function(e) {
-	// console.log('rightclick with event:');
-	// console.log(e);
 	// },
 	// 'dblrightclick' : function(e) {
-	// console.log('dblrightclick at ' + e.xy.x + ',' + e.xy.y);
 	// }
 	// }
 	// });
