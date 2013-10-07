@@ -202,6 +202,11 @@ public class ShipServiceImpl implements ShipService {
         return plan.getVoyagePlan();
     }
 
+    /**
+     * Used to save uploaded routes.
+     * 
+     * Automatically fills out route fields also being part of voyage information, like departure location, destination location, times etc. 
+     */
     @Override
     public String saveRoute(Route route, String voyageId, boolean active) {
         if (route.getId() == null) {
@@ -212,21 +217,37 @@ public class ShipServiceImpl implements ShipService {
         if (voyageId == null) {
             throw new IllegalArgumentException("Missing 'voyageId'");
         }
-        Voyage voyage = shipRepository.getVoyageByEnavId(voyageId);
 
-        if(voyage == null){
+        Voyage voyage = shipRepository.getVoyageByEnavId(voyageId);
+        if (voyage == null) {
             throw new IllegalArgumentException("Unknown 'voyageId' value '" + voyageId + "'");
         }
         
+        route.setOrigin(voyage.getBerthName());
+        route.setEtaOfDeparture(voyage.getDeparture());
+        
+        List<Voyage> voyages = voyage.getPlan().getVoyagePlan();
+        int count = 0;
+        boolean found = false;
+        while(count < voyages.size() && !found){
+            Voyage v = voyages.get(count++);
+            if(v.getEnavId().equals(voyage.getEnavId())){
+                found = true;
+            }
+        }
+        if(count < voyages.size()){
+            route.setDestination(voyages.get(count).getBerthName());
+        }
+
         route.setVoyage(voyage);
         shipRepository.saveEntity(route);
 
-        if(active){
+        if (active) {
             Ship ship = voyage.getPlan().getShip();
             ship.setActiveVoyage(voyage);
             shipRepository.saveEntity(ship);
         }
-        
+
         return route.getEnavId();
     }
 
@@ -276,8 +297,8 @@ public class ShipServiceImpl implements ShipService {
     public Route activateRoute(String routeEnavId, Boolean activate) {
         logger.debug("activateRoute({}, {})", routeEnavId, activate);
         Route route = shipRepository.getRouteByEnavId(routeEnavId);
-        
-        if(route == null){
+
+        if (route == null) {
             throw new IllegalArgumentException("Unknown route with id '" + routeEnavId);
         }
 
