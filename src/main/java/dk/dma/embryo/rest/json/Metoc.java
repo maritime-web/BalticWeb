@@ -15,34 +15,38 @@
  */
 package dk.dma.embryo.rest.json;
 
+import java.text.ParseException;
+import java.util.Date;
+
+import dk.dma.embryo.restclients.DmiSejlRuteService;
 import dk.dma.embryo.restclients.DmiSejlRuteService.MetocForecast;
 
-
-
 public class Metoc {
-    
+
     private String created;
     private Forecast[] forecasts;
 
-    
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public static Metoc from(MetocForecast metocForecast){
+    public static Metoc from(MetocForecast metocForecast) {
         Metoc result = new Metoc();
-        
-        Forecast[] forecasts = new Forecast[metocForecast.getForecasts().length];
-        int count = 0;
-        for(dk.dma.embryo.restclients.DmiSejlRuteService.Forecast dmiForecast : metocForecast.getForecasts()){
-            forecasts[count++] = Forecast.from(dmiForecast);
+
+        try {
+            Forecast[] forecasts = new Forecast[metocForecast.getForecasts().length];
+            int count = 0;
+            for (dk.dma.embryo.restclients.DmiSejlRuteService.Forecast dmiForecast : metocForecast.getForecasts()) {
+                forecasts[count++] = Forecast.from(dmiForecast);
+            }
+            result.setCreated(metocForecast.getCreated());
+            result.setForecasts(forecasts);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
-        result.setCreated(metocForecast.getCreated());
-        result.setForecasts(forecasts);
-        
+
         return result;
     }
-    
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -68,7 +72,7 @@ public class Metoc {
     public static class Forecast {
         private double lat;
         private double lon;
-        private String time;
+        private Date time;
         private Double windDir;
         private Double windSpeed;
         private Double curDir;
@@ -77,22 +81,35 @@ public class Metoc {
         private Double waveHeight;
         private Double wavePeriod;
         private Double seaLevel;
-        
-        
-        public static Forecast from(dk.dma.embryo.restclients.DmiSejlRuteService.Forecast dmiForecast){
+
+        public static Forecast from(dk.dma.embryo.restclients.DmiSejlRuteService.Forecast dmiForecast)
+                throws ParseException {
             Forecast forecast = new Forecast();
             forecast.setLat(dmiForecast.getLat());
             forecast.setLon(dmiForecast.getLon());
-            forecast.setTime(dmiForecast.getTime());
-            forecast.setWindDir(dmiForecast.getWindDir() == null ? null : dmiForecast.getWindDir().getForecast());
-            forecast.setWindSpeed(dmiForecast.getWindSpeed() == null ? null : dmiForecast.getWindSpeed().getForecast());
-            forecast.setCurDir(dmiForecast.getCurrentDir() == null ? null : dmiForecast.getCurrentDir().getForecast());
-            forecast.setCurSpeed(dmiForecast.getCurrentSpeed() == null ? null : dmiForecast.getCurrentSpeed().getForecast());
-            forecast.setWaveDir(dmiForecast.getWaveDir() == null ? null : dmiForecast.getWaveDir().getForecast());
-            forecast.setWaveHeight(dmiForecast.getWaveHeight() == null ? null : dmiForecast.getWaveHeight().getForecast());
-            forecast.setWavePeriod(dmiForecast.getWavePeriod() == null ? null : dmiForecast.getWavePeriod().getForecast());
-            forecast.setSeaLevel(dmiForecast.getSealevel() == null ? null : dmiForecast.getSealevel().getForecast());
+            forecast.setTime(DmiSejlRuteService.DATE_FORMAT.parse(dmiForecast.getTime()));
+            forecast.setWindDir(dmiForecast.getWindDir() == null ? null : ceil(dmiForecast.getWindDir().getForecast(),
+                    0));
+            forecast.setWindSpeed(dmiForecast.getWindSpeed() == null ? null : ceil(dmiForecast.getWindSpeed()
+                    .getForecast(), 1));
+            forecast.setCurDir(dmiForecast.getCurrentDir() == null ? null : ceil(dmiForecast.getCurrentDir()
+                    .getForecast(), 0));
+            forecast.setCurSpeed(dmiForecast.getCurrentSpeed() == null ? null : ceil(dmiForecast.getCurrentSpeed()
+                    .getForecast(), 1));
+            forecast.setWaveDir(dmiForecast.getWaveDir() == null ? null : ceil(dmiForecast.getWaveDir().getForecast(),
+                    0));
+            forecast.setWaveHeight(dmiForecast.getWaveHeight() == null ? null : ceil(dmiForecast.getWaveHeight()
+                    .getForecast(), 1));
+            forecast.setWavePeriod(dmiForecast.getWavePeriod() == null ? null : ceil(dmiForecast.getWavePeriod()
+                    .getForecast(), 2));
+            forecast.setSeaLevel(dmiForecast.getSealevel() == null ? null : ceil(dmiForecast.getSealevel()
+                    .getForecast(), 1));
             return forecast;
+        }
+
+        private static double ceil(double number, int decimals) {
+            double d = Math.pow(10.0, decimals);
+            return Math.ceil(number * d) / d;
         }
 
         public double getLat() {
@@ -111,11 +128,11 @@ public class Metoc {
             this.lon = lon;
         }
 
-        public String getTime() {
+        public Date getTime() {
             return time;
         }
 
-        public void setTime(String time) {
+        public void setTime(Date time) {
             this.time = time;
         }
 
