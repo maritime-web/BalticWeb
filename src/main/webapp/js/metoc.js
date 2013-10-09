@@ -40,13 +40,11 @@ var defaultWaveWarnLimit = 3.0;
 var defaultWindWarnLimit = 10.0;
 
 embryo.metoc.draw = function(metoc) {
-
-    console.log(embryo.map.internalMap.zoom);
-
-    var index, attr, geom, forecast, features = [];
+    var index, attr, geom, forecast, features = [], labelFeatures = [];
 
     for ( var index in metoc.forecasts) {
         forecast = metoc.forecasts[index];
+        var featuresCount = features.length;
 
         if (forecast.waveDir && forecast.waveHeight && forecast.wavePeriod) {
             attr = {
@@ -78,10 +76,33 @@ embryo.metoc.draw = function(metoc) {
             geom = embryo.map.createPoint(forecast.lon, forecast.lat);
             features.push(new OpenLayers.Feature.Vector(geom, attr));
         }
+        
+
+        if (featuresCount < features.length) {
+            // time = formatTime(track.time);
+            attr = {
+                time : forecast.time,
+                curSpeed : forecast.curSpeed ? forecast.curSpeed + " kn" : "N/A",
+                curDir : forecast.curDir ? forecast.curDir + "°" : "N/A",
+                windSpeed : forecast.windSpeed ? forecast.windSpeed + " m/s" : "N/A",
+                windDir : forecast.windDir ? forecast.windDir + "°" : "N/A",
+                waveHeight : forecast.waveHeight ? forecast.waveHeight + " m" : "N/A",
+                waveDir : forecast.waveDir ? forecast.waveDir + "°" : "N/A",
+                wavePeriod : forecast.wavePeriod ? forecast.wavePeriod + " sec" : "N/A",
+                sealevel : forecast.sealevel ? forecast.sealevel + " m" : "N/A",
+                align : "lm",
+                xOffset : 40,
+                yOffset : 40
+            };
+            labelFeatures.push(new OpenLayers.Feature.Vector(embryo.map.createPoint(forecast.lon, forecast.lat), attr));
+        }
     }
 
     embryo.metoc.layer.addFeatures(features);
     embryo.metoc.layer.refresh();
+
+    embryo.metoc.labelsLayer.addFeatures(labelFeatures);
+    embryo.metoc.labelsLayer.refresh();
 };
 
 var groupSelected;
@@ -95,12 +116,12 @@ embryo.metoc.initLayer = function() {
         9 : 1, // hvert punkt
         8 : 2, // hvert andet punkt
         7 : 3,
-        6 : 5,  
-        5 : 6, 
-        4 : 8, 
+        6 : 5,
+        5 : 6,
+        4 : 8,
         3 : 10,
-        2 : 10, 
-        1 : 10 
+        2 : 10,
+        1 : 10
     };
 
     var context = {
@@ -149,11 +170,11 @@ embryo.metoc.initLayer = function() {
             }
             return 0;
         },
-        display : function(feature){
+        display : function(feature) {
             console.log(embryo.map.internalMap.zoom);
             var zoom = embryo.map.internalMap.zoom > 10 ? 10 : embryo.map.internalMap.zoom;
-            var modulus = feature.attributes.index % zoomFilter[zoom]; 
-            if(modulus == 0){
+            var modulus = feature.attributes.index % zoomFilter[zoom];
+            if (modulus == 0) {
                 return "display";
             }
             return "none";
@@ -277,59 +298,75 @@ embryo.metoc.initLayer = function() {
             })
         })
     });
-    
-    var timeStampsLayer = new OpenLayers.Layer.Vector("timeStampsLayer", {
-        styleMap : new OpenLayers.StyleMap({
-            'default' : {
-                label : "${timeStamp}",
-                fontColor : timeStampColor,
-                fontSize : timeStampFontSize,
-                fontFamily : timeStampFontFamily,
-                fontWeight : timeStampFontWeight,
-                labelAlign : "${align}",
-                labelXOffset : "${xOffset}",
-                labelYOffset : "${yOffset}",
-                labelOutlineColor : "#fff",
-                labelOutlineWidth : 2,
-                labelOutline : 1,
-                pointRadius: 3,
-                fill: true,
-                fillColor : pastTrackColor,
-                strokeColor : pastTrackColor,
-                stroke: true
-//                display : "${display}"
-            }
-        })
-    });
+
+    var labelContext = {
+        display : function(feature) {
+            return embryo.map.internalMap.zoom >= 10 ? "display" : "none";
+        },
+    };
+    embryo.metoc.labelsLayer = new OpenLayers.Layer.Vector(
+            "metocLabels",
+            {
+                styleMap : new OpenLayers.StyleMap(
+                        {
+                            'default' : new OpenLayers.Style(
+                                    {
+                                        label : "METOC for ${time}\nCurrent: ${curSpeed} - ${curDir} \nWind:   ${windSpeed} - ${windDir} \nWave: ${waveHeight} - ${waveDir} (${wavePeriod})\nSea level:   ${sealevel}",
+                                        fontColor : timeStampColor,
+                                        fontSize : 10,
+                                        fontFamily : timeStampFontFamily,
+                                        labelAlign : "${align}",
+                                        labelXOffset : "${xOffset}",
+                                        labelYOffset : "${yOffset}",
+                                        labelOutlineColor : "#fff",
+                                        labelOutlineWidth : 2,
+                                        labelOutline : 1,
+                                        pointRadius : 3,
+                                        fill : true,
+                                        fillColor : '#550055',
+                                        strokeColor : pastTrackColor,
+                                        stroke : true,
+                                        display : "${display}"
+                                    }, {
+                                        context : labelContext
+                                    })
+                        })
+            });
 
     embryo.map.add({
         group : "vessel",
         layer : embryo.metoc.layer,
-        select : true
+        select : false,
     });
 
-    var selectedFeature = null;
-
-    function onSelect(event) {
-        console.log(event);
-        var feature = event.feature;
-        if (selectedFeature != null)
-            onUnselect();
-        selectedFeature = feature;
-        redrawSelection();
-    }
-    ;
-
-    function onUnselect(event) {
-        console.log(event);
-        selectedFeature = null;
-        redrawSelection();
-    }
-
-    embryo.metoc.layer.events.on({
-        featureselected : onSelect,
-        featureunselected : onUnselect
+    embryo.map.add({
+        group : "vessel",
+        layer : embryo.metoc.labelsLayer,
+        select : false
     });
+
+    // var selectedFeature = null;
+    //
+    // function onSelect(event) {
+    // console.log(event);
+    // var feature = event.feature;
+    // if (selectedFeature != null)
+    // onUnselect();
+    // selectedFeature = feature;
+    // redrawSelection();
+    // }
+    // ;
+    //
+    // function onUnselect(event) {
+    // console.log(event);
+    // selectedFeature = null;
+    // redrawSelection();
+    // }
+
+    // embryo.metoc.layer.events.on({
+    // featureselected : onSelect,
+    // featureunselected : onUnselect
+    // });
 
     /**
      * Redraws all features in vessel layer and selection layer. Features are
