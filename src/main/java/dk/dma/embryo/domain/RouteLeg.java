@@ -34,19 +34,19 @@ public class RouteLeg implements Serializable {
     @NotNull
     private Double speed;
 
-    /** Port XTD. */
-    private Double xtdPort;
-
     /** Heading. */
     private Heading heading;
     
-    /** Starboard XTD. */
+    /** Port XTD. Currently not used but saved in database such that routes can be imported/exported */
+    private Double xtdPort;
+
+    /** Starboard XTD. Currently not used but saved in database such that routes can be imported/exported */
     private Double xtdStarboard;
 
-    /** Safe Haven Width */
+    /** Safe Haven Width Currently not used Currently not used but saved in database such that routes can be imported/exported */
     private Double SFWidth;
 
-    /** Safe Haven Length */
+    /** Safe Haven Length Currently not used but saved in database such that routes can be imported/exported */
     private Double SFLen;
 
 

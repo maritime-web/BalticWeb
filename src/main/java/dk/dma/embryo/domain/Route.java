@@ -123,6 +123,10 @@ public class Route extends BaseEntity<Long> {
         for (WayPoint wp : this.getWayPoints()) {
             toRoute.getWaypoints().add(wp.toEnavModel());
         }
+        
+        if(toRoute.getWaypoints().size() > 0 && toRoute.getWaypoints().get(0).getEta() == null){
+            toRoute.getWaypoints().get(0).setEta(getEtaOfDeparture() == null ? null : getEtaOfDeparture().toDate());
+        }
 
         return toRoute;
     }

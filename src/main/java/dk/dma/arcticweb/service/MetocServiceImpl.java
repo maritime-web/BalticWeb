@@ -15,7 +15,8 @@
  */
 package dk.dma.arcticweb.service;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -25,12 +26,15 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.ShipDao;
+import dk.dma.commons.model.RouteDecorator;
+import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Ship;
-import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.restclients.DmiSejlRuteService;
+import dk.dma.embryo.restclients.DmiSejlRuteService.Forecast;
 import dk.dma.embryo.restclients.DmiSejlRuteService.Waypoint;
 import dk.dma.embryo.security.Subject;
+import dk.dma.enav.model.geometry.Position;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -38,15 +42,20 @@ public class MetocServiceImpl implements MetocService {
 
     @Inject
     private DmiSejlRuteService dmiSejlRuteService;
-    
+
     @Inject
     private Subject subject;
 
     @Inject
     private ShipDao shipDao;
-    
-    @Inject Logger logger;
 
+    @Inject
+    private Logger logger;
+
+    @Inject
+    @Property("embryo.metoc.minDistance")
+    private Integer minimumMetocDistance;
+    
     public MetocServiceImpl() {
     }
 
@@ -64,31 +73,57 @@ public class MetocServiceImpl implements MetocService {
 
         Ship ship = route.getVoyage().getPlan().getShip();
 
+        RouteDecorator r = new RouteDecorator(route.toEnavModel());
+
         DmiSejlRuteService.SejlRuteRequest request = new DmiSejlRuteService.SejlRuteRequest();
         request.setMssi(ship.getMmsi());
         request.setDatatypes(new String[] { "sealevel", "current", "wave", "wind", "density" });
         request.setDt(60);
 
-        Waypoint[] waypoints = new Waypoint[route.getWayPoints().size()];
+        Waypoint[] waypoints = new Waypoint[r.getWaypoints().size()];
         int count = 0;
 
-        for (WayPoint waypoint : route.getWayPoints()) {
+        for (RouteDecorator.Waypoint waypoint : r.getWaypoints()) {
             waypoints[count] = new DmiSejlRuteService.Waypoint();
-            waypoints[count].setEta(DmiSejlRuteService.DATE_FORMAT.format(new Date(
-                    System.currentTimeMillis() + 1000L * 3600 * count)));
-            waypoints[count].setHeading("RL");
-            waypoints[count].setLat(waypoint.getPosition().getLatitude());
-            waypoints[count].setLon(waypoint.getPosition().getLongitude());
+            waypoints[count].setEta(DmiSejlRuteService.DATE_FORMAT.format(waypoint.getEta()));
+            waypoints[count].setHeading(waypoint.getRouteLeg().getHeading().toString());
+            waypoints[count].setLat(waypoint.getLatitude());
+            waypoints[count].setLon(waypoint.getLongitude());
             count++;
         }
 
         request.setWaypoints(waypoints);
 
         logger.debug("Sending METOC request: {}", request);
-        
+
         DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
 
         logger.debug("Received METOC response: {}", sejlRuteResponse);
+
+        // Filtering result such that metoc points are at least minimumMetocDistance a part
+        if (sejlRuteResponse.getMetocForecast() != null && sejlRuteResponse.getMetocForecast().getForecasts() != null) {
+            Forecast[] forecasts = sejlRuteResponse.getMetocForecast().getForecasts();
+            ArrayList<Forecast> result = new ArrayList<>(forecasts.length);
+            Position lastPosition = null;
+            for (int i = 0; i < forecasts.length; i++) {
+                Position position = Position.create(forecasts[i].getLat(), forecasts[i].getLon());
+                if (lastPosition != null) {
+                    // Using geodesic distance. Because the small distances in the comparison, geodesic vs rhumbline
+                    // shouldnt matter
+                    if (position.rhumbLineDistanceTo(lastPosition) > minimumMetocDistance) {
+                        result.add(forecasts[i]);
+                        lastPosition = position;
+                    }
+                } else {
+                    result.add(forecasts[i]);
+                    lastPosition = position;
+                }
+            }
+
+            Forecast[] filtered = new Forecast[result.size()];
+            filtered = result.toArray(filtered);
+            sejlRuteResponse.getMetocForecast().setForecasts(filtered);
+        }
 
         return sejlRuteResponse;
     }
