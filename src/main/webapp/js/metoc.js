@@ -1,4 +1,3 @@
-
 var metocModule = angular.module('embryo.metoc', []);
 
 metocModule.factory('MetocService', function($http) {
@@ -32,16 +31,18 @@ metocModule.factory('MetocService', function($http) {
 
 embryo.metoc = {};
 
-var defaultCurrentLow=1.0;
-var defaultCurrentMedium=2.0;
-var defaultCurrentWarnLimit=4.0;
-var defaultWaveLow=1.0;
-var defaultWaveMedium=2.0;
-var defaultWaveWarnLimit=3.0;
-var defaultWindWarnLimit=10.0;
-
+var defaultCurrentLow = 1.0;
+var defaultCurrentMedium = 2.0;
+var defaultCurrentWarnLimit = 4.0;
+var defaultWaveLow = 1.0;
+var defaultWaveMedium = 2.0;
+var defaultWaveWarnLimit = 3.0;
+var defaultWindWarnLimit = 10.0;
 
 embryo.metoc.draw = function(metoc) {
+
+    console.log(embryo.map.internalMap.zoom);
+
     var index, attr, geom, forecast, features = [];
 
     for ( var index in metoc.forecasts) {
@@ -49,6 +50,7 @@ embryo.metoc.draw = function(metoc) {
 
         if (forecast.waveDir && forecast.waveHeight && forecast.wavePeriod) {
             attr = {
+                index : index,
                 type : "wave",
                 created : metoc.created,
                 forecast : forecast
@@ -58,6 +60,7 @@ embryo.metoc.draw = function(metoc) {
         }
         if (forecast.windDir && forecast.windSpeed) {
             attr = {
+                index : index,
                 type : "wind",
                 created : metoc.created,
                 forecast : forecast
@@ -67,6 +70,7 @@ embryo.metoc.draw = function(metoc) {
         }
         if (forecast.curDir && forecast.curSpeed) {
             attr = {
+                index : index,
                 type : "current",
                 created : metoc.created,
                 forecast : forecast
@@ -85,6 +89,20 @@ var groupSelected;
 embryo.metoc.initLayer = function() {
     console.log('Metoc layer initialized');
 
+    // zoom level -> hvert x punkt vises
+    var zoomFilter = {
+        10 : 1,// hvert punkt
+        9 : 1, // hvert punkt
+        8 : 2, // hvert andet punkt
+        7 : 3,
+        6 : 5,  
+        5 : 6, 
+        4 : 8, 
+        3 : 10,
+        2 : 10, 
+        1 : 10 
+    };
+
     var context = {
         transparency : function() {
             return groupSelected ? 0.8 : 0.5;
@@ -93,79 +111,88 @@ embryo.metoc.initLayer = function() {
             return -context.height(feature) / 2;
         },
         size : function() {
-            return 2 * embryo.map.internalMap.zoom / embryo.map.internalMap.numZoomLevels;
-        }, 
+            return 1.5 * embryo.map.internalMap.zoom / embryo.map.internalMap.numZoomLevels;
+        },
         width : function(feature) {
-            if(feature.attributes.type === 'wave'){
+            if (feature.attributes.type === 'wave') {
                 return context.size() * 27;
             }
-            if(feature.attributes.type === 'current'){
+            if (feature.attributes.type === 'current') {
                 return context.size() * 21;
             }
-            if(feature.attributes.type === 'wind'){
+            if (feature.attributes.type === 'wind') {
                 return context.size() * 27;
             }
             return 100;
-        }, 
+        },
         height : function(feature) {
-            if(feature.attributes.type === 'wave'){
+            if (feature.attributes.type === 'wave') {
                 return context.size() * 93;
             }
-            if(feature.attributes.type === 'current'){
+            if (feature.attributes.type === 'current') {
                 return context.size() * 253;
             }
-            if(feature.attributes.type === 'wind'){
+            if (feature.attributes.type === 'wind') {
                 return context.size() * 93;
             }
             return 100;
-        }, 
-        rotation : function(feature){
-            if(feature.attributes.type === 'wave'){
-                return feature.attributes.forecast.waveDir;
+        },
+        rotation : function(feature) {
+            if (feature.attributes.type === 'wave') {
+                return feature.attributes.forecast.waveDir + 180;
             }
-            if(feature.attributes.type === 'current'){
-                return feature.attributes.forecast.curDir;
+            if (feature.attributes.type === 'current') {
+                return feature.attributes.forecast.curDir + 180;
             }
-            if(feature.attributes.type === 'wind'){
+            if (feature.attributes.type === 'wind') {
                 return feature.attributes.forecast.windDir;
             }
             return 0;
         },
-        graphic : function(feature){
-            if(feature.attributes.type === 'wave'){
+        display : function(feature){
+            console.log(embryo.map.internalMap.zoom);
+            var zoom = embryo.map.internalMap.zoom > 10 ? 10 : embryo.map.internalMap.zoom;
+            var modulus = feature.attributes.index % zoomFilter[zoom]; 
+            if(modulus == 0){
+                return "display";
+            }
+            return "none";
+        },
+        graphic : function(feature) {
+            if (feature.attributes.type === 'wave') {
                 var waveHeight = feature.attributes.forecast.waveHeight;
                 var markerDir = 'img/wave/mark';
-                
-                if(waveHeight >= 0 && waveHeight <= defaultWaveLow){
+
+                if (waveHeight >= 0 && waveHeight <= defaultWaveLow) {
                     markerDir += "01";
-                } else if (waveHeight > defaultWaveLow && waveHeight <= defaultWaveMedium){
+                } else if (waveHeight > defaultWaveLow && waveHeight <= defaultWaveMedium) {
                     markerDir += "02";
-                } else if (waveHeight > defaultWaveMedium){
+                } else if (waveHeight > defaultWaveMedium) {
                     markerDir += "03";
                 }
-                
-                if(waveHeight >= defaultWaveWarnLimit){
+
+                if (waveHeight >= defaultWaveWarnLimit) {
                     markerDir += "red.png";
                 } else {
                     markerDir += ".png";
                 }
-                
+
                 return markerDir;
             }
-            if(feature.attributes.type === 'current'){
+            if (feature.attributes.type === 'current') {
                 var currentSpeedMs = feature.attributes.forecast.curSpeed;
                 var markerDir = 'img/current/mark';
-                var currentSpeedKn = currentSpeedMs * (3.6/1.852);
-                
-                if(currentSpeedKn >= 0 && currentSpeedKn <= defaultCurrentLow){
+                var currentSpeedKn = currentSpeedMs * (3.6 / 1.852);
+
+                if (currentSpeedKn >= 0 && currentSpeedKn <= defaultCurrentLow) {
                     markerDir += "01";
-                } else if (currentSpeedKn > defaultCurrentLow && currentSpeedKn <= defaultCurrentMedium){
+                } else if (currentSpeedKn > defaultCurrentLow && currentSpeedKn <= defaultCurrentMedium) {
                     markerDir += "02";
-                } else if (currentSpeedKn > defaultCurrentMedium){
+                } else if (currentSpeedKn > defaultCurrentMedium) {
                     markerDir += "03";
                 }
-                
-                if(currentSpeedKn >= defaultCurrentWarnLimit){
+
+                if (currentSpeedKn >= defaultCurrentWarnLimit) {
                     markerDir += "red.png";
                 } else {
                     markerDir += ".png";
@@ -173,88 +200,156 @@ embryo.metoc.initLayer = function() {
 
                 return markerDir;
             }
-            if(feature.attributes.type === 'wind'){
-                var markerDir = 'img/wind/mark';                
+            if (feature.attributes.type === 'wind') {
+                var markerDir = 'img/wind/mark';
                 var windSpeed = feature.attributes.forecast.windSpeed;
 
-                var windSpeedKnots = windSpeed * (3.6/1.852);
+                var windSpeedKnots = windSpeed * (3.6 / 1.852);
 
-                if(windSpeedKnots >= 0 && windSpeedKnots <= 5){
+                if (windSpeedKnots >= 0 && windSpeedKnots <= 5) {
                     markerDir += "005";
-                } else if (windSpeedKnots > 5 && windSpeedKnots <= 10){
+                } else if (windSpeedKnots > 5 && windSpeedKnots <= 10) {
                     markerDir += "010";
-                } else if (windSpeedKnots > 10 && windSpeedKnots <= 15){
+                } else if (windSpeedKnots > 10 && windSpeedKnots <= 15) {
                     markerDir += "015";
-                } else if (windSpeedKnots > 15 && windSpeedKnots <= 20){
+                } else if (windSpeedKnots > 15 && windSpeedKnots <= 20) {
                     markerDir += "020";
-                } else if (windSpeedKnots > 20 && windSpeedKnots <= 25){
+                } else if (windSpeedKnots > 20 && windSpeedKnots <= 25) {
                     markerDir += "025";
-                } else if (windSpeedKnots > 25 && windSpeedKnots <= 30){
+                } else if (windSpeedKnots > 25 && windSpeedKnots <= 30) {
                     markerDir += "030";
-                } else if (windSpeedKnots > 30 && windSpeedKnots <= 35){
+                } else if (windSpeedKnots > 30 && windSpeedKnots <= 35) {
                     markerDir += "035";
-                } else if (windSpeedKnots > 35 && windSpeedKnots <= 40){
+                } else if (windSpeedKnots > 35 && windSpeedKnots <= 40) {
                     markerDir += "040";
-                } else if (windSpeedKnots > 40 && windSpeedKnots <= 45){
+                } else if (windSpeedKnots > 40 && windSpeedKnots <= 45) {
                     markerDir += "045";
-                } else if (windSpeedKnots > 45 && windSpeedKnots <= 50){
+                } else if (windSpeedKnots > 45 && windSpeedKnots <= 50) {
                     markerDir += "050";
-                } else if (windSpeedKnots > 50 && windSpeedKnots <= 55){
+                } else if (windSpeedKnots > 50 && windSpeedKnots <= 55) {
                     markerDir += "055";
-                } else if (windSpeedKnots > 55 && windSpeedKnots <= 60){
+                } else if (windSpeedKnots > 55 && windSpeedKnots <= 60) {
                     markerDir += "060";
-                } else if (windSpeedKnots > 60 && windSpeedKnots <= 65){
+                } else if (windSpeedKnots > 60 && windSpeedKnots <= 65) {
                     markerDir += "065";
-                } else if (windSpeedKnots > 65 && windSpeedKnots <= 70){
+                } else if (windSpeedKnots > 65 && windSpeedKnots <= 70) {
                     markerDir += "070";
-                } else if (windSpeedKnots > 70 && windSpeedKnots <= 75){
+                } else if (windSpeedKnots > 70 && windSpeedKnots <= 75) {
                     markerDir += "075";
-                } else if (windSpeedKnots > 75 && windSpeedKnots <= 80){
+                } else if (windSpeedKnots > 75 && windSpeedKnots <= 80) {
                     markerDir += "080";
-                } else if (windSpeedKnots > 80 && windSpeedKnots <= 85){
+                } else if (windSpeedKnots > 80 && windSpeedKnots <= 85) {
                     markerDir += "085";
-                } else if (windSpeedKnots > 85 && windSpeedKnots <= 90){
+                } else if (windSpeedKnots > 85 && windSpeedKnots <= 90) {
                     markerDir += "090";
-                } else if (windSpeedKnots > 90 && windSpeedKnots <= 95){
+                } else if (windSpeedKnots > 90 && windSpeedKnots <= 95) {
                     markerDir += "095";
-                } else if (windSpeedKnots > 95 && windSpeedKnots <= 100){
+                } else if (windSpeedKnots > 95 && windSpeedKnots <= 100) {
                     markerDir += "100";
-                } else if (windSpeedKnots > 100 && windSpeedKnots <= 105){
+                } else if (windSpeedKnots > 100 && windSpeedKnots <= 105) {
                     markerDir += "105";
-                }else if (windSpeedKnots > 100){
+                } else if (windSpeedKnots > 100) {
                     markerDir += "105";
                 }
 
-                if(windSpeed >= defaultWindWarnLimit){
+                if (windSpeed >= defaultWindWarnLimit) {
                     markerDir += "red.png";
                 } else {
                     markerDir += ".png";
                 }
-                
+
                 return markerDir;
-            } 
+            }
         }
     };
 
     embryo.metoc.layer = new OpenLayers.Layer.Vector("METOC", {
         styleMap : new OpenLayers.StyleMap({
             "default" : new OpenLayers.Style({
-                //graphicOpacity : "${transparency}",
+                // graphicOpacity : "${transparency}",
                 externalGraphic : "${graphic}",
+                display : "${display}",
                 graphicWidth : "${width}",
                 graphicHeight : "${height}",
-                rotation: "${rotation}",
+                rotation : "${rotation}",
             }, {
                 context : context
             })
+        })
+    });
+    
+    var timeStampsLayer = new OpenLayers.Layer.Vector("timeStampsLayer", {
+        styleMap : new OpenLayers.StyleMap({
+            'default' : {
+                label : "${timeStamp}",
+                fontColor : timeStampColor,
+                fontSize : timeStampFontSize,
+                fontFamily : timeStampFontFamily,
+                fontWeight : timeStampFontWeight,
+                labelAlign : "${align}",
+                labelXOffset : "${xOffset}",
+                labelYOffset : "${yOffset}",
+                labelOutlineColor : "#fff",
+                labelOutlineWidth : 2,
+                labelOutline : 1,
+                pointRadius: 3,
+                fill: true,
+                fillColor : pastTrackColor,
+                strokeColor : pastTrackColor,
+                stroke: true
+//                display : "${display}"
+            }
         })
     });
 
     embryo.map.add({
         group : "vessel",
         layer : embryo.metoc.layer,
-        select : false
+        select : true
     });
+
+    var selectedFeature = null;
+
+    function onSelect(event) {
+        console.log(event);
+        var feature = event.feature;
+        if (selectedFeature != null)
+            onUnselect();
+        selectedFeature = feature;
+        redrawSelection();
+    }
+    ;
+
+    function onUnselect(event) {
+        console.log(event);
+        selectedFeature = null;
+        redrawSelection();
+    }
+
+    embryo.metoc.layer.events.on({
+        featureselected : onSelect,
+        featureunselected : onUnselect
+    });
+
+    /**
+     * Redraws all features in vessel layer and selection layer. Features are
+     * vessels.
+     */
+    function redrawSelection() {
+
+        // Set search result in focus
+        if (selectedFeature) {
+
+            var html = '<table><tr><td>Wave</td><td>' + 5 + '</td></tr></table>';
+
+            popup = new OpenLayers.Popup("metoc", selectedFeature.geometry.getBounds().getCenterLonLat(), null, html,
+                    true);
+            // feature.popup = popup;
+            embryp.map.internalMap.addPopup(popup);
+        }
+
+    }
+
 };
 
 embryo.mapInitialized(embryo.metoc.initLayer);
