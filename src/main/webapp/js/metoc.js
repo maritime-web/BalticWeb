@@ -39,8 +39,21 @@ var defaultWaveMedium = 2.0;
 var defaultWaveWarnLimit = 3.0;
 var defaultWindWarnLimit = 10.0;
 
+
 embryo.metoc.draw = function(metoc) {
     var index, attr, geom, forecast, features = [], labelFeatures = [];
+
+    function formatDate(dato) {
+        if (dato == null) return "-";
+        var d = new Date(dato);
+        return d.getFullYear()+"-"+(""+(101+d.getMonth())).slice(1,3)+"-"+(""+(100+d.getDate())).slice(1,3);
+    }
+
+    function formatTime(dato) {
+        if (dato == null) return "-";
+        var d = new Date(dato);
+        return formatDate(dato) + " " + d.getHours()+":"+(""+(100+d.getMinutes())).slice(1,3);
+    }
 
     for ( var index in metoc.forecasts) {
         forecast = metoc.forecasts[index];
@@ -79,9 +92,8 @@ embryo.metoc.draw = function(metoc) {
         
 
         if (featuresCount < features.length) {
-            // time = formatTime(track.time);
             attr = {
-                time : forecast.time,
+                time : formatTime(forecast.time),
                 curSpeed : forecast.curSpeed ? forecast.curSpeed + " kn" : "N/A",
                 curDir : forecast.curDir ? forecast.curDir + "°" : "N/A",
                 windSpeed : forecast.windSpeed ? forecast.windSpeed + " m/s" : "N/A",
@@ -311,16 +323,13 @@ embryo.metoc.initLayer = function() {
                         {
                             'default' : new OpenLayers.Style(
                                     {
-                                        label : "METOC for ${time}\nCurrent: ${curSpeed} - ${curDir} \nWind:   ${windSpeed} - ${windDir} \nWave: ${waveHeight} - ${waveDir} (${wavePeriod})\nSea level:   ${sealevel}",
+                                        label : "Time: ${time}\nCurrent: ${curSpeed} - ${curDir} \nWind:   ${windSpeed} - ${windDir} \nWave: ${waveHeight} - ${waveDir} (${wavePeriod})\nSea level:   ${sealevel}",
                                         fontColor : timeStampColor,
                                         fontSize : 10,
                                         fontFamily : timeStampFontFamily,
                                         labelAlign : "${align}",
                                         labelXOffset : "${xOffset}",
                                         labelYOffset : "${yOffset}",
-                                        labelOutlineColor : "#fff",
-                                        labelOutlineWidth : 2,
-                                        labelOutline : 1,
                                         pointRadius : 3,
                                         fill : true,
                                         fillColor : '#550055',
