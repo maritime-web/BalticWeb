@@ -1,7 +1,7 @@
 
 <div>
 	<div>
-		<h2>Voyage plan</h2>
+		<h2>Schedule</h2>
 	</div>
 	<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
 	<div x-ng-show="message" class="alert alert-info">{{message}}</div>
@@ -10,7 +10,7 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th>Berth</th>
+					<th>Location</th>
 					<th>Latitude</th>
 					<th>Longitude</th>
 					<th>Arrival</th>
@@ -46,9 +46,9 @@
 								<li><a tabindex="-1" x-ng-href="{{editRouteLink(voyage)}}">Edit Route</a></li>
 								<!-- <li x-ng-show="voyage.routeId"><a tabindex="-1" href="#" x-ng-click="drawRoute(voyage)">Draw Route</a></li> -->
 								<li x-ng-show="voyage.routeId && !isActive(voyage)"><a tabindex="-1" x-ng-click="activate(voyage)">Activate
-										Voyage/Route</a></li>
+										Route</a></li>
 								<li x-ng-show="voyage.routeId && isActive(voyage)"><a tabindex="-1" x-ng-click="deactivate(voyage)">Deactivate
-										Voyage/Route</a></li>
+										Route</a></li>
 							</ul>
 						</div>
 					</td>
