@@ -127,7 +127,8 @@ $(function() {
                 vessels = [];
 
                 for (var i in result.vesselList.vessels) {
-                    vessels.push(new Vessel(i, result.vesselList.vessels[i], 1));
+                    if (result.vesselList.vessels[i][4] != 1)
+                        vessels.push(new Vessel(i, result.vesselList.vessels[i], 1));
                 }
                 
                 drawVessels();
