@@ -27,7 +27,7 @@ import javax.xml.ws.BindingProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MsiClientImpl implements MsiClient {
+public class MsiClientImpl /* implements MsiClient */ {
     @Inject
     @Property("embryo.msi.endpoint")
     String endpoint;
@@ -44,11 +44,11 @@ public class MsiClientImpl implements MsiClient {
         );
     }
 
-    public List<MsiItem> getActiveWarnings() {
-        List<MsiItem> result = new ArrayList<>();
+    public List<MsiClient.MsiItem> getActiveWarnings() {
+        List<MsiClient.MsiItem> result = new ArrayList<>();
 
         for (MsiDtoLight mdl : msiService.getActiveWarning().getItem()) {
-            result.add(new MsiItem(mdl));
+            result.add(new MsiClient.MsiItem(mdl));
         }
 
         return result;
