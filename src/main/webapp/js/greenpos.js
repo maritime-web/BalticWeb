@@ -49,9 +49,84 @@
             $timeout) {
         $scope.editable = true;
 
-        $scope.report = {
-            type : "SP",
-        };
+        function getPeriod(dateLong) {
+            var date = new Date(dateLong);
+            if (date.getUTCHours() >= 0 && date.getUTCHours() < 6) {
+                return {
+                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0),
+                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 6, 0),
+                };
+            } else if (date.getUTCHours() >= 6 && date.getUTCHours() < 12) {
+                return {
+                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 6, 0),
+                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12, 0),
+                };
+            }
+            if (date.getUTCHours() >= 12 && date.getUTCHours() < 18) {
+                return {
+                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12, 0),
+                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 18, 0),
+                };
+            }
+            if (date.getUTCHours() >= 18 && date.getUTCHours() <= 23) {
+                return {
+                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 18, 0),
+                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1, 0, 0),
+                };
+            }
+        }
+
+        function evalGreenpos(greenpos) {
+            console.log('evalGreenpos');
+            console.log(greenpos);
+
+            if (!greenpos || !greenpos.ts) {
+                $scope.report = {
+                    type : "PR",
+                };
+                return;
+            }
+
+            if (greenpos.reportType === 'FR') {
+                $scope.report = {
+                    type : "SP",
+                };
+            }
+
+            var now = Date.now();
+            var period = getPeriod(now);
+
+            // Allow for reports to be performed 15 minutes before reporting
+            // hour.
+            // if last report performed more than 15 minutes before reporting
+            // period then perform new report
+            if (greenpos.ts < (period.from - 900000) && now < (period.from + 1800000)) {
+                $scope.report = {
+                    type : "PR",
+                };
+                return;
+            }
+
+            // if last report not performed more than ½ later than reporting
+            // hour, then highlight.
+            if (greenpos.ts < (period.from - 900000) && now >= (period.from + 1800000)) {
+                $scope.report = {
+                    type : "PR",
+                };
+                return;
+            }
+
+            $scope.report = {
+                type : "SP",
+            };
+        }
+        ;
+
+        ShipService.getYourShip(function(ship) {
+            GreenposService.getLatestReport(ship.maritimeId, function(latestReport) {
+                evalGreenpos(latestReport);
+            });
+        });
 
         $scope.$on('$viewContentLoaded', function() {
             if (!$scope.map) {
@@ -85,13 +160,13 @@
             VoyageService.getYourActive(function(voyage) {
                 $scope.report.destination = voyage.berthName;
                 $scope.report.etaOfArrival = voyage.arrival;
-                if(voyage.crew){
+                if (voyage.crew) {
                     $scope.report.personsOnBoard = voyage.crew;
                 }
-                if(voyage.passengers){
-                    if($scope.report.personsOnBoard){
+                if (voyage.passengers) {
+                    if ($scope.report.personsOnBoard) {
                         $scope.report.personsOnBoard += voyage.passengers;
-                    }else{
+                    } else {
                         $scope.report.personsOnBoard = voyage.passengers;
                     }
                 }
@@ -131,7 +206,7 @@
                 $scope.report.lat = formatted;
                 $scope.$apply();
             }
-        })
+        });
 
         $("#gpLon").change(function() {
             var formatted = reformat($scope.report.lon, formatLongitude);
@@ -139,7 +214,7 @@
                 $scope.report.lon = formatted;
                 $scope.$apply();
             }
-        })
+        });
 
         $scope.$watch($scope.getLatLon, function(newValue, oldValue) {
             if (newValue.lat && newValue.lon) {
