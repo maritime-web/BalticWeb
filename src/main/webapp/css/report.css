@@ -40,8 +40,8 @@ span.msg-invalid {
 	width: 100%;
 }
 
-.ctrlContainer {
-	width: 270px !important;
+.controlPanel {
+	width: 300px;
 }
 
 .pagecontainer {
