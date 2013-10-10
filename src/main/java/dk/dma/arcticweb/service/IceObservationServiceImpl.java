@@ -96,7 +96,9 @@ public class IceObservationServiceImpl implements IceObservationService {
 
                 long size = new File(localDmiDirectory + "/" + name + ".shp").length();
 
-                iceObservations.add(new IceObservation("DMI", region, date, size, name));
+                if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
+                    iceObservations.add(new IceObservation("DMI", region, date, size, name));
+                }
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
