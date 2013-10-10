@@ -114,6 +114,33 @@
             };
         };
 
+        function reformat(value, formatter) {
+            if (value) {
+                value = value.trim();
+                var parsed = parseFloat(value);
+                if (parsed == value) {
+                    return formatter(parsed);
+                }
+            }
+            return null;
+        }
+
+        $("#gpLat").change(function() {
+            var formatted = reformat($scope.report.lat, formatLatitude);
+            if (formatted) {
+                $scope.report.lat = formatted;
+                $scope.$apply();
+            }
+        })
+
+        $("#gpLon").change(function() {
+            var formatted = reformat($scope.report.lon, formatLongitude);
+            if (formatted) {
+                $scope.report.lon = formatted;
+                $scope.$apply();
+            }
+        })
+
         $scope.$watch($scope.getLatLon, function(newValue, oldValue) {
             if (newValue.lat && newValue.lon) {
                 $scope.setPositionOnMap(newValue.lat, newValue.lon);

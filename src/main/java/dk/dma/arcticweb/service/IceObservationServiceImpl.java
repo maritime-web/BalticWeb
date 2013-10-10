@@ -22,12 +22,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class IceObservationServiceImpl implements IceObservationService {
     @Inject
@@ -96,7 +91,7 @@ public class IceObservationServiceImpl implements IceObservationService {
 
                 long size = new File(localDmiDirectory + "/" + name + ".shp").length();
 
-                if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
+                if ((System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) && (!region.equals("Greenland WA"))) {
                     iceObservations.add(new IceObservation("DMI", region, date, size, name));
                 }
             }
