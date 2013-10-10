@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 
 import org.slf4j.Logger;
 
+import dk.dma.arcticweb.service.GreenPosService;
 import dk.dma.arcticweb.service.ShipService;
 import dk.dma.embryo.rest.json.Ship;
 import dk.dma.enav.model.ship.ShipType;
@@ -39,6 +40,9 @@ public class ShipRestService {
 
     @Inject
     private ShipService shipService;
+
+    @Inject
+    private GreenPosService greenposService;
 
     @Inject
     private Logger logger;
@@ -90,6 +94,22 @@ public class ShipRestService {
         
         return maritimeId;
     }
+    
+//    @GET
+//    @Path("/reportingstatus")
+//    @Produces("application/json")
+//    public Ship getReportStatus() {
+//        logger.debug("getReportStatus()");
+//        
+//        Ship result = null;
+//        if(ship != null){
+//            result = ship.toJsonModel();
+//        }
+//        
+//        logger.debug("getReportStatus(): {}", result);
+//        
+//        return result;
+//    }
 
 //    @GET
 //    @Path("/{maritimeId}")

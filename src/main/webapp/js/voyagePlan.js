@@ -24,6 +24,8 @@
                     voyagePlan = plan;
                     $scope.voyages = voyagePlan.voyages.slice();
                     $scope.voyages.push({});
+
+                    console.log(voyagePlan);
                 });
             }
 
@@ -31,8 +33,11 @@
         var loadActiveRoute = function() {
             RouteService.getActive($scope.mmsi, function(route) {
                 $scope.activeRoute = route;
+                console.log($scope.activeRoute);
             });
         };
+        
+
 
         $scope.mmsi = $routeParams.mmsi;
 
@@ -96,7 +101,7 @@
             // voyage.maritimeId = Math.uuid(17);
             // }
 
-            return '#/routeUpload/' + $scope.mmsi + '/' + voyage.maritimeId;
+            return '#/routeUpload/' + $scope.mmsi + '/voyage/' + voyage.maritimeId;
         };
 
         $scope.routeDisabled = function(voyage) {

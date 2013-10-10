@@ -37,7 +37,9 @@ public class Voyage {
 
     private String departure;
 
-    private Integer personsOnBoard;
+    private Integer crew;
+
+    private Integer passengers;
 
     private Boolean doctor;
     
@@ -51,7 +53,7 @@ public class Voyage {
     }
     
     public Voyage(String maritimeId, String berthName, String latitude, String longitude, String arrival,
-            String departure, Integer personsOnBoard) {
+            String departure, Integer crew, Integer passengers) {
         super();
         this.maritimeId = maritimeId;
         this.berthName = berthName;
@@ -59,11 +61,12 @@ public class Voyage {
         this.longitude = longitude;
         this.arrival = arrival;
         this.departure = departure;
-        this.personsOnBoard = personsOnBoard;
+        this.crew = crew;
+        this.passengers = passengers;
     }
 
     public Voyage(String maritimeId, String berthName, String latitude, String longitude, String arrival,
-            String departure, Integer personsOnBoard, Boolean doctor) {
+            String departure, Integer crew, Integer passengers, Boolean doctor) {
         super();
         this.maritimeId = maritimeId;
         this.berthName = berthName;
@@ -71,7 +74,8 @@ public class Voyage {
         this.longitude = longitude;
         this.arrival = arrival;
         this.departure = departure;
-        this.personsOnBoard = personsOnBoard;
+        this.crew = crew;
+        this.passengers = passengers;
         this.doctor = doctor;
     }
 
@@ -135,12 +139,20 @@ public class Voyage {
         this.departure = departure;
     }
 
-    public Integer getPersonsOnBoard() {
-        return personsOnBoard;
+    public Integer getCrew() {
+        return crew;
     }
 
-    public void setPersonsOnBoard(Integer personsOnBoard) {
-        this.personsOnBoard = personsOnBoard;
+    public void setCrew(Integer crew) {
+        this.crew = crew;
+    }
+
+    public Integer getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(Integer passengers) {
+        this.passengers = passengers;
     }
 
     public Boolean isDoctor() {

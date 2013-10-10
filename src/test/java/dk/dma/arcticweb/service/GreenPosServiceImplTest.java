@@ -80,7 +80,7 @@ public class GreenPosServiceImplTest {
 
         VoyagePlan plan = new VoyagePlan();
         plan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", LocalDateTime.now(), LocalDateTime.now()
-                .plusDays(2), 12, true));
+                .plusDays(2), 12, 0, true));
         ship.setVoyagePlan(plan);
 
         entityManager.persist(ship);

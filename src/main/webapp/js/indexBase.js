@@ -40,8 +40,9 @@
             controller : embryo.RouteEditCtrl
         }).when('/routeUpload/:mmsi', {
             templateUrl : 'partials/routeUpload.html'// ,
-        // controller : embryo.GreenPosListCtrl
-        }).when('/routeUpload/:mmsi/:voyageId', {
+        }).when('/routeUpload/:mmsi/voyage/:voyageId', {
+            templateUrl : 'partials/routeUpload.html'// ,
+        }).when('/routeUpload/:mmsi/active', {
             templateUrl : 'partials/routeUpload.html'// ,
         }).when('/reportlist', {
             templateUrl : 'partials/greenposList.html',

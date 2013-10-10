@@ -24,7 +24,7 @@
                             var url = embryo.baseUrl + 'rest/route/active/' + mmsi;
                             $http.get(url).success(onSuccess);
                         };
-                        
+
                         remoteCall(callback);
                     },
                     getYourActive : function(mmsi, callback) {
@@ -70,6 +70,9 @@
                             callback();
                             $rootScope.$broadcast('yourshipDataUpdated');
                         });
+                    },
+                    clearActiveFromCache : function() {
+                        SessionStorageService.removeItem(active);
                     },
                     getRoute : function(routeId, callback) {
                         // should routes be cached?

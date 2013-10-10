@@ -79,9 +79,9 @@ public class ShipServiceImplTest {
 
         VoyagePlan voyagePlan = new VoyagePlan();
         voyagePlan.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
-                LocalDateTime.parse("2013-06-20T11:56"), 12, true));
+                LocalDateTime.parse("2013-06-20T11:56"), 12, 0, true));
         voyagePlan.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime.parse("2013-06-23T22:08"),
-                LocalDateTime.parse("2013-06-25T20:19"), 11, false));
+                LocalDateTime.parse("2013-06-25T20:19"), 11, 0, false));
 
         ship.setVoyagePlan(voyagePlan);
         entityManager.persist(voyagePlan);

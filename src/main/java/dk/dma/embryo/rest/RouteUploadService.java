@@ -76,7 +76,7 @@ public class RouteUploadService {
 
         String voyageId = null;
 
-        boolean active = false;
+        Boolean active = null;
 
         for (FileItem item : items) {
             if (item.isFormField()) {

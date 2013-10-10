@@ -143,7 +143,8 @@ public class ShipServiceImpl implements ShipService {
             v.setBerthName(voyageEntry.getValue().getBerthName());
             v.setDeparture(voyageEntry.getValue().getDeparture());
             v.setPosition(voyageEntry.getValue().getPosition());
-            v.setPersonsOnBoard(voyageEntry.getValue().getPersonsOnBoard());
+            v.setCrewOnBoard(voyageEntry.getValue().getCrewOnBoard());
+            v.setPassengersOnBoard(voyageEntry.getValue().getPassengersOnBoard());
             v.setDoctorOnBoard(voyageEntry.getValue().getDoctorOnBoard());
         }
 
@@ -208,7 +209,7 @@ public class ShipServiceImpl implements ShipService {
      * Automatically fills out route fields also being part of voyage information, like departure location, destination location, times etc. 
      */
     @Override
-    public String saveRoute(Route route, String voyageId, boolean active) {
+    public String saveRoute(Route route, String voyageId, Boolean active) {
         if (route.getId() == null) {
             Long id = shipRepository.getRouteId(route.getEnavId());
             route.setId(id);
@@ -241,13 +242,15 @@ public class ShipServiceImpl implements ShipService {
 
         route.setVoyage(voyage);
         shipRepository.saveEntity(route);
+        // update relation
+        shipRepository.saveEntity(voyage);
 
-        if (active) {
+        if (active == Boolean.TRUE) {
             Ship ship = voyage.getPlan().getShip();
             ship.setActiveVoyage(voyage);
             shipRepository.saveEntity(ship);
         }
-
+        
         return route.getEnavId();
     }
 
