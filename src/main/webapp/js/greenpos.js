@@ -49,6 +49,10 @@
             $timeout) {
         $scope.editable = true;
 
+        $scope.report = {
+            type : "SP",
+        };
+
         function getPeriod(dateLong) {
             var date = new Date(dateLong);
             if (date.getUTCHours() >= 0 && date.getUTCHours() < 6) {
