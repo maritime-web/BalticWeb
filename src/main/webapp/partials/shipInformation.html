@@ -44,7 +44,7 @@
 					<div class="control-group">
 						<label class="control-label" for="commCapabilities">Communication capabilities</label>
 						<div class="controls">
-							<input type="text" id="commCapabilities" class="input-large" x-ng-model="ship.commCapabilities" />
+							<input type="text" id="commCapabilities" class="input-xxlarge" x-ng-model="ship.commCapabilities" />
 						</div>
 					</div>
 				</div>
@@ -53,27 +53,27 @@
 					<div class="control-group">
 						<label class="control-label" for="width">Width (m)</label>
 						<div class="controls">
-							<input type="number" id="width" name="width" class="input-mini" x-ng-model="ship.width" min="0" /> <span
+							<input type="number" id="width" name="width" class="input-small" x-ng-model="ship.width" min="0" /> <span
 								x-ng-show="shipForm.width.$error.min" class="msg-invalid">Expected positive number</span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="length">Length (m)</label>
 						<div class="controls">
-							<input type="number" id="length" name="length" class="input-mini" x-ng-model="ship.length" min="0" /> <span
+							<input type="number" id="length" name="length" class="input-small" x-ng-model="ship.length" min="0" /> <span
 								x-ng-show="shipForm.length.$error.min" class="msg-invalid">Expected positive number</span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="maxSpeed">Max speed (kn)</label>
 						<div class="controls">
-							<input type="text" id="maxSpeed" name="maxSpeed" class="input-mini" x-ng-model="ship.maxSpeed" />
+							<input type="text" id="maxSpeed" name="maxSpeed" class="input-small" x-ng-model="ship.maxSpeed" />
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="gTonnage">Gross tonnage</label>
 						<div class="controls">
-							<input type="number" id="gTonnage" name="gTonnage" class="input-mini" x-ng-model="ship.grossTon" min="0" /> <span
+							<input type="number" id="gTonnage" name="gTonnage" class="input-small" x-ng-model="ship.grossTon" min="0" /> <span
 								x-ng-show="shipForm.gTonnage.$error.min" class="msg-invalid">Expected positive number</span>
 						</div>
 					</div>
