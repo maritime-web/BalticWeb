@@ -27,7 +27,7 @@ public class MsiClientTest {
 
         msiClientImpl.init();
 
-        for (MsiClientImpl.MsiItem msiItem : msiClientImpl.getActiveWarnings()) {
+        for (MsiClient.MsiItem msiItem : msiClientImpl.getActiveWarnings()) {
             System.out.println(""+msiItem);
         }
     }

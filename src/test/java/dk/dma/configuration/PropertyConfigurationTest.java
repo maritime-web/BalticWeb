@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 import java.net.URISyntaxException;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {ConfiguredClassImpl.class, PropertyFileService.class})

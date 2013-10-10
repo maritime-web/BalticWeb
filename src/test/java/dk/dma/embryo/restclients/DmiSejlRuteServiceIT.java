@@ -19,8 +19,6 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import junit.framework.Assert;
-
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Test;
