@@ -43,14 +43,14 @@ public class Voyage extends BaseEntity<Long> {
 
     private Position position;
 
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime arrival;
 
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime departure;
 
-    private Integer personsOnBoard;
-
+    private Integer passengersOnBoard;
+    private Integer crewOnBoard;
     private Boolean doctorOnBoard;
 
     // Should cascade be set to e.g. MERGE, REMOVE, PERSIST?
@@ -69,7 +69,7 @@ public class Voyage extends BaseEntity<Long> {
 
         dk.dma.embryo.rest.json.Voyage voyage = new dk.dma.embryo.rest.json.Voyage(getEnavId(), getBerthName(),
                 getPosition().getLatitudeAsString(), getPosition().getLongitudeAsString(), arrival, departure,
-                getPersonsOnBoard(), getDoctorOnBoard());
+                getCrewOnBoard(), getPassengersOnBoard(),  getDoctorOnBoard());
 
         if (getRoute() != null) {
             voyage.setRouteId(getRoute().getEnavId());
@@ -87,7 +87,8 @@ public class Voyage extends BaseEntity<Long> {
         result.setPosition(position);
         result.setArrival(arrival);
         result.setDeparture(departure);
-        result.setPersonsOnBoard(voyage.getPersonsOnBoard());
+        result.setCrewOnBoard(voyage.getCrew());
+        result.setPassengersOnBoard(voyage.getPassengers());
         result.setDoctorOnBoard(voyage.isDoctor());
         return result;
     }
@@ -116,13 +117,14 @@ public class Voyage extends BaseEntity<Long> {
     }
 
     public Voyage(String name, String latitude, String longitude, LocalDateTime arrival, LocalDateTime departure,
-            Integer personsOnBoard, boolean doctorOnBoard) {
+            Integer crewOnBoard, Integer passengers, boolean doctorOnBoard) {
         this();
         this.berthName = name;
         this.position = new Position(latitude, longitude);
         this.arrival = arrival;
         this.departure = departure;
-        this.personsOnBoard = personsOnBoard;
+        this.crewOnBoard = crewOnBoard;
+        this.passengersOnBoard = passengers;
         this.doctorOnBoard = doctorOnBoard;
     }
 
@@ -132,8 +134,8 @@ public class Voyage extends BaseEntity<Long> {
     @Override
     public String toString() {
         return "Voyage [" + baseToString() + ", enavId=" + enavId + ", berthName=" + berthName + ", position="
-                + position + ", arrival=" + arrival + ", departure=" + departure + ", personsOnBoard=" + personsOnBoard
-                + ", doctorOnBoard=" + doctorOnBoard + "]";
+                + position + ", arrival=" + arrival + ", departure=" + departure + ", crewOnBoard=" + crewOnBoard
+                + ", passengersOnBoard=" + passengersOnBoard + ", doctorOnBoard=" + doctorOnBoard + "]";
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -183,12 +185,20 @@ public class Voyage extends BaseEntity<Long> {
         this.enavId = key;
     }
 
-    public Integer getPersonsOnBoard() {
-        return personsOnBoard;
+    public Integer getCrewOnBoard() {
+        return crewOnBoard;
     }
 
-    public void setPersonsOnBoard(Integer personsOnBoard) {
-        this.personsOnBoard = personsOnBoard;
+    public void setCrewOnBoard(Integer crewOnBoard) {
+        this.crewOnBoard = crewOnBoard;
+    }
+
+    public Integer getPassengersOnBoard() {
+        return passengersOnBoard;
+    }
+
+    public void setPassengersOnBoard(Integer passengersOnBoard) {
+        this.passengersOnBoard = passengersOnBoard;
     }
 
     public Boolean getDoctorOnBoard() {
@@ -206,5 +216,5 @@ public class Voyage extends BaseEntity<Long> {
     public VoyagePlan getPlan() {
         return plan;
     }
-    
+
 }

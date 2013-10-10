@@ -15,6 +15,7 @@
 					<th>Longitude</th>
 					<th>Arrival</th>
 					<th>Departure</th>
+					<th>Crew</th>
 					<th>Persons</th>
 					<th>Doctor</th>
 					<th></th>
@@ -22,14 +23,15 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr x-ng-repeat="voyage in voyages" x-ng-class="{activerow : isActive(voyage)}">
+				<tr x-ng-repeat="voyage in voyages" x-ng-class="{success : isActive(voyage)}">
 					<td><input ng-model="voyage.berthName" fn-selected="berthSelected(voyage, datum)"
 						fn-autocompleted="berthSelected(voyage, datum)" class="input-large ngTypeahead" datasets="berths" type="text" /></td>
 					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
 					<td><input x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
-					<td><input x-ng-model="voyage.arrival" type="text" class="input-small" placeholder="dd-MM-yyyy hh:mm" /></td>
-					<td><input x-ng-model="voyage.departure" type="text" class="input-small" placeholder="dd-MM-yy hh:mm" /></td>
-					<td><input x-ng-model="voyage.personsOnBoard" type="text" class="input-small" /></td>
+					<td><input x-ng-model="voyage.arrival" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
+					<td><input x-ng-model="voyage.departure" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
+					<td><input x-ng-model="voyage.crew" type="text" class="input-mini" /></td>
+					<td><input x-ng-model="voyage.passengers" type="text" class="input-mini" /></td>
 					<td><select x-ng-model="voyage.doctor" class="input-small" ng-options="value as key for (key, value) in options">
 							<option value="">---</option>
 					</select></td>

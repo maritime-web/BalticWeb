@@ -1,14 +1,17 @@
 /** Route upload **/
-.progress{
+.progress {
 	margin-top: 7px;
 }
 
 /**Voyage Plan*/
-tr.activerow td{
-	background-color :  rgba(98,196,98,0.08);
+input.lon {
+	width: 70px;
 }
 
-​
+input.tt-hint {
+	width: 150px;
+}
+
 .leftForm {
 	float: left;
 	width: 430px;
@@ -23,13 +26,13 @@ input.ng-dirty.ng-invalid {
 	border-color: #e9322d;
 }
 
-span.msg-invalid{
-	color : #e9322d;
+span.msg-invalid {
+	color: #e9322d;
 }
 
-.data-label{
-	padding-top:5px;
-	float:left;
+.data-label {
+	padding-top: 5px;
+	float: left;
 }
 
 .menuDivider {
@@ -37,23 +40,47 @@ span.msg-invalid{
 	width: 100%;
 }
 
-.ctrlContainer{
-	width:270px!important;
+.ctrlContainer {
+	width: 270px !important;
 }
 
 .pagecontainer {
-    margin-top:0px;
-    margin-bottom:100px;
-	min-width:270px!important;
+	margin-top: 0px;
+	margin-bottom: 100px;
+	min-width: 270px !important;
 }
 
 .pagecontainer {
-    margin-top:0px;
-    margin-bottom:100px;
-	min-width:270px!important;
+	margin-top: 0px;
+	margin-bottom: 100px;
+	min-width: 270px !important;
 }
 
-#shipInformation{
-	min-width:580px;
-	max-width:720px;
+#shipInformation {
+	min-width: 580px;
+	max-width: 720px;
+}
+
+.input-mini {
+	width: 30px;
+}
+
+.input-small {
+	width: 60px;
+}
+
+.input-medium {
+	width: 90px;
+}
+
+.input-large {
+	width: 150px;
+}
+
+.input-xlarge {
+	width: 210px;
+}
+
+.input-xxlarge {
+	width: 270px;
 }

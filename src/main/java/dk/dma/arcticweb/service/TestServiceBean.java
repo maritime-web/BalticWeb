@@ -208,9 +208,9 @@ public class TestServiceBean {
         newShip.setVoyagePlan(voyagePlan);
 
         voyagePlan.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
-                now.minusDays(3).withTime(17, 0, 0, 0), 12, true));
+                now.minusDays(3).withTime(17, 0, 0, 0), 12, 0, true));
         voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
-                now.plusDays(5).withTime(9, 0, 0, 0), 12, true));
+                now.plusDays(5).withTime(9, 0, 0, 0), 12, 0, true));
         voyagePlan.addVoyageEntry(new Voyage("Thule", "77 27.8N", "069 14.0W", now.plusDays(9).withTime(13, 15, 0, 0),
                 now.plusDays(11).withTime(9, 0, 0, 0)));
         voyagePlan.addVoyageEntry(new Voyage("Upernavik", "72 47.5N", "056 09.4W", now.plusDays(13).withTime(10, 45, 0,
@@ -420,7 +420,7 @@ public class TestServiceBean {
         newShip.setVoyagePlan(voyagePlan);
 
         voyagePlan.addVoyageEntry(new Voyage("Copenhagen", "55 67.61N", "12 56.83E", null, now.withTime(12, 57, 0, 0),
-                300, true));
+                12, 300, true));
         voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(10).withTime(7, 10, 0, 0),
                 null));
 
