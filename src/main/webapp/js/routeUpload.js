@@ -38,7 +38,7 @@
     // embryo.angular.controller('embryo.RouteUploadCtrl', [ '$scope',
     // function($scope) {
 
-    embryo.RouteUploadCtrl = function($scope, $rootScope, $location, $routeParams, VoyageService, RouteService) {
+    embryo.RouteUploadCtrl = function($scope, $rootScope, $routeParams, $location, VoyageService, RouteService) {
         var initUpload = function() {
             var index;
             if ($routeParams.mmsi) {
