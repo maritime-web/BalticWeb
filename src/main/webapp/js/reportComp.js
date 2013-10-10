@@ -123,12 +123,13 @@
         }
 
         function evalGreenpos(greenpos) {
-            if (!greenpos || !greenpos.reportedTs) {
+            if (!greenpos || !greenpos.ts) {
                 $scope.greenposTxt = 'DUE NOW';
                 $scope.greenposLabel = 'label-warning blink';
                 return;
             }
 
+            
             if (greenpos.reportType === 'FR') {
                 $scope.greenposTxt = 'OK';
                 $scope.greenposLabel = 'label-success';
@@ -141,7 +142,7 @@
             // hour.
             // if last report performed more than 15 minutes before reporting
             // period then perform new report
-            if (greenpos.reportedTs < (period.from - 900000) && now < (period.from + 1800000)) {
+            if (greenpos.ts < (period.from - 900000) && now < (period.from + 1800000)) {
                 $scope.greenposTxt = 'DUE NOW';
                 $scope.greenposLabel = 'label-warning blink';
                 return;
@@ -149,7 +150,7 @@
 
             // if last report not performed more than ½ later than reporting
             // hour, then highlight.
-            if (greenpos.reportedTs < (period.from - 900000) && now >= (period.from + 1800000)) {
+            if (greenpos.ts < (period.from - 900000) && now >= (period.from + 1800000)) {
                 $scope.greenposTxt = 'DUE NOW';
                 $scope.greenposLabel = 'label-important blink';
                 return;
@@ -157,8 +158,7 @@
 
             $scope.greenposTxt = 'OK';
             $scope.greenposLabel = 'label-success';
-        }
-        ;
+        };
 
         $scope.$watch('greenpos', function(lastGreenpos, old) {
             evalGreenpos(lastGreenpos);
