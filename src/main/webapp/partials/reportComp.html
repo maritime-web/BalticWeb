@@ -15,7 +15,7 @@
 		<tr>
 			<th>Active Route</th>
 			<td><span x-ng-class="routeLabel" class="label">{{routeTxt}}</span></td>
-			<td><span x-ng-show="routeEditTxt" ><a id="routeEdit" x-ng-href="report.html#/routeEdit/{{ship.mmsi}}/{{route.id}}">{{routeEditTxt}}</a> - </span><a id="routeUpload" href="report.html#/routeUpload/{{ship.mmsi}}/{{voyage.maritimeId}}">upload</a></td>
+			<td><span x-ng-show="routeEditTxt" ><a id="routeEdit" x-ng-href="report.html#/routeEdit/{{ship.mmsi}}/{{route.id}}">{{routeEditTxt}}</a> - </span><a id="routeUpload" href="report.html#/routeUpload/{{ship.mmsi}}{{active}}">upload</a></td>
 		</tr>
 		<tr>
 			<th>Greenpos Report</th>

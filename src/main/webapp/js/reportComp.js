@@ -21,6 +21,7 @@
 
                 RouteService.getYourActive(ship.mmsi, function(route) {
                     $scope.route = route;
+                    $scope.active = !route ? "/active" : "" ;
                 });
             });
         }
@@ -32,6 +33,8 @@
         });
 
         $scope.$on("yourshipDataUpdated", function() {
+            console.log('yourshipDataUpdated');
+            
             updateData();
         });
 

@@ -68,7 +68,7 @@ public interface ShipService {
 
     Voyage getActiveVoyage(String maritimeId);
 
-    String saveRoute(Route route, String voyageId, boolean active);
+    String saveRoute(Route route, String voyageId, Boolean active);
 
     String saveRoute(Route route);
 
