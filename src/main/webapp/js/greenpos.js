@@ -85,7 +85,16 @@
             VoyageService.getYourActive(function(voyage) {
                 $scope.report.destination = voyage.berthName;
                 $scope.report.etaOfArrival = voyage.arrival;
-                $scope.report.personsOnBoard = voyage.personsOnBoard;
+                if(voyage.crew){
+                    $scope.report.personsOnBoard = voyage.crew;
+                }
+                if(voyage.passengers){
+                    if($scope.report.personsOnBoard){
+                        $scope.report.personsOnBoard += voyage.passengers;
+                    }else{
+                        $scope.report.personsOnBoard = voyage.passengers;
+                    }
+                }
             });
         }
 
