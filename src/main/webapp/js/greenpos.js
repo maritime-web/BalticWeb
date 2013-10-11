@@ -46,7 +46,9 @@
     });
 
     embryo.GreenPosCtrl = function($scope, $routeParams, ShipService, VoyageService, GreenposService, AisRestService,
-            $timeout) {
+            $timeout, RouteService) {
+        
+        
         $scope.editable = true;
 
         $scope.report = {
@@ -81,9 +83,6 @@
         }
 
         function evalGreenpos(greenpos) {
-            console.log('evalGreenpos');
-            console.log(greenpos);
-
             if (!greenpos || !greenpos.ts) {
                 $scope.report = {
                     type : "PR",
@@ -123,8 +122,7 @@
             $scope.report = {
                 type : "SP",
             };
-        }
-        ;
+        };
 
         ShipService.getYourShip(function(ship) {
             GreenposService.getLatestReport(ship.maritimeId, function(latestReport) {
@@ -159,9 +157,14 @@
                 $scope.report.callSign = yourShip.callSign;
                 $scope.report.shipName = yourShip.name;
                 $scope.report.shipMaritimeId = yourShip.maritimeId;
+                
+                RouteService.getYourActive(yourShip.mmsi, function(route) {
+                    $scope.hasActiveRoute = route ? true : false;
+                });
             });
 
             VoyageService.getYourActive(function(voyage) {
+                $scope.hasActiveRoute = voyage && voyage.berthName ? true : false;
                 $scope.report.destination = voyage.berthName;
                 $scope.report.etaOfArrival = voyage.arrival;
                 if (voyage.crew) {
@@ -175,6 +178,8 @@
                     }
                 }
             });
+
+
         }
 
         $scope.projection = "EPSG:4326";
@@ -235,12 +240,24 @@
             return fields.indexOf(fieldName) > -1;
         };
 
-        // can speed and course be preset with ais data?
-
         $scope.sendReport = function() {
             $scope.message = null;
+            
+            
+
             GreenposService.save($scope.report, function() {
-                $scope.message = "GreenPos report successfully submitted";
+                $scope.message = "GreenPos report successfully submitted. ";
+
+                if($scope.deactivate){
+                    console.log($scope.deactivate);
+                    VoyageService.getYourActive(function(voyage) {
+                        console.log($scope.deactivate);
+
+                        RouteService.setActiveRoute(voyage.routeId, false, function(){
+                            $scope.message += "Active route successsfully deactivated. ";
+                        });
+                    });
+                }
             });
         };
 

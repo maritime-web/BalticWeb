@@ -9,8 +9,7 @@
 		<div class="row-fluid">
 			<div class="span6" id="formColumn">
 				<form id="greenPosForm" name="greenPosForm" class="form-horizontal" novalidate>
-					<div class="row
-					">
+					<div class="row">
 						<div class="span12">
 							<div class="control-group">
 								<label class="control-label" for="gReportType">Report type</label>
@@ -141,13 +140,26 @@
 						</div>
 					</div>
 
-					<div class="row-fluid">
+					<div class="row" x-ng-show="report.type == 'FR' && hasActiveRoute">
+						<div class="span12">
+							<h3>Active route</h3>
+							<div class="control-group">
+								<label class="control-label" for="deactivate">Deactive</label>
+								<div class="controls">
+									<input id="deactivate" name="deactivate" type="checkbox" x-ng-model="deactivate" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
 						<div class="span12">
 							<span class="pull-right">
 								<button x-ng-show="!editable" class="btn btn-primary" x-ng-click="back()">Close</button>
 								<button x-ng-show="editable" class="btn" x-ng-click="clear()">Clear</button>
 								<button x-ng-show="editable" class="btn" x-ng-click="cancel()">Cancel</button>
-								<button x-ng-show="editable" type="submit" x-ng-click="sendReport()" x-ng-disabled="greenPosForm.$invalid" class="btn btn-primary">Send</button>
+								<button x-ng-show="editable" type="submit" x-ng-click="sendReport()" x-ng-disabled="greenPosForm.$invalid"
+									class="btn btn-primary">Send</button>
 							</span>
 						</div>
 					</div>
