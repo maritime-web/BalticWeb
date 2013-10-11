@@ -84,16 +84,12 @@
 
         function evalGreenpos(greenpos) {
             if (!greenpos || !greenpos.ts) {
-                $scope.report = {
-                    type : "PR",
-                };
+                $scope.report.type = "PR";
                 return;
             }
 
             if (greenpos.reportType === 'FR') {
-                $scope.report = {
-                    type : "SP",
-                };
+                $scope.report.type = "SP";
             }
 
             var now = Date.now();
@@ -104,24 +100,18 @@
             // if last report performed more than 15 minutes before reporting
             // period then perform new report
             if (greenpos.ts < (period.from - 900000) && now < (period.from + 1800000)) {
-                $scope.report = {
-                    type : "PR",
-                };
+                $scope.report.type = "PR";
                 return;
             }
 
             // if last report not performed more than ½ later than reporting
             // hour, then highlight.
             if (greenpos.ts < (period.from - 900000) && now >= (period.from + 1800000)) {
-                $scope.report = {
-                    type : "PR",
-                };
+                $scope.report.type = "PR";
                 return;
             }
 
-            $scope.report = {
-                type : "SP",
-            };
+            $scope.report.type = "SP";
         };
 
         ShipService.getYourShip(function(ship) {
@@ -242,8 +232,6 @@
 
         $scope.sendReport = function() {
             $scope.message = null;
-            
-            
 
             GreenposService.save($scope.report, function() {
                 $scope.message = "GreenPos report successfully submitted. ";
