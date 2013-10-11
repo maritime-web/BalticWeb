@@ -77,7 +77,7 @@ $(function() {
             var geometry = event.geometry;
             var units = event.units;
             var measure = event.measure;
-            $("#adtDistance h4").html("Distance: " + e.measure.toFixed(3) + "  " + e.units);
+            $("#adtDistance h4").html("Distance: " + formatNauticalMile(e.measure));
         }
     });
 
@@ -144,8 +144,10 @@ $(function() {
 
         var distance = parseInt($("#adtDistanceField").val());
 
-        distance = Math.min(10000, distance);
+        distance = Math.min(1000, distance);
         distance = Math.max(0, distance);
+
+        distance = distance * 1.852;
 
         var noRings = parseInt($("#adtNoRingsField").val());
 
