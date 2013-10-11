@@ -79,16 +79,24 @@ embryo.VesselControl = function($scope, MetocService, RouteService){
 
     $scope.toggleShowMetoc = function() {
         if ($scope.metocLinkTxt === 'view') {
-            
             RouteService.getYourActive(embryo.authentication.shipMmsi, function(route){
                 MetocService.getMetoc(route.id, function(metoc) {
                     $scope.metoc = metoc;
+                    
+                    if($scope.metoc && $scope.metoc.forecasts && $scope.metoc.forecasts.length > 0){
+                        $scope.metocTxt = 'SHOWN';
+                        $scope.metocLabel = 'label-success';
+                        $scope.metocLinkTxt = 'hide';
+                    }else{
+                        $scope.metocTxt = 'NO DATA';
+                        $scope.metocLabel = '';
+                        $scope.metocLinkTxt = 'retry';
+                    }
+                    
                     embryo.metoc.draw(metoc);
                 });
             });
-            $scope.metocTxt = 'SHOWN';
-            $scope.metocLabel = 'label-success';
-            $scope.metocLinkTxt = 'hide';
+            
         } else {
             $scope.metocTxt = 'NOT SNOWN';
             $scope.metocLabel = '';
@@ -96,7 +104,6 @@ embryo.VesselControl = function($scope, MetocService, RouteService){
             embryo.metoc.remove($scope.metoc);
         }
     };
-
 };
 
 $(function() {
