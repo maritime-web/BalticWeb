@@ -382,7 +382,7 @@ $(function() {
                         ));
 
                         labelFeature.attributes = {
-                            label: v.distance.toFixed(1) + " km " + formatHour(v.distance / (result.sog * 1.852))+ " hours"
+                            label: formatNauticalMile(v.distance) + " " + formatHour(v.distance / (result.sog * 1.852))+ " hours"
                         }
 
                         nearestLayerLabels.addFeatures([

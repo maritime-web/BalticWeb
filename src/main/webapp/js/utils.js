@@ -83,3 +83,9 @@ function formatLatitude(latitude) {
 function formatLonLat(lonlat) {
     return formatLatitude(lonlat.lat) + " " + formatLongitude(lonlat.lon);
 }
+
+function formatNauticalMile(km) {
+    var result = (parseFloat(km) / 1.852);
+    if (result > 25) return result.toFixed(0) + " NM";
+    return result.toFixed(1) + " NM";
+}
