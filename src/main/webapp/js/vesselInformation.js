@@ -278,26 +278,31 @@ $(function() {
     embryo.map.add({
         group: "vessel",
         layer: timeStampsLayer,
+        select: false
     });
 
     embryo.map.add({
         group: "vessel",
         layer: tracksLayer,
+        select: false
     });
 
     embryo.map.add({
         group: "vessel",
         layer: ringsLayer,
+        select: false
     });
 
     embryo.map.add({
         group: "vessel",
         layer: nearestLayer,
+        select: false
     });
 
     embryo.map.add({
         group: "vessel",
         layer: nearestLayerLabels,
+        select: false
     });
 
 
@@ -335,7 +340,7 @@ $(function() {
                 if (shipSelected == false) return;
 	            if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
                 showVesselInformation(result);
-                setupAdditionalInformation("#viewHistoricalTrack", function(e) {
+                setupAdditionalInformation("#viewHistoricalTrack", (result.pastTrack == null || result.pastTrack.points.length < 5) ?  null : function(e) {
                     e.preventDefault();
                     embryo.map.zoomToExtent([tracksLayer]);
                     setLayerOpacityById("timeStampsLayer", 0.8);
