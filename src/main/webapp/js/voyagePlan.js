@@ -118,12 +118,16 @@
             return '#/routeNew/' + $scope.mmsi + '/' + voyage.maritimeId;
         };
 
-        $scope.activate = function(voyage) {
+        $scope.activate = function(voyage, $event) {
+            $event.preventDefault();
+
             RouteService.setActiveRoute(voyage.routeId, true, function() {
                 loadActiveRoute();
             });
         };
-        $scope.deactivate = function(voyage) {
+        $scope.deactivate = function(voyage, $event) {
+            $event.preventDefault();
+            
             RouteService.setActiveRoute(voyage.routeId, false, function() {
                 loadActiveRoute();
             });
