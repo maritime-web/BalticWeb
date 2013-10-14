@@ -73,13 +73,24 @@ $(function() {
         ShipService.getYourShip(function(ship) {
             RouteService.getYourActive(ship.mmsi, function(route) {
                 if (typeof route !== 'undefined') {
-                    embryo.route.draw(route, true);
+                    draw(route, true);
                 }
             });
         });
     };
 
+    embryo.route.removeSelected = function(route, active) {
+        embryo.route.layer.removeAll();
+        embryo.route.drawActiveRoute();
+    };
+
     embryo.route.draw = function(route, active) {
+        draw(route, active);
+        
+        embryo.map.zoomToExtent([embryo.route.layer]);
+    };
+    
+    function draw(route, active) {
         // Remove old tracks
         // routeLayer.removeAllFeatures();
 

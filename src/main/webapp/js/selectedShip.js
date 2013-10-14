@@ -47,22 +47,22 @@
             updateData();
         });
 
-        $scope.$watch('routeLinkTxt', function(newValue, oldValue) {
-            if (newValue == 'hide') {
-                // I can now see a route
-                $scope.metocTxt = 'NOT SHOWN';
-                $scope.metocLabel = '';
-                $scope.metocLinkTxt = 'view';
-            } else {
-                $scope.metocTxt = 'NOT AVAILABLE';
-                $scope.metocLabel = '';
-                $scope.metocLinkTxt = null;
-                // route hidden visible
-                if ($scope.metoc) {
-                    embryo.metoc.remove($scope.metoc);
-                }
-            }
-        });
+//        $scope.$watch('routeLinkTxt', function(newValue, oldValue) {
+//            if (newValue == 'hide') {
+//                // I can now see a route
+//                $scope.metocTxt = 'NOT SHOWN';
+//                $scope.metocLabel = '';
+//                $scope.metocLinkTxt = 'view';
+//            } else {
+//                $scope.metocTxt = 'NOT AVAILABLE';
+//                $scope.metocLabel = '';
+//                $scope.metocLinkTxt = null;
+//                // route hidden visible
+//                if ($scope.metoc) {
+//                    embryo.metoc.remove($scope.metoc);
+//                }
+//            }
+//        });
 
         embryo.vesselSelected(function(e) {
             var vessel = embryo.vessel.lookupVessel(e.vesselId);
@@ -72,32 +72,33 @@
             });
         });
 
-        $scope.toggleShowMetoc = function() {
-            if ($scope.metocLinkTxt === 'view') {
-                MetocService.getMetoc($scope.route.id, function(metoc) {
-                    $scope.metoc = metoc;
-                    embryo.metoc.draw(metoc);
-                });
-                $scope.metocTxt = 'SHOWN';
-                $scope.metocLabel = 'label-success';
-                $scope.metocLinkTxt = 'hide';
-            } else {
-                $scope.metocTxt = 'NOT SNOWN';
-                $scope.metocLabel = '';
-                $scope.metocLinkTxt = 'view';
-                embryo.metoc.remove($scope.metoc);
-            }
-        };
-
         $scope.toggleShow = function() {
             if ($scope.routeLinkTxt === 'view') {
                 embryo.route.draw($scope.route, false);
-                $scope.routeLinkTxt = 'hide';
+//                $scope.routeLinkTxt = 'hide';
             } else {
-                embryo.route.remove($scope.route);
-                $scope.routeLinkTxt = 'view';
+//                embryo.route.remove($scope.route);
+//                $scope.routeLinkTxt = 'view';
             }
         };
+
+//        $scope.toggleShowMetoc = function() {
+//            if ($scope.metocLinkTxt === 'view') {
+//                MetocService.getMetoc($scope.route.id, function(metoc) {
+//                    $scope.metoc = metoc;
+//                    embryo.metoc.draw(metoc);
+//                });
+//                $scope.metocTxt = 'SHOWN';
+//                $scope.metocLabel = 'label-success';
+//                $scope.metocLinkTxt = 'hide';
+//            } else {
+//                $scope.metocTxt = 'NOT SNOWN';
+//                $scope.metocLabel = '';
+//                $scope.metocLinkTxt = 'view';
+//                embryo.metoc.remove($scope.metoc);
+//            }
+//        };
+//
     });
 
 }());
