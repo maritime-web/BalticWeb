@@ -115,6 +115,10 @@ embryo.metoc.draw = function(metoc) {
 
     embryo.metoc.labelsLayer.addFeatures(labelFeatures);
     embryo.metoc.labelsLayer.refresh();
+    
+    if(features.length > 0){
+        embryo.map.zoomToExtent([embryo.metoc.layer]);
+    }
 };
 
 var groupSelected;
