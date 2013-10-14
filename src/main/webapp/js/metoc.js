@@ -41,6 +41,8 @@ var defaultWindWarnLimit = 10.0;
 
 
 embryo.metoc.draw = function(metoc) {
+    embryo.metoc.layer.removeAllFeatures();
+    
     var index, attr, geom, forecast, features = [], labelFeatures = [];
 
     function formatDate(dato) {
