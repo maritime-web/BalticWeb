@@ -74,7 +74,7 @@
 
         $scope.toggleShow = function() {
             if ($scope.routeLinkTxt === 'view') {
-                embryo.route.draw($scope.route, false);
+                embryo.route.drawSelected($scope.route);
 //                $scope.routeLinkTxt = 'hide';
             } else {
 //                embryo.route.remove($scope.route);
