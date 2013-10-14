@@ -20,27 +20,24 @@ $(function() {
         // Create vector layer for routes
 
         // Find a better color code. How to convert sRGB to HTML codes?
-        var defTemplate = OpenLayers.Util.applyDefaults({
+        var yourDefault = OpenLayers.Util.applyDefaults({
             strokeWidth : 2,
             strokeDashstyle : 'dashdot',
-            strokeColor : "${getColor}", // using context.getColor(feature)
+            strokeColor : "red", // using context.getColor(feature)
             strokeOpacity : "${getOpacity}",
             fillColor : "${getColor}", // using context.getColor(feature)
             fillOpacity : "${getOpacity}"
         }, OpenLayers.Feature.Vector.style["default"]);
 
+        var selectedDefault = OpenLayers.Util.applyDefaults({
+            strokeColor : "#D5672D", // using context.getColor(feature)
+        }, yourDefault);
+
         var context = {
-            getColor : function(feature) {
-                return feature.attributes.active ? 'red ' : '#D5672D';
-            },
             getOpacity : function() {
                 return groupSelected ? 1 : 0.3;
             }
         };
-
-        var defaultStyle = new OpenLayers.Style(defTemplate, {
-            context : context
-        });
 
         var select = OpenLayers.Util.applyDefaults({}, OpenLayers.Feature.Vector.style.select);
         var selectStyle = new OpenLayers.Style(select);
@@ -50,15 +47,31 @@ $(function() {
 
         embryo.route.layer = new OpenLayers.Layer.Vector("routeLayer", {
             styleMap : new OpenLayers.StyleMap({
-                'default' : defaultStyle,
+                'default' : new OpenLayers.Style(yourDefault, {
+                    context : context
+                }),
                 'select' : selectStyle,
                 'temporary' : temporaryStyle
             })
         });
 
+        embryo.route.selectedLayer = new OpenLayers.Layer.Vector("selectedLayer", {
+            styleMap : new OpenLayers.StyleMap({
+                'default' : new OpenLayers.Style(selectedDefault, {
+                    context : context
+                })
+            })
+        });
+
         embryo.map.add({
-            group: "vessel",
+            group : "vessel",
             layer : embryo.route.layer,
+            select : false
+        });
+
+        embryo.map.add({
+            group : "vessel",
+            layer : embryo.route.selectedLayer,
             select : false
         });
 
@@ -73,32 +86,43 @@ $(function() {
         ShipService.getYourShip(function(ship) {
             RouteService.getYourActive(ship.mmsi, function(route) {
                 if (typeof route !== 'undefined') {
-                    draw(route, true);
+                    drawYourRoute(route);
                 }
             });
         });
     };
 
     embryo.route.removeSelected = function(route, active) {
-        embryo.route.layer.removeAll();
-        embryo.route.drawActiveRoute();
+        embryo.route.selectedLayer.removeAllFeatures();
     };
 
-    embryo.route.draw = function(route, active) {
-        draw(route, active);
-        
-        embryo.map.zoomToExtent([embryo.route.layer]);
-    };
-    
-    function draw(route, active) {
+    function drawYourRoute(route) {
         // Remove old tracks
-        // routeLayer.removeAllFeatures();
-
-        if (!active) {
-            active = false;
-        }
+        embryo.route.layer.removeAllFeatures();
 
         // Draw tracks
+        if (route && route.waypoints) {
+
+            embryo.route.layer.addFeatures(createVectorFeatures(route));
+            // embryo.route.layer.addFeatures(points);
+
+            // Draw features
+            embryo.route.layer.refresh();
+        }
+    };
+
+    embryo.route.drawSelected = function(route) {
+        embryo.route.selectedLayer.removeAllFeatures();
+
+        // Draw features
+        embryo.route.selectedLayer.addFeatures(createVectorFeatures(route));
+        embryo.route.selectedLayer.refresh();
+        embryo.map.zoomToExtent([ embryo.route.selectedLayer ]);
+    };
+
+    function createVectorFeatures(route) {
+        var features = [];
+
         if (route && route.waypoints) {
             var firstPoint = true;
             var currentPoint;
@@ -122,17 +146,14 @@ $(function() {
             var multiLine = new OpenLayers.Geometry.MultiLineString(lines);
             var feature = new OpenLayers.Feature.Vector(multiLine, {
                 featureType : 'route',
-                active : active,
                 route : route
             });
 
-            embryo.route.layer.addFeatures([ feature ]);
-            // embryo.route.layer.addFeatures(points);
-
-            // Draw features
-            embryo.route.layer.refresh();
+            features.push(feature);
         }
-    };
+        return features;
+    }
+    ;
 
     embryo.route.remove = function(route) {
         var key, feature, toRemove = [];
@@ -201,8 +222,9 @@ $(function() {
 
     embryo.mapInitialized(embryo.route.initLayer);
 
-    embryo.groupChanged(function (e) {
+    embryo.groupChanged(function(e) {
         groupSelected = (e.groupId == "vessel");
-        if (embryo.route.layer) embryo.route.layer.redraw();
+        if (embryo.route.layer)
+            embryo.route.layer.redraw();
     })
 });
