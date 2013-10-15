@@ -111,7 +111,7 @@ public class AisReplicator {
             }
         }
 
-        Map<Long, Ship> vessels = vesselRepository.getVessels(mmsis);
+        Map<Long, Ship> vessels = null;//vesselRepository.getVessels(mmsis);
 
         for (Entry<String, String[]> aisVessel : result.getVesselList().getVessels().entrySet()) {
             Long mmsi = asLong(aisVessel.getValue()[6]);
@@ -123,15 +123,15 @@ public class AisReplicator {
                 Ship vessel = vessels.get(mmsi);
 
                 if (vessel != null) {
-                    if (!isUpToDate(vessel.getAisData(), callSign, imo)) {
-                        vessel.getAisData().setCallsign(callSign);
-                        vessel.getAisData().setImoNo(imo);
-                        vessel.getAisData().setName(name);
-                        logger.debug("Updating vessel {}/{}", mmsi, name);
-                        saveVessel(vessel);
-                    } else {
-                        logger.debug("Vessel {}/{} is up to date", mmsi, name);
-                    }
+//                    if (!isUpToDate(vessel.getAisData(), callSign, imo)) {
+//                        vessel.getAisData().setCallsign(callSign);
+//                        vessel.getAisData().setImoNo(imo);
+//                        vessel.getAisData().setName(name);
+//                        logger.debug("Updating vessel {}/{}", mmsi, name);
+//                        saveVessel(vessel);
+//                    } else {
+//                        logger.debug("Vessel {}/{} is up to date", mmsi, name);
+//                    }
                 }
             }
         }
