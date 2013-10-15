@@ -57,7 +57,6 @@ embryo.additionalInformation.route = {
     showAt: [ "SelectedShip" ],
     layer: new RouteLayer("#D5672D"),
     available: function (vessel, vesselDetails) {
-        console.log("Checking route")
         return vesselDetails.route != null;
     },
     show: function (vessel, vesselDetails) {
@@ -71,13 +70,11 @@ embryo.additionalInformation.metoc = {
     showAt: [ "YourShip" ],
     layer: new MetocLayer("#D5672D"),
     available: function (vessel, vesselDetails) {
-        console.log("checking metoc", vessel, vesselDetails)
         return vesselDetails.route != null;
     },
     show: function (vessel, vesselDetails) {
         var that = this;
         embryo.metocService.getMetoc(vesselDetails.route.id, function(metoc) {
-            console.log(metoc);
             that.layer.draw(metoc);
             that.layer.zoomToExtent();
         });
