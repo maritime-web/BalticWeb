@@ -1,4 +1,4 @@
-<div x-ng-controller="SelectedShipCtrl">
+<div>
 	<div id="selectedAesInformation">
 		<h4>
 			<small style="float: right"><a href="#" id="selectedAesInformationLink">view all</a></small>AIS Information
@@ -9,28 +9,5 @@
 	<h4>Additional Information</h4>
 
 	<table class="table table-condensed additional-information" id="selectedShipAdditionalInformation">
-		<tr id="viewHistoricalTrack">
-			<th>Historical Track</th>
-			<td><span class="label"></span></td>
-			<td><a>view</a></td>
-		</tr>
-
-        <tr>
-			<th>Active Route</th>
-			<td><span x-ng-class="routeLabel" class="label">{{routeTxt}}</span></td>
-			<td><a x-ng-click="toggleShow()" x-ng-show="routeLinkTxt">{{routeLinkTxt}}</a></td>
-		</tr>
-
-        <tr id="viewDistanceCircleSog">
-            <th>3-6-9 hour distance circle based on SOG</th>
-            <td><span class="label"></span></td>
-            <td><a>view</a></td>
-        </tr>
-
-        <tr id="viewNearestShips">
-            <th>Nearest Ships</th>
-            <td><span class="label"></span></td>
-            <td><a>view</a></td>
-        </tr>
 	</table>
 </div>

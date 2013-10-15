@@ -15,7 +15,7 @@
 	</div>
 </div>
 
-<div id="vesselControlPanel" class="controlPanel" x-ng-controller="embryo.VesselControl">
+<div id="vesselControlPanel" class="controlPanel">
 	<div class="accordion" id="ycpAccordion">
 		<div class="accordion-group">
 			<div class="accordion-heading">
@@ -37,11 +37,6 @@
 					<h4>Additional Information</h4>
 
 					<table class="table table-condensed additional-information" id="yourShipAdditionalInformation">
-						<tr>
-							<th>METOC</th>
-							<td><span x-ng-class="metocLabel" class="label">{{metocTxt}}</span></td>
-							<td><a href="#" x-ng-click="toggleShowMetoc($event)" x-ng-show="metocLinkTxt">view</a></td>
-						</tr>
 					</table>
 
 				</div>

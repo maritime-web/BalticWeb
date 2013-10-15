@@ -74,7 +74,7 @@ embryo.additionalInformation.metoc = {
     },
     show: function (vessel, vesselDetails) {
         var that = this;
-        embryo.metocService.getMetoc(vesselDetails.route.id, function(metoc) {
+        embryo.metoc.service.getMetoc(vesselDetails.route.id, function(metoc) {
             that.layer.draw(metoc);
             that.layer.zoomToExtent();
         });

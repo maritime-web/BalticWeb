@@ -31,6 +31,10 @@ metocModule.factory('MetocService', function($http) {
 
 embryo.metoc = {};
 
+metocModule.run(function(MetocService) {
+    embryo.metoc.service = MetocService;
+})
+
 var defaultCurrentLow = 1.0;
 var defaultCurrentMedium = 2.0;
 var defaultCurrentWarnLimit = 4.0;
