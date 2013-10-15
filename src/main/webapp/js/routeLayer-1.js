@@ -1,5 +1,6 @@
 function RouteLayer(color) {
     this.init = function() {
+        this.layers = [];
         // Create vector layer for routes
 
         // Find a better color code. How to convert sRGB to HTML codes?

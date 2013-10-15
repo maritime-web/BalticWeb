@@ -70,8 +70,7 @@ $(function() {
                 vessels = [];
 
                 for (var i in result.vesselList.vessels) {
-                    if (result.vesselList.vessels[i][4] != 1)
-                        vessels.push(new Vessel(i, result.vesselList.vessels[i], 1));
+                    vessels.push(new Vessel(i, result.vesselList.vessels[i], 1));
                 }
 
                 vesselLayer.draw(vessels);

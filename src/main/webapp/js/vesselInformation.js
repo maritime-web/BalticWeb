@@ -313,6 +313,8 @@ $(function() {
 
     embryo.vesselSelected(function(e) {
         shipSelected = true;
+
+        $("a[href=#vcpSelectedShip]").html("Selected Ship - loading data");
         // var messageId = embryo.messagePanel.show( { text: "Loading vessel data ..." })
 
         function setupAdditionalInformation(id, click) {
@@ -343,7 +345,7 @@ $(function() {
 
                 var vessel = embryo.vessel.lookupVessel(e.vesselId);
 
-                console.log("setting up ai", vessel, result);
+                console.log(vessel);
 
                 setupAdditionalInformationTable("#selectedShipAdditionalInformation", vessel, result, "SelectedShip");
 

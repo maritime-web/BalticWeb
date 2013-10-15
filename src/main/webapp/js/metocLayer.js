@@ -1,19 +1,8 @@
 function MetocLayer(color) {
     this.init = function() {
         var that = this;
-        // zoom level -> hvert x punkt vises
-        var zoomFilter = {
-            10 : 1,// hvert punkt
-            9 : 1, // hvert punkt
-            8 : 2, // hvert andet punkt
-            7 : 3,
-            6 : 5,
-            5 : 6,
-            4 : 8,
-            3 : 10,
-            2 : 10,
-            1 : 10
-        };
+
+        this.zoomLevels = [5, 7, 10];
 
         var context = {
             transparency : function() {
@@ -23,8 +12,7 @@ function MetocLayer(color) {
                 return -context.height(feature) / 2;
             },
             size : function() {
-                return 1;
-                return 1.5 * embryo.map.internalMap.zoom / embryo.map.internalMap.numZoomLevels;
+                return [0.5, 0.5, 1, 1][that.zoomLevel];
             },
             width : function(feature) {
                 if (feature.attributes.type === 'wave') {
@@ -63,10 +51,7 @@ function MetocLayer(color) {
                 return 0;
             },
             display : function(feature) {
-                return "display"
-                console.log(embryo.map.internalMap.zoom);
-                var zoom = embryo.map.internalMap.zoom > 10 ? 10 : embryo.map.internalMap.zoom;
-                var modulus = feature.attributes.index % zoomFilter[zoom];
+                var modulus = feature.attributes.index % [ 20, 8, 4, 1 ][that.zoomLevel];
                 if (modulus == 0) {
                     return "display";
                 }
@@ -194,7 +179,7 @@ function MetocLayer(color) {
 
         var labelContext = {
             display : function(feature) {
-                return embryo.map.internalMap.zoom >= 10 ? "display" : "none";
+                return that.zoomLevel >= 3 ? "display" : "none";
             },
         };
         this.layers.labels = new OpenLayers.Layer.Vector(

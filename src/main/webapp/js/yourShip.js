@@ -1,6 +1,10 @@
 $(function() {
     var yourShip;
 
+    var yourShipRouteLayer = new RouteLayer("#2a6237");
+
+    addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
+
     function setup() {
         function downloadShipDetails(id) {
             $.ajax({
@@ -18,6 +22,7 @@ $(function() {
                         embryo.vesselInformation.showAesDialog(result);
                     });
                     setupAdditionalInformationTable("#yourShipAdditionalInformation", yourShip, result, "YourShip");
+                    if (result.route) yourShipRouteLayer.draw(result.route);
                 }
             });
 
