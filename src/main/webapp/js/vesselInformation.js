@@ -4,7 +4,25 @@
 embryo.vesselInformation = {
     mmsi : null,    
         
-    renderShortTable: function (data) {
+    renderYourShipShortTable: function (data) {
+        var html = "";
+
+        var egenskaber = {
+            "MMSI": data.mmsi,
+            "Callsign": data.callsign,
+            "Country": data.country,
+            "Destination": data.destination,
+            "Nav status": data.navStatus,
+            "ETA": data.eta
+        }
+
+        $.each(egenskaber, function(k,v) {
+            if (v != null) html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
+        });
+
+        return html;
+    },
+    renderSelectedShipShortTable: function (data) {
         var html = "";
         
         var egenskaber = {
@@ -177,7 +195,7 @@ $(function() {
     function showVesselInformation(data) {
         openCollapse("#vcpSelectedShip");
         $("a[href=#vcpSelectedShip]").html("Selected Ship - "+data.name);
-        $("#selectedAesInformation table").html(embryo.vesselInformation.renderShortTable(data));
+        $("#selectedAesInformation table").html(embryo.vesselInformation.renderSelectedShipShortTable(data));
         $("#selectedAesInformationLink").off("click");
         $("#selectedAesInformationLink").on("click", function(e) {
             e.preventDefault();

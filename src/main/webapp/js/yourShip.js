@@ -11,7 +11,7 @@ $(function() {
                 },
                 success: function (result) {
                     $("a[href=#vcpYourShip]").html("Your Ship - "+result.name);
-                    $("#yourShipAesInformation table").html(embryo.vesselInformation.renderShortTable(result));
+                    $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(result));
                     $("#yourShipAesInformationLink").off("click");
                     $("#yourShipAesInformationLink").on("click", function(e) {
                         e.preventDefault();
