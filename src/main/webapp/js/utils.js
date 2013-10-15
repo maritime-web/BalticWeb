@@ -89,3 +89,20 @@ function formatNauticalMile(km) {
     if (result > 25) return result.toFixed(0) + " NM";
     return result.toFixed(1) + " NM";
 }
+
+function formatDate(dato) {
+    if (dato == null) return "-";
+    var d = new Date(dato);
+    return d.getFullYear()+"-"+(""+(101+d.getMonth())).slice(1,3)+"-"+(""+(100+d.getDate())).slice(1,3);
+}
+
+function formatTime(dato) {
+    if (dato == null) return "-";
+    var d = new Date(dato);
+    return formatDate(dato) + " " + d.getHours()+":"+(""+(100+d.getMinutes())).slice(1,3);
+}
+
+function formatHour(hour) {
+    return Math.floor(hour) + ":" + (0.6 * (hour - Math.floor(hour))).toFixed(2).substring(2);
+}
+

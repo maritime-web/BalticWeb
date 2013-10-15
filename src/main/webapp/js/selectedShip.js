@@ -5,6 +5,7 @@
             'embryo.routeService', 'embryo.metoc' ]);
 
     module.controller('SelectedShipCtrl', function($scope, ShipService, RouteService, MetocService) {
+        embryo.metocService = MetocService;
         embryo.authenticated(function() {
             $scope.$apply(function() {
                 ShipService.getYourShip(function(ship) {
