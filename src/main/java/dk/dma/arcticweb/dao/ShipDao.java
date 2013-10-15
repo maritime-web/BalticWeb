@@ -15,6 +15,9 @@
  */
 package dk.dma.arcticweb.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Route;
@@ -37,6 +40,8 @@ public interface ShipDao extends Dao {
 
     Ship getShipByCallsign(String callsign);
 
+    Map<Long, Ship> getVessels(List<Long> mmsiNumbers);
+    
     VoyagePlan getVoyagePlan(Long mmsi);
 
     Route getActiveRoute(Long mmsi);

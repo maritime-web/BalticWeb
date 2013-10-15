@@ -110,7 +110,7 @@ public class GreenPosServiceImpl implements GreenPosService {
     private void validateShipData(GreenPosReport report, Ship ship) {
         // If report is send by sailor, then validate, that he is reporting on behalf of his own ship
         // Validation if his ship name is still not registered in the system.
-        if (ship.getCallsign() != null && !ship.getCallsign().equals(report.getShipCallSign())) {
+        if (ship.getAisData().getCallsign() != null && !ship.getAisData().getCallsign().equals(report.getShipCallSign())) {
             throw new IllegalArgumentException("Reported ship call sign must match the call sign of the users ship.");
         }
 
@@ -119,7 +119,7 @@ public class GreenPosServiceImpl implements GreenPosService {
         }
 
         // Validation skipped if his ship name is still not registered in the system.
-        if (ship.getName() != null && !ship.getName().equals(report.getShipName())) {
+        if (ship.getAisData().getName() != null && !ship.getAisData().getName().equals(report.getShipName())) {
             throw new IllegalArgumentException("Reported ship name must match the call sign of the users ship");
         }
     }
