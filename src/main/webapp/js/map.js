@@ -94,7 +94,17 @@ $(function() {
                     extent.right = Math.max(extent.right, e.right);
                 }
             }
-            
+
+            // nudge extent so that the left overlay does not overlay the zoomed layers
+
+            var deltaV = extent.top - extent.bottom;
+            var deltaH = extent.right - extent.left;
+
+            extent.bottom -= deltaV * 0.05;
+            extent.left -= deltaH * 0.35;
+            extent.right += deltaH * 0.05;
+            extent.top += deltaV * 0.1;
+
             map.zoomToExtent(extent);
         },
         setCenter: function(longitude, latitude, zoom) {

@@ -87,4 +87,15 @@ $(function() {
         setInterval(loadVesselList, loadFrequence);
         loadVesselList();
     });
+
+    embryo.ready(function() {
+        function fixAccordionSize() {
+            $("#vcpYourShip .accordion-inner").css("overflow", "auto");
+            $("#vcpYourShip .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px");
+        }
+
+        $(window).resize(fixAccordionSize);
+
+        fixAccordionSize();
+    });
 })

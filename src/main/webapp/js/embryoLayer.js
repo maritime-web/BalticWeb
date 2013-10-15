@@ -72,6 +72,15 @@ function EmbryoLayer() {
             }
         }
     }
+
+    this.clear = function() {
+        for (var i in this.layers) this.layers[i].removeAllFeatures();
+        for (var i in this.layers) this.layers[i].refresh();
+    }
+
+    this.zoomToExtent = function() {
+        this.map.zoomToExtent(this.layers);
+    }
 }
 
 // This will be moved into map.js later

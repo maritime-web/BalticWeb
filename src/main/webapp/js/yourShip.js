@@ -4,7 +4,7 @@ $(function() {
     function setup() {
         function downloadShipDetails(id) {
             $.ajax({
-                url: embryo.baseUrl+detailsUrl,
+                url: embryo.baseUrl+"rest/vessel/details", // detailsUrl,
                 data: {
                     id : id,
                     past_track: 0
@@ -17,6 +17,7 @@ $(function() {
                         e.preventDefault();
                         embryo.vesselInformation.showAesDialog(result);
                     });
+                    setupAdditionalInformationTable("#yourShipAdditionalInformation", yourShip, result, "YourShip");
                 }
             });
 

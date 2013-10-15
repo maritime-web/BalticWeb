@@ -106,22 +106,6 @@ embryo.VesselControl = function($scope, MetocService, RouteService){
 
 $(function() {
     var shipSelected = false;
-    function formatDate(dato) {
-        if (dato == null) return "-";
-        var d = new Date(dato);
-        return d.getFullYear()+"-"+(""+(101+d.getMonth())).slice(1,3)+"-"+(""+(100+d.getDate())).slice(1,3);
-    }
-    
-    function formatTime(dato) {
-        if (dato == null) return "-";
-        var d = new Date(dato);
-        return formatDate(dato) + " " + d.getHours()+":"+(""+(100+d.getMinutes())).slice(1,3);
-    }
-
-    function formatHour(hour) {
-        return Math.floor(hour) + ":" + (0.6 * (hour - Math.floor(hour))).toFixed(2).substring(2);
-    }
-
     /**
      * Draws the past track. If tracks are null, it will simply remove all tracks
      * and draw nothing.
@@ -329,15 +313,25 @@ $(function() {
         }
 
         $.ajax({
-            url: embryo.baseUrl+detailsUrl,
+            url: embryo.baseUrl+"rest/vessel/details", // detailsUrl,
             data: { 
                 id : e.vesselId, 
                 past_track: 1 
             },
             success: function (result) {
                 if (shipSelected == false) return;
-	            if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
+	            // if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
                 showVesselInformation(result);
+
+                var vessel = embryo.vessel.lookupVessel(e.vesselId);
+
+                console.log("setting up ai", vessel, result);
+
+                setupAdditionalInformationTable("#selectedShipAdditionalInformation", vessel, result, "SelectedShip");
+
+                return;
+
+
                 setupAdditionalInformation("#viewHistoricalTrack", (result.pastTrack == null || result.pastTrack.points.length < 5) ?  null : function(e) {
                     e.preventDefault();
                     embryo.map.zoomToExtent([tracksLayer]);
@@ -345,7 +339,6 @@ $(function() {
                     setLayerOpacityById("trackLayer", 0.4);
                 });
 
-                var vessel = embryo.vessel.lookupVessel(e.vesselId);
 
                 setupAdditionalInformation("#viewDistanceCircleSog", (result.sog == null || result.sog == 0) ?  null : function(e) {
                     e.preventDefault();
@@ -392,7 +385,8 @@ $(function() {
                         ));
 
                         labelFeature.attributes = {
-                            label: formatNauticalMile(v.distance) + " " + formatHour(v.distance / (result.sog * 1.852))+ " hours"
+                            label: formatNauticalMile(v.distance) +
+                            (result.sog > 0 ? (" " + formatHour(v.distance / (result.sog * 1.852))+ " hours") : "")
                         }
 
                         nearestLayerLabels.addFeatures([
@@ -421,6 +415,7 @@ $(function() {
         ringsLayer.removeAllFeatures();
         nearestLayer.removeAllFeatures();
         nearestLayerLabels.removeAllFeatures();
+        clearAdditionalInformation();
     });
 
     embryo.groupChanged(function(e) {
@@ -433,4 +428,5 @@ $(function() {
         }
     });
 
+    initAdditionalInformation(embryo.map, "vessel");
 });
