@@ -38,7 +38,7 @@ import dk.dma.enav.model.geometry.Position;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class MetocServiceImpl implements MetocService {
+public class MetocServiceImpl {
 
     @Inject
     private DmiSejlRuteService dmiSejlRuteService;
@@ -64,7 +64,7 @@ public class MetocServiceImpl implements MetocService {
         this.subject = subject;
     }
 
-    @Override
+//    @Override
     public DmiSejlRuteService.SejlRuteResponse getMetoc(String routeId) {
         Route route = shipDao.getRouteByEnavId(routeId);
         if (route == null) {
