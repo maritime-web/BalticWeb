@@ -273,8 +273,6 @@ function MetocLayer(color) {
 
         this.layers.labels.addFeatures(labelFeatures);
         this.layers.labels.refresh();
-
-        console.log("features", features)
     }
 }
 

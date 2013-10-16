@@ -161,6 +161,7 @@ $(function() {
             openCollapse("#vesselControlPanel .accordion-body:first");
         } else {
             $("#vesselControlPanel").css("display", "none");
+            clearAdditionalInformation();
         }
     });
 
