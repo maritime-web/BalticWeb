@@ -53,14 +53,8 @@ embryo.ready(function() {
                     data: { 
                     },
                     success: function(data) {
-                        location.reload();
                         sessionStorage.clear();
-                        
-                        /*
-                        embryo.authentication = {};
-                        embryo.messagePanel.replace(messageId, { text: "Succesfully logged out.", type: "success" });
-                        updateNavigationBar();
-                        */
+                        location = "front.html";
                     },
                     error: function(data) {
                         embryo.messagePanel.replace(messageId, { text: "Logout failed. ("+data.status+")", type: "error" })
@@ -76,7 +70,6 @@ embryo.ready(function() {
     
     $("#login button.btn-primary").click(function(e) {
         e.preventDefault();
-        console.log("Logging in ...");
         var messageId = embryo.messagePanel.show( { text: "Logging in ..." })
         
         $("#login").modal("hide");
@@ -89,20 +82,24 @@ embryo.ready(function() {
             },
             success: function(data) {
                 sessionStorage.clear();
-                console.log("Logged in.");
                 embryo.authentication = data;
                 embryo.messagePanel.replace(messageId, { text: "Succesfully logged in.", type: "success" });
                 updateNavigationBar();
                 embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
             },
             error: function(data) {
-                console.log("Log in failed.");
+                updateNavigationBar();
                 embryo.messagePanel.replace(messageId, { text: "Login failed. ("+data.status+")", type: "error" })
+                $("#loginWrongLoginOrPassword").css("display", "block");
+                setTimeout(function() {
+                    $("#login").modal("show");
+                }, 1000);
             }
         });
         
         $("#userName").val("");
         $("#password").val("");
+        $("#loginWrongLoginOrPassword").css("display", "none");
     });
     
     updateNavigationBar();

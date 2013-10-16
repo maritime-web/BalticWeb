@@ -7,15 +7,18 @@
         <h2>Sign in</h2>
     </div>
     <div class="modal-body">
+        <div class="alert alert-error" style="display:none" id="loginWrongLoginOrPassword">Wrong login or password</div>
         <form class="form-signin" name="login_form">
-            <input type="text" class="input-block-level" placeholder="User Name" id="userName"> <input type="password"
-                                                                                                       class="input-block-level" placeholder="Password" id="password" /> <label class="checkbox"> <input
-                type="checkbox" value="remember-me" /> Remember me
-        </label>
+            <input type="text" class="input-block-level" placeholder="User Name" id="userName" />
+            <input type="password" class="input-block-level" placeholder="Password" id="password" />
+            <label class="checkbox">
+                <input type="checkbox" value="remember-me" /> Remember me
+            </label>
             <div style="margin-top: 24px">
                 <button type="submit" class="btn btn-primary">Sign in</button>
-                <a href="#forgot" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Forgot password</a> <a
-                    href="#request" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Request login</a>
+                <a role="button" class="btn" data-toggle="modal" data-dismiss="modal">Close</a>
+                <!-- a href="#forgot" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Forgot password</a>
+                <a href="#request" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Request login</a -->
             </div>
         </form>
     </div>
