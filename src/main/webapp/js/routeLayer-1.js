@@ -1,5 +1,7 @@
 function RouteLayer(color) {
     this.init = function() {
+        var that = this;
+
         this.layers = [];
         // Create vector layer for routes
 
@@ -15,7 +17,7 @@ function RouteLayer(color) {
 
         var context = {
             getOpacity : function() {
-                return groupSelected ? 1 : 0.3;
+                return that.active ? 1 : 0.3;
             }
         };
 
