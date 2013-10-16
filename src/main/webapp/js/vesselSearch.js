@@ -10,7 +10,7 @@ $(function() {
 
             for (vesselId in result.vessels) {
                 var vesselJSON = result.vessels[vesselId];
-                var vessel = new Vessel(vesselId, vesselJSON, 1);
+                var vessel = new Vessel(vesselId, vesselJSON);
                 searchResults.push(vessel);
             }
 
@@ -75,9 +75,10 @@ $(function() {
                 $(".searchResultItem").click(function(e) {
                     var t = $(this);
                     t.addClass("btn-info");
-                    setTimeout(function() {
+                    $("#vcpSearch").on("hidden.selected", function() {
                         t.removeClass("btn-info");
-                    }, 2000);
+                        $("#vcpSearch").off("hidden.selected");
+                    })
                     embryo.vessel.goToVesselLocation(searchResults[$(this).attr("id")]);
                     embryo.vessel.selectVessel(searchResults[$(this).attr("id")]);
                 })

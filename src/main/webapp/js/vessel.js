@@ -7,7 +7,7 @@
  *            Scale of the marker
  * @returns vessel object
  */
-function Vessel(vesselId, vessel, markerScale) {
+function Vessel(vesselId, vessel) {
 	this.id = vesselId;
 	this.lat = vessel[1];
 	this.lon = vessel[2];

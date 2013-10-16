@@ -78,14 +78,14 @@ embryo.geographic.parseLongitude = function() {
 
 embryo.geographic.splitFormattedPos = function(posStr) {
 	if (posStr.length < 4) {
-		throw new FormatException();
+		throw posStr + " length is 4 or less";
 	}
 	var parts = [];
 	parts[2] = posStr.substring(posStr.length - 1);
 	posStr = posStr.substring(0, posStr.length - 1);
 	var posParts = posStr.split(" ");
 	if (posParts.length != 2) {
-		throw new FormatException();
+		throw posStr + " split by space gives " + posParts.length + " parts";
 	}
 	parts[0] = posParts[0];
 	parts[1] = posParts[1];

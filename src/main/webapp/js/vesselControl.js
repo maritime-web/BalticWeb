@@ -87,7 +87,7 @@ $(function() {
                 vessels = [];
 
                 for (var i in result.vesselList.vessels) {
-                    vessels.push(new Vessel(i, result.vesselList.vessels[i], 1));
+                    vessels.push(new Vessel(i, result.vesselList.vessels[i]));
                 }
 
                 vesselLayer.draw(vessels);

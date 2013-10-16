@@ -274,7 +274,7 @@
                         var vessels = [];
                         for ( var vesselId in searchResult.vessels) {
                             var vesselJSON = searchResult.vessels[vesselId];
-                            var vessel = new Vessel(vesselId, vesselJSON, 1);
+                            var vessel = new Vessel(vesselId, vesselJSON);
                             vessels.push(vessel);
                         }
                         $scope.setVesselsOnMap(vessels);

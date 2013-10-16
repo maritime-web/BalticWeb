@@ -33,7 +33,7 @@ $(function() {
 
             for (var vesselId in result.vessels) {
                 var vesselJSON = result.vessels[vesselId];
-                var vessel = new Vessel(vesselId, vesselJSON, 1);
+                var vessel = new Vessel(vesselId, vesselJSON);
                 searchResults.push(vessel);
             }
 
