@@ -18,9 +18,8 @@ $(function() {
         })
     }
 
-    function searchResultToHTML(vessel, key){
-        var html =
-                "<p><div class='btn searchResultItem' id='" + key + "'>" +
+    function searchResultToHTML(vessel){
+        var html = "<p><div class='btn searchResultItem' id='" + vessel.id + "'>" +
             "<div class='panelText btn-block'>" + vessel.vesselName + "</div>";
 
         if (searchResultsShowPositon){
@@ -40,11 +39,9 @@ $(function() {
         $("#searchMatch").html('');
 
         if (arg.length > 0) {
-            // Show loader
             $("#searchLoad").css('display', 'block');
 
             latestSearch = arg;
-            // Load search results
 
             embryo.vessel.searchVessels(arg, function(searchResults) {
                 var html = "";
@@ -61,9 +58,8 @@ $(function() {
                     $("#searchResultsTop").html("<div class='information'>Search results: </div>");
 
                     $.each(searchResults, function(key, value) {
-                        html += searchResultToHTML(value, key);
-                    });
-
+                        html += searchResultToHTML(value);
+                    })
                 }
 
                 $("#searchResultsContainer").html(html);
@@ -73,14 +69,19 @@ $(function() {
                 $("#searchLoad").css('display', 'none');
 
                 $(".searchResultItem").click(function(e) {
-                    var t = $(this);
-                    t.addClass("btn-info");
-                    $("#vcpSearch").on("hidden.selected", function() {
-                        t.removeClass("btn-info");
-                        $("#vcpSearch").off("hidden.selected");
-                    })
-                    embryo.vessel.goToVesselLocation(searchResults[$(this).attr("id")]);
-                    embryo.vessel.selectVessel(searchResults[$(this).attr("id")]);
+                    var vessel = embryo.vessel.lookupVessel($(this).attr("id"));
+
+                    if (vessel) {
+                        embryo.vessel.goToVesselLocation(vessel);
+                        embryo.vessel.selectVessel(vessel);
+
+                        var t = $(this);
+                        t.addClass("btn-info");
+                        $("#vcpSearch").on("hidden.selected", function() {
+                            t.removeClass("btn-info");
+                            $("#vcpSearch").off("hidden.selected");
+                        })
+                    }
                 })
 
             })
