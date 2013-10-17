@@ -291,8 +291,8 @@
 
     embryo.ready(function() {
         function fixAccordionSize() {
-            $("#icpIceMaps .accordion-inner").css("overflow", "auto");
-            $("#icpIceMaps .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px");
+            $("#iceControlPanel .accordion-inner").css("overflow", "auto");
+            $("#iceControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - 250)+"px");
         }
 
         $(window).resize(fixAccordionSize);

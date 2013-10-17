@@ -106,8 +106,8 @@ $(function() {
 
     embryo.ready(function() {
         function fixAccordionSize() {
-            $("#vcpYourShip .accordion-inner").css("overflow", "auto");
-            $("#vcpYourShip .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px");
+            $("#vesselControlPanel .accordion-inner").css("overflow", "auto");
+            $("#vesselControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - 300)+"px");
         }
 
         $(window).resize(fixAccordionSize);

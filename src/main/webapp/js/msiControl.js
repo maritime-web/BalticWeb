@@ -69,8 +69,8 @@ $(function() {
 
     embryo.ready(function() {
         function fixAccordionSize() {
-            $("#msiOverview .accordion-inner").css("overflow", "auto");
-            $("#msiOverview .accordion-inner").css("max-height", Math.max(100, $(window).height()-350)+"px");
+            $("#msiControlPanel .accordion-inner").css("overflow", "auto");
+            $("#msiControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - 250)+"px");
         }
 
         $(window).resize(fixAccordionSize);
