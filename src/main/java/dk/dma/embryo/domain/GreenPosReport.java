@@ -39,7 +39,7 @@ import dk.dma.embryo.rest.json.GreenPos;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQueries({
-        @NamedQuery(name = "GreenPosReport:findLatest", query = "SELECT DISTINCT g FROM GreenPosReport g where g.shipMaritimeId = :shipMaritimeId ORDER By g.ts DESC"),
+        @NamedQuery(name = "GreenPosReport:findLatest", query = "SELECT DISTINCT g FROM GreenPosReport g where g.vesselMaritimeId = :vesselMaritimeId ORDER By g.ts DESC"),
         @NamedQuery(name = "GreenPosReport:findById", query = "SELECT g FROM GreenPosReport g where g.enavId = :id") })
 public abstract class GreenPosReport extends BaseEntity<Long> {
 
@@ -52,13 +52,13 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     private String enavId;
 
     @NotNull
-    private String shipName;
+    private String vesselName;
 
-    private Long shipMmsi;
+    private Long vesselMmsi;
 
-    private String shipCallSign;
+    private String vesselCallSign;
 
-    private String shipMaritimeId;
+    private String vesselMaritimeId;
 
     @Valid
     private Position position;
@@ -135,22 +135,22 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         this.enavId = UUID.randomUUID().toString();
     }
 
-    public GreenPosReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId, String latitude,
+    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId, String latitude,
             String longitude) {
         this();
-        this.shipName = shipName;
-        this.shipMmsi = shipMmsi;
-        this.shipCallSign = shipCallSign;
-        this.shipMaritimeId = shipMaritimeId;
+        this.vesselName = vesselName;
+        this.vesselMmsi = vesselMmsi;
+        this.vesselCallSign = vesselCallSign;
+        this.vesselMaritimeId = vesselMaritimeId;
         this.position = new Position(latitude, longitude);
     }
 
-    public GreenPosReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId, Position position) {
+    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId, Position position) {
         this();
-        this.shipName = shipName;
-        this.shipMmsi = shipMmsi;
-        this.shipCallSign = shipCallSign;
-        this.shipMaritimeId = shipMaritimeId;
+        this.vesselName = vesselName;
+        this.vesselMmsi = vesselMmsi;
+        this.vesselCallSign = vesselCallSign;
+        this.vesselMaritimeId = vesselMaritimeId;
         this.position = position;
     }
 
@@ -165,24 +165,24 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public String getShipName() {
-        return shipName;
+    public String getVesselName() {
+        return vesselName;
     }
 
-    public String getShipMaritimeId() {
-        return shipMaritimeId;
+    public String getVesselMaritimeId() {
+        return vesselMaritimeId;
     }
 
     public String getEnavId() {
         return enavId;
     }
 
-    public String getShipCallSign() {
-        return shipCallSign;
+    public String getVesselCallSign() {
+        return vesselCallSign;
     }
 
-    public Long getShipMmsi() {
-        return shipMmsi;
+    public Long getVesselMmsi() {
+        return vesselMmsi;
     }
 
     public Position getPosition() {

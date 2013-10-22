@@ -26,13 +26,13 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDateTime;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
-import dk.dma.arcticweb.dao.ShipDao;
+import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
 
@@ -47,47 +47,47 @@ public class GreenPosServiceImpl implements GreenPosService {
     private Subject subject;
 
     @Inject
-    private ShipService shipService;
+    private VesselService vesselService;
 
     @Inject
-    private ShipDao shipDao;
+    private VesselDao vesselDao;
 
     public GreenPosServiceImpl() {
     }
 
-    public GreenPosServiceImpl(GreenPosDao reportingDao, ShipDao shipDao, Subject subject, ShipService shipservice) {
+    public GreenPosServiceImpl(GreenPosDao reportingDao, VesselDao vesselDao, Subject subject, VesselService vesselservice) {
         this.greenPosDao = reportingDao;
-        this.shipDao = shipDao;
+        this.vesselDao = vesselDao;
         this.subject = subject;
-        this.shipService = shipservice;
+        this.vesselService = vesselservice;
     }
     
     @Override
     public List<GreenPosReport> listReports() {
-        // TODO Should current ship only be able to list reports for own ship ?
+        // TODO Should current vessel only be able to list reports for own vessel ?
         return greenPosDao.getAll(GreenPosReport.class);
     }
 
     /**
-     * This saves a report coming from a ship
+     * This saves a report coming from a vessel
      */
     @Override
     @YourShip
     public String saveReport(GreenPosReport report) {
         checkIfAlreadySaved(report);
 
-        Ship ship = null;
+        Vessel vessel = null;
 
         if (subject.hasRole(Sailor.class)) {
-            ship = shipService.getYourShip();
-            validateShipData(report, ship);
+            vessel = vesselService.getYourVessel();
+            validateVesselData(report, vessel);
         } else {
-            ship = getShipFromReport(report);
+            vessel = getVesselFromReport(report);
         }
 
         if(report instanceof GreenPosSailingPlanReport){
             GreenPosSailingPlanReport spReport = (GreenPosSailingPlanReport)report;
-            report = spReport.withVoyages(ship.getVoyagePlan().getVoyagePlan());
+            report = spReport.withVoyages(vessel.getVoyagePlan().getVoyagePlan());
         }else if(report instanceof GreenPosDeviationReport){
             GreenPosDeviationReport spReport = (GreenPosDeviationReport)report;            
         }
@@ -106,38 +106,38 @@ public class GreenPosServiceImpl implements GreenPosService {
         }
     }
 
-    private void validateShipData(GreenPosReport report, Ship ship) {
-        // If report is send by sailor, then validate, that he is reporting on behalf of his own ship
-        // Validation if his ship name is still not registered in the system.
-        if (ship.getAisData().getCallsign() != null && !ship.getAisData().getCallsign().equals(report.getShipCallSign())) {
-            throw new IllegalArgumentException("Reported ship call sign must match the call sign of the users ship.");
+    private void validateVesselData(GreenPosReport report, Vessel vessel) {
+        // If report is send by sailor, then validate, that he is reporting on behalf of his own vessel
+        // Validation if his vessel name is still not registered in the system.
+        if (vessel.getAisData().getCallsign() != null && !vessel.getAisData().getCallsign().equals(report.getVesselCallSign())) {
+            throw new IllegalArgumentException("Reported vessel call sign must match the call sign of the users vessel.");
         }
 
-        if (ship.getMmsi() != null && !ship.getMmsi().equals(report.getShipMmsi())) {
-            throw new IllegalArgumentException("Reported ship Mmsi must match the call sign of the users ship.");
+        if (vessel.getMmsi() != null && !vessel.getMmsi().equals(report.getVesselMmsi())) {
+            throw new IllegalArgumentException("Reported vessel Mmsi must match the call sign of the users vessel.");
         }
 
-        // Validation skipped if his ship name is still not registered in the system.
-        if (ship.getAisData().getName() != null && !ship.getAisData().getName().equals(report.getShipName())) {
-            throw new IllegalArgumentException("Reported ship name must match the call sign of the users ship");
+        // Validation skipped if his vessel name is still not registered in the system.
+        if (vessel.getAisData().getName() != null && !vessel.getAisData().getName().equals(report.getVesselName())) {
+            throw new IllegalArgumentException("Reported vessel name must match the call sign of the users vessel");
         }
     }
 
-    private Ship getShipFromReport(GreenPosReport report) {
-        Ship ship = null;
-        if (StringUtils.isNotBlank(report.getShipMaritimeId())) {
-            ship = shipDao.getShipByMaritimeId(report.getShipMaritimeId());
+    private Vessel getVesselFromReport(GreenPosReport report) {
+        Vessel vessel = null;
+        if (StringUtils.isNotBlank(report.getVesselMaritimeId())) {
+            vessel = vesselDao.getVesselByMaritimeId(report.getVesselMaritimeId());
         }
 
-        if (ship == null && StringUtils.isNotBlank(report.getShipCallSign())) {
-            ship = shipDao.getShipByCallsign(report.getShipCallSign());
+        if (vessel == null && StringUtils.isNotBlank(report.getVesselCallSign())) {
+            vessel = vesselDao.getVesselByCallsign(report.getVesselCallSign());
         }
-        if (ship == null) {
+        if (vessel == null) {
             // TODO relax this. it should be possible to save report in any case, but with below message as a report
             // comment.
-            throw new IllegalArgumentException("Could not identify ship from report data.");
+            throw new IllegalArgumentException("Could not identify vessel from report data.");
         }
-        return ship;
+        return vessel;
     }
 
     @Override
@@ -146,8 +146,8 @@ public class GreenPosServiceImpl implements GreenPosService {
     }
 
     @Override
-    public GreenPosReport getLatest(String shipMaritimeId) {
-        return greenPosDao.findLatest(shipMaritimeId);
+    public GreenPosReport getLatest(String vesselMaritimeId) {
+        return greenPosDao.findLatest(vesselMaritimeId);
     }
 
     @Override

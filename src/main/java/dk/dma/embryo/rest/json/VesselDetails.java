@@ -69,16 +69,16 @@ public class VesselDetails {
         return mmsi;
     }
 
-    public void setMmsi(Long shipMmsi) {
-        this.mmsi = shipMmsi;
+    public void setMmsi(Long vesselMmsi) {
+        this.mmsi = vesselMmsi;
     }
 
     public String getMaritimeId() {
         return maritimeId;
     }
 
-    public void setMaritimeId(String shipMaritimeId) {
-        this.maritimeId = shipMaritimeId;
+    public void setMaritimeId(String vesselMaritimeId) {
+        this.maritimeId = vesselMaritimeId;
     }
 
 

@@ -43,9 +43,9 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
     }
 
     @Override
-    public GreenPosReport findLatest(String shipMaritimeId) {
+    public GreenPosReport findLatest(String vesselMaritimeId) {
         TypedQuery<GreenPosReport> query = em.createNamedQuery("GreenPosReport:findLatest", GreenPosReport.class);
-        query.setParameter("shipMaritimeId", shipMaritimeId);
+        query.setParameter("vesselMaritimeId", vesselMaritimeId);
         query.setMaxResults(1);
 
         List<GreenPosReport> result = query.getResultList();
@@ -64,7 +64,7 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
         List<Predicate> criterias = new LinkedList<>();
         
         if(search.getShipMmsi() != null){
-            criterias.add(builder.equal(root.get("shipMmsi"), search.getShipMmsi()));
+            criterias.add(builder.equal(root.get("vesselMmsi"), search.getShipMmsi()));
         }
         
         Predicate[] criteriaArr = new Predicate[criterias.size()];

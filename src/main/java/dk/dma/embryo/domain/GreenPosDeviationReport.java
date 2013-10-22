@@ -28,7 +28,7 @@ import dk.dma.embryo.rest.json.GreenPos;
  * {@link #modifiedPlan} or a combination of both.
  * 
  * The system is expected to insert a modified voyage plan if it exists. The textual description if filled in by either
- * ship or authorities (Grønlandskommandoen).
+ * vessel or authorities (Grønlandskommandoen).
  * 
  * @author Jesper Tejlgaard
  */
@@ -51,8 +51,8 @@ public class GreenPosDeviationReport extends GreenPosReport {
     public static GreenPosDeviationReport fromJsonModel(GreenPos from) {
         Position pos = new Position(from.getLat(), from.getLon());
 
-        GreenPosDeviationReport report = new GreenPosDeviationReport(from.getShipName(), from.getMmsi(),
-                from.getCallSign(), from.getShipMaritimeId(), pos, from.getDeviation());
+        GreenPosDeviationReport report = new GreenPosDeviationReport(from.getVesselName(), from.getMmsi(),
+                from.getCallSign(), from.getVesselMaritimeId(), pos, from.getDeviation());
 
         return report;
     }
@@ -62,10 +62,10 @@ public class GreenPosDeviationReport extends GreenPosReport {
         GreenPos result = new GreenPos();
         result.setId(getEnavId());
         result.setType(getReportType());
-        result.setShipName(getShipName());
-        result.setShipMaritimeId(getShipMaritimeId());
-        result.setMmsi(getShipMmsi());
-        result.setCallSign(getShipCallSign());
+        result.setVesselName(getVesselName());
+        result.setVesselMaritimeId(getVesselMaritimeId());
+        result.setMmsi(getVesselMmsi());
+        result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitudeAsString());
         result.setLat(getPosition().getLatitudeAsString());
         result.setDeviation(getDeviation());
@@ -83,9 +83,9 @@ public class GreenPosDeviationReport extends GreenPosReport {
         super();
     }
 
-    public GreenPosDeviationReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
+    public GreenPosDeviationReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
             Position pos, String deviation) {
-        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, pos);
+        super(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, pos);
 
         this.deviation = deviation;
         // this.modifiedPlan = deviatedPlan;

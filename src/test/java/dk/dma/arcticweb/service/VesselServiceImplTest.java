@@ -36,25 +36,25 @@ import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
-import dk.dma.arcticweb.dao.ShipDaoImpl;
+import dk.dma.arcticweb.dao.VesselDaoImpl;
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.RouteLeg;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.validation.ConstraintViolationImpl;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 
-public class ShipServiceImplTest {
+public class VesselServiceImplTest {
 
     private static EntityManagerFactory factory;
     private EntityManager entityManager;
-    private ShipService shipService;
+    private VesselService vesselService;
 
     @BeforeClass
     public static void setupForAll() {
@@ -74,8 +74,8 @@ public class ShipServiceImplTest {
         user.addRole(sailor);
         entityManager.persist(user);
 
-        Ship ship = new Ship(10L);
-        entityManager.persist(ship);
+        Vessel vessel = new Vessel(10L);
+        entityManager.persist(vessel);
 
         VoyagePlan voyagePlan = new VoyagePlan();
         voyagePlan.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
@@ -83,7 +83,7 @@ public class ShipServiceImplTest {
         voyagePlan.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime.parse("2013-06-23T22:08"),
                 LocalDateTime.parse("2013-06-25T20:19"), 11, 0, false));
 
-        ship.setVoyagePlan(voyagePlan);
+        vessel.setVoyagePlan(voyagePlan);
         entityManager.persist(voyagePlan);
 
         // /// new user
@@ -95,12 +95,12 @@ public class ShipServiceImplTest {
         user.addRole(sailor);
         entityManager.persist(user);
 
-        ship = new Ship(20L);
-        entityManager.persist(ship);
+        vessel = new Vessel(20L);
+        entityManager.persist(vessel);
 
         voyagePlan = new VoyagePlan();
 
-        ship.setVoyagePlan(voyagePlan);
+        vessel.setVoyagePlan(voyagePlan);
         entityManager.persist(voyagePlan);
 
         entityManager.getTransaction().commit();
@@ -110,13 +110,13 @@ public class ShipServiceImplTest {
     @Before
     public void setup() {
         entityManager = factory.createEntityManager();
-        shipService = new ShipServiceImpl(new ShipDaoImpl(entityManager));
+        vesselService = new VesselServiceImpl(new VesselDaoImpl(entityManager));
         entityManager.clear();
     }
 
     @Test
     public void getVoyagePlan_NoVoyagePlan() {
-        VoyagePlan info = shipService.getVoyagePlan(20L);
+        VoyagePlan info = vesselService.getVoyagePlan(20L);
 
         entityManager.clear();
 
@@ -126,7 +126,7 @@ public class ShipServiceImplTest {
 
     @Test
     public void getVoyagePlan_WithVoyagePlan() {
-        VoyagePlan info = shipService.getVoyagePlan(10L);
+        VoyagePlan info = vesselService.getVoyagePlan(10L);
 
         entityManager.clear();
 
@@ -140,7 +140,7 @@ public class ShipServiceImplTest {
     @Test
     public void getVoyages_notExisting() {
         // TODO fix to work for several voyage plans
-        List<Voyage> voyages = shipService.getVoyages(65L);
+        List<Voyage> voyages = vesselService.getVoyages(65L);
 
         Assert.assertNotNull(voyages);
         Assert.assertEquals(0, voyages.size());
@@ -149,7 +149,7 @@ public class ShipServiceImplTest {
     @Test
     public void getVoyages_existing() {
         // TODO fix to work for several voyage plans
-        List<Voyage> voyages = shipService.getVoyages(10L);
+        List<Voyage> voyages = vesselService.getVoyages(10L);
 
         Assert.assertNotNull(voyages);
         Assert.assertEquals(2, voyages.size());
@@ -173,12 +173,12 @@ public class ShipServiceImplTest {
         wp.setLeg(new RouteLeg(20.0, 2.0, 2.0, Heading.RL));
         route.addWayPoint(wp);
 
-        shipService.saveRoute(route);
+        vesselService.saveRoute(route);
         entityManager.getTransaction().commit();
 
         entityManager.clear();
 
-        Route result = shipService.getRouteByEnavId("key");
+        Route result = vesselService.getRouteByEnavId("key");
 
         Assert.assertNotNull(result);
         Assert.assertEquals("key", result.getEnavId());
@@ -227,7 +227,7 @@ public class ShipServiceImplTest {
         route.addWayPoint(wp);
 
         try {
-            shipService.saveRoute(route);
+            vesselService.saveRoute(route);
             entityManager.getTransaction().commit();
 
             Assert.fail("Constraint violations expected");

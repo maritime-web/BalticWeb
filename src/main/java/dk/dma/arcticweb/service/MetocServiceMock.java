@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.dao.ShipDao;
+import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.commons.model.RouteDecorator;
 import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.Route;
@@ -46,7 +46,7 @@ public class MetocServiceMock implements MetocService {
     private Subject subject;
 
     @Inject
-    private ShipDao shipDao;
+    private VesselDao vesselDao;
 
     @Inject
     private Logger logger;
@@ -89,24 +89,31 @@ public class MetocServiceMock implements MetocService {
     public MetocServiceMock() {
     }
 
-    public MetocServiceMock(ShipDao shipDao, Subject subject) {
-        this.shipDao = shipDao;
+    public MetocServiceMock(VesselDao vesselService, Subject subject) {
+        this.vesselDao = vesselService;
         this.subject = subject;
     }
 
     @Override
     public DmiSejlRuteService.SejlRuteResponse getMetoc(String routeId) {
-        Route route = shipDao.getRouteByEnavId(routeId);
+        Route route = vesselDao.getRouteByEnavId(routeId);
         if (route == null) {
             throw new IllegalArgumentException("Unknown route id: " + routeId);
         }
 
         dk.dma.enav.model.voyage.Route enavRoute = route.toEnavModel();
 
+        System.out.println(enavRoute);
+
         new RouteDecorator(enavRoute);
 
+        System.out.println(enavRoute);
+        
+        
         List<Waypoint> waypoints = new ArrayList<>();
 
+        System.out.println(enavRoute.getWaypoints());
+        
         for (int i = 0; i < enavRoute.getWaypoints().size() - 1; i++) {
             Waypoint curWp = enavRoute.getWaypoints().get(i);
             Waypoint nextWp = enavRoute.getWaypoints().get(i + 1);

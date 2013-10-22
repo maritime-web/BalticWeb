@@ -10,10 +10,9 @@
     <class>dk.dma.embryo.domain.Text</class>
     <class>dk.dma.embryo.domain.Sailor</class>
     <class>dk.dma.embryo.domain.ShoreRole</class>
-    <class>dk.dma.embryo.domain.ShipOwnerRole</class>
+    <class>dk.dma.embryo.domain.VesselOwnerRole</class>
     <class>dk.dma.embryo.domain.AuthorityRole</class>
-    <class>dk.dma.embryo.domain.Ship</class>
-    <class>dk.dma.embryo.domain.ShipReport</class>
+    <class>dk.dma.embryo.domain.Vessel</class>
     <class>dk.dma.embryo.domain.VoyagePlan</class>
     <class>dk.dma.embryo.domain.Voyage</class>
     <class>dk.dma.embryo.domain.Berth</class>

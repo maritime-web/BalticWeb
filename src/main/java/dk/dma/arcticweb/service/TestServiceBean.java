@@ -35,7 +35,7 @@ import org.joda.time.Period;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.dao.ShipDao;
+import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.AuthorityRole;
 import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.GreenPosFinalReport;
@@ -52,6 +52,7 @@ import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.ShoreRole;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.rest.util.DateTimeConverter;
@@ -64,10 +65,10 @@ public class TestServiceBean {
     private RealmDao realmDao;
 
     @EJB
-    private ShipDao shipDao;
+    private VesselDao vesselDao;
 
     @EJB
-    private ShipService shipService;
+    private VesselService vesselService;
 
     @Inject
     private Logger logger;
@@ -93,6 +94,7 @@ public class TestServiceBean {
 
         deleteAll(Berth.class);
         deleteAll(Ship.class);
+        deleteAll(Vessel.class);
         deleteAll(VoyagePlan.class);
         // delete any other voyages
         deleteAll(Voyage.class);
@@ -110,10 +112,10 @@ public class TestServiceBean {
         try {
             logger.info("Deleting entities of type {}", type.getName());
 
-            List<E> entities = shipDao.getAll(type);
+            List<E> entities = vesselDao.getAll(type);
             for (E entity : entities) {
                 logger.info("Deleting entities with id {}", entity.getId());
-                shipDao.remove(entity);
+                vesselDao.remove(entity);
             }
         } catch (RuntimeException e) {
             logger.error("Error deleting existing entries", e);
@@ -141,71 +143,71 @@ public class TestServiceBean {
     private void createOrasilaTestData() {
         logger.info("BEFORE CREATION - ORASILA");
 
-        // Create ship and user
-        Ship newShip = new Ship();
-        newShip.setMmsi(220443000L);
-        newShip.setType("TANKER");
-        newShip.setCommCapabilities("Sat C 0581 422044310, GMDSS A1+A2+A3");
-        newShip.setMaxSpeed(BigDecimal.valueOf(12.6));
-        newShip.setGrossTonnage(2194);
-        newShip.setIceClass("A1");
-        newShip.setHelipad(Boolean.FALSE);
-        newShip.getAisData().setImoNo(9336725L);
-        newShip.getAisData().setName("ORASILA");
-        newShip.getAisData().setCallsign("OYDK2");
-        newShip.getAisData().setWidth(14);
-        newShip.getAisData().setLength(77);
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.setMmsi(220443000L);
+        newVessel.setType("TANKER");
+        newVessel.setCommCapabilities("Sat C 0581 422044310, GMDSS A1+A2+A3");
+        newVessel.setMaxSpeed(BigDecimal.valueOf(12.6));
+        newVessel.setGrossTonnage(2194);
+        newVessel.setIceClass("A1");
+        newVessel.setHelipad(Boolean.FALSE);
+        newVessel.getAisData().setImoNo(9336725L);
+        newVessel.getAisData().setName("ORASILA");
+        newVessel.getAisData().setCallsign("OYDK2");
+        newVessel.getAisData().setWidth(14);
+        newVessel.getAisData().setLength(77);
 
-        newShip = shipDao.saveEntity(newShip);
+        newVessel = vesselDao.saveEntity(newVessel);
 
         Permission ais = new Permission("ais");
         Permission yourShip = new Permission("yourShip");
 
-        shipDao.saveEntity(ais);
-        shipDao.saveEntity(yourShip);
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
 
         Sailor sailorRole = new Sailor();
-        sailorRole.setShip(newShip);
+        sailorRole.setVessel(newVessel);
         sailorRole.add(ais);
         sailorRole.add(yourShip);
 
-        shipDao.saveEntity(sailorRole);
+        vesselDao.saveEntity(sailorRole);
 
         SecuredUser user = new SecuredUser("orasila", "qwerty", "obo@dma.dk");
         user.addRole(sailorRole);
 
-        shipDao.saveEntity(user);
+        vesselDao.saveEntity(user);
 
         // Create auth and user
         AuthorityRole auth = new AuthorityRole();
         // auth.setName(new Text("en", "Danish Maritime Authority"));
         auth.add(ais);
-        shipDao.saveEntity(auth);
+        vesselDao.saveEntity(auth);
 
         user = new SecuredUser("dma", "qwerty", "obo@dma.dk");
         user.addRole(auth);
 
-        shipDao.saveEntity(user);
+        vesselDao.saveEntity(user);
 
         // Test data found on
         // http://gronlandskehavnelods.dk/#HID=78
-        shipDao.saveEntity(new Berth("Nuuk", "64 10.4N", "051 43.5W"));
-        shipDao.saveEntity(new Berth("Sisimiut", "Holsteinsborg", "66 56.5N", "053 40.5W"));
-        shipDao.saveEntity(new Berth("Danmarkshavn", "76 46.0N", "018 45.0W"));
-        shipDao.saveEntity(new Berth("Kangilinnguit", "Grønnedal", "61 14.3N", "48 06.1W"));
-        shipDao.saveEntity(new Berth("Aasiaat", "Egedesminde", "68 42.6N", "052 53.0W"));
-        shipDao.saveEntity(new Berth("Ilulissat", "Jakobshavn", "69 13.5N", "051 06.0W"));
-        shipDao.saveEntity(new Berth("Qeqertarsuaq", "Godhavn", "69 15.0N", "053 33.0W"));
-        shipDao.saveEntity(new Berth("Ammassivik", "Sletten", "60 35.8N", "045 23.7W"));
-        shipDao.saveEntity(new Berth("Ittaajimmiut", "Kap Hope", "70 27.5N", "022 22.0W"));
-        shipDao.saveEntity(new Berth("Kangersuatsiaq", "Prøven", "72 22.7N", "055 33.5W"));
-        shipDao.saveEntity(new Berth("Qaanaaq", "Thule", "77 27.8N", "069 14.0W"));
-        shipDao.saveEntity(new Berth("Upernavik", "72 47.5N", "056 09.4W"));
-        shipDao.saveEntity(new Berth("Miami", "25 47.16N", "08 13.27W"));
+        vesselDao.saveEntity(new Berth("Nuuk", "64 10.4N", "051 43.5W"));
+        vesselDao.saveEntity(new Berth("Sisimiut", "Holsteinsborg", "66 56.5N", "053 40.5W"));
+        vesselDao.saveEntity(new Berth("Danmarkshavn", "76 46.0N", "018 45.0W"));
+        vesselDao.saveEntity(new Berth("Kangilinnguit", "Grønnedal", "61 14.3N", "48 06.1W"));
+        vesselDao.saveEntity(new Berth("Aasiaat", "Egedesminde", "68 42.6N", "052 53.0W"));
+        vesselDao.saveEntity(new Berth("Ilulissat", "Jakobshavn", "69 13.5N", "051 06.0W"));
+        vesselDao.saveEntity(new Berth("Qeqertarsuaq", "Godhavn", "69 15.0N", "053 33.0W"));
+        vesselDao.saveEntity(new Berth("Ammassivik", "Sletten", "60 35.8N", "045 23.7W"));
+        vesselDao.saveEntity(new Berth("Ittaajimmiut", "Kap Hope", "70 27.5N", "022 22.0W"));
+        vesselDao.saveEntity(new Berth("Kangersuatsiaq", "Prøven", "72 22.7N", "055 33.5W"));
+        vesselDao.saveEntity(new Berth("Qaanaaq", "Thule", "77 27.8N", "069 14.0W"));
+        vesselDao.saveEntity(new Berth("Upernavik", "72 47.5N", "056 09.4W"));
+        vesselDao.saveEntity(new Berth("Miami", "25 47.16N", "08 13.27W"));
 
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
-        newShip.setVoyagePlan(voyagePlan);
+        newVessel.setVoyagePlan(voyagePlan);
 
         voyagePlan.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
                 now.minusDays(3).withTime(17, 0, 0, 0), 12, 0, true));
@@ -216,7 +218,7 @@ public class TestServiceBean {
         voyagePlan.addVoyageEntry(new Voyage("Upernavik", "72 47.5N", "056 09.4W", now.plusDays(13).withTime(10, 45, 0,
                 0), now.plusDays(14).withTime(9, 30, 0, 0)));
 
-        shipDao.saveEntity(voyagePlan);
+        vesselDao.saveEntity(voyagePlan);
 
     }
 
@@ -224,7 +226,7 @@ public class TestServiceBean {
     private void uploadOrasilaRoutes() {
         logger.info("BEFORE UPLOAD - ORASILA");
 
-        VoyagePlan voyagePlan = shipService.getVoyagePlan(220443000L);
+        VoyagePlan voyagePlan = vesselService.getVoyagePlan(220443000L);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/Miami-Nuuk.txt", true);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(1).getEnavId(), "/demo/routes/Nuuk-Thule.txt", false);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(2).getEnavId(), "/demo/routes/Thule-Upernavik.txt", false);
@@ -234,48 +236,48 @@ public class TestServiceBean {
     private void createOraTankTestData() {
         logger.info("BEFORE CREATION - ORATANK");
 
-        // Create ship and user
-        Ship newShip = new Ship();
-        newShip.getAisData().setName("ORATANK");
-        newShip.setMmsi(220516000L);
-        newShip.getAisData().setCallsign("OXPJ2");
-        newShip = shipDao.saveEntity(newShip);
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.getAisData().setName("ORATANK");
+        newVessel.setMmsi(220516000L);
+        newVessel.getAisData().setCallsign("OXPJ2");
+        newVessel = vesselDao.saveEntity(newVessel);
 
         Permission ais = new Permission("ais");
         Permission yourShip = new Permission("yourShip");
 
-        shipDao.saveEntity(ais);
-        shipDao.saveEntity(yourShip);
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
 
         Sailor sailorRole = new Sailor();
-        sailorRole.setShip(newShip);
+        sailorRole.setVessel(newVessel);
         sailorRole.add(ais);
         sailorRole.add(yourShip);
 
-        shipDao.saveEntity(sailorRole);
+        vesselDao.saveEntity(sailorRole);
 
         SecuredUser user = new SecuredUser("oratank", "qwerty", "obo@dma.dk");
         user.addRole(sailorRole);
 
-        shipDao.saveEntity(user);
+        vesselDao.saveEntity(user);
 
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
-        newShip.setVoyagePlan(voyagePlan);
+        newVessel.setVoyagePlan(voyagePlan);
 
         voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
                 now.plusDays(5).withTime(9, 0, 0, 0)));
         voyagePlan.addVoyageEntry(new Voyage("X", "63 41.81N", "051 29.00W", now.minusDays(4).withTime(9, 30, 0, 0),
                 now.minusDays(3).withTime(17, 0, 0, 0)));
 
-        shipDao.saveEntity(voyagePlan);
+        vesselDao.saveEntity(voyagePlan);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadOraTankRoutes() {
         logger.info("BEFORE UPLOAD - ORATANK");
 
-        VoyagePlan voyagePlan = shipService.getVoyagePlan(220516000L);
+        VoyagePlan voyagePlan = vesselService.getVoyagePlan(220516000L);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/Oratank-Nuuk.txt", true);
     }
 
@@ -283,34 +285,34 @@ public class TestServiceBean {
     private void createSarfaqTestData() {
         logger.info("BEFORE CREATION - SARFAQ ITTUK");
 
-        // Create ship and user
-        Ship newShip = new Ship();
-        newShip.setMmsi(331037000L);
-        newShip.getAisData().setName("SARFAQ ITTUK");
-        newShip.getAisData().setCallsign("OWDD");
-        newShip = shipDao.saveEntity(newShip);
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.setMmsi(331037000L);
+        newVessel.getAisData().setName("SARFAQ ITTUK");
+        newVessel.getAisData().setCallsign("OWDD");
+        newVessel = vesselDao.saveEntity(newVessel);
 
         Permission ais = new Permission("ais");
         Permission yourShip = new Permission("yourShip");
 
-        shipDao.saveEntity(ais);
-        shipDao.saveEntity(yourShip);
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
 
         Sailor sailorRole = new Sailor();
-        sailorRole.setShip(newShip);
+        sailorRole.setVessel(newVessel);
         sailorRole.add(ais);
         sailorRole.add(yourShip);
 
-        shipDao.saveEntity(sailorRole);
+        vesselDao.saveEntity(sailorRole);
 
         SecuredUser user = new SecuredUser("sarfaq", "qwerty", "obo@dma.dk");
         user.addRole(sailorRole);
 
-        shipDao.saveEntity(user);
+        vesselDao.saveEntity(user);
 
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
-        newShip.setVoyagePlan(voyagePlan);
+        newVessel.setVoyagePlan(voyagePlan);
 
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
 
@@ -367,14 +369,14 @@ public class TestServiceBean {
             }
         }
 
-        shipDao.saveEntity(voyagePlan);
+        vesselDao.saveEntity(voyagePlan);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadSarfaqRoutes() {
         logger.info("BEFORE UPLOAD - SARFAQ");
 
-        VoyagePlan voyagePlan = shipService.getVoyagePlan(331037000L);
+        VoyagePlan voyagePlan = vesselService.getVoyagePlan(331037000L);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt",
                 false);
@@ -386,38 +388,38 @@ public class TestServiceBean {
     private void createCarnivalLegendTestData() {
         logger.info("BEFORE CREATION - CARNIVAL LEGEND");
 
-        // Create ship and user
-        Ship newShip = new Ship();
-        newShip.getAisData().setName("CARNIVAL LEGEND");
-        newShip.setMmsi(354237000L);
-        newShip.getAisData().setCallsign("H3VT");
-        newShip.getAisData().setImoNo(9224726L);
-        newShip.getAisData().setLength(293);
-        newShip.getAisData().setWidth(32);
-        newShip.setGrossTonnage(85942);
-        newShip = shipDao.saveEntity(newShip);
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.getAisData().setName("CARNIVAL LEGEND");
+        newVessel.setMmsi(354237000L);
+        newVessel.getAisData().setCallsign("H3VT");
+        newVessel.getAisData().setImoNo(9224726L);
+        newVessel.getAisData().setLength(293);
+        newVessel.getAisData().setWidth(32);
+        newVessel.setGrossTonnage(85942);
+        newVessel = vesselDao.saveEntity(newVessel);
 
         Permission ais = new Permission("ais");
         Permission yourShip = new Permission("yourShip");
 
-        shipDao.saveEntity(ais);
-        shipDao.saveEntity(yourShip);
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
 
         Sailor sailorRole = new Sailor();
-        sailorRole.setShip(newShip);
+        sailorRole.setVessel(newVessel);
         sailorRole.add(ais);
         sailorRole.add(yourShip);
 
-        shipDao.saveEntity(sailorRole);
+        vesselDao.saveEntity(sailorRole);
 
         SecuredUser user = new SecuredUser("carnivalLegend", "qwerty", "obo@dma.dk");
         user.addRole(sailorRole);
 
-        shipDao.saveEntity(user);
+        vesselDao.saveEntity(user);
 
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
-        newShip.setVoyagePlan(voyagePlan);
+        newVessel.setVoyagePlan(voyagePlan);
 
         voyagePlan.addVoyageEntry(new Voyage("Copenhagen", "55 67.61N", "12 56.83E", null, now.withTime(12, 57, 0, 0),
                 12, 300, true));
@@ -426,14 +428,14 @@ public class TestServiceBean {
 
         // firstDeparture.
 
-        shipDao.saveEntity(voyagePlan);
+        vesselDao.saveEntity(voyagePlan);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadCarnivalLegendRoutes() {
         logger.info("BEFORE UPLOAD - CARNIVAL LEGEND");
 
-        VoyagePlan voyagePlan = shipService.getVoyagePlan(354237000L);
+        VoyagePlan voyagePlan = vesselService.getVoyagePlan(354237000L);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/CARNIVAL-LEGEND-Cph-Nuuk.txt", true);
     }
 
@@ -441,18 +443,18 @@ public class TestServiceBean {
     private void createArcticCommandLogin() {
         logger.info("BEFORE CREATION - Arctic Command");
 
-        // Create ship and user
+        // Create vessel and user
         Permission ais = new Permission("ais");
         Permission ice = new Permission("ice");
         Permission msi = new Permission("msi");
         Permission assistance = new Permission("assistance");
         Permission greenpos = new Permission("greenpos");
 
-        shipDao.saveEntity(ais);
-        shipDao.saveEntity(ice);
-        shipDao.saveEntity(msi);
-        shipDao.saveEntity(assistance);
-        shipDao.saveEntity(greenpos);
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(ice);
+        vesselDao.saveEntity(msi);
+        vesselDao.saveEntity(assistance);
+        vesselDao.saveEntity(greenpos);
 
         ShoreRole role = new ShoreRole();
         role.add(ais);
@@ -461,28 +463,28 @@ public class TestServiceBean {
         role.add(assistance);
         role.add(greenpos);
 
-        shipDao.saveEntity(role);
+        vesselDao.saveEntity(role);
 
         SecuredUser user = new SecuredUser("arcticCommand", "qwerty", "obo@dma.dk");
         user.addRole(role);
 
-        shipDao.saveEntity(user);
+        vesselDao.saveEntity(user);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createDmiLogin() {
         logger.info("BEFORE CREATION - DMI");
 
-        // Create ship and user
+        // Create vessel and user
         Permission ais = new Permission("ais");
         Permission ice = new Permission("ice");
         Permission msi = new Permission("msi");
         Permission assistance = new Permission("assistance");
 
-        shipDao.saveEntity(ais);
-        shipDao.saveEntity(ice);
-        shipDao.saveEntity(msi);
-        shipDao.saveEntity(assistance);
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(ice);
+        vesselDao.saveEntity(msi);
+        vesselDao.saveEntity(assistance);
 
         ShoreRole role = new ShoreRole();
         role.add(ais);
@@ -490,28 +492,28 @@ public class TestServiceBean {
         role.add(msi);
         role.add(assistance);
 
-        shipDao.saveEntity(role);
+        vesselDao.saveEntity(role);
 
         SecuredUser user = new SecuredUser("dmi", "qwerty", "obo@dma.dk");
         user.addRole(role);
 
-        shipDao.saveEntity(user);
+        vesselDao.saveEntity(user);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createIceCenterLogin() {
         logger.info("BEFORE CREATION - Istjejenesten");
 
-        // Create ship and user
+        // Create vessel and user
         Permission ais = new Permission("ais");
         Permission ice = new Permission("ice");
         Permission msi = new Permission("msi");
         Permission assistance = new Permission("assistance");
 
-        shipDao.saveEntity(ais);
-        shipDao.saveEntity(ice);
-        shipDao.saveEntity(msi);
-        shipDao.saveEntity(assistance);
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(ice);
+        vesselDao.saveEntity(msi);
+        vesselDao.saveEntity(assistance);
 
         ShoreRole role = new ShoreRole();
         role.add(ais);
@@ -519,96 +521,96 @@ public class TestServiceBean {
         role.add(msi);
         role.add(assistance);
 
-        shipDao.saveEntity(role);
+        vesselDao.saveEntity(role);
 
         SecuredUser user = new SecuredUser("iceCenter", "qwerty", "obo@dma.dk");
         user.addRole(role);
 
-        shipDao.saveEntity(user);
+        vesselDao.saveEntity(user);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createGreenposReports() {
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
-        Ship ship = shipDao.getShipByCallsign("OXPJ2");
+        Vessel vessel = vesselDao.getVesselByCallsign("OXPJ2");
 
         List<ReportedVoyage> voyages = null;
-        GreenPosReport report = new GreenPosSailingPlanReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(),
-                ship.getMaritimeId(), new Position("66 56.5N", "053 40.50W"), "Sun shine", "NO ICE", 4.1, 10, "Nuuk",
+        GreenPosReport report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
+                vessel.getMaritimeId(), new Position("66 56.5N", "053 40.50W"), "Sun shine", "NO ICE", 4.1, 10, "Nuuk",
                 converter.toObject("19-09-2013 10:30"), 6, voyages);
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("18-09-2013 13:09"));
-        shipDao.saveEntity(report);
+        vesselDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(), vessel.getMaritimeId(),
                 new Position("66 03.772N", "053 46.3W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("18-09-2013 18:00"));
-        shipDao.saveEntity(report);
+        vesselDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(), vessel.getMaritimeId(),
                 new Position("65 19.926N", "052 57.483W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("19-09-2013 00:00"));
-        shipDao.saveEntity(report);
+        vesselDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(), vessel.getMaritimeId(),
                 new Position("64 29.198N", "052 29.507W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("19-09-2013 06:00"));
-        shipDao.saveEntity(report);
+        vesselDao.saveEntity(report);
 
-        report = new GreenPosFinalReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosFinalReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(), vessel.getMaritimeId(),
                 new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("19-09-2013 10:15"));
-        shipDao.saveEntity(report);
+        vesselDao.saveEntity(report);
 
-        ship = shipDao.getShipByCallsign("OYDK2");
+        vessel = vesselDao.getVesselByCallsign("OYDK2");
 
-        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(), vessel.getMaritimeId(),
                 new Position("63 80.01N", "051 58.04W"), "Sun shine", "NO ICE", 11.6, 350);
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("24-09-2013 12:00"));
-        shipDao.saveEntity(report);
+        vesselDao.saveEntity(report);
 
-        report = new GreenPosFinalReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosFinalReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(), vessel.getMaritimeId(),
                 new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("24-09-2013 16:02"));
-        shipDao.saveEntity(report);
+        vesselDao.saveEntity(report);
 
         voyages = null;
-        report = new GreenPosSailingPlanReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(),
-                ship.getMaritimeId(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150,
+        report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
+                vessel.getMaritimeId(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150,
                 "KYSTFART", converter.toObject("26-09-2013 10:30"), 6, voyages);
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("24-09-2013 23:12"));
-        shipDao.saveEntity(report);
+        vesselDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(), vessel.getMaritimeId(),
                 new Position("64 10.068N", "051 64.78W"), "Sun shine", "NO ICE", 11.6, 162);
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("25-09-2013 00:00"));
-        shipDao.saveEntity(report);
+        vesselDao.saveEntity(report);
 
     }
 
     public void logExistingEntries() {
-        logger.info("Permissions: {} ", shipDao.getAll(Permission.class));
-        logger.info("Roles: {} ", shipDao.getAll(Role.class));
-        logger.info("Users: {} ", shipDao.getAll(SecuredUser.class));
-        logger.info("Ships: {} ", shipDao.getAll(Ship.class));
-        logger.info("VoyagePlans: {} ", shipDao.getAll(VoyagePlan.class));
-        logger.info("Voyage: {} ", shipDao.getAll(Voyage.class));
-        logger.info("Berth: {} ", shipDao.getAll(Berth.class));
+        logger.info("Permissions: {} ", vesselDao.getAll(Permission.class));
+        logger.info("Roles: {} ", vesselDao.getAll(Role.class));
+        logger.info("Users: {} ", vesselDao.getAll(SecuredUser.class));
+        logger.info("Vessels: {} ", vesselDao.getAll(Vessel.class));
+        logger.info("VoyagePlans: {} ", vesselDao.getAll(VoyagePlan.class));
+        logger.info("Voyage: {} ", vesselDao.getAll(Voyage.class));
+        logger.info("Berth: {} ", vesselDao.getAll(Berth.class));
     }
 
     private void insertDemoRoute(String voyageId, String file, boolean activate) {
         InputStream is = getClass().getResourceAsStream(file);
         try {
-            Route r = shipService.parseRoute(is);
-            shipService.saveRoute(r, voyageId, activate);
+            Route r = vesselService.parseRoute(is);
+            vesselService.saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);
         }

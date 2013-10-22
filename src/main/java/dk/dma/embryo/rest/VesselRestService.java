@@ -25,9 +25,9 @@ import javax.ws.rs.QueryParam;
 
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.ShipService;
+import dk.dma.arcticweb.service.VesselService;
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.rest.json.VesselDetails;
 import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
 import dk.dma.embryo.restclients.AisViewService;
@@ -41,7 +41,7 @@ public class VesselRestService {
     private Logger logger;
 
     @Inject
-    private ShipService vesselService;
+    private VesselService vesselService;
 
     @GET
     @Path("/historical-track")
@@ -62,7 +62,7 @@ public class VesselRestService {
     @Produces("application/json")
     public VesselDetails detailsByMmsi(@QueryParam("maritimeId") String maritimeId) {
         VesselDetails details = null;
-        Ship vessel = vesselService.getVessel(maritimeId);
+        Vessel vessel = vesselService.getVessel(maritimeId);
 
         if (vessel != null) {
             details = vessel.toJsonModel2();
@@ -80,7 +80,7 @@ public class VesselRestService {
         Object track = result.remove("pastTrack");
 
         VesselDetails details = null;
-        Ship vessel = null;
+        Vessel vessel = null;
         Route route = null;
         if (mmsiStr != null) {
             vessel = vesselService.getVessel(Long.valueOf(mmsiStr));

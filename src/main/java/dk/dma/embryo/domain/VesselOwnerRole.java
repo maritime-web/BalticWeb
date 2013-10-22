@@ -23,22 +23,22 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Entity
-public class ShipOwnerRole extends Role {
+public class VesselOwnerRole extends Role {
     private static final long serialVersionUID = 1L;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
-    private Set<Ship> ships = new HashSet<Ship>();
+    private Set<Vessel> vessels = new HashSet<Vessel>();
 
-    public ShipOwnerRole() {
-        super("shipOwner");
+    public VesselOwnerRole() {
+        super("vesselOwner");
     }
 
-    public Set<Ship> getShips() {
-        return ships;
+    public Set<Vessel> getVessels() {
+        return vessels;
     }
 
-    public void setShips(Set<Ship> ships) {
-        this.ships = ships;
+    public void setVessels(Set<Vessel> vessels) {
+        this.vessels = vessels;
     }
 
 }

@@ -29,11 +29,11 @@ public class GreenposSearch {
     // //////////////////////////////////////////////////////////////////////
     private String reportType;
 
-    private String shipName;
+    private String vesselName;
 
-    private Long shipMmsi;
+    private Long vesselMmsi;
 
-    private String shipCallSign;
+    private String vesselCallSign;
 
     private String reportedBy;
 
@@ -53,7 +53,7 @@ public class GreenposSearch {
     public GreenposSearch() {
     }
 
-    public GreenposSearch(String reportType, String shipName, Long shipMmsi, String shipCallSign, String reportedBy,
+    public GreenposSearch(String reportType, String vesselName, Long vesselMmsi, String vesselCallSign, String reportedBy,
             LocalDateTime ts, String sortBy, String sortOrder, Integer first, Integer numberOfReports) {
         super();
         
@@ -70,9 +70,9 @@ public class GreenposSearch {
         }
         
         this.reportType = reportType;
-        this.shipName = shipName;
-        this.shipMmsi = shipMmsi;
-        this.shipCallSign = shipCallSign;
+        this.vesselName = vesselName;
+        this.vesselMmsi = vesselMmsi;
+        this.vesselCallSign = vesselCallSign;
         this.reportedBy = reportedBy;
         this.ts = ts;
         this.first = first;
@@ -91,15 +91,15 @@ public class GreenposSearch {
     // Property methods
     // //////////////////////////////////////////////////////////////////////
     public String getShipName() {
-        return shipName;
+        return vesselName;
     }
 
     public String getShipCallSign() {
-        return shipCallSign;
+        return vesselCallSign;
     }
 
     public Long getShipMmsi() {
-        return shipMmsi;
+        return vesselMmsi;
     }
     public String getReportedBy() {
         return reportedBy;

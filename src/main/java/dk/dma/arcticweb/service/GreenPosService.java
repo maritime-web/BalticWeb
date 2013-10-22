@@ -27,7 +27,7 @@ public interface GreenPosService{
 
     List<GreenPosReport> listReports();
 
-    GreenPosReport getLatest(String shipMaritimeId);
+    GreenPosReport getLatest(String vesselMaritimeId);
 
     String saveReport(GreenPosReport report);
     

@@ -21,23 +21,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-@NamedQueries({ @NamedQuery(name = "Sailor:withShip", query = "SELECT r FROM Sailor r inner join r.users AS u JOIN FETCH r.ship where u.id = :id") })
+@NamedQueries({ @NamedQuery(name = "Sailor:withShip", query = "SELECT r FROM Sailor r inner join r.users AS u JOIN FETCH r.vessel where u.id = :id") })
 @Entity
 public class Sailor extends Role {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Ship ship;
+    private Vessel vessel;
 
     public Sailor() {
         super("sailor");
     }
 
-    public Ship getShip() {
-        return ship;
+    public Vessel getVessel() {
+        return vessel;
     }
 
-    public void setShip(Ship ship) {
-        this.ship = ship;
+    public void setVessel(Vessel vessel) {
+        this.vessel = vessel;
     }
 }

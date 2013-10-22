@@ -145,8 +145,8 @@
             ShipService.getYourShip(function(yourShip) {
                 $scope.report.mmsi = yourShip.mmsi;
                 $scope.report.callSign = yourShip.callSign;
-                $scope.report.shipName = yourShip.name;
-                $scope.report.shipMaritimeId = yourShip.maritimeId;
+                $scope.report.vesselName = yourShip.name;
+                $scope.report.vesselMaritimeId = yourShip.maritimeId;
                 
                 RouteService.getYourActive(yourShip.mmsi, function(route) {
                     $scope.hasActiveRoute = route ? true : false;

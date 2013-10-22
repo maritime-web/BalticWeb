@@ -23,41 +23,32 @@ import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship;
-import dk.dma.embryo.domain.ShipReport;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 
 @Local
-public interface ShipService {
+public interface VesselService {
 
     
     /**
-     * Get the ship for the currently logged in {@link Sailor}.
+     * Get the vessel for the currently logged in {@link Sailor}.
      * 
      * @return
      */
-    Ship getYourShip();
+    Vessel getYourVessel();
 
     /**
      * 
-     * @param ship
+     * @param vessel
      * @return
      */
-    String save(Ship ship);
-
-    /**
-     * Add ship report for ship
-     * 
-     * @param ship
-     * @param shipReport
-     */
-    void reportForCurrentShip(ShipReport shipReport);
+    String save(Vessel vessel);
 
     /**
      * Save voyage plan
      * 
-     * @param ship
+     * @param vessel
      * @param voyagePlan
      */
     void saveVoyagePlan(VoyagePlan voyagePlan);
@@ -84,8 +75,8 @@ public interface ShipService {
     
     Route parseRoute(InputStream is) throws IOException;
     
-    Ship getVessel(Long mmsi);
+    Vessel getVessel(Long mmsi);
 
-    Ship getVessel(String maritimeId);
+    Vessel getVessel(String maritimeId);
 
 }

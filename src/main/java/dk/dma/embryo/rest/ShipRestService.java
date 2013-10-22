@@ -27,7 +27,7 @@ import javax.ws.rs.Produces;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.GreenPosService;
-import dk.dma.arcticweb.service.ShipService;
+import dk.dma.arcticweb.service.VesselService;
 import dk.dma.embryo.rest.json.Ship;
 import dk.dma.enav.model.ship.ShipType;
 
@@ -39,7 +39,7 @@ import dk.dma.enav.model.ship.ShipType;
 public class ShipRestService {
 
     @Inject
-    private ShipService shipService;
+    private VesselService shipService;
 
     @Inject
     private GreenPosService greenposService;
@@ -56,7 +56,7 @@ public class ShipRestService {
     public Ship getYourShip() {
         logger.debug("getYourShip()");
 
-        dk.dma.embryo.domain.Ship ship = shipService.getYourShip();
+        dk.dma.embryo.domain.Vessel ship = shipService.getYourVessel();
         
         Ship result = null;
         if(ship != null){
@@ -86,7 +86,7 @@ public class ShipRestService {
     public String save(Ship ship) {
         logger.debug("save({})", ship);
 
-        dk.dma.embryo.domain.Ship toBeSaved = dk.dma.embryo.domain.Ship.fromJsonModel(ship);
+        dk.dma.embryo.domain.Vessel toBeSaved = dk.dma.embryo.domain.Vessel.fromJsonModel(ship);
         
         String maritimeId = shipService.save(toBeSaved);
         

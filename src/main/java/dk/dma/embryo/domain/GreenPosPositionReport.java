@@ -49,8 +49,8 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     public static GreenPosPositionReport fromJsonModel(GreenPos from) {
         Position pos = new Position(from.getLat(), from.getLon());
 
-        GreenPosPositionReport report = new GreenPosPositionReport(from.getShipName(), from.getMmsi(),
-                from.getCallSign(), from.getShipMaritimeId(), pos, from.getWeather(), from.getIce(),
+        GreenPosPositionReport report = new GreenPosPositionReport(from.getVesselName(), from.getMmsi(),
+                from.getCallSign(), from.getVesselMaritimeId(), pos, from.getWeather(), from.getIce(),
                 from.getSpeed(), from.getCourse());
 
         return report;
@@ -61,10 +61,10 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         GreenPos result = new GreenPos();
         result.setId(getEnavId());
         result.setType(getReportType());
-        result.setShipName(getShipName());
-        result.setShipMaritimeId(getShipMaritimeId());
-        result.setMmsi(getShipMmsi());
-        result.setCallSign(getShipCallSign());
+        result.setVesselName(getVesselName());
+        result.setVesselMaritimeId(getVesselMaritimeId());
+        result.setMmsi(getVesselMmsi());
+        result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitudeAsString());
         result.setLat(getPosition().getLatitudeAsString());
         result.setWeather(getWeather());
@@ -84,17 +84,17 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         super();
     }
 
-    public GreenPosPositionReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
+    public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
             String latitude, String longitude, String weather, String iceInformation, Double speed, Integer course) {
-        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, latitude, longitude, weather, iceInformation);
+        super(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, latitude, longitude, weather, iceInformation);
         
         this.speed = speed;
         this.course = course;
     }
 
-    public GreenPosPositionReport(String shipName, Long shipMmsi, String shipCallSign, String shipMaritimeId,
+    public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
             Position position, String weather, String iceInformation, Double speed, Integer course) {
-        super(shipName, shipMmsi, shipCallSign, shipMaritimeId, position, weather, iceInformation);
+        super(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, position, weather, iceInformation);
         
         this.speed = speed;
         this.course = course;

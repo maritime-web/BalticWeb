@@ -24,11 +24,11 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.dao.ShipDao;
+import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.commons.model.RouteDecorator;
 import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.restclients.DmiSejlRuteService;
 import dk.dma.embryo.restclients.DmiSejlRuteService.Forecast;
 import dk.dma.embryo.restclients.DmiSejlRuteService.Waypoint;
@@ -46,7 +46,7 @@ public class MetocServiceImpl {
     private Subject subject;
 
     @Inject
-    private ShipDao shipDao;
+    private VesselDao vesselDao;
 
     @Inject
     private Logger logger;
@@ -58,24 +58,24 @@ public class MetocServiceImpl {
     public MetocServiceImpl() {
     }
 
-    public MetocServiceImpl(ShipDao shipDao, Subject subject) {
-        this.shipDao = shipDao;
+    public MetocServiceImpl(VesselDao vesselDao, Subject subject) {
+        this.vesselDao = vesselDao;
         this.subject = subject;
     }
 
 //    @Override
     public DmiSejlRuteService.SejlRuteResponse getMetoc(String routeId) {
-        Route route = shipDao.getRouteByEnavId(routeId);
+        Route route = vesselDao.getRouteByEnavId(routeId);
         if (route == null) {
             throw new IllegalArgumentException("Unknown route id: " + routeId);
         }
 
-        Ship ship = route.getVoyage().getPlan().getShip();
+        Vessel vessel = route.getVoyage().getPlan().getVessel();
 
         RouteDecorator r = new RouteDecorator(route.toEnavModel());
 
         DmiSejlRuteService.SejlRuteRequest request = new DmiSejlRuteService.SejlRuteRequest();
-        request.setMssi(ship.getMmsi());
+        request.setMssi(vessel.getMmsi());
         request.setDatatypes(new String[] { "sealevel", "current", "wave", "wind", "density" });
         request.setDt(60);
 

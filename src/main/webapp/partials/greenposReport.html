@@ -1,170 +1,166 @@
-<div id="shipReportPanel">
-	<div>
-		<div class="row-fluid">
-			<div class="span6 contentBox" id="formColumn">
-				<h2>Ship report</h2>
-				<form id="greenPosForm" name="greenPosForm" class="form-horizontal" novalidate>
-					<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
-					<div x-ng-show="message" class="alert alert-info">{{message}}</div>
-					<div class="row">
-						<div class="span12">
-							<div class="control-group">
-								<label class="control-label" for="gReportType">Report type</label>
-								<div class="controls">
-									<select id="gReportType" name="gpReportType" x-ng-model="report.type" class="input-large" required>
-										<option value="SP">Sailing Plan Report</option>
-										<option value="PR">Position Report</option>
-										<option value="FR">Final Report</option>
-										<option value="DR">Deviation Report</option>
-									</select> <span x-ng-show="greenPosForm.gpReportType.$error.required && greenPosForm.gpReportType.$dirty"
-										class="msg-invalid">Value required</span>
+<div class="row-fluid">
+	<div class="span6 contentBox" id="formColumn">
+		<h2>Ship report</h2>
+		<form id="greenPosForm" name="greenPosForm" class="form-horizontal" novalidate>
+			<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+			<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+			<div class="row">
+				<div class="span12">
+					<div class="control-group">
+						<label class="control-label" for="gReportType">Report type</label>
+						<div class="controls">
+							<select id="gReportType" name="gpReportType" x-ng-model="report.type" class="input-large" required>
+								<option value="SP">Sailing Plan Report</option>
+								<option value="PR">Position Report</option>
+								<option value="FR">Final Report</option>
+								<option value="DR">Deviation Report</option>
+							</select> <span x-ng-show="greenPosForm.gpReportType.$error.required && greenPosForm.gpReportType.$dirty"
+								class="msg-invalid">Value required</span>
 
-								</div>
-							</div>
-							<div class="control-group">
-								<label class="control-label" for="lon">Ship name</label>
-								<div class="controls">
-									<input type="text" name="gpShipName" x-ng-model="report.shipName" /> <input type="hidden"
-										x-ng-model="report.shipMaritimeId" />
-								</div>
-								<span x-ng-show="greenPosForm.gpShipName.$error.required" class="msg-invalid">Invalid email</span>
-							</div>
-							<div class="control-group">
-								<label class="control-label" for="lon">MMSI</label>
-								<div class="controls">
-									<input type="text" class="input-medium" x-ng-model="report.mmsi" />
-								</div>
-							</div>
-							<div class="control-group">
-								<label class="control-label" for="lon">Call sign</label>
-								<div class="controls">
-									<input type="text" class="input-medium" x-ng-model="report.callSign" />
-								</div>
-							</div>
-							<div class="control-group" x-ng-show="isVisible('destination')">
-								<label class="control-label" for="gpDestination">Destination</label>
-								<div class="controls">
-									<input id="gpDestination" name="gpDestination" type="text" class="input-medium" x-ng-model="report.destination"
-										x-ng-required="isVisible('destination')" /> <span
-										x-ng-show="greenPosForm.gpDestination.$error.required && greenPosForm.gpDestination.$dirty"
-										class="msg-invalid">Value required</span>
-								</div>
-							</div>
-							<div class="control-group" x-ng-show="isVisible('etaOfArrival')">
-								<label class="control-label" for="gpEta">Estimated time of arrival</label>
-								<div class="controls">
-									<input id="gpEta" name="gpEta" type="text" class="input-medium" x-ng-model="report.etaOfArrival"
-										x-ng-required="isVisible('etaOfArrival')" /> <span
-										x-ng-show="greenPosForm.gpEta.$error.required && greenPosForm.gpEta.$dirty" class="msg-invalid">Value
-										required</span>
-								</div>
-							</div>
-							<div class="control-group" x-ng-show="isVisible('personsOnBoard')">
-								<label class="control-label" for="gpPersons">Persons on board</label>
-								<div class="controls">
-									<input id="gpPersons" name="gpPersons" type="text" class="input-small" x-ng-model="report.personsOnBoard"
-										x-ng-required="isVisible('personsOnBoard')" /> <span
-										x-ng-show="greenPosForm.gpPersons.$error.required && greenPosForm.gpPersons.$dirty" class="msg-invalid">Value
-										required</span>
-									<!-- <span x-msg-required="greenPosForm.gpPersons"></span> -->
-								</div>
-							</div>
-							<div class="control-group" x-ng-show="isVisible('course')">
-								<label class="control-label" for="gpCourse">Course</label>
-								<div class="controls">
-									<input name="gpCourse" id="gpCourse" type="text" class="input-small" x-ng-model="report.course"
-										x-ng-required="isVisible('course')" /> <span
-										x-ng-show="greenPosForm.gpCourse.$error.required  && greenPosForm.gpCourse.$dirty" class="msg-invalid">Value
-										required</span>
-								</div>
-							</div>
-							<div class="control-group" x-ng-show="isVisible('speed')">
-								<label class="control-label" for="gpSpeed">Speed</label>
-								<div class="controls">
-									<input id="gpSpeed" name="gpSpeed" type="text" class="input-small" x-ng-model="report.speed"
-										x-ng-required="isVisible('speed')" /> <span
-										x-ng-show="greenPosForm.gpSpeed.$error.required && greenPosForm.gpSpeed.$dirty" class="msg-invalid">Value
-										required</span>
-								</div>
-							</div>
-							<div class="control-group">
-								<label class="control-label" for="gpLat">Latitude</label>
-								<div class="controls">
-									<input id="gpLat" name="gpLat" type="text" class="input-medium" x-ng-model="report.lat" required /> <span
-										x-ng-show="greenPosForm.gpLat.$error.required && greenPosForm.gpLat.$dirty" class="msg-invalid">Value
-										required</span>
-								</div>
-							</div>
-							<div class="control-group">
-								<label class="control-label" for="gpLon">Longitude</label>
-								<div class="controls">
-									<input id="gpLon" name="gpLon" type="text" class="input-medium" x-ng-model="report.lon" required /> <span
-										x-ng-show="greenPosForm.gpLon.$error.required && greenPosForm.gpLon.$dirty" class="msg-invalid">Value
-										required</span>
-								</div>
-							</div>
-							<div class="control-group" x-ng-show="isVisible('weather')">
-								<label class="control-label" for="gpWeather">Weather</label>
-								<div class="controls">
-									<textarea id="gpWeather" name="gpWeather" rows="3" x-ng-model="report.weather"
-										x-ng-required="isVisible('weather')"></textarea>
-									<span x-ng-show="greenPosForm.gpWeather.$error.required && greenPosForm.gpWeather.$dirty" class="msg-invalid">Value
-										required</span>
-								</div>
-							</div>
-							<div class="control-group" x-ng-show="isVisible('ice')">
-								<label class="control-label" for="gpIce">Ice observations</label>
-								<div class="controls">
-									<textarea id="gpIce" name="gpIce" rows="3" x-ng-model="report.ice" x-ng-required="isVisible('ice')"></textarea>
-									<span x-ng-show="greenPosForm.gpIce.$error.required && greenPosForm.gpIce.$dirty" class="msg-invalid">Value
-										required</span>
-								</div>
-							</div>
-							<div class="control-group" x-ng-show="isVisible('deviation')">
-								<label class="control-label" for="gpDeviation">Deviation Description</label>
-								<div class="controls">
-									<textarea id="gpDeviation" name="gpDeviation" rows="3" x-ng-model="report.deviation"></textarea>
-									<span x-ng-show="greenPosForm.gpDeviation.$error.required && greenPosForm.gpDeviation.$dirty"
-										class="msg-invalid">Value required</span>
-								</div>
-							</div>
-							<div class="control-group">
-								<label class="control-label" for="reportTime">Report time</label>
-								<div class="controls">
-									<div></div>
-								</div>
-							</div>
 						</div>
 					</div>
-
-					<div class="row" x-ng-show="report.type == 'FR' && hasActiveRoute">
-						<div class="span12">
-							<h3>Active route</h3>
-							<div class="control-group">
-								<label class="control-label" for="deactivate">Deactive</label>
-								<div class="controls">
-									<input id="deactivate" name="deactivate" type="checkbox" x-ng-model="deactivate" />
-								</div>
-							</div>
+					<div class="control-group">
+						<label class="control-label" for="lon">Ship name</label>
+						<div class="controls">
+							<input type="text" name="gpShipName" x-ng-model="report.vesselName" /> <input type="hidden"
+								x-ng-model="report.vesselMaritimeId" />
+						</div>
+						<span x-ng-show="greenPosForm.gpShipName.$error.required" class="msg-invalid">Invalid email</span>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="lon">MMSI</label>
+						<div class="controls">
+							<input type="text" class="input-medium" x-ng-model="report.mmsi" />
 						</div>
 					</div>
-
-					<div class="row">
-						<div class="span12">
-							<span class="pull-right">
-								<button x-ng-show="!editable" class="btn btn-primary" x-ng-click="back()">Close</button>
-								<button x-ng-show="editable" class="btn" x-ng-click="clear()">Clear</button>
-								<button x-ng-show="editable" class="btn" x-ng-click="cancel()">Cancel</button>
-								<button x-ng-show="editable" type="submit" x-ng-click="sendReport()" x-ng-disabled="greenPosForm.$invalid"
-									class="btn btn-primary">Send</button>
-							</span>
+					<div class="control-group">
+						<label class="control-label" for="lon">Call sign</label>
+						<div class="controls">
+							<input type="text" class="input-medium" x-ng-model="report.callSign" />
 						</div>
 					</div>
-				</form>
+					<div class="control-group" x-ng-show="isVisible('destination')">
+						<label class="control-label" for="gpDestination">Destination</label>
+						<div class="controls">
+							<input id="gpDestination" name="gpDestination" type="text" class="input-medium" x-ng-model="report.destination"
+								x-ng-required="isVisible('destination')" /> <span
+								x-ng-show="greenPosForm.gpDestination.$error.required && greenPosForm.gpDestination.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+					<div class="control-group" x-ng-show="isVisible('etaOfArrival')">
+						<label class="control-label" for="gpEta">Estimated time of arrival</label>
+						<div class="controls">
+							<input id="gpEta" name="gpEta" type="text" class="input-medium" x-ng-model="report.etaOfArrival"
+								x-ng-required="isVisible('etaOfArrival')" /> <span
+								x-ng-show="greenPosForm.gpEta.$error.required && greenPosForm.gpEta.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+					<div class="control-group" x-ng-show="isVisible('personsOnBoard')">
+						<label class="control-label" for="gpPersons">Persons on board</label>
+						<div class="controls">
+							<input id="gpPersons" name="gpPersons" type="text" class="input-small" x-ng-model="report.personsOnBoard"
+								x-ng-required="isVisible('personsOnBoard')" /> <span
+								x-ng-show="greenPosForm.gpPersons.$error.required && greenPosForm.gpPersons.$dirty" class="msg-invalid">Value
+								required</span>
+							<!-- <span x-msg-required="greenPosForm.gpPersons"></span> -->
+						</div>
+					</div>
+					<div class="control-group" x-ng-show="isVisible('course')">
+						<label class="control-label" for="gpCourse">Course</label>
+						<div class="controls">
+							<input name="gpCourse" id="gpCourse" type="text" class="input-small" x-ng-model="report.course"
+								x-ng-required="isVisible('course')" /> <span
+								x-ng-show="greenPosForm.gpCourse.$error.required  && greenPosForm.gpCourse.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+					<div class="control-group" x-ng-show="isVisible('speed')">
+						<label class="control-label" for="gpSpeed">Speed</label>
+						<div class="controls">
+							<input id="gpSpeed" name="gpSpeed" type="text" class="input-small" x-ng-model="report.speed"
+								x-ng-required="isVisible('speed')" /> <span
+								x-ng-show="greenPosForm.gpSpeed.$error.required && greenPosForm.gpSpeed.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="gpLat">Latitude</label>
+						<div class="controls">
+							<input id="gpLat" name="gpLat" type="text" class="input-medium" x-ng-model="report.lat" required /> <span
+								x-ng-show="greenPosForm.gpLat.$error.required && greenPosForm.gpLat.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="gpLon">Longitude</label>
+						<div class="controls">
+							<input id="gpLon" name="gpLon" type="text" class="input-medium" x-ng-model="report.lon" required /> <span
+								x-ng-show="greenPosForm.gpLon.$error.required && greenPosForm.gpLon.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+					<div class="control-group" x-ng-show="isVisible('weather')">
+						<label class="control-label" for="gpWeather">Weather</label>
+						<div class="controls">
+							<textarea id="gpWeather" name="gpWeather" rows="3" x-ng-model="report.weather"
+								x-ng-required="isVisible('weather')"></textarea>
+							<span x-ng-show="greenPosForm.gpWeather.$error.required && greenPosForm.gpWeather.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+					<div class="control-group" x-ng-show="isVisible('ice')">
+						<label class="control-label" for="gpIce">Ice observations</label>
+						<div class="controls">
+							<textarea id="gpIce" name="gpIce" rows="3" x-ng-model="report.ice" x-ng-required="isVisible('ice')"></textarea>
+							<span x-ng-show="greenPosForm.gpIce.$error.required && greenPosForm.gpIce.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+					<div class="control-group" x-ng-show="isVisible('deviation')">
+						<label class="control-label" for="gpDeviation">Deviation Description</label>
+						<div class="controls">
+							<textarea id="gpDeviation" name="gpDeviation" rows="3" x-ng-model="report.deviation"></textarea>
+							<span x-ng-show="greenPosForm.gpDeviation.$error.required && greenPosForm.gpDeviation.$dirty" class="msg-invalid">Value
+								required</span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="reportTime">Report time</label>
+						<div class="controls">
+							<div></div>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="span6" x-ng-style="style()" resize="formColumn">
-				<div id="greenPosMap" x-ng-style="style()" resize="greenPosForm"></div>
+
+			<div class="row" x-ng-show="report.type == 'FR' && hasActiveRoute">
+				<div class="span12">
+					<h3>Active route</h3>
+					<div class="control-group">
+						<label class="control-label" for="deactivate">Deactive</label>
+						<div class="controls">
+							<input id="deactivate" name="deactivate" type="checkbox" x-ng-model="deactivate" />
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
+
+			<div class="row">
+				<div class="span12">
+					<span class="pull-right">
+						<button x-ng-show="!editable" class="btn btn-primary" x-ng-click="back()">Close</button>
+						<button x-ng-show="editable" class="btn" x-ng-click="clear()">Clear</button>
+						<button x-ng-show="editable" class="btn" x-ng-click="cancel()">Cancel</button>
+						<button x-ng-show="editable" type="submit" x-ng-click="sendReport()" x-ng-disabled="greenPosForm.$invalid"
+							class="btn btn-primary">Send</button>
+					</span>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="span6" x-ng-style="style()" resize="formColumn">
+		<div id="greenPosMap" x-ng-style="style()" resize="greenPosForm"></div>
 	</div>
 </div>
