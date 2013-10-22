@@ -106,3 +106,8 @@ function formatHour(hour) {
     return Math.floor(hour) + ":" + (0.6 * (hour - Math.floor(hour))).toFixed(2).substring(2);
 }
 
+function formatSize(size) {
+    if (size < 1024*1024) return Math.round(size / 1024) + " KB";
+    return (Math.round(size / 1024 / 1024 * 10) / 10) + " MB";
+}
+

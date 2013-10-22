@@ -3,7 +3,7 @@
 
     var lastRequestId = 0;
 
-    module.service('VesselService', function($http) {
+    module.service('VesselService', function() {
         return {
             list: function(callback) {
                 $.ajax({

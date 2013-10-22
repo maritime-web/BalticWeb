@@ -18,25 +18,11 @@ $(function() {
         }
     });
 
-    function formatDate(dato) {
-        if (dato == null) return "-";
-        var d = new Date(dato);
-        return d.getFullYear()+"-"+(""+(101+d.getMonth())).slice(1,3)+"-"+(""+(100+d.getDate())).slice(1,3);
-    }
-
-    function formatTime(dato) {
-        if (dato == null) return "-";
-        var d = new Date(dato);
-        return formatDate(dato) + " " + d.getHours()+":"+(""+(100+d.getMinutes())).slice(1,3);
-    }
-
     embryo.authenticated(function() {
         var messageId = embryo.messagePanel.show( { text: "Requesting active MSI warnings ..." })
 
-        $.ajax({
-            url: embryo.baseUrl+"rest/msi/list",
-            data: { },
-            success: function(data) {
+        embryo.msi.service.list(function(error, data) {
+            if (data) {
                 data = data.sort(function(a,b) {
                     return b.created-a.created;
                 });
@@ -60,9 +46,8 @@ $(function() {
                 msiLayer.draw(data);
 
                 embryo.messagePanel.replace(messageId, { text: data.length + " MSI warnings returned.", type: "success" })
-            },
-            error: function(data) {
-                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " requesting MSI warnings.", type: "error" })
+            } else {
+                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + error.status + " requesting MSI warnings.", type: "error" })
             }
         });
     });
@@ -99,5 +84,4 @@ $(function() {
         $("a[href=#msiSelectedItem]").html("Selected Warning");
         $("#msiOverview tr").removeClass("alert");
     }
-
-});
+})

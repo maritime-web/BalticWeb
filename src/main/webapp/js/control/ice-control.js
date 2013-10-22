@@ -168,10 +168,8 @@
 
         var messageId = embryo.messagePanel.show( { text: "Requesting " + name + " data ..." })
 
-        $.ajax({
-            url: embryo.baseUrl+"rest/shapefile/multiple/" + name,
-            data: { },
-            success: function(data) {
+        embryo.ice.service.shapes(name, function(error, data) {
+            if (data) {
                 var totalPolygons = 0;
                 var totalPoints = 0;
                 for (var k in data) {
@@ -186,10 +184,9 @@
                 console.log(totalPolygons + " polygons. "+totalPoints+" points returned.");
                 iceLayer.draw(data);
                 if (onSuccess) onSuccess();
-            },
-            error: function(data) {
-                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " requesting ice data.", type: "error" })
-                console.log("Server returned error code: " + data.status + " requesting ice data.");
+            } else {
+                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + error.status + " requesting ice data.", type: "error" })
+                console.log("Server returned error code: " + error.status + " requesting ice data.");
             }
         });
     }
@@ -197,28 +194,9 @@
     function requestIceObservations() {
         var messageId = embryo.messagePanel.show( { text: "Requesting list of ice observations ..." })
 
-        $.ajax({
-            url: embryo.baseUrl+"rest/ice/list",
-            data: { },
-            success: function(data) {
+        embryo.ice.service.list(function(error, data) {
+            if (data) {
                 embryo.messagePanel.replace(messageId, { text: "List of "+data.length+" ice observations downloaded.", type: "success" })
-
-                function formatDate(dato) {
-                    if (dato == null) return "-";
-                    var d = new Date(dato);
-                    return d.getFullYear()+"-"+(""+(101+d.getMonth())).slice(1,3)+"-"+(""+(100+d.getDate())).slice(1,3);
-                }
-
-                function formatTime(dato) {
-                    if (dato == null) return "-";
-                    var d = new Date(dato);
-                    return formatDate(dato) + " " + d.getHours()+":"+(""+(100+d.getMinutes())).slice(1,3);
-                }
-
-                function formatSize(size) {
-                    if (size < 1024*1024) return Math.round(size / 1024) + " KB";
-                    return (Math.round(size / 1024 / 1024 * 10) / 10) + " MB";
-                }
 
                 data.sort(function(a,b) {
                     return b.date - a.date;
@@ -267,11 +245,10 @@
                     embryo.map.zoomToExtent(iceLayer.layers);
                 });
                 $("#icpIceMaps table a.zoom").css("display", "none");
-            },
-            error: function(data) {
+            } else {
                 embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " requesting list of ice observations.", type: "error" })
             }
-        });
+        })
     }
 
     embryo.authenticated(function() {
