@@ -7,43 +7,35 @@ $(function() {
 
     function setup() {
         function downloadShipDetails(id) {
-            $.ajax({
-                url: embryo.baseUrl + "rest/vessel/details",
-                data: {
-                    id : id,
-                    past_track: 0
-                },
-                success: function (result) {
-                    $("a[href=#vcpYourShip]").html("Your Ship - "+result.name);
-                    $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(result));
+            embryo.vessel.service.details(id, function(error, data) {
+                if (data) {
+                    $("a[href=#vcpYourShip]").html("Your Ship - "+data.name);
+                    $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(data));
                     $("#yourShipAesInformationLink").off("click");
                     $("#yourShipAesInformationLink").on("click", function(e) {
                         e.preventDefault();
-                        embryo.vesselInformation.showAesDialog(result);
+                        embryo.vesselInformation.showAesDialog(data);
                     });
-                    setupAdditionalInformationTable("#yourShipAdditionalInformation", yourShip, result, "YourShip");
-                    if (result.route) yourShipRouteLayer.draw(result.route);
+                    setupAdditionalInformationTable("#yourShipAdditionalInformation", yourShip, data, "YourShip");
+                    if (data.route) yourShipRouteLayer.draw(data.route);
+                } else {
+                    embryo.messagePanel.show({ text: "Server returned error code: " + error.status + " getting vessel details.", type: "error" });
                 }
-            });
-
+            })
         }
 
-        $.getJSON(embryo.baseUrl + "json_proxy/vessel_search", { argument: embryo.authentication.shipMmsi }, function (result) {
-            var searchResults = [];
+        embryo.vessel.service.search(embryo.authentication.shipMmsi, function(error, data) {
+            if (data) {
+                $.each(data, function(k, v) {
+                    yourShip = new Vessel(k, v);
+                })
 
-            for (var vesselId in result.vessels) {
-                var vesselJSON = result.vessels[vesselId];
-                var vessel = new Vessel(vesselId, vesselJSON);
-                searchResults.push(vessel);
+                embryo.vessel.setMarkedVessel(yourShip.id);
+
+                downloadShipDetails(yourShip.id);
+            } else {
+                embryo.messagePanel.show({ text: "Server returned error code: " + error.status + " searching vessels.", type: "error" });
             }
-
-            if (searchResults.length == 1){
-                yourShip = searchResults[0];
-            }
-
-            embryo.vessel.setMarkedVessel(yourShip.id);
-
-            downloadShipDetails(yourShip.id);
         });
     }
     

@@ -1,4 +1,4 @@
-    embryo.vessel = {};
+embryo.vessel = {};
 
 embryo.eventbus.VesselSelectedEvent = function(id) {
     var event = jQuery.Event("VesselSelectedEvent");
@@ -15,7 +15,6 @@ embryo.eventbus.registerShorthand(embryo.eventbus.VesselSelectedEvent, "vesselSe
 embryo.eventbus.registerShorthand(embryo.eventbus.VesselUnselectedEvent, "vesselUnselected");
 
 $(function() {
-    var lastRequestId = 0;
     var vessels;
     var vesselLayer = new VesselLayer();
 
@@ -50,7 +49,7 @@ $(function() {
     }
 
     embryo.vessel.goToVesselLocation = function (vessel) {
-        embryo.map.setCenter(vessel.lon, vessel.lat, focusZoom);
+        embryo.map.setCenter(vessel.lon, vessel.lat, 8);
     }
 
     embryo.vessel.selectVessel = function (vessel) {
@@ -74,29 +73,22 @@ $(function() {
     function loadVesselList() {
         var messageId = embryo.messagePanel.show( { text: "Loading vessels ..." })
 
-        $.ajax({
-            url: embryo.baseUrl + "json_proxy/vessel_list",
-            data: {
-                requestId: lastRequestId
-            },
-            success: function (result) {
-                embryo.messagePanel.replace(messageId, { text: result.vesselsInWorld + " vessels loaded.", type: "success" })
-
-                if (result.requestId != lastRequestId) return;
-
+        embryo.vessel.service.list(function(error, data) {
+            if (data) {
                 vessels = [];
 
-                for (var i in result.vesselList.vessels) {
-                    vessels.push(new Vessel(i, result.vesselList.vessels[i]));
+                for (var i in data) {
+                    vessels.push(new Vessel(i, data[i]));
                 }
 
+                embryo.messagePanel.replace(messageId, { text: vessels.length + " vessels loaded.", type: "success" })
+
                 vesselLayer.draw(vessels);
-            },
-            error: function(data) {
-                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " loading vessels.", type: "error" });
-                console.log("Server returned error code: " + data.status + " loading vessels.");
+            } else {
+                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + error.status + " loading vessels.", type: "error" });
+                console.log("Server returned error code: " + error.status + " loading vessels.");
             }
-        });
+        })
     }
 
     embryo.mapInitialized(function() {
