@@ -26,40 +26,39 @@
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 
 <!-- The main application script -->
-<script src="js/settings.js" defer="defer"></script>
 <script src="js/utils.js" defer="defer"></script>
 <script src="js/embryo.js" defer="defer"></script>
-<script src="js/embryoLayer.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/embryo-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
 <script src="js/vessel.js" defer="defer" type="text/javascript"></script>
-<script src="js/storageServices.js" defer="defer"></script>
-<script src="js/shipService.js" defer="defer"></script>
-<script src="js/routeService.js" defer="defer"></script>
-<script src="js/voyageService.js" defer="defer"></script>
-<script src="js/greenposService.js" defer="defer"></script>
+<script src="js/service/storage-services.js" defer="defer"></script>
+<script src="js/service/ship-service.js" defer="defer"></script>
+<script src="js/service/route-service.js" defer="defer"></script>
+<script src="js/service/voyage-service.js" defer="defer"></script>
+<script src="js/service/greenpos-service.js" defer="defer"></script>
 <script src="js/map.js" defer="defer"></script>
 <!-- <script src="js/hovering.js" defer="defer"></script> -->
-<script src="js/vesselLayer-2.js" defer="defer"></script>
-<script src="js/vesselControl.js" defer="defer"></script>
-<script src="js/vesselInformation.js" defer="defer"></script>
-<script src="js/metoc.js" defer="defer" type="text/javascript"></script>
-<script src="js/vesselSearch.js" defer="defer"></script>
-<script src="js/yourShip.js" type="text/javascript" defer="defer"></script>
-<script src="js/iceLayer-2.js" defer="defer" type="text/javascript"></script>
-<script src="js/iceControl.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/vessel-layer.js" defer="defer"></script>
+<script src="js/control/vessel-control.js" defer="defer"></script>
+<script src="js/control/vessel-information.js" defer="defer"></script>
+<script src="js/service/metoc-service.js" defer="defer" type="text/javascript"></script>
+<script src="js/control/vessel-search.js" defer="defer"></script>
+<script src="js/control/your-ship.js" type="text/javascript" defer="defer"></script>
+<script src="js/layer/ice-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/control/ice-control.js" defer="defer" type="text/javascript"></script>
 <!-- script src="js/routeLayer.js" defer="defer" type="text/javascript"></script -->
-<script src="js/reportComp.js" defer="defer" type="text/javascript"></script>
+<script src="js/reporting/report-comp.js" defer="defer" type="text/javascript"></script>
 <!-- script src="js/selectedShip.js" defer="defer" type="text/javascript"></script -->
 <script src="js/menu.js" defer="defer" type="text/javascript"></script>
-<script src="js/msiLayer-1.js" defer="defer" type="text/javascript"></script>
-<script src="js/msiControl.js" defer="defer" type="text/javascript"></script>
-<script src="js/adtLayer.js" defer="defer" type="text/javascript"></script>
-<script src="js/historicalTrackLayer.js" defer="defer" type="text/javascript"></script>
-<script src="js/routeLayer-1.js" defer="defer" type="text/javascript"></script>
-<script src="js/nearestVesselsLayer.js" defer="defer" type="text/javascript"></script>
-<script src="js/metocLayer.js" defer="defer" type="text/javascript"></script>
-<script src="js/distanceCirclesLayer.js" defer="defer" type="text/javascript"></script>
-<script src="js/additionalInformation.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/msi-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/control/msi-control.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/adt-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/historical-track-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/route-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/nearest-vessels-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/metoc-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/distance-circles-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/control/additional-information.js" defer="defer" type="text/javascript"></script>
 
 <script defer="defer" type="text/javascript">
     angular.module('embryo.map', [ 'embryo.shipService', 'embryo.voyageService', 'embryo.routeService',
@@ -78,7 +77,6 @@
 
 	<div id="messagePanel"></div>
 
-	<!-- AES information modal ================================================== -->
 	<div x-ng-include="'partials/vesselControl.html'"></div>
 	<div x-ng-include="'partials/iceControl.html'"></div>
 	<div x-ng-include="'partials/msiControl.html'"></div>

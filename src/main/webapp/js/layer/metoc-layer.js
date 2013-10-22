@@ -1,4 +1,12 @@
 function MetocLayer(color) {
+    var defaultCurrentLow = 1.0;
+    var defaultCurrentMedium = 2.0;
+    var defaultCurrentWarnLimit = 4.0;
+    var defaultWaveLow = 1.0;
+    var defaultWaveMedium = 2.0;
+    var defaultWaveWarnLimit = 3.0;
+    var defaultWindWarnLimit = 10.0;
+
     this.init = function() {
         var that = this;
 
@@ -187,16 +195,16 @@ function MetocLayer(color) {
                 styleMap : new OpenLayers.StyleMap( {
                     'default' : new OpenLayers.Style( {
                             label : "Time: ${time}\nCurrent: ${curSpeed} - ${curDir} \nWind:   ${windSpeed} - ${windDir} \nWave: ${waveHeight} - ${waveDir} (${wavePeriod})\nSea level:   ${sealevel}",
-                            fontColor : timeStampColor,
+                            fontColor : "#222222",
                             fontSize : 10,
-                            fontFamily : timeStampFontFamily,
+                            fontFamily : embryo.defaultFontFamily,
                             labelAlign : "${align}",
                             labelXOffset : "${xOffset}",
                             labelYOffset : "${yOffset}",
                             pointRadius : 3,
                             fill : true,
                             fillColor : '#550055',
-                            strokeColor : pastTrackColor,
+                            strokeColor : "#CC2222",
                             stroke : true,
                             display : "${display}"
                         }, {

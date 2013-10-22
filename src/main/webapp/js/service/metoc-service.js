@@ -34,12 +34,3 @@ embryo.metoc = {};
 metocModule.run(function(MetocService) {
     embryo.metoc.service = MetocService;
 })
-
-var defaultCurrentLow = 1.0;
-var defaultCurrentMedium = 2.0;
-var defaultCurrentWarnLimit = 4.0;
-var defaultWaveLow = 1.0;
-var defaultWaveMedium = 2.0;
-var defaultWaveWarnLimit = 3.0;
-var defaultWindWarnLimit = 10.0;
-

@@ -75,7 +75,7 @@ $(function() {
         var messageId = embryo.messagePanel.show( { text: "Loading vessels ..." })
 
         $.ajax({
-            url: embryo.baseUrl+listUrl,
+            url: embryo.baseUrl + "json_proxy/vessel_list",
             data: {
                 requestId: lastRequestId
             },
@@ -100,7 +100,7 @@ $(function() {
     }
 
     embryo.mapInitialized(function() {
-        setInterval(loadVesselList, loadFrequence);
+        setInterval(loadVesselList, embryo.loadFrequence);
         loadVesselList();
     });
 

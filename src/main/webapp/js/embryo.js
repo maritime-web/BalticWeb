@@ -8,6 +8,10 @@ embryo.baseUrl = "";
 embryo.baseUrlForAngularResource = "";
 // embryo.baseUrlForAngularResource = "http://localhost\\:8080/arcticweb/";
 
+embryo.loadFrequence = 120 * 1000;
+
+embryo.defaultFontFamily = "'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif";
+
 // embryo.eventbus is necessary to construct a completely loose coupling between
 // all components in the application.
 // The implementation is based on jQuery, and as such embryo.eventbus is just a
