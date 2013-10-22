@@ -35,10 +35,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "Ship:getByMmsi", query = "SELECT s FROM Ship s WHERE s.mmsi = :mmsi"),
-        @NamedQuery(name = "Ship:getByMaritimeId", query = "SELECT s FROM Ship s WHERE s.maritimeId = :maritimeId"),
-        @NamedQuery(name = "Ship:getByCallsign", query = "SELECT s FROM Ship s WHERE s.aisData.callsign = :callsign"),
-        @NamedQuery(name = "Ship:getMmsiList", query = "SELECT s FROM Ship s WHERE s.mmsi in :mmsiNumbers") })
 public class Ship extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 

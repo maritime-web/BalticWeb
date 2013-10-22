@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.ScheduleExpression;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
@@ -39,6 +38,7 @@ import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.AisData;
 import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.restclients.AisViewService;
 import dk.dma.embryo.restclients.AisViewService.VesselListResult;
 
@@ -109,7 +109,7 @@ public class AisReplicator {
             }
         }
 
-        Map<Long, Ship> vessels = null;//vesselRepository.getVessels(mmsis);
+        Map<Long, Vessel> vessels = null;//vesselRepository.getVessels(mmsis);
 
         for (Entry<String, String[]> aisVessel : result.getVesselList().getVessels().entrySet()) {
             Long mmsi = asLong(aisVessel.getValue()[6]);
@@ -118,7 +118,7 @@ public class AisReplicator {
             Long imo = asLong(aisVessel.getValue()[9]);
 
             if (mmsi != null) {
-                Ship vessel = vessels.get(mmsi);
+                Vessel vessel = vessels.get(mmsi);
 
                 if (vessel != null) {
 //                    if (!isUpToDate(vessel.getAisData(), callSign, imo)) {

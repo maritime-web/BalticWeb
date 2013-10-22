@@ -90,15 +90,15 @@ public class GreenposSearch {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public String getShipName() {
+    public String getVesselName() {
         return vesselName;
     }
 
-    public String getShipCallSign() {
+    public String getVesselCallSign() {
         return vesselCallSign;
     }
 
-    public Long getShipMmsi() {
+    public Long getVesselMmsi() {
         return vesselMmsi;
     }
     public String getReportedBy() {

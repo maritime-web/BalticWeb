@@ -40,9 +40,24 @@ span.msg-invalid {
 	width: 100%;
 }
 
+
+
+body{
+/*	background-color:#D19A45;*/
+	background-color:#FFE75E;
+/*	background-color:#304863;
+/*	background-color:#E6E6E6;*/
+}
 .controlPanel {
 	width: 300px;
 }
+.ctrlContainer{
+	width:300px!important;
+}
+
+.accordion-group{
+	background-color:white;
+}
 
 .pagecontainer {
 	margin-top: 0px;
@@ -50,10 +65,15 @@ span.msg-invalid {
 	min-width: 270px !important;
 }
 
-.pagecontainer {
-	margin-top: 0px;
-	margin-bottom: 100px;
-	min-width: 270px !important;
+/*
+h2, h3, th, .section, .control-label{
+	color:white;
+}*/
+
+.contentBox{
+	padding-left:20px;
+	padding-right:20px;
+/*	background-color:white;*/
 }
 
 #shipInformation {

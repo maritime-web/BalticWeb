@@ -61,7 +61,7 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
 
     @Override
     public Sailor getSailor(Long userId) {
-        TypedQuery<Sailor> query = em.createNamedQuery("Sailor:withShip", Sailor.class);
+        TypedQuery<Sailor> query = em.createNamedQuery("Sailor:withVessel", Sailor.class);
         query.setParameter("id", userId);
         return query.getSingleResult();
     }

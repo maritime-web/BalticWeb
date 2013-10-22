@@ -66,12 +66,12 @@ public class VoyageRestService {
     }
 
     @GET
-    @Path("/active/{maritimeShipId}")
+    @Path("/active/{maritimeVesselId}")
     @Produces("application/json")
-    public dk.dma.embryo.rest.json.Voyage getActive(@PathParam("maritimeShipId") String maritimeShipId) {
-        logger.trace("getVoyages({})", maritimeShipId);
+    public dk.dma.embryo.rest.json.Voyage getActive(@PathParam("maritimeVesselId") String maritimeVesselId) {
+        logger.trace("getVoyages({})", maritimeVesselId);
 
-        Voyage voyage = shipService.getActiveVoyage(maritimeShipId);
+        Voyage voyage = shipService.getActiveVoyage(maritimeVesselId);
 
         dk.dma.embryo.rest.json.Voyage result = null;
 
@@ -79,7 +79,7 @@ public class VoyageRestService {
             result = voyage.toJsonModel();
         }
 
-        logger.debug("getVoyages({}) : {}", maritimeShipId, result);
+        logger.debug("getVoyages({}) : {}", maritimeVesselId, result);
         return result;
     }
 
