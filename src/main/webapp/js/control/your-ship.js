@@ -8,7 +8,7 @@ $(function() {
     function setup() {
         function downloadShipDetails(id) {
             $.ajax({
-                url: embryo.baseUrl+"rest/vessel/details", // detailsUrl,
+                url: embryo.baseUrl + "rest/vessel/details",
                 data: {
                     id : id,
                     past_track: 0
@@ -28,7 +28,7 @@ $(function() {
 
         }
 
-        $.getJSON(embryo.baseUrl + searchUrl, { argument: embryo.authentication.shipMmsi }, function (result) {
+        $.getJSON(embryo.baseUrl + "json_proxy/vessel_search", { argument: embryo.authentication.shipMmsi }, function (result) {
             var searchResults = [];
 
             for (var vesselId in result.vessels) {
@@ -37,10 +37,8 @@ $(function() {
                 searchResults.push(vessel);
             }
 
-            if (searchResults.length <= searchResultsLimit && searchResults.length != 0){
-                if (searchResults.length == 1){
-                    yourShip = searchResults[0];
-                }
+            if (searchResults.length == 1){
+                yourShip = searchResults[0];
             }
 
             embryo.vessel.setMarkedVessel(yourShip.id);
@@ -51,7 +49,7 @@ $(function() {
     
     embryo.authenticated(function() {
         setup();
-        setInterval(setup, loadFrequence);
+        setInterval(setup, embryo.loadFrequence);
     });
 
     $("#zoomToYourShip").click(function() {

@@ -125,7 +125,7 @@ $(function() {
         }
 
         $.ajax({
-            url: embryo.baseUrl+"rest/vessel/details", // detailsUrl,
+            url: embryo.baseUrl+"rest/vessel/details",
             data: { 
                 id : e.vesselId, 
                 past_track: 1 

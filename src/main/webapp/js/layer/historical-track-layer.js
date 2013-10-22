@@ -3,8 +3,8 @@ function HistoricalTrackLayer() {
         this.layers.tracks = new OpenLayers.Layer.Vector("trackLayer", {
             styleMap : new OpenLayers.StyleMap({
                 'default' : {
-                    strokeColor : pastTrackColor,
-                    strokeWidth : pastTrackWidth
+                    strokeColor : "#CC2222",
+                    strokeWidth : 3
                 }
             })
         });
@@ -13,10 +13,10 @@ function HistoricalTrackLayer() {
             styleMap : new OpenLayers.StyleMap({
                 'default' : {
                     label : "${timeStamp}",
-                    fontColor : timeStampColor,
-                    fontSize : timeStampFontSize,
-                    fontFamily : timeStampFontFamily,
-                    fontWeight : timeStampFontWeight,
+                    fontColor : "black",
+                    fontSize : "11px",
+                    fontFamily : embryo.defaultFontFamily,
+                    fontWeight : "bold",
                     labelAlign : "${align}",
                     labelXOffset : "${xOffset}",
                     labelYOffset : "${yOffset}",
@@ -25,8 +25,8 @@ function HistoricalTrackLayer() {
                     labelOutline : 1,
                     pointRadius: 3,
                     fill: true,
-                    fillColor : pastTrackColor,
-                    strokeColor : pastTrackColor,
+                    fillColor : "#CC2222",
+                    strokeColor : "#CC2222",
                     stroke: true
                 }
             })

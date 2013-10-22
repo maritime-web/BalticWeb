@@ -14,10 +14,10 @@ function NearestVesselsLayer() {
             styleMap: new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style({
                     label : "${label}",
-                    fontColor : timeStampColor,
-                    fontSize : timeStampFontSize,
-                    fontFamily : timeStampFontFamily,
-                    fontWeight : timeStampFontWeight,
+                    fontColor : "black",
+                    fontSize : "11px",
+                    fontFamily : embryo.defaultFontFamily,
+                    fontWeight : "normal",
                     labelAlign : "cm",
                     labelXOffset : 0,
                     labelYOffset : -15,

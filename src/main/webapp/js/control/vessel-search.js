@@ -3,7 +3,7 @@ $(function() {
     var lastSearch = "";
 
     function doServerSideSearch(argument, callback) {
-        $.getJSON(embryo.baseUrl + searchUrl, {
+        $.getJSON(embryo.baseUrl + "json_proxy/vessel_search", {
             argument : argument
         }, function(result) {
             var searchResults = [];

@@ -187,16 +187,16 @@ function MetocLayer(color) {
                 styleMap : new OpenLayers.StyleMap( {
                     'default' : new OpenLayers.Style( {
                             label : "Time: ${time}\nCurrent: ${curSpeed} - ${curDir} \nWind:   ${windSpeed} - ${windDir} \nWave: ${waveHeight} - ${waveDir} (${wavePeriod})\nSea level:   ${sealevel}",
-                            fontColor : timeStampColor,
+                            fontColor : "#222222",
                             fontSize : 10,
-                            fontFamily : timeStampFontFamily,
+                            fontFamily : embryo.defaultFontFamily,
                             labelAlign : "${align}",
                             labelXOffset : "${xOffset}",
                             labelYOffset : "${yOffset}",
                             pointRadius : 3,
                             fill : true,
                             fillColor : '#550055',
-                            strokeColor : pastTrackColor,
+                            strokeColor : "#CC2222",
                             stroke : true,
                             display : "${display}"
                         }, {
