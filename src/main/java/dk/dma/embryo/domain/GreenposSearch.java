@@ -113,7 +113,6 @@ public class GreenposSearch {
     }
 
     public String getSortByField() {
-        System.out.println(sortByField);
         return sortByField;
     }
 

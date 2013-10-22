@@ -103,17 +103,10 @@ public class MetocServiceMock implements MetocService {
 
         dk.dma.enav.model.voyage.Route enavRoute = route.toEnavModel();
 
-        System.out.println(enavRoute);
-
         new RouteDecorator(enavRoute);
 
-        System.out.println(enavRoute);
-        
-        
         List<Waypoint> waypoints = new ArrayList<>();
 
-        System.out.println(enavRoute.getWaypoints());
-        
         for (int i = 0; i < enavRoute.getWaypoints().size() - 1; i++) {
             Waypoint curWp = enavRoute.getWaypoints().get(i);
             Waypoint nextWp = enavRoute.getWaypoints().get(i + 1);
@@ -155,8 +148,6 @@ public class MetocServiceMock implements MetocService {
     private boolean farApart(Waypoint wp1, Waypoint wp2) {
         long dif = wp2.getEta().getTime() - wp1.getEta().getTime();
         
-        System.out.println(dif);
-        
         return dif > 3600000;
     }
 
@@ -171,8 +162,6 @@ public class MetocServiceMock implements MetocService {
         double lonRad = (wp.getLongitude() / 360) * 2 * Math.PI; 
         
         double angularDistance = distance / earthRadius;
-
-        System.out.println("distance=" + distance + ", bearing=" + bearing + ", lat=" + wp.getLatitude()+ ", lon=" + wp.getLongitude());
 
         double lat2 = Math.asin(Math.sin(latRad) * Math.cos(angularDistance) + (Math.cos(latRad)
                 * Math.sin(angularDistance) * Math.cos(bearingRad)));
