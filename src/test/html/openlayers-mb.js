@@ -58,7 +58,7 @@ function init() {
     });
 
     map.addLayer(createMapBoxBaseLayer("chvid.kort"));
-    map.addLayer(createMapBoxLayer("chvid.iskort-4"));
+    // map.addLayer(createMapBoxLayer("chvid.iskort-4"));
 
     map.zoomToMaxExtent();
 }

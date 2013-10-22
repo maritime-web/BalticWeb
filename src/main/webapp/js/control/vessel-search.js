@@ -22,10 +22,6 @@ $(function() {
         var html = "<p><div class='btn searchResultItem' id='" + vessel.id + "'>" +
             "<div class='panelText btn-block'>" + vessel.vesselName + "</div>";
 
-        if (searchResultsShowPositon){
-            html += "<div class='smallText'>" + vessel.lon + ", " + vessel.lat + "</div>";
-        }
-
         html +=	"</div><p>";
 
         return html;

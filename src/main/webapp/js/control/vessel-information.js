@@ -124,27 +124,19 @@ $(function() {
             }
         }
 
-        $.ajax({
-            url: embryo.baseUrl+"rest/vessel/details",
-            data: { 
-                id : e.vesselId, 
-                past_track: 1 
-            },
-            success: function (result) {
+        embryo.vessel.service.details(e.vesselId, function(error, data) {
+            if (data) {
                 if (shipSelected == false) return;
-	            // if (result.pastTrack != null) drawPastTrack(result.pastTrack.points);
-                showVesselInformation(result);
+
+                showVesselInformation(data);
 
                 var vessel = embryo.vessel.lookupVessel(e.vesselId);
 
-                setupAdditionalInformationTable("#selectedShipAdditionalInformation", vessel, result, "SelectedShip");
-            },
-            error: function(data) {
-                // embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + data.status + " loading vessel data.", type: "error" });
-                embryo.messagePanel.show({ text: "Server returned error code: " + data.status + " loading vessel data.", type: "error" });
+                setupAdditionalInformationTable("#selectedShipAdditionalInformation", vessel, data, "SelectedShip");
+            } else {
+                embryo.messagePanel.show({ text: "Server returned error code: " + error.status + " loading vessel data.", type: "error" });
             }
         });
-    
     });
 
     embryo.vesselUnselected(function() {
