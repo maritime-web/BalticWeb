@@ -29,6 +29,7 @@ import javax.persistence.OrderColumn;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
 
 import dk.dma.enav.model.voyage.Waypoint;
@@ -54,8 +55,10 @@ public class Route extends BaseEntity<Long> {
 
     private String origin;
 
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime etaOfArrival;
 
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime etaOfDeparture;
 
     @ElementCollection
