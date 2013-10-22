@@ -77,15 +77,17 @@
 	<div x-ng-include="'partials/menu.html'"></div>
 
 
-	<div class="menuDivider"></div>
+	<div class="pageContent">
+		<div class="menuDivider"></div>
 
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<div class="span3 ctrlContainer" >
-				<div x-ng-include="'partials/reportControl.html'"></div>
-			</div>
-			<div class="span9 pagecontainer">
-				<div x-ng-view></div>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span3 ctrlContainer">
+					<div x-ng-include="'partials/reportControl.html'"></div>
+				</div>
+				<div class="span9 pagecontainer">
+					<div x-ng-view></div>
+				</div>
 			</div>
 		</div>
 	</div>

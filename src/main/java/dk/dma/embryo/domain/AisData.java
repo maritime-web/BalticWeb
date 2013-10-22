@@ -16,6 +16,8 @@
 package dk.dma.embryo.domain;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -43,6 +45,24 @@ public class AisData implements Serializable{
     @Column(nullable = true)
     private Integer length;
 
+    // //////////////////////////////////////////////////////////////////////
+    // Utility methods
+    // //////////////////////////////////////////////////////////////////////
+    Map<String, Object> toJsonModel(){
+        Map<String, Object> map = new HashMap<>();
+        
+        map.put("name", name);
+        map.put("callsign", callsign);
+        map.put("imoNo", imoNo);
+        map.put("width", width);
+        map.put("length", length);
+        
+        return map;
+    }
+    
+    // //////////////////////////////////////////////////////////////////////
+    // Property methods
+    // //////////////////////////////////////////////////////////////////////
     public String getName() {
         return name;
     }

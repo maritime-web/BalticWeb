@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -89,15 +90,15 @@ public class ShipServiceImpl implements ShipService {
 
         if (managed != null) {
             // copying all values to managed entity to avoid resetting JPA association fields.
-            managed.setName(ship.getName());
+            managed.getAisData().setName(ship.getAisData().getName());
             managed.setMmsi(ship.getMmsi());
-            managed.setImoNo(ship.getImoNo());
-            managed.setCallsign(ship.getCallsign());
+            managed.getAisData().setImoNo(ship.getAisData().getImoNo());
+            managed.getAisData().setCallsign(ship.getAisData().getCallsign());
             managed.setCommCapabilities(ship.getCommCapabilities());
             managed.setHelipad(ship.getHelipad());
-            managed.setLength(ship.getLength());
+            managed.getAisData().setLength(ship.getAisData().getLength());
             managed.setMaxSpeed(ship.getMaxSpeed());
-            managed.setWidth(ship.getWidth());
+            managed.getAisData().setWidth(ship.getAisData().getWidth());
             managed.setType(ship.getType());
             managed.setGrossTonnage(ship.getGrossTonnage());
 
@@ -201,6 +202,17 @@ public class ShipServiceImpl implements ShipService {
             return Collections.emptyList();
         }
         return plan.getVoyagePlan();
+    }
+
+    @Override
+    public Ship getVessel(Long mmsi) {
+        return shipRepository.getVessel(mmsi);
+    }
+
+    
+    @Override
+    public Ship getVessel(String maritimeId) {
+        return shipRepository.getShipByMaritimeId(maritimeId);
     }
 
     /**

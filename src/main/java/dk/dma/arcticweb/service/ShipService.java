@@ -83,5 +83,9 @@ public interface ShipService {
     Voyage getVoyage(String businessId);
     
     Route parseRoute(InputStream is) throws IOException;
+    
+    Ship getVessel(Long mmsi);
+
+    Ship getVessel(String maritimeId);
 
 }

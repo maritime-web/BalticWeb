@@ -26,6 +26,7 @@ import javax.ejb.ScheduleExpression;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -80,11 +81,8 @@ public class AisReplicator {
         if (enabled != null && "true".equals(enabled.trim().toLowerCase())) {
             logger.info("Setting up ais replication job executing every {} minutes", minute);
 
-            ScheduleExpression exp = new ScheduleExpression();
-            exp.minute("*/" + minute).hour("*");
-            service.createCalendarTimer(exp);
-
-            updateAis();
+            TimerConfig config = new TimerConfig(null, false);
+            service.createIntervalTimer(0, 1000 * 60 * minute, config);
         } else {
             logger.info("Ais replication job not enabled");
         }

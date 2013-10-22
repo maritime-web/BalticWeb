@@ -1,44 +1,23 @@
 <div id="shipInformation">
-	<div>
-		<h2>Ship information</h2>
-	</div>
-	<div>
-		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
-		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
-
+	<div class="contentBox">
+		<h2>Vessel information</h2>
+		<p></p>
 		<form name="shipForm" class="form-horizontal" novalidate>
+			<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+			<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 			<div class="row-fluid">
 				<div class="span7">
 					<input type="hidden" x-ng-model="ship.maritimeId" />
 					<div class="control-group">
 						<label class="control-label" for="mmsi">MMSI</label>
 						<div class="controls">
-							<input type="text" id="mmsi" class="input-small" x-ng-model="ship.mmsi" />
+							<span>{{ship.mmsi}}</span>
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label" for="name">Name</label>
+						<label class="control-label" for="maxSpeed">Max speed (kn)</label>
 						<div class="controls">
-							<input type="text" id="name" name="name" class="input-large" x-ng-model="ship.name" required /> <span
-								x-ng-show="shipForm.name.$error.required && shipForm.name.$dirty" class="msg-invalid">Value required</span>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="imoNo">IMO number</label>
-						<div class="controls">
-							<input type="text" id="imoNo" class="input-small" x-ng-model="ship.imo" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="callsign">Callsign</label>
-						<div class="controls">
-							<input type="text" id="callsign" class="input-small" x-ng-model="ship.callSign" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="type">Type</label>
-						<div class="controls">
-							<select id="type" class="input-large" x-ng-model="ship.type" x-ng-options="value for value in types"></select>
+							<input type="text" id="maxSpeed" name="maxSpeed" class="input-small" x-ng-model="ship.maxSpeed" />
 						</div>
 					</div>
 					<div class="control-group">
@@ -50,26 +29,6 @@
 				</div>
 
 				<div class="span5">
-					<div class="control-group">
-						<label class="control-label" for="width">Width (m)</label>
-						<div class="controls">
-							<input type="number" id="width" name="width" class="input-small" x-ng-model="ship.width" min="0" /> <span
-								x-ng-show="shipForm.width.$error.min" class="msg-invalid">Expected positive number</span>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="length">Length (m)</label>
-						<div class="controls">
-							<input type="number" id="length" name="length" class="input-small" x-ng-model="ship.length" min="0" /> <span
-								x-ng-show="shipForm.length.$error.min" class="msg-invalid">Expected positive number</span>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="maxSpeed">Max speed (kn)</label>
-						<div class="controls">
-							<input type="text" id="maxSpeed" name="maxSpeed" class="input-small" x-ng-model="ship.maxSpeed" />
-						</div>
-					</div>
 					<div class="control-group">
 						<label class="control-label" for="gTonnage">Gross tonnage</label>
 						<div class="controls">
@@ -86,19 +45,36 @@
 					<div class="control-group">
 						<label class="control-label" for="helipad">Helipad</label>
 						<div class="controls">
-							<select x-ng-model="ship.helipad" class="input-small" ng-options="value as key for (key, value) in helipadOptions">
+							<select x-ng-model="ship.helipad" class="input-small"
+								ng-options="value as key for (key, value) in helipadOptions">
 								<option></option>
 							</select>
 						</div>
 					</div>
 				</div>
+
+
+			</div>
+			<div class="row-fluid">
+				<span class="pull-right">
+					<button type="button" class="btn" x-ng-click="reset()">Reset</button>
+					<button type="submit" class="btn btn-primary" x-ng-click="save()">Save</button>
+				</span>
 			</div>
 		</form>
 	</div>
-	<div>
-		<span class="pull-right">
-			<button type="button" class="btn" x-ng-click="reset()">Reset</button>
-			<button type="submit" class="btn btn-primary" x-ng-click="save()">Save</button>
-		</span>
+
+	<div class="section contentBox">
+		<h3>AIS Information</h3>
+		<p>This information is maintained in the ships AIS transponder</p>
+
+		<div class="row-fluid">
+			<div class="span6">Callsign: {{ship.callSign}}</div>
+			<div class="span6">Name: {{ship.name}}</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span6">Width: {{ship.width}}m</div>
+			<div class="span6">Length: {{ship.length}}m</div>
+		</div>
 	</div>
 </div>

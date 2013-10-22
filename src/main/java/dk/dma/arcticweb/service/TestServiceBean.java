@@ -143,18 +143,18 @@ public class TestServiceBean {
 
         // Create ship and user
         Ship newShip = new Ship();
-        newShip.setName("ORASILA");
         newShip.setMmsi(220443000L);
-        newShip.setCallsign("OYDK2");
-        newShip.setImoNo(9336725L);
         newShip.setType("TANKER");
         newShip.setCommCapabilities("Sat C 0581 422044310, GMDSS A1+A2+A3");
-        newShip.setWidth(14);
-        newShip.setLength(77);
         newShip.setMaxSpeed(BigDecimal.valueOf(12.6));
         newShip.setGrossTonnage(2194);
         newShip.setIceClass("A1");
         newShip.setHelipad(Boolean.FALSE);
+        newShip.getAisData().setImoNo(9336725L);
+        newShip.getAisData().setName("ORASILA");
+        newShip.getAisData().setCallsign("OYDK2");
+        newShip.getAisData().setWidth(14);
+        newShip.getAisData().setLength(77);
 
         newShip = shipDao.saveEntity(newShip);
 
@@ -236,9 +236,9 @@ public class TestServiceBean {
 
         // Create ship and user
         Ship newShip = new Ship();
-        newShip.setName("ORATANK");
+        newShip.getAisData().setName("ORATANK");
         newShip.setMmsi(220516000L);
-        newShip.setCallsign("OXPJ2");
+        newShip.getAisData().setCallsign("OXPJ2");
         newShip = shipDao.saveEntity(newShip);
 
         Permission ais = new Permission("ais");
@@ -285,9 +285,9 @@ public class TestServiceBean {
 
         // Create ship and user
         Ship newShip = new Ship();
-        newShip.setName("SARFAQ ITTUK");
         newShip.setMmsi(331037000L);
-        newShip.setCallsign("OWDD");
+        newShip.getAisData().setName("SARFAQ ITTUK");
+        newShip.getAisData().setCallsign("OWDD");
         newShip = shipDao.saveEntity(newShip);
 
         Permission ais = new Permission("ais");
@@ -388,12 +388,12 @@ public class TestServiceBean {
 
         // Create ship and user
         Ship newShip = new Ship();
-        newShip.setName("CARNIVAL LEGEND");
+        newShip.getAisData().setName("CARNIVAL LEGEND");
         newShip.setMmsi(354237000L);
-        newShip.setCallsign("H3VT");
-        newShip.setImoNo(9224726L);
-        newShip.setLength(293);
-        newShip.setWidth(32);
+        newShip.getAisData().setCallsign("H3VT");
+        newShip.getAisData().setImoNo(9224726L);
+        newShip.getAisData().setLength(293);
+        newShip.getAisData().setWidth(32);
         newShip.setGrossTonnage(85942);
         newShip = shipDao.saveEntity(newShip);
 
@@ -533,32 +533,32 @@ public class TestServiceBean {
         Ship ship = shipDao.getShipByCallsign("OXPJ2");
 
         List<ReportedVoyage> voyages = null;
-        GreenPosReport report = new GreenPosSailingPlanReport(ship.getName(), ship.getMmsi(), ship.getCallsign(),
+        GreenPosReport report = new GreenPosSailingPlanReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(),
                 ship.getMaritimeId(), new Position("66 56.5N", "053 40.50W"), "Sun shine", "NO ICE", 4.1, 10, "Nuuk",
                 converter.toObject("19-09-2013 10:30"), 6, voyages);
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("18-09-2013 13:09"));
         shipDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
                 new Position("66 03.772N", "053 46.3W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("18-09-2013 18:00"));
         shipDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
                 new Position("65 19.926N", "052 57.483W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("19-09-2013 00:00"));
         shipDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
                 new Position("64 29.198N", "052 29.507W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("19-09-2013 06:00"));
         shipDao.saveEntity(report);
 
-        report = new GreenPosFinalReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosFinalReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
                 new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
         report.setReportedBy("oratank");
         report.setTs(converter.toObject("19-09-2013 10:15"));
@@ -566,27 +566,27 @@ public class TestServiceBean {
 
         ship = shipDao.getShipByCallsign("OYDK2");
 
-        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
                 new Position("63 80.01N", "051 58.04W"), "Sun shine", "NO ICE", 11.6, 350);
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("24-09-2013 12:00"));
         shipDao.saveEntity(report);
 
-        report = new GreenPosFinalReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosFinalReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
                 new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("24-09-2013 16:02"));
         shipDao.saveEntity(report);
 
         voyages = null;
-        report = new GreenPosSailingPlanReport(ship.getName(), ship.getMmsi(), ship.getCallsign(),
+        report = new GreenPosSailingPlanReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(),
                 ship.getMaritimeId(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150,
                 "KYSTFART", converter.toObject("26-09-2013 10:30"), 6, voyages);
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("24-09-2013 23:12"));
         shipDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(ship.getName(), ship.getMmsi(), ship.getCallsign(), ship.getMaritimeId(),
+        report = new GreenPosPositionReport(ship.getAisData().getName(), ship.getMmsi(), ship.getAisData().getCallsign(), ship.getMaritimeId(),
                 new Position("64 10.068N", "051 64.78W"), "Sun shine", "NO ICE", 11.6, 162);
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("25-09-2013 00:00"));

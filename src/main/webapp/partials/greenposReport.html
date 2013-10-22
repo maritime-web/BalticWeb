@@ -1,14 +1,11 @@
 <div id="shipReportPanel">
 	<div>
-		<h2>Ship report</h2>
-	</div>
-	<div>
-		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
-		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
-
 		<div class="row-fluid">
-			<div class="span6" id="formColumn">
+			<div class="span6 contentBox" id="formColumn">
+				<h2>Ship report</h2>
 				<form id="greenPosForm" name="greenPosForm" class="form-horizontal" novalidate>
+					<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+					<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 					<div class="row">
 						<div class="span12">
 							<div class="control-group">
