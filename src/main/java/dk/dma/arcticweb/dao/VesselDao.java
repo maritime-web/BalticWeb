@@ -22,27 +22,27 @@ import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 
 @Local
-public interface ShipDao extends Dao {
+public interface VesselDao extends Dao {
 
     /**
      * 
      * @param sailor
      * @return
      */
-    Ship getShip(Sailor sailor);
+    Vessel getVessel(Sailor sailor);
 
-    Ship getShipByMaritimeId(String id);
+    Vessel getVesselByMaritimeId(String id);
 
-    Ship getShipByCallsign(String callsign);
+    Vessel getVesselByCallsign(String callsign);
 
-    Ship getVessel(Long mmsi);
+    Vessel getVessel(Long mmsi);
     
-    Map<Long, Ship> getVessels(List<Long> mmsiNumbers);
+    Map<Long, Vessel> getVessels(List<Long> mmsiNumbers);
     
     VoyagePlan getVoyagePlan(Long mmsi);
 

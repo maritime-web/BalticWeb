@@ -35,7 +35,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.dao.ShipDao;
+import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.AisData;
 import dk.dma.embryo.domain.Ship;
@@ -48,7 +48,7 @@ import dk.dma.embryo.restclients.AisViewService.VesselListResult;
 public class AisReplicator {
 
     @Inject
-    private ShipDao vesselRepository;
+    private VesselDao vesselRepository;
 
     @Inject
     private AisViewService aisView;
@@ -70,7 +70,7 @@ public class AisReplicator {
     public AisReplicator() {
     }
 
-    public AisReplicator(ShipDao vesselRepository) {
+    public AisReplicator(VesselDao vesselRepository) {
         this.vesselRepository = vesselRepository;
     }
 

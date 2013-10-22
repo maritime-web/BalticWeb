@@ -35,11 +35,10 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.dao.ShipDao;
+import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship;
-import dk.dma.embryo.domain.ShipReport;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.security.Subject;
@@ -48,10 +47,10 @@ import dk.dma.enav.serialization.RouteParser;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class ShipServiceImpl implements ShipService {
+public class VesselServiceImpl implements VesselService {
 
     @Inject
-    private ShipDao shipRepository;
+    private VesselDao vesselRepository;
 
     @Inject
     private RealmDao realmDao;
@@ -62,51 +61,37 @@ public class ShipServiceImpl implements ShipService {
     @Inject
     private Logger logger;
 
-    public ShipServiceImpl() {
+    public VesselServiceImpl() {
     }
 
-    public ShipServiceImpl(ShipDao shipRepository) {
-        this.shipRepository = shipRepository;
-    }
-
-    // TODO implement Security Interceptor for EJB methods
-    @Override
-    @YourShip
-    public void reportForCurrentShip(ShipReport shipReport) {
-        Ship ship = subject.getRole(Sailor.class).getShip();
-
-        // TODO Should report time be modified
-        shipReport.setReportTime(new Date());
-        shipReport.setCreated(new Date());
-        shipReport.setShip(ship);
-
-        shipRepository.saveEntity(shipReport);
+    public VesselServiceImpl(VesselDao vesselRepository) {
+        this.vesselRepository = vesselRepository;
     }
 
     @Override
     @YourShip
-    public String save(Ship ship) {
-        Ship managed = shipRepository.getShipByMaritimeId(ship.getMaritimeId());
+    public String save(Vessel vessel) {
+        Vessel managed = vesselRepository.getVesselByMaritimeId(vessel.getMaritimeId());
 
         if (managed != null) {
             // copying all values to managed entity to avoid resetting JPA association fields.
-            managed.getAisData().setName(ship.getAisData().getName());
-            managed.setMmsi(ship.getMmsi());
-            managed.getAisData().setImoNo(ship.getAisData().getImoNo());
-            managed.getAisData().setCallsign(ship.getAisData().getCallsign());
-            managed.setCommCapabilities(ship.getCommCapabilities());
-            managed.setHelipad(ship.getHelipad());
-            managed.getAisData().setLength(ship.getAisData().getLength());
-            managed.setMaxSpeed(ship.getMaxSpeed());
-            managed.getAisData().setWidth(ship.getAisData().getWidth());
-            managed.setType(ship.getType());
-            managed.setGrossTonnage(ship.getGrossTonnage());
+            managed.getAisData().setName(vessel.getAisData().getName());
+            managed.setMmsi(vessel.getMmsi());
+            managed.getAisData().setImoNo(vessel.getAisData().getImoNo());
+            managed.getAisData().setCallsign(vessel.getAisData().getCallsign());
+            managed.setCommCapabilities(vessel.getCommCapabilities());
+            managed.setHelipad(vessel.getHelipad());
+            managed.getAisData().setLength(vessel.getAisData().getLength());
+            managed.setMaxSpeed(vessel.getMaxSpeed());
+            managed.getAisData().setWidth(vessel.getAisData().getWidth());
+            managed.setType(vessel.getType());
+            managed.setGrossTonnage(vessel.getGrossTonnage());
 
-            managed = shipRepository.saveEntity(managed);
+            managed = vesselRepository.saveEntity(managed);
             return managed.getMaritimeId();
         } else {
-            ship = shipRepository.saveEntity(ship);
-            return ship.getMaritimeId();
+            vessel = vesselRepository.saveEntity(vessel);
+            return vessel.getMaritimeId();
         }
     }
 
@@ -115,7 +100,7 @@ public class ShipServiceImpl implements ShipService {
         VoyagePlan fresh = null;
 
         if (toBeUpdated.getId() != null) {
-            fresh = shipRepository.getByPrimaryKey(VoyagePlan.class, toBeUpdated.getId());
+            fresh = vesselRepository.getByPrimaryKey(VoyagePlan.class, toBeUpdated.getId());
         }
 
         if (fresh == null) {
@@ -152,38 +137,38 @@ public class ShipServiceImpl implements ShipService {
         for (String key : toBeDeleted) {
             Voyage v = freshVoyagePlan.get(key);
             fresh.removeVoyage(v);
-            shipRepository.remove(v);
+            vesselRepository.remove(v);
         }
 
-        shipRepository.saveEntity(fresh);
+        vesselRepository.saveEntity(fresh);
     }
 
-    public Voyage getActiveVoyage(String maritimeShipId) {
-        Ship ship = shipRepository.getShipByMaritimeId(maritimeShipId);
-        if (ship == null) {
+    public Voyage getActiveVoyage(String maritimeVesselId) {
+        Vessel vessel = vesselRepository.getVesselByMaritimeId(maritimeVesselId);
+        if (vessel == null) {
             return null;
         }
-        Voyage voyage = ship.getActiveVoyage();
+        Voyage voyage = vessel.getActiveVoyage();
         return voyage;
     }
 
-    public Ship getYourShip() {
+    public Vessel getYourVessel() {
         if (subject.hasRole(Sailor.class)) {
             Sailor sailor = realmDao.getSailor(subject.getUserId());
-            return sailor.getShip();
+            return sailor.getVessel();
         }
-        return new Ship();
+        return new Vessel();
     }
 
     @YourShip
     @Override
     public VoyagePlan getVoyagePlan(Long mmsi) {
-        VoyagePlan voyagePlan = shipRepository.getVoyagePlan(mmsi);
+        VoyagePlan voyagePlan = vesselRepository.getVoyagePlan(mmsi);
         if (voyagePlan == null) {
             voyagePlan = new VoyagePlan();
             // FIXME: Hack only works for YourShip feature
-            Ship ship = shipRepository.getShip(subject.getRole(Sailor.class));
-            ship.setVoyagePlan(voyagePlan);
+            Vessel vessel = vesselRepository.getVessel(subject.getRole(Sailor.class));
+            vessel.setVoyagePlan(voyagePlan);
         }
 
         for (Voyage voyage : voyagePlan.getVoyagePlan()) {
@@ -197,7 +182,7 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public List<Voyage> getVoyages(Long mmsi) {
         // TODO fix to work for several voyage plans
-        VoyagePlan plan = shipRepository.getVoyagePlan(mmsi);
+        VoyagePlan plan = vesselRepository.getVoyagePlan(mmsi);
         if (plan == null) {
             return Collections.emptyList();
         }
@@ -205,14 +190,14 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public Ship getVessel(Long mmsi) {
-        return shipRepository.getVessel(mmsi);
+    public Vessel getVessel(Long mmsi) {
+        return vesselRepository.getVessel(mmsi);
     }
 
     
     @Override
-    public Ship getVessel(String maritimeId) {
-        return shipRepository.getShipByMaritimeId(maritimeId);
+    public Vessel getVessel(String maritimeId) {
+        return vesselRepository.getVesselByMaritimeId(maritimeId);
     }
 
     /**
@@ -223,7 +208,7 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public String saveRoute(Route route, String voyageId, Boolean active) {
         if (route.getId() == null) {
-            Long id = shipRepository.getRouteId(route.getEnavId());
+            Long id = vesselRepository.getRouteId(route.getEnavId());
             route.setId(id);
         }
 
@@ -231,7 +216,7 @@ public class ShipServiceImpl implements ShipService {
             throw new IllegalArgumentException("Missing 'voyageId'");
         }
 
-        Voyage voyage = shipRepository.getVoyageByEnavId(voyageId);
+        Voyage voyage = vesselRepository.getVoyageByEnavId(voyageId);
         if (voyage == null) {
             throw new IllegalArgumentException("Unknown 'voyageId' value '" + voyageId + "'");
         }
@@ -253,14 +238,14 @@ public class ShipServiceImpl implements ShipService {
         }
 
         route.setVoyage(voyage);
-        shipRepository.saveEntity(route);
+        vesselRepository.saveEntity(route);
         // update relation
-        shipRepository.saveEntity(voyage);
+        vesselRepository.saveEntity(voyage);
 
         if (active == Boolean.TRUE) {
-            Ship ship = voyage.getPlan().getShip();
-            ship.setActiveVoyage(voyage);
-            shipRepository.saveEntity(ship);
+            Vessel vessel = voyage.getPlan().getVessel();
+            vessel.setActiveVoyage(voyage);
+            vesselRepository.saveEntity(vessel);
         }
         
         return route.getEnavId();
@@ -269,18 +254,18 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public String saveRoute(Route route) {
         if (route.getId() == null) {
-            Long id = shipRepository.getRouteId(route.getEnavId());
+            Long id = vesselRepository.getRouteId(route.getEnavId());
             route.setId(id);
         }
 
-        shipRepository.saveEntity(route);
+        vesselRepository.saveEntity(route);
 
         return route.getEnavId();
     }
 
     @Override
     public Route getActiveRoute(Long mmsi) {
-        Route r = shipRepository.getActiveRoute(mmsi);
+        Route r = vesselRepository.getActiveRoute(mmsi);
         if (r != null) {
             if (r.getWayPoints().size() > 0) {
                 r.getWayPoints().get(0);
@@ -292,11 +277,11 @@ public class ShipServiceImpl implements ShipService {
     @YourShip
     @Override
     public Route getYourActiveRoute() {
-        Ship ship = getYourShip();
-        if (ship == null) {
+        Vessel vessel = getYourVessel();
+        if (vessel == null) {
             return null;
         }
-        Voyage active = ship.getActiveVoyage();
+        Voyage active = vessel.getActiveVoyage();
         if (active != null && active.getRoute() != null) {
             // initialize to avoid lazyinitialization exceptions
             if (active.getRoute().getWayPoints().size() > 0) {
@@ -311,34 +296,34 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public Route activateRoute(String routeEnavId, Boolean activate) {
         logger.debug("activateRoute({}, {})", routeEnavId, activate);
-        Route route = shipRepository.getRouteByEnavId(routeEnavId);
+        Route route = vesselRepository.getRouteByEnavId(routeEnavId);
 
         if (route == null) {
             throw new IllegalArgumentException("Unknown route with id '" + routeEnavId);
         }
 
-        Ship ship = getYourShip();
+        Vessel vessel = getYourVessel();
 
-        logger.debug("Ship:{}", ship.getMmsi());
+        logger.debug("Vessel:{}", vessel.getMmsi());
 
         if (activate) {
-            ship.setActiveVoyage(route.getVoyage());
+            vessel.setActiveVoyage(route.getVoyage());
         } else {
-            ship.setActiveVoyage(null);
+            vessel.setActiveVoyage(null);
         }
-        shipRepository.saveEntity(ship);
+        vesselRepository.saveEntity(vessel);
         return route;
     }
 
     @Override
     public Route getRouteByEnavId(String enavId) {
-        Route route = shipRepository.getRouteByEnavId(enavId);
+        Route route = vesselRepository.getRouteByEnavId(enavId);
         return route;
     }
 
     @Override
     public Voyage getVoyage(String enavId) {
-        return shipRepository.getVoyageByEnavId(enavId);
+        return vesselRepository.getVoyageByEnavId(enavId);
     }
 
     /**

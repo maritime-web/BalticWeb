@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-import dk.dma.arcticweb.service.ShipService;
+import dk.dma.arcticweb.service.VesselService;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.rest.util.DateTimeConverter;
@@ -41,7 +41,7 @@ import dk.dma.embryo.rest.util.TypeaheadDatum;
 public class VoyageRestService {
 
     @Inject
-    private ShipService shipService;
+    private VesselService shipService;
 
     @Inject
     private Logger logger;

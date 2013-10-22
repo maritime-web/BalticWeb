@@ -32,7 +32,7 @@ import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.ShipOwnerRole;
+import dk.dma.embryo.domain.VesselOwnerRole;
 import dk.dma.embryo.domain.ShoreRole;
 
 public class RealmDaoImplTest {
@@ -60,7 +60,7 @@ public class RealmDaoImplTest {
         
         Role sailor = new Sailor();
         Role shore = new ShoreRole();
-        Role role3 = new ShipOwnerRole();
+        Role role3 = new VesselOwnerRole();
 
         sailor.add(perm1);
         sailor.add(perm2);
@@ -135,9 +135,9 @@ public class RealmDaoImplTest {
 
         assertEquals("user2", user2.getUserName());
         assertEquals("pw2", user2.getPassword());
-        assertPropertyLenientEquals("logicalName", asList("shore", "shipOwner"), user2.getRoles());
+        assertPropertyLenientEquals("logicalName", asList("shore", "vesselOwner"), user2.getRoles());
         assertPropertyLenientEquals("logicalName", asList("ais", "ais:region:europe"), user2.getRole("shore").getPermissions());
-        assertEquals(0, user2.getRole("shipOwner").getPermissions().size());
+        assertEquals(0, user2.getRole("vesselOwner").getPermissions().size());
     }
 
 }

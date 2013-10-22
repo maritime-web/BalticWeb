@@ -25,13 +25,13 @@ public class GreenPos {
 
     private String type;
 
-    private String shipName;
+    private String vesselName;
 
     private Long mmsi;
 
     private String callSign;
 
-    private String shipMaritimeId;
+    private String vesselMaritimeId;
 
     private String lat;
 
@@ -76,36 +76,36 @@ public class GreenPos {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public String getShipName() {
-        return shipName;
+    public String getVesselName() {
+        return vesselName;
     }
 
-    public void setShipName(String shipName) {
-        this.shipName = shipName;
+    public void setVesselName(String name) {
+        this.vesselName = name;
     }
 
     public Long getMmsi() {
         return mmsi;
     }
 
-    public void setMmsi(Long shipMmsi) {
-        this.mmsi = shipMmsi;
+    public void setMmsi(Long mmsi) {
+        this.mmsi = mmsi;
     }
 
     public String getCallSign() {
         return callSign;
     }
 
-    public void setCallSign(String shipCallSign) {
-        this.callSign = shipCallSign;
+    public void setCallSign(String callSign) {
+        this.callSign = callSign;
     }
 
-    public String getShipMaritimeId() {
-        return shipMaritimeId;
+    public String getVesselMaritimeId() {
+        return vesselMaritimeId;
     }
 
-    public void setShipMaritimeId(String shipMaritimeId) {
-        this.shipMaritimeId = shipMaritimeId;
+    public void setVesselMaritimeId(String vesselMaritimeId) {
+        this.vesselMaritimeId = vesselMaritimeId;
     }
 
     public String getLat() {

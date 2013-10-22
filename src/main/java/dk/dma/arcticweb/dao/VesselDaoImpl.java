@@ -25,67 +25,67 @@ import javax.persistence.TypedQuery;
 
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 
 @Stateless
-public class ShipDaoImpl extends DaoImpl implements ShipDao {
+public class VesselDaoImpl extends DaoImpl implements VesselDao {
 
-    public ShipDaoImpl() {
+    public VesselDaoImpl() {
         super();
     }
 
-    public ShipDaoImpl(EntityManager entityManager) {
+    public VesselDaoImpl(EntityManager entityManager) {
         super(entityManager);
     }
 
     @Override
-    public Ship getShip(Sailor sailor) {
-        Long shipId = sailor.getShip().getId();
-        return (Ship) getByPrimaryKey(Ship.class, shipId);
+    public Vessel getVessel(Sailor sailor) {
+        Long vesselId = sailor.getVessel().getId();
+        return (Vessel) getByPrimaryKey(Vessel.class, vesselId);
     }
 
     @Override
-    public Ship getVessel(Long mmsi) {
-        TypedQuery<Ship> query = em.createNamedQuery("Ship:getByMmsi", Ship.class);
+    public Vessel getVessel(Long mmsi) {
+        TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getByMmsi", Vessel.class);
         query.setParameter("mmsi", mmsi);
 
-        List<Ship> result = query.getResultList();
+        List<Vessel> result = query.getResultList();
 
         return getSingleOrNull(result);
     }
 
     @Override
-    public Map<Long, Ship> getVessels(List<Long> mmsiNumbers) {
-        TypedQuery<Ship> query = em.createNamedQuery("Vessel:getMmsiList", Ship.class);
+    public Map<Long, Vessel> getVessels(List<Long> mmsiNumbers) {
+        TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getMmsiList", Vessel.class);
         query.setParameter("mmsiNumbers", mmsiNumbers);
 
-        List<Ship> result = query.getResultList();
-        Map<Long, Ship> mapResult = new HashMap<>((result.size() +1) * (4/3));
+        List<Vessel> result = query.getResultList();
+        Map<Long, Vessel> mapResult = new HashMap<>((result.size() +1) * (4/3));
         
-        for(Ship ship : result){
-            mapResult.put(ship.getMmsi(), ship);
+        for(Vessel vessel : result){
+            mapResult.put(vessel.getMmsi(), vessel);
         }
         return mapResult;
     }
 
     @Override
-    public Ship getShipByCallsign(String callsign) {
-        TypedQuery<Ship> query = em.createNamedQuery("Ship:getByCallsign", Ship.class);
+    public Vessel getVesselByCallsign(String callsign) {
+        TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getByCallsign", Vessel.class);
         query.setParameter("callsign", callsign);
 
-        List<Ship> result = query.getResultList();
+        List<Vessel> result = query.getResultList();
 
         return getSingleOrNull(result);
     }
 
     @Override
-    public Ship getShipByMaritimeId(String callsign) {
-        TypedQuery<Ship> query = em.createNamedQuery("Ship:getByMaritimeId", Ship.class);
+    public Vessel getVesselByMaritimeId(String callsign) {
+        TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getByMaritimeId", Vessel.class);
         query.setParameter("maritimeId", callsign);
 
-        List<Ship> result = query.getResultList();
+        List<Vessel> result = query.getResultList();
 
         return getSingleOrNull(result);
     }
@@ -102,18 +102,18 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
 
     @Override
     public Route getActiveRoute(Long mmsi) {
-        TypedQuery<Ship> query = em.createNamedQuery("Ship:getByMmsi", Ship.class);
+        TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getByMmsi", Vessel.class);
         query.setParameter("mmsi", mmsi);
 
-        List<Ship> result = query.getResultList();
+        List<Vessel> result = query.getResultList();
 
-        Ship ship = getSingleOrNull(result);
+        Vessel vessel = getSingleOrNull(result);
 
-        if (ship == null || ship.getActiveVoyage() == null) {
+        if (vessel == null || vessel.getActiveVoyage() == null) {
             return null;
         }
 
-        return ship.getActiveVoyage().getRoute();
+        return vessel.getActiveVoyage().getRoute();
     }
 
     @Override

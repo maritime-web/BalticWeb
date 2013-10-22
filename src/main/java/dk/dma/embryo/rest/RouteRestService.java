@@ -26,7 +26,7 @@ import javax.ws.rs.Produces;
 
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.ShipService;
+import dk.dma.arcticweb.service.VesselService;
 import dk.dma.embryo.rest.json.ActiveRoute;
 import dk.dma.embryo.rest.json.Route;
 import dk.dma.embryo.security.authorization.YourShip;
@@ -39,7 +39,7 @@ import dk.dma.embryo.security.authorization.YourShip;
 public class RouteRestService {
 
     @Inject
-    private ShipService shipService;
+    private VesselService shipService;
 
     @Inject
     private Logger logger;

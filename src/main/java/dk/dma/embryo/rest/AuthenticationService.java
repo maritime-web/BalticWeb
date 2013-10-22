@@ -57,7 +57,7 @@ public class AuthenticationService {
 
         if (subject.hasRole(Sailor.class)) {
             Sailor sailor = realmRepository.getSailor(subject.getUserId());
-            details.setShipMmsi("" + sailor.getShip().getMmsi());
+            details.setShipMmsi("" + sailor.getVessel().getMmsi());
         }
 
         Set<Permission> perms = user.getPermissions();

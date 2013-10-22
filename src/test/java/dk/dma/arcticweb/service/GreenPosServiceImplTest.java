@@ -32,14 +32,14 @@ import org.slf4j.LoggerFactory;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.GreenPosDaoImpl;
-import dk.dma.arcticweb.dao.ShipDao;
-import dk.dma.arcticweb.dao.ShipDaoImpl;
+import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.arcticweb.dao.VesselDaoImpl;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.Position;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.Ship;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.security.Subject;
@@ -54,15 +54,15 @@ public class GreenPosServiceImplTest {
 
     EntityManager entityManager;
 
-    ShipService shipService;
+    VesselService vesselService;
 
     Subject subject;
 
     GreenPosService greenPosService;
 
-    static Ship ship;
+    static Vessel vessel;
 
-    ShipDao shipDao;
+    VesselDao vesselDao;
 
     GreenPosDao greenPosDao;
 
@@ -73,17 +73,17 @@ public class GreenPosServiceImplTest {
         EntityManager entityManager = factory.createEntityManager();
         entityManager.getTransaction().begin();
 
-        ship = new Ship();
-        ship.getAisData().setName("MyShip");
-        ship.getAisData().setCallsign("AA");
-        ship.setMmsi(0L);
+        vessel = new Vessel();
+        vessel.getAisData().setName("MyShip");
+        vessel.getAisData().setCallsign("AA");
+        vessel.setMmsi(0L);
 
         VoyagePlan plan = new VoyagePlan();
         plan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", LocalDateTime.now(), LocalDateTime.now()
                 .plusDays(2), 12, 0, true));
-        ship.setVoyagePlan(plan);
+        vessel.setVoyagePlan(plan);
 
-        entityManager.persist(ship);
+        entityManager.persist(vessel);
 
         entityManager.getTransaction().commit();
         entityManager.close();
@@ -92,13 +92,13 @@ public class GreenPosServiceImplTest {
     @Before
     public void setup() {
         entityManager = factory.createEntityManager();
-        shipDao = new ShipDaoImpl(entityManager);
+        vesselDao = new VesselDaoImpl(entityManager);
         greenPosDao = new GreenPosDaoImpl(entityManager);
         
         subject = Mockito.mock(Subject.class);
-        shipService = Mockito.mock(ShipService.class);
+        vesselService = Mockito.mock(VesselService.class);
         
-        greenPosService = new GreenPosServiceImpl(greenPosDao, shipDao, subject, shipService);
+        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, vesselService);
         
     }
 
@@ -119,7 +119,7 @@ public class GreenPosServiceImplTest {
 
         Mockito.when(subject.hasRole(Sailor.class)).thenReturn(true);
         Mockito.when(subject.getUser()).thenReturn(new SecuredUser("Hans", "pwd"));
-        Mockito.when(shipService.getYourShip()).thenReturn(ship);
+        Mockito.when(vesselService.getYourVessel()).thenReturn(vessel);
 
         greenPosService.saveReport(spReport);
 
@@ -136,10 +136,10 @@ public class GreenPosServiceImplTest {
 
         GreenPosSailingPlanReport spResult = (GreenPosSailingPlanReport) reports.get(0);
 
-        Assert.assertEquals("MyShip", spResult.getShipName());
-        Assert.assertEquals(Long.valueOf(0L), spResult.getShipMmsi());
-        Assert.assertEquals("AA", spResult.getShipCallSign());
-        Assert.assertEquals("M-ID", spResult.getShipMaritimeId());
+        Assert.assertEquals("MyShip", spResult.getVesselName());
+        Assert.assertEquals(Long.valueOf(0L), spResult.getVesselMmsi());
+        Assert.assertEquals("AA", spResult.getVesselCallSign());
+        Assert.assertEquals("M-ID", spResult.getVesselMaritimeId());
         Assert.assertEquals("64 10.400N", spResult.getPosition().getLatitudeAsString());
         Assert.assertEquals("051 43.500W", spResult.getPosition().getLongitudeAsString());
         Assert.assertEquals("Weather", spResult.getWeather());

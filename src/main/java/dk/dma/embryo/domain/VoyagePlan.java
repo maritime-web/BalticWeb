@@ -33,7 +33,7 @@ import javax.persistence.OrderColumn;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "VoyagePlan:getByMmsi", query = "SELECT DISTINCT v FROM VoyagePlan v LEFT JOIN FETCH v.voyages where v.ship.mmsi = :mmsi") })
+@NamedQueries({ @NamedQuery(name = "VoyagePlan:getByMmsi", query = "SELECT DISTINCT v FROM VoyagePlan v LEFT JOIN FETCH v.voyages where v.vessel.mmsi = :mmsi") })
 public class VoyagePlan extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class VoyagePlan extends BaseEntity<Long> {
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     @OneToOne(optional = false)
-    Ship ship;
+    Vessel vessel;
 
     @OneToMany(cascade = { CascadeType.ALL })
     @OrderColumn(name = "voyageIndex")
@@ -123,8 +123,8 @@ public class VoyagePlan extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public Ship getShip() {
-        return ship;
+    public Vessel getVessel() {
+        return vessel;
     }
 
     public List<Voyage> getVoyagePlan() {

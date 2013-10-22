@@ -38,7 +38,7 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({ @NamedQuery(name = "Ship:getByMmsi", query = "SELECT s FROM Ship s WHERE s.mmsi = :mmsi"),
         @NamedQuery(name = "Ship:getByMaritimeId", query = "SELECT s FROM Ship s WHERE s.maritimeId = :maritimeId"),
         @NamedQuery(name = "Ship:getByCallsign", query = "SELECT s FROM Ship s WHERE s.aisData.callsign = :callsign"),
-        @NamedQuery(name = "Vessel:getMmsiList", query = "SELECT s FROM Ship s WHERE s.mmsi in :mmsiNumbers") })
+        @NamedQuery(name = "Ship:getMmsiList", query = "SELECT s FROM Ship s WHERE s.mmsi in :mmsiNumbers") })
 public class Ship extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 
@@ -74,11 +74,7 @@ public class Ship extends BaseEntity<Long> {
     @Column(nullable = true)
     private Boolean helipad;
 
-    @OneToMany(mappedBy = "ship", fetch = FetchType.LAZY)
-    @OrderBy("reportTime")
-    private List<ShipReport> reports;
-
-    @OneToOne(mappedBy = "ship", cascade = { CascadeType.ALL })
+    @OneToOne(mappedBy = "vessel", cascade = { CascadeType.ALL })
     private VoyagePlan voyagePlan;
 
     @OneToOne(cascade = { CascadeType.ALL })
@@ -86,61 +82,9 @@ public class Ship extends BaseEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = true)
-    private ShipOwnerRole owner;
+    private VesselOwnerRole owner;
 
     private AisData aisData = new AisData();
-
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
-    public dk.dma.embryo.rest.json.Ship toJsonModel() {
-        dk.dma.embryo.rest.json.Ship ship = new dk.dma.embryo.rest.json.Ship();
-
-        ship.setName(getAisData().getName());
-        ship.setCallSign(getAisData().getCallsign());
-        ship.setMmsi(getMmsi());
-        ship.setMaritimeId(getMaritimeId());
-        ship.setImo(getAisData().getImoNo());
-        ship.setType(getType());
-        ship.setCommCapabilities(getCommCapabilities());
-        ship.setLength(getAisData().getLength());
-        ship.setWidth(getAisData().getWidth());
-        ship.setGrossTon(getGrossTonnage());
-        ship.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
-        ship.setIceClass(getIceClass());
-        ship.setHelipad(getHelipad());
-
-        return ship;
-    }
-
-    public dk.dma.embryo.rest.json.VesselDetails toJsonModel2() {
-        dk.dma.embryo.rest.json.VesselDetails vessel = new dk.dma.embryo.rest.json.VesselDetails();
-        vessel.setAis(getAisData().toJsonModel());
-        
-        vessel.setMmsi(getMmsi());
-        vessel.setMaritimeId(getMaritimeId());
-        vessel.setCommCapabilities(getCommCapabilities());
-        vessel.setGrossTon(getGrossTonnage());
-        vessel.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
-        vessel.setIceClass(getIceClass());
-        vessel.setHelipad(getHelipad());
-
-        return vessel;
-    }
-
-    public static Ship fromJsonModel(dk.dma.embryo.rest.json.Ship ship) {
-        Ship result = new Ship(ship.getMaritimeId());
-
-        result.setMmsi(ship.getMmsi());
-        result.setType(ship.getType());
-        result.setCommCapabilities(ship.getCommCapabilities());
-        result.setGrossTonnage(ship.getGrossTon());
-        result.setMaxSpeed(ship.getMaxSpeed() == null ? null : BigDecimal.valueOf(ship.getMaxSpeed()));
-        result.setIceClass(ship.getIceClass());
-        result.setHelipad(ship.getHelipad());
-
-        return result;
-    }
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -156,106 +100,6 @@ public class Ship extends BaseEntity<Long> {
     public Ship(Long mmsi) {
         this();
         this.mmsi = mmsi;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getMaritimeId() {
-        return maritimeId;
-    }
-
-    public Long getMmsi() {
-        return mmsi;
-    }
-
-    public void setMmsi(Long mmsi) {
-        this.mmsi = mmsi;
-    }
-
-    public ShipOwnerRole getOwner() {
-        return owner;
-    }
-
-    public void setOwner(ShipOwnerRole owner) {
-        this.owner = owner;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public BigDecimal getMaxSpeed() {
-        return maxSpeed;
-    }
-
-    public void setMaxSpeed(BigDecimal maxSpeed) {
-        this.maxSpeed = maxSpeed;
-    }
-
-    public Integer getGrossTonnage() {
-        return grossTonnage;
-    }
-
-    public void setGrossTonnage(Integer tonnage) {
-        this.grossTonnage = tonnage;
-    }
-
-    public String getCommCapabilities() {
-        return commCapabilities;
-    }
-
-    public void setCommCapabilities(String commCapabilities) {
-        this.commCapabilities = commCapabilities;
-    }
-
-    public String getIceClass() {
-        return iceClass;
-    }
-
-    public void setIceClass(String iceClass) {
-        this.iceClass = iceClass;
-    }
-
-    public Boolean getHelipad() {
-        return helipad;
-    }
-
-    public void setHelipad(Boolean helipad) {
-        this.helipad = helipad;
-    }
-
-    public List<ShipReport> getReports() {
-        return reports;
-    }
-
-    public VoyagePlan getVoyagePlan() {
-        return voyagePlan;
-    }
-
-    public void setVoyagePlan(VoyagePlan plan) {
-        plan.ship = this;
-        this.voyagePlan = plan;
-    }
-
-    public Voyage getActiveVoyage() {
-        return activeVoyage;
-    }
-
-    public void setActiveVoyage(Voyage activeVoyage) {
-        this.activeVoyage = activeVoyage;
-    }
-
-    public AisData getAisData() {
-        return aisData;
-    }
-
-    public void setAisData(AisData aisData) {
-        this.aisData = aisData;
     }
 
 }
