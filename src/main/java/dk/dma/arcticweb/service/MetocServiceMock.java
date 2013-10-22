@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.ShipDao;
-import dk.dma.commons.model.Converter;
 import dk.dma.commons.model.RouteDecorator;
 import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.Route;
@@ -35,7 +34,6 @@ import dk.dma.embryo.restclients.DmiSejlRuteService.ForecastValue;
 import dk.dma.embryo.restclients.DmiSejlRuteService.MetocForecast;
 import dk.dma.embryo.restclients.DmiSejlRuteService.SejlRuteResponse;
 import dk.dma.embryo.security.Subject;
-import dk.dma.enav.model.geometry.CoordinateSystem;
 import dk.dma.enav.model.geometry.Position;
 import dk.dma.enav.model.voyage.RouteLeg;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
@@ -105,7 +103,7 @@ public class MetocServiceMock implements MetocService {
 
         dk.dma.enav.model.voyage.Route enavRoute = route.toEnavModel();
 
-        RouteDecorator r = new RouteDecorator(enavRoute);
+        new RouteDecorator(enavRoute);
 
         List<Waypoint> waypoints = new ArrayList<>();
 

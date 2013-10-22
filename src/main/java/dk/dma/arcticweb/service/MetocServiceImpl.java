@@ -16,7 +16,6 @@
 package dk.dma.arcticweb.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

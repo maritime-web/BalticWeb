@@ -74,8 +74,8 @@ public class GreenPosServiceImplTest {
         entityManager.getTransaction().begin();
 
         ship = new Ship();
-        ship.setName("MyShip");
-        ship.setCallsign("AA");
+        ship.getAisData().setName("MyShip");
+        ship.getAisData().setCallsign("AA");
         ship.setMmsi(0L);
 
         VoyagePlan plan = new VoyagePlan();

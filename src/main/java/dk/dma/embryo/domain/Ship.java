@@ -37,12 +37,10 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NamedQueries({ @NamedQuery(name = "Ship:getByMmsi", query = "SELECT s FROM Ship s WHERE s.mmsi = :mmsi"),
         @NamedQuery(name = "Ship:getByMaritimeId", query = "SELECT s FROM Ship s WHERE s.maritimeId = :maritimeId"),
-        @NamedQuery(name = "Ship:getByCallsign", query = "SELECT s FROM Ship s WHERE s.callsign = :callsign") })
+        @NamedQuery(name = "Ship:getByCallsign", query = "SELECT s FROM Ship s WHERE s.aisData.callsign = :callsign"),
+        @NamedQuery(name = "Vessel:getMmsiList", query = "SELECT s FROM Ship s WHERE s.mmsi in :mmsiNumbers") })
 public class Ship extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
-
-    @Column(nullable = true, length = 128)
-    private String name;
 
     @NotNull
     @Column(unique = true)
@@ -50,12 +48,6 @@ public class Ship extends BaseEntity<Long> {
 
     @Column(nullable = true)
     private Long mmsi;
-
-    @Column(nullable = true)
-    private Long imoNo;
-
-    @Column(nullable = true, length = 32)
-    private String callsign;
 
     @Column(nullable = true, length = 32)
     private String type;
@@ -76,14 +68,6 @@ public class Ship extends BaseEntity<Long> {
     @Column(nullable = true)
     private Integer persons;
 
-    @Min(0)
-    @Column(nullable = true)
-    private Integer width;
-
-    @Min(0)
-    @Column(nullable = true)
-    private Integer length;
-
     @Column(nullable = true, length = 32)
     private String iceClass;
 
@@ -99,54 +83,65 @@ public class Ship extends BaseEntity<Long> {
 
     @OneToOne(cascade = { CascadeType.ALL })
     private Voyage activeVoyage;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = true)
     private ShipOwnerRole owner;
 
+    private AisData aisData = new AisData();
+
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public dk.dma.embryo.rest.json.Ship toJsonModel(){
+    public dk.dma.embryo.rest.json.Ship toJsonModel() {
         dk.dma.embryo.rest.json.Ship ship = new dk.dma.embryo.rest.json.Ship();
 
-        ship.setName(getName());
-        ship.setCallSign(getCallsign());
+        ship.setName(getAisData().getName());
+        ship.setCallSign(getAisData().getCallsign());
         ship.setMmsi(getMmsi());
         ship.setMaritimeId(getMaritimeId());
-        ship.setImo(getImoNo());
+        ship.setImo(getAisData().getImoNo());
         ship.setType(getType());
         ship.setCommCapabilities(getCommCapabilities());
-        ship.setLength(getLength());
-        ship.setWidth(getWidth());
+        ship.setLength(getAisData().getLength());
+        ship.setWidth(getAisData().getWidth());
         ship.setGrossTon(getGrossTonnage());
         ship.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
         ship.setIceClass(getIceClass());
         ship.setHelipad(getHelipad());
-        
+
         return ship;
     }
 
-    public static Ship fromJsonModel(dk.dma.embryo.rest.json.Ship ship){
+    public dk.dma.embryo.rest.json.VesselDetails toJsonModel2() {
+        dk.dma.embryo.rest.json.VesselDetails vessel = new dk.dma.embryo.rest.json.VesselDetails();
+        vessel.setAis(getAisData().toJsonModel());
+        
+        vessel.setMmsi(getMmsi());
+        vessel.setMaritimeId(getMaritimeId());
+        vessel.setCommCapabilities(getCommCapabilities());
+        vessel.setGrossTon(getGrossTonnage());
+        vessel.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
+        vessel.setIceClass(getIceClass());
+        vessel.setHelipad(getHelipad());
+
+        return vessel;
+    }
+
+    public static Ship fromJsonModel(dk.dma.embryo.rest.json.Ship ship) {
         Ship result = new Ship(ship.getMaritimeId());
 
-        result.setName(ship.getName());
-        result.setCallsign(ship.getCallSign());
         result.setMmsi(ship.getMmsi());
-        result.setImoNo(ship.getImo());
         result.setType(ship.getType());
         result.setCommCapabilities(ship.getCommCapabilities());
-        result.setLength(ship.getLength());
-        result.setWidth(ship.getWidth());
         result.setGrossTonnage(ship.getGrossTon());
         result.setMaxSpeed(ship.getMaxSpeed() == null ? null : BigDecimal.valueOf(ship.getMaxSpeed()));
         result.setIceClass(ship.getIceClass());
         result.setHelipad(ship.getHelipad());
-        
+
         return result;
     }
 
-    
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
@@ -169,14 +164,6 @@ public class Ship extends BaseEntity<Long> {
     public String getMaritimeId() {
         return maritimeId;
     }
-    
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Long getMmsi() {
         return mmsi;
@@ -192,22 +179,6 @@ public class Ship extends BaseEntity<Long> {
 
     public void setOwner(ShipOwnerRole owner) {
         this.owner = owner;
-    }
-
-    public Long getImoNo() {
-        return imoNo;
-    }
-
-    public void setImoNo(Long imoNo) {
-        this.imoNo = imoNo;
-    }
-
-    public String getCallsign() {
-        return callsign;
-    }
-
-    public void setCallsign(String callsign) {
-        this.callsign = callsign;
     }
 
     public String getType() {
@@ -240,22 +211,6 @@ public class Ship extends BaseEntity<Long> {
 
     public void setCommCapabilities(String commCapabilities) {
         this.commCapabilities = commCapabilities;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getLength() {
-        return length;
-    }
-
-    public void setLength(Integer length) {
-        this.length = length;
     }
 
     public String getIceClass() {
@@ -294,4 +249,13 @@ public class Ship extends BaseEntity<Long> {
     public void setActiveVoyage(Voyage activeVoyage) {
         this.activeVoyage = activeVoyage;
     }
+
+    public AisData getAisData() {
+        return aisData;
+    }
+
+    public void setAisData(AisData aisData) {
+        this.aisData = aisData;
+    }
+
 }

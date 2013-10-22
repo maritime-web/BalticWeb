@@ -15,7 +15,9 @@
  */
 package dk.dma.arcticweb.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -42,6 +44,30 @@ public class ShipDaoImpl extends DaoImpl implements ShipDao {
     public Ship getShip(Sailor sailor) {
         Long shipId = sailor.getShip().getId();
         return (Ship) getByPrimaryKey(Ship.class, shipId);
+    }
+
+    @Override
+    public Ship getVessel(Long mmsi) {
+        TypedQuery<Ship> query = em.createNamedQuery("Ship:getByMmsi", Ship.class);
+        query.setParameter("mmsi", mmsi);
+
+        List<Ship> result = query.getResultList();
+
+        return getSingleOrNull(result);
+    }
+
+    @Override
+    public Map<Long, Ship> getVessels(List<Long> mmsiNumbers) {
+        TypedQuery<Ship> query = em.createNamedQuery("Vessel:getMmsiList", Ship.class);
+        query.setParameter("mmsiNumbers", mmsiNumbers);
+
+        List<Ship> result = query.getResultList();
+        Map<Long, Ship> mapResult = new HashMap<>((result.size() +1) * (4/3));
+        
+        for(Ship ship : result){
+            mapResult.put(ship.getMmsi(), ship);
+        }
+        return mapResult;
     }
 
     @Override
