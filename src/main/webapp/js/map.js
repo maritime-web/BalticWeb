@@ -27,7 +27,7 @@ $(function() {
         div : "map",
         controls: [
             new OpenLayers.Control.Navigation(
-                {dragPanOptions: {enableKinetic: false}}
+                { dragPanOptions: { enableKinetic: false } }
             )
         ],
         fractionalZoom : false
