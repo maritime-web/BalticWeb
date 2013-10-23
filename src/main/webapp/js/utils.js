@@ -24,14 +24,6 @@ function getCookie(c_name) {
     }
 }
 
-function setLayerOpacityById(id, value) {
-    var layers = embryo.map.internalMap.getLayersByName(id);
-    
-    for (var k in layers) {
-        layers[k].setOpacity(value);
-    }
-}
-
 function openCollapse(id) {
     $(".collapse", $(id).parents(".accordion")).data("collapse", null);
     if (!$(id).hasClass("in")) {
