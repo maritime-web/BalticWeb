@@ -40,8 +40,13 @@ $(function() {
     }
     
     embryo.authenticated(function() {
-        setup();
-        setInterval(setup, embryo.loadFrequence);
+        if (embryo.authentication.shipMmsi) {
+            setup();
+            setInterval(setup, embryo.loadFrequence);
+        } else {
+            $("#vcpYourShip").parent().remove();
+            $("#zoomToYourShip").remove();
+        }
     });
 
     $("#zoomToYourShip").click(function() {

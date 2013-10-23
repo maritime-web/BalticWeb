@@ -31,23 +31,6 @@ $(function() {
         return vessels;
     }
 
-    embryo.vessel.searchVessels = function(argument, callback) {
-        if (argument == null || argument == "") return [];
-
-        var result = [];
-
-        $.each(embryo.vessel.allVessels(), function (k,v) {
-            if (v.vesselName) {
-                if ((v.vesselName.toLowerCase().indexOf(argument.toLowerCase()) == 0) || 
-                    (v.vesselName.toLowerCase().indexOf(" "+argument.toLowerCase()) >= 0)) {
-                    result.push(v);
-                }
-            }
-        })
-
-        callback(result);
-    }
-
     embryo.vessel.goToVesselLocation = function (vessel) {
         embryo.map.setCenter(vessel.lon, vessel.lat, 8);
     }
@@ -96,14 +79,14 @@ $(function() {
         loadVesselList();
     });
 
-    embryo.ready(function() {
+    embryo.authenticated(function() {
         function fixAccordionSize() {
             $("#vesselControlPanel .accordion-inner").css("overflow", "auto");
-            $("#vesselControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - 300)+"px");
+            $("#vesselControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - $("#vesselControlPanel .accordion-group").length * 50 - 100)+"px");
         }
 
         $(window).resize(fixAccordionSize);
 
-        fixAccordionSize();
+        setTimeout(fixAccordionSize, 10);
     });
 })

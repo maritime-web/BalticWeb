@@ -2,22 +2,6 @@ $(function() {
     var searchResultsLimit = 10;
     var lastSearch = "";
 
-    function doServerSideSearch(argument, callback) {
-        $.getJSON(embryo.baseUrl + "json_proxy/vessel_search", {
-            argument : argument
-        }, function(result) {
-            var searchResults = [];
-
-            for (vesselId in result.vessels) {
-                var vesselJSON = result.vessels[vesselId];
-                var vessel = new Vessel(vesselId, vesselJSON);
-                searchResults.push(vessel);
-            }
-
-            callback(searchResults);
-        })
-    }
-
     function searchResultToHTML(vessel){
         var html = "<p><div class='btn searchResultItem' id='" + vessel.id + "'>" +
             "<div class='panelText btn-block'>" + vessel.vesselName + "</div>";
@@ -39,7 +23,7 @@ $(function() {
 
             latestSearch = arg;
 
-            embryo.vessel.searchVessels(arg, function(searchResults) {
+            embryo.vessel.service.clientSideSearch(arg, function(searchResults) {
                 var html = "";
 
                 var s = "s";
@@ -106,5 +90,13 @@ $(function() {
             $("#searchField").focus();
         });
     });
-    
+
+    embryo.authenticated(function() {
+        if (!embryo.authentication.shipMmsi) {
+            embryo.groupChanged(function(e) {
+                if (e.groupId == "vessel") $("#searchField").focus();
+            });
+        }
+    });
+
 });
