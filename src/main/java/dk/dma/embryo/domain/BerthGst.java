@@ -16,14 +16,14 @@
 package dk.dma.embryo.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 @Entity
-@NamedQueries({@NamedQuery(name="Berth:findByQuery", query="SELECT b FROM Berth b WHERE b.name LIKE :query OR b.alias like :query")})
-public class Berth extends BaseEntity<Long>{
+@Table(name = "berth_gst")
+public class BerthGst extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7720878907095105915L;
 
@@ -32,10 +32,12 @@ public class Berth extends BaseEntity<Long>{
     // //////////////////////////////////////////////////////////////////////
     @NotNull
     private String name;
-    
+
     private String alias;
-    
-    private Position position;
+
+    private String latitude;
+
+    private String longitude;
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -48,39 +50,61 @@ public class Berth extends BaseEntity<Long>{
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Berth(){}
-    
-    public Berth(String name, String lattitude, String longitude){
-        this.name = name;
-        this.position = new Position(lattitude, longitude);
-    }
-
-    public Berth(String name, String alias, String lattitude, String longitude){
-        this.name = name;
-        this.alias = alias;
-        this.position = new Position(lattitude, longitude);
+    public BerthGst() {
     }
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
     public String getName() {
-        return name;
+        String[] parts = name.split("\\(");
+        return parts[0].trim();
     }
 
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getAlias() {
-        return alias;
+        String[] parts = name.split("\\(");
+        return parts.length > 1 ? parts[1].replaceAll("\\)", "").trim() : null;
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
+    public String getLatitude() {
+        return getValue(latitude);
     }
 
-    public Position getPosition() {
-        return position;
-    }    
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return getValue(longitude);
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    private String getValue(String value) {
+        return value.replace("º", " ").replaceAll(",", ".").replaceAll("´", "");
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
+
+    public String asBerthConstructor() {
+        return "new Berth(" + asStringLiteral(getName()) + ", " + asStringLiteral(getAlias()) + ", "
+                + asStringLiteral(getLatitude()) + ", " + asStringLiteral(getLongitude()) + ")";
+    }
+
+    private String asStringLiteral(String value) {
+        return value == null ? null : "\"" + value + "\"";
+    }
+
 }
