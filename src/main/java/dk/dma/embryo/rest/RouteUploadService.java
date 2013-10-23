@@ -99,7 +99,7 @@ public class RouteUploadService {
                 }
                 logger.debug("Handling uploaded route with file name: {}", item.getName());
 
-                dk.dma.embryo.domain.Route route = shipService.parseRoute(item.getInputStream());
+                dk.dma.embryo.domain.Route route = shipService.parseRoute(item.getName(), item.getInputStream());
 
                 String enavId = shipService.saveRoute(route, voyageId, active);
 
