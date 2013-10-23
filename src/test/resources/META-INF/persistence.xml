@@ -41,4 +41,23 @@
     </properties>
 
   </persistence-unit>
+  <persistence-unit name="berthMover" transaction-type="RESOURCE_LOCAL">
+    <class>dk.dma.embryo.domain.Berth</class>
+    <class>dk.dma.embryo.domain.BerthGst</class>
+
+    <validation-mode>CALLBACK</validation-mode>
+
+    <properties>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/embryo" />
+      <property name="javax.persistence.jdbc.user" value="embryo" />
+      <property name="javax.persistence.jdbc.password" value="embryo" />
+
+      <!-- Properties for Hibernate -->
+      <property name="hibernate.hbm2ddl.auto" value="update" />
+      <property name="hibernate.show_sql" value="true" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+    </properties>
+
+  </persistence-unit>
 </persistence>

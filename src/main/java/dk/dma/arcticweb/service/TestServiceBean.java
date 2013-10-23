@@ -18,6 +18,7 @@ package dk.dma.arcticweb.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +77,8 @@ public class TestServiceBean {
     @Inject
     private EntityManagerFactory emf;
 
+    List<Berth> berthList = new ArrayList<>(100);
+    
     @PostConstruct
     public void startup() {
         Map<String, Object> props = emf.getProperties();
@@ -83,10 +86,111 @@ public class TestServiceBean {
         String hbm2dllAuto = (String) props.get("hibernate.hbm2ddl.auto");
         logger.info("Detected database auto update setting: {}", hbm2dllAuto);
 
+        setupBerthList();
+        
         if ("create-drop".equals(hbm2dllAuto)) {
             createTestData();
         }
     }
+    
+    private void setupBerthList(){
+        
+        berthList.add(new Berth("Ikerasassuaq Vejrstation", "Prins Christian Sund Vejrstation", "60 03.5N", "043 10.5W"));
+        berthList.add(new Berth("Aappilattoq", null, "60 09.6N", "044 17.2W"));
+        berthList.add(new Berth("Narsaq Kujalleq", "Frederiksdal", "60 00.4N", "044 40.0W"));
+        berthList.add(new Berth("Tasiusaq", null, "60 11.8N", "044 49.5W"));
+        berthList.add(new Berth("Nanortalik", null, "60 08.3N", "045 14.5W"));
+        berthList.add(new Berth("Alluitsup Paa", "Sydprøven", "60 27.8N", "045 34.2W"));
+        berthList.add(new Berth("Alluitsoq", "Lichtenau", "60 30.6N", "045 32.5W"));
+        berthList.add(new Berth("Ammassivik", "Sletten", "60 35.8N", "045 23.7W"));
+        berthList.add(new Berth("Qallimiut", null, "60 42.5N", "045 22.0W"));
+        berthList.add(new Berth("Saarloq", null, "60 32.3N", "046 01.9W"));
+        berthList.add(new Berth("Eqalugaarsuit", null, "60 37.4N", "045 54.8W"));
+        berthList.add(new Berth("Qaqortoq", "Julianehåb", "60 43.1N", "046 02.4W"));
+        berthList.add(new Berth("Upernaviarsuk", null, "60 45.0N", "045 53.8W"));
+        berthList.add(new Berth("Qassimiut", null, "60 46.9N", "047 09.8W"));
+        berthList.add(new Berth("Igaliku", null, "60 59.6N", "045 25.4W"));
+        berthList.add(new Berth("Narsaq", null, "60 54.5N", "046 03.0W"));
+        berthList.add(new Berth("Narsarsuaq", null, "61 08.8N", "045 26.2W"));
+        berthList.add(new Berth("Qassiarsuk", null, "61 09.3N", "045 31.0W"));
+        berthList.add(new Berth("Kangilinnguit", "Grønnedal", "61 14.3N", "48 06.1W"));
+        berthList.add(new Berth("Arsuk", null, "61 10.5N", "048 27.2W"));
+        berthList.add(new Berth("Paamiut", "Frederikshåb", "61 59.8N", "049 40.8W"));
+        berthList.add(new Berth("Qeqertarsuatsiaat", "Fiskenæsset", "63 05.4N", "050 41.0W"));
+        berthList.add(new Berth("Orsiivik", "Polaroil", "63 41.1N", "051 30.6W"));
+        berthList.add(new Berth("Nordafar", null, "63 42.0N", "051 29.6W"));
+        berthList.add(new Berth("Nuuk", "Godthåb", "64 10.4N", "051 43.5W"));
+        berthList.add(new Berth("Kapisillit", null, "64 26.0N", "050 16.0W"));
+        berthList.add(new Berth("Atammik", null, "64 48.3N", "052 11.0W"));
+        berthList.add(new Berth("Napasoq", null, "65 02.7N", "052 23.1W"));
+        berthList.add(new Berth("Maniitsoq", "Sukkertoppen", "65 24.8N", "052 54.3W"));
+        berthList.add(new Berth("Kangaamiut", null, "65 49.6N", "053 20.9W"));
+        berthList.add(new Berth("Kangerlussuup Umiarsualivia", null, "66 58.2N", "050 57.2W"));
+        berthList.add(new Berth("Itilleq", null, "66 34.6N", "053 30.2W"));
+        berthList.add(new Berth("Sarfannguit", null, "66 54.0N", "052 52.0W"));
+        berthList.add(new Berth("Sisimiut", "Holsteinsborg", "66 56.5N", "053 40.5W"));
+        berthList.add(new Berth("Attu", null, "67 56.5N", "053 38.0W"));
+        berthList.add(new Berth("Ikerasaarsuk", null, "68 08.4N", "053 27.2W"));
+        berthList.add(new Berth("Iginniarfik", null, "68 09.0N", "053 10.8W"));
+        berthList.add(new Berth("Niaqornaarsuk", null, "68 14.0N", "052 52.0W"));
+        berthList.add(new Berth("Kangaatsiaq", null, "68 18.5N", "053 28.0W"));
+        berthList.add(new Berth("Aasiaat", "Egedesminde", "68 42.6N", "052 53.0W"));
+        berthList.add(new Berth("Kitsissuarsuit", "Hunde Ejland", "68 51.5N", "053 07.8W"));
+        berthList.add(new Berth("Akunnaaq", null, "68 44.7N", "052 20.2W"));
+        berthList.add(new Berth("Qeqertarsuaq", "Godhavn", "69 15.0N", "053 33.0W"));
+        berthList.add(new Berth("Kangerluk", "Diskofjord", "69 29.0N", "053 57.0W"));
+        berthList.add(new Berth("Ikamiut", null, "68 38.1N", "051 50.0W"));
+        berthList.add(new Berth("Qasigiannguit", "Christianshåb", "68 49.0N", "051 12.0W"));
+        berthList.add(new Berth("Ilimanaq", "Claushavn", "69 05.0N", "051 07.3W"));
+        berthList.add(new Berth("Ilulissat", "Jakobshavn", "69 13.5N", "051 06.0W"));
+        berthList.add(new Berth("Oqaatsut", "Rodebay", "69 20.7N", "051 00.7W"));
+        berthList.add(new Berth("Qeqertaq", null, "70 00.0N", "051 19.0W"));
+        berthList.add(new Berth("Saqqaq", null, "70 01.0N", "051 57.0W"));
+        berthList.add(new Berth("Niaqornat", null, "70 47.6N", "053 40.0W"));
+        berthList.add(new Berth("Qaarsut", null, "70 44.0N", "052 38.5W"));
+        berthList.add(new Berth("Uummannaq", null, "70 40.5N", "052 08.0W"));
+        berthList.add(new Berth("Ikerasak", null, "70 30.0N", "051 19.0W"));
+        berthList.add(new Berth("Saattut", null, "70 48.8N", "051 38.2W"));
+        berthList.add(new Berth("Ukkusissat", null, "71 03.0N", "051 53.8W"));
+        berthList.add(new Berth("Illorsuit", null, "71 14.3N", "053 30.5W"));
+        berthList.add(new Berth("Nuugaatsiaq", null, "71 32.5N", "053 13.0W"));
+        berthList.add(new Berth("Upernavik Kujalleq", "Søndre Upernavik", "72 09.2N", "055 32.0W"));
+        berthList.add(new Berth("Kangersuatsiaq", "Prøven", "72 22.7N", "055 33.5W"));
+        berthList.add(new Berth("Upernavik", null, "72 47.5N", "056 09.4W"));
+        berthList.add(new Berth("Aappilattoq", null, "72 53.0N", "055 36.6W"));
+        berthList.add(new Berth("Naajaat", null, "73 09.0N", "055 48.0W"));
+        berthList.add(new Berth("Innaarsuit", null, "73 12.0N", "056 02.0W"));
+        berthList.add(new Berth("Tasiusaq", null, "73 22.0N", "056 04.0W"));
+        berthList.add(new Berth("Nutaarmiut", null, "73 31.8N", "056 26.0W"));
+        berthList.add(new Berth("Nuussuaq", "Kraulshavn", "74 07.0N", "057 06.0W"));
+        berthList.add(new Berth("Kullorsuaq", null, "74 34.8N", "057 13.0W"));
+        berthList.add(new Berth("Savissivik", null, "76 01.0N", "065 06.0W"));
+        berthList.add(new Berth("Pituffik", "Thule Air Base", "76 32.6N", "068 52.5W"));
+        berthList.add(new Berth("Moriusaq", null, "76 45.0N", "069 53.0W"));
+        berthList.add(new Berth("Qeqertarsuaq", "Herbert Ø", "77 25.3N", "070 09.0W"));
+        berthList.add(new Berth("Qaanaaq", "Thule", "77 27.8N", "069 14.0W"));
+        berthList.add(new Berth("Qeqertat", null, "77 29.8N", "066 43.0W"));
+        berthList.add(new Berth("Siorapaluk", null, "77 47.0N", "070 37.0W"));
+        berthList.add(new Berth("Danmarkshavn", null, "76 46.0N", "018 45.0W"));
+        berthList.add(new Berth("Daneborg", null, "74 18.2N", "020 14.7W"));
+        berthList.add(new Berth("Ella Ø", null, "72 53.0N", "025 06.0W"));
+        berthList.add(new Berth("Nyhavn", null, "72 16.0N", "023 57.0W"));
+        berthList.add(new Berth("Illoqqortoormiut", "Scoresbysund", "70 28.0N", "021 58.0W"));
+        berthList.add(new Berth("Ittaajimmiut", "Kap Hope", "70 27.5N", "022 22.0W"));
+        berthList.add(new Berth("Uunarteq", "Kap Tobin", "70 24.5N", "021 58.0W"));
+        berthList.add(new Berth("Nerlerit Inaat", "Constable Pynt", "70 44.0N", "022 38.0W"));
+        berthList.add(new Berth("Sermiligaaq", null, "65 54.0N", "036 22.0W"));
+        berthList.add(new Berth("Tiniteqilaaq", null, "65 52.9N", "037 46.9W"));
+        berthList.add(new Berth("Kuummiut", null, "65 51.5N", "037 00.5W"));
+        berthList.add(new Berth("Ikkatteq", null, "65 37.8N", "037 57.2W"));
+        berthList.add(new Berth("Tasiilaq", null, "65 36.5N", "037 37.5W"));
+        berthList.add(new Berth("Kulusuk", "Kap Dan", "65 34.3N", "037 11.0W"));
+        berthList.add(new Berth("Kulusuk Mittarfik", "Kulusuk Flyveplads", "65 34.7N", "037 08.7W"));
+        berthList.add(new Berth("Isortoq", null, "65 32.4N", "038 58.5W"));
+        berthList.add(new Berth("Saqqisikuik", "Skjoldungen", "63 13.0N", "041 24.0W"));
+        berthList.add(new Berth("Seqinnersuusaq", null, "64 58.7N", "051 34.9W"));
+        berthList.add(new Berth("Maarmorilik", null, "71 07.6N", "051 16.5W"));
+        berthList.add(new Berth("Zackenberg Forskningsstation", null, "74 28.0N", "020 34.0W"));    }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void clearAllData() {
@@ -124,6 +228,7 @@ public class TestServiceBean {
     }
 
     public void createTestData() {
+        createBerths();
         createOrasilaTestData();
         uploadOrasilaRoutes();
         createOraTankTestData();
@@ -137,6 +242,16 @@ public class TestServiceBean {
         createIceCenterLogin();
         createArcticCommandLogin();
         createGreenposReports();
+    }
+
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createBerths() {
+        logger.info("BEFORE CREATION - Berths");
+
+        for(Berth berth : berthList){
+            vesselDao.saveEntity(berth);
+        }
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -188,22 +303,6 @@ public class TestServiceBean {
         user.addRole(auth);
 
         vesselDao.saveEntity(user);
-
-        // Test data found on
-        // http://gronlandskehavnelods.dk/#HID=78
-        vesselDao.saveEntity(new Berth("Nuuk", "64 10.4N", "051 43.5W"));
-        vesselDao.saveEntity(new Berth("Sisimiut", "Holsteinsborg", "66 56.5N", "053 40.5W"));
-        vesselDao.saveEntity(new Berth("Danmarkshavn", "76 46.0N", "018 45.0W"));
-        vesselDao.saveEntity(new Berth("Kangilinnguit", "Grønnedal", "61 14.3N", "48 06.1W"));
-        vesselDao.saveEntity(new Berth("Aasiaat", "Egedesminde", "68 42.6N", "052 53.0W"));
-        vesselDao.saveEntity(new Berth("Ilulissat", "Jakobshavn", "69 13.5N", "051 06.0W"));
-        vesselDao.saveEntity(new Berth("Qeqertarsuaq", "Godhavn", "69 15.0N", "053 33.0W"));
-        vesselDao.saveEntity(new Berth("Ammassivik", "Sletten", "60 35.8N", "045 23.7W"));
-        vesselDao.saveEntity(new Berth("Ittaajimmiut", "Kap Hope", "70 27.5N", "022 22.0W"));
-        vesselDao.saveEntity(new Berth("Kangersuatsiaq", "Prøven", "72 22.7N", "055 33.5W"));
-        vesselDao.saveEntity(new Berth("Qaanaaq", "Thule", "77 27.8N", "069 14.0W"));
-        vesselDao.saveEntity(new Berth("Upernavik", "72 47.5N", "056 09.4W"));
-        vesselDao.saveEntity(new Berth("Miami", "25 47.16N", "08 13.27W"));
 
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
