@@ -11,10 +11,10 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
     
     var menuModule = angular.module('embryo.menu',[]);
 
-    var embryoReady = false;
+    var embryoAuthenticated = false;
 
-    embryo.ready(function() {
-        embryoReady = true;
+    embryo.authenticated(function() {
+        embryoAuthenticated = true;
     })
 
     embryo.MenuCtrl = function($scope, $location, $element, $timeout) {
@@ -30,8 +30,8 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
                 }
             });
 
-            if (!embryoReady) {
-                embryo.ready(function() {
+            if (!embryoAuthenticated) {
+                embryo.authenticated(function() {
                     embryo.eventbus.fireEvent(embryo.eventbus.GroupChangedEvent(url.substring(url.lastIndexOf("/")+1)));
                 })
             } else {

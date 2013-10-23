@@ -90,5 +90,13 @@ $(function() {
             $("#searchField").focus();
         });
     });
-    
+
+    embryo.authenticated(function() {
+        if (!embryo.authentication.shipMmsi) {
+            embryo.groupChanged(function(e) {
+                if (e.groupId == "vessel") $("#searchField").focus();
+            });
+        }
+    });
+
 });

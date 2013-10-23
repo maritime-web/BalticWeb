@@ -96,14 +96,14 @@ $(function() {
         loadVesselList();
     });
 
-    embryo.ready(function() {
+    embryo.authenticated(function() {
         function fixAccordionSize() {
             $("#vesselControlPanel .accordion-inner").css("overflow", "auto");
-            $("#vesselControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - 300)+"px");
+            $("#vesselControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - $("#vesselControlPanel .accordion-group").length * 50 - 100)+"px");
         }
 
         $(window).resize(fixAccordionSize);
 
-        fixAccordionSize();
+        setTimeout(fixAccordionSize, 10);
     });
 })
