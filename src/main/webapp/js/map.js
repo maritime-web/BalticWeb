@@ -25,6 +25,11 @@ $(function() {
 
     var map = new OpenLayers.Map({
         div : "map",
+        controls: [
+            new OpenLayers.Control.Navigation(
+                { dragPanOptions: { enableKinetic: false } }
+            )
+        ],
         fractionalZoom : false
     });
 
@@ -246,6 +251,17 @@ $(function() {
         );
 
         map.addLayer(osm);
+
+        var extent = new OpenLayers.Bounds(-270, -90, 270, 90);
+
+        extent.transform(
+            new OpenLayers.Projection("EPSG:4326"),
+            map.getProjectionObject()
+        );
+
+        map.setOptions({
+            restrictedExtent: extent
+        });
 
         loadViewCookie();
 
