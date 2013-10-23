@@ -30,4 +30,4 @@ embryo.eventbus.EmbryoReadyEvent = function() {
 };
 
 embryo.eventbus.registerShorthand(embryo.eventbus.EmbryoReadyEvent, "ready");
-embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authenticated");
+embryo.eventbus.registerShorthand(embryo.eventbus.EmbryoReadyEvent, "authenticated");
