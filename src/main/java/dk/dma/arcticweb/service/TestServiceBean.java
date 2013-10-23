@@ -708,7 +708,7 @@ public class TestServiceBean {
     private void insertDemoRoute(String voyageId, String file, boolean activate) {
         InputStream is = getClass().getResourceAsStream(file);
         try {
-            Route r = vesselService.parseRoute(is);
+            Route r = vesselService.parseRoute(file, is);
             vesselService.saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);

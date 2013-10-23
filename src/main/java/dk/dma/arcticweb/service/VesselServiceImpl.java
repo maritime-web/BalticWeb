@@ -330,8 +330,8 @@ public class VesselServiceImpl implements VesselService {
      * Also sets yourship on route
      */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Route parseRoute(InputStream is) throws IOException {
-        RouteParser parser = RouteParser.getSimpleRouteParser(is);
+    public Route parseRoute(String fileName, InputStream is) throws IOException {
+        RouteParser parser = RouteParser.getRouteParser(fileName, is);
 
         dk.dma.enav.model.voyage.Route enavRoute = parser.parse();
         Route route = Route.fromEnavModel(enavRoute);
