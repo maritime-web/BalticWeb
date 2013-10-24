@@ -28,7 +28,8 @@ $(function() {
         controls: [
             new OpenLayers.Control.Navigation(
                 { dragPanOptions: { enableKinetic: false } }
-            )
+            ),
+            new OpenLayers.Control.Zoom()
         ],
         fractionalZoom : false
     });
@@ -244,7 +245,9 @@ $(function() {
         
         var osm = new OpenLayers.Layer.OSM(
             "OSM",
-            "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png", {
+            [ "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+            "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+            "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], {
                 'layers' : 'basic',
                 'isBaseLayer' : true
             }
