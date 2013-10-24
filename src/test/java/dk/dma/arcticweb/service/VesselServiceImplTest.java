@@ -249,7 +249,6 @@ public class VesselServiceImplTest {
 
             ReflectionAssert.assertReflectionEquals(expected, violations, ReflectionComparatorMode.IGNORE_DEFAULTS,
                     ReflectionComparatorMode.LENIENT_ORDER);
-            System.out.println(violations);
         }
 
         entityManager.clear();
