@@ -21,7 +21,15 @@ embryo.eventbus.registerShorthand(embryo.eventbus.MapInitialized, "mapInitialize
 
 $(function() {
     var selectLayerByGroup = { };
+
     var controlsByGroup = { };
+
+    var e1 = new OpenLayers.Bounds(-179, -89, 179, 89);
+
+    e1.transform(
+        new OpenLayers.Projection("EPSG:4326"),
+        new OpenLayers.Projection(embryo.projection)
+    );
 
     var map = new OpenLayers.Map({
         div : "map",
@@ -31,6 +39,8 @@ $(function() {
             ),
             new OpenLayers.Control.Zoom()
         ],
+        projection: embryo.projection,
+        maxExtent: e1,
         fractionalZoom : false
     });
 
@@ -241,30 +251,35 @@ $(function() {
     moveZoomControl();
     
     embryo.authenticated(function() {
-        map.projection = new OpenLayers.Projection(embryo.authentication.projection);
-        
-        var osm = new OpenLayers.Layer.OSM(
-            "OSM",
-            [ "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-            "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-            "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], {
-                'layers' : 'basic',
-                'isBaseLayer' : true
-            }
-        );
+        function createOsmLayer() {
+            return osm = new OpenLayers.Layer.OSM(
+                "OSM",
+                [ "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                 "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], {
+                    'layers' : 'basic',
+                    'isBaseLayer' : true
+                }
+            );
+        }
 
-        map.addLayer(osm);
+        function createBlackBaseLayer() {
+            var e1 = new OpenLayers.Bounds(-179, -89, 179, 89);
 
-        var extent = new OpenLayers.Bounds(-270, -90, 270, 90);
+            e1.transform(
+                new OpenLayers.Projection("EPSG:4326"),
+                embryo.projection
+            );
 
-        extent.transform(
-            new OpenLayers.Projection("EPSG:4326"),
-            map.getProjectionObject()
-        );
+            return new OpenLayers.Layer("Blank", {
+                isBaseLayer: true,
+                numZoomLevels: 19,
+                projection: map.projection,
+                maxExtent: e1
+            });
+        }
 
-        map.setOptions({
-            restrictedExtent: extent
-        });
+        map.addLayer(createOsmLayer());
 
         loadViewCookie();
 

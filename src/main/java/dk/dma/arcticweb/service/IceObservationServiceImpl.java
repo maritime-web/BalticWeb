@@ -97,7 +97,7 @@ public class IceObservationServiceImpl implements IceObservationService {
                 long size = new File(localDmiDirectory + "/" + name + ".shp").length();
 
                 if ((System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) && (!region.equals("Greenland WA"))) {
-                    iceObservations.add(new IceObservation("DMI", region, date, size, name));
+                    iceObservations.add(new IceObservation("DMI", region, date, size, "dmi." + name));
                 }
             }
         } catch (ParseException e) {
