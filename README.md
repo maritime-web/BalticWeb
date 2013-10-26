@@ -23,17 +23,11 @@ http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only avail
 
 
 ## Eclipse setup ##
-
-	Install JSLint plugin
-	* Choose Help > Install New Software
-	* Use update URL: http://svn.codespot.com/a/eclipselabs.org/mobile-web-development-with-phonegap/tags/r1.2.91/download
-	* Choose to install jslint4java and JavaScript Development Tools
-
-	Use standard Eclipse project;
+Use standard Eclipse project;
     * Go to command line and execute: mvn eclipse:eclipse 
 	* Choose File > Import and then General > Existing Projects into Worksapce
 	
-	Use Eclipse Maven integration
+Use Eclipse Maven integration
 	* Choose File > Import and then Maven > Existing Maven Projects
 
 ## Building ##
@@ -74,7 +68,6 @@ The installation of karma and usage of the maven-karma-plugin is described here 
 * mvn jboss-as:deploy - App deploy only 
 * mvn antrun:run - deploy js, css and html to temporary deploy folder on JBoss (fast deploy of web resources - web session not destroyed)
  
-
 ## JavaScript Validation Errors
 Ways to avoid annoying JavaScript Validation Errors in Eclipse:
 http://stackoverflow.com/questions/7102299/eclipse-javascript-validation-disabled-but-still-generating-errors

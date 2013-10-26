@@ -23,4 +23,4 @@
     module.run(function(MsiService) {
         embryo.msi.service = MsiService;
     })
-})()
+})();
