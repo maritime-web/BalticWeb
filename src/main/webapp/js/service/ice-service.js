@@ -90,4 +90,4 @@
     module.run(function(IceService) {
         embryo.ice.service = IceService;
     })
-})()
+})();
