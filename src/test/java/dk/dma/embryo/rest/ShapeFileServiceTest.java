@@ -16,6 +16,7 @@
 package dk.dma.embryo.rest;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -28,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 public class ShapeFileServiceTest {
     private ShapeFileService service = new ShapeFileService();
 
+    @Ignore
     @Test
     public void test() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -45,9 +47,8 @@ public class ShapeFileServiceTest {
 
     @Test
     public void reprojectTest() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
         List<ShapeFileService.Shape> file = service.getMultipleFile("static.world_merc", 0, "", true, 4);
-        String result = mapper.writeValueAsString(file);
-        System.out.println(result);
+        assertEquals(-616867, file.get(0).getFragments().get(0).getPolygons().get(0).get(0).getX());
+        assertEquals(170244, file.get(0).getFragments().get(0).getPolygons().get(0).get(0).getY());
     }
 }
