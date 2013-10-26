@@ -17,6 +17,7 @@ package dk.dma.embryo.rest;
 
 import dk.dma.configuration.Property;
 import dk.dma.dataformats.dbf.DbfParser;
+import dk.dma.dataformats.shapefile.ProjectionFileParser;
 import dk.dma.dataformats.shapefile.ShapeFileParser;
 import org.jboss.resteasy.annotations.GZIP;
 
@@ -29,8 +30,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ import java.util.Map;
 public class ShapeFileService {
     @Inject
     @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
-    private String localDmiDirectory;
+    String localDmiDirectory;
 
     @GET
     @Path("/single/{id}")
@@ -48,9 +49,11 @@ public class ShapeFileService {
     public Shape getSingleFile(
             @PathParam("id") String id,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
-            @DefaultValue("") @QueryParam("filter") String filter
+            @DefaultValue("") @QueryParam("filter") String filter,
+            @DefaultValue("false") @QueryParam("delta") boolean delta,
+            @DefaultValue("2") @QueryParam("exponent") int exponent
     ) throws IOException {
-        return readSingleFile(id, resolution, filter);
+        return readSingleFile(id, resolution, filter, delta, exponent);
     }
 
     @GET
@@ -60,24 +63,64 @@ public class ShapeFileService {
     public List<Shape> getMultipleFile(
             @PathParam("ids") String ids,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
-            @DefaultValue("") @QueryParam("filter") String filter
+            @DefaultValue("") @QueryParam("filter") String filter,
+            @DefaultValue("false") @QueryParam("delta") boolean delta,
+            @DefaultValue("2") @QueryParam("exponent") int exponent
     ) throws IOException {
         List<Shape> result = new ArrayList<>();
 
         for (String id : ids.split(",")) {
-            result.add(readSingleFile(id, resolution, filter));
+            result.add(readSingleFile(id, resolution, filter, delta, exponent));
         }
 
         return result;
     }
 
-    public Shape readSingleFile(String id, int resolution, String filter) throws IOException {
-        Map<String, Object> shapeDescription = new HashMap<>();
-        shapeDescription.put("id", id);
+    private static Position reprojectAndRound(ShapeFileParser.Point p, String projection, int exponent) {
+        if (projection.equals("GOOGLE_MERCATOR")) {
+            // after http://stackoverflow.com/questions/11957538/converting-geographic-wgs-84-to-web-mercator-102100
+
+            double x = p.getX();
+            double y = p.getY();
+            double num3 = x / 6378137.0;
+            double num4 = num3 * 57.295779513082323;
+            double num5 = Math.floor((num4 + 180.0) / 360.0);
+            double num6 = num4 - (num5 * 360.0);
+            double num7 = 1.5707963267948966 - (2.0 * Math.atan(Math.exp((-1.0 * y) / 6378137.0)));
+            double x1 = num6;
+            double y1 = num7 * 57.295779513082323;
+
+            return new Position(round(x1, exponent), round(y1, exponent));
+        } else {
+            return new Position(round(p.getX(), exponent), round(p.getY(), exponent));
+        }
+    }
+
+    public Shape readSingleFile(String id, int resolution, String filter, boolean delta, int exponent) throws IOException {
+        InputStream shpIs;
+        InputStream dbfIs;
+        InputStream prjIs;
+
+        if (id.startsWith("dmi.")) {
+            id = id.substring(4);
+            shpIs = new FileInputStream(localDmiDirectory + "/" + id + ".shp");
+            dbfIs = new FileInputStream(localDmiDirectory + "/" + id + ".dbf");
+            prjIs = new FileInputStream(localDmiDirectory + "/" + id + ".prj");
+        } else if (id.startsWith("static.")) {
+            id = id.substring(7);
+            shpIs = getClass().getResourceAsStream("/shapefiles/" + id + ".shp");
+            dbfIs = getClass().getResourceAsStream("/shapefiles/" + id + ".dbf");
+            prjIs = getClass().getResourceAsStream("/shapefiles/" + id + ".prj");
+        } else {
+            throw new RuntimeException("No prefix for " + id);
+        }
+
+        String projection = ProjectionFileParser.parse(prjIs);
+
         List<Fragment> fragments = new ArrayList<>();
 
-        ShapeFileParser.File file = ShapeFileParser.parse(new FileInputStream(localDmiDirectory + "/" + id + ".shp"));
-        List<Map<String, Object>> data = DbfParser.parse(new FileInputStream(localDmiDirectory + "/" + id + ".dbf"));
+        ShapeFileParser.File file = ShapeFileParser.parse(shpIs);
+        List<Map<String, Object>> data = DbfParser.parse(dbfIs);
 
         for (ShapeFileParser.Record r : file.getRecords()) {
             if (r.getShape() instanceof ShapeFileParser.PolyLine) {
@@ -88,19 +131,32 @@ public class ShapeFileService {
                     for (List<ShapeFileParser.Point> part : ((ShapeFileParser.PolyLine) r.getShape()).getPartsAsPoints()) {
                         List<Position> polygon = new ArrayList<>();
                         for (ShapeFileParser.Point p : part) {
-                            polygon.add(new Position(p.getX(), p.getY()));
+                            polygon.add(reprojectAndRound(p, projection, exponent));
                         }
 
-                        if (resolution == 0) {
+                        if (resolution != 0) {
+                            polygon = resample(polygon, resolution);
+                        }
+
+                        if (delta) {
+                            polygon = convertToDelta(polygon);
+                        }
+
+                        if (polygon.size() > 1) {
                             polygons.add(polygon);
-                        } else {
-                            polygons.add(resample(polygon, resolution));
                         }
                     }
-                    fragments.add(new Fragment(description, polygons));
+
+                    if (polygons.size() > 0) {
+                        fragments.add(new Fragment(description, polygons));
+                    }
                 }
             }
         }
+
+        Map<String, Object> shapeDescription = new HashMap<>();
+
+        shapeDescription.put("id", id);
 
         return new Shape(shapeDescription, fragments);
     }
@@ -123,25 +179,59 @@ public class ShapeFileService {
         return result;
     }
 
-    public static void main(String[] args) {
-        System.out.println("result is " + resample(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20), 4));
+    private static long round(double value, int exponent) {
+        return Math.round(value * Math.pow(10, exponent));
+    }
+
+    private static List<Position> convertToDelta(List<Position> input) {
+        List<Position> result = new ArrayList<>();
+
+        Position current = new Position(0, 0);
+
+        for (Position p : input) {
+            Position delta = new Position(p.getX() - current.getX(), p.getY() - current.getY());
+            if (delta.getX() != 0 || delta.getY() != 0) {
+                result.add(delta);
+            }
+            current = p;
+        }
+
+        return result;
+    }
+
+    private static List<Position> convertFromDelta(List<Position> input) {
+        List<Position> result = new ArrayList<>();
+
+        Position current = new Position(0, 0);
+
+        for (Position delta : input) {
+            Position p = new Position(delta.getX() + current.getX(), delta.getY() + current.getY());
+            result.add(p);
+            current = p;
+        }
+
+        return result;
     }
 
     public static class Position {
-        private double x;
-        private double y;
+        private long x;
+        private long y;
 
-        public Position(double x, double y) {
+        public Position(long x, long y) {
             this.x = x;
             this.y = y;
         }
 
-        public double getX() {
+        public long getX() {
             return x;
         }
 
-        public double getY() {
+        public long getY() {
             return y;
+        }
+
+        public String toString() {
+            return "Position(" + x + ", " + y + ")";
         }
     }
 

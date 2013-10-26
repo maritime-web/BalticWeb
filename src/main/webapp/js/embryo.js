@@ -8,6 +8,8 @@ embryo.baseUrl = "";
 embryo.baseUrlForAngularResource = "";
 // embryo.baseUrlForAngularResource = "http://localhost\\:8080/arcticweb/";
 
+embryo.projection = "EPSG:900913";
+
 embryo.loadFrequence = 120 * 1000;
 
 embryo.defaultFontFamily = "'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif";

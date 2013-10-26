@@ -43,7 +43,7 @@ public class DbfField {
             throw new RuntimeException("The field length should be less than 254 characters for character fields. Got: " +
                     i);
         }
-        if (c == 'N' && i >= 21) {
+        if (c == 'N' && i >= 30) {
             throw new RuntimeException(
                     "The field length should be less than 21 digits for numeric fields. Got: " +
                             i);

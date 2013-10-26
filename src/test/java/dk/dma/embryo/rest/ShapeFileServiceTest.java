@@ -15,17 +15,40 @@
  */
 package dk.dma.embryo.rest;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 import static org.junit.Assert.assertEquals;
 
 public class ShapeFileServiceTest {
     private ShapeFileService service = new ShapeFileService();
-    // @Test - disabled since shapefiles are no longer static resources
-    public void readFileFromDmi() throws IOException {
-        ShapeFileService.Shape file = service.getSingleFile("201304100920_CapeFarewell_RIC", 0, "");
-        assertEquals(23, file.getFragments().size());
+
+    @Ignore
+    @Test
+    public void test() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        service.localDmiDirectory = "/Users/chvid/sfs/dmi";
+        List<ShapeFileService.Shape> file = service.getMultipleFile("dmi.201310132210_Qaanaaq_RIC", 0, "", true, 4);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gos = new GZIPOutputStream(out);
+        String result = mapper.writeValueAsString(file);
+        System.out.println("uncompressed size is " + result.getBytes().length);
+        gos.write(result.getBytes());
+        System.out.println("size is " + out.toByteArray().length);
+
+    }
+
+    @Test
+    public void reprojectTest() throws IOException {
+        List<ShapeFileService.Shape> file = service.getMultipleFile("static.world_merc", 0, "", true, 4);
+        assertEquals(-616867, file.get(0).getFragments().get(0).getPolygons().get(0).get(0).getX());
+        assertEquals(170244, file.get(0).getFragments().get(0).getPolygons().get(0).get(0).getY());
     }
 }
