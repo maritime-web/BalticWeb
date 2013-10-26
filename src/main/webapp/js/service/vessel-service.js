@@ -71,4 +71,4 @@
     module.run(function(VesselService) {
         embryo.vessel.service = VesselService;
     })
-})()
+})();
