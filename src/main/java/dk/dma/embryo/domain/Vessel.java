@@ -96,8 +96,6 @@ public class Vessel extends BaseEntity<Long> {
         ship.setImo(getAisData().getImoNo());
         ship.setType(getType());
         ship.setCommCapabilities(getCommCapabilities());
-        ship.setLength(getAisData().getLength());
-        ship.setWidth(getAisData().getWidth());
         ship.setGrossTon(getGrossTonnage());
         ship.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
         ship.setIceClass(getIceClass());

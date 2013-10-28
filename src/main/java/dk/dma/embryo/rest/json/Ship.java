@@ -39,10 +39,6 @@ public class Ship {
     /** Communication capabilities */
     private String commCapabilities;
 
-    private Integer width;
-
-    private Integer length;
-
     private Float maxSpeed;
 
     /** Gross tonnage */
@@ -124,22 +120,6 @@ public class Ship {
 
     public void setCommCapabilities(String commCapabilities) {
         this.commCapabilities = commCapabilities;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getLength() {
-        return length;
-    }
-
-    public void setLength(Integer length) {
-        this.length = length;
     }
 
     public Float getMaxSpeed() {

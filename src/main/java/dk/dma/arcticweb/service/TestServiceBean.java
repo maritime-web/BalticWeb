@@ -272,8 +272,6 @@ public class TestServiceBean {
         newVessel.getAisData().setImoNo(9336725L);
         newVessel.getAisData().setName("ORASILA");
         newVessel.getAisData().setCallsign("OYDK2");
-        newVessel.getAisData().setWidth(14);
-        newVessel.getAisData().setLength(77);
 
         newVessel = vesselDao.saveEntity(newVessel);
 
@@ -558,8 +556,6 @@ public class TestServiceBean {
         newVessel.setMmsi(354237000L);
         newVessel.getAisData().setCallsign("H3VT");
         newVessel.getAisData().setImoNo(9224726L);
-        newVessel.getAisData().setLength(293);
-        newVessel.getAisData().setWidth(32);
         newVessel.setGrossTonnage(85942);
         newVessel = vesselDao.saveEntity(newVessel);
 
