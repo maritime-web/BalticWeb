@@ -43,6 +43,7 @@
             list: function(callback) {
                 $.ajax({
                     url: embryo.baseUrl+"rest/ice/list",
+                    timeout: embryo.defaultTimeout,
                     data: { },
                     success: function(data) {
                         callback(null, data);
@@ -66,6 +67,7 @@
 
                 $.ajax({
                     url: embryo.baseUrl+"rest/shapefile/multiple/" + r.ids,
+                    timeout: embryo.defaultTimeout,
                     data: {
                         delta: r.delta,
                         exponent: r.exponent

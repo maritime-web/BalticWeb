@@ -15,9 +15,12 @@
  */
 package dk.dma.embryo.rest;
 
+import dk.dma.embryo.config.LogConfiguration;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,6 +36,7 @@ public class ShapeFileServiceTest {
     @Test
     public void test() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        service.logger = LoggerFactory.getLogger(ShapeFileService.class);
         service.localDmiDirectory = "/Users/chvid/sfs/dmi";
         List<ShapeFileService.Shape> file = service.getMultipleFile("dmi.201310132210_Qaanaaq_RIC", 0, "", true, 4);
 
@@ -47,6 +51,7 @@ public class ShapeFileServiceTest {
 
     @Test
     public void reprojectTest() throws IOException {
+        service.logger = LoggerFactory.getLogger(ShapeFileService.class);
         List<ShapeFileService.Shape> file = service.getMultipleFile("static.world_merc", 0, "", true, 4);
         assertEquals(-616867, file.get(0).getFragments().get(0).getPolygons().get(0).get(0).getX());
         assertEquals(170244, file.get(0).getFragments().get(0).getPolygons().get(0).get(0).getY());

@@ -6,6 +6,7 @@
             list: function(callback) {
                 $.ajax({
                     url: embryo.baseUrl+"rest/msi/list",
+                    timeout: embryo.defaultTimeout,
                     data: { },
                     success: function(data) {
                         callback(null, data);

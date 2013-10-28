@@ -54,7 +54,10 @@ embryo.ready(function() {
                     },
                     success: function(data) {
                         sessionStorage.clear();
-                        location = "front.html";
+                        localStorage.clear();
+                        setTimeout(function() {
+                            location = "front.html";
+                        }, 100);
                     },
                     error: function(data) {
                         embryo.messagePanel.replace(messageId, { text: "Logout failed. ("+data.status+")", type: "error" })

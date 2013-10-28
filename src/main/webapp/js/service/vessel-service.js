@@ -8,6 +8,7 @@
             list: function(callback) {
                 $.ajax({
                     url: embryo.baseUrl + "json_proxy/vessel_list",
+                    timeout: embryo.defaultTimeout,
                     data: {
                         requestId: lastRequestId
                     },
@@ -23,6 +24,7 @@
             details: function(id, callback) {
                 $.ajax({
                     url: embryo.baseUrl + "rest/vessel/details",
+                    timeout: embryo.defaultTimeout,
                     data: {
                         id : id,
                         past_track: 0
@@ -38,14 +40,15 @@
             search: function(argument, callback) {
                 $.ajax({
                     url: embryo.baseUrl + "json_proxy/vessel_search",
+                    timeout: embryo.defaultTimeout,
                     data: {
                         argument: argument
                     },
                     success: function(data) {
                         callback(null, data.vessels)
                     },
-                    error: function(data) {
-                        callback(data);
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        callback(jqXHR, null);
                     }
                 })
             },
