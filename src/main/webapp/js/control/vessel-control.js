@@ -32,7 +32,7 @@ $(function() {
     }
 
     embryo.vessel.goToVesselLocation = function (vessel) {
-        embryo.map.setCenter(vessel.lon, vessel.lat, 8);
+        embryo.map.setCenter(vessel.x, vessel.y, 8);
     }
 
     embryo.vessel.selectVessel = function (vessel) {
@@ -41,7 +41,6 @@ $(function() {
 
     embryo.vessel.setMarkedVessel = function(markedVesselId) {
         vesselLayer.markedVesselId = markedVesselId;
-        // vesselLayer.draw(vessels);
     }
 
     var selectedId = null;
@@ -58,11 +57,7 @@ $(function() {
 
         embryo.vessel.service.list(function(error, data) {
             if (data) {
-                vessels = [];
-
-                for (var i in data) {
-                    vessels.push(new Vessel(i, data[i]));
-                }
+                vessels = data;
 
                 embryo.messagePanel.replace(messageId, { text: vessels.length + " vessels loaded.", type: "success" })
 

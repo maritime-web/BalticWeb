@@ -1,3 +1,37 @@
+var imageForVessel = function(vo) {
+    var colorName;
+
+    switch (vo.type) {
+		case "0" : colorName = "blue"; break;
+		case "1" : colorName = "gray"; break;
+		case "2" : colorName = "green"; break;
+		case "3" : colorName = "orange"; break;
+		case "4" : colorName = "purple"; break;
+		case "5" : colorName = "red"; break;
+		case "6" : colorName = "turquoise"; break;
+		case "7" : colorName = "yellow"; break;
+		default : colorName = "unknown";
+	}
+
+	if (vo.moored){
+		return {
+		    name: "vessel_" + colorName + "_moored.png",
+		    width: 12,
+		    height: 12,
+		    xOffset: -6,
+		    yOffset: -6
+		}
+	} else {
+	    return {
+    		name: "vessel_" + colorName + ".png",
+    		width: 20,
+	    	height: 10,
+	    	xOffset: -10,
+	    	yOffset: -5
+	    }
+	}
+}
+
 function VesselLayer() {
     this.init = function() {
         this.zoomLevels = [4, 6];
@@ -80,9 +114,9 @@ function VesselLayer() {
                 if (v.attributes.vessel.id == id) {
                     that.layers.selection.addFeatures([
                         new OpenLayers.Feature.Vector(
-                             that.map.createPoint(v.attributes.vessel.lon, v.attributes.vessel.lat), {
+                             that.map.createPoint(v.attributes.vessel.x, v.attributes.vessel.y), {
                                 id : -1,
-                                angle : v.attributes.vessel.degree - 90,
+                                angle : v.attributes.vessel.angle - 90,
                                 opacity : 1,
                                 image : "img/selection.png",
                                 imageWidth : 32,
@@ -114,19 +148,20 @@ function VesselLayer() {
         var context = this.context;
 
         $.each(vessels, function(key, value) {
+            var image = imageForVessel(value);
             var attr = {
                 id : value.id,
-                angle : value.degree - 90,
-                image : "img/" + value.image,
-                imageWidth : function() { return value.imageWidth * context.vesselSize() },
-                imageHeight : function() { return value.imageHeight * context.vesselSize() },
-                imageYOffset : function() { return value.imageYOffset * context.vesselSize() },
-                imageXOffset : function() { return value.imageXOffset * context.vesselSize() },
+                angle : value.angle - 90,
+                image : "img/" + image.name,
+                imageWidth : function() { return image.width * context.vesselSize() },
+                imageHeight : function() { return image.height * context.vesselSize() },
+                imageYOffset : function() { return image.yOffset * context.vesselSize() },
+                imageXOffset : function() { return image.xOffset * context.vesselSize() },
                 type : "vessel",
                 vessel : value
             }
 
-            var geom = embryo.map.createPoint(value.lon, value.lat);
+            var geom = embryo.map.createPoint(value.x, value.y);
 
             var feature = new OpenLayers.Feature.Vector(geom, attr);
 
@@ -154,7 +189,7 @@ function VesselLayer() {
             if (that.markedVesselId == v.id) {
                 markerLayer.addFeatures([
                     new OpenLayers.Feature.Vector(
-                        embryo.map.createPoint(v.lon, v.lat), {
+                        embryo.map.createPoint(v.x, v.y), {
                             id : -1,
                             angle : 0,
                             opacity : "{transparency}",

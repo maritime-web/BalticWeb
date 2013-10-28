@@ -1,20 +1,14 @@
 (function() {
     var module = angular.module('embryo.vessel', []);
 
-    var lastRequestId = 0;
-
     module.service('VesselService', function() {
         return {
             list: function(callback) {
                 $.ajax({
-                    url: embryo.baseUrl + "json_proxy/vessel_list",
+                    url: embryo.baseUrl + "rest/vessel/list",
                     timeout: embryo.defaultTimeout,
-                    data: {
-                        requestId: lastRequestId
-                    },
                     success: function(data) {
-                        if (data.requestId != lastRequestId) return;
-                        callback(null, data.vesselList.vessels);
+                        callback(null, data);
                     },
                     error: function(data) {
                         callback(data);
@@ -58,15 +52,59 @@
                 var result = [];
 
                 $.each(embryo.vessel.allVessels(), function (k,v) {
-                    if (v.vesselName) {
-                        if ((v.vesselName.toLowerCase().indexOf(argument.toLowerCase()) == 0) || 
-                            (v.vesselName.toLowerCase().indexOf(" "+argument.toLowerCase()) >= 0)) {
+                    if (v.name) {
+                        if ((v.name.toLowerCase().indexOf(argument.toLowerCase()) == 0) || 
+                            (v.name.toLowerCase().indexOf(" "+argument.toLowerCase()) >= 0)) {
                             result.push(v);
                         }
                     }
                 })
 
                 callback(result);
+            },
+            subscribe: function (mmsi, callback) {
+                var that = this;
+                function lookupStepTwo(vesselOverview) {
+                    if (vesselOverview) {
+                        that.details(vesselOverview.id, function(error, vesselDetails) {
+                            if (vesselDetails) {
+                                callback(null, vesselOverview, vesselDetails);
+                            } else {
+                                callback(error);
+                            }
+                        })
+                    } else {
+                        callback("unable to find "+mmsi);
+                    }
+                }
+
+                function lookup() {
+                    that.clientSideMmsiSearch(mmsi, lookupStepTwo);
+                }
+
+                lookup(mmsi, callback);
+
+                return setInterval(lookup, embryo.loadFrequence);
+            },
+            unsubscribe: function (id) {
+                clearInterval(id);
+            },
+            clientSideMmsiSearch: function(mmsi, callback) {
+                var that = this;
+                var result = [];
+
+                if (embryo.vessel.allVessels()) {
+                    $.each(embryo.vessel.allVessels(), function (k,v) {
+                        if (mmsi == v.mmsi) {
+                            result.push(v);
+                        }
+                    })
+                    callback(result[0]);
+                } else {
+                    setTimeout(function() {
+                        that.clientSideMmsiSearch(mmsi, callback);
+                    }, 100);
+                }
             }
         };
     });

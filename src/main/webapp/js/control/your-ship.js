@@ -5,44 +5,26 @@ $(function() {
 
     addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
 
-    function setup() {
-        function downloadShipDetails(id) {
-            embryo.vessel.service.details(id, function(error, data) {
-                if (data) {
-                    $("a[href=#vcpYourShip]").html("Your Ship - "+data.name);
-                    $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(data));
-                    $("#yourShipAesInformationLink").off("click");
-                    $("#yourShipAesInformationLink").on("click", function(e) {
-                        e.preventDefault();
-                        embryo.vesselInformation.showAesDialog(data);
-                    });
-                    setupAdditionalInformationTable("#yourShipAdditionalInformation", yourShip, data, "YourShip");
-                    if (data.route) yourShipRouteLayer.draw(data.route);
-                } else {
-                    embryo.messagePanel.show({ text: "Server returned error code: " + error.status + " getting vessel details.", type: "error" });
-                }
-            })
+    function updateBox(error, vesselOverview, vesselDetails) {
+        if (!error) {
+            yourShip = vesselOverview;
+            embryo.vessel.setMarkedVessel(vesselOverview.id);
+
+            $("a[href=#vcpYourShip]").html("Your Ship - "+vesselDetails.name);
+            $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(vesselDetails));
+            $("#yourShipAesInformationLink").off("click");
+            $("#yourShipAesInformationLink").on("click", function(e) {
+                e.preventDefault();
+                embryo.vesselInformation.showAesDialog(vesselDetails);
+            });
+            setupAdditionalInformationTable("#yourShipAdditionalInformation", vesselOverview, vesselDetails, "YourShip");
+            if (vesselDetails.route) yourShipRouteLayer.draw(vesselDetails.route);
         }
-
-        embryo.vessel.service.search(embryo.authentication.shipMmsi, function(error, data) {
-            if (data) {
-                $.each(data, function(k, v) {
-                    yourShip = new Vessel(k, v);
-                })
-
-                embryo.vessel.setMarkedVessel(yourShip.id);
-
-                downloadShipDetails(yourShip.id);
-            } else {
-                embryo.messagePanel.show({ text: "Server returned error code: " + error.status + " searching vessels.", type: "error" });
-            }
-        });
     }
-    
+
     embryo.authenticated(function() {
         if (embryo.authentication.shipMmsi) {
-            setup();
-            setInterval(setup, embryo.loadFrequence);
+            embryo.vessel.service.subscribe(embryo.authentication.shipMmsi, updateBox);
         } else {
             $("#vcpYourShip").parent().remove();
             $("#zoomToYourShip").remove();
