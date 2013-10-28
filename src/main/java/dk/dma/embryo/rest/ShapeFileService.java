@@ -20,6 +20,8 @@ import dk.dma.dataformats.dbf.DbfParser;
 import dk.dma.dataformats.shapefile.ProjectionFileParser;
 import dk.dma.dataformats.shapefile.ShapeFileParser;
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.Cache;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -42,10 +44,16 @@ public class ShapeFileService {
     @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
     String localDmiDirectory;
 
+    @Inject
+    private Logger logger;
+
     @GET
     @Path("/single/{id}")
     @Produces("application/json")
     @GZIP
+    @Cache(
+            maxAge = 31556926
+    )
     public Shape getSingleFile(
             @PathParam("id") String id,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
@@ -53,6 +61,7 @@ public class ShapeFileService {
             @DefaultValue("false") @QueryParam("delta") boolean delta,
             @DefaultValue("2") @QueryParam("exponent") int exponent
     ) throws IOException {
+        logger.info("Request for single file: "+id);
         return readSingleFile(id, resolution, filter, delta, exponent);
     }
 
@@ -60,6 +69,9 @@ public class ShapeFileService {
     @Path("/multiple/{ids}")
     @Produces("application/json")
     @GZIP
+    @Cache(
+            maxAge = 31556926
+    )
     public List<Shape> getMultipleFile(
             @PathParam("ids") String ids,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
@@ -67,6 +79,7 @@ public class ShapeFileService {
             @DefaultValue("false") @QueryParam("delta") boolean delta,
             @DefaultValue("2") @QueryParam("exponent") int exponent
     ) throws IOException {
+        logger.info("Request for multiple files: "+ids);
         List<Shape> result = new ArrayList<>();
 
         for (String id : ids.split(",")) {
