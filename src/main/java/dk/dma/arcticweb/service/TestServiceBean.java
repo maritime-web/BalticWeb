@@ -234,10 +234,12 @@ public class TestServiceBean {
         createOraTankTestData();
         uploadOraTankRoutes();
         createSarfaqTestData();
-        uploadSarfaqRoutes();
-        createCarnivalLegendTestData();
-        uploadCarnivalLegendRoutes();
-
+        //createSarfaqSchedule();
+        //uploadSarfaqRoutes();
+        createNajaArcticaTestData();
+        createArinaArcticaTestData();
+//        createCarnivalLegendTestData();
+//        uploadCarnivalLegendRoutes();
         createDmiLogin();
         createIceCenterLogin();
         createArcticCommandLogin();
@@ -387,8 +389,6 @@ public class TestServiceBean {
         // Create vessel and user
         Vessel newVessel = new Vessel();
         newVessel.setMmsi(331037000L);
-        newVessel.getAisData().setName("SARFAQ ITTUK");
-        newVessel.getAisData().setCallsign("OWDD");
         newVessel = vesselDao.saveEntity(newVessel);
 
         Permission ais = new Permission("ais");
@@ -409,9 +409,17 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(user);
 
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createSarfaqSchedule() {
+        logger.info("BEFORE SCHEDULE - SARFAQ");
+
+        Vessel sarfaq = vesselService.getVessel(331037000L);
+                
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
-        newVessel.setVoyagePlan(voyagePlan);
+        sarfaq.setVoyagePlan(voyagePlan);
 
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
 
@@ -471,6 +479,7 @@ public class TestServiceBean {
         vesselDao.saveEntity(voyagePlan);
     }
 
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadSarfaqRoutes() {
         logger.info("BEFORE UPLOAD - SARFAQ");
@@ -481,6 +490,62 @@ public class TestServiceBean {
                 false);
         insertDemoRoute(voyagePlan.getVoyagePlan().get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt",
                 false);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createNajaArcticaTestData() {
+        logger.info("BEFORE CREATION - NAJA ARCTICA");
+
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.setMmsi(219623000L);
+        newVessel = vesselDao.saveEntity(newVessel);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setVessel(newVessel);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        vesselDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("naja", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        vesselDao.saveEntity(user);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createArinaArcticaTestData() {
+        logger.info("BEFORE CREATION - ARINA ARCTICA");
+
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.setMmsi(219097000L);
+        newVessel = vesselDao.saveEntity(newVessel);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setVessel(newVessel);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        vesselDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("arina", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        vesselDao.saveEntity(user);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
