@@ -9,7 +9,7 @@ $(function() {
         function downloadShipDetails(id) {
             embryo.vessel.service.details(id, function(error, data) {
                 if (data) {
-                    $("a[href=#vcpYourShip]").html("Your Ship - "+data.name);
+                    $("a[href=#vcpYourShip]").html("Your Vessel - "+data.name);
                     $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(data));
                     $("#yourShipAesInformationLink").off("click");
                     $("#yourShipAesInformationLink").on("click", function(e) {
