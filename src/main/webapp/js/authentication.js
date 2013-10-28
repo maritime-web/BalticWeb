@@ -54,6 +54,7 @@ embryo.ready(function() {
                     },
                     success: function(data) {
                         sessionStorage.clear();
+                        localStorage.clear();
                         location = "front.html";
                     },
                     error: function(data) {
