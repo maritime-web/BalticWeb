@@ -81,9 +81,7 @@ public class VesselServiceImpl implements VesselService {
             managed.getAisData().setCallsign(vessel.getAisData().getCallsign());
             managed.setCommCapabilities(vessel.getCommCapabilities());
             managed.setHelipad(vessel.getHelipad());
-            managed.getAisData().setLength(vessel.getAisData().getLength());
             managed.setMaxSpeed(vessel.getMaxSpeed());
-            managed.getAisData().setWidth(vessel.getAisData().getWidth());
             managed.setType(vessel.getType());
             managed.setGrossTonnage(vessel.getGrossTonnage());
 

@@ -234,10 +234,12 @@ public class TestServiceBean {
         createOraTankTestData();
         uploadOraTankRoutes();
         createSarfaqTestData();
-        uploadSarfaqRoutes();
-        createCarnivalLegendTestData();
-        uploadCarnivalLegendRoutes();
-
+        //createSarfaqSchedule();
+        //uploadSarfaqRoutes();
+        createNajaArcticaTestData();
+        createArinaArcticaTestData();
+//        createCarnivalLegendTestData();
+//        uploadCarnivalLegendRoutes();
         createDmiLogin();
         createIceCenterLogin();
         createArcticCommandLogin();
@@ -270,8 +272,6 @@ public class TestServiceBean {
         newVessel.getAisData().setImoNo(9336725L);
         newVessel.getAisData().setName("ORASILA");
         newVessel.getAisData().setCallsign("OYDK2");
-        newVessel.getAisData().setWidth(14);
-        newVessel.getAisData().setLength(77);
 
         newVessel = vesselDao.saveEntity(newVessel);
 
@@ -387,8 +387,6 @@ public class TestServiceBean {
         // Create vessel and user
         Vessel newVessel = new Vessel();
         newVessel.setMmsi(331037000L);
-        newVessel.getAisData().setName("SARFAQ ITTUK");
-        newVessel.getAisData().setCallsign("OWDD");
         newVessel = vesselDao.saveEntity(newVessel);
 
         Permission ais = new Permission("ais");
@@ -409,9 +407,17 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(user);
 
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createSarfaqSchedule() {
+        logger.info("BEFORE SCHEDULE - SARFAQ");
+
+        Vessel sarfaq = vesselService.getVessel(331037000L);
+                
         LocalDateTime now = LocalDateTime.now();
         VoyagePlan voyagePlan = new VoyagePlan();
-        newVessel.setVoyagePlan(voyagePlan);
+        sarfaq.setVoyagePlan(voyagePlan);
 
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
 
@@ -471,6 +477,7 @@ public class TestServiceBean {
         vesselDao.saveEntity(voyagePlan);
     }
 
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadSarfaqRoutes() {
         logger.info("BEFORE UPLOAD - SARFAQ");
@@ -484,6 +491,62 @@ public class TestServiceBean {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createNajaArcticaTestData() {
+        logger.info("BEFORE CREATION - NAJA ARCTICA");
+
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.setMmsi(219623000L);
+        newVessel = vesselDao.saveEntity(newVessel);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setVessel(newVessel);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        vesselDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("naja", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        vesselDao.saveEntity(user);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createArinaArcticaTestData() {
+        logger.info("BEFORE CREATION - ARINA ARCTICA");
+
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.setMmsi(219097000L);
+        newVessel = vesselDao.saveEntity(newVessel);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setVessel(newVessel);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        vesselDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("arina", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        vesselDao.saveEntity(user);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createCarnivalLegendTestData() {
         logger.info("BEFORE CREATION - CARNIVAL LEGEND");
 
@@ -493,8 +556,6 @@ public class TestServiceBean {
         newVessel.setMmsi(354237000L);
         newVessel.getAisData().setCallsign("H3VT");
         newVessel.getAisData().setImoNo(9224726L);
-        newVessel.getAisData().setLength(293);
-        newVessel.getAisData().setWidth(32);
         newVessel.setGrossTonnage(85942);
         newVessel = vesselDao.saveEntity(newVessel);
 

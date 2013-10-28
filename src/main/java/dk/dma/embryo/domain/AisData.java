@@ -39,12 +39,6 @@ public class AisData implements Serializable{
     @Column(nullable = true)
     private Long imoNo;
 
-    @Column(nullable = true)
-    private Integer width;
-
-    @Column(nullable = true)
-    private Integer length;
-
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
@@ -54,8 +48,6 @@ public class AisData implements Serializable{
         map.put("name", name);
         map.put("callsign", callsign);
         map.put("imoNo", imoNo);
-        map.put("width", width);
-        map.put("length", length);
         
         return map;
     }
@@ -77,22 +69,6 @@ public class AisData implements Serializable{
 
     public void setCallsign(String callsign) {
         this.callsign = callsign;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getLength() {
-        return length;
-    }
-
-    public void setLength(Integer length) {
-        this.length = length;
     }
 
     public Long getImoNo() {

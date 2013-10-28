@@ -23,8 +23,8 @@
     embryo.angular.config([ '$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
 
-        $routeProvider.when('/ship', {
-            templateUrl : 'partials/shipInformation.html',
+        $routeProvider.when('/vessel', {
+            templateUrl : 'partials/vesselInformation.html',
             controller : embryo.ShipInformationCtrl
         }).when('/voyagePlan/:mmsi', {
             templateUrl : 'partials/voyagePlan.html',
