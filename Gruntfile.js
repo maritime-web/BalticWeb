@@ -12,12 +12,13 @@ module.exports = function(grunt) {
             src : 'src/main/webapp',
             test : 'src/test/jsUnit',
             build : '.tmp/webapp',
+            livereload : '.tmp/livereload',
             dist : 'target/webapp'
         },
         watch : {
-            js : {
-                files : [ '<%= proj.src %>/js/{,*/}*.js' ],
-                tasks : [ 'default' ]
+            webapp : {
+                files : [ '<%= proj.src %>/{,**/}*.*' ],
+                tasks : [ 'copy:all2Livereload' ]
             },
             jsTest : {
                 files : [ '<%= proj.test %>/{,*/}*.js' ],
@@ -31,8 +32,8 @@ module.exports = function(grunt) {
                 options : {
                     livereload : '<%= connect.options.livereload %>'
                 },
-                files : [ '<%= proj.src %>/{,*/}*.html', '<%= proj.src %>/css/{,*/}*.css',
-                        '<%= proj.src %>/js/{,*/}*.js', '<%= proj.src %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}' ]
+                files : [ '<%= proj.livereload %>/{,*/}*.html', '<%= proj.livereload %>/css/{,*/}*.css',
+                        '<%= proj.livereload %>/js/{,*/}*.js', '<%= proj.livereload %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}' ]
             }
         },
 
@@ -45,23 +46,19 @@ module.exports = function(grunt) {
                 directory : 'arcticweb'
             },
             proxies : [ {
-                context : [ '/rest', '/json_proxy' ],
+                context : [ '/arcticweb/rest', '/arcticweb/json_proxy' ],
                 host : 'localhost',
                 port : '8080',
                 https : false,
                 changeOrigin : true,
-                xforward : false,
-                rewrite : {
-                    '/rest' : '/arcticweb/rest',
-                    '/json_proxy' : '/arcticweb/json_proxy',
-                }
+                xforward : false
             } ],
             livereload : {
                 options : {
                     open : true,
-                    base : [ '<%= proj.src %>' ],
+                    base : [ '<%= proj.livereload %>' ],
                     middleware : function(connect, options) {
-                        return [ proxySnippet, mountFolder(connect, 'src/main/webapp') ];
+                        return [ proxySnippet, mountFolder(connect, '.tmp/livereload') ];
                         // return [ connect.static('<%= proj.src %>'),
                         // proxySnippet ];
                     }
@@ -107,14 +104,14 @@ module.exports = function(grunt) {
             html : [ '<%= proj.src %>/front.html', '<%= proj.src %>/map.html', '<%= proj.src %>/report.html' ],
             options : {
                 dest : '<%= proj.build %>'
-//                flow : {
-//                    html : {
-//                        steps : {
-//                            'js' : [ 'concat' ]
-//                        },
-//                        post : {}
-//                    }
-//                }
+            // flow : {
+            // html : {
+            // steps : {
+            // 'js' : [ 'concat' ]
+            // },
+            // post : {}
+            // }
+            // }
             }
         },
         usemin : {
@@ -152,6 +149,14 @@ module.exports = function(grunt) {
                     cwd : '.tmp/concat',
                     src : '{,*/}*.js',
                     dest : '<%= proj.build %>'
+                } ]
+            },
+            all2Livereload : {
+                files : [ {
+                    expand : true,
+                    cwd : '<%= proj.src %>',
+                    src : '{,**/}*.*',
+                    dest : '<%= proj.livereload %>/arcticweb'
                 } ]
             }
         },
@@ -192,13 +197,14 @@ module.exports = function(grunt) {
             return grunt.task.run([ 'build', 'connect:dist:keepalive' ]);
         }
 
-        grunt.task.run([ /* 'autoprefixer', */'configureProxies', 'connect:livereload', 'watch' ]);
+        grunt.task.run([ 'copy:all2Livereload', /* 'autoprefixer', */'configureProxies', 'connect:livereload', 'watch' ]);
     });
 
     // grunt.registerTask('test', [ 'clean:server', 'concurrent:test',
     // 'autoprefixer', 'connect:test', 'karma' ]);
 
-    grunt.registerTask('build', [ 'useminPrepare', 'copy:nonJs2Build', 'concat', 'usemin', 'copy:js2Build', 'copy:toTarget' ]);
+    grunt.registerTask('build', [ 'useminPrepare', 'copy:nonJs2Build', 'concat', 'usemin', 'copy:js2Build',
+            'copy:toTarget' ]);
 
     // 'clean:dist',
     // 'useminPrepare',
