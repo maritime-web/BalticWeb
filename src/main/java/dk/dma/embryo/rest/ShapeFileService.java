@@ -44,6 +44,7 @@ public class ShapeFileService {
     @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
     String localDmiDirectory;
 
+    @Inject
     Logger logger;
 
     @GET

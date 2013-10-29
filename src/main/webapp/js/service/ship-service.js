@@ -19,7 +19,7 @@
             }
         };
 	});
-	
+
 	serviceModule.factory('ShipService', function($rootScope, $http, SessionStorageService, LocalStorageService) {
 	    var yourShipKey = 'yourShip';
 	    

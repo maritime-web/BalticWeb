@@ -3,6 +3,9 @@
 
 embryo = {};
 
+embryo.baseMap = "world_merc";
+// embryo.baseMap = "osm";
+
 embryo.baseUrl = "";
 // embryo.baseUrl = "http://localhost:8080/arcticweb/";
 embryo.baseUrlForAngularResource = "";
@@ -10,7 +13,7 @@ embryo.baseUrlForAngularResource = "";
 
 embryo.projection = "EPSG:900913";
 
-embryo.loadFrequence = 10 * 1000;
+embryo.loadFrequence = 120 * 1000;
 embryo.defaultTimeout = 30000;
 
 embryo.defaultFontFamily = "'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif";

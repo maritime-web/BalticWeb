@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.rest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -23,6 +25,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.embryo.rest.json.VesselOverview;
+import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.VesselService;
@@ -43,6 +48,9 @@ public class VesselRestService {
     @Inject
     private VesselService vesselService;
 
+    @Inject
+    private VesselDao vesselDao;
+
     @GET
     @Path("/historical-track")
     @Produces("application/json")
@@ -51,11 +59,58 @@ public class VesselRestService {
         return result.remove("pastTrack");
     }
 
+    @GET
+    @Path("/list")
+    @Produces("application/json")
+    @GZIP
+    public List<VesselOverview> list() {
+        AisViewService.VesselListResult vesselListResult = aisViewService.vesselList(0);
+
+        List<VesselOverview> result = new ArrayList<>();
+
+        Map<String, String[]> vessels = vesselListResult.getVesselList().getVessels();
+
+        for (String id : vessels.keySet()) {
+            String[] vessel = vessels.get(id);
+
+            VesselOverview vo = new VesselOverview();
+
+            vo.setId(Integer.parseInt(id));
+            vo.setX(Double.parseDouble(vessel[2]));
+            vo.setY(Double.parseDouble(vessel[1]));
+            vo.setAngle(Double.parseDouble(vessel[0]));
+            vo.setMmsi(Long.parseLong(vessel[6]));
+            vo.setName(vessel[7]);
+            vo.setImo(vessel[9]);
+            vo.setCallsign(vessel[8]);
+            vo.setMoored("1".equals(vessel[5]));
+            vo.setType(vessel[4]);
+            vo.setInArcticWeb(false);
+
+            // What is vessel[3] seems to be either A or B ?
+
+            result.add(vo);
+        }
+
+        List<Long> mmsis = new ArrayList<>();
+
+        for (VesselOverview vo : result) {
+            mmsis.add(vo.getMmsi());
+        }
+
+        for (Vessel v : vesselDao.getVessels(mmsis).values()) {
+            for (VesselOverview vo : result) {
+                if (vo.getMmsi().equals(v.getMmsi())) {
+                    vo.setInArcticWeb(true);
+                }
+            }
+        }
+
+        return result;
+    }
+
     /**
      * Returns vessel details based ArcticWeb data and AIS data.
-     * 
-     * @param mmsi
-     * @return
      */
     @GET
     @Path("/details-short")

@@ -3,10 +3,14 @@ $(function() {
     var lastSearch = "";
 
     function searchResultToHTML(vessel){
-        var html = "<p><div class='btn searchResultItem' id='" + vessel.id + "'>" +
-            "<div class='panelText btn-block'>" + vessel.vesselName + "</div>";
+        var html = "<p><div class='btn searchResultItem' id='" + vessel.id + "'>";
+        html += "<div class='panelText btn-block'>" + vessel.name;
 
-        html +=	"</div><p>";
+        if (vessel.inArcticWeb) {
+            html +=" <font color=#0080C0>AW</font>"
+        }
+
+        html +=	"</div></div><p>";
 
         return html;
     }
