@@ -95,33 +95,6 @@
             $scope.routeLabel = 'label-success';
         }, true);
 
-        function getPeriod(dateLong) {
-            var date = new Date(dateLong);
-            if (date.getUTCHours() >= 0 && date.getUTCHours() < 6) {
-                return {
-                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0),
-                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 6, 0),
-                };
-            } else if (date.getUTCHours() >= 6 && date.getUTCHours() < 12) {
-                return {
-                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 6, 0),
-                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12, 0),
-                };
-            }
-            if (date.getUTCHours() >= 12 && date.getUTCHours() < 18) {
-                return {
-                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12, 0),
-                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 18, 0),
-                };
-            }
-            if (date.getUTCHours() >= 18 && date.getUTCHours() <= 23) {
-                return {
-                    from : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 18, 0),
-                    to : Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1, 0, 0),
-                };
-            }
-        }
-
         function evalGreenpos(greenpos) {
             if (!greenpos || !greenpos.ts) {
                 $scope.greenposTxt = 'DUE NOW';
@@ -136,7 +109,7 @@
             }
 
             var now = Date.now();
-            var period = getPeriod(now);
+            var period = GreenposService.getPeriod(now);
 
             // Allow for reports to be performed 15 minutes before reporting
             // hour.
