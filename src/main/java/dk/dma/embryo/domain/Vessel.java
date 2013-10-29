@@ -46,9 +46,6 @@ public class Vessel extends BaseEntity<Long> {
     @Column(nullable = true)
     private Long mmsi;
 
-    @Column(nullable = true, length = 32)
-    private String type;
-
     @Min(0)
     @Max(200)
     @Column(nullable = true)
@@ -94,7 +91,6 @@ public class Vessel extends BaseEntity<Long> {
         ship.setMmsi(getMmsi());
         ship.setMaritimeId(getMaritimeId());
         ship.setImo(getAisData().getImoNo());
-        ship.setType(getType());
         ship.setCommCapabilities(getCommCapabilities());
         ship.setGrossTon(getGrossTonnage());
         ship.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
@@ -123,7 +119,19 @@ public class Vessel extends BaseEntity<Long> {
         Vessel result = new Vessel(ship.getMaritimeId());
 
         result.setMmsi(ship.getMmsi());
-        result.setType(ship.getType());
+        result.setCommCapabilities(ship.getCommCapabilities());
+        result.setGrossTonnage(ship.getGrossTon());
+        result.setMaxSpeed(ship.getMaxSpeed() == null ? null : BigDecimal.valueOf(ship.getMaxSpeed()));
+        result.setIceClass(ship.getIceClass());
+        result.setHelipad(ship.getHelipad());
+
+        return result;
+    }
+
+    public static Vessel fromJsonModel2(dk.dma.embryo.rest.json.Ship ship) {
+        Vessel result = new Vessel(ship.getMaritimeId());
+
+        result.setMmsi(ship.getMmsi());
         result.setCommCapabilities(ship.getCommCapabilities());
         result.setGrossTonnage(ship.getGrossTon());
         result.setMaxSpeed(ship.getMaxSpeed() == null ? null : BigDecimal.valueOf(ship.getMaxSpeed()));
@@ -170,14 +178,6 @@ public class Vessel extends BaseEntity<Long> {
 
     public void setOwner(VesselOwnerRole owner) {
         this.owner = owner;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public BigDecimal getMaxSpeed() {

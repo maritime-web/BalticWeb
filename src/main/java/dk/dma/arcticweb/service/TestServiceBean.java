@@ -263,7 +263,6 @@ public class TestServiceBean {
         // Create vessel and user
         Vessel newVessel = new Vessel();
         newVessel.setMmsi(220443000L);
-        newVessel.setType("TANKER");
         newVessel.setCommCapabilities("Sat C 0581 422044310, GMDSS A1+A2+A3");
         newVessel.setMaxSpeed(BigDecimal.valueOf(12.6));
         newVessel.setGrossTonnage(2194);
