@@ -279,7 +279,14 @@ $(function() {
             });
         }
 
-        map.addLayer(createOsmLayer());
+        switch (embryo.baseMap) {
+            case "osm":
+                map.addLayer(createOsmLayer());
+                break;
+            default:
+                map.addLayer(createBlackBaseLayer());
+                break;
+        }
 
         loadViewCookie();
 

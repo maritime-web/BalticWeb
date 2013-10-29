@@ -3,6 +3,9 @@
 
 embryo = {};
 
+embryo.baseMap = "world_merc";
+// embryo.baseMap = "osm";
+
 embryo.baseUrl = "";
 // embryo.baseUrl = "http://localhost:8080/arcticweb/";
 embryo.baseUrlForAngularResource = "";
