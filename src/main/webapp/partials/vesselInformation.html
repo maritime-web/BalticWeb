@@ -1,29 +1,29 @@
-<div id="shipInformation">
+<div id="vesselInformation">
 	<div class="contentBox">
 		<h2>Vessel information</h2>
 		<p></p>
-		<form name="shipForm" class="form-horizontal" novalidate>
+		<form name="vesselForm" class="form-horizontal" novalidate>
 			<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
 			<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 			<div class="row-fluid">
 				<div class="span7">
-					<input type="hidden" x-ng-model="ship.maritimeId" />
+					<input type="hidden" x-ng-model="vessel.maritimeId" />
 					<div class="control-group">
 						<label class="control-label" for="mmsi">MMSI</label>
 						<div class="controls">
-							<span>{{ship.mmsi}}</span>
+							<span>{{vessel.mmsi}}</span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="maxSpeed">Max speed (kn)</label>
 						<div class="controls">
-							<input type="text" id="maxSpeed" name="maxSpeed" class="input-small" x-ng-model="ship.maxSpeed" />
+							<input type="text" id="maxSpeed" name="maxSpeed" class="input-small" x-ng-model="vessel.maxSpeed" />
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="commCapabilities">Communication capabilities</label>
 						<div class="controls">
-							<input type="text" id="commCapabilities" class="input-xxlarge" x-ng-model="ship.commCapabilities" />
+							<input type="text" id="commCapabilities" class="input-xxlarge" x-ng-model="vessel.commCapabilities" />
 						</div>
 					</div>
 				</div>
@@ -32,20 +32,20 @@
 					<div class="control-group">
 						<label class="control-label" for="gTonnage">Gross tonnage</label>
 						<div class="controls">
-							<input type="number" id="gTonnage" name="gTonnage" class="input-small" x-ng-model="ship.grossTon" min="0" /> <span
-								x-ng-show="shipForm.gTonnage.$error.min" class="msg-invalid">Expected positive number</span>
+							<input type="number" id="gTonnage" name="gTonnage" class="input-small" x-ng-model="vessel.grossTon" min="0" /> <span
+								x-ng-show="vesselForm.gTonnage.$error.min" class="msg-invalid">Expected positive number</span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="iceClass">Ice class</label>
 						<div class="controls">
-							<input type="text" id="iceClass" class="input-small" x-ng-model="ship.iceClass" />
+							<input type="text" id="iceClass" class="input-small" x-ng-model="vessel.iceClass" />
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="helipad">Helipad</label>
 						<div class="controls">
-							<select x-ng-model="ship.helipad" class="input-small"
+							<select x-ng-model="vessel.helipad" class="input-small"
 								ng-options="value as key for (key, value) in helipadOptions">
 								<option></option>
 							</select>

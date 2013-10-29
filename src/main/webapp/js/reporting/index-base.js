@@ -25,7 +25,7 @@
 
         $routeProvider.when('/vessel', {
             templateUrl : 'partials/vesselInformation.html',
-            controller : embryo.ShipInformationCtrl
+            controller : embryo.VesselInformationCtrl
         }).when('/voyagePlan/:mmsi', {
             templateUrl : 'partials/voyagePlan.html',
             controller : embryo.VoyagePlanCtrl

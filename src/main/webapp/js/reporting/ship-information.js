@@ -10,21 +10,17 @@
 (function() {
     "use strict";
 
-    var shipModule = angular.module('embryo.shipInformation', [ 'embryo.shipService' ]);
+    var vesselModule = angular.module('embryo.shipInformation', [ 'embryo.shipService' ]);
 
-    embryo.ShipInformationCtrl = function($scope, ShipService) {
+    embryo.VesselInformationCtrl = function($scope, ShipService) {
         $scope.helipadOptions = {
             "Yes" : true,
             "No" : false
         };
 
         var loadData = function() {
-            ShipService.getYourShip(function(ship) {
-                $scope.ship = ship;
-            });
-
-            ShipService.getShipTypes(function(types) {
-                $scope.types = types;
+            ShipService.getYourShip(function(vessel) {
+                $scope.vessel = vessel;
             });
         };
 
@@ -34,8 +30,8 @@
 
         $scope.save = function() {
             $scope.message = null;
-            ShipService.save($scope.ship, function() {
-                $scope.message = "Ship information successfully submitted";
+            ShipService.save($scope.vessel, function() {
+                $scope.message = "vessel information successfully submitted";
             });
         };
 
