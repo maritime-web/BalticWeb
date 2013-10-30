@@ -10,28 +10,31 @@
 (function() {
     "use strict";
 
-    var vesselModule = angular.module('embryo.shipInformation', [ 'embryo.shipService' ]);
+    var vesselModule = angular.module('embryo.shipInformation', [ 'embryo.vessel' ]);
 
-    embryo.VesselInformationCtrl = function($scope, ShipService) {
+    embryo.VesselInformationCtrl = function($scope, VesselService) {
         $scope.helipadOptions = {
             "Yes" : true,
             "No" : false
         };
 
-        var loadData = function() {
-            ShipService.getYourShip(function(vessel) {
-                $scope.vessel = vessel;
-            });
-        };
-
-        $scope.$on('$viewContentLoaded', function(event) {
-            loadData();
+        embryo.authenticated(function() {
+            if (embryo.authentication.shipMmsi) {
+                embryo.vessel.service.subscribe(embryo.authentication.shipMmsi,
+                    function(error, vesselOverview, vesselDetails) {
+                        $scope.vessel = vesselDetails;
+                        $scope.$apply();
+                    }
+                );
+            }
         });
 
         $scope.save = function() {
             $scope.message = null;
-            ShipService.save($scope.vessel, function() {
+            VesselService.saveDetails($scope.vessel, function(error, data) {
                 $scope.message = "vessel information successfully submitted";
+                console.log("data", data);
+                $scope.$apply();
             });
         };
 
@@ -39,7 +42,6 @@
             // TODO find a way to hide these
             $scope.message = null;
             $scope.alertMessage = null;
-            loadData();
         };
     };
 

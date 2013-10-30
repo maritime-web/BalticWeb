@@ -15,7 +15,7 @@ function DistanceCirclesLayer() {
 
     this.draw = function (vessel, vesselDetails) {
         this.layers.rings.removeAllFeatures();
-        this.layers.rings.addFeatures(embryo.adt.createRing(vessel.lon, vessel.lat, vesselDetails.sog * 3 * 1.852, 3));
+        this.layers.rings.addFeatures(embryo.adt.createRing(vessel.x, vessel.y, vesselDetails.ais.sog * 3 * 1.852, 3));
     }
 }
 

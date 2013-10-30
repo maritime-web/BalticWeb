@@ -71,3 +71,41 @@ body {
 #searchLoad {
     display: none;
 }
+
+.reportingPanel {
+    display: none;
+    background-color: white;
+    position: absolute;
+    top: 50px;
+    left: 315px;
+    z-index: 1039;
+}
+
+/*#vesselInformationPanel {
+    width: 700px;
+    heigth: 400px;
+}*/
+
+.input-mini {
+	width: 30px;
+}
+
+.input-small {
+	width: 60px;
+}
+
+.input-medium {
+	width: 90px;
+}
+
+.input-large {
+	width: 150px;
+}
+
+.input-xlarge {
+	width: 210px;
+}
+
+.input-xxlarge {
+	width: 270px;
+}

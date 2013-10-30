@@ -9,11 +9,18 @@ embryo.additionalInformation.historicalTrack = {
         addLayerToMap(group, this.layer, map)
     },
     available: function (vessel, vesselDetails) {
-        return vesselDetails.pastTrack && vesselDetails.pastTrack.points.length > 5;
+        return vesselDetails.additionalInformation.historicalTrack;
     },
     show: function (vessel, vesselDetails) {
-        this.layer.draw(vesselDetails.pastTrack.points);
-        this.layer.zoomToExtent();
+        var that = this;
+        embryo.vessel.service.historicalTrack(vessel.id, function(error, data) {
+            if (data) {
+                that.layer.draw(data);
+                that.layer.zoomToExtent();
+            } else {
+                console.log("unhandled error", error);
+            }
+        })
     },
     hide: function (vessel, vesselDetails) {
         this.layer.clear();
@@ -21,7 +28,7 @@ embryo.additionalInformation.historicalTrack = {
 }
 
 embryo.additionalInformation.nearestShips = {
-    title: "Nearest Ships",
+    title: "Nearest Vessels",
     showAt: [ "YourShip", "SelectedShip" ],
     layer: new NearestVesselsLayer(),
     init: function (map, group) {
@@ -44,7 +51,7 @@ embryo.additionalInformation.distanceCircles = {
     showAt: [ "YourShip", "SelectedShip" ],
     layer: new DistanceCirclesLayer(),
     available: function (vessel, vesselDetails) {
-        return vesselDetails.sog > 0;
+        return vesselDetails.ais.sog > 0;
     },
     show: function (vessel, vesselDetails) {
         this.layer.draw(vessel, vesselDetails);
@@ -57,24 +64,27 @@ embryo.additionalInformation.route = {
     showAt: [ "SelectedShip" ],
     layer: new RouteLayer("#D5672D"),
     available: function (vessel, vesselDetails) {
-        return vesselDetails.route != null;
+        return vesselDetails.additionalInformation.routeId;
     },
     show: function (vessel, vesselDetails) {
-        this.layer.draw(vesselDetails.route);
-        this.layer.zoomToExtent();
+        var that = this;
+        embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
+            that.layer.draw(data);
+            that.layer.zoomToExtent();
+        });
     }
 }
 
 embryo.additionalInformation.metoc = {
     title: "METOC",
     showAt: [ "YourShip" ],
-    layer: new MetocLayer("#D5672D"),
+    layer: new MetocLayer(),
     available: function (vessel, vesselDetails) {
-        return vesselDetails.route != null;
+        return vesselDetails.additionalInformation.routeId;
     },
     show: function (vessel, vesselDetails) {
         var that = this;
-        embryo.metoc.service.getMetoc(vesselDetails.route.id, function(metoc) {
+        embryo.metoc.service.getMetoc(vesselDetails.additionalInformation.routeId, function(metoc) {
             that.layer.draw(metoc);
             that.layer.zoomToExtent();
         });
@@ -90,6 +100,9 @@ function initAdditionalInformation(map, group) {
 function clearAdditionalInformation() {
     $.each(embryo.additionalInformation, function (k, v) {
         v.layer.clear();
+    });
+    $.each(embryo.reporting, function (k, v) {
+        v.hide();
     });
     $(".additional-information tr").removeClass("alert");
 }
@@ -120,3 +133,10 @@ function setupAdditionalInformationTable(id, vessel, vesselDetails, page) {
         $(this).parents("tr").addClass("alert");
     })
 }
+
+embryo.ready(function() {
+    $(".embryo-close-panel").click(function(e) {
+        e.preventDefault();
+        clearAdditionalInformation();
+    });
+});

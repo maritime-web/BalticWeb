@@ -74,4 +74,4 @@ embryo.authenticated(function() {
             });
             break;
     }
-})
+});

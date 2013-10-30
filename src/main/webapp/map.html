@@ -33,44 +33,49 @@
 <script src="js/embryo.js" defer="defer"></script>
 <script src="js/layer/embryo-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
-<script src="js/vessel.js" defer="defer" type="text/javascript"></script>
+<script src="js/menu.js" defer="defer" type="text/javascript"></script>
+
 <script src="js/service/storage-services.js" defer="defer"></script>
 <script src="js/service/ship-service.js" defer="defer"></script>
 <script src="js/service/route-service.js" defer="defer"></script>
 <script src="js/service/voyage-service.js" defer="defer"></script>
 <script src="js/service/greenpos-service.js" defer="defer"></script>
+<script src="js/service/vessel-service.js" defer="defer" type="text/javascript"></script>
+<script src="js/service/metoc-service.js" defer="defer" type="text/javascript"></script>
+<script src="js/service/ice-service.js" defer="defer" type="text/javascript"></script>
+<script src="js/service/msi-service.js" defer="defer" type="text/javascript"></script>
+
 <script src="js/map.js" defer="defer"></script>
-<!-- <script src="js/hovering.js" defer="defer"></script> -->
-<script src="js/layer/vessel-layer.js" defer="defer"></script>
+
 <script src="js/control/vessel-control.js" defer="defer"></script>
 <script src="js/control/vessel-information.js" defer="defer"></script>
-<script src="js/service/metoc-service.js" defer="defer" type="text/javascript"></script>
 <script src="js/control/vessel-search.js" defer="defer"></script>
 <script src="js/control/your-ship.js" type="text/javascript" defer="defer"></script>
-<script src="js/layer/ice-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/control/ice-control.js" defer="defer" type="text/javascript"></script>
-<!-- script src="js/routeLayer.js" defer="defer" type="text/javascript"></script -->
-<script src="js/reporting/report-comp.js" defer="defer" type="text/javascript"></script>
-<!-- script src="js/selectedShip.js" defer="defer" type="text/javascript"></script -->
-<script src="js/menu.js" defer="defer" type="text/javascript"></script>
-<script src="js/layer/msi-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/control/msi-control.js" defer="defer" type="text/javascript"></script>
+<script src="js/control/reporting.js" defer="defer" type="text/javascript"></script>
+
+<script src="js/layer/vessel-layer.js" defer="defer"></script>
+<script src="js/layer/ice-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/msi-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/layer/adt-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/layer/historical-track-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/layer/route-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/layer/nearest-vessels-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/layer/metoc-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/layer/distance-circles-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/control/additional-information.js" defer="defer" type="text/javascript"></script>
-<script src="js/service/vessel-service.js" defer="defer" type="text/javascript"></script>
-<script src="js/service/ice-service.js" defer="defer" type="text/javascript"></script>
-<script src="js/service/msi-service.js" defer="defer" type="text/javascript"></script>
 <script src="js/layer/world-map-layer.js" defer="defer" type="text/javascript"></script>
+
+<script src="js/control/additional-information.js" defer="defer" type="text/javascript"></script>
+
+<script src="js/reporting/report-comp.js" defer="defer" type="text/javascript"></script>
+<script src="js/reporting/ship-information.js" defer="defer" type="text/javascript"></script>
 <!-- endbuild -->
 
 <script defer="defer" type="text/javascript">
     angular.module('embryo.map', [ 'embryo.shipService', 'embryo.voyageService', 'embryo.routeService',
-            'embryo.greenposService', 'embryo.reportComp', 'embryo.metoc', 'embryo.vessel', 'embryo.ice', 'embryo.msi' ]);
+            'embryo.greenposService', 'embryo.reportComp', 'embryo.metoc', 'embryo.vessel', 'embryo.ice', 'embryo.msi',
+            'embryo.shipInformation' ]);
 </script>
 
 </head>
@@ -99,6 +104,24 @@
 			<button class="btn btn-small" id="zoomToYourShip">Zoom to Your Vessel</button>
 		</p>
 	</div>
+
+    <div class="reportingPanel well" id="vesselInformationPanel">
+        <div x-ng-include="'partials/vesselInformation.html'"></div>
+    </div>
+
+    <!--
+    <div class="reportingPanel well" id="schedulePanel">
+        <div x-ng-include="'partials/voyagePlan.html'"></div>
+    </div>
+
+    <div class="reportingPanel well" id="activeRoutePanel">
+        <div x-ng-include="'partials/routeUpload.html'"></div>
+    </div>
+
+    <div class="reportingPanel well" id="greenposReportPanel">
+        <div x-ng-include="'partials/greenposReport.html'"></div>
+    </div>
+    -->
 
 </body>
 </html>

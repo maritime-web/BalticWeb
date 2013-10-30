@@ -2,18 +2,16 @@
 // Listens for vessel selected events.
 
 embryo.vesselInformation = {
-    mmsi : null,    
-        
     renderYourShipShortTable: function (data) {
         var html = "";
 
         var egenskaber = {
-            "MMSI": data.mmsi,
-            "Callsign": data.callsign,
-            "Country": data.country,
-            "Destination": data.destination,
-            "Nav status": data.navStatus,
-            "ETA": data.eta
+            "MMSI": data.ais.mmsi,
+            "Callsign": data.ais.callsign,
+            "Country": data.ais.country,
+            "Destination": data.ais.destination,
+            "Nav status": data.ais.navStatus,
+            "ETA": data.ais.eta
         }
 
         $.each(egenskaber, function(k,v) {
@@ -26,16 +24,16 @@ embryo.vesselInformation = {
         var html = "";
         
         var egenskaber = {
-            "MMSI": data.mmsi,
-            "Class": data["class"],
-            "Callsign": data.callsign,
-            "Cargo": data.cargo,
-            "Country": data.country,
-            "SOG": data.sog,
-            "COG": data.cog,
-            "Destination": data.destination,
-            "Nav status": data.navStatus,
-            "ETA": data.eta
+            "MMSI": data.ais.mmsi,
+            "Class": data.ais["class"],
+            "Callsign": data.ais.callsign,
+            "Cargo": data.ais.cargo,
+            "Country": data.ais.country,
+            "SOG": data.ais.sog,
+            "COG": data.ais.cog,
+            "Destination": data.ais.destination,
+            "Nav status": data.ais.navStatus,
+            "ETA": data.ais.eta
         }
         
         $.each(egenskaber, function(k,v) {
@@ -45,36 +43,34 @@ embryo.vesselInformation = {
         return html;
     },
     showAesDialog: function (data) {
-        embryo.vesselInformation.mmsi = data.mmsi;
-        
         var html = "";
 
-        var link = "http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi="+data.mmsi;
+        var link = "http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi="+data.ais.mmsi;
 
         var egenskaber = {
-            "MMSI": data.mmsi,
-            "Class": data["class"],
-            "Name": data.name,
-            "Callsign": data.callsign,
-            "Lat": data.lat,
-            "Lon": data.lon,
-            "IMO": data.imo,
-            "Source": data.source,
-            "Type": data.type,
-            "Cargo": data.cargo,
-            "Country": data.country,
-            "SOG": data.sog,
-            "COG": data.cog,
-            "Heading": data.heading,
-            "Draught": data.draught,
-            "ROT": data.rot,
-            "Width": data.width,
-            "Length": data.length,
-            "Destination": data.destination,
-            "Nav status": data.navStatus,
-            "ETA": data.eta,
-            "Pos acc": data.posAcc,
-            "Last report": data.lastReport,
+            "MMSI": data.ais.mmsi,
+            "Class": data.ais["class"],
+            "Name": data.ais.name,
+            "Callsign": data.ais.callsign,
+            "Lat": data.ais.lat,
+            "Lon": data.ais.lon,
+            "IMO": data.ais.imo,
+            "Source": data.ais.source,
+            "Type": data.ais.type,
+            "Cargo": data.ais.cargo,
+            "Country": data.ais.country,
+            "SOG": data.ais.sog,
+            "COG": data.ais.cog,
+            "Heading": data.ais.heading,
+            "Draught": data.ais.draught,
+            "ROT": data.ais.rot,
+            "Width": data.ais.width,
+            "Length": data.ais.length,
+            "Destination": data.ais.destination,
+            "Nav status": data.ais.navStatus,
+            "ETA": data.ais.eta,
+            "Pos acc": data.ais.posAcc,
+            "Last report": data.ais.lastReport,
             "More information": "<a href='"+link+"' target='new_window'>"+link+"</a>"
         }
         
@@ -82,7 +78,7 @@ embryo.vesselInformation = {
             if (v != null) html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
         });
 
-        $("#aesModal h2").html("AIS Information - " + data.name);
+        $("#aesModal h2").html("AIS Information - " + data.ais.name);
         $("#aesModal table").html(html);
         $("#aesModal").modal("show");
     }
@@ -93,7 +89,7 @@ $(function() {
 
     function showVesselInformation(data) {
         openCollapse("#vcpSelectedShip");
-        $("a[href=#vcpSelectedShip]").html("Selected Ship - "+data.name);
+        $("a[href=#vcpSelectedShip]").html("Selected Vessel - "+data.ais.name);
         $("#selectedAesInformation table").html(embryo.vesselInformation.renderSelectedShipShortTable(data));
         $("#selectedAesInformationLink").off("click");
         $("#selectedAesInformationLink").on("click", function(e) {
@@ -106,7 +102,7 @@ $(function() {
     embryo.vesselSelected(function(e) {
         shipSelected = true;
 
-        $("a[href=#vcpSelectedShip]").html("Selected Ship - loading data");
+        $("a[href=#vcpSelectedShip]").html("Selected Vessel - loading data");
         // var messageId = embryo.messagePanel.show( { text: "Loading vessel data ..." })
 
         function setupAdditionalInformation(id, click) {
@@ -142,7 +138,7 @@ $(function() {
     embryo.vesselUnselected(function() {
         shipSelected = false;
         closeCollapse("#vcpSelectedShip");
-        $("a[href=#vcpSelectedShip]").html("Selected Ship");
+        $("a[href=#vcpSelectedShip]").html("Selected Vessel");
         clearAdditionalInformation();
     });
 

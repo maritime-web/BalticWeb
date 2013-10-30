@@ -15,27 +15,23 @@
  */
 package dk.dma.embryo.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-
 import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.embryo.rest.json.VesselOverview;
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
 import dk.dma.arcticweb.service.VesselService;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.rest.json.VesselDetails;
 import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
+import dk.dma.embryo.rest.json.VesselOverview;
 import dk.dma.embryo.restclients.AisViewService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
+
+import javax.inject.Inject;
+import javax.sql.rowset.spi.TransactionalWriter;
+import javax.ws.rs.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Path("/vessel")
 public class VesselRestService {
@@ -56,7 +52,7 @@ public class VesselRestService {
     @Produces("application/json")
     public Object historicalTrack(@QueryParam("id") long vesselId) {
         Map result = aisViewService.vesselTargetDetails(vesselId, 1);
-        return result.remove("pastTrack");
+        return ((Map)result.get("pastTrack")).get("points");
     }
 
     @GET
@@ -126,38 +122,52 @@ public class VesselRestService {
     }
 
     @GET
-    @Path("/details-by-ais")
+    @Path("/details")
     @Produces("application/json")
     public VesselDetails detailsByAis(@QueryParam("id") long vesselId) {
         Map result = aisViewService.vesselTargetDetails(vesselId, 1);
 
-        Integer mmsiStr = (Integer) result.get("mmsi");
+        long mmsi = (Integer) result.get("mmsi");
         Object track = result.remove("pastTrack");
 
-        VesselDetails details = null;
-        Vessel vessel = null;
+        VesselDetails details;
+        Vessel vessel = vesselService.getVessel(mmsi);
+
         Route route = null;
-        if (mmsiStr != null) {
-            vessel = vesselService.getVessel(Long.valueOf(mmsiStr));
-        }
 
         if (vessel != null) {
-            route = vesselService.getActiveRoute(Long.valueOf(mmsiStr));
+            route = vesselService.getActiveRoute(mmsi);
             details = vessel.toJsonModel2();
-            // merge AIS data
             details.getAis().putAll(result);
         } else {
             details = new VesselDetails();
             details.setAis(result);
         }
 
-        details.setAdditionalInformation(new AdditionalInformation(route != null ? route.getEnavId() : null,
-                track != null));
+        details.setAdditionalInformation(
+                new AdditionalInformation(
+                        route != null ? route.getEnavId() : null, track != null
+                )
+        );
+
         return details;
     }
 
+    @POST
+    @Path("/save-details")
+    @Consumes("application/json")
+    public String saveDetails(VesselDetails details) {
+        logger.info("save({})", details);
+
+        String maritimeId = vesselService.save(Vessel.toJsonModel2(details));
+
+        logger.info("save(): {}", maritimeId);
+
+        return maritimeId;
+    }
+
     @GET
-    @Path("/details")
+    @Path("/details-old")
     @Produces("application/json")
     public Map details(@QueryParam("id") long vesselId, @QueryParam("past_track") int pastTrack) {
         Map result = aisViewService.vesselTargetDetails(vesselId, pastTrack);

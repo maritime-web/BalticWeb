@@ -20,8 +20,7 @@
                     url: embryo.baseUrl + "rest/vessel/details",
                     timeout: embryo.defaultTimeout,
                     data: {
-                        id : id,
-                        past_track: 0
+                        id : id
                     },
                     success: function(data) {
                         callback(null, data);
@@ -40,6 +39,20 @@
                     },
                     success: function(data) {
                         callback(null, data.vessels)
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        callback(jqXHR, null);
+                    }
+                })
+            },
+            saveDetails: function(details, callback) {
+                $.ajax({
+                    url: embryo.baseUrl + "rest/vessel/save-details",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(details),
+                    success: function(data) {
+                        callback(null, data);
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         callback(jqXHR, null);
@@ -105,11 +118,27 @@
                         that.clientSideMmsiSearch(mmsi, callback);
                     }, 100);
                 }
+            },
+            historicalTrack: function(vesselId, callback) {
+                $.ajax({
+                    url: embryo.baseUrl + "rest/vessel/historical-track",
+                    timeout: embryo.defaultTimeout,
+                    data: {
+                        id : vesselId
+                    },
+                    success: function(data) {
+                        callback(null, data);
+                    },
+                    error: function(data) {
+                        callback(data);
+                    }
+                });
             }
         };
     });
 
     module.run(function(VesselService) {
+        if (!embryo.vessel) embryo.vessel = {};
         embryo.vessel.service = VesselService;
     })
 })();

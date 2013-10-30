@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.domain;
 
+import dk.dma.embryo.rest.json.VesselDetails;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -114,6 +116,18 @@ public class Vessel extends BaseEntity<Long> {
 
         return vessel;
     }
+
+    public static Vessel toJsonModel2(VesselDetails details) {
+        Vessel result = new Vessel();
+        result.setMmsi(details.getMmsi());
+        result.setCommCapabilities(details.getCommCapabilities());
+        result.setGrossTonnage(details.getGrossTon());
+        result.setHelipad(details.getHelipad());
+        result.setIceClass(details.getIceClass());
+        result.setMaxSpeed(BigDecimal.valueOf(details.getMaxSpeed()));
+        return result;
+    }
+
 
     public static Vessel fromJsonModel(dk.dma.embryo.rest.json.Ship ship) {
         Vessel result = new Vessel(ship.getMaritimeId());
