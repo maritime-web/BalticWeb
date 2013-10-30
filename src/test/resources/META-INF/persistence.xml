@@ -13,6 +13,7 @@
     <class>dk.dma.embryo.domain.VesselOwnerRole</class>
     <class>dk.dma.embryo.domain.AuthorityRole</class>
     <class>dk.dma.embryo.domain.Vessel</class>
+    <class>dk.dma.embryo.domain.Schedule</class>
     <class>dk.dma.embryo.domain.VoyagePlan</class>
     <class>dk.dma.embryo.domain.Voyage</class>
     <class>dk.dma.embryo.domain.Berth</class>

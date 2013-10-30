@@ -36,25 +36,25 @@ import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
-import dk.dma.arcticweb.dao.VesselDaoImpl;
+import dk.dma.arcticweb.dao.ScheduleDaoImpl;
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.RouteLeg;
 import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.validation.ConstraintViolationImpl;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 
-public class VesselServiceImplTest {
+public class ScheduleServiceImplTest {
 
     private static EntityManagerFactory factory;
     private EntityManager entityManager;
-    private VesselService vesselService;
+    private ScheduleService vesselService;
 
     @BeforeClass
     public static void setupForAll() {
@@ -77,14 +77,14 @@ public class VesselServiceImplTest {
         Vessel vessel = new Vessel(10L);
         entityManager.persist(vessel);
 
-        VoyagePlan voyagePlan = new VoyagePlan();
-        voyagePlan.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
+        Schedule schedule = new Schedule();
+        schedule.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
                 LocalDateTime.parse("2013-06-20T11:56"), 12, 0, true));
-        voyagePlan.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime.parse("2013-06-23T22:08"),
+        schedule.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime.parse("2013-06-23T22:08"),
                 LocalDateTime.parse("2013-06-25T20:19"), 11, 0, false));
 
-        vessel.setVoyagePlan(voyagePlan);
-        entityManager.persist(voyagePlan);
+        vessel.setSchedule(schedule);
+        entityManager.persist(schedule);
 
         // /// new user
         sailor = new Sailor();
@@ -98,10 +98,10 @@ public class VesselServiceImplTest {
         vessel = new Vessel(20L);
         entityManager.persist(vessel);
 
-        voyagePlan = new VoyagePlan();
+        schedule = new Schedule();
 
-        vessel.setVoyagePlan(voyagePlan);
-        entityManager.persist(voyagePlan);
+        vessel.setSchedule(schedule);
+        entityManager.persist(schedule);
 
         entityManager.getTransaction().commit();
         entityManager.close();
@@ -110,23 +110,23 @@ public class VesselServiceImplTest {
     @Before
     public void setup() {
         entityManager = factory.createEntityManager();
-        vesselService = new VesselServiceImpl(new VesselDaoImpl(entityManager));
+        vesselService = new ScheduleServiceImpl(new ScheduleDaoImpl(entityManager));
         entityManager.clear();
     }
 
     @Test
     public void getVoyagePlan_NoVoyagePlan() {
-        VoyagePlan info = vesselService.getVoyagePlan(20L);
+        Schedule info = vesselService.getSchedule(20L);
 
         entityManager.clear();
 
         Assert.assertNotNull(info);
-        Assert.assertEquals(0, info.getVoyagePlan().size());
+        Assert.assertEquals(0, info.getEntries().size());
     }
 
     @Test
     public void getVoyagePlan_WithVoyagePlan() {
-        VoyagePlan info = vesselService.getVoyagePlan(10L);
+        Schedule info = vesselService.getSchedule(10L);
 
         entityManager.clear();
 
@@ -134,7 +134,7 @@ public class VesselServiceImplTest {
 
         ReflectionAssert.assertPropertyLenientEquals("arrival",
                 asList(LocalDateTime.parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-23T22:08")),
-                info.getVoyagePlan());
+                info.getEntries());
     }
 
     @Test

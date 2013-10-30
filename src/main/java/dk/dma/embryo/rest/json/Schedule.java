@@ -13,52 +13,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.domain;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
+package dk.dma.embryo.rest.json;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-@Entity
-public class VoyagePlan extends BaseEntity<Long> {
+/**
+ * 
+ * @author Jesper Tejlgaard
+ */
+public class Schedule {
 
-    private static final long serialVersionUID = 1L;
+    // Properties relevant for current functionality. Extra can be added.
 
-    // //////////////////////////////////////////////////////////////////////
-    // Entity fields (also see super class)
-    // //////////////////////////////////////////////////////////////////////
+    private Long id;
 
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
-
-
-    // //////////////////////////////////////////////////////////////////////
-    // Utility Methods
-    // //////////////////////////////////////////////////////////////////////
-
+    private Voyage[] voyages;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public VoyagePlan() {
-
+    public Schedule() {
+        super();
     }
 
-    public VoyagePlan(Long id) {
+    public Schedule(Long id) {
+        this();
         this.id = id;
     }
 
@@ -73,4 +52,15 @@ public class VoyagePlan extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
+    public Long getId() {
+        return id;
+    }
+
+    public Voyage[] getVoyages() {
+        return voyages;
+    }
+
+    public void setVoyages(Voyage[] voyages) {
+        this.voyages = voyages;
+    }
 }

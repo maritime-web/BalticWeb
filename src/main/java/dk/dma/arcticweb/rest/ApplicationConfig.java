@@ -29,6 +29,7 @@ import dk.dma.embryo.rest.MetocRestService;
 import dk.dma.embryo.rest.MsiRestService;
 import dk.dma.embryo.rest.RouteRestService;
 import dk.dma.embryo.rest.RouteUploadService;
+import dk.dma.embryo.rest.ScheduleRestService;
 import dk.dma.embryo.rest.ShapeFileService;
 import dk.dma.embryo.rest.ShipRestService;
 import dk.dma.embryo.rest.VesselRestService;
@@ -40,6 +41,7 @@ public class ApplicationConfig extends Application {
         return new HashSet<Class<?>>(Arrays.asList(RouteRestService.class, RouteUploadService.class,
                 VoyageRestService.class, ShapeFileService.class, GreenPosRestService.class, ShipRestService.class,
                 BerthRestService.class, AuthenticationService.class, TestDataRestService.class,
-                IceObservationRestService.class, MsiRestService.class, MetocRestService.class, VesselRestService.class));
+                IceObservationRestService.class, MsiRestService.class, MetocRestService.class, VesselRestService.class,
+                ScheduleRestService.class));
     }
 }

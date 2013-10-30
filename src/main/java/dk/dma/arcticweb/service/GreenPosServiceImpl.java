@@ -87,7 +87,7 @@ public class GreenPosServiceImpl implements GreenPosService {
 
         if(report instanceof GreenPosSailingPlanReport){
             GreenPosSailingPlanReport spReport = (GreenPosSailingPlanReport)report;
-            report = spReport.withVoyages(vessel.getVoyagePlan().getVoyagePlan());
+            report = spReport.withVoyages(vessel.getSchedule().getEntries());
         }else if(report instanceof GreenPosDeviationReport){
             GreenPosDeviationReport spReport = (GreenPosDeviationReport)report;            
         }

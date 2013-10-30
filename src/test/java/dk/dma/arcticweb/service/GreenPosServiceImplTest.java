@@ -38,10 +38,10 @@ import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.Position;
 import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.security.Subject;
 
 /**
@@ -78,10 +78,10 @@ public class GreenPosServiceImplTest {
         vessel.getAisData().setCallsign("AA");
         vessel.setMmsi(0L);
 
-        VoyagePlan plan = new VoyagePlan();
-        plan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", LocalDateTime.now(), LocalDateTime.now()
+        Schedule schedule = new Schedule();
+        schedule.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", LocalDateTime.now(), LocalDateTime.now()
                 .plusDays(2), 12, 0, true));
-        vessel.setVoyagePlan(plan);
+        vessel.setSchedule(schedule);
 
         entityManager.persist(vessel);
 

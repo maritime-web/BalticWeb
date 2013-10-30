@@ -55,6 +55,7 @@ import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.ShoreRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
+import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.rest.util.DateTimeConverter;
 
@@ -70,6 +71,9 @@ public class TestServiceBean {
 
     @EJB
     private VesselService vesselService;
+
+    @EJB
+    private ScheduleService scheduleService;
 
     @Inject
     private Logger logger;
@@ -200,6 +204,7 @@ public class TestServiceBean {
         deleteAll(Ship.class);
         deleteAll(Vessel.class);
         deleteAll(VoyagePlan.class);
+        deleteAll(Schedule.class);
         // delete any other voyages
         deleteAll(Voyage.class);
         deleteAll(Route.class);
@@ -304,8 +309,8 @@ public class TestServiceBean {
         vesselDao.saveEntity(user);
 
         LocalDateTime now = LocalDateTime.now();
-        VoyagePlan voyagePlan = new VoyagePlan();
-        newVessel.setVoyagePlan(voyagePlan);
+        Schedule voyagePlan = new Schedule();
+        newVessel.setSchedule(voyagePlan);
 
         voyagePlan.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
                 now.minusDays(3).withTime(17, 0, 0, 0), 12, 0, true));
@@ -324,10 +329,10 @@ public class TestServiceBean {
     private void uploadOrasilaRoutes() {
         logger.info("BEFORE UPLOAD - ORASILA");
 
-        VoyagePlan voyagePlan = vesselService.getVoyagePlan(220443000L);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/Miami-Nuuk.txt", true);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(1).getEnavId(), "/demo/routes/Nuuk-Thule.txt", false);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(2).getEnavId(), "/demo/routes/Thule-Upernavik.txt", false);
+        Schedule voyagePlan = scheduleService.getSchedule(220443000L);
+        insertDemoRoute(voyagePlan.getEntries().get(0).getEnavId(), "/demo/routes/Miami-Nuuk.txt", true);
+        insertDemoRoute(voyagePlan.getEntries().get(1).getEnavId(), "/demo/routes/Nuuk-Thule.txt", false);
+        insertDemoRoute(voyagePlan.getEntries().get(2).getEnavId(), "/demo/routes/Thule-Upernavik.txt", false);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -360,8 +365,8 @@ public class TestServiceBean {
         vesselDao.saveEntity(user);
 
         LocalDateTime now = LocalDateTime.now();
-        VoyagePlan voyagePlan = new VoyagePlan();
-        newVessel.setVoyagePlan(voyagePlan);
+        Schedule voyagePlan = new Schedule();
+        newVessel.setSchedule(voyagePlan);
 
         voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
                 now.plusDays(5).withTime(9, 0, 0, 0)));
@@ -375,8 +380,8 @@ public class TestServiceBean {
     private void uploadOraTankRoutes() {
         logger.info("BEFORE UPLOAD - ORATANK");
 
-        VoyagePlan voyagePlan = vesselService.getVoyagePlan(220516000L);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/Oratank-Nuuk.txt", true);
+        Schedule voyagePlan = scheduleService.getSchedule(220516000L);
+        insertDemoRoute(voyagePlan.getEntries().get(0).getEnavId(), "/demo/routes/Oratank-Nuuk.txt", true);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -415,8 +420,8 @@ public class TestServiceBean {
         Vessel sarfaq = vesselService.getVessel(331037000L);
                 
         LocalDateTime now = LocalDateTime.now();
-        VoyagePlan voyagePlan = new VoyagePlan();
-        sarfaq.setVoyagePlan(voyagePlan);
+        Schedule voyagePlan = new Schedule();
+        sarfaq.setSchedule(voyagePlan);
 
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
 
@@ -467,7 +472,7 @@ public class TestServiceBean {
 
         Period p = new Period(firstDeparture, now);
         if (p.getWeeks() > 0) {
-            for (Voyage v : voyagePlan.getVoyagePlan()) {
+            for (Voyage v : voyagePlan.getEntries()) {
                 v.setArrival(v.getArrival() == null ? null : v.getArrival().plusWeeks(p.getWeeks()));
                 v.setDeparture(v.getDeparture() == null ? null : v.getDeparture().plusWeeks(p.getWeeks()));
             }
@@ -481,11 +486,11 @@ public class TestServiceBean {
     private void uploadSarfaqRoutes() {
         logger.info("BEFORE UPLOAD - SARFAQ");
 
-        VoyagePlan voyagePlan = vesselService.getVoyagePlan(331037000L);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt",
+        Schedule voyagePlan = scheduleService.getSchedule(331037000L);
+        insertDemoRoute(voyagePlan.getEntries().get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
+        insertDemoRoute(voyagePlan.getEntries().get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt",
                 false);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt",
+        insertDemoRoute(voyagePlan.getEntries().get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt",
                 false);
     }
 
@@ -577,8 +582,8 @@ public class TestServiceBean {
         vesselDao.saveEntity(user);
 
         LocalDateTime now = LocalDateTime.now();
-        VoyagePlan voyagePlan = new VoyagePlan();
-        newVessel.setVoyagePlan(voyagePlan);
+        Schedule voyagePlan = new Schedule();
+        newVessel.setSchedule(voyagePlan);
 
         voyagePlan.addVoyageEntry(new Voyage("Copenhagen", "55 67.61N", "12 56.83E", null, now.withTime(12, 57, 0, 0),
                 12, 300, true));
@@ -594,8 +599,8 @@ public class TestServiceBean {
     private void uploadCarnivalLegendRoutes() {
         logger.info("BEFORE UPLOAD - CARNIVAL LEGEND");
 
-        VoyagePlan voyagePlan = vesselService.getVoyagePlan(354237000L);
-        insertDemoRoute(voyagePlan.getVoyagePlan().get(0).getEnavId(), "/demo/routes/CARNIVAL-LEGEND-Cph-Nuuk.txt", true);
+        Schedule voyagePlan = scheduleService.getSchedule(354237000L);
+        insertDemoRoute(voyagePlan.getEntries().get(0).getEnavId(), "/demo/routes/CARNIVAL-LEGEND-Cph-Nuuk.txt", true);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -760,7 +765,7 @@ public class TestServiceBean {
         logger.info("Roles: {} ", vesselDao.getAll(Role.class));
         logger.info("Users: {} ", vesselDao.getAll(SecuredUser.class));
         logger.info("Vessels: {} ", vesselDao.getAll(Vessel.class));
-        logger.info("VoyagePlans: {} ", vesselDao.getAll(VoyagePlan.class));
+        logger.info("Schedules: {} ", vesselDao.getAll(Schedule.class));
         logger.info("Voyage: {} ", vesselDao.getAll(Voyage.class));
         logger.info("Berth: {} ", vesselDao.getAll(Berth.class));
     }
@@ -768,8 +773,8 @@ public class TestServiceBean {
     private void insertDemoRoute(String voyageId, String file, boolean activate) {
         InputStream is = getClass().getResourceAsStream(file);
         try {
-            Route r = vesselService.parseRoute(file, is);
-            vesselService.saveRoute(r, voyageId, activate);
+            Route r = scheduleService.parseRoute(file, is);
+            scheduleService.saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);
         }

@@ -13,53 +13,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.domain;
+package dk.dma.embryo.rest.json;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
+import java.util.Date;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-@Entity
-public class VoyagePlan extends BaseEntity<Long> {
+/**
+ * 
+ * @author Jesper Tejlgaard
+ */
+public class VoyageShort {
 
-    private static final long serialVersionUID = 1L;
+    // Properties relevant for current functionality. Extra can be added.
 
-    // //////////////////////////////////////////////////////////////////////
-    // Entity fields (also see super class)
-    // //////////////////////////////////////////////////////////////////////
+    private String maritimeId;
 
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
+    private String loc;
 
+    private Date arr;
 
-    // //////////////////////////////////////////////////////////////////////
-    // Utility Methods
-    // //////////////////////////////////////////////////////////////////////
+    private Date dep;
 
+    private String routeId;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public VoyagePlan() {
-
+    public VoyageShort() {
+        super();
     }
 
-    public VoyagePlan(Long id) {
-        this.id = id;
+    public VoyageShort(String maritimeId, String berthName, Date arrival, Date departure) {
+        super();
+        this.maritimeId = maritimeId;
+        this.loc = berthName;
+        this.arr = arrival;
+        this.dep = departure;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -73,4 +63,45 @@ public class VoyagePlan extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
+
+    public String getMaritimeId() {
+        return maritimeId;
+    }
+
+    public void setMaritimeId(String maritimeId) {
+        this.maritimeId = maritimeId;
+    }
+
+    public String getLoc() {
+        return loc;
+    }
+
+    public void setLoc(String loc) {
+        this.loc = loc;
+    }
+
+    public Date getArr() {
+        return arr;
+    }
+
+    public void setArr(Date arr) {
+        this.arr = arr;
+    }
+
+    public Date getDep() {
+        return dep;
+    }
+
+    public void setDep(Date dep) {
+        this.dep = dep;
+    }
+
+    public String getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(String routeId) {
+        this.routeId = routeId;
+    }
+
 }

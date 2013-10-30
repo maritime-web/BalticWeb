@@ -43,7 +43,7 @@ public class Voyage {
 
     private Boolean doctor;
     
-    private String routeId;
+    private RouteOverview route;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -162,12 +162,45 @@ public class Voyage {
     public void setDoctor(Boolean doctor) {
         this.doctor = doctor;
     }
-
-    public String getRouteId() {
-        return routeId;
+    
+    public RouteOverview getRoute() {
+        return route;
     }
 
-    public void setRouteId(String routeId) {
-        this.routeId = routeId;
+    public void setRoute(RouteOverview route) {
+        this.route = route;
+    }
+    
+    public static class RouteOverview{
+        
+        private String id;
+        private String name;
+        private String dep;
+        private String des;
+        private Integer waypointCount;
+        
+        public RouteOverview(String id, String name, String dep, String des, Integer waypointCount) {
+            super();
+            this.id = id;
+            this.name = name;
+            this.dep = dep;
+            this.des = des;
+            this.waypointCount = waypointCount;
+        }
+        public String getId() {
+            return id;
+        }
+        public String getName() {
+            return name;
+        }
+        public String getDep() {
+            return dep;
+        }
+        public String getDes() {
+            return des;
+        }
+        public Integer getWaypointCount() {
+            return waypointCount;
+        }
     }
 }

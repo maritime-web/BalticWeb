@@ -34,7 +34,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.VesselService;
+import dk.dma.arcticweb.service.ScheduleService;
 
 /**
  * 
@@ -44,8 +44,8 @@ import dk.dma.arcticweb.service.VesselService;
 public class RouteUploadService {
 
     @Inject
-    private VesselService shipService;
-
+    private ScheduleService scheduleService;
+    
     @Inject
     private Logger logger;
 
@@ -99,9 +99,9 @@ public class RouteUploadService {
                 }
                 logger.debug("Handling uploaded route with file name: {}", item.getName());
 
-                dk.dma.embryo.domain.Route route = shipService.parseRoute(item.getName(), item.getInputStream());
+                dk.dma.embryo.domain.Route route = scheduleService.parseRoute(item.getName(), item.getInputStream());
 
-                String enavId = shipService.saveRoute(route, voyageId, active);
+                String enavId = scheduleService.saveRoute(route, voyageId, active);
 
                 result.files.add(new RestFile(item.getName(), item.getSize(), enavId));
 

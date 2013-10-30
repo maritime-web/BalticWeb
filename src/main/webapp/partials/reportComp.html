@@ -13,11 +13,6 @@
 			<td><a id="voyagePlan" x-ng-href="report.html#/voyagePlan/{{ship.mmsi}}/current">edit</a></td>
 		</tr>
 		<tr>
-			<th>Active Route</th>
-			<td><span x-ng-class="routeLabel" class="label">{{routeTxt}}</span></td>
-			<td><span x-ng-show="routeEditTxt" ><a id="routeEdit" x-ng-href="report.html#/voyagePlan/{{ship.mmsi}}/current">{{routeEditTxt}}</a> - </span><a id="routeUpload" href="report.html#/routeUpload/{{ship.mmsi}}{{active}}">upload</a></td>
-		</tr>
-		<tr>
 			<th>Greenpos Report</th>
 			<td><span x-ng-class="greenposLabel" class="label">{{greenposTxt}}</span></td>
 			<td><a id="greenposReport" href="report.html#/report">report</a></td>

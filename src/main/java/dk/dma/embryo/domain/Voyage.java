@@ -58,7 +58,7 @@ public class Voyage extends BaseEntity<Long> {
     Route route;
 
     @ManyToOne
-    VoyagePlan plan;
+    Schedule schedule;
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
@@ -69,11 +69,8 @@ public class Voyage extends BaseEntity<Long> {
 
         dk.dma.embryo.rest.json.Voyage voyage = new dk.dma.embryo.rest.json.Voyage(getEnavId(), getBerthName(),
                 getPosition().getLatitudeAsString(), getPosition().getLongitudeAsString(), arrival, departure,
-                getCrewOnBoard(), getPassengersOnBoard(),  getDoctorOnBoard());
+                getCrewOnBoard(), getPassengersOnBoard(), getDoctorOnBoard());
 
-        if (getRoute() != null) {
-            voyage.setRouteId(getRoute().getEnavId());
-        }
         return voyage;
     }
 
@@ -213,8 +210,8 @@ public class Voyage extends BaseEntity<Long> {
         return route;
     }
 
-    public VoyagePlan getPlan() {
-        return plan;
+    public Schedule getSchedule() {
+        return schedule;
     }
 
 }

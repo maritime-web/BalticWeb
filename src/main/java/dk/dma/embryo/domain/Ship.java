@@ -15,78 +15,19 @@
  */
 package dk.dma.embryo.domain;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 @Entity
 public class Ship extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 
-    @NotNull
-    @Column(unique = true)
-    private String maritimeId;
-
-    @Column(nullable = true)
-    private Long mmsi;
-
-    @Column(nullable = true, length = 32)
-    private String type;
-
-    @Min(0)
-    @Max(200)
-    @Column(nullable = true)
-    private BigDecimal maxSpeed;
-
-    @Min(0)
-    @Column(nullable = true)
-    private Integer grossTonnage;
-
-    @Column(nullable = true, length = 64)
-    private String commCapabilities;
-
-    @Min(0)
-    @Column(nullable = true)
-    private Integer persons;
-
-    @Column(nullable = true, length = 32)
-    private String iceClass;
-
-    @Column(nullable = true)
-    private Boolean helipad;
-
-    @OneToOne(mappedBy = "vessel", cascade = { CascadeType.ALL })
-    private VoyagePlan voyagePlan;
-
-    @OneToOne(cascade = { CascadeType.ALL })
-    private Voyage activeVoyage;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true)
-    private VesselOwnerRole owner;
-
-    private AisData aisData = new AisData();
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
     public Ship(String maritimeId) {
-        this.maritimeId = maritimeId;
     }
 
     public Ship() {
@@ -95,7 +36,6 @@ public class Ship extends BaseEntity<Long> {
 
     public Ship(Long mmsi) {
         this();
-        this.mmsi = mmsi;
     }
 
 }

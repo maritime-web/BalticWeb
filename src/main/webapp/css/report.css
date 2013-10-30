@@ -81,6 +81,38 @@ h2, h3, th, .section, .control-label{
 	max-width: 720px;
 }
 
+#schedule .table tbody {
+	border-top-style: none;
+	
+	/*border-top: 2px solid #dddddd;*/
+}
+
+#schedule .table tbody td{
+	border-top-style: none;
+}
+
+#schedule .table tbody.content:nth-child(even){
+	background-color: #EBEBEB;
+}
+
+
+#schedule .table tr.voyage td{
+	padding-top: 15px;
+}
+
+#schedule .table tr.route td{
+	padding-top: 0px;
+	padding-bottom: 15px;
+}
+
+#schedule tr.lastRow td{
+	padding-top: 40px;
+}
+
+.scheduleSelection {
+	max-width: 450px;
+}
+
 .input-mini {
 	width: 30px;
 }
