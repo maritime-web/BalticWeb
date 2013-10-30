@@ -132,7 +132,14 @@ public class VesselRestService {
         Map result = aisViewService.vesselTargetDetails(vesselId, 1);
 
         long mmsi = (Integer) result.get("mmsi");
+
+        boolean historicalTrack = false;
+
         Object track = result.remove("pastTrack");
+
+        if (track != null) {
+            historicalTrack = ((List)((Map)track).get("points")).size() > 3;
+        }
 
         VesselDetails details;
         Vessel vessel = vesselService.getVessel(mmsi);
@@ -150,7 +157,7 @@ public class VesselRestService {
 
         details.setAdditionalInformation(
                 new AdditionalInformation(
-                        route != null ? route.getEnavId() : null, track != null
+                        route != null ? route.getEnavId() : null, historicalTrack
                 )
         );
 
