@@ -156,6 +156,10 @@ public class VesselDetails {
         private String routeId;
         private Boolean historicalTrack;
 
+        public AdditionalInformation() {
+
+        }
+
         public AdditionalInformation(String routeId, Boolean historicalTrack) {
             super();
             this.routeId = routeId;
