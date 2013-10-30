@@ -25,16 +25,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.embryo.rest.json.VesselOverview;
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
+import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.arcticweb.service.VesselService;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.rest.json.VesselDetails;
 import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
+import dk.dma.embryo.rest.json.VesselOverview;
 import dk.dma.embryo.restclients.AisViewService;
 
 @Path("/vessel")
@@ -48,6 +49,10 @@ public class VesselRestService {
     @Inject
     private VesselService vesselService;
 
+    @Inject
+    private ScheduleService scheduleService;
+
+    
     @Inject
     private VesselDao vesselDao;
 
@@ -142,7 +147,7 @@ public class VesselRestService {
         }
 
         if (vessel != null) {
-            route = vesselService.getActiveRoute(Long.valueOf(mmsiStr));
+            route = scheduleService.getActiveRoute(Long.valueOf(mmsiStr));
             details = vessel.toJsonModel2();
             // merge AIS data
             details.getAis().putAll(result);
@@ -161,7 +166,7 @@ public class VesselRestService {
     @Produces("application/json")
     public Map details(@QueryParam("id") long vesselId, @QueryParam("past_track") int pastTrack) {
         Map result = aisViewService.vesselTargetDetails(vesselId, pastTrack);
-        Route route = vesselService.getActiveRoute((long) (Integer) result.get("mmsi"));
+        Route route = scheduleService.getActiveRoute((long) (Integer) result.get("mmsi"));
         if (route != null) {
             result.put("route", route.toJsonModel());
         }

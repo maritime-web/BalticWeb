@@ -13,33 +13,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.service;
+package dk.dma.arcticweb.dao;
 
 import javax.ejb.Local;
 
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Vessel;
+import dk.dma.embryo.domain.Route;
+import dk.dma.embryo.domain.Schedule;
+import dk.dma.embryo.domain.Voyage;
 
 @Local
-public interface VesselService {
-
-    
-    /**
-     * Get the vessel for the currently logged in {@link Sailor}.
-     * 
-     * @return
-     */
-    Vessel getYourVessel();
+public interface ScheduleDao extends Dao {
 
     /**
      * 
-     * @param vessel
+     * @param sailor
      * @return
      */
-    String save(Vessel vessel);
+    Schedule getSchedule(Long mmsi);
 
-    Vessel getVessel(Long mmsi);
+    Route getActiveRoute(Long mmsi);
 
-    Vessel getVessel(String maritimeId);
+    Long getRouteId(String enavId);
 
+    Route getRouteByEnavId(String enavId);
+
+    Voyage getVoyageByEnavId(String enavId);
 }

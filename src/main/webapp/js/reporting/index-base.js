@@ -10,7 +10,7 @@
 (function() {
     "use strict";
 
-    embryo.angular = angular.module('embryo', [ 'embryo.shipInformation', 'embryo.voyagePlan', 'embryo.routeEdit',
+    embryo.angular = angular.module('embryo', [ 'embryo.shipInformation', 'embryo.voyagePlan', 'embryo.schedule' ,'embryo.routeEdit',
             'embryo.routeUpload', 'embryo.greenpos', 'embryo.reportControl' ]);
     // , 'ui.bootstrap'
     
@@ -27,11 +27,9 @@
             templateUrl : 'partials/vesselInformation.html',
             controller : embryo.VesselInformationCtrl
         }).when('/voyagePlan/:mmsi', {
-            templateUrl : 'partials/voyagePlan.html',
-            controller : embryo.VoyagePlanCtrl
+            templateUrl : 'partials/schedule.html',
         }).when('/voyagePlan/:mmsi/:voyage', {
-            templateUrl : 'partials/voyagePlan.html',
-            controller : embryo.VoyagePlanCtrl
+            templateUrl : 'partials/schedule.html',
         }).when('/routeEdit/:mmsi', {
             templateUrl : 'partials/routeEdit.html',
             controller : embryo.RouteEditCtrl
@@ -39,11 +37,11 @@
             templateUrl : 'partials/routeEdit.html',
             controller : embryo.RouteEditCtrl
         }).when('/routeUpload/:mmsi', {
-            templateUrl : 'partials/routeUpload.html'// ,
+            templateUrl : 'partials/route.html'// ,
         }).when('/routeUpload/:mmsi/voyage/:voyageId', {
-            templateUrl : 'partials/routeUpload.html'// ,
+            templateUrl : 'partials/route.html'// ,
         }).when('/routeUpload/:mmsi/active', {
-            templateUrl : 'partials/routeUpload.html'// ,
+            templateUrl : 'partials/route.html'// ,
         }).when('/reportlist', {
             templateUrl : 'partials/greenposList.html',
             controller : embryo.GreenposListCtrl

@@ -69,7 +69,7 @@ public class Vessel extends BaseEntity<Long> {
     private Boolean helipad;
 
     @OneToOne(mappedBy = "vessel", cascade = { CascadeType.ALL })
-    private VoyagePlan voyagePlan;
+    private Schedule schedule;
 
     @OneToOne(cascade = { CascadeType.ALL })
     private Voyage activeVoyage;
@@ -220,13 +220,13 @@ public class Vessel extends BaseEntity<Long> {
         this.helipad = helipad;
     }
 
-    public VoyagePlan getVoyagePlan() {
-        return voyagePlan;
+    public Schedule getSchedule() {
+        return schedule;
     }
 
-    public void setVoyagePlan(VoyagePlan plan) {
+    public void setSchedule(Schedule plan) {
         plan.vessel = this;
-        this.voyagePlan = plan;
+        this.schedule = plan;
     }
 
     public Voyage getActiveVoyage() {

@@ -1,0 +1,95 @@
+
+<div id="schedule" x-ng-controller="embryo.ScheduleCtrl">
+	<div>
+		<h2>Schedule</h2>
+	</div>
+	<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+	<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+	<form class="form-horizontal">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Location</th>
+					<th>Latitude</th>
+					<th>Longitude</th>
+					<th>Arrival</th>
+					<th>Departure</th>
+					<th>Crew</th>
+					<th>Passengers</th>
+					<th>Doctor</th>
+				</tr>
+			</thead>
+			<tbody x-ng-repeat="voyage in voyages" x-ng-class="{success : isActive(voyage)}" class="content">
+				<tr class="voyage">
+					<td><input ng-model="voyage.berthName" fn-selected="berthSelected(voyage, datum)"
+						fn-autocompleted="berthSelected(voyage, datum)" class="input-large ngTypeahead" datasets="berths" type="text" /></td>
+					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
+					<td><input x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
+					<td><input x-ng-model="voyage.arrival" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
+					<td><input x-ng-model="voyage.departure" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
+					<td><input x-ng-model="voyage.crew" type="text" class="input-mini" /></td>
+					<td><input x-ng-model="voyage.passengers" type="text" class="input-mini" /></td>
+					<td><select x-ng-model="voyage.doctor" class="input-small"
+						ng-options="value as key for (key, value) in options">
+							<option value="">---</option>
+					</select></td>
+					<!-- 					<td>
+						<div class="btn-group pull-left" x-ng-show="!$last">
+							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#" x-ng-show="!routeDisabled(voyage)">Route <span
+								class="caret"></span>
+							</a> <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" x-ng-show="routeDisabled(voyage)"
+								x-ng-disabled="true" title="Save voyage plan to enable route functionality">Route <span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a tabindex="-1" x-ng-href="{{uploadLink(voyage)}}">Upload Route</a></li>
+								<li><a tabindex="-1" x-ng-href="{{editRouteLink(voyage)}}">Edit Route</a></li>
+								<!-- <li x-ng-show="voyage.routeId"><a tabindex="-1" href="#" x-ng-click="drawRoute(voyage)">Draw Route</a></li> -->
+					<!-- 	<li x-ng-show="voyage.routeId && !isActive(voyage)"><a tabindex="-1" href="#"
+									x-ng-click="activate(voyage, $event)">Activate Route</a></li>
+								<li x-ng-show="voyage.routeId && isActive(voyage)"><a tabindex="-1" href="#"
+									x-ng-click="deactivate(voyage, $event)">Deactivate Route</a></li>
+							</ul>
+						</div>
+					</td>
+ -->
+				</tr>
+				<tr class="route">
+					<td colspan="4"><span ng-show="voyage.route">Route <span style="font-style: italic;">{{voyage.route.name}}</span>
+							from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points
+					</span> <span ng-show="!voyage.route">No route</span></td>
+					<td colspan="3"><span class="pull-right" ng-show="!voyage.route">
+							<button class="btn" x-ng-click="editRoute(voyage, $event)">Create route</button>
+							<button class="btn" x-ng-click="uploadRoute(voyage, $event)">Upload route</button>
+					</span><span class="pull-right" ng-show="voyage.route">
+							<button ng-show="!isActive(voyage)" class="btn btn-success" x-ng-click="activate(voyage, $event)">Activate</button>
+							<button ng-show="isActive(voyage)" class="btn btn-warning" x-ng-click="deactivate(voyage, $event)">Deactivate</button>
+							<button class="btn" x-ng-click="editRoute(voyage, $event)">Edit route</button>
+							<button class="btn" x-ng-click="uploadRoute(voyage, $event)">Upload route</button>
+					</span></td>
+					<td><button class="btn btn-danger" x-ng-show="!$last" x-ng-disabled="isActive(voyage)"
+							x-ng-click="del($index)">Delete</button></td>
+
+					<!-- 
+					<td colspan="3"><span class="pull-right" ng-show="!voyage.route">Route actions: <a>Upload route</a> - <a>Create
+								route</a></span> <span class="pull-right" ng-show="voyage.route"> <a>Upload route</a> - <a>Edit route</a> - <a>Activate</a></span></td>
+					<td><a x-ng-show="!$last" x-ng-disabled="isActive(voyage)"
+							x-ng-click="del($index)">Delete</a></td>
+ -->
+
+				</tr>
+			</tbody>
+			<tbody>
+				<tr class="lastRow">
+					<td colspan="7"><span class="pull-right">
+							<button class="btn" x-ng-click="reset()">Reset</button>
+					</span></td>
+					<td>
+						<button type="submit" class="btn btn-primary" x-ng-click="save()">Save</button>
+					</td>
+				</tr>
+			</tbody>
+
+		</table>
+	</form>
+</div>

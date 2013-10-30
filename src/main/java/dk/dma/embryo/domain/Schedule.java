@@ -32,33 +32,93 @@ import javax.persistence.OrderColumn;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import dk.dma.embryo.rest.json.Voyage.RouteOverview;
+
 @Entity
-public class VoyagePlan extends BaseEntity<Long> {
+@NamedQueries({ @NamedQuery(name = "Schedule:getByMmsi", query = "SELECT DISTINCT s FROM Schedule s LEFT JOIN FETCH s.voyages where s.vessel.mmsi = :mmsi") })
+public class Schedule extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 1L;
 
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
+    @OneToOne(optional = false)
+    Vessel vessel;
+
+    @OneToMany(cascade = { CascadeType.ALL })
+    @OrderColumn(name = "voyageIndex")
+    @JoinColumn(name = "plan")
+    private List<Voyage> voyages = new LinkedList<>();
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
+    public void addVoyageEntry(Voyage entry) {
+        voyages.add(entry);
+        entry.schedule = this;
+    }
 
+    public Map<String, Voyage> getVoyagePlanAsMap() {
+        Map<String, Voyage> m = new HashMap<>();
+        for (Voyage v : voyages) {
+            m.put(v.getEnavId(), v);
+        }
+        return m;
+    }
+
+    public void removeLastVoyage() {
+        voyages.remove(voyages.size() - 1).schedule = null;
+    }
+
+    public void removeVoyage(Voyage v) {
+        v.schedule = null;
+        voyages.remove(v);
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // Utility Methods
     // //////////////////////////////////////////////////////////////////////
+    public dk.dma.embryo.rest.json.Schedule toJsonModel() {
+        dk.dma.embryo.rest.json.Schedule result = new dk.dma.embryo.rest.json.Schedule(getId());
 
+        dk.dma.embryo.rest.json.Voyage[] voyages = new dk.dma.embryo.rest.json.Voyage[getEntries().size()];
+        int index = 0;
+
+        for (Voyage voyage : getEntries()) {
+            voyages[index] = voyage.toJsonModel();
+
+            if(voyage.getRoute() != null){
+                Route route = voyage.getRoute();
+                RouteOverview overview = new RouteOverview(route.getEnavId(), route.getName(), route.getOrigin(),
+                        route.getDestination(), route.getWayPoints().size());
+                voyages[index].setRoute(overview);
+            }
+            index++;
+        }
+        result.setVoyages(voyages);
+
+        return result;
+    }
+
+    public static Schedule fromJsonModel(dk.dma.embryo.rest.json.Schedule schedule) {
+        Schedule result = new Schedule(schedule.getId());
+
+        for (dk.dma.embryo.rest.json.Voyage voyage : schedule.getVoyages()) {
+            Voyage v = Voyage.fromJsonModel(voyage);
+            result.addVoyageEntry(v);
+        }
+        return result;
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public VoyagePlan() {
+    public Schedule() {
 
     }
 
-    public VoyagePlan(Long id) {
+    public Schedule(Long id) {
         this.id = id;
     }
 
@@ -73,4 +133,11 @@ public class VoyagePlan extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
+    public Vessel getVessel() {
+        return vessel;
+    }
+
+    public List<Voyage> getEntries() {
+        return Collections.unmodifiableList(voyages);
+    }
 }

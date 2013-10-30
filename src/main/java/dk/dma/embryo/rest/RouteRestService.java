@@ -26,7 +26,7 @@ import javax.ws.rs.Produces;
 
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.VesselService;
+import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.embryo.rest.json.ActiveRoute;
 import dk.dma.embryo.rest.json.Route;
 import dk.dma.embryo.security.authorization.YourShip;
@@ -39,8 +39,8 @@ import dk.dma.embryo.security.authorization.YourShip;
 public class RouteRestService {
 
     @Inject
-    private VesselService shipService;
-
+    private ScheduleService scheduleService;
+    
     @Inject
     private Logger logger;
 
@@ -52,7 +52,7 @@ public class RouteRestService {
     @Produces("application/json")
     public Route getRoute(@PathParam("id") String id) {
         logger.debug("getRoute({})", id);
-        dk.dma.embryo.domain.Route route = shipService.getRouteByEnavId(id);
+        dk.dma.embryo.domain.Route route = scheduleService.getRouteByEnavId(id);
 
         // TODO replace below with some http status telling resource is not available
         return route != null ? route.toJsonModel() : null;
@@ -76,7 +76,7 @@ public class RouteRestService {
 
         dk.dma.embryo.domain.Route route;
 
-        route = shipService.getYourActiveRoute();
+        route = scheduleService.getYourActiveRoute();
 
         Route result = route != null ? route.toJsonModel() : null;
 
@@ -93,7 +93,7 @@ public class RouteRestService {
 
         dk.dma.embryo.domain.Route route;
 
-        route = shipService.getActiveRoute(Long.valueOf(mmsi));
+        route = scheduleService.getActiveRoute(Long.valueOf(mmsi));
 
         Route result = route != null ? route.toJsonModel() : null;
 
@@ -108,7 +108,7 @@ public class RouteRestService {
         logger.debug("save({})", route);
 
         dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromJsonModel(route);
-        shipService.saveRoute(toBeSaved);
+        scheduleService.saveRoute(toBeSaved);
         // String result = "Product created : " + product;
         // return Response.status(201).entity(result).build();
     }
@@ -120,7 +120,7 @@ public class RouteRestService {
         logger.debug("save2({})", route);
 
         dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromJsonModel(route);
-        shipService.saveRoute(toBeSaved);
+        scheduleService.saveRoute(toBeSaved);
         // String result = "Product created : " + product;
         // return Response.status(201).entity(result).build();
     }
@@ -135,7 +135,7 @@ public class RouteRestService {
     public void activate(ActiveRoute activeRoute) {
         logger.debug("Activating route: {}", activeRoute);
 
-        shipService.activateRoute(activeRoute.getRouteId(), activeRoute.getActive());
+        scheduleService.activateRoute(activeRoute.getRouteId(), activeRoute.getActive());
         // String result = "Product created : " + product;
         // return Response.status(201).entity(result).build();
     }
