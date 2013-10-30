@@ -10,7 +10,7 @@ $(function() {
             yourShip = vesselOverview;
             embryo.vessel.setMarkedVessel(vesselOverview.id);
 
-            $("a[href=#vcpYourShip]").html("Your Ship - "+vesselDetails.name);
+            $("a[href=#vcpYourShip]").html("Your Vessel - "+vesselDetails.ais.name);
             $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(vesselDetails));
             $("#yourShipAesInformationLink").off("click");
             $("#yourShipAesInformationLink").on("click", function(e) {
@@ -18,7 +18,13 @@ $(function() {
                 embryo.vesselInformation.showAesDialog(vesselDetails);
             });
             setupAdditionalInformationTable("#yourShipAdditionalInformation", vesselOverview, vesselDetails, "YourShip");
-            if (vesselDetails.route) yourShipRouteLayer.draw(vesselDetails.route);
+            if (vesselDetails.additionalInformation.routeId) {
+                embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
+                    console.log("drawing", data);
+                    yourShipRouteLayer.draw(data);
+                });
+            }
+            setupReporting("#yourShipReporting", vesselOverview, vesselDetails);
         }
     }
 

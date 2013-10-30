@@ -55,14 +55,12 @@ public class VesselServiceImpl implements VesselService {
     @Override
     @YourShip
     public String save(Vessel vessel) {
-        Vessel managed = vesselRepository.getVesselByMaritimeId(vessel.getMaritimeId());
+        Vessel managed = vesselRepository.getVessel(vessel.getMmsi());
 
         if (managed != null) {
             // copying all values to managed entity to avoid resetting JPA association fields.
-            managed.getAisData().setName(vessel.getAisData().getName());
+
             managed.setMmsi(vessel.getMmsi());
-            managed.getAisData().setImoNo(vessel.getAisData().getImoNo());
-            managed.getAisData().setCallsign(vessel.getAisData().getCallsign());
             managed.setCommCapabilities(vessel.getCommCapabilities());
             managed.setHelipad(vessel.getHelipad());
             managed.setMaxSpeed(vessel.getMaxSpeed());

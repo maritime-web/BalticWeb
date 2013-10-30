@@ -32,7 +32,10 @@
 						<table class="table table-condensed"></table>
 					</div>
 
-					<div x-ng-include="'partials/reportComp.html'"></div>
+                    <h4>Reporting</h4>
+
+                    <table class="table table-condensed additional-information" id="yourShipReporting">
+                    </table>
 
 					<h4>Additional Information</h4>
 
@@ -45,7 +48,7 @@
 		<div class="accordion-group">
 			<div class="accordion-heading">
 				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSearch"> Search Ships
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSearch"> Search Vessels
 					</a>
 				</h4>
 			</div>
@@ -70,7 +73,7 @@
 			<div class="accordion-heading">
 				<h4>
 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSelectedShip">
-						Selected Ship </a>
+						Selected Vessel </a>
 				</h4>
 			</div>
 			<div id="vcpSelectedShip" class="accordion-body collapse">

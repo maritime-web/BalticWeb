@@ -17,6 +17,8 @@ package dk.dma.embryo.rest;
 
 import java.util.List;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -83,6 +85,7 @@ public class ShipRestService {
 
     @PUT
     @Consumes("application/json")
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String save(Ship ship) {
         logger.debug("save({})", ship);
 
