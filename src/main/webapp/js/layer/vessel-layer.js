@@ -111,7 +111,7 @@ function VesselLayer() {
             that.layers.selection.removeAllFeatures();
 
             $.each(that.layers.vessel.features, function (k,v) {
-                if (v.attributes.vessel.id == id) {
+                if (v.attributes.vessel.mmsi == id) {
                     that.layers.selection.addFeatures([
                         new OpenLayers.Feature.Vector(
                              that.map.createPoint(v.attributes.vessel.x, v.attributes.vessel.y), {
@@ -138,7 +138,7 @@ function VesselLayer() {
         var that = this;
 
         $.each(this.layers.vessel.features, function(k, v) {
-            if (v.attributes.vessel.id = that.selectedId) {
+            if (v.attributes.vessel.mmsi = that.selectedId) {
                 selectedFeature = v;
             }
         })
