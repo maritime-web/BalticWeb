@@ -22,6 +22,7 @@ embryo.reporting.schedule = {
         return "OK";
     },
     show: function (vesselOverview, vesselDetails) {
+        embryo.ScheduleCtrl.show(vesselDetails);
         $("#schedulePanel").css("display", "block");
     },
     hide: function () {
@@ -29,18 +30,19 @@ embryo.reporting.schedule = {
     }
 }
 
-embryo.reporting.activeRoute = {
-    title: "Active Route",
-    status: function (vesselOverview, vesselDetails) {
-        return "OK";
-    },
-    show: function (vesselOverview, vesselDetails) {
-        $("#activeRoutePanel").css("display", "block");
-    },
-    hide: function () {
-        $("#activeRoutePanel").css("display", "none");
+embryo.reporting.route = {
+        title: "Active Route",
+        status: function (vesselOverview, vesselDetails) {
+            return "OK";
+        },
+        show: function (vesselOverview, vesselDetails) {
+            $("#routeUploadPanel").css("display", "block");
+        },
+        hide: function () {
+            $("#routeUploadPanel").css("display", "none");
+        }
     }
-}
+
 
 embryo.reporting.greenposReport = {
     title: "Greenpos Report",

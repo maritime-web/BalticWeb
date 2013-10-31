@@ -1,0 +1,8 @@
+/** Route upload **/
+#routeupload .progress {
+	margin-top: 7px;
+}
+
+#routeupload .scheduleEntry{
+	font-size:1.1em;
+}

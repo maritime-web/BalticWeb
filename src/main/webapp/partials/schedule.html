@@ -20,8 +20,8 @@
 					<th>Doctor</th>
 				</tr>
 			</thead>
-			<tbody x-ng-repeat="voyage in voyages" x-ng-class="{success : isActive(voyage)}" class="content">
-				<tr class="voyage">
+			<tbody x-ng-repeat="voyage in voyages" class="content">
+				<tr class="voyage" x-ng-class="{warning : activeRouteId == voyage.route.id}">
 					<td><input ng-model="voyage.berthName" fn-selected="berthSelected(voyage, datum)"
 						fn-autocompleted="berthSelected(voyage, datum)" class="input-large ngTypeahead" datasets="berths" type="text" /></td>
 					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
@@ -54,18 +54,18 @@
 					</td>
  -->
 				</tr>
-				<tr class="route">
+				<tr class="route" x-ng-class="{warning : activeRouteId == voyage.route.id}">
 					<td colspan="4"><span ng-show="voyage.route">Route <span style="font-style: italic;">{{voyage.route.name}}</span>
 							from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points
 					</span> <span ng-show="!voyage.route">No route</span></td>
 					<td colspan="3"><span class="pull-right" ng-show="!voyage.route">
-							<button class="btn" x-ng-click="editRoute(voyage, $event)">Create route</button>
-							<button class="btn" x-ng-click="uploadRoute(voyage, $event)">Upload route</button>
+							<button ng-hide="!voyage.maritimeId" class="btn" x-ng-click="editRoute(voyage, $event)">Create route</button>
+							<button ng-hide="!voyage.maritimeId" class="btn" x-ng-click="uploadRoute(voyage, $event)">Upload route</button>
 					</span><span class="pull-right" ng-show="voyage.route">
-							<button ng-show="!isActive(voyage)" class="btn btn-success" x-ng-click="activate(voyage, $event)">Activate</button>
-							<button ng-show="isActive(voyage)" class="btn btn-warning" x-ng-click="deactivate(voyage, $event)">Deactivate</button>
-							<button class="btn" x-ng-click="editRoute(voyage, $event)">Edit route</button>
-							<button class="btn" x-ng-click="uploadRoute(voyage, $event)">Upload route</button>
+							<button ng-show="activeRouteId != voyage.route.id" class="btn btn-success" x-ng-click="activate(voyage, $event)">Activate</button>
+							<button ng-show="activeRouteId == voyage.route.id" class="btn btn-warning" x-ng-click="deactivate(voyage, $event)">Deactivate</button>
+							<button ng-hide="!voyage.maritimeId" class="btn" x-ng-click="editRoute(voyage, $event)">Edit route</button>
+							<button ng-hide="!voyage.maritimeId" class="btn" x-ng-click="uploadRoute(voyage, $event)">Upload route</button>
 					</span></td>
 					<td><button class="btn btn-danger" x-ng-show="!$last" x-ng-disabled="isActive(voyage)"
 							x-ng-click="del($index)">Delete</button></td>
@@ -82,10 +82,10 @@
 			<tbody>
 				<tr class="lastRow">
 					<td colspan="7"><span class="pull-right">
-							<button class="btn" x-ng-click="reset()">Reset</button>
+							<button type="button" class="btn" x-ng-click="reset()">Reset</button>
 					</span></td>
 					<td>
-						<button type="submit" class="btn btn-primary" x-ng-click="save()">Save</button>
+						<button type="button" class="btn btn-primary" x-ng-click="save()">Save</button>
 					</td>
 				</tr>
 			</tbody>

@@ -11,21 +11,39 @@
 <link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
 <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
+<link href="css/ext/typeahead-0.9.3.css" rel="stylesheet" type="text/css">
+<link href="css/ext/jquery.fileupload-ui.css" rel="stylesheet" type="text/css">
+
 <link href="css/style.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet" type="text/css">
+<link href="css/schedule.css" rel="stylesheet" type="text/css">
+<link href="css/routeupload.css" rel="stylesheet" type="text/css">
 
 <!-- script type="text/javascript" src="http://svn.osgeo.org/metacrs/proj4js/trunk/lib/proj4js-compressed.js"></script -->
 
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
 <script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+<script src="js/ext/bootstrap.min.js"></script>
 <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
 
-<script src="js/ext/bootstrap.min.js"></script>
-<script src="js/ext/bootstrap-contextmenu.js"></script>
+<script src="js/ext/typeahead-0.9.3.min.js" type="text/javascript"></script>
 
 <!-- <script src="js/ext/angular.min.js"></script>-->
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="js/ext/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="js/ext/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="js/ext/jquery.fileupload-process.js"></script>
+<!-- The File Upload validation plugin -->
+<script src="js/ext/jquery.fileupload-validate.js"></script>
+<!-- The File Upload Angular JS module -->
+<script src="js/ext/jquery.fileupload-angular.js"></script>
+
+<script src="js/ext/ui-bootstrap-tpls-0.6.0.js"></script>
 
 <!-- The main application script -->
 <!-- build:js js/arcticweb-map.js -->
@@ -70,12 +88,15 @@
 
 <script src="js/reporting/report-comp.js" defer="defer" type="text/javascript"></script>
 <script src="js/reporting/ship-information.js" defer="defer" type="text/javascript"></script>
+<script src="js/reporting/schedule.js" defer="defer" type="text/javascript"></script>
+<script src="js/reporting/route-upload.js" defer="defer" type="text/javascript"></script> 
+<script src="js/reporting/greenpos.js" defer="defer" type="text/javascript"></script> 
 <!-- endbuild -->
 
 <script defer="defer" type="text/javascript">
     angular.module('embryo.map', [ 'embryo.shipService', 'embryo.voyageService', 'embryo.routeService',
             'embryo.greenposService', 'embryo.reportComp', 'embryo.metoc', 'embryo.vessel', 'embryo.ice', 'embryo.msi',
-            'embryo.shipInformation' ]);
+            'embryo.shipInformation', 'embryo.routeUpload' ]);
 </script>
 
 </head>
@@ -109,19 +130,15 @@
         <div x-ng-include="'partials/vesselInformation.html'"></div>
     </div>
 
-    <!--
     <div class="reportingPanel well" id="schedulePanel">
-        <div x-ng-include="'partials/voyagePlan.html'"></div>
+        <div x-ng-include="'partials/schedule.html'"></div>
     </div>
-
-    <div class="reportingPanel well" id="activeRoutePanel">
+    <div class="reportingPanel well" id="routeUploadPanel">
         <div x-ng-include="'partials/routeUpload.html'"></div>
     </div>
-
     <div class="reportingPanel well" id="greenposReportPanel">
         <div x-ng-include="'partials/greenposReport.html'"></div>
     </div>
-    -->
 
 </body>
 </html>

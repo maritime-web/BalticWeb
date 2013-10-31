@@ -35,30 +35,30 @@
         }
     } ]);
 
-    // embryo.angular.controller('embryo.RouteUploadCtrl', [ '$scope',
-    // function($scope) {
-
-    embryo.RouteUploadCtrl = function($scope, $rootScope, $routeParams, $location, VoyageService, RouteService) {
-        var initUpload = function() {
-            var index;
-            if ($routeParams.mmsi) {
-                VoyageService.getVoyages($routeParams.mmsi, function(voyages) {
-                    $scope.voyages = voyages;
-
-                    if ($routeParams.voyageId) {
-                        for (index in $scope.voyages) {
-                            if ($scope.voyages[index].id === $routeParams.voyageId) {
-                                $scope.selectedVoyage = $scope.voyages[index];
-                                return;
-                            }
-                        }
-                    }
+    embryo.RouteUploadCtrl = function($scope, $rootScope, $location, VoyageService, RouteService) {
+        function initUpload() {
+            if ($scope.mmsi, $scope.voyageId) {
+                VoyageService.getVoyageInfo($scope.mmsi, $scope.voyageId, function(voyageInfo) {
+                    $scope.voyageInfo = voyageInfo;
                 });
             }
         };
 
-        initUpload();
+        embryo.RouteUploadCtrl.show = function(mmsi, voyageId) {
+            $scope.mmsi = mmsi;
+            $scope.voyageId = voyageId;
+            $scope.$apply(function() {
+            });
 
+            initUpload();
+            $("#routeUploadPanel").css("display", "block");
+        };
+
+        embryo.RouteUploadCtrl.hide = function(mmsi, voyageId) {
+            $("#routeUploadPanel").css("display", "hide");
+        };
+
+        
         // Choosing a new file will replace the old one
         $scope.$on('fileuploadadd', function(e, data) {
             $scope.queue = [];
@@ -93,9 +93,9 @@
         $scope.$on('fileuploadsubmit', function(e, data) {
             $scope.message = null;
 
-            if (typeof $scope.selectedVoyage !== "undefined") {
+            if (typeof $scope.voyageInfo !== "undefined") {
                 data.formData = {
-                    voyageId : $scope.selectedVoyage.id,
+                    voyageId : $scope.voyageInfo.id,
                     active : $location.path().lastIndexOf('active') > 0
                 };
             }
