@@ -11,16 +11,10 @@
 
 	var module = angular.module('embryo.routeEdit',['embryo.voyageService', 'embryo.routeService', 'ui.bootstrap', 'ui.bootstrap.datetimepicker']);
 
-	embryo.RouteEditCtrl = function($scope, $routeParams, RouteService, VoyageService) {
-		if ($routeParams.mmsi) {
-			VoyageService.getVoyages($routeParams.mmsi, function(voyages) {
-				$scope.voyages = voyages;
-			});
-		}
-
-		var initRoute = function() {
-			if ($routeParams.routeId) {
-				RouteService.getRoute($routeParams.routeId, function(route) {
+	embryo.RouteEditCtrl = function($scope, RouteService, VoyageService) {
+		function initRoute() {
+			if ($scope.routeId) {
+				RouteService.getRoute($scope.routeId, function(route) {
 					$scope.route = route;
 					$scope.date = new Date(route.etaDeparture);
 				});
@@ -29,7 +23,16 @@
 			}
 		};
 
-		initRoute();
+        embryo.RouteEditCtrl.show = function(mmsi, routeId) {
+            $scope.mmsi = mmsi;
+            $scope.routeId = routeId;
+            initRoute();
+            $scope.$apply(function() {
+            });
+
+            $("#routeEditPanel").css("display", "block");
+        };
+
 
 		$scope.save = function() {
             $scope.message = null;
