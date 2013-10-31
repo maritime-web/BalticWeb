@@ -23,7 +23,7 @@
 			}
 		};
 
-        embryo.RouteEditCtrl.show = function(mmsi, routeId) {
+		embryo.RouteEditCtrl.show = function(mmsi, routeId) {
             $scope.mmsi = mmsi;
             $scope.routeId = routeId;
             initRoute();

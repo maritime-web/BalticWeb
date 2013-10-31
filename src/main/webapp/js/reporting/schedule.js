@@ -13,13 +13,14 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.voyageService', 'embryo.routeService',
-            'siyfion.ngTypeahead' ]);
+            'siyfion.typeahead']);
 
     embryo.ScheduleCtrl = function($scope, $rootScope, VesselService, VoyageService, RouteService, $location) {
         var schedule;
         var loadVoyage = function() {
             VoyageService.getSchedule($scope.mmsi, function(ss) {
                 schedule = ss;
+                
                 $scope.voyages = schedule.voyages.slice();
                 $scope.voyages.push({});
 
@@ -43,7 +44,7 @@
         };
 
         $scope.berths = {
-            name : 'embryo_berths',
+            name : 'embryo_berths2',
             prefetch : {
                 url : berthUrl,
                 // 1 time
@@ -116,7 +117,6 @@
             $scope.message = null;
             $scope.alertMessage = null;
             loadVoyage();
-            loadActiveRoute();
         };
         $scope.save = function() {
             var index;
@@ -131,7 +131,6 @@
                 $rootScope.$broadcast('yourshipDataUpdated');
                 $scope.message = "Schedule saved successfully";
                 loadVoyage();
-                loadActiveRoute();
             });
         };
     };

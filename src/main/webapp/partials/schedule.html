@@ -23,7 +23,7 @@
 			<tbody x-ng-repeat="voyage in voyages" class="content">
 				<tr class="voyage" x-ng-class="{warning : activeRouteId == voyage.route.id}">
 					<td><input ng-model="voyage.berthName" fn-selected="berthSelected(voyage, datum)"
-						fn-autocompleted="berthSelected(voyage, datum)" class="input-large ngTypeahead" datasets="berths" type="text" /></td>
+						fn-autocompleted="berthSelected(voyage, datum)" class="input-large siyTypeahead" datasets="berths" type="text" /></td>
 					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
 					<td><input x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
 					<td><input x-ng-model="voyage.arrival" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>

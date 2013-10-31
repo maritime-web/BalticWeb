@@ -4,7 +4,12 @@
  * from above location
  * Modified a great deal to match our own needs. 
  */
-angular.module('siyfion.ngTypeahead', []).directive('ngTypeahead', function() {
+
+(function() {
+    "use strict";
+
+angular.module('siyfion.typeahead', []).directive('siyTypeahead', function() {
+    
 	return {
 		restrict : 'ACE',
 		scope : {
@@ -56,3 +61,5 @@ angular.module('siyfion.ngTypeahead', []).directive('ngTypeahead', function() {
 		}
 	};
 });
+
+}());

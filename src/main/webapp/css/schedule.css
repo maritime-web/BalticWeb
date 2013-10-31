@@ -5,6 +5,15 @@
 	min-width:120px;
 }
 
+#schedule input.lon {
+	width: 70px;
+}
+
+#schedule input.tt-hint {
+	width: 150px;
+}
+
+
 #schedule .table tbody {
 	border-top-style: none;
 	
