@@ -1,6 +1,8 @@
 (function() {
     var module = angular.module('embryo.vessel', []);
 
+    var subscriptions = {};
+
     module.service('VesselService', function() {
         return {
             list: function(callback) {
@@ -75,19 +77,47 @@
 
                 callback(result);
             },
+            fireVesselDetailsUpdate: function(vesselDetails) {
+                var s = subscriptions[vesselDetails.ais.mmsi];
+                if (s) {
+                    s.vesselDetails = vesselDetails;
+                    for (var i in s.callbacks) {
+                        s.callbacks[i](null, s.vesselOverview, s.vesselDetails)
+                    }
+                }
+            },
             subscribe: function (mmsi, callback) {
+                if (subscriptions[mmsi] == null)
+                    subscriptions[mmsi] = {
+                        callbacks: [],
+                        vesselOverview: null,
+                        vesselDetails: null,
+                        interval: null
+                    };
+
+                var s = subscriptions[mmsi];
+
+                var id = s.callbacks.push(callback);
+
                 var that = this;
+
                 function lookupStepTwo(vesselOverview) {
                     if (vesselOverview) {
                         that.details(vesselOverview.mmsi, function(error, vesselDetails) {
                             if (vesselDetails) {
-                                callback(null, vesselOverview, vesselDetails);
+                                embryo.vesselDetails = vesselDetails;
+                                s.vesselOverview = vesselOverview;
+                                s.vesselDetails = vesselDetails;
+                                for (var i in s.callbacks)
+                                    if (s.callbacks[i]) s.callbacks[i](null, vesselOverview, vesselDetails);
                             } else {
-                                callback(error);
+                                for (var i in s.callbacks)
+                                    if (s.callbacks[i]) s.callbacks[i](error);
                             }
                         })
                     } else {
-                        callback("unable to find "+mmsi);
+                        for (var i in s.callbacks)
+                            if (s.callbacks[i]) s.callbacks[i]("unable to find "+mmsi);
                     }
                 }
 
@@ -95,12 +125,25 @@
                     that.clientSideMmsiSearch(mmsi, lookupStepTwo);
                 }
 
-                lookup(mmsi, callback);
+                if (s.interval == null) {
+                    s.interval = setInterval(lookup, embryo.loadFrequence);
+                    lookup(mmsi, callback);
+                }
 
-                return setInterval(lookup, embryo.loadFrequence);
+                if (s.vesselDetails) {
+                    callback(null,s.vesselOverview, s.vesselDetails)
+                }
+                return { id: id, mmsi: mmsi }
             },
             unsubscribe: function (id) {
-                clearInterval(id);
+                var s = subscriptions[id.mmsi];
+                s.callbacks[id.id] = null;
+                var allDead = true;
+                for (var i in s.callbacks) allDead &= s.callbacks[i] == null;
+                if (allDead) {
+                    clearInterval(s.interval);
+                    subscriptions[id.mmsi] = null
+                }
             },
             clientSideMmsiSearch: function(mmsi, callback) {
                 var that = this;
