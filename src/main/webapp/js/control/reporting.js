@@ -18,7 +18,7 @@ embryo.reporting.vesselInformation = {
 
 embryo.reporting.schedule = {
     title: "Schedule",
-    status: function (vesselOverview, vesselDetails) {
+    status: function (vesselOverview, vesselDetails) {        
         return "OK";
     },
     show: function (vesselOverview, vesselDetails) {
@@ -43,6 +43,7 @@ embryo.reporting.route = {
         }
     }
 
+embryo.reporting.editRoute = {
         title: "Edit Route",
         status: function (vesselOverview, vesselDetails) {
             return "OK";
