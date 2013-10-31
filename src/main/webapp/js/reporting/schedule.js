@@ -89,10 +89,6 @@
             return $scope.activeRouteId === voyage.route.id;
         };
 
-        $scope.routeDisabled = function(voyage) {
-            return typeof voyage.maritimeId === 'undefined';
-        };
-
         $scope.editRoute = function(voyage) {
             embryo.reporting.schedule.hide();
             embryo.RouteEditCtrl.show($scope.mmsi, voyage.route.id);
@@ -103,18 +99,16 @@
             embryo.RouteUploadCtrl.show($scope.mmsi, voyage.maritimeId);
         };
 
-        $scope.activate = function(voyage, $event) {
-            $event.preventDefault();
-
+        $scope.activate = function(voyage) {
             RouteService.setActiveRoute(voyage.route.id, true, function() {
-                loadActiveRoute();
+                VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", voyage.route.id);
+                $scope.activeRouteId = voyage.route.id;
             });
         };
-        $scope.deactivate = function(voyage, $event) {
-            $event.preventDefault();
-
+        $scope.deactivate = function(voyage) {
             RouteService.setActiveRoute(voyage.route.id, false, function() {
-                loadActiveRoute();
+                VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", null);
+                $scope.activeRouteId = null;
             });
         };
 

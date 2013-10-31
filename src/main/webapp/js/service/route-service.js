@@ -71,7 +71,6 @@
                             SessionStorageService.removeItem(active);
                         }
                         callback();
-                        $rootScope.$broadcast('yourshipDataUpdated');
                     });
                 },
                 clearActiveFromCache : function() {

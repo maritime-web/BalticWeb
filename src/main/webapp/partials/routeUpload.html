@@ -1,6 +1,6 @@
 <div id="routeupload">
 	<div>
-		<h2>Route upload</h2>
+		<h2>Upload route</h2>
 	</div>
 	<div id="routeUpload" x-ng-controller="embryo.RouteUploadCtrl">
 
@@ -13,12 +13,11 @@
 
 			<div class="row-fluid">
 				<div class="span12">
-					<span class="scheduleEntry">Associated schedule entries:</span> <span class="scheduleEntry"> <span>{{voyageInfo.dep}}
-							({{voyageInfo.depEta}})</span> to <span>{{voyageInfo.des}} ({{voyageInfo.desEta}})</span> <!-- 							<input id="voyageName" name="voyageName" type="text" class="input-large" x-ng-model="selectedVoyage"
+					<span>From {{voyageInfo.dep}} ({{voyageInfo.depEta}}) to {{voyageInfo.des}} ({{voyageInfo.desEta}})</span>
+					<!-- 							<input id="voyageName" name="voyageName" type="text" class="input-large" x-ng-model="selectedVoyage"
 								x-typeahead="voyage as voyage.value for voyage in voyages | filter:$viewValue | limitTo:10" required /> 
 							<span x-ng-show="uploadRouteForm.voyageName.$error.required && uploadRouteForm.voyageName.$dirty" class="msg-invalid">Value
 								required</span> -->
-					</span>
 				</div>
 			</div>
 			<div class="row-fluid">
@@ -54,7 +53,7 @@
 							x-ng-disabled="!queue[0] || active() || uploaded() || uploadRouteForm.$invalid">
 							<i class="icon-upload icon-white"></i> <span>Upload</span>
 						</button>
-						<button type="button" class="btn btn-primary start" x-ng-click="submit()" x-ng-show="!voyageInfo.active"
+						<button type="button" class="btn btn-primary start" x-ng-click="uploadAndActivate()" x-ng-show="!voyageInfo.active"
 							x-ng-disabled="!queue[0] || active() || uploaded() || uploadRouteForm.$invalid">
 							<i class="icon-upload icon-white"></i> <span>Upload and activate</span>
 						</button>
