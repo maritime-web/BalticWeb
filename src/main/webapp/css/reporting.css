@@ -55,21 +55,6 @@ body{
 	width:300px!important;
 }
 
-.accordion-group{
-	background-color:white;
-}
-
-.pagecontainer {
-	margin-top: 0px;
-	margin-bottom: 100px;
-	min-width: 270px !important;
-}
-
-/*
-h2, h3, th, .section, .control-label{
-	color:white;
-}*/
-
 .contentBox{
 	padding-left:20px;
 	padding-right:20px;
@@ -83,10 +68,6 @@ h2, h3, th, .section, .control-label{
 
 .controls.txt{
 	padding-top:5px;
-}
-
-#routeupload .scheduleEntry{
-	font-size:1.1em;
 }
 
 .input-mini {

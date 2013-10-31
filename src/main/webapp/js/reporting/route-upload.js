@@ -36,8 +36,13 @@
     } ]);
 
     embryo.RouteUploadCtrl = function($scope, $rootScope, $location, VoyageService, RouteService) {
+
         function initUpload() {
-            if ($scope.mmsi, $scope.voyageId) {
+            console.log($scope.mmsi );
+            console.log($scope.voyageId);
+            console.log($scope.mmsi && $scope.voyageId);
+            
+            if ($scope.mmsi && $scope.voyageId) {
                 VoyageService.getVoyageInfo($scope.mmsi, $scope.voyageId, function(voyageInfo) {
                     $scope.voyageInfo = voyageInfo;
                 });
@@ -47,10 +52,8 @@
         embryo.RouteUploadCtrl.show = function(mmsi, voyageId) {
             $scope.mmsi = mmsi;
             $scope.voyageId = voyageId;
-            $scope.$apply(function() {
-            });
-
             initUpload();
+
             $("#routeUploadPanel").css("display", "block");
         };
 

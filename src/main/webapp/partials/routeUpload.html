@@ -13,33 +13,25 @@
 
 			<div class="row-fluid">
 				<div class="span12">
-					<div class="control-group">
-						<label class="control-label scheduleEntry" for="voyageName">Associated schedule entries:</label>
-						<div class="controls txt scheduleEntry">
-							<span>{{voyageInfo.dep}} ({{voyageInfo.depEta}})</span> to <span>{{voyageInfo.des}}
-								({{voyageInfo.desEta}})</span>
-
-
-							<!-- 							<input id="voyageName" name="voyageName" type="text" class="input-large" x-ng-model="selectedVoyage"
+					<span class="scheduleEntry">Associated schedule entries:</span> <span class="scheduleEntry"> <span>{{voyageInfo.dep}}
+							({{voyageInfo.depEta}})</span> to <span>{{voyageInfo.des}} ({{voyageInfo.desEta}})</span> <!-- 							<input id="voyageName" name="voyageName" type="text" class="input-large" x-ng-model="selectedVoyage"
 								x-typeahead="voyage as voyage.value for voyage in voyages | filter:$viewValue | limitTo:10" required /> 
 							<span x-ng-show="uploadRouteForm.voyageName.$error.required && uploadRouteForm.voyageName.$dirty" class="msg-invalid">Value
 								required</span> -->
-						</div>
-					</div>
+					</span>
 				</div>
 			</div>
 			<div class="row-fluid">
 				<!-- The global progress information-->
 				<div class="span5">
-					<span class="control-label"> <span class="btn fileinput-button" x-ng-disabled="active()"
-						x-ng-class="{disabled: disabled}"> <i class="icon-plus icon-white"></i> <span>Choose file</span> <input
-							type="file" name="files[]" x-ng-disabled="disabled">
+
+
+					<span class="btn fileinput-button" x-ng-disabled="active()" x-ng-class="{disabled: disabled}"> <i
+						class="icon-plus icon-white"></i> <span>Choose file</span> <input type="file" name="files[]"
+						x-ng-disabled="disabled">
+					</span> <span class="txt"> <span class="data-label" x-ng-show="queue[0]"> <span>{{queue[0].name}}</span> <span
+							class="size">{{queue[0].size | formatFileSize}}</span></span>
 					</span>
-					</span>
-					<div class="controls txt">
-						<span class="data-label" x-ng-show="queue[0]"> <span>{{queue[0].name}}</span> <span class="size">{{queue[0].size
-								| formatFileSize}}</span></span>
-					</div>
 				</div>
 
 				<div class="span7 fade" x-ng-class="{in: active()}">
@@ -51,21 +43,23 @@
 				</div>
 			</div>
 
-			<div>
-				<span class="pull-right fileupload-buttonbar">
-					<button type="button" class="btn" x-ng-click="reset()" x-ng-disabled="active()">Reset</button>
-					<button type="button" class="btn btn-danger cancel" x-ng-click="cancel()" x-ng-disabled="!active() || uploaded()">
-						<i class="icon-ban-circle icon-white"></i> <span>Cancel upload</span>
-					</button>
-					<button type="button" class="btn btn-primary start" x-ng-click="submit()"
-						x-ng-disabled="!queue[0] || active() || uploaded() || uploadRouteForm.$invalid">
-						<i class="icon-upload icon-white"></i> <span>Upload</span>
-					</button>
-					<button type="button" class="btn btn-primary start" x-ng-click="submit()" x-ng-show="!voyageInfo.active"
-						x-ng-disabled="!queue[0] || active() || uploaded() || uploadRouteForm.$invalid">
-						<i class="icon-upload icon-white"></i> <span>Upload and activate</span>
-					</button>
-				</span>
+			<div class="row-fluid">
+				<div class="span12">
+					<span class="pull-right fileupload-buttonbar">
+						<button type="button" class="btn" x-ng-click="reset()" x-ng-disabled="active()">Reset</button>
+						<button type="button" class="btn btn-danger cancel" x-ng-click="cancel()" x-ng-disabled="!active() || uploaded()">
+							<i class="icon-ban-circle icon-white"></i> <span>Cancel upload</span>
+						</button>
+						<button type="button" class="btn btn-primary start" x-ng-click="submit()"
+							x-ng-disabled="!queue[0] || active() || uploaded() || uploadRouteForm.$invalid">
+							<i class="icon-upload icon-white"></i> <span>Upload</span>
+						</button>
+						<button type="button" class="btn btn-primary start" x-ng-click="submit()" x-ng-show="!voyageInfo.active"
+							x-ng-disabled="!queue[0] || active() || uploaded() || uploadRouteForm.$invalid">
+							<i class="icon-upload icon-white"></i> <span>Upload and activate</span>
+						</button>
+					</span>
+				</div>
 			</div>
 		</form>
 	</div>

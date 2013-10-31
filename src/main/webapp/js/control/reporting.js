@@ -43,6 +43,19 @@ embryo.reporting.route = {
         }
     }
 
+embryo.reporting.editRoute = {
+        title: "Edit Route",
+        status: function (vesselOverview, vesselDetails) {
+            return "OK";
+        },
+        show: function (vesselOverview, vesselDetails) {
+            $("#routeEditPanel").css("display", "block");
+        },
+        hide: function () {
+            $("#routeEditPanel").css("display", "none");
+        }
+    }
+
 
 embryo.reporting.greenposReport = {
     title: "Greenpos Report",
