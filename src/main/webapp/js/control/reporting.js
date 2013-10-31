@@ -43,7 +43,6 @@ embryo.reporting.route = {
         }
     }
 
-embryo.reporting.editRoute = {
         title: "Edit Route",
         status: function (vesselOverview, vesselDetails) {
             return "OK";

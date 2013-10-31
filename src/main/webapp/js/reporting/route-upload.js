@@ -36,13 +36,8 @@
     } ]);
 
     embryo.RouteUploadCtrl = function($scope, $rootScope, $location, VoyageService, RouteService) {
-
         function initUpload() {
-            console.log($scope.mmsi );
-            console.log($scope.voyageId);
-            console.log($scope.mmsi && $scope.voyageId);
-            
-            if ($scope.mmsi && $scope.voyageId) {
+            if ($scope.mmsi, $scope.voyageId) {
                 VoyageService.getVoyageInfo($scope.mmsi, $scope.voyageId, function(voyageInfo) {
                     $scope.voyageInfo = voyageInfo;
                 });
