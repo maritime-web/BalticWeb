@@ -15,29 +15,33 @@
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.voyageService', 'embryo.routeService',
             'siyfion.ngTypeahead' ]);
 
-    embryo.ScheduleCtrl = function($scope, $rootScope, $routeParams, VoyageService, RouteService, $location) {
+    embryo.ScheduleCtrl = function($scope, $rootScope, VesselService, VoyageService, RouteService, $location) {
         var schedule;
-
         var loadVoyage = function() {
-            if ($routeParams.voyage === 'current') {
-                VoyageService.getSchedule($scope.mmsi, function(s) {
-                    schedule = s;
-                    $scope.voyages = schedule.voyages.slice();
-                    $scope.voyages.push({});
+            VoyageService.getSchedule($scope.mmsi, function(ss) {
+                schedule = ss;
+                $scope.voyages = schedule.voyages.slice();
+                $scope.voyages.push({});
 
-                    console.log(schedule);
-                });
-            }
-
-        };
-        var loadActiveRoute = function() {
-            RouteService.getActive($scope.mmsi, function(route) {
-                $scope.activeRoute = route;
+                console.log(schedule);
             });
         };
+        
+        embryo.ScheduleCtrl.show = function(vesselDetails) {
+            
+            console.log(vesselDetails);
+            
+            
+            $scope.mmsi = vesselDetails.mmsi;
+            $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
 
-        $scope.mmsi = $routeParams.mmsi;
+            loadVoyage();
+            
+            $scope.$apply(function() {
+            });
 
+        };
+        
         $scope.options = {
             "Yes" : true,
             "No" : false
@@ -52,9 +56,6 @@
             },
             remote : berthUrl
         };
-
-        loadVoyage();
-        loadActiveRoute();
 
         $scope.getLastVoyage = function() {
             if (!$scope.voyages) {
@@ -90,7 +91,7 @@
                 return false;
             }
 
-            return $scope.activeRoute.id === voyage.route.id;
+            return $scope.activeRouteId === voyage.route.id;
         };
 
         $scope.uploadLink = function(voyage) {
@@ -112,19 +113,17 @@
             // if (!voyage.maritimeId) {
             // voyage.maritimeId = Math.uuid(17);
             // }
-            return '#/routeNew/' + $scope.mmsi + '/' + voyage.maritimeId;
+                        return '#/routeNew/' + $scope.mmsi + '/' + voyage.maritimeId;
         };
 
         $scope.editRoute = function(voyage) {
-            if (voyage && voyage.route && voyage.route.id) {
-                $location.path('/routeEdit/' + $scope.mmsi + '/' + voyage.route.id);
-            } else {
-                $location.path('/routeEdit/' + $scope.mmsi + '/' + voyage.maritimeId);
-            }
+            embryo.reporting.schedule.hide();
+            embryo.RouteUploadCtrl.show();
         };
 
         $scope.uploadRoute = function(voyage) {
-            $location.path('/routeUpload/' + $scope.mmsi + '/voyage/' + voyage.maritimeId);
+            embryo.reporting.schedule.hide();
+            embryo.RouteUploadCtrl.show(mmsi, voyageId);
         };
 
         $scope.activate = function(voyage, $event) {
@@ -165,4 +164,5 @@
             });
         };
     };
+
 }());

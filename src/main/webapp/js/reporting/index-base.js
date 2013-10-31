@@ -37,11 +37,11 @@
             templateUrl : 'partials/routeEdit.html',
             controller : embryo.RouteEditCtrl
         }).when('/routeUpload/:mmsi', {
-            templateUrl : 'partials/route.html'// ,
+            templateUrl : 'partials/routeUpload.html'// ,
         }).when('/routeUpload/:mmsi/voyage/:voyageId', {
-            templateUrl : 'partials/route.html'// ,
+            templateUrl : 'partials/routeUpload.html'// ,
         }).when('/routeUpload/:mmsi/active', {
-            templateUrl : 'partials/route.html'// ,
+            templateUrl : 'partials/routeUpload.html'// ,
         }).when('/reportlist', {
             templateUrl : 'partials/greenposList.html',
             controller : embryo.GreenposListCtrl

@@ -44,7 +44,7 @@
             },
             getSchedule : function(mmsi, callback) {
                 var remoteCall = function(onSuccess) {
-                    $http.get(scheduleUrl + 'overview/' + mmsi ).success(onSuccess);
+                    $http.get(scheduleUrl + 'overview/' + mmsi).success(onSuccess);
                 };
                 SessionStorageService.getItem(currentPlan, callback, remoteCall);
             },
@@ -60,7 +60,7 @@
                         var departure = voyagesShort[index];
                         var destination = voyagesShort[index + 1];
                         result.push({
-                            maritimeId : departure.maritimeId, 
+                            maritimeId : departure.maritimeId,
                             dep : departure.loc,
                             depEta : formatTime(departure.dep),
                             des : destination.loc,
@@ -69,11 +69,10 @@
                     }
                     if (voyagesShort.length > 0) {
                         result.push({
-                            maritimeId : voyagesShort[voyagesShort.length - 1].maritimeId, 
+                            maritimeId : voyagesShort[voyagesShort.length - 1].maritimeId,
                             dep : voyagesShort[voyagesShort.length - 1].loc,
                             depEta : formatTime(voyagesShort[voyagesShort.length - 1].arr)
                         });
-                        
                     }
                     return result;
                 }
@@ -84,6 +83,38 @@
                 }
 
                 $http.get(voyageShortUrl + mmsi).success(transformCallback);
+            },
+            getVoyageInfo : function(mmsi, voyageId, callback) {
+                function findVoyageIndex(voyageId, schedule) {
+                    for (var index = 0; index < schedule.voyages.length - 1; index++) {
+                        console.log(schedule.voyages[index]);
+                        if (schedule.voyages[index].maritimeId === voyageId) {
+                            return index;
+                        }
+                    }
+                    return null;
+                }
+                function buildVoyageInfo(index, schecule, callback) {
+                    var result = {
+                        id : schecule.voyages[index].maritimeId,
+                        dep : schecule.voyages[index].berthName,
+                        depEta : schecule.voyages[index].departure,
+                    };
+                    if( index < schecule.voyages.length - 1){
+                        result.des = schecule.voyages[index + 1].berthName;
+                        result.desEta = schecule.voyages[index + 1].arrival;
+                    }
+                    return result;
+                }
+                this.getSchedule(mmsi, function(schedule) {
+                    var index = findVoyageIndex(voyageId, schedule);
+                    if (index == null) {
+                        callback(null);
+                        return;
+                    }
+                    var voyageInfo = buildVoyageInfo(index, schedule);
+                    callback(voyageInfo);
+                });
             },
             save : function(plan, callback) {
                 $http.put(voyageUrl + 'savePlan', plan).success(function() {
