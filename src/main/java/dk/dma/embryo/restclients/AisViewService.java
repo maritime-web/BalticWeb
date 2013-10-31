@@ -27,7 +27,7 @@ public interface AisViewService {
 
     @GET
     @Path("vessel_target_details")
-    Map vesselTargetDetails(@QueryParam("id") long vesselId, @QueryParam("past_track") int pastTrack);
+    Map vesselTargetDetails(@QueryParam("mmsi") long vesselId, @QueryParam("past_track") int pastTrack);
 
     public static class VesselListResult {
         private long requestId;

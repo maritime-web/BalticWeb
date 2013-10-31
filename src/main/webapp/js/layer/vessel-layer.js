@@ -102,7 +102,7 @@ function VesselLayer() {
         });
 
         this.selectableLayer = this.layers.vessel;
-        this.selectableAttribute = "vessel.id";
+        this.selectableAttribute = "vessel.mmsi";
         this.selectedId = null;
 
         this.select(function(id) {

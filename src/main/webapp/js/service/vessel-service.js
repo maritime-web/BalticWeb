@@ -15,12 +15,12 @@
                     }
                 });
             },
-            details: function(id, callback) {
+            details: function(mmsi, callback) {
                 $.ajax({
                     url: embryo.baseUrl + "rest/vessel/details",
                     timeout: embryo.defaultTimeout,
                     data: {
-                        id : id
+                        mmsi : mmsi
                     },
                     success: function(data) {
                         callback(null, data);
@@ -60,13 +60,13 @@
                 })
             },
             clientSideSearch: function(argument, callback) {
-                if (argument == null || argument == "") return [];
+                if (argument == null || argument == "") return [];
 
                 var result = [];
 
                 $.each(embryo.vessel.allVessels(), function (k,v) {
                     if (v.name) {
-                        if ((v.name.toLowerCase().indexOf(argument.toLowerCase()) == 0) || 
+                        if ((v.name.toLowerCase().indexOf(argument.toLowerCase()) == 0) || 
                             (v.name.toLowerCase().indexOf(" "+argument.toLowerCase()) >= 0)) {
                             result.push(v);
                         }
@@ -79,7 +79,7 @@
                 var that = this;
                 function lookupStepTwo(vesselOverview) {
                     if (vesselOverview) {
-                        that.details(vesselOverview.id, function(error, vesselDetails) {
+                        that.details(vesselOverview.mmsi, function(error, vesselDetails) {
                             if (vesselDetails) {
                                 callback(null, vesselOverview, vesselDetails);
                             } else {

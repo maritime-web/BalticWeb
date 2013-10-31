@@ -122,7 +122,7 @@ public class VesselRestService {
     @GET
     @Path("/details-short")
     @Produces("application/json")
-    public VesselDetails detailsByMmsi(@QueryParam("maritimeId") String maritimeId) {
+    public VesselDetails detailsShort(@QueryParam("maritimeId") String maritimeId) {
         VesselDetails details = null;
         Vessel vessel = vesselService.getVessel(maritimeId);
 
@@ -135,10 +135,9 @@ public class VesselRestService {
     @GET
     @Path("/details")
     @Produces("application/json")
-    public VesselDetails detailsByAis(@QueryParam("id") long vesselId) {
-        Map result = aisViewService.vesselTargetDetails(vesselId, 1);
-
-        long mmsi = (Integer) result.get("mmsi");
+    public VesselDetails detailsFull(@QueryParam("mmsi") long mmsi) {
+        //TODO change to execute the two calls asynchronously
+        Map result = aisViewService.vesselTargetDetails(mmsi, 1);
 
         boolean historicalTrack = false;
 
