@@ -97,7 +97,10 @@
 
         $scope.uploadRoute = function(voyage) {
             embryo.reporting.schedule.hide();
-            embryo.RouteUploadCtrl.show($scope.mmsi, voyage.maritimeId);
+            embryo.controllers.uploadroute.show({
+                mmsi : $scope.mmsi,
+                voyageId : voyage.maritimeId
+            });
         };
 
         $scope.activate = function(voyage) {

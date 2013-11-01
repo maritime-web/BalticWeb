@@ -44,6 +44,23 @@
             }
         }
 
+        embryo.controllers.uploadroute = {
+            notitle : "not shown in left panel",
+            status : function(vesselOverview, vesselDetails) {
+                return "OK";
+            },
+            show : function(context) {
+                $scope.mmsi = context.mmsi;
+                $scope.voyageId = context.voyageId;
+                $scope.reset();
+                $("#routeUploadPanel").css("display", "block");
+            },
+            hide : function() {
+                $("#routeUploadPanel").css("display", "hide");
+                $scope.reset();
+            }
+        };
+
         // Choosing a new file will replace the old one
         $scope.$on('fileuploadadd', function(e, data) {
             $scope.queue = [];
@@ -98,20 +115,6 @@
             }
 
         });
-    };
-
-    embryo.controllers.routeupload = {
-        notitle : "not shown in left panel",
-        status : function(vesselOverview, vesselDetails) {
-            return "OK";
-        },
-        show : function(context) {
-            embryo.ScheduleCtrl.show(vesselDetails);
-            $("#routeUploadPanel").css("display", "block");
-        },
-        hide : function() {
-            $("#routeUploadPanel").css("display", "hide");
-        }
     };
 
 }());
