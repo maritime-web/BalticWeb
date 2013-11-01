@@ -84,6 +84,7 @@
 <script src="js/layer/metoc-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/layer/distance-circles-layer.js" defer="defer" type="text/javascript"></script>
 <script src="js/layer/world-map-layer.js" defer="defer" type="text/javascript"></script>
+<script src="js/layer/greenpos-marker-layer.js" defer="defer" type="text/javascript"></script>
 
 <script src="js/control/additional-information.js" defer="defer" type="text/javascript"></script>
 
@@ -92,13 +93,14 @@
 <script src="js/reporting/route-edit.js" defer="defer" type="text/javascript"></script> 
 <script src="js/reporting/schedule.js" defer="defer" type="text/javascript"></script>
 <script src="js/reporting/route-upload.js" defer="defer" type="text/javascript"></script> 
-<script src="js/reporting/greenpos.js" defer="defer" type="text/javascript"></script> 
+<script src="js/reporting/greenpos.js" defer="defer" type="text/javascript"></script>
+<script src="js/reporting/position.js" defer="defer"></script>
 <!-- endbuild -->
 
 <script defer="defer" type="text/javascript">
     angular.module('embryo.map', [ 'embryo.shipService', 'embryo.voyageService', 'embryo.routeService',
-            'embryo.greenposService', 'embryo.reportComp', 'embryo.metoc', 'embryo.vessel', 'embryo.ice', 'embryo.msi',
-            'embryo.shipInformation', 'embryo.routeUpload', 'embryo.schedule' ]);
+            'embryo.greenpos', 'embryo.reportComp', 'embryo.metoc', 'embryo.vessel', 'embryo.ice', 'embryo.msi',
+            'embryo.shipInformation', 'embryo.routeUpload' , 'embryo.schedule']);
 </script>
 
 </head>

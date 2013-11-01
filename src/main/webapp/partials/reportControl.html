@@ -1,17 +1,5 @@
 <div class="controlPanel" x-ng-controller="embryo.ReportController">
 	<div class="accordion" id="ycpAccordion">
-		<div class="accordion-group" x-ng-show="user.isPermitted('yourShip')">
-			<div class="accordion-heading" >
-				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpYourShip"> Your Vessel </a>
-				</h4>
-			</div>
-			<div id="vcpYourShip" class="accordion-body collapse in">
-				<div class="accordion-inner">
-					<div x-ng-include="'partials/reportComp.html'"></div>
-				</div>
-			</div>
-		</div>
 		<div class="accordion-group" x-ng-show="user.isPermitted('greenpos')">
 			<div class="accordion-heading">
 				<h4>

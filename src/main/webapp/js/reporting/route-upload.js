@@ -42,21 +42,8 @@
                     $scope.voyageInfo = voyageInfo;
                 });
             }
-        };
+        }
 
-        embryo.RouteUploadCtrl.show = function(mmsi, voyageId) {
-            $scope.mmsi = mmsi;
-            $scope.voyageId = voyageId;
-            $scope.reset();
-
-            $("#routeUploadPanel").css("display", "block");
-        };
-
-        embryo.RouteUploadCtrl.hide = function(mmsi, voyageId) {
-            $("#routeUploadPanel").css("display", "hide");
-        };
-
-        
         // Choosing a new file will replace the old one
         $scope.$on('fileuploadadd', function(e, data) {
             $scope.queue = [];
@@ -70,10 +57,11 @@
                     $scope.uploadedFile = file;
 
                     console.log(file);
-                    
-                    if($scope.activate){
-                        VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", file.routeId);
-                        $scope.message +=  " and activated the route";
+
+                    if ($scope.activate) {
+                        VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId",
+                                file.routeId);
+                        $scope.message += " and activated the route";
                     }
                     // HACK: need to reload voyage plan
                     sessionStorage.clear();
@@ -81,11 +69,11 @@
             }
         };
 
-        $scope.uploadAndActivate = function(){
-            $scope.activate=true;
+        $scope.uploadAndActivate = function() {
+            $scope.activate = true;
             $scope.submit();
         };
-        
+
         $scope.uploaded = function() {
             return $scope.uploadedFile !== null && typeof $scope.uploadedFile === "object";
         };
@@ -110,6 +98,20 @@
             }
 
         });
+    };
+
+    embryo.controllers.routeupload = {
+        notitle : "not shown in left panel",
+        status : function(vesselOverview, vesselDetails) {
+            return "OK";
+        },
+        show : function(context) {
+            embryo.ScheduleCtrl.show(vesselDetails);
+            $("#routeUploadPanel").css("display", "block");
+        },
+        hide : function() {
+            $("#routeUploadPanel").css("display", "hide");
+        }
     };
 
 }());
