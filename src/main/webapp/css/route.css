@@ -1,0 +1,27 @@
+/* CSS Styling for all route related functionality */
+
+
+/**Route Edit**/
+#routeEdit .input-heading{
+	width:100px;
+}
+
+/**Route Edit**/
+#routeEdit .table{
+	margin-top:30px;
+}
+
+
+/**Route Upload**/
+#routeupload .progress {
+	margin-top: 7px;
+}
+
+#routeupload .scheduleEntry{
+	font-size:1.1em;
+}
+
+#routeupload {
+	min-width: 580px;
+	max-width: 720px;
+}
