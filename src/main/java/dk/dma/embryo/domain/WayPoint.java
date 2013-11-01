@@ -67,7 +67,7 @@ public class WayPoint implements Serializable {
         transformed.setRot(wayPoint.getRot());
         transformed.setTurnRadius(wayPoint.getTurnRad());
         
-        transformed.setLeg(RouteLeg.fromJsonModel(wayPoint.getLeg()));
+        transformed.setLeg(RouteLeg.fromJsonModel(wayPoint));
         
         return transformed;
     }
@@ -81,7 +81,8 @@ public class WayPoint implements Serializable {
         toWaypoint.setTurnRad(this.getTurnRadius());
         
         if(this.getLeg() != null){
-            toWaypoint.setLeg(this.getLeg().toJsonModel());
+            toWaypoint.setSpeed(this.getLeg().getSpeed());
+            toWaypoint.setHeading(this.getLeg().getHeading());
         }
         
         return toWaypoint;

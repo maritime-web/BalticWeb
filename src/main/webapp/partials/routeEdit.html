@@ -11,7 +11,7 @@
 		<form name="routeEditForm" class="form-horizontal route" ng-submit="save()">
 
 			<div class="row-fluid">
-				<div class="span5">
+				<div class="span6">
 					<div class="control-group">
 						<label class="control-label" for="name">Name</label>
 						<div class="controls">
@@ -20,57 +20,25 @@
 								required</span>
 						</div>
 					</div>
-				</div>
-				<div class="span7">
 					<div class="control-group">
-						<label class="control-label" for="voyageName">Associated voyage</label>
+						<label class="control-label long" for="etaOfDeparture">Estimated time of Departure</label>
 						<div class="controls">
-							<input type="text" id="voyageName" class="input-large" ng-model="selectedVoyage"
-								typeahead="voyage as voyage.value for voyage in voyages | filter:$viewValue | limitTo:10" />
+							<input x-ng-model="route.etaDep" type="text" id="etaDep" class="input-medium" />
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="row-fluid">
-				<div class="span5">
+
+				<div class="span6">
 					<div class="control-group">
 						<label class="control-label" for="origin">Origin</label>
 						<div class="controls">
-							<input x-ng-model="route.departure" type="text" id="origin" class="input-large" />
+							<input x-ng-model="route.dep" type="text" id="origin" class="input-large" />
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="destination">Destination</label>
 						<div class="controls">
-							<input x-ng-model="route.destination" type="text" id="destination" class="input-large" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="distance">Total Distance</label>
-						<div class="controls">
-							<span id="distance"></span>
-						</div>
-					</div>
-				</div>
-
-				<div class="span7 long-label">
-					<div class="control-group">
-						<label class="control-label long" for="etaOfDeparture">Estimated time of Departure</label>
-						<div class="controls">
-							<input type="text" id="etaOfDeparture" class="input-medium" />
-							<!--<datetimepicker x-ng-model="date" type="text" id="etaOfDeparture" class="input-medium" />-->
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label long" for="etaOfArrival">Estimated time of Arrival</label>
-						<div class="controls">
-							<input type="text" id="etaOfArrival" class="input-medium" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label long" for="timeBetween">Estimated time in between</label>
-						<div class="controls">
-							<input type="text" id="timeBetween" class="input-medium" />
+							<input x-ng-model="route.des" type="text" id="destination" class="input-large" />
 						</div>
 					</div>
 				</div>
@@ -82,22 +50,24 @@
 						<th>Name</th>
 						<th>Latitude</th>
 						<th>Longitude</th>
-						<th>Rad</th>
-						<th>Rot</th>
-						<th>TTG</th>
-						<th>ETA</th>
+						<th>Turn radius (nm)</th>
+						<th>Heading</th>
+						<th>Speed (kn)</th>
 					</tr>
 				</thead>
 
 				<tbody>
-					<tr name="wayPointsNestedForm" ng-form ng-repeat="wp in route.waypoints">
+					<tr name="wayPointsNestedForm" ng-form ng-repeat="wp in route.wps">
 						<td><input ng-model="wp.name" class="input-medium" type="text" required /></td>
-						<td><input ng-model="wp.latitude" class="input-small" type="text" required /></td>
-						<td><input ng-model="wp.longitude" class="input-small" type="text" required /></td>
-						<td><input ng-model="wp.turnRad" class="input-small" type="text" required /></td>
-						<td><input ng-model="wp.rot" class="input-small" type="text" /></td>
-						<td><input class="input-small" type="text" /></td>
-						<td><input class="input-small" type="text" /></td>
+						<td><input ng-model="wp.latitude" class="input-large" type="text" required /></td>
+						<td><input ng-model="wp.longitude" class="input-large" type="text" required /></td>
+						<td><input ng-model="wp.turnRad" class="input-medium" type="text" required /></td>
+						<td><select
+							name="heading" x-ng-model="wp.heading" class="input-large input-heading" required>
+							<option label="Rhumb line" value="RL"></option>
+							<option label="Great circle" value="GC"></option>
+						</select></td>
+						<td><input ng-model="wp.speed" class="input-large" type="text" required /></td>
 					</tr>
 				</tbody>
 			</table>
@@ -105,8 +75,7 @@
 			<div>
 				<span class="pull-right">
 					<button type="button" class="btn" x-ng-click="reset()" x-ng-disabled="active()">Reset</button>
-					<button type="submit" class="btn btn-primary start" x-ng-click="submit()" x-ng-disabled="!saveable()">
-						Save</button>
+					<button type="submit" class="btn btn-primary start" x-ng-click="submit()" x-ng-disabled="!saveable()">Save</button>
 				</span>
 			</div>
 		</form>

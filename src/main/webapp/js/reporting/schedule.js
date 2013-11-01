@@ -108,11 +108,15 @@
             return $scope.activeRouteId === voyage.route.id;
         };
 
-        $scope.editRoute = function(voyage) {
-            embryo.controllers.editroute.show({
+        $scope.editRoute = function(index) {
+            var context = {
                 mmsi : $scope.mmsi,
-                routeId : voyage.route.id
-            });
+                fromVoyage : $scope.voyages[index]
+            };
+            if (index < $scope.voyages.length - 1) {
+                context.toVoyage = $scope.voyages[index + 1];
+            }
+            embryo.controllers.editroute.show(context);
         };
 
         $scope.uploadRoute = function(voyage) {

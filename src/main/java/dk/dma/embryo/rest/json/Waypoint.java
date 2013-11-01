@@ -17,18 +17,23 @@ package dk.dma.embryo.rest.json;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import dk.dma.enav.model.voyage.RouteLeg.Heading;
+
 public class Waypoint {
 
     /** Waypoint name */
     private String name;
 
-    /** Out leg */
-    private RouteLeg leg;
-
     /** Mandatory latitude. */
     private double latitude;
     /** Mandatory longitude. */
     private double longitude;
+    
+    /** Speed in knots. */
+    private Double speed;
+
+    /** Sail heading rhumb line or great circle */
+    private Heading heading;
 
     /** Rate of turn . */
     private Double rot;
@@ -80,12 +85,16 @@ public class Waypoint {
         return rot;
     }
 
-    public RouteLeg getLeg() {
-        return leg;
-    }
-
     public Double getTurnRad() {
         return turnRad;
+    }
+
+    public Double getSpeed() {
+        return speed;
+    }
+
+    public Heading getHeading() {
+        return heading;
     }
 
     public void setLatitude(double latitude) {
@@ -104,13 +113,19 @@ public class Waypoint {
         this.rot = rot;
     }
 
-    public void setLeg(RouteLeg routeLeg) {
-        this.leg = routeLeg;
-    }
-
     public void setTurnRad(Double turnRad) {
         this.turnRad = turnRad;
     }
+
+    public void setSpeed(Double speed) {
+        this.speed = speed;
+    }
+
+    public void setHeading(Heading heading) {
+        this.heading = heading;
+    }
+    
+    
 
 
 }

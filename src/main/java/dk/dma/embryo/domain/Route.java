@@ -82,11 +82,11 @@ public class Route extends BaseEntity<Long> {
     }
 
     public static Route fromJsonModel(dk.dma.embryo.rest.json.Route from) {
-        Route route = new Route(from.getId(), from.getName(), from.getDeparture(), from.getDestination());
-        route.setEtaOfArrival(from.getEtaDeparture() == null ? null : LocalDateTime.fromDateFields(from
-                .getEtaDeparture()));
+        Route route = new Route(from.getId(), from.getName(), from.getDep(), from.getDes());
+        route.setEtaOfArrival(from.getEtaDep() == null ? null : LocalDateTime.fromDateFields(from
+                .getEtaDep()));
 
-        for (dk.dma.embryo.rest.json.Waypoint wayPoint : from.getWaypoints()) {
+        for (dk.dma.embryo.rest.json.Waypoint wayPoint : from.getWps()) {
             route.addWayPoint(WayPoint.fromJsonModel(wayPoint));
         }
 
@@ -96,12 +96,12 @@ public class Route extends BaseEntity<Long> {
     public dk.dma.embryo.rest.json.Route toJsonModel() {
         dk.dma.embryo.rest.json.Route toRoute = new dk.dma.embryo.rest.json.Route(this.enavId);
         toRoute.setName(this.name);
-        toRoute.setDeparture(this.origin);
-        toRoute.setDestination(this.destination);
-        toRoute.setEtaDeparture(getEtaOfDeparture() == null ? null : getEtaOfDeparture().toDate());
+        toRoute.setDep(this.origin);
+        toRoute.setDes(this.destination);
+        toRoute.setEtaDep(getEtaOfDeparture() == null ? null : getEtaOfDeparture().toDate());
 
         for (WayPoint wp : this.getWayPoints()) {
-            toRoute.getWaypoints().add(wp.toJsonModel());
+            toRoute.getWps().add(wp.toJsonModel());
         }
 
         return toRoute;

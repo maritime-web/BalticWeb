@@ -78,11 +78,11 @@ public class Route {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public String getDeparture() {
+    public String getDep() {
         return departure;
     }
 
-    public String getDestination() {
+    public String getDes() {
         return destination;
     }
 
@@ -94,15 +94,15 @@ public class Route {
         return id;
     }
 
-    public List<Waypoint> getWaypoints() {
+    public List<Waypoint> getWps() {
         return waypoints;
     }
 
-    public void setDeparture(String departure) {
+    public void setDep(String departure) {
         this.departure = departure;
     }
 
-    public void setDestination(String destination) {
+    public void setDes(String destination) {
         this.destination = destination;
     }
 
@@ -110,11 +110,11 @@ public class Route {
         this.name = name;
     }
 
-    public Date getEtaDeparture() {
+    public Date getEtaDep() {
         return etaDeparture;
     }
 
-    public void setEtaDeparture(Date eta) {
+    public void setEtaDep(Date eta) {
         this.etaDeparture = eta;
     }
 

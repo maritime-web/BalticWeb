@@ -66,10 +66,10 @@ public class RouteLeg implements Serializable {
         return toLeg;
     }
 
-    public static RouteLeg fromJsonModel(dk.dma.embryo.rest.json.RouteLeg leg){
+    public static RouteLeg fromJsonModel(dk.dma.embryo.rest.json.Waypoint wp){
         RouteLeg result = new RouteLeg();
-        result.setHeading(leg.getHeading());
-        result.setSpeed(leg.getSpeed());
+        result.setHeading(wp.getHeading());
+        result.setSpeed(wp.getSpeed());
         return result;
         
     }

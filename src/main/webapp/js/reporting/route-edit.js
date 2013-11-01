@@ -11,16 +11,32 @@
 
     var module = angular.module('embryo.routeEdit', [ 'embryo.voyageService', 'embryo.routeService', 'ui.bootstrap',
             'ui.bootstrap.datetimepicker' ]);
+    
+    function setDefault(context, field, defaultValue){
+        if(!context[field]){
+            context[field] = defaultValue;
+        }
+    }
+
+    function initRouteMeta(route, meta) {
+        setDefault(route, "etaDep", meta.etdep);
+        setDefault(route, "etaDes", meta.etdes);
+        setDefault(route, "dep", meta.dep);
+        setDefault(route, "des", meta.des);
+    }
 
     embryo.RouteEditCtrl = function($scope, RouteService, VoyageService) {
+
         function initRoute() {
             if ($scope.routeId) {
                 RouteService.getRoute($scope.routeId, function(route) {
                     $scope.route = route;
+                    initRouteMeta($scope.route, $scope.scheduleData);
                     $scope.date = new Date(route.etaDeparture);
                 });
             } else {
                 $scope.route = {};
+                initRouteMeta($scope.route, $scope.scheduleData);
             }
         }
 
@@ -29,7 +45,17 @@
             show : function(context) {
                 clearAdditionalInformation();
                 $scope.mmsi = context.mmsi;
-                $scope.routeId = context.routeId;
+                
+                if(context.fromVoyage.route && context.fromVoyage.route.id){
+                    $scope.routeId = context.fromVoyage.route.id;
+                }
+                
+                $scope.scheduleData = {
+                    dep : context.fromVoyage.berthName,
+                    etdep : context.fromVoyage.departure,
+                    des : context.toVoyage.berthName,
+                    etdes : context.toVoyage.arrival
+                };
                 $scope.reset();
                 $("#routeEditPanel").css("display", "block");
             },
@@ -52,6 +78,10 @@
 
         $scope.saveable = function() {
             if ($scope.routeEditForm.$invalid) {
+                return false;
+            }
+
+            if (!$scope.route) {
                 return false;
             }
 
