@@ -32,11 +32,12 @@
             title : "Schedule",
             status : function(vesselOverview, vesselDetails) {
                 var status = {
-                    message : "NO DATA",
+                    message : "INACTIVE",
                 }
 
                 if (vesselDetails.additionalInformation.routeId) {
-                    status.message = "ACTIVE", status.code = "success"
+                    status.message = "ACTIVE";
+                    status.code = "success";
                 }
 
                 return status;
@@ -130,7 +131,7 @@
         };
         $scope.deactivate = function(voyage) {
             RouteService.setActiveRoute(voyage.route.id, false, function() {
-                VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", null);
+                VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", "");
                 $scope.activeRouteId = null;
             });
         };
