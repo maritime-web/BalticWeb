@@ -78,14 +78,17 @@
 
         $scope.saveable = function() {
             if ($scope.routeEditForm.$invalid) {
+                console.log("form");
                 return false;
             }
 
             if (!$scope.route) {
+                console.log("no route");
                 return false;
             }
 
-            if (!($scope.route.waypoints && $scope.route.waypoints.length >= 2)) {
+            if (!($scope.route.wps && $scope.route.wps.length >= 2)) {
+                console.log("not enough waypoints");
                 return false;
             }
 
