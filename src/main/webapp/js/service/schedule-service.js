@@ -15,10 +15,10 @@
 
     var scheduleUrl = embryo.baseUrl + 'rest/schedule/';
 
-    var voyageServiceModule = angular.module('embryo.voyageService', [ 'embryo.storageServices' ]);
+    var scheduleServiceModule = angular.module('embryo.scheduleService', [ 'embryo.storageServices' ]);
 
-    voyageServiceModule.factory('VoyageService', function($rootScope, $http, ShipService, SessionStorageService) {
-        var currentPlan = 'voyagePlan_current';
+    scheduleServiceModule.factory('ScheduleService', function($http, ShipService, SessionStorageService) {
+        var currentSchedule = 'schedule_current';
         var activeVoyage = 'voyage_active';
 
         return {
@@ -36,57 +36,19 @@
                     callback(JSON.parse(voyageStr));
                 }
             },
-            getCurrentPlan : function(mmsi, callback) {
-                var remoteCall = function(onSuccess) {
-                    $http.get(voyageUrl + mmsi + '/current').success(onSuccess);
-                };
-                SessionStorageService.getItem(currentPlan, callback, remoteCall);
-            },
             getSchedule : function(mmsi, callback) {
                 var remoteCall = function(onSuccess) {
                     $http.get(scheduleUrl + 'overview/' + mmsi).success(onSuccess);
                 };
-                SessionStorageService.getItem(currentPlan, callback, remoteCall);
+                SessionStorageService.getItem(currentSchedule, callback, remoteCall);
             },
             getVoyages : function(mmsi, callback) {
                 $http.get(voyageTypeaheadUrl + mmsi).success(callback);
             },
-            getVoyagesShort : function(mmsi, callback) {
-                function transformShort(voyagesShort) {
-                    var index = 0;
-                    var result = [];
-
-                    for (index = 0; index < voyagesShort.length - 1; index++) {
-                        var departure = voyagesShort[index];
-                        var destination = voyagesShort[index + 1];
-                        result.push({
-                            maritimeId : departure.maritimeId,
-                            dep : departure.loc,
-                            depEta : formatTime(departure.dep),
-                            des : destination.loc,
-                            desEta : formatTime(destination.arr)
-                        });
-                    }
-                    if (voyagesShort.length > 0) {
-                        result.push({
-                            maritimeId : voyagesShort[voyagesShort.length - 1].maritimeId,
-                            dep : voyagesShort[voyagesShort.length - 1].loc,
-                            depEta : formatTime(voyagesShort[voyagesShort.length - 1].arr)
-                        });
-                    }
-                    return result;
-                }
-
-                function transformCallback(voyagesShort) {
-                    var voyages = transformShort(voyagesShort);
-                    callback(voyages);
-                }
-
-                $http.get(voyageShortUrl + mmsi).success(transformCallback);
-            },
             getVoyageInfo : function(mmsi, voyageId, callback) {
                 function findVoyageIndex(voyageId, schedule) {
                     for (var index = 0; index < schedule.voyages.length - 1; index++) {
+                        console.log(schedule.voyages[index]);
                         if (schedule.voyages[index].maritimeId === voyageId) {
                             return index;
                         }
@@ -115,18 +77,10 @@
                     callback(voyageInfo);
                 });
             },
-            save : function(plan, callback) {
-                $http.put(voyageUrl + 'savePlan', plan).success(function() {
-                    SessionStorageService.removeItem(currentPlan);
-                    callback();
-                    $rootScope.$broadcast('yourshipDataUpdated');
-                });
-            },
-            saveScedule : function(schedule, callback) {
+            save : function(schedule, callback) {
                 $http.put(scheduleUrl + 'save', schedule).success(function() {
-                    SessionStorageService.removeItem(currentPlan);
+                    SessionStorageService.removeItem(currentSchedule);
                     callback();
-                    $rootScope.$broadcast('yourshipDataUpdated');
                 });
             }
         };
