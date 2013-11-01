@@ -35,7 +35,7 @@
         }
     } ]);
 
-    embryo.RouteUploadCtrl = function($scope, $rootScope, $location, VoyageService, RouteService) {
+    embryo.RouteUploadCtrl = function($scope, VesselService, VoyageService, RouteService) {
         function initUpload() {
             if ($scope.mmsi, $scope.voyageId) {
                 VoyageService.getVoyageInfo($scope.mmsi, $scope.voyageId, function(voyageInfo) {
@@ -47,10 +47,8 @@
         embryo.RouteUploadCtrl.show = function(mmsi, voyageId) {
             $scope.mmsi = mmsi;
             $scope.voyageId = voyageId;
-            $scope.$apply(function() {
-            });
+            $scope.reset();
 
-            initUpload();
             $("#routeUploadPanel").css("display", "block");
         };
 
@@ -68,16 +66,26 @@
             url : url,
             done : function(e, data) {
                 $.each(data.result.files, function(index, file) {
-                    $scope.message = "Uploaded route '" + file.name + "'";
+                    $scope.message = "Uploaded route file '" + file.name + "'";
                     $scope.uploadedFile = file;
+
+                    console.log(file);
+                    
+                    if($scope.activate){
+                        VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", file.routeId);
+                        $scope.message +=  " and activated the route";
+                    }
                     // HACK: need to reload voyage plan
                     sessionStorage.clear();
-                    RouteService.clearActiveFromCache();
-                    $rootScope.$broadcast('yourshipDataUpdated');
                 });
             }
         };
 
+        $scope.uploadAndActivate = function(){
+            $scope.activate=true;
+            $scope.submit();
+        };
+        
         $scope.uploaded = function() {
             return $scope.uploadedFile !== null && typeof $scope.uploadedFile === "object";
         };
@@ -86,6 +94,7 @@
             // $scope.fileUploadForm.clear(); - coming in Angular 1.1.1
             $scope.uploadedFile = null;
             $scope.message = null;
+            $scope.activate = false;
             $scope.cancel();
             initUpload();
         };
@@ -96,11 +105,9 @@
             if (typeof $scope.voyageInfo !== "undefined") {
                 data.formData = {
                     voyageId : $scope.voyageInfo.id,
-                    active : $location.path().lastIndexOf('active') > 0
+                    active : $scope.activate
                 };
             }
-
-            $rootScope.$broadcast('yourshipDataUpdated');
 
         });
     };

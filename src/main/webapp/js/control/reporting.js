@@ -18,7 +18,7 @@ embryo.reporting.vesselInformation = {
 
 embryo.reporting.schedule = {
     title: "Schedule",
-    status: function (vesselOverview, vesselDetails) {
+    status: function (vesselOverview, vesselDetails) {        
         return "OK";
     },
     show: function (vesselOverview, vesselDetails) {
@@ -40,6 +40,19 @@ embryo.reporting.route = {
         },
         hide: function () {
             $("#routeUploadPanel").css("display", "none");
+        }
+    }
+
+embryo.reporting.editRoute = {
+        title: "Edit Route",
+        status: function (vesselOverview, vesselDetails) {
+            return "OK";
+        },
+        show: function (vesselOverview, vesselDetails) {
+            $("#routeEditPanel").css("display", "block");
+        },
+        hide: function () {
+            $("#routeEditPanel").css("display", "none");
         }
     }
 

@@ -55,6 +55,8 @@ body{
 	width:300px!important;
 }
 
+<<<<<<< HEAD
+=======
 .accordion-group{
 	background-color:white;
 }
@@ -70,6 +72,7 @@ h2, h3, th, .section, .control-label{
 	color:white;
 }*/
 
+>>>>>>> 57b5995ef245bed409cd4d516a1e57c24356ca55
 .contentBox{
 	padding-left:20px;
 	padding-right:20px;
@@ -85,10 +88,13 @@ h2, h3, th, .section, .control-label{
 	padding-top:5px;
 }
 
+<<<<<<< HEAD
+=======
 #routeupload .scheduleEntry{
 	font-size:1.1em;
 }
 
+>>>>>>> 57b5995ef245bed409cd4d516a1e57c24356ca55
 .input-mini {
 	width: 30px;
 }

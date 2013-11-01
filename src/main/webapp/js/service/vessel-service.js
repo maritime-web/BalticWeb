@@ -77,12 +77,32 @@
 
                 callback(result);
             },
+            updateVesselDetailParameter: function(mmsi, name, value) {
+                var s = subscriptions[mmsi];
+                if (s) {
+                    eval("s.vesselDetails." + name + "='" + value+ "'");
+                    console.log(s)
+                    this.fireVesselDetailsUpdate(s.vesselDetails);
+                }
+            },
             fireVesselDetailsUpdate: function(vesselDetails) {
                 var s = subscriptions[vesselDetails.ais.mmsi];
                 if (s) {
                     s.vesselDetails = vesselDetails;
                     for (var i in s.callbacks) {
-                        s.callbacks[i](null, s.vesselOverview, s.vesselDetails)
+//                        function x(){
+//                            var count = i;
+//                            s.callbacks[count]();
+//                        }
+//                        setTimeout(x, 10);
+                        
+                        
+                        (function (callback) {
+                            setTimeout(function() {
+                                console.log("calling", callback)
+                                callback(null, s.vesselOverview, s.vesselDetails)
+                            }, 10);
+                        })(s.callbacks[i]);
                     }
                 }
             },

@@ -6,3 +6,8 @@
 #routeupload .scheduleEntry{
 	font-size:1.1em;
 }
+
+#routeupload {
+	min-width: 580px;
+	max-width: 720px;
+}
