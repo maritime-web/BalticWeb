@@ -104,3 +104,5 @@ embryo.messagePanel = {
         $("#"+id).remove();
     }
 }
+
+embryo.controllers = {};

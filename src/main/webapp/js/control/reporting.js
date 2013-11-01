@@ -54,6 +54,7 @@ embryo.reporting.greenposReport = {
     },
     hide: function () {
         $("#greenposReportPanel").css("display", "none");
+        embryo.controllers.greenpos.hide();
     }
 }
 

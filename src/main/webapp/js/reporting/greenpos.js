@@ -45,17 +45,31 @@
         };
     });
 
+    var layer;
+
+    $(function() {
+        layer = new GreenposMarkerLayer();
+        addLayerToMap("vessel", layer, embryo.map);
+    })
+
     embryo.GreenPosCtrl = function($scope, $routeParams, ShipService, VoyageService, GreenposService, AisRestService,
             $timeout, RouteService) {
-        
-        
         $scope.editable = true;
 
         $scope.report = {
             type : "SP",
+            types : [
+                { id: "SP", name: "Sailing Plan Report" },
+                { id: "PR", name: "Position Report" },
+                { id: "FR", name: "Final Report" },
+                { id: "DR", name: "Deviation Report" }
+            ]
         };
 
         function evalGreenpos(greenpos) {
+            $scope.report.type = "FR";
+            $scope.$apply();
+            return;
             if (!greenpos || !greenpos.ts) {
                 $scope.report.type = "PR";
                 return;
@@ -87,10 +101,18 @@
             $scope.report.type = "SP";
         };
 
-        ShipService.getYourShip(function(ship) {
-            GreenposService.getLatestReport(ship.maritimeId, function(latestReport) {
-                evalGreenpos(latestReport);
-            });
+        embryo.authenticated(function() {
+            if (embryo.authentication.shipMmsi) {
+                embryo.vessel.service.subscribe(embryo.authentication.shipMmsi,
+                    function(error, vesselOverview, vesselDetails) {
+                        if (!error) {
+                            GreenposService.getLatestReport(vesselDetails.maritimeId, function(latestReport) {
+                                evalGreenpos(latestReport);
+                            });
+                        }
+                    }
+                );
+            }
         });
 
         $scope.$on('$viewContentLoaded', function() {
@@ -102,7 +124,7 @@
                 // the
                 // map is not loaded in correct size
                 $timeout(function() {
-                    $scope.loadMap();
+                    // $scope.loadMap();
                 }, 50);
             }
         });
@@ -243,7 +265,7 @@
 
             $scope.$watch($scope.getShip, function(newValue, oldValue) {
                 if (newValue.mmsi) {
-                    AisRestService.findVesselsByMmsi(newValue.mmsi, function(searchResult) {
+                    /* AisRestService.findVesselsByMmsi(newValue.mmsi, function(searchResult) {
                         var vessels = [];
                         for ( var vesselId in searchResult.vessels) {
                             var vesselJSON = searchResult.vessels[vesselId];
@@ -251,129 +273,26 @@
                             vessels.push(vessel);
                         }
                         $scope.setVesselsOnMap(vessels);
-                    });
+                    }); */
                 }
             }, true);
-
-            $scope.setVesselsOnMap = function(vessels) {
-                var features = [];
-                for ( var index in vessels) {
-                    var value = vessels[index];
-                    var attr = {
-                        id : value.id,
-                        angle : value.degree - 90,
-                        opacity : 1,
-                        image : "img/" + value.image,
-                        imageWidth : value.imageWidth,
-                        imageHeight : value.imageHeight,
-                        imageYOffset : value.imageYOffset,
-                        imageXOffset : value.imageXOffset,
-                        type : "vessel",
-                        vessel : value
-                    };
-
-                    // transform from WGS 1984 to Spherical Mercator Projection
-                    var geom = new OpenLayers.Geometry.Point(value.lon, value.lat).transform(new OpenLayers.Projection(
-                            $scope.projection), $scope.map.getProjectionObject());
-
-                    // Use styled vector points
-                    features.push(new OpenLayers.Feature.Vector(geom, attr));
-                }
-
-                $scope.vesselLayer.removeAllFeatures();
-                $scope.vesselLayer.addFeatures(features);
-                $scope.vesselLayer.refresh();
-            };
         }
 
-        $scope.loadMap = function() {
-            $scope.map = new OpenLayers.Map({
-                div : "greenPosMap",
-                projection : 'EPSG:900913',
-                fractionalZoom : false
-            });
-
-            var osm = new OpenLayers.Layer.OSM("OSM", "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png", {
-                'layers' : 'basic',
-                'isBaseLayer' : true
-            });
-            $scope.map.addLayer(osm);
-
-            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
-            renderer = (renderer) ? [ renderer ] : OpenLayers.Layer.Vector.prototype.renderers;
-
-            var defTemplate = OpenLayers.Util.applyDefaults({
-                strokeWidth : 2,
-                strokeColor : "blue", // using context.getColor(feature)
-                fillColor : "blue", // using context.getColor(feature)
-                graphicName : "x",
-                pointRadius : 5
-            }, OpenLayers.Feature.Vector.style["default"]);
-
-            $scope.pointLayer = new OpenLayers.Layer.Vector("pointLayer", {
-                styleMap : new OpenLayers.StyleMap({
-                    'default' : defTemplate
-                }),
-                renderes : renderer
-            });
-
-            $scope.vesselLayer = new OpenLayers.Layer.Vector("staticLayer", {
-                styleMap : new OpenLayers.StyleMap({
-                    "default" : {
-                        externalGraphic : "${image}",
-                        graphicWidth : "${imageWidth}",
-                        graphicHeight : "${imageHeight}",
-                        graphicYOffset : "${imageYOffset}",
-                        graphicXOffset : "${imageXOffset}",
-                        rotation : "${angle}",
-                        strokeDashstyle : 'dash',
-                        strokeColor : "red", // using
-                        // context.getColor(feature)
-                        strokeWidth : 3
-                    // strokeOpacity
-                    },
-                    "select" : {
-                        cursor : "crosshair",
-                        externalGraphic : "${image}"
-                    }
-                }),
-                renderers : renderer
-            });
-            $scope.map.addLayer($scope.vesselLayer);
-            $scope.map.addLayer($scope.pointLayer);
-
-            var initialLat = 74.00;
-            var initialLon = -40.0;
-            var initialZoom = 3;
-
-            var center = $scope.transformPosition(initialLon, initialLat);
-            $scope.map.setCenter(center, initialZoom);
-
-            if ($scope.report.lat && $scope.report.lon) {
-                $scope.setPositionOnMap($scope.report.lat, $scope.report.lon);
-            }
-        };
-
         $scope.setPositionOnMap = function(latitude, longitude) {
-            if ($scope.pointLayer) {
+            try {
                 var lat = embryo.geographic.parseLatitude(latitude);
                 var lon = embryo.geographic.parseLongitude(longitude);
-
-                var point = new OpenLayers.Geometry.Point(lon, lat).transform(new OpenLayers.Projection(
-                        $scope.projection), $scope.map.getProjectionObject());
-
-                var pointFeature = new OpenLayers.Feature.Vector(point);
-                $scope.pointLayer.removeAllFeatures();
-                $scope.pointLayer.addFeatures([ pointFeature ]);
-                $scope.pointLayer.refresh();
+                layer.draw(lon, lat);
+            } catch (e) {
+                layer.clear();
             }
         };
 
-        $scope.transformPosition = function(lon, lat) {
-            // transform from WGS 1984 to Spherical Mercator Projection
-            return new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection($scope.projection), $scope.map
-                    .getProjectionObject());
-        };
+        this.hide = function() {
+            layer.clear();
+        }
+
+        embryo.controllers.greenpos = this;
     };
 
     greenposModule.directive('sort', function() {
