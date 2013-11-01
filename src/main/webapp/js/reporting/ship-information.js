@@ -18,16 +18,27 @@
             "No" : false
         };
 
-        embryo.authenticated(function() {
-            if (embryo.authentication.shipMmsi) {
-                embryo.vessel.service.subscribe(embryo.authentication.shipMmsi,
-                    function(error, vesselOverview, vesselDetails) {
-                        $scope.vessel = vesselDetails;
-                        $scope.$apply();
-                    }
-                );
+        embryo.controllers.vesselInformation = {
+            title : "Vessel Information",
+            status : function(vesselOverview, vesselDetails) {
+                var status = {
+                    message : "OK",
+                    code : "success"
+                }
+                return status;
+            },
+            show : function(context) {
+                $("#vesselInformationPanel").css("display", "block");
+                $("#maxSpeed").focus();
+
+                $scope.vessel = context.vesselDetails;
+                $scope.$apply(function() {
+                });
+            },
+            hide : function() {
+                $("#vesselInformationPanel").css("display", "hide");
             }
-        });
+        };
 
         $scope.save = function() {
             $scope.message = null;

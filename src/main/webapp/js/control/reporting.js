@@ -2,70 +2,71 @@ embryo.reporting = {
 
 }
 
+embryo.controllers = {}
+
 embryo.reporting.vesselInformation = {
-    title: "Vessel Information",
-    status: function (vesselOverview, vesselDetails) {
+    title : "Vessel Information",
+    status : function(vesselOverview, vesselDetails) {
         return "OK";
     },
-    show: function (vesselOverview, vesselDetails) {
+    show : function(vesselOverview, vesselDetails) {
         $("#vesselInformationPanel").css("display", "block");
         $("#maxSpeed").focus();
     },
-    hide: function () {
+    hide : function() {
         $("#vesselInformationPanel").css("display", "none");
     }
 }
 
 embryo.reporting.schedule = {
-    title: "Schedule",
-    status: function (vesselOverview, vesselDetails) {        
+    title : "Schedule",
+    status : function(vesselOverview, vesselDetails) {
         return "OK";
     },
-    show: function (vesselOverview, vesselDetails) {
+    show : function(vesselOverview, vesselDetails) {
         embryo.ScheduleCtrl.show(vesselDetails);
         $("#schedulePanel").css("display", "block");
     },
-    hide: function () {
+    hide : function() {
         $("#schedulePanel").css("display", "none");
     }
 }
 
 embryo.reporting.route = {
-        title: "Active Route",
-        status: function (vesselOverview, vesselDetails) {
-            return "OK";
-        },
-        show: function (vesselOverview, vesselDetails) {
-            $("#routeUploadPanel").css("display", "block");
-        },
-        hide: function () {
-            $("#routeUploadPanel").css("display", "none");
-        }
-    }
-
-embryo.reporting.editRoute = {
-        title: "Edit Route",
-        status: function (vesselOverview, vesselDetails) {
-            return "OK";
-        },
-        show: function (vesselOverview, vesselDetails) {
-            $("#routeEditPanel").css("display", "block");
-        },
-        hide: function () {
-            $("#routeEditPanel").css("display", "none");
-        }
-    }
-
-
-embryo.reporting.greenposReport = {
-    title: "Greenpos Report",
-    status: function (vesselOverview, vesselDetails) {
+    title : "Active Route",
+    status : function(vesselOverview, vesselDetails) {
         return "OK";
     },
-    show: function (vesselOverview, vesselDetails) {
+    show : function(vesselOverview, vesselDetails) {
+        $("#routeUploadPanel").css("display", "block");
+    },
+    hide : function() {
+        $("#routeUploadPanel").css("display", "none");
+    }
+}
+
+embryo.reporting.editRoute = {
+    title : "Edit Route",
+    status : function(vesselOverview, vesselDetails) {
+        return "OK";
+    },
+    show : function(vesselOverview, vesselDetails) {
+        $("#routeEditPanel").css("display", "block");
+    },
+    hide : function() {
+        $("#routeEditPanel").css("display", "none");
+    }
+}
+
+embryo.reporting.greenposReport = {
+    title : "Greenpos Report",
+    status : function(vesselOverview, vesselDetails) {
+        return "OK";
+    },
+    show : function(vesselOverview, vesselDetails) {
         $("#greenposReportPanel").css("display", "block");
     },
-    hide: function () {
+    hide : function() {
         $("#greenposReportPanel").css("display", "none");
         embryo.controllers.greenpos.hide();
     }
@@ -73,31 +74,32 @@ embryo.reporting.greenposReport = {
 
 function setupReporting(id, vessel, vesselDetails) {
     var html = "";
-    $.each(embryo.reporting, function (k, v) {
-        html += "<tr><th>"+v.title+"</th>";
+    $.each(embryo.controllers, function(k, v) {
+        if (v.title) {
+            html += "<tr><th>" + v.title + "</th>";
+            var status = v.status(vessel, vesselDetails)
+            var label = "";
+            if (status.code) {
+                label = "label-" + status.code;
+            }
 
-        var status = v.status(vessel, vesselDetails)
+            html += "<td><span class='label " + label + "'>" + status.message + "</span></td>";
+            html += "<td><a href=# aid=" + k + ">edit</a></td>";
 
-        switch(status) {
-            case "OK":
-                html += "<td><span class='label label-success'>OK</span></td>"
-                break;
-            default:
-                html += "<td><span class='label'>NOT AVAILABLE</span></td>"
-                break;
+            html += "</tr>";
         }
 
-        html += "<td><a href=# aid="+k+">edit</a></td>"
-
-        html += "</tr>"
     });
 
     $(id).html(html);
 
-    $("a", $(id)).click(function (e) {
+    $("a", $(id)).click(function(e) {
         e.preventDefault();
         clearAdditionalInformation();
-        embryo.reporting[$(this).attr("aid")].show(vessel, vesselDetails);
+        embryo.controllers[$(this).attr("aid")].show({
+            vesselOverview : vessel,
+            vesselDetails : vesselDetails
+        });
         $(this).parents("tr").addClass("alert");
     })
 }

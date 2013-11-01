@@ -13,31 +13,48 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.voyageService', 'embryo.routeService',
-            'siyfion.typeahead']);
+            'siyfion.typeahead' ]);
 
     embryo.ScheduleCtrl = function($scope, $rootScope, VesselService, VoyageService, RouteService, $location) {
         var schedule;
         var loadVoyage = function() {
             VoyageService.getSchedule($scope.mmsi, function(ss) {
                 schedule = ss;
-                
+
                 $scope.voyages = schedule.voyages.slice();
                 $scope.voyages.push({});
 
                 console.log(schedule);
             });
         };
-        
-        embryo.ScheduleCtrl.show = function(vesselDetails) {
-            $scope.mmsi = vesselDetails.mmsi;
-            $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
 
-            loadVoyage();
-            
-            $scope.$apply(function() {
-            });
+        embryo.controllers.schedule = {
+            title : "Schedule",
+            status : function(vesselOverview, vesselDetails) {
+                var status = {
+                    message : "NO DATA",
+                }
+
+                if (vesselDetails.additionalInformation.routeId) {
+                    status.message = "ACTIVE", status.code = "success"
+                }
+
+                return status;
+            },
+            show : function(context) {
+                $scope.mmsi = context.vesselDetails.mmsi;
+                $scope.activeRouteId = context.vesselDetails.additionalInformation.routeId;
+                loadVoyage();
+                $scope.$apply(function() {
+                });
+                $("#schedulePanel").css("display", "block");
+            },
+            hide : function() {
+                $("#schedulePanel").css("display", "hide");
+                $scope.reset();
+            }
         };
-        
+
         $scope.options = {
             "Yes" : true,
             "No" : false
@@ -91,12 +108,13 @@
         };
 
         $scope.editRoute = function(voyage) {
-            embryo.reporting.schedule.hide();
-            embryo.RouteEditCtrl.show($scope.mmsi, voyage.route.id);
+            embryo.controllers.editroute.show({
+                mmsi : $scope.mmsi,
+                routeId : voyage.route.id
+            });
         };
 
         $scope.uploadRoute = function(voyage) {
-            embryo.reporting.schedule.hide();
             embryo.controllers.uploadroute.show({
                 mmsi : $scope.mmsi,
                 voyageId : voyage.maritimeId
@@ -105,7 +123,8 @@
 
         $scope.activate = function(voyage) {
             RouteService.setActiveRoute(voyage.route.id, true, function() {
-                VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", voyage.route.id);
+                VesselService
+                        .updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", voyage.route.id);
                 $scope.activeRouteId = voyage.route.id;
             });
         };

@@ -46,10 +46,8 @@
 
         embryo.controllers.uploadroute = {
             notitle : "not shown in left panel",
-            status : function(vesselOverview, vesselDetails) {
-                return "OK";
-            },
             show : function(context) {
+                clearAdditionalInformation();
                 $scope.mmsi = context.mmsi;
                 $scope.voyageId = context.voyageId;
                 $scope.reset();
