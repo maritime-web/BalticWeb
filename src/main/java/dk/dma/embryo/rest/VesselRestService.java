@@ -61,6 +61,7 @@ public class VesselRestService {
     @GET
     @Path("/historical-track")
     @Produces("application/json")
+    @GZIP
     public Object historicalTrack(@QueryParam("id") long vesselId) {
         Map result = aisViewService.vesselTargetDetails(vesselId, 1);
         return ((Map)result.get("pastTrack")).get("points");
@@ -122,6 +123,7 @@ public class VesselRestService {
     @GET
     @Path("/details-short")
     @Produces("application/json")
+    @GZIP
     public VesselDetails detailsShort(@QueryParam("maritimeId") String maritimeId) {
         VesselDetails details = null;
         Vessel vessel = vesselService.getVessel(maritimeId);
@@ -135,6 +137,7 @@ public class VesselRestService {
     @GET
     @Path("/details")
     @Produces("application/json")
+    @GZIP
     public VesselDetails detailsFull(@QueryParam("mmsi") long mmsi) {
         //TODO change to execute the two calls asynchronously
         Map result = aisViewService.vesselTargetDetails(mmsi, 1);
@@ -173,6 +176,7 @@ public class VesselRestService {
     @POST
     @Path("/save-details")
     @Consumes("application/json")
+    @GZIP
     public String saveDetails(VesselDetails details) {
         logger.info("save({})", details);
 
@@ -186,6 +190,7 @@ public class VesselRestService {
     @GET
     @Path("/details-old")
     @Produces("application/json")
+    @GZIP
     public Map details(@QueryParam("id") long vesselId, @QueryParam("past_track") int pastTrack) {
         Map result = aisViewService.vesselTargetDetails(vesselId, pastTrack);
         Route route = scheduleService.getActiveRoute((long) (Integer) result.get("mmsi"));

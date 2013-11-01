@@ -24,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ScheduleService;
@@ -50,6 +51,7 @@ public class RouteRestService {
     @GET
     @Path("/{id}")
     @Produces("application/json")
+    @GZIP
     public Route getRoute(@PathParam("id") String id) {
         logger.debug("getRoute({})", id);
         dk.dma.embryo.domain.Route route = scheduleService.getRouteByEnavId(id);
@@ -71,6 +73,7 @@ public class RouteRestService {
     @GET
     @Path("/active")
     @Produces("application/json")
+    @GZIP
     public Route getActive() {
         logger.debug("getActive()");
 
@@ -88,6 +91,7 @@ public class RouteRestService {
     @GET
     @Path("/active/{mmsi}")
     @Produces("application/json")
+    @GZIP
     public Route getActiveByMmsi(@PathParam("mmsi") String mmsi) {
         logger.debug("getActiveByMmsi({})", mmsi);
 

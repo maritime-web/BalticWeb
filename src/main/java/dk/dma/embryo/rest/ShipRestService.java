@@ -26,6 +26,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.GreenPosService;
@@ -55,6 +56,7 @@ public class ShipRestService {
     @GET
     @Path("/yourship")
     @Produces("application/json")
+    @GZIP
     public Ship getYourShip() {
         logger.debug("getYourShip()");
 
@@ -73,6 +75,7 @@ public class ShipRestService {
     @GET
     @Path("/shiptypes")
     @Produces("application/json")
+    @GZIP
     public List<String> getShipTypes() {
         logger.debug("getShipTypes()");
 

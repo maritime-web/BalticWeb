@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ScheduleService;
@@ -43,6 +44,7 @@ public class ScheduleRestService {
     @GET
     @Path("/overview/{mmsi}")
     @Produces("application/json")
+    @GZIP
     public dk.dma.embryo.rest.json.Schedule getScheduleView(@PathParam("mmsi") Long mmsi) {
         logger.trace("getScheduleView({})", mmsi);
 

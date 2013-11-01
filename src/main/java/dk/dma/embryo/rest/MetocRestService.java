@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.MetocService;
@@ -51,6 +52,7 @@ public class MetocRestService {
     @GET
     @Path("/{routeId}")
     @Produces("application/json")
+    @GZIP
     public Metoc getMetoc(@PathParam("routeId") String id) {
         logger.debug("getMetoc({})", id);
   

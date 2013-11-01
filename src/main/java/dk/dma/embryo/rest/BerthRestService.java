@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
 import com.google.common.base.Function;
@@ -48,6 +49,7 @@ public class BerthRestService {
     @GET
     @Path("/search")
     @Produces("application/json")
+    @GZIP
     public List<BerthDatum> remote(@QueryParam("QUERY") String query) {
         logger.trace("remoteFetch({})", query);
 
