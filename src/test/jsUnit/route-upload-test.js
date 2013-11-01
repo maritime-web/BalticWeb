@@ -16,6 +16,8 @@ describe('Route Upload Controller', function() {
 					return []
 				}
 			};
+			
+			embryo.controllers = {}
 
 			// var ctrl = $controller(embryo.RouteUploadCtrl, {$scope: scope});
 			new embryo.RouteUploadCtrl(scope, routeParams, VoyageService);
