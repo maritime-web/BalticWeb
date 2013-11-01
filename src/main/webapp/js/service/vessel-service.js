@@ -187,7 +187,7 @@
                     url: embryo.baseUrl + "rest/vessel/historical-track",
                     timeout: embryo.defaultTimeout,
                     data: {
-                        id : vesselId
+                        mmsi : vesselId
                     },
                     success: function(data) {
                         callback(null, data);

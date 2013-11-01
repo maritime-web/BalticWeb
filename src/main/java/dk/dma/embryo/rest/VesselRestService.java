@@ -62,8 +62,8 @@ public class VesselRestService {
     @Path("/historical-track")
     @Produces("application/json")
     @GZIP
-    public Object historicalTrack(@QueryParam("id") long vesselId) {
-        Map result = aisViewService.vesselTargetDetails(vesselId, 1);
+    public Object historicalTrack(@QueryParam("mmsi") long mmsi) {
+        Map result = aisViewService.vesselTargetDetails(mmsi, 1);
         return ((Map)result.get("pastTrack")).get("points");
     }
 

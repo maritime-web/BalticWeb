@@ -13,7 +13,7 @@ embryo.additionalInformation.historicalTrack = {
     },
     show: function (vessel, vesselDetails) {
         var that = this;
-        embryo.vessel.service.historicalTrack(vessel.id, function(error, data) {
+        embryo.vessel.service.historicalTrack(vessel.mmsi, function(error, data) {
             if (data) {
                 that.layer.draw(data);
                 that.layer.zoomToExtent();
