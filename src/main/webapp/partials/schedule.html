@@ -1,7 +1,10 @@
 
 <div id="schedule" x-ng-controller="embryo.ScheduleCtrl">
 	<div>
-		<h2>Schedule</h2>
+		<h2>
+			<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> 
+			Schedule
+		</h2>
 	</div>
 	<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
 	<div x-ng-show="message" class="alert alert-info">{{message}}</div>
@@ -59,13 +62,18 @@
 							from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points
 					</span> <span ng-show="!voyage.route">No route</span></td>
 					<td colspan="3"><span class="pull-right" ng-show="!voyage.route">
-							<button type="button" ng-hide="!voyage.maritimeId" class="btn" x-ng-click="editRoute(voyage)">Create route</button>
-							<button type="button" ng-hide="!voyage.maritimeId" class="btn" x-ng-click="uploadRoute(voyage)">Upload route</button>
+							<button type="button" ng-hide="!voyage.maritimeId" class="btn" x-ng-click="editRoute(voyage)">Create
+								route</button>
+							<button type="button" ng-hide="!voyage.maritimeId" class="btn" x-ng-click="uploadRoute(voyage)">Upload
+								route</button>
 					</span><span class="pull-right" ng-show="voyage.route">
-							<button type="button" ng-show="activeRouteId != voyage.route.id" class="btn btn-success" x-ng-click="activate(voyage, $event)">Activate</button>
-							<button type="button" ng-show="activeRouteId == voyage.route.id" class="btn btn-warning" x-ng-click="deactivate(voyage, $event)">Deactivate</button>
+							<button type="button" ng-show="activeRouteId != voyage.route.id" class="btn btn-success"
+								x-ng-click="activate(voyage, $event)">Activate</button>
+							<button type="button" ng-show="activeRouteId == voyage.route.id" class="btn btn-warning"
+								x-ng-click="deactivate(voyage, $event)">Deactivate</button>
 							<button type="button" ng-hide="!voyage.maritimeId" class="btn" x-ng-click="editRoute(voyage)">Edit route</button>
-							<button type="button" ng-hide="!voyage.maritimeId" class="btn" x-ng-click="uploadRoute(voyage)">Upload route</button>
+							<button type="button" ng-hide="!voyage.maritimeId" class="btn" x-ng-click="uploadRoute(voyage)">Upload
+								route</button>
 					</span></td>
 					<td><button class="btn btn-danger" x-ng-show="!$last" x-ng-disabled="isActive(voyage)"
 							x-ng-click="del($index)">Delete</button></td>
