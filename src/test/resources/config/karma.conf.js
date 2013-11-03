@@ -21,8 +21,7 @@ module.exports = function(config) {
 				'src/main/webapp/js/menu.js', 
 				'src/main/webapp/js/reporting/position.js',
 				'src/main/webapp/js/reporting/route-upload.js',
-				'src/main/webapp/js/reporting/greenpos.js',
-				'src/test/jsUnit/**/*.js' ],
+				'src/test/jsUnit/**/*Test.js' ],
 
 		// list of files to exclude
 		exclude : ['src/main/webapp/js/ext/jquery.fileupload*.js'],
