@@ -18,7 +18,6 @@ package dk.dma.embryo.rest;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,6 +29,7 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.embryo.rest.json.ActiveRoute;
 import dk.dma.embryo.rest.json.Route;
+import dk.dma.embryo.rest.json.SaveRouteRequest;
 import dk.dma.embryo.security.authorization.YourShip;
 
 /**
@@ -41,7 +41,7 @@ public class RouteRestService {
 
     @Inject
     private ScheduleService scheduleService;
-    
+
     @Inject
     private Logger logger;
 
@@ -108,31 +108,23 @@ public class RouteRestService {
 
     @PUT
     @Consumes("application/json")
-    public void save(Route route) {
-        logger.debug("save({})", route);
+    public void save(SaveRouteRequest request) {
+        logger.debug("save({})", request);
 
-        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromJsonModel(route);
-        scheduleService.saveRoute(toBeSaved);
-        // String result = "Product created : " + product;
-        // return Response.status(201).entity(result).build();
+        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromJsonModel(request.getRoute());
+        scheduleService.saveRoute(toBeSaved, request.getVoyageId(), false);
     }
 
-    // TODO Remove, when wicket has been removed
-    @POST
+    @PUT
+    @Path("/save/activate")
     @Consumes("application/json")
-    public void save2(Route route) {
-        logger.debug("save2({})", route);
+    public void saveAndActivate(SaveRouteRequest request) {
+        logger.debug("saveAndActivate({})", request);
 
-        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromJsonModel(route);
-        scheduleService.saveRoute(toBeSaved);
-        // String result = "Product created : " + product;
-        // return Response.status(201).entity(result).build();
+        dk.dma.embryo.domain.Route toBeSaved = dk.dma.embryo.domain.Route.fromJsonModel(request.getRoute());
+        scheduleService.saveRoute(toBeSaved, request.getVoyageId(), true);
     }
 
-    /*
-     * FIXME This method does not follow rest principles. What should have been done, was to save a ship with current
-     * voyage, which had an activeRoute.
-     */
     @PUT
     @Path("/activate")
     @Consumes("application/json")
@@ -140,8 +132,6 @@ public class RouteRestService {
         logger.debug("Activating route: {}", activeRoute);
 
         scheduleService.activateRoute(activeRoute.getRouteId(), activeRoute.getActive());
-        // String result = "Product created : " + product;
-        // return Response.status(201).entity(result).build();
     }
 
 }

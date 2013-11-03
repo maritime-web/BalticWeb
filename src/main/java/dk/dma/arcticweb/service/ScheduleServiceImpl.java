@@ -40,7 +40,6 @@ import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;

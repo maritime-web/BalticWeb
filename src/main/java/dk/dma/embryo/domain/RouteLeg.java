@@ -74,13 +74,6 @@ public class RouteLeg implements Serializable {
         
     }
     
-    public dk.dma.embryo.rest.json.RouteLeg toJsonModel(){
-        dk.dma.embryo.rest.json.RouteLeg toLeg = new dk.dma.embryo.rest.json.RouteLeg();
-        toLeg.setSpeed(this.getSpeed());
-        toLeg.setHeading(this.getHeading());
-        return toLeg;
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////

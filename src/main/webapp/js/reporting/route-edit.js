@@ -11,21 +11,20 @@
 
     var module = angular.module('embryo.routeEdit', [ 'embryo.voyageService', 'embryo.routeService', 'ui.bootstrap',
             'ui.bootstrap.datetimepicker' ]);
-    
-    function setDefault(context, field, defaultValue){
-        if(!context[field]){
+
+    function setDefault(context, field, defaultValue) {
+        if (!context[field]) {
             context[field] = defaultValue;
         }
     }
 
-    function initRouteMeta(route, meta) {
-        setDefault(route, "etaDep", meta.etdep);
-        setDefault(route, "etaDes", meta.etdes);
-        setDefault(route, "dep", meta.dep);
-        setDefault(route, "des", meta.des);
-    }
-
-    embryo.RouteEditCtrl = function($scope, RouteService, VoyageService) {
+    embryo.RouteEditCtrl = function($scope, RouteService, VoyageService, VesselService) {
+        function initRouteMeta(route, meta) {
+            setDefault(route, "etaDep", meta.etdep);
+            setDefault($scope, "etaDes", meta.etdes);
+            setDefault(route, "dep", meta.dep);
+            setDefault(route, "des", meta.des);
+        }
 
         function initRoute() {
             if ($scope.routeId) {
@@ -45,12 +44,13 @@
             show : function(context) {
                 clearAdditionalInformation();
                 $scope.mmsi = context.mmsi;
-                
-                if(context.fromVoyage.route && context.fromVoyage.route.id){
+
+                if (context.fromVoyage.route && context.fromVoyage.route.id) {
                     $scope.routeId = context.fromVoyage.route.id;
                 }
-                
+
                 $scope.scheduleData = {
+                    voyageId : context.fromVoyage.maritimeId,
                     dep : context.fromVoyage.berthName,
                     etdep : context.fromVoyage.departure,
                     des : context.toVoyage.berthName,
@@ -66,10 +66,19 @@
 
         $scope.save = function() {
             $scope.message = null;
-
-            RouteService.save($scope.route, function() {
+            RouteService.save($scope.route, $scope.scheduleData.voyageId, function() {
                 $scope.message = "Saved route '" + $scope.route.name + "'";
-                // Route not fetch from server, which might be a good idea.
+
+                // TODO replace this with a thrown event
+                // embryo.route.redrawIfVisible(RouteService.getRoute());
+            });
+        };
+
+        $scope.saveAndActivate = function() {
+            RouteService.saveAndActivate($scope.route, $scope.scheduleData.voyageId, function() {
+                $scope.message = "Saved and activated route '" + $scope.route.name + "'";
+                VesselService
+                .updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", $scope.route.id);
 
                 // TODO replace this with a thrown event
                 // embryo.route.redrawIfVisible(RouteService.getRoute());
@@ -78,17 +87,14 @@
 
         $scope.saveable = function() {
             if ($scope.routeEditForm.$invalid) {
-                console.log("form");
                 return false;
             }
 
             if (!$scope.route) {
-                console.log("no route");
                 return false;
             }
 
             if (!($scope.route.wps && $scope.route.wps.length >= 2)) {
-                console.log("not enough waypoints");
                 return false;
             }
 
