@@ -33,7 +33,8 @@ module.exports = function(grunt) {
                     livereload : '<%= connect.options.livereload %>'
                 },
                 files : [ '<%= proj.livereload %>/{,*/}*.html', '<%= proj.livereload %>/css/{,*/}*.css',
-                        '<%= proj.livereload %>/js/{,*/}*.js', '<%= proj.livereload %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}' ]
+                        '<%= proj.livereload %>/js/{,*/}*.js',
+                        '<%= proj.livereload %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}' ]
             }
         },
 
@@ -130,11 +131,11 @@ module.exports = function(grunt) {
                     dest : '<%= proj.dist %>'
                 } ]
             },
-            nonJs2Build : {
+            unMod2Build : {
                 files : [ {
                     expand : true,
                     cwd : '<%= proj.src %>',
-                    src : 'css/{,*/}*.css',
+                    src : 'css/ext/{,*/}*.css',
                     dest : '<%= proj.build %>'
                 }, {
                     expand : true,
@@ -143,11 +144,16 @@ module.exports = function(grunt) {
                     dest : '<%= proj.build %>'
                 } ]
             },
-            js2Build : {
+            gen2Build : {
                 files : [ {
                     expand : true,
                     cwd : '.tmp/concat',
                     src : '{,*/}*.js',
+                    dest : '<%= proj.build %>'
+                }, {
+                    expand : true,
+                    cwd : '.tmp/concat',
+                    src : '{,*/}*.css',
                     dest : '<%= proj.build %>'
                 } ]
             },
@@ -192,18 +198,20 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-connect-proxy');
 
-    grunt.registerTask('server', function(target) {
-        if (target === 'dist') {
-            return grunt.task.run([ 'build', 'connect:dist:keepalive' ]);
-        }
+    grunt.registerTask('server',
+            function(target) {
+                if (target === 'dist') {
+                    return grunt.task.run([ 'build', 'connect:dist:keepalive' ]);
+                }
 
-        grunt.task.run([ 'copy:all2Livereload', /* 'autoprefixer', */'configureProxies', 'connect:livereload', 'watch' ]);
-    });
+                grunt.task.run([ 'copy:all2Livereload', /* 'autoprefixer', */'configureProxies', 'connect:livereload',
+                        'watch' ]);
+            });
 
     // grunt.registerTask('test', [ 'clean:server', 'concurrent:test',
     // 'autoprefixer', 'connect:test', 'karma' ]);
 
-    grunt.registerTask('build', [ 'useminPrepare', 'copy:nonJs2Build', 'concat', 'usemin', 'copy:js2Build',
+    grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'concat', 'usemin', 'copy:gen2Build',
             'copy:toTarget' ]);
 
     // 'clean:dist',
