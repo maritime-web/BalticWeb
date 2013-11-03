@@ -41,7 +41,7 @@ function RouteLayer(color) {
     function createVectorFeatures(route) {
         var features = [];
 
-        if (route && route.waypoints) {
+        if (route && route.wps) {
             var firstPoint = true;
             var currentPoint;
             var previousPoint = null;
@@ -49,9 +49,9 @@ function RouteLayer(color) {
             var points = [];
             var lines = [];
 
-            for ( var index in route.waypoints) {
+            for ( var index in route.wps) {
                 currentPoint = embryo.map
-                        .createPoint(route.waypoints[index].longitude, route.waypoints[index].latitude);
+                        .createPoint(route.wps[index].longitude, route.wps[index].latitude);
 
                 // points.push(embryo.route.createWaypointFeature(currentPoint));
                 if (!firstPoint) {
@@ -75,7 +75,7 @@ function RouteLayer(color) {
     this.draw = function(route) {
         this.layers.route.removeAllFeatures();
 
-        if (route && route.waypoints) {
+        if (route && route.wps) {
             this.layers.route.addFeatures(createVectorFeatures(route));
             this.layers.route.refresh();
         }
