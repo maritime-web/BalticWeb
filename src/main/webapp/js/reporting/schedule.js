@@ -20,11 +20,8 @@
         var loadVoyage = function() {
             VoyageService.getSchedule($scope.mmsi, function(ss) {
                 schedule = ss;
-
                 $scope.voyages = schedule.voyages.slice();
                 $scope.voyages.push({});
-
-                console.log(schedule);
             });
         };
 

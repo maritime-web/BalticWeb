@@ -81,7 +81,6 @@
                 var s = subscriptions[mmsi];
                 if (s) {
                     eval("s.vesselDetails." + name + "='" + value+ "'");
-                    console.log(s)
                     this.fireVesselDetailsUpdate(s.vesselDetails);
                 }
             },
@@ -99,7 +98,6 @@
                         
                         (function (callback) {
                             setTimeout(function() {
-                                console.log("calling", callback)
                                 callback(null, s.vesselOverview, s.vesselDetails)
                             }, 10);
                         })(s.callbacks[i]);
