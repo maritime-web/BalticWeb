@@ -10,10 +10,8 @@
 (function() {
     "use strict";
 
-    var greenposModule = angular.module(
-        'embryo.greenpos',
-        [ 'embryo.voyageService', 'embryo.greenposService', 'embryo.shipService' ]
-    );
+    var greenposModule = angular.module('embryo.greenpos', [ 'embryo.voyageService', 'embryo.greenposService',
+            'embryo.shipService' ]);
 
     /*
      * Inspired by http://jsfiddle.net/zbjLh/2/
@@ -58,15 +56,22 @@
             $timeout, RouteService) {
         $scope.editable = true;
 
-        $scope.reportTypes = [
-            { id: "SP", name: "Sailing Plan Report" },
-            { id: "PR", name: "Position Report" },
-            { id: "FR", name: "Final Report" },
-            { id: "DR", name: "Deviation Report" }
-        ]
+        $scope.reportTypes = [ {
+            id : "SP",
+            name : "Sailing Plan Report"
+        }, {
+            id : "PR",
+            name : "Position Report"
+        }, {
+            id : "FR",
+            name : "Final Report"
+        }, {
+            id : "DR",
+            name : "Deviation Report"
+        } ]
 
         $scope.report = {
-            type:"SP"
+            type : "SP"
         }
 
         function evalGreenpos(greenpos) {
@@ -99,7 +104,8 @@
             }
 
             $scope.report.type = "SP";
-        };
+        }
+        ;
 
         $scope.visibility = {
             "SP" : [ "destination", "etaOfArrival", "personsOnBoard", "course", "speed", "weather", "ice" ],
@@ -163,11 +169,9 @@
             GreenposService.save($scope.report, function() {
                 $scope.message = "GreenPos report successfully submitted. ";
 
-                if($scope.deactivate){
-                    VoyageService.getYourActive(function(voyage) {
-                        RouteService.setActiveRoute(voyage.routeId, false, function(){
-                            $scope.message += "Active route successsfully deactivated. ";
-                        });
+                if ($scope.deactivate) {
+                    RouteService.setActiveRoute($scope.activeRouteId, false, function() {
+                        $scope.message += "Active route successsfully deactivated. ";
                     });
                 }
             });
@@ -202,6 +206,8 @@
             $scope.report.callSign = c.vesselOverview.callSign;
             $scope.report.vesselName = c.vesselOverview.name;
             $scope.hasActiveRoute = (c.vesselDetails.additionalInformation.routeId != null);
+            
+            $scope.activeRouteId = c.vesselDetails.additionalInformation.routeId;
 
             $scope.$apply();
 
@@ -230,7 +236,7 @@
         this.status = function(vesselOverview, vesselDetails) {
             return {
                 code : "success",
-                message: "OK"
+                message : "OK"
             }
         }
 
