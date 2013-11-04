@@ -27,7 +27,7 @@
                 if (!voyageStr) {
                     ShipService.getYourShip(function(yourShip) {
                         var remoteCall = function(onSuccess) {
-                            $http.get(voyageUrl + 'active/' + yourShip.maritimeId).success(onSuccess);
+                            $http.get(voyageUrl + 'active/' + yourShip.mmsi).success(onSuccess);
                         };
 
                         SessionStorageService.getItem(activeVoyage, callback, remoteCall);

@@ -151,7 +151,7 @@
                 delete schedule.voyages[index].route;
             }
 
-            VoyageService.save(schedule, function() {
+            VoyageService.saveSchedule(schedule, function() {
                 $rootScope.$broadcast('yourshipDataUpdated');
                 $scope.message = "Schedule saved successfully";
                 loadVoyage();
