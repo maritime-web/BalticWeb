@@ -183,17 +183,4 @@ public class VesselRestService {
         logger.info("save({})", details);
         vesselService.save(Vessel.toJsonModel2(details));
     }
-
-    @GET
-    @Path("/details-old")
-    @Produces("application/json")
-    @GZIP
-    public Map details(@QueryParam("id") long vesselId, @QueryParam("past_track") int pastTrack) {
-        Map result = aisViewService.vesselTargetDetails(vesselId, pastTrack);
-        Route route = scheduleService.getActiveRoute((long) (Integer) result.get("mmsi"));
-        if (route != null) {
-            result.put("route", route.toJsonModel());
-        }
-        return result;
-    }
 }
