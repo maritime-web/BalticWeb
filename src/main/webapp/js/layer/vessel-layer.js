@@ -1,38 +1,38 @@
-var imageForVessel = function(vo) {
-    var colorName;
-
-    switch (vo.type) {
-		case "0" : colorName = "blue"; break;
-		case "1" : colorName = "gray"; break;
-		case "2" : colorName = "green"; break;
-		case "3" : colorName = "orange"; break;
-		case "4" : colorName = "purple"; break;
-		case "5" : colorName = "red"; break;
-		case "6" : colorName = "turquoise"; break;
-		case "7" : colorName = "yellow"; break;
-		default : colorName = "unknown";
-	}
-
-	if (vo.moored){
-		return {
-		    name: "vessel_" + colorName + "_moored.png",
-		    width: 12,
-		    height: 12,
-		    xOffset: -6,
-		    yOffset: -6
-		}
-	} else {
-	    return {
-    		name: "vessel_" + colorName + ".png",
-    		width: 20,
-	    	height: 10,
-	    	xOffset: -10,
-	    	yOffset: -5
-	    }
-	}
-}
-
 function VesselLayer() {
+    function imageForVessel(vo) {
+        var colorName;
+
+        switch (vo.type) {
+            case "0" : colorName = "blue"; break;
+            case "1" : colorName = "gray"; break;
+            case "2" : colorName = "green"; break;
+            case "3" : colorName = "orange"; break;
+            case "4" : colorName = "purple"; break;
+            case "5" : colorName = "red"; break;
+            case "6" : colorName = "turquoise"; break;
+            case "7" : colorName = "yellow"; break;
+            default : colorName = "unknown";
+        }
+
+        if (vo.moored){
+            return {
+                name: "vessel_" + colorName + "_moored.png",
+                width: 12,
+                height: 12,
+                xOffset: -6,
+                yOffset: -6
+            }
+        } else {
+            return {
+                name: "vessel_" + colorName + ".png",
+                width: 20,
+                height: 10,
+                xOffset: -10,
+                yOffset: -5
+            }
+        }
+    }
+
     this.init = function() {
         this.zoomLevels = [4, 6];
 
