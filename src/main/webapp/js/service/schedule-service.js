@@ -1,11 +1,6 @@
-/*
- * Dependencies:
- * 
- * aisview.js
- * aisviewUI.js
- * route.js
- * ....
- */
+/**
+ * ScheduleService
+ **/
 
 (function() {
     "use strict";
