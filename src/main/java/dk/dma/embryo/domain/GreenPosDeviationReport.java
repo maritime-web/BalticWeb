@@ -25,7 +25,7 @@ import dk.dma.embryo.rest.json.GreenPos;
 
 /**
  * Deviation may be reported as either a free form textual description {@link #deviation} or a modified voyage plan
- * {@link #modifiedPlan} or a combination of both.
+ * or a combination of both.
  * 
  * The system is expected to insert a modified voyage plan if it exists. The textual description if filled in by either
  * vessel or authorities (Grønlandskommandoen).
@@ -52,7 +52,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosDeviationReport report = new GreenPosDeviationReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), from.getVesselMaritimeId(), pos, from.getDeviation());
+                from.getCallSign(), pos, from.getDeviation());
 
         return report;
     }
@@ -63,7 +63,6 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setId(getEnavId());
         result.setType(getReportType());
         result.setVesselName(getVesselName());
-        result.setVesselMaritimeId(getVesselMaritimeId());
         result.setMmsi(getVesselMmsi());
         result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitudeAsString());
@@ -83,9 +82,9 @@ public class GreenPosDeviationReport extends GreenPosReport {
         super();
     }
 
-    public GreenPosDeviationReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
+    public GreenPosDeviationReport(String vesselName, Long vesselMmsi, String vesselCallSign,
             Position pos, String deviation) {
-        super(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, pos);
+        super(vesselName, vesselMmsi, vesselCallSign, pos);
 
         this.deviation = deviation;
         // this.modifiedPlan = deviatedPlan;

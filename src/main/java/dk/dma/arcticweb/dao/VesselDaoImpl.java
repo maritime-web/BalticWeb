@@ -80,17 +80,7 @@ public class VesselDaoImpl extends DaoImpl implements VesselDao {
         return getSingleOrNull(result);
     }
 
-    @Override
-    public Vessel getVesselByMaritimeId(String callsign) {
-        TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getByMaritimeId", Vessel.class);
-        query.setParameter("maritimeId", callsign);
-
-        List<Vessel> result = query.getResultList();
-
-        return getSingleOrNull(result);
-    }
-
-    @Override
+     @Override
     public VoyagePlan getVoyagePlan(Long mmsi) {
         TypedQuery<VoyagePlan> query = em.createNamedQuery("VoyagePlan:getByMmsi", VoyagePlan.class);
         query.setParameter("mmsi", mmsi);

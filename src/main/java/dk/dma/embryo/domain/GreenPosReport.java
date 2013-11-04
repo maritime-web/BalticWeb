@@ -39,7 +39,7 @@ import dk.dma.embryo.rest.json.GreenPos;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQueries({
-        @NamedQuery(name = "GreenPosReport:findLatest", query = "SELECT DISTINCT g FROM GreenPosReport g where g.vesselMaritimeId = :vesselMaritimeId ORDER By g.ts DESC"),
+        @NamedQuery(name = "GreenPosReport:findLatest", query = "SELECT DISTINCT g FROM GreenPosReport g where g.vesselMmsi = :vesselMmsi ORDER By g.ts DESC"),
         @NamedQuery(name = "GreenPosReport:findById", query = "SELECT g FROM GreenPosReport g where g.enavId = :id") })
 public abstract class GreenPosReport extends BaseEntity<Long> {
 
@@ -57,8 +57,6 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     private Long vesselMmsi;
 
     private String vesselCallSign;
-
-    private String vesselMaritimeId;
 
     @Valid
     private Position position;
@@ -135,22 +133,20 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         this.enavId = UUID.randomUUID().toString();
     }
 
-    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId, String latitude,
+    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String latitude,
             String longitude) {
         this();
         this.vesselName = vesselName;
         this.vesselMmsi = vesselMmsi;
         this.vesselCallSign = vesselCallSign;
-        this.vesselMaritimeId = vesselMaritimeId;
         this.position = new Position(latitude, longitude);
     }
 
-    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId, Position position) {
+    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, Position position) {
         this();
         this.vesselName = vesselName;
         this.vesselMmsi = vesselMmsi;
         this.vesselCallSign = vesselCallSign;
-        this.vesselMaritimeId = vesselMaritimeId;
         this.position = position;
     }
 
@@ -167,10 +163,6 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     public String getVesselName() {
         return vesselName;
-    }
-
-    public String getVesselMaritimeId() {
-        return vesselMaritimeId;
     }
 
     public String getEnavId() {

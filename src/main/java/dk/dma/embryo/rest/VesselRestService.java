@@ -90,7 +90,7 @@ public class VesselRestService {
             vo.setMmsi(Long.parseLong(vessel[6]));
             vo.setName(vessel[7]);
             vo.setImo(vessel[9]);
-            vo.setCallsign(vessel[8]);
+            vo.setCallSign(vessel[8]);
             vo.setMoored("1".equals(vessel[5]));
             vo.setType(vessel[4]);
             vo.setInArcticWeb(false);
@@ -120,6 +120,7 @@ public class VesselRestService {
     /**
      * Returns vessel details based ArcticWeb data and AIS data.
      */
+    /*
     @GET
     @Path("/details-short")
     @Produces("application/json")
@@ -133,6 +134,7 @@ public class VesselRestService {
         }
         return details;
     }
+    */
 
     @GET
     @Path("/details")
@@ -177,14 +179,9 @@ public class VesselRestService {
     @Path("/save-details")
     @Consumes("application/json")
     @GZIP
-    public String saveDetails(VesselDetails details) {
+    public void saveDetails(VesselDetails details) {
         logger.info("save({})", details);
-
-        String maritimeId = vesselService.save(Vessel.toJsonModel2(details));
-
-        logger.info("save(): {}", maritimeId);
-
-        return maritimeId;
+        vesselService.save(Vessel.toJsonModel2(details));
     }
 
     @GET

@@ -27,15 +27,9 @@ public class Ship extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Ship(String maritimeId) {
-    }
-
     public Ship() {
-        this(UUID.randomUUID().toString());
+
     }
 
-    public Ship(Long mmsi) {
-        this();
-    }
 
 }

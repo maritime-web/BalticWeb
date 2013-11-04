@@ -29,5 +29,5 @@ public interface GreenPosDao extends Dao {
 
     GreenPosReport findById(String id);
 
-    GreenPosReport findLatest(String vesselMaritimeId);
+    GreenPosReport findLatest(Long vesselMmsi);
 }

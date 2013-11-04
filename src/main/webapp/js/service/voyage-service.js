@@ -22,15 +22,15 @@
         var activeVoyage = 'voyage_active';
 
         return {
-            getYourActive : function(callback) {
-                var voyageStr = sessionStorage.getItem(activeVoyage);
+            getYourActive : function(mmsi, callback) {
+                var voyageStr = sessionStorage.getItem(activeVoyage+mmsi);
                 if (!voyageStr) {
                     ShipService.getYourShip(function(yourShip) {
                         var remoteCall = function(onSuccess) {
-                            $http.get(voyageUrl + 'active/' + yourShip.maritimeId).success(onSuccess);
+                            $http.get(voyageUrl + 'active/' + mmsi).success(onSuccess);
                         };
 
-                        SessionStorageService.getItem(activeVoyage, callback, remoteCall);
+                        SessionStorageService.getItem(activeVoyage+mmsi, callback, remoteCall);
                     });
                 } else {
                     callback(JSON.parse(voyageStr));

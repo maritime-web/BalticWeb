@@ -35,15 +35,10 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = "Vessel:getByMmsi", query = "SELECT v FROM Vessel v WHERE v.mmsi = :mmsi"),
-        @NamedQuery(name = "Vessel:getByMaritimeId", query = "SELECT v FROM Vessel v WHERE v.maritimeId = :maritimeId"),
         @NamedQuery(name = "Vessel:getByCallsign", query = "SELECT v FROM Vessel v WHERE v.aisData.callsign = :callsign"),
         @NamedQuery(name = "Vessel:getMmsiList", query = "SELECT v FROM Vessel v WHERE v.mmsi in :mmsiNumbers") })
 public class Vessel extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
-
-    @NotNull
-    @Column(unique = true)
-    private String maritimeId;
 
     @Column(nullable = true)
     private Long mmsi;
@@ -91,7 +86,6 @@ public class Vessel extends BaseEntity<Long> {
         ship.setName(getAisData().getName());
         ship.setCallSign(getAisData().getCallsign());
         ship.setMmsi(getMmsi());
-        ship.setMaritimeId(getMaritimeId());
         ship.setImo(getAisData().getImoNo());
         ship.setCommCapabilities(getCommCapabilities());
         ship.setGrossTon(getGrossTonnage());
@@ -107,7 +101,6 @@ public class Vessel extends BaseEntity<Long> {
         vessel.setAis(getAisData().toJsonModel());
         
         vessel.setMmsi(getMmsi());
-        vessel.setMaritimeId(getMaritimeId());
         vessel.setCommCapabilities(getCommCapabilities());
         vessel.setGrossTon(getGrossTonnage());
         vessel.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
@@ -130,7 +123,7 @@ public class Vessel extends BaseEntity<Long> {
 
 
     public static Vessel fromJsonModel(dk.dma.embryo.rest.json.Ship ship) {
-        Vessel result = new Vessel(ship.getMaritimeId());
+        Vessel result = new Vessel();
 
         result.setMmsi(ship.getMmsi());
         result.setCommCapabilities(ship.getCommCapabilities());
@@ -143,7 +136,7 @@ public class Vessel extends BaseEntity<Long> {
     }
 
     public static Vessel fromJsonModel2(dk.dma.embryo.rest.json.Ship ship) {
-        Vessel result = new Vessel(ship.getMaritimeId());
+        Vessel result = new Vessel();
 
         result.setMmsi(ship.getMmsi());
         result.setCommCapabilities(ship.getCommCapabilities());
@@ -158,12 +151,8 @@ public class Vessel extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Vessel(String maritimeId) {
-        this.maritimeId = maritimeId;
-    }
-
     public Vessel() {
-        this(UUID.randomUUID().toString());
+
     }
 
     public Vessel(Long mmsi) {
@@ -174,10 +163,6 @@ public class Vessel extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public String getMaritimeId() {
-        return maritimeId;
-    }
-
     public Long getMmsi() {
         return mmsi;
     }

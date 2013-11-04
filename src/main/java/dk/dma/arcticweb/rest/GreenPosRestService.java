@@ -65,20 +65,20 @@ public class GreenPosRestService {
     }
 
     @GET
-    @Path("/latest/{vesselMaritimeId}")
+    @Path("/latest/{mmsi}")
     @Produces("application/json")
-    public GreenPos latest(@PathParam("vesselMaritimeId") String vesselMaritimeId) {
-        logger.debug("latest({})", vesselMaritimeId);
+    public GreenPos latest(@PathParam("mmsi") Long mmsi) {
+        logger.debug("latest({})", mmsi);
 
         GreenPos result = null;
 
-        GreenPosReport report = reportingService.getLatest(vesselMaritimeId);
+        GreenPosReport report = reportingService.getLatest(mmsi);
 
         if (report != null) {
             result = report.toJsonModel();
         }
 
-        logger.debug("latest({}) - {}", vesselMaritimeId, result);
+        logger.debug("latest({}) - {}", mmsi, result);
 
         return result;
     }

@@ -54,7 +54,7 @@
                 $("#routeUploadPanel").css("display", "block");
             },
             hide : function() {
-                $("#routeUploadPanel").css("display", "hide");
+                $("#routeUploadPanel").css("display", "none");
                 $scope.reset();
             }
         };

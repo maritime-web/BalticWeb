@@ -36,7 +36,7 @@
                 });
             },
             hide : function() {
-                $("#vesselInformationPanel").css("display", "hide");
+                $("#vesselInformationPanel").css("display", "none");
             }
         };
 

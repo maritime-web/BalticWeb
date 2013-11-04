@@ -112,7 +112,7 @@ public class GreenPosServiceImplTest {
 
         LocalDateTime datetime = LocalDateTime.now();
 
-        GreenPosSailingPlanReport spReport = new GreenPosSailingPlanReport("MyShip", 0L, "AA", "M-ID", new Position(
+        GreenPosSailingPlanReport spReport = new GreenPosSailingPlanReport("MyShip", 0L, "AA", new Position(
                 "64 10.400N", "051 43.500W"), "Weather", "Ice", 12.0, 343, "Nuuk", datetime, 12);
 
         entityManager.getTransaction().begin();
@@ -139,7 +139,6 @@ public class GreenPosServiceImplTest {
         Assert.assertEquals("MyShip", spResult.getVesselName());
         Assert.assertEquals(Long.valueOf(0L), spResult.getVesselMmsi());
         Assert.assertEquals("AA", spResult.getVesselCallSign());
-        Assert.assertEquals("M-ID", spResult.getVesselMaritimeId());
         Assert.assertEquals("64 10.400N", spResult.getPosition().getLatitudeAsString());
         Assert.assertEquals("051 43.500W", spResult.getPosition().getLongitudeAsString());
         Assert.assertEquals("Weather", spResult.getWeather());

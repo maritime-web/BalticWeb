@@ -22,7 +22,7 @@ $(function() {
 
     embryo.vessel.lookupVessel = function(id) {
         for (var i in vessels) {
-            if (vessels[i].id == id) return vessels[i];
+            if (vessels[i].mmsi == id) return vessels[i];
         }
         return null;
     }
@@ -36,7 +36,7 @@ $(function() {
     }
 
     embryo.vessel.selectVessel = function (vessel) {
-        vesselLayer.select(vessel.id);
+        vesselLayer.select(vessel.mmsi);
     }
 
     embryo.vessel.setMarkedVessel = function(markedVesselId) {
@@ -82,6 +82,16 @@ $(function() {
 
         $(window).resize(fixAccordionSize);
 
-        setTimeout(fixAccordionSize, 10);
+        setTimeout(fixAccordionSize, 100);
     });
+})
+
+$(function() {
+    function fixReportingPanelSize() {
+        $(".reportingPanel").css("overflow", "auto");
+        $(".reportingPanel").css("max-height", Math.max(100, $(window).height() - 100)+"px");
+    }
+
+    $(window).resize(fixReportingPanelSize);
+    fixReportingPanelSize();
 })

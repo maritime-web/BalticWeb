@@ -31,8 +31,6 @@ public class GreenPos {
 
     private String callSign;
 
-    private String vesselMaritimeId;
-
     private String lat;
 
     private String lon;
@@ -98,14 +96,6 @@ public class GreenPos {
 
     public void setCallSign(String callSign) {
         this.callSign = callSign;
-    }
-
-    public String getVesselMaritimeId() {
-        return vesselMaritimeId;
-    }
-
-    public void setVesselMaritimeId(String vesselMaritimeId) {
-        this.vesselMaritimeId = vesselMaritimeId;
     }
 
     public String getLat() {
