@@ -138,7 +138,7 @@ function VesselLayer() {
         var that = this;
 
         $.each(this.layers.vessel.features, function(k, v) {
-            if (v.attributes.vessel.mmsi = that.selectedId) {
+            if (v.attributes.vessel.mmsi == that.selectedId) {
                 selectedFeature = v;
             }
         })
