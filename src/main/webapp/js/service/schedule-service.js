@@ -47,8 +47,7 @@
             },
             getVoyageInfo : function(mmsi, voyageId, callback) {
                 function findVoyageIndex(voyageId, schedule) {
-                    for (var index = 0; index < schedule.voyages.length - 1; index++) {
-                        console.log(schedule.voyages[index]);
+                    for (var index = 0; index < schedule.voyages.length; index++) {
                         if (schedule.voyages[index].maritimeId === voyageId) {
                             return index;
                         }
