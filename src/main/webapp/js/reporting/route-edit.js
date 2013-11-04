@@ -9,7 +9,7 @@
 (function() {
     "use strict";
 
-    var module = angular.module('embryo.routeEdit', [ 'embryo.voyageService', 'embryo.routeService', 'ui.bootstrap',
+    var module = angular.module('embryo.routeEdit', [ 'embryo.routeService', 'ui.bootstrap',
             'ui.bootstrap.datetimepicker' ]);
 
     function setDefault(context, field, defaultValue) {
@@ -18,10 +18,7 @@
         }
     }
     
-    // icon-remove
-    // icon-plus
-
-    embryo.RouteEditCtrl = function($scope, RouteService, VoyageService, VesselService) {
+    embryo.RouteEditCtrl = function($scope, RouteService, VesselService) {
         function initRouteMeta(route, meta) {
             setDefault(route, "etaDep", meta.etdep);
             setDefault($scope, "etaDes", meta.etdes);
