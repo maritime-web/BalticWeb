@@ -37,31 +37,12 @@
 						ng-options="value as key for (key, value) in options">
 							<option value="">---</option>
 					</select></td>
-					<!-- 					<td>
-						<div class="btn-group pull-left" x-ng-show="!$last">
-							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#" x-ng-show="!routeDisabled(voyage)">Route <span
-								class="caret"></span>
-							</a> <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" x-ng-show="routeDisabled(voyage)"
-								x-ng-disabled="true" title="Save voyage plan to enable route functionality">Route <span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu" role="menu">
-								<li><a tabindex="-1" x-ng-href="{{uploadLink(voyage)}}">Upload Route</a></li>
-								<li><a tabindex="-1" x-ng-href="{{editRouteLink(voyage)}}">Edit Route</a></li>
-								<!-- <li x-ng-show="voyage.routeId"><a tabindex="-1" href="#" x-ng-click="drawRoute(voyage)">Draw Route</a></li> -->
-					<!-- 	<li x-ng-show="voyage.routeId && !isActive(voyage)"><a tabindex="-1" href="#"
-									x-ng-click="activate(voyage, $event)">Activate Route</a></li>
-								<li x-ng-show="voyage.routeId && isActive(voyage)"><a tabindex="-1" href="#"
-									x-ng-click="deactivate(voyage, $event)">Deactivate Route</a></li>
-							</ul>
-						</div>
-					</td>
- -->
 				</tr>
 				<tr class="route" x-ng-class="{warning : activeRouteId == voyage.route.id}">
-					<td colspan="4"><span ng-show="voyage.route">Route <span style="font-style: italic;">{{voyage.route.name}}</span>
+					<td colspan="3"><span ng-show="voyage.route">Route <span style="font-style: italic;">{{voyage.route.name}}</span>
 							from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points
 					</span> <span ng-show="!voyage.route">No route</span></td>
-					<td colspan="3"><span class="pull-right" ng-show="!voyage.route">
+					<td colspan="4"><span class="pull-right" ng-show="!voyage.route">
 							<button type="button" ng-hide="!voyage.maritimeId" class="btn" x-ng-click="editRoute($index)">Create
 								route</button>
 							<button type="button" ng-hide="!voyage.maritimeId" class="btn" x-ng-click="uploadRoute(voyage)">Upload
@@ -77,14 +58,6 @@
 					</span></td>
 					<td><button class="btn btn-danger" x-ng-show="!$last" x-ng-disabled="isActive(voyage)"
 							x-ng-click="del($index)">Delete</button></td>
-
-					<!-- 
-					<td colspan="3"><span class="pull-right" ng-show="!voyage.route">Route actions: <a>Upload route</a> - <a>Create
-								route</a></span> <span class="pull-right" ng-show="voyage.route"> <a>Upload route</a> - <a>Edit route</a> - <a>Activate</a></span></td>
-					<td><a x-ng-show="!$last" x-ng-disabled="isActive(voyage)"
-							x-ng-click="del($index)">Delete</a></td>
- -->
-
 				</tr>
 			</tbody>
 			<tbody>
