@@ -16,7 +16,6 @@
 package dk.dma.embryo.rest.json;
 
 public class VesselOverview {
-    private int id;
     private double angle;
     private double x;
     private double y;
@@ -27,14 +26,6 @@ public class VesselOverview {
     private String imo;
     private boolean moored;
     private boolean inArcticWeb;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public double getX() {
         return x;

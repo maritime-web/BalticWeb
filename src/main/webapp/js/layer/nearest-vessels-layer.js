@@ -36,7 +36,7 @@ function NearestVesselsLayer() {
         var vessels = [];
 
         $.each(allVessels, function (k,v) {
-            if (v.id != vessel.id) {
+            if (v.mmsi != vessel.mmsi) {
                 var o = {
                     distance : embryo.adt.measureDistanceGc(vessel.x, vessel.y, v.x, v.y),
                     vessel : v

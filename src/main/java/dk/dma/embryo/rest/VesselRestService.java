@@ -83,7 +83,6 @@ public class VesselRestService {
 
             VesselOverview vo = new VesselOverview();
 
-            vo.setId(Integer.parseInt(id));
             vo.setX(Double.parseDouble(vessel[2]));
             vo.setY(Double.parseDouble(vessel[1]));
             vo.setAngle(Double.parseDouble(vessel[0]));
