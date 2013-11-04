@@ -36,10 +36,8 @@ public interface VesselService {
      * @param vessel
      * @return
      */
-    String save(Vessel vessel);
+    void save(Vessel vessel);
 
     Vessel getVessel(Long mmsi);
-
-    Vessel getVessel(String maritimeId);
 
 }

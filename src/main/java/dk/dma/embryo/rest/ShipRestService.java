@@ -89,16 +89,12 @@ public class ShipRestService {
     @PUT
     @Consumes("application/json")
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public String save(Ship ship) {
+    public void save(Ship ship) {
         logger.debug("save({})", ship);
 
         dk.dma.embryo.domain.Vessel toBeSaved = dk.dma.embryo.domain.Vessel.fromJsonModel(ship);
         
-        String maritimeId = shipService.save(toBeSaved);
-        
-        logger.debug("save(): {}", maritimeId);
-        
-        return maritimeId;
+        shipService.save(toBeSaved);
     }
     
 //    @GET

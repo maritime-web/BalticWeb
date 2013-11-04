@@ -73,7 +73,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosSailingPlanReport report = new GreenPosSailingPlanReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), from.getVesselMaritimeId(), pos, from.getWeather(), from.getIce(),
+                from.getCallSign(), pos, from.getWeather(), from.getIce(),
                 from.getSpeed(), from.getCourse(), from.getDestination(), eta, from.getPersonsOnBoard());
         return report;
     }
@@ -91,7 +91,6 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setId(getEnavId());
         result.setType(getReportType());
         result.setVesselName(getVesselName());
-        result.setVesselMaritimeId(getVesselMaritimeId());
         result.setMmsi(getVesselMmsi());
         result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitudeAsString());
@@ -116,7 +115,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
 //            transformed.add(ReportedVoyage.from(voyage));
 //        }
 
-        return new GreenPosSailingPlanReport(getVesselName(), getVesselMmsi(), getVesselCallSign(), getVesselMaritimeId(),
+        return new GreenPosSailingPlanReport(getVesselName(), getVesselMmsi(), getVesselCallSign(),
                 getPosition(), getWeather(), getIceInformation(), getSpeed(), getCourse(), getDestination(),
                 getEtaOfArrival(), getPersonsOnBoard(), transformed);
     }
@@ -127,20 +126,20 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     public GreenPosSailingPlanReport() {
     }
 
-    public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
+    public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign,
             Position position, String weather, String iceInformation, Double speed, Integer course, String destination,
             LocalDateTime eta, Integer personsOnBoard) {
-        super(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, position, weather, iceInformation, speed, course);
+        super(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation, speed, course);
 
         this.destination = destination;
         this.personsOnBoard = personsOnBoard;
         this.etaOfArrival = eta;
     }
 
-    public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
+    public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign,
             Position position, String weather, String iceInformation, Double speed, Integer course, String destination,
             LocalDateTime eta, Integer personsOnBoard, List<ReportedVoyage> voyages) {
-        this(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, position, weather, iceInformation, speed, course,
+        this(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation, speed, course,
                 destination, eta, personsOnBoard);
 
         this.voyages = voyages;

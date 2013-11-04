@@ -54,7 +54,7 @@ public class VesselServiceImpl implements VesselService {
 
     @Override
     @YourShip
-    public String save(Vessel vessel) {
+    public void save(Vessel vessel) {
         Vessel managed = vesselRepository.getVessel(vessel.getMmsi());
 
         if (managed != null) {
@@ -67,10 +67,8 @@ public class VesselServiceImpl implements VesselService {
             managed.setGrossTonnage(vessel.getGrossTonnage());
 
             managed = vesselRepository.saveEntity(managed);
-            return managed.getMaritimeId();
         } else {
             vessel = vesselRepository.saveEntity(vessel);
-            return vessel.getMaritimeId();
         }
     }
     
@@ -88,9 +86,4 @@ public class VesselServiceImpl implements VesselService {
     }
 
     
-    @Override
-    public Vessel getVessel(String maritimeId) {
-        return vesselRepository.getVesselByMaritimeId(maritimeId);
-    }
-
 }

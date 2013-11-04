@@ -36,8 +36,6 @@ public interface VesselDao extends Dao {
      */
     Vessel getVessel(Sailor sailor);
 
-    Vessel getVesselByMaritimeId(String id);
-
     Vessel getVesselByCallsign(String callsign);
 
     Vessel getVessel(Long mmsi);

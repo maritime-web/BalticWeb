@@ -15,16 +15,6 @@
  */
 package dk.dma.arcticweb.service;
 
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.LocalDateTime;
-
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
@@ -35,6 +25,13 @@ import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
+import org.joda.time.LocalDateTime;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.List;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -61,7 +58,7 @@ public class GreenPosServiceImpl implements GreenPosService {
         this.subject = subject;
         this.vesselService = vesselservice;
     }
-    
+
     @Override
     public List<GreenPosReport> listReports() {
         // TODO Should current vessel only be able to list reports for own vessel ?
@@ -85,16 +82,16 @@ public class GreenPosServiceImpl implements GreenPosService {
             vessel = getVesselFromReport(report);
         }
 
-        if(report instanceof GreenPosSailingPlanReport){
-            GreenPosSailingPlanReport spReport = (GreenPosSailingPlanReport)report;
+        if (report instanceof GreenPosSailingPlanReport) {
+            GreenPosSailingPlanReport spReport = (GreenPosSailingPlanReport) report;
             report = spReport.withVoyages(vessel.getSchedule().getEntries());
-        }else if(report instanceof GreenPosDeviationReport){
-            GreenPosDeviationReport spReport = (GreenPosDeviationReport)report;            
+        } else if (report instanceof GreenPosDeviationReport) {
+            GreenPosDeviationReport spReport = (GreenPosDeviationReport) report;
         }
-        
+
         report.setReportedBy(subject.getUser().getUserName());
         report.setTs(LocalDateTime.now());
-        
+
         greenPosDao.saveEntity(report);
 
         return report.getEnavId();
@@ -124,14 +121,7 @@ public class GreenPosServiceImpl implements GreenPosService {
     }
 
     private Vessel getVesselFromReport(GreenPosReport report) {
-        Vessel vessel = null;
-        if (StringUtils.isNotBlank(report.getVesselMaritimeId())) {
-            vessel = vesselDao.getVesselByMaritimeId(report.getVesselMaritimeId());
-        }
-
-        if (vessel == null && StringUtils.isNotBlank(report.getVesselCallSign())) {
-            vessel = vesselDao.getVesselByCallsign(report.getVesselCallSign());
-        }
+        Vessel vessel = vesselDao.getVessel(report.getVesselMmsi());
         if (vessel == null) {
             // TODO relax this. it should be possible to save report in any case, but with below message as a report
             // comment.
@@ -146,14 +136,12 @@ public class GreenPosServiceImpl implements GreenPosService {
     }
 
     @Override
-    public GreenPosReport getLatest(String vesselMaritimeId) {
-        return greenPosDao.findLatest(vesselMaritimeId);
+    public GreenPosReport getLatest(Long vesselMmsi) {
+        return greenPosDao.findLatest(vesselMmsi);
     }
 
     @Override
     public GreenPosReport get(String id) {
         return greenPosDao.findById(id);
     }
-    
-    
 }

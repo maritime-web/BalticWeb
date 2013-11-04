@@ -3,7 +3,7 @@ $(function() {
     var lastSearch = "";
 
     function searchResultToHTML(vessel){
-        var html = "<p><div class='btn searchResultItem' id='" + vessel.id + "'>";
+        var html = "<p><div class='btn searchResultItem' id='" + vessel.mmsi + "'>";
         html += "<div class='panelText btn-block'>" + vessel.name;
 
         if (vessel.inArcticWeb) {

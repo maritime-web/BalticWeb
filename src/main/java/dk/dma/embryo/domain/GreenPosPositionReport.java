@@ -50,7 +50,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosPositionReport report = new GreenPosPositionReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), from.getVesselMaritimeId(), pos, from.getWeather(), from.getIce(),
+                from.getCallSign(), pos, from.getWeather(), from.getIce(),
                 from.getSpeed(), from.getCourse());
 
         return report;
@@ -62,7 +62,6 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setId(getEnavId());
         result.setType(getReportType());
         result.setVesselName(getVesselName());
-        result.setVesselMaritimeId(getVesselMaritimeId());
         result.setMmsi(getVesselMmsi());
         result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitudeAsString());
@@ -84,17 +83,17 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         super();
     }
 
-    public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
+    public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign,
             String latitude, String longitude, String weather, String iceInformation, Double speed, Integer course) {
-        super(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, latitude, longitude, weather, iceInformation);
+        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude, weather, iceInformation);
         
         this.speed = speed;
         this.course = course;
     }
 
-    public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
+    public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign,
             Position position, String weather, String iceInformation, Double speed, Integer course) {
-        super(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, position, weather, iceInformation);
+        super(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation);
         
         this.speed = speed;
         this.course = course;

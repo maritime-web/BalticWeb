@@ -123,7 +123,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     public Voyage getActiveVoyage(String maritimeVesselId) {
-        Vessel vessel = vesselRepository.getVesselByMaritimeId(maritimeVesselId);
+        Vessel vessel = vesselRepository.getVessel(Long.parseLong(maritimeVesselId));
         if (vessel == null) {
             return null;
         }

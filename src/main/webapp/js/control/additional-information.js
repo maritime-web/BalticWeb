@@ -101,7 +101,7 @@ function clearAdditionalInformation() {
     $.each(embryo.additionalInformation, function (k, v) {
         v.layer.clear();
     });
-    $.each(embryo.reporting, function (k, v) {
+    $.each(embryo.controllers, function (k, v) {
         v.hide();
     });
     $(".additional-information tr").removeClass("alert");

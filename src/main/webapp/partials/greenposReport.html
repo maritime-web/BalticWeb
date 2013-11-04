@@ -11,7 +11,7 @@
                 <label class="control-label" for="gReportType">Report type</label>
                 <div class="controls">
 
-                    <select id="gReportType" name="gpReportType" x-ng-options="i.id as i.name for i in report.types" x-ng-model="report.type" class="input-large" required>
+                    <select id="gReportType" name="gpReportType" x-ng-options="i.id as i.name for i in reportTypes" x-ng-model="report.type" class="input-large" required>
                     </select> <span x-ng-show="greenPosForm.gpReportType.$error.required && greenPosForm.gpReportType.$dirty"
                         class="msg-invalid">Value required</span>
 
@@ -149,7 +149,6 @@
             <span class="pull-right">
                 <button type="button" x-ng-show="!editable" class="btn btn-primary" x-ng-click="back()">Close</button>
                 <button type="button" x-ng-show="editable" class="btn" x-ng-click="clear()">Clear</button>
-                <button type="button" x-ng-show="editable" class="btn" x-ng-click="cancel()">Cancel</button>
                 <button type="button" x-ng-show="editable" x-ng-click="sendReport()" x-ng-disabled="greenPosForm.$invalid"
                     class="btn btn-primary">Send</button>
 

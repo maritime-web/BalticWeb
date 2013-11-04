@@ -45,16 +45,16 @@ public abstract class GreenPosDMIReport extends GreenPosReport {
         super();
     }
 
-    public GreenPosDMIReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
+    public GreenPosDMIReport(String vesselName, Long vesselMmsi, String vesselCallSign,
             String latitude, String longitude, String weather, String iceInformation) {
-        super(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, latitude, longitude);
+        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude);
         this.weather = weather;
         this.iceInformation = iceInformation;
     }
 
-    public GreenPosDMIReport(String vesselName, Long vesselMmsi, String vesselCallSign, String vesselMaritimeId,
+    public GreenPosDMIReport(String vesselName, Long vesselMmsi, String vesselCallSign,
             Position position, String weather, String iceInformation) {
-        super(vesselName, vesselMmsi, vesselCallSign, vesselMaritimeId, position);
+        super(vesselName, vesselMmsi, vesselCallSign, position);
         this.weather = weather;
         this.iceInformation = iceInformation;
     }

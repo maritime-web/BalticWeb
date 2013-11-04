@@ -30,8 +30,6 @@ public class Ship {
 
     private String callSign;
 
-    private String maritimeId;
-
     private Long imo;
 
     private String type;
@@ -88,14 +86,6 @@ public class Ship {
 
     public void setCallSign(String shipCallSign) {
         this.callSign = shipCallSign;
-    }
-
-    public String getMaritimeId() {
-        return maritimeId;
-    }
-
-    public void setMaritimeId(String shipMaritimeId) {
-        this.maritimeId = shipMaritimeId;
     }
 
     public Long getImo() {

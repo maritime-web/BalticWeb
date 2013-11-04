@@ -23,7 +23,7 @@ public class VesselOverview {
     private String name;
     private String type;
     private Long mmsi;
-    private String callsign;
+    private String callSign;
     private String imo;
     private boolean moored;
     private boolean inArcticWeb;
@@ -76,12 +76,12 @@ public class VesselOverview {
         this.mmsi = mmsi;
     }
 
-    public String getCallsign() {
-        return callsign;
+    public String getCallSign() {
+        return callSign;
     }
 
-    public void setCallsign(String callsign) {
-        this.callsign = callsign;
+    public void setCallSign(String callSign) {
+        this.callSign = callSign;
     }
 
     public String getImo() {

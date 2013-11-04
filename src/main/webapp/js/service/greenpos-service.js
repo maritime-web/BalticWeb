@@ -21,15 +21,12 @@
         var findReportsUrl = reportsUrl + '/list/';
 
         return {
-            getLatestReport : function(shipMaritimeId, callback) {
+            getLatestReport : function(mmsi, callback) {
                 var remoteCall = function(onSuccess) {
-                    var url = embryo.baseUrl + 'rest/greenpos/latest/' + shipMaritimeId;
+                    var url = embryo.baseUrl + 'rest/greenpos/latest/' + mmsi;
                     $http.get(url).success(onSuccess);
                 };
-
-                // last report maintained in SessionStorage as
-                // 'latestgreenpos_shipMaritimeId' -> report
-                SessionStorageService.getItem(latestGreenposKey(shipMaritimeId), callback, remoteCall);
+                SessionStorageService.getItem(latestGreenposKey(mmsi), callback, remoteCall);
             },
             get : function(id, callback) {
                 var url = reportsUrl + "/" + id;

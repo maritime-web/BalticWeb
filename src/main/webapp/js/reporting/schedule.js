@@ -48,7 +48,7 @@
                 $("#schedulePanel").css("display", "block");
             },
             hide : function() {
-                $("#schedulePanel").css("display", "hide");
+                $("#schedulePanel").css("display", "none");
                 $scope.reset();
             }
         };

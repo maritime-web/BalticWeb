@@ -20,7 +20,7 @@ $(function() {
             setupAdditionalInformationTable("#yourShipAdditionalInformation", vesselOverview, vesselDetails, "YourShip");
             if (vesselDetails.additionalInformation.routeId) {
                 embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
-                    console.log("drawing", data);
+                    console.log("Drawing router layer for your vessel", data);
                     yourShipRouteLayer.draw(data);
                 });
             }

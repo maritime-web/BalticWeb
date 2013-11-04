@@ -70,7 +70,7 @@
                 $("#routeEditPanel").css("display", "block");
             },
             hide : function() {
-                $("#routeEditPanel").css("display", "hide");
+                $("#routeEditPanel").css("display", "none");
             }
         };
 
