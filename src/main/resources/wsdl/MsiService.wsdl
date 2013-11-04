@@ -23,18 +23,6 @@
                     </xs:extension>
                 </xs:complexContent>
             </xs:complexType>
-            <xs:complexType name="msiDtoLight">
-                <xs:sequence>
-                    <xs:element minOccurs="0" name="created" type="xs:dateTime"/>
-                    <xs:element minOccurs="0" name="ENCtext" type="xs:string"/>
-                    <xs:element minOccurs="0" name="latitude" type="xs:string"/>
-                    <xs:element minOccurs="0" name="text" type="xs:string"/>
-                    <xs:element minOccurs="0" name="longitude" type="xs:string"/>
-                    <xs:element minOccurs="0" name="mainArea" type="xs:string"/>
-                    <xs:element minOccurs="0" name="subArea" type="xs:string"/>
-                    <xs:element minOccurs="0" name="updated" type="xs:dateTime"/>
-                </xs:sequence>
-            </xs:complexType>
             <xs:complexType name="msiDto">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="areaEnglish" type="xs:string"/>
@@ -71,9 +59,16 @@
                     <xs:element name="ptno" type="xs:int"/>
                 </xs:sequence>
             </xs:complexType>
-            <xs:complexType final="#all" name="msiDtoLightArray">
+            <xs:complexType name="msiDtoLight">
                 <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="item" nillable="true" type="tns:msiDtoLight"/>
+                    <xs:element minOccurs="0" name="created" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="ENCtext" type="xs:string"/>
+                    <xs:element minOccurs="0" name="latitude" type="xs:string"/>
+                    <xs:element minOccurs="0" name="text" type="xs:string"/>
+                    <xs:element minOccurs="0" name="longitude" type="xs:string"/>
+                    <xs:element minOccurs="0" name="mainArea" type="xs:string"/>
+                    <xs:element minOccurs="0" name="subArea" type="xs:string"/>
+                    <xs:element minOccurs="0" name="updated" type="xs:dateTime"/>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType final="#all" name="msiDtoArray">
@@ -81,8 +76,17 @@
                     <xs:element maxOccurs="unbounded" minOccurs="0" name="item" nillable="true" type="tns:msiDto"/>
                 </xs:sequence>
             </xs:complexType>
+            <xs:complexType final="#all" name="msiDtoLightArray">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="item" nillable="true" type="tns:msiDtoLight"/>
+                </xs:sequence>
+            </xs:complexType>
         </xs:schema>
     </wsdl:types>
+    <wsdl:message name="getActiveWarningCountry">
+        <wsdl:part name="arg0" type="xsd:string">
+        </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="getWarningAfterIdResponse">
         <wsdl:part name="return" type="ns1:msiDtoArray">
         </wsdl:part>
@@ -97,7 +101,17 @@
         <wsdl:part name="return" type="ns1:msiDtoLightArray">
         </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="getActiveWarningCountryResponse">
+        <wsdl:part name="return" type="ns1:msiDtoArray">
+        </wsdl:part>
+    </wsdl:message>
     <wsdl:portType name="MsiService">
+        <wsdl:operation name="getActiveWarningCountry">
+            <wsdl:input message="ns1:getActiveWarningCountry" name="getActiveWarningCountry">
+            </wsdl:input>
+            <wsdl:output message="ns1:getActiveWarningCountryResponse" name="getActiveWarningCountryResponse">
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="getActiveWarning">
             <wsdl:input message="ns1:getActiveWarning" name="getActiveWarning">
             </wsdl:input>

@@ -18,7 +18,7 @@ package dk.dma.embryo.msi;
 import dk.dma.configuration.Property;
 import dk.frv.enav.msi.ws.warning.MsiService;
 import dk.frv.enav.msi.ws.warning.WarningService;
-import dk.frv.msiedit.core.webservice.message.MsiDtoLight;
+import dk.frv.msiedit.core.webservice.message.MsiDto;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -31,6 +31,10 @@ public class MsiClientImpl /* implements MsiClient */ {
     @Inject
     @Property("embryo.msi.endpoint")
     String endpoint;
+
+    @Inject
+    @Property("embryo.msi.country")
+    String country;
 
     private MsiService msiService;
 
@@ -47,8 +51,8 @@ public class MsiClientImpl /* implements MsiClient */ {
     public List<MsiClient.MsiItem> getActiveWarnings() {
         List<MsiClient.MsiItem> result = new ArrayList<>();
 
-        for (MsiDtoLight mdl : msiService.getActiveWarning().getItem()) {
-            result.add(new MsiClient.MsiItem(mdl));
+        for (MsiDto md : msiService.getActiveWarningCountry(country).getItem()) {
+            result.add(new MsiClient.MsiItem(md));
         }
 
         return result;

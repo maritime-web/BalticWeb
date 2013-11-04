@@ -15,6 +15,7 @@
  */
 package dk.dma.embryo.msi;
 
+import dk.frv.msiedit.core.webservice.message.MsiDto;
 import dk.frv.msiedit.core.webservice.message.MsiDtoLight;
 
 import java.util.Date;
@@ -24,41 +25,41 @@ public interface MsiClient {
     List<MsiItem> getActiveWarnings();
 
     class MsiItem {
-        private MsiDtoLight mdl;
+        private MsiDto mdl;
 
         public Date getCreated() {
             return mdl.getCreated().toGregorianCalendar().getTime();
         }
 
         public String getENCtext() {
-            return mdl.getENCtext();
+            return mdl.getEncText();
         }
 
         public double getLatitude() {
-            return Double.parseDouble(mdl.getLatitude());
+            return mdl.getPoints().getPoint().get(0).getLatitude();
         }
 
         public double getLongitude() {
-            return Double.parseDouble(mdl.getLongitude());
+            return mdl.getPoints().getPoint().get(0).getLongitude();
         }
 
         public String getMainArea() {
-            return mdl.getMainArea();
+            return mdl.getAreaEnglish();
         }
 
         public String getSubArea() {
-            return mdl.getSubArea();
+            return mdl.getSubarea();
         }
 
         public String getText() {
-            return mdl.getText();
+            return mdl.getNavWarning();
         }
 
         public Date getUpdated() {
             return mdl.getUpdated().toGregorianCalendar().getTime();
         }
 
-        public MsiItem(MsiDtoLight mdl) {
+        public MsiItem(MsiDto mdl) {
             this.mdl = mdl;
         }
 

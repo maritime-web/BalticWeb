@@ -9,6 +9,15 @@
     </wsdl:import>
     <wsdl:binding name="WarningServiceSoapBinding" type="ns1:MsiService">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getActiveWarningCountry">
+            <soap:operation soapAction="" style="rpc"/>
+            <wsdl:input name="getActiveWarningCountry">
+                <soap:body namespace="http://message.webservice.core.msiedit.frv.dk/" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getActiveWarningCountryResponse">
+                <soap:body namespace="http://message.webservice.core.msiedit.frv.dk/" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="getActiveWarning">
             <soap:operation soapAction="" style="rpc"/>
             <wsdl:input name="getActiveWarning">
@@ -30,7 +39,7 @@
     </wsdl:binding>
     <wsdl:service name="WarningService">
         <wsdl:port binding="tns:WarningServiceSoapBinding" name="MsiServiceBeanPort">
-            <soap:address location="http://localhost/msi/ws/warning"/>
+            <soap:address location="http://msi-beta.e-navigation.net/msi/ws/warning"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
