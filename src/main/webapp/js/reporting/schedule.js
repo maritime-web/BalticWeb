@@ -18,11 +18,13 @@
     embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService) {
         var schedule;
         var loadSchedule = function() {
-            ScheduleService.getSchedule($scope.mmsi, function(ss) {
-                schedule = ss;
-                $scope.voyages = schedule.voyages.slice();
-                $scope.voyages.push({});
-            });
+            if ($scope.mmsi) {
+                ScheduleService.getSchedule($scope.mmsi, function(ss) {
+                    schedule = ss;
+                    $scope.voyages = schedule.voyages.slice();
+                    $scope.voyages.push({});
+                });
+            }
         };
 
         embryo.controllers.schedule = {

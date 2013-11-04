@@ -10,7 +10,7 @@
 (function() {
     "use strict";
 
-    var url = 'rest/routeUpload/single/';
+    var url = embryo.baseUrl + 'rest/routeUpload/single/';
 
     var module = angular.module('embryo.routeUpload', [ 'embryo.scheduleService','embryo.routeService',  'blueimp.fileupload' ]);
 
@@ -101,8 +101,8 @@
 
         $scope.$on('fileuploadsubmit', function(e, data) {
             $scope.message = null;
-
-            if (typeof $scope.voyageInfo !== "undefined") {
+			
+            if ($scope.voyageInfo != null) {
                 data.formData = {
                     voyageId : $scope.voyageInfo.id,
                     active : $scope.activate

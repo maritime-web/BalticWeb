@@ -6,9 +6,10 @@ $(function() {
     addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
 
     function updateBox(error, vesselOverview, vesselDetails) {
+        // console.log("updateBox", error, vesselOverview, vesselDetails);
         if (!error) {
             yourShip = vesselOverview;
-            embryo.vessel.setMarkedVessel(vesselOverview.id);
+            embryo.vessel.setMarkedVessel(vesselOverview.mmsi);
 
             $("a[href=#vcpYourShip]").html("Your Vessel - "+vesselDetails.ais.name);
             $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(vesselDetails));
@@ -20,7 +21,7 @@ $(function() {
             setupAdditionalInformationTable("#yourShipAdditionalInformation", vesselOverview, vesselDetails, "YourShip");
             if (vesselDetails.additionalInformation.routeId) {
                 embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
-                    console.log("Drawing router layer for your vessel", data);
+                    // console.log("Drawing router layer for your vessel", data);
                     yourShipRouteLayer.draw(data);
                 });
             }
@@ -38,6 +39,6 @@ $(function() {
     });
 
     $("#zoomToYourShip").click(function() {
-        embryo.vessel.goToVesselLocation(embryo.vessel.lookupVessel(yourShip.id));
+        embryo.vessel.goToVesselLocation(embryo.vessel.lookupVessel(yourShip.mmsi));
     });
 });

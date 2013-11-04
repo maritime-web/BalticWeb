@@ -1,38 +1,38 @@
-var imageForVessel = function(vo) {
-    var colorName;
-
-    switch (vo.type) {
-		case "0" : colorName = "blue"; break;
-		case "1" : colorName = "gray"; break;
-		case "2" : colorName = "green"; break;
-		case "3" : colorName = "orange"; break;
-		case "4" : colorName = "purple"; break;
-		case "5" : colorName = "red"; break;
-		case "6" : colorName = "turquoise"; break;
-		case "7" : colorName = "yellow"; break;
-		default : colorName = "unknown";
-	}
-
-	if (vo.moored){
-		return {
-		    name: "vessel_" + colorName + "_moored.png",
-		    width: 12,
-		    height: 12,
-		    xOffset: -6,
-		    yOffset: -6
-		}
-	} else {
-	    return {
-    		name: "vessel_" + colorName + ".png",
-    		width: 20,
-	    	height: 10,
-	    	xOffset: -10,
-	    	yOffset: -5
-	    }
-	}
-}
-
 function VesselLayer() {
+    function imageForVessel(vo) {
+        var colorName;
+
+        switch (vo.type) {
+            case "0" : colorName = "blue"; break;
+            case "1" : colorName = "gray"; break;
+            case "2" : colorName = "green"; break;
+            case "3" : colorName = "orange"; break;
+            case "4" : colorName = "purple"; break;
+            case "5" : colorName = "red"; break;
+            case "6" : colorName = "turquoise"; break;
+            case "7" : colorName = "yellow"; break;
+            default : colorName = "unknown";
+        }
+
+        if (vo.moored){
+            return {
+                name: "vessel_" + colorName + "_moored.png",
+                width: 12,
+                height: 12,
+                xOffset: -6,
+                yOffset: -6
+            }
+        } else {
+            return {
+                name: "vessel_" + colorName + ".png",
+                width: 20,
+                height: 10,
+                xOffset: -10,
+                yOffset: -5
+            }
+        }
+    }
+
     this.init = function() {
         this.zoomLevels = [4, 6];
 
@@ -85,7 +85,7 @@ function VesselLayer() {
 
         this.layers.selection = new OpenLayers.Layer.Vector("Selection", {
             styleMap : new OpenLayers.StyleMap({
-                "default" : {
+                "default" : new OpenLayers.Style({
                     externalGraphic : "${image}",
                     graphicWidth : "${imageWidth}",
                     graphicHeight : "${imageHeight}",
@@ -93,11 +93,24 @@ function VesselLayer() {
                     graphicXOffset : "${imageXOffset}",
                     graphicOpacity : "${transparency}",
                     rotation : "${angle}"
-                },
-                "select" : {
+                }, { context: this.context }),
+                "select" : new OpenLayers.Style({
                     cursor : "crosshair",
                     externalGraphic : "${image}"
-                }
+                }, { context: this.context })
+            }, { context: this.context })
+        });
+
+        this.layers.icon = new OpenLayers.Layer.Vector("Icons", {
+            styleMap : new OpenLayers.StyleMap({
+                "default" : new OpenLayers.Style({
+                    externalGraphic : "${image}",
+                    graphicWidth : "${imageWidth}",
+                    graphicHeight : "${imageHeight}",
+                    graphicYOffset : "${imageYOffset}",
+                    graphicXOffset : "${imageXOffset}",
+                    graphicOpacity : "${transparency}"
+                }, { context: this.context })
             })
         });
 
@@ -186,7 +199,7 @@ function VesselLayer() {
         markerLayer.removeAllFeatures();
 
         $.each(vessels, function(k, v) {
-            if (that.markedVesselId == v.id) {
+            if (that.markedVesselId == v.mmsi) {
                 markerLayer.addFeatures([
                     new OpenLayers.Feature.Vector(
                         embryo.map.createPoint(v.x, v.y), {
@@ -206,6 +219,30 @@ function VesselLayer() {
         });
 
         markerLayer.redraw();
+
+        var iconLayer = this.layers.icon;
+
+        iconLayer.removeAllFeatures();
+
+        $.each(vessels, function(k, v) {
+            if (v.inArcticWeb) {
+                iconLayer.addFeatures([
+                    new OpenLayers.Feature.Vector(
+                        embryo.map.createPoint(v.x, v.y), {
+                            id : -1,
+                            angle : 0,
+                            image : "img/aw-logo.png",
+                            imageWidth : function() { return 32 * context.vesselSize() },
+                            imageHeight : function() { return 16 * context.vesselSize() },
+                            imageYOffset : function() { return 8 * context.vesselSize() },
+                            imageXOffset : function() { return -16 * context.vesselSize() },
+                            type : "marker"
+                        })
+                ]);
+            }
+        });
+
+        iconLayer.redraw();
 
     }
 }
