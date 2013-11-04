@@ -10,9 +10,6 @@
 (function() {
     "use strict";
 
-    var voyageUrl = embryo.baseUrl + 'rest/voyage/', voyageTypeaheadUrl = embryo.baseUrl + 'rest/voyage/typeahead/', voyageShortUrl = embryo.baseUrl
-            + 'rest/voyage/short/';
-
     var scheduleUrl = embryo.baseUrl + 'rest/schedule/';
 
     var scheduleServiceModule = angular.module('embryo.scheduleService', [ 'embryo.storageServices' ]);
@@ -22,15 +19,15 @@
         var activeVoyage = 'voyage_active';
 
         return {
-            getYourActive : function(callback) {
-                var voyageStr = sessionStorage.getItem(activeVoyage);
+            getYourActive : function(mmsi, callback) {
+                var voyageStr = sessionStorage.getItem(activeVoyage+mmsi);
                 if (!voyageStr) {
                     ShipService.getYourShip(function(yourShip) {
                         var remoteCall = function(onSuccess) {
-                            $http.get(voyageUrl + 'active/' + yourShip.mmsi).success(onSuccess);
+                            $http.get(scheduleUrl + 'active/' + mmsi).success(onSuccess);
                         };
 
-                        SessionStorageService.getItem(activeVoyage, callback, remoteCall);
+                        SessionStorageService.getItem(activeVoyage+mmsi, callback, remoteCall);
                     });
                 } else {
                     callback(JSON.parse(voyageStr));
@@ -38,12 +35,9 @@
             },
             getSchedule : function(mmsi, callback) {
                 var remoteCall = function(onSuccess) {
-                    $http.get(scheduleUrl + 'overview/' + mmsi).success(onSuccess);
+                    $http.get(scheduleUrl + mmsi).success(onSuccess);
                 };
                 SessionStorageService.getItem(currentSchedule, callback, remoteCall);
-            },
-            getVoyages : function(mmsi, callback) {
-                $http.get(voyageTypeaheadUrl + mmsi).success(callback);
             },
             getVoyageInfo : function(mmsi, voyageId, callback) {
                 function findVoyageIndex(voyageId, schedule) {

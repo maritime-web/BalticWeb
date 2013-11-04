@@ -33,13 +33,12 @@ import dk.dma.embryo.rest.ScheduleRestService;
 import dk.dma.embryo.rest.ShapeFileService;
 import dk.dma.embryo.rest.ShipRestService;
 import dk.dma.embryo.rest.VesselRestService;
-import dk.dma.embryo.rest.VoyageRestService;
 
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
         return new HashSet<Class<?>>(Arrays.asList(RouteRestService.class, RouteUploadService.class,
-                VoyageRestService.class, ShapeFileService.class, GreenPosRestService.class, ShipRestService.class,
+                ShapeFileService.class, GreenPosRestService.class, ShipRestService.class,
                 BerthRestService.class, AuthenticationService.class, TestDataRestService.class,
                 IceObservationRestService.class, MsiRestService.class, MetocRestService.class, VesselRestService.class,
                 ScheduleRestService.class));

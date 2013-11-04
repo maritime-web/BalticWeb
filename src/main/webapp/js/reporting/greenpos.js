@@ -10,8 +10,7 @@
 (function() {
     "use strict";
 
-    var greenposModule = angular.module('embryo.greenpos', [ 'embryo.voyageService', 'embryo.greenposService',
-            'embryo.shipService' ]);
+    var greenposModule = angular.module('embryo.greenpos', [ 'embryo.scheduleService', 'embryo.greenposService', ]);
 
     /*
      * Inspired by http://jsfiddle.net/zbjLh/2/
@@ -52,8 +51,8 @@
         addLayerToMap("vessel", layer, embryo.map);
     })
 
-    embryo.GreenPosCtrl = function($scope, $routeParams, ShipService, VoyageService, GreenposService, AisRestService,
-            $timeout, RouteService) {
+    embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, $timeout,
+            RouteService) {
         $scope.editable = true;
 
         $scope.reportTypes = [ {
@@ -206,13 +205,13 @@
             $scope.report.callSign = c.vesselOverview.callSign;
             $scope.report.vesselName = c.vesselOverview.name;
             $scope.hasActiveRoute = (c.vesselDetails.additionalInformation.routeId != null);
-            
+
             $scope.activeRouteId = c.vesselDetails.additionalInformation.routeId;
 
             $scope.$apply();
 
             $scope.$apply(function() {
-                VoyageService.getYourActive(c.vesselOverview.mmsi, function(voyage) {
+                ScheduleService.getYourActive(c.vesselOverview.mmsi, function(voyage) {
                     $scope.hasActiveRoute = voyage && voyage.berthName ? true : false;
                     $scope.report.destination = voyage.berthName;
                     $scope.report.etaOfArrival = voyage.arrival;
