@@ -164,10 +164,7 @@
                 $scope.message = "GreenPos report successfully submitted. ";
 
                 if($scope.deactivate){
-                    console.log($scope.deactivate);
                     VoyageService.getYourActive(function(voyage) {
-                        console.log($scope.deactivate);
-
                         RouteService.setActiveRoute(voyage.routeId, false, function(){
                             $scope.message += "Active route successsfully deactivated. ";
                         });
@@ -191,13 +188,11 @@
         };
 
         this.hide = function() {
-            console.log("Hiding greenpos")
             $("#greenposReportPanel").css("display", "none");
             layer.clear();
         }
 
         this.show = function(c) {
-            console.log("Showing greenpos")
             GreenposService.getLatestReport(c.vesselOverview.mmsi, function(latestReport) {
                 evalGreenpos(latestReport);
                 $("#greenposReportPanel").css("display", "block");

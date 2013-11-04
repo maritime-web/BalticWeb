@@ -122,7 +122,7 @@
                     $rootScope.$broadcast('yourshipDataUpdated');
                 });
             },
-            saveScedule : function(schedule, callback) {
+            saveSchedule : function(schedule, callback) {
                 $http.put(scheduleUrl + 'save', schedule).success(function() {
                     SessionStorageService.removeItem(currentPlan);
                     callback();

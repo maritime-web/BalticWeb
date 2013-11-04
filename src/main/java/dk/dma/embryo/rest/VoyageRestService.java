@@ -86,7 +86,7 @@ public class VoyageRestService {
 
     
     @GET
-    @Path("/active/{maritimeVesselId}")
+    @Path("/active/{mmsi}")
     @Produces("application/json")
     public dk.dma.embryo.rest.json.Voyage getActive(@PathParam("mmsi") Long mmsi) {
         logger.trace("getActive({})", mmsi);
