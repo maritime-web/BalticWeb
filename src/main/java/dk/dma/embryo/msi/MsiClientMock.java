@@ -103,12 +103,21 @@ public class MsiClientMock implements MsiClient {
             return encText;
         }
 
-        public double getLatitude() {
-            return latitude;
+        public List<Point> getPoints() {
+            List<Point> result = new ArrayList<>();
+            result.add(new Point(null) {
+                public double getLatitude() {
+                    return latitude;
+                }
+                public double getLongitude() {
+                    return longitude;
+                }
+            });
+            return result;
         }
 
-        public double getLongitude() {
-            return longitude;
+        public Type getType() {
+            return Type.Point;
         }
 
         public String getMainArea() {

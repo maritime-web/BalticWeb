@@ -16,59 +16,86 @@
 package dk.dma.embryo.msi;
 
 import dk.frv.msiedit.core.webservice.message.MsiDto;
-import dk.frv.msiedit.core.webservice.message.MsiDtoLight;
+import dk.frv.msiedit.core.webservice.message.PointDto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public interface MsiClient {
     List<MsiItem> getActiveWarnings();
 
-    class MsiItem {
-        private MsiDto mdl;
+    public enum Type {Point, Polygon, Polyline, Points}
 
-        public Date getCreated() {
-            return mdl.getCreated().toGregorianCalendar().getTime();
-        }
+    class Point {
+        private PointDto pd;
 
-        public String getENCtext() {
-            return mdl.getEncText();
-        }
-
-        public double getLatitude() {
-            return mdl.getPoints().getPoint().get(0).getLatitude();
+        public Point(PointDto pd) {
+            this.pd = pd;
         }
 
         public double getLongitude() {
-            return mdl.getPoints().getPoint().get(0).getLongitude();
+            return pd.getLongitude();
+        }
+
+        public double getLatitude() {
+            return pd.getLatitude();
+        }
+
+        public String toString() {
+            return "(Latitude: " + getLatitude() + " Longitude: " + getLongitude() + ")";
+        }
+    }
+
+    class MsiItem {
+        private MsiDto md;
+
+        public Type getType() {
+            return Type.valueOf(md.getLocationType());
+        }
+
+        public Date getCreated() {
+            return md.getCreated().toGregorianCalendar().getTime();
+        }
+
+        public String getENCtext() {
+            return md.getEncText();
+        }
+
+        public List<Point> getPoints() {
+            List<Point> result = new ArrayList<>();
+            for (PointDto pd : md.getPoints().getPoint()) {
+                result.add(new Point(pd));
+            }
+            return result;
         }
 
         public String getMainArea() {
-            return mdl.getAreaEnglish();
+            return md.getAreaEnglish();
         }
 
         public String getSubArea() {
-            return mdl.getSubarea();
+            return md.getSubarea();
         }
 
         public String getText() {
-            return mdl.getNavWarning();
+            return md.getNavWarning();
         }
 
         public Date getUpdated() {
-            return mdl.getUpdated().toGregorianCalendar().getTime();
+            return md.getUpdated().toGregorianCalendar().getTime();
         }
 
-        public MsiItem(MsiDto mdl) {
-            this.mdl = mdl;
+        public MsiItem(MsiDto md) {
+            this.md = md;
         }
 
         public String toString() {
             return getClass().getName() +
                     "\n- created: " + getCreated() +
+                    "\n- Type: " + getType() +
                     "\n- ENCText: " + getENCtext() +
-                    "\n- Latitude: " + getLatitude() +
-                    "\n- Longitude: " + getLongitude() +
+                    "\n- Points: " + getPoints() +
                     "\n- MainArea: " + getMainArea() +
                     "\n- SubArea: " + getSubArea() +
                     "\n- Text: " + getText() +

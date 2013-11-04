@@ -78,9 +78,13 @@ function MsiLayer() {
                 msi : data[i]
             }
 
-            var geom = this.map.createPoint(data[i].longitude, data[i].latitude);
+            switch (data[i].type) {
+                case "Point":
+                    var geom = this.map.createPoint(data[i].points[0].longitude, data[i].points[0].latitude);
+                    features.push(new OpenLayers.Feature.Vector(geom, attr));
+                    break;
+            }
 
-            features.push(new OpenLayers.Feature.Vector(geom, attr));
         }
 
         this.layers.msi.addFeatures(features);
