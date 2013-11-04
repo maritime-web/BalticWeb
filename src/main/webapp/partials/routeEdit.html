@@ -15,7 +15,7 @@
 					<div class="control-group">
 						<label class="control-label" for="name">Name</label>
 						<div class="controls">
-							<input ng-model="route.name" type="text" id="name" name="name" class="input-large" required /> <span
+							<input x-ng-model="route.name" type="text" id="name" name="name" class="input-large" required /> <span
 								x-ng-show="routeEditForm.name.$error.required && routeEditForm.name.$dirty" class="msg-invalid">Value
 								required</span>
 						</div>
@@ -53,21 +53,26 @@
 						<th>Turn radius (nm)</th>
 						<th>Heading</th>
 						<th>Speed (kn)</th>
+						<th></th>
+						<th></th>
 					</tr>
 				</thead>
 
 				<tbody>
-					<tr name="wayPointsNestedForm" ng-form ng-repeat="wp in route.wps">
-						<td><input ng-model="wp.name" class="input-medium" type="text" required /></td>
-						<td><input ng-model="wp.latitude" class="input-large" type="text" required /></td>
-						<td><input ng-model="wp.longitude" class="input-large" type="text" required /></td>
-						<td><input ng-model="wp.turnRad" class="input-medium" type="text" required /></td>
+					<tr name="wayPointsNestedForm" x-ng-form x-ng-repeat="wp in waypoints">
+						<td><input x-ng-model="wp.name" class="input-medium" type="text" x-ng-required="!$last" /></td>
+						<td><input x-ng-model="wp.latitude" class="input-medium" type="text" x-ng-required="!$last" /></td>
+						<td><input x-ng-model="wp.longitude" class="input-medium" type="text" x-ng-required="!$last" /></td>
+						<td><input x-ng-model="wp.turnRad" class="input-small" type="text" x-ng-required="!$last" /></td>
 						<td><select
-							name="heading" x-ng-model="wp.heading" class="input-large input-heading" required>
+							name="heading" x-ng-model="wp.heading" class="input-large input-heading" x-ng-required="!$last">
 							<option label="Rhumb line" value="RL"></option>
 							<option label="Great circle" value="GC"></option>
 						</select></td>
-						<td><input ng-model="wp.speed" class="input-large" type="text" required /></td>
+						<td><input x-ng-model="wp.speed" class="input-large" type="text" x-ng-required="!$last" /></td>
+						<td><button x-ng-show="!$last" type="button" class="btn btn-danger" x-ng-click="remove($index)">Delete</button></td>
+						<td><button x-ng-show="!$last" type="button" class="btn" x-ng-click="add($index)">Add below</button></td>
+						
 					</tr>
 				</tbody>
 			</table>
