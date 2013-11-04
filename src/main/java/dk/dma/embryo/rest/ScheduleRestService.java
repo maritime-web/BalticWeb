@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.embryo.domain.Schedule;
-import dk.dma.embryo.domain.Voyage;
 
 @Path("/schedule")
 public class ScheduleRestService {
@@ -56,24 +55,6 @@ public class ScheduleRestService {
         }
 
         logger.debug("getScheduleView({}) : {}", mmsi, result);
-        return result;
-    }
-    
-    @GET
-    @Path("/active/{mmsi}")
-    @Produces("application/json")
-    public dk.dma.embryo.rest.json.Voyage getActive(@PathParam("mmsi") Long mmsi) {
-        logger.trace("getActive({})", mmsi);
-
-        Voyage voyage = scheduleService.getActiveVoyage(""+mmsi);
-
-        dk.dma.embryo.rest.json.Voyage result = null;
-
-        if (voyage != null) {
-            result = voyage.toJsonModel();
-        }
-
-        logger.debug("getActive({}) : {}", mmsi, result);
         return result;
     }
 

@@ -51,8 +51,7 @@
         addLayerToMap("vessel", layer, embryo.map);
     })
 
-    embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, $timeout,
-            RouteService) {
+    embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, $timeout, RouteService) {
         $scope.editable = true;
 
         $scope.reportTypes = [ {
@@ -211,22 +210,21 @@
             $scope.$apply();
 
             $scope.$apply(function() {
-                ScheduleService.getYourActive(c.vesselOverview.mmsi, function(voyage) {
-                    $scope.hasActiveRoute = voyage && voyage.berthName ? true : false;
-                    $scope.report.destination = voyage.berthName;
-                    $scope.report.etaOfArrival = voyage.arrival;
-                    if (voyage.crew) {
-                        $scope.report.personsOnBoard = voyage.crew;
-                    }
-                    if (voyage.passengers) {
-                        if ($scope.report.personsOnBoard) {
-                            $scope.report.personsOnBoard += voyage.passengers;
-                        } else {
-                            $scope.report.personsOnBoard = voyage.passengers;
-                        }
-                    }
-                });
-
+                ScheduleService.getActiveVoyage(c.vesselOverview.mmsi, c.vesselDetails.additionalInformation.routeId,
+                        function(voyageInfo) {
+                            $scope.report.destination = voyageInfo.des;
+                            $scope.report.etaOfArrival = voyageInfo.desEta;
+                            if (voyageInfo.crew) {
+                                $scope.report.personsOnBoard = voyageInfo.crew;
+                            }
+                            if (voyageInfo.passengers) {
+                                if ($scope.report.personsOnBoard) {
+                                    $scope.report.personsOnBoard += voyageInfo.passengers;
+                                } else {
+                                    $scope.report.personsOnBoard = voyageInfo.passengers;
+                                }
+                            }
+                        });
             });
         }
 
