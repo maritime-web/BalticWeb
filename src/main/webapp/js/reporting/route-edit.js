@@ -129,7 +129,7 @@
                 return false;
             }
 
-            if (!($scope.waypoints && $scope.waypoints.length >= 1)) {
+            if (!($scope.waypoints && $scope.waypoints.length >= 3)) {
                 return false;
             }
 
