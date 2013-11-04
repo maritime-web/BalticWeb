@@ -12,13 +12,13 @@
 
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
-    var scheduleModule = angular.module('embryo.schedule', [ 'embryo.voyageService', 'embryo.routeService',
+    var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
             'siyfion.typeahead' ]);
 
-    embryo.ScheduleCtrl = function($scope, $rootScope, VesselService, VoyageService, RouteService, $location) {
+    embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService) {
         var schedule;
-        var loadVoyage = function() {
-            VoyageService.getSchedule($scope.mmsi, function(ss) {
+        var loadSchedule = function() {
+            ScheduleService.getSchedule($scope.mmsi, function(ss) {
                 schedule = ss;
                 $scope.voyages = schedule.voyages.slice();
                 $scope.voyages.push({});
@@ -42,7 +42,7 @@
             show : function(context) {
                 $scope.mmsi = context.vesselDetails.mmsi;
                 $scope.activeRouteId = context.vesselDetails.additionalInformation.routeId;
-                loadVoyage();
+                loadSchedule();
                 $scope.$apply(function() {
                 });
                 $("#schedulePanel").css("display", "block");
@@ -140,7 +140,7 @@
         $scope.reset = function() {
             $scope.message = null;
             $scope.alertMessage = null;
-            loadVoyage();
+            loadSchedule();
         };
         $scope.save = function() {
             var index;
@@ -151,10 +151,9 @@
                 delete schedule.voyages[index].route;
             }
 
-            VoyageService.saveSchedule(schedule, function() {
-                $rootScope.$broadcast('yourshipDataUpdated');
+            ScheduleService.save(schedule, function() {
                 $scope.message = "Schedule saved successfully";
-                loadVoyage();
+                loadSchedule();
             });
         };
     };

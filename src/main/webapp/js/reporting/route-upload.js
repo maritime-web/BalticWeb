@@ -12,7 +12,7 @@
 
     var url = 'rest/routeUpload/single/';
 
-    var module = angular.module('embryo.routeUpload', [ 'embryo.voyageService', 'ui.bootstrap', 'blueimp.fileupload' ]);
+    var module = angular.module('embryo.routeUpload', [ 'embryo.scheduleService','embryo.routeService',  'blueimp.fileupload' ]);
 
     module.config([ '$httpProvider', 'fileUploadProvider', function($httpProvider, fileUploadProvider) {
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
@@ -35,10 +35,10 @@
         }
     } ]);
 
-    embryo.RouteUploadCtrl = function($scope, VesselService, VoyageService, RouteService) {
+    embryo.RouteUploadCtrl = function($scope, VesselService, ScheduleService, RouteService) {
         function initUpload() {
-            if ($scope.mmsi, $scope.voyageId) {
-                VoyageService.getVoyageInfo($scope.mmsi, $scope.voyageId, function(voyageInfo) {
+            if ($scope.mmsi && $scope.voyageId) {
+                ScheduleService.getVoyageInfo($scope.mmsi, $scope.voyageId, function(voyageInfo) {
                     $scope.voyageInfo = voyageInfo;
                 });
             }
@@ -55,7 +55,6 @@
             },
             hide : function() {
                 $("#routeUploadPanel").css("display", "none");
-                $scope.reset();
             }
         };
 
@@ -70,8 +69,6 @@
                 $.each(data.result.files, function(index, file) {
                     $scope.message = "Uploaded route file '" + file.name + "'";
                     $scope.uploadedFile = file;
-
-                    console.log(file);
 
                     if ($scope.activate) {
                         VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId",
