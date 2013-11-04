@@ -17,7 +17,12 @@ package dk.dma.arcticweb.service;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.embryo.domain.*;
+import dk.dma.embryo.domain.GreenPosDeviationReport;
+import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenPosSailingPlanReport;
+import dk.dma.embryo.domain.GreenposSearch;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
 import org.joda.time.LocalDateTime;
