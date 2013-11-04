@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
 
+import dk.dma.embryo.rest.util.DateTimeConverter;
 import dk.dma.enav.model.voyage.Waypoint;
 
 @Entity
@@ -82,9 +83,14 @@ public class Route extends BaseEntity<Long> {
     }
 
     public static Route fromJsonModel(dk.dma.embryo.rest.json.Route from) {
+        
+        LocalDateTime departure = null; 
+        if(from.getEtaDep()!= null && from.getEtaDep().length() > 0){
+            departure = DateTimeConverter.getDateTimeConverter().toObject(from.getEtaDep());
+        }
+
         Route route = new Route(from.getId(), from.getName(), from.getDep(), from.getDes());
-        route.setEtaOfArrival(from.getEtaDep() == null ? null : LocalDateTime.fromDateFields(from
-                .getEtaDep()));
+        route.setEtaOfDeparture(departure);
 
         for (dk.dma.embryo.rest.json.Waypoint wayPoint : from.getWps()) {
             route.addWayPoint(WayPoint.fromJsonModel(wayPoint));
@@ -94,12 +100,16 @@ public class Route extends BaseEntity<Long> {
     }
 
     public dk.dma.embryo.rest.json.Route toJsonModel() {
+        String departure = null;
+        if(this.getEtaOfDeparture()!= null){
+            departure = DateTimeConverter.getDateTimeConverter().toString(this.getEtaOfDeparture());
+        }
+        
         dk.dma.embryo.rest.json.Route toRoute = new dk.dma.embryo.rest.json.Route(this.enavId);
         toRoute.setName(this.name);
         toRoute.setDep(this.origin);
         toRoute.setDes(this.destination);
-        toRoute.setEtaDep(getEtaOfDeparture() == null ? null : getEtaOfDeparture().toDate());
-
+        toRoute.setEtaDep(departure);
         for (WayPoint wp : this.getWayPoints()) {
             toRoute.getWps().add(wp.toJsonModel());
         }
