@@ -85,7 +85,7 @@ function VesselLayer() {
 
         this.layers.selection = new OpenLayers.Layer.Vector("Selection", {
             styleMap : new OpenLayers.StyleMap({
-                "default" : {
+                "default" : new OpenLayers.Style({
                     externalGraphic : "${image}",
                     graphicWidth : "${imageWidth}",
                     graphicHeight : "${imageHeight}",
@@ -93,11 +93,24 @@ function VesselLayer() {
                     graphicXOffset : "${imageXOffset}",
                     graphicOpacity : "${transparency}",
                     rotation : "${angle}"
-                },
-                "select" : {
+                }, { context: this.context }),
+                "select" : new OpenLayers.Style({
                     cursor : "crosshair",
                     externalGraphic : "${image}"
-                }
+                }, { context: this.context })
+            }, { context: this.context })
+        });
+
+        this.layers.icon = new OpenLayers.Layer.Vector("Icons", {
+            styleMap : new OpenLayers.StyleMap({
+                "default" : new OpenLayers.Style({
+                    externalGraphic : "${image}",
+                    graphicWidth : "${imageWidth}",
+                    graphicHeight : "${imageHeight}",
+                    graphicYOffset : "${imageYOffset}",
+                    graphicXOffset : "${imageXOffset}",
+                    graphicOpacity : "${transparency}"
+                }, { context: this.context })
             })
         });
 
@@ -206,6 +219,30 @@ function VesselLayer() {
         });
 
         markerLayer.redraw();
+
+        var iconLayer = this.layers.icon;
+
+        iconLayer.removeAllFeatures();
+
+        $.each(vessels, function(k, v) {
+            if (v.inArcticWeb) {
+                iconLayer.addFeatures([
+                    new OpenLayers.Feature.Vector(
+                        embryo.map.createPoint(v.x, v.y), {
+                            id : -1,
+                            angle : 0,
+                            image : "img/aw-logo.png",
+                            imageWidth : function() { return 32 * context.vesselSize() },
+                            imageHeight : function() { return 16 * context.vesselSize() },
+                            imageYOffset : function() { return 8 * context.vesselSize() },
+                            imageXOffset : function() { return -16 * context.vesselSize() },
+                            type : "marker"
+                        })
+                ]);
+            }
+        });
+
+        iconLayer.redraw();
 
     }
 }
