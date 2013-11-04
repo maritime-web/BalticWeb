@@ -14,21 +14,19 @@
 
     var scheduleServiceModule = angular.module('embryo.scheduleService', [ 'embryo.storageServices' ]);
 
-    scheduleServiceModule.factory('ScheduleService', function($http, ShipService, SessionStorageService) {
+    scheduleServiceModule.factory('ScheduleService', function($http, SessionStorageService) {
         var currentSchedule = 'schedule_current';
         var activeVoyage = 'voyage_active';
 
         return {
             getYourActive : function(mmsi, callback) {
-                var voyageStr = sessionStorage.getItem(activeVoyage+mmsi);
+                var voyageStr = sessionStorage.getItem(activeVoyage + mmsi);
                 if (!voyageStr) {
-                    ShipService.getYourShip(function(yourShip) {
-                        var remoteCall = function(onSuccess) {
-                            $http.get(scheduleUrl + 'active/' + mmsi).success(onSuccess);
-                        };
+                    var remoteCall = function(onSuccess) {
+                        $http.get(scheduleUrl + 'active/' + mmsi).success(onSuccess);
+                    };
 
-                        SessionStorageService.getItem(activeVoyage+mmsi, callback, remoteCall);
-                    });
+                    SessionStorageService.getItem(activeVoyage + mmsi, callback, remoteCall);
                 } else {
                     callback(JSON.parse(voyageStr));
                 }
@@ -41,7 +39,7 @@
             },
             getVoyageInfo : function(mmsi, voyageId, callback) {
                 function findVoyageIndex(voyageId, schedule) {
-                    for (var index = 0; index < schedule.voyages.length; index++) {
+                    for ( var index = 0; index < schedule.voyages.length; index++) {
                         if (schedule.voyages[index].maritimeId === voyageId) {
                             return index;
                         }
@@ -54,7 +52,7 @@
                         dep : schecule.voyages[index].berthName,
                         depEta : schecule.voyages[index].departure,
                     };
-                    if( index < schecule.voyages.length - 1){
+                    if (index < schecule.voyages.length - 1) {
                         result.des = schecule.voyages[index + 1].berthName;
                         result.desEta = schecule.voyages[index + 1].arrival;
                     }

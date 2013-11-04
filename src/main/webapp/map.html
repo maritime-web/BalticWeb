@@ -58,7 +58,6 @@
 <script src="js/menu.js" defer="defer" type="text/javascript"></script>
 
 <script src="js/service/storage-services.js" defer="defer"></script>
-<script src="js/service/ship-service.js" defer="defer"></script>
 <script src="js/service/route-service.js" defer="defer"></script>
 <script src="js/service/schedule-service.js" defer="defer"></script>
 <script src="js/service/greenpos-service.js" defer="defer"></script>
@@ -100,7 +99,7 @@
 <!-- endbuild -->
 
 <script defer="defer" type="text/javascript">
-    angular.module('embryo.map', [ 'embryo.shipService', 'embryo.routeService',
+    angular.module('embryo.map', [ 'embryo.routeService',
             'embryo.greenpos', 'embryo.metoc', 'embryo.vessel', 'embryo.ice', 'embryo.msi',
             'embryo.shipInformation', 'embryo.routeUpload' , 'embryo.schedule']);
 </script>
