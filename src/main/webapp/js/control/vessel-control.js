@@ -41,6 +41,7 @@ $(function() {
 
     embryo.vessel.setMarkedVessel = function(markedVesselId) {
         vesselLayer.markedVesselId = markedVesselId;
+        vesselLayer.draw(vessels);
     }
 
     var selectedId = null;

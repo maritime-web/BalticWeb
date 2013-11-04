@@ -186,7 +186,7 @@ function VesselLayer() {
         markerLayer.removeAllFeatures();
 
         $.each(vessels, function(k, v) {
-            if (that.markedVesselId == v.id) {
+            if (that.markedVesselId == v.mmsi) {
                 markerLayer.addFeatures([
                     new OpenLayers.Feature.Vector(
                         embryo.map.createPoint(v.x, v.y), {

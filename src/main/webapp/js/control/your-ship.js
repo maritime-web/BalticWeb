@@ -9,7 +9,7 @@ $(function() {
         // console.log("updateBox", error, vesselOverview, vesselDetails);
         if (!error) {
             yourShip = vesselOverview;
-            embryo.vessel.setMarkedVessel(vesselOverview.id);
+            embryo.vessel.setMarkedVessel(vesselOverview.mmsi);
 
             $("a[href=#vcpYourShip]").html("Your Vessel - "+vesselDetails.ais.name);
             $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(vesselDetails));
