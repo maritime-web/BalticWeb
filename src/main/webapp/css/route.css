@@ -2,6 +2,10 @@
 
 
 /**Route Edit**/
+#routeEdit{
+	min-width:870px;
+}
+
 #routeEdit .input-heading{
 	width:100px;
 }
@@ -9,6 +13,7 @@
 #routeEdit .table{
 	margin-top:30px;
 }
+
 
 
 /**Route Upload**/
