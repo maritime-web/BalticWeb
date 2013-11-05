@@ -158,7 +158,7 @@ public class VesselRestService {
 
         if (vessel != null) {
             route = scheduleService.getActiveRoute(mmsi);
-            details = vessel.toJsonModel2();
+            details = vessel.toJsonModel();
             details.getAis().putAll(result);
         } else {
             details = new VesselDetails();
@@ -180,6 +180,6 @@ public class VesselRestService {
     @GZIP
     public void saveDetails(VesselDetails details) {
         logger.info("save({})", details);
-        vesselService.save(Vessel.toJsonModel2(details));
+        vesselService.save(Vessel.fromJsonModel(details));
     }
 }

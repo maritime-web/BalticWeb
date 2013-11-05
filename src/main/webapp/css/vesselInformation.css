@@ -1,0 +1,13 @@
+
+
+#vesselInformation{
+	max-width:600px;
+}
+
+#vesselInformation form{
+	margin-top:20px;
+}
+
+#vesselInformation .txt{
+	padding-top:5px;
+}
