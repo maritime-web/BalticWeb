@@ -109,7 +109,15 @@ function VesselLayer() {
                     graphicHeight : "${imageHeight}",
                     graphicYOffset : "${imageYOffset}",
                     graphicXOffset : "${imageXOffset}",
-                    graphicOpacity : "${transparency}"
+                    graphicOpacity : "${transparency}" /*,
+                    fontColor: "#000",
+                    fontSize: "10px",
+                    fontOpacity: 1,
+                    fontFamily: "Courier New, monospace",
+                    fontWeight: "bold",
+                    label: "${label}",
+                    labelOutlineWidth : 0,
+                    labelYOffset: 16 */
                 }, { context: this.context })
             })
         });

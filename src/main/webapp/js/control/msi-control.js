@@ -45,6 +45,11 @@ $(function() {
                         case "Point":
                             embryo.map.setCenter(msi.points[0].longitude, msi.points[0].latitude, 8);
                             break;
+                        case "Points":
+                        case "Polygon":
+                        case "Polyline":
+                            embryo.map.setCenter(msi.points[0].longitude, msi.points[0].latitude, 8);
+                            break;
                     }
 
                 });

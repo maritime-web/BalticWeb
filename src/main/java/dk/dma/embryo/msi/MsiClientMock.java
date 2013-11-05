@@ -21,13 +21,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MsiClientMock implements MsiClient {
+public class MsiClientMock /* implements MsiClient */ {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    @Override
-    public List<MsiItem> getActiveWarnings() {
+    public List<MsiClient.MsiItem> getActiveWarnings() {
         try {
-            List<MsiItem> result = new ArrayList<>();
+            List<MsiClient.MsiItem> result = new ArrayList<>();
 
             result.add(new MsiItemMock(DATE_FORMAT.parse("2013-10-10"), "Shoal", 72.7516667, -056.2500000, "Greenland West", "Upernavik",
                     "TEST - NAVIGATIONAL WARNING JOINT ARCTIC COMMAND NO. 014/13. " +
@@ -72,7 +71,7 @@ public class MsiClientMock implements MsiClient {
         }
     }
 
-    public class MsiItemMock extends MsiItem {
+    public class MsiItemMock extends MsiClient.MsiItem {
         private Date created;
         private String encText;
         private double latitude;
@@ -103,9 +102,9 @@ public class MsiClientMock implements MsiClient {
             return encText;
         }
 
-        public List<Point> getPoints() {
-            List<Point> result = new ArrayList<>();
-            result.add(new Point(null) {
+        public List<MsiClient.Point> getPoints() {
+            List<MsiClient.Point> result = new ArrayList<>();
+            result.add(new MsiClient.Point(null) {
                 public double getLatitude() {
                     return latitude;
                 }
@@ -116,8 +115,8 @@ public class MsiClientMock implements MsiClient {
             return result;
         }
 
-        public Type getType() {
-            return Type.Point;
+        public MsiClient.Type getType() {
+            return MsiClient.Type.Point;
         }
 
         public String getMainArea() {

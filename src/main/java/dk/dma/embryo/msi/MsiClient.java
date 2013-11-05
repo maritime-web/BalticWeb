@@ -25,7 +25,7 @@ import java.util.List;
 public interface MsiClient {
     List<MsiItem> getActiveWarnings();
 
-    public enum Type {Point, Polygon, Polyline, Points}
+    public enum Type {Point, Polygon, Polyline, Points, General}
 
     class Point {
         private PointDto pd;
@@ -51,6 +51,7 @@ public interface MsiClient {
         private MsiDto md;
 
         public Type getType() {
+            if (md.getPoints() == null || md.getPoints().getPoint().size() == 0) return Type.General;
             return Type.valueOf(md.getLocationType());
         }
 
