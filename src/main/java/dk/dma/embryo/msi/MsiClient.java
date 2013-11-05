@@ -51,7 +51,9 @@ public interface MsiClient {
         private MsiDto md;
 
         public Type getType() {
-            if (md.getPoints() == null || md.getPoints().getPoint().size() == 0) return Type.General;
+            if (md.getPoints() == null || md.getPoints().getPoint().size() == 0) {
+                return Type.General;
+            }
             return Type.valueOf(md.getLocationType());
         }
 
@@ -77,6 +79,10 @@ public interface MsiClient {
 
         public String getSubArea() {
             return md.getSubarea();
+        }
+
+        public String getNavtexNo() {
+            return md.getNavtexNo();
         }
 
         public String getText() {
