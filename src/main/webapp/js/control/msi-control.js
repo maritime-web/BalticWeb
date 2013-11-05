@@ -40,7 +40,13 @@ $(function() {
                     var msi = data[$(this).attr("index")];
                     showMsiInformation(msi);
                     msiLayer.select(msi);
-                    embryo.map.setCenter(msi.longitude, msi.latitude, 8);
+
+                    switch (msi.type) {
+                        case "Point":
+                            embryo.map.setCenter(msi.points[0].longitude, msi.points[0].latitude, 8);
+                            break;
+                    }
+
                 });
 
                 msiLayer.draw(data);
