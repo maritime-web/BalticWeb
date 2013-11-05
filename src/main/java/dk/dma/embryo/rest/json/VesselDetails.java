@@ -37,6 +37,9 @@ public class VesselDetails {
     /** Gross tonnage */
     private Integer grossTon;
 
+    /** Maximum Capacity for persons on board */
+    private Integer maxPersons;
+
     private String iceClass;
 
     private Boolean helipad;
@@ -128,6 +131,14 @@ public class VesselDetails {
         this.helipad = helipad;
     }
     
+    public Integer getMaxPersons() {
+        return maxPersons;
+    }
+
+    public void setMaxPersons(Integer maxPersons) {
+        this.maxPersons = maxPersons;
+    }
+
     public AdditionalInformation getAdditionalInformation() {
         return additionalInformation;
     }

@@ -64,6 +64,7 @@ public class VesselServiceImpl implements VesselService {
             managed.setCommCapabilities(vessel.getCommCapabilities());
             managed.setHelipad(vessel.getHelipad());
             managed.setMaxSpeed(vessel.getMaxSpeed());
+            managed.setPersons(vessel.getPersons());
             managed.setGrossTonnage(vessel.getGrossTonnage());
 
             managed = vesselRepository.saveEntity(managed);

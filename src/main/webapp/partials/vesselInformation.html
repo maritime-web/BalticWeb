@@ -1,67 +1,76 @@
 <div id="vesselInformation" x-ng-controller="embryo.VesselInformationCtrl">
-    <h2>
-        <a class="close embryo-close-panel" href="#" style="float:right">&times;</a>
-        Vessel information
-    </h2>
-    <p></p>
-    <form name="vesselForm" class="form-horizontal" novalidate>
-        <div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
-        <div x-ng-show="message" class="alert alert-info">{{message}}</div>
-        <div class="row-fluid">
-            <div class="span7">
-                <input type="hidden" x-ng-model="vessel.maritimeId" />
-                <div class="control-group">
-                    <label class="control-label" for="mmsi">MMSI</label>
-                    <div class="controls">
-                        <span>{{vessel.mmsi}}</span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="maxSpeed">Max speed (kn)</label>
-                    <div class="controls">
-                        <input type="text" id="maxSpeed" name="maxSpeed" class="input-small" x-ng-model="vessel.maxSpeed" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="commCapabilities">Communication capabilities</label>
-                    <div class="controls">
-                        <input type="text" id="commCapabilities" class="input-xxlarge" x-ng-model="vessel.commCapabilities" />
-                    </div>
-                </div>
-            </div>
+	<h2>
+		<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Vessel information
+	</h2>
+	<p>Static information about the vessel is expected maintained mainly in the vessels AIS transponder. Additionally
+		information valuable in the Arctic region can be reported below.</p>
+	<form name="vesselForm" class="form-horizontal" novalidate>
+		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label" for="mmsi">MMSI</label>
+					<div class="controls txt">
+						<span>{{vessel.mmsi}}</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="maxSpeed">Max speed (kn)</label>
+					<div class="controls">
+						<input type="text" id="maxSpeed" name="maxSpeed" class="input-small" x-ng-model="vessel.maxSpeed" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="iceClass">Ice class</label>
+					<div class="controls">
+						<input type="text" id="iceClass" class="input-small" x-ng-model="vessel.iceClass" />
+					</div>
+				</div>
+			</div>
 
-            <div class="span5">
-                <div class="control-group">
-                    <label class="control-label" for="gTonnage">Gross tonnage</label>
-                    <div class="controls">
-                        <input type="number" id="gTonnage" name="gTonnage" class="input-small" x-ng-model="vessel.grossTon" min="0" /> <span
-                            x-ng-show="vesselForm.gTonnage.$error.min" class="msg-invalid">Expected positive number</span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="iceClass">Ice class</label>
-                    <div class="controls">
-                        <input type="text" id="iceClass" class="input-small" x-ng-model="vessel.iceClass" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="helipad">Helipad</label>
-                    <div class="controls">
-                        <select x-ng-model="vessel.helipad" class="input-small"
-                            ng-options="value as key for (key, value) in helipadOptions">
-                            <option></option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label" for="gTonnage">Gross tonnage</label>
+					<div class="controls">
+						<input type="number" id="gTonnage" name="gTonnage" class="input-small" x-ng-model="vessel.grossTon" min="0" /> <span
+							x-ng-show="vesselForm.gTonnage.$error.min" class="msg-invalid">Expected positive number</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="people">Max people capacity</label>
+					<div class="controls">
+						<input type="text" id="people" class="input-small" x-ng-model="vessel.maxPersons" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="helipad">Helipad</label>
+					<div class="controls">
+						<select x-ng-model="vessel.helipad" class="input-small"
+							ng-options="value as key for (key, value) in helipadOptions">
+							<option></option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span12">
+				<div class="control-group">
+					<label class="control-label" for="commCapabilities">Communication capabilities</label>
+					<div class="controls">
+						<input type="text" id="commCapabilities" class="input-xxlarge" x-ng-model="vessel.commCapabilities" />
+					</div>
+				</div>
 
+			</div>
+		</div>
 
-        </div>
-        <div class="row-fluid">
-            <span class="pull-right">
-                <button type="button" class="btn" x-ng-click="reset()">Reset</button>
-                <button type="button" class="btn btn-primary" x-ng-click="save()">Save</button>
-            </span>
-        </div>
-    </form>
+		<div class="row-fluid">
+			<span class="pull-right">
+				<button type="button" class="btn" x-ng-click="reset()">Reset</button>
+				<button type="button" class="btn btn-primary" x-ng-click="save()">Save</button>
+			</span>
+		</div>
+	</form>
 </div>

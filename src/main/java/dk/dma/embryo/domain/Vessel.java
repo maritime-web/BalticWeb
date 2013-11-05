@@ -15,10 +15,7 @@
  */
 package dk.dma.embryo.domain;
 
-import dk.dma.embryo.rest.json.VesselDetails;
-
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,10 +28,12 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+
+import dk.dma.embryo.rest.json.VesselDetails;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "Vessel:getByMmsi", query = "SELECT v FROM Vessel v WHERE v.mmsi = :mmsi"),
+@NamedQueries({
+        @NamedQuery(name = "Vessel:getByMmsi", query = "SELECT v FROM Vessel v WHERE v.mmsi = :mmsi"),
         @NamedQuery(name = "Vessel:getByCallsign", query = "SELECT v FROM Vessel v WHERE v.aisData.callsign = :callsign"),
         @NamedQuery(name = "Vessel:getMmsiList", query = "SELECT v FROM Vessel v WHERE v.mmsi in :mmsiNumbers") })
 public class Vessel extends BaseEntity<Long> {
@@ -55,6 +54,9 @@ public class Vessel extends BaseEntity<Long> {
     @Column(nullable = true, length = 64)
     private String commCapabilities;
 
+    /**
+     * Maximum capacity for the number of persons on board. This information is (hopefully) usable in a resque scenario.
+     */
     @Min(0)
     @Column(nullable = true)
     private Integer persons;
@@ -80,29 +82,15 @@ public class Vessel extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public dk.dma.embryo.rest.json.Ship toJsonModel() {
-        dk.dma.embryo.rest.json.Ship ship = new dk.dma.embryo.rest.json.Ship();
 
-        ship.setName(getAisData().getName());
-        ship.setCallSign(getAisData().getCallsign());
-        ship.setMmsi(getMmsi());
-        ship.setImo(getAisData().getImoNo());
-        ship.setCommCapabilities(getCommCapabilities());
-        ship.setGrossTon(getGrossTonnage());
-        ship.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
-        ship.setIceClass(getIceClass());
-        ship.setHelipad(getHelipad());
-
-        return ship;
-    }
-
-    public dk.dma.embryo.rest.json.VesselDetails toJsonModel2() {
+    public dk.dma.embryo.rest.json.VesselDetails toJsonModel() {
         dk.dma.embryo.rest.json.VesselDetails vessel = new dk.dma.embryo.rest.json.VesselDetails();
         vessel.setAis(getAisData().toJsonModel());
-        
+
         vessel.setMmsi(getMmsi());
         vessel.setCommCapabilities(getCommCapabilities());
         vessel.setGrossTon(getGrossTonnage());
+        vessel.setMaxPersons(getPersons());
         vessel.setMaxSpeed(getMaxSpeed() == null ? null : getMaxSpeed().floatValue());
         vessel.setIceClass(getIceClass());
         vessel.setHelipad(getHelipad());
@@ -110,41 +98,15 @@ public class Vessel extends BaseEntity<Long> {
         return vessel;
     }
 
-    public static Vessel toJsonModel2(VesselDetails details) {
+    public static Vessel fromJsonModel(VesselDetails details) {
         Vessel result = new Vessel();
         result.setMmsi(details.getMmsi());
         result.setCommCapabilities(details.getCommCapabilities());
         result.setGrossTonnage(details.getGrossTon());
+        result.setPersons(details.getMaxPersons());
         result.setHelipad(details.getHelipad());
         result.setIceClass(details.getIceClass());
         result.setMaxSpeed(BigDecimal.valueOf(details.getMaxSpeed()));
-        return result;
-    }
-
-
-    public static Vessel fromJsonModel(dk.dma.embryo.rest.json.Ship ship) {
-        Vessel result = new Vessel();
-
-        result.setMmsi(ship.getMmsi());
-        result.setCommCapabilities(ship.getCommCapabilities());
-        result.setGrossTonnage(ship.getGrossTon());
-        result.setMaxSpeed(ship.getMaxSpeed() == null ? null : BigDecimal.valueOf(ship.getMaxSpeed()));
-        result.setIceClass(ship.getIceClass());
-        result.setHelipad(ship.getHelipad());
-
-        return result;
-    }
-
-    public static Vessel fromJsonModel2(dk.dma.embryo.rest.json.Ship ship) {
-        Vessel result = new Vessel();
-
-        result.setMmsi(ship.getMmsi());
-        result.setCommCapabilities(ship.getCommCapabilities());
-        result.setGrossTonnage(ship.getGrossTon());
-        result.setMaxSpeed(ship.getMaxSpeed() == null ? null : BigDecimal.valueOf(ship.getMaxSpeed()));
-        result.setIceClass(ship.getIceClass());
-        result.setHelipad(ship.getHelipad());
-
         return result;
     }
 
@@ -219,6 +181,14 @@ public class Vessel extends BaseEntity<Long> {
         this.helipad = helipad;
     }
 
+    public Integer getPersons() {
+        return persons;
+    }
+
+    public void setPersons(Integer persons) {
+        this.persons = persons;
+    }
+
     public Schedule getSchedule() {
         return schedule;
     }
@@ -237,7 +207,7 @@ public class Vessel extends BaseEntity<Long> {
     }
 
     public AisData getAisData() {
-        if(aisData == null){
+        if (aisData == null) {
             aisData = new AisData();
         }
         return aisData;
