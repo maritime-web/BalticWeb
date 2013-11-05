@@ -64,12 +64,15 @@ function EmbryoLayer() {
         } else if (b instanceof Function) {
             this.selectListeners[a] = b;
         } else {
+            var didSelect = false;
             for (var i in this.selectableLayer.features) {
                 var feature = this.selectableLayer.features[i];
                 if (eval("feature.attributes." + this.selectableAttribute) == a) {
                     this.map.select(feature);
+                    didSelect = true;
                 }
             }
+            if (!didSelect) this.map.select(null);
         }
     }
 

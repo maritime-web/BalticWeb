@@ -91,7 +91,7 @@ $(function() {
         },
         select: function(feature) {
             selectControl.unselectAll();
-            selectControl.select(feature);
+            if (feature != null) selectControl.select(feature);
         },
         zoomToExtent: function(layers) {
             var extent = new OpenLayers.Bounds();

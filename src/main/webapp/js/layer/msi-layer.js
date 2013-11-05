@@ -11,6 +11,9 @@ function MsiLayer() {
             labelTransparency: function() {
                 return (that.zoomLevel > 1) && that.active ? 0.8 : 0.01;
             },
+            polygonTransparency: function() {
+                return that.active ? 0.4 : 0.2;
+            },
             offset: function() {
                 return -context.size() / 2;
             },
@@ -35,7 +38,13 @@ function MsiLayer() {
                     label : "${description}",
                     fontWeight: "bold",
                     labelOutlineWidth : 0,
-                    labelYOffset: -20
+                    labelYOffset: -20,
+                    fillColor: "yellow",
+                    fillOpacity: "${polygonTransparency}",
+                    strokeWidth: 3,
+                    strokeColor: "red",
+                    strokeOpacity: "${polygonTransparency}"
+
                 }, { context: context }),
                 "select": new OpenLayers.Style({
                     graphicOpacity: 1,
@@ -55,7 +64,9 @@ function MsiLayer() {
                     fontSize: "10px",
                     fontFamily: "Courier New, monospace",
                     label : "${description}",
-                    fill: true
+                    fill: true,
+                    fillOpacity: 0.8,
+                    strokeOpacity: 0.8
                 }, { context: context} )
 
             })
@@ -80,8 +91,43 @@ function MsiLayer() {
 
             switch (data[i].type) {
                 case "Point":
-                    var geom = this.map.createPoint(data[i].points[0].longitude, data[i].points[0].latitude);
-                    features.push(new OpenLayers.Feature.Vector(geom, attr));
+                case "Points":
+                    for (var j in data[i].points) {
+                        var p = data[i].points[j];
+                        features.push(new OpenLayers.Feature.Vector(this.map.createPoint(p.longitude, p.latitude), attr));
+                    }
+                    break;
+                case "Polygon":
+                    var points = [];
+
+                    for (var j in data[i].points) {
+                        var p = data[i].points[j];
+                        points.push(this.map.createPoint(p.longitude, p.latitude));
+                    }
+
+                    features.push(new OpenLayers.Feature.Vector(
+                        new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(points)]), attr
+                    ));
+
+                    break;
+                case "Polyline":
+                    var points = [];
+
+                    for (var j in data[i].points) {
+                        var p = data[i].points[j];
+                        points.push(this.map.createPoint(p.longitude, p.latitude));
+                    }
+
+                    features.push(new OpenLayers.Feature.Vector(
+                        new OpenLayers.Geometry.LineString(points), attr
+                    ));
+
+/*
+                    features.push(new OpenLayers.Feature.Vector(
+                        new OpenLayers.Geometry.Curve([new OpenLayers.Geometry.LineString(points)]), attr
+                    ));
+*/
+
                     break;
             }
 

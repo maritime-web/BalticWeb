@@ -24,7 +24,7 @@ public class MsiClientTest {
         MsiClientImpl msiClientImpl = new MsiClientImpl();
 
         msiClientImpl.endpoint = "http://msi-beta.e-navigation.net/msi/ws/warning";
-        msiClientImpl.country = "DK";
+        msiClientImpl.country = "GL";
 
         msiClientImpl.init();
 

@@ -45,6 +45,11 @@ $(function() {
                         case "Point":
                             embryo.map.setCenter(msi.points[0].longitude, msi.points[0].latitude, 8);
                             break;
+                        case "Points":
+                        case "Polygon":
+                        case "Polyline":
+                            embryo.map.setCenter(msi.points[0].longitude, msi.points[0].latitude, 8);
+                            break;
                     }
 
                 });
@@ -76,6 +81,7 @@ $(function() {
         html += "<tr><td>Updated</td><td>"+formatDate(msi.updated)+"</td></tr>";
         html += "<tr><td>Main Area</td><td>"+msi.mainArea+"</td></tr>";
         html += "<tr><td>Sub Area</td><td>"+msi.subArea+"</td></tr>";
+        html += "<tr><td>Navtex Number</td><td>"+msi.navtexNo+"</td></tr>";
 
         $("#msiSelectedItem table").html(html);
         $("#msiSelectedItem p").html(msi.text);

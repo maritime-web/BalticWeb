@@ -27,7 +27,7 @@ import javax.xml.ws.BindingProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MsiClientImpl /* implements MsiClient */ {
+public class MsiClientImpl implements MsiClient {
     @Inject
     @Property("embryo.msi.endpoint")
     String endpoint;

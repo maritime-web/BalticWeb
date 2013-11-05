@@ -21,19 +21,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MsiClientMock implements MsiClient {
+public class MsiClientMock /* implements MsiClient */ {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    @Override
-    public List<MsiItem> getActiveWarnings() {
+    public List<MsiClient.MsiItem> getActiveWarnings() {
         try {
-            List<MsiItem> result = new ArrayList<>();
+            List<MsiClient.MsiItem> result = new ArrayList<>();
 
             result.add(new MsiItemMock(DATE_FORMAT.parse("2013-10-10"), "Shoal", 72.7516667, -056.2500000, "Greenland West", "Upernavik",
                     "TEST - NAVIGATIONAL WARNING JOINT ARCTIC COMMAND NO. 014/13. " +
                             "WEST COAST OF GREENLAND, OFF UPERNAVIK CHART 1710 " +
                             "IN POSITION 7245,1 N - 05615,0W (WGS84) A 17 METER SHOAL " +
-                            "HAS BEEN REPORTED.", DATE_FORMAT.parse("2013-10-10"))
+                            "HAS BEEN REPORTED.", DATE_FORMAT.parse("2013-10-10"), "GL-001-01")
             );
 
             result.add(new MsiItemMock(DATE_FORMAT.parse("2013-10-07"), "Inoperative Beacon", 63.6978333, -051.6053333, "Greenland West", "Kangerluarsoruseq",
@@ -41,21 +40,21 @@ public class MsiClientMock implements MsiClient {
                             "WEST COAST OF GREENLAND, KANGERLUARSORUSEQ. " +
                             "RACON-BEACON ON SAATTUT IN POSITION " +
                             "63-41.87N 051-36.32W IS REPORTED INOPERATIVE. " +
-                            "ADMIRALITY LIST OF LIGHTS NO. L 5500", DATE_FORMAT.parse("2013-10-07"))
+                            "ADMIRALITY LIST OF LIGHTS NO. L 5500", DATE_FORMAT.parse("2013-10-07"), "GL-001-02")
             );
 
             result.add(new MsiItemMock(DATE_FORMAT.parse("2013-10-02"), "Shoal", 72.0283333, -056.0416667, "Greenland West", "Svartenhuk",
                     "TEST - NAVIGATIONAL WARNING JOINT ARCTIC COMMAND NO. 017/13. " +
                             "WEST COAST OF GREENLAND, SVARTENHUK PENINSULA " +
                             "AN 8 METER SHOAL HAS BEEN REPORTED IN POS 72 01.7N 056 02.5W " +
-                            "GREENLANDIC CHART NO 1600", DATE_FORMAT.parse("2013-10-02"))
+                            "GREENLANDIC CHART NO 1600", DATE_FORMAT.parse("2013-10-02"), "GL-001-03")
             );
 
             result.add(new MsiItemMock(DATE_FORMAT.parse("2013-09-28"), "Lost Trawl", 68.1900000, -053.9583333, "Greenland West", "Simiutarsuup",
                     "TEST - NAVIGATIONAL WARNING JOINT ARCTIC COMMAND NO. 018/13. " +
                             "WEST COAST OF GREENLAND, SIMIUTARSUUP " +
                             "A TRAWL(OLD) HAS BEEN REPORTED FLOATING IN POS 68 11,4N " +
-                            "053 57,5w GREENLANDIC CHART NO 1416", DATE_FORMAT.parse("2013-09-28"))
+                            "053 57,5w GREENLANDIC CHART NO 1416", DATE_FORMAT.parse("2013-09-28"), "GL-001-04")
             );
 
             result.add(new MsiItemMock(DATE_FORMAT.parse("2013-09-30"), "Lost Dinghy", 64.142664, -51.615843, "Greenland West", "Nuuk Fiord",
@@ -63,7 +62,7 @@ public class MsiClientMock implements MsiClient {
                             "WEST COAST OF GREENLAND, NUUK FIORD. " +
                             "FISHINGVESSEL PITA HAVE LOST A DINGHY YESTERDAY 30 SEP " +
                             "2230 LMT NE OF NUUK AIRPORT.THE DINGHY IS A RYDS 535 WITH " +
-                            "AN SUZUKI 115 HP, NO PERSON UNBOARD.", DATE_FORMAT.parse("2013-09-30"))
+                            "AN SUZUKI 115 HP, NO PERSON UNBOARD.", DATE_FORMAT.parse("2013-09-30"), "GL-001-05")
             );
 
             return result;
@@ -72,7 +71,7 @@ public class MsiClientMock implements MsiClient {
         }
     }
 
-    public class MsiItemMock extends MsiItem {
+    public class MsiItemMock extends MsiClient.MsiItem {
         private Date created;
         private String encText;
         private double latitude;
@@ -81,9 +80,10 @@ public class MsiClientMock implements MsiClient {
         private String subArea;
         private String text;
         private Date updated;
+        private String navtexNo;
 
         public MsiItemMock(Date created, String encText, double latitude, double longitude, String mainArea,
-                           String subArea, String text, Date updated) {
+                           String subArea, String text, Date updated, String navtexNo) {
             super(null);
             this.created = created;
             this.encText = encText;
@@ -93,6 +93,7 @@ public class MsiClientMock implements MsiClient {
             this.subArea = subArea;
             this.text = text;
             this.updated = updated;
+            this.navtexNo = navtexNo;
         }
 
         public Date getCreated() {
@@ -103,9 +104,9 @@ public class MsiClientMock implements MsiClient {
             return encText;
         }
 
-        public List<Point> getPoints() {
-            List<Point> result = new ArrayList<>();
-            result.add(new Point(null) {
+        public List<MsiClient.Point> getPoints() {
+            List<MsiClient.Point> result = new ArrayList<>();
+            result.add(new MsiClient.Point(null) {
                 public double getLatitude() {
                     return latitude;
                 }
@@ -116,8 +117,8 @@ public class MsiClientMock implements MsiClient {
             return result;
         }
 
-        public Type getType() {
-            return Type.Point;
+        public MsiClient.Type getType() {
+            return MsiClient.Type.Point;
         }
 
         public String getMainArea() {
@@ -134,6 +135,10 @@ public class MsiClientMock implements MsiClient {
 
         public Date getUpdated() {
             return updated;
+        }
+
+        public String getNavtexNo() {
+            return navtexNo;
         }
     }
 }
