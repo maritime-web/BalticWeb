@@ -186,12 +186,10 @@ function VesselLayer() {
 
             var feature = new OpenLayers.Feature.Vector(geom, attr);
 
-            vesselFeatures.push(feature);
-
-            if (selectedFeature && selectedFeature.attributes.vessel.id == attr.vessel.id) {
+            if (selectedFeature && selectedFeature.attributes.vessel.mmsi == attr.vessel.mmsi) {
 
             } else {
-                vesselFeatures.push(feature);
+                if (value.type != null) vesselFeatures.push(feature);
             }
         });
 
@@ -207,7 +205,7 @@ function VesselLayer() {
         markerLayer.removeAllFeatures();
 
         $.each(vessels, function(k, v) {
-            if (that.markedVesselId == v.mmsi) {
+            if (that.markedVesselId == v.mmsi && (v.type != null)) {
                 markerLayer.addFeatures([
                     new OpenLayers.Feature.Vector(
                         embryo.map.createPoint(v.x, v.y), {
@@ -233,7 +231,7 @@ function VesselLayer() {
         iconLayer.removeAllFeatures();
 
         $.each(vessels, function(k, v) {
-            if (v.inArcticWeb) {
+            if ((v.inArcticWeb) && (v.type != null)) {
                 iconLayer.addFeatures([
                     new OpenLayers.Feature.Vector(
                         embryo.map.createPoint(v.x, v.y), {

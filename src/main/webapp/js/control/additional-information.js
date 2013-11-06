@@ -51,7 +51,7 @@ embryo.additionalInformation.distanceCircles = {
     showAt: [ "YourShip", "SelectedShip" ],
     layer: new DistanceCirclesLayer(),
     available: function (vessel, vesselDetails) {
-        return vesselDetails.ais.sog > 0;
+        return vesselDetails.ais && vesselDetails.ais.sog > 0;
     },
     show: function (vessel, vesselDetails) {
         this.layer.draw(vessel, vesselDetails);

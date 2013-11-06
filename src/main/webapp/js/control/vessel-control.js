@@ -32,11 +32,15 @@ $(function() {
     }
 
     embryo.vessel.goToVesselLocation = function (vessel) {
-        embryo.map.setCenter(vessel.x, vessel.y, 8);
+        if (vessel.type != null) embryo.map.setCenter(vessel.x, vessel.y, 8);
     }
 
     embryo.vessel.selectVessel = function (vessel) {
-        vesselLayer.select(vessel.mmsi);
+        if (vessel.type) vesselLayer.select(vessel.mmsi);
+        else {
+            vesselLayer.select(null);
+            embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(vessel.mmsi))
+        }
     }
 
     embryo.vessel.setMarkedVessel = function(markedVesselId) {

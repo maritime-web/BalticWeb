@@ -3,6 +3,7 @@
 
 embryo.vesselInformation = {
     renderYourShipShortTable: function (data) {
+        if (!data.ais) return "<span class='label label-important'>AIS UNAVAILABLE</span>";
         var html = "";
 
         var egenskaber = {
@@ -21,6 +22,7 @@ embryo.vesselInformation = {
         return html;
     },
     renderSelectedShipShortTable: function (data) {
+        if (!data.ais) return "<span class='label label-important'>AIS UNAVAILABLE</span>";
         var html = "";
         
         var egenskaber = {
@@ -43,6 +45,8 @@ embryo.vesselInformation = {
         return html;
     },
     showAesDialog: function (data) {
+        if (!data.ais) return;
+
         var html = "";
 
         var link = "http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi="+data.ais.mmsi;
@@ -87,14 +91,14 @@ embryo.vesselInformation = {
 $(function() {
     var shipSelected = false;
 
-    function showVesselInformation(data) {
+    function showVesselInformation(vesselOverview, vesselDetails) {
         openCollapse("#vcpSelectedShip");
-        $("a[href=#vcpSelectedShip]").html("Selected Vessel - "+data.ais.name);
-        $("#selectedAesInformation table").html(embryo.vesselInformation.renderSelectedShipShortTable(data));
+        $("a[href=#vcpSelectedShip]").html("Selected Vessel - "+vesselOverview.name);
+        $("#selectedAesInformation table").html(embryo.vesselInformation.renderSelectedShipShortTable(vesselDetails));
         $("#selectedAesInformationLink").off("click");
         $("#selectedAesInformationLink").on("click", function(e) {
             e.preventDefault();
-            embryo.vesselInformation.showAesDialog(data);
+            embryo.vesselInformation.showAesDialog(vesselDetails);
         });
     }
     
@@ -124,9 +128,9 @@ $(function() {
             if (data) {
                 if (shipSelected == false) return;
 
-                showVesselInformation(data);
-
                 var vessel = embryo.vessel.lookupVessel(e.vesselId);
+
+                showVesselInformation(vessel, data);
 
                 setupAdditionalInformationTable("#selectedShipAdditionalInformation", vessel, data, "SelectedShip");
             } else {

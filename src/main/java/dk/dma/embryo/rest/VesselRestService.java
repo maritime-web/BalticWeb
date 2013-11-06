@@ -15,22 +15,6 @@
  */
 package dk.dma.embryo.rest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.arcticweb.service.VesselService;
@@ -40,6 +24,14 @@ import dk.dma.embryo.rest.json.VesselDetails;
 import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
 import dk.dma.embryo.rest.json.VesselOverview;
 import dk.dma.embryo.restclients.AisViewService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Path("/vessel")
 public class VesselRestService {
@@ -55,7 +47,6 @@ public class VesselRestService {
     @Inject
     private ScheduleService scheduleService;
 
-    
     @Inject
     private VesselDao vesselDao;
 
@@ -65,7 +56,7 @@ public class VesselRestService {
     @GZIP
     public Object historicalTrack(@QueryParam("mmsi") long mmsi) {
         Map result = aisViewService.vesselTargetDetails(mmsi, 1);
-        return ((Map)result.get("pastTrack")).get("points");
+        return ((Map) result.get("pastTrack")).get("points");
     }
 
     @GET
@@ -102,7 +93,7 @@ public class VesselRestService {
 
         List<Vessel> allArcticWebVessels = vesselDao.getAll(Vessel.class);
 
-        for (Vessel v: allArcticWebVessels) {
+        for (Vessel v : allArcticWebVessels) {
             VesselOverview vesselOverview = null;
             for (VesselOverview vo : result) {
                 if (v.getMmsi().equals(vo.getMmsi())) {
@@ -117,6 +108,8 @@ public class VesselRestService {
                 vo.setCallSign(v.getAisData().getCallsign());
                 vo.setName(v.getAisData().getName());
                 vo.setImo("" + v.getAisData().getImoNo());
+                vo.setMmsi(v.getMmsi());
+                result.add(vo);
             }
         }
 
@@ -141,13 +134,11 @@ public class VesselRestService {
         return details;
     }
     */
-
     @GET
     @Path("/details")
     @Produces("application/json")
     @GZIP
     public VesselDetails detailsFull(@QueryParam("mmsi") long mmsi) {
-        //TODO change to execute the two calls asynchronously
         Map result = aisViewService.vesselTargetDetails(mmsi, 1);
 
         boolean historicalTrack = false;
@@ -155,7 +146,7 @@ public class VesselRestService {
         Object track = result.remove("pastTrack");
 
         if (track != null) {
-            historicalTrack = ((List)((Map)track).get("points")).size() > 3;
+            historicalTrack = ((List) ((Map) track).get("points")).size() > 3;
         }
 
         VesselDetails details;

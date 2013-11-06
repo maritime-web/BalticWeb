@@ -11,7 +11,7 @@ $(function() {
             yourShip = vesselOverview;
             embryo.vessel.setMarkedVessel(vesselOverview.mmsi);
 
-            $("a[href=#vcpYourShip]").html("Your Vessel - "+vesselDetails.ais.name);
+            $("a[href=#vcpYourShip]").html("Your Vessel - "+vesselOverview.name);
             $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(vesselDetails));
             $("#yourShipAesInformationLink").off("click");
             $("#yourShipAesInformationLink").on("click", function(e) {
