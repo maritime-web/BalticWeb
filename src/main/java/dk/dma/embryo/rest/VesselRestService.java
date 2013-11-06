@@ -16,6 +16,7 @@
 package dk.dma.embryo.rest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,17 +100,23 @@ public class VesselRestService {
             result.add(vo);
         }
 
-        List<Long> mmsis = new ArrayList<>();
+        List<Vessel> allArcticWebVessels = vesselDao.getAll(Vessel.class);
 
-        for (VesselOverview vo : result) {
-            mmsis.add(vo.getMmsi());
-        }
-
-        for (Vessel v : vesselDao.getVessels(mmsis).values()) {
+        for (Vessel v: allArcticWebVessels) {
+            VesselOverview vesselOverview = null;
             for (VesselOverview vo : result) {
-                if (vo.getMmsi().equals(v.getMmsi())) {
-                    vo.setInArcticWeb(true);
+                if (v.getMmsi().equals(vo.getMmsi())) {
+                    vesselOverview = vo;
                 }
+            }
+            if (vesselOverview != null) {
+                vesselOverview.setInArcticWeb(true);
+            } else {
+                VesselOverview vo = new VesselOverview();
+                vo.setInArcticWeb(true);
+                vo.setCallSign(v.getAisData().getCallsign());
+                vo.setName(v.getAisData().getName());
+                vo.setImo("" + v.getAisData().getImoNo());
             }
         }
 
