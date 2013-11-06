@@ -4,7 +4,7 @@ $(function() {
 
     function searchResultToHTML(vessel){
         var html = "<p><div class='btn searchResultItem' id='" + vessel.mmsi + "'>";
-        html += "<div class='panelText btn-block'>" + vessel.name;
+        html += "<div class='panelText btn-block'>" + vessel.name + " " + vessel.mmsi;
 
         if (vessel.inArcticWeb) {
             html +=" <font color=#0080C0>AW</font>"

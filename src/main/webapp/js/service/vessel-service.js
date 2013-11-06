@@ -67,11 +67,18 @@
                 var result = [];
 
                 $.each(embryo.vessel.allVessels(), function (k,v) {
+                    var matches = false
                     if (v.name) {
                         if ((v.name.toLowerCase().indexOf(argument.toLowerCase()) == 0) || 
                             (v.name.toLowerCase().indexOf(" "+argument.toLowerCase()) >= 0)) {
-                            result.push(v);
+                            matches = true;
                         }
+                    }
+                    if (v.mmsi) {
+                        if ((""+v.mmsi).indexOf(argument) == 0) matches = true;
+                    }
+                    if (matches) {
+                        result.push(v);
                     }
                 })
 
