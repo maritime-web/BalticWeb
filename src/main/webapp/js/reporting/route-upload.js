@@ -61,6 +61,10 @@
         // Choosing a new file will replace the old one
         $scope.$on('fileuploadadd', function(e, data) {
             $scope.queue = [];
+            
+            if(data.files.length > 0 && data.files[0].name.toLocaleLowerCase().match(/.rt3$/)){
+                $scope.fileExtension = "rt3";
+            }
         });
 
         $scope.options = {
@@ -105,8 +109,12 @@
             if ($scope.voyageInfo != null) {
                 data.formData = {
                     voyageId : $scope.voyageInfo.id,
-                    active : $scope.activate
+                    active : $scope.activate,
                 };
+                
+                if($scope.fileExtension == "rt3"){
+                    data.formData.schedule = $scope.scheduleName
+                }
             }
 
         });

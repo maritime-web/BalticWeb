@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.AisData;
-import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.restclients.AisViewService;
 import dk.dma.embryo.restclients.AisViewService.VesselListResult;
@@ -109,7 +108,7 @@ public class AisReplicator {
             }
         }
 
-        Map<Long, Vessel> vessels = null;//vesselRepository.getVessels(mmsis);
+        Map<Long, Vessel> vessels = vesselRepository.getVessels(mmsis);
 
         for (Entry<String, String[]> aisVessel : result.getVesselList().getVessels().entrySet()) {
             Long mmsi = asLong(aisVessel.getValue()[6]);
@@ -121,15 +120,15 @@ public class AisReplicator {
                 Vessel vessel = vessels.get(mmsi);
 
                 if (vessel != null) {
-//                    if (!isUpToDate(vessel.getAisData(), callSign, imo)) {
-//                        vessel.getAisData().setCallsign(callSign);
-//                        vessel.getAisData().setImoNo(imo);
-//                        vessel.getAisData().setName(name);
-//                        logger.debug("Updating vessel {}/{}", mmsi, name);
-//                        saveVessel(vessel);
-//                    } else {
-//                        logger.debug("Vessel {}/{} is up to date", mmsi, name);
-//                    }
+                    if (!isUpToDate(vessel.getAisData(), name, callSign, imo)) {
+                        vessel.getAisData().setCallsign(callSign);
+                        vessel.getAisData().setImoNo(imo);
+                        vessel.getAisData().setName(name);
+                        logger.debug("Updating vessel {}/{}", mmsi, name);
+                        saveVessel(vessel);
+                    } else {
+                        logger.debug("Vessel {}/{} is up to date", mmsi, name);
+                    }
                 }
             }
         }
@@ -137,12 +136,13 @@ public class AisReplicator {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    void saveVessel(Ship vessel) {
+    void saveVessel(Vessel vessel) {
         vesselRepository.saveEntity(vessel);
     }
 
-    private boolean isUpToDate(AisData aisData, String callSign, Long imo) {
-        return ObjectUtils.equals(aisData.getCallsign(), callSign) && ObjectUtils.equals(aisData.getImoNo(), imo);
+    private boolean isUpToDate(AisData aisData, String name, String callSign, Long imo) {
+        return ObjectUtils.equals(aisData.getName(), name) && ObjectUtils.equals(aisData.getCallsign(), callSign)
+                && ObjectUtils.equals(aisData.getImoNo(), imo);
     }
 
     private Long asLong(String value) {

@@ -18,6 +18,7 @@ package dk.dma.arcticweb.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Local;
 
@@ -28,8 +29,6 @@ import dk.dma.embryo.domain.Voyage;
 @Local
 public interface ScheduleService {
 
-    
-
     /**
      * Save voyage plan
      * 
@@ -37,9 +36,9 @@ public interface ScheduleService {
      * @param voyagePlan
      */
     void saveSchedule(Schedule schedule);
-    
+
     Schedule getSchedule(Long mmsi);
-    
+
     List<Voyage> getVoyages(Long mmsi);
 
     Voyage getActiveVoyage(String maritimeId);
@@ -57,6 +56,6 @@ public interface ScheduleService {
     Route getRouteByEnavId(String enavId);
 
     Voyage getVoyage(String businessId);
-    
-    Route parseRoute(String fileName, InputStream is) throws IOException;   
+
+    Route parseRoute(String fileName, InputStream is, Map<String, String> context) throws IOException;
 }

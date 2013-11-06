@@ -14,8 +14,6 @@
 	margin-top:30px;
 }
 
-
-
 /**Route Upload**/
 #routeupload .progress {
 	margin-top: 7px;
@@ -28,4 +26,8 @@
 #routeupload {
 	min-width: 580px;
 	max-width: 720px;
+}
+
+#routeupload .extra{
+	margin-bottom: 8px;
 }

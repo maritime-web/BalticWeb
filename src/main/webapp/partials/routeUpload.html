@@ -1,8 +1,7 @@
 <div id="routeupload">
 	<div>
 		<h2>
-			<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> 
-			Upload route
+			<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Upload route
 		</h2>
 	</div>
 	<div id="routeUpload" x-ng-controller="embryo.RouteUploadCtrl">
@@ -16,12 +15,19 @@
 
 			<div class="row-fluid">
 				<div class="span12">
-					<span>From {{voyageInfo.dep}} <span x-ng-show="voyageInfo.depEta">({{voyageInfo.depEta}})</span> to {{voyageInfo.des}} <span x-ng-show="voyageInfo.desEta">({{voyageInfo.desEta}})</span></span>
+					<span>From {{voyageInfo.dep}} <span x-ng-show="voyageInfo.depEta">({{voyageInfo.depEta}})</span> to
+						{{voyageInfo.des}} <span x-ng-show="voyageInfo.desEta">({{voyageInfo.desEta}})</span></span>
 				</div>
 			</div>
 			<div class="row-fluid">
+				<div x-ng-show="fileExtension == 'rt3'" class="extra">
+					<input placeholder="Transas Schedule Name" x-ng-model="scheduleName" type="text" name="name" class="input-large" />
+				</div>
+			</div>
+
+			<div class="row-fluid">
 				<!-- The global progress information-->
-				<div class="span5">
+				<div class="span12">
 					<span class="btn fileinput-button" x-ng-disabled="active()" x-ng-class="{disabled: disabled}"> <i
 						class="icon-plus icon-white"></i> <span>Choose file</span> <input type="file" name="files[]"
 						x-ng-disabled="disabled">
@@ -29,8 +35,9 @@
 							class="size">{{queue[0].size | formatFileSize}}</span></span>
 					</span>
 				</div>
-
-				<div class="span7 fade" x-ng-class="{in: active()}">
+			</div>
+			<div class="row-fluid">
+				<div class="span12 fade" x-ng-class="{in: active()}">
 					<!-- The global progress bar -->
 					<div class="progress progress-success progress-striped active" x-file-upload-progress="progress()"
 						x-ng-show="queue[0]">
@@ -38,7 +45,6 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="row-fluid">
 				<div class="span12">
 					<span class="pull-right fileupload-buttonbar">

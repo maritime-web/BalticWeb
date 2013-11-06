@@ -296,8 +296,8 @@ public class ScheduleServiceImpl implements ScheduleService {
      * Also sets yourship on route
      */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Route parseRoute(String fileName, InputStream is) throws IOException {
-        RouteParser parser = RouteParser.getRouteParser(fileName, is);
+    public Route parseRoute(String fileName, InputStream is, Map<String, String> context) throws IOException {
+        RouteParser parser = RouteParser.getRouteParser(fileName, is, context);
 
         dk.dma.enav.model.voyage.Route enavRoute = parser.parse();
         Route route = Route.fromEnavModel(enavRoute);

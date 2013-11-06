@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,12 +51,12 @@ import dk.dma.embryo.domain.ReportedVoyage;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.ShoreRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.rest.util.DateTimeConverter;
 
@@ -773,7 +774,7 @@ public class TestServiceBean {
     private void insertDemoRoute(String voyageId, String file, boolean activate) {
         InputStream is = getClass().getResourceAsStream(file);
         try {
-            Route r = scheduleService.parseRoute(file, is);
+            Route r = scheduleService.parseRoute(file, is, new HashMap());
             scheduleService.saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);

@@ -17,7 +17,9 @@ package dk.dma.embryo.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -75,8 +77,8 @@ public class RouteUploadService {
         List<FileItem> items = upload.parseRequest(req);
 
         String voyageId = null;
-
         Boolean active = null;
+        Map<String, String> context = new HashMap<>();
 
         for (FileItem item : items) {
             if (item.isFormField()) {
@@ -85,6 +87,8 @@ public class RouteUploadService {
                     voyageId = item.getString();
                 } else if ("active".equals(item.getFieldName())) {
                     active = "true".equals(item.getString()) || "TRUE".equals(item.getString());
+                } else if ("schedule".equals(item.getFieldName())){
+                    context.put("schedule", item.getString());
                 }
             }
         }
@@ -99,7 +103,7 @@ public class RouteUploadService {
                 }
                 logger.debug("Handling uploaded route with file name: {}", item.getName());
 
-                dk.dma.embryo.domain.Route route = scheduleService.parseRoute(item.getName(), item.getInputStream());
+                dk.dma.embryo.domain.Route route = scheduleService.parseRoute(item.getName(), item.getInputStream(), context);
 
                 String enavId = scheduleService.saveRoute(route, voyageId, active);
 
