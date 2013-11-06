@@ -1,6 +1,6 @@
 <div id="vesselInformation" x-ng-controller="embryo.VesselInformationCtrl">
 	<h2>
-		<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Vessel information
+		<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Vessel Information
 	</h2>
 	<p>Static information about the vessel is expected maintained mainly in the vessels AIS transponder. Additionally
 		information valuable in the Arctic region can be reported below.</p>
@@ -10,19 +10,19 @@
 		<div class="row-fluid">
 			<div class="span6">
 				<div class="control-group">
-					<label class="control-label" for="mmsi">MMSI</label>
+					<label class="control-label">MMSI</label>
 					<div class="controls txt">
 						<span>{{vessel.mmsi}}</span>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="maxSpeed">Max speed (kn)</label>
+					<label class="control-label" for="maxSpeed">Max Speed (kn)</label>
 					<div class="controls">
 						<input type="text" id="maxSpeed" name="maxSpeed" class="input-small" x-ng-model="vessel.maxSpeed" />
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="iceClass">Ice class</label>
+					<label class="control-label" for="iceClass">Ice Class</label>
 					<div class="controls">
 						<input type="text" id="iceClass" class="input-small" x-ng-model="vessel.iceClass" />
 					</div>
@@ -31,14 +31,14 @@
 
 			<div class="span6">
 				<div class="control-group">
-					<label class="control-label" for="gTonnage">Gross tonnage</label>
+					<label class="control-label" for="gTonnage">Gross Tonnage</label>
 					<div class="controls">
 						<input type="number" id="gTonnage" name="gTonnage" class="input-small" x-ng-model="vessel.grossTon" min="0" /> <span
 							x-ng-show="vesselForm.gTonnage.$error.min" class="msg-invalid">Expected positive number</span>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="people">Max people capacity</label>
+					<label class="control-label" for="people">Max People Capacity</label>
 					<div class="controls">
 						<input type="text" id="people" class="input-small" x-ng-model="vessel.maxPersons" />
 					</div>
@@ -46,7 +46,7 @@
 				<div class="control-group">
 					<label class="control-label" for="helipad">Helipad</label>
 					<div class="controls">
-						<select x-ng-model="vessel.helipad" class="input-small"
+						<select id="helipad" x-ng-model="vessel.helipad" class="input-small"
 							ng-options="value as key for (key, value) in helipadOptions">
 							<option></option>
 						</select>
@@ -57,7 +57,7 @@
 		<div class="row-fluid">
 			<div class="span12">
 				<div class="control-group">
-					<label class="control-label" for="commCapabilities">Communication capabilities</label>
+					<label class="control-label" for="commCapabilities">Communication Capabilities</label>
 					<div class="controls">
 						<input type="text" id="commCapabilities" class="input-xxlarge" x-ng-model="vessel.commCapabilities" />
 					</div>
