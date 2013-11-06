@@ -35,6 +35,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,15 +97,17 @@ public class VesselRestService {
             result.add(vo);
         }
 
+        Map<Long, VesselOverview> resultAsMap = new HashMap<>();
+
+        for (VesselOverview vo : result) {
+            resultAsMap.put(vo.getMmsi(), vo);
+        }
+
         List<Vessel> allArcticWebVessels = vesselDao.getAll(Vessel.class);
 
         for (Vessel v : allArcticWebVessels) {
-            VesselOverview vesselOverview = null;
-            for (VesselOverview vo : result) {
-                if (v.getMmsi().equals(vo.getMmsi())) {
-                    vesselOverview = vo;
-                }
-            }
+            VesselOverview vesselOverview = resultAsMap.get(v.getMmsi());
+
             if (vesselOverview != null) {
                 vesselOverview.setInArcticWeb(true);
             } else {
@@ -121,29 +124,11 @@ public class VesselRestService {
         return result;
     }
 
-    /**
-     * Returns vessel details based ArcticWeb data and AIS data.
-     */
-    /*
-    @GET
-    @Path("/details-short")
-    @Produces("application/json")
-    @GZIP
-    public VesselDetails detailsShort(@QueryParam("maritimeId") String maritimeId) {
-        VesselDetails details = null;
-        Vessel vessel = vesselService.getVessel(maritimeId);
-
-        if (vessel != null) {
-            details = vessel.toJsonModel2();
-        }
-        return details;
-    }
-    */
     @GET
     @Path("/details")
     @Produces("application/json")
     @GZIP
-    public VesselDetails detailsFull(@QueryParam("mmsi") long mmsi) {
+    public VesselDetails details(@QueryParam("mmsi") long mmsi) {
         Map result = aisViewService.vesselTargetDetails(mmsi, 1);
 
         boolean historicalTrack = false;
