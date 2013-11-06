@@ -35,7 +35,7 @@ embryo.additionalInformation.nearestShips = {
         addLayerToMap(group, this.layer, map)
     },
     available: function (vessel, vesselDetails) {
-        return true;
+        return vesselDetails.ais;
     },
     show: function (vessel, vesselDetails) {
         this.layer.draw(vessel, vesselDetails, embryo.vessel.allVessels());
