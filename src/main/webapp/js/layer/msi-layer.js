@@ -12,7 +12,7 @@ function MsiLayer() {
                 return (that.zoomLevel > 1) && that.active ? 0.8 : 0.01;
             },
             polygonTransparency: function() {
-                return that.active ? 0.4 : 0.2;
+                return that.active ? 0.3 : 0.15;
             },
             offset: function() {
                 return -context.size() / 2;
@@ -39,10 +39,10 @@ function MsiLayer() {
                     fontWeight: "bold",
                     labelOutlineWidth : 0,
                     labelYOffset: -20,
-                    fillColor: "yellow",
+                    fillColor: "#ad57a1",
                     fillOpacity: "${polygonTransparency}",
                     strokeWidth: 3,
-                    strokeColor: "red",
+                    strokeColor: "#8f2f7b",
                     strokeOpacity: "${polygonTransparency}"
 
                 }, { context: context }),
@@ -65,7 +65,7 @@ function MsiLayer() {
                     fontFamily: "Courier New, monospace",
                     label : "${description}",
                     fill: true,
-                    fillOpacity: 0.8,
+                    fillOpacity: 0.6,
                     strokeOpacity: 0.8
                 }, { context: context} )
 

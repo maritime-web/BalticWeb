@@ -24,8 +24,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import javax.ejb.ScheduleExpression;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,6 +56,9 @@ public class DmiFtpReader {
     private final Logger logger = LoggerFactory.getLogger(DmiFtpReader.class);
 
     @Inject
+    @Property("embryo.iceMaps.cron")
+    private String cron;
+    @Inject
     @Property("embryo.iceMaps.dmiFtpServerName")
     private String dmiServer;
     @Inject
@@ -69,78 +77,49 @@ public class DmiFtpReader {
     @Property("embryo.iceMaps.deltaSpawnTransferFile")
     private int deltaSpawnTransferFile;
 
-    private Thread transferFileThread;
-    private Thread periodicallySpawnTransferFileThread;
+    @Resource
+    private TimerService timerService;
 
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shp.xml", ".shx");
 
-    private void spawnTransferFileThread() {
-        transferFileThread = new Thread() {
-            public void run() {
-                try {
-                    logger.info("Making directory if necessary ...");
-                    if (!new File(localDmiDirectory).exists()) {
-                        logger.info("Making local directort for DMI files: " + localDmiDirectory);
-                        new File(localDmiDirectory).mkdirs();
-                    }
-                    logger.info("Calling transfer files ...");
-                    transferFiles();
-                } catch (Throwable t) {
-                    logger.error("Unhandled error transfering files from dmi: " + t, t);
-                } finally {
-                    transferFileThread = null;
-                    logger.info("Transfer file thread finished.");
-                }
-            }
-        };
-        transferFileThread.setDaemon(true);
-        transferFileThread.start();
+    private static ScheduleExpression createScheduleExpression(String e) {
+        String[] items = e.split(" ");
+        ScheduleExpression r = new ScheduleExpression();
+        r.minute(items[0]);
+        r.hour(items[1]);
+        r.dayOfMonth(items[2]);
+        r.month(items[3]);
+        r.dayOfMonth(items[4]);
+        return r;
     }
 
     @PostConstruct
     public void init() {
         if (!dmiServer.trim().equals("")) {
-            periodicallySpawnTransferFileThread = new Thread() {
-                public void run() {
-                    try {
-                        while (!Thread.currentThread().isInterrupted()) {
-                            if (transferFileThread == null) {
-                                logger.info("Spawning update DMI directory job.");
-                                spawnTransferFileThread();
-                            } else {
-                                logger.info("Update DMI directory job already running.");
-                            }
-                            Thread.sleep(deltaSpawnTransferFile * 60 * 1000L);
-
-                        }
-                    } catch (InterruptedException e) {
-                        // ignored
-                    } finally {
-                        logger.info("Periodically spawn transfer file thread finished.");
-                    }
-                }
-            };
-            periodicallySpawnTransferFileThread.setDaemon(true);
-            periodicallySpawnTransferFileThread.start();
+            timerService.createCalendarTimer(createScheduleExpression(cron), new TimerConfig(null, false));
         } else {
-            logger.info("DMI FTP site is not configured - DMI directory job not spawned.");
+            logger.info("DMI FTP site is not configured - cron job not scheduled.");
+        }
+    }
+
+    @Timeout
+    public void timeout() {
+        try {
+            logger.info("Making directory if necessary ...");
+            if (!new File(localDmiDirectory).exists()) {
+                logger.info("Making local directort for DMI files: " + localDmiDirectory);
+                new File(localDmiDirectory).mkdirs();
+            }
+            logger.info("Calling transfer files ...");
+            transferFiles();
+        } catch (Throwable t) {
+            logger.error("Unhandled error transfering files from dmi: " + t, t);
         }
     }
 
     @PreDestroy
     public void shutdown() throws InterruptedException {
         logger.info("Shutdown called.");
-
-        if (periodicallySpawnTransferFileThread != null) {
-            logger.info("Stopping periodically spawn transfer file thread ...");
-            periodicallySpawnTransferFileThread.interrupt();
-        }
-
-        if (transferFileThread != null) {
-            logger.info("Stopping transfer file thread ...");
-            transferFileThread.interrupt();
-            // transferFileThread.join();
-        }
     }
 
     private boolean isIceObservationFullyDownloaded(String name) {
@@ -215,7 +194,6 @@ public class DmiFtpReader {
         } finally {
             ftp.logout();
         }
-
     }
 
     private void transferFile(FTPClient ftp, String name) throws IOException, InterruptedException {

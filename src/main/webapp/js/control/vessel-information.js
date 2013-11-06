@@ -7,7 +7,7 @@ embryo.vesselInformation = {
 
         var egenskaber = {
             "MMSI": data.ais.mmsi,
-            "Callsign": data.ais.callSign,
+            "Callsign": data.ais.callsign,
             "Country": data.ais.country,
             "Destination": data.ais.destination,
             "Nav status": data.ais.navStatus,
@@ -26,7 +26,7 @@ embryo.vesselInformation = {
         var egenskaber = {
             "MMSI": data.ais.mmsi,
             "Class": data.ais["class"],
-            "Callsign": data.ais.callSign,
+            "Callsign": data.ais.callsign,
             "Cargo": data.ais.cargo,
             "Country": data.ais.country,
             "SOG": data.ais.sog,
@@ -51,7 +51,7 @@ embryo.vesselInformation = {
             "MMSI": data.ais.mmsi,
             "Class": data.ais["class"],
             "Name": data.ais.name,
-            "Callsign": data.ais.callSign,
+            "Callsign": data.ais.callsign,
             "Lat": data.ais.lat,
             "Lon": data.ais.lon,
             "IMO": data.ais.imo,
