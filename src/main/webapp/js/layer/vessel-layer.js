@@ -140,10 +140,10 @@ function VesselLayer() {
                                 angle : v.attributes.vessel.angle - 90,
                                 opacity : 1,
                                 image : "img/selection.png",
-                                imageWidth : 32,
-                                imageHeight : 32,
-                                imageYOffset : -16,
-                                imageXOffset : -16,
+                                imageWidth : function() { return 32 * that.context.vesselSize() },
+                                imageHeight : function() { return 32 * that.context.vesselSize() },
+                                imageYOffset : function() { return -16 * that.context.vesselSize() },
+                                imageXOffset : function() { return -16 * that.context.vesselSize() },
                                 type : "selection"
                             })
                     ]);
