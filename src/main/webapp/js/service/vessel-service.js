@@ -74,9 +74,11 @@
                             matches = true;
                         }
                     }
+                    /*
                     if (v.mmsi) {
                         if ((""+v.mmsi).indexOf(argument) == 0) matches = true;
                     }
+                    */
                     if (matches) {
                         result.push(v);
                     }
