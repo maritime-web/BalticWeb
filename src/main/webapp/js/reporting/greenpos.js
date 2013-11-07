@@ -202,20 +202,21 @@
 
             $scope.$apply(function() {
                 ScheduleService.getActiveVoyage(c.vesselOverview.mmsi, c.vesselDetails.additionalInformation.routeId,
-                        function(voyageInfo) {
-                            $scope.report.destination = voyageInfo.des;
-                            $scope.report.etaOfArrival = voyageInfo.desEta;
-                            if (voyageInfo.crew) {
-                                $scope.report.personsOnBoard = voyageInfo.crew;
+                    function(voyageInfo) {
+                        $scope.report.destination = voyageInfo.des;
+                        $scope.report.etaOfArrival = voyageInfo.desEta;
+                        if (voyageInfo.crew) {
+                            $scope.report.personsOnBoard = voyageInfo.crew;
+                        }
+                        if (voyageInfo.passengers) {
+                            if ($scope.report.personsOnBoard) {
+                                $scope.report.personsOnBoard += voyageInfo.passengers;
+                            } else {
+                                $scope.report.personsOnBoard = voyageInfo.passengers;
                             }
-                            if (voyageInfo.passengers) {
-                                if ($scope.report.personsOnBoard) {
-                                    $scope.report.personsOnBoard += voyageInfo.passengers;
-                                } else {
-                                    $scope.report.personsOnBoard = voyageInfo.passengers;
-                                }
-                            }
-                        });
+                        }
+                    }
+                );
             });
         }
 
