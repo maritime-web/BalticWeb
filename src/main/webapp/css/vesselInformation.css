@@ -1,13 +1,23 @@
-
-
-#vesselInformation{
+#vesselInformationEditPanel {
 	max-width:600px;
 }
 
-#vesselInformation form{
+#vesselInformationViewPanel {
+	max-width:600px;
+}
+
+#vesselInformationEditPanel form {
 	margin-top:20px;
 }
 
-#vesselInformation .txt{
+#vesselInformationViewPanel form {
+	margin-top:20px;
+}
+
+#vesselInformationEditPanel .txt {
+	padding-top:5px;
+}
+
+#vesselInformationViewPanel .txt {
 	padding-top:5px;
 }
