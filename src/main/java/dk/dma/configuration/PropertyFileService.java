@@ -109,7 +109,9 @@ public class PropertyFileService {
     public ScheduleExpression getScheduleExpressionPropertyByKey(InjectionPoint ip) {
         String e = getStringPropertyByKey(ip);
 
-        if (e.equals("-")) return null;
+        if (e.equals("-")) {
+            return null;
+        }
 
         String[] items = e.split(" ");
 
