@@ -34,6 +34,7 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ScheduleService;
@@ -47,7 +48,7 @@ public class RouteUploadService {
 
     @Inject
     private ScheduleService scheduleService;
-    
+
     @Inject
     private Logger logger;
 
@@ -69,13 +70,12 @@ public class RouteUploadService {
     @POST
     @Path("/single")
     @Consumes("multipart/form-data")
-    @Produces("application/json")
+    @Produces({ "application/json" })
     public Files uploadFile(@Context HttpServletRequest req) throws FileUploadException, IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
 
         List<FileItem> items = upload.parseRequest(req);
-
         String voyageId = null;
         Boolean active = null;
         Map<String, String> context = new HashMap<>();
@@ -87,7 +87,7 @@ public class RouteUploadService {
                     voyageId = item.getString();
                 } else if ("active".equals(item.getFieldName())) {
                     active = "true".equals(item.getString()) || "TRUE".equals(item.getString());
-                } else if ("schedule".equals(item.getFieldName())){
+                } else if ("schedule".equals(item.getFieldName())) {
                     context.put("schedule", item.getString());
                 }
             }
@@ -103,7 +103,8 @@ public class RouteUploadService {
                 }
                 logger.debug("Handling uploaded route with file name: {}", item.getName());
 
-                dk.dma.embryo.domain.Route route = scheduleService.parseRoute(item.getName(), item.getInputStream(), context);
+                dk.dma.embryo.domain.Route route = scheduleService.parseRoute(item.getName(), item.getInputStream(),
+                        context);
 
                 String enavId = scheduleService.saveRoute(route, voyageId, active);
 
@@ -114,6 +115,30 @@ public class RouteUploadService {
         }
 
         return result;
+    }
+
+    /**
+     * This is a workaround to the fact that Internet Explorer v <= 9 does not allow file submit using Ajax (See more
+     * here https://github.com/blueimp/jQuery-File-Upload/issues/123). by setting content type to text/html but
+     * returning JSON it works.
+     * 
+     * @param req
+     * @return
+     * @throws FileUploadException
+     * @throws IOException
+     */
+    @POST
+    @Path("/single")
+    @Consumes("multipart/form-data")
+    @Produces({ "text/html" })
+    public String uploadFileHtml(@Context HttpServletRequest req) throws FileUploadException, IOException {
+        Files files = uploadFile(req);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(files);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static class Files {

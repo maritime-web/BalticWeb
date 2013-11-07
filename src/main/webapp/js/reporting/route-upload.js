@@ -10,7 +10,7 @@
 (function() {
     "use strict";
 
-    var url = embryo.baseUrl + 'rest/routeUpload/single/';
+    var url = embryo.baseUrl + 'rest/routeUpload/single';
 
     var module = angular.module('embryo.routeUpload', [ 'embryo.scheduleService', 'embryo.routeService',
             'blueimp.fileupload' ]);
@@ -101,20 +101,24 @@
             });
         };
 
+        function done(e, data){
+            $.each(data.result.files, function(index, file) {
+                $scope.uploadedFile = file;
+                if ($scope.activate) {
+                    VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId",
+                            file.routeId);
+                }
+                // HACK: need to reload voyage plan
+                sessionStorage.clear();
+            });            
+        }
+        
         $scope.options = {
             url : url,
-            done : function(e, data) {
-                $.each(data.result.files, function(index, file) {
-                    $scope.uploadedFile = file;
-                    if ($scope.activate) {
-                        VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId",
-                                file.routeId);
-                    }
-                    // HACK: need to reload voyage plan
-                    sessionStorage.clear();
-                });
-            }
+            dataType : 'json',
         };
+        
+        $scope.$on('fileuploaddone', done);
 
         $scope.uploadAndActivate = function() {
             $scope.activate = true;
@@ -136,6 +140,7 @@
             initUpload();
         };
 
+        
         $scope.$on('fileuploadsubmit', function(e, data) {
             $scope.message = null;
 
