@@ -57,7 +57,7 @@ public class DmiFtpReader {
 
     @Inject
     @Property("embryo.iceMaps.cron")
-    private String cron;
+    private ScheduleExpression cron;
     @Inject
     @Property("embryo.iceMaps.dmiFtpServerName")
     private String dmiServer;
@@ -73,30 +73,16 @@ public class DmiFtpReader {
     @Inject
     @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
     private String localDmiDirectory;
-    @Inject
-    @Property("embryo.iceMaps.deltaSpawnTransferFile")
-    private int deltaSpawnTransferFile;
 
     @Resource
     private TimerService timerService;
 
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shp.xml", ".shx");
 
-    private static ScheduleExpression createScheduleExpression(String e) {
-        String[] items = e.split(" ");
-        ScheduleExpression r = new ScheduleExpression();
-        r.minute(items[0]);
-        r.hour(items[1]);
-        r.dayOfMonth(items[2]);
-        r.month(items[3]);
-        r.dayOfMonth(items[4]);
-        return r;
-    }
-
     @PostConstruct
     public void init() {
-        if (!dmiServer.trim().equals("")) {
-            timerService.createCalendarTimer(createScheduleExpression(cron), new TimerConfig(null, false));
+        if (!dmiServer.trim().equals("") && (cron != null)) {
+            timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("DMI FTP site is not configured - cron job not scheduled.");
         }

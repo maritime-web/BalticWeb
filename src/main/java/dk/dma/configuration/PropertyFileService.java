@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.ScheduleExpression;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Singleton;
@@ -101,5 +102,27 @@ public class PropertyFileService {
     @Property
     public double getDoublePropertyByKey(InjectionPoint ip) {
         return Double.parseDouble(getStringPropertyByKey(ip));
+    }
+
+    @Produces
+    @Property
+    public ScheduleExpression getScheduleExpressionPropertyByKey(InjectionPoint ip) {
+        String e = getStringPropertyByKey(ip);
+
+        if (e.equals("-")) {
+            return null;
+        }
+
+        String[] items = e.split(" ");
+
+        ScheduleExpression r = new ScheduleExpression();
+
+        r.minute(items[0]);
+        r.hour(items[1]);
+        r.dayOfMonth(items[2]);
+        r.month(items[3]);
+        r.dayOfMonth(items[4]);
+
+        return r;
     }
 }
