@@ -1,14 +1,14 @@
 <div class="row-fluid" x-ng-controller="embryo.GreenPosCtrl">
     <h2>
         <a class="close embryo-close-panel" href="#" style="float:right">&times;</a>
-        Ship report
+        Ship Report
     </h2>
     <form id="greenPosForm" name="greenPosForm" class="form-horizontal" novalidate>
         <div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
         <div x-ng-show="message" class="alert alert-info">{{message}}</div>
         <div class="row">
             <div class="control-group">
-                <label class="control-label" for="gReportType">Report type</label>
+                <label class="control-label" for="gReportType">Report Type</label>
                 <div class="controls">
 
                     <select id="gReportType" name="gpReportType" x-ng-options="i.id as i.name for i in reportTypes" x-ng-model="report.type" class="input-large" required>
@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label">Ship name</label>
+                <label class="control-label">Ship Name</label>
                 <div class="controls">
                     <input type="text" name="gpShipName" x-ng-model="report.vesselName" /> <input type="hidden"
                         x-ng-model="report.vesselMaritimeId" />
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label">Call sign</label>
+                <label class="control-label">Call Sign</label>
                 <div class="controls">
                     <input type="text" class="input-medium" x-ng-model="report.callSign" />
                 </div>
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="control-group" x-ng-show="isVisible('etaOfArrival')">
-                <label class="control-label" for="gpEta">Estimated time of arrival</label>
+                <label class="control-label" for="gpEta">Estimated Time of Arrival</label>
                 <div class="controls">
                     <input id="gpEta" name="gpEta" type="text" class="input-medium" x-ng-model="report.etaOfArrival"
                         x-ng-required="isVisible('etaOfArrival')" /> <span
@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div class="control-group" x-ng-show="isVisible('personsOnBoard')">
-                <label class="control-label" for="gpPersons">Persons on board</label>
+                <label class="control-label" for="gpPersons">Persons on Board</label>
                 <div class="controls">
                     <input id="gpPersons" name="gpPersons" type="text" class="input-small" x-ng-model="report.personsOnBoard"
                         x-ng-required="isVisible('personsOnBoard')" /> <span
@@ -109,7 +109,7 @@
                 </div>
             </div>
             <div class="control-group" x-ng-show="isVisible('ice')">
-                <label class="control-label" for="gpIce">Ice observations</label>
+                <label class="control-label" for="gpIce">Ice Observations</label>
                 <div class="controls">
                     <textarea id="gpIce" name="gpIce" rows="3" x-ng-model="report.ice" x-ng-required="isVisible('ice')"></textarea>
                     <span x-ng-show="greenPosForm.gpIce.$error.required && greenPosForm.gpIce.$dirty" class="msg-invalid">Value
@@ -122,12 +122,6 @@
                     <textarea id="gpDeviation" name="gpDeviation" rows="3" x-ng-model="report.deviation"></textarea>
                     <span x-ng-show="greenPosForm.gpDeviation.$error.required && greenPosForm.gpDeviation.$dirty" class="msg-invalid">Value
                         required</span>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Report time</label>
-                <div class="controls">
-                    <div></div>
                 </div>
             </div>
         </div>
@@ -148,7 +142,9 @@
         <div class="row">
             <span class="pull-right">
                 <button type="button" x-ng-show="!editable" class="btn btn-primary" x-ng-click="back()">Close</button>
+                &nbsp;
                 <button type="button" x-ng-show="editable" class="btn" x-ng-click="clear()">Clear</button>
+                &nbsp;
                 <button type="button" x-ng-show="editable" x-ng-click="sendReport()" x-ng-disabled="greenPosForm.$invalid"
                     class="btn btn-primary">Send</button>
 
