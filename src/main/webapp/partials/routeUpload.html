@@ -7,7 +7,10 @@
 	<div id="routeUpload" x-ng-controller="embryo.RouteUploadCtrl">
 
 		<div x-ng-show="queue[0].error" class="alert alert-error">{{queue[0].error}}</div>
-		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+		<div x-ng-show="uploadedFile" class="alert alert-info">
+			Uploaded <span x-ng-show="activate"> and activated </span> route from file {{file.name}}. Edit the route details <a
+				href="#" x-ng-click="edit($event)">here</a>
+		</div>
 
 		<form name="uploadRouteForm" action="//jquery-file-upload.appspot.com/" method="POST" enctype="multipart/form-data"
 			x-file-upload="options" x-ng-class="{'fileupload-processing' : processing() || loadFiles}"
@@ -20,20 +23,22 @@
 				</div>
 			</div>
 			<div class="row-fluid">
-				<div x-ng-show="fileExtension == 'rt3'" class="extra">
-					<input placeholder="Transas Schedule Name" x-ng-model="scheduleName" type="text" name="name" class="input-large" />
-				</div>
-			</div>
-
-			<div class="row-fluid">
 				<!-- The global progress information-->
-				<div class="span12">
+				<div class="span8">
 					<span class="btn fileinput-button" x-ng-disabled="active()" x-ng-class="{disabled: disabled}"> <i
 						class="icon-plus icon-white"></i> <span>Choose file</span> <input type="file" name="files[]"
 						x-ng-disabled="disabled">
 					</span> <span class="txt"> <span class="data-label" x-ng-show="queue[0]"> <span>{{queue[0].name}}</span> <span
 							class="size">{{queue[0].size | formatFileSize}}</span></span>
 					</span>
+				</div>
+				<div class="span4">
+					<div x-ng-show="fileExtension == 'rt3'" class="extra">
+						<select x-ng-show="fileSupport" x-ng-model="scheduleName"
+							x-ng-options="name for name in transasSchedules" class="input-large">
+						</select> <input x-ng-show="!fileSupport" type="text" placeholder="Transas Schedule Name" x-ng-model="scheduleName"
+							class="input-large">
+					</div>
 				</div>
 			</div>
 			<div class="row-fluid">
