@@ -22,13 +22,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.Timeout;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.ejb.*;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -59,9 +53,9 @@ public class AisReplicator {
     @Inject
     private String enabled;
 
-    @Property(value = "embryo.vessel.aisjob.minutes")
     @Inject
-    private Integer minute;
+    @Property("embryo.vessel.aisjob.cron")
+    private ScheduleExpression cron;
 
     @Inject
     private Logger logger;
@@ -75,13 +69,11 @@ public class AisReplicator {
 
     @PostConstruct
     public void startTimer() {
-        logger.info("Setting up ais replication job executing every {} minutes", minute);
+        logger.info("Setting up ais replication job");
 
-        if (enabled != null && "true".equals(enabled.trim().toLowerCase())) {
-            logger.info("Setting up ais replication job executing every {} minutes", minute);
-
+        if (enabled != null && "true".equals(enabled.trim().toLowerCase()) && cron != null) {
             TimerConfig config = new TimerConfig(null, false);
-            service.createIntervalTimer(0, 1000 * 60 * minute, config);
+            service.createCalendarTimer(cron, config);
         } else {
             logger.info("Ais replication job not enabled");
         }
