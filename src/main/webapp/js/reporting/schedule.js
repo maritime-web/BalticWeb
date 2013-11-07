@@ -110,11 +110,16 @@
         $scope.editRoute = function(index) {
             var context = {
                 mmsi : $scope.mmsi,
-                fromVoyage : $scope.voyages[index]
+                routeId : $scope.voyages[index].route ? $scope.voyages[index].route.id : null,
+                voyageId : $scope.voyages[index].maritimeId,
+                dep : $scope.voyages[index].berthName,
+                etdep : $scope.voyages[index].departure,
             };
             if (index < $scope.voyages.length - 1) {
-                context.toVoyage = $scope.voyages[index + 1];
+                context.des = $scope.voyages[index + 1].berthName;
+                context.etdes = $scope.voyages[index + 1].arrival;
             }
+            
             embryo.controllers.editroute.show(context);
         };
 

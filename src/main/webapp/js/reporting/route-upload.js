@@ -12,7 +12,8 @@
 
     var url = embryo.baseUrl + 'rest/routeUpload/single/';
 
-    var module = angular.module('embryo.routeUpload', [ 'embryo.scheduleService','embryo.routeService',  'blueimp.fileupload' ]);
+    var module = angular.module('embryo.routeUpload', [ 'embryo.scheduleService', 'embryo.routeService',
+            'blueimp.fileupload' ]);
 
     module.config([ '$httpProvider', 'fileUploadProvider', function($httpProvider, fileUploadProvider) {
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
@@ -57,27 +58,57 @@
                 $("#routeUploadPanel").css("display", "none");
             }
         };
+        
+        $scope.fileSupport = window.FileReader ? true : false;
 
         // Choosing a new file will replace the old one
         $scope.$on('fileuploadadd', function(e, data) {
             $scope.queue = [];
-            
-            if(data.files.length > 0 && data.files[0].name.toLocaleLowerCase().match(/.rt3$/)){
+
+            if (data.files.length > 0 && data.files[0].name.toLocaleLowerCase().match(/.rt3$/)) {
                 $scope.fileExtension = "rt3";
+
+                // parse file and populate Transas Route Schedule Names if browser supports FileReader API
+                if($scope.fileSupport){
+                    var f = event.target.files[0];
+                    var reader = new FileReader();
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                            var xml = jQuery.parseXML(e.target.result);
+                            var xmlDoc = $(xml);
+                            $scope.$apply(function() {
+                                $scope.transasSchedules = xmlDoc.find("Calculations Calculation").map(function(index, elem) {
+                                    return $(elem).attr("CalcName");
+                                });
+                                if($scope.transasSchedules.length > 0){
+                                    $scope.scheduleName = $scope.transasSchedules[$scope.transasSchedules.length > 1 ? 1 : 0];
+                                }
+                            });
+                        };
+                    })(f);
+                    reader.readAsText(f);
+                }
             }
         });
+
+        $scope.edit = function($event) {
+            $event.preventDefault();
+
+            embryo.controllers.editroute.show({
+                mmsi : $scope.mmsi,
+                routeId : $scope.uploadedFile.routeId,
+                voyageId : $scope.voyageInfo.id
+            });
+        };
 
         $scope.options = {
             url : url,
             done : function(e, data) {
                 $.each(data.result.files, function(index, file) {
-                    $scope.message = "Uploaded route file '" + file.name + "'";
                     $scope.uploadedFile = file;
-
                     if ($scope.activate) {
                         VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId",
                                 file.routeId);
-                        $scope.message += " and activated the route";
                     }
                     // HACK: need to reload voyage plan
                     sessionStorage.clear();
@@ -99,21 +130,23 @@
             $scope.uploadedFile = null;
             $scope.message = null;
             $scope.activate = false;
+            $scope.scheduleName = null;
+            $scope.fileExtension = null;
             $scope.cancel();
             initUpload();
         };
 
         $scope.$on('fileuploadsubmit', function(e, data) {
             $scope.message = null;
-			
+
             if ($scope.voyageInfo != null) {
                 data.formData = {
                     voyageId : $scope.voyageInfo.id,
                     active : $scope.activate,
                 };
-                
-                if($scope.fileExtension == "rt3"){
-                    data.formData.schedule = $scope.scheduleName
+
+                if ($scope.fileExtension == "rt3") {
+                    data.formData.schedule = $scope.scheduleName;
                 }
             }
 

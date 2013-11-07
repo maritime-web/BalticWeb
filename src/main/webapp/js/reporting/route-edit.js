@@ -49,19 +49,14 @@
             show : function(context) {
                 clearAdditionalInformation();
                 $scope.mmsi = context.mmsi;
-
-                if (context.fromVoyage.route && context.fromVoyage.route.id) {
-                    $scope.routeId = context.fromVoyage.route.id;
-                }else{
-                    $scope.routeId = null;
-                }
+                $scope.routeId = context.routeId;
 
                 $scope.scheduleData = {
-                    voyageId : context.fromVoyage.maritimeId,
-                    dep : context.fromVoyage.berthName,
-                    etdep : context.fromVoyage.departure,
-                    des : context.toVoyage.berthName,
-                    etdes : context.toVoyage.arrival
+                    voyageId : context.voyageId,
+                    dep : context.dep,
+                    etdep : context.etdep,
+                    des : context.des,
+                    etdes : context.etdes
                 };
                 $scope.reset();
                 $("#routeEditPanel").css("display", "block");
