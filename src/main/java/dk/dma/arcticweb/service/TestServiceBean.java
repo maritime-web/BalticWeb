@@ -237,6 +237,7 @@ public class TestServiceBean {
         createBerths();
         createOrasilaTestData();
         uploadOrasilaRoutes();
+        createDmaTestData();
         createOraTankTestData();
         uploadOraTankRoutes();
         createSarfaqTestData();
@@ -261,6 +262,19 @@ public class TestServiceBean {
             vesselDao.saveEntity(berth);
         }
     }
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createDmaTestData() {
+        logger.info("BEFORE CREATION - DMA");
+
+        AuthorityRole auth = new AuthorityRole();
+
+        vesselDao.saveEntity(auth);
+
+        SecuredUser user = new SecuredUser("dma", "qwerty", "obo@dma.dk");
+        user.addRole(auth);
+
+        vesselDao.saveEntity(user);
+    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createOrasilaTestData() {
@@ -280,15 +294,12 @@ public class TestServiceBean {
 
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission ais = new Permission("ais");
-        Permission yourShip = new Permission("yourShip");
+        Permission yourShip = new Permission("YourShip");
 
-        vesselDao.saveEntity(ais);
         vesselDao.saveEntity(yourShip);
 
         Sailor sailorRole = new Sailor();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(ais);
         sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
@@ -298,16 +309,6 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(user);
 
-        // Create auth and user
-        AuthorityRole auth = new AuthorityRole();
-        // auth.setName(new Text("en", "Danish Maritime Authority"));
-        auth.add(ais);
-        vesselDao.saveEntity(auth);
-
-        user = new SecuredUser("dma", "qwerty", "obo@dma.dk");
-        user.addRole(auth);
-
-        vesselDao.saveEntity(user);
 
         LocalDateTime now = LocalDateTime.now();
         Schedule voyagePlan = new Schedule();
@@ -323,8 +324,9 @@ public class TestServiceBean {
                 0), now.plusDays(14).withTime(9, 30, 0, 0)));
 
         vesselDao.saveEntity(voyagePlan);
-
     }
+
+
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadOrasilaRoutes() {
@@ -347,15 +349,12 @@ public class TestServiceBean {
         newVessel.getAisData().setCallsign("OXPJ2");
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission ais = new Permission("ais");
-        Permission yourShip = new Permission("yourShip");
+        Permission yourShip = new Permission("YourShip");
 
-        vesselDao.saveEntity(ais);
         vesselDao.saveEntity(yourShip);
 
         Sailor sailorRole = new Sailor();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(ais);
         sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
@@ -394,15 +393,12 @@ public class TestServiceBean {
         newVessel.setMmsi(331037000L);
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission ais = new Permission("ais");
-        Permission yourShip = new Permission("yourShip");
+        Permission yourShip = new Permission("YourShip");
 
-        vesselDao.saveEntity(ais);
         vesselDao.saveEntity(yourShip);
 
         Sailor sailorRole = new Sailor();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(ais);
         sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
@@ -504,15 +500,12 @@ public class TestServiceBean {
         newVessel.setMmsi(219623000L);
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission ais = new Permission("ais");
-        Permission yourShip = new Permission("yourShip");
+        Permission yourShip = new Permission("YourShip");
 
-        vesselDao.saveEntity(ais);
         vesselDao.saveEntity(yourShip);
 
         Sailor sailorRole = new Sailor();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(ais);
         sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
@@ -608,25 +601,12 @@ public class TestServiceBean {
     private void createArcticCommandLogin() {
         logger.info("BEFORE CREATION - Arctic Command");
 
-        // Create vessel and user
-        Permission ais = new Permission("ais");
-        Permission ice = new Permission("ice");
-        Permission msi = new Permission("msi");
-        Permission assistance = new Permission("assistance");
-        Permission greenpos = new Permission("greenpos");
+        Permission greenposList = new Permission("GreenposList");
 
-        vesselDao.saveEntity(ais);
-        vesselDao.saveEntity(ice);
-        vesselDao.saveEntity(msi);
-        vesselDao.saveEntity(assistance);
-        vesselDao.saveEntity(greenpos);
+        vesselDao.saveEntity(greenposList);
 
         ShoreRole role = new ShoreRole();
-        role.add(ais);
-        role.add(ice);
-        role.add(msi);
-        role.add(assistance);
-        role.add(greenpos);
+        role.add(greenposList);
 
         vesselDao.saveEntity(role);
 
@@ -640,22 +620,7 @@ public class TestServiceBean {
     private void createDmiLogin() {
         logger.info("BEFORE CREATION - DMI");
 
-        // Create vessel and user
-        Permission ais = new Permission("ais");
-        Permission ice = new Permission("ice");
-        Permission msi = new Permission("msi");
-        Permission assistance = new Permission("assistance");
-
-        vesselDao.saveEntity(ais);
-        vesselDao.saveEntity(ice);
-        vesselDao.saveEntity(msi);
-        vesselDao.saveEntity(assistance);
-
         ShoreRole role = new ShoreRole();
-        role.add(ais);
-        role.add(ice);
-        role.add(msi);
-        role.add(assistance);
 
         vesselDao.saveEntity(role);
 
@@ -669,22 +634,7 @@ public class TestServiceBean {
     private void createIceCenterLogin() {
         logger.info("BEFORE CREATION - Istjejenesten");
 
-        // Create vessel and user
-        Permission ais = new Permission("ais");
-        Permission ice = new Permission("ice");
-        Permission msi = new Permission("msi");
-        Permission assistance = new Permission("assistance");
-
-        vesselDao.saveEntity(ais);
-        vesselDao.saveEntity(ice);
-        vesselDao.saveEntity(msi);
-        vesselDao.saveEntity(assistance);
-
         ShoreRole role = new ShoreRole();
-        role.add(ais);
-        role.add(ice);
-        role.add(msi);
-        role.add(assistance);
 
         vesselDao.saveEntity(role);
 
