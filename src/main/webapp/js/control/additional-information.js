@@ -50,6 +50,9 @@ embryo.additionalInformation.distanceCircles = {
     title: "3-6-9 hour distance circle based on SOG",
     showAt: [ "YourShip", "SelectedShip" ],
     layer: new DistanceCirclesLayer(),
+    init: function (map, group) {
+        addLayerToMap(group, this.layer, map)
+    },
     available: function (vessel, vesselDetails) {
         return vesselDetails.ais && vesselDetails.ais.sog > 0;
     },
@@ -63,6 +66,9 @@ embryo.additionalInformation.route = {
     title: "Route",
     showAt: [ "SelectedShip" ],
     layer: new RouteLayer("#D5672D"),
+    init: function (map, group) {
+        addLayerToMap(group, this.layer, map)
+    },
     available: function (vessel, vesselDetails) {
         return vesselDetails.additionalInformation.routeId;
     },
@@ -79,6 +85,9 @@ embryo.additionalInformation.metoc = {
     title: "METOC",
     showAt: [ "YourShip" ],
     layer: new MetocLayer(),
+    init: function (map, group) {
+        addLayerToMap(group, this.layer, map)
+    },
     available: function (vessel, vesselDetails) {
         return vesselDetails.additionalInformation.routeId;
     },
@@ -93,7 +102,7 @@ embryo.additionalInformation.metoc = {
 
 function initAdditionalInformation(map, group) {
     $.each(embryo.additionalInformation, function (k, v) {
-        addLayerToMap(group, v.layer, map)
+        if (v.init) v.init(map, group);
     });
 }
 

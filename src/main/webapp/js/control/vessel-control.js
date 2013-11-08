@@ -89,6 +89,12 @@ $(function() {
 
         setTimeout(fixAccordionSize, 100);
     });
+
+    embryo.authenticated(function() {
+        if (embryo.authentication.permissions.indexOf("GreenposList") < 0) {
+            $("#vcpGreenposList").parent().remove();
+        }
+    });
 })
 
 $(function() {
