@@ -1,0 +1,17 @@
+#greenposList .table tr.basic td {
+	padding-bottom: 0px;
+	border-top: none;
+}
+
+#greenposList .table tr.extra td {
+	padding-top: 0px;
+	border-top: none;
+}
+
+#greenposList .table tbody {
+	border-top: 2px solid #dddddd;
+}
+
+#greenposList .table {
+	margin-top: 20px;
+}

@@ -66,7 +66,7 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
         if(search.getVesselMmsi() != null){
             criterias.add(builder.equal(root.get("vesselMmsi"), search.getVesselMmsi()));
         }
-        
+
         Predicate[] criteriaArr = new Predicate[criterias.size()];
         criteriaArr = criterias.toArray(criteriaArr);
         

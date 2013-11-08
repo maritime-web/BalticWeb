@@ -40,6 +40,7 @@ import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.AuthorityRole;
 import dk.dma.embryo.domain.Berth;
+import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosFinalReport;
 import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosReport;
@@ -704,10 +705,23 @@ public class TestServiceBean {
         vesselDao.saveEntity(report);
 
         report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("64 10.068N", "051 64.78W"), "Sun shine", "NO ICE", 11.6, 162);
+                new Position("64 10.068N", "051 64.78W"), "Sun shine", "Spredte skosser og let tyndis", 11.6, 162);
         report.setReportedBy("orasila");
         report.setTs(converter.toObject("25-09-2013 00:00"));
         vesselDao.saveEntity(report);
+
+        report = new GreenPosDeviationReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
+                new Position("64 10.068N", "051 64.78W"), "Vi smutter lige en tur omkring Sisimiut og henter cigaretter mm. ");
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("25-09-2013 04:00"));
+        vesselDao.saveEntity(report);
+
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
+                new Position("64 10.068N", "051 64.78W"), "Sun shine", "Spredte skosser og let tyndis", 11.6, 162);
+        report.setReportedBy("orasila");
+        report.setTs(converter.toObject("25-09-2013 06:00"));
+        vesselDao.saveEntity(report);
+
 
     }
 

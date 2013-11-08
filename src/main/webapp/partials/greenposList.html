@@ -1,46 +1,48 @@
-
-
-<div>
+<div id="greenposList" x-ng-controller="embryo.GreenposListCtrl">
 	<div>
-		<h2>Greenpos Reports</h2>
+		<h2>
+			<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Greenpos Reports - {{vessel.ais.name}}
+		</h2>
 	</div>
 	<div>
 
-		<div class="row-fluid">
-			<div class="span12" id="greenPosList_list">
+		<table class="table">
+			<thead>
+				<tr>
+					<th x-sort="type" options="{options}">Report type</th>
+					<th x-sort="ts" options="sortOptions">Report time</th>
+					<th>Longitude</th>
+					<th>Latitude</th>
+					<th>Course</th>
+					<th>Speed</th>
+					<th>Persons</th>
+					<th>Destination</th>
+					<th>ETA</th>
+				</tr>
+			</thead>
 
-				<table class="table">
-					<thead>
-						<tr>
-							<th x-sort="type" options="{options}">Report type</th>
-							<th x-sort="name" options="options">Ship name</th>
-							<th x-sort="mmsi" options="options">Mmsi</th>
-							<th x-sort="callSign" options="options">Call sign</th>
-							<th>Longitude</th>
-							<th>Latitude</th>
-							<th>Course</th>
-							<th>Speed</th>
-							<th x-sort="ts" options="sortOptions">Report time</th>
-							<th x-sort="reporter" options="sortOptions">Reported by</th>
-						</tr>
-					</thead>
+			<tbody x-ng-repeat="report in reports">
+				<tr class="basic">
+					<td>{{reportText(report.type)}}</td>
+					<td>{{utc(report.ts) | date:'dd-MM-yy HH:mm'}}</td>
+					<td>{{report.lon}}</td>
+					<td>{{report.lat}}</td>
+					<td>{{report.course}}</td>
+					<td>{{report.speed}}</td>
+					<td>{{report.personsOnBoard}}</td>
+					<td>{{report.destination}}</td>
+					<td>{{report.eta}}</td>
+				</tr>
+				<tr class="extra" x-ng-show="report.type=='SP' || report.type=='FR' || report.type=='PR'">
+					<td colspan="9">Weather: {{report.weather}}<br />Ice: {{report.ice}}
 
-					<tbody>
-						<tr x-ng-repeat="report in reports">
-							<td ><a x-ng-href="report.html#/report/view/{{report.id}}">{{reportText(report.type)}}</a></td>
-							<td>{{report.shipName}}</td>
-							<td>{{report.mmsi}}</td>
-							<td>{{report.callSign}}</td>
-							<td>{{report.lon}}</td>
-							<td>{{report.lat}}</td>
-							<td>{{report.course}}</td>
-							<td>{{report.speed}}</td>
-							<td><a x-ng-href="report.html#/report/view/{{report.mmsi}}/{{report.ts}}">{{utc(report.ts) | date:'dd-MM-yy HH:mm'}}</a></td>
-							<td>{{report.reporter}}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
+					</td>
+
+				</tr>
+				<tr class="extra" x-ng-show="report.type=='DR'">
+					<td colspan="9">{{report.deviation}}</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </div>

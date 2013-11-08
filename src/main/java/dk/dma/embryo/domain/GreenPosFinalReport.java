@@ -22,6 +22,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.rest.json.GreenPos;
+import dk.dma.embryo.rest.json.GreenPosShort;
 
 /**
  * 
@@ -63,6 +64,19 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         return result;
     }
 
+    @Override
+    public GreenPosShort toJsonModelShort() {
+        GreenPosShort result = new GreenPosShort();
+        result.setId(getEnavId());
+        result.setType(getReportType());
+        result.setLon(getPosition().getLongitudeAsString());
+        result.setLat(getPosition().getLatitudeAsString());
+        result.setWeather(getWeather());
+        result.setIce(getIceInformation());
+        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        
+        return result;
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors

@@ -33,6 +33,7 @@ import dk.dma.arcticweb.service.GreenPosService;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.rest.json.GreenPos;
+import dk.dma.embryo.rest.json.GreenPosShort;
 import dk.dma.embryo.rest.util.DateTimeConverter;
 
 /**
@@ -100,9 +101,8 @@ public class GreenPosRestService {
     @GET
     @Path("/list")
     @Produces("application/json")
-    public GreenPos[] list(@QueryParam("name") String type, @QueryParam("name") String name,
-            @QueryParam("mmsi") Long mmsi, @QueryParam("callSign") String callSign,
-            @QueryParam("reporter") String reporter, @QueryParam("ts") String ts, @QueryParam("sortBy") String sortBy,
+    public GreenPosShort[] list(@QueryParam("type") String type, @QueryParam("mmsi") Long mmsi,
+            @QueryParam("ts") String ts, @QueryParam("sortBy") String sortBy,
             @QueryParam("sortOrder") String sortOrder, @QueryParam("start") Integer start,
             @QueryParam("max") Integer max) {
         logger.debug("list({})");
@@ -118,14 +118,13 @@ public class GreenPosRestService {
             }
         }
 
-        GreenposSearch search = new GreenposSearch(type, name, mmsi, callSign, reporter, dateTime, sortBy, sortOrder,
-                start, max);
+        GreenposSearch search = new GreenposSearch(type, mmsi, dateTime, sortBy, sortOrder, start, max);
 
         logger.debug("Searching with {}", search);
 
         List<GreenPosReport> reports = reportingService.findReports(search);
 
-        GreenPos[] result = GreenPosReport.toJsonModel(reports);
+        GreenPosShort[] result = GreenPosReport.toJsonModelShort(reports);
 
         logger.debug("list() - {}", (Object[]) result);
         return result;

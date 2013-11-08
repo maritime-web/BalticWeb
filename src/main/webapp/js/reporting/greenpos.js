@@ -285,21 +285,44 @@
     });
 
     embryo.GreenposListCtrl = function($scope, GreenposService) {
-        $scope.max = 20;
+         $scope.max = 10;
+        // $scope.options = {
+        // fnSort : function(sort, order) {
+        // console.log('fnSort' + sort + order);
+        // }
+        // };
 
-        $scope.options = {
-            fnSort : function(sort, order) {
-                console.log('fnSort' + sort + order);
+        embryo.controllers.greenposListView = {
+            title : "GreenposList",
+            status : function(vesselOverview, vesselDetails) {
+                var status = {
+                    message : "OK",
+                    code : "success"
+                }
+                return status;
+            },
+            show : function(context) {
+                $("#greenposListPanel").css("display", "block");
+
+                $scope.vessel = context.vesselDetails;
+
+                GreenposService.findReports({
+                    mmsi : $scope.vessel.mmsi,
+                    start : 0,
+                    max : $scope.max,
+                    sort : 'time'
+                }, function(reports) {
+                    console.log(reports);
+                    $scope.reports = reports;
+                });
+
+                $scope.$apply(function() {
+                });
+            },
+            hide : function() {
+                $("#greenposListPanel").css("display", "none");
             }
         };
-
-        GreenposService.findReports({
-            start : 0,
-            max : $scope.max,
-            sort : 'time'
-        }, function(reports) {
-            $scope.reports = reports;
-        });
 
         $scope.utc = function(dateValue) {
             var date = new Date(dateValue);
