@@ -129,7 +129,15 @@ public class VesselRestService {
     @Produces("application/json")
     @GZIP
     public VesselDetails details(@QueryParam("mmsi") long mmsi) {
-        Map result = aisViewService.vesselTargetDetails(mmsi, 1);
+        //
+        Map result = null;
+        try{
+            result = aisViewService.vesselTargetDetails(mmsi, 1);
+        }catch(Exception e){
+            // Make sure ArcticWeb reporting can be used even though AIS server is not present
+            logger.error("Error when calling ais server", e);
+            result = new HashMap<>();
+        }
 
         boolean historicalTrack = false;
 
