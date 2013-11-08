@@ -15,7 +15,6 @@
  */
 package dk.dma.embryo.restclients;
 
-
 import dk.dma.configuration.Property;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.client.ProxyFactory;
@@ -32,8 +31,12 @@ public class RestClientFactory {
     private String dmiSejlRuteServiceUrl;
 
     @Inject
-    @Property("dk.dma.embryo.restclients.aisViewServiceUrl")
-    private String aisViewServiceUrl;
+    @Property("dk.dma.embryo.restclients.limitedAisViewServiceUrl")
+    private String limitedAisViewServiceUrl;
+
+    @Inject
+    @Property("dk.dma.embryo.restclients.fullAisViewServiceUrl")
+    private String fullAisViewServiceUrl;
 
     @Produces
     public DmiSejlRuteService createSejlRuteService() {
@@ -41,8 +44,13 @@ public class RestClientFactory {
     }
 
     @Produces
-    public AisViewService createAisViewService() {
-        return ProxyFactory.create(AisViewService.class, aisViewServiceUrl);
+    public LimitedAisViewService createLimitedAisViewService() {
+        return ProxyFactory.create(LimitedAisViewService.class, limitedAisViewServiceUrl);
+    }
+
+    @Produces
+    public FullAisViewService createFullAisViewService() {
+        return ProxyFactory.create(FullAisViewService.class, fullAisViewServiceUrl);
     }
 
     public static String asJson(Object object) {

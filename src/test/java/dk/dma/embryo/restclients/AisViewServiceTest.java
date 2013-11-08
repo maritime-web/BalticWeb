@@ -23,17 +23,31 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.util.Map;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {RestClientFactory.class, PropertyFileService.class})
 public class AisViewServiceTest {
     @Inject
-    AisViewService aisViewService;
+    FullAisViewService fullAisViewService;
+
+    @Inject
+    LimitedAisViewService limitedAisViewService;
 
     @Ignore
     @Test
     public void test() {
-        AisViewService.VesselListResult vesselListResult = aisViewService.vesselList(0);
-        System.out.println(""+vesselListResult);
+        AisViewService.VesselListResult fullList = fullAisViewService.vesselList(0);
+        System.out.println("Full list: " + fullList.getVesselsInWorld());
+
+        AisViewService.VesselListResult limitedList = limitedAisViewService.vesselList(0);
+        System.out.println("Limited list: " + limitedList.getVesselsInWorld());
+    }
+
+    @Ignore
+    @Test
+    public void testDetails() {
+        Map details = fullAisViewService.vesselTargetDetails(220443000, 0);
+        System.out.println("Details: "+details);
     }
 }
