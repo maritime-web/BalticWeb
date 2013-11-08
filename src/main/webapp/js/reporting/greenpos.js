@@ -285,7 +285,6 @@
         // };
 
         embryo.controllers.greenposListView = {
-            title : "GreenposList",
             status : function(vesselOverview, vesselDetails) {
                 var status = {
                     message : "OK",
@@ -304,7 +303,6 @@
                     max : $scope.max,
                     sort : 'time'
                 }, function(reports) {
-                    console.log(reports);
                     $scope.reports = reports;
                 });
 

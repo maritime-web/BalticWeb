@@ -15,17 +15,10 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.arcticweb.service.ScheduleService;
-import dk.dma.arcticweb.service.VesselService;
-import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Vessel;
-import dk.dma.embryo.rest.json.VesselDetails;
-import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
-import dk.dma.embryo.rest.json.VesselOverview;
-import dk.dma.embryo.restclients.AisViewService;
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -34,10 +27,22 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
+
+import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.arcticweb.service.GreenPosService;
+import dk.dma.arcticweb.service.ScheduleService;
+import dk.dma.arcticweb.service.VesselService;
+import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenposSearch;
+import dk.dma.embryo.domain.Route;
+import dk.dma.embryo.domain.Vessel;
+import dk.dma.embryo.rest.json.VesselDetails;
+import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
+import dk.dma.embryo.rest.json.VesselOverview;
+import dk.dma.embryo.restclients.AisViewService;
 
 @Path("/vessel")
 public class VesselRestService {
@@ -53,6 +58,9 @@ public class VesselRestService {
     @Inject
     private ScheduleService scheduleService;
 
+    @Inject
+    private GreenPosService greenposService;
+    
     @Inject
     private VesselDao vesselDao;
 
@@ -151,9 +159,11 @@ public class VesselRestService {
         Vessel vessel = vesselService.getVessel(mmsi);
 
         Route route = null;
+        List<GreenPosReport> report = null;
 
         if (vessel != null) {
             route = scheduleService.getActiveRoute(mmsi);
+            report = greenposService.findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1));
             details = vessel.toJsonModel();
             details.getAis().putAll(result);
         } else {
@@ -163,7 +173,7 @@ public class VesselRestService {
 
         details.setAdditionalInformation(
                 new AdditionalInformation(
-                        route != null ? route.getEnavId() : null, historicalTrack
+                        route != null ? route.getEnavId() : null, historicalTrack, report.size() > 0
                 )
         );
 
