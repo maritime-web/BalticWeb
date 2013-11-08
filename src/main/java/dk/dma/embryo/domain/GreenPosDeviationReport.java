@@ -22,6 +22,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.rest.json.GreenPos;
+import dk.dma.embryo.rest.json.GreenPosShort;
 
 /**
  * Deviation may be reported as either a free form textual description {@link #deviation} or a modified voyage plan
@@ -74,6 +75,18 @@ public class GreenPosDeviationReport extends GreenPosReport {
         return result;
     }
 
+    @Override
+    public GreenPosShort toJsonModelShort() {
+        GreenPosShort result = new GreenPosShort();
+        result.setId(getEnavId());
+        result.setType(getReportType());
+        result.setLon(getPosition().getLongitudeAsString());
+        result.setLat(getPosition().getLatitudeAsString());
+        result.setDeviation(getDeviation());
+        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        
+        return result;
+    }
     
     // //////////////////////////////////////////////////////////////////////
     // Constructors

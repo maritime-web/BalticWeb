@@ -15,21 +15,13 @@
  */
 package dk.dma.embryo.rest.json;
 
-import java.util.List;
-
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-public class GreenPos {
+public class GreenPosShort {
 
     private String id;
 
     private String type;
-
-    private String vesselName;
-
-    private Long mmsi;
-
-    private String callSign;
 
     private String lat;
 
@@ -51,16 +43,12 @@ public class GreenPos {
 
     private String deviation;
 
-    private List<Voyage> voyages;
-
-    private String reporter;
-
     private Long ts;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public GreenPos() {
+    public GreenPosShort() {
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -74,29 +62,6 @@ public class GreenPos {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public String getVesselName() {
-        return vesselName;
-    }
-
-    public void setVesselName(String name) {
-        this.vesselName = name;
-    }
-
-    public Long getMmsi() {
-        return mmsi;
-    }
-
-    public void setMmsi(Long mmsi) {
-        this.mmsi = mmsi;
-    }
-
-    public String getCallSign() {
-        return callSign;
-    }
-
-    public void setCallSign(String callSign) {
-        this.callSign = callSign;
-    }
 
     public String getLat() {
         return lat;
@@ -136,14 +101,6 @@ public class GreenPos {
 
     public void setIce(String iceInformation) {
         this.ice = iceInformation;
-    }
-
-    public String getReporter() {
-        return reporter;
-    }
-
-    public void setReporter(String reportedBy) {
-        this.reporter = reportedBy;
     }
 
     public Double getSpeed() {
@@ -192,14 +149,6 @@ public class GreenPos {
 
     public void setDeviation(String deviation) {
         this.deviation = deviation;
-    }
-
-    public List<Voyage> getVoyages() {
-        return voyages;
-    }
-
-    public void setVoyages(List<Voyage> voyages) {
-        this.voyages = voyages;
     }
 
     public Long getTs() {

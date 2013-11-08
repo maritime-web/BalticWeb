@@ -42,7 +42,7 @@ public class GreenposSearch {
     private String sortByField = "ts";
 
     private String sortOrder = "DESC";
-    
+
     private Integer first;
 
     private Integer numberOfReports;
@@ -53,22 +53,23 @@ public class GreenposSearch {
     public GreenposSearch() {
     }
 
-    public GreenposSearch(String reportType, String vesselName, Long vesselMmsi, String vesselCallSign, String reportedBy,
-            LocalDateTime ts, String sortBy, String sortOrder, Integer first, Integer numberOfReports) {
+    public GreenposSearch(String reportType, String vesselName, Long vesselMmsi, String vesselCallSign,
+            String reportedBy, LocalDateTime ts, String sortBy, String sortOrder, Integer first, Integer numberOfReports) {
         super();
-        
-        if(sortOrder != null && sortOrder.trim().length() > 0){
+
+        if (sortOrder != null && sortOrder.trim().length() > 0) {
             this.sortOrder = sortOrder;
         }
-        
-        if(sortBy != null && sortBy.trim().length() > 0){
+
+        if (sortBy != null && sortBy.trim().length() > 0) {
             this.sortByField = sortBy;
         }
 
-        if(!"ASC".equals(this.sortOrder) && !"DESC".equals(this.sortOrder)){
-            throw new IllegalArgumentException("Invalid value '" + sortOrder + "'. sortOrder can have values 'ASC' and 'DESC'");
+        if (!"ASC".equals(this.sortOrder) && !"DESC".equals(this.sortOrder)) {
+            throw new IllegalArgumentException("Invalid value '" + sortOrder
+                    + "'. sortOrder can have values 'ASC' and 'DESC'");
         }
-        
+
         this.reportType = reportType;
         this.vesselName = vesselName;
         this.vesselMmsi = vesselMmsi;
@@ -77,6 +78,12 @@ public class GreenposSearch {
         this.ts = ts;
         this.first = first;
         this.numberOfReports = numberOfReports;
+    }
+
+    public GreenposSearch(String reportType, Long vesselMmsi, LocalDateTime ts, String sortBy, String sortOrder,
+            Integer first, Integer numberOfReports) {
+        this(reportType, null, vesselMmsi, null, null, ts, sortBy, sortOrder, first, numberOfReports);
+
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -101,6 +108,7 @@ public class GreenposSearch {
     public Long getVesselMmsi() {
         return vesselMmsi;
     }
+
     public String getReportedBy() {
         return reportedBy;
     }
@@ -108,6 +116,7 @@ public class GreenposSearch {
     public LocalDateTime getTs() {
         return ts;
     }
+
     public String getReportType() {
         return reportType;
     }
@@ -128,5 +137,4 @@ public class GreenposSearch {
         return sortOrder;
     }
 
-    
 }

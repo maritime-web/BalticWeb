@@ -31,6 +31,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
 import dk.dma.embryo.rest.json.GreenPos;
+import dk.dma.embryo.rest.json.GreenPosShort;
 import dk.dma.embryo.rest.util.DateTimeConverter;
 
 /**
@@ -69,7 +70,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     // //////////////////////////////////////////////////////////////////////
 
     public static GreenPosSailingPlanReport fromJsonModel(GreenPos from) {
-        LocalDateTime eta = DateTimeConverter.getDateTimeConverter().toObject(from.getEtaOfArrival(), null);
+        LocalDateTime eta = DateTimeConverter.getDateTimeConverter().toObject(from.getEta(), null);
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosSailingPlanReport report = new GreenPosSailingPlanReport(from.getVesselName(), from.getMmsi(),
@@ -101,9 +102,29 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setCourse(getCourse());
         result.setDestination(getDestination());
         result.setPersonsOnBoard(getPersonsOnBoard());
-        result.setEtaOfArrival(eta);
+        result.setEta(eta);
 //        result.setVoyages(transformed);
         result.setReporter(getReportedBy());
+        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        return result;
+    }
+
+    @Override
+    public GreenPosShort toJsonModelShort() {
+        String eta = DateTimeConverter.getDateTimeConverter().toString(getEtaOfArrival(), null);
+        
+        GreenPosShort result = new GreenPosShort();
+        result.setId(getEnavId());
+        result.setType(getReportType());
+        result.setLon(getPosition().getLongitudeAsString());
+        result.setLat(getPosition().getLatitudeAsString());
+        result.setWeather(getWeather());
+        result.setIce(getIceInformation());
+        result.setSpeed(getSpeed());
+        result.setCourse(getCourse());
+        result.setDestination(getDestination());
+        result.setPersonsOnBoard(getPersonsOnBoard());
+        result.setEta(eta);
         result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
         return result;
     }

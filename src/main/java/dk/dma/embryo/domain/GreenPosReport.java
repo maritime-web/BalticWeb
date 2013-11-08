@@ -31,6 +31,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
 
 import dk.dma.embryo.rest.json.GreenPos;
+import dk.dma.embryo.rest.json.GreenPosShort;
 
 /**
  * 
@@ -97,7 +98,19 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         return result;
     }
 
+    public static GreenPosShort[] toJsonModelShort(List<GreenPosReport> reports) {
+        GreenPosShort[] result = new GreenPosShort[reports.size()];
+        int index = 0;
+        for (GreenPosReport report : reports) {
+            result[index++] = report.toJsonModelShort();
+        }
+
+        return result;
+    }
+
     public abstract GreenPos toJsonModel();
+    
+    public abstract GreenPosShort toJsonModelShort();
 
     public String getReportType() {
         if (getClass() == GreenPosSailingPlanReport.class) {

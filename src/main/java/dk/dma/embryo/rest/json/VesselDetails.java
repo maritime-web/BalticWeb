@@ -163,15 +163,17 @@ public class VesselDetails {
         
         private String routeId;
         private Boolean historicalTrack;
+        private Boolean greenpos;
 
         public AdditionalInformation() {
 
         }
 
-        public AdditionalInformation(String routeId, Boolean historicalTrack) {
+        public AdditionalInformation(String routeId, Boolean historicalTrack, Boolean greenpos) {
             super();
             this.routeId = routeId;
             this.historicalTrack = historicalTrack;
+            this.greenpos = greenpos;
         }
 
         public String getRouteId() {
@@ -188,7 +190,14 @@ public class VesselDetails {
 
         public void setHistoricalTrack(Boolean historicalTrack) {
             this.historicalTrack = historicalTrack;
+        }
+
+        public Boolean getGreenpos() {
+            return greenpos;
+        }
+
+        public void setGreenpos(Boolean greenpos) {
+            this.greenpos = greenpos;
         } 
     }
-
 }
