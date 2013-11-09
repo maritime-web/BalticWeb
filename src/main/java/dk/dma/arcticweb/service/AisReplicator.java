@@ -16,6 +16,7 @@
 package dk.dma.arcticweb.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +33,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import dk.dma.dataformats.shapefile.ProjectionFileParser;
+import dk.dma.embryo.restclients.FullAisViewService;
+import dk.dma.enav.model.geometry.CoordinateSystem;
+import dk.dma.enav.model.geometry.Position;
 import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 
@@ -45,13 +50,15 @@ import dk.dma.embryo.restclients.AisViewService.VesselListResult;
 @Singleton
 @Startup
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class AisReplicator {
+public class AisReplicator implements AisReplicatorService {
+
+    private List<String[]> vesselsInArcticCircle = new ArrayList<>();
 
     @Inject
     private VesselDao vesselRepository;
 
     @Inject
-    private AisViewService aisView;
+    private FullAisViewService aisView;
 
     @Resource
     private TimerService service;
@@ -63,6 +70,18 @@ public class AisReplicator {
     @Inject
     @Property("embryo.vessel.aisjob.cron")
     private ScheduleExpression cron;
+
+    @Inject
+    @Property("embryo.aisCircle.latitude")
+    private double aisCircleLatitude;
+
+    @Inject
+    @Property("embryo.aisCircle.longitude")
+    private double aisCircleLongitude;
+
+    @Inject
+    @Property("embryo.aisCircle.radius")
+    private double aisCircleRadius;
 
     @Inject
     private Logger logger;
@@ -96,18 +115,16 @@ public class AisReplicator {
 
         VesselListResult result = aisView.vesselList(0);
 
-        List<Long> mmsis = new ArrayList<>((int) result.getVesselList().getVesselCount());
+        List<Vessel> awVesselsAsList = vesselRepository.getAll(Vessel.class);
 
-        logger.debug("");
+        logger.debug("aisView returns "+result.getVesselList().getVessels().size()+" items - " +
+                "repository returns "+awVesselsAsList.size()+" items.");
 
-        for (Entry<String, String[]> vessel : result.getVesselList().getVessels().entrySet()) {
-            String mmsi = vessel.getValue()[6];
-            if (mmsi != null && mmsi.trim().length() > 0) {
-                mmsis.add(Long.valueOf(vessel.getValue()[6]));
-            }
+        Map<Long, Vessel> awVesselsAsMap = new HashMap<>();
+
+        for (Vessel v : awVesselsAsList) {
+            awVesselsAsMap.put(v.getMmsi(), v);
         }
-
-        Map<Long, Vessel> vessels = vesselRepository.getVessels(mmsis);
 
         for (Entry<String, String[]> aisVessel : result.getVesselList().getVessels().entrySet()) {
             Long mmsi = asLong(aisVessel.getValue()[6]);
@@ -116,9 +133,9 @@ public class AisReplicator {
             Long imo = asLong(aisVessel.getValue()[9]);
 
             if (mmsi != null) {
-                Vessel vessel = vessels.get(mmsi);
+                Vessel vessel = awVesselsAsMap.get(mmsi);
 
-                if (vessel != null) {
+                if (vessel != null && name != null && callSign != null) {
                     if (!isUpToDate(vessel.getAisData(), name, callSign, imo)) {
                         vessel.getAisData().setCallsign(callSign);
                         vessel.getAisData().setImoNo(imo);
@@ -132,6 +149,25 @@ public class AisReplicator {
             }
         }
 
+        vesselsInArcticCircle = new ArrayList<>();
+
+        for (String[] aisVessel : result.getVesselList().getVessels().values()) {
+            double x = Double.parseDouble(aisVessel[2]);
+            double y = Double.parseDouble(aisVessel[1]);
+
+            Long mmsi = asLong(aisVessel[6]);
+
+            if (isWithinAisCircle(x, y) ||
+                    awVesselsAsMap.containsKey(mmsi)) {
+                vesselsInArcticCircle.add(aisVessel);
+            }
+        }
+
+        logger.debug("Vessels in arctic circle: "+vesselsInArcticCircle.size());
+    }
+
+    public boolean isWithinAisCircle(double x, double y) {
+        return Position.create(y, x).distanceTo(Position.create(aisCircleLatitude, aisCircleLongitude), CoordinateSystem.GEODETIC) < aisCircleRadius;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -150,6 +186,10 @@ public class AisReplicator {
     }
 
     private String asString(String value) {
-        return value == null || value.trim().length() == 0 ? null : value;
+        return value == null || value.trim().length() == 0 || value.trim().toUpperCase().equals("N/A") ? null : value;
+    }
+
+    public List<String[]> getVesselsInArcticCircle() {
+        return vesselsInArcticCircle;
     }
 }

@@ -15,10 +15,22 @@
  */
 package dk.dma.embryo.rest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.arcticweb.service.AisReplicatorService;
+import dk.dma.arcticweb.service.GreenPosService;
+import dk.dma.arcticweb.service.ScheduleService;
+import dk.dma.arcticweb.service.VesselService;
+import dk.dma.embryo.domain.GreenposSearch;
+import dk.dma.embryo.domain.ParseUtils;
+import dk.dma.embryo.domain.Route;
+import dk.dma.embryo.domain.Vessel;
+import dk.dma.embryo.rest.json.VesselDetails;
+import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
+import dk.dma.embryo.rest.json.VesselOverview;
+import dk.dma.embryo.restclients.FullAisViewService;
+import dk.dma.embryo.restclients.LimitedAisViewService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -27,27 +39,21 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.arcticweb.service.GreenPosService;
-import dk.dma.arcticweb.service.ScheduleService;
-import dk.dma.arcticweb.service.VesselService;
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.domain.GreenposSearch;
-import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Vessel;
-import dk.dma.embryo.rest.json.VesselDetails;
-import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
-import dk.dma.embryo.rest.json.VesselOverview;
-import dk.dma.embryo.restclients.AisViewService;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Path("/vessel")
 public class VesselRestService {
     @Inject
-    private AisViewService aisViewService;
+    private LimitedAisViewService limitedAisViewService;
+
+    @Inject
+    private FullAisViewService fullAisViewService;
+
+    @Inject
+    private AisReplicatorService aisReplicator;
 
     @Inject
     private Logger logger;
@@ -59,17 +65,17 @@ public class VesselRestService {
     private ScheduleService scheduleService;
 
     @Inject
-    private GreenPosService greenposService;
-    
-    @Inject
     private VesselDao vesselDao;
+
+    @Inject
+    private GreenPosService greenposService;
 
     @GET
     @Path("/historical-track")
     @Produces("application/json")
     @GZIP
     public Object historicalTrack(@QueryParam("mmsi") long mmsi) {
-        Map result = aisViewService.vesselTargetDetails(mmsi, 1);
+        Map result = limitedAisViewService.vesselTargetDetails(mmsi, 1);
         return ((Map) result.get("pastTrack")).get("points");
     }
 
@@ -78,14 +84,11 @@ public class VesselRestService {
     @Produces("application/json")
     @GZIP
     public List<VesselOverview> list() {
-        AisViewService.VesselListResult vesselListResult = aisViewService.vesselList(0);
-
         List<VesselOverview> result = new ArrayList<>();
 
-        Map<String, String[]> vessels = vesselListResult.getVesselList().getVessels();
+        List<String[]> vessels = aisReplicator.getVesselsInArcticCircle();
 
-        for (String id : vessels.keySet()) {
-            String[] vessel = vessels.get(id);
+        for (String[] vessel : vessels) {
 
             VesselOverview vo = new VesselOverview();
 
@@ -137,47 +140,72 @@ public class VesselRestService {
     @Produces("application/json")
     @GZIP
     public VesselDetails details(@QueryParam("mmsi") long mmsi) {
-        //
-        Map result = null;
-        try{
-            result = aisViewService.vesselTargetDetails(mmsi, 1);
-        }catch(Exception e){
-            // Make sure ArcticWeb reporting can be used even though AIS server is not present
-            logger.error("Error when calling ais server", e);
-            result = new HashMap<>();
+        try {
+            Map result = fullAisViewService.vesselTargetDetails(mmsi, 0);
+
+            boolean historicalTrack =
+                    aisReplicator.isWithinAisCircle(ParseUtils.parseLongitude((String) result.get("lon")),
+                            ParseUtils.parseLatitude((String) result.get("lat")));
+
+            VesselDetails details;
+            Vessel vessel = vesselService.getVessel(mmsi);
+
+            Route route = null;
+
+            boolean greenpos = greenposService.
+                    findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1)).size() > 0;
+
+
+            if (vessel != null) {
+                route = scheduleService.getActiveRoute(mmsi);
+                details = vessel.toJsonModel();
+                details.getAis().putAll(result);
+            } else {
+                details = new VesselDetails();
+                details.setAis(result);
+            }
+
+            details.setAdditionalInformation(
+                    new AdditionalInformation(
+                            route != null ? route.getEnavId() : null, historicalTrack, greenpos
+                    )
+            );
+
+            return details;
+
+        } catch (Throwable t) {
+            logger.info("Ignoring exception " + t, t);
+
+            // fallback on database only
+
+            Vessel vessel = vesselService.getVessel(mmsi);
+
+
+            if (vessel != null) {
+                VesselDetails details;
+                Route route = scheduleService.getActiveRoute(mmsi);
+
+                boolean greenpos = greenposService.
+                        findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1)).size() > 0;
+
+                details = vessel.toJsonModel();
+
+                details.getAis().put("callsign", vessel.getAisData().getCallsign());
+                details.getAis().put("imoNo", "" + vessel.getAisData().getImoNo());
+                details.getAis().put("mmsi", "" + vessel.getMmsi());
+                details.getAis().put("name", "" + vessel.getAisData().getName());
+
+                details.setAdditionalInformation(
+                        new AdditionalInformation(
+                                route != null ? route.getEnavId() : null, false, greenpos
+                        )
+                );
+
+                return details;
+            } else {
+                throw new RuntimeException("No vessel details available for " + mmsi + " caused by " + t);
+            }
         }
-
-        boolean historicalTrack = false;
-
-        Object track = result.remove("pastTrack");
-
-        if (track != null) {
-            historicalTrack = ((List) ((Map) track).get("points")).size() > 3;
-        }
-
-        VesselDetails details;
-        Vessel vessel = vesselService.getVessel(mmsi);
-
-        Route route = null;
-        List<GreenPosReport> report = null;
-
-        if (vessel != null) {
-            route = scheduleService.getActiveRoute(mmsi);
-            report = greenposService.findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1));
-            details = vessel.toJsonModel();
-            details.getAis().putAll(result);
-        } else {
-            details = new VesselDetails();
-            details.setAis(result);
-        }
-
-        details.setAdditionalInformation(
-                new AdditionalInformation(
-                        route != null ? route.getEnavId() : null, historicalTrack, report.size() > 0
-                )
-        );
-
-        return details;
     }
 
     @POST
