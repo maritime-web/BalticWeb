@@ -15,23 +15,26 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.arcticweb.dao.GreenPosDao;
-import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.embryo.domain.GreenPosDeviationReport;
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.domain.GreenPosSailingPlanReport;
-import dk.dma.embryo.domain.GreenposSearch;
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Vessel;
-import dk.dma.embryo.security.Subject;
-import dk.dma.embryo.security.authorization.YourShip;
-import org.joda.time.LocalDateTime;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.List;
+
+import org.joda.time.LocalDateTime;
+
+import dk.dma.arcticweb.dao.GreenPosDao;
+import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.embryo.domain.GreenPosDeviationReport;
+import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenPosSailingPlanReport;
+import dk.dma.embryo.domain.GreenposMinimal;
+import dk.dma.embryo.domain.GreenposSearch;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.Vessel;
+import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.security.authorization.YourShip;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -138,6 +141,11 @@ public class GreenPosServiceImpl implements GreenPosService {
     @Override
     public GreenPosReport getLatest(Long vesselMmsi) {
         return greenPosDao.findLatest(vesselMmsi);
+    }
+
+    @Override
+    public List<GreenposMinimal> getLatest() {
+        return greenPosDao.getLatest();
     }
 
     @Override

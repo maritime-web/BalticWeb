@@ -28,6 +28,9 @@
                 };
                 SessionStorageService.getItem(latestGreenposKey(mmsi), callback, remoteCall);
             },
+            getLatest : function(callback) {
+                $http.get(reportsUrl+"/latest").success(callback);
+            },
             get : function(id, callback) {
                 var url = reportsUrl + "/" + id;
                 $http.get(url).success(callback);
@@ -85,4 +88,10 @@
 
         };
     });
+    
+    embryo.greenpos = {};
+    serviceModule.run(function(GreenposService) {
+        embryo.greenpos.service = GreenposService;
+    });
+
 }());

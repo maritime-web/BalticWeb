@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
@@ -53,6 +54,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     @NotNull
     private Integer personsOnBoard;
 
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     @NotNull
     private LocalDateTime etaOfArrival;
 

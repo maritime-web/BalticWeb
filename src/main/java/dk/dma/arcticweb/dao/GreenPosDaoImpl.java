@@ -15,11 +15,14 @@
  */
 package dk.dma.arcticweb.dao;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,6 +32,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
 
 @Stateless
@@ -52,7 +56,20 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
 
         return getSingleOrNull(result);
     }
+    
+    @Override
+    public List<GreenposMinimal> getLatest() {
+        Query query = em.createNativeQuery("select vesselName, vesselMmsi, DTYPE, max(ts) from GreenposReport WHERE SUBDATE(DATE(NOW()),7) <= DATE(ts) Group By vesselName");
 
+        List<Object[]> list = (List<Object[]>)query.getResultList();
+        List<GreenposMinimal> result = new ArrayList<>(list.size());
+        for(Object[] greenpos : list){
+            result.add(new GreenposMinimal((String)greenpos[0], Long.parseLong(greenpos[1].toString()), (String)greenpos[2], (Date)greenpos[3]));
+        }
+
+        return result;
+    }
+    
     @Override
     public List<GreenPosReport> find(GreenposSearch search) {
         CriteriaBuilder builder = em.getCriteriaBuilder(); 
@@ -60,7 +77,6 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
         Root<GreenPosReport> root = criteriaQuery.from(GreenPosReport.class);
         criteriaQuery.select(root);
 
-        
         List<Predicate> criterias = new LinkedList<>();
         
         if(search.getVesselMmsi() != null){

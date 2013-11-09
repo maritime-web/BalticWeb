@@ -20,6 +20,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
 
 @Local
@@ -30,4 +31,6 @@ public interface GreenPosDao extends Dao {
     GreenPosReport findById(String id);
 
     GreenPosReport findLatest(Long vesselMmsi);
+    
+    List<GreenposMinimal> getLatest();
 }

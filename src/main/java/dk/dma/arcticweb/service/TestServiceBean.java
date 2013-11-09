@@ -650,36 +650,42 @@ public class TestServiceBean {
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
         Vessel vessel = vesselDao.getVesselByCallsign("OXPJ2");
 
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime minus8 = now.minusDays(8);
+        LocalDateTime minus7 = now.minusDays(7);
+        LocalDateTime minus2 = now.minusDays(2);
+        LocalDateTime minus1 = now.minusDays(1);
+        
         List<ReportedVoyage> voyages = null;
         GreenPosReport report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("66 56.5N", "053 40.50W"), "Sun shine", "NO ICE", 4.1, 10, "Nuuk",
                 converter.toObject("19-09-2013 10:30"), 6, voyages);
         report.setReportedBy("oratank");
-        report.setTs(converter.toObject("18-09-2013 13:09"));
+        report.setTs(minus8.withHourOfDay(13).withMinuteOfHour(9));
         vesselDao.saveEntity(report);
 
         report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("66 03.772N", "053 46.3W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
-        report.setTs(converter.toObject("18-09-2013 18:00"));
+        report.setTs(minus8.withHourOfDay(18).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
         report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("65 19.926N", "052 57.483W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
-        report.setTs(converter.toObject("19-09-2013 00:00"));
+        report.setTs(minus7.withHourOfDay(0).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
         report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("64 29.198N", "052 29.507W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
-        report.setTs(converter.toObject("19-09-2013 06:00"));
+        report.setTs(minus7.withHourOfDay(6).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
         report = new GreenPosFinalReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
         report.setReportedBy("oratank");
-        report.setTs(converter.toObject("19-09-2013 10:15"));
+        report.setTs(minus7.withHourOfDay(10).withMinuteOfHour(15));
         vesselDao.saveEntity(report);
 
         vessel = vesselDao.getVesselByCallsign("OYDK2");
@@ -687,13 +693,13 @@ public class TestServiceBean {
         report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("63 80.01N", "051 58.04W"), "Sun shine", "NO ICE", 11.6, 350);
         report.setReportedBy("orasila");
-        report.setTs(converter.toObject("24-09-2013 12:00"));
+        report.setTs(minus2.withHourOfDay(12).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
         report = new GreenPosFinalReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
         report.setReportedBy("orasila");
-        report.setTs(converter.toObject("24-09-2013 16:02"));
+        report.setTs(minus2.withHourOfDay(16).withMinuteOfHour(2));
         vesselDao.saveEntity(report);
 
         voyages = null;
@@ -701,25 +707,26 @@ public class TestServiceBean {
                 new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150,
                 "KYSTFART", converter.toObject("26-09-2013 10:30"), 6, voyages);
         report.setReportedBy("orasila");
-        report.setTs(converter.toObject("24-09-2013 23:12"));
+        report.setTs(minus2.withHourOfDay(23).withMinuteOfHour(12));
         vesselDao.saveEntity(report);
 
         report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("64 10.068N", "051 64.78W"), "Sun shine", "Spredte skosser og let tyndis", 11.6, 162);
         report.setReportedBy("orasila");
+        report.setTs(minus1.withHourOfDay(0).withMinuteOfHour(0));
         report.setTs(converter.toObject("25-09-2013 00:00"));
         vesselDao.saveEntity(report);
 
         report = new GreenPosDeviationReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("64 10.068N", "051 64.78W"), "Vi smutter lige en tur omkring Sisimiut og henter cigaretter mm. ");
         report.setReportedBy("orasila");
-        report.setTs(converter.toObject("25-09-2013 04:00"));
+        report.setTs(minus1.withHourOfDay(4).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
         report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
                 new Position("64 10.068N", "051 64.78W"), "Sun shine", "Spredte skosser og let tyndis", 11.6, 162);
         report.setReportedBy("orasila");
-        report.setTs(converter.toObject("25-09-2013 06:00"));
+        report.setTs(minus1.withHourOfDay(6).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
 

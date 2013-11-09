@@ -20,7 +20,7 @@
         <div class="accordion-group">
             <div class="accordion-heading">
                 <h4>
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpGreenposList"> Greenpos List </a>
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpGreenposList"> Greenpos Reports </a>
                 </h4>
             </div>
             <div id="vcpGreenposList" class="accordion-body collapse">
@@ -28,11 +28,10 @@
 
                     <p>Vessel that have Greeenpos-reported with the last 7 days.</p>
 
-                    <table class="table table-condensed" style="display: block">
+                    <table id="greenposTable" class="table table-condensed" style="display: block">
                         <tr><th>Name</th><th>Type</th><th>Time</th><th></th></tr>
-                        <tr><td>Orasila</td><td>Position</td><td>2013-12-01 24:00</td><td><a href="#">view vessel</a></td></tr>
-                        <tr><td>Oratank</td><td>Position</td><td>2013-12-01 24:00</td><td><a href="#">view vessel</a></td></tr>
-                        <tr><td>Atatuk</td><td>Position</td><td>2013-12-01 24:00</td><td><a href="#">view vessel</a></td></tr>
+                        <tbody id="greenposTableBody">
+                        </tbody>
                     </table>
 
                 </div>

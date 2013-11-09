@@ -109,7 +109,7 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     }
 
     public abstract GreenPos toJsonModel();
-    
+
     public abstract GreenPosShort toJsonModelShort();
 
     public String getReportType() {
@@ -146,8 +146,7 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         this.enavId = UUID.randomUUID().toString();
     }
 
-    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String latitude,
-            String longitude) {
+    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String latitude, String longitude) {
         this();
         this.vesselName = vesselName;
         this.vesselMmsi = vesselMmsi;

@@ -26,11 +26,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.jboss.resteasy.annotations.GZIP;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.GreenPosService;
 import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
@@ -85,8 +87,24 @@ public class GreenPosRestService {
     }
 
     @GET
+    @Path("/latest")
+    @Produces("application/json")
+    @GZIP
+    public List<GreenposMinimal> listLatest() {
+        logger.debug("listLatest()");
+
+        List<GreenposMinimal> reports = reportingService.getLatest();
+
+        logger.debug("listLatest() - {}", reports);
+
+        return reports;
+    }
+
+    
+    @GET
     @Path("/{id}")
     @Produces("application/json")
+    @GZIP
     public GreenPos get(@PathParam("id") String id) {
         logger.debug("get({})", id);
 
@@ -101,6 +119,7 @@ public class GreenPosRestService {
     @GET
     @Path("/list")
     @Produces("application/json")
+    @GZIP
     public GreenPosShort[] list(@QueryParam("type") String type, @QueryParam("mmsi") Long mmsi,
             @QueryParam("ts") String ts, @QueryParam("sortBy") String sortBy,
             @QueryParam("sortOrder") String sortOrder, @QueryParam("start") Integer start,
