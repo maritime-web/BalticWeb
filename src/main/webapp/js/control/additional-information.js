@@ -95,7 +95,7 @@ embryo.additionalInformation.schedule = {
         }
     }
 
-embryo.additionalInformation.route = {
+embryo.additionalInformation.greenpos = {
     title : "Greenpos Reports",
     showAt : [ "SelectedShip" ],
     layer : new RouteLayer("#D5672F"),
