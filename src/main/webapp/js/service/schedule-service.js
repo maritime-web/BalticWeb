@@ -39,7 +39,7 @@
                     return null;
                 }
 
-                this.getSchedule(mmsi, function(schedule) {
+                this.getYourSchedule(mmsi, function(schedule) {
                     var index = findVoyageIndex(schedule);
                     if (index == null) {
                         callback(null);
@@ -49,11 +49,14 @@
                     callback(voyageInfo);
                 });
             },
-            getSchedule : function(mmsi, callback) {
+            getYourSchedule : function(mmsi, callback) {
                 var remoteCall = function(onSuccess) {
                     $http.get(scheduleUrl + mmsi).success(onSuccess);
                 };
                 SessionStorageService.getItem(currentSchedule, callback, remoteCall);
+            },
+            getSchedule : function(mmsi, callback) {
+                $http.get(scheduleUrl + mmsi).success(callback);
             },
             getVoyageInfo : function(mmsi, voyageId, callback) {
                 function findVoyageIndex(voyageId, schedule) {
@@ -64,7 +67,7 @@
                     }
                     return null;
                 }
-                this.getSchedule(mmsi, function(schedule) {
+                this.getYourSchedule(mmsi, function(schedule) {
                     var index = findVoyageIndex(voyageId, schedule);
                     if (index == null) {
                         callback(null);

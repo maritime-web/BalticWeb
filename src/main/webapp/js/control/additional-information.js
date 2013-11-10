@@ -80,6 +80,21 @@ embryo.additionalInformation.route = {
     }
 }
 
+embryo.additionalInformation.schedule = {
+        title : "Schedule",
+        showAt : [ "SelectedShip" ],
+        layer : new RouteLayer("#D5672F"),
+        init : function(map, group) {
+        },
+        available : function(vessel, vesselDetails) {
+            return true;
+        },
+        show : function(vessel, vesselDetails) {
+            var that = this;
+            embryo.controllers.scheduleview.show({vesselDetails : vesselDetails});
+        }
+    }
+
 embryo.additionalInformation.route = {
     title : "Greenpos Reports",
     showAt : [ "SelectedShip" ],

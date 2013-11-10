@@ -1,0 +1,46 @@
+<div id="scheduleview" class="schedule" x-ng-controller="embryo.ScheduleViewCtrl">
+	<div>
+		<h2>
+			<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Schedule
+		</h2>
+	</div>
+	<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+	<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+	<form class="form-horizontal">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Location</th>
+					<th>Latitude</th>
+					<th>Longitude</th>
+					<th>Arrival</th>
+					<th>Departure</th>
+					<th>Crew</th>
+					<th>Passengers</th>
+					<th>Doctor</th>
+				</tr>
+			</thead>
+			<tbody x-ng-repeat="voyage in voyages" class="content">
+				<tr class="voyage" x-ng-class="{warning : activeRouteId && activeRouteId == voyage.route.id}">
+					<td>{{voyage.berthName}}</td>
+					<td>{{voyage.latitude}}</td>
+					<td>{{voyage.longitude}}</td>
+					<td>{{voyage.arrival}}</td>
+					<td>{{voyage.departure}}</td>
+					<td>{{voyage.crew}}</td>
+					<td>{{voyage.passengers}}</td>
+					<td><span ng-show="voyage.doctor">Yes</span><span ng-show="voyage.doctor==false">No</span></td>
+				</tr>
+				<tr class="route" x-ng-class="{warning : activeRouteId && activeRouteId == voyage.route.id}">
+					<td colspan=5"><span ng-show="voyage.route">Route <span style="font-style: italic;">{{voyage.route.name}}</span>
+						from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points </span> <span
+						ng-show="!voyage.route">No route</span></td>
+					<td colspan="3"><span class="pull-right" ng-show="voyage.route"> <a href="#"
+							x-ng-click="viewRoute(voyage)">view route</a>
+					</span></td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>

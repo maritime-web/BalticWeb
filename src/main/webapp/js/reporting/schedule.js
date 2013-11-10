@@ -19,7 +19,7 @@
         var schedule;
         var loadSchedule = function() {
             if ($scope.mmsi) {
-                ScheduleService.getSchedule($scope.mmsi, function(ss) {
+                ScheduleService.getYourSchedule($scope.mmsi, function(ss) {
                     schedule = ss;
                     $scope.voyages = schedule.voyages.slice();
                     $scope.voyages.push({});
@@ -162,6 +162,60 @@
                 $scope.message = "Schedule saved successfully";
                 loadSchedule();
             });
+        };
+    };
+
+    embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService) {
+        var schedule;
+        var loadSchedule = function() {
+            if ($scope.mmsi) {
+                ScheduleService.getSchedule($scope.mmsi, function(ss) {
+                    schedule = ss;
+                    $scope.voyages = schedule.voyages.slice();
+                });
+            }
+        };
+
+        embryo.controllers.scheduleview = {
+//            title : "Schedule View",
+            status : function(vesselOverview, vesselDetails) {
+                var status = {
+                    message : "INACTIVE",
+                }
+
+                if (vesselDetails.additionalInformation.routeId) {
+                    status.message = "ACTIVE";
+                    status.code = "success";
+                }
+
+                return status;
+            },
+            show : function(context) {
+                
+                console.log(context);
+                
+                $scope.mmsi = context.vesselDetails.mmsi;
+                $scope.activeRouteId = context.vesselDetails.additionalInformation.routeId;
+                loadSchedule();
+                $scope.$apply(function() {
+                });
+                $("#scheduleViewPanel").css("display", "block");
+            },
+            hide : function() {
+                $("#scheduleViewPanel").css("display", "none");
+            }
+        };
+
+        $scope.isActive = function(voyage) {
+            if (!voyage || !voyage.route || !voyage.route.id) {
+                return false;
+            }
+
+            if (!$scope.activeRoute) {
+                return false;
+            }
+
+            return $scope.activeRouteId === voyage.route.id;
         };
     };
 
