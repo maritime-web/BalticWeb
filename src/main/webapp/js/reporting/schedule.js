@@ -196,9 +196,6 @@
             init : function(map, group) {
             },
             show : function(context) {
-                
-                console.log(context);
-                
                 $scope.mmsi = context.vesselDetails.mmsi;
                 $scope.activeRouteId = context.vesselDetails.additionalInformation.routeId;
                 loadSchedule();
