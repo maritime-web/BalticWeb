@@ -97,7 +97,7 @@
         ;
 
         $scope.visibility = {
-            "SP" : [ "destination", "etaOfArrival", "personsOnBoard", "course", "speed", "weather", "ice" ],
+            "SP" : [ "destination", "eta", "personsOnBoard", "course", "speed", "weather", "ice" ],
             "PR" : [ "course", "speed", "weather", "ice" ],
             "FR" : [ "weather", "ice" ],
             "DR" : [ "deviation" ]
@@ -204,7 +204,7 @@
                 ScheduleService.getActiveVoyage(c.vesselOverview.mmsi, c.vesselDetails.additionalInformation.routeId,
                     function(voyageInfo) {
                         $scope.report.destination = voyageInfo.des;
-                        $scope.report.etaOfArrival = voyageInfo.desEta;
+                        $scope.report.eta = voyageInfo.desEta;
                         if (voyageInfo.crew) {
                             $scope.report.personsOnBoard = voyageInfo.crew;
                         }

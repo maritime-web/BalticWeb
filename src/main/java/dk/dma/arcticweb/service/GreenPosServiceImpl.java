@@ -44,6 +44,9 @@ public class GreenPosServiceImpl implements GreenPosService {
     private GreenPosDao greenPosDao;
 
     @Inject
+    private MailService mailService;
+
+    @Inject
     private Subject subject;
 
     @Inject
@@ -55,11 +58,13 @@ public class GreenPosServiceImpl implements GreenPosService {
     public GreenPosServiceImpl() {
     }
 
-    public GreenPosServiceImpl(GreenPosDao reportingDao, VesselDao vesselDao, Subject subject, VesselService vesselservice) {
+    public GreenPosServiceImpl(GreenPosDao reportingDao, VesselDao vesselDao, Subject subject,
+            VesselService vesselservice, MailService mailService) {
         this.greenPosDao = reportingDao;
         this.vesselDao = vesselDao;
         this.subject = subject;
         this.vesselService = vesselservice;
+        this.mailService = mailService;
     }
 
     @Override
@@ -95,7 +100,9 @@ public class GreenPosServiceImpl implements GreenPosService {
         report.setReportedBy(subject.getUser().getUserName());
         report.setTs(LocalDateTime.now());
 
-        greenPosDao.saveEntity(report);
+        report = greenPosDao.saveEntity(report);
+
+        mailService.newGreenposReport(report);
 
         return report.getEnavId();
     }
@@ -109,8 +116,10 @@ public class GreenPosServiceImpl implements GreenPosService {
     private void validateVesselData(GreenPosReport report, Vessel vessel) {
         // If report is send by sailor, then validate, that he is reporting on behalf of his own vessel
         // Validation if his vessel name is still not registered in the system.
-        if (vessel.getAisData().getCallsign() != null && !vessel.getAisData().getCallsign().equals(report.getVesselCallSign())) {
-            throw new IllegalArgumentException("Reported vessel call sign must match the call sign of the users vessel.");
+        if (vessel.getAisData().getCallsign() != null
+                && !vessel.getAisData().getCallsign().equals(report.getVesselCallSign())) {
+            throw new IllegalArgumentException(
+                    "Reported vessel call sign must match the call sign of the users vessel.");
         }
 
         if (vessel.getMmsi() != null && !vessel.getMmsi().equals(report.getVesselMmsi())) {

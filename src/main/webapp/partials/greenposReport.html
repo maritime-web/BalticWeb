@@ -46,11 +46,11 @@
                         required</span>
                 </div>
             </div>
-            <div class="control-group" x-ng-show="isVisible('etaOfArrival')">
+            <div class="control-group" x-ng-show="isVisible('eta')">
                 <label class="control-label" for="gpEta">Estimated Time of Arrival</label>
                 <div class="controls">
-                    <input id="gpEta" name="gpEta" type="text" class="input-medium" x-ng-model="report.etaOfArrival"
-                        x-ng-required="isVisible('etaOfArrival')" /> <span
+                    <input id="gpEta" name="gpEta" type="text" class="input-medium" x-ng-model="report.eta"
+                        x-ng-required="isVisible('eta')" /> <span
                         x-ng-show="greenPosForm.gpEta.$error.required && greenPosForm.gpEta.$dirty" class="msg-invalid">Value
                         required</span>
                 </div>

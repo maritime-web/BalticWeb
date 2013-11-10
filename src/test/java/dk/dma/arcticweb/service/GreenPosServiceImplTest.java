@@ -66,6 +66,8 @@ public class GreenPosServiceImplTest {
 
     GreenPosDao greenPosDao;
 
+    MailService mailService;
+
     @BeforeClass
     public static void setupForAll() {
         factory = Persistence.createEntityManagerFactory("componentTest");
@@ -97,8 +99,9 @@ public class GreenPosServiceImplTest {
         
         subject = Mockito.mock(Subject.class);
         vesselService = Mockito.mock(VesselService.class);
+        mailService = Mockito.mock(MailService.class);
         
-        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, vesselService);
+        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, vesselService, mailService);
         
     }
 
