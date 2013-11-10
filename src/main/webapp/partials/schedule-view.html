@@ -37,7 +37,7 @@
 						from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points </span> <span
 						ng-show="!voyage.route">No route</span></td>
 					<td colspan="3"><span class="pull-right" ng-show="voyage.route"> <a href="#"
-							x-ng-click="viewRoute(voyage)">view route</a>
+							x-ng-click="viewRoute(voyage, $event)">view route</a>
 					</span></td>
 				</tr>
 			</tbody>

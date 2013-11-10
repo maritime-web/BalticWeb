@@ -175,6 +175,9 @@
                 });
             }
         };
+        
+        $scope.layer = new RouteLayer("#D5672F");
+        addLayerToMap("vessel", $scope.layer, embryo.map);
 
         embryo.controllers.scheduleview = {
 //            title : "Schedule View",
@@ -189,6 +192,8 @@
                 }
 
                 return status;
+            },
+            init : function(map, group) {
             },
             show : function(context) {
                 
@@ -216,6 +221,15 @@
             }
 
             return $scope.activeRouteId === voyage.route.id;
+        };
+        
+        $scope.viewRoute = function(voyage, $event) {
+            $event.preventDefault();
+            RouteService.getRoute(voyage.route.id, function(route){
+                $scope.layer.draw(route);
+                $scope.layer.zoomToExtent();
+
+            });
         };
     };
 
