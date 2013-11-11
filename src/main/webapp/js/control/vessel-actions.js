@@ -3,13 +3,13 @@ embryo.vessel.actions = {
     activeItemRow: null,
     hide: function() {
         if (this.activeItem && this.activeItem.hide) this.activeItem.hide();
-        if (this.activeItemRow) this.activeItemRow.removeClass("alert");
+        if (this.activeItemRow) $("#"+this.activeItemRow).removeClass("alert");
         this.activeItem = null;
         this.activeRow = null;
         $(".reportingPanel").css("display", "none");
     },
     markActiveItem: function() {
-        if (this.activeItemRow) this.activeItemRow.addClass("alert");
+        if (this.activeItemRow) $("#"+this.activeItemRow).addClass("alert");
     },
     setup: function(id, items, vesselOverview, vesselDetails) {
         var html = "";
@@ -31,7 +31,7 @@ embryo.vessel.actions = {
                         html += "<table class='table table-condensed'>"
                     }
 
-                    html += "<tr><th>"+item.title+"</th>";
+                    html += "<tr id=" + $(id).attr("id") + "_" + i + "><th>"+item.title+"</th>";
 
                     var available = false;
 
@@ -69,7 +69,7 @@ embryo.vessel.actions = {
         $("a", id).click(function(e) {
             e.preventDefault();
             that.hide();
-            that.activeItemRow = $(this).parents("tr");
+            that.activeItemRow = $(this).parents("tr").attr("id");
             that.activeItem = items[$(this).attr("aid")];
             that.markActiveItem();
             that.activeItem.show(vesselOverview, vesselDetails);
