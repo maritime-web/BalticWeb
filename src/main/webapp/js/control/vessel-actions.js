@@ -2,14 +2,18 @@ embryo.vessel.actions = {
     activeItem: null,
     activeItemRow: null,
     hide: function() {
+        if (this.activeItemRow) {
+            $("#"+this.activeItemRow).removeClass("alert");
+        }
         if (this.activeItem && this.activeItem.hide) this.activeItem.hide();
-        if (this.activeItemRow) $("#"+this.activeItemRow).removeClass("alert");
         this.activeItem = null;
-        this.activeRow = null;
+        this.activeItemRow = null;
         $(".reportingPanel").css("display", "none");
     },
     markActiveItem: function() {
-        if (this.activeItemRow) $("#"+this.activeItemRow).addClass("alert");
+        if (this.activeItemRow) {
+            $("#"+this.activeItemRow).addClass("alert");
+        }
     },
     setup: function(id, items, vesselOverview, vesselDetails) {
         var html = "";

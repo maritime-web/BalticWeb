@@ -103,25 +103,11 @@ $(function() {
     }
     
     embryo.vesselSelected(function(e) {
+        embryo.vessel.actions.hide();
+
         shipSelected = true;
 
         $("a[href=#vcpSelectedShip]").html("Selected Vessel - loading data");
-        // var messageId = embryo.messagePanel.show( { text: "Loading vessel data ..." })
-
-        function setupAdditionalInformation(id, click) {
-            $(id+" a").off("click");
-            if (click != null) {
-                $(id+" a").css("display", "block");
-                $(id+" span").addClass("label-success");
-                $(id+" span").html("AVAILABLE");
-                $(id+" a").attr("href", "#");
-                $(id+" a").on("click", click);
-            } else {
-                $(id+" a").css("display", "none");
-                $(id+" span").removeClass("label-success");
-                $(id+" span").html("NOT AVAILABLE");
-            }
-        }
 
         embryo.vessel.service.details(e.vesselId, function(error, data) {
             if (data) {
