@@ -246,6 +246,10 @@ public class TestServiceBean {
         // uploadSarfaqRoutes();
         createNajaArcticaTestData();
         createArinaArcticaTestData();
+        
+        createSilverExplorerTestData();
+        createArtaniaTestData();
+        createEmeraldPrincessTestData();
         // createCarnivalLegendTestData();
         // uploadCarnivalLegendRoutes();
         createDmiLogin();
@@ -541,7 +545,91 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(user);
     }
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createSilverExplorerTestData() {
+        logger.info("BEFORE CREATION - SILVER EXPLORER");
 
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.setMmsi(311562000L);
+        newVessel = vesselDao.saveEntity(newVessel);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setVessel(newVessel);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        vesselDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("silver", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        vesselDao.saveEntity(user);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createArtaniaTestData() {
+        logger.info("BEFORE CREATION - ARTANIA");
+
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.setMmsi(310456000L);
+        newVessel = vesselDao.saveEntity(newVessel);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setVessel(newVessel);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        vesselDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("artania", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        vesselDao.saveEntity(user);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createEmeraldPrincessTestData() {
+        logger.info("BEFORE CREATION - EMERALD PRINCESS");
+
+        // Create vessel and user
+        Vessel newVessel = new Vessel();
+        newVessel.setMmsi(310531000L);
+        newVessel = vesselDao.saveEntity(newVessel);
+
+        Permission ais = new Permission("ais");
+        Permission yourShip = new Permission("yourShip");
+
+        vesselDao.saveEntity(ais);
+        vesselDao.saveEntity(yourShip);
+
+        Sailor sailorRole = new Sailor();
+        sailorRole.setVessel(newVessel);
+        sailorRole.add(ais);
+        sailorRole.add(yourShip);
+
+        vesselDao.saveEntity(sailorRole);
+
+        SecuredUser user = new SecuredUser("princess", "qwerty", "obo@dma.dk");
+        user.addRole(sailorRole);
+
+        vesselDao.saveEntity(user);
+    }
+
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createCarnivalLegendTestData() {
         logger.info("BEFORE CREATION - CARNIVAL LEGEND");
