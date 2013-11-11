@@ -49,7 +49,7 @@ public class ScheduleDaoImpl extends DaoImpl implements ScheduleDao {
         
         TypedQuery<Voyage> query = em.createNamedQuery("Voyage:getByMmsi", Voyage.class);
         query.setParameter("mmsi", mmsi);
-        query.setParameter("date", date.toDate());
+        query.setParameter("date", date != null ? date.toDate() : null);
 
         List<Voyage> result = query.getResultList();
 

@@ -222,7 +222,10 @@
         this.title = "Greenpos Reporting";
 
         this.available = function(vesselOverview, vesselDetails) {
-            return vesselOverview.inArcticWeb;
+            if (vesselOverview.inArcticWeb) return {
+                text: "OK", klass: "success", action: "edit"
+            };
+            return false;
         }
 
         embryo.controllers.greenpos = this;
