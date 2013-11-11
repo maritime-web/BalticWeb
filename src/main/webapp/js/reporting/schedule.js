@@ -13,6 +13,7 @@
                     $scope.idsOfVoyages2Delete = [];
                     $scope.voyages = schedule.voyages.slice();
                     $scope.voyages.push({});
+                    $("#schedulePanel").css("display", "block");
                 });
             }
         };
@@ -28,7 +29,6 @@
                 loadSchedule();
                 $scope.$apply(function() {
                 });
-                $("#schedulePanel").css("display", "block");
             },
             hide : function() {
                 $scope.reset();

@@ -2,7 +2,6 @@ embryo.additionalInformation = {}
 
 embryo.additionalInformation.historicalTrack = {
     title : "Historical Track",
-    showAt : [ "YourShip", "SelectedShip" ],
     layer : new HistoricalTrackLayer(),
     init : function(map, group) {
         addLayerToMap(group, this.layer, map)
@@ -28,7 +27,6 @@ embryo.additionalInformation.historicalTrack = {
 
 embryo.additionalInformation.nearestShips = {
     title : "Nearest Vessels",
-    showAt : [ "YourShip", "SelectedShip" ],
     layer : new NearestVesselsLayer(),
     init : function(map, group) {
         addLayerToMap(group, this.layer, map)
@@ -47,7 +45,6 @@ embryo.additionalInformation.nearestShips = {
 
 embryo.additionalInformation.distanceCircles = {
     title : "3-6-9 hour distance circle based on SOG",
-    showAt : [ "YourShip", "SelectedShip" ],
     layer : new DistanceCirclesLayer(),
     init : function(map, group) {
         addLayerToMap(group, this.layer, map)
@@ -66,7 +63,6 @@ embryo.additionalInformation.distanceCircles = {
 
 embryo.additionalInformation.route = {
     title : "Route",
-    showAt : [ "SelectedShip" ],
     layer : new RouteLayer("#D5672D"),
     init : function(map, group) {
         addLayerToMap(group, this.layer, map)
@@ -88,7 +84,6 @@ embryo.additionalInformation.route = {
 
 embryo.additionalInformation.metoc = {
     title : "METOC",
-    showAt : [ "YourShip" ],
     layer : new MetocLayer(),
     init : function(map, group) {
         addLayerToMap(group, this.layer, map)
@@ -102,6 +97,9 @@ embryo.additionalInformation.metoc = {
             that.layer.draw(metoc);
             that.layer.zoomToExtent();
         });
+    },
+    hide: function() {
+        this.layer.clear();
     }
 }
 

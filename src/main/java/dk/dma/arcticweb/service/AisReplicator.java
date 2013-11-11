@@ -25,7 +25,14 @@ import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.*;
+import javax.ejb.ScheduleExpression;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
