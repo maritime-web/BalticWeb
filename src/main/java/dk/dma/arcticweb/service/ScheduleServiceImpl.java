@@ -19,12 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -37,7 +33,6 @@ import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ScheduleDao;
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.WayPoint;
@@ -73,7 +68,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleServiceImpl(ScheduleDao scheduleRepository) {
         this.scheduleRepository = scheduleRepository;
     }
-
 
     @Override
     public void updateSchedule(Long mmsi, List<Voyage> toBeSaved, String[] toBeDeleted) {
@@ -115,15 +109,6 @@ public class ScheduleServiceImpl implements ScheduleService {
                 scheduleRepository.remove(voyage);
             }
         }
-    }
-
-    public Voyage getActiveVoyage(String maritimeVesselId) {
-        Vessel vessel = vesselRepository.getVessel(Long.parseLong(maritimeVesselId));
-        if (vessel == null) {
-            return null;
-        }
-        Voyage voyage = vessel.getActiveVoyage();
-        return voyage;
     }
 
     @YourShip
@@ -219,23 +204,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         return r;
     }
 
-    @YourShip
-    @Override
-    public Route getYourActiveRoute() {
-        Vessel vessel = vesselService.getYourVessel();
-        if (vessel == null) {
-            return null;
-        }
-        Voyage active = vessel.getActiveVoyage();
-        if (active != null && active.getRoute() != null) {
-            // initialize to avoid lazyinitialization exceptions
-            if (active.getRoute().getWayPoints().size() > 0) {
-                active.getRoute().getWayPoints().get(0);
-            }
-            return active.getRoute();
-        }
-        return null;
-    }
 
     @YourShip
     @Override
@@ -266,14 +234,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         return route;
     }
 
-    @Override
-    public Voyage getVoyage(String enavId) {
-        return scheduleRepository.getVoyageByEnavId(enavId);
-    }
-
     /**
      * Also sets yourship on route
      */
+    @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Route parseRoute(String fileName, InputStream is, Map<String, String> context) throws IOException {
         RouteParser parser = RouteParser.getRouteParser(fileName, is, context);

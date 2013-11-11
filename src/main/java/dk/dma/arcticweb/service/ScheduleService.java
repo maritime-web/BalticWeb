@@ -33,21 +33,15 @@ public interface ScheduleService {
 
     List<Voyage> getSchedule(Long mmsi);
 
-    Voyage getActiveVoyage(String maritimeId);
-
     String saveRoute(Route route, String voyageId, Boolean active);
 
     String saveRoute(Route route);
-
-    Route getYourActiveRoute();
 
     Route getActiveRoute(Long mmsi);
 
     Route activateRoute(String routeEnavId, Boolean activate);
 
     Route getRouteByEnavId(String enavId);
-
-    Voyage getVoyage(String businessId);
 
     Route parseRoute(String fileName, InputStream is, Map<String, String> context) throws IOException;
 }
