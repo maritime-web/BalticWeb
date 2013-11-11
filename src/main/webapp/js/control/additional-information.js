@@ -21,7 +21,7 @@ embryo.additionalInformation.historicalTrack = {
             }
         })
     },
-    hide : function(vessel, vesselDetails) {
+    hide : function() {
         this.layer.clear();
     }
 }
@@ -34,13 +34,13 @@ embryo.additionalInformation.nearestShips = {
         addLayerToMap(group, this.layer, map)
     },
     available : function(vessel, vesselDetails) {
-        return vesselDetails.ais;
+        return vesselDetails.ais != null;
     },
     show : function(vessel, vesselDetails) {
         this.layer.draw(vessel, vesselDetails, embryo.vessel.allVessels());
         this.layer.zoomToExtent();
     },
-    hide : function(vessel, vesselDetails) {
+    hide : function() {
         this.layer.clear();
     }
 }
@@ -58,6 +58,9 @@ embryo.additionalInformation.distanceCircles = {
     show : function(vessel, vesselDetails) {
         this.layer.draw(vessel, vesselDetails);
         this.layer.zoomToExtent();
+    },
+    hide : function() {
+        this.layer.clear();
     }
 }
 
@@ -69,7 +72,7 @@ embryo.additionalInformation.route = {
         addLayerToMap(group, this.layer, map)
     },
     available : function(vessel, vesselDetails) {
-        return vesselDetails.additionalInformation.routeId;
+        return vesselDetails.additionalInformation.routeId != null;
     },
     show : function(vessel, vesselDetails) {
         var that = this;
@@ -77,36 +80,9 @@ embryo.additionalInformation.route = {
             that.layer.draw(data);
             that.layer.zoomToExtent();
         });
-    }
-}
-
-embryo.additionalInformation.schedule = {
-        title : "Schedule",
-        showAt : [ "SelectedShip" ],
-        layer : new RouteLayer("#D5672F"),
-        init : function(map, group) {
-        },
-        available : function(vessel, vesselDetails) {
-            return true;
-        },
-        show : function(vessel, vesselDetails) {
-            var that = this;
-            embryo.controllers.scheduleview.show({vesselDetails : vesselDetails});
-        }
-    }
-
-embryo.additionalInformation.greenpos = {
-    title : "Greenpos Reports",
-    showAt : [ "SelectedShip" ],
-    layer : new RouteLayer("#D5672F"),
-    init : function(map, group) {
     },
-    available : function(vessel, vesselDetails) {
-        return vesselDetails.additionalInformation.greenpos;
-    },
-    show : function(vessel, vesselDetails) {
-        var that = this;
-        embryo.controllers.greenposListView.show({vesselDetails : vesselDetails});
+    hide : function() {
+        this.layer.clear();
     }
 }
 
@@ -118,7 +94,7 @@ embryo.additionalInformation.metoc = {
         addLayerToMap(group, this.layer, map)
     },
     available : function(vessel, vesselDetails) {
-        return vesselDetails.additionalInformation.routeId;
+        return vesselDetails.additionalInformation.routeId != null;
     },
     show : function(vessel, vesselDetails) {
         var that = this;
@@ -129,54 +105,8 @@ embryo.additionalInformation.metoc = {
     }
 }
 
-function initAdditionalInformation(map, group) {
+embryo.mapInitialized(function() {
     $.each(embryo.additionalInformation, function(k, v) {
-        if (v.init)
-            v.init(map, group);
-    });
-}
-
-function clearAdditionalInformation() {
-    $.each(embryo.additionalInformation, function(k, v) {
-        v.layer.clear();
-    });
-    $.each(embryo.controllers, function(k, v) {
-        v.hide();
-    });
-    $(".additional-information tr").removeClass("alert");
-}
-
-function setupAdditionalInformationTable(id, vessel, vesselDetails, page) {
-    var html = "";
-    $.each(embryo.additionalInformation, function(k, v) {
-        if (v.showAt.indexOf(page) >= 0) {
-            var available = v.available(vessel, vesselDetails);
-            html += "<tr><th>" + v.title + "</th>";
-
-            if (available) {
-                html += "<td><span class='label label-success'>AVAILABLE</span></td><td><a href=# aid=" + k
-                        + ">view</a></td>"
-            } else {
-                html += "<td><span class='label'>NOT AVAILABLE</span></td><td></td>"
-            }
-
-            html += "</tr>"
-        }
-    });
-
-    $(id).html(html);
-
-    $("a", $(id)).click(function(e) {
-        e.preventDefault();
-        clearAdditionalInformation();
-        embryo.additionalInformation[$(this).attr("aid")].show(vessel, vesselDetails);
-        $(this).parents("tr").addClass("alert");
-    })
-}
-
-embryo.ready(function() {
-    $(".embryo-close-panel").click(function(e) {
-        e.preventDefault();
-        clearAdditionalInformation();
+        if (v.init) v.init(embryo.map, "vessel");
     });
 });

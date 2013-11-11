@@ -17,8 +17,10 @@ package dk.dma.arcticweb.service;
 
 import java.util.List;
 
-public interface AisReplicatorService {
-    List<String[]> getVesselsInArcticCircle();
+public interface AisDataService {
+    List<String[]> getVesselsInAisCircle();
+
+    void setVesselsInAisCircle(List<String[]> vesselsInArcticCircle);
 
     boolean isWithinAisCircle(double x, double y);
 }

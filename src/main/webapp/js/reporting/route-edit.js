@@ -45,9 +45,8 @@
         }
 
         embryo.controllers.editroute = {
-            notitle : "not shown in left panel",
             show : function(context) {
-                clearAdditionalInformation();
+                embryo.vessel.actions.hide();
                 $scope.mmsi = context.mmsi;
                 $scope.routeId = context.routeId;
 
@@ -60,9 +59,6 @@
                 };
                 $scope.reset();
                 $("#routeEditPanel").css("display", "block");
-            },
-            hide : function() {
-                $("#routeEditPanel").css("display", "none");
             }
         };
 

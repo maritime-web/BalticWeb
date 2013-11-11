@@ -102,7 +102,6 @@ $(function() {
         });
     }
     
-
     embryo.vesselSelected(function(e) {
         shipSelected = true;
 
@@ -132,7 +131,7 @@ $(function() {
 
                 showVesselInformation(vessel, data);
 
-                setupAdditionalInformationTable("#selectedShipAdditionalInformation", vessel, data, "SelectedShip");
+                embryo.vessel.actions.setup("#selectedVesselActions", embryo.vessel.actions.selectedVessel, vessel, data);
             } else {
                 embryo.messagePanel.show({ text: "Server returned error code: " + error.status + " loading vessel data.", type: "error" });
             }
@@ -143,7 +142,7 @@ $(function() {
         shipSelected = false;
         closeCollapse("#vcpSelectedShip");
         $("a[href=#vcpSelectedShip]").html("Selected Vessel");
-        clearAdditionalInformation();
+        embryo.vessel.actions.hide();
     });
 
     embryo.groupChanged(function(e) {
@@ -153,9 +152,7 @@ $(function() {
             openCollapse("#vesselControlPanel .accordion-body:first");
         } else {
             $("#vesselControlPanel").css("display", "none");
-            clearAdditionalInformation();
+            embryo.vessel.actions.hide();
         }
     });
-
-    initAdditionalInformation(embryo.map, "vessel");
 });
