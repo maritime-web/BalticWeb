@@ -43,44 +43,16 @@ hr.soften {
 	text-align: center;
 }
 
+.hero-content p {
+    font-size: 16px;
+}
+
+
 /* Request login button */
 .hero-content .btn {
 	margin-top: 16px;
-	padding: 10px 16px;
-	font-size: 18px;
+	font-size: 16px;
 	font-weight: 200;
-	color: #fff; /* redeclare to override the `.jumbotron a` */
-	border: 0;
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-	border-radius: 6px;
-	-webkit-box-shadow: inset 2px 3px 2px rgba(255, 255, 255, .2), 0 0 2px
-		2px rgba(0, 0, 0, .0);
-	-moz-box-shadow: inset 2px 3px 2px rgba(255, 255, 255, .2), 0 0 2px 2px
-		rgba(0, 0, 0, .0);
-	box-shadow: inset 2px 3px 2px rgba(255, 255, 255, .2), 0 0 2px 2px
-		rgba(0, 0, 0, .0);
-	-webkit-transition: none;
-	-moz-transition: none;
-	transition: none;
-}
-
-.hero-content .btn:hover {
-	-webkit-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, .1), 0 0 2px
-		2px rgba(0, 0, 0, .0);
-	-moz-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, .1), 0 0 2px 2px
-		rgba(0, 0, 0, .0);
-	box-shadow: inset 0px 1px 0px rgba(255, 255, 255, .1), 0 0 2px 2px
-		rgba(0, 0, 0, .0);
-}
-
-.hero-content .btn:active {
-	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, .1), 0 0 2px 2px
-		rgba(0, 0, 0, .0);
-	-moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, .1), 0 0 2px 2px
-		rgba(0, 0, 0, .0);
-	box-shadow: inset 0 2px 4px rgba(0, 0, 0, .1), 0 0 2px 2px
-		rgba(0, 0, 0, .0);
 }
 
 .menuDivider {
@@ -93,9 +65,6 @@ hr.soften {
 	font-size: 14px;
 }
 
-.hero-content p {
-    font-size: 12px;
-}
 
 .pagecontainer {
 	font-size: 16px;
@@ -103,5 +72,6 @@ hr.soften {
 }
 
 h3{
-	margin-top:20px;
-	}
+	margin-top:40px;
+	margin-bottom:5px;
+}
