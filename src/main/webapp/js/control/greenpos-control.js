@@ -33,6 +33,10 @@
                 $(this).parents("tbody").find("tr").removeClass("alert");
                 $(this).parents("tr").addClass("alert");
             });
+
+            embryo.vesselUnselected(function() {
+                $("tr", "#greenposTableBody").removeClass("alert");
+            })
         });
     }
 
