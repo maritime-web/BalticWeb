@@ -16,6 +16,9 @@
 package dk.dma.embryo.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -67,8 +71,8 @@ public class Vessel extends BaseEntity<Long> {
     @Column(nullable = true)
     private Boolean helipad;
 
-    @OneToOne(mappedBy = "vessel", cascade = { CascadeType.ALL })
-    private Schedule schedule;
+    @OneToMany(mappedBy = "vessel", cascade = { CascadeType.ALL })
+    private List<Voyage> schedule = new ArrayList<>();
 
     @OneToOne(cascade = { CascadeType.ALL })
     private Voyage activeVoyage;
@@ -120,6 +124,16 @@ public class Vessel extends BaseEntity<Long> {
     public Vessel(Long mmsi) {
         this();
         this.mmsi = mmsi;
+    }
+
+
+    // //////////////////////////////////////////////////////////////////////
+    // Utility
+    // //////////////////////////////////////////////////////////////////////
+
+    public void addVoyageEntry(Voyage entry) {
+        schedule.add(entry);
+        entry.vessel = this;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -189,13 +203,8 @@ public class Vessel extends BaseEntity<Long> {
         this.persons = persons;
     }
 
-    public Schedule getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(Schedule plan) {
-        plan.vessel = this;
-        this.schedule = plan;
+    public List<Voyage> getSchedule() {
+        return Collections.unmodifiableList(schedule);
     }
 
     public Voyage getActiveVoyage() {

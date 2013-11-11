@@ -21,24 +21,27 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * 
  * @author Jesper Tejlgaard
  */
-public class Schedule {
+public class ScheduleRequest {
 
-    // Properties relevant for current functionality. Extra can be added.
-
-    private Long id;
-
+    /**
+     * MMSI of vessel for which to update the schedule
+     */
+    private Long mmsi;
+    
+    /**
+     * Updated/new voyages to persist in the database
+     */
     private Voyage[] voyages;
 
+    /**
+     * Voyage IDs of voyages to delete. 
+     */
+    private String[] toDelete;
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Schedule() {
+    public ScheduleRequest() {
         super();
-    }
-
-    public Schedule(Long id) {
-        this();
-        this.id = id;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -52,10 +55,6 @@ public class Schedule {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public Long getId() {
-        return id;
-    }
-
     public Voyage[] getVoyages() {
         return voyages;
     }
@@ -63,4 +62,22 @@ public class Schedule {
     public void setVoyages(Voyage[] voyages) {
         this.voyages = voyages;
     }
+
+    public String[] getToDelete() {
+        return toDelete;
+    }
+
+    public void setToDelete(String[] toDelete) {
+        this.toDelete = toDelete;
+    }
+
+    public Long getMmsi() {
+        return mmsi;
+    }
+
+    public void setMmsi(Long mmsi) {
+        this.mmsi = mmsi;
+    }
+    
+    
 }

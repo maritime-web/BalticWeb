@@ -29,17 +29,9 @@ import dk.dma.embryo.domain.Voyage;
 @Local
 public interface ScheduleService {
 
-    /**
-     * Save voyage plan
-     * 
-     * @param vessel
-     * @param voyagePlan
-     */
-    void saveSchedule(Schedule schedule);
+    void updateSchedule(Long mmsi, List<Voyage> toBeSaved, String[] toDelete);
 
-    Schedule getSchedule(Long mmsi);
-
-    List<Voyage> getVoyages(Long mmsi);
+    List<Voyage> getSchedule(Long mmsi);
 
     Voyage getActiveVoyage(String maritimeId);
 

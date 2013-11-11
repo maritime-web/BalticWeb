@@ -15,6 +15,10 @@
  */
 package dk.dma.embryo.domain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -22,6 +26,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
@@ -29,7 +35,10 @@ import org.joda.time.LocalDateTime;
 import dk.dma.embryo.rest.util.DateTimeConverter;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "Voyage:getByEnavId", query = "SELECT DISTINCT v FROM Voyage v where v.enavId = :enavId") })
+@NamedQueries({
+        @NamedQuery(name = "Voyage:getByEnavId", query = "SELECT DISTINCT v FROM Voyage v where v.enavId = :enavId"),
+        @NamedQuery(name = "Voyage:getByEnavIds", query = "SELECT DISTINCT v FROM Voyage v where v.enavId in :enavIds"),
+        @NamedQuery(name = "Voyage:getByMmsi", query = "SELECT DISTINCT v FROM Voyage v where v.vessel.mmsi = :mmsi AND DATE(v.departure) >= DATE(:date) order by v.departure") })
 public class Voyage extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -39,13 +48,16 @@ public class Voyage extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     private String enavId;
 
+    @NotNull
     private String berthName;
 
+    @Valid
     private Position position;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime arrival;
 
+    @NotNull
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime departure;
 
@@ -58,7 +70,7 @@ public class Voyage extends BaseEntity<Long> {
     Route route;
 
     @ManyToOne
-    Schedule schedule;
+    Vessel vessel;
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
@@ -72,6 +84,15 @@ public class Voyage extends BaseEntity<Long> {
                 getCrewOnBoard(), getPassengersOnBoard(), getDoctorOnBoard());
 
         return voyage;
+    }
+
+    public static List<Voyage> fromJsonModel(dk.dma.embryo.rest.json.Voyage[] voyages) {
+        List<Voyage> result = new ArrayList<>(voyages.length);
+        for (dk.dma.embryo.rest.json.Voyage voyage : voyages) {
+            Voyage v = Voyage.fromJsonModel(voyage);
+            result.add(v);
+        }
+        return result;
     }
 
     public static Voyage fromJsonModel(dk.dma.embryo.rest.json.Voyage voyage) {
@@ -88,6 +109,14 @@ public class Voyage extends BaseEntity<Long> {
         result.setPassengersOnBoard(voyage.getPassengers());
         result.setDoctorOnBoard(voyage.isDoctor());
         return result;
+    }
+
+    public static Map<String, Voyage> asMap(List<Voyage> voyages) {
+        Map<String, Voyage> m = new HashMap<>();
+        for (Voyage v : voyages) {
+            m.put(v.getEnavId(), v);
+        }
+        return m;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -210,8 +239,8 @@ public class Voyage extends BaseEntity<Long> {
         return route;
     }
 
-    public Schedule getSchedule() {
-        return schedule;
+    public Vessel getVessel() {
+        return vessel;
     }
 
 }

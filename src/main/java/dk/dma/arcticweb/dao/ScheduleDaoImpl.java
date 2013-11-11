@@ -21,8 +21,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.joda.time.LocalDateTime;
+
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 
@@ -39,13 +40,20 @@ public class ScheduleDaoImpl extends DaoImpl implements ScheduleDao {
 
 
     @Override
-    public Schedule getSchedule(Long mmsi) {
-        TypedQuery<Schedule> query = em.createNamedQuery("Schedule:getByMmsi", Schedule.class);
+    public List<Voyage> getSchedule(Long mmsi) {
+        TypedQuery<LocalDateTime> datequery = em.createQuery("select MAX(v.departure) from Voyage v where v.vessel.mmsi = :mmsi AND date(v.departure) < CURRENT_DATE()", LocalDateTime.class);
+//        TypedQuery<LocalDateTime> datequery = em.createQuery("select FUNCTION('MAX', v.departure) AS DATETIME from Voyage v where v.schedule.vessel.mmsi = :mmsi AND FUNCTION('DATE', v.departure) < FUNCTION('CURDATE')", LocalDateTime.class);
+        datequery.setParameter("mmsi", mmsi);
+
+        LocalDateTime date = datequery.getSingleResult();
+        
+        TypedQuery<Voyage> query = em.createNamedQuery("Voyage:getByMmsi", Voyage.class);
         query.setParameter("mmsi", mmsi);
+        query.setParameter("date", date.toDate());
 
-        List<Schedule> result = query.getResultList();
+        List<Voyage> result = query.getResultList();
 
-        return getSingleOrNull(result);
+        return result;
     }
 
     @Override
@@ -92,6 +100,14 @@ public class ScheduleDaoImpl extends DaoImpl implements ScheduleDao {
         List<Voyage> result = query.getResultList();
 
         return getSingleOrNull(result);
+    }
+
+    @Override
+    public List<Voyage> getByEnavIds(List<String> enavIds) {
+        TypedQuery<Voyage> query = em.createNamedQuery("Voyage:getByEnavIds", Voyage.class);
+        query.setParameter("enavIds", enavIds);
+        List<Voyage> result = query.getResultList();
+        return result;
     }
 
 }

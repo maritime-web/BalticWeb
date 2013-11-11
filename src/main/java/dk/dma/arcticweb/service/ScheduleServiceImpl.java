@@ -17,7 +17,8 @@ package dk.dma.arcticweb.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +37,6 @@ import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ScheduleDao;
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
@@ -74,52 +74,47 @@ public class ScheduleServiceImpl implements ScheduleService {
         this.scheduleRepository = scheduleRepository;
     }
 
+
     @Override
-    public void saveSchedule(Schedule toBeUpdated) {
-        Schedule fresh = null;
+    public void updateSchedule(Long mmsi, List<Voyage> toBeSaved, String[] toBeDeleted) {
 
-        if (toBeUpdated.getId() != null) {
-            fresh = scheduleRepository.getByPrimaryKey(Schedule.class, toBeUpdated.getId());
+        List<String> ids = new ArrayList<>(toBeSaved.size());
+        for (int i = 0; i < toBeSaved.size(); i++) {
+            ids.add(toBeSaved.get(i).getEnavId());
         }
 
-        if (fresh == null) {
-            // Voyage Plan does not exist in the database. Create a new Voyage Plan
-            fresh = new Schedule();
-        }
+        List<Voyage> persisted = scheduleRepository.getByEnavIds(ids);
+        Map<String, Voyage> persistedAsMap = Voyage.asMap(persisted);
 
-        Map<String, Voyage> voyagePlanToBeUpdated = toBeUpdated.getVoyagePlanAsMap();
-        Map<String, Voyage> freshVoyagePlan = fresh.getVoyagePlanAsMap();
+        Vessel vessel = vesselRepository.getVessel(mmsi);
 
-        Set<String> toBeDeleted = new HashSet<>(freshVoyagePlan.keySet());
-        toBeDeleted.removeAll(voyagePlanToBeUpdated.keySet());
-
-        List<Voyage> newVoyages = new LinkedList<>();
-
-        for (Entry<String, Voyage> voyageEntry : voyagePlanToBeUpdated.entrySet()) {
+        // In order to maintain JPA relations we have to select from DB and merge data manually
+        for (Voyage voyage : toBeSaved) {
             Voyage v = null;
-            if (freshVoyagePlan.containsKey(voyageEntry.getKey())) {
-                v = freshVoyagePlan.get(voyageEntry.getKey());
+            if (persistedAsMap.containsKey(voyage.getEnavId())) {
+                v = persistedAsMap.get(voyage.getEnavId());
+
+                v.setArrival(voyage.getArrival());
+                v.setBerthName(voyage.getBerthName());
+                v.setDeparture(voyage.getDeparture());
+                v.setPosition(voyage.getPosition());
+                v.setCrewOnBoard(voyage.getCrewOnBoard());
+                v.setPassengersOnBoard(voyage.getPassengersOnBoard());
+                v.setDoctorOnBoard(voyage.getDoctorOnBoard());
             } else {
-                v = new Voyage();
-                fresh.addVoyageEntry(v);
-                newVoyages.add(voyageEntry.getValue());
+                v = voyage;
+                vessel.addVoyageEntry(v);
             }
-            v.setArrival(voyageEntry.getValue().getArrival());
-            v.setBerthName(voyageEntry.getValue().getBerthName());
-            v.setDeparture(voyageEntry.getValue().getDeparture());
-            v.setPosition(voyageEntry.getValue().getPosition());
-            v.setCrewOnBoard(voyageEntry.getValue().getCrewOnBoard());
-            v.setPassengersOnBoard(voyageEntry.getValue().getPassengersOnBoard());
-            v.setDoctorOnBoard(voyageEntry.getValue().getDoctorOnBoard());
+            scheduleRepository.saveEntity(v);
         }
 
-        for (String key : toBeDeleted) {
-            Voyage v = freshVoyagePlan.get(key);
-            fresh.removeVoyage(v);
-            scheduleRepository.remove(v);
+        if (toBeDeleted.length > 0) {
+            List<String> toBeDeletedAsList = Arrays.asList(toBeDeleted);
+            List<Voyage> toDelete = scheduleRepository.getByEnavIds(toBeDeletedAsList);
+            for (Voyage voyage : toDelete) {
+                scheduleRepository.remove(voyage);
+            }
         }
-
-        scheduleRepository.saveEntity(fresh);
     }
 
     public Voyage getActiveVoyage(String maritimeVesselId) {
@@ -133,43 +128,27 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @YourShip
     @Override
-    public Schedule getSchedule(Long mmsi) {
-        Schedule voyagePlan = scheduleRepository.getSchedule(mmsi);
-        if (voyagePlan == null) {
-            voyagePlan = new Schedule();
-            // FIXME: Hack only works for YourShip feature
-            Vessel vessel = vesselRepository.getVessel(subject.getRole(Sailor.class));
-            vessel.setSchedule(voyagePlan);
-        }
+    public List<Voyage> getSchedule(Long mmsi) {
+        List<Voyage> schedule = scheduleRepository.getSchedule(mmsi);
 
-        for (Voyage voyage : voyagePlan.getEntries()) {
+        for (Voyage voyage : schedule) {
             Route r = voyage.getRoute();
-            if(r != null){
-                for(WayPoint w : r.getWayPoints()){
+            if (r != null) {
+                for (WayPoint w : r.getWayPoints()) {
                     w.getName();
                 }
-                
+
             }
         }
 
-        return voyagePlan;
-    }
-
-    @YourShip
-    @Override
-    public List<Voyage> getVoyages(Long mmsi) {
-        // TODO fix to work for several voyage plans
-        Schedule plan = scheduleRepository.getSchedule(mmsi);
-        if (plan == null) {
-            return Collections.emptyList();
-        }
-        return plan.getEntries();
+        return schedule;
     }
 
     /**
      * Used to save uploaded routes.
      * 
-     * Automatically fills out route fields also being part of voyage information, like departure location, destination location, times etc. 
+     * Automatically fills out route fields also being part of voyage information, like departure location, destination
+     * location, times etc.
      */
     @Override
     public String saveRoute(Route route, String voyageId, Boolean active) {
@@ -186,20 +165,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (voyage == null) {
             throw new IllegalArgumentException("Unknown 'voyageId' value '" + voyageId + "'");
         }
-        
+
         route.setOrigin(voyage.getBerthName());
         route.setEtaOfDeparture(voyage.getDeparture());
-        
-        List<Voyage> voyages = voyage.getSchedule().getEntries();
+
+        List<Voyage> voyages = voyage.getVessel().getSchedule();
         int count = 0;
         boolean found = false;
-        while(count < voyages.size() && !found){
+        while (count < voyages.size() && !found) {
             Voyage v = voyages.get(count++);
-            if(v.getEnavId().equals(voyage.getEnavId())){
+            if (v.getEnavId().equals(voyage.getEnavId())) {
                 found = true;
             }
         }
-        if(count < voyages.size()){
+        if (count < voyages.size()) {
             route.setDestination(voyages.get(count).getBerthName());
         }
 
@@ -209,11 +188,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.saveEntity(voyage);
 
         if (active == Boolean.TRUE) {
-            Vessel vessel = voyage.getSchedule().getVessel();
+            Vessel vessel = voyage.getVessel();
             vessel.setActiveVoyage(voyage);
             scheduleRepository.saveEntity(vessel);
         }
-        
+
         return route.getEnavId();
     }
 
