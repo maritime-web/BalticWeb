@@ -23,39 +23,24 @@ import java.util.Map;
 import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.Voyage;
 
 @Local
 public interface ScheduleService {
 
-    /**
-     * Save voyage plan
-     * 
-     * @param vessel
-     * @param voyagePlan
-     */
-    void saveSchedule(Schedule schedule);
+    void updateSchedule(Long mmsi, List<Voyage> toBeSaved, String[] toDelete);
 
-    Schedule getSchedule(Long mmsi);
-
-    List<Voyage> getVoyages(Long mmsi);
-
-    Voyage getActiveVoyage(String maritimeId);
+    List<Voyage> getSchedule(Long mmsi);
 
     String saveRoute(Route route, String voyageId, Boolean active);
 
     String saveRoute(Route route);
-
-    Route getYourActiveRoute();
 
     Route getActiveRoute(Long mmsi);
 
     Route activateRoute(String routeEnavId, Boolean activate);
 
     Route getRouteByEnavId(String enavId);
-
-    Voyage getVoyage(String businessId);
 
     Route parseRoute(String fileName, InputStream is, Map<String, String> context) throws IOException;
 }

@@ -1,12 +1,3 @@
-/*
- * Dependencies:
- * 
- * aisview.js
- * aisviewUI.js
- * route.js
- * ....
- */
-
 (function() {
     "use strict";
 
@@ -16,11 +7,10 @@
             'siyfion.typeahead' ]);
 
     embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService) {
-        var schedule;
         var loadSchedule = function() {
             if ($scope.mmsi) {
-                ScheduleService.getYourSchedule($scope.mmsi, function(ss) {
-                    schedule = ss;
+                ScheduleService.getYourSchedule($scope.mmsi, function(schedule) {
+                    $scope.idsOfVoyages2Delete = [];
                     $scope.voyages = schedule.voyages.slice();
                     $scope.voyages.push({});
                 });
@@ -75,6 +65,9 @@
         }, true);
 
         $scope.del = function(index) {
+            if($scope.voyages[index].maritimeId){
+                $scope.idsOfVoyages2Delete.push($scope.voyages[index].maritimeId);
+            }
             $scope.voyages.splice(index, 1);
         };
 
@@ -109,7 +102,7 @@
                 context.des = $scope.voyages[index + 1].berthName;
                 context.etdes = $scope.voyages[index + 1].arrival;
             }
-            
+
             embryo.controllers.editroute.show(context);
         };
 
@@ -137,18 +130,23 @@
         $scope.reset = function() {
             $scope.message = null;
             $scope.alertMessage = null;
+            $scope.idsOfVoyages2Delete = [];
             loadSchedule();
         };
         $scope.save = function() {
             var index;
             // remove last empty element
-            schedule.voyages = $scope.voyages.slice(0, $scope.voyages.length - 1);
+            var scheduleRequest = {
+                mmsi : $scope.mmsi,
+                voyages : $scope.voyages.slice(0, $scope.voyages.length - 1),
+                toDelete : $scope.idsOfVoyages2Delete
+            };
 
-            for (index in schedule.voyages) {
-                delete schedule.voyages[index].route;
+            for (index in scheduleRequest.voyages) {
+                delete scheduleRequest.voyages[index].route;
             }
 
-            ScheduleService.save(schedule, function() {
+            ScheduleService.save(scheduleRequest, function() {
                 $scope.message = "Schedule saved successfully";
                 loadSchedule();
             });
@@ -156,17 +154,15 @@
     };
 
     embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService) {
-        var schedule;
         var loadSchedule = function() {
             if ($scope.mmsi) {
-                ScheduleService.getSchedule($scope.mmsi, function(ss) {
-                    schedule = ss;
+                ScheduleService.getSchedule($scope.mmsi, function(schedule) {
                     $scope.voyages = schedule.voyages.slice();
                     $("#scheduleViewPanel").css("display", "block");
                 });
             }
         };
-        
+
         $scope.layer = new RouteLayer("#D5672F");
         addLayerToMap("vessel", $scope.layer, embryo.map);
 
@@ -199,10 +195,10 @@
 
             return $scope.activeRouteId === voyage.route.id;
         };
-        
+
         $scope.viewRoute = function(voyage, $event) {
             $event.preventDefault();
-            RouteService.getRoute(voyage.route.id, function(route){
+            RouteService.getRoute(voyage.route.id, function(route) {
                 $scope.layer.draw(route);
                 $scope.layer.zoomToExtent();
 

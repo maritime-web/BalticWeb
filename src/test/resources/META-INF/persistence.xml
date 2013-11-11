@@ -42,6 +42,29 @@
     </properties>
 
   </persistence-unit>
+  <persistence-unit name="mysqlTest" transaction-type="RESOURCE_LOCAL">
+    <class>dk.dma.embryo.domain.ReportedVoyage</class>
+    <class>dk.dma.embryo.domain.GreenPosDeviationReport</class>
+    <class>dk.dma.embryo.domain.GreenPosFinalReport</class>
+    <class>dk.dma.embryo.domain.GreenPosPositionReport</class>
+    <class>dk.dma.embryo.domain.GreenPosReport</class>
+    <class>dk.dma.embryo.domain.GreenPosSailingPlanReport</class>
+
+    <validation-mode>CALLBACK</validation-mode>
+
+    <properties>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:target/h2/mysqldb;MODE=MySQL;create=tru" />
+      <property name="javax.persistence.jdbc.user" value="embryo" />
+      <property name="javax.persistence.jdbc.password" value="embryo" />
+
+      <!-- Properties for Hibernate -->
+      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+      <property name="hibernate.show_sql" value="false" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+    </properties>
+
+  </persistence-unit>
   <persistence-unit name="berthMover" transaction-type="RESOURCE_LOCAL">
     <class>dk.dma.embryo.domain.Berth</class>
     <class>dk.dma.embryo.domain.BerthGst</class>

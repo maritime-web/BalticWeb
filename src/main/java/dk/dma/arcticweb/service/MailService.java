@@ -13,23 +13,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.domain;
+package dk.dma.arcticweb.service;
 
-import java.util.UUID;
+import javax.ejb.Local;
 
-import javax.persistence.Entity;
+import dk.dma.embryo.domain.GreenPosReport;
 
-@Entity
-public class Ship extends BaseEntity<Long> {
-    private static final long serialVersionUID = 1L;
+@Local
+public interface MailService{
 
-
-    // //////////////////////////////////////////////////////////////////////
-    // Constructors
-    // //////////////////////////////////////////////////////////////////////
-    public Ship() {
-
-    }
-
+    String newGreenposReport(GreenPosReport report);
 
 }

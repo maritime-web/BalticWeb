@@ -52,6 +52,9 @@ public class DateTimeConverter {
         if(value == null){
             return null;
         }
+        if(value.trim().length() == 0){
+            return null;
+        }
         if(locale != null){
             return formatter.withLocale(locale).parseLocalDateTime(value);
         }

@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.rest;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,7 +29,11 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ScheduleService;
+import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Schedule;
+import dk.dma.embryo.domain.Voyage;
+import dk.dma.embryo.rest.json.ScheduleRequest;
+import dk.dma.embryo.rest.json.Voyage.RouteOverview;
 
 @Path("/schedule")
 public class ScheduleRestService {
@@ -45,13 +51,26 @@ public class ScheduleRestService {
     @Path("/{mmsi}")
     @Produces("application/json")
     @GZIP
-    public dk.dma.embryo.rest.json.Schedule getScheduleView(@PathParam("mmsi") Long mmsi) {
+    public dk.dma.embryo.rest.json.ScheduleResponse getScheduleView(@PathParam("mmsi") Long mmsi) {
         logger.trace("getScheduleView({})", mmsi);
 
-        Schedule schedule = scheduleService.getSchedule(mmsi);
-        dk.dma.embryo.rest.json.Schedule result = null;
+        List<Voyage> schedule = scheduleService.getSchedule(mmsi);
+        dk.dma.embryo.rest.json.ScheduleResponse result = new dk.dma.embryo.rest.json.ScheduleResponse();
         if (schedule != null) {
-            result = schedule.toJsonModel();
+            dk.dma.embryo.rest.json.Voyage[] voyages = new dk.dma.embryo.rest.json.Voyage[schedule.size()];
+            for (int i = 0; i < schedule.size(); i++) {
+                Voyage voyage = schedule.get(i);
+                voyages[i] = voyage.toJsonModel();
+
+                if (voyage.getRoute() != null) {
+                    Route route = voyage.getRoute();
+                    RouteOverview overview = new RouteOverview(route.getEnavId(), route.getName(), route.getOrigin(),
+                            route.getDestination(), route.getWayPoints().size());
+                    voyages[i].setRoute(overview);
+                }
+            }
+
+            result.setVoyages(voyages);
         }
 
         logger.debug("getScheduleView({}) : {}", mmsi, result);
@@ -61,13 +80,13 @@ public class ScheduleRestService {
     @PUT
     @Path("/save")
     @Consumes("application/json")
-    public void savePlan(dk.dma.embryo.rest.json.Schedule schedule) {
-        logger.trace("savePlan({})", schedule);
+    public void save(ScheduleRequest scheduleRequest) {
+        logger.debug("savePlan({})", scheduleRequest);
 
-        Schedule toBeSaved = Schedule.fromJsonModel(schedule);
-        scheduleService.saveSchedule(toBeSaved);
+        List<Voyage> toBeSaved = Voyage.fromJsonModel(scheduleRequest.getVoyages());
+        scheduleService.updateSchedule(scheduleRequest.getMmsi(), toBeSaved, scheduleRequest.getToDelete());
 
-        logger.trace("savePlan()");
+        logger.debug("savePlan()");
     }
 
 }

@@ -54,7 +54,6 @@ import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.ShoreRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
@@ -84,7 +83,7 @@ public class TestServiceBean {
     private EntityManagerFactory emf;
 
     List<Berth> berthList = new ArrayList<>(100);
-    
+
     @PostConstruct
     public void startup() {
         Map<String, Object> props = emf.getProperties();
@@ -93,15 +92,16 @@ public class TestServiceBean {
         logger.info("Detected database auto update setting: {}", hbm2dllAuto);
 
         setupBerthList();
-        
+
         if ("create-drop".equals(hbm2dllAuto)) {
             createTestData();
         }
     }
-    
-    private void setupBerthList(){
-        
-        berthList.add(new Berth("Ikerasassuaq Vejrstation", "Prins Christian Sund Vejrstation", "60 03.5N", "043 10.5W"));
+
+    private void setupBerthList() {
+
+        berthList
+                .add(new Berth("Ikerasassuaq Vejrstation", "Prins Christian Sund Vejrstation", "60 03.5N", "043 10.5W"));
         berthList.add(new Berth("Aappilattoq", null, "60 09.6N", "044 17.2W"));
         berthList.add(new Berth("Narsaq Kujalleq", "Frederiksdal", "60 00.4N", "044 40.0W"));
         berthList.add(new Berth("Tasiusaq", null, "60 11.8N", "044 49.5W"));
@@ -196,14 +196,14 @@ public class TestServiceBean {
         berthList.add(new Berth("Saqqisikuik", "Skjoldungen", "63 13.0N", "041 24.0W"));
         berthList.add(new Berth("Seqinnersuusaq", null, "64 58.7N", "051 34.9W"));
         berthList.add(new Berth("Maarmorilik", null, "71 07.6N", "051 16.5W"));
-        berthList.add(new Berth("Zackenberg Forskningsstation", null, "74 28.0N", "020 34.0W"));    }
+        berthList.add(new Berth("Zackenberg Forskningsstation", null, "74 28.0N", "020 34.0W"));
+    }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void clearAllData() {
         logger.info("Deleting existing entries");
 
         deleteAll(Berth.class);
-        deleteAll(Ship.class);
         deleteAll(Vessel.class);
         deleteAll(VoyagePlan.class);
         deleteAll(Schedule.class);
@@ -242,27 +242,27 @@ public class TestServiceBean {
         createOraTankTestData();
         uploadOraTankRoutes();
         createSarfaqTestData();
-        //createSarfaqSchedule();
-        //uploadSarfaqRoutes();
+        // createSarfaqSchedule();
+        // uploadSarfaqRoutes();
         createNajaArcticaTestData();
         createArinaArcticaTestData();
-//        createCarnivalLegendTestData();
-//        uploadCarnivalLegendRoutes();
+        // createCarnivalLegendTestData();
+        // uploadCarnivalLegendRoutes();
         createDmiLogin();
         createIceCenterLogin();
         createArcticCommandLogin();
         createGreenposReports();
     }
 
-    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createBerths() {
         logger.info("BEFORE CREATION - Berths");
 
-        for(Berth berth : berthList){
+        for (Berth berth : berthList) {
             vesselDao.saveEntity(berth);
         }
     }
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createDmaTestData() {
         logger.info("BEFORE CREATION - DMA");
@@ -310,33 +310,32 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(user);
 
-
         LocalDateTime now = LocalDateTime.now();
-        Schedule voyagePlan = new Schedule();
-        newVessel.setSchedule(voyagePlan);
 
-        voyagePlan.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
+        newVessel.addVoyageEntry(new Voyage("Is never shown", "25 47.16N", "08 13.27W", null, now.minusDays(6)
+                .withTime(17, 0, 0, 0), 0, 0, false));
+        newVessel.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
                 now.minusDays(3).withTime(17, 0, 0, 0), 12, 0, true));
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
+        newVessel.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
                 now.plusDays(5).withTime(9, 0, 0, 0), 12, 0, true));
-        voyagePlan.addVoyageEntry(new Voyage("Thule", "77 27.8N", "069 14.0W", now.plusDays(9).withTime(13, 15, 0, 0),
+        newVessel.addVoyageEntry(new Voyage("Thule", "77 27.8N", "069 14.0W", now.plusDays(9).withTime(13, 15, 0, 0),
                 now.plusDays(11).withTime(9, 0, 0, 0)));
-        voyagePlan.addVoyageEntry(new Voyage("Upernavik", "72 47.5N", "056 09.4W", now.plusDays(13).withTime(10, 45, 0,
+        newVessel.addVoyageEntry(new Voyage("Upernavik", "72 47.5N", "056 09.4W", now.plusDays(13).withTime(10, 45, 0,
                 0), now.plusDays(14).withTime(9, 30, 0, 0)));
 
-        vesselDao.saveEntity(voyagePlan);
+        for(Voyage v : newVessel.getSchedule()){
+            vesselDao.saveEntity(v);
+        }
     }
-
-
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadOrasilaRoutes() {
         logger.info("BEFORE UPLOAD - ORASILA");
 
-        Schedule voyagePlan = scheduleService.getSchedule(220443000L);
-        insertDemoRoute(voyagePlan.getEntries().get(0).getEnavId(), "/demo/routes/Miami-Nuuk.txt", true);
-        insertDemoRoute(voyagePlan.getEntries().get(1).getEnavId(), "/demo/routes/Nuuk-Thule.txt", false);
-        insertDemoRoute(voyagePlan.getEntries().get(2).getEnavId(), "/demo/routes/Thule-Upernavik.txt", false);
+        List<Voyage> schedule = scheduleService.getSchedule(220443000L);
+        insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/Miami-Nuuk.txt", true);
+        insertDemoRoute(schedule.get(1).getEnavId(), "/demo/routes/Nuuk-Thule.txt", false);
+        insertDemoRoute(schedule.get(2).getEnavId(), "/demo/routes/Thule-Upernavik.txt", false);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -366,23 +365,23 @@ public class TestServiceBean {
         vesselDao.saveEntity(user);
 
         LocalDateTime now = LocalDateTime.now();
-        Schedule voyagePlan = new Schedule();
-        newVessel.setSchedule(voyagePlan);
 
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
+        newVessel.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
                 now.plusDays(5).withTime(9, 0, 0, 0)));
-        voyagePlan.addVoyageEntry(new Voyage("X", "63 41.81N", "051 29.00W", now.minusDays(4).withTime(9, 30, 0, 0),
+        newVessel.addVoyageEntry(new Voyage("X", "63 41.81N", "051 29.00W", now.minusDays(4).withTime(9, 30, 0, 0),
                 now.minusDays(3).withTime(17, 0, 0, 0)));
 
-        vesselDao.saveEntity(voyagePlan);
+        for(Voyage v : newVessel.getSchedule()){
+            vesselDao.saveEntity(v);
+        }
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadOraTankRoutes() {
         logger.info("BEFORE UPLOAD - ORATANK");
 
-        Schedule voyagePlan = scheduleService.getSchedule(220516000L);
-        insertDemoRoute(voyagePlan.getEntries().get(0).getEnavId(), "/demo/routes/Oratank-Nuuk.txt", true);
+        List<Voyage> schedule = scheduleService.getSchedule(220516000L);
+        insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/Oratank-Nuuk.txt", true);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -416,80 +415,78 @@ public class TestServiceBean {
         logger.info("BEFORE SCHEDULE - SARFAQ");
 
         Vessel sarfaq = vesselService.getVessel(331037000L);
-                
+
         LocalDateTime now = LocalDateTime.now();
-        Schedule voyagePlan = new Schedule();
-        sarfaq.setSchedule(voyagePlan);
 
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
 
         LocalDateTime firstDeparture = converter.toObject("27-09-2013 21:00", null);
 
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", null, firstDeparture));
-        voyagePlan.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject(
+        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", null, firstDeparture));
+        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject(
                 "28-09-2013 07:00", null), converter.toObject("28-09-2013 07:30", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject(
+        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject(
                 "28-09-2013 10:45", null), converter.toObject("28-09-2013 11:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject(
+        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject(
                 "28-09-2013 18:00", null), converter.toObject("28-09-2013 21:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 08:00",
+        sarfaq.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 08:00",
                 null), converter.toObject("29-09-2013 08:30", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Ilulissat", "69 13.5N", "051 06.0W", converter.toObject(
+        sarfaq.addVoyageEntry(new Voyage("Ilulissat", "69 13.5N", "051 06.0W", converter.toObject(
                 "29-09-2013 13:00", null), converter.toObject("29-09-2013 17:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 21:30",
+        sarfaq.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 21:30",
                 null), converter.toObject("29-09-2013 22:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject(
+        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject(
                 "30-09-2013 09:00", null), converter.toObject("30-09-2013 10:30", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject(
+        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject(
                 "30-09-2013 17:30", null), converter.toObject("30-09-2013 17:45", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject(
+        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject(
                 "30-09-2013 21:30", null), converter.toObject("30-09-2013 22:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("01-10-2013 06:30",
+        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("01-10-2013 06:30",
                 null), converter.toObject("01-10-2013 09:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject(
+        sarfaq.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject(
                 "01-10-2013 16:30", null), converter.toObject("01-10-2013 16:45", null)));
 
-        voyagePlan.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("01-10-2013 23:30",
+        sarfaq.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("01-10-2013 23:30",
                 null), converter.toObject("02-10-2013 00:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.1W", converter.toObject("02-10-2013 06:45",
+        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.1W", converter.toObject("02-10-2013 06:45",
                 null), converter.toObject("02-10-2013 07:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Qaqortoq", "60 43.1N", "046 02.4W", converter.toObject(
+        sarfaq.addVoyageEntry(new Voyage("Qaqortoq", "60 43.1N", "046 02.4W", converter.toObject(
                 "02-10-2013 15:30", null), converter.toObject("02-10-2013 19:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Narsaq", "60 54.5N", "046 03.0W", converter.toObject("02-10-2013 21:00",
+        sarfaq.addVoyageEntry(new Voyage("Narsaq", "60 54.5N", "046 03.0W", converter.toObject("02-10-2013 21:00",
                 null), converter.toObject("02-10-2013 21:30", null)));
 
-        voyagePlan.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.2W", converter.toObject("03-10-2013 06:45",
+        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.2W", converter.toObject("03-10-2013 06:45",
                 null), converter.toObject("03-10-2013 07:00", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("03-10-2013 13:30",
+        sarfaq.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("03-10-2013 13:30",
                 null), converter.toObject("03-10-2013 14:30", null)));
-        voyagePlan.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject(
-                "03-10-2013 22:30"), converter.toObject("03-10-2013 22:45")));
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00"), null));
+        sarfaq.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter
+                .toObject("03-10-2013 22:30"), converter.toObject("03-10-2013 22:45")));
+        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00"),
+                null));
 
         // firstDeparture.
 
         Period p = new Period(firstDeparture, now);
         if (p.getWeeks() > 0) {
-            for (Voyage v : voyagePlan.getEntries()) {
+            for (Voyage v : sarfaq.getSchedule()) {
                 v.setArrival(v.getArrival() == null ? null : v.getArrival().plusWeeks(p.getWeeks()));
                 v.setDeparture(v.getDeparture() == null ? null : v.getDeparture().plusWeeks(p.getWeeks()));
             }
         }
-
-        vesselDao.saveEntity(voyagePlan);
+        
+        for(Voyage v : sarfaq.getSchedule()){
+            vesselDao.saveEntity(v);
+        }
     }
 
-    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadSarfaqRoutes() {
         logger.info("BEFORE UPLOAD - SARFAQ");
 
-        Schedule voyagePlan = scheduleService.getSchedule(331037000L);
-        insertDemoRoute(voyagePlan.getEntries().get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
-        insertDemoRoute(voyagePlan.getEntries().get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt",
-                false);
-        insertDemoRoute(voyagePlan.getEntries().get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt",
-                false);
+        List<Voyage> schedule = scheduleService.getSchedule(331037000L);
+        insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
+        insertDemoRoute(schedule.get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt", false);
+        insertDemoRoute(schedule.get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt", false);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -577,25 +574,23 @@ public class TestServiceBean {
         vesselDao.saveEntity(user);
 
         LocalDateTime now = LocalDateTime.now();
-        Schedule voyagePlan = new Schedule();
-        newVessel.setSchedule(voyagePlan);
 
-        voyagePlan.addVoyageEntry(new Voyage("Copenhagen", "55 67.61N", "12 56.83E", null, now.withTime(12, 57, 0, 0),
+        newVessel.addVoyageEntry(new Voyage("Copenhagen", "55 67.61N", "12 56.83E", null, now.withTime(12, 57, 0, 0),
                 12, 300, true));
-        voyagePlan.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(10).withTime(7, 10, 0, 0),
+        newVessel.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(10).withTime(7, 10, 0, 0),
                 null));
 
-        // firstDeparture.
-
-        vesselDao.saveEntity(voyagePlan);
+        for(Voyage v : newVessel.getSchedule()){
+            vesselDao.saveEntity(v);
+        }
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadCarnivalLegendRoutes() {
         logger.info("BEFORE UPLOAD - CARNIVAL LEGEND");
 
-        Schedule voyagePlan = scheduleService.getSchedule(354237000L);
-        insertDemoRoute(voyagePlan.getEntries().get(0).getEnavId(), "/demo/routes/CARNIVAL-LEGEND-Cph-Nuuk.txt", true);
+        List<Voyage> schedule = scheduleService.getSchedule(354237000L);
+        insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/CARNIVAL-LEGEND-Cph-Nuuk.txt", true);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -655,80 +650,82 @@ public class TestServiceBean {
         LocalDateTime minus7 = now.minusDays(7);
         LocalDateTime minus2 = now.minusDays(2);
         LocalDateTime minus1 = now.minusDays(1);
-        
+
         List<ReportedVoyage> voyages = null;
-        GreenPosReport report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("66 56.5N", "053 40.50W"), "Sun shine", "NO ICE", 4.1, 10, "Nuuk",
-                converter.toObject("19-09-2013 10:30"), 6, voyages);
+        GreenPosReport report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel
+                .getAisData().getCallsign(), new Position("66 56.5N", "053 40.50W"), "Sun shine", "NO ICE", 4.1, 10,
+                "Nuuk", converter.toObject("19-09-2013 10:30"), 6, voyages);
         report.setReportedBy("oratank");
         report.setTs(minus8.withHourOfDay(13).withMinuteOfHour(9));
         vesselDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("66 03.772N", "053 46.3W"), "Sun shine", "NO ICE", 10.0, 10);
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("66 03.772N", "053 46.3W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
         report.setTs(minus8.withHourOfDay(18).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("65 19.926N", "052 57.483W"), "Sun shine", "NO ICE", 10.0, 10);
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("65 19.926N", "052 57.483W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
         report.setTs(minus7.withHourOfDay(0).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("64 29.198N", "052 29.507W"), "Sun shine", "NO ICE", 10.0, 10);
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("64 29.198N", "052 29.507W"), "Sun shine", "NO ICE", 10.0, 10);
         report.setReportedBy("oratank");
         report.setTs(minus7.withHourOfDay(6).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
-        report = new GreenPosFinalReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
+        report = new GreenPosFinalReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
         report.setReportedBy("oratank");
         report.setTs(minus7.withHourOfDay(10).withMinuteOfHour(15));
         vesselDao.saveEntity(report);
 
         vessel = vesselDao.getVesselByCallsign("OYDK2");
 
-        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("63 80.01N", "051 58.04W"), "Sun shine", "NO ICE", 11.6, 350);
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("63 80.01N", "051 58.04W"), "Sun shine", "NO ICE", 11.6, 350);
         report.setReportedBy("orasila");
         report.setTs(minus2.withHourOfDay(12).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
-        report = new GreenPosFinalReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
+        report = new GreenPosFinalReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE");
         report.setReportedBy("orasila");
         report.setTs(minus2.withHourOfDay(16).withMinuteOfHour(2));
         vesselDao.saveEntity(report);
 
         voyages = null;
-        report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150,
-                "KYSTFART", converter.toObject("26-09-2013 10:30"), 6, voyages);
+        report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150, "KYSTFART",
+                converter.toObject("26-09-2013 10:30"), 6, voyages);
         report.setReportedBy("orasila");
         report.setTs(minus2.withHourOfDay(23).withMinuteOfHour(12));
         vesselDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("64 10.068N", "051 64.78W"), "Sun shine", "Spredte skosser og let tyndis", 11.6, 162);
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("64 10.068N", "051 64.78W"), "Sun shine", "Spredte skosser og let tyndis",
+                11.6, 162);
         report.setReportedBy("orasila");
         report.setTs(minus1.withHourOfDay(0).withMinuteOfHour(0));
         report.setTs(converter.toObject("25-09-2013 00:00"));
         vesselDao.saveEntity(report);
 
-        report = new GreenPosDeviationReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("64 10.068N", "051 64.78W"), "Vi smutter lige en tur omkring Sisimiut og henter cigaretter mm. ");
+        report = new GreenPosDeviationReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("64 10.068N", "051 64.78W"),
+                "Vi smutter lige en tur omkring Sisimiut og henter cigaretter mm. ");
         report.setReportedBy("orasila");
         report.setTs(minus1.withHourOfDay(4).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
 
-        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData().getCallsign(),
-                new Position("64 10.068N", "051 64.78W"), "Sun shine", "Spredte skosser og let tyndis", 11.6, 162);
+        report = new GreenPosPositionReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
+                .getCallsign(), new Position("64 10.068N", "051 64.78W"), "Sun shine", "Spredte skosser og let tyndis",
+                11.6, 162);
         report.setReportedBy("orasila");
         report.setTs(minus1.withHourOfDay(6).withMinuteOfHour(0));
         vesselDao.saveEntity(report);
-
 
     }
 

@@ -13,36 +13,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.domain;
-
-import javax.persistence.Entity;
+package dk.dma.embryo.rest.json;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-@Entity
-public class Schedule extends BaseEntity<Long> {
+/**
+ * 
+ * @author Jesper Tejlgaard
+ */
+public class ScheduleResponse {
 
-    private static final long serialVersionUID = 1L;
+    // Properties relevant for current functionality. Extra can be added.
 
-    // //////////////////////////////////////////////////////////////////////
-    // Entity fields (also see super class)
-    // //////////////////////////////////////////////////////////////////////
-
-
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
-
+    private Voyage[] voyages;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Schedule() {
-
-    }
-
-    public Schedule(Long id) {
-        this.id = id;
+    public ScheduleResponse() {
+        super();
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -56,4 +45,11 @@ public class Schedule extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
+    public Voyage[] getVoyages() {
+        return voyages;
+    }
+
+    public void setVoyages(Voyage[] voyages) {
+        this.voyages = voyages;
+    }
 }

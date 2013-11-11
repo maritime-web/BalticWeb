@@ -23,7 +23,7 @@ angular.module('siyfion.typeahead', []).directive('siyTypeahead', function() {
 
 			element.typeahead(scope.datasets);
 
-			element.on('typeahead:selected', function(event, datum) {
+			element.on('typeahead:selected', function(event, datum, dataset) {
 				scope.$apply(function() {
 					if (scope.fnSelected) {
 						scope.fnSelected({
@@ -42,7 +42,7 @@ angular.module('siyfion.typeahead', []).directive('siyTypeahead', function() {
 				});
 			});
 
-			scope.$watch(scope.ngModel, function(newValue, oldValue) {
+			scope.$watch('ngModel', function(newValue, oldValue) {
 				if (typeof scope.ngModel !== 'undefined') {
 					element.typeahead('setQuery', scope.ngModel);
 				} else {

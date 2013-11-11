@@ -15,10 +15,11 @@
  */
 package dk.dma.arcticweb.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.Voyage;
 
 @Local
@@ -29,7 +30,7 @@ public interface ScheduleDao extends Dao {
      * @param sailor
      * @return
      */
-    Schedule getSchedule(Long mmsi);
+    List<Voyage> getSchedule(Long mmsi);
 
     Route getActiveRoute(Long mmsi);
 
@@ -38,4 +39,6 @@ public interface ScheduleDao extends Dao {
     Route getRouteByEnavId(String enavId);
 
     Voyage getVoyageByEnavId(String enavId);
+
+    List<Voyage> getByEnavIds(List<String> enavIds);
 }

@@ -30,7 +30,6 @@ import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.embryo.rest.json.ActiveRoute;
 import dk.dma.embryo.rest.json.Route;
 import dk.dma.embryo.rest.json.SaveRouteRequest;
-import dk.dma.embryo.security.authorization.YourShip;
 
 /**
  * 
@@ -56,44 +55,15 @@ public class RouteRestService {
         logger.debug("getRoute({})", id);
         dk.dma.embryo.domain.Route route = scheduleService.getRouteByEnavId(id);
 
-        // TODO replace below with some http status telling resource is not available
         return route != null ? route.toJsonModel() : null;
-    }
-
-    /**
-     * Given that mmsi value is supplied, the active route for that ship is returned
-     * 
-     * Given that no mmsi value is supplied, the active route for the authorized user (with {@link YourShip} permission)
-     * is returned.
-     * 
-     * @param mmsi
-     * @return
-     */
-
-    @GET
-    @Path("/active")
-    @Produces("application/json")
-    @GZIP
-    public Route getActive() {
-        logger.debug("getActive()");
-
-        dk.dma.embryo.domain.Route route;
-
-        route = scheduleService.getYourActiveRoute();
-
-        Route result = route != null ? route.toJsonModel() : null;
-
-        logger.debug("getActive({}) : {}", result);
-        // TODO replace below with some http status telling resource is not available
-        return result;
     }
 
     @GET
     @Path("/active/{mmsi}")
     @Produces("application/json")
     @GZIP
-    public Route getActiveByMmsi(@PathParam("mmsi") String mmsi) {
-        logger.debug("getActiveByMmsi({})", mmsi);
+    public Route getActive(@PathParam("mmsi") String mmsi) {
+        logger.debug("getActive({})", mmsi);
 
         dk.dma.embryo.domain.Route route;
 
@@ -101,8 +71,7 @@ public class RouteRestService {
 
         Route result = route != null ? route.toJsonModel() : null;
 
-        logger.debug("getActiveByMmsi({}) : {}", mmsi, result);
-        // TODO replace below with some http status telling resource is not available
+        logger.debug("getActive({}) : {}", mmsi, result);
         return result;
     }
 

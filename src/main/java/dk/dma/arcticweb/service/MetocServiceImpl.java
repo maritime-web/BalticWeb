@@ -70,7 +70,7 @@ public class MetocServiceImpl {
             throw new IllegalArgumentException("Unknown route id: " + routeId);
         }
 
-        Vessel vessel = route.getVoyage().getSchedule().getVessel();
+        Vessel vessel = route.getVoyage().getVessel();
 
         RouteDecorator r = new RouteDecorator(route.toEnavModel());
 

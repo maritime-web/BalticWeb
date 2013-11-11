@@ -66,6 +66,8 @@ public class GreenPosServiceImplTest {
 
     GreenPosDao greenPosDao;
 
+    MailService mailService;
+
     @BeforeClass
     public static void setupForAll() {
         factory = Persistence.createEntityManagerFactory("componentTest");
@@ -78,12 +80,12 @@ public class GreenPosServiceImplTest {
         vessel.getAisData().setCallsign("AA");
         vessel.setMmsi(0L);
 
-        Schedule schedule = new Schedule();
-        schedule.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", LocalDateTime.now(), LocalDateTime.now()
-                .plusDays(2), 12, 0, true));
-        vessel.setSchedule(schedule);
-
         entityManager.persist(vessel);
+
+        Voyage v = new Voyage("Nuuk", "64 10.4N", "051 43.5W", LocalDateTime.now(), LocalDateTime.now().plusDays(2),
+                12, 0, true);
+        vessel.addVoyageEntry(v);
+        entityManager.persist(v);
 
         entityManager.getTransaction().commit();
         entityManager.close();
@@ -94,12 +96,13 @@ public class GreenPosServiceImplTest {
         entityManager = factory.createEntityManager();
         vesselDao = new VesselDaoImpl(entityManager);
         greenPosDao = new GreenPosDaoImpl(entityManager);
-        
+
         subject = Mockito.mock(Subject.class);
         vesselService = Mockito.mock(VesselService.class);
-        
-        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, vesselService);
-        
+        mailService = Mockito.mock(MailService.class);
+
+        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, vesselService, mailService);
+
     }
 
     @After
