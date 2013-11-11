@@ -7,9 +7,9 @@ embryo.baseMap = "world_merc";
 // embryo.baseMap = "osm";
 
 embryo.baseUrl = "";
-embryo.baseUrl = "http://localhost:8080/arcticweb/";
+// embryo.baseUrl = "http://localhost:8080/arcticweb/";
 embryo.baseUrlForAngularResource = "";
-embryo.baseUrlForAngularResource = "http://localhost\\:8080/arcticweb/";
+// embryo.baseUrlForAngularResource = "http://localhost\\:8080/arcticweb/";
 
 embryo.projection = "EPSG:900913";
 
