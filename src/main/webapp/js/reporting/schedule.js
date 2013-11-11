@@ -21,7 +21,13 @@
         embryo.controllers.schedule = {
             title : "Schedule",
             available : function(vesselOverview, vesselDetails) {
-                return vesselDetails.additionalInformation.routeId ? "ACTIVE" : "INACTIVE";
+                if (vesselOverview.inArcticWeb) {
+                    if (vesselDetails.additionalInformation.routeId)
+                        return { text: "ACTIVE", klass: "success", action: "edit" }
+                    else
+                        return { text: "INACTIVE", action: "edit" }
+                }
+                return false;
             },
             show : function(vesselOverview, vesselDetails) {
                 $scope.mmsi = vesselDetails.mmsi;
@@ -169,8 +175,7 @@
         embryo.controllers.scheduleView = {
             title : "Schedule",
             available : function(vesselOverview, vesselDetails) {
-                if (!vesselOverview.inArcticWeb) return false;
-                return vesselDetails.additionalInformation.routeId ? "ACTIVE" : "INACTIVE";
+                return vesselOverview.inArcticWeb;
             },
             show : function(vesselOverview, vesselDetails) {
                 $scope.mmsi = vesselDetails.mmsi;

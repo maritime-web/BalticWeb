@@ -12,7 +12,10 @@
         embryo.controllers.vesselInformationEdit = {
             title : "Vessel Information",
             available : function(vesselOverview, vesselDetails) {
-                return "OK";
+                if (vesselOverview.inArcticWeb) {
+                    return { text: "OK", klass: "success", action: "edit" }
+                }
+                return false;
             },
             show : function(vesselOverview, vesselDetails) {
                 $("#vesselInformationEditPanel").css("display", "block");

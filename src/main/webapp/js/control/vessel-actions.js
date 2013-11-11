@@ -50,12 +50,10 @@ embryo.vessel.actions = {
                         case true:
                             html += "<td><span class='label label-success'>AVAILABLE</span></td><td><a href=# aid="+i+">view</a></td>"
                             break;
-                        case "NOT OK":
-                        case "INACTIVE":
-                            html += "<td><span class='label'>"+available+"</span></td><td></td>"
-                            break;
                         default:
-                            html += "<td><span class='label label-success'>"+available+"</span></td><td><a href=# aid="+i+">view</a></td>"
+                            var klass = "";
+                            if (available.klass) klass = "label-"+available.klass;
+                            html += "<td><span class='label "+klass+"'>"+available.text+"</span></td><td><a href=# aid="+i+">"+available.action+"</a></td>"
                             break;
                     }
 
