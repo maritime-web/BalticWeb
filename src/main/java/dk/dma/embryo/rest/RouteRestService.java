@@ -30,7 +30,6 @@ import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.embryo.rest.json.ActiveRoute;
 import dk.dma.embryo.rest.json.Route;
 import dk.dma.embryo.rest.json.SaveRouteRequest;
-import dk.dma.embryo.security.authorization.YourShip;
 
 /**
  * 

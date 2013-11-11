@@ -23,7 +23,6 @@ import java.util.Map;
 import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.Voyage;
 
 @Local
