@@ -54,7 +54,6 @@ import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.Ship;
 import dk.dma.embryo.domain.ShoreRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
@@ -205,7 +204,6 @@ public class TestServiceBean {
         logger.info("Deleting existing entries");
 
         deleteAll(Berth.class);
-        deleteAll(Ship.class);
         deleteAll(Vessel.class);
         deleteAll(VoyagePlan.class);
         deleteAll(Schedule.class);
