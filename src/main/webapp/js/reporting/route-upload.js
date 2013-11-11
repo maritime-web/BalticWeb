@@ -46,16 +46,12 @@
         }
 
         embryo.controllers.uploadroute = {
-            notitle : "not shown in left panel",
             show : function(context) {
-                clearAdditionalInformation();
+                embryo.vessel.actions.hide();
                 $scope.mmsi = context.mmsi;
                 $scope.voyageId = context.voyageId;
                 $scope.reset();
                 $("#routeUploadPanel").css("display", "block");
-            },
-            hide : function() {
-                $("#routeUploadPanel").css("display", "none");
             }
         };
         

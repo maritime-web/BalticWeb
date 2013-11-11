@@ -18,14 +18,13 @@ $(function() {
                 e.preventDefault();
                 embryo.vesselInformation.showAesDialog(vesselDetails);
             });
-            setupAdditionalInformationTable("#yourShipAdditionalInformation", vesselOverview, vesselDetails, "YourShip");
             if (vesselDetails.additionalInformation.routeId) {
                 embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
                     // console.log("Drawing router layer for your vessel", data);
                     yourShipRouteLayer.draw(data);
                 });
             }
-            setupReporting("#yourShipReporting", vesselOverview, vesselDetails);
+            embryo.vessel.actions.setup("#yourVesselActions", embryo.vessel.actions.yourVessel, vesselOverview, vesselDetails);
         }
     }
 

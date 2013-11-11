@@ -181,27 +181,26 @@
         };
 
         this.hide = function() {
-            $("#greenposReportPanel").css("display", "none");
             layer.clear();
         }
 
-        this.show = function(c) {
-            GreenposService.getLatestReport(c.vesselOverview.mmsi, function(latestReport) {
+        this.show = function(vesselOverview, vesselDetails) {
+            GreenposService.getLatestReport(vesselOverview.mmsi, function(latestReport) {
                 evalGreenpos(latestReport);
                 $("#greenposReportPanel").css("display", "block");
             });
 
-            $scope.report.mmsi = c.vesselOverview.mmsi;
-            $scope.report.callSign = c.vesselOverview.callSign;
-            $scope.report.vesselName = c.vesselOverview.name;
-            $scope.hasActiveRoute = (c.vesselDetails.additionalInformation.routeId != null);
+            $scope.report.mmsi = vesselOverview.mmsi;
+            $scope.report.callSign = vesselOverview.callSign;
+            $scope.report.vesselName = vesselOverview.name;
+            $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId != null);
 
-            $scope.activeRouteId = c.vesselDetails.additionalInformation.routeId;
+            $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
 
             $scope.$apply();
 
             $scope.$apply(function() {
-                ScheduleService.getActiveVoyage(c.vesselOverview.mmsi, c.vesselDetails.additionalInformation.routeId,
+                ScheduleService.getActiveVoyage(vesselOverview.mmsi, vesselDetails.additionalInformation.routeId,
                     function(voyageInfo) {
                         $scope.report.destination = voyageInfo.des;
                         $scope.report.eta = voyageInfo.desEta;
@@ -222,11 +221,8 @@
 
         this.title = "Greenpos Reporting";
 
-        this.status = function(vesselOverview, vesselDetails) {
-            return {
-                code : "success",
-                message : "OK"
-            }
+        this.available = function(vesselOverview, vesselDetails) {
+            return vesselOverview.inArcticWeb;
         }
 
         embryo.controllers.greenpos = this;
@@ -285,17 +281,14 @@
         // };
 
         embryo.controllers.greenposListView = {
-            status : function(vesselOverview, vesselDetails) {
-                var status = {
-                    message : "OK",
-                    code : "success"
-                }
-                return status;
+            title: "Greenpos Reports",
+            available : function(vesselOverview, vesselDetails) {
+                return vesselOverview.inArcticWeb;
             },
-            show : function(context) {
+            show : function(vesselOverview, vesselDetails) {
                 $("#greenposListPanel").css("display", "block");
 
-                $scope.vessel = context.vesselDetails;
+                $scope.vessel = vesselDetails;
 
                 GreenposService.findReports({
                     mmsi : $scope.vessel.mmsi,

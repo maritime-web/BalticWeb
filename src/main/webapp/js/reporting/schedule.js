@@ -1,12 +1,3 @@
-/*
- * Dependencies:
- * 
- * aisview.js
- * aisviewUI.js
- * route.js
- * ....
- */
-
 (function() {
     "use strict";
 
@@ -22,34 +13,24 @@
                     $scope.idsOfVoyages2Delete = [];
                     $scope.voyages = schedule.voyages.slice();
                     $scope.voyages.push({});
+                    $("#schedulePanel").css("display", "block");
                 });
             }
         };
 
         embryo.controllers.schedule = {
             title : "Schedule",
-            status : function(vesselOverview, vesselDetails) {
-                var status = {
-                    message : "INACTIVE",
-                }
-
-                if (vesselDetails.additionalInformation.routeId) {
-                    status.message = "ACTIVE";
-                    status.code = "success";
-                }
-
-                return status;
+            available : function(vesselOverview, vesselDetails) {
+                return vesselDetails.additionalInformation.routeId ? "ACTIVE" : "INACTIVE";
             },
-            show : function(context) {
-                $scope.mmsi = context.vesselDetails.mmsi;
-                $scope.activeRouteId = context.vesselDetails.additionalInformation.routeId;
+            show : function(vesselOverview, vesselDetails) {
+                $scope.mmsi = vesselDetails.mmsi;
+                $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
                 loadSchedule();
                 $scope.$apply(function() {
                 });
-                $("#schedulePanel").css("display", "block");
             },
             hide : function() {
-                $("#schedulePanel").css("display", "none");
                 $scope.reset();
             }
         };
@@ -177,6 +158,7 @@
             if ($scope.mmsi) {
                 ScheduleService.getSchedule($scope.mmsi, function(schedule) {
                     $scope.voyages = schedule.voyages.slice();
+                    $("#scheduleViewPanel").css("display", "block");
                 });
             }
         };
@@ -184,32 +166,21 @@
         $scope.layer = new RouteLayer("#D5672F");
         addLayerToMap("vessel", $scope.layer, embryo.map);
 
-        embryo.controllers.scheduleview = {
-            // title : "Schedule View",
-            status : function(vesselOverview, vesselDetails) {
-                var status = {
-                    message : "INACTIVE",
-                }
-
-                if (vesselDetails.additionalInformation.routeId) {
-                    status.message = "ACTIVE";
-                    status.code = "success";
-                }
-
-                return status;
+        embryo.controllers.scheduleView = {
+            title : "Schedule",
+            available : function(vesselOverview, vesselDetails) {
+                if (!vesselOverview.inArcticWeb) return false;
+                return vesselDetails.additionalInformation.routeId ? "ACTIVE" : "INACTIVE";
             },
-            init : function(map, group) {
-            },
-            show : function(context) {
-                $scope.mmsi = context.vesselDetails.mmsi;
-                $scope.activeRouteId = context.vesselDetails.additionalInformation.routeId;
+            show : function(vesselOverview, vesselDetails) {
+                $scope.mmsi = vesselDetails.mmsi;
+                $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
                 loadSchedule();
                 $scope.$apply(function() {
                 });
-                $("#scheduleViewPanel").css("display", "block");
             },
             hide : function() {
-                $("#scheduleViewPanel").css("display", "none");
+                $scope.layer.clear();
             }
         };
 

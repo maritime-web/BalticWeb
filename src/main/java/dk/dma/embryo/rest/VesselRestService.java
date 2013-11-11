@@ -16,7 +16,7 @@
 package dk.dma.embryo.rest;
 
 import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.arcticweb.service.AisReplicatorService;
+import dk.dma.arcticweb.service.AisDataService;
 import dk.dma.arcticweb.service.GreenPosService;
 import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.arcticweb.service.VesselService;
@@ -53,7 +53,7 @@ public class VesselRestService {
     private FullAisViewService fullAisViewService;
 
     @Inject
-    private AisReplicatorService aisReplicator;
+    private AisDataService aisReplicator;
 
     @Inject
     private Logger logger;
@@ -86,7 +86,7 @@ public class VesselRestService {
     public List<VesselOverview> list() {
         List<VesselOverview> result = new ArrayList<>();
 
-        List<String[]> vessels = aisReplicator.getVesselsInArcticCircle();
+        List<String[]> vessels = aisReplicator.getVesselsInAisCircle();
 
         for (String[] vessel : vessels) {
 

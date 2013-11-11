@@ -10,19 +10,15 @@
         };
 
         embryo.controllers.vesselInformationEdit = {
-            title : "Vessel Information Edit",
-            status : function(vesselOverview, vesselDetails) {
-                var status = {
-                    message : "OK",
-                    code : "success"
-                }
-                return status;
+            title : "Vessel Information",
+            available : function(vesselOverview, vesselDetails) {
+                return "OK";
             },
-            show : function(context) {
+            show : function(vesselOverview, vesselDetails) {
                 $("#vesselInformationEditPanel").css("display", "block");
                 $("#maxSpeed").focus();
 
-                $scope.vessel = context.vesselDetails;
+                $scope.vessel = vesselDetails;
                 $scope.message = null;
                 $scope.alertMessage = null;
                 $scope.$apply(function() {
@@ -37,7 +33,6 @@
             $scope.message = null;
             VesselService.saveDetails($scope.vessel, function(error, data) {
                 $scope.message = "vessel information successfully submitted";
-                console.log("data", data);
                 $scope.$apply();
             });
         };
@@ -52,19 +47,15 @@
 
     embryo.VesselInformationViewCtrl = function($scope, VesselService) {
         embryo.controllers.vesselInformationView = {
-            title : "Vessel Information View",
-            status : function(vesselOverview, vesselDetails) {
-                var status = {
-                    message : "OK",
-                    code : "success"
-                }
-                return status;
+            title : "Vessel Information",
+            available : function(vesselOverview, vesselDetails) {
+                return vesselOverview.inArcticWeb;
             },
-            show : function(context) {
+            show : function(vesselOverview, vesselDetails) {
                 $("#vesselInformationViewPanel").css("display", "block");
                 $("#maxSpeed").focus();
 
-                $scope.vessel = context.vesselDetails;
+                $scope.vessel = vesselDetails;
                 $scope.$apply(function() {
                 });
             },
