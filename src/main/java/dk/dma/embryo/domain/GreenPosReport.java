@@ -55,8 +55,10 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     @NotNull
     private String vesselName;
 
+    @NotNull
     private Long vesselMmsi;
 
+    @NotNull
     private String vesselCallSign;
 
     @Valid
