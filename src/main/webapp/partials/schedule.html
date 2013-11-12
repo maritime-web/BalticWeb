@@ -7,7 +7,7 @@
 	<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
 	<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-	<form class="form-horizontal">
+	<form name="scheduleEditForm" class="form-horizontal">
 		<table class="table">
 			<thead>
 				<tr>
@@ -25,7 +25,7 @@
 				<tr class="voyage" x-ng-class="{warning : activeRouteId && activeRouteId == voyage.route.id}">
 					<td><input ng-model="voyage.berthName" fn-selected="berthSelected(voyage, datum)"
 						fn-autocompleted="berthSelected(voyage, datum)" class="input-large siyTypeahead" datasets="berths" type="text"
-						x-ng-required="!$last" /></td>
+						x-ng-required="!$parent.$last" /></td>
 					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" x-ng-required="!$last" /></td>
 					<td><input x-ng-model="voyage.longitude" type="text" class="input-small lon" x-ng-required="!$last" /></td>
 					<td><input x-ng-model="voyage.arrival" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
