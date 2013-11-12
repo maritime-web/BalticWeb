@@ -83,7 +83,8 @@ footer img {
 }
 
 footer .copyright {
-	padding-top: 40px;
+	padding-top: 65px;
+	text-align:center;	
 }
 
 footer img,footer div.section {
