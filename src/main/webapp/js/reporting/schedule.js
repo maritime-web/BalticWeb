@@ -23,9 +23,16 @@
             available : function(vesselOverview, vesselDetails) {
                 if (vesselOverview.inArcticWeb) {
                     if (vesselDetails.additionalInformation.routeId)
-                        return { text: "ACTIVE", klass: "success", action: "edit" }
+                        return {
+                            text : "ACTIVE",
+                            klass : "success",
+                            action : "edit"
+                        }
                     else
-                        return { text: "INACTIVE", action: "edit" }
+                        return {
+                            text : "INACTIVE",
+                            action : "edit"
+                        }
                 }
                 return false;
             },
@@ -71,7 +78,7 @@
         }, true);
 
         $scope.del = function(index) {
-            if($scope.voyages[index].maritimeId){
+            if ($scope.voyages[index].maritimeId) {
                 $scope.idsOfVoyages2Delete.push($scope.voyages[index].maritimeId);
             }
             $scope.voyages.splice(index, 1);
@@ -139,6 +146,19 @@
             $scope.idsOfVoyages2Delete = [];
             loadSchedule();
         };
+
+        $scope.saveable = function() {
+            if ($scope.scheduleEditForm.$invalid) {
+                return false;
+            }
+
+            if (!(($scope.voyages && $scope.voyages.length >= 1) || ($scope.idsOfVoyages2Delete && $scope.idsOfVoyages2Delete.length > 0))) {
+                return false;
+            }
+
+            return true;
+        };
+
         $scope.save = function() {
             var index;
             // remove last empty element
@@ -160,6 +180,7 @@
     };
 
     embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService) {
+
         var loadSchedule = function() {
             if ($scope.mmsi) {
                 ScheduleService.getSchedule($scope.mmsi, function(schedule) {
@@ -169,8 +190,11 @@
             }
         };
 
-        $scope.layer = new RouteLayer("#D5672F");
-        addLayerToMap("vessel", $scope.layer, embryo.map);
+        $scope.routeLayer = new RouteLayer("#D5672F");
+        addLayerToMap("vessel", $scope.routeLayer, embryo.map);
+
+        $scope.scheduleLayer = new ScheduleLayer("#D5672F");
+        addLayerToMap("vessel", $scope.scheduleLayer, embryo.map);
 
         embryo.controllers.scheduleView = {
             title : "Schedule",
@@ -185,7 +209,8 @@
                 });
             },
             hide : function() {
-                $scope.layer.clear();
+                $scope.routeLayer.clear();
+                $scope.scheduleLayer.clear();
             }
         };
 
@@ -201,12 +226,15 @@
             return $scope.activeRouteId === voyage.route.id;
         };
 
-        $scope.viewRoute = function(voyage, $event) {
-            $event.preventDefault();
-            RouteService.getRoute(voyage.route.id, function(route) {
-                $scope.layer.draw(route);
-                $scope.layer.zoomToExtent();
+        $scope.view = function() {
+            $scope.scheduleLayer.draw($scope.voyages);
+            $scope.scheduleLayer.zoomToExtent();
+        };
 
+        $scope.viewRoute = function(voyage) {
+            RouteService.getRoute(voyage.route.id, function(route) {
+                $scope.routeLayer.draw(route);
+                $scope.routeLayer.zoomToExtent();
             });
         };
     };

@@ -31,14 +31,20 @@
 					<td>{{voyage.crew}}</td>
 					<td>{{voyage.passengers}}</td>
 					<td><span ng-show="voyage.doctor">Yes</span><span ng-show="voyage.doctor==false">No</span></td>
+					<td><button type="button" x-ng-show="voyage.route" class="btn" x-ng-click="viewRoute(voyage)">View Route</button></td>
 				</tr>
 				<tr class="route" x-ng-class="{warning : activeRouteId && activeRouteId == voyage.route.id}">
-					<td colspan=5"><span ng-show="voyage.route">Route <span style="font-style: italic;">{{voyage.route.name}}</span>
+					<td colspan=9"><span ng-show="voyage.route">Route <span style="font-style: italic;">{{voyage.route.name}}</span>
 						from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points </span> <span
 						ng-show="!voyage.route">No route</span></td>
-					<td colspan="3"><span class="pull-right" ng-show="voyage.route"> <a href="#"
-							x-ng-click="viewRoute(voyage, $event)">view route</a>
-					</span></td>
+				</tr>
+			</tbody>
+			<tbody>
+				<tr class="lastRow">
+					<td colspan="7"></td>
+					<td colspan="2">
+						<button type="button" class="btn btn-primary" x-ng-click="view()">View Schedule on Map</button>
+					</td>
 				</tr>
 			</tbody>
 		</table>
