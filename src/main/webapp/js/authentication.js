@@ -18,17 +18,17 @@ embryo.ready(function() {
             var html = "";
             
             html += "<span>";
-            html += "<a href=#signIn>Sign in</a> | <a href=#requestLogin>Request login</a>"
+            html += "<a href=#login>Login</a> | <a href=#requestAccess>Request access</a>"
             html += "</span>";
             
             $("#authentication").html(html);
             
-            $("#authentication a[href=\"#signIn\"]").click(function() {
+            $("#authentication a[href=\"#login\"]").click(function() {
                 $("#login").modal("show");
                 return false;
             });
             
-            $("#authentication a[href=\"#requestLogin\"]").click(function() {
+            $("#authentication a[href=\"#requestAccess\"]").click(function() {
                 $("#request").modal("show");
                 return false;
             });
