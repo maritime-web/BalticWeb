@@ -96,4 +96,4 @@ $(function() {
         $("a[href=#msiSelectedItem]").html("Selected Warning");
         $("#msiOverview tr").removeClass("alert");
     }
-})
+});
