@@ -43,8 +43,6 @@
     })
 
     embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, $timeout, RouteService) {
-        $scope.editable = true;
-
         $scope.reportTypes = [ {
             id : "SP",
             name : "Sailing Plan Report"
@@ -151,6 +149,21 @@
 
             return fields.indexOf(fieldName) > -1;
         };
+        
+        
+        $scope.$watch("greenPosForm", function(newValue, oldValue) {
+            console.log("greenposForm");
+            console.log(newValue);
+        }, true);
+        $scope.$watch("greenPosForm.gpShipName", function(newValue, oldValue) {
+            console.log("gpShipName");
+            console.log(newValue);
+        }, true);
+        $scope.$watch("greenPosForm.gpShipName.$error", function(newValue, oldValue) {
+            console.log("error");
+            console.log(newValue);
+        }, true);
+
 
         $scope.sendReport = function() {
             $scope.message = null;
@@ -243,9 +256,6 @@
 
                 element.bind('click',
                         function() {
-                            console.log(scope.sort);
-                            console.log(scope.order);
-                            console.log(attrs.sort);
 
                             if (!scope.sort || scope.sort != attrs.sort) {
                                 scope.sort = attrs.sort;
@@ -253,21 +263,15 @@
                                         : 'DESC';
                                 element.find('i').addClass('icon-chevron-up');
                             } else {
-                                console.log('else');
                                 scope.order = (scope.order == 'ASC' ? 'DESC' : 'ASC');
                                 element.find('i').toggleClass('icon-chevron-up icon-chevron-down');
                             }
 
-                            console.log(order);
-
-                            console.log(scope.options);
-                            console.log(attrs.options);
                             scope.options.fnSort(sort, order);
                         });
 
                 scope.$watch('sort', function(newValue) {
                     // elem.find('i').toggleClass('');
-                    console.log('wathcing:' + newValue);
                 });
 
                 element.append(' <i class="" style="vertical-align: middle; margin-bottom: 4px">');
