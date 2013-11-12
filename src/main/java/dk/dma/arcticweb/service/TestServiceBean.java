@@ -316,7 +316,7 @@ public class TestServiceBean {
 
         LocalDateTime now = LocalDateTime.now();
 
-        newVessel.addVoyageEntry(new Voyage("Is never shown", "25 47.16N", "08 13.27W", null, now.minusDays(6)
+        newVessel.addVoyageEntry(new Voyage("Is never shown", "25 47.16N", "080 22.410W", null, now.minusDays(6)
                 .withTime(17, 0, 0, 0), 0, 0, false));
         newVessel.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
                 now.minusDays(3).withTime(17, 0, 0, 0), 12, 0, true));
