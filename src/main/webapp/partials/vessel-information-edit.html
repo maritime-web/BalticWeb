@@ -2,8 +2,8 @@
     <h2>
         <a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Vessel Information
     </h2>
-    <p>Static information about the vessel is expected maintained mainly in the vessels AIS transponder. Additionally
-        information valuable in the Arctic region can be reported below.</p>
+    <p>Static information is expected maintained mainly in the vessels' AIS transponder. Additional
+        information valuable in the Arctic region may be shared below.</p>
     <form name="vesselForm" class="form-horizontal" novalidate>
         <div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
         <div x-ng-show="message" class="alert alert-info">{{message}}</div>
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="people">Max People Capacity</label>
+                    <label class="control-label" for="people">Estimated Rescue Capacity (Persons)</label>
                     <div class="controls">
                         <input type="text" id="people" class="input-small" x-ng-model="vessel.maxPersons" />
                     </div>
