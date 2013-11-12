@@ -86,8 +86,14 @@ footer img {
 	margin-right: auto;
 }
 
+footer .dmi img{
+	margin-left:25px;
+	margin-top: 10px;
+	text-align:center
+}
+
 footer .copyright {
-	padding-top: 65px;
+	padding-top: 60px;
 	text-align:center;	
 }
 
