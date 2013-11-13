@@ -18,7 +18,7 @@ embryo.ready(function() {
             var html = "";
             
             html += "<span>";
-            html += "<a href=#signIn>Sign in</a> | <a href=#requestLogin>Request login</a>"
+            html += "<a href=#signIn>Log In</a> | <a href=#requestLogin>Request Access</a>"
             html += "</span>";
             
             $("#authentication").html(html);
@@ -38,7 +38,7 @@ embryo.ready(function() {
             
             html += "<i class='icon-user icon-white' style='vertical-align:middle; margin-bottom: 4px'></i>";
             html += " <span>";
-            html += embryo.authentication.userName + " | <a href=#>Log out</a>"
+            html += embryo.authentication.userName + " | <a href=#>Log Out</a>"
             html += "</span>";
             
             $("#authentication").html(html);
