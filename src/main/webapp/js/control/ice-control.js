@@ -218,7 +218,7 @@
 
                     for (var i in data) {
                         if (data[i].region == region)
-                            html += "<tr><td>"+data[i].source+"</td><td>"+formatTime(data[i].date)+"</td><td>"+formatSize(data[i].size)+"</td><td><a href="+i+" class=download>download</a><a href="+i+" class=zoom>zoom</a></td></tr>";
+                            html += "<tr><td>"+data[i].source+"</td><td>"+formatTime(data[i].date)+"</td><td>"+formatSize(data[i].size)+"</td><td><a mid="+i+" href=# class=download>download</a><a mid="+i+" href=# class=zoom>zoom</a></td></tr>";
                     }
 
                 }
@@ -228,7 +228,7 @@
                 $("#icpIceMaps table a.download").click(function(e) {
                     e.preventDefault();
                     var row = $(this).parents("tr");
-                    requestShapefile(data[$(this).attr("href")].shapeFileName, function() {
+                    requestShapefile(data[$(this).attr("mid")].shapeFileName, function() {
                         $("#icpIceMaps table tr").removeClass("alert");
                         $(row).addClass("alert");
                         $("#icpIceMaps table a.zoom").css("display", "none");
