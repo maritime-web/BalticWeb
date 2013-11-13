@@ -81,20 +81,17 @@ footer img,footer div.section {
 	display: inline-block;
 }
 
-footer img {
+footer .dmi img{
+	margin-top: 10px;
 	margin-left: auto;
 	margin-right: auto;
-}
-
-footer .dmi img{
-	margin-left:25px;
-	margin-top: 10px;
-	text-align:center
+	display:block;
 }
 
 footer .copyright {
-	padding-top: 60px;
+	margin-top:40px;
 	text-align:center;	
+	font-style: italic;
 }
 
 footer img,footer div.section {
