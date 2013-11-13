@@ -53,25 +53,3 @@ function WorldMapLayer() {
 
 WorldMapLayer.prototype = new EmbryoLayer();
 
-
-embryo.authenticated(function() {
-    switch (embryo.baseMap) {
-        case "osm":
-            break;
-        default:
-            var layer = new WorldMapLayer();
-            addLayerToMap("world", layer, embryo.map);
-            embryo.ice.service.shapes({
-                ids: "static." + embryo.baseMap,
-                exponent: 2,
-                delta:true
-            }, function(error, data) {
-                if (data) {
-                    layer.draw(data);
-                } else {
-                    console.log("unhandled error", error);
-                }
-            });
-            break;
-    }
-});

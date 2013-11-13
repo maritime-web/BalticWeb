@@ -249,44 +249,81 @@ $(function() {
 
     $(window).resize(moveZoomControl);
     moveZoomControl();
-    
-    embryo.authenticated(function() {
-        function createOsmLayer() {
-            return osm = new OpenLayers.Layer.OSM(
-                "OSM",
-                [ "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-                "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-                 "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], {
-                    'layers' : 'basic',
-                    'isBaseLayer' : true
-                }
-            );
-        }
 
-        function createBlackBaseLayer() {
-            var e1 = new OpenLayers.Bounds(-179, -89, 179, 89);
+    function setupOsmMap() {
+        var osm = new OpenLayers.Layer.OSM(
+            "OSM",
+            [ "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+            "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+             "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], {
+                'layers' : 'basic',
+                'isBaseLayer' : true
+            }
+        );
+        map.addLayer(osm);
+        map.setBaseLayer(osm);
+    }
 
-            e1.transform(
-                new OpenLayers.Projection("EPSG:4326"),
-                embryo.projection
-            );
+    function setupVectorMap(name) {
+        var e1 = new OpenLayers.Bounds(-179, -89, 179, 89);
 
-            return new OpenLayers.Layer("Blank", {
-                isBaseLayer: true,
-                numZoomLevels: 19,
-                projection: map.projection,
-                maxExtent: e1
-            });
-        }
+        e1.transform(
+            new OpenLayers.Projection("EPSG:4326"),
+            embryo.projection
+        );
+
+        var blankLayer = new OpenLayers.Layer("Blank", {
+            isBaseLayer: true,
+            numZoomLevels: 19,
+            projection: map.projection,
+            maxExtent: e1
+        });
+
+        map.addLayer(blankLayer);
+        map.setBaseLayer(blankLayer);
+
+        var layer = new WorldMapLayer();
+
+        addLayerToMap("world", layer, embryo.map);
+        embryo.ice.service.shapes({
+            ids: "static." + name,
+            exponent: 2,
+            delta:true
+        }, function(error, data) {
+            if (data) {
+                layer.draw(data);
+            } else {
+                console.log("unhandled error", error);
+            }
+        });
+    }
+
+    function removeMapLayers() {
+        $.each(["Blank", "World", "OSM"], function(k, v) {
+            $.each(map.getLayersByName(v), function(k, v) {
+                map.removeLayer(v);
+            })
+        })
+    }
+
+    function setupBaseMap() {
+        removeMapLayers();
 
         switch (embryo.baseMap) {
             case "osm":
-                map.addLayer(createOsmLayer());
+                setupOsmMap();
                 break;
             default:
-                map.addLayer(createBlackBaseLayer());
+                setupVectorMap(embryo.baseMap)
                 break;
         }
+    }
+
+    embryo.authenticated(function() {
+        var cookieMapName = getCookie("dma-ais-map");
+        if (cookieMapName) embryo.baseMap = cookieMapName;
+
+        setupBaseMap();
 
         loadViewCookie();
 
@@ -308,5 +345,32 @@ $(function() {
             }
         }
     });
+
+    embryo.ready(function() {
+        $("#switchBaseMap").click(function(e) {
+            e.preventDefault();
+
+            $("#bsOpenStreetMap").prop("checked", embryo.baseMap == "osm");
+            $("#bsSimpleVectorMap").prop("checked", embryo.baseMap == "world_merc");
+
+            $("#switchBaseMapDialog").modal("show");
+        });
+
+        $("#switchBaseMapDialog .btn-primary").click(function(e) {
+            var newMap;
+
+            if ($("#bsOpenStreetMap").prop("checked")) newMap = "osm";
+            if ($("#bsSimpleVectorMap").prop("checked")) newMap = "world_merc";
+
+            $("#switchBaseMapDialog").modal("hide");
+
+            if (newMap != embryo.baseMap) {
+                embryo.baseMap = newMap;
+                setupBaseMap(embryo.baseMap);
+                setCookie("dma-ais-map", embryo.baseMap, 30);
+            }
+        })
+
+    })
 });
 
