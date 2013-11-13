@@ -18,7 +18,7 @@ embryo.ready(function() {
             var html = "";
             
             html += "<span>";
-            html += "<a href=#login>Login</a> | <a href=#requestAccess>Request Access</a>"
+            html += "<a href=#login>Log In</a> | <a href=#requestAccess>Request Access</a>"
             html += "</span>";
             
             $("#authentication").html(html);
@@ -92,7 +92,7 @@ embryo.ready(function() {
             },
             error: function(data) {
                 updateNavigationBar();
-                embryo.messagePanel.replace(messageId, { text: "Login failed. ("+data.status+")", type: "error" })
+                embryo.messagePanel.replace(messageId, { text: "Log in failed. ("+data.status+")", type: "error" })
                 $("#loginWrongLoginOrPassword").css("display", "block");
                 setTimeout(function() {
                     $("#login").modal("show");
