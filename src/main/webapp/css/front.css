@@ -77,26 +77,18 @@ li{
 	line-height:inherit;
 }
 
-footer img,footer div.section {
-	display: inline-block;
-}
-
-footer img {
+footer img{
 	margin-left: auto;
 	margin-right: auto;
+	display:block;
 }
 
 footer .dmi img{
-	margin-left:25px;
 	margin-top: 10px;
-	text-align:center
 }
 
 footer .copyright {
-	padding-top: 60px;
+	margin-top:40px;
 	text-align:center;	
-}
-
-footer img,footer div.section {
-	display: inline-block;
+	font-style: italic;
 }

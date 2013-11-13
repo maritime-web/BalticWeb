@@ -18,17 +18,17 @@ embryo.ready(function() {
             var html = "";
             
             html += "<span>";
-            html += "<a href=#signIn>Log In</a> | <a href=#requestLogin>Request Access</a>"
+            html += "<a href=#login>Log In</a> | <a href=#requestAccess>Request Access</a>"
             html += "</span>";
             
             $("#authentication").html(html);
             
-            $("#authentication a[href=\"#signIn\"]").click(function() {
+            $("#authentication a[href=\"#login\"]").click(function() {
                 $("#login").modal("show");
                 return false;
             });
             
-            $("#authentication a[href=\"#requestLogin\"]").click(function() {
+            $("#authentication a[href=\"#requestAccess\"]").click(function() {
                 $("#request").modal("show");
                 return false;
             });
@@ -92,7 +92,7 @@ embryo.ready(function() {
             },
             error: function(data) {
                 updateNavigationBar();
-                embryo.messagePanel.replace(messageId, { text: "Login failed. ("+data.status+")", type: "error" })
+                embryo.messagePanel.replace(messageId, { text: "Log in failed. ("+data.status+")", type: "error" })
                 $("#loginWrongLoginOrPassword").css("display", "block");
                 setTimeout(function() {
                     $("#login").modal("show");
