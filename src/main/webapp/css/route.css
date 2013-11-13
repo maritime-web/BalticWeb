@@ -3,7 +3,7 @@
 
 /**Route Edit**/
 #routeEdit{
-	min-width:870px;
+	/* min-width:870px; */
 }
 
 #routeEdit .input-heading{
@@ -25,7 +25,7 @@
 
 #routeupload {
 	min-width: 580px;
-	max-width: 720px;
+	/* max-width: 720px; */
 }
 
 #routeupload .extra{

@@ -244,7 +244,8 @@ $(function() {
     // Position zoom control to the right
     
     function moveZoomControl() {
-        $(".olControlZoom").css("left", $(window).width()-40);
+        $(".olControlZoom").css("left", $("#map").width()-40);
+        $(".olControlZoom").css("top", 50);
     }
 
     $(window).resize(moveZoomControl);

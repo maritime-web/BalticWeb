@@ -269,7 +269,7 @@
     embryo.ready(function() {
         function fixAccordionSize() {
             $("#iceControlPanel .accordion-inner").css("overflow", "auto");
-            $("#iceControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - 250)+"px");
+            $("#iceControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - 233)+"px");
         }
 
         $(window).resize(fixAccordionSize);

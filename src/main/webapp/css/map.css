@@ -5,11 +5,19 @@ html {
 body {
 	width: 100%;
 	height: 100%;
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 	color: #5A5A5A;
-    margin-top: 40px;
     overflow: hidden;
+    left:0;
+    top:0;
+    position: fixed;
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation:portrait) {
+    body {
+        -webkit-transform: rotate(90deg);
+    }
 }
 
 .navbar {
@@ -31,7 +39,9 @@ body {
 	background-color: #d0e4fe;
 	width: 100%;
 	height: 100%;
-	position: relative;
+    position: fixed;
+	left: 0;
+	top: 0;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
