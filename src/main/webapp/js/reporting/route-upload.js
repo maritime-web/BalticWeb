@@ -41,6 +41,8 @@
             if ($scope.mmsi && $scope.voyageId) {
                 ScheduleService.getVoyageInfo($scope.mmsi, $scope.voyageId, function(voyageInfo) {
                     $scope.voyageInfo = voyageInfo;
+                }, function(errorMsgs) {
+                    $scope.alertMessages = errorMsgs;
                 });
             }
         }
@@ -54,38 +56,46 @@
                 $("#routeUploadPanel").css("display", "block");
             }
         };
-        
+
         $scope.fileSupport = window.FileReader ? true : false;
 
         // Choosing a new file will replace the old one
-        $scope.$on('fileuploadadd', function(e, data) {
-            $scope.queue = [];
+        $scope
+                .$on(
+                        'fileuploadadd',
+                        function(e, data) {
+                            $scope.queue = [];
 
-            if (data.files.length > 0 && data.files[0].name.toLocaleLowerCase().match(/.rt3$/)) {
-                $scope.fileExtension = "rt3";
+                            if (data.files.length > 0 && data.files[0].name.toLocaleLowerCase().match(/.rt3$/)) {
+                                $scope.fileExtension = "rt3";
 
-                // parse file and populate Transas Route Schedule Names if browser supports FileReader API
-                if($scope.fileSupport){
-                    var f = event.target.files[0];
-                    var reader = new FileReader();
-                    reader.onload = (function(theFile) {
-                        return function(e) {
-                            var xml = jQuery.parseXML(e.target.result);
-                            var xmlDoc = $(xml);
-                            $scope.$apply(function() {
-                                $scope.transasSchedules = xmlDoc.find("Calculations Calculation").map(function(index, elem) {
-                                    return $(elem).attr("CalcName");
-                                });
-                                if($scope.transasSchedules.length > 0){
-                                    $scope.scheduleName = $scope.transasSchedules[$scope.transasSchedules.length > 1 ? 1 : 0];
+                                // parse file and populate Transas Route
+                                // Schedule Names if browser supports FileReader
+                                // API
+                                if ($scope.fileSupport) {
+                                    var f = event.target.files[0];
+                                    var reader = new FileReader();
+                                    reader.onload = (function(theFile) {
+                                        return function(e) {
+                                            var xml = jQuery.parseXML(e.target.result);
+                                            var xmlDoc = $(xml);
+                                            $scope
+                                                    .$apply(function() {
+                                                        $scope.transasSchedules = xmlDoc.find(
+                                                                "Calculations Calculation").map(function(index, elem) {
+                                                            return $(elem).attr("CalcName");
+                                                        });
+                                                        if ($scope.transasSchedules.length > 0) {
+                                                            $scope.scheduleName = $scope.transasSchedules[$scope.transasSchedules.length > 1 ? 1
+                                                                    : 0];
+                                                        }
+                                                    });
+                                        };
+                                    })(f);
+                                    reader.readAsText(f);
                                 }
-                            });
-                        };
-                    })(f);
-                    reader.readAsText(f);
-                }
-            }
-        });
+                            }
+                        });
 
         $scope.edit = function($event) {
             $event.preventDefault();
@@ -97,7 +107,7 @@
             });
         };
 
-        function done(e, data){
+        function done(e, data) {
             $.each(data.result.files, function(index, file) {
                 $scope.uploadedFile = file;
                 if ($scope.activate) {
@@ -106,14 +116,14 @@
                 }
                 // HACK: need to reload voyage plan
                 sessionStorage.clear();
-            });            
+            });
         }
-        
+
         $scope.options = {
             url : url,
             dataType : 'json',
         };
-        
+
         $scope.$on('fileuploaddone', done);
 
         $scope.uploadAndActivate = function() {
@@ -129,6 +139,7 @@
             // $scope.fileUploadForm.clear(); - coming in Angular 1.1.1
             $scope.uploadedFile = null;
             $scope.message = null;
+            $scope.alertMessages = null;
             $scope.activate = false;
             $scope.scheduleName = null;
             $scope.fileExtension = null;
@@ -136,7 +147,6 @@
             initUpload();
         };
 
-        
         $scope.$on('fileuploadsubmit', function(e, data) {
             $scope.message = null;
 

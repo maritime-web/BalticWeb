@@ -149,8 +149,7 @@
 
             return fields.indexOf(fieldName) > -1;
         };
-        
-        
+
         $scope.$watch("greenPosForm", function(newValue, oldValue) {
             console.log("greenposForm");
             console.log(newValue);
@@ -164,23 +163,27 @@
             console.log(newValue);
         }, true);
 
-
         $scope.sendReport = function() {
             $scope.message = null;
-
             GreenposService.save($scope.report, function() {
                 $scope.message = "GreenPos report successfully submitted. ";
-
                 if ($scope.deactivate) {
                     RouteService.setActiveRoute($scope.activeRouteId, false, function() {
                         $scope.message += "Active route successsfully deactivated. ";
+                    }, function(error) {
+                        $scope.alertMessages = error;
+                        $scope.alertMessages[0] += "Greenpos submitted successfully, but failed route deactivation.";
                     });
                 }
+            }, function(error) {
+                $scope.alertMessages = error;
             });
         };
 
-        $scope.clear = function() {
-
+        $scope.reset = function() {
+            $scope.warningMessages = null;
+            $scope.alertMessages = null;
+            $scope.message = null;
         };
 
         $scope.setPositionOnMap = function(latitude, longitude) {
@@ -198,46 +201,52 @@
         }
 
         this.show = function(vesselOverview, vesselDetails) {
-            GreenposService.getLatestReport(vesselOverview.mmsi, function(latestReport) {
-                evalGreenpos(latestReport);
-                $("#greenposReportPanel").css("display", "block");
+            $scope.$apply(function() {
+                GreenposService.getLatestReport(vesselOverview.mmsi, function(latestReport) {
+                    evalGreenpos(latestReport);
+                });
             });
 
-            $scope.report.mmsi = vesselOverview.mmsi;
-            $scope.report.callSign = vesselOverview.callSign;
-            $scope.report.vesselName = vesselOverview.name;
-            $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId != null);
+            $scope.$apply(function() {
+                $("#greenposReportPanel").css("display", "block");
+                $scope.report.mmsi = vesselOverview.mmsi;
+                $scope.report.callSign = vesselOverview.callSign;
+                $scope.report.vesselName = vesselOverview.name;
+                $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId != null);
 
-            $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
-
-            $scope.$apply();
+                $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
+            });
 
             $scope.$apply(function() {
                 ScheduleService.getActiveVoyage(vesselOverview.mmsi, vesselDetails.additionalInformation.routeId,
-                    function(voyageInfo) {
-                        $scope.report.destination = voyageInfo.des;
-                        $scope.report.eta = voyageInfo.desEta;
-                        if (voyageInfo.crew) {
-                            $scope.report.personsOnBoard = voyageInfo.crew;
-                        }
-                        if (voyageInfo.passengers) {
-                            if ($scope.report.personsOnBoard) {
-                                $scope.report.personsOnBoard += voyageInfo.passengers;
-                            } else {
-                                $scope.report.personsOnBoard = voyageInfo.passengers;
+                        function(voyageInfo) {
+                            $scope.report.destination = voyageInfo.des;
+                            $scope.report.eta = voyageInfo.desEta;
+                            if (voyageInfo.crew) {
+                                $scope.report.personsOnBoard = voyageInfo.crew;
                             }
-                        }
-                    }
-                );
+                            if (voyageInfo.passengers) {
+                                if ($scope.report.personsOnBoard) {
+                                    $scope.report.personsOnBoard += voyageInfo.passengers;
+                                } else {
+                                    $scope.report.personsOnBoard = voyageInfo.passengers;
+                                }
+                            }
+                        }, function(errorMsgs) {
+                            $scope.warningMessages = errorMsgs;
+                        });
             });
         }
 
         this.title = "Greenpos Reporting";
 
         this.available = function(vesselOverview, vesselDetails) {
-            if (vesselOverview.inArcticWeb) return {
-                text: "OK", klass: "success", action: "edit"
-            };
+            if (vesselOverview.inArcticWeb)
+                return {
+                    text : "OK",
+                    klass : "success",
+                    action : "edit"
+                };
             return false;
         }
 
@@ -280,7 +289,7 @@
     });
 
     embryo.GreenposListCtrl = function($scope, GreenposService) {
-         $scope.max = 10;
+        $scope.max = 10;
         // $scope.options = {
         // fnSort : function(sort, order) {
         // console.log('fnSort' + sort + order);
@@ -288,7 +297,7 @@
         // };
 
         embryo.controllers.greenposListView = {
-            title: "Greenpos Reports",
+            title : "Greenpos Reports",
             available : function(vesselOverview, vesselDetails) {
                 return vesselOverview.inArcticWeb;
             },

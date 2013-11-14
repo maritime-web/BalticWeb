@@ -19,19 +19,17 @@
         };
 
         return {
-            getActive : function(mmsi, callback) {
-                var remoteCall = function(onSuccess) {
-                    var url = embryo.baseUrl + 'rest/route/active/' + mmsi;
-                    $http.get(url).success(onSuccess);
-                };
-
-                remoteCall(callback);
+            getActive : function(mmsi, success, error) {
+                var url = embryo.baseUrl + 'rest/route/active/' + mmsi;
+                $http.get(url).success(success);
             },
-            setActiveRoute : function(routeId, activity, callback) {
+            setActiveRoute : function(routeId, activity, callback, error) {
                 $http.put(embryo.baseUrl + 'rest/route/activate/', {
                     routeId : routeId,
                     active : activity
-                }).success(callback);
+                }).success(callback).error(function(data, status, headers, config) {
+                    error(embryo.ErrorService.extractError(data, status, config));
+                });
             },
             getRoute : function(routeId, callback) {
                 // should routes be cached?
@@ -40,28 +38,26 @@
                 };
                 SessionStorageService.getItem(routeKey(routeId), callback, remoteCall);
             },
-            save : function(route, voyageId, callback) {
+            save : function(route, voyageId, success, error) {
                 $http.put(embryo.baseUrl + 'rest/route', {
                     route : route,
                     voyageId : voyageId
                 }).success(function() {
-
-                    console.log("something happened");
-
                     SessionStorageService.setItem(routeKey(route.id), route);
-                    callback();
-                }).error(function() {
-                    console.log("error");
-
+                    success();
+                }).error(function(data, status, headers, config) {
+                    error(embryo.ErrorService.extractError(data, status, config));
                 });
             },
-            saveAndActivate : function(route, voyageId, callback) {
+            saveAndActivate : function(route, voyageId, callback, error) {
                 $http.put(embryo.baseUrl + 'rest/route/save/activate', {
                     route : route,
                     voyageId : voyageId
                 }).success(function() {
                     SessionStorageService.setItem(routeKey(route.id), route);
                     callback();
+                }).error(function(data, status, headers, config) {
+                    error(embryo.ErrorService.getText(data, status, config));
                 });
             }
 

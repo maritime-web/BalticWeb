@@ -5,7 +5,9 @@
 		</h2>
 	</div>
 	<div>
-		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+		<div x-ng-show="alertMessages" class="alert alert-error">
+			<span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+		</div>
 		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
 		<form name="routeEditForm" class="form-horizontal route" ng-submit="save()">
@@ -64,15 +66,14 @@
 						<td><input x-ng-model="wp.latitude" class="input-medium" type="text" x-ng-required="!$last" /></td>
 						<td><input x-ng-model="wp.longitude" class="input-medium" type="text" x-ng-required="!$last" /></td>
 						<td><input x-ng-model="wp.turnRad" class="input-small" type="text" x-ng-required="!$last" /></td>
-						<td><select
-							name="heading" x-ng-model="wp.heading" class="input-large input-heading" x-ng-required="!$last">
-							<option label="Rhumb line" value="RL"></option>
-							<option label="Great circle" value="GC"></option>
+						<td><select name="heading" x-ng-model="wp.heading" class="input-large input-heading" x-ng-required="!$last">
+								<option label="Rhumb line" value="RL"></option>
+								<option label="Great circle" value="GC"></option>
 						</select></td>
 						<td><input x-ng-model="wp.speed" class="input-medium" type="text" x-ng-required="!$last" /></td>
 						<td><button x-ng-show="!$last" type="button" class="btn btn-danger" x-ng-click="remove($index)">Delete</button></td>
 						<td><button x-ng-show="!$last" type="button" class="btn" x-ng-click="add($index)">Add below</button></td>
-						
+
 					</tr>
 				</tbody>
 			</table>
@@ -81,7 +82,8 @@
 				<span class="pull-right">
 					<button type="button" class="btn" x-ng-click="reset()" x-ng-disabled="active()">Reset</button>
 					<button type="button" class="btn btn-primary" x-ng-click="save()" x-ng-disabled="!saveable()">Save</button>
-					<button type="button" class="btn btn-primary" x-ng-click="saveAndActivate()" x-ng-disabled="!saveable()">Save and activate</button>
+					<button type="button" class="btn btn-primary" x-ng-click="saveAndActivate()" x-ng-disabled="!saveable()">Save
+						and activate</button>
 				</span>
 			</div>
 		</form>

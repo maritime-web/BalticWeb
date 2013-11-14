@@ -17,7 +17,7 @@
             context[field] = defaultValue;
         }
     }
-    
+
     embryo.RouteEditCtrl = function($scope, RouteService, VesselService) {
         function initRouteMeta(route, meta) {
             setDefault(route, "etaDep", meta.etdep);
@@ -37,9 +37,8 @@
                     $scope.waypoints.push({});
                 });
             } else {
-                console.log('creating new route');
                 $scope.route = {};
-                $scope.waypoints = [{}];
+                $scope.waypoints = [ {} ];
                 initRouteMeta($scope.route, $scope.scheduleData);
             }
         }
@@ -81,17 +80,16 @@
         };
 
         $scope.add = function(index) {
-            $scope.waypoints.splice(index+1, 0, {});
+            $scope.waypoints.splice(index + 1, 0, {});
         };
-        
+
         $scope.save = function() {
             $scope.message = null;
             $scope.route.wps = $scope.waypoints.slice(0, $scope.waypoints.length - 1);
             RouteService.save($scope.route, $scope.scheduleData.voyageId, function() {
                 $scope.message = "Saved route '" + $scope.route.name + "'";
-
-                // TODO replace this with a thrown event
-                // embryo.route.redrawIfVisible(RouteService.getRoute());
+            }, function(error) {
+                $scope.alertMessages = error;
             });
         };
 
@@ -101,10 +99,9 @@
             RouteService.saveAndActivate($scope.route, $scope.scheduleData.voyageId, function() {
                 $scope.message = "Saved and activated route '" + $scope.route.name + "'";
                 VesselService
-                .updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", $scope.route.id);
-
-                // TODO replace this with a thrown event
-                // embryo.route.redrawIfVisible(RouteService.getRoute());
+                        .updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", $scope.route.id);
+            }, function(error) {
+                $scope.alertMessages = error;
             });
         };
 
@@ -125,7 +122,7 @@
         };
 
         $scope.reset = function() {
-            $scope.alertMessage = null;
+            $scope.alertMessages = null;
             $scope.message = null;
             initRoute();
         };

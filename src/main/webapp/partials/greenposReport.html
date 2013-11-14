@@ -3,7 +3,12 @@
 		<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Ship Report
 	</h2>
 	<form id="greenPosForm" name="greenPosForm" class="form-horizontal" novalidate>
-		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+		<div x-ng-show="warningMessages" class="alert alert-warning">
+			<span x-ng-repeat="msg in warningMessages">{{msg}}<br /></span>
+		</div>
+		<div x-ng-show="alertMessages" class="alert alert-error">
+			<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+		</div>
 		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 		<div class="row">
 			<div class="control-group">
@@ -146,7 +151,7 @@
 
 		<div class="row">
 			<span class="pull-right">
-				<button type="button" class="btn" x-ng-click="clear()">Reset</button> &nbsp;
+				<button type="button" class="btn" x-ng-click="reset()">Reset</button> &nbsp;
 				<button type="button" x-ng-click="sendReport()" x-ng-disabled="greenPosForm.$invalid" class="btn btn-primary">Send</button>
 
 			</span>
