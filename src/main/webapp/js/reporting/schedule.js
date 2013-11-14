@@ -246,6 +246,14 @@
             $scope.scheduleLayer.zoomToExtent();
         };
 
+        $scope.formatLatitude = function(latitude) {
+            return formatLatitude(latitude);
+        };
+
+        $scope.formatLongitude = function(latitude) {
+            return formatLongitude(latitude);
+        };
+        
         $scope.viewRoute = function(voyage) {
             RouteService.getRoute(voyage.route.id, function(route) {
                 $scope.routeLayer.draw(route);
