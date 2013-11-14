@@ -129,6 +129,7 @@
         };
 
         $scope.activate = function(voyage) {
+            resetMessages();
             RouteService.setActiveRoute(voyage.route.id, true, function() {
                 VesselService
                         .updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", voyage.route.id);
@@ -138,6 +139,7 @@
             });
         };
         $scope.deactivate = function(voyage) {
+            resetMessages();
             RouteService.setActiveRoute(voyage.route.id, false, function() {
                 VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", "");
                 $scope.activeRouteId = null;
@@ -146,9 +148,13 @@
             });
         };
 
-        $scope.reset = function() {
+        function resetMessages() {
             $scope.message = null;
             $scope.alertMessages = null;
+        }
+
+        $scope.reset = function() {
+            resetMessages();
             $scope.idsOfVoyages2Delete = [];
             loadSchedule();
         };
@@ -178,6 +184,7 @@
                 delete scheduleRequest.voyages[index].route;
             }
 
+            resetMessages();
             ScheduleService.save(scheduleRequest, function() {
                 $scope.message = "Schedule saved successfully";
                 loadSchedule();
