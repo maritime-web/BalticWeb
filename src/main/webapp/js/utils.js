@@ -20,16 +20,20 @@ function getCookie(c_name) {
 
 function openCollapse(id) {
     $(".collapse", $(id).parents(".accordion")).data("collapse", null);
-    if (!$(id).hasClass("in")) {
-        $("a[href=#"+$(id).attr("id")+"]").click();
-    }
+    setTimeout(function() {
+        if (!$(id).hasClass("in")) {
+            $("a[href=#"+$(id).attr("id")+"]").click();
+        }
+    }, 10)
 }
 
 function closeCollapse(id) {
     $(".collapse", $(id).parents(".accordion")).data("collapse", null);
-    if ($(id).hasClass("in")) {
-        $("a[href=#"+$(id).attr("id")+"]").click();
-    }
+    setTimeout(function() {
+        if ($(id).hasClass("in")) {
+            $("a[href=#"+$(id).attr("id")+"]").click();
+        }
+    }, 10)
 }
 
 function formatLongitude(longitude) {

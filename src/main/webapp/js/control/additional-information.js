@@ -1,6 +1,7 @@
 embryo.additionalInformation = {}
 
 embryo.additionalInformation.historicalTrack = {
+    doShow: false,
     title : "Historical Track",
     layer : new HistoricalTrackLayer(),
     init : function(map, group) {
@@ -11,8 +12,9 @@ embryo.additionalInformation.historicalTrack = {
     },
     show : function(vessel, vesselDetails) {
         var that = this;
+        this.doShow = true;
         embryo.vessel.service.historicalTrack(vessel.mmsi, function(error, data) {
-            if (data) {
+            if (data && that.doShow) {
                 that.layer.draw(data);
                 that.layer.zoomToExtent();
             } else {
@@ -21,6 +23,7 @@ embryo.additionalInformation.historicalTrack = {
         })
     },
     hide : function() {
+        this.doShow = false;
         this.layer.clear();
     }
 }
