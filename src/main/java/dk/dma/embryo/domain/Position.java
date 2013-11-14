@@ -56,8 +56,8 @@ public class Position implements Serializable {
     }
 
     public Position(String latitude, String longitude) {
-        this.latitude = ParseUtils.parseLatitude(latitude);
-        this.longitude = ParseUtils.parseLongitude(longitude);
+        this.latitude = latitude.length() == 0 ? null : ParseUtils.parseLatitude(latitude);
+        this.longitude = longitude.length() == 0 ? null : ParseUtils.parseLongitude(longitude);
     }
 
     public Position(Double latitude, Double longitude) {

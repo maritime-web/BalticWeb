@@ -29,7 +29,7 @@
                 SessionStorageService.getItem(latestGreenposKey(mmsi), callback, remoteCall);
             },
             getLatest : function(callback) {
-                $http.get(reportsUrl+"/latest").success(callback);
+                $http.get(reportsUrl + "/latest").success(callback);
             },
             get : function(id, callback) {
                 var url = reportsUrl + "/" + id;
@@ -52,14 +52,15 @@
 
                 $http.get(url).success(callback);
             },
-            save : function(greenpos, callback) {
+            save : function(greenpos, callback, error) {
                 $http.post(embryo.baseUrl + 'rest/greenpos', greenpos).success(function() {
                     SessionStorageService.removeItem(latestGreenposKey(greenpos.shipMaritimeId));
                     callback();
-                    $rootScope.$broadcast('yourshipDataUpdated');
+                }).error(function(data, status, headers, config) {
+                    error(embryo.ErrorService.extractError(data, status, config));
                 });
             },
-            getPeriod : function (dateLong) {
+            getPeriod : function(dateLong) {
                 var date = new Date(dateLong);
                 if (date.getUTCHours() >= 0 && date.getUTCHours() < 6) {
                     return {
@@ -88,7 +89,7 @@
 
         };
     });
-    
+
     embryo.greenpos = {};
     serviceModule.run(function(GreenposService) {
         embryo.greenpos.service = GreenposService;

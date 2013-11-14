@@ -20,6 +20,7 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
@@ -36,6 +37,7 @@ public class WayPoint implements Serializable {
     // //////////////////////////////////////////////////////////////////////
 
     @NotNull
+    @Size(min=1)
     private String name;
 
     @Valid

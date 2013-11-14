@@ -4,7 +4,9 @@
 			<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Schedule
 		</h2>
 	</div>
-	<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+	<div x-ng-show="alertMessages" class="alert alert-error">
+		<span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+	</div>
 	<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
 	<form name="scheduleEditForm" class="form-horizontal">
@@ -26,8 +28,8 @@
 					<td><input ng-model="voyage.berthName" fn-selected="berthSelected(voyage, datum)"
 						fn-autocompleted="berthSelected(voyage, datum)" class="input-large siyTypeahead" datasets="berths" type="text"
 						x-ng-required="!$parent.$last" /></td>
-					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" x-ng-required="!$last" /></td>
-					<td><input x-ng-model="voyage.longitude" type="text" class="input-small lon" x-ng-required="!$last" /></td>
+					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
+					<td><input x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
 					<td><input x-ng-model="voyage.arrival" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
 					<td><input x-ng-model="voyage.departure" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm"
 						x-ng-required="!$last" /></td>
@@ -42,7 +44,7 @@
 					<td colspan="3"><span ng-show="voyage.route">Route <span style="font-style: italic;">{{voyage.route.name}}</span>
 							from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points
 					</span> <span ng-show="!voyage.route">No route</span></td>
-					<td colspan="4"><span class="pull-right" >
+					<td colspan="4"><span class="pull-right">
 							<button type="button" ng-show="activeRouteId != voyage.route.id && voyage.route" class="btn btn-success"
 								x-ng-click="activate(voyage, $event)">Activate</button>
 							<button type="button" ng-show="activeRouteId == voyage.route.id && voyage.route" class="btn btn-warning"

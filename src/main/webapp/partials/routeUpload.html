@@ -6,6 +6,9 @@
 	</div>
 	<div id="routeUpload" x-ng-controller="embryo.RouteUploadCtrl">
 
+		<div x-ng-show="alertMessages" class="alert alert-error">
+			<span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+		</div>
 		<div x-ng-show="queue[0].error" class="alert alert-error">{{queue[0].error}}</div>
 		<div x-ng-show="uploadedFile" class="alert alert-info">
 			Uploaded <span x-ng-show="activate"> and activated </span> route from file {{file.name}}. Edit the route details <a
@@ -34,8 +37,8 @@
 				</div>
 				<div class="span4">
 					<div x-ng-show="fileExtension == 'rt3'" class="extra">
-						<select x-ng-show="fileSupport" x-ng-model="scheduleName"
-							x-ng-options="name for name in transasSchedules" class="input-large">
+						<select x-ng-show="fileSupport" x-ng-model="scheduleName" x-ng-options="name for name in transasSchedules"
+							class="input-large">
 						</select> <input x-ng-show="!fileSupport" type="text" placeholder="Transas Schedule Name" x-ng-model="scheduleName"
 							class="input-large">
 					</div>

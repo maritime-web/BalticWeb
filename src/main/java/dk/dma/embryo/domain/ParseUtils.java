@@ -62,14 +62,14 @@ public class ParseUtils {
 
     private static String[] splitFormattedPos(String posStr) {
         if (posStr.length() < 4) {
-            throw new FormatException();
+            throw new FormatException("Invalid value '" + posStr + "'. Does not follow correct format");
         }
         String[] parts = new String[3];
         parts[2] = posStr.substring(posStr.length() - 1);
         posStr = posStr.substring(0, posStr.length() - 1);
         String[] posParts = posStr.split(" ");
         if (posParts.length != 2) {
-            throw new FormatException();
+            throw new FormatException("Invalid value '" + posStr + "'. Does not follow correct format");
         }
         parts[0] = posParts[0];
         parts[1] = posParts[1];
@@ -85,7 +85,7 @@ public class ParseUtils {
             throw new FormatException();
         }
         if (!ns.equals("N") && !ns.equals("S")) {
-            throw new FormatException();
+            throw new FormatException("Invalid value '" + ns + "'. Must be 'N' or 'S'");
         }
         double lat = h + m / 60.0;
         if (ns.equals("S")) {
@@ -102,7 +102,7 @@ public class ParseUtils {
             throw new FormatException();
         }
         if (!ew.equals("E") && !ew.equals("W")) {
-            throw new FormatException();
+            throw new FormatException("Invalid value '" + ew + "'. Must be 'E' or 'W'");
         }
         double lon = h + m / 60.0;
         if (ew.equals("W")) {

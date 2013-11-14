@@ -1,6 +1,6 @@
 /**
  * ScheduleService
- **/
+ */
 
 (function() {
     "use strict";
@@ -29,7 +29,7 @@
         }
 
         return {
-            getActiveVoyage : function(mmsi, routeId, callback) {
+            getActiveVoyage : function(mmsi, routeId, callback ,error) {
                 function findVoyageIndex(schedule) {
                     for ( var index = 0; index < schedule.voyages.length; index++) {
                         if (schedule.voyages[index].route.id === routeId) {
@@ -38,7 +38,6 @@
                     }
                     return null;
                 }
-
                 this.getYourSchedule(mmsi, function(schedule) {
                     var index = findVoyageIndex(schedule);
                     if (index == null) {
@@ -47,18 +46,24 @@
                     }
                     var voyageInfo = buildVoyageInfo(index, schedule);
                     callback(voyageInfo);
+                }, function(errorMsgs){
+                    error(errorMsgs);
                 });
             },
-            getYourSchedule : function(mmsi, callback) {
+            getYourSchedule : function(mmsi, callback, error) {
                 var remoteCall = function(onSuccess) {
-                    $http.get(scheduleUrl + mmsi).success(onSuccess);
+                    $http.get(scheduleUrl + mmsi).success(onSuccess).error(function(data, status, headers, config) {
+                        error(embryo.ErrorService.extractError(data, status, config));
+                    });
                 };
                 SessionStorageService.getItem(currentSchedule, callback, remoteCall);
             },
-            getSchedule : function(mmsi, callback) {
-                $http.get(scheduleUrl + mmsi).success(callback);
+            getSchedule : function(mmsi, callback, error) {
+                $http.get(scheduleUrl + mmsi).success(callback).error(function(data, status, headers, config) {
+                    error(embryo.ErrorService.extractError(data, status, config));
+                });
             },
-            getVoyageInfo : function(mmsi, voyageId, callback) {
+            getVoyageInfo : function(mmsi, voyageId, callback, error) {
                 function findVoyageIndex(voyageId, schedule) {
                     for ( var index = 0; index < schedule.voyages.length; index++) {
                         if (schedule.voyages[index].maritimeId === voyageId) {
@@ -75,12 +80,16 @@
                     }
                     var voyageInfo = buildVoyageInfo(index, schedule);
                     callback(voyageInfo);
+                }, function(errorMsgs) {
+                    error(errorMsgs);
                 });
             },
-            save : function(schedule, callback) {
+            save : function(schedule, callback, error) {
                 $http.put(scheduleUrl + 'save', schedule).success(function() {
                     SessionStorageService.removeItem(currentSchedule);
                     callback();
+                }).error(function(data, status, headers, config) {
+                    error(embryo.ErrorService.extractError(data, status, config));
                 });
             }
         };

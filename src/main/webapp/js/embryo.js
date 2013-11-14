@@ -51,58 +51,98 @@ $(function() {
     var interval = setInterval(function() {
         var allIncludesLoaded = true;
 
-        $("ng-include").each(function (k, v) {
+        $("ng-include").each(function(k, v) {
             var l = $(v).html().trim().length;
-            if (l == 0) allIncludesLoaded = false;
+            if (l == 0)
+                allIncludesLoaded = false;
         });
 
-        $("div[x-ng-include]").each(function (k, v) {
+        $("div[x-ng-include]").each(function(k, v) {
             var l = $(v).html().trim().length;
-            if (l == 0) allIncludesLoaded = false;
+            if (l == 0)
+                allIncludesLoaded = false;
         });
 
         if (allIncludesLoaded) {
             clearInterval(interval);
             embryo.eventbus.fireEvent(embryo.eventbus.EmbryoReadyEvent());
         }
-        
+
     }, 100);
 });
 
 embryo.messagePanel = {
-    render: function(id, msg) {
+    render : function(id, msg) {
         switch (msg.type) {
         case "error":
             setTimeout(function() {
                 embryo.messagePanel.remove(id);
             }, 30000);
-            return "<div id="+id+"><div class='alert alert-error' style=display:inline-block>"+msg.text+"</div></div>";
+            return "<div id=" + id + "><div class='alert alert-error' style=display:inline-block>" + msg.text
+                    + "</div></div>";
         case "success":
             setTimeout(function() {
                 embryo.messagePanel.remove(id);
             }, 10000);
-            return "<div id="+id+"><div class='alert alert-success' style=display:inline-block>"+msg.text+"</div></div>";
+            return "<div id=" + id + "><div class='alert alert-success' style=display:inline-block>" + msg.text
+                    + "</div></div>";
         default:
-            return "<div id="+id+"><div class='alert' style=display:inline-block>"+msg.text+"</div></div>";
+            return "<div id=" + id + "><div class='alert' style=display:inline-block>" + msg.text + "</div></div>";
         }
     },
-    show: function(msg) {
+    show : function(msg) {
         var html = $("#messagePanel").html();
-        var id = ("_"+Math.random()).replace(".", "_");
+        var id = ("_" + Math.random()).replace(".", "_");
         html += embryo.messagePanel.render(id, msg);
         $("#messagePanel").html(html);
         return id;
     },
-    replace: function(id, msg) {
+    replace : function(id, msg) {
         embryo.messagePanel.remove(id);
         var html = $("#messagePanel").html();
         html += embryo.messagePanel.render(id, msg);
         $("#messagePanel").html(html);
         return id;
     },
-    remove: function(id) {
-        $("#"+id).remove();
+    remove : function(id) {
+        $("#" + id).remove();
     }
-}
+};
+
+embryo.ErrorService = {
+    statusTxt : {
+        400 : "Bad request",
+        401 : "Unauthorized",
+        402 : "Payment Required ",
+        403 : "Forbidden",
+        404 : "Not Found",
+        405 : "Method Not Allowed",
+        406 : "Not Acceptable",
+        407 : "Proxy Authentication Required",
+        408 : "Request Timeout",
+        409 : "Conflict",
+        410 : "Gone",
+        415 : "Unsupported Media Type",
+        419 : "Authentication Timeout",
+        500 : "Internal Server Error",
+        501 : "Not Implemented",
+        502 : "Bad Gateway",
+        503 : "Service Unavailable",
+        504 : "Gateway Timeout",
+        511 : "Network Authentication Required",
+        522 : "Connection timed out",
+        524 : "A timeout occurred"
+    },
+
+    extractError : function(data, status, config) {
+        var message = status + " " + this.statusTxt[status] + ". ";
+        var texts = [ message ];
+        if (data instanceof Array) {
+            texts = texts.concat(data);
+        }
+        return texts;
+    }
+
+};
 
 embryo.controllers = {};
