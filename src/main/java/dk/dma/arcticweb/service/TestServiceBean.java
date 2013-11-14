@@ -255,6 +255,8 @@ public class TestServiceBean {
         createDmiLogin();
         createIceCenterLogin();
         createArcticCommandLogin();
+        createAasiaatLogin();
+        createNanoqLogin();
         createGreenposReports();
     }
 
@@ -318,7 +320,7 @@ public class TestServiceBean {
 
         newVessel.addVoyageEntry(new Voyage("Is never shown", "25 47.16N", "080 22.410W", null, now.minusDays(6)
                 .withTime(17, 0, 0, 0), 0, 0, false));
-        newVessel.addVoyageEntry(new Voyage("Miami", "25 47.16N", "08 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
+        newVessel.addVoyageEntry(new Voyage("Miami", "25 47.16N", "080 13.27W", now.minusDays(4).withTime(9, 30, 0, 0),
                 now.minusDays(3).withTime(17, 0, 0, 0), 12, 0, true));
         newVessel.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
                 now.plusDays(5).withTime(9, 0, 0, 0), 12, 0, true));
@@ -700,6 +702,40 @@ public class TestServiceBean {
         vesselDao.saveEntity(user);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createAasiaatLogin() {
+        logger.info("BEFORE CREATION - Kyst radion");
+
+        Permission greenposList = new Permission("GreenposList");
+
+        vesselDao.saveEntity(greenposList);
+
+        ShoreRole role = new ShoreRole();
+        role.add(greenposList);
+
+        vesselDao.saveEntity(role);
+
+        SecuredUser user = new SecuredUser("aasiaat", "qwerty", "obo@dma.dk");
+        user.addRole(role);
+
+        vesselDao.saveEntity(user);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void createNanoqLogin() {
+        logger.info("BEFORE CREATION - Nanoq");
+
+        ShoreRole role = new ShoreRole();
+
+        vesselDao.saveEntity(role);
+
+        SecuredUser user = new SecuredUser("nanoq", "qwerty", "obo@dma.dk");
+        user.addRole(role);
+
+        vesselDao.saveEntity(user);
+    }
+
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createDmiLogin() {
         logger.info("BEFORE CREATION - DMI");
