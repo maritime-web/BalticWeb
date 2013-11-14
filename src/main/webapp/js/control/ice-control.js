@@ -192,11 +192,11 @@
     }
 
     function requestIceObservations() {
-        var messageId = embryo.messagePanel.show( { text: "Requesting list of ice observations ..." })
+        var messageId = embryo.messagePanel.show( { text: "Requesting list of ice charts ..." })
 
         embryo.ice.service.list(function(error, data) {
             if (data) {
-                embryo.messagePanel.replace(messageId, { text: "List of "+data.length+" ice observations downloaded.", type: "success" })
+                embryo.messagePanel.replace(messageId, { text: "List of "+data.length+" ice charts downloaded.", type: "success" })
 
                 data.sort(function(a,b) {
                     return b.date - a.date;
@@ -224,6 +224,8 @@
                 }
 
                 $("#icpIceMaps table").html(html);
+
+                // $("#icpIceMaps td:first").css("border-top", "none");
 
                 $("#icpIceMaps table a.download").click(function(e) {
                     e.preventDefault();
