@@ -83,7 +83,7 @@ embryo.additionalInformation.route = {
 }
 
 embryo.additionalInformation.metoc = {
-    title : "METOC",
+    title : "METOC on Route",
     layer : new MetocLayer(),
     init : function(map, group) {
         addLayerToMap(group, this.layer, map)

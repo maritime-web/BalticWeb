@@ -29,6 +29,8 @@ import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
 
+import java.util.List;
+
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class VesselServiceImpl implements VesselService {
@@ -53,7 +55,7 @@ public class VesselServiceImpl implements VesselService {
     }
 
     @Override
-    @YourShip
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(Vessel vessel) {
         Vessel managed = vesselRepository.getVessel(vessel.getMmsi());
 
@@ -86,5 +88,10 @@ public class VesselServiceImpl implements VesselService {
         return vesselRepository.getVessel(mmsi);
     }
 
-    
+    @Override
+    public List<Vessel> getAll() {
+        return vesselRepository.getAll(Vessel.class);
+    }
+
+
 }

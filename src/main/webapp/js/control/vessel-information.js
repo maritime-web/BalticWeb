@@ -8,15 +8,15 @@ embryo.vesselInformation = {
 
         var egenskaber = {
             "MMSI": data.ais.mmsi,
-            "Callsign": data.ais.callsign,
+            "Call Sign": data.ais.callsign,
             "Country": data.ais.country,
             "Destination": data.ais.destination,
-            "Nav status": data.ais.navStatus,
+            "Nav Status": data.ais.navStatus,
             "ETA": data.ais.eta
         }
 
         $.each(egenskaber, function(k,v) {
-            if (v != null) html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
+            if (v != null && v != "") html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
         });
 
         return html;
@@ -28,18 +28,19 @@ embryo.vesselInformation = {
         var egenskaber = {
             "MMSI": data.ais.mmsi,
             "Class": data.ais["class"],
-            "Callsign": data.ais.callsign,
-            "Cargo": data.ais.cargo,
+            "Call Sign": data.ais.callsign,
+            "Vessel Type": data.ais.vesselType,
+            "Cargo": data.ais.cargo != "N/A" && data.ais.cargo != "Undefined" ? data.ais.cargo : null,
             "Country": data.ais.country,
             "SOG": data.ais.sog,
             "COG": data.ais.cog,
             "Destination": data.ais.destination,
-            "Nav status": data.ais.navStatus,
+            "Nav Status": data.ais.navStatus,
             "ETA": data.ais.eta
         }
         
         $.each(egenskaber, function(k,v) {
-            if (v != null) html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
+            if (v != null && v != "") html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
         });
 
         return html;
@@ -55,13 +56,14 @@ embryo.vesselInformation = {
             "MMSI": data.ais.mmsi,
             "Class": data.ais["class"],
             "Name": data.ais.name,
-            "Callsign": data.ais.callsign,
+            "Call Sign": data.ais.callsign,
+            "Vessel Type": data.ais.vesselType,
+            "Cargo": data.ais.cargo != "N/A" && data.ais.cargo != "Undefined" ? data.ais.cargo : null,
             "Lat": data.ais.lat,
             "Lon": data.ais.lon,
             "IMO": data.ais.imo,
             "Source": data.ais.source,
             "Type": data.ais.type,
-            "Cargo": data.ais.cargo,
             "Country": data.ais.country,
             "SOG": data.ais.sog,
             "COG": data.ais.cog,
@@ -71,15 +73,15 @@ embryo.vesselInformation = {
             "Width": data.ais.width,
             "Length": data.ais.length,
             "Destination": data.ais.destination,
-            "Nav status": data.ais.navStatus,
+            "Nav Status": data.ais.navStatus,
             "ETA": data.ais.eta,
-            "Pos acc": data.ais.posAcc,
-            "Last report": data.ais.lastReport,
-            "More information": "<a href='"+link+"' target='new_window'>"+link+"</a>"
+            "Position Accuracy": data.ais.posAcc,
+            "Last Report": data.ais.lastReport,
+            "More Information": "<a href='"+link+"' target='new_window'>"+link+"</a>"
         }
         
         $.each(egenskaber, function(k,v) {
-            if (v != null) html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
+            if (v != null && v != "") html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
         });
 
         $("#aesModal h2").html("AIS Information - " + data.ais.name);

@@ -15,29 +15,26 @@
  */
 package dk.dma.arcticweb.service;
 
-import javax.ejb.Local;
-
 import dk.dma.embryo.domain.Sailor;
 import dk.dma.embryo.domain.Vessel;
 
+import javax.ejb.Local;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import java.util.List;
+
 @Local
 public interface VesselService {
-
-    
     /**
      * Get the vessel for the currently logged in {@link Sailor}.
-     * 
+     *
      * @return
      */
     Vessel getYourVessel();
 
-    /**
-     * 
-     * @param vessel
-     * @return
-     */
     void save(Vessel vessel);
 
     Vessel getVessel(Long mmsi);
 
+    List<Vessel> getAll();
 }

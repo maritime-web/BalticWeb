@@ -82,7 +82,7 @@ $(function() {
     embryo.authenticated(function() {
         function fixAccordionSize() {
             $("#vesselControlPanel .accordion-inner").css("overflow", "auto");
-            $("#vesselControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - $("#vesselControlPanel .accordion-group").length * 50 - 100)+"px");
+            $("#vesselControlPanel .accordion-inner").css("max-height", Math.max(100, $("#map").height() - $("#vesselControlPanel .accordion-group").length * 51 - 80)+"px");
         }
 
         $(window).resize(fixAccordionSize);
@@ -97,12 +97,13 @@ $(function() {
     });
 })
 
-$(function() {
+embryo.ready(function() {
     function fixReportingPanelSize() {
         $(".reportingPanel").css("overflow", "auto");
-        $(".reportingPanel").css("max-height", Math.max(100, $(window).height() - 100)+"px");
+        $(".reportingPanel").css("max-height", Math.max(100, $("#map").height() - 100)+"px");
     }
 
     $(window).resize(fixReportingPanelSize);
-    fixReportingPanelSize();
+
+    setTimeout(fixReportingPanelSize, 100);
 })

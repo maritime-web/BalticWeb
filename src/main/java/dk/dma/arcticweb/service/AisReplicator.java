@@ -42,10 +42,12 @@ import java.util.Map.Entry;
 
 @Singleton
 @Startup
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class AisReplicator {
     @Inject
     private VesselDao vesselRepository;
+
+    @Inject
+    private VesselService vesselService;
 
     @Inject
     private AisDataService aisDataService;
@@ -70,10 +72,6 @@ public class AisReplicator {
     public AisReplicator() {
     }
 
-    public AisReplicator(VesselDao vesselRepository) {
-        this.vesselRepository = vesselRepository;
-    }
-
     @PostConstruct
     public void startTimer() {
         logger.info("Setting up ais replication job");
@@ -90,13 +88,12 @@ public class AisReplicator {
      * Executes on startup
      */
     @Timeout
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     void updateAis() {
         logger.debug("UPDATE AIS VESSEL DATA");
 
         VesselListResult result = aisView.vesselList(0);
 
-        List<Vessel> awVesselsAsList = vesselRepository.getAll(Vessel.class);
+        List<Vessel> awVesselsAsList = vesselService.getAll();
 
         logger.debug("aisView returns " + result.getVesselList().getVessels().size() + " items - " +
                 "repository returns " + awVesselsAsList.size() + " items.");
@@ -122,7 +119,7 @@ public class AisReplicator {
                         vessel.getAisData().setImoNo(imo);
                         vessel.getAisData().setName(name);
                         logger.debug("Updating vessel {}/{}", mmsi, name);
-                        saveVessel(vessel);
+                        vesselService.save(vessel);
                     } else {
                         logger.debug("Vessel {}/{} is up to date", mmsi, name);
                     }
@@ -147,11 +144,6 @@ public class AisReplicator {
         logger.debug("Vessels in AIS circle: " + vesselsInAisCircle.size());
 
         aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
-    }
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    private void saveVessel(Vessel vessel) {
-        vesselRepository.saveEntity(vessel);
     }
 
     private boolean isUpToDate(dk.dma.embryo.domain.AisData aisData, String name, String callSign, Long imo) {
