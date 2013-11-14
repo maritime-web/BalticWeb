@@ -91,11 +91,6 @@ body {
     z-index: 1039;
 }
 
-/*#vesselInformationPanel {
-    width: 700px;
-    heigth: 400px;
-}*/
-
 .input-mini {
 	width: 30px;
 }
@@ -119,3 +114,47 @@ body {
 .input-xxlarge {
 	width: 270px;
 }
+
+#searchField {
+    width: 235px;
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    .controlPanel {
+        width: 250px;
+    }
+
+    .reportingPanel {
+        left: 265px;
+        max-width: 710px;
+    }
+
+    .input-mini {
+        width: 30px;
+    }
+
+    .input-small {
+        width: 50px;
+    }
+
+    .input-medium {
+        width: 70px;
+    }
+
+    .input-large {
+        width: 100px;
+    }
+
+    .input-xlarge {
+        width: 140px;
+    }
+
+    .input-xxlarge {
+        width: 180px;
+    }
+
+    #searchField {
+        width: 185px;
+    }
+}
+

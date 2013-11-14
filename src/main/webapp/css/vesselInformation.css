@@ -1,11 +1,3 @@
-#vesselInformationEditPanel {
-	max-width:600px;
-}
-
-#vesselInformationViewPanel {
-	max-width:600px;
-}
-
 #vesselInformationEditPanel form {
 	margin-top:20px;
 }
