@@ -34,20 +34,6 @@ function closeCollapse(id) {
     }
 }
 
-function formatPositionValue(value, formatter) {
-    if (value) {
-        value = value.trim();
-        var parsed = parseFloat(value);
-
-        console.log("parsed: " + parsed);
-        
-        if (parsed == value) {
-            return formatter(parsed);
-        }
-    }
-    return null;
-}
-
 function formatLongitude(longitude) {
     var ns = "E";
     if (longitude < 0) {
