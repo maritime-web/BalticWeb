@@ -19,7 +19,7 @@
             },
             show : function(vesselOverview, vesselDetails) {
                 $("#vesselInformationEditPanel").css("display", "block");
-                $("#maxSpeed").focus();
+                // $("#maxSpeed").focus();
 
                 $scope.vessel = vesselDetails;
                 $scope.message = null;
