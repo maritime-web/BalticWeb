@@ -29,9 +29,9 @@ public class Voyage {
 
     private String berthName;
 
-    private String latitude;
+    private Double latitude;
 
-    private String longitude;
+    private Double longitude;
 
     private String arrival;
 
@@ -52,7 +52,7 @@ public class Voyage {
         super();
     }
     
-    public Voyage(String maritimeId, String berthName, String latitude, String longitude, String arrival,
+    public Voyage(String maritimeId, String berthName, Double latitude, Double longitude, String arrival,
             String departure, Integer crew, Integer passengers) {
         super();
         this.maritimeId = maritimeId;
@@ -65,7 +65,7 @@ public class Voyage {
         this.passengers = passengers;
     }
 
-    public Voyage(String maritimeId, String berthName, String latitude, String longitude, String arrival,
+    public Voyage(String maritimeId, String berthName, Double latitude, Double longitude, String arrival,
             String departure, Integer crew, Integer passengers, Boolean doctor) {
         super();
         this.maritimeId = maritimeId;
@@ -107,19 +107,19 @@ public class Voyage {
         this.berthName = berthName;
     }
 
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 

@@ -80,7 +80,7 @@ public class Voyage extends BaseEntity<Long> {
         String departure = DateTimeConverter.getDateTimeConverter().toString(getDeparture(), null);
 
         dk.dma.embryo.rest.json.Voyage voyage = new dk.dma.embryo.rest.json.Voyage(getEnavId(), getBerthName(),
-                getPosition().getLatitudeAsString(), getPosition().getLongitudeAsString(), arrival, departure,
+                getPosition().getLatitude(), getPosition().getLongitude(), arrival, departure,
                 getCrewOnBoard(), getPassengersOnBoard(), getDoctorOnBoard());
 
         return voyage;

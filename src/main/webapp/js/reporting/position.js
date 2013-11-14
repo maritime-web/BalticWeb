@@ -1,93 +1,121 @@
-"use strict";
 
-embryo.geographic = {};
+(function() {
+    "use strict";
 
-embryo.geographic.parseLatitude = function() {
-	if (arguments.length == 1) {
-		if(this.isNumber(arguments[0])){
-			return parseFloat(arguments[0]);
-		}		
-		
-		// TODO validate latitude format
-		var parts = this.splitFormattedPos(arguments[0]);
-		return this.parseLatitude(parts[0], parts[1], parts[2]);
-	}
+    embryo.position = {};
 
-	if (arguments.length != 3) {
-		return null;
-	}
+    embryo.position.parseLatitude = function (value) {
+        if (value.trim().indexOf(" ") < 0) {
+            var parsed = parseFloat(value);
+            if (parsed == value) {
+                return parsed;
+            }
+        }
+        var parts = splitFormattedPos(value);
+        return parseLat(parts[0], parts[1], parts[2]);
+    };
 
-	// TODO validate latitude format
-	var h = parseInt(arguments[0], 10);
-	var m = parseFloat(arguments[1]);
-	var ns = arguments[2].trim();
+    embryo.position.parseLongitude = function (value) {
+        if (value.trim().indexOf(" ") < 0) {
+            var parsed = parseFloat(value);
+            if (parsed == value) {
+                return parsed;
+            }
+        }
+        var parts = splitFormattedPos(value);
+        return parseLon(parts[0], parts[1], parts[2]);
+    };
 
-	// not necessary if format has been validated
-	// if (h == null || m == null || ns == null) {
-	// // throw new FormatException();
-	// }
-	// if (!ns.equals("N") && !ns.equals("S")) {
-	// throw new FormatException();
-	// }
-	var lat = h + m / 60.0;
-	if (ns === "S") {
-		lat *= -1;
-	}
-	return lat;
-};
+    function splitFormattedPos(posStr) {
+        var parts = [];
+        parts[2] = posStr.substring(posStr.length - 1);
+        posStr = posStr.substring(0, posStr.length - 1);
+        var posParts = posStr.trim().split(" ");
+        if (posParts.length != 2) {
+            throw "Format exception";
+        }
+        parts[0] = posParts[0];
+        parts[1] = posParts[1];
+        return parts;
+    }
 
-embryo.geographic.isNumber = function(n) {
-	return !isNaN(parseFloat(n)) && isFinite(n);
-};
+    function parseString(str){
+        str = str.trim();
+        if (str == null || str.length == 0) {
+            return null;
+        }
+        return str;
+    }
 
-embryo.geographic.parseLongitude = function() {
-	if (arguments.length == 1) {
-		if(this.isNumber(arguments[0])){
-			return parseFloat(arguments[0]);
-		}		
+    function parseLat(hours, minutes, northSouth) {
+        var h = parseInt(hours, 10);
+        var m = parseFloat(minutes);
+        var ns = parseString(northSouth);
+        if (h == null || m == null || ns == null) {
+            throw "Format exception";
+        }
+        if (!ns == "N" && !ns == "S") {
+            throw "Format exception";
+        }
+        var lat = h + m / 60.0;
+        if (ns == "S") {
+            lat *= -1;
+        }
+        return lat;
+    }
 
-		// TODO validate longitude format
-		var parts = this.splitFormattedPos(arguments[0]);
-		return this.parseLongitude(parts[0], parts[1], parts[2]);
-	}
+    function parseLon(hours, minutes, eastWest) {
+        var h = parseInt(hours, 10);
+        var m = parseFloat(minutes);
+        var ew = parseString(eastWest);
+        if (h == null || m == null || ew == null) {
+            throw "Format exception";
+        }
+        if (!(ew == "E") && !(ew == "W")) {
+            throw "Format exception";
+        }
+        var lon = h + m / 60.0;
+        if (ew == "W") {
+            lon *= -1;
+        }
+        return lon;
+    }
 
-	// TODO validate longitude format
-	if (arguments.length != 3) {
-		return null;
-	}
+    var module = angular.module('embryo.position', []);
 
-	var h = parseInt(arguments[0], 10);
-	var m = parseFloat(arguments[1]);
-	var ew = arguments[2].trim();
+    function positionDirective(formatter, parser) {
+        return {
+            require : '^ngModel',
+            restrict : 'A',
+            link : function(scope, element, attr, ngModelController) {
+                ngModelController.$formatters.push(function(modelValue) {
+                    if (!modelValue) {
+                        return null;
+                    }
+                    return formatter(modelValue);
+                });
 
-	// not necessary if format has been validated
-	// if (h === NaN || m === NaN || ew == null) {
-	// return null;
-	//        	
-	// throw "format exception for values";
-	// }
-	// if (!ew.equals("E") && !ew.equals("W")) {
-	// throw new FormatException();
-	// }
-	var lon = h + m / 60.0;
-	if (ew === "W") {
-		lon *= -1;
-	}
-	return lon;
-};
+                ngModelController.$parsers.push(function(valueFromInput) {
+                    return parser(valueFromInput);
+                });
 
-embryo.geographic.splitFormattedPos = function(posStr) {
-	if (posStr.length < 4) {
-		throw posStr + " length is 4 or less";
-	}
-	var parts = [];
-	parts[2] = posStr.substring(posStr.length - 1);
-	posStr = posStr.substring(0, posStr.length - 1);
-	var posParts = posStr.split(" ");
-	if (posParts.length != 2) {
-		throw posStr + " split by space gives " + posParts.length + " parts";
-	}
-	parts[0] = posParts[0];
-	parts[1] = posParts[1];
-	return parts;
-};
+                element.bind('change', function(event) {
+                    if (!ngModelController.$modelValue) {
+                        ngModelController.$viewValue = null;
+                    }
+                    ngModelController.$viewValue = formatter(ngModelController.$modelValue);
+                    ngModelController.$render();
+                });
+            }
+        };
+    }
+
+    module.directive('latitude', function() {
+        return positionDirective(formatLatitude, embryo.position.parseLatitude);
+    });
+
+    module.directive('longitude', function() {
+        return positionDirective(formatLongitude, embryo.position.parseLongitude);
+    });
+
+}());

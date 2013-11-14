@@ -28,8 +28,8 @@
 					<td><input ng-model="voyage.berthName" fn-selected="berthSelected(voyage, datum)"
 						fn-autocompleted="berthSelected(voyage, datum)" class="input-large siyTypeahead" datasets="berths" type="text"
 						x-ng-required="!$parent.$last" /></td>
-					<td><input x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
-					<td><input x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
+					<td><input latitude x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
+					<td><input longitude x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
 					<td><input x-ng-model="voyage.arrival" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
 					<td><input x-ng-model="voyage.departure" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm"
 						x-ng-required="!$last" /></td>

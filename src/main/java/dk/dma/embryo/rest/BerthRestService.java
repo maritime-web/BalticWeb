@@ -71,20 +71,20 @@ public class BerthRestService {
     }
     
     public static class BerthDatum extends TypeaheadDatum {
-        private String latitude;
-        private String longitude;
+        private Double latitude;
+        private Double longitude;
 
-        public BerthDatum(String value, String[] tokens, String latitude, String longitude) {
+        public BerthDatum(String value, String[] tokens, Double latitude, Double longitude) {
             super(value, tokens);
             this.latitude = latitude;
             this.longitude = longitude;
         }
 
-        public String getLatitude() {
+        public Double getLatitude() {
             return latitude;
         }
 
-        public String getLongitude() {
+        public Double getLongitude() {
             return longitude;
         }
     }
@@ -104,8 +104,8 @@ public class BerthRestService {
 
         @Override
         public BerthDatum apply(final Berth input) {
-            return new BerthDatum(value(input), tokens(input), input.getPosition().getLatitudeAsString(), input
-                    .getPosition().getLongitudeAsString());
+            return new BerthDatum(value(input), tokens(input), input.getPosition().getLatitude(), input
+                    .getPosition().getLongitude());
         }
     }
 }

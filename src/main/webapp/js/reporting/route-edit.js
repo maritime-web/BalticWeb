@@ -10,7 +10,7 @@
     "use strict";
 
     var module = angular.module('embryo.routeEdit', [ 'embryo.routeService', 'ui.bootstrap',
-            'ui.bootstrap.datetimepicker' ]);
+            'ui.bootstrap.datetimepicker', 'embryo.position'  ]);
 
     function setDefault(context, field, defaultValue) {
         if (!context[field]) {

@@ -4,7 +4,7 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.typeahead' ]);
+            'siyfion.typeahead' , 'embryo.position']);
 
     embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService) {
         var loadSchedule = function() {
@@ -56,7 +56,7 @@
         };
 
         $scope.berths = {
-            name : 'embryo_berths2',
+            name : 'embryo_berths5',
             prefetch : {
                 url : berthUrl,
                 // 1 time
@@ -78,7 +78,7 @@
                 $scope.voyages.push({});
             }
         }, true);
-
+        
         $scope.del = function(index) {
             if ($scope.voyages[index].maritimeId) {
                 $scope.idsOfVoyages2Delete.push($scope.voyages[index].maritimeId);

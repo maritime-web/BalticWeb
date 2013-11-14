@@ -36,6 +36,20 @@ function closeCollapse(id) {
     }, 10)
 }
 
+function formatPositionValue(value, formatter) {
+    if (value) {
+        value = value.trim();
+        var parsed = parseFloat(value);
+
+        console.log("parsed: " + parsed);
+        
+        if (parsed == value) {
+            return formatter(parsed);
+        }
+    }
+    return null;
+}
+
 function formatLongitude(longitude) {
     var ns = "E";
     if (longitude < 0) {
@@ -100,73 +114,3 @@ function formatSize(size) {
     if (size < 1024*1024) return Math.round(size / 1024) + " KB";
     return (Math.round(size / 1024 / 1024 * 10) / 10) + " MB";
 }
-
-function parseLatitude(formattedString) {
-    var parts = splitFormattedPos(formattedString);
-    return parseLat(parts[0], parts[1], parts[2]);
-}
-
-function parseLongitude(formattedString) {
-    var parts = splitFormattedPos(formattedString);
-    return parseLon(parts[0], parts[1], parts[2]);
-}
-
-function splitFormattedPos(posStr) {
-    if (posStr.length < 4) {
-        throw "Format exception";
-    }
-    var parts = [];
-    parts[2] = posStr.substring(posStr.length - 1);
-    posStr = posStr.substring(0, posStr.length - 1);
-    var posParts = posStr.split(" ");
-    if (posParts.length != 2) {
-        throw "Format exception";
-    }
-    parts[0] = posParts[0];
-    parts[1] = posParts[1];
-
-    return parts;
-}
-
-function parseString(str){
-    str = str.trim();
-    if (str == null || str.length == 0) {
-        return null;
-    }
-    return str;
-}
-
-function parseLat(hours, minutes, northSouth) {
-    var h = parseInt(hours);
-    var m = parseFloat(minutes);
-    var ns = parseString(northSouth);
-    if (h == null || m == null || ns == null) {
-        throw "Format exception";
-    }
-    if (!ns == "N" && !ns == "S") {
-        throw "Format exception";
-    }
-    var lat = h + m / 60.0;
-    if (ns == "S") {
-        lat *= -1;
-    }
-    return lat;
-}
-
-function parseLon(hours, minutes, eastWest) {
-    var h = parseInt(hours);
-    var m = parseFloat(minutes);
-    var ew = parseString(eastWest);
-    if (h == null || m == null || ew == null) {
-        throw "Format exception";
-    }
-    if (!(ew == "E") && !(ew == "W")) {
-        throw "Format exception";
-    }
-    var lon = h + m / 60.0;
-    if (ew == "W") {
-        lon *= -1;
-    }
-    return lon;
-}
-

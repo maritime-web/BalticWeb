@@ -50,10 +50,7 @@ function ScheduleLayer(color) {
             var lines = [];
 
             for ( var index in voyages) {
-                var lat = parseLatitude(voyages[index].latitude);
-                var lon = parseLongitude(voyages[index].longitude);
-
-                currentPoint = embryo.map.createPoint(lon, lat);
+                currentPoint = embryo.map.createPoint(voyages[index].longitude, voyages[index].latitude);
 
                 if (!firstPoint) {
                     lines.push(new OpenLayers.Geometry.LineString([ previousPoint, currentPoint ]));

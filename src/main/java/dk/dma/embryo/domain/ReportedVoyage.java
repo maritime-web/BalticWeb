@@ -64,8 +64,8 @@ public class ReportedVoyage extends BaseEntity<Long> {
         String arrival = DateTimeConverter.getDateTimeConverter().toString(getArrival(), null);
         String departure = DateTimeConverter.getDateTimeConverter().toString(getDeparture(), null);
         
-        return new dk.dma.embryo.rest.json.Voyage(getMaritimeId(), getBerthName(), getPosition().getLatitudeAsString(),
-                getPosition().getLongitudeAsString(), arrival, departure, null, null);
+        return new dk.dma.embryo.rest.json.Voyage(getMaritimeId(), getBerthName(), getPosition().getLatitude(),
+                getPosition().getLongitude(), arrival, departure, null, null);
     }
 
     public static List<dk.dma.embryo.rest.json.Voyage> toJsonModel(List<ReportedVoyage> voyages) {
