@@ -29,6 +29,7 @@ import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
 import dk.dma.embryo.rest.json.VesselOverview;
 import dk.dma.embryo.restclients.FullAisViewService;
 import dk.dma.embryo.restclients.LimitedAisViewService;
+import dk.dma.embryo.security.authorization.YourShip;
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
@@ -212,6 +213,7 @@ public class VesselRestService {
     @Path("/save-details")
     @Consumes("application/json")
     @GZIP
+    @YourShip
     public void saveDetails(VesselDetails details) {
         logger.info("save({})", details);
         vesselService.save(Vessel.fromJsonModel(details));
