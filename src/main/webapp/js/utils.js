@@ -29,11 +29,9 @@ function openCollapse(id) {
 
 function closeCollapse(id) {
     $(".collapse", $(id).parents(".accordion")).data("collapse", null);
-    setTimeout(function() {
-        if ($(id).hasClass("in")) {
-            $("a[href=#"+$(id).attr("id")+"]").click();
-        }
-    }, 10)
+    if ($(id).hasClass("in")) {
+        $("a[href=#"+$(id).attr("id")+"]").click();
+    }
 }
 
 function formatPositionValue(value, formatter) {
