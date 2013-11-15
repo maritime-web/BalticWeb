@@ -99,7 +99,7 @@ public class MailServiceImpl implements MailService {
 
         Session session;
 
-        if (username == null || username.trim().equals("-")) {
+        if (username == null || username.trim().equals("")) {
             session = Session.getDefaultInstance(properties);
         } else {
             properties.put("mail.smtp.auth", "true");
@@ -119,8 +119,9 @@ public class MailServiceImpl implements MailService {
 
             message.setFrom(new InternetAddress(fromEmail));
 
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-
+            for (String email : toEmail.split(";")) {
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+            }
 
             message.setSubject(header);
 
@@ -140,7 +141,9 @@ public class MailServiceImpl implements MailService {
         for (String key : environment.keySet()) {
             String value = environment.get(key);
 
-            if (value == null) value = "null";
+            if (value == null) {
+                value = "null";
+            }
 
             value = Matcher.quoteReplacement(value);
 
