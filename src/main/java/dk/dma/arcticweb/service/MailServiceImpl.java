@@ -17,7 +17,12 @@ package dk.dma.arcticweb.service;
 
 import dk.dma.configuration.Property;
 import dk.dma.configuration.PropertyFileService;
-import dk.dma.embryo.domain.*;
+import dk.dma.embryo.domain.GreenPosDMIReport;
+import dk.dma.embryo.domain.GreenPosDeviationReport;
+import dk.dma.embryo.domain.GreenPosFinalReport;
+import dk.dma.embryo.domain.GreenPosPositionReport;
+import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
