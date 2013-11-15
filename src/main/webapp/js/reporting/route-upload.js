@@ -57,6 +57,10 @@
             }
         };
 
+        $scope.formatDateTime = function(timeInMillis) {
+            return formatTime(timeInMillis);
+        };
+
         $scope.fileSupport = window.FileReader ? true : false;
 
         // Choosing a new file will replace the old one

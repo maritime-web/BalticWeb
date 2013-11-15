@@ -21,8 +21,8 @@
 
 			<div class="row-fluid">
 				<div class="span12">
-					<span>From {{voyageInfo.dep}} <span x-ng-show="voyageInfo.depEta">({{voyageInfo.depEta}})</span> to
-						{{voyageInfo.des}} <span x-ng-show="voyageInfo.desEta">({{voyageInfo.desEta}})</span></span>
+					<span>From {{voyageInfo.dep}} <span x-ng-show="voyageInfo.depEta">({{formatDateTime(voyageInfo.depEta)}})</span> to
+						{{voyageInfo.des}} <span x-ng-show="voyageInfo.desEta">({{formatDateTime(voyageInfo.desEta)}})</span></span>
 				</div>
 			</div>
 			<div class="row-fluid">
