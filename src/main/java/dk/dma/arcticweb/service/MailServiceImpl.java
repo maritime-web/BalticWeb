@@ -17,8 +17,7 @@ package dk.dma.arcticweb.service;
 
 import dk.dma.configuration.Property;
 import dk.dma.configuration.PropertyFileService;
-import dk.dma.embryo.domain.GreenPosDMIReport;
-import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.*;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -142,7 +141,7 @@ public class MailServiceImpl implements MailService {
             String value = environment.get(key);
 
             if (value == null) {
-                value = "null";
+                value = "-";
             }
 
             value = Matcher.quoteReplacement(value);
@@ -170,20 +169,24 @@ public class MailServiceImpl implements MailService {
             environment.put("Weather", ((GreenPosDMIReport) report).getWeather());
         }
 
-        /*
-        if (report instanceof GreenPosFinalReport) {
-            templateName = "greenposFinalReport";
-        } else if (report instanceof GreenPosDeviationReport) {
-            templateName = "greenposDeviationReport";
-        } else if (report instanceof GreenPosSailingPlanReport) {
+        if (report instanceof GreenPosPositionReport) {
+            templateName = "greenposPositionReport";
+            environment.put("Course", "" + ((GreenPosPositionReport) report).getCourse());
+            environment.put("Speed", "" + ((GreenPosPositionReport) report).getSpeed());
+        }
+        if (report instanceof GreenPosSailingPlanReport) {
             environment.put("Destination", ((GreenPosSailingPlanReport) report).getDestination());
             environment.put("PersonsOnBoard", "" + ((GreenPosSailingPlanReport) report).getPersonsOnBoard());
             environment.put("EtaOfArrival", "" + ((GreenPosSailingPlanReport) report).getEtaOfArrival());
             templateName = "greenposSailingPlanReport";
-        } else if (report instanceof GreenPosPositionReport) {
-            templateName = "greenposPositionReport";
         }
-        */
+        if (report instanceof GreenPosFinalReport) {
+            templateName = "greenposFinalReport";
+        }
+        if (report instanceof GreenPosDeviationReport) {
+            environment.put("Deviation", ((GreenPosDeviationReport)report).getDeviation());
+            templateName = "greenposDeviationReport";
+        }
 
         String header = propertyFileService.getProperty("embryo.notification.template." + templateName + ".header");
         String body = propertyFileService.getProperty("embryo.notification.template." + templateName + ".body");
