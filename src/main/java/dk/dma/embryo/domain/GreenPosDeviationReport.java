@@ -66,8 +66,8 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setVesselName(getVesselName());
         result.setMmsi(getVesselMmsi());
         result.setCallSign(getVesselCallSign());
-        result.setLon(getPosition().getLongitudeAsString());
-        result.setLat(getPosition().getLatitudeAsString());
+        result.setLon(getPosition().getLongitude());
+        result.setLat(getPosition().getLatitude());
         result.setDeviation(getDeviation());
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());

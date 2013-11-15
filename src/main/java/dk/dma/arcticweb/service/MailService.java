@@ -22,6 +22,6 @@ import dk.dma.embryo.domain.GreenPosReport;
 @Local
 public interface MailService{
 
-    String newGreenposReport(GreenPosReport report);
+    void newGreenposReport(GreenPosReport report);
 
 }

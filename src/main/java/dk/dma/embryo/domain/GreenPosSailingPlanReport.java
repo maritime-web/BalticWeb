@@ -95,8 +95,8 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setVesselName(getVesselName());
         result.setMmsi(getVesselMmsi());
         result.setCallSign(getVesselCallSign());
-        result.setLon(getPosition().getLongitudeAsString());
-        result.setLat(getPosition().getLatitudeAsString());
+        result.setLon(getPosition().getLongitude());
+        result.setLat(getPosition().getLatitude());
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
         result.setSpeed(getSpeed());

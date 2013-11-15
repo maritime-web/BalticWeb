@@ -32,9 +32,9 @@ public class GreenPos {
 
     private String callSign;
 
-    private String lat;
+    private Double lat;
 
-    private String lon;
+    private Double lon;
 
     private String weather;
 
@@ -99,19 +99,19 @@ public class GreenPos {
         this.callSign = callSign;
     }
 
-    public String getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(String latitude) {
+    public void setLat(Double latitude) {
         this.lat = latitude;
     }
 
-    public String getLon() {
+    public Double getLon() {
         return lon;
     }
 
-    public void setLon(String longitude) {
+    public void setLon(Double longitude) {
         this.lon = longitude;
     }
 

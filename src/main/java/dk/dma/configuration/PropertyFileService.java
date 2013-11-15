@@ -61,6 +61,10 @@ public class PropertyFileService {
         }
     }
 
+    public String getProperty(String name) {
+        return properties.getProperty(name);
+    }
+
     @Produces
     @Property
     public String getStringPropertyByKey(InjectionPoint ip) {
