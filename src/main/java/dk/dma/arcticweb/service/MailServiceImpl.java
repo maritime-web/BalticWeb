@@ -15,7 +15,11 @@
  */
 package dk.dma.arcticweb.service;
 
-import java.util.Properties;
+import dk.dma.configuration.Property;
+import dk.dma.configuration.PropertyFileService;
+import dk.dma.embryo.domain.GreenPosDMIReport;
+import dk.dma.embryo.domain.GreenPosReport;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.TransactionAttribute;
@@ -23,17 +27,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import org.slf4j.Logger;
-
-import dk.dma.configuration.Property;
-import dk.dma.embryo.domain.GreenPosReport;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
 
 @Named
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -59,77 +61,130 @@ public class MailServiceImpl implements MailService {
     private String smtpHost;
 
     @Inject
+    @Property(value = "embryo.notification.mail.smtp.username", defaultValue = " ")
+    private String username;
+
+    @Inject
+    @Property(value = "embryo.notification.mail.smtp.password", defaultValue = " ")
+    private String password;
+
+    @Inject
     @Property("embryo.notification.mail.enabled")
     private String enabled;
 
+    @Inject
+    private PropertyFileService propertyFileService;
+
     public MailServiceImpl() {
     }
-    
+
     @PostConstruct
-    public void init(){
-        if(enabled == null || !"TRUE".equals(enabled.toUpperCase())){
+    public void init() {
+        if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
             logger.info("ArcticWeb MAIL SERVICE DISABLED");
-        }else{
+        } else {
             logger.info("ArcticWeb MAIL SERVICE ENABLED");
         }
     }
 
-    @Override
-    public String newGreenposReport(GreenPosReport report) {
-        // Assuming you are sending email from localhost
-
-        if(enabled == null || !"TRUE".equals(enabled.toUpperCase())){
-            return "";
+    private void sendEmail(String header, String body) {
+        if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
+            logger.info("Email to Arctic Command has been disabled. Would have sent the following:\n" + header + "\n" + body);
+            return;
         }
-        
-        final String username = "username@gmail.com";
-        final String password = "password";
-        
-        // Get system properties
+
         Properties properties = new Properties();
 
-        // Setup mail server
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.host", smtpHost);
-        properties.put("mail.smtp.port", "587");
-        
-        // Get the default Session object.
-        // Session session = Session.getDefaultInstance(properties);
 
-        Session session = Session.getInstance(properties,
-                new javax.mail.Authenticator() {
-                  protected PasswordAuthentication getPasswordAuthentication() {
-                      return new PasswordAuthentication(username, password);
-                  }
-                });
-        try {
-            // Create a default MimeMessage object.
-            MimeMessage message = new MimeMessage(session);
+        Session session;
 
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(fromEmail));
+        if (username == null || username.trim().equals("-")) {
+            session = Session.getDefaultInstance(properties);
+        } else {
+            properties.put("mail.smtp.auth", "true");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.port", "587");
 
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-
-            // Set Subject: header field
-            message.setSubject("New Greenpos report from " + report.getVesselName());
-
-            // Now set the actual message
-            message.setText(report.getVesselName() + " with mmsi " + report.getVesselMmsi() + " and call sign "
-                    + report.getVesselCallSign()
-                    + " has submitted a new greenpos report. See the details in ArcticWeb.");
-
-            // Send message
-            Transport.send(message);
-            logger.info("Send email successfully");
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
+            session = Session.getInstance(properties,
+                    new javax.mail.Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                        }
+                    });
         }
 
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            MimeMessage message = new MimeMessage(session);
+
+            message.setFrom(new InternetAddress(fromEmail));
+
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+
+
+            message.setSubject(header);
+
+            message.setText(body);
+
+            Transport.send(message);
+
+            logger.info("The following email to Arctic Command have been sent:\n" + header + "\n" + body);
+        } catch (Exception mex) {
+            throw new RuntimeException(mex);
+        }
     }
 
+    private String applyTemplate(String template, Map<String, String> environment) {
+        String result = template;
+
+        for (String key : environment.keySet()) {
+            String value = environment.get(key);
+
+            if (value == null) value = "null";
+
+            value = Matcher.quoteReplacement(value);
+
+            result = result.replaceAll("\\{" + key + "\\}", value);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void newGreenposReport(GreenPosReport report) {
+        Map<String, String> environment = new HashMap<>();
+
+        environment.put("VesselName", report.getVesselName());
+        environment.put("VesselMmsi", "" + report.getVesselMmsi());
+        environment.put("VesselCallSign", report.getVesselCallSign());
+        environment.put("Latitude", report.getPosition().getLatitudeAsString());
+        environment.put("Longitude", report.getPosition().getLongitudeAsString());
+
+        String templateName = "greenposReport";
+
+        if (report instanceof GreenPosDMIReport) {
+            environment.put("IceInformation", ((GreenPosDMIReport) report).getIceInformation());
+            environment.put("Weather", ((GreenPosDMIReport) report).getWeather());
+        }
+
+        /*
+        if (report instanceof GreenPosFinalReport) {
+            templateName = "greenposFinalReport";
+        } else if (report instanceof GreenPosDeviationReport) {
+            templateName = "greenposDeviationReport";
+        } else if (report instanceof GreenPosSailingPlanReport) {
+            environment.put("Destination", ((GreenPosSailingPlanReport) report).getDestination());
+            environment.put("PersonsOnBoard", "" + ((GreenPosSailingPlanReport) report).getPersonsOnBoard());
+            environment.put("EtaOfArrival", "" + ((GreenPosSailingPlanReport) report).getEtaOfArrival());
+            templateName = "greenposSailingPlanReport";
+        } else if (report instanceof GreenPosPositionReport) {
+            templateName = "greenposPositionReport";
+        }
+        */
+
+        String header = propertyFileService.getProperty("embryo.notification.template." + templateName + ".header");
+        String body = propertyFileService.getProperty("embryo.notification.template." + templateName + ".body");
+
+        sendEmail(applyTemplate(header, environment), applyTemplate(body, environment));
+    }
 }
