@@ -25,6 +25,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
@@ -47,6 +48,7 @@ public class AuthenticationService {
     @GET
     @Path("/details")
     @Produces("application/json")
+    @GZIP
     public Details details() {
         SecuredUser user = subject.getUser();
         if (user == null) {
@@ -77,6 +79,7 @@ public class AuthenticationService {
     @GET
     @Path("/logout")
     @Produces("application/json")
+    @GZIP
     public void logout() {
         subject.logout();
     }
@@ -84,6 +87,7 @@ public class AuthenticationService {
     @GET
     @Path("/login")
     @Produces("application/json")
+    @GZIP
     public Details login(@QueryParam("userName") String userName, @QueryParam("password") String password) {
         SecuredUser user = subject.login(userName, password);
 

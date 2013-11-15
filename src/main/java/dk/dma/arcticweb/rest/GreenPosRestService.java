@@ -70,6 +70,7 @@ public class GreenPosRestService {
     @GET
     @Path("/latest/{mmsi}")
     @Produces("application/json")
+    @GZIP
     public GreenPos latest(@PathParam("mmsi") Long mmsi) {
         logger.debug("latest({})", mmsi);
 
