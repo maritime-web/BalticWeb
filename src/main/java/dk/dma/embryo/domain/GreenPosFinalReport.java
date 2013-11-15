@@ -38,7 +38,7 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
     public static GreenPosFinalReport fromJsonModel(GreenPos from) {
-        Position pos = new Position(from.getLat(), from.getLon());
+        Position pos = new Position(Double.parseDouble(from.getLat()), Double.parseDouble(from.getLon()));
 
         GreenPosFinalReport report = new GreenPosFinalReport(from.getVesselName(), from.getMmsi(),
                 from.getCallSign(), pos, from.getWeather(), from.getIce());

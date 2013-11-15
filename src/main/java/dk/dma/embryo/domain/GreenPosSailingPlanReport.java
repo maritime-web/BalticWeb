@@ -73,7 +73,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
 
     public static GreenPosSailingPlanReport fromJsonModel(GreenPos from) {
         LocalDateTime eta = DateTimeConverter.getDateTimeConverter().toObject(from.getEta(), null);
-        Position pos = new Position(from.getLat(), from.getLon());
+        Position pos = new Position(Double.parseDouble(from.getLat()), Double.parseDouble(from.getLon()));
 
         GreenPosSailingPlanReport report = new GreenPosSailingPlanReport(from.getVesselName(), from.getMmsi(),
                 from.getCallSign(), pos, from.getWeather(), from.getIce(),
