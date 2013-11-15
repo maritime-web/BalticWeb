@@ -70,7 +70,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setLat(getPosition().getLatitudeAsString());
         result.setDeviation(getDeviation());
         result.setReporter(getReportedBy());
-        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setTs(getTs().toDate());
         
         return result;
     }
@@ -83,7 +83,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setLon(getPosition().getLongitudeAsString());
         result.setLat(getPosition().getLatitudeAsString());
         result.setDeviation(getDeviation());
-        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setTs(getTs().toDate());
         
         return result;
     }

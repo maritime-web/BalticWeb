@@ -26,8 +26,8 @@
 					<td>{{voyage.berthName}}</td>
 					<td>{{formatLatitude(voyage.latitude)}}</td>
 					<td>{{formatLongitude(voyage.longitude)}}</td>
-					<td>{{voyage.arrival}}</td>
-					<td>{{voyage.departure}}</td>
+					<td>{{formatDateTime(voyage.arrival)}}</td>
+					<td>{{formatDateTime(voyage.departure)}}</td>
 					<td>{{voyage.crew}}</td>
 					<td>{{voyage.passengers}}</td>
 					<td><span ng-show="voyage.doctor">Yes</span><span ng-show="voyage.doctor==false">No</span></td>

@@ -72,7 +72,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setSpeed(getSpeed());
         result.setCourse(getCourse());
         result.setReporter(getReportedBy());
-        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setTs(getTs().toDate());
         
         return result;
     }
@@ -88,7 +88,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setIce(getIceInformation());
         result.setSpeed(getSpeed());
         result.setCourse(getCourse());
-        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setTs(getTs().toDate());
         
         return result;
     }

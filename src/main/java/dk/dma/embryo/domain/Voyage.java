@@ -16,6 +16,7 @@
 package dk.dma.embryo.domain;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
-
-import dk.dma.embryo.rest.util.DateTimeConverter;
 
 @Entity
 @NamedQueries({
@@ -76,8 +75,8 @@ public class Voyage extends BaseEntity<Long> {
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
     public dk.dma.embryo.rest.json.Voyage toJsonModel() {
-        String arrival = DateTimeConverter.getDateTimeConverter().toString(getArrival(), null);
-        String departure = DateTimeConverter.getDateTimeConverter().toString(getDeparture(), null);
+        Date arrival = getArrival() == null ? null : getArrival().toDate();
+        Date departure = getDeparture() == null ? null : getDeparture().toDate();
 
         dk.dma.embryo.rest.json.Voyage voyage = new dk.dma.embryo.rest.json.Voyage(getEnavId(), getBerthName(),
                 getPosition().getLatitude(), getPosition().getLongitude(), arrival, departure,
@@ -96,8 +95,9 @@ public class Voyage extends BaseEntity<Long> {
     }
 
     public static Voyage fromJsonModel(dk.dma.embryo.rest.json.Voyage voyage) {
-        LocalDateTime arrival = DateTimeConverter.getDateTimeConverter().toObject(voyage.getArrival(), null);
-        LocalDateTime departure = DateTimeConverter.getDateTimeConverter().toObject(voyage.getDeparture(), null);
+        LocalDateTime arrival = voyage.getArrival() == null ? null : new LocalDateTime(voyage.getArrival().getTime());
+        LocalDateTime departure = voyage.getDeparture() == null ? null : new LocalDateTime(voyage.getDeparture().getTime());
+        
         Position position = new Position(voyage.getLatitude(), voyage.getLongitude());
 
         Voyage result = new Voyage(voyage.getMaritimeId());

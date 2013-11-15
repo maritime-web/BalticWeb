@@ -29,7 +29,7 @@ public class Route {
     private String name;
     private String destination;
     private String departure;
-    private String etaDep;
+    private Date etaDep;
 
     /** Should this be implemented as a {@link MaritimeId} ? */
     private String id;
@@ -110,11 +110,11 @@ public class Route {
         this.name = name;
     }
 
-    public String getEtaDep() {
+    public Date getEtaDep() {
         return etaDep;
     }
 
-    public void setEtaDep(String eta) {
+    public void setEtaDep(Date eta) {
         this.etaDep = eta;
     }
 

@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.rest.json;
 
+import java.util.Date;
+
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
@@ -33,9 +35,9 @@ public class Voyage {
 
     private Double longitude;
 
-    private String arrival;
+    private Date arrival;
 
-    private String departure;
+    private Date departure;
 
     private Integer crew;
 
@@ -52,8 +54,8 @@ public class Voyage {
         super();
     }
     
-    public Voyage(String maritimeId, String berthName, Double latitude, Double longitude, String arrival,
-            String departure, Integer crew, Integer passengers) {
+    public Voyage(String maritimeId, String berthName, Double latitude, Double longitude, Date arrival,
+            Date departure, Integer crew, Integer passengers) {
         super();
         this.maritimeId = maritimeId;
         this.berthName = berthName;
@@ -65,8 +67,8 @@ public class Voyage {
         this.passengers = passengers;
     }
 
-    public Voyage(String maritimeId, String berthName, Double latitude, Double longitude, String arrival,
-            String departure, Integer crew, Integer passengers, Boolean doctor) {
+    public Voyage(String maritimeId, String berthName, Double latitude, Double longitude, Date arrival,
+            Date departure, Integer crew, Integer passengers, Boolean doctor) {
         super();
         this.maritimeId = maritimeId;
         this.berthName = berthName;
@@ -123,19 +125,19 @@ public class Voyage {
         this.longitude = longitude;
     }
 
-    public String getArrival() {
+    public Date getArrival() {
         return arrival;
     }
 
-    public void setArrival(String arrival) {
+    public void setArrival(Date arrival) {
         this.arrival = arrival;
     }
 
-    public String getDeparture() {
+    public Date getDeparture() {
         return departure;
     }
 
-    public void setDeparture(String departure) {
+    public void setDeparture(Date departure) {
         this.departure = departure;
     }
 

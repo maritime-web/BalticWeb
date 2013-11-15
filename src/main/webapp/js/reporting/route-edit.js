@@ -9,8 +9,7 @@
 (function() {
     "use strict";
 
-    var module = angular.module('embryo.routeEdit', [ 'embryo.routeService', 'ui.bootstrap',
-            'ui.bootstrap.datetimepicker', 'embryo.position'  ]);
+    var module = angular.module('embryo.routeEdit', [ 'embryo.routeService', 'embryo.datepicker', 'embryo.position'  ]);
 
     function setDefault(context, field, defaultValue) {
         if (!context[field]) {
@@ -25,10 +24,14 @@
             setDefault(route, "dep", meta.dep);
             setDefault(route, "des", meta.des);
         }
-
+        
         function initRoute() {
             if ($scope.routeId) {
                 RouteService.getRoute($scope.routeId, function(route) {
+                    
+                    console.log(route);
+
+                    
                     $scope.route = route;
                     initRouteMeta($scope.route, $scope.scheduleData);
                     $scope.date = new Date(route.etaDeparture);
@@ -48,6 +51,8 @@
                 embryo.vessel.actions.hide();
                 $scope.mmsi = context.mmsi;
                 $scope.routeId = context.routeId;
+                
+                $scope.date = new Date();
 
                 $scope.scheduleData = {
                     voyageId : context.voyageId,
@@ -84,6 +89,9 @@
         };
 
         $scope.save = function() {
+            
+            console.log($scope.route);
+            
             $scope.message = null;
             $scope.route.wps = $scope.waypoints.slice(0, $scope.waypoints.length - 1);
             RouteService.save($scope.route, $scope.scheduleData.voyageId, function() {

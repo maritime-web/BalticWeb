@@ -123,18 +123,18 @@
             return fields.indexOf(fieldName) > -1;
         };
 
-        $scope.$watch("greenPosForm", function(newValue, oldValue) {
-            console.log("greenposForm");
-            console.log(newValue);
-        }, true);
-        $scope.$watch("greenPosForm.gpShipName", function(newValue, oldValue) {
-            console.log("gpShipName");
-            console.log(newValue);
-        }, true);
-        $scope.$watch("greenPosForm.gpShipName.$error", function(newValue, oldValue) {
-            console.log("error");
-            console.log(newValue);
-        }, true);
+//        $scope.$watch("greenPosForm", function(newValue, oldValue) {
+//            console.log("greenposForm");
+//            console.log(newValue);
+//        }, true);
+//        $scope.$watch("greenPosForm.gpShipName", function(newValue, oldValue) {
+//            console.log("gpShipName");
+//            console.log(newValue);
+//        }, true);
+//        $scope.$watch("greenPosForm.gpShipName.$error", function(newValue, oldValue) {
+//            console.log("error");
+//            console.log(newValue);
+//        }, true);
 
         $scope.sendReport = function() {
             $scope.message = null;
@@ -294,12 +294,13 @@
             }
         };
 
-        $scope.utc = function(dateValue) {
-            var date = new Date(dateValue);
-            date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-            return date;
+        $scope.formatDateTime = function(timeInMillis) {
+            
+            console.log(timeInMillis);
+            
+            return formatTime(timeInMillis);
         };
-
+        
         $scope.reportText = function(type) {
             if (type === 'SP') {
                 return 'Sailing plan';

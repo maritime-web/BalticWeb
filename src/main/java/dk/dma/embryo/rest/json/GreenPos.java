@@ -15,6 +15,7 @@
  */
 package dk.dma.embryo.rest.json;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -47,7 +48,7 @@ public class GreenPos {
 
     private Integer personsOnBoard;
 
-    private String eta;
+    private Date eta;
 
     private String deviation;
 
@@ -55,7 +56,7 @@ public class GreenPos {
 
     private String reporter;
 
-    private Long ts;
+    private Date ts;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -178,11 +179,11 @@ public class GreenPos {
         this.personsOnBoard = personsOnBoard;
     }
 
-    public String getEta() {
+    public Date getEta() {
         return eta;
     }
 
-    public void setEta(String eta) {
+    public void setEta(Date eta) {
         this.eta = eta;
     }
 
@@ -202,11 +203,11 @@ public class GreenPos {
         this.voyages = voyages;
     }
 
-    public Long getTs() {
+    public Date getTs() {
         return ts;
     }
 
-    public void setTs(Long reportedTs) {
+    public void setTs(Date reportedTs) {
         this.ts = reportedTs;
     }
 

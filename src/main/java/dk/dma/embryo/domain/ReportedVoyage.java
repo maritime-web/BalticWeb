@@ -16,6 +16,7 @@
 package dk.dma.embryo.domain;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,8 +24,6 @@ import javax.persistence.Entity;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.joda.time.LocalDateTime;
-
-import dk.dma.embryo.rest.util.DateTimeConverter;
 
 @Entity
 public class ReportedVoyage extends BaseEntity<Long> {
@@ -61,9 +60,9 @@ public class ReportedVoyage extends BaseEntity<Long> {
     }
 
     public dk.dma.embryo.rest.json.Voyage toJsonModel() {
-        String arrival = DateTimeConverter.getDateTimeConverter().toString(getArrival(), null);
-        String departure = DateTimeConverter.getDateTimeConverter().toString(getDeparture(), null);
-        
+        Date arrival = getArrival() == null ? null : getArrival().toDate(); 
+        Date departure = getDeparture() == null ? null : getDeparture().toDate(); 
+                
         return new dk.dma.embryo.rest.json.Voyage(getMaritimeId(), getBerthName(), getPosition().getLatitude(),
                 getPosition().getLongitude(), arrival, departure, null, null);
     }

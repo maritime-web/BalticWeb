@@ -253,7 +253,11 @@
         $scope.formatLongitude = function(latitude) {
             return formatLongitude(latitude);
         };
-        
+
+        $scope.formatDateTime = function(timeInMillis) {
+            return formatTime(timeInMillis);
+        };
+
         $scope.viewRoute = function(voyage) {
             RouteService.getRoute(voyage.route.id, function(route) {
                 $scope.routeLayer.draw(route);

@@ -30,9 +30,8 @@
 						x-ng-required="!$parent.$last" /></td>
 					<td><input latitude x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
 					<td><input longitude x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
-					<td><input x-ng-model="voyage.arrival" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm" /></td>
-					<td><input x-ng-model="voyage.departure" type="text" class="input-medium" placeholder="dd-MM-yy hh:mm"
-						x-ng-required="!$last" /></td>
+					<td><datetimepicker x-ng-model="voyage.arrival" x-ng-required="!$last"/></td>
+					<td><datetimepicker x-ng-model="voyage.departure" x-ng-required="!$last" /></td>
 					<td><input x-ng-model="voyage.crew" type="text" class="input-mini" /></td>
 					<td><input x-ng-model="voyage.passengers" type="text" class="input-mini" /></td>
 					<td><select x-ng-model="voyage.doctor" class="input-small"

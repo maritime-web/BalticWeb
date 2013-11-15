@@ -12,6 +12,7 @@
 
 		<form name="routeEditForm" class="form-horizontal route" ng-submit="save()">
 
+
 			<div class="row-fluid">
 				<div class="span6">
 					<div class="control-group">
@@ -23,9 +24,9 @@
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label long" for="etaOfDeparture">Estimated time of Departure</label>
+						<label class="control-label long" >Estimated time of Departure</label>
 						<div class="controls">
-							<input x-ng-model="route.etaDep" type="text" id="etaDep" class="input-medium" />
+							<datetimepicker x-ng-model="route.etaDep"></datetimepicker>
 						</div>
 					</div>
 				</div>

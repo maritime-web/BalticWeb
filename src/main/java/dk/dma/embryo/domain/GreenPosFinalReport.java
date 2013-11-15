@@ -59,7 +59,7 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
         result.setReporter(getReportedBy());
-        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setTs(getTs().toDate());
         
         return result;
     }
@@ -73,7 +73,7 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         result.setLat(getPosition().getLatitudeAsString());
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
-        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setTs(getTs().toDate());
         
         return result;
     }

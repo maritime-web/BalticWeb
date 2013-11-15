@@ -151,8 +151,12 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new IllegalArgumentException("Unknown 'voyageId' value '" + voyageId + "'");
         }
 
-        route.setOrigin(voyage.getBerthName());
-        route.setEtaOfDeparture(voyage.getDeparture());
+        if(route.getOrigin() == null){
+            route.setOrigin(voyage.getBerthName());
+        }
+        if(route.getEtaOfDeparture() == null){
+            route.setEtaOfDeparture(voyage.getDeparture());
+        }
 
         List<Voyage> voyages = voyage.getVessel().getSchedule();
         int count = 0;

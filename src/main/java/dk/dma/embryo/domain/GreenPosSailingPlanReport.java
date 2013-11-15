@@ -16,6 +16,7 @@
 package dk.dma.embryo.domain;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -28,12 +29,10 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
-import dk.dma.embryo.rest.util.DateTimeConverter;
 
 /**
  * 
@@ -72,7 +71,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     // //////////////////////////////////////////////////////////////////////
 
     public static GreenPosSailingPlanReport fromJsonModel(GreenPos from) {
-        LocalDateTime eta = DateTimeConverter.getDateTimeConverter().toObject(from.getEta(), null);
+        LocalDateTime eta = from.getEta() == null ? null : new LocalDateTime(from.getEta().getTime()); 
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosSailingPlanReport report = new GreenPosSailingPlanReport(from.getVesselName(), from.getMmsi(),
@@ -83,7 +82,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
 
     @Override
     public GreenPos toJsonModel() {
-        String eta = DateTimeConverter.getDateTimeConverter().toString(getEtaOfArrival(), null);
+        Date eta = getEtaOfArrival() == null ? null : getEtaOfArrival().toDate(); 
         
 //        List<dk.dma.embryo.rest.json.Voyage> transformed = new ArrayList<dk.dma.embryo.rest.json.Voyage>(getVoyages().size());
 //        for(ReportedVoyage v : getVoyages()){
@@ -107,13 +106,13 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setEta(eta);
 //        result.setVoyages(transformed);
         result.setReporter(getReportedBy());
-        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setTs(getTs().toDate());
         return result;
     }
 
     @Override
     public GreenPosShort toJsonModelShort() {
-        String eta = DateTimeConverter.getDateTimeConverter().toString(getEtaOfArrival(), null);
+        Date eta = getEtaOfArrival() == null ? null : getEtaOfArrival().toDate();
         
         GreenPosShort result = new GreenPosShort();
         result.setId(getEnavId());
@@ -127,7 +126,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setDestination(getDestination());
         result.setPersonsOnBoard(getPersonsOnBoard());
         result.setEta(eta);
-        result.setTs(getTs().toDateTime(DateTimeZone.UTC).getMillis());
+        result.setTs(getTs().toDate());
         return result;
     }
 
