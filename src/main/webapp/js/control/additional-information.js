@@ -66,7 +66,7 @@ embryo.additionalInformation.distanceCircles = {
 
 embryo.additionalInformation.route = {
     title : "Route",
-    layer : new RouteLayer("#D5672D"),
+    layer : new RouteLayer("#2a6237"),
     init : function(map, group) {
         addLayerToMap(group, this.layer, map)
     },

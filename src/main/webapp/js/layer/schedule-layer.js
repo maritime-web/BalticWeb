@@ -7,8 +7,7 @@ function ScheduleLayer(color) {
 
         // Find a better color code. How to convert sRGB to HTML codes?
         var yourDefault = OpenLayers.Util.applyDefaults({
-            strokeWidth : 2,
-            strokeDashstyle : 'dashdot',
+            strokeWidth : 1,
             strokeColor : color,
             strokeOpacity : "${getOpacity}",
             fillColor : "${getColor}",

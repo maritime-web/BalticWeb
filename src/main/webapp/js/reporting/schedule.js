@@ -205,10 +205,10 @@
             }
         };
 
-        $scope.routeLayer = new RouteLayer("#D5672F");
+        $scope.routeLayer = new RouteLayer("#2a6237");
         addLayerToMap("vessel", $scope.routeLayer, embryo.map);
 
-        $scope.scheduleLayer = new ScheduleLayer("#D5672F");
+        $scope.scheduleLayer = new ScheduleLayer("#000000");
         addLayerToMap("vessel", $scope.scheduleLayer, embryo.map);
 
         embryo.controllers.scheduleView = {

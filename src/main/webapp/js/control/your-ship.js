@@ -1,7 +1,7 @@
 $(function() {
     var yourShip;
 
-    var yourShipRouteLayer = new RouteLayer("#2a6237");
+    var yourShipRouteLayer = new RouteLayer("#D5672D");
 
     addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
 
