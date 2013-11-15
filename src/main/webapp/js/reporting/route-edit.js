@@ -28,10 +28,6 @@
         function initRoute() {
             if ($scope.routeId) {
                 RouteService.getRoute($scope.routeId, function(route) {
-                    
-                    console.log(route);
-
-                    
                     $scope.route = route;
                     initRouteMeta($scope.route, $scope.scheduleData);
                     $scope.date = new Date(route.etaDeparture);
@@ -89,9 +85,6 @@
         };
 
         $scope.save = function() {
-            
-            console.log($scope.route);
-            
             $scope.message = null;
             $scope.route.wps = $scope.waypoints.slice(0, $scope.waypoints.length - 1);
             RouteService.save($scope.route, $scope.scheduleData.voyageId, function() {
