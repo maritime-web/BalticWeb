@@ -52,7 +52,8 @@ public class ShapeFileService {
     @Produces("application/json")
     @GZIP
     @Cache(
-            maxAge = 31556926
+            maxAge = 31556926,
+            isPrivate = false
     )
     public Shape getSingleFile(
             @PathParam("id") String id,
@@ -70,7 +71,8 @@ public class ShapeFileService {
     @Produces("application/json")
     @GZIP
     @Cache(
-            maxAge = 31556926
+            maxAge = 31556926,
+            isPrivate = false
     )
     public List<Shape> getMultipleFile(
             @PathParam("ids") String ids,

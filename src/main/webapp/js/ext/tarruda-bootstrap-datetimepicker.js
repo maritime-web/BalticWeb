@@ -1300,6 +1300,6 @@
     );
   }
 
-  console.log('tarruda');
+  // console.log('tarruda');
 
 })(window.jQuery)
