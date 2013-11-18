@@ -254,7 +254,7 @@
     }
 
     embryo.authenticated(function() {
-        setInterval(requestIceObservations, 60 * 1000 * 10);
+        setInterval(requestIceObservations, 2 * 60 * 1000 * 60);
         requestIceObservations();
     });
 

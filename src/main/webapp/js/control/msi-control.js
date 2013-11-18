@@ -19,48 +19,53 @@ $(function() {
     });
 
     embryo.authenticated(function() {
-        var messageId = embryo.messagePanel.show( { text: "Requesting active MSI warnings ..." })
+        function requestMsiList() {
+            var messageId = embryo.messagePanel.show( { text: "Requesting active MSI warnings ..." })
 
-        embryo.msi.service.list(function(error, data) {
-            if (data) {
-                data = data.sort(function(a,b) {
-                    return b.created-a.created;
-                });
+            embryo.msi.service.list(function(error, data) {
+                if (data) {
+                    data = data.sort(function(a,b) {
+                        return b.created-a.created;
+                    });
 
-                for (var i in data) data[i].id = i;
+                    for (var i in data) data[i].id = i;
 
-                var html = "<tr><th>Date</th><th>Type</th><th>Area</th></tr>";
+                    var html = "<tr><th>Date</th><th>Type</th><th>Area</th></tr>";
 
-                for (var i in data) {
-                    html += "<tr index="+i+" style='cursor:pointer'><td>"+formatDate(data[i].created)+"</td><td>"+data[i].enctext+"</td><td>"+data[i].mainArea+" - "+data[i].subArea+"</td>";               }
+                    for (var i in data) {
+                        html += "<tr index="+i+" style='cursor:pointer'><td>"+formatDate(data[i].created)+"</td><td>"+data[i].enctext+"</td><td>"+data[i].mainArea+" - "+data[i].subArea+"</td>";               }
 
-                $("#msiOverview table").html(html);
+                    $("#msiOverview table").html(html);
 
-                $("#msiOverview tr").click(function(e) {
-                    var msi = data[$(this).attr("index")];
-                    showMsiInformation(msi);
-                    msiLayer.select(msi);
+                    $("#msiOverview tr").click(function(e) {
+                        var msi = data[$(this).attr("index")];
+                        showMsiInformation(msi);
+                        msiLayer.select(msi);
 
-                    switch (msi.type) {
-                        case "Point":
-                            embryo.map.setCenter(msi.points[0].longitude, msi.points[0].latitude, 8);
-                            break;
-                        case "Points":
-                        case "Polygon":
-                        case "Polyline":
-                            embryo.map.setCenter(msi.points[0].longitude, msi.points[0].latitude, 8);
-                            break;
-                    }
+                        switch (msi.type) {
+                            case "Point":
+                                embryo.map.setCenter(msi.points[0].longitude, msi.points[0].latitude, 8);
+                                break;
+                            case "Points":
+                            case "Polygon":
+                            case "Polyline":
+                                embryo.map.setCenter(msi.points[0].longitude, msi.points[0].latitude, 8);
+                                break;
+                        }
 
-                });
+                    });
 
-                msiLayer.draw(data);
+                    msiLayer.draw(data);
 
-                embryo.messagePanel.replace(messageId, { text: data.length + " MSI warnings returned.", type: "success" })
-            } else {
-                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + error.status + " requesting MSI warnings.", type: "error" })
-            }
-        });
+                    embryo.messagePanel.replace(messageId, { text: data.length + " MSI warnings returned.", type: "success" })
+                } else {
+                    embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + error.status + " requesting MSI warnings.", type: "error" })
+                }
+            });
+        }
+
+        requestMsiList();
+        setInterval(requestMsiList, 1 * 60 * 1000 * 60);
     });
 
     embryo.ready(function() {
