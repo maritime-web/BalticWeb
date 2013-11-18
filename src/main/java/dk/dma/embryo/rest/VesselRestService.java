@@ -144,18 +144,21 @@ public class VesselRestService {
         try {
             Map result = fullAisViewService.vesselTargetDetails(mmsi, 0);
 
-            boolean historicalTrack =
-                    aisReplicator.isWithinAisCircle(ParseUtils.parseLongitude((String) result.get("lon")),
-                            ParseUtils.parseLatitude((String) result.get("lat")));
+            boolean historicalTrack = false;
+            String lat = (String) result.get("lat");
+            String lon = (String) result.get("lon");
+            //EMBRYO-135: avoid NullPointer when lat/lon not present in AIS data
+            if (lat != null && lon != null) {
+                historicalTrack = aisReplicator.isWithinAisCircle(ParseUtils.parseLongitude(lon), ParseUtils.parseLatitude(lat));
+            }
 
             VesselDetails details;
             Vessel vessel = vesselService.getVessel(mmsi);
 
             Route route = null;
 
-            boolean greenpos = greenposService.
-                    findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1)).size() > 0;
-
+            boolean greenpos = greenposService.findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1))
+                    .size() > 0;
 
             if (vessel != null) {
                 route = scheduleService.getActiveRoute(mmsi);
@@ -166,11 +169,8 @@ public class VesselRestService {
                 details.setAis(result);
             }
 
-            details.setAdditionalInformation(
-                    new AdditionalInformation(
-                            route != null ? route.getEnavId() : null, historicalTrack, greenpos
-                    )
-            );
+            details.setAdditionalInformation(new AdditionalInformation(route != null ? route.getEnavId() : null,
+                    historicalTrack, greenpos));
 
             return details;
 
@@ -181,13 +181,12 @@ public class VesselRestService {
 
             Vessel vessel = vesselService.getVessel(mmsi);
 
-
             if (vessel != null) {
                 VesselDetails details;
                 Route route = scheduleService.getActiveRoute(mmsi);
 
-                boolean greenpos = greenposService.
-                        findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1)).size() > 0;
+                boolean greenpos = greenposService.findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1))
+                        .size() > 0;
 
                 details = vessel.toJsonModel();
 
@@ -196,11 +195,8 @@ public class VesselRestService {
                 details.getAis().put("mmsi", "" + vessel.getMmsi());
                 details.getAis().put("name", "" + vessel.getAisData().getName());
 
-                details.setAdditionalInformation(
-                        new AdditionalInformation(
-                                route != null ? route.getEnavId() : null, false, greenpos
-                        )
-                );
+                details.setAdditionalInformation(new AdditionalInformation(route != null ? route.getEnavId() : null,
+                        false, greenpos));
 
                 return details;
             } else {
