@@ -66,7 +66,8 @@ embryo.additionalInformation.distanceCircles = {
 
 embryo.additionalInformation.route = {
     title : "Route",
-    layer : new RouteLayer("#2a6237"),
+    // Darker green #2a6237
+    layer : new RouteLayer(),
     init : function(map, group) {
         addLayerToMap(group, this.layer, map)
     },
@@ -76,7 +77,8 @@ embryo.additionalInformation.route = {
     show : function(vessel, vesselDetails) {
         var that = this;
         embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
-            that.layer.draw(data);
+            var routeType = embryo.route.service.getRouteType(vesselDetails.mmsi, vesselDetails.additionalInformation.routeId); 
+            that.layer.draw(data , routeType);
             that.layer.zoomToExtent();
         });
     },
