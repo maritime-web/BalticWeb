@@ -17,6 +17,17 @@
         var routeKey = function(routeId) {
             return 'route_' + routeId;
         };
+        
+        var loggedInVesselDetails;
+        function updateLoggedInVessel(error, vesselOverview, vesselDetails) {
+            // console.log("updateBox", error, vesselOverview, vesselDetails);
+            loggedInVesselDetails = vesselDetails;
+        }
+        embryo.authenticated(function() {
+            if (embryo.authentication.shipMmsi) {
+                embryo.vessel.service.subscribe(embryo.authentication.shipMmsi, updateLoggedInVessel);
+            }
+        });
 
         return {
             getActive : function(mmsi, success, error) {
@@ -59,8 +70,17 @@
                 }).error(function(data, status, headers, config) {
                     error(embryo.ErrorService.getText(data, status, config));
                 });
+            },
+            getRouteType : function(mmsi, routeId) {
+                if (mmsi == embryo.authentication.shipMmsi) {
+                    if (routeId == loggedInVesselDetails.additionalInformation.routeId) {
+                        return "active";
+                    } else {
+                        return "planned";
+                    }
+                }   
+                return "other";
             }
-
         };
     });
 

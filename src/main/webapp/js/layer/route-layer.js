@@ -1,5 +1,12 @@
-function RouteLayer(color) {
+function RouteLayer() {
     this.init = function() {
+        var colors = {
+           "active" : "#FF0000",
+           "planned" : "#D5672D",
+           "other" : "#3E7D1D"
+               // Another green : "#2AAC0C"
+               // orig green 2a6237
+        };
         var that = this;
 
         this.layers = [];
@@ -9,15 +16,16 @@ function RouteLayer(color) {
         var yourDefault = OpenLayers.Util.applyDefaults({
             strokeWidth : 2,
             strokeDashstyle : 'dashdot',
-            strokeColor : color,
+            strokeColor : "${getColor}",
             strokeOpacity : "${getOpacity}",
-            fillColor : "${getColor}",
-            fillOpacity : "${getOpacity}"
         }, OpenLayers.Feature.Vector.style["default"]);
 
         var context = {
             getOpacity : function() {
                 return that.active ? 1 : 0.3;
+            },
+            getColor : function(feature){
+                return colors[feature.data.colorKey];
             }
         };
 
@@ -38,7 +46,7 @@ function RouteLayer(color) {
         });
     }
 
-    function createVectorFeatures(route) {
+    function createVectorFeatures(route, colorKey) {
         var features = [];
 
         if (route && route.wps) {
@@ -64,7 +72,8 @@ function RouteLayer(color) {
             var multiLine = new OpenLayers.Geometry.MultiLineString(lines);
             var feature = new OpenLayers.Feature.Vector(multiLine, {
                 featureType : 'route',
-                route : route
+                route : route,
+                colorKey : colorKey
             });
 
             features.push(feature);
@@ -72,11 +81,11 @@ function RouteLayer(color) {
         return features;
     };
 
-    this.draw = function(route) {
+    this.draw = function(route, colorKey) {
         this.layers.route.removeAllFeatures();
 
         if (route && route.wps) {
-            this.layers.route.addFeatures(createVectorFeatures(route));
+            this.layers.route.addFeatures(createVectorFeatures(route, colorKey));
             this.layers.route.refresh();
         }
     }

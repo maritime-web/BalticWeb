@@ -1,7 +1,7 @@
 $(function() {
     var yourShip;
 
-    var yourShipRouteLayer = new RouteLayer("#D5672D");
+    var yourShipRouteLayer = new RouteLayer();
 
     addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
 
@@ -21,7 +21,7 @@ $(function() {
             if (vesselDetails.additionalInformation.routeId) {
                 embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
                     // console.log("Drawing router layer for your vessel", data);
-                    yourShipRouteLayer.draw(data);
+                    yourShipRouteLayer.draw(data, "active");
                 });
             }
             embryo.vessel.actions.setup("#yourVesselActions", embryo.vessel.actions.yourVessel, vesselOverview, vesselDetails);

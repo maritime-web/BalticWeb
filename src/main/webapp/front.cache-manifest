@@ -1,0 +1,31 @@
+CACHE MANIFEST
+NETWORK:
+*
+CACHE:
+front.html
+css/ext/embryo.bootstrap.min.css
+css/ext/bootstrap-responsive.css
+http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css
+
+css/arcticweb-front.css
+
+http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js
+http://openlayers.org/api/OpenLayers.js
+http://code.jquery.com/ui/1.9.1/jquery-ui.js
+js/ext/bootstrap.min.js
+http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js
+js/arcticweb-front.js
+
+img/front/iceChart.png
+img/front/weather.png
+img/front/safety_h270.jpg
+img/dmi/dmi_eng_h70.png
+img/dma/dma-logo-h50.png
+img/img6.jpg
+img/front/Konsol_h350.jpg
+img/front/ice.jpg
+
+partials/menu.html
+partials/authentication.html
+
+# Version: 1
