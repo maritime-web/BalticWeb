@@ -25,7 +25,10 @@ img/img6.jpg
 img/front/Konsol_h350.jpg
 img/front/ice.jpg
 
+<<<<<<< HEAD
 partials/menu.html
 partials/authentication.html
 
+=======
+>>>>>>> 733c6c0a6bf495d20ae1188d00570425eebd5a05
 # Version: 1
