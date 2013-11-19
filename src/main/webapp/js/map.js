@@ -183,8 +183,8 @@ $(function() {
     
     map.events.includeXY = true;
     
-    map.addControl(hoverControl);
-    hoverControl.activate();
+    /*map.addControl(hoverControl);
+    hoverControl.activate();*/
     
     map.addControl(selectControl);
     selectControl.activate();
