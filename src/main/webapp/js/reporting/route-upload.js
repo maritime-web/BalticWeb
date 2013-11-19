@@ -1,4 +1,5 @@
 /*
+
  * Dependencies:
  * 
  * aisview.js
@@ -18,22 +19,14 @@
     module.config([ '$httpProvider', 'fileUploadProvider', function($httpProvider, fileUploadProvider) {
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
         fileUploadProvider.defaults.redirect = window.location.href.replace(/\/[^\/]*$/, '/cors/result.html?%s');
-        if (false) {
-            // Demo settings:
-            angular.extend(fileUploadProvider.defaults, {
-                // Enable image
-                // resizing, except for
-                // Android and Opera,
-                // which actually
-                // support image
-                // resizing, but fail to
-                // send Blob objects via
-                // XHR requests:
-                disableImageResize : /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
-                maxFileSize : 5000000,
-                acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i
-            });
-        }
+        angular.extend(fileUploadProvider.defaults, {
+            maxFileSize : 1000000,
+            acceptFileTypes : /(\.|\/)(txt|rou|rt3)$/i,
+            messages: {
+                acceptFileTypes: 'File type not allowed. Accepted types are txt, rou and rt3.',
+                maxFileSize: 'File is too large. Size may not exceed 1 MB.',
+            }
+        });
     } ]);
 
     embryo.RouteUploadCtrl = function($scope, VesselService, ScheduleService, RouteService) {
@@ -50,9 +43,11 @@
         embryo.controllers.uploadroute = {
             show : function(context) {
                 embryo.vessel.actions.hide();
-                $scope.mmsi = context.mmsi;
+                $scope.vesselDetails = context.vesselDetails;
+                $scope.mmsi = context.vesselDetails.mmsi;
                 $scope.voyageId = context.voyageId;
                 $scope.reset();
+                initUpload();
                 $("#routeUploadPanel").css("display", "block");
             }
         };
@@ -135,6 +130,10 @@
             $scope.submit();
         };
 
+        $scope.activeVoyage = function() {
+            return $scope.vesselDetails.additionalInformation.routeId == $scope.voyageInfo.routeId;
+        };
+
         $scope.uploaded = function() {
             return $scope.uploadedFile !== null && typeof $scope.uploadedFile === "object";
         };
@@ -148,7 +147,9 @@
             $scope.scheduleName = null;
             $scope.fileExtension = null;
             $scope.cancel();
-            initUpload();
+            // if already uploaded then cleared by setting queue empty
+            $scope.queue = [];
+            
         };
 
         $scope.$on('fileuploadsubmit', function(e, data) {
@@ -164,7 +165,6 @@
                     data.formData.schedule = $scope.scheduleName;
                 }
             }
-
         });
     };
 

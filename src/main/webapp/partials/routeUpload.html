@@ -61,11 +61,11 @@
 							<i class="icon-ban-circle icon-white"></i> <span>Cancel upload</span>
 						</button>
 						<button type="button" class="btn btn-primary start" x-ng-click="submit()"
-							x-ng-disabled="!queue[0] || active() || uploaded() || uploadRouteForm.$invalid">
+							x-ng-disabled="!queue[0] || activeVoyage() || uploaded() || uploadRouteForm.$invalid">
 							<i class="icon-upload icon-white"></i> <span>Upload</span>
 						</button>
 						<button type="button" class="btn btn-primary start" x-ng-click="uploadAndActivate()"
-							x-ng-show="!voyageInfo.active" x-ng-disabled="!queue[0] || active() || uploaded() || uploadRouteForm.$invalid">
+							x-ng-show="!voyageInfo.active" x-ng-disabled="!queue[0] || uploaded() || uploadRouteForm.$invalid">
 							<i class="icon-upload icon-white"></i> <span>Upload and activate</span>
 						</button>
 					</span>

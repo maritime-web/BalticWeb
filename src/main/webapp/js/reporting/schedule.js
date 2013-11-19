@@ -40,6 +40,7 @@
             },
             show : function(vesselOverview, vesselDetails) {
                 $scope.mmsi = vesselDetails.mmsi;
+                $scope.vesselDetails = vesselDetails;
                 $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
                 loadSchedule();
                 $scope.$apply(function() {
@@ -123,7 +124,7 @@
 
         $scope.uploadRoute = function(voyage) {
             embryo.controllers.uploadroute.show({
-                mmsi : $scope.mmsi,
+                vesselDetails : $scope.vesselDetails,
                 voyageId : voyage.maritimeId
             });
         };
