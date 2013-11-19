@@ -158,7 +158,8 @@ public class ScheduleServiceImpl implements ScheduleService {
             route.setEtaOfDeparture(voyage.getDeparture());
         }
 
-        List<Voyage> voyages = voyage.getVessel().getSchedule();
+        List<Voyage> voyages = scheduleRepository.getSchedule(voyage.getVessel().getMmsi());
+        
         int count = 0;
         boolean found = false;
         while (count < voyages.size() && !found) {
