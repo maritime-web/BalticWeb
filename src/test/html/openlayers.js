@@ -1,32 +1,51 @@
-var map, layer;
+var map;
 
 function init() {
-    var map = new OpenLayers.Map( 'map' );
-    var layer = new OpenLayers.Layer.WMS(
-        "OpenLayers WMS",
-        "http://vmap0.tiles.osgeo.org/wms/vmap0",
-        { layers: 'basic' }
+    map = new OpenLayers.Map( 'map' );
+
+    var osm = new OpenLayers.Layer.OSM(
+        "OSM",
+        [ "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+        "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+         "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], {
+            'layers' : 'basic',
+            'isBaseLayer' : true
+        }
     );
-    map.addLayer(layer);
+    map.addLayer(osm);
+    map.setBaseLayer(osm);
 
-    var overlay = new OpenLayers.Layer.Vector("overlay");
+    function createPoint(longitude, latitude) {
+        return new OpenLayers.Geometry.Point(longitude, latitude)
+            .transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+    }
 
-    var points = [
-        new OpenLayers.Geometry.Point(-60, 60),
-        new OpenLayers.Geometry.Point(-30, 60),
-        new OpenLayers.Geometry.Point(-30, 30),
-        new OpenLayers.Geometry.Point(-60, 30)
-    ];
+    function addOverlay(i) {
+        var overlay = new OpenLayers.Layer.Vector("overlay"+i /* , { renderers: [ "Canvas" ]} */ );
 
-    var ring = new OpenLayers.Geometry.LinearRing(points);
+        var points = [
+            createPoint(-60, 60+i*2),
+            createPoint(-30+i*6, 60-3*i),
+            createPoint(-30, 30),
+            createPoint(-60+i*9, 30+i)
+        ];
 
-    var polygon = new OpenLayers.Geometry.Polygon([ ring ]);
+        var ring = new OpenLayers.Geometry.LinearRing(points);
 
-    var feature = new OpenLayers.Feature.Vector(polygon);
+        var polygon = new OpenLayers.Geometry.Polygon([ ring ]);
 
-    overlay.addFeatures([ feature ]);
+        var feature = new OpenLayers.Feature.Vector(polygon);
 
-    map.addLayer(overlay);
+        overlay.addFeatures([ feature ]);
+
+        map.addLayer(overlay);
+    }
+
+    // Virker i fuldskærms chrome
+    // for (var i = 0; i < 13; i++) addOverlay(i);
+
+    // Virker ikke i fuldskærms chrome
+    for (var i = 0; i < 14; i++) addOverlay(i);
 
     map.zoomToMaxExtent();
 

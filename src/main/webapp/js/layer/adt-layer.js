@@ -90,6 +90,8 @@ $(function() {
         }
     });
 
+    /*
+
     for (var i in layers) {
         embryo.map.add({
             group: "adt",
@@ -102,6 +104,8 @@ $(function() {
             control: controls[i]
         });
     }
+
+    */
 
     function toRad(degree) {
         return degree / 360 * 2 * Math.PI;
