@@ -15,11 +15,9 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.embryo.config.LogConfiguration;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
@@ -38,13 +36,14 @@ public class ShapeFileServiceTest {
         ObjectMapper mapper = new ObjectMapper();
         service.logger = LoggerFactory.getLogger(ShapeFileService.class);
         service.localDmiDirectory = "/Users/chvid/sfs/dmi";
-        List<ShapeFileService.Shape> file = service.getMultipleFile("dmi.201310132210_Qaanaaq_RIC", 0, "", true, 4);
+        List<ShapeFileService.Shape> file = service.getMultipleFile("dmi.201311190920_CapeFarewell_RIC", 0, "", true, 4);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gos = new GZIPOutputStream(out);
         String result = mapper.writeValueAsString(file);
         System.out.println("uncompressed size is " + result.getBytes().length);
         gos.write(result.getBytes());
+        gos.close();
         System.out.println("size is " + out.toByteArray().length);
 
     }
