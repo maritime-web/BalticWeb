@@ -21,10 +21,10 @@
         fileUploadProvider.defaults.redirect = window.location.href.replace(/\/[^\/]*$/, '/cors/result.html?%s');
         angular.extend(fileUploadProvider.defaults, {
             maxFileSize : 1000000,
-            acceptFileTypes : /(\.|\/)(txt|rou|rt3)$/i,
-            messages: {
-                acceptFileTypes: 'File type not allowed. Accepted types are txt, rou and rt3.',
-                maxFileSize: 'File is too large. Size may not exceed 1 MB.',
+            acceptFileTypes : /(\.|\/)(txt|rou|rt3|route)$/i,
+            messages : {
+                acceptFileTypes : 'File type not allowed. Accepted types are txt, rou, rt3 and route.',
+                maxFileSize : 'File is too large. Size may not exceed 1 MB.',
             }
         });
     } ]);
@@ -58,43 +58,63 @@
 
         $scope.fileSupport = window.FileReader ? true : false;
 
-        // Choosing a new file will replace the old one
-        $scope
-                .$on(
-                        'fileuploadadd',
-                        function(e, data) {
-                            $scope.queue = [];
+        function getFileExtension(data) {
+            if (data.files.length > 0) {
+                if (data.files[0].name.toLocaleLowerCase().match(/.rt3$/)) {
+                    return "rt3";
+                } else if (data.files[0].name.toLocaleLowerCase().match(/.route$/)) {
+                    return "route";
+                }
+            }
+            return null;
+        }
 
-                            if (data.files.length > 0 && data.files[0].name.toLocaleLowerCase().match(/.rt3$/)) {
-                                $scope.fileExtension = "rt3";
+        function chooseDefaultName() {
+            if ($scope.names.length > 0) {
+                $scope.nameFromFile = $scope.names[$scope.names.length > 1 ? 1 : 0];
+            }
+        }
 
-                                // parse file and populate Transas Route
-                                // Schedule Names if browser supports FileReader
-                                // API
-                                if ($scope.fileSupport) {
-                                    var f = event.target.files[0];
-                                    var reader = new FileReader();
-                                    reader.onload = (function(theFile) {
-                                        return function(e) {
-                                            var xml = jQuery.parseXML(e.target.result);
-                                            var xmlDoc = $(xml);
-                                            $scope
-                                                    .$apply(function() {
-                                                        $scope.transasSchedules = xmlDoc.find(
-                                                                "Calculations Calculation").map(function(index, elem) {
-                                                            return $(elem).attr("CalcName");
-                                                        });
-                                                        if ($scope.transasSchedules.length > 0) {
-                                                            $scope.scheduleName = $scope.transasSchedules[$scope.transasSchedules.length > 1 ? 1
-                                                                    : 0];
-                                                        }
-                                                    });
-                                        };
-                                    })(f);
-                                    reader.readAsText(f);
-                                }
-                            }
+        var parsers = {
+            "rt3" : function(theFile) {
+                return function(e) {
+                    var xml = jQuery.parseXML(e.target.result);
+                    var xmlDoc = $(xml);
+                    $scope.$apply(function() {
+                        $scope.names = xmlDoc.find("Calculations Calculation").map(function(index, elem) {
+                            return $(elem).attr("CalcName");
                         });
+                        chooseDefaultName();
+                    });
+                };
+            },
+            "route" : function(theFile) {
+                return function(e) {
+                    var xml = jQuery.parseXML(e.target.result);
+                    var xmlDoc = $(xml);
+                    $scope.$apply(function() {
+                        $scope.names = xmlDoc.find("Summaries Name").map(function(index, elem) {
+                            return $(elem).text();
+                        });
+                        chooseDefaultName();
+                    });
+                };
+            }
+        }
+
+        // Choosing a new file will replace the old one
+        $scope.$on('fileuploadadd', function(e, data) {
+            $scope.reset();
+            var fileExtension = getFileExtension(data);
+            // parse file if browser supports FileReader API and populate
+            // names dropdown with choices from file
+            if ($scope.fileSupport && parsers[fileExtension]) {
+                var f = event.target.files[0];
+                var reader = new FileReader();
+                reader.onload = (parsers[fileExtension])(f);
+                reader.readAsText(f);
+            }
+        });
 
         $scope.edit = function($event) {
             $event.preventDefault();
@@ -144,12 +164,14 @@
             $scope.message = null;
             $scope.alertMessages = null;
             $scope.activate = false;
-            $scope.scheduleName = null;
-            $scope.fileExtension = null;
+            $scope.nameFromFile = null;
+            $scope.names = null;
             $scope.cancel();
-            // if already uploaded then cleared by setting queue empty
-            $scope.queue = [];
             
+            // if already uploaded then cleared by setting queue empty
+            $scope.num = 0;
+            $scope.queue = [];
+
         };
 
         $scope.$on('fileuploadsubmit', function(e, data) {
@@ -161,8 +183,8 @@
                     active : $scope.activate,
                 };
 
-                if ($scope.fileExtension == "rt3") {
-                    data.formData.schedule = $scope.scheduleName;
+                if ($scope.nameFromFile) {
+                    data.formData.name = $scope.nameFromFile;
                 }
             }
         });

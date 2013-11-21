@@ -92,6 +92,9 @@ public class MailServiceImpl implements MailService {
     }
 
     private void sendEmail(String header, String body) {
+        
+        logger.debug("enabled=" + enabled);
+        
         if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
             logger.info("Email to Arctic Command has been disabled. Would have sent the following:\n" + header + "\n" + body);
             return;

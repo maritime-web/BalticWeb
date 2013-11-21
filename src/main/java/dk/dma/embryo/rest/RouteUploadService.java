@@ -87,9 +87,9 @@ public class RouteUploadService {
                     voyageId = item.getString();
                 } else if ("active".equals(item.getFieldName())) {
                     active = "true".equals(item.getString()) || "TRUE".equals(item.getString());
-                } else if ("schedule".equals(item.getFieldName())) {
-                    context.put("schedule", item.getString());
-                }
+                } else if ("name".equals(item.getFieldName())) {
+                    context.put("name", item.getString());
+                } 
             }
         }
 
