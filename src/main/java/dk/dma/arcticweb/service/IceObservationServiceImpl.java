@@ -15,57 +15,30 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.configuration.Property;
+import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
 import dk.dma.embryo.domain.IceObservation;
+import dk.dma.embryo.domain.ShapeFileMeasurement;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class IceObservationServiceImpl implements IceObservationService {
     @Inject
-    @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
-    private String localDmiDirectory;
+    ShapeFileMeasurementDao shapeFileMeasurementDao;
 
-    private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shp.xml", ".shx");
-
-    private boolean isIceObservationFullyDownloaded(String name) {
-        for (String suffix : requiredFilesInIceObservation) {
-            if (!new File(localDmiDirectory + "/" + name + suffix).exists()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private Set<String> downloadedIceObservations() {
-        Set<String> result = new HashSet<>();
-        File[] files = new File(localDmiDirectory).listFiles();
-        if (files != null) {
-            for (File f : files) {
-                String name = f.getName().substring(0, f.getName().indexOf("."));
-                if (isIceObservationFullyDownloaded(name)) {
-                    result.add(name);
-                }
-            }
-        }
-        return result;
-    }
+    private String prefix = "dmi.";
 
     public List<IceObservation> listAvailableIceObservations() {
         List<IceObservation> iceObservations = new ArrayList<>();
 
         try {
-            for (String name : downloadedIceObservations()) {
-                Date date = new SimpleDateFormat("yyyyMMddHHmm").parse(name.substring(0, 12));
-                String region = name.substring(13);
+            for (ShapeFileMeasurement sfm : shapeFileMeasurementDao.list(prefix)) {
+                Date date = new SimpleDateFormat("yyyyMMddHHmm").parse(sfm.getFileName().substring(0, 12));
+                String region = sfm.getFileName().substring(13);
 
                 switch (region) {
                     case "CapeFarewell_RIC":
@@ -94,10 +67,8 @@ public class IceObservationServiceImpl implements IceObservationService {
                         break;
                 }
 
-                long size = new File(localDmiDirectory + "/" + name + ".shp").length();
-
                 if ((System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) && (!region.equals("Greenland WA"))) {
-                    iceObservations.add(new IceObservation("DMI", region, date, size, "dmi." + name));
+                    iceObservations.add(new IceObservation("DMI", region, date, sfm.getFileSize(), prefix + sfm.getFileName()));
                 }
             }
         } catch (ParseException e) {
