@@ -20,10 +20,6 @@ body {
     }
 }
 
-.navbar {
-	font-size: 14px;
-}
-
 #messagePanel {
     z-index: 1039;
 	position: absolute;
