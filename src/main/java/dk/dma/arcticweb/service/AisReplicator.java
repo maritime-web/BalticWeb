@@ -31,8 +31,6 @@ import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +67,9 @@ public class AisReplicator {
     @Inject
     private Logger logger;
 
+    @Inject
+    private EmbryoLogService embryoLogService;
+
     public AisReplicator() {
     }
 
@@ -89,61 +90,67 @@ public class AisReplicator {
      */
     @Timeout
     void updateAis() {
-        logger.debug("UPDATE AIS VESSEL DATA");
+        try {
+            logger.debug("UPDATE AIS VESSEL DATA");
 
-        VesselListResult result = aisView.vesselList(0);
+            VesselListResult result = aisView.vesselList(0);
 
-        List<Vessel> awVesselsAsList = vesselService.getAll();
+            List<Vessel> awVesselsAsList = vesselService.getAll();
 
-        logger.debug("aisView returns " + result.getVesselList().getVessels().size() + " items - " +
-                "repository returns " + awVesselsAsList.size() + " items.");
+            logger.debug("aisView returns " + result.getVesselList().getVessels().size() + " items - " +
+                    "repository returns " + awVesselsAsList.size() + " items.");
 
-        Map<Long, Vessel> awVesselsAsMap = new HashMap<>();
+            Map<Long, Vessel> awVesselsAsMap = new HashMap<>();
 
-        for (Vessel v : awVesselsAsList) {
-            awVesselsAsMap.put(v.getMmsi(), v);
-        }
+            for (Vessel v : awVesselsAsList) {
+                awVesselsAsMap.put(v.getMmsi(), v);
+            }
 
-        for (Entry<String, String[]> aisVessel : result.getVesselList().getVessels().entrySet()) {
-            Long mmsi = asLong(aisVessel.getValue()[6]);
-            String name = asString(aisVessel.getValue()[7]);
-            String callSign = asString(aisVessel.getValue()[8]);
-            Long imo = asLong(aisVessel.getValue()[9]);
+            for (Entry<String, String[]> aisVessel : result.getVesselList().getVessels().entrySet()) {
+                Long mmsi = asLong(aisVessel.getValue()[6]);
+                String name = asString(aisVessel.getValue()[7]);
+                String callSign = asString(aisVessel.getValue()[8]);
+                Long imo = asLong(aisVessel.getValue()[9]);
 
-            if (mmsi != null) {
-                Vessel vessel = awVesselsAsMap.get(mmsi);
+                if (mmsi != null) {
+                    Vessel vessel = awVesselsAsMap.get(mmsi);
 
-                if (vessel != null && name != null && callSign != null) {
-                    if (!isUpToDate(vessel.getAisData(), name, callSign, imo)) {
-                        vessel.getAisData().setCallsign(callSign);
-                        vessel.getAisData().setImoNo(imo);
-                        vessel.getAisData().setName(name);
-                        logger.debug("Updating vessel {}/{}", mmsi, name);
-                        vesselService.save(vessel);
-                    } else {
-                        logger.debug("Vessel {}/{} is up to date", mmsi, name);
+                    if (vessel != null && name != null && callSign != null) {
+                        if (!isUpToDate(vessel.getAisData(), name, callSign, imo)) {
+                            vessel.getAisData().setCallsign(callSign);
+                            vessel.getAisData().setImoNo(imo);
+                            vessel.getAisData().setName(name);
+                            logger.debug("Updating vessel {}/{}", mmsi, name);
+                            vesselService.save(vessel);
+                        } else {
+                            logger.debug("Vessel {}/{} is up to date", mmsi, name);
+                        }
                     }
                 }
             }
-        }
 
-        List<String[]> vesselsInAisCircle = new ArrayList<>();
+            List<String[]> vesselsInAisCircle = new ArrayList<>();
 
-        for (String[] aisVessel : result.getVesselList().getVessels().values()) {
-            double x = Double.parseDouble(aisVessel[2]);
-            double y = Double.parseDouble(aisVessel[1]);
+            for (String[] aisVessel : result.getVesselList().getVessels().values()) {
+                double x = Double.parseDouble(aisVessel[2]);
+                double y = Double.parseDouble(aisVessel[1]);
 
-            Long mmsi = asLong(aisVessel[6]);
+                Long mmsi = asLong(aisVessel[6]);
 
-            if (aisDataService.isWithinAisCircle(x, y) ||
-                    awVesselsAsMap.containsKey(mmsi)) {
-                vesselsInAisCircle.add(aisVessel);
+                if (aisDataService.isWithinAisCircle(x, y) ||
+                        awVesselsAsMap.containsKey(mmsi)) {
+                    vesselsInAisCircle.add(aisVessel);
+                }
             }
+
+            logger.debug("Vessels in AIS circle: " + vesselsInAisCircle.size());
+
+            aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
+
+            embryoLogService.info("AIS data replicated. Vessel count: " + vesselsInAisCircle.size());
+        } catch (Throwable t) {
+            embryoLogService.error("" + t, t);
         }
-
-        logger.debug("Vessels in AIS circle: " + vesselsInAisCircle.size());
-
-        aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
     }
 
     private boolean isUpToDate(dk.dma.embryo.domain.AisData aisData, String name, String callSign, Long imo) {

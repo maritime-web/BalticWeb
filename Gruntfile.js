@@ -102,7 +102,7 @@ module.exports = function(grunt) {
         // }
         // },
         useminPrepare : {
-            html : [ '<%= proj.src %>/front.html', '<%= proj.src %>/map.html', '<%= proj.src %>/report.html' ],
+            html : [ '<%= proj.src %>/front.html', '<%= proj.src %>/map.html', '<%= proj.src %>/log.html', '<%= proj.src %>/administration.html' ],
             options : {
                 dest : '<%= proj.build %>'
             // flow : {

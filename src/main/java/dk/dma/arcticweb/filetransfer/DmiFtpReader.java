@@ -15,6 +15,7 @@
  */
 package dk.dma.arcticweb.filetransfer;
 
+import dk.dma.arcticweb.service.EmbryoLogService;
 import dk.dma.configuration.Property;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -77,6 +78,9 @@ public class DmiFtpReader {
     @Resource
     private TimerService timerService;
 
+    @Inject
+    private EmbryoLogService embryoLogService;
+
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shp.xml", ".shx");
 
     @PostConstruct
@@ -97,9 +101,11 @@ public class DmiFtpReader {
                 new File(localDmiDirectory).mkdirs();
             }
             logger.info("Calling transfer files ...");
-            transferFiles();
+            int count = transferFiles();
+            embryoLogService.info("Scanned DMI (" + dmiServer + ") for new files. Files transferred: " + count);
         } catch (Throwable t) {
-            logger.error("Unhandled error transfering files from dmi: " + t, t);
+            logger.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
+            embryoLogService.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
         }
     }
 
@@ -128,7 +134,9 @@ public class DmiFtpReader {
         return result;
     }
 
-    public void transferFiles() throws IOException, InterruptedException {
+    public int transferFiles() throws IOException, InterruptedException {
+        int count = 0;
+
         FTPClient ftp = new FTPClient();
         logger.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
 
@@ -169,7 +177,9 @@ public class DmiFtpReader {
                 for (String fn : filesInSubdirectory) {
                     for (String prefix : requiredFilesInIceObservation) {
                         if (fn.endsWith(prefix)) {
-                            transferFile(ftp, fn);
+                            if (transferFile(ftp, fn)) {
+                                count++;
+                            }
                         }
                     }
                 }
@@ -180,14 +190,16 @@ public class DmiFtpReader {
         } finally {
             ftp.logout();
         }
+
+        return count;
     }
 
-    private void transferFile(FTPClient ftp, String name) throws IOException, InterruptedException {
+    private boolean transferFile(FTPClient ftp, String name) throws IOException, InterruptedException {
         String localName = localDmiDirectory + "/" + name;
 
         if (new File(localName).exists()) {
             logger.info("Not transfering " + name + " since the file already exists in " + localName);
-            return;
+            return false;
         }
 
         String fn = System.getProperty("java.io.tmpdir") + "/test" + Math.random();
@@ -207,5 +219,7 @@ public class DmiFtpReader {
 
         logger.info("Moving " + fn + " to " + localName);
         new File(fn).renameTo(new File(localName));
+
+        return true;
     }
 }
