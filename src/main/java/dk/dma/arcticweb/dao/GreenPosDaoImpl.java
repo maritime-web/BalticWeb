@@ -15,25 +15,20 @@
  */
 package dk.dma.arcticweb.dao;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenposMinimal;
+import dk.dma.embryo.domain.GreenposSearch;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.domain.GreenposMinimal;
-import dk.dma.embryo.domain.GreenposSearch;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Stateless
 public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
@@ -56,46 +51,48 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
 
         return getSingleOrNull(result);
     }
-    
+
     @Override
     public List<GreenposMinimal> getLatest() {
-        Query query = em.createNativeQuery("select vesselName, vesselMmsi, DTYPE, max(ts) from GreenposReport WHERE SUBDATE(DATE(NOW()),7) <= DATE(ts) Group By vesselName");
+        Query query = em.createNativeQuery("SELECT vesselName, vesselMmsi, DTYPE, max(ts) FROM GreenPosReport WHERE :date <= DATE(ts) GROUP BY vesselName");
 
-        List<Object[]> list = (List<Object[]>)query.getResultList();
+        query.setParameter("date", new Date(System.currentTimeMillis() - 7 * 24 * 3600 * 1000L), TemporalType.TIMESTAMP);
+
+        List<Object[]> list = (List<Object[]>) query.getResultList();
         List<GreenposMinimal> result = new ArrayList<>(list.size());
-        for(Object[] greenpos : list){
-            result.add(new GreenposMinimal((String)greenpos[0], Long.parseLong(greenpos[1].toString()), (String)greenpos[2], (Date)greenpos[3]));
+        for (Object[] greenpos : list) {
+            result.add(new GreenposMinimal((String) greenpos[0], Long.parseLong(greenpos[1].toString()), (String) greenpos[2], (Date) greenpos[3]));
         }
 
         return result;
     }
-    
+
     @Override
     public List<GreenPosReport> find(GreenposSearch search) {
-        CriteriaBuilder builder = em.getCriteriaBuilder(); 
+        CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<GreenPosReport> criteriaQuery = builder.createQuery(GreenPosReport.class);
         Root<GreenPosReport> root = criteriaQuery.from(GreenPosReport.class);
         criteriaQuery.select(root);
 
         List<Predicate> criterias = new LinkedList<>();
-        
-        if(search.getVesselMmsi() != null){
+
+        if (search.getVesselMmsi() != null) {
             criterias.add(builder.equal(root.get("vesselMmsi"), search.getVesselMmsi()));
         }
 
         Predicate[] criteriaArr = new Predicate[criterias.size()];
         criteriaArr = criterias.toArray(criteriaArr);
-        
+
         criteriaQuery.where(criteriaArr);
-        
+
         Expression<String> field = root.get(search.getSortByField());
         Order order = "ASC".equals(search.getSortOrder()) ? builder.asc(field) : builder.desc(field);
         criteriaQuery.orderBy(order);
-        
+
         TypedQuery<GreenPosReport> reports = em.createQuery(criteriaQuery);
         reports.setFirstResult(search.getFirst());
         reports.setMaxResults(search.getNumberOfReports());
-        
+
         return reports.getResultList();
     }
 
@@ -110,5 +107,5 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
         return getSingleOrNull(result);
     }
 
-    
+
 }
