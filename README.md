@@ -3,30 +3,6 @@ Embryo
 
 A tool for ships sailing in the Arctic region around Greenland. ArcticWeb serves as a single access point to safety related information, provides streamlined reporting and allows for voluntary coordinated voyage through sharing of positions and planned routes.
 
-## Prerequisites ##
-
-* Java JDK 1.7
-* Maven 3.x
-* JBoss 7.1.1 (Maven setup to deploy to JBoss)
-* MySQL (Maven configures JBoss datasource to use MySQL)
-* Node.js (Follow the installation instructions at http://nodejs.org)
-* Grunt.js (Follow the installation instructions at http://gruntjs.com)
-
-
-## Demo test server ##
-
-More stable releases are demoed from this test server:
-
-http://test.e-navigation.net/arcticweb (requires credentials only available to development team)
-
-
-## CI Test Server - Latest and Greatest ##
-
-The CI server continuously deployes the latest and greatest to a separate test server: 
-
-http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only available to development team)
-
-
 ## Software Architecture
 
 ArcticWeb is rich client HTML/JS-application with a server side JSON webservice API. The server is a J2EE 6 application.
@@ -54,6 +30,32 @@ Server side technologies:
 * Mockito (for mocking test-cases)
 
 
+## Prerequisites ##
+
+* Java JDK 1.7
+* Maven 3.x
+* JBoss 7.1.1 (Maven setup to deploy to JBoss)
+* MySQL (Maven configures JBoss datasource to use MySQL)
+* Node.js (Follow the installation instructions at http://nodejs.org)
+* Grunt.js (Follow the installation instructions at http://gruntjs.com)
+
+
+## Initial setup
+
+As root in MySQL - create a database and a user for ArcticWeb:
+
+    create database embryo;
+    create user 'embryo'@'localhost' identified by 'embryo';
+
+ArcticWeb has a default configuration file which may be overridden by setting the system property "arcticweb.configuration" to the URI of an external configuration file. For example put the following in your JBOSS standalone.xml-file:
+
+    <system-properties>
+        <property name="arcticweb.configuration" value="file:///Users/chvid/sfs/arcticweb.properties"/>
+    </system-properties>
+
+In particular the file may contain URLs and passwords for the DMI Ice map server.
+
+
 ## Eclipse setup ##
 
 Use standard Eclipse project:
@@ -69,13 +71,6 @@ Use Eclipse Maven integration:
 ## Building ##
 
     mvn clean install (install will also provoke a deploy to local JBoss 7.1.1)
-
-
-## MySQL setup
-
-As root:
-
-    create database embryo;
 
 
 ## Checkstyle
@@ -125,3 +120,19 @@ The installation of karma and usage of the maven-karma-plugin is described here 
 Ways to avoid annoying JavaScript Validation Errors in Eclipse:
 
 http://stackoverflow.com/questions/7102299/eclipse-javascript-validation-disabled-but-still-generating-errors
+
+
+## Demo test server ##
+
+More stable releases are demoed from this test server:
+
+http://test.e-navigation.net/arcticweb (requires credentials only available to development team)
+
+
+## CI Test Server - Latest and Greatest ##
+
+The CI server continuously deployes the latest and greatest to a separate test server:
+
+http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only available to development team)
+
+
