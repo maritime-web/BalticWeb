@@ -15,7 +15,7 @@ A tool for ships sailing in the Arctic region around Greenland. ArcticWeb serves
 
 ## Demo test server ##
 
-More stable releases are demoed from this test server
+More stable releases are demoed from this test server:
 
 http://test.e-navigation.net/arcticweb (requires credentials only available to development team)
 
@@ -56,12 +56,12 @@ Server side technologies:
 
 ## Eclipse setup ##
 
-Use standard Eclipse project;
+Use standard Eclipse project:
 
 * Go to command line and execute: mvn eclipse:eclipse
 * Choose File > Import and then General > Existing Projects into Worksapce
 	
-Use Eclipse Maven integration
+Use Eclipse Maven integration:
 
 * Choose File > Import and then Maven > Existing Maven Projects
 
