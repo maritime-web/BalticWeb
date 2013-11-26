@@ -1,7 +1,7 @@
 Embryo
 =========
 
-An effort from Danish Maritime Authority to improve maritime safety in the Arctic region. ArcticWeb serves as a single access point to safety related information, provides streamlined reporting and allows for voluntary coordinated voyage through sharing of positions and planned routes.
+A tool for ships sailing in the Arctic region around Greenland. ArcticWeb serves as a single access point to safety related information, provides streamlined reporting and allows for voluntary coordinated voyage through sharing of positions and planned routes.
 
 ## Prerequisites ##
 
@@ -15,7 +15,7 @@ An effort from Danish Maritime Authority to improve maritime safety in the Arcti
 
 ## Demo test server ##
 
-More stable releases is demoed from this test server
+More stable releases are demoed from this test server
 
 http://test.e-navigation.net/arcticweb (requires credentials only available to development team)
 
@@ -32,34 +32,38 @@ http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only avail
 ArcticWeb is rich client HTML/JS-application with a server side JSON webservice API. The server is a J2EE 6 application.
 
 On the client side we use:
-    * JavaScript/HTML
-    * Grunt (for building)
-    * OpenLayers (for maps)
-    * JQuery (for DOM-manipulation and calling webservices)
-    * Twitter Bootstrap (for basic layout)
-    * AngularJS (for forms and similar)
-    * HTML5 Application Cache
+
+* JavaScript/HTML
+* Grunt (for building)
+* OpenLayers (for maps)
+* JQuery (for DOM-manipulation and calling webservices)
+* Twitter Bootstrap (for basic layout)
+* AngularJS (for forms and similar)
+* HTML5 Application Cache
 
 Server side technologies:
-    * Java 7
-    * Maven (for building)
-    * EJB3/Hibernate (for persistance)
-    * CDI/JSR330 (for dependency injection)
-    * Resteasy (for JSON-webservices)
-    * Shiro (for security)
-    * Apache CXF (for SOAP-webservices)
-    * JUnit (for unit-test)
-    * Mockito (for mocking test-cases)
+
+* Java 7
+* Maven (for building)
+* EJB3/Hibernate (for persistance)
+* CDI/JSR330 (for dependency injection)
+* Resteasy (for JSON-webservices)
+* Shiro (for security)
+* Apache CXF (for SOAP-webservices)
+* JUnit (for unit-test)
+* Mockito (for mocking test-cases)
 
 
 ## Eclipse setup ##
 
 Use standard Eclipse project;
-    * Go to command line and execute: mvn eclipse:eclipse 
-	* Choose File > Import and then General > Existing Projects into Worksapce
+
+* Go to command line and execute: mvn eclipse:eclipse
+* Choose File > Import and then General > Existing Projects into Worksapce
 	
 Use Eclipse Maven integration
-	* Choose File > Import and then Maven > Existing Maven Projects
+
+* Choose File > Import and then Maven > Existing Maven Projects
 
 
 ## Building ##
@@ -82,22 +86,28 @@ See https://github.com/dma-dk/dma-developers
 ## JSLint
 
 Execute the following Maven command to lint your JavaScript files:
+
     mvn jslint4java:lint
 
 
 ## JavaScript Unit Test
 
 JavaScript may be tested using Node.js, NPM and Karma. Follow this blog (http://jespertejlgaard.blogspot.dk/2013/08/installing-nodejs-npm-and-karma-on.html) to install Node.js, NPM and Karma (at least on Linux) and install the plugins:
+
     sudo npm install -g karma-junit-reporter
     sudo npm install -g karma-phantomjs-launcher
 
 Execution of unit tests are performed on the developer machines by a Karma server, which will discover changes in the project JavaScript files and execute all JS unit tests. The Karma server is started by executing: 
+
     scripts/test.sh (unit tests on linux/MaC)
     scripts\test.bat (unit tests on Windows)
 
 Test execution is performed on the continuous integration server using the maven-karma-plugin. The plugin can be executed on any machine with Node.js and karma installed by executing the command 
-    mvn 'karma:start' 
-or as part of the build 
+
+    mvn 'karma:start'
+
+or as part of the build:
+
     'mvn -Pkarma install'
 
 The installation of karma and usage of the maven-karma-plugin is described here 'TO BE INSERTED'.
