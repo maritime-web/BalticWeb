@@ -32,6 +32,7 @@ import dk.dma.embryo.rest.RouteRestService;
 import dk.dma.embryo.rest.RouteUploadService;
 import dk.dma.embryo.rest.ScheduleRestService;
 import dk.dma.embryo.rest.ShapeFileService;
+import dk.dma.embryo.rest.UserRestService;
 import dk.dma.embryo.rest.VesselRestService;
 
 @ApplicationPath("/rest")
@@ -41,6 +42,6 @@ public class ApplicationConfig extends Application {
                 ShapeFileService.class, GreenPosRestService.class,
                 BerthRestService.class, AuthenticationService.class, TestDataRestService.class,
                 IceObservationRestService.class, MsiRestService.class, MetocRestService.class, VesselRestService.class,
-                ScheduleRestService.class, LogEntryRestService.class));
+                ScheduleRestService.class, LogEntryRestService.class, UserRestService.class));
     }
 }

@@ -56,20 +56,11 @@
                     </tr>
                 </thead>
                 <tbody id="activeUsersTable">
-                    <tr>
-                        <td>orasila</td>
-                        <td>2002349238</td>
-                        <td>Sailor</td>
-                        <td>
-                            <a href="#editUserDialog" data-toggle="modal">edit</a> -
-                            <a href="#deleteUserDialog" data-toggle="modal">delete</a>
-                        </td>
-                    </tr>
                 </tbody>
 
             </table>
 
-            <a href="#createNewUserDialog" role="button" class="btn" data-toggle="modal">Create New User</a>
+            <a href="#" role="button" class="btn" id="createNewUserDialogButton">Create New User</a>
 
         </div>
     </div>
@@ -120,68 +111,7 @@
                         <select id="cRole">
                             <option value="Sailor">Sailor</option>
                             <option value="Shore">Shore</option>
-                            <option value="greenposAuthority">Greenpos Authority</option>
-                            <option value="Administrator">Administrator</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <div class="controls">
-                        <button class="btn btn-primary">OK</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="editUserDialog" class="modal hide" tabindex="-1" role="dialog">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">x</button>
-            <h2>Edit User</h2>
-        </div>
-        <div class="modal-body">
-            <form class="form-horizontal">
-                <div class="control-group">
-                    <label class="control-label" for="eLogin">Login:</label>
-
-                    <div class="controls">
-                        <input type="text" id="eLogin" class="input-medium">
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" for="ePassword">Password:</label>
-
-                    <div class="controls">
-                        <input type="password" id="ePassword" class="input-small">
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" for="ePasswordAgain">Password Again:</label>
-
-                    <div class="controls">
-                        <input type="password" id="ePasswordAgain" class="input-small">
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" for="eShipMmsi">Ship (MMSI - may be left blank):</label>
-
-                    <div class="controls">
-                        <input type="text" id="eShipMmsi" class="input-medium">
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" for="eRole">Role:</label>
-
-                    <div class="controls">
-                        <select id="eRole">
-                            <option value="Sailor">Sailor</option>
-                            <option value="Shore">Shore</option>
-                            <option value="greenposAuthority">Greenpos Authority</option>
+                            <option value="Greenpos Authority">Greenpos Authority</option>
                             <option value="Administrator">Administrator</option>
                         </select>
                     </div>
