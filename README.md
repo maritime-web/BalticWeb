@@ -64,8 +64,7 @@ In particular the file may contain URLs and passwords for the DMI Ice map server
 
 ## Deploy to JBoss
 
-* mvn clean install - Install database drivers environmental variables and deploy application (used for first deploy)
-* mvn jboss-as:deploy - App deploy only 
+* mvn clean jboss-as:deploy - Clean, build, install database drivers environmental variables and deploy application (used for first deploy)
 * mvn antrun:run - deploy js, css and html to temporary deploy folder on JBoss (fast deploy of web resources - web session not destroyed)
 
 A local deployment will setup ArcticWeb at the following URL:
@@ -75,6 +74,8 @@ http://localhost:8080/arcticweb/
 Use the following URL to setup test users and data:
 
 http://localhost:8080/arcticweb/testdata.html
+
+Login with e.g. orasila/qwerty
 
 
 ## Checkstyle
