@@ -46,7 +46,7 @@ As root in MySQL - create a database and a user for ArcticWeb:
 
     create database embryo;
     create user 'embryo'@'localhost' identified by 'embryo';
-    grant all on embryo.* TO 'embryo'@'localhost';
+    grant all on embryo.* to 'embryo'@'localhost';
 
 ArcticWeb has a default configuration file which may be overridden by setting the system property "arcticweb.configuration" to the URI of an external configuration file. For example put the following in your JBOSS standalone.xml-file:
 
