@@ -21,6 +21,7 @@
     <script src="js/utils.js" defer="defer" type="text/javascript"></script>
     <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
     <script src="js/menu.js" defer="defer" type="text/javascript"></script>
+    <script src="js/administration.js" defer="defer" type="text/javascript"></script>
     <!-- endbuild -->
 
     <script type="text/javascript" defer="defer">
@@ -43,21 +44,29 @@
 
             <h2>Active Users</h2>
 
+            <div class="alert alert-info" id="feedback"></div>
+
             <table class="table">
-                <tr>
-                    <th>Login</th>
-                    <th>Ship (MMSI)</th>
-                    <th>Role</th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <td>orasila</td>
-                    <td>2002349238</td>
-                    <td>Sailor</td>
-                    <td><a href="#createNewUserDialog" data-toggle="modal">edit</a> - <a href="#deleteUserDialog"
-                                                                                         data-toggle="modal">delete</a>
-                    </td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Login</th>
+                        <th>Ship (MMSI)</th>
+                        <th>Role</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="activeUsersTable">
+                    <tr>
+                        <td>orasila</td>
+                        <td>2002349238</td>
+                        <td>Sailor</td>
+                        <td>
+                            <a href="#editUserDialog" data-toggle="modal">edit</a> -
+                            <a href="#deleteUserDialog" data-toggle="modal">delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+
             </table>
 
             <a href="#createNewUserDialog" role="button" class="btn" data-toggle="modal">Create New User</a>
@@ -73,45 +82,107 @@
         <div class="modal-body">
             <form class="form-horizontal">
                 <div class="control-group">
-                    <label class="control-label" for="login">Login:</label>
+                    <label class="control-label" for="cLogin">Login:</label>
 
                     <div class="controls">
-                        <input type="text" id="login" class="input-medium">
+                        <input type="text" id="cLogin" class="input-medium">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="password">Password:</label>
+                    <label class="control-label" for="cPassword">Password:</label>
 
                     <div class="controls">
-                        <input type="text" id="password" class="input-small">
+                        <input type="password" id="cPassword" class="input-small">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="passwordAgain">Password Again:</label>
+                    <label class="control-label" for="cPasswordAgain">Password Again:</label>
 
                     <div class="controls">
-                        <input type="text" id="passwordAgain" class="input-small">
+                        <input type="password" id="cPasswordAgain" class="input-small">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="shipMmsi">Ship (MMSI - may be left blank):</label>
+                    <label class="control-label" for="cShipMmsi">Ship (MMSI - may be left blank):</label>
 
                     <div class="controls">
-                        <input type="text" id="shipMmsi" class="input-medium">
+                        <input type="text" id="cShipMmsi" class="input-medium">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="role">Role:</label>
+                    <label class="control-label" for="cRole">Role:</label>
 
                     <div class="controls">
-                        <select id="role">
-                            <option>Sailor</option>
-                            <option>AuthorityRole</option>
-                            <option>Shore</option>
+                        <select id="cRole">
+                            <option value="Sailor">Sailor</option>
+                            <option value="Shore">Shore</option>
+                            <option value="greenposAuthority">Greenpos Authority</option>
+                            <option value="Administrator">Administrator</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="controls">
+                        <button class="btn btn-primary">OK</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editUserDialog" class="modal hide" tabindex="-1" role="dialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h2>Edit User</h2>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="eLogin">Login:</label>
+
+                    <div class="controls">
+                        <input type="text" id="eLogin" class="input-medium">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="ePassword">Password:</label>
+
+                    <div class="controls">
+                        <input type="password" id="ePassword" class="input-small">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="ePasswordAgain">Password Again:</label>
+
+                    <div class="controls">
+                        <input type="password" id="ePasswordAgain" class="input-small">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="eShipMmsi">Ship (MMSI - may be left blank):</label>
+
+                    <div class="controls">
+                        <input type="text" id="eShipMmsi" class="input-medium">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="eRole">Role:</label>
+
+                    <div class="controls">
+                        <select id="eRole">
+                            <option value="Sailor">Sailor</option>
+                            <option value="Shore">Shore</option>
+                            <option value="greenposAuthority">Greenpos Authority</option>
+                            <option value="Administrator">Administrator</option>
                         </select>
                     </div>
                 </div>
