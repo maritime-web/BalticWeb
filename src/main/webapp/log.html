@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="embryo.administration.log">
+
+<head>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
+
+    <!-- build:css css/arcticweb-log.css -->
+    <link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
+    <link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- endbuild -->
+
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="js/ext/bootstrap.min.js"></script>
+    <script src="js/ext/ui-bootstrap-tpls-0.6.0.js"></script>
+
+    <!-- build:js js/arcticweb-log.js -->
+    <script src="js/embryo.js" defer="defer" type="text/javascript"></script>
+    <script src="js/utils.js" defer="defer" type="text/javascript"></script>
+    <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
+    <script src="js/menu.js" defer="defer" type="text/javascript"></script>
+    <script src="js/log.js" defer="defer" type="text/javascript"></script>
+    <!-- endbuild -->
+
+    <script type="text/javascript" defer="defer">
+        angular.module('embryo.administration.log', [ ]);
+    </script>
+</head>
+
+<body>
+
+<div x-ng-include="'partials/authentication.html'"></div>
+<div x-ng-include="'partials/menu.html'"></div>
+
+<div class="menuDivider"></div>
+
+<div class="container" style="padding-top: 50px;">
+
+    <div class="row">
+        <div class="span9">
+            <h1>ArcticWeb - Logger</h1>
+
+            <table class="table" id="latestLogEntries">
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>

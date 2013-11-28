@@ -21,7 +21,7 @@ import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
 
-public class LogEntryServiceImpl extends DaoImpl implements LogEntryService {
+public class LogEntryDaoImpl extends DaoImpl implements LogEntryDao {
     public void save(LogEntry entry) {
         saveEntity(entry);
     }

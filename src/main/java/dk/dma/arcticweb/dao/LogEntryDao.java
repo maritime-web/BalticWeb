@@ -19,7 +19,7 @@ import dk.dma.embryo.domain.LogEntry;
 
 import java.util.List;
 
-public interface LogEntryService {
+public interface LogEntryDao {
     void save(LogEntry entry);
 
     List<LogEntry> list();
