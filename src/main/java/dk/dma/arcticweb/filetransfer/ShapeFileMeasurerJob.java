@@ -41,11 +41,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
 @Singleton
 @Startup
 public class ShapeFileMeasurerJob {
+    private static long TRANSACTION_LENGTH = 60 * 1000L * 7;
+
     private final Logger logger = LoggerFactory.getLogger(ShapeFileMeasurerJob.class);
 
     @Inject
@@ -110,6 +113,8 @@ public class ShapeFileMeasurerJob {
         try {
             int count = 0;
 
+            long start = System.currentTimeMillis();
+
             logger.info("Measuring files ...");
 
             List<ShapeFileMeasurement> measurements = new ArrayList<>();
@@ -117,19 +122,21 @@ public class ShapeFileMeasurerJob {
             for (String fn : downloadedIceObservations()) {
                 ShapeFileMeasurement lookup = shapeFileMeasurementDao.lookup(fn, prefix);
                 if (lookup == null) {
-                    logger.info("Measuring file: " + fn);
+                    if (System.currentTimeMillis() - start < TRANSACTION_LENGTH) {
+                        logger.info("Measuring file: " + fn);
 
-                    ShapeFileMeasurement sfm = new ShapeFileMeasurement();
+                        ShapeFileMeasurement sfm = new ShapeFileMeasurement();
 
-                    sfm.setFileName(fn);
-                    sfm.setFileSize(measureFile(fn));
-                    sfm.setPrefix(prefix);
+                        sfm.setFileName(fn);
+                        sfm.setFileSize(measureFile(fn));
+                        sfm.setPrefix(prefix);
 
-                    logger.info("File size: " + sfm.getFileSize());
+                        logger.info("File size: " + sfm.getFileSize());
 
-                    measurements.add(sfm);
+                        measurements.add(sfm);
 
-                    count++;
+                        count++;
+                    }
                 } else {
                     ShapeFileMeasurement sfm = new ShapeFileMeasurement();
 
