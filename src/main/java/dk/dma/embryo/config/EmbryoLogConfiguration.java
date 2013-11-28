@@ -15,7 +15,7 @@
  */
 package dk.dma.embryo.config;
 
-import dk.dma.arcticweb.dao.LogEntryService;
+import dk.dma.arcticweb.dao.LogEntryDao;
 import dk.dma.arcticweb.service.EmbryoLogService;
 import dk.dma.arcticweb.service.EmbryoLogServiceImpl;
 
@@ -25,10 +25,10 @@ import javax.inject.Inject;
 
 public class EmbryoLogConfiguration {
     @Inject
-    LogEntryService logEntryService;
+    LogEntryDao logEntryDao;
 
     @Produces
     public EmbryoLogService getLogger(InjectionPoint injectionPoint) {
-        return new EmbryoLogServiceImpl(logEntryService, injectionPoint.getMember().getDeclaringClass());
+        return new EmbryoLogServiceImpl(logEntryDao, injectionPoint.getMember().getDeclaringClass());
     }
 }

@@ -49,8 +49,7 @@ public class MailServiceImpl implements MailService {
     private Logger logger;
 
     @Inject
-    @Property("embryo.metoc.minDistance")
-    private Integer minimumMetocDistance;
+    private EmbryoLogService embryoLogService;
 
     @Inject
     @Property("embryo.notification.mail.to.greenpos")
@@ -92,9 +91,9 @@ public class MailServiceImpl implements MailService {
     }
 
     private void sendEmail(String header, String body) {
-        
+
         logger.debug("enabled=" + enabled);
-        
+
         if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
             logger.info("Email to Arctic Command has been disabled. Would have sent the following:\n" + header + "\n" + body);
             return;
@@ -162,43 +161,53 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void newGreenposReport(GreenPosReport report) {
-        Map<String, String> environment = new HashMap<>();
+        try {
+            Map<String, String> environment = new HashMap<>();
 
-        environment.put("VesselName", report.getVesselName());
-        environment.put("VesselMmsi", "" + report.getVesselMmsi());
-        environment.put("VesselCallSign", report.getVesselCallSign());
-        environment.put("Latitude", report.getPosition().getLatitudeAsString());
-        environment.put("Longitude", report.getPosition().getLongitudeAsString());
+            environment.put("VesselName", report.getVesselName());
+            environment.put("VesselMmsi", "" + report.getVesselMmsi());
+            environment.put("VesselCallSign", report.getVesselCallSign());
+            environment.put("Latitude", report.getPosition().getLatitudeAsString());
+            environment.put("Longitude", report.getPosition().getLongitudeAsString());
 
-        String templateName = "greenposReport";
+            String templateName = "greenposReport";
 
-        if (report instanceof GreenPosDMIReport) {
-            environment.put("IceInformation", ((GreenPosDMIReport) report).getIceInformation());
-            environment.put("Weather", ((GreenPosDMIReport) report).getWeather());
+            if (report instanceof GreenPosDMIReport) {
+                environment.put("IceInformation", ((GreenPosDMIReport) report).getIceInformation());
+                environment.put("Weather", ((GreenPosDMIReport) report).getWeather());
+            }
+
+            if (report instanceof GreenPosPositionReport) {
+                templateName = "greenposPositionReport";
+                environment.put("Course", "" + ((GreenPosPositionReport) report).getCourse());
+                environment.put("Speed", "" + ((GreenPosPositionReport) report).getSpeed());
+            }
+            if (report instanceof GreenPosSailingPlanReport) {
+                environment.put("Destination", ((GreenPosSailingPlanReport) report).getDestination());
+                environment.put("PersonsOnBoard", "" + ((GreenPosSailingPlanReport) report).getPersonsOnBoard());
+                environment.put("EtaOfArrival", "" + ((GreenPosSailingPlanReport) report).getEtaOfArrival());
+                templateName = "greenposSailingPlanReport";
+            }
+            if (report instanceof GreenPosFinalReport) {
+                templateName = "greenposFinalReport";
+            }
+            if (report instanceof GreenPosDeviationReport) {
+                environment.put("Deviation", ((GreenPosDeviationReport) report).getDeviation());
+                templateName = "greenposDeviationReport";
+            }
+
+            String header = propertyFileService.getProperty("embryo.notification.template." + templateName + ".header");
+            String body = propertyFileService.getProperty("embryo.notification.template." + templateName + ".body");
+
+            sendEmail(applyTemplate(header, environment), applyTemplate(body, environment));
+
+            embryoLogService.info(applyTemplate(header, environment) + " sent to " + toEmail);
+
+        } catch (Throwable t) {
+            embryoLogService.error("Error sending " +
+                    (report != null ? report.getClass().getSimpleName() : null) + "  to " + toEmail, t
+            );
+            throw new RuntimeException(t);
         }
-
-        if (report instanceof GreenPosPositionReport) {
-            templateName = "greenposPositionReport";
-            environment.put("Course", "" + ((GreenPosPositionReport) report).getCourse());
-            environment.put("Speed", "" + ((GreenPosPositionReport) report).getSpeed());
-        }
-        if (report instanceof GreenPosSailingPlanReport) {
-            environment.put("Destination", ((GreenPosSailingPlanReport) report).getDestination());
-            environment.put("PersonsOnBoard", "" + ((GreenPosSailingPlanReport) report).getPersonsOnBoard());
-            environment.put("EtaOfArrival", "" + ((GreenPosSailingPlanReport) report).getEtaOfArrival());
-            templateName = "greenposSailingPlanReport";
-        }
-        if (report instanceof GreenPosFinalReport) {
-            templateName = "greenposFinalReport";
-        }
-        if (report instanceof GreenPosDeviationReport) {
-            environment.put("Deviation", ((GreenPosDeviationReport)report).getDeviation());
-            templateName = "greenposDeviationReport";
-        }
-
-        String header = propertyFileService.getProperty("embryo.notification.template." + templateName + ".header");
-        String body = propertyFileService.getProperty("embryo.notification.template." + templateName + ".body");
-
-        sendEmail(applyTemplate(header, environment), applyTemplate(body, environment));
     }
 }

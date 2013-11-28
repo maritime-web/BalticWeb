@@ -15,7 +15,7 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.arcticweb.dao.LogEntryService;
+import dk.dma.arcticweb.dao.LogEntryDao;
 import dk.dma.embryo.domain.LogEntry;
 
 import java.io.PrintWriter;
@@ -23,12 +23,12 @@ import java.io.StringWriter;
 import java.util.Date;
 
 public class EmbryoLogServiceImpl implements EmbryoLogService {
-    private LogEntryService logEntryService;
+    private LogEntryDao logEntryDao;
 
     private String className;
 
-    public EmbryoLogServiceImpl(LogEntryService logEntryService, Class klass) {
-        this.logEntryService = logEntryService;
+    public EmbryoLogServiceImpl(LogEntryDao logEntryDao, Class klass) {
+        this.logEntryDao = logEntryDao;
         this.className = klass.getName();
     }
 
@@ -38,7 +38,7 @@ public class EmbryoLogServiceImpl implements EmbryoLogService {
         entry.setMessage(message.substring(0, Math.min(message.length(), 200)));
         entry.setService(className);
         entry.setStatus(LogEntry.Status.OK);
-        logEntryService.save(entry);
+        logEntryDao.save(entry);
     }
 
     public void error(String message) {
@@ -47,7 +47,7 @@ public class EmbryoLogServiceImpl implements EmbryoLogService {
         entry.setMessage(message.substring(0, Math.min(message.length(), 200)));
         entry.setService(className);
         entry.setStatus(LogEntry.Status.ERROR);
-        logEntryService.save(entry);
+        logEntryDao.save(entry);
     }
 
     public void error(String message, Throwable exception) {
@@ -61,6 +61,6 @@ public class EmbryoLogServiceImpl implements EmbryoLogService {
         exception.printStackTrace(new PrintWriter(sw));
         entry.setStackTrace(sw.toString().substring(0, Math.min(sw.toString().length(), 4000)));
 
-        logEntryService.save(entry);
+        logEntryDao.save(entry);
     }
 }
