@@ -195,6 +195,7 @@ var greenposScope;
                 vesselOverview.mmsi,
                 vesselDetails.additionalInformation.routeId,
                 function(voyageInfo) {
+                    if (!voyageInfo) return;
                     $scope.report.destination = voyageInfo.des;
                     $scope.report.eta = voyageInfo.desEta;
                     if (voyageInfo.crew) {
