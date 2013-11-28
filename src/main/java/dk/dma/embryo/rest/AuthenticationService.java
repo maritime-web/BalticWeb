@@ -15,7 +15,14 @@
  */
 package dk.dma.embryo.rest;
 
-import java.util.Set;
+import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.arcticweb.service.EmbryoLogService;
+import dk.dma.embryo.domain.Permission;
+import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SecuredUser;
+import dk.dma.embryo.security.Subject;
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -24,15 +31,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.embryo.domain.Permission;
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.security.Subject;
+import java.util.Set;
 
 @Path("/authentication")
 public class AuthenticationService {
@@ -44,6 +43,9 @@ public class AuthenticationService {
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private EmbryoLogService embryoLogService;
 
     @GET
     @Path("/details")
@@ -65,14 +67,14 @@ public class AuthenticationService {
         Set<Permission> perms = user.getPermissions();
         String[] permissions = new String[perms.size()];
         int count = 0;
-        for(Permission permission : perms){
-            permissions[count++] = permission.getLogicalName(); 
+        for (Permission permission : perms) {
+            permissions[count++] = permission.getLogicalName();
         }
-                
+
         details.setProjection("EPSG:900913");
         details.setUserName(user.getUserName());
         details.setPermissions(permissions);
-        
+
         return details;
     }
 
@@ -81,6 +83,7 @@ public class AuthenticationService {
     @Produces("application/json")
     @GZIP
     public void logout() {
+        embryoLogService.info("User " + subject.getUser().getUserName() + " logged out");
         subject.logout();
     }
 
@@ -89,15 +92,21 @@ public class AuthenticationService {
     @Produces("application/json")
     @GZIP
     public Details login(@QueryParam("userName") String userName, @QueryParam("password") String password) {
-        SecuredUser user = subject.login(userName, password);
+        try {
+            SecuredUser user = subject.login(userName, password);
 
-        logger.info("User "+userName+" : "+password+" -> "+user);
-
-        if (user != null) {
-            return details();
-        } else {
-            throw new UserNotAuthenticated();
+            if (user != null) {
+                embryoLogService.info("User " + userName + " logged in");
+                return details();
+            } else {
+                embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
+                throw new UserNotAuthenticated();
+            }
+        } catch (org.apache.shiro.authc.IncorrectCredentialsException e) {
+            embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
+            throw e;
         }
+
     }
 
     public static class UserNotAuthenticated extends WebApplicationException {
