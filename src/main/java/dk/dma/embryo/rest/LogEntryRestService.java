@@ -15,7 +15,7 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.arcticweb.dao.LogEntryService;
+import dk.dma.arcticweb.dao.LogEntryDao;
 import dk.dma.embryo.domain.LogEntry;
 
 import javax.inject.Inject;
@@ -27,12 +27,12 @@ import java.util.List;
 @Path("/log")
 public class LogEntryRestService {
     @Inject
-    private LogEntryService logEntryService;
+    private LogEntryDao logEntryDao;
 
     @GET
     @Path("/list")
     @Produces("application/json")
     public List<LogEntry> list() {
-        return logEntryService.list();
+        return logEntryDao.list();
     }
 }
