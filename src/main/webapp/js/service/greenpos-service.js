@@ -21,8 +21,8 @@
                 };
                 SessionStorageService.getItem(latestGreenposKey(mmsi), callback, remoteCall);
             },
-            getLatest : function(mmsi, callback) {
-                $http.get(reportsUrl + "/latest/" + mmsi).success(callback);
+            getLatest : function(callback) {
+                $http.get(reportsUrl + "/latest/").success(callback);
             },
             get : function(id, callback) {
                 var url = reportsUrl + "/" + id;
