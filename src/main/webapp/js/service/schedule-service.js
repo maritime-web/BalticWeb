@@ -1,7 +1,3 @@
-/**
- * ScheduleService
- */
-
 (function() {
     "use strict";
 

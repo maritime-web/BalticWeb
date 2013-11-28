@@ -1,12 +1,3 @@
-/*
- * Dependencies:
- * 
- * aisview.js
- * aisviewUI.js
- * position.js
- * ....
- */
-
 (function() {
     "use strict";
 
@@ -24,12 +15,14 @@
             getLatestReport : function(mmsi, callback) {
                 var remoteCall = function(onSuccess) {
                     var url = embryo.baseUrl + 'rest/greenpos/latest/' + mmsi;
-                    $http.get(url).success(onSuccess);
+                    $http.get(url).success(onSuccess).error(function (data) {
+                        callback(null);
+                    });
                 };
                 SessionStorageService.getItem(latestGreenposKey(mmsi), callback, remoteCall);
             },
-            getLatest : function(callback) {
-                $http.get(reportsUrl + "/latest").success(callback);
+            getLatest : function(mmsi, callback) {
+                $http.get(reportsUrl + "/latest/" + mmsi).success(callback);
             },
             get : function(id, callback) {
                 var url = reportsUrl + "/" + id;
@@ -54,7 +47,7 @@
             },
             save : function(greenpos, callback, error) {
                 $http.post(embryo.baseUrl + 'rest/greenpos', greenpos).success(function() {
-                    SessionStorageService.removeItem(latestGreenposKey(greenpos.shipMaritimeId));
+                    SessionStorageService.removeItem(latestGreenposKey(greenpos.mmsi));
                     callback();
                 }).error(function(data, status, headers, config) {
                     error(embryo.ErrorService.extractError(data, status, config));

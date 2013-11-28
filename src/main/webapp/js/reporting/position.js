@@ -1,4 +1,3 @@
-
 (function() {
     "use strict";
 
@@ -83,7 +82,12 @@
 
     var module = angular.module('embryo.position', []);
 
-    function positionDirective(formatter, parser) {
+    function positionDirective(formatter1, parser) {
+        function formatter(value) {
+            if (value || value === 0) return formatter1(value);
+            return null;
+        }
+
         return {
             require : '^ngModel',
             restrict : 'A',
@@ -96,7 +100,11 @@
                 });
 
                 ngModelController.$parsers.push(function(valueFromInput) {
-                    return parser(valueFromInput);
+                    try {
+                        return parser(valueFromInput);
+                    } catch (e) {
+                        return null;
+                    }
                 });
 
                 element.bind('change', function(event) {
