@@ -17,7 +17,6 @@ function GreenposMarkerLayer() {
     }
 
     this.draw = function (lon, lat) {
-        console.log("drawing at", lon, lat)
         this.layers.point.removeAllFeatures();
         this.layers.point.addFeatures([new OpenLayers.Feature.Vector(embryo.map.createPoint(lon, lat))]);
         this.layers.point.refresh();
