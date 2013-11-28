@@ -43,7 +43,6 @@ import java.util.Set;
 
 @Path("/user")
 public class UserRestService {
-
     @Inject
     private VesselDao vesselDao;
 
@@ -52,7 +51,6 @@ public class UserRestService {
 
     @Inject
     private Logger logger;
-
 
     @GET
     @Path("/delete")
@@ -132,7 +130,6 @@ public class UserRestService {
     @Path("/list")
     @Produces("application/json")
     public List<User> list() {
-
         List<User> result = new ArrayList<>();
 
         for (SecuredUser su : realmDao.getAll(SecuredUser.class)) {
