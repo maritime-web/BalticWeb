@@ -32,21 +32,6 @@
                     }
                 });
             },
-            search: function(argument, callback) {
-                $.ajax({
-                    url: embryo.baseUrl + "json_proxy/vessel_search",
-                    timeout: embryo.defaultTimeout,
-                    data: {
-                        argument: argument
-                    },
-                    success: function(data) {
-                        callback(null, data.vessels)
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        callback(jqXHR, null);
-                    }
-                })
-            },
             saveDetails: function(details, callback) {
                 $.ajax({
                     url: embryo.baseUrl + "rest/vessel/save-details",

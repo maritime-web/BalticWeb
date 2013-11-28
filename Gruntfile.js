@@ -47,7 +47,7 @@ module.exports = function(grunt) {
                 directory : 'arcticweb'
             },
             proxies : [ {
-                context : [ '/arcticweb/rest', '/arcticweb/json_proxy' ],
+                context : [ '/arcticweb/rest' ],
                 host : 'localhost',
                 port : '8080',
                 https : false,

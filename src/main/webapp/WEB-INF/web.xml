@@ -61,14 +61,4 @@
         <welcome-file>front.html</welcome-file>
     </welcome-file-list>
 
-    <servlet>
-        <description></description>
-        <servlet-name>JsonProxyServlet</servlet-name>
-        <servlet-class>dk.dma.arcticweb.site.proxy.JsonProxyServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>JsonProxyServlet</servlet-name>
-        <url-pattern>/json_proxy/*</url-pattern>
-    </servlet-mapping>
-
 </web-app>
