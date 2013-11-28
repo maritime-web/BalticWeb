@@ -81,7 +81,6 @@
 <script src="js/control/your-ship.js" type="text/javascript" defer="defer"></script>
 <script src="js/control/ice-control.js" defer="defer" type="text/javascript"></script>
 <script src="js/control/msi-control.js" defer="defer" type="text/javascript"></script>
-<script src="js/control/reporting.js" defer="defer" type="text/javascript"></script>
 <script src="js/control/greenpos-control.js" defer="defer" type="text/javascript"></script>
 
 <script src="js/layer/vessel-layer.js" defer="defer"></script>
@@ -128,10 +127,9 @@
 
 	<div id="messagePanel"></div>
 
-	<div x-ng-include="'partials/vesselControl.html'"></div>
-	<div x-ng-include="'partials/iceControl.html'"></div>
-	<div x-ng-include="'partials/msiControl.html'"></div>
-	<div x-ng-include="'partials/adtControl.html'"></div>
+	<div x-ng-include="'partials/vessel-control.html'"></div>
+	<div x-ng-include="'partials/ice-control.html'"></div>
+	<div x-ng-include="'partials/msi-control.html'"></div>
     <div x-ng-include="'partials/switch-base-map.html'"></div>
 
 	<div id="zoomControlPanel">
@@ -159,16 +157,16 @@
         <div x-ng-include="'partials/schedule-view.html'"></div>
     </div>
     <div class="reportingPanel well" id="routeUploadPanel">
-        <div x-ng-include="'partials/routeUpload.html'"></div>
+        <div x-ng-include="'partials/route-upload.html'"></div>
     </div>
     <div class="reportingPanel well" id="routeEditPanel">
-        <div x-ng-include="'partials/routeEdit.html'"></div>
+        <div x-ng-include="'partials/route-edit.html'"></div>
     </div>
     <div class="reportingPanel well" id="greenposReportPanel">
-        <div x-ng-include="'partials/greenposReport.html'"></div>
+        <div x-ng-include="'partials/greenpos-report.html'"></div>
     </div>
     <div class="reportingPanel well" id="greenposListPanel">
-        <div x-ng-include="'partials/greenposList.html'"></div>
+        <div x-ng-include="'partials/greenpos-list.html'"></div>
     </div>
 
 </body>
