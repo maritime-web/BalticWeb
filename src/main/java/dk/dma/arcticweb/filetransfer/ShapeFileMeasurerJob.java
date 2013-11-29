@@ -26,7 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.*;
+import javax.ejb.ScheduleExpression;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
