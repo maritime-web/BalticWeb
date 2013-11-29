@@ -64,7 +64,8 @@ In particular the file may contain URLs and passwords for the DMI Ice map server
 
 ## Deploy to JBoss
 
-* mvn clean jboss-as:deploy - Clean, build, install database drivers environmental variables and deploy application (used for first deploy)
+* mvn install -P fulldeploy - Clean, build, install database drivers environmental variables and deploy application (used for first deploy)
+* mvn jboss-as:deploy - Just deploy the WAR-file
 * mvn antrun:run - deploy js, css and html to temporary deploy folder on JBoss (fast deploy of web resources - web session not destroyed)
 
 A local deployment will setup ArcticWeb at the following URL:
