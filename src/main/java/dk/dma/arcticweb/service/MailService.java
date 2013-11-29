@@ -18,9 +18,12 @@ package dk.dma.arcticweb.service;
 import javax.ejb.Local;
 
 import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.rest.RequestAccessRestService;
 
 @Local
 public interface MailService{
+
+    void newRequestAccess(RequestAccessRestService.SignupRequest request);
 
     void newGreenposReport(GreenPosReport report);
 
