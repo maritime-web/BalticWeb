@@ -26,28 +26,18 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.ScheduleExpression;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.Timeout;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
+import javax.ejb.*;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
 @Singleton
 @Startup
 public class ShapeFileMeasurerJob {
-    private static long TRANSACTION_LENGTH = 60 * 1000L * 7;
+    private static long TRANSACTION_LENGTH = 60 * 1000L * 4;
 
     private final Logger logger = LoggerFactory.getLogger(ShapeFileMeasurerJob.class);
 
@@ -113,15 +103,17 @@ public class ShapeFileMeasurerJob {
         try {
             int count = 0;
 
-            long start = System.currentTimeMillis();
+            long start = new Date().getTime();
 
-            logger.info("Measuring files ...");
+            logger.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
 
             List<ShapeFileMeasurement> measurements = new ArrayList<>();
 
             for (String fn : downloadedIceObservations()) {
                 ShapeFileMeasurement lookup = shapeFileMeasurementDao.lookup(fn, prefix);
                 if (lookup == null) {
+                    logger.info("" + (new Date().getTime() - start) + " vs " + TRANSACTION_LENGTH);
+
                     if (System.currentTimeMillis() - start < TRANSACTION_LENGTH) {
                         logger.info("Measuring file: " + fn);
 
