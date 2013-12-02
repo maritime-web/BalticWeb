@@ -15,6 +15,8 @@
  */
 package dk.dma.arcticweb.service;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -24,12 +26,9 @@ import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.Subject;
-import dk.dma.embryo.security.authorization.YourShip;
-
-import java.util.List;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -76,8 +75,8 @@ public class VesselServiceImpl implements VesselService {
     }
     
     public Vessel getYourVessel() {
-        if (subject.hasRole(Sailor.class)) {
-            Sailor sailor = realmDao.getSailor(subject.getUserId());
+        if (subject.hasRole(SailorRole.class)) {
+            SailorRole sailor = realmDao.getSailor(subject.getUserId());
             return sailor.getVessel();
         }
         return new Vessel();

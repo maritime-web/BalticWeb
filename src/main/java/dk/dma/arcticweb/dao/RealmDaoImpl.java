@@ -21,7 +21,7 @@ import javax.persistence.TypedQuery;
 
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 
 @Stateless
@@ -60,8 +60,8 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
     }
 
     @Override
-    public Sailor getSailor(Long userId) {
-        TypedQuery<Sailor> query = em.createNamedQuery("Sailor:withVessel", Sailor.class);
+    public SailorRole getSailor(Long userId) {
+        TypedQuery<SailorRole> query = em.createNamedQuery("Sailor:withVessel", SailorRole.class);
         query.setParameter("id", userId);
         return query.getSingleResult();
     }

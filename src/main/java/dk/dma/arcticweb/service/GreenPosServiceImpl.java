@@ -31,7 +31,7 @@ import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.YourShip;
@@ -83,7 +83,7 @@ public class GreenPosServiceImpl implements GreenPosService {
 
         Vessel vessel = null;
 
-        if (subject.hasRole(Sailor.class)) {
+        if (subject.hasRole(SailorRole.class)) {
             vessel = vesselService.getYourVessel();
             validateVesselData(report, vessel);
         } else {

@@ -37,8 +37,7 @@ import dk.dma.arcticweb.dao.VesselDaoImpl;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.Position;
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.Schedule;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
@@ -120,7 +119,7 @@ public class GreenPosServiceImplTest {
 
         entityManager.getTransaction().begin();
 
-        Mockito.when(subject.hasRole(Sailor.class)).thenReturn(true);
+        Mockito.when(subject.hasRole(SailorRole.class)).thenReturn(true);
         Mockito.when(subject.getUser()).thenReturn(new SecuredUser("Hans", "pwd"));
         Mockito.when(vesselService.getYourVessel()).thenReturn(vessel);
 

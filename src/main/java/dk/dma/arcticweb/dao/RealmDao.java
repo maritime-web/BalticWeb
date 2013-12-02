@@ -17,7 +17,7 @@ package dk.dma.arcticweb.dao;
 
 import javax.ejb.Local;
 
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 
 @Local
@@ -27,5 +27,5 @@ public interface RealmDao extends Dao {
 
     SecuredUser getByPrimaryKeyReturnAll(Long key);
     
-    Sailor getSailor(Long userid);
+    SailorRole getSailor(Long userid);
 }

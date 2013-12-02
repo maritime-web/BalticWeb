@@ -43,8 +43,10 @@ public class WayPoint implements Serializable {
     @Valid
     private Position position;
     
+    /** Rate of turn. */
     private Double rot;
 
+    /** Waypoint turn radius in nautical miles. */
     @NotNull
     private Double turnRadius;
     

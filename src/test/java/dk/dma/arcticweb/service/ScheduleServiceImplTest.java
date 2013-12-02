@@ -42,7 +42,7 @@ import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.RouteLeg;
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
@@ -66,7 +66,7 @@ public class ScheduleServiceImplTest {
         Permission perm1 = new Permission("yourShip");
         entityManager.persist(perm1);
 
-        Role sailor = new Sailor();
+        Role sailor = new SailorRole();
         sailor.add(perm1);
         entityManager.persist(sailor);
 
@@ -87,7 +87,7 @@ public class ScheduleServiceImplTest {
         }
         
         // /// new user
-        sailor = new Sailor();
+        sailor = new SailorRole();
         sailor.add(perm1);
         entityManager.persist(sailor);
 

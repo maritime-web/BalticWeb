@@ -32,18 +32,10 @@ public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {
         this.logicalName = logicalName;
     }
 
-    protected AbstractAuthorizationEntity(String logicalName, Text name) {
-        this(logicalName);
-        this.name = name;
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     private String logicalName;
-
-    //@ManyToOne
-    private Text name;
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -52,9 +44,6 @@ public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public String getName(Locale locale) {
-        return name.getText(locale);
-    }
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
@@ -67,16 +56,8 @@ public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {
         this.logicalName = logicalName;
     }
 
-    public Text getName() {
-        return name;
-    }
-
-    public void setName(Text name) {
-        this.name = name;
-    }
-
     public String toStringRaw() {
-        return "id=" + id + ", logicalName=" + logicalName + ", name=" + name;
+        return "id=" + id + ", logicalName=" + logicalName;
     }
 
     @Override

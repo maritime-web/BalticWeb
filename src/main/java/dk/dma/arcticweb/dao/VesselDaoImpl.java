@@ -24,7 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
@@ -41,7 +41,7 @@ public class VesselDaoImpl extends DaoImpl implements VesselDao {
     }
 
     @Override
-    public Vessel getVessel(Sailor sailor) {
+    public Vessel getVessel(SailorRole sailor) {
         Long vesselId = sailor.getVessel().getId();
         return (Vessel) getByPrimaryKey(Vessel.class, vesselId);
     }

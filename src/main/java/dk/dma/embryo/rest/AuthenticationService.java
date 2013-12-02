@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.embryo.domain.Permission;
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.Subject;
 
@@ -57,8 +57,8 @@ public class AuthenticationService {
 
         Details details = new Details();
 
-        if (subject.hasRole(Sailor.class)) {
-            Sailor sailor = realmRepository.getSailor(subject.getUserId());
+        if (subject.hasRole(SailorRole.class)) {
+            SailorRole sailor = realmRepository.getSailor(subject.getUserId());
             details.setShipMmsi("" + sailor.getVessel().getMmsi());
         }
 

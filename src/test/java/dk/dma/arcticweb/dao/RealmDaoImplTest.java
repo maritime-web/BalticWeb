@@ -30,7 +30,7 @@ import org.junit.Test;
 
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.VesselOwnerRole;
 import dk.dma.embryo.domain.ShoreRole;
@@ -58,7 +58,7 @@ public class RealmDaoImplTest {
         entityManager.persist(perm3);
         entityManager.persist(perm4);
         
-        Role sailor = new Sailor();
+        Role sailor = new SailorRole();
         Role shore = new ShoreRole();
         Role role3 = new VesselOwnerRole();
 

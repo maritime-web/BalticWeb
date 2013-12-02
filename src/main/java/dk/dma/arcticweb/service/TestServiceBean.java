@@ -51,7 +51,7 @@ import dk.dma.embryo.domain.Position;
 import dk.dma.embryo.domain.ReportedVoyage;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.ShoreRole;
@@ -305,7 +305,7 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(yourShip);
 
-        Sailor sailorRole = new Sailor();
+        SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
         sailorRole.add(yourShip);
 
@@ -359,7 +359,7 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(yourShip);
 
-        Sailor sailorRole = new Sailor();
+        SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
         sailorRole.add(yourShip);
 
@@ -403,7 +403,7 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(yourShip);
 
-        Sailor sailorRole = new Sailor();
+        SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
         sailorRole.add(yourShip);
 
@@ -508,7 +508,7 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(yourShip);
 
-        Sailor sailorRole = new Sailor();
+        SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
         sailorRole.add(yourShip);
 
@@ -535,7 +535,7 @@ public class TestServiceBean {
         vesselDao.saveEntity(ais);
         vesselDao.saveEntity(yourShip);
 
-        Sailor sailorRole = new Sailor();
+        SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
         sailorRole.add(ais);
         sailorRole.add(yourShip);
@@ -562,7 +562,7 @@ public class TestServiceBean {
         vesselDao.saveEntity(ais);
         vesselDao.saveEntity(yourShip);
 
-        Sailor sailorRole = new Sailor();
+        SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
         sailorRole.add(ais);
         sailorRole.add(yourShip);
@@ -590,7 +590,7 @@ public class TestServiceBean {
         vesselDao.saveEntity(ais);
         vesselDao.saveEntity(yourShip);
 
-        Sailor sailorRole = new Sailor();
+        SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
         sailorRole.add(ais);
         sailorRole.add(yourShip);
@@ -618,7 +618,7 @@ public class TestServiceBean {
         vesselDao.saveEntity(ais);
         vesselDao.saveEntity(yourShip);
 
-        Sailor sailorRole = new Sailor();
+        SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
         sailorRole.add(ais);
         sailorRole.add(yourShip);
@@ -651,7 +651,7 @@ public class TestServiceBean {
         vesselDao.saveEntity(ais);
         vesselDao.saveEntity(yourShip);
 
-        Sailor sailorRole = new Sailor();
+        SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
         sailorRole.add(ais);
         sailorRole.add(yourShip);

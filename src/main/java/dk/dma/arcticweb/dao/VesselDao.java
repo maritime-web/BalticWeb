@@ -21,7 +21,7 @@ import java.util.Map;
 import javax.ejb.Local;
 
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Sailor;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.VoyagePlan;
@@ -34,7 +34,7 @@ public interface VesselDao extends Dao {
      * @param sailor
      * @return
      */
-    Vessel getVessel(Sailor sailor);
+    Vessel getVessel(SailorRole sailor);
 
     Vessel getVesselByCallsign(String callsign);
 

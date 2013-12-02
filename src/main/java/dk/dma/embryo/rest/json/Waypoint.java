@@ -32,10 +32,10 @@ public class Waypoint {
     /** Speed in knots. */
     private Double speed;
 
-    /** Sail heading rhumb line or great circle */
+    /** Sail heading - rhumb line or great circle */
     private Heading heading;
 
-    /** Rate of turn . */
+    /** Rate of turn. */
     private Double rot;
 
     /** Waypoint turn radius in nautical miles. */

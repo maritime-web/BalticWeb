@@ -39,10 +39,6 @@ public abstract class Role extends AbstractAuthorizationEntity<Integer> {
         super(logicalName);
     }
 
-    public Role(String logicalName, Text name) {
-        super(logicalName, name);
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
