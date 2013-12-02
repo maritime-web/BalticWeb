@@ -30,6 +30,7 @@ import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
+import java.util.regex.Matcher;
 
 @Singleton
 public class PropertyFileService {
@@ -86,7 +87,7 @@ public class PropertyFileService {
 
                 if (property.substituteSystemProperties()) {
                     for (Object key : System.getProperties().keySet()) {
-                        result = result.replaceAll("\\{" + key + "\\}", System.getProperty("" + key));
+                        result = result.replaceAll("\\{" + key + "\\}", Matcher.quoteReplacement(System.getProperty("" + key)));
                     }
                 }
 

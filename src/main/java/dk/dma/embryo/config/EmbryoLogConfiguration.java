@@ -13,18 +13,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.service;
+package dk.dma.embryo.config;
 
-import javax.ejb.Local;
+import dk.dma.arcticweb.dao.LogEntryDao;
+import dk.dma.arcticweb.service.EmbryoLogService;
+import dk.dma.arcticweb.service.EmbryoLogServiceImpl;
 
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.rest.RequestAccessRestService;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 
-@Local
-public interface MailService{
+public class EmbryoLogConfiguration {
+    @Inject
+    LogEntryDao logEntryDao;
 
-    void newRequestAccess(RequestAccessRestService.SignupRequest request);
-
-    void newGreenposReport(GreenPosReport report);
-
+    @Produces
+    public EmbryoLogService getLogger(InjectionPoint injectionPoint) {
+        return new EmbryoLogServiceImpl(logEntryDao, injectionPoint.getMember().getDeclaringClass());
+    }
 }

@@ -23,16 +23,21 @@ embryo.ready(function() {
             
             $("#authentication").html(html);
             
-            $("#authentication a[href=\"#login\"]").click(function() {
+            $("#authentication a[href=\"#login\"]").click(function(e) {
+                e.preventDefault();
                 $("#login").modal("show");
-                return false;
             });
             
-            $("#authentication a[href=\"#requestAccess\"]").click(function() {
-                $("#request").modal("show");
-                return false;
+            $("#authentication a[href=\"#requestAccess\"]").click(function(e) {
+                e.preventDefault();
+                embryo.authentication.showRequestAccess();
             });
-            
+
+            $("#requestAccessBigButton").click(function(e) {
+                e.preventDefault();
+                embryo.authentication.showRequestAccess();
+            })
+
         } else {
             var html = "";
             
@@ -154,4 +159,63 @@ embryo.ready(function() {
 
 }());
 
+
+embryo.ready(function() {
+    embryo.authentication.showRequestAccess = function() {
+        $("#requestProperSignup input").val("");
+        feedback();
+        $("#requestProperSignup").modal("show");
+        $("#rPreferredLogin").focus();
+    }
+
+    function feedback(text) {
+        if (text) {
+            $("#rFeedback").html(text);
+            $("#rFeedback").css("display", "block");
+        } else {
+            $("#rFeedback").css("display", "none");
+        }
+    }
+
+    $("#requestProperSignup .btn-primary").click(function(e) {
+        e.preventDefault();
+
+        var r = {
+            preferredLogin: $("#rPreferredLogin").val(),
+            contactPerson: $("#rContactPerson").val(),
+            emailAddress: $("#rEmailAddress").val(),
+            mmsiNumber: $("#rMmsiNumber").val()
+        }
+
+        if (r.mmsiNumber) {
+            var x = r.mmsiNumber;
+            r.mmsiNumber = parseInt(x);
+            if (r.mmsiNumber != x) {
+                feedback("MMSI must be only digits.");
+                return;
+            }
+        }
+
+        if (!r.emailAddress) {
+            feedback("A proper email address is required.");
+        } else {
+            feedback("Sending request for access.")
+
+            $.ajax({
+                url: embryo.baseUrl + "rest/request-access/save",
+                method: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(r),
+                success: function() {
+                    feedback("Request for access has been sent. We will get back to you via email.")
+                },
+                error: function() {
+                    feedback("Request for access has failed. Please try again.")
+                }
+            })
+        }
+
+    })
+
+});
 

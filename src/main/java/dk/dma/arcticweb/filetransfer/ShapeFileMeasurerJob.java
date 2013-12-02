@@ -16,6 +16,7 @@
 package dk.dma.arcticweb.filetransfer;
 
 import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
+import dk.dma.arcticweb.service.EmbryoLogService;
 import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 import dk.dma.embryo.rest.ShapeFileService;
@@ -37,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +47,8 @@ import java.util.zip.GZIPOutputStream;
 @Singleton
 @Startup
 public class ShapeFileMeasurerJob {
+    private static long TRANSACTION_LENGTH = 60 * 1000L * 4;
+
     private final Logger logger = LoggerFactory.getLogger(ShapeFileMeasurerJob.class);
 
     @Inject
@@ -63,6 +67,9 @@ public class ShapeFileMeasurerJob {
     @Inject
     @Property(value = "embryo.shapeFileMeasurer.cron", substituteSystemProperties = true)
     private ScheduleExpression cron;
+
+    @Inject
+    private EmbryoLogService embryoLogService;
 
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shp.xml", ".shx");
 
@@ -103,45 +110,61 @@ public class ShapeFileMeasurerJob {
 
     @Timeout
     public void measureFiles() throws IOException {
-        logger.info("Measuring files ...");
+        try {
+            int count = 0;
 
-        List<ShapeFileMeasurement> measurements = new ArrayList<>();
+            long start = new Date().getTime();
 
-        for (String fn : downloadedIceObservations()) {
-            ShapeFileMeasurement lookup = shapeFileMeasurementDao.lookup(fn, prefix);
-            if (lookup == null) {
-                logger.info("Measuring file: " + fn);
+            logger.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
 
-                ShapeFileMeasurement sfm = new ShapeFileMeasurement();
+            List<ShapeFileMeasurement> measurements = new ArrayList<>();
 
-                sfm.setFileName(fn);
-                sfm.setFileSize(measureFile(fn));
-                sfm.setPrefix(prefix);
+            for (String fn : downloadedIceObservations()) {
+                ShapeFileMeasurement lookup = shapeFileMeasurementDao.lookup(fn, prefix);
+                if (lookup == null) {
+                    logger.info("" + (new Date().getTime() - start) + " vs " + TRANSACTION_LENGTH);
 
-                logger.info("File size: " + sfm.getFileSize());
+                    if (System.currentTimeMillis() - start < TRANSACTION_LENGTH) {
+                        logger.info("Measuring file: " + fn);
 
-                measurements.add(sfm);
-            } else {
-                ShapeFileMeasurement sfm = new ShapeFileMeasurement();
+                        ShapeFileMeasurement sfm = new ShapeFileMeasurement();
 
-                sfm.setFileName(lookup.getFileName());
-                sfm.setFileSize(lookup.getFileSize());
-                sfm.setPrefix(lookup.getPrefix());
+                        sfm.setFileName(fn);
+                        sfm.setFileSize(measureFile(fn));
+                        sfm.setPrefix(prefix);
 
-                measurements.add(sfm);
+                        logger.info("File size: " + sfm.getFileSize());
+
+                        measurements.add(sfm);
+
+                        count++;
+                    }
+                } else {
+                    ShapeFileMeasurement sfm = new ShapeFileMeasurement();
+
+                    sfm.setFileName(lookup.getFileName());
+                    sfm.setFileSize(lookup.getFileSize());
+                    sfm.setPrefix(lookup.getPrefix());
+
+                    measurements.add(sfm);
+                }
             }
-        }
 
-        logger.info("Done. Saving " + measurements.size() + " items ...");
+            logger.info("Done. Saving " + measurements.size() + " items ...");
 
-        logger.info("Calling deleteAll");
+            logger.info("Calling deleteAll");
 
-        shapeFileMeasurementDao.deleteAll(prefix);
+            shapeFileMeasurementDao.deleteAll(prefix);
 
-        logger.info("Saving " + measurements.size() + " measurements");
+            logger.info("Saving " + measurements.size() + " measurements");
 
-        for (ShapeFileMeasurement sfm : measurements) {
-            shapeFileMeasurementDao.saveEntity(sfm);
+            for (ShapeFileMeasurement sfm : measurements) {
+                shapeFileMeasurementDao.saveEntity(sfm);
+            }
+
+            embryoLogService.info(measurements.size() + " files validated / measured. " + count + " new.");
+        } catch (Throwable t) {
+            embryoLogService.error("Unhandled error measuring shape files: " + t, t);
         }
     }
 
@@ -160,6 +183,7 @@ public class ShapeFileMeasurerJob {
 
         } catch (Throwable t) {
             logger.info("Error measuring " + fn + ": " + t, t);
+            embryoLogService.error("Error measuring " + fn + ": " + t, t);
             return -1;
         }
     }

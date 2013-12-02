@@ -3,15 +3,17 @@
 
 <head>
 <meta charset="utf-8" />
-<title>ArcticWeb - Greenland</title>
+<title>ArcticWeb - Test Data</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
-<link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
-<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <!-- build:css css/arcticweb-testdata.css -->
+    <link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
+    <link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- endbuild -->
 
-<link href="css/style.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
 <script src="js/ext/jquery-1.9.1.min.js"></script>
 
@@ -71,16 +73,16 @@
 	</div>
 	<!-- ============================================= -->
 
-	<div class="container" x-ng-controller="TestDataController">
+	<div class="container" x-ng-controller="TestDataController" style="padding-top: 50px;">
 		<div>
-			<h2>Test data</h2>
+			<h1>ArcticWeb - Test Data</h1>
 		</div>
 
 		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
 		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
 		<form class="form-horizontal" >
-			<button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize test data</button>
+			<button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize Test Data</button>
 		</form>
 
 	</div>

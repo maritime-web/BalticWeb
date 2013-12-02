@@ -1,12 +1,3 @@
-/*
- * Dependencies:
- * 
- * aisview.js
- * aisviewUI.js
- * route.js
- * ....
- */
-
 (function() {
     "use strict";
 

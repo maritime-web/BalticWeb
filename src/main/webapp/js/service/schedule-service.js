@@ -1,7 +1,3 @@
-/**
- * ScheduleService
- */
-
 (function() {
     "use strict";
 
@@ -33,7 +29,7 @@
             getActiveVoyage : function(mmsi, routeId, callback ,error) {
                 function findVoyageIndex(schedule) {
                     for ( var index = 0; index < schedule.voyages.length; index++) {
-                        if (schedule.voyages[index].route.id === routeId) {
+                        if (schedule.voyages[index].route && schedule.voyages[index].route.id === routeId) {
                             return index;
                         }
                     }

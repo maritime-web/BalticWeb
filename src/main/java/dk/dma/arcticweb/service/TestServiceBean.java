@@ -275,6 +275,10 @@ public class TestServiceBean {
 
         AuthorityRole auth = new AuthorityRole();
 
+        Permission administration = new Permission("Administration");
+        vesselDao.saveEntity(administration);
+        auth.add(administration);
+
         vesselDao.saveEntity(auth);
 
         SecuredUser user = new SecuredUser("dma", "qwerty", "obo@dma.dk");

@@ -15,12 +15,12 @@
  */
 package dk.dma.embryo.rest.ex;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.LinkedList;
-import java.util.List;
+import dk.dma.embryo.domain.FormatException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
 
 import javax.ejb.EJBTransactionRolledbackException;
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -33,16 +33,19 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
-
-import org.codehaus.jackson.map.ObjectMapper;
-
-import dk.dma.embryo.domain.FormatException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Jesper Tejlgaard
  */
-@WebFilter(filterName = "ExceptionFilter", urlPatterns = { "/rest/*" })
+@WebFilter(filterName = "ExceptionFilter", urlPatterns = {"/rest/schedule", "/rest/routeUpload", "/rest/route"})
 public class ExceptionFilter implements Filter {
+
+    @Inject
+    private Logger logger;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -55,7 +58,7 @@ public class ExceptionFilter implements Filter {
         try {
             chain.doFilter(request, response);
         } catch (RuntimeException e) {
-
+            logger.info("Filtering exception " + e, e);
             Throwable t = e;
             if (t instanceof WebApplicationException) {
                 // should never end here, becaue REST EASY handling WebApplicationException closer to RS services
@@ -81,7 +84,7 @@ public class ExceptionFilter implements Filter {
         PrintWriter writer = response.getWriter();
         ObjectMapper mapper = new ObjectMapper();
         try {
-             String json = mapper.writeValueAsString(buildJson(t));
+            String json = mapper.writeValueAsString(buildJson(t));
             writer.write(json);
         } catch (IOException e2) {
             throw new RuntimeException(e2);
@@ -96,7 +99,7 @@ public class ExceptionFilter implements Filter {
             return buildMessage((ConstraintViolationException) t);
         }
 
-        return new String[] { t.getMessage() };
+        return new String[]{t.getMessage()};
     }
 
     private void setStatus(ServletResponse response, Throwable e) throws IOException {

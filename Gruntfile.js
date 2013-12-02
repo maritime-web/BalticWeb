@@ -47,7 +47,7 @@ module.exports = function(grunt) {
                 directory : 'arcticweb'
             },
             proxies : [ {
-                context : [ '/arcticweb/rest', '/arcticweb/json_proxy' ],
+                context : [ '/arcticweb/rest' ],
                 host : 'localhost',
                 port : '8080',
                 https : false,
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
         // }
         // },
         useminPrepare : {
-            html : [ '<%= proj.src %>/front.html', '<%= proj.src %>/map.html', '<%= proj.src %>/report.html' ],
+            html : [ '<%= proj.src %>/front.html', '<%= proj.src %>/map.html', '<%= proj.src %>/log.html', '<%= proj.src %>/users.html', '<%= proj.src %>/testdata.html' ],
             options : {
                 dest : '<%= proj.build %>'
             // flow : {

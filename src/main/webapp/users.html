@@ -2,21 +2,28 @@
 <html lang="en" ng-app="embryo.administration">
 
 <head>
+    <title>ArcticWeb - Users</title>
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
 
+    <!-- build:css css/arcticweb-administration.css -->
     <link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
     <link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <!-- endbuild -->
+
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="js/ext/bootstrap.min.js"></script>
     <script src="js/ext/ui-bootstrap-tpls-0.6.0.js"></script>
 
-    <script src="js/embryo.js" type="text/javascript"></script>
-    <script src="js/utils.js" type="text/javascript"></script>
-    <script src="js/authentication.js" type="text/javascript"></script>
+    <!-- build:js js/arcticweb-administration.js -->
+    <script src="js/embryo.js" defer="defer" type="text/javascript"></script>
+    <script src="js/utils.js" defer="defer" type="text/javascript"></script>
+    <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
     <script src="js/menu.js" defer="defer" type="text/javascript"></script>
+    <script src="js/administration/users.js" defer="defer" type="text/javascript"></script>
+    <!-- endbuild -->
 
     <script type="text/javascript" defer="defer">
         angular.module('embryo.administration', [ ]);
@@ -34,28 +41,25 @@
 
     <div class="row">
         <div class="span9">
-            <h1>ArcticWeb - Administration</h1>
+            <h1>ArcticWeb - Users</h1>
 
-            <h2>Active Users</h2>
+            <div class="alert alert-info" id="feedback"></div>
 
             <table class="table">
-                <tr>
-                    <th>Login</th>
-                    <th>Ship (MMSI)</th>
-                    <th>Role</th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <td>orasila</td>
-                    <td>2002349238</td>
-                    <td>Sailor</td>
-                    <td><a href="#createNewUserDialog" data-toggle="modal">edit</a> - <a href="#deleteUserDialog"
-                                                                                         data-toggle="modal">delete</a>
-                    </td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Login</th>
+                        <th>Ship (MMSI)</th>
+                        <th>Role</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="activeUsersTable">
+                </tbody>
+
             </table>
 
-            <a href="#createNewUserDialog" role="button" class="btn" data-toggle="modal">Create New User</a>
+            <a href="#" role="button" class="btn" id="createNewUserDialogButton">Create New User</a>
 
         </div>
     </div>
@@ -68,45 +72,46 @@
         <div class="modal-body">
             <form class="form-horizontal">
                 <div class="control-group">
-                    <label class="control-label" for="login">Login:</label>
+                    <label class="control-label" for="cLogin">Login:</label>
 
                     <div class="controls">
-                        <input type="text" id="login" class="input-medium">
+                        <input type="text" id="cLogin" class="input-medium">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="password">Password:</label>
+                    <label class="control-label" for="cPassword">Password:</label>
 
                     <div class="controls">
-                        <input type="text" id="password" class="input-small">
+                        <input type="password" id="cPassword" class="input-small">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="passwordAgain">Password Again:</label>
+                    <label class="control-label" for="cPasswordAgain">Password Again:</label>
 
                     <div class="controls">
-                        <input type="text" id="passwordAgain" class="input-small">
+                        <input type="password" id="cPasswordAgain" class="input-small">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="shipMmsi">Ship (MMSI - may be left blank):</label>
+                    <label class="control-label" for="cShipMmsi">Ship (MMSI - may be left blank):</label>
 
                     <div class="controls">
-                        <input type="text" id="shipMmsi" class="input-medium">
+                        <input type="text" id="cShipMmsi" class="input-medium">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="role">Role:</label>
+                    <label class="control-label" for="cRole">Role:</label>
 
                     <div class="controls">
-                        <select id="role">
-                            <option>Sailor</option>
-                            <option>AuthorityRole</option>
-                            <option>Shore</option>
+                        <select id="cRole">
+                            <option value="Sailor">Sailor</option>
+                            <option value="Shore">Shore</option>
+                            <option value="Greenpos Authority">Greenpos Authority</option>
+                            <option value="Administrator">Administrator</option>
                         </select>
                     </div>
                 </div>

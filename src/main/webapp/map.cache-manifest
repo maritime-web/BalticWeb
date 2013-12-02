@@ -28,19 +28,18 @@ js/ext/tarruda-bootstrap-datetimepicker.js
 js/arcticweb-map.js
 partials/authentication.html
 partials/menu.html
-partials/vesselControl.html
-partials/iceControl.html
-partials/msiControl.html
-partials/adtControl.html
+partials/vessel-control.html
+partials/ice-control.html
+partials/msi-control.html
 partials/switch-base-map.html
 partials/vessel-information-edit.html
 partials/vessel-information-view.html
 partials/schedule.html
 partials/schedule-view.html
-partials/routeUpload.html
-partials/routeEdit.html
-partials/greenposReport.html
-partials/greenposList.html
+partials/route-upload.html
+partials/route-edit.html
+partials/greenpos-report.html
+partials/greenpos-list.html
 rest/shapefile/multiple/static.world_merc?delta=true&exponent=2
 http://openlayers.org/api/theme/default/style.css
 img/load.gif
@@ -67,4 +66,4 @@ img/ring.png
 img/green_marker.png
 img/aw-logo.png
 
-# Version: 2
+# Version: 19

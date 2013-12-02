@@ -13,18 +13,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.service;
+package dk.dma.embryo.rest;
 
-import javax.ejb.Local;
+import dk.dma.arcticweb.dao.LogEntryDao;
+import dk.dma.embryo.domain.LogEntry;
 
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.rest.RequestAccessRestService;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import java.util.List;
 
-@Local
-public interface MailService{
+@Path("/log")
+public class LogEntryRestService {
+    @Inject
+    private LogEntryDao logEntryDao;
 
-    void newRequestAccess(RequestAccessRestService.SignupRequest request);
-
-    void newGreenposReport(GreenPosReport report);
-
+    @GET
+    @Path("/list")
+    @Produces("application/json")
+    public List<LogEntry> list() {
+        return logEntryDao.list();
+    }
 }

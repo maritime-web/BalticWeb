@@ -27,7 +27,7 @@
 
 <!-- Request login modal ================================================== -->
 
-<div id="request" class="modal hide" tabindex="-1" role="dialog">
+<div id="requestClosedPilot" class="modal hide" tabindex="-1" role="dialog">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">x</button>
 		<h2>Request Access</h2>
@@ -52,4 +52,38 @@
 			</div>
 		</form>
 	</div>
+</div>
+
+
+<div id="requestProperSignup" class="modal hide" tabindex="-1" role="dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h2>Request Access</h2>
+    </div>
+    <div class="modal-body">
+        <p class="alert alert-info" id="rFeedback"></p>
+
+        <p>
+            Please fill out the form below to get access to ArcticWeb.
+        </p>
+
+        <p>
+            MMSI-number may be left blank if you do not want your account to be tied to a particular vessel.
+        </p>
+
+        <form class="form-signin">
+            <label for="rPreferredLogin">Preferred Login:</label>
+            <input type="text" class="input-block-level" placeholder="Prefered Login" id="rPreferredLogin">
+            <label for="rContactPerson">Contact Person:</label>
+            <input type="text" class="input-block-level"placeholder="Contact Person" id="rContactPerson">
+            <label for="rEmailAddress">Email Address:</label>
+            <input type="text" class="input-block-level" placeholder="Email Address" id="rEmailAddress">
+            <label for="rMmsiNumber">MMSI-number:</label>
+            <input type="text" class="input-block-level" placeholder="MMSI-number" id="rMmsiNumber">
+            <div style="margin-top: 24px">
+                <button class="btn btn-primary">Send Request</button>
+                <button class="btn" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
 </div>

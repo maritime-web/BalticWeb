@@ -15,16 +15,10 @@
  */
 package dk.dma.arcticweb.service;
 
-import javax.ejb.Local;
+public interface EmbryoLogService {
+    void info(String message);
 
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.rest.RequestAccessRestService;
+    void error(String message);
 
-@Local
-public interface MailService{
-
-    void newRequestAccess(RequestAccessRestService.SignupRequest request);
-
-    void newGreenposReport(GreenPosReport report);
-
+    void error(String message, Throwable exception);
 }

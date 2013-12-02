@@ -1,3 +1,5 @@
+var greenposScope;
+
 (function() {
     "use strict";
 
@@ -28,8 +30,7 @@
 
                 var window = angular.element($window);
                 window.bind('resize', function() {
-                    scope.$apply(function() {
-                    });
+                    scope.$apply();
                 });
             }
         };
@@ -57,18 +58,28 @@
             name : "Deviation Report"
         } ]
 
+        // Beautiful thing that makes angular update form validity.
+
         $scope.report = {
-            type : "SP"
+            type : "PR"
         }
+
+        $.each($scope.reportTypes, function (k, v) {
+            setTimeout(function () {
+                $scope.report.type = v.id;
+                $scope.$apply();
+            }, v * 10);
+        });
 
         function evalGreenpos(greenpos) {
             if (!greenpos || !greenpos.ts) {
-                $scope.report.type = "PR";
+                $scope.report.type = "SP";
                 return;
             }
 
-            if (greenpos.reportType === 'FR') {
+            if (greenpos.type === 'FR') {
                 $scope.report.type = "SP";
+                return;
             }
 
             var now = Date.now();
@@ -90,9 +101,12 @@
                 return;
             }
 
-            $scope.report.type = "SP";
+            if (greenpos.type === 'PR' || greenpos.type === 'DR') {
+                $scope.report.type = "PR";
+            } else {
+                $scope.report.type = "SP";
+            }
         }
-        ;
 
         $scope.visibility = {
             "SP" : [ "destination", "eta", "personsOnBoard", "course", "speed", "weather", "ice" ],
@@ -109,9 +123,7 @@
         };
 
         $scope.$watch($scope.getLatLon, function(newValue, oldValue) {
-            if (newValue.lat && newValue.lon) {
-                $scope.setPositionOnMap(newValue.lat, newValue.lon);
-            }
+            $scope.setPositionOnMap(newValue.lat, newValue.lon);
         }, true);
 
         $scope.isVisible = function(fieldName) {
@@ -139,7 +151,7 @@
         $scope.sendReport = function() {
             $scope.message = null;
             GreenposService.save($scope.report, function() {
-                $scope.message = "GreenPos report successfully submitted. ";
+                $scope.message = "Greenpos report successfully submitted. ";
                 if ($scope.deactivate) {
                     RouteService.setActiveRoute($scope.activeRouteId, false, function() {
                         $scope.message += "Active route successsfully deactivated. ";
@@ -160,9 +172,9 @@
         };
 
         $scope.setPositionOnMap = function(latitude, longitude) {
-            try {
+            if (longitude !== null && latitude !== null && typeof latitude != "undefined" && typeof longitude != "undefined") {
                 layer.draw(longitude, latitude);
-            } catch (e) {
+            } else {
                 layer.clear();
             }
         };
@@ -172,41 +184,42 @@
         }
 
         this.show = function(vesselOverview, vesselDetails) {
-            $scope.$apply(function() {
-                GreenposService.getLatestReport(vesselOverview.mmsi, function(latestReport) {
-                    evalGreenpos(latestReport);
-                });
-            });
+            $scope.report.mmsi = vesselOverview.mmsi;
+            $scope.report.callSign = vesselOverview.callSign;
+            $scope.report.vesselName = vesselOverview.name;
+            $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId != null);
 
-            $scope.$apply(function() {
+            $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
+
+            ScheduleService.getActiveVoyage(
+                vesselOverview.mmsi,
+                vesselDetails.additionalInformation.routeId,
+                function(voyageInfo) {
+                    if (!voyageInfo) return;
+                    $scope.report.destination = voyageInfo.des;
+                    $scope.report.eta = voyageInfo.desEta;
+                    if (voyageInfo.crew) {
+                        $scope.report.personsOnBoard = voyageInfo.crew;
+                    }
+                    if (voyageInfo.passengers) {
+                        if ($scope.report.personsOnBoard) {
+                            $scope.report.personsOnBoard += voyageInfo.passengers;
+                        } else {
+                            $scope.report.personsOnBoard = voyageInfo.passengers;
+                        }
+                    }
+
+                }, function(errorMsgs) {
+                    $scope.warningMessages = errorMsgs;
+                }
+            );
+
+            GreenposService.getLatestReport(vesselOverview.mmsi, function(latestReport) {
+                evalGreenpos(latestReport);
                 $("#greenposReportPanel").css("display", "block");
-                $scope.report.mmsi = vesselOverview.mmsi;
-                $scope.report.callSign = vesselOverview.callSign;
-                $scope.report.vesselName = vesselOverview.name;
-                $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId != null);
-
-                $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
             });
 
-            $scope.$apply(function() {
-                ScheduleService.getActiveVoyage(vesselOverview.mmsi, vesselDetails.additionalInformation.routeId,
-                        function(voyageInfo) {
-                            $scope.report.destination = voyageInfo.des;
-                            $scope.report.eta = voyageInfo.desEta;
-                            if (voyageInfo.crew) {
-                                $scope.report.personsOnBoard = voyageInfo.crew;
-                            }
-                            if (voyageInfo.passengers) {
-                                if ($scope.report.personsOnBoard) {
-                                    $scope.report.personsOnBoard += voyageInfo.passengers;
-                                } else {
-                                    $scope.report.personsOnBoard = voyageInfo.passengers;
-                                }
-                            }
-                        }, function(errorMsgs) {
-                            $scope.warningMessages = errorMsgs;
-                        });
-            });
+            $scope.$apply();
         }
 
         this.title = "Greenpos Reporting";
@@ -286,8 +299,7 @@
                     $scope.reports = reports;
                 });
 
-                $scope.$apply(function() {
-                });
+                $scope.$apply();
             },
             hide : function() {
                 $("#greenposListPanel").css("display", "none");
@@ -295,8 +307,6 @@
         };
 
         $scope.formatDateTime = function(timeInMillis) {
-            
-            console.log(timeInMillis);
             
             return formatTime(timeInMillis);
         };

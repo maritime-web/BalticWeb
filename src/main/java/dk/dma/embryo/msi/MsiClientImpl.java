@@ -15,12 +15,17 @@
  */
 package dk.dma.embryo.msi;
 
+import dk.dma.arcticweb.service.EmbryoLogService;
 import dk.dma.configuration.Property;
+import dk.dma.embryo.security.authorization.YourShip;
 import dk.frv.enav.msi.ws.warning.MsiService;
 import dk.frv.enav.msi.ws.warning.WarningService;
 import dk.frv.msiedit.core.webservice.message.MsiDto;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
@@ -36,6 +41,9 @@ public class MsiClientImpl implements MsiClient {
     @Property("embryo.msi.country")
     String country;
 
+    @Inject
+    private EmbryoLogService embryoLogService;
+
     private MsiService msiService;
 
     @PostConstruct
@@ -49,12 +57,21 @@ public class MsiClientImpl implements MsiClient {
     }
 
     public List<MsiClient.MsiItem> getActiveWarnings() {
-        List<MsiClient.MsiItem> result = new ArrayList<>();
+        try {
+            List<MsiClient.MsiItem> result = new ArrayList<>();
 
-        for (MsiDto md : msiService.getActiveWarningCountry(country).getItem()) {
-            result.add(new MsiClient.MsiItem(md));
+            for (MsiDto md : msiService.getActiveWarningCountry(country).getItem()) {
+                result.add(new MsiClient.MsiItem(md));
+            }
+
+            embryoLogService.info("Read " + result.size() + " warnings from MSI service: " + endpoint);
+
+            return result;
+
+        } catch (Throwable t) {
+            embryoLogService.error("Error reading warnings from MSI service: " + endpoint, t);
+
+            throw new RuntimeException(t);
         }
-
-        return result;
     }
 }

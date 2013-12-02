@@ -25,12 +25,15 @@ import javax.ws.rs.core.Application;
 import dk.dma.embryo.rest.AuthenticationService;
 import dk.dma.embryo.rest.BerthRestService;
 import dk.dma.embryo.rest.IceObservationRestService;
+import dk.dma.embryo.rest.LogEntryRestService;
 import dk.dma.embryo.rest.MetocRestService;
 import dk.dma.embryo.rest.MsiRestService;
+import dk.dma.embryo.rest.RequestAccessRestService;
 import dk.dma.embryo.rest.RouteRestService;
 import dk.dma.embryo.rest.RouteUploadService;
 import dk.dma.embryo.rest.ScheduleRestService;
 import dk.dma.embryo.rest.ShapeFileService;
+import dk.dma.embryo.rest.UserRestService;
 import dk.dma.embryo.rest.VesselRestService;
 
 @ApplicationPath("/rest")
@@ -40,6 +43,6 @@ public class ApplicationConfig extends Application {
                 ShapeFileService.class, GreenPosRestService.class,
                 BerthRestService.class, AuthenticationService.class, TestDataRestService.class,
                 IceObservationRestService.class, MsiRestService.class, MetocRestService.class, VesselRestService.class,
-                ScheduleRestService.class));
+                ScheduleRestService.class, LogEntryRestService.class, UserRestService.class, RequestAccessRestService.class));
     }
 }
