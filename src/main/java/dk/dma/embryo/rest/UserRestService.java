@@ -15,16 +15,10 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.embryo.domain.AuthorityRole;
-import dk.dma.embryo.domain.Permission;
-import dk.dma.embryo.domain.Role;
-import dk.dma.embryo.domain.Sailor;
-import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.ShoreRole;
-import dk.dma.embryo.domain.Vessel;
-import org.slf4j.Logger;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -36,10 +30,18 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import org.slf4j.Logger;
+
+import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.embryo.domain.AuthorityRole;
+import dk.dma.embryo.domain.Permission;
+import dk.dma.embryo.domain.Role;
+import dk.dma.embryo.domain.SailorRole;
+import dk.dma.embryo.domain.SecuredUser;
+import dk.dma.embryo.domain.ShoreRole;
+import dk.dma.embryo.domain.Vessel;
 
 @Path("/user")
 public class UserRestService {
@@ -83,7 +85,7 @@ public class UserRestService {
                 vessel.setMmsi(user.getShipMmsi());
                 vesselDao.saveEntity(vessel);
 
-                Sailor sailor = new Sailor();
+                SailorRole sailor = new SailorRole();
 
                 sailor.add(ais);
                 sailor.add(yourShip);
@@ -146,9 +148,9 @@ public class UserRestService {
                 permissions.add(p.getLogicalName());
             }
 
-            if (role instanceof Sailor) {
+            if (role instanceof SailorRole) {
                 user.setRole("Sailor");
-                Sailor sailor = realmDao.getSailor(su.getId());
+                SailorRole sailor = realmDao.getSailor(su.getId());
                 user.setShipMmsi(sailor.getVessel().getMmsi());
             } else if (role instanceof ShoreRole || role instanceof AuthorityRole) {
                 if (permissions.contains("Administration")) {

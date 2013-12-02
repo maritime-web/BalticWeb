@@ -7,8 +7,7 @@
     <class>dk.dma.embryo.domain.SecuredUser</class>
     <class>dk.dma.embryo.domain.Role</class>
     <class>dk.dma.embryo.domain.Permission</class>
-    <class>dk.dma.embryo.domain.Text</class>
-    <class>dk.dma.embryo.domain.Sailor</class>
+    <class>dk.dma.embryo.domain.SailorRole</class>
     <class>dk.dma.embryo.domain.ShoreRole</class>
     <class>dk.dma.embryo.domain.VesselOwnerRole</class>
     <class>dk.dma.embryo.domain.AuthorityRole</class>
