@@ -4,10 +4,9 @@ $(function() {
             switch (v) {
             case "00":
                 return "Ice Free";
-            case "01":
-                return "Open Water (< 1/10)";
-            case "02":
-                return "Bergy Water";
+            case "1":
+            case "2":
+                return "< 1/10";
             case "10":
                 return "1/10";
             case "12":
@@ -157,7 +156,7 @@ $(function() {
             case 7:
                 return "Giant Floe";
             case 8:
-                return "Fastened (Fast) Floe";
+                return "Fast Ice";
             case 9:
                 return "Growlers, Floebergs, Floebits";
             case 10:
