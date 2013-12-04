@@ -63,7 +63,8 @@ function IceLayer() {
     }
 
     this.draw = function(shapes) {
-        function colorByDescription(description) {            
+        function colorByDescription(description) {
+            
             if (description.CT == 92) return "#979797";
             if (description.CT == 79 || description.CT > 80) return "#ff0000";
             if (description.CT == 57 || description.CT > 60) return "#ff7c06";
@@ -117,7 +118,6 @@ function IceLayer() {
             for (var i in ice)
                 if (ice[i].description.POLY_TYPE == 'W') {
                     var polygons = ice[i].polygons;
-
                     for (var k in polygons) {
                         var polygon = polygons[k];
 
