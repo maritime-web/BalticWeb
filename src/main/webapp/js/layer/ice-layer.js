@@ -63,12 +63,13 @@ function IceLayer() {
     }
 
     this.draw = function(shapes) {
-        function colorByDescription(description) {
-            if (description.CT > 80) return "#ff0000";
-            if (description.CT > 60) return "#e57425";
-            if (description.CT > 40) return "#ffc05e";
-            if (description.CT > 20) return "#fdfc39";
-            return "#90fba4";
+        function colorByDescription(description) {            
+            if (description.CT == 92) return "#979797";
+            if (description.CT == 79 || description.CT > 80) return "#ff0000";
+            if (description.CT == 57 || description.CT > 60) return "#ff7c06";
+            if (description.CT == 24 || description.CT > 30) return "#ffff00";
+            if (description.CT > 10) return "#8effa0";
+            return "#96C7FF";
         }
 
         this.layers.ice.removeAllFeatures();
