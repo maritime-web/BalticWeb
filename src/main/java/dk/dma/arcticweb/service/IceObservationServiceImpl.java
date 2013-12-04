@@ -48,7 +48,7 @@ public class IceObservationServiceImpl implements IceObservationService {
                         region = "Central West";
                         break;
                     case "Greenland_WA":
-                        region = "Greenland WA";
+                        region = "Greenland Overview";
                         break;
                     case "NorthEast_RIC":
                         region = "North East";
@@ -67,7 +67,7 @@ public class IceObservationServiceImpl implements IceObservationService {
                         break;
                 }
 
-                if ((System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) && (!region.equals("Greenland WA"))) {
+                if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
                     iceObservations.add(new IceObservation("DMI", region, date, sfm.getFileSize(), prefix + sfm.getFileName()));
                 }
             }
