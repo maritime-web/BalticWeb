@@ -223,7 +223,7 @@ public class DmiFtpReader {
         String localName = localDmiDirectory + "/" + name;
 
         if (new File(localName).exists()) {
-            logger.info("Not transfering " + name + " since the file already exists in " + localName);
+            logger.debug("Not transfering " + name + " since the file already exists in " + localName);
             return false;
         }
 
