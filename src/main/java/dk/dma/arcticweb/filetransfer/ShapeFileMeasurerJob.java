@@ -78,6 +78,7 @@ public class ShapeFileMeasurerJob {
     @PostConstruct
     public void init() throws IOException {
         if (cron != null) {
+            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("Cron job not scheduled.");
@@ -122,10 +123,10 @@ public class ShapeFileMeasurerJob {
             for (String fn : downloadedIceObservations()) {
                 ShapeFileMeasurement lookup = shapeFileMeasurementDao.lookup(fn, prefix);
                 if (lookup == null) {
-                    logger.info("" + (new Date().getTime() - start) + " vs " + TRANSACTION_LENGTH);
+                    logger.debug("" + (new Date().getTime() - start) + " vs " + TRANSACTION_LENGTH);
 
                     if (System.currentTimeMillis() - start < TRANSACTION_LENGTH) {
-                        logger.info("Measuring file: " + fn);
+                        logger.debug("Measuring file: " + fn);
 
                         ShapeFileMeasurement sfm = new ShapeFileMeasurement();
 
@@ -133,7 +134,7 @@ public class ShapeFileMeasurerJob {
                         sfm.setFileSize(measureFile(fn));
                         sfm.setPrefix(prefix);
 
-                        logger.info("File size: " + sfm.getFileSize());
+                        logger.debug("File size: " + sfm.getFileSize());
 
                         measurements.add(sfm);
 
@@ -150,9 +151,9 @@ public class ShapeFileMeasurerJob {
                 }
             }
 
-            logger.info("Done. Saving " + measurements.size() + " items ...");
+            logger.debug("Done. Saving " + measurements.size() + " items ...");
 
-            logger.info("Calling deleteAll");
+            logger.debug("Calling deleteAll");
 
             shapeFileMeasurementDao.deleteAll(prefix);
 
@@ -182,7 +183,7 @@ public class ShapeFileMeasurerJob {
             return out.toByteArray().length;
 
         } catch (Throwable t) {
-            logger.info("Error measuring " + fn + ": " + t, t);
+            logger.error("Error measuring " + fn + ": " + t, t);
             embryoLogService.error("Error measuring " + fn + ": " + t, t);
             return -1;
         }

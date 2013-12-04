@@ -15,13 +15,15 @@
  */
 package dk.dma.arcticweb.filetransfer;
 
-import dk.dma.arcticweb.service.EmbryoLogService;
-import dk.dma.configuration.Property;
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -33,12 +35,17 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import dk.dma.arcticweb.service.EmbryoLogService;
+import dk.dma.configuration.Property;
 
 @Singleton
 @Startup
@@ -74,7 +81,10 @@ public class DmiFtpReader {
     @Inject
     @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
     private String localDmiDirectory;
-
+    @Inject
+    @Property("embryo.iceMaps.ftp.ageInDays")
+    private Integer ageInDays;
+    
     @Resource
     private TimerService timerService;
 
@@ -86,6 +96,7 @@ public class DmiFtpReader {
     @PostConstruct
     public void init() {
         if (!dmiServer.trim().equals("") && (cron != null)) {
+            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("DMI FTP site is not configured - cron job not scheduled.");
@@ -124,14 +135,26 @@ public class DmiFtpReader {
         return true;
     }
 
-    private boolean filter(String fn) {
+    private boolean filter(String fn, LocalDate limit) {
         boolean result = false;
 
         for (String c : charts) {
             result |= fn.endsWith(c);
         }
 
-        return result;
+        if(!result){
+            return false;
+        }
+        
+        try {
+            Date date = new SimpleDateFormat("yyyyMMddHHmm").parse(fn.substring(0, 12));
+            
+            LocalDateTime mapDate = new LocalDateTime(date.getTime());
+            
+            return mapDate.toLocalDate().isAfter(limit) ;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int transferFiles() throws IOException, InterruptedException {
@@ -150,13 +173,15 @@ public class DmiFtpReader {
             ftp.changeWorkingDirectory(dmiBaseDirectory);
 
             List<String> subdirectoriesAtServer = new ArrayList<String>();
+            
+            LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(1);
 
             Thread.sleep(10);
 
             logger.info("Reading files in: " + dmiBaseDirectory);
 
             for (FTPFile f : ftp.listFiles()) {
-                if (filter(f.getName()) && !isIceObservationFullyDownloaded(f.getName())) {
+                if (filter(f.getName(), mapsYoungerThan) && !isIceObservationFullyDownloaded(f.getName())) {
                     subdirectoriesAtServer.add(f.getName());
                 }
             }
