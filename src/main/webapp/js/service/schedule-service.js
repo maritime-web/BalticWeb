@@ -16,8 +16,10 @@
                 depEta : schecule.voyages[index].departure,
                 crew : schecule.voyages[index].crew,
                 passengers : schecule.voyages[index].passengers,
-                routeId : schecule.voyages[index].route.id,
             };
+            if(schecule.voyages[index].route){
+                result.routeId = schecule.voyages[index].route.id;
+            }
             if (index < schecule.voyages.length - 1) {
                 result.des = schecule.voyages[index + 1].berthName;
                 result.desEta = schecule.voyages[index + 1].arrival;
