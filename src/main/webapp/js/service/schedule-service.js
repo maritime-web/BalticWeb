@@ -57,6 +57,9 @@
                 };
                 SessionStorageService.getItem(currentSchedule, callback, remoteCall);
             },
+            clearYourSchedule : function() {
+                SessionStorageService.removeItem(currentSchedule);
+            },
             getSchedule : function(mmsi, callback, error) {
                 $http.get(scheduleUrl + mmsi).success(callback).error(function(data, status, headers, config) {
                     error(embryo.ErrorService.extractError(data, status, config));

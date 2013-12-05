@@ -9,7 +9,7 @@
         }
     }
 
-    embryo.RouteEditCtrl = function($scope, RouteService, VesselService) {
+    embryo.RouteEditCtrl = function($scope, RouteService, VesselService, ScheduleService) {
         function initRouteMeta(route, meta) {
             setDefault(route, "etaDep", meta.etdep);
             setDefault($scope, "etaDes", meta.etdes);
@@ -81,6 +81,7 @@
             $scope.route.wps = $scope.waypoints.slice(0, $scope.waypoints.length - 1);
             RouteService.save($scope.route, $scope.scheduleData.voyageId, function() {
                 $scope.message = "Saved route '" + $scope.route.name + "'";
+                ScheduleService.clearYourSchedule();
             }, function(error) {
                 $scope.alertMessages = error;
             });
@@ -93,6 +94,7 @@
                 $scope.message = "Saved and activated route '" + $scope.route.name + "'";
                 VesselService
                         .updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", $scope.route.id);
+                ScheduleService.clearYourSchedule();
             }, function(error) {
                 $scope.alertMessages = error;
             });

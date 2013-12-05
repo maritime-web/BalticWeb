@@ -123,8 +123,7 @@
                     VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId",
                             file.routeId);
                 }
-                // HACK: need to reload voyage plan
-                sessionStorage.clear();
+                ScheduleService.clearYourSchedule();
             });
         }
 
