@@ -52,6 +52,10 @@ body {
     display:none;
 }
 
+#vcpLegends .aw{
+	color:#0080C0;
+}
+
 #hoveringBox {
     position: absolute;
 }
@@ -153,4 +157,3 @@ body {
         width: 185px;
     }
 }
-
