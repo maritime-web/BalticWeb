@@ -5,8 +5,9 @@ $(function() {
             case "00":
                 return "Ice Free";
             case "1":
+                return "Open Water";
             case "2":
-                return "< 1/10";
+                return "Bergy Water";
             case "10":
                 return "1/10";
             case "12":
