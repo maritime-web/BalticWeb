@@ -45,9 +45,9 @@ public class ScheduleDaoImpl extends DaoImpl implements ScheduleDao {
         datequery.setParameter("mmsi", mmsi);
         LocalDateTime date = datequery.getSingleResult();
 
-        datequery = em.createQuery("select v.departure from Voyage v where v.vessel.mmsi = :mmsi AND v.vessel.activeVoyage = v", LocalDateTime.class);
-        datequery.setParameter("mmsi", mmsi);
-        LocalDateTime activeDate = datequery.getSingleResult();
+        TypedQuery<LocalDateTime> activeDateQuery = em.createQuery("select ves.activeVoyage.departure from Vessel ves where ves.mmsi = :mmsi", LocalDateTime.class);
+        activeDateQuery.setParameter("mmsi", mmsi);
+        LocalDateTime activeDate = getSingleOrNull(activeDateQuery.getResultList());
 
         if(date != null && activeDate != null && date.isAfter(activeDate)){
             date = activeDate;
