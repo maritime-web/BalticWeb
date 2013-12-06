@@ -42,10 +42,18 @@ public class ScheduleDaoImpl extends DaoImpl implements ScheduleDao {
     @Override
     public List<Voyage> getSchedule(Long mmsi) {
         TypedQuery<LocalDateTime> datequery = em.createQuery("select MAX(v.departure) from Voyage v where v.vessel.mmsi = :mmsi AND date(v.departure) < CURRENT_DATE()", LocalDateTime.class);
-//        TypedQuery<LocalDateTime> datequery = em.createQuery("select FUNCTION('MAX', v.departure) AS DATETIME from Voyage v where v.schedule.vessel.mmsi = :mmsi AND FUNCTION('DATE', v.departure) < FUNCTION('CURDATE')", LocalDateTime.class);
         datequery.setParameter("mmsi", mmsi);
-
         LocalDateTime date = datequery.getSingleResult();
+
+        datequery = em.createQuery("select v.departure from Voyage v where v.vessel.mmsi = :mmsi AND v.vessel.activeVoyage = v", LocalDateTime.class);
+        datequery.setParameter("mmsi", mmsi);
+        LocalDateTime activeDate = datequery.getSingleResult();
+
+        if(date != null && activeDate != null && date.isAfter(activeDate)){
+            date = activeDate;
+        }else if (date == null){
+            date = activeDate;
+        }
         
         TypedQuery<Voyage> query = em.createNamedQuery("Voyage:getByMmsi", Voyage.class);
         query.setParameter("mmsi", mmsi);
