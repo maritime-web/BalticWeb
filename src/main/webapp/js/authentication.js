@@ -90,9 +90,13 @@ embryo.ready(function() {
             },
             success: function(data) {
                 sessionStorage.clear();
+                
+                if(location.pathname.indexOf("front.html") >= 0){
+                    location = "map.html#/vessel";
+                }
                 embryo.authentication = data;
-                embryo.messagePanel.replace(messageId, { text: "Succesfully logged in.", type: "success" });
                 updateNavigationBar();
+                embryo.messagePanel.replace(messageId, { text: "Succesfully logged in.", type: "success" });
                 embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
             },
             error: function(data) {
