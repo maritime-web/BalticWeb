@@ -85,7 +85,11 @@ public class AuthenticationService {
     @Produces("application/json")
     @GZIP
     public void logout() {
-        embryoLogService.info("User " + subject.getUser().getUserName() + " logged out");
+        if (subject != null && subject.getUser() != null) {
+            embryoLogService.info("User " + subject.getUser().getUserName() + " logged out");
+        }else{
+            embryoLogService.error("Attempt to logout all though not logged in");
+        }
         subject.logout();
     }
 
