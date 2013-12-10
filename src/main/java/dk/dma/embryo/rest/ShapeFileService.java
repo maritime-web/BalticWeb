@@ -51,18 +51,12 @@ public class ShapeFileService {
     @Path("/single/{id}")
     @Produces("application/json")
     @GZIP
-    @Cache(
-            maxAge = 31556926,
-            isPrivate = false
-    )
-    public Shape getSingleFile(
-            @PathParam("id") String id,
-            @DefaultValue("0") @QueryParam("resolution") int resolution,
+    @Cache(maxAge = 31556926, isPrivate = false)
+    public Shape getSingleFile(@PathParam("id") String id, @DefaultValue("0") @QueryParam("resolution") int resolution,
             @DefaultValue("") @QueryParam("filter") String filter,
             @DefaultValue("false") @QueryParam("delta") boolean delta,
-            @DefaultValue("2") @QueryParam("exponent") int exponent
-    ) throws IOException {
-        logger.info("Request for single file: "+id);
+            @DefaultValue("2") @QueryParam("exponent") int exponent) throws IOException {
+        logger.info("Request for single file: " + id);
         return readSingleFile(id, resolution, filter, delta, exponent);
     }
 
@@ -70,18 +64,13 @@ public class ShapeFileService {
     @Path("/multiple/{ids}")
     @Produces("application/json")
     @GZIP
-    @Cache(
-            maxAge = 31556926,
-            isPrivate = false
-    )
-    public List<Shape> getMultipleFile(
-            @PathParam("ids") String ids,
+    @Cache(maxAge = 31556926, isPrivate = false)
+    public List<Shape> getMultipleFile(@PathParam("ids") String ids,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
             @DefaultValue("") @QueryParam("filter") String filter,
             @DefaultValue("false") @QueryParam("delta") boolean delta,
-            @DefaultValue("2") @QueryParam("exponent") int exponent
-    ) throws IOException {
-        logger.info("Request for multiple files: "+ids);
+            @DefaultValue("2") @QueryParam("exponent") int exponent) throws IOException {
+        logger.info("Request for multiple files: " + ids);
         List<Shape> result = new ArrayList<>();
 
         for (String id : ids.split(",")) {
@@ -111,31 +100,46 @@ public class ShapeFileService {
         }
     }
 
-    public Shape readSingleFile(String id, int resolution, String filter, boolean delta, int exponent) throws IOException {
-        InputStream shpIs;
-        InputStream dbfIs;
-        InputStream prjIs;
+    private Shape readSingleFile(String id, int resolution, String filter, boolean delta, int exponent)
+            throws IOException {
+        InputStream shpIs = null;
+        InputStream dbfIs = null;
+        InputStream prjIs = null;
 
-        if (id.startsWith("dmi.")) {
-            id = id.substring(4);
-            shpIs = new FileInputStream(localDmiDirectory + "/" + id + ".shp");
-            dbfIs = new FileInputStream(localDmiDirectory + "/" + id + ".dbf");
-            prjIs = new FileInputStream(localDmiDirectory + "/" + id + ".prj");
-        } else if (id.startsWith("static.")) {
-            id = id.substring(7);
-            shpIs = getClass().getResourceAsStream("/shapefiles/" + id + ".shp");
-            dbfIs = getClass().getResourceAsStream("/shapefiles/" + id + ".dbf");
-            prjIs = getClass().getResourceAsStream("/shapefiles/" + id + ".prj");
-        } else {
-            throw new RuntimeException("No prefix for " + id);
+        String projection = null;
+        ShapeFileParser.File file = null;
+        List<Map<String, Object>> data = null;
+
+        try {
+            if (id.startsWith("dmi.")) {
+                id = id.substring(4);
+                shpIs = new FileInputStream(localDmiDirectory + "/" + id + ".shp");
+                dbfIs = new FileInputStream(localDmiDirectory + "/" + id + ".dbf");
+                prjIs = new FileInputStream(localDmiDirectory + "/" + id + ".prj");
+            } else if (id.startsWith("static.")) {
+                id = id.substring(7);
+                shpIs = getClass().getResourceAsStream("/shapefiles/" + id + ".shp");
+                dbfIs = getClass().getResourceAsStream("/shapefiles/" + id + ".dbf");
+                prjIs = getClass().getResourceAsStream("/shapefiles/" + id + ".prj");
+            } else {
+                throw new RuntimeException("No prefix for " + id);
+            }
+            projection = ProjectionFileParser.parse(prjIs);
+            file = ShapeFileParser.parse(shpIs);
+            data = DbfParser.parse(dbfIs);
+        } finally {
+            if(prjIs != null){
+                prjIs.close();
+            }
+            if(shpIs != null){
+                shpIs.close();
+            }
+            if(dbfIs != null){
+                dbfIs.close();
+            }
         }
 
-        String projection = ProjectionFileParser.parse(prjIs);
-
         List<Fragment> fragments = new ArrayList<>();
-
-        ShapeFileParser.File file = ShapeFileParser.parse(shpIs);
-        List<Map<String, Object>> data = DbfParser.parse(dbfIs);
 
         for (ShapeFileParser.Record r : file.getRecords()) {
             if (r.getShape() instanceof ShapeFileParser.PolyLine) {
@@ -143,7 +147,8 @@ public class ShapeFileService {
                 if (filter.equals("") || description.get("POLY_TYPE").equals(filter)) {
                     List<List<Position>> polygons = new ArrayList<>();
 
-                    for (List<ShapeFileParser.Point> part : ((ShapeFileParser.PolyLine) r.getShape()).getPartsAsPoints()) {
+                    for (List<ShapeFileParser.Point> part : ((ShapeFileParser.PolyLine) r.getShape())
+                            .getPartsAsPoints()) {
                         List<Position> polygon = new ArrayList<>();
                         for (ShapeFileParser.Point p : part) {
                             polygon.add(reprojectAndRound(p, projection, exponent));
