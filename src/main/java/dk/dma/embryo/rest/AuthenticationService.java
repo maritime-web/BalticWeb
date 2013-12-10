@@ -25,7 +25,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
@@ -53,6 +55,7 @@ public class AuthenticationService {
     @Path("/details")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public Details details() {
         SecuredUser user = subject.getUser();
         if (user == null) {
@@ -77,6 +80,7 @@ public class AuthenticationService {
         details.setUserName(user.getUserName());
         details.setPermissions(permissions);
 
+        logger.debug("details() : {}", details);
         return details;
     }
 
@@ -84,10 +88,13 @@ public class AuthenticationService {
     @Path("/logout")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public void logout() {
         if (subject != null && subject.getUser() != null) {
+            logger.debug("User {} logged out", subject.getUser().getUserName());
             embryoLogService.info("User " + subject.getUser().getUserName() + " logged out");
-        }else{
+        } else {
+            logger.error("Attempt to logout all though not logged in");
             embryoLogService.error("Attempt to logout all though not logged in");
         }
         subject.logout();
@@ -97,18 +104,22 @@ public class AuthenticationService {
     @Path("/login")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public Details login(@QueryParam("userName") String userName, @QueryParam("password") String password) {
         try {
             SecuredUser user = subject.login(userName, password);
 
             if (user != null) {
+                logger.debug("User {} logged in", userName);
                 embryoLogService.info("User " + userName + " logged in");
                 return details();
             } else {
+                logger.debug("User {} not logged in (wrong username / password)", userName);
                 embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
                 throw new UserNotAuthenticated();
             }
         } catch (org.apache.shiro.authc.IncorrectCredentialsException e) {
+            logger.debug("User {} not logged in (wrong username / password)", userName);
             embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
             throw e;
         }
@@ -159,6 +170,11 @@ public class AuthenticationService {
 
         public void setPermissions(String[] permissions) {
             this.permissions = permissions;
+        }
+
+        @Override
+        public String toString() {
+            return ReflectionToStringBuilder.toString(this);
         }
     }
 }
