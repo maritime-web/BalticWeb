@@ -3,6 +3,22 @@
 
 embryo = {};
 
+// fn to add blank (noOp) function for all console methods
+var key, names = [ "log", "debug", "info", "warn", "error", "assert", "dir", "dirxml", "group", "groupEnd", "time",
+        "timeEnd", "count", "trace", "profile", "profileEnd" ];
+embryo.logger = {};
+
+for (key in names) {
+    if (window.console) {
+        embryo.logger[names[key]] = function() {
+            return console[name](arguments);
+        };
+    } else {
+        embryo.logger[names[key]] = function() {
+        };
+    }
+}
+
 embryo.baseMap = "world_merc";
 // embryo.baseMap = "osm";
 

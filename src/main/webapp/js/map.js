@@ -294,7 +294,7 @@ $(function() {
             if (data) {
                 layer.draw(data);
             } else {
-                console.log("unhandled error", error);
+                embryo.logger.log("unhandled error", error);
             }
         });
     }
