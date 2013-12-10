@@ -56,7 +56,7 @@ public class ShapeFileService {
             @DefaultValue("") @QueryParam("filter") String filter,
             @DefaultValue("false") @QueryParam("delta") boolean delta,
             @DefaultValue("2") @QueryParam("exponent") int exponent) throws IOException {
-        logger.info("Request for single file: " + id);
+        logger.info("Request for single file: {}", id);
         return readSingleFile(id, resolution, filter, delta, exponent);
     }
 
@@ -70,7 +70,7 @@ public class ShapeFileService {
             @DefaultValue("") @QueryParam("filter") String filter,
             @DefaultValue("false") @QueryParam("delta") boolean delta,
             @DefaultValue("2") @QueryParam("exponent") int exponent) throws IOException {
-        logger.info("Request for multiple files: " + ids);
+        logger.info("Request for multiple files: {}", ids);
         List<Shape> result = new ArrayList<>();
 
         for (String id : ids.split(",")) {
