@@ -1,5 +1,5 @@
 embryo.authentication = {
-    currentPageRequiresAuthentication: true
+    currentPageRequiresAuthentication : true
 };
 
 embryo.eventbus.AuthenticatedEvent = function() {
@@ -10,24 +10,42 @@ embryo.eventbus.AuthenticatedEvent = function() {
 embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authenticated");
 
 embryo.ready(function() {
-    
+
+    function detectBrowser() {
+        if (browser.isIE() && browser.version() <= 7) {
+            $("#ie7ver").html(browser.version());
+            $("#ie7").show();
+        } else if (browser.isIE() && browser.version() <= 9) {
+            $("#ie89ver").html(browser.version());
+            $("#ie89").show();
+        }
+    }
+
+    function clearMessages() {
+        $("#ie89").hide();
+        $("#ie7").hide();
+        $("#loginWrongLoginOrPassword").hide();
+    }
+
     function updateNavigationBar() {
         // is user logged in ?
-        
+
         if (embryo.authentication.userName == null) {
             var html = "";
-            
+
             html += "<span>";
             html += "<a href=#login>Log In</a> | <a href=#requestAccess>Request Access</a>"
             html += "</span>";
-            
+
             $("#authentication").html(html);
-            
+
             $("#authentication a[href=\"#login\"]").click(function(e) {
                 e.preventDefault();
+                clearMessages();
+                detectBrowser();
                 $("#login").modal("show");
             });
-            
+
             $("#authentication a[href=\"#requestAccess\"]").click(function(e) {
                 e.preventDefault();
                 embryo.authentication.showRequestAccess();
@@ -40,32 +58,36 @@ embryo.ready(function() {
 
         } else {
             var html = "";
-            
+
             html += "<i class='icon-user icon-white' style='vertical-align:middle; margin-bottom: 4px'></i>";
             html += " <span>";
             html += embryo.authentication.userName + " | <a href=#>Log Out</a>"
             html += "</span>";
-            
+
             $("#authentication").html(html);
-            
+
             $("#authentication a").click(function(e) {
                 e.preventDefault();
 
-                var messageId = embryo.messagePanel.show( { text: "Logging out ..." })
-                
+                var messageId = embryo.messagePanel.show({
+                    text : "Logging out ..."
+                })
+
                 $.ajax({
-                    url: embryo.baseUrl+"rest/authentication/logout",
-                    data: { 
-                    },
-                    success: function(data) {
+                    url : embryo.baseUrl + "rest/authentication/logout",
+                    data : {},
+                    success : function(data) {
                         sessionStorage.clear();
                         localStorage.clear();
                         setTimeout(function() {
                             location = "front.html";
                         }, 100);
                     },
-                    error: function(data) {
-                        embryo.messagePanel.replace(messageId, { text: "Logout failed. ("+data.status+")", type: "error" })
+                    error : function(data) {
+                        embryo.messagePanel.replace(messageId, {
+                            text : "Logout failed. (" + data.status + ")",
+                            type : "error"
+                        })
                     }
                 });
             });
@@ -75,70 +97,89 @@ embryo.ready(function() {
     $("#login").on("shown", function() {
         $("#userName").focus();
     });
-    
+
     $("#login button.btn-primary").click(function(e) {
         e.preventDefault();
-        var messageId = embryo.messagePanel.show( { text: "Logging in ..." })
-        
+        var messageId = embryo.messagePanel.show({
+            text : "Logging in ..."
+        })
+
         $("#login").modal("hide");
         
+        clearMessages();
+
         $.ajax({
-            url: embryo.baseUrl+"rest/authentication/login",
-            data: { 
-                userName: $("#userName").val(),
-                password: $("#password").val()
+            url : embryo.baseUrl + "rest/authentication/login",
+            data : {
+                userName : $("#userName").val(),
+                password : $("#password").val()
             },
-            success: function(data) {
+            success : function(data) {
                 sessionStorage.clear();
-                
-                if(location.pathname.indexOf("front.html") >= 0){
+
+                if (location.pathname.indexOf("front.html") >= 0) {
                     location.href = "map.html#/vessel";
                 }
                 embryo.authentication = data;
                 updateNavigationBar();
-                embryo.messagePanel.replace(messageId, { text: "Succesfully logged in.", type: "success" });
+                embryo.messagePanel.replace(messageId, {
+                    text : "Succesfully logged in.",
+                    type : "success"
+                });
                 embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
             },
-            error: function(data) {
+            error : function(data) {
                 updateNavigationBar();
-                embryo.messagePanel.replace(messageId, { text: "Log in failed. ("+data.status+")", type: "error" })
+                embryo.messagePanel.replace(messageId, {
+                    text : "Log in failed. (" + data.status + ")",
+                    type : "error"
+                })
                 $("#loginWrongLoginOrPassword").css("display", "block");
                 setTimeout(function() {
                     $("#login").modal("show");
                 }, 1000);
             }
         });
-        
+
         $("#userName").val("");
         $("#password").val("");
         $("#loginWrongLoginOrPassword").css("display", "none");
     });
-    
+
     updateNavigationBar();
-    
+
     if (embryo.authentication.userName == null) {
-        var messageId = embryo.messagePanel.show( { text: "Refreshing ..." })
+        var messageId = embryo.messagePanel.show({
+            text : "Refreshing ..."
+        })
 
         $.ajax({
-            url: embryo.baseUrl+"rest/authentication/details",
-            data: { 
-            },
-            success: function(data) {
+            url : embryo.baseUrl + "rest/authentication/details",
+            data : {},
+            success : function(data) {
                 embryo.authentication = data;
-                embryo.messagePanel.replace(messageId, { text: "Refresh succesful.", type: "success" });
+                embryo.messagePanel.replace(messageId, {
+                    text : "Refresh succesful.",
+                    type : "success"
+                });
                 updateNavigationBar();
                 embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
             },
-            error: function(data) {
+            error : function(data) {
                 if (data.status == 401 && embryo.authentication.currentPageRequiresAuthentication) {
                     embryo.messagePanel.remove(messageId);
+                    clearMessages();
+                    detectBrowser();
                     $("#login").modal("show");
                 } else {
-                    embryo.messagePanel.replace(messageId, { text: "Refresh failed. ("+data.status+")", type: "error" })
+                    embryo.messagePanel.replace(messageId, {
+                        text : "Refresh failed. (" + data.status + ")",
+                        type : "error"
+                    })
                 }
             }
         });
-    }    
+    }
 });
 
 (function() {
@@ -150,19 +191,18 @@ embryo.ready(function() {
         return {
             isPermitted : function(permission) {
                 var index, permissions = embryo.authentication.permissions;
-                
-                for(index in permissions){
-                    if(permissions[index] == permission){
+
+                for (index in permissions) {
+                    if (permissions[index] == permission) {
                         return true;
                     }
                 }
                 return false;
             }
-       };
+        };
     });
 
 }());
-
 
 embryo.ready(function() {
     embryo.authentication.showRequestAccess = function() {
@@ -185,10 +225,10 @@ embryo.ready(function() {
         e.preventDefault();
 
         var r = {
-            preferredLogin: $("#rPreferredLogin").val(),
-            contactPerson: $("#rContactPerson").val(),
-            emailAddress: $("#rEmailAddress").val(),
-            mmsiNumber: $("#rMmsiNumber").val()
+            preferredLogin : $("#rPreferredLogin").val(),
+            contactPerson : $("#rContactPerson").val(),
+            emailAddress : $("#rEmailAddress").val(),
+            mmsiNumber : $("#rMmsiNumber").val()
         }
 
         if (r.mmsiNumber) {
@@ -206,14 +246,14 @@ embryo.ready(function() {
             feedback("Sending request for access.")
 
             $.ajax({
-                url: embryo.baseUrl + "rest/request-access/save",
-                method: "POST",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(r),
-                success: function() {
+                url : embryo.baseUrl + "rest/request-access/save",
+                method : "POST",
+                contentType : "application/json; charset=utf-8",
+                data : JSON.stringify(r),
+                success : function() {
                     feedback("Request for access has been sent. We will get back to you via email.")
                 },
-                error: function() {
+                error : function() {
                     feedback("Request for access has failed. Please try again.")
                 }
             })
@@ -222,4 +262,3 @@ embryo.ready(function() {
     })
 
 });
-

@@ -1,8 +1,7 @@
 function setCookie(c_name, value, exdays) {
     var exdate = new Date();
     exdate.setDate(exdate.getDate() + exdays);
-    var c_value = escape(value)
-	+ ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+    var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
     document.cookie = c_name + "=" + c_value;
 }
 
@@ -22,7 +21,7 @@ function openCollapse(id) {
     $(".collapse", $(id).parents(".accordion")).data("collapse", null);
     setTimeout(function() {
         if (!$(id).hasClass("in")) {
-            $("a[href=#"+$(id).attr("id")+"]").click();
+            $("a[href=#" + $(id).attr("id") + "]").click();
         }
     }, 10)
 }
@@ -30,7 +29,7 @@ function openCollapse(id) {
 function closeCollapse(id) {
     $(".collapse", $(id).parents(".accordion")).data("collapse", null);
     if ($(id).hasClass("in")) {
-        $("a[href=#"+$(id).attr("id")+"]").click();
+        $("a[href=#" + $(id).attr("id") + "]").click();
     }
 }
 
@@ -48,7 +47,7 @@ function formatLongitude(longitude) {
         lonStr = "0" + lonStr;
     }
 
-    return (hours/1000.0).toFixed(3).substring(2) + " " + lonStr + ns;
+    return (hours / 1000.0).toFixed(3).substring(2) + " " + lonStr + ns;
 }
 
 function formatLatitude(latitude) {
@@ -65,7 +64,7 @@ function formatLatitude(latitude) {
         latStr = "0" + latStr;
     }
 
-    return (hours/100.0).toFixed(2).substring(2) + " " + latStr + ns;
+    return (hours / 100.0).toFixed(2).substring(2) + " " + latStr + ns;
 }
 
 function formatLonLat(lonlat) {
@@ -74,20 +73,24 @@ function formatLonLat(lonlat) {
 
 function formatNauticalMile(km) {
     var result = (parseFloat(km) / 1.852);
-    if (result > 25) return result.toFixed(0) + " NM";
+    if (result > 25)
+        return result.toFixed(0) + " NM";
     return result.toFixed(1) + " NM";
 }
 
 function formatDate(dato) {
-    if (dato == null) return "-";
+    if (dato == null)
+        return "-";
     var d = new Date(dato);
-    return d.getFullYear()+"-"+(""+(101+d.getMonth())).slice(1,3)+"-"+(""+(100+d.getDate())).slice(1,3);
+    return d.getFullYear() + "-" + ("" + (101 + d.getMonth())).slice(1, 3) + "-"
+            + ("" + (100 + d.getDate())).slice(1, 3);
 }
 
 function formatTime(dato) {
-    if (dato == null) return "-";
+    if (dato == null)
+        return "-";
     var d = new Date(dato);
-    return formatDate(dato) + " " + d.getHours()+":"+(""+(100+d.getMinutes())).slice(1,3);
+    return formatDate(dato) + " " + d.getHours() + ":" + ("" + (100 + d.getMinutes())).slice(1, 3);
 }
 
 function formatHour(hour) {
@@ -95,6 +98,27 @@ function formatHour(hour) {
 }
 
 function formatSize(size) {
-    if (size < 1024*1024) return Math.round(size / 1024) + " KB";
+    if (size < 1024 * 1024)
+        return Math.round(size / 1024) + " KB";
     return (Math.round(size / 1024 / 1024 * 10) / 10) + " MB";
 }
+
+var browser = {
+    isIE : function(){
+        var myNav = navigator.userAgent.toLowerCase();
+        return myNav.indexOf('msie') != -1;
+    },
+    version : function() {
+        var index, version = 999; // we assume a sane browser
+        var myNav = navigator.userAgent.toLowerCase();
+
+        var parts = myNav.split(";");
+        
+        for(index in parts){
+            if(parts[index].indexOf("msie") >= 0){
+                return parseFloat(parts[index].split("msie")[1]);
+            }
+        }
+        return version;
+    }
+};
