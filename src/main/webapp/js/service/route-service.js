@@ -12,7 +12,7 @@
         
         var loggedInVesselDetails;
         function updateLoggedInVessel(error, vesselOverview, vesselDetails) {
-            // console.log("updateBox", error, vesselOverview, vesselDetails);
+            // embryo.logger.log("updateBox", error, vesselOverview, vesselDetails);
             loggedInVesselDetails = vesselDetails;
         }
         embryo.authenticated(function() {

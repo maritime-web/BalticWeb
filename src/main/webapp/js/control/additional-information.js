@@ -18,7 +18,7 @@ embryo.additionalInformation.historicalTrack = {
                 that.layer.draw(data);
                 that.layer.zoomToExtent();
             } else {
-                console.log("unhandled error", error);
+                embryo.logger.log("unhandled error", error);
             }
         })
     },

@@ -18,8 +18,6 @@
 
     var module = angular.module('embryo.datepicker', []);
 
-    // console.log("zzzzzz");
-
     module.directive('datetimepicker', function() {
         return {
             require : '^ngModel',

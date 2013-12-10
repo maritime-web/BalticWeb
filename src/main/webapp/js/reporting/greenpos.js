@@ -136,16 +136,16 @@ var greenposScope;
         };
 
 //        $scope.$watch("greenPosForm", function(newValue, oldValue) {
-//            console.log("greenposForm");
-//            console.log(newValue);
+//            embryo.logger.log("greenposForm");
+//            embryo.logger.log(newValue);
 //        }, true);
 //        $scope.$watch("greenPosForm.gpShipName", function(newValue, oldValue) {
-//            console.log("gpShipName");
-//            console.log(newValue);
+//            embryo.logger.log("gpShipName");
+//            embryo.logger.log(newValue);
 //        }, true);
 //        $scope.$watch("greenPosForm.gpShipName.$error", function(newValue, oldValue) {
-//            console.log("error");
-//            console.log(newValue);
+//            embryo.logger.log("error");
+//            embryo.logger.log(newValue);
 //        }, true);
 
         $scope.sendReport = function() {
@@ -276,7 +276,7 @@ var greenposScope;
         $scope.max = 10;
         // $scope.options = {
         // fnSort : function(sort, order) {
-        // console.log('fnSort' + sort + order);
+        // embryo.logger.log('fnSort' + sort + order);
         // }
         // };
 

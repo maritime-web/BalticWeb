@@ -238,7 +238,7 @@ $(function() {
     })
 
     function requestShapefile(name, onSuccess) {
-        console.log("Requesting " + name + " data ...");
+        embryo.logger.log("Requesting " + name + " data ...");
 
         var messageId = embryo.messagePanel.show({
             text : "Requesting " + name + " data ..."
@@ -260,7 +260,7 @@ $(function() {
                     text : totalPolygons + " polygons. " + totalPoints + " points returned.",
                     type : "success"
                 })
-                console.log(totalPolygons + " polygons. " + totalPoints + " points returned.");
+                embryo.logger.log(totalPolygons + " polygons. " + totalPoints + " points returned.");
                 iceLayer.draw(data);
                 if (onSuccess)
                     onSuccess();
@@ -269,7 +269,7 @@ $(function() {
                     text : "Server returned error code: " + error.status + " requesting ice data.",
                     type : "error"
                 })
-                console.log("Server returned error code: " + error.status + " requesting ice data.");
+                embryo.logger.log("Server returned error code: " + error.status + " requesting ice data.");
             }
         });
     }

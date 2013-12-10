@@ -1300,6 +1300,4 @@
     );
   }
 
-  // console.log('tarruda');
-
 })(window.jQuery)

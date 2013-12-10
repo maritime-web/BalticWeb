@@ -6,7 +6,7 @@ $(function() {
     addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
 
     function updateBox(error, vesselOverview, vesselDetails) {
-        // console.log("updateBox", error, vesselOverview, vesselDetails);
+        // embryo.logger.log("updateBox", error, vesselOverview, vesselDetails);
         if (!error) {
             yourShip = vesselOverview;
             embryo.vessel.setMarkedVessel(vesselOverview.mmsi);
@@ -20,7 +20,7 @@ $(function() {
             });
             if (vesselDetails.additionalInformation.routeId) {
                 embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
-                    // console.log("Drawing router layer for your vessel", data);
+                    // embryo.logger.log("Drawing router layer for your vessel", data);
                     yourShipRouteLayer.draw(data, "active");
                 });
             }
