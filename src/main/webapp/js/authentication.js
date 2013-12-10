@@ -92,7 +92,7 @@ embryo.ready(function() {
                 sessionStorage.clear();
                 
                 if(location.pathname.indexOf("front.html") >= 0){
-                    location = "map.html#/vessel";
+                    location.href = "map.html#/vessel";
                 }
                 embryo.authentication = data;
                 updateNavigationBar();
