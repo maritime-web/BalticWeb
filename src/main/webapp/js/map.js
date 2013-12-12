@@ -254,9 +254,7 @@ $(function() {
     function setupOsmMap() {
         var osm = new OpenLayers.Layer.OSM(
             "OSM",
-            [ "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-            "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-             "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], {
+            embryo.authentication.osm, {
                 'layers' : 'basic',
                 'isBaseLayer' : true
             }
