@@ -11,7 +11,7 @@ embryo.logger = {};
 for (key in names) {
     if (window.console) {
         embryo.logger[names[key]] = function() {
-            return console[name](arguments);
+            return console[names[key]](arguments);
         };
     } else {
         embryo.logger[names[key]] = function() {
