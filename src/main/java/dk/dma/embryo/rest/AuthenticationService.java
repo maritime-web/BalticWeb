@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.service.EmbryoLogService;
+import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
@@ -50,6 +51,10 @@ public class AuthenticationService {
 
     @Inject
     private EmbryoLogService embryoLogService;
+    
+    @Inject
+    @Property("embryo.osm.url")
+    private String osm;
 
     @GET
     @Path("/details")
@@ -79,6 +84,7 @@ public class AuthenticationService {
         details.setProjection("EPSG:900913");
         details.setUserName(user.getUserName());
         details.setPermissions(permissions);
+        details.setOsm(osm);
 
         logger.debug("details() : {}", details);
         return details;
@@ -139,6 +145,7 @@ public class AuthenticationService {
         private String projection;
         private String userName;
         private String[] permissions;
+        private String osm;
 
         public String getShipMmsi() {
             return shipMmsi;
@@ -170,6 +177,14 @@ public class AuthenticationService {
 
         public void setPermissions(String[] permissions) {
             this.permissions = permissions;
+        }
+        
+        public String getOsm() {
+            return osm;
+        }
+
+        public void setOsm(String osm) {
+            this.osm = osm;
         }
 
         @Override
