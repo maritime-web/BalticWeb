@@ -6,17 +6,20 @@ map.html
 css/ext/embryo.bootstrap.min.css
 css/ext/bootstrap-responsive.css
 //netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css
-css/ext/typeahead-0.9.3.css
-css/ext/jquery.fileupload-ui.css
-css/ext/tarruda-bootstrap-datetimepicker.min.css
 css/arcticweb-map.css
-http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js
-http://openlayers.org/api/OpenLayers.js
-http://www.openstreetmap.org/openlayers/OpenStreetMap.js
-js/ext/bootstrap.min.js
-http://code.jquery.com/ui/1.9.1/jquery-ui.js
+OpenLayers-2.13.1/theme/default/style.css
+
+//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js
+OpenLayers-2.13.1/OpenLayers.js
+
+//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js
+
+//code.jquery.com/ui/1.9.1/jquery-ui.js
+
 js/ext/typeahead-0.9.3.min.js
-http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js
+
+//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js
+
 js/ext/angular-typeahead.js
 js/ext/jquery.iframe-transport.js
 js/ext/jquery.fileupload.js
@@ -41,7 +44,6 @@ partials/route-edit.html
 partials/greenpos-report.html
 partials/greenpos-list.html
 rest/shapefile/multiple/static.world_merc?delta=true&exponent=2
-http://openlayers.org/api/theme/default/style.css
 img/load.gif
 img/vessel_blue.png
 img/vessel_green.png
@@ -66,4 +68,4 @@ img/ring.png
 img/green_marker.png
 img/aw-logo.png
 
-# Version: 20
+# Version: 21
