@@ -41,7 +41,7 @@
     }
 
     embryo.authenticated(function() {
-        if (embryo.authentication.permissions.indexOf("GreenposList") >= 0) {
+        if (embryo.authentication.permissions.indexOf("Reporting") >= 0) {
             loadGreenposReports();
         }
     });

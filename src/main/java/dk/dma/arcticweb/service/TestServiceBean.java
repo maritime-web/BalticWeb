@@ -30,15 +30,19 @@ import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.apache.shiro.SecurityUtils;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.arcticweb.dao.ScheduleDao;
 import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.embryo.domain.AuthorityRole;
+import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosFinalReport;
@@ -46,22 +50,24 @@ import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.IEntity;
-import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Position;
 import dk.dma.embryo.domain.ReportedVoyage;
+import dk.dma.embryo.domain.ReportingAuthorityRole;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
-import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.ShoreRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyagePlan;
 import dk.dma.embryo.rest.util.DateTimeConverter;
+import dk.dma.embryo.security.AuthorizationChecker;
+import dk.dma.embryo.security.SecurityUtil;
+import dk.dma.embryo.security.authorization.Roles;
 
 @Singleton
 @Startup
+@Interceptors(AuthorizationChecker.class)
 public class TestServiceBean {
 
     @Inject
@@ -71,7 +77,7 @@ public class TestServiceBean {
     private VesselDao vesselDao;
 
     @EJB
-    private VesselService vesselService;
+    private ScheduleDao scheduleDao;
 
     @EJB
     private ScheduleService scheduleService;
@@ -82,6 +88,10 @@ public class TestServiceBean {
     @Inject
     private EntityManagerFactory emf;
 
+    @Inject
+    private EntityManager em;
+
+    
     List<Berth> berthList = new ArrayList<>(100);
 
     @PostConstruct
@@ -94,7 +104,10 @@ public class TestServiceBean {
         setupBerthList();
 
         if ("create-drop".equals(hbm2dllAuto)) {
-            createTestData();
+            resetBaseData();
+            resetTestData();
+        } else if("update".equals(hbm2dllAuto)){
+            resetBaseData();
         }
     }
 
@@ -199,46 +212,42 @@ public class TestServiceBean {
         berthList.add(new Berth("Zackenberg Forskningsstation", null, "74 28.0N", "020 34.0W"));
     }
 
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void clearAllData() {
-        logger.info("Deleting existing entries");
-
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void resetBaseData() {
+        clearDmaUser();
         deleteAll(Berth.class);
-        deleteAll(Vessel.class);
-        deleteAll(VoyagePlan.class);
-        deleteAll(Schedule.class);
-        // delete any other voyages
-        deleteAll(Voyage.class);
-        deleteAll(Route.class);
-        deleteAll(SecuredUser.class);
-        deleteAll(Role.class);
-        deleteAll(Permission.class);
-        deleteAll(GreenPosReport.class);
 
-        logger.info("AFTER DELETION");
+        createDmaAccount();
+        createBerths();
+    }
+
+    @Roles(AdministratorRole.class)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void resetTestData() {
+        internalResetTestData();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public <E extends IEntity<K>, K> void deleteAll(Class<E> type) {
-        try {
-            logger.info("Deleting entities of type {}", type.getName());
+    public void clearTestData() {
+        logger.info("Deleting existing test data entries");
 
-            List<E> entities = vesselDao.getAll(type);
-            for (E entity : entities) {
-                logger.info("Deleting entities with id {}", entity.getId());
-                vesselDao.remove(entity);
-            }
-        } catch (RuntimeException e) {
-            logger.error("Error deleting existing entries", e);
-            throw e;
-        }
+        // delete any other voyages
+        deleteAll(Voyage.class);
+        deleteAll(Vessel.class);
+        deleteAll(Route.class);
+        clearTestUsers();
+        deleteAll(Vessel.class);
+        deleteAll(GreenPosReport.class);
+        
+        logger.info("AFTER DELETION");
     }
 
-    public void createTestData() {
-        createBerths();
+
+    private void internalResetTestData() {
+        clearTestData();
+
         createOrasilaTestData();
         uploadOrasilaRoutes();
-        createDmaTestData();
         createOraTankTestData();
         uploadOraTankRoutes();
         createSarfaqTestData();
@@ -246,7 +255,7 @@ public class TestServiceBean {
         // uploadSarfaqRoutes();
         createNajaArcticaTestData();
         createArinaArcticaTestData();
-        
+
         createSilverExplorerTestData();
         createArtaniaTestData();
         createEmeraldPrincessTestData();
@@ -260,34 +269,72 @@ public class TestServiceBean {
         createGreenposReports();
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private <E extends IEntity<K>, K> void deleteAll(Class<E> type) {
+        try {
+            logger.info("Deleting entities of type {}", type.getName());
+            List<E> entities = vesselDao.getAll(type);
+            for (E entity : entities) {
+                logger.info("Deleting entities with id {}", entity.getId());
+                vesselDao.remove(entity);
+            }
+            em.flush();
+            em.clear();
+        } catch (RuntimeException e) {
+            logger.error("Error deleting existing entries", e);
+            throw e;
+        }        
+    }
+
+    public void clearDmaUser() {
+        clearUsers(true);
+        
+    }
+
+    public void clearTestUsers() {
+        clearUsers(false);
+    }
+
+    private void clearUsers(boolean dma) {
+        try {
+            logger.info("Deleting test users (entities of type{})", SecuredUser.class.getName());
+
+            List<SecuredUser> entities = vesselDao.getAll(SecuredUser.class);
+            for (SecuredUser user : entities) {
+                if (dma && "dma".equals(user.getUserName()) || !(dma || "dma".equals(user.getUserName()))) {
+                    logger.info("Deleting entities with id {}", user.getId());
+                    vesselDao.remove(user);
+                }
+            }
+            em.flush();
+            em.clear();
+        } catch (RuntimeException e) {
+            logger.error("Error deleting existing entries", e);
+            throw e;
+        }
+    }
+
+    private void createDmaAccount() {
+        logger.info("BEFORE CREATION - DMA");
+
+        AdministratorRole auth = new AdministratorRole();
+        vesselDao.saveEntity(auth);
+
+        SecuredUser user = SecurityUtil.createUser("dma", "qwerty", "obo@dma.dk");
+        user.setRole(auth);
+        vesselDao.saveEntity(user);
+    }
+    
     private void createBerths() {
         logger.info("BEFORE CREATION - Berths");
 
         for (Berth berth : berthList) {
             vesselDao.saveEntity(berth);
         }
+        
+        em.flush();
+        em.clear();
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    private void createDmaTestData() {
-        logger.info("BEFORE CREATION - DMA");
-
-        AuthorityRole auth = new AuthorityRole();
-
-        Permission administration = new Permission("Administration");
-        vesselDao.saveEntity(administration);
-        auth.add(administration);
-
-        vesselDao.saveEntity(auth);
-
-        SecuredUser user = new SecuredUser("dma", "qwerty", "obo@dma.dk");
-        user.addRole(auth);
-
-        vesselDao.saveEntity(user);
-    }
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createOrasilaTestData() {
         logger.info("BEFORE CREATION - ORASILA");
 
@@ -305,18 +352,13 @@ public class TestServiceBean {
 
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission yourShip = new Permission("YourShip");
-
-        vesselDao.saveEntity(yourShip);
-
         SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("orasila", "qwerty", "obo@dma.dk");
-        user.addRole(sailorRole);
+        SecuredUser user = SecurityUtil.createUser("orasila", "qwerty", "obo@dma.dk");
+        user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
 
@@ -333,22 +375,20 @@ public class TestServiceBean {
         newVessel.addVoyageEntry(new Voyage("Upernavik", "72 47.5N", "056 09.4W", now.plusDays(13).withTime(10, 45, 0,
                 0), now.plusDays(14).withTime(9, 30, 0, 0)));
 
-        for(Voyage v : newVessel.getSchedule()){
+        for (Voyage v : newVessel.getSchedule()) {
             vesselDao.saveEntity(v);
         }
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadOrasilaRoutes() {
         logger.info("BEFORE UPLOAD - ORASILA");
 
-        List<Voyage> schedule = scheduleService.getSchedule(220443000L);
+        List<Voyage> schedule = scheduleDao.getSchedule(220443000L);
         insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/Miami-Nuuk.txt", true);
         insertDemoRoute(schedule.get(1).getEnavId(), "/demo/routes/Nuuk-Thule.txt", false);
         insertDemoRoute(schedule.get(2).getEnavId(), "/demo/routes/Thule-Upernavik.txt", false);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createOraTankTestData() {
         logger.info("BEFORE CREATION - ORATANK");
 
@@ -359,18 +399,13 @@ public class TestServiceBean {
         newVessel.getAisData().setCallsign("OXPJ2");
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission yourShip = new Permission("YourShip");
-
-        vesselDao.saveEntity(yourShip);
-
         SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("oratank", "qwerty", "obo@dma.dk");
-        user.addRole(sailorRole);
+        SecuredUser user = SecurityUtil.createUser("oratank", "qwerty", "obo@dma.dk");
+        user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
 
@@ -378,23 +413,21 @@ public class TestServiceBean {
 
         newVessel.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
                 now.plusDays(5).withTime(9, 0, 0, 0)));
-        newVessel.addVoyageEntry(new Voyage("X", "63 41.81N", "051 29.00W", now.minusDays(4).withTime(9, 30, 0, 0),
-                now.minusDays(3).withTime(17, 0, 0, 0)));
+        newVessel.addVoyageEntry(new Voyage("X", "63 41.81N", "051 29.00W", now.minusDays(4).withTime(9, 30, 0, 0), now
+                .minusDays(3).withTime(17, 0, 0, 0)));
 
-        for(Voyage v : newVessel.getSchedule()){
+        for (Voyage v : newVessel.getSchedule()) {
             vesselDao.saveEntity(v);
         }
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadOraTankRoutes() {
         logger.info("BEFORE UPLOAD - ORATANK");
 
-        List<Voyage> schedule = scheduleService.getSchedule(220516000L);
+        List<Voyage> schedule = scheduleDao.getSchedule(220516000L);
         insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/Oratank-Nuuk.txt", true);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createSarfaqTestData() {
         logger.info("BEFORE CREATION - SARFAQ ITTUK");
 
@@ -403,28 +436,22 @@ public class TestServiceBean {
         newVessel.setMmsi(331037000L);
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission yourShip = new Permission("YourShip");
-
-        vesselDao.saveEntity(yourShip);
-
         SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("sarfaq", "qwerty", "obo@dma.dk");
-        user.addRole(sailorRole);
+        SecuredUser user = SecurityUtil.createUser("sarfaq", "qwerty", "obo@dma.dk");
+        user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
 
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createSarfaqSchedule() {
         logger.info("BEFORE SCHEDULE - SARFAQ");
 
-        Vessel sarfaq = vesselService.getVessel(331037000L);
+        Vessel sarfaq = vesselDao.getVessel(331037000L);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -433,46 +460,45 @@ public class TestServiceBean {
         LocalDateTime firstDeparture = converter.toObject("27-09-2013 21:00", null);
 
         sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", null, firstDeparture));
-        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject(
-                "28-09-2013 07:00", null), converter.toObject("28-09-2013 07:30", null)));
-        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject(
-                "28-09-2013 10:45", null), converter.toObject("28-09-2013 11:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject(
-                "28-09-2013 18:00", null), converter.toObject("28-09-2013 21:00", null)));
+        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("28-09-2013 07:00",
+                null), converter.toObject("28-09-2013 07:30", null)));
+        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("28-09-2013 10:45",
+                null), converter.toObject("28-09-2013 11:00", null)));
+        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("28-09-2013 18:00",
+                null), converter.toObject("28-09-2013 21:00", null)));
         sarfaq.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 08:00",
                 null), converter.toObject("29-09-2013 08:30", null)));
-        sarfaq.addVoyageEntry(new Voyage("Ilulissat", "69 13.5N", "051 06.0W", converter.toObject(
-                "29-09-2013 13:00", null), converter.toObject("29-09-2013 17:00", null)));
+        sarfaq.addVoyageEntry(new Voyage("Ilulissat", "69 13.5N", "051 06.0W", converter.toObject("29-09-2013 13:00",
+                null), converter.toObject("29-09-2013 17:00", null)));
         sarfaq.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 21:30",
                 null), converter.toObject("29-09-2013 22:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject(
-                "30-09-2013 09:00", null), converter.toObject("30-09-2013 10:30", null)));
-        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject(
-                "30-09-2013 17:30", null), converter.toObject("30-09-2013 17:45", null)));
-        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject(
-                "30-09-2013 21:30", null), converter.toObject("30-09-2013 22:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("01-10-2013 06:30",
-                null), converter.toObject("01-10-2013 09:00", null)));
+        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("30-09-2013 09:00",
+                null), converter.toObject("30-09-2013 10:30", null)));
+        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("30-09-2013 17:30",
+                null), converter.toObject("30-09-2013 17:45", null)));
+        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("30-09-2013 21:30",
+                null), converter.toObject("30-09-2013 22:00", null)));
+        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("01-10-2013 06:30", null),
+                converter.toObject("01-10-2013 09:00", null)));
         sarfaq.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject(
                 "01-10-2013 16:30", null), converter.toObject("01-10-2013 16:45", null)));
 
         sarfaq.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("01-10-2013 23:30",
                 null), converter.toObject("02-10-2013 00:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.1W", converter.toObject("02-10-2013 06:45",
-                null), converter.toObject("02-10-2013 07:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Qaqortoq", "60 43.1N", "046 02.4W", converter.toObject(
-                "02-10-2013 15:30", null), converter.toObject("02-10-2013 19:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Narsaq", "60 54.5N", "046 03.0W", converter.toObject("02-10-2013 21:00",
-                null), converter.toObject("02-10-2013 21:30", null)));
+        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.1W",
+                converter.toObject("02-10-2013 06:45", null), converter.toObject("02-10-2013 07:00", null)));
+        sarfaq.addVoyageEntry(new Voyage("Qaqortoq", "60 43.1N", "046 02.4W", converter.toObject("02-10-2013 15:30",
+                null), converter.toObject("02-10-2013 19:00", null)));
+        sarfaq.addVoyageEntry(new Voyage("Narsaq", "60 54.5N", "046 03.0W", converter
+                .toObject("02-10-2013 21:00", null), converter.toObject("02-10-2013 21:30", null)));
 
-        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.2W", converter.toObject("03-10-2013 06:45",
-                null), converter.toObject("03-10-2013 07:00", null)));
+        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.2W",
+                converter.toObject("03-10-2013 06:45", null), converter.toObject("03-10-2013 07:00", null)));
         sarfaq.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("03-10-2013 13:30",
                 null), converter.toObject("03-10-2013 14:30", null)));
         sarfaq.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter
                 .toObject("03-10-2013 22:30"), converter.toObject("03-10-2013 22:45")));
-        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00"),
-                null));
+        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00"), null));
 
         // firstDeparture.
 
@@ -483,23 +509,21 @@ public class TestServiceBean {
                 v.setDeparture(v.getDeparture() == null ? null : v.getDeparture().plusWeeks(p.getWeeks()));
             }
         }
-        
-        for(Voyage v : sarfaq.getSchedule()){
+
+        for (Voyage v : sarfaq.getSchedule()) {
             vesselDao.saveEntity(v);
         }
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadSarfaqRoutes() {
         logger.info("BEFORE UPLOAD - SARFAQ");
 
-        List<Voyage> schedule = scheduleService.getSchedule(331037000L);
+        List<Voyage> schedule = scheduleDao.getSchedule(331037000L);
         insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
         insertDemoRoute(schedule.get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt", false);
         insertDemoRoute(schedule.get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt", false);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createNajaArcticaTestData() {
         logger.info("BEFORE CREATION - NAJA ARCTICA");
 
@@ -508,23 +532,17 @@ public class TestServiceBean {
         newVessel.setMmsi(219623000L);
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission yourShip = new Permission("YourShip");
-
-        vesselDao.saveEntity(yourShip);
-
         SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("naja", "qwerty", "obo@dma.dk");
-        user.addRole(sailorRole);
+        SecuredUser user = SecurityUtil.createUser("naja", "qwerty", "obo@dma.dk");
+        user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createArinaArcticaTestData() {
         logger.info("BEFORE CREATION - ARINA ARCTICA");
 
@@ -533,25 +551,17 @@ public class TestServiceBean {
         newVessel.setMmsi(219097000L);
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission ais = new Permission("ais");
-        Permission yourShip = new Permission("yourShip");
-
-        vesselDao.saveEntity(ais);
-        vesselDao.saveEntity(yourShip);
-
         SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(ais);
-        sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("arina", "qwerty", "obo@dma.dk");
-        user.addRole(sailorRole);
+        SecuredUser user = SecurityUtil.createUser("arina", "qwerty", "obo@dma.dk");
+        user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
     }
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+
     private void createSilverExplorerTestData() {
         logger.info("BEFORE CREATION - SILVER EXPLORER");
 
@@ -560,26 +570,17 @@ public class TestServiceBean {
         newVessel.setMmsi(311562000L);
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission ais = new Permission("ais");
-        Permission yourShip = new Permission("yourShip");
-
-        vesselDao.saveEntity(ais);
-        vesselDao.saveEntity(yourShip);
-
         SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(ais);
-        sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("silver", "qwerty", "obo@dma.dk");
-        user.addRole(sailorRole);
+        SecuredUser user = SecurityUtil.createUser("silver", "qwerty", "obo@dma.dk");
+        user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createArtaniaTestData() {
         logger.info("BEFORE CREATION - ARTANIA");
 
@@ -588,26 +589,17 @@ public class TestServiceBean {
         newVessel.setMmsi(310456000L);
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission ais = new Permission("ais");
-        Permission yourShip = new Permission("yourShip");
-
-        vesselDao.saveEntity(ais);
-        vesselDao.saveEntity(yourShip);
-
         SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(ais);
-        sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("artania", "qwerty", "obo@dma.dk");
-        user.addRole(sailorRole);
+        SecuredUser user = SecurityUtil.createUser("artania", "qwerty", "obo@dma.dk");
+        user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createEmeraldPrincessTestData() {
         logger.info("BEFORE CREATION - EMERALD PRINCESS");
 
@@ -616,27 +608,17 @@ public class TestServiceBean {
         newVessel.setMmsi(310531000L);
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission ais = new Permission("ais");
-        Permission yourShip = new Permission("yourShip");
-
-        vesselDao.saveEntity(ais);
-        vesselDao.saveEntity(yourShip);
-
         SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(ais);
-        sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("princess", "qwerty", "obo@dma.dk");
-        user.addRole(sailorRole);
+        SecuredUser user = SecurityUtil.createUser("princess", "qwerty", "obo@dma.dk");
+        user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
     }
 
-    
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createCarnivalLegendTestData() {
         logger.info("BEFORE CREATION - CARNIVAL LEGEND");
 
@@ -649,21 +631,13 @@ public class TestServiceBean {
         newVessel.setGrossTonnage(85942);
         newVessel = vesselDao.saveEntity(newVessel);
 
-        Permission ais = new Permission("ais");
-        Permission yourShip = new Permission("yourShip");
-
-        vesselDao.saveEntity(ais);
-        vesselDao.saveEntity(yourShip);
-
         SailorRole sailorRole = new SailorRole();
         sailorRole.setVessel(newVessel);
-        sailorRole.add(ais);
-        sailorRole.add(yourShip);
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = new SecuredUser("carnivalLegend", "qwerty", "obo@dma.dk");
-        user.addRole(sailorRole);
+        SecuredUser user = SecurityUtil.createUser("carnivalLegend", "qwerty", "obo@dma.dk");
+        user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
 
@@ -674,101 +648,75 @@ public class TestServiceBean {
         newVessel.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(10).withTime(7, 10, 0, 0),
                 null));
 
-        for(Voyage v : newVessel.getSchedule()){
+        for (Voyage v : newVessel.getSchedule()) {
             vesselDao.saveEntity(v);
         }
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void uploadCarnivalLegendRoutes() {
         logger.info("BEFORE UPLOAD - CARNIVAL LEGEND");
 
-        List<Voyage> schedule = scheduleService.getSchedule(354237000L);
+        List<Voyage> schedule = scheduleDao.getSchedule(354237000L);
         insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/CARNIVAL-LEGEND-Cph-Nuuk.txt", true);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createArcticCommandLogin() {
         logger.info("BEFORE CREATION - Arctic Command");
 
-        Permission greenposList = new Permission("GreenposList");
-
-        vesselDao.saveEntity(greenposList);
-
-        ShoreRole role = new ShoreRole();
-        role.add(greenposList);
+        ReportingAuthorityRole role = new ReportingAuthorityRole();
 
         vesselDao.saveEntity(role);
 
-        SecuredUser user = new SecuredUser("arcticCommand", "qwerty", "obo@dma.dk");
-        user.addRole(role);
+        SecuredUser user = SecurityUtil.createUser("arcticCommand", "qwerty", "obo@dma.dk");
+        user.setRole(role);
 
         vesselDao.saveEntity(user);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createAasiaatLogin() {
         logger.info("BEFORE CREATION - Kyst radion");
 
-        Permission greenposList = new Permission("GreenposList");
-
-        vesselDao.saveEntity(greenposList);
-
-        ShoreRole role = new ShoreRole();
-        role.add(greenposList);
-
+        ReportingAuthorityRole role = new ReportingAuthorityRole();
         vesselDao.saveEntity(role);
 
-        SecuredUser user = new SecuredUser("aasiaat", "qwerty", "obo@dma.dk");
-        user.addRole(role);
-
+        SecuredUser user = SecurityUtil.createUser("aasiaat", "qwerty", "obo@dma.dk");
+        user.setRole(role);
         vesselDao.saveEntity(user);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createNanoqLogin() {
         logger.info("BEFORE CREATION - Nanoq");
 
         ShoreRole role = new ShoreRole();
-
         vesselDao.saveEntity(role);
 
-        SecuredUser user = new SecuredUser("nanoq", "qwerty", "obo@dma.dk");
-        user.addRole(role);
-
+        SecuredUser user = SecurityUtil.createUser("nanoq", "qwerty", "obo@dma.dk");
+        user.setRole(role);
         vesselDao.saveEntity(user);
     }
 
-    
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createDmiLogin() {
         logger.info("BEFORE CREATION - DMI");
 
         ShoreRole role = new ShoreRole();
-
         vesselDao.saveEntity(role);
 
-        SecuredUser user = new SecuredUser("dmi", "qwerty", "obo@dma.dk");
-        user.addRole(role);
-
+        SecuredUser user = SecurityUtil.createUser("dmi", "qwerty", "obo@dma.dk");
+        user.setRole(role);
         vesselDao.saveEntity(user);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createIceCenterLogin() {
         logger.info("BEFORE CREATION - Istjejenesten");
 
         ShoreRole role = new ShoreRole();
-
         vesselDao.saveEntity(role);
 
-        SecuredUser user = new SecuredUser("iceCenter", "qwerty", "obo@dma.dk");
-        user.addRole(role);
-
+        SecuredUser user = SecurityUtil.createUser("iceCenter", "qwerty", "obo@dma.dk");
+        user.setRole(role);
         vesselDao.saveEntity(user);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void createGreenposReports() {
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
         Vessel vessel = vesselDao.getVesselByCallsign("OXPJ2");
@@ -857,12 +805,10 @@ public class TestServiceBean {
 
     }
 
-    public void logExistingEntries() {
-        logger.info("Permissions: {} ", vesselDao.getAll(Permission.class));
+    private void logExistingEntries() {
         logger.info("Roles: {} ", vesselDao.getAll(Role.class));
         logger.info("Users: {} ", vesselDao.getAll(SecuredUser.class));
         logger.info("Vessels: {} ", vesselDao.getAll(Vessel.class));
-        logger.info("Schedules: {} ", vesselDao.getAll(Schedule.class));
         logger.info("Voyage: {} ", vesselDao.getAll(Voyage.class));
         logger.info("Berth: {} ", vesselDao.getAll(Berth.class));
     }
@@ -874,7 +820,10 @@ public class TestServiceBean {
             scheduleService.saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);
+        } finally {
+            SecurityUtils.getSubject().releaseRunAs();
         }
+
     }
 
 }

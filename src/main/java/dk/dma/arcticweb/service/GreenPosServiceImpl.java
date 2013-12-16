@@ -21,10 +21,12 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 
 import org.joda.time.LocalDateTime;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
+import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosReport;
@@ -33,11 +35,15 @@ import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
+import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
-import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.embryo.security.authorization.Roles;
+import dk.dma.embryo.security.authorization.RolesAllowAll;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
+@Interceptors(value=AuthorizationChecker.class)
+@RolesAllowAll
 public class GreenPosServiceImpl implements GreenPosService {
 
     @Inject
@@ -50,20 +56,20 @@ public class GreenPosServiceImpl implements GreenPosService {
     private Subject subject;
 
     @Inject
-    private VesselService vesselService;
-
-    @Inject
     private VesselDao vesselDao;
+    
+    @Inject
+    private RealmDao realmDao;
 
     public GreenPosServiceImpl() {
     }
 
     public GreenPosServiceImpl(GreenPosDao reportingDao, VesselDao vesselDao, Subject subject,
-            VesselService vesselservice, MailService mailService) {
+            RealmDao realmDao, MailService mailService) {
         this.greenPosDao = reportingDao;
         this.vesselDao = vesselDao;
         this.subject = subject;
-        this.vesselService = vesselservice;
+        this.realmDao = realmDao;
         this.mailService = mailService;
     }
 
@@ -77,14 +83,16 @@ public class GreenPosServiceImpl implements GreenPosService {
      * This saves a report coming from a vessel
      */
     @Override
-    @YourShip
+    @Roles(SailorRole.class)
     public String saveReport(GreenPosReport report) {
+        //TODO check if reporting for own ship 
+        
         checkIfAlreadySaved(report);
 
         Vessel vessel = null;
 
         if (subject.hasRole(SailorRole.class)) {
-            vessel = vesselService.getYourVessel();
+            vessel = realmDao.getSailor(subject.getUserId()).getVessel();
             validateVesselData(report, vessel);
         } else {
             vessel = getVesselFromReport(report);

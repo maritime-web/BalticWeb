@@ -21,12 +21,16 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 
 import dk.dma.arcticweb.dao.GeographicDao;
 import dk.dma.embryo.domain.Berth;
+import dk.dma.embryo.security.AuthorizationChecker;
+import dk.dma.embryo.security.authorization.RolesAllowAll;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
+@Interceptors(AuthorizationChecker.class)
 public class GeographicServiceImpl implements GeographicService {
 
     @Inject
@@ -40,10 +44,8 @@ public class GeographicServiceImpl implements GeographicService {
     }
 
     @Override
+    @RolesAllowAll
     public List<Berth> findBerths(String query) {
-//        if(query == null || query.length() == 0){
-//            return Collections.emptyList();
-//        }
         return geoDao.findBerths(query);
     }
 

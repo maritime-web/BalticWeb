@@ -45,9 +45,6 @@ public class AisReplicator {
     private VesselDao vesselRepository;
 
     @Inject
-    private VesselService vesselService;
-
-    @Inject
     private AisDataService aisDataService;
 
     @Inject
@@ -95,7 +92,7 @@ public class AisReplicator {
 
             VesselListResult result = aisView.vesselList(0);
 
-            List<Vessel> awVesselsAsList = vesselService.getAll();
+            List<Vessel> awVesselsAsList = vesselRepository.getAll(Vessel.class);
 
             logger.debug("aisView returns " + result.getVesselList().getVessels().size() + " items - " +
                     "repository returns " + awVesselsAsList.size() + " items.");
@@ -121,7 +118,7 @@ public class AisReplicator {
                             vessel.getAisData().setImoNo(imo);
                             vessel.getAisData().setName(name);
                             logger.debug("Updating vessel {}/{}", mmsi, name);
-                            vesselService.save(vessel);
+                            vesselRepository.saveEntity(vessel);
                         } else {
                             logger.debug("Vessel {}/{} is up to date", mmsi, name);
                         }

@@ -15,12 +15,12 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.arcticweb.dao.LogEntryDao;
-import dk.dma.embryo.domain.LogEntry;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
+
+import dk.dma.arcticweb.dao.LogEntryDao;
+import dk.dma.embryo.domain.LogEntry;
 
 public class EmbryoLogServiceImpl implements EmbryoLogService {
     private LogEntryDao logEntryDao;

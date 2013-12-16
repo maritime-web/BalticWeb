@@ -15,8 +15,6 @@
  */
 package dk.dma.embryo.rest;
 
-import java.util.Set;
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -33,7 +31,6 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.service.EmbryoLogService;
 import dk.dma.configuration.Property;
-import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.Subject;
@@ -51,7 +48,7 @@ public class AuthenticationService {
 
     @Inject
     private EmbryoLogService embryoLogService;
-    
+
     @Inject
     @Property("embryo.osm.url")
     private String osm;
@@ -74,16 +71,10 @@ public class AuthenticationService {
             details.setShipMmsi("" + sailor.getVessel().getMmsi());
         }
 
-        Set<Permission> perms = user.getPermissions();
-        String[] permissions = new String[perms.size()];
-        int count = 0;
-        for (Permission permission : perms) {
-            permissions[count++] = permission.getLogicalName();
-        }
-
+        String[] rolesJson = new String[]{user.getRole().getLogicalName()};
         details.setProjection("EPSG:900913");
         details.setUserName(user.getUserName());
-        details.setPermissions(permissions);
+        details.setPermissions(rolesJson);
         details.setOsm(osm);
 
         logger.debug("details() : {}", details);
@@ -178,7 +169,7 @@ public class AuthenticationService {
         public void setPermissions(String[] permissions) {
             this.permissions = permissions;
         }
-        
+
         public String getOsm() {
             return osm;
         }

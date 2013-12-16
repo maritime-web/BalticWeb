@@ -16,6 +16,7 @@
 package dk.dma.arcticweb.service;
 
 import dk.dma.configuration.Property;
+import dk.dma.embryo.security.authorization.RolesAllowAll;
 import dk.dma.enav.model.geometry.CoordinateSystem;
 import dk.dma.enav.model.geometry.Position;
 
@@ -40,6 +41,7 @@ public class AisDataServiceImpl implements AisDataService {
     @Property("embryo.aisCircle.radius")
     private double aisCircleRadius;
 
+    @RolesAllowAll
     public List<String[]> getVesselsInAisCircle() {
         return vesselsInAisCircle;
     }
@@ -48,6 +50,7 @@ public class AisDataServiceImpl implements AisDataService {
         this.vesselsInAisCircle = vesselsInAisCircle;
     }
 
+    @RolesAllowAll
     public boolean isWithinAisCircle(double x, double y) {
         return Position.create(y, x).distanceTo(Position.create(aisCircleLatitude, aisCircleLongitude), CoordinateSystem.GEODETIC) < aisCircleRadius;
     }

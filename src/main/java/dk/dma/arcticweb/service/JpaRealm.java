@@ -15,7 +15,6 @@
  */
 package dk.dma.arcticweb.service;
 
-
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
@@ -24,10 +23,10 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.embryo.config.Configuration;
-import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SecuredUser;
 
 public class JpaRealm extends AuthorizingRealm {
@@ -40,11 +39,12 @@ public class JpaRealm extends AuthorizingRealm {
 
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) {
         RealmDao realmDao = Configuration.getBean(RealmDao.class);
-        
+
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         SecuredUser user = realmDao.findByUsername(token.getUsername());
         if (user != null) {
-            return new SimpleAuthenticationInfo(user.getId(), user.getPassword(), getName());
+            return new SimpleAuthenticationInfo(user.getId(), user.getHashedPassword(), ByteSource.Util.bytes(user
+                    .getSalt()), getName());
         } else {
             return null;
         }
@@ -57,10 +57,7 @@ public class JpaRealm extends AuthorizingRealm {
         SecuredUser user = realmDao.getByPrimaryKeyReturnAll(userId);
         if (user != null) {
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-            for (Role role : user.getRoles()) {
-                info.addRole(role.getLogicalName());
-                info.addStringPermissions(role.getPermissionsAsStrings());
-            }
+            info.addRole(user.getRole().getLogicalName());
             return info;
         } else {
             return null;

@@ -21,6 +21,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 
 import org.slf4j.Logger;
 
@@ -28,15 +29,19 @@ import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.commons.model.RouteDecorator;
 import dk.dma.configuration.Property;
 import dk.dma.embryo.domain.Route;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.restclients.DmiSejlRuteService;
 import dk.dma.embryo.restclients.DmiSejlRuteService.Forecast;
 import dk.dma.embryo.restclients.DmiSejlRuteService.Waypoint;
+import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.security.authorization.Roles;
 import dk.dma.enav.model.geometry.Position;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@Interceptors(value=AuthorizationChecker.class)
 public class MetocServiceImpl {
 
     @Inject
@@ -64,6 +69,7 @@ public class MetocServiceImpl {
     }
 
 //    @Override
+    @Roles(value=SailorRole.class)
     public DmiSejlRuteService.SejlRuteResponse getMetoc(String routeId) {
         Route route = vesselDao.getRouteByEnavId(routeId);
         if (route == null) {

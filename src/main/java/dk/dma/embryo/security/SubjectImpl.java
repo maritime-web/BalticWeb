@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.security;
 
+import java.util.List;
+
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
@@ -25,7 +27,6 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.security.authorization.Permission;
 
 /**
  * Subject class wrapping all access to shiro security and also decorating with extra syntactic sugar.
@@ -45,9 +46,6 @@ public class SubjectImpl implements Subject {
     @Inject
     private transient Logger logger;
 
-    @Inject
-    private PermissionExtractor permissionExtractor;
-
     public SecuredUser login(String userName, String password, Boolean rememberMe) {
         // collect user principals and credentials in a gui specific manner
         // such as username/password html form, X509 certificate, OpenID, etc.
@@ -58,9 +56,6 @@ public class SubjectImpl implements Subject {
         // token.setRememberMe(true);
         SecurityUtils.getSubject().login(token);
 
-        logger.info("AIS access: " + SecurityUtils.getSubject().isPermitted("ais"));
-        logger.info("YourShip access: " + SecurityUtils.getSubject().isPermitted("yourShip"));
-
         return realmDao.findByUsername(userName);
     }
 
@@ -68,27 +63,8 @@ public class SubjectImpl implements Subject {
         return login(userName, password, Boolean.FALSE);
     }
 
-    public boolean isPermitted(Permission permission) {
-        boolean result = SecurityUtils.getSubject().isPermitted(permission.value());
-        logger.trace("isPermitted({}) : {}" + permission, result);
-        return result;
-    }
 
     /**
-     * TODO remove me.
-     * 
-     * Expected used while transitioning from role base security to feature base security
-     * 
-     * @param permission
-     * @return
-     */
-    public boolean isPermitted(String permission) {
-        return SecurityUtils.getSubject().isPermitted(permission);
-    }
-
-    /**
-     * TODO remove me.
-     * 
      * Expected used while transitioning from role base security to feature base security
      * 
      * @param permission
@@ -96,7 +72,8 @@ public class SubjectImpl implements Subject {
      */
     public <R extends Role> boolean hasRole(Class<R> roleType) {
         try {
-            return SecurityUtils.getSubject().hasRole(roleType.newInstance().getLogicalName());
+            String roleName = roleType.newInstance().getLogicalName();
+            return SecurityUtils.getSubject().hasRole(roleName);
         } catch (InstantiationException | IllegalAccessException e) {
             // FIXME throw application exception
             throw new RuntimeException(e);
@@ -112,54 +89,25 @@ public class SubjectImpl implements Subject {
         return realmDao.getByPrimaryKeyReturnAll(key);
     }
 
-    public <R extends Role> R getRole(Class<R> roleType) {
-        return getUser().getRole(roleType);
-    }
-
-    public boolean isAtLeastOnePermitted(Permission[] permissions) {
-        if (permissions.length > 0) {
-            for (Permission permission : permissions) {
-                if (isPermitted(permission)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean isPermitted(Object secured) {
-        if (secured instanceof PermissionContainer) {
-            PermissionContainer permissionContainer = (PermissionContainer) secured;
-            if (permissionContainer.hasPermissions()) {
-                return isAtLeastOnePermitted(permissionContainer.getPermissions());
-            }
-            // fall through to security by original object
-            // should this instead just return true ?
-        }
-
-        // // DEAD CODE?
-        // if(secured instanceof PermissionDelegator<?>){
-        // PermissionDelegator<?> permissionDelegate = (PermissionDelegator<?>)secured;
-        // if(permissionDelegate.hasPermissionDelegate()){
-        // Permission[] permissions = permissionExtractor.getPermissions(permissionDelegate.getPermissionDelegate());
-        // return isAtLeastOnePermitted(permissions);
-        // }
-        // // fall through to security by original object
-        // // should this instead just return true ?
-        // }
-
-        Permission[] permissions = permissionExtractor.getPermissions(secured);
-        return isAtLeastOnePermitted(permissions);
-    }
-
+    @Override
     public void logout() {
         SecurityUtils.getSubject().logout();
     }
 
+    @Override
     public boolean isLoggedIn() {
         return SecurityUtils.getSubject().isAuthenticated();
     }
-
+    
+    @Override
+    public boolean hasOneOfRoles(List<Class<? extends Role>> roleTypes){
+        for(Class<? extends Role> roleType : roleTypes){
+            if(hasRole(roleType)){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
 }

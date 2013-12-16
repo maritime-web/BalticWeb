@@ -24,5 +24,4 @@ public class AuthorityRole extends Role {
     public AuthorityRole() {
         super("authority");
     }
-
 }

@@ -15,6 +15,7 @@
  */
 package dk.dma.arcticweb.site;
 
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.Ini.Section;
 import org.apache.shiro.web.env.IniWebEnvironment;
@@ -34,8 +35,12 @@ public class ShiroWebEnvironment extends IniWebEnvironment {
         Ini ini = new Ini();
         
         Section s = ini.addSection("main");
+        s.put("credentialsMatcher", HashedCredentialsMatcher.class.getName());
+        s.put("credentialsMatcher.hashAlgorithmName", "SHA-512");
+        s.put("credentialsMatcher.hashIterations", "10000");
+        s.put("credentialsMatcher.storedCredentialsHexEncoded", "false");
         s.put("realm", JpaRealm.class.getName());
-        
+        s.put("realm.credentialsMatcher", "$credentialsMatcher");
         setIni(ini);
     }
 

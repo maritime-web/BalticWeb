@@ -19,17 +19,10 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 
 @Local
 public interface VesselService {
-    /**
-     * Get the vessel for the currently logged in {@link SailorRole}.
-     *
-     * @return
-     */
-    Vessel getYourVessel();
 
     void save(Vessel vessel);
 

@@ -19,8 +19,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import dk.dma.embryo.domain.Permission;
-import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 
@@ -49,14 +47,6 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
         query.setParameter("id", key);
 
         return (SecuredUser) getSingleOrNull(query.getResultList());
-    }
-
-    public Role saveEntity(Role entity) {
-        return (Role) saveEntity(entity);
-    }
-
-    public Permission saveEntity(Permission entity) {
-        return (Permission) saveEntity(entity);
     }
 
     @Override

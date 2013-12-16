@@ -15,6 +15,22 @@
  */
 package dk.dma.embryo.rest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
+
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.arcticweb.service.AisDataService;
 import dk.dma.arcticweb.service.GreenPosService;
@@ -29,21 +45,6 @@ import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
 import dk.dma.embryo.rest.json.VesselOverview;
 import dk.dma.embryo.restclients.FullAisViewService;
 import dk.dma.embryo.restclients.LimitedAisViewService;
-import dk.dma.embryo.security.authorization.YourShip;
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Path("/vessel")
 public class VesselRestService {
@@ -209,7 +210,6 @@ public class VesselRestService {
     @Path("/save-details")
     @Consumes("application/json")
     @GZIP
-    @YourShip
     public void saveDetails(VesselDetails details) {
         logger.info("save({})", details);
         vesselService.save(Vessel.fromJsonModel(details));

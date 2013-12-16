@@ -24,4 +24,8 @@ public class ShoreRole extends Role {
     public ShoreRole() {
         super("shore");
     }
+
+    public ShoreRole(String logicalName) {
+        super(logicalName);
+    }
 }

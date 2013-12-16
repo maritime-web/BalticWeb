@@ -21,6 +21,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 
 import org.slf4j.Logger;
 
@@ -28,10 +29,14 @@ import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
+import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.security.authorization.Roles;
+import dk.dma.embryo.security.authorization.RolesAllowAll;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
+@Interceptors(value=AuthorizationChecker.class)
 public class VesselServiceImpl implements VesselService {
 
     @Inject
@@ -55,6 +60,7 @@ public class VesselServiceImpl implements VesselService {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @Roles(value=SailorRole.class)
     public void save(Vessel vessel) {
         Vessel managed = vesselRepository.getVessel(vessel.getMmsi());
 
@@ -74,20 +80,14 @@ public class VesselServiceImpl implements VesselService {
         }
     }
     
-    public Vessel getYourVessel() {
-        if (subject.hasRole(SailorRole.class)) {
-            SailorRole sailor = realmDao.getSailor(subject.getUserId());
-            return sailor.getVessel();
-        }
-        return new Vessel();
-    }
-
     @Override
+    @RolesAllowAll
     public Vessel getVessel(Long mmsi) {
         return vesselRepository.getVessel(mmsi);
     }
 
     @Override
+    @RolesAllowAll
     public List<Vessel> getAll() {
         return vesselRepository.getAll(Vessel.class);
     }

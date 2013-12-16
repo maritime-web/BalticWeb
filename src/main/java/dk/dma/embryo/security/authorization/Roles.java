@@ -13,11 +13,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.security;
+package dk.dma.embryo.security.authorization;
 
-public interface PermissionDelegator<T> {
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    T getPermissionDelegate();
-
-    boolean hasPermissionDelegate();
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Authorization
+public @interface Roles {
+    Class<?>[] value();
 }

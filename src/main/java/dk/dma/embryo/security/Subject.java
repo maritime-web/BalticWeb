@@ -16,10 +16,10 @@
 package dk.dma.embryo.security;
 
 import java.io.Serializable;
+import java.util.List;
 
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.security.authorization.Permission;
 
 /**
  * Subject class wrapping all access to shiro security and also decorating with extra syntactic sugar.
@@ -35,18 +35,6 @@ public interface Subject extends Serializable {
     
     SecuredUser login(String userName, String password);
     
-    boolean isPermitted(Permission permission) ;
-
-    /**
-     * TODO remove me.
-     * 
-     * Expected used while transitioning from role base security to feature base security
-     * 
-     * @param permission
-     * @return
-     */
-    boolean isPermitted(String permission) ;
-    
     /**
      * TODO remove me.
      * 
@@ -58,15 +46,12 @@ public interface Subject extends Serializable {
     <R extends Role> boolean hasRole(Class<R> roleType) ;
 
     Long getUserId() ;
+
     SecuredUser getUser() ;
 
-    <R extends Role> R getRole(Class<R> roleType) ;
-
-    boolean isAtLeastOnePermitted(Permission[] permissions);
-    
-    boolean isPermitted(Object secured) ;
+    boolean hasOneOfRoles(List<Class<? extends Role>> roleTypes) ;
     
     void logout();
-    boolean isLoggedIn();
 
+    boolean isLoggedIn();
 }

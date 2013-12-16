@@ -24,7 +24,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-@Permission(value = "yourShip")
-public @interface YourShip {
-
+@Authorization
+public @interface RolesAllowAll {
 }

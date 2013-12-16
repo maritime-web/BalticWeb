@@ -23,9 +23,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -59,7 +56,7 @@ public class Vessel extends BaseEntity<Long> {
     private String commCapabilities;
 
     /**
-     * Maximum capacity for the number of persons on board. This information is (hopefully) usable in a resque scenario.
+     * Maximum capacity for the number of persons on board. This information is (hopefully) usable in a rescue scenario.
      */
     @Min(0)
     @Column(nullable = true)
@@ -76,10 +73,6 @@ public class Vessel extends BaseEntity<Long> {
 
     @OneToOne(cascade = { CascadeType.ALL })
     private Voyage activeVoyage;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true)
-    private VesselOwnerRole owner;
 
     private AisData aisData = new AisData();
 
@@ -145,14 +138,6 @@ public class Vessel extends BaseEntity<Long> {
 
     public void setMmsi(Long mmsi) {
         this.mmsi = mmsi;
-    }
-
-    public VesselOwnerRole getOwner() {
-        return owner;
-    }
-
-    public void setOwner(VesselOwnerRole owner) {
-        this.owner = owner;
     }
 
     public BigDecimal getMaxSpeed() {

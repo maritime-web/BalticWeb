@@ -62,7 +62,7 @@ public class Route extends BaseEntity<Long> {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime etaOfDeparture;
 
-    @ElementCollection
+    @ElementCollection()
     @CollectionTable(name = "WayPoint")
     @OrderColumn(name = "orderNumber")
     @Valid

@@ -51,7 +51,7 @@ public class BerthRestService {
     @Produces("application/json")
     @GZIP
     public List<BerthDatum> remote(@QueryParam("QUERY") String query) {
-        logger.trace("remoteFetch({})", query);
+        logger.debug("remoteFetch({})", query);
 
         List<Berth> berths = null;
         List<BerthDatum> transformed = null;
@@ -66,7 +66,7 @@ public class BerthRestService {
             transformed = Lists.transform(berths, new BerthTransformerFunction());
         }
 
-        logger.trace("berths={}", transformed);
+        logger.debug("berths={}", transformed);
         return transformed;
     }
     

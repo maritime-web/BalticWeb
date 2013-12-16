@@ -1,3 +1,5 @@
 /.tmp/
 /target/
 /node_modules/
+/.settings
+/target

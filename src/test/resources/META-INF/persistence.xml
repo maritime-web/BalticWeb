@@ -6,14 +6,11 @@
   <persistence-unit name="componentTest" transaction-type="RESOURCE_LOCAL">
     <class>dk.dma.embryo.domain.SecuredUser</class>
     <class>dk.dma.embryo.domain.Role</class>
-    <class>dk.dma.embryo.domain.Permission</class>
     <class>dk.dma.embryo.domain.SailorRole</class>
     <class>dk.dma.embryo.domain.ShoreRole</class>
     <class>dk.dma.embryo.domain.VesselOwnerRole</class>
     <class>dk.dma.embryo.domain.AuthorityRole</class>
     <class>dk.dma.embryo.domain.Vessel</class>
-    <class>dk.dma.embryo.domain.Schedule</class>
-    <class>dk.dma.embryo.domain.VoyagePlan</class>
     <class>dk.dma.embryo.domain.Voyage</class>
     <class>dk.dma.embryo.domain.Berth</class>
     <class>dk.dma.embryo.domain.Route</class>

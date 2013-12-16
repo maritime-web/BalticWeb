@@ -15,12 +15,8 @@
  */
 package dk.dma.embryo.security;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -45,11 +41,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.embryo.domain.ReportingAuthorityRole;
+import dk.dma.embryo.domain.Role;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.security.authorization.Permission;
+import dk.dma.embryo.domain.ShoreRole;
 
 // DummyHttpSession and DummyHttpRequest are necessary to test SessionScoped Subject
-@AdditionalClasses({ SubjectImpl.class, PermissionExtractor.class, DummyHttpSession.class, DummyHttpRequest.class })
+@AdditionalClasses({ SubjectImpl.class, DummyHttpSession.class, DummyHttpRequest.class })
 public class SubjectTest extends AbstractShiroTest {
 
     private static final String PERMITTED_PERMISSION = "permission";
@@ -70,47 +69,38 @@ public class SubjectTest extends AbstractShiroTest {
 
     @Test
     @InSessionScope
-    public void testIsPermittedWithAnnotation_Permission() {
-        String user = "permittedUser";
+    public void testHasOneOfRoles() {
+        String user = "ole";
         String pw = "pw";
 
-        Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw));
+        Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw ,null));
 
         subject.login(user, pw);
+        
+        List<Class<? extends Role>> roleTypes = new LinkedList<>();
+        roleTypes.add(SailorRole.class);
 
-        Assert.assertTrue(subject.isPermitted(new Component()));
+        Assert.assertTrue(subject.hasOneOfRoles(roleTypes));
 
+        roleTypes.clear();
+        roleTypes.add(ReportingAuthorityRole.class);
+        Assert.assertTrue(subject.hasOneOfRoles(roleTypes));
+
+        roleTypes.clear();
+        roleTypes.add(ShoreRole.class);
+        Assert.assertFalse(subject.hasOneOfRoles(roleTypes));
+
+        roleTypes.clear();
+        roleTypes.add(ShoreRole.class);
+        roleTypes.add(SailorRole.class);
+        roleTypes.add(ReportingAuthorityRole.class);
+        Assert.assertTrue(subject.hasOneOfRoles(roleTypes));
+
+        
         subject.logout();
     }
 
-    @Test
-    @InSessionScope
-    public void testIsPermittedWithAnnotation_NoPermission() {
-        String user = "nopermission";
-        String pw = "pw";
-
-        Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw));
-
-        subject.login(user, pw);
-
-        Assert.assertFalse(subject.isPermitted("not annotated object"));
-
-        subject.logout();
-    }
-
-    @TestPermission
-    public static class Component {
-
-    }
-
-    @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    @Permission(value = PERMITTED_PERMISSION)
-    public static @interface TestPermission {
-
-    }
-
+    
     public static class TestRealm extends AuthorizingRealm {
 
         public TestRealm() {
@@ -122,13 +112,14 @@ public class SubjectTest extends AbstractShiroTest {
          */
         @Override
         protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authToken) {
-
             UsernamePasswordToken token = (UsernamePasswordToken) authToken;
             return new SimpleAuthenticationInfo(token.getUsername(), new String(token.getPassword()), getName());
         }
 
         @Override
-        protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals){
+            
+            
             String userName = (String) principals.fromRealm(getName()).iterator().next();
             if ("nopermission".equals(userName)) {
                 SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
@@ -136,11 +127,15 @@ public class SubjectTest extends AbstractShiroTest {
                 return info;
             } else {
                 SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-                info.addRole("bollocks");
-                info.addStringPermissions(Arrays.asList("never", "really", "used"));
+                try {
+                    info.addRole(SailorRole.class.newInstance().getLogicalName());
+                    info.addRole(ReportingAuthorityRole.class.newInstance().getLogicalName());
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+//                info.addStringPermissions(Arrays.asList("never", "really", "used"));
 
-                info.addRole("role");
-                info.addStringPermissions(Arrays.asList("dummy", PERMITTED_PERMISSION));
+//                info.addStringPermissions(Arrays.asList("dummy", PERMITTED_PERMISSION));
                 return info;
 
             }

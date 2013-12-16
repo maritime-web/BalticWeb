@@ -57,7 +57,7 @@
         };
 
         $scope.berths = {
-            name : 'embryo_berths5',
+            name : 'embryo_berths7',
             prefetch : {
                 url : berthUrl,
                 // 1 time

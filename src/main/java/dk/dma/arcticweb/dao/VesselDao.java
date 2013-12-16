@@ -24,7 +24,6 @@ import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyagePlan;
 
 @Local
 public interface VesselDao extends Dao {
@@ -42,8 +41,6 @@ public interface VesselDao extends Dao {
     
     Map<Long, Vessel> getVessels(List<Long> mmsiNumbers);
     
-    VoyagePlan getVoyagePlan(Long mmsi);
-
     Route getActiveRoute(Long mmsi);
 
     Long getRouteId(String enavId);

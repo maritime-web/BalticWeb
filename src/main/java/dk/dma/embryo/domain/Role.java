@@ -24,6 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 
 @Entity
@@ -42,48 +43,15 @@ public abstract class Role extends AbstractAuthorizationEntity<Integer> {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-    @ManyToMany
-    private Set<Permission> permissions = new HashSet<>();
-
-    @ManyToMany(mappedBy="roles")
-    Set<SecuredUser> users = new HashSet<>();
+    @OneToOne(mappedBy="role")
+    SecuredUser user; 
 
     // //////////////////////////////////////////////////////////////////////
-    // business logic
+    // Object methods
     // //////////////////////////////////////////////////////////////////////
-
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
-    public Collection<String> getPermissionsAsStrings() {
-        Collection<String> permissions = new HashSet<>();
-        for (Permission permission : getPermissions()) {
-            permissions.add(permission.getLogicalName());
-        }
-        return permissions;
-    }
-
     @Override
     public String toString() {
         return "Role [" + super.toString() + "]";
     }
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public Set<Permission> getPermissions() {
-        return Collections.unmodifiableSet(permissions);
-    }
     
-    public void add(Permission permission){
-        // Maintain referential integrity
-        permissions.add(permission);
-        permission.roles.add(this);
-    }
-
-    public void remove(Permission permission){
-        // Maintain referential integrity
-        permissions.remove(permission);
-        permission.roles.remove(this);
-    }    
-
 }

@@ -13,13 +13,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.security;
+package dk.dma.embryo.domain;
 
-import dk.dma.embryo.security.authorization.Permission;
+import javax.persistence.Entity;
 
-public interface PermissionContainer{
+@Entity
+public class AdministratorRole extends Role {
+    private static final long serialVersionUID = 1L;
 
-    Permission[] getPermissions();
-
-    boolean hasPermissions();
+    public AdministratorRole() {
+        super("Administration");
+    }
 }

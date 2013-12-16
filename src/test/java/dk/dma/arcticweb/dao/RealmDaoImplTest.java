@@ -15,9 +15,7 @@
  */
 package dk.dma.arcticweb.dao;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.unitils.reflectionassert.ReflectionAssert.assertPropertyLenientEquals;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -28,12 +26,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.VesselOwnerRole;
 import dk.dma.embryo.domain.ShoreRole;
+import dk.dma.embryo.domain.VesselOwnerRole;
 
 public class RealmDaoImplTest {
 
@@ -48,40 +45,39 @@ public class RealmDaoImplTest {
         EntityManager entityManager = factory.createEntityManager();
         entityManager.getTransaction().begin();
         
-        Permission perm1 = new Permission("ais");
-        Permission perm2 = new Permission("ais:country");
-        Permission perm3 = new Permission("ais:country:DK");
-        Permission perm4 = new Permission("ais:region:europe");
+//        Permission perm1 = new Permission("ais");
+//        Permission perm2 = new Permission("ais:country");
+//        Permission perm3 = new Permission("ais:country:DK");
+//        Permission perm4 = new Permission("ais:region:europe");
 
-        entityManager.persist(perm1);
-        entityManager.persist(perm2);
-        entityManager.persist(perm3);
-        entityManager.persist(perm4);
+//        entityManager.persist(perm1);
+//        entityManager.persist(perm2);
+//        entityManager.persist(perm3);
+//        entityManager.persist(perm4);
         
         Role sailor = new SailorRole();
         Role shore = new ShoreRole();
         Role role3 = new VesselOwnerRole();
 
-        sailor.add(perm1);
-        sailor.add(perm2);
-        sailor.add(perm3);
-
-        shore.add(perm1);
-        shore.add(perm4);
+//        sailor.add(perm1);
+//        sailor.add(perm2);
+//        sailor.add(perm3);
+//
+//        shore.add(perm1);
+//        shore.add(perm4);
 
         entityManager.persist(sailor);
         entityManager.persist(shore);
         entityManager.persist(role3);
 
-        SecuredUser user1 = new SecuredUser("user1", "pw1");
-        SecuredUser user2 = new SecuredUser("user2", "pw2");
+        SecuredUser user1 = new SecuredUser("user1", "pw1", null);
+        SecuredUser user2 = new SecuredUser("user2", "pw2", null);
         
-        user1.addRole(sailor);
-        user1.addRole(shore);
+        user1.setRole(sailor);
         entityManager.persist(user1);
+        entityManager.persist(sailor);
         
-        user2.addRole(shore);
-        user2.addRole(role3);
+        user2.setRole(shore);
         
         entityManager.persist(user2);
         
@@ -108,7 +104,7 @@ public class RealmDaoImplTest {
         entityManager.clear();
 
         assertEquals("user1", user.getUserName());
-        assertEquals("pw1", user.getPassword());
+        assertEquals("pw1", user.getHashedPassword());
     }
 
 
@@ -120,10 +116,8 @@ public class RealmDaoImplTest {
         entityManager.clear();
 
         assertEquals("user1", user1.getUserName());
-        assertEquals("pw1", user1.getPassword());
-        assertPropertyLenientEquals("logicalName", asList("sailor", "shore"), user1.getRoles());
-        assertPropertyLenientEquals("logicalName", asList("ais", "ais:country", "ais:country:DK"), user1.getRole("sailor").getPermissions());
-        assertPropertyLenientEquals("logicalName", asList("ais", "ais:region:europe"), user1.getRole("shore").getPermissions());
+        assertEquals("pw1", user1.getHashedPassword());
+        assertEquals("sailor", user1.getRole().getLogicalName());
 
         entityManager.clear();
         
@@ -134,10 +128,8 @@ public class RealmDaoImplTest {
         entityManager.clear();
 
         assertEquals("user2", user2.getUserName());
-        assertEquals("pw2", user2.getPassword());
-        assertPropertyLenientEquals("logicalName", asList("shore", "vesselOwner"), user2.getRoles());
-        assertPropertyLenientEquals("logicalName", asList("ais", "ais:region:europe"), user2.getRole("shore").getPermissions());
-        assertEquals(0, user2.getRole("vesselOwner").getPermissions().size());
+        assertEquals("pw2", user2.getHashedPassword());
+        assertEquals("shore", user2.getRole().getLogicalName());
     }
 
 }

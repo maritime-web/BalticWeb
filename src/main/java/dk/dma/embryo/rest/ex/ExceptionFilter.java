@@ -16,6 +16,8 @@
 package dk.dma.embryo.rest.ex;
 
 import dk.dma.embryo.domain.FormatException;
+
+import org.apache.shiro.authz.AuthorizationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 
@@ -41,7 +43,7 @@ import java.util.List;
 /**
  * @author Jesper Tejlgaard
  */
-@WebFilter(filterName = "ExceptionFilter", urlPatterns = {"/rest/schedule", "/rest/routeUpload", "/rest/route"})
+@WebFilter(filterName = "ExceptionFilter", urlPatterns = { "/rest/schedule", "/rest/routeUpload", "/rest/route" })
 public class ExceptionFilter implements Filter {
 
     @Inject
@@ -99,7 +101,7 @@ public class ExceptionFilter implements Filter {
             return buildMessage((ConstraintViolationException) t);
         }
 
-        return new String[]{t.getMessage()};
+        return new String[] { t.getMessage() };
     }
 
     private void setStatus(ServletResponse response, Throwable e) throws IOException {
@@ -107,7 +109,9 @@ public class ExceptionFilter implements Filter {
             e = getCause(e);
         }
 
-        if (e instanceof ConstraintViolationException) {
+        if (e instanceof AuthorizationException) {
+            ((HttpServletResponse) response).setStatus(Status.UNAUTHORIZED.getStatusCode());
+        } else if (e instanceof ConstraintViolationException) {
             ((HttpServletResponse) response).setStatus(Status.BAD_REQUEST.getStatusCode());
         } else if (e instanceof IllegalArgumentException) {
             ((HttpServletResponse) response).setStatus(Status.BAD_REQUEST.getStatusCode());

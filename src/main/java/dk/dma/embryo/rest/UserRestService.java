@@ -16,9 +16,7 @@
 package dk.dma.embryo.rest;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -35,13 +33,15 @@ import org.slf4j.Logger;
 
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.embryo.domain.AuthorityRole;
-import dk.dma.embryo.domain.Permission;
+import dk.dma.embryo.domain.AdministratorRole;
+import dk.dma.embryo.domain.ReportingAuthorityRole;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.ShoreRole;
 import dk.dma.embryo.domain.Vessel;
+import dk.dma.embryo.security.SecurityUtil;
+import dk.dma.embryo.security.Subject;
 
 @Path("/user")
 public class UserRestService {
@@ -53,6 +53,9 @@ public class UserRestService {
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private Subject subject;
 
     @GET
     @Path("/delete")
@@ -70,56 +73,41 @@ public class UserRestService {
     public void save(User user) {
         logger.info("Creating new user " + user.getLogin() + "  in role " + user.getRole());
 
-        SecuredUser su = new SecuredUser(user.getLogin(), user.getPassword(), "obo@dma.dk");
+        SecuredUser su = SecurityUtil.createUser(user.getLogin(), user.getPassword(), "obo@dma.dk");
 
         switch (user.getRole()) {
-            case "Sailor":
-                Permission ais = new Permission("ais");
-                Permission yourShip = new Permission("yourShip");
+        case "Sailor":
+            Vessel vessel = new Vessel();
 
-                vesselDao.saveEntity(ais);
-                vesselDao.saveEntity(yourShip);
+            vessel.setMmsi(user.getShipMmsi());
+            vesselDao.saveEntity(vessel);
 
-                Vessel vessel = new Vessel();
+            SailorRole sailor = new SailorRole();
 
-                vessel.setMmsi(user.getShipMmsi());
-                vesselDao.saveEntity(vessel);
+            sailor.setVessel(vessel);
+            vesselDao.saveEntity(sailor);
 
-                SailorRole sailor = new SailorRole();
+            su.setRole(sailor);
+            break;
+        case "Shore":
+            ShoreRole shore = new ShoreRole();
+            vesselDao.saveEntity(shore);
 
-                sailor.add(ais);
-                sailor.add(yourShip);
-                sailor.setVessel(vessel);
-                vesselDao.saveEntity(sailor);
+            su.setRole(shore);
+            break;
+        case "Greenpos Authority":
+            ReportingAuthorityRole authority = new ReportingAuthorityRole();
+            vesselDao.saveEntity(authority);
 
-                su.addRole(sailor);
-                break;
-            case "Shore":
-                ShoreRole shore = new ShoreRole();
-                vesselDao.saveEntity(shore);
+            su.setRole(authority);
+            break;
+        case "Administrator":
 
-                su.addRole(shore);
-                break;
-            case "Greenpos Authority":
-                Permission greenposList = new Permission("GreenposList");
-                vesselDao.saveEntity(greenposList);
+            AdministratorRole administator = new AdministratorRole();
+            vesselDao.saveEntity(administator);
 
-                ShoreRole authority = new ShoreRole();
-                authority.add(greenposList);
-                vesselDao.saveEntity(authority);
-
-                su.addRole(authority);
-                break;
-            case "Administrator":
-                Permission administration = new Permission("Administration");
-                vesselDao.saveEntity(administration);
-
-                ShoreRole administator = new ShoreRole();
-                administator.add(administration);
-                vesselDao.saveEntity(administator);
-
-                su.addRole(administator);
-                break;
+            su.setRole(administator);
+            break;
         }
 
         vesselDao.saveEntity(su);
@@ -140,26 +128,14 @@ public class UserRestService {
             su = realmDao.getByPrimaryKeyReturnAll(su.getId());
 
             user.setLogin(su.getUserName());
-            Role role = su.getRoles().iterator().next();
-
-            Set<String> permissions = new HashSet<>();
-
-            for (Permission p : su.getPermissions()) {
-                permissions.add(p.getLogicalName());
-            }
+            Role role = su.getRole();
 
             if (role instanceof SailorRole) {
-                user.setRole("Sailor");
+                user.setRole(role.getLogicalName());
                 SailorRole sailor = realmDao.getSailor(su.getId());
                 user.setShipMmsi(sailor.getVessel().getMmsi());
-            } else if (role instanceof ShoreRole || role instanceof AuthorityRole) {
-                if (permissions.contains("Administration")) {
-                    user.setRole("Administrator");
-                } else if (permissions.contains("GreenposList")) {
-                    user.setRole("Greenpos Administrator");
-                } else {
-                    user.setRole("Shore");
-                }
+            } else {
+                user.setRole(role.getLogicalName());
             }
 
             result.add(user);
@@ -168,13 +144,11 @@ public class UserRestService {
         return result;
     }
 
-
     public static class User {
         private String login;
         private String password;
         private String role;
         private Long shipMmsi;
-
 
         public String getLogin() {
             return login;

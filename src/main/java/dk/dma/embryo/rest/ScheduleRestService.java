@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Schedule;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.rest.json.ScheduleRequest;
 import dk.dma.embryo.rest.json.Voyage.RouteOverview;

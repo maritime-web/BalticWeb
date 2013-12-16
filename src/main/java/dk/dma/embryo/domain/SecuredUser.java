@@ -15,20 +15,21 @@
  */
 package dk.dma.embryo.domain;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.Type;
+import org.joda.time.LocalDateTime;
 
 @Entity
 @NamedQueries({
         @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName"),
         // LEFT JOIN FETCH u.roles [identification variable] is not supported by JPA but by Hibernate
-       @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.roles AS r LEFT JOIN FETCH r.permissions WHERE u.id=:id") })
+        @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role WHERE u.id=:id") })
 public class SecuredUser extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;
@@ -37,86 +38,47 @@ public class SecuredUser extends BaseEntity<Long> {
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
 
-    private String password;
+    private String hashedPassword;
 
+    private byte[] salt;
+
+    @Column(unique=true)
     private String userName;
 
     private String email;
+    
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    private LocalDateTime created;
 
     public SecuredUser() {
     }
 
-    public SecuredUser(String userName, String password) {
+    public SecuredUser(String userName, String hashedPassword, byte[] salt) {
         setUserName(userName);
-        setPassword(password);
+        setHashedPassword(hashedPassword);
+        setSalt(salt);
+        created = LocalDateTime.now();
     }
 
-    public SecuredUser(String userName, String password, String email) {
-        this(userName, password);
+    public SecuredUser(String userName, String hashedPassword, byte[] salt, String email) {
+        this(userName, hashedPassword, salt);
         setEmail(email);
     }
 
-    //@ManyToMany(mappedBy = "users")
-    //private Set<Permission> permissions;
+    @OneToOne(cascade=CascadeType.REMOVE)
+    private Role role;
 
-    @ManyToMany
-    private Set<Role> roles = new HashSet<>();
-    
-    // //////////////////////////////////////////////////////////////////////
-    // business logic
-    // //////////////////////////////////////////////////////////////////////
-    public Role getRole(String name){
-        for(Role role : roles){
-            if(role.getLogicalName().equals(name)){
-                return role;
-            }
-        }
-        
-        return null;
-    }
-
-    // TODO For now we only expect one of each role type
-    // with time this will not hold and the implementation must be changed. 
-    public <R extends Role> R getRole(Class<R> type){
-        for(Role role : roles){
-            if(role.getClass() == type){
-                return (R)role;
-            }
-        }
-        
-        return null;
-    
-    }
-    
-    public Set<Permission> getPermissions(){
-        Set<Permission> permissions = new HashSet<Permission>();
-        
-        for(Role role : getRoles()){
-            permissions.addAll(role.getPermissions());
-        }
-        
-        return permissions;
-    }
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "SecuredUser [password=" + password + ", userName=" + userName + ", id=" + id + "]";
+        return "SecuredUser [userName=" + userName + ", id=" + id + " hashedpassword=*]";
     }
-
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getUserName() {
         return userName;
     }
@@ -124,7 +86,7 @@ public class SecuredUser extends BaseEntity<Long> {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -133,17 +95,38 @@ public class SecuredUser extends BaseEntity<Long> {
         this.email = email;
     }
 
-//    public Set<Permission> getPermissions() {
-//        return permissions;
-//    }
+    // public Set<Permission> getPermissions() {
+    // return permissions;
+    // }
 
-    public Set<Role> getRoles() {
-        return Collections.unmodifiableSet(roles);
+    public String getHashedPassword() {
+        return hashedPassword;
     }
 
-    public void addRole(Role role) {
-        roles.add(role);
-        role.users.add(this);
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
+    }
+
+    public byte[] getSalt() {
+        return salt;
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+//        roles.add(role);
+//        role.users.add(this);
     }
 
 }

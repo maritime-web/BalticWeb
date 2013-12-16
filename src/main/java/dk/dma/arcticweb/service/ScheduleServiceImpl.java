@@ -26,6 +26,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 
 import org.slf4j.Logger;
 
@@ -33,22 +34,23 @@ import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ScheduleDao;
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.domain.Route;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.WayPoint;
+import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
-import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.embryo.security.authorization.Roles;
+import dk.dma.embryo.security.authorization.RolesAllowAll;
 import dk.dma.enav.serialization.RouteParser;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
+@Interceptors(value=AuthorizationChecker.class)
 public class ScheduleServiceImpl implements ScheduleService {
 
     @Inject
     private ScheduleDao scheduleRepository;
-
-    @Inject
-    private VesselService vesselService;
 
     @Inject
     private VesselDao vesselRepository;
@@ -70,6 +72,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @Roles(value=SailorRole.class)
     public void updateSchedule(Long mmsi, List<Voyage> toBeSaved, String[] toBeDeleted) {
 
         List<String> ids = new ArrayList<>(toBeSaved.size());
@@ -111,8 +114,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
-    @YourShip
     @Override
+    @RolesAllowAll
     public List<Voyage> getSchedule(Long mmsi) {
         List<Voyage> schedule = scheduleRepository.getSchedule(mmsi);
 
@@ -136,7 +139,20 @@ public class ScheduleServiceImpl implements ScheduleService {
      * location, times etc.
      */
     @Override
+    @Roles(SailorRole.class)
     public String saveRoute(Route route, String voyageId, Boolean active) {
+        return internalSaveRoute(route, voyageId, active);
+    }
+
+    /**
+     * Used by other service classes, e.g. TestServiceBean. Does not require login.
+     * 
+     * @param route
+     * @param voyageId
+     * @param active
+     * @return
+     */
+    private String internalSaveRoute(Route route, String voyageId, Boolean active) {
         if (route.getId() == null) {
             Long id = scheduleRepository.getRouteId(route.getEnavId());
             route.setId(id);
@@ -186,7 +202,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         return route.getEnavId();
     }
 
+    
     @Override
+    @Roles(SailorRole.class)
     public String saveRoute(Route route) {
         if (route.getId() == null) {
             Long id = scheduleRepository.getRouteId(route.getEnavId());
@@ -199,6 +217,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @RolesAllowAll
     public Route getActiveRoute(Long mmsi) {
         Route r = scheduleRepository.getActiveRoute(mmsi);
         if (r != null) {
@@ -210,8 +229,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
 
-    @YourShip
     @Override
+    @Roles(SailorRole.class)
     public Route activateRoute(String routeEnavId, Boolean activate) {
         logger.debug("activateRoute({}, {})", routeEnavId, activate);
         Route route = scheduleRepository.getRouteByEnavId(routeEnavId);
@@ -220,7 +239,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new IllegalArgumentException("Unknown route with id '" + routeEnavId);
         }
 
-        Vessel vessel = vesselService.getYourVessel();
+        Vessel vessel = realmDao.getSailor(subject.getUserId()).getVessel();
 
         logger.debug("Vessel:{}", vessel.getMmsi());
 
@@ -234,6 +253,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @RolesAllowAll
     public Route getRouteByEnavId(String enavId) {
         Route route = scheduleRepository.getRouteByEnavId(enavId);
         return route;

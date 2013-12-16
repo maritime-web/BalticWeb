@@ -18,6 +18,7 @@
 <script src="js/ext/jquery-1.9.1.min.js"></script>
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+<script src="js/embryo.js"></script>
 
 
 <script type="text/javascript">
@@ -26,10 +27,14 @@
     app.controller('TestDataController', function($scope, $http) {
         $scope.reInitialize = function() {
             $scope.message = null;
+            $scope.alertMessage = null;
             $http.put('rest/testData', {
                 responseType : 'json'
             }).success(function(response) {
                 $scope.message = response;
+                sessionStorage.clear();
+            }).error(function(data, status, headers, config){
+                $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
                 sessionStorage.clear();
             });
 

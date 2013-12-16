@@ -20,13 +20,13 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class VesselOwnerRole extends Role {
     private static final long serialVersionUID = 1L;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Vessel> vessels = new HashSet<Vessel>();
 
     public VesselOwnerRole() {

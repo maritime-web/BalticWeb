@@ -15,16 +15,10 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.configuration.Property;
-import dk.dma.configuration.PropertyFileService;
-import dk.dma.embryo.domain.GreenPosDMIReport;
-import dk.dma.embryo.domain.GreenPosDeviationReport;
-import dk.dma.embryo.domain.GreenPosFinalReport;
-import dk.dma.embryo.domain.GreenPosPositionReport;
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.domain.GreenPosSailingPlanReport;
-import dk.dma.embryo.rest.RequestAccessRestService;
-import org.slf4j.Logger;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.TransactionAttribute;
@@ -37,10 +31,18 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Matcher;
+
+import org.slf4j.Logger;
+
+import dk.dma.configuration.Property;
+import dk.dma.configuration.PropertyFileService;
+import dk.dma.embryo.domain.GreenPosDMIReport;
+import dk.dma.embryo.domain.GreenPosDeviationReport;
+import dk.dma.embryo.domain.GreenPosFinalReport;
+import dk.dma.embryo.domain.GreenPosPositionReport;
+import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenPosSailingPlanReport;
+import dk.dma.embryo.rest.RequestAccessRestService;
 
 @Named
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

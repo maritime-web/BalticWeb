@@ -104,7 +104,7 @@ embryo.authenticated(function() {
         embryo.controllers.vesselInformationView,
         embryo.controllers.scheduleView,
         embryo.additionalInformation.route,
-        (embryo.authentication.permissions.indexOf("GreenposList") >= 0) ? embryo.controllers.greenposListView : null,
+        (embryo.authentication.permissions.indexOf("Reporting") >= 0) ? embryo.controllers.greenposListView : null,
         "Additional Information",
         embryo.additionalInformation.historicalTrack,
         embryo.additionalInformation.nearestShips,

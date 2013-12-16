@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.GreenPosDaoImpl;
+import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.arcticweb.dao.VesselDaoImpl;
 import dk.dma.embryo.domain.GreenPosReport;
@@ -53,7 +54,7 @@ public class GreenPosServiceImplTest {
 
     EntityManager entityManager;
 
-    VesselService vesselService;
+    RealmDao realmDao;
 
     Subject subject;
 
@@ -97,10 +98,10 @@ public class GreenPosServiceImplTest {
         greenPosDao = new GreenPosDaoImpl(entityManager);
 
         subject = Mockito.mock(Subject.class);
-        vesselService = Mockito.mock(VesselService.class);
+        realmDao = Mockito.mock(RealmDao.class);
         mailService = Mockito.mock(MailService.class);
 
-        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, vesselService, mailService);
+        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, realmDao, mailService);
 
     }
 
@@ -120,8 +121,11 @@ public class GreenPosServiceImplTest {
         entityManager.getTransaction().begin();
 
         Mockito.when(subject.hasRole(SailorRole.class)).thenReturn(true);
-        Mockito.when(subject.getUser()).thenReturn(new SecuredUser("Hans", "pwd"));
-        Mockito.when(vesselService.getYourVessel()).thenReturn(vessel);
+        Mockito.when(subject.getUser()).thenReturn(new SecuredUser("Hans", "pwd", null));
+        Mockito.when(subject.getUserId()).thenReturn(1L);
+        SailorRole role = new SailorRole();
+        role.setVessel(vessel);
+        Mockito.when(realmDao.getSailor(1L)).thenReturn(role);
 
         greenPosService.saveReport(spReport);
 

@@ -41,10 +41,9 @@ public class TestDataRestService {
 
     @PUT
     public String reInitializeTestData() {
-        logger.debug("save({})");
+        logger.debug("reInitializeTestData()");
         
-        testService.clearAllData();
-        testService.createTestData();
+        testService.resetTestData();
         
         String result = "SUCCESS";
         // String result = "Product created : " + product;

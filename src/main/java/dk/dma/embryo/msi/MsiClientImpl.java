@@ -15,23 +15,24 @@
  */
 package dk.dma.embryo.msi;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.interceptor.Interceptors;
+import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
+
 import dk.dma.arcticweb.service.EmbryoLogService;
 import dk.dma.configuration.Property;
-import dk.dma.embryo.security.authorization.YourShip;
+import dk.dma.embryo.security.AuthorizationChecker;
+import dk.dma.embryo.security.authorization.RolesAllowAll;
 import dk.frv.enav.msi.ws.warning.MsiService;
 import dk.frv.enav.msi.ws.warning.WarningService;
 import dk.frv.msiedit.core.webservice.message.MsiDto;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
-import java.util.ArrayList;
-import java.util.List;
-
+@Interceptors(value=AuthorizationChecker.class)
 public class MsiClientImpl implements MsiClient {
     @Inject
     @Property("embryo.msi.endpoint")
@@ -56,6 +57,7 @@ public class MsiClientImpl implements MsiClient {
         );
     }
 
+    @RolesAllowAll
     public List<MsiClient.MsiItem> getActiveWarnings() {
         try {
             List<MsiClient.MsiItem> result = new ArrayList<>();

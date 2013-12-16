@@ -27,7 +27,6 @@ import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.VoyagePlan;
 
 @Stateless
 public class VesselDaoImpl extends DaoImpl implements VesselDao {
@@ -76,16 +75,6 @@ public class VesselDaoImpl extends DaoImpl implements VesselDao {
         query.setParameter("callsign", callsign);
 
         List<Vessel> result = query.getResultList();
-
-        return getSingleOrNull(result);
-    }
-
-     @Override
-    public VoyagePlan getVoyagePlan(Long mmsi) {
-        TypedQuery<VoyagePlan> query = em.createNamedQuery("VoyagePlan:getByMmsi", VoyagePlan.class);
-        query.setParameter("mmsi", mmsi);
-
-        List<VoyagePlan> result = query.getResultList();
 
         return getSingleOrNull(result);
     }

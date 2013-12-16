@@ -38,7 +38,6 @@ import org.unitils.reflectionassert.ReflectionAssert;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import dk.dma.arcticweb.dao.ScheduleDaoImpl;
-import dk.dma.embryo.domain.Permission;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.RouteLeg;
@@ -63,15 +62,11 @@ public class ScheduleServiceImplTest {
         EntityManager entityManager = factory.createEntityManager();
         entityManager.getTransaction().begin();
 
-        Permission perm1 = new Permission("yourShip");
-        entityManager.persist(perm1);
-
         Role sailor = new SailorRole();
-        sailor.add(perm1);
         entityManager.persist(sailor);
 
-        SecuredUser user = new SecuredUser("user1", "pw1");
-        user.addRole(sailor);
+        SecuredUser user = new SecuredUser("user1", "pw1", null);
+        user.setRole(sailor);
         entityManager.persist(user);
 
         Vessel vessel = new Vessel(10L);
@@ -82,17 +77,16 @@ public class ScheduleServiceImplTest {
         vessel.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime.parse("2013-06-23T22:08"),
                 LocalDateTime.parse("2013-06-25T20:19"), 11, 0, false));
 
-        for(Voyage v : vessel.getSchedule()){
+        for (Voyage v : vessel.getSchedule()) {
             entityManager.persist(v);
         }
-        
+
         // /// new user
         sailor = new SailorRole();
-        sailor.add(perm1);
         entityManager.persist(sailor);
 
-        user = new SecuredUser("user2", "pw2");
-        user.addRole(sailor);
+        user = new SecuredUser("user2", "pw2", null);
+        user.setRole(sailor);
         entityManager.persist(user);
 
         vessel = new Vessel(20L);
@@ -130,8 +124,7 @@ public class ScheduleServiceImplTest {
         Assert.assertNotNull(voyages);
 
         ReflectionAssert.assertPropertyLenientEquals("arrival",
-                asList(LocalDateTime.parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-23T22:08")),
-                voyages);
+                asList(LocalDateTime.parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-23T22:08")), voyages);
     }
 
     @Test
