@@ -53,7 +53,6 @@ public class AuthorizationChecker {
                 throw new AuthenticationException("Attemp to call " + getMethodName(ctx) + " without being authenticated");
             }
             
-            logger.debug("Method roles allowed {}", rolesAllowed);
             if (isAuthorized(rolesAllowed)) {
                 return ctx.proceed();
             } else {
@@ -68,7 +67,6 @@ public class AuthorizationChecker {
                 throw new AuthenticationException("Attemp to call " + getMethodName(ctx) + " without being authenticated");
             }
 
-            logger.debug("Class roles allowed {}", rolesAllowed);
             if (isAuthorized(rolesAllowed)) {
                 return ctx.proceed();
             } else {
