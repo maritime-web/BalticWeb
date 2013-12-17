@@ -34,44 +34,53 @@ public class RoleExtractorTest {
     private RoleExtractor extractor = new RoleExtractor();
     
     @Test
-    public void testGetAuthorizationConfiguration_Method_Roles() throws NoSuchMethodException, SecurityException {
+    public void testGetAuthorizationConfiguration_Method_Roles() throws NoSuchMethodException{
+        Method method;
+        List<Annotation> result;
         class Foo{
             @Roles(SailorRole.class)
             public void doSomething(){
             }
         }
         
-        Method method = Foo.class.getMethod("doSomething");
-        List<Annotation> result = extractor.getAuthorizationConfiguration(method);
+        method = Foo.class.getMethod("doSomething");
+        result = extractor.getAuthorizationConfiguration(method);
         
         Assert.assertEquals(1, result.size());
         Assert.assertEquals(Roles.class, result.get(0).annotationType());        
     }
 
     @Test
-    public void testGetAuthorizationConfiguration_Method_Deprecated() throws NoSuchMethodException, SecurityException {
+    public void testGetAuthorizationConfiguration_Method_Deprecated() throws NoSuchMethodException {
+        Method method;
+        List<Annotation> result;
         class Foo{
+            /**
+             * @deprecated for testing purpose
+             */
             @Deprecated
             public void doSomething(){
             }
         }
         
-        Method method = Foo.class.getMethod("doSomething");
-        List<Annotation> result = extractor.getAuthorizationConfiguration(method);
+        method = Foo.class.getMethod("doSomething");
+        result = extractor.getAuthorizationConfiguration(method);
         
         Assert.assertEquals(0, result.size());
     }
 
     @Test
-    public void testGetAuthorizationConfiguration_Method_RolesAllowAll() throws NoSuchMethodException, SecurityException {
+    public void testGetAuthorizationConfiguration_Method_RolesAllowAll() throws NoSuchMethodException{
+        Method method;
+        List<Annotation> result;
         class Foo{
             @RolesAllowAll
             public void doSomething(){
             }
         }
         
-        Method method = Foo.class.getMethod("doSomething");
-        List<Annotation> result = extractor.getAuthorizationConfiguration(method);
+        method = Foo.class.getMethod("doSomething");
+        result = extractor.getAuthorizationConfiguration(method);
         
         Assert.assertEquals(1, result.size());
         Assert.assertEquals(RolesAllowAll.class, result.get(0).annotationType());        

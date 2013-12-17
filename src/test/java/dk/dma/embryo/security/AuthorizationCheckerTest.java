@@ -62,14 +62,6 @@ public class AuthorizationCheckerTest {
 
     }
 
-    static public class Foo {
-        public Foo(){
-        }
-        @Roles(SailorRole.class)
-        public void doSomething() {
-        }
-    }
-
     @Test
     public void test() {
         // SETUP MOCKS
@@ -98,4 +90,13 @@ public class AuthorizationCheckerTest {
             Assert.fail("Exception caught ");
         }
     }
+
+    public static class Foo {
+        public Foo(){
+        }
+        @Roles(SailorRole.class)
+        public void doSomething() {
+        }
+    }
+
 }
