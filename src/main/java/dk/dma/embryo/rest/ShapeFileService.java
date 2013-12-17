@@ -15,10 +15,11 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.configuration.Property;
 import dk.dma.dataformats.dbf.DbfParser;
 import dk.dma.dataformats.shapefile.ProjectionFileParser;
 import dk.dma.dataformats.shapefile.ShapeFileParser;
+import dk.dma.embryo.configuration.Property;
+
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.Cache;
 import org.slf4j.Logger;

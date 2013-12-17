@@ -15,15 +15,17 @@
  */
 package dk.dma.embryo.restclients;
 
-import dk.dma.configuration.PropertyFileService;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
-import java.util.Map;
+import dk.dma.embryo.configuration.PropertyFileService;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {RestClientFactory.class, PropertyFileService.class})

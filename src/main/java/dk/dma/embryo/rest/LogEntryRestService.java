@@ -15,7 +15,7 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.arcticweb.dao.LogEntryDao;
+import dk.dma.embryo.dao.LogEntryDao;
 import dk.dma.embryo.domain.LogEntry;
 
 import javax.inject.Inject;

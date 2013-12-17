@@ -28,12 +28,12 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.service.EmbryoLogService;
-import dk.dma.configuration.Property;
+import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.service.EmbryoLogService;
 
 @Path("/authentication")
 public class AuthenticationService {

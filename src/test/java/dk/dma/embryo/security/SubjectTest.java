@@ -40,7 +40,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.domain.ReportingAuthorityRole;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SailorRole;

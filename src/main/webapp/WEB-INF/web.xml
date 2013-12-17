@@ -7,7 +7,7 @@
 
     <context-param>
         <param-name>shiroEnvironmentClass</param-name>
-        <param-value>dk.dma.arcticweb.site.ShiroWebEnvironment</param-value>
+        <param-value>dk.dma.embryo.security.ShiroWebEnvironment</param-value>
     </context-param>
 
     <listener>

@@ -26,10 +26,10 @@ import javax.ws.rs.Produces;
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.embryo.rest.json.ActiveRoute;
 import dk.dma.embryo.rest.json.Route;
 import dk.dma.embryo.rest.json.SaveRouteRequest;
+import dk.dma.embryo.service.ScheduleService;
 
 /**
  * 

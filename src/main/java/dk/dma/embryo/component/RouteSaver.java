@@ -17,7 +17,7 @@ package dk.dma.embryo.component;
 
 import java.util.List;
 
-import dk.dma.arcticweb.dao.ScheduleDao;
+import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;

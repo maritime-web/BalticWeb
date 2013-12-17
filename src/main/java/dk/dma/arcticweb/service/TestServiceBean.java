@@ -38,11 +38,11 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.dao.ScheduleDao;
-import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.embryo.component.RouteParserComponent;
 import dk.dma.embryo.component.RouteSaver;
+import dk.dma.embryo.dao.RealmDao;
+import dk.dma.embryo.dao.ScheduleDao;
+import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.GreenPosDeviationReport;

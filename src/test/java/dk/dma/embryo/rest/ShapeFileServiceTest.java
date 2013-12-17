@@ -15,17 +15,17 @@
  */
 package dk.dma.embryo.rest;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-import static org.junit.Assert.assertEquals;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 public class ShapeFileServiceTest {
     private ShapeFileService service = new ShapeFileService();

@@ -15,7 +15,8 @@
  */
 package dk.dma.embryo.restclients;
 
-import dk.dma.configuration.Property;
+import dk.dma.embryo.configuration.Property;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.client.ProxyFactory;
 

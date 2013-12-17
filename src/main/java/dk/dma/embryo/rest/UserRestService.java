@@ -30,8 +30,8 @@ import javax.ws.rs.QueryParam;
 
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.embryo.dao.RealmDao;
+import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.domain.ReportingAuthorityRole;
 import dk.dma.embryo.domain.Role;

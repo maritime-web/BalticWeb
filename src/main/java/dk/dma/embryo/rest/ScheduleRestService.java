@@ -28,11 +28,11 @@ import javax.ws.rs.Produces;
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.ScheduleService;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.rest.json.ScheduleRequest;
 import dk.dma.embryo.rest.json.Voyage.RouteOverview;
+import dk.dma.embryo.service.ScheduleService;
 
 @Path("/schedule")
 public class ScheduleRestService {
