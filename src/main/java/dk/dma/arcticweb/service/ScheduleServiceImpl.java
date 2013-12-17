@@ -15,8 +15,6 @@
  */
 package dk.dma.arcticweb.service;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +31,7 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ScheduleDao;
 import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.embryo.component.RouteSaver;
 import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
@@ -43,7 +42,6 @@ import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.Roles;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
-import dk.dma.enav.serialization.RouteParser;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -142,67 +140,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Roles({SailorRole.class, AdministratorRole.class})
     public String saveRoute(Route route, String voyageId, Boolean active) {
-        return internalSaveRoute(route, voyageId, active);
+        return new RouteSaver(scheduleRepository).saveRoute(route, voyageId, active);
     }
-
-    /**
-     * Used by other service classes, e.g. TestServiceBean. Does not require login.
-     * 
-     * @param route
-     * @param voyageId
-     * @param active
-     * @return
-     */
-    private String internalSaveRoute(Route route, String voyageId, Boolean active) {
-        if (route.getId() == null) {
-            Long id = scheduleRepository.getRouteId(route.getEnavId());
-            route.setId(id);
-        }
-
-        if (voyageId == null) {
-            throw new IllegalArgumentException("Missing 'voyageId'");
-        }
-
-        Voyage voyage = scheduleRepository.getVoyageByEnavId(voyageId);
-        if (voyage == null) {
-            throw new IllegalArgumentException("Unknown 'voyageId' value '" + voyageId + "'");
-        }
-
-        if(route.getOrigin() == null){
-            route.setOrigin(voyage.getBerthName());
-        }
-        if(route.getEtaOfDeparture() == null){
-            route.setEtaOfDeparture(voyage.getDeparture());
-        }
-
-        List<Voyage> voyages = scheduleRepository.getSchedule(voyage.getVessel().getMmsi());
-        
-        int count = 0;
-        boolean found = false;
-        while (count < voyages.size() && !found) {
-            Voyage v = voyages.get(count++);
-            if (v.getEnavId().equals(voyage.getEnavId())) {
-                found = true;
-            }
-        }
-        if (count < voyages.size()) {
-            route.setDestination(voyages.get(count).getBerthName());
-        }
-
-        route.setVoyage(voyage);
-        scheduleRepository.saveEntity(route);
-        // update relation
-        scheduleRepository.saveEntity(voyage);
-
-        if (active == Boolean.TRUE) {
-            Vessel vessel = voyage.getVessel();
-            vessel.setActiveVoyage(voyage);
-            scheduleRepository.saveEntity(vessel);
-        }
-
-        return route.getEnavId();
-    }
-
     
     @Override
     @Roles(SailorRole.class)
@@ -257,20 +196,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     @RolesAllowAll
     public Route getRouteByEnavId(String enavId) {
         Route route = scheduleRepository.getRouteByEnavId(enavId);
-        return route;
-    }
-
-    /**
-     * Also sets yourship on route
-     */
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Route parseRoute(String fileName, InputStream is, Map<String, String> context) throws IOException {
-        RouteParser parser = RouteParser.getRouteParser(fileName, is, context);
-
-        dk.dma.enav.model.voyage.Route enavRoute = parser.parse();
-        Route route = Route.fromEnavModel(enavRoute);
-
         return route;
     }
 }

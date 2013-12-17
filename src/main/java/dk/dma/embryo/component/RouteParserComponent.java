@@ -13,32 +13,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.service;
+package dk.dma.embryo.component;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Local;
-
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Voyage;
+import dk.dma.enav.serialization.RouteParser;
 
-@Local
-public interface ScheduleService {
+/**
+ * @author Jesper Tejlgaard
+ */
 
-    void updateSchedule(Long mmsi, List<Voyage> toBeSaved, String[] toDelete);
+public class RouteParserComponent {
 
-    List<Voyage> getSchedule(Long mmsi);
+    /**
+     * Also sets yourship on route
+     */
+    public Route parseRoute(String fileName, InputStream is, Map<String, String> context) throws IOException {
+        RouteParser parser = RouteParser.getRouteParser(fileName, is, context);
 
-    String saveRoute(Route route, String voyageId, Boolean active);
+        dk.dma.enav.model.voyage.Route enavRoute = parser.parse();
+        Route route = Route.fromEnavModel(enavRoute);
 
-    String saveRoute(Route route);
+        return route;
+    }
 
-    Route getActiveRoute(Long mmsi);
-
-    Route activateRoute(String routeEnavId, Boolean activate);
-
-    Route getRouteByEnavId(String enavId);
 }

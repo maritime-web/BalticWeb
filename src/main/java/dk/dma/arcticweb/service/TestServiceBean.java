@@ -42,6 +42,8 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ScheduleDao;
 import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.embryo.component.RouteParserComponent;
+import dk.dma.embryo.component.RouteSaver;
 import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.domain.Berth;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
@@ -78,9 +80,6 @@ public class TestServiceBean {
 
     @EJB
     private ScheduleDao scheduleDao;
-
-    @EJB
-    private ScheduleService scheduleService;
 
     @Inject
     private Logger logger;
@@ -816,8 +815,8 @@ public class TestServiceBean {
     private void insertDemoRoute(String voyageId, String file, boolean activate) {
         InputStream is = getClass().getResourceAsStream(file);
         try {
-            Route r = scheduleService.parseRoute(file, is, new HashMap());
-            scheduleService.saveRoute(r, voyageId, activate);
+            Route r = new RouteParserComponent().parseRoute(file, is, new HashMap());
+            new RouteSaver(scheduleDao).saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);
         } finally {

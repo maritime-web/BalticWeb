@@ -38,6 +38,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.ScheduleService;
+import dk.dma.embryo.component.RouteParserComponent;
 
 /**
  * 
@@ -103,7 +104,7 @@ public class RouteUploadService {
                 }
                 logger.debug("Handling uploaded route with file name: {}", item.getName());
 
-                dk.dma.embryo.domain.Route route = scheduleService.parseRoute(item.getName(), item.getInputStream(),
+                dk.dma.embryo.domain.Route route = new RouteParserComponent().parseRoute(item.getName(), item.getInputStream(),
                         context);
 
                 String enavId = scheduleService.saveRoute(route, voyageId, active);
