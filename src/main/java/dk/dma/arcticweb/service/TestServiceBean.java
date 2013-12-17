@@ -34,7 +34,6 @@ import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.shiro.SecurityUtils;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.slf4j.Logger;
