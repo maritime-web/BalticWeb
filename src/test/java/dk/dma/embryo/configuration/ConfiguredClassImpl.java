@@ -17,6 +17,8 @@ package dk.dma.embryo.configuration;
 
 import javax.inject.Inject;
 
+import dk.dma.embryo.configuration.Property;
+
 public class ConfiguredClassImpl implements ConfiguredClass {
     @Inject
     @Property("test.astringproperty")

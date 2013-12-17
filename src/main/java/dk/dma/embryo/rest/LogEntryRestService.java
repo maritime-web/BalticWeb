@@ -22,6 +22,10 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+import org.jboss.resteasy.annotations.GZIP;
+
 import java.util.List;
 
 @Path("/log")
@@ -32,7 +36,15 @@ public class LogEntryRestService {
     @GET
     @Path("/list")
     @Produces("application/json")
+    @GZIP
     public List<LogEntry> list() {
         return logEntryDao.list();
+    }
+
+    @GET
+    @Path("/latest")
+    @Produces("application/json")
+    public LogEntry latest(@QueryParam("type") String service) {
+        return logEntryDao.latest(service);
     }
 }

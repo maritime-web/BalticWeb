@@ -46,6 +46,8 @@ import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.WayPoint;
+import dk.dma.embryo.service.ScheduleService;
+import dk.dma.embryo.service.ScheduleServiceImpl;
 import dk.dma.embryo.validation.ConstraintViolationImpl;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 

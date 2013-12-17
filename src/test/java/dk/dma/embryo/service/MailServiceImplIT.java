@@ -27,6 +27,7 @@ import dk.dma.embryo.configuration.PropertyFileService;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
+import dk.dma.embryo.service.MailServiceImpl;
 
 /**
  * @author Jesper Tejlgaard

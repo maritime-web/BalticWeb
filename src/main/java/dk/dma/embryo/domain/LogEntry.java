@@ -23,9 +23,12 @@ import java.util.Date;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "LogEntry:list", query = "SELECT m FROM LogEntry m WHERE m.date > :date")
-})
+        @NamedQuery(name = "LogEntry:list", query = "SELECT m FROM LogEntry m WHERE m.date > :date"),
+        @NamedQuery(name = "LogEntry:latest", query = "SELECT e FROM LogEntry e where e.service = :service order by e.date desc") })
 public class LogEntry extends BaseEntity<Long> {
+    
+    private static final long serialVersionUID = -7538708790704459110L;
+    
     public String getService() {
         return service;
     }
@@ -66,7 +69,9 @@ public class LogEntry extends BaseEntity<Long> {
         this.stackTrace = stackTrace;
     }
 
-    public enum Status {OK, ERROR}
+    public enum Status {
+        OK, ERROR
+    }
 
     @Column(length = 100)
     private String service;
