@@ -31,11 +31,9 @@ import javax.ws.rs.QueryParam;
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.dao.VesselDao;
 import dk.dma.arcticweb.service.AisDataService;
 import dk.dma.arcticweb.service.GreenPosService;
-import dk.dma.arcticweb.service.ScheduleService;
-import dk.dma.arcticweb.service.VesselService;
+import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.domain.ParseUtils;
 import dk.dma.embryo.domain.Route;
@@ -45,6 +43,8 @@ import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
 import dk.dma.embryo.rest.json.VesselOverview;
 import dk.dma.embryo.restclients.FullAisViewService;
 import dk.dma.embryo.restclients.LimitedAisViewService;
+import dk.dma.embryo.service.ScheduleService;
+import dk.dma.embryo.service.VesselService;
 
 @Path("/vessel")
 public class VesselRestService {

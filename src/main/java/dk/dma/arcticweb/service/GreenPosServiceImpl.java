@@ -26,8 +26,8 @@ import javax.interceptor.Interceptors;
 import org.joda.time.LocalDateTime;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.embryo.dao.RealmDao;
+import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
@@ -39,6 +39,7 @@ import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.Roles;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
+import dk.dma.embryo.service.MailService;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)

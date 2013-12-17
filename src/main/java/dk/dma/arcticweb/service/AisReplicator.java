@@ -15,11 +15,13 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.configuration.Property;
+import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.restclients.AisViewService.VesselListResult;
 import dk.dma.embryo.restclients.FullAisViewService;
+import dk.dma.embryo.service.EmbryoLogService;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 

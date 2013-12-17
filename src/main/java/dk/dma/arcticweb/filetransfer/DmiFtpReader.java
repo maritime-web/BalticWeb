@@ -44,8 +44,8 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.dma.arcticweb.service.EmbryoLogService;
-import dk.dma.configuration.Property;
+import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.service.EmbryoLogService;
 
 @Singleton
 @Startup

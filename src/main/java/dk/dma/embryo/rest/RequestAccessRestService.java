@@ -15,7 +15,7 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.arcticweb.service.MailService;
+import dk.dma.embryo.service.MailService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;

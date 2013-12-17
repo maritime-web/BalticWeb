@@ -26,10 +26,10 @@ import javax.ws.rs.Produces;
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.MetocService;
 import dk.dma.embryo.rest.json.Metoc;
 import dk.dma.embryo.restclients.DmiSejlRuteService;
 import dk.dma.embryo.restclients.DmiSejlRuteService.SejlRuteResponse;
+import dk.dma.embryo.service.MetocService;
 
 /**
  * 

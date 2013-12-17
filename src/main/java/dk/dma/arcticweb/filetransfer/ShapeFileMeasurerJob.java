@@ -16,10 +16,11 @@
 package dk.dma.arcticweb.filetransfer;
 
 import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
-import dk.dma.arcticweb.service.EmbryoLogService;
-import dk.dma.configuration.Property;
+import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 import dk.dma.embryo.rest.ShapeFileService;
+import dk.dma.embryo.service.EmbryoLogService;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

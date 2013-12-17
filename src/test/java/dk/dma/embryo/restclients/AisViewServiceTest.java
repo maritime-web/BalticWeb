@@ -15,7 +15,8 @@
  */
 package dk.dma.embryo.restclients;
 
-import dk.dma.configuration.PropertyFileService;
+import dk.dma.embryo.configuration.PropertyFileService;
+
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Ignore;

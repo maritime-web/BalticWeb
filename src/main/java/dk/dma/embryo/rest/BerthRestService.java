@@ -29,9 +29,9 @@ import org.slf4j.Logger;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-import dk.dma.arcticweb.service.GeographicService;
 import dk.dma.embryo.domain.Berth;
-import dk.dma.embryo.rest.util.TypeaheadDatum;
+import dk.dma.embryo.rest.json.TypeaheadDatum;
+import dk.dma.embryo.service.GeographicService;
 
 /**
  * 

@@ -17,6 +17,7 @@ package dk.dma.arcticweb.dao;
 
 import javax.ejb.Local;
 
+import dk.dma.embryo.dao.Dao;
 import dk.dma.embryo.domain.User;
 
 @Local

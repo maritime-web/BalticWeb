@@ -19,6 +19,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import dk.dma.embryo.dao.DaoImpl;
 import dk.dma.embryo.domain.User;
 
 @Stateless

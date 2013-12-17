@@ -15,7 +15,7 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.configuration.Property;
+import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
 import dk.dma.enav.model.geometry.CoordinateSystem;
 import dk.dma.enav.model.geometry.Position;

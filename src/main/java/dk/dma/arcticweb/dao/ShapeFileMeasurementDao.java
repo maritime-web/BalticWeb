@@ -15,6 +15,7 @@
  */
 package dk.dma.arcticweb.dao;
 
+import dk.dma.embryo.dao.Dao;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 
 import java.util.List;

@@ -32,9 +32,9 @@ import org.slf4j.LoggerFactory;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.GreenPosDaoImpl;
-import dk.dma.arcticweb.dao.RealmDao;
-import dk.dma.arcticweb.dao.VesselDao;
-import dk.dma.arcticweb.dao.VesselDaoImpl;
+import dk.dma.embryo.dao.RealmDao;
+import dk.dma.embryo.dao.VesselDao;
+import dk.dma.embryo.dao.VesselDaoImpl;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.Position;
@@ -43,6 +43,7 @@ import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.service.MailService;
 
 /**
  * 

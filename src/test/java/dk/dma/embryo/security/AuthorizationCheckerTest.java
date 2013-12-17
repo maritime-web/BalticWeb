@@ -32,8 +32,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import dk.dma.embryo.config.Configuration;
-import dk.dma.embryo.config.LogConfiguration;
+import dk.dma.embryo.configuration.Configuration;
+import dk.dma.embryo.configuration.LogConfiguration;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;

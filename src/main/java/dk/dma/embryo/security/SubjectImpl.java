@@ -24,7 +24,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.dao.RealmDao;
+import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SecuredUser;
 
