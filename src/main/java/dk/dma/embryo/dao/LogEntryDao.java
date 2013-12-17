@@ -23,4 +23,6 @@ public interface LogEntryDao {
     void save(LogEntry entry);
 
     List<LogEntry> list();
+    
+    LogEntry latest(String service);
 }

@@ -38,4 +38,14 @@ public class LogEntryDaoImpl extends DaoImpl implements LogEntryDao {
 
         return query.getResultList();
     }
+
+    public LogEntry latest(String service) {
+        TypedQuery<LogEntry> query = em.createNamedQuery("LogEntry:latest", LogEntry.class);
+        query.setParameter("service", service);
+        query.setMaxResults(1);
+
+        return getSingleOrNull(query.getResultList());
+    }
+
+    
 }
