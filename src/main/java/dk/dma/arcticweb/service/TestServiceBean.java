@@ -819,10 +819,7 @@ public class TestServiceBean {
             new RouteSaver(scheduleDao).saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);
-        } finally {
-            SecurityUtils.getSubject().releaseRunAs();
-        }
-
+        } 
     }
 
 }
