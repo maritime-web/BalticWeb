@@ -45,26 +45,9 @@ public class RealmDaoImplTest {
         EntityManager entityManager = factory.createEntityManager();
         entityManager.getTransaction().begin();
         
-//        Permission perm1 = new Permission("ais");
-//        Permission perm2 = new Permission("ais:country");
-//        Permission perm3 = new Permission("ais:country:DK");
-//        Permission perm4 = new Permission("ais:region:europe");
-
-//        entityManager.persist(perm1);
-//        entityManager.persist(perm2);
-//        entityManager.persist(perm3);
-//        entityManager.persist(perm4);
-        
         Role sailor = new SailorRole();
         Role shore = new ShoreRole();
         Role role3 = new VesselOwnerRole();
-
-//        sailor.add(perm1);
-//        sailor.add(perm2);
-//        sailor.add(perm3);
-//
-//        shore.add(perm1);
-//        shore.add(perm4);
 
         entityManager.persist(sailor);
         entityManager.persist(shore);
@@ -117,7 +100,7 @@ public class RealmDaoImplTest {
 
         assertEquals("user1", user1.getUserName());
         assertEquals("pw1", user1.getHashedPassword());
-        assertEquals("sailor", user1.getRole().getLogicalName());
+        assertEquals("Sailor", user1.getRole().getLogicalName());
 
         entityManager.clear();
         
@@ -129,7 +112,7 @@ public class RealmDaoImplTest {
 
         assertEquals("user2", user2.getUserName());
         assertEquals("pw2", user2.getHashedPassword());
-        assertEquals("shore", user2.getRole().getLogicalName());
+        assertEquals("Shore", user2.getRole().getLogicalName());
     }
 
 }

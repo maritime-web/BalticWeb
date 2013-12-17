@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import dk.dma.arcticweb.dao.RealmDao;
 import dk.dma.arcticweb.dao.ScheduleDao;
 import dk.dma.arcticweb.dao.VesselDao;
+import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
@@ -139,7 +140,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      * location, times etc.
      */
     @Override
-    @Roles(SailorRole.class)
+    @Roles({SailorRole.class, AdministratorRole.class})
     public String saveRoute(Route route, String voyageId, Boolean active) {
         return internalSaveRoute(route, voyageId, active);
     }

@@ -30,7 +30,7 @@ public class SailorRole extends Role {
     private Vessel vessel;
 
     public SailorRole() {
-        super("sailor");
+        super("Sailor");
     }
 
     public Vessel getVessel() {
