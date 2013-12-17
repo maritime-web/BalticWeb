@@ -25,4 +25,6 @@ public interface LogEntryDao {
     List<LogEntry> list();
     
     LogEntry latest(String service);
+
+    List<String> services();
 }

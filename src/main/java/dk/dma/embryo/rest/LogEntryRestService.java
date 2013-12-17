@@ -15,8 +15,7 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.embryo.dao.LogEntryDao;
-import dk.dma.embryo.domain.LogEntry;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -25,26 +24,54 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
 
-import java.util.List;
+import dk.dma.embryo.dao.LogEntryDao;
+import dk.dma.embryo.rest.json.LogEntry;
 
 @Path("/log")
 public class LogEntryRestService {
     @Inject
     private LogEntryDao logEntryDao;
+    
+    @Inject
+    private Logger logger;
 
     @GET
     @Path("/list")
     @Produces("application/json")
     @GZIP
     public List<LogEntry> list() {
-        return logEntryDao.list();
+        
+        List<dk.dma.embryo.domain.LogEntry> result = logEntryDao.list();
+        List<LogEntry> transformed = dk.dma.embryo.domain.LogEntry.fromJsonModel(result);
+        
+        return transformed;
     }
 
     @GET
     @Path("/latest")
     @Produces("application/json")
-    public LogEntry latest(@QueryParam("type") String service) {
-        return logEntryDao.latest(service);
+    public LogEntry latest(@QueryParam("service") String service) {
+        logger.debug("latest({})", service);
+        
+        dk.dma.embryo.domain.LogEntry latest = logEntryDao.latest(service); 
+
+        LogEntry result = latest == null ? null : latest.toJsonModel();
+        
+        logger.debug("latest({}) : {}", service, result);
+        return result;
+    }
+
+    @GET
+    @Path("/services")
+    @Produces("application/json")
+    public List<String> services() {
+        logger.debug("services()");
+        
+        List<String> services = logEntryDao.services(); 
+        
+        logger.debug("services():{}", services);
+        return services;
     }
 }

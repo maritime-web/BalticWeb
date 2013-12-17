@@ -15,36 +15,50 @@
  */
 package dk.dma.embryo.dao;
 
-import dk.dma.embryo.domain.LogEntry;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.TypedQuery;
-import java.util.Date;
-import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import dk.dma.embryo.domain.LogEntry;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class LogEntryDaoImpl extends DaoImpl implements LogEntryDao {
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(LogEntry entry) {
         saveEntity(entry);
     }
 
+    @Override
     public List<LogEntry> list() {
         TypedQuery<LogEntry> query = em.createNamedQuery("LogEntry:list", LogEntry.class);
-
-        query.setParameter("date", new Date(System.currentTimeMillis() - 48 * 3600 * 1000L));
+        query.setParameter("date", DateTime.now(DateTimeZone.UTC).minusDays(2));
 
         return query.getResultList();
     }
 
+    @Override
     public LogEntry latest(String service) {
         TypedQuery<LogEntry> query = em.createNamedQuery("LogEntry:latest", LogEntry.class);
         query.setParameter("service", service);
         query.setMaxResults(1);
 
         return getSingleOrNull(query.getResultList());
+    }
+
+    @Override
+    public List<String> services() {
+        TypedQuery<String> query = em.createNamedQuery("LogEntry:services", String.class);
+        query.setParameter("date", DateTime.now(DateTimeZone.UTC).minusMonths(1));
+
+        return query.getResultList();
     }
 
     
