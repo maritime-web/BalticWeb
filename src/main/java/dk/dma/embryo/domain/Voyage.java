@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -32,7 +31,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 @Entity
 @NamedQueries({
@@ -54,12 +54,12 @@ public class Voyage extends BaseEntity<Long> {
     @Valid
     private Position position;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
-    private LocalDateTime arrival;
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime arrival;
 
     @NotNull
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
-    private LocalDateTime departure;
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime departure;
 
     private Integer passengersOnBoard;
     private Integer crewOnBoard;
@@ -96,8 +96,8 @@ public class Voyage extends BaseEntity<Long> {
     }
 
     public static Voyage fromJsonModel(dk.dma.embryo.rest.json.Voyage voyage) {
-        LocalDateTime arrival = voyage.getArrival() == null ? null : new LocalDateTime(voyage.getArrival().getTime());
-        LocalDateTime departure = voyage.getDeparture() == null ? null : new LocalDateTime(voyage.getDeparture().getTime());
+        DateTime arrival = voyage.getArrival() == null ? null : new DateTime(voyage.getArrival().getTime(), DateTimeZone.UTC);
+        DateTime departure = voyage.getDeparture() == null ? null : new DateTime(voyage.getDeparture().getTime(), DateTimeZone.UTC);
         
         Position position = new Position(voyage.getLatitude(), voyage.getLongitude());
 
@@ -135,7 +135,7 @@ public class Voyage extends BaseEntity<Long> {
         this(null);
     }
 
-    public Voyage(String name, String latitude, String longitude, LocalDateTime arrival, LocalDateTime departure) {
+    public Voyage(String name, String latitude, String longitude, DateTime arrival, DateTime departure) {
         this();
         this.berthName = name;
         this.position = new Position(latitude, longitude);
@@ -143,7 +143,7 @@ public class Voyage extends BaseEntity<Long> {
         this.departure = departure;
     }
 
-    public Voyage(String name, String latitude, String longitude, LocalDateTime arrival, LocalDateTime departure,
+    public Voyage(String name, String latitude, String longitude, DateTime arrival, DateTime departure,
             Integer crewOnBoard, Integer passengers, boolean doctorOnBoard) {
         this();
         this.berthName = name;
@@ -168,19 +168,19 @@ public class Voyage extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public LocalDateTime getArrival() {
+    public DateTime getArrival() {
         return arrival;
     }
 
-    public void setArrival(LocalDateTime arrival) {
+    public void setArrival(DateTime arrival) {
         this.arrival = arrival;
     }
 
-    public LocalDateTime getDeparture() {
+    public DateTime getDeparture() {
         return departure;
     }
 
-    public void setDeparture(LocalDateTime departure) {
+    public void setDeparture(DateTime departure) {
         this.departure = departure;
     }
 

@@ -31,7 +31,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import dk.dma.enav.model.voyage.Waypoint;
 
@@ -56,11 +57,11 @@ public class Route extends BaseEntity<Long> {
 
     private String origin;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
-    private LocalDateTime etaOfArrival;
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime etaOfArrival;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
-    private LocalDateTime etaOfDeparture;
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime etaOfDeparture;
 
     @ElementCollection()
     @CollectionTable(name = "WayPoint")
@@ -84,7 +85,7 @@ public class Route extends BaseEntity<Long> {
 
     public static Route fromJsonModel(dk.dma.embryo.rest.json.Route from) {
         
-        LocalDateTime departure = from.getEtaDep() == null ? null : new LocalDateTime(from.getEtaDep().getTime());
+        DateTime departure = from.getEtaDep() == null ? null : new DateTime(from.getEtaDep().getTime(), DateTimeZone.UTC);
         
         Route route = new Route(from.getId(), from.getName(), from.getDep(), from.getDes());
         route.setEtaOfDeparture(departure);
@@ -189,19 +190,19 @@ public class Route extends BaseEntity<Long> {
         this.origin = origin;
     }
 
-    public LocalDateTime getEtaOfArrival() {
+    public DateTime getEtaOfArrival() {
         return etaOfArrival;
     }
 
-    public void setEtaOfArrival(LocalDateTime etaOfArrival) {
+    public void setEtaOfArrival(DateTime etaOfArrival) {
         this.etaOfArrival = etaOfArrival;
     }
 
-    public LocalDateTime getEtaOfDeparture() {
+    public DateTime getEtaOfDeparture() {
         return etaOfDeparture;
     }
 
-    public void setEtaOfDeparture(LocalDateTime etaOfDeparture) {
+    public void setEtaOfDeparture(DateTime etaOfDeparture) {
         this.etaOfDeparture = etaOfDeparture;
     }
 

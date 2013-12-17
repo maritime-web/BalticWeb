@@ -16,9 +16,9 @@
 package dk.dma.embryo.rest.json;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.joda.time.LocalDateTime;
 
 import dk.dma.enav.model.geometry.Position;
 
@@ -35,9 +35,9 @@ public class GreenPosVoyage implements Serializable{
 
     private Position position;
 
-    private LocalDateTime arrival;
+    private Date arrival;
 
-    private LocalDateTime departure;
+    private Date departure;
 
     private Integer personsOnBoard;
 
@@ -61,8 +61,8 @@ public class GreenPosVoyage implements Serializable{
     public GreenPosVoyage() {
     }
 
-    public GreenPosVoyage(String maritimeId, String name, Position position, LocalDateTime arrival,
-            LocalDateTime departure, Integer personsOnBoard, boolean doctorOnBoard) {
+    public GreenPosVoyage(String maritimeId, String name, Position position, Date arrival,
+            Date departure, Integer personsOnBoard, boolean doctorOnBoard) {
         this();
         this.berthName = name;
         this.position = position;
@@ -75,11 +75,11 @@ public class GreenPosVoyage implements Serializable{
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public LocalDateTime getArrival() {
+    public Date getArrival() {
         return arrival;
     }
 
-    public LocalDateTime getDeparture() {
+    public Date getDeparture() {
         return departure;
     }
 

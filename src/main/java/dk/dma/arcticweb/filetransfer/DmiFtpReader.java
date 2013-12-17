@@ -39,8 +39,8 @@ import javax.inject.Inject;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,8 +148,7 @@ public class DmiFtpReader {
         
         try {
             Date date = new SimpleDateFormat("yyyyMMddHHmm").parse(fn.substring(0, 12));
-            
-            LocalDateTime mapDate = new LocalDateTime(date.getTime());
+            DateTime mapDate = new DateTime(date.getTime());
             
             return mapDate.toLocalDate().isAfter(limit) ;
         } catch (ParseException e) {

@@ -15,16 +15,19 @@
  */
 package dk.dma.embryo.domain;
 
-import java.util.Date;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 public class IceObservation {
     private String source;
-    private Date date;
+    
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime date;
     private String shapeFileName;
     private String region;
     private long size;
 
-    public IceObservation(String source, String region, Date date, long size, String shapeFileName) {
+    public IceObservation(String source, String region, DateTime date, long size, String shapeFileName) {
         this.source = source;
         this.region = region;
         this.date = date;
@@ -36,7 +39,7 @@ public class IceObservation {
         return source;
     }
 
-    public Date getDate() {
+    public DateTime getDate() {
         return date;
     }
 

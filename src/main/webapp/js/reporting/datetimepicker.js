@@ -42,17 +42,17 @@
 
                 ngModelController.$formatters.push(function(modelValue) {
                     if (!modelValue) {
-                        picker.setLocalDate(null);
+                        picker.setDate(null);
                     } else {
-                        picker.setLocalDate(new Date(modelValue));
+                        picker.setDate(new Date(modelValue));
                     }
                 });
 
                 ngModelController.$parsers.push(function(valueFromInput) {
-                    if (!picker.getLocalDate()) {
+                    if (!picker.getDate()) {
                         return null;
                     } 
-                    return picker.getLocalDate().getTime();
+                    return picker.getDate().getTime();
                 });
 
                 element.bind('changeDate', function(e) {
@@ -61,7 +61,7 @@
                 });
                 
                 element.bind('blur change', function() {
-                    var millis = !picker.getLocalDate() ? null : picker.getLocalDate().getTime();
+                    var millis = !picker.getDate() ? null : picker.getDate().getTime();
                     ngModelController.$modelValue = millis;
                     ngModelController.$render();
                 });

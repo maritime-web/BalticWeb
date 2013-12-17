@@ -23,7 +23,8 @@ import java.util.UUID;
 import javax.persistence.Entity;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.joda.time.LocalDateTime;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 @Entity
 public class ReportedVoyage extends BaseEntity<Long> {
@@ -39,9 +40,10 @@ public class ReportedVoyage extends BaseEntity<Long> {
 
     private Position position;
 
-    private LocalDateTime arrival;
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime arrival;
 
-    private LocalDateTime departure;
+    private DateTime departure;
 
     private Integer personsOnBoard;
 
@@ -93,8 +95,8 @@ public class ReportedVoyage extends BaseEntity<Long> {
         this(UUID.randomUUID().toString());
     }
 
-    public ReportedVoyage(String maritimeId, String name, Position position, LocalDateTime arrival,
-            LocalDateTime departure, Integer personsOnBoard, boolean doctorOnBoard) {
+    public ReportedVoyage(String maritimeId, String name, Position position, DateTime arrival,
+            DateTime departure, Integer personsOnBoard, boolean doctorOnBoard) {
         this();
         this.berthName = name;
         this.position = position;
@@ -107,11 +109,11 @@ public class ReportedVoyage extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-    public LocalDateTime getArrival() {
+    public DateTime getArrival() {
         return arrival;
     }
 
-    public LocalDateTime getDeparture() {
+    public DateTime getDeparture() {
         return departure;
     }
 

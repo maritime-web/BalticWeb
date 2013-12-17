@@ -17,7 +17,9 @@ package dk.dma.embryo.service;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Date;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.dao.LogEntryDao;
 import dk.dma.embryo.domain.LogEntry;
@@ -34,7 +36,7 @@ public class EmbryoLogServiceImpl implements EmbryoLogService {
 
     public void info(String message) {
         LogEntry entry = new LogEntry();
-        entry.setDate(new Date());
+        entry.setTs(DateTime.now(DateTimeZone.UTC));
         entry.setMessage(message.substring(0, Math.min(message.length(), 200)));
         entry.setService(className);
         entry.setStatus(LogEntry.Status.OK);
@@ -43,7 +45,7 @@ public class EmbryoLogServiceImpl implements EmbryoLogService {
 
     public void error(String message) {
         LogEntry entry = new LogEntry();
-        entry.setDate(new Date());
+        entry.setTs(DateTime.now(DateTimeZone.UTC));
         entry.setMessage(message.substring(0, Math.min(message.length(), 200)));
         entry.setService(className);
         entry.setStatus(LogEntry.Status.ERROR);
@@ -52,7 +54,7 @@ public class EmbryoLogServiceImpl implements EmbryoLogService {
 
     public void error(String message, Throwable exception) {
         LogEntry entry = new LogEntry();
-        entry.setDate(new Date());
+        entry.setTs(DateTime.now(DateTimeZone.UTC));
         entry.setMessage(message.substring(0, Math.min(message.length(), 200)));
         entry.setService(className);
         entry.setStatus(LogEntry.Status.ERROR);

@@ -23,7 +23,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Type;
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.DateTime;
 
 @Entity
 @NamedQueries({
@@ -47,8 +48,8 @@ public class SecuredUser extends BaseEntity<Long> {
 
     private String email;
     
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
-    private LocalDateTime created;
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime created;
 
     public SecuredUser() {
     }
@@ -57,7 +58,7 @@ public class SecuredUser extends BaseEntity<Long> {
         setUserName(userName);
         setHashedPassword(hashedPassword);
         setSalt(salt);
-        created = LocalDateTime.now();
+        created = DateTime.now(DateTimeZone.UTC);
     }
 
     public SecuredUser(String userName, String hashedPassword, byte[] salt, String email) {
@@ -115,7 +116,7 @@ public class SecuredUser extends BaseEntity<Long> {
         this.salt = salt;
     }
 
-    public LocalDateTime getCreated() {
+    public DateTime getCreated() {
         return created;
     }
 

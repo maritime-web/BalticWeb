@@ -21,7 +21,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -83,7 +84,7 @@ public class GreenPosServiceImplTest {
 
         entityManager.persist(vessel);
 
-        Voyage v = new Voyage("Nuuk", "64 10.4N", "051 43.5W", LocalDateTime.now(), LocalDateTime.now().plusDays(2),
+        Voyage v = new Voyage("Nuuk", "64 10.4N", "051 43.5W", DateTime.now(DateTimeZone.UTC), DateTime.now(DateTimeZone.UTC).plusDays(2),
                 12, 0, true);
         vessel.addVoyageEntry(v);
         entityManager.persist(v);
@@ -114,7 +115,7 @@ public class GreenPosServiceImplTest {
     @Test
     public void testSave_GreenPosSailingPlanReport() {
 
-        LocalDateTime datetime = LocalDateTime.now();
+        DateTime datetime = DateTime.now(DateTimeZone.UTC);
 
         GreenPosSailingPlanReport spReport = new GreenPosSailingPlanReport("MyShip", 0L, "AA", new Position(
                 "64 10.400N", "051 43.500W"), "Weather", "Ice", 12.0, 343, "Nuuk", datetime, 12);
@@ -153,7 +154,7 @@ public class GreenPosServiceImplTest {
         Assert.assertEquals(12.0, spResult.getSpeed(), 0.0);
         Assert.assertEquals(Integer.valueOf(343), spResult.getCourse());
         Assert.assertEquals("Nuuk", spResult.getDestination());
-        Assert.assertEquals(datetime, spResult.getEtaOfArrival());
+        Assert.assertEquals(datetime.getMillis(), spResult.getEtaOfArrival().getMillis());
         Assert.assertEquals(Integer.valueOf(12), spResult.getPersonsOnBoard());
 
         entityManager.getTransaction().commit();

@@ -28,7 +28,7 @@ import javax.persistence.RollbackException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -72,10 +72,10 @@ public class ScheduleServiceImplTest {
         Vessel vessel = new Vessel(10L);
         entityManager.persist(vessel);
 
-        vessel.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", LocalDateTime.parse("2013-06-19T12:23"),
-                LocalDateTime.parse("2013-06-20T11:56"), 12, 0, true));
-        vessel.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", LocalDateTime.parse("2013-06-23T22:08"),
-                LocalDateTime.parse("2013-06-25T20:19"), 11, 0, false));
+        vessel.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", DateTime.parse("2013-06-19T12:23+00:00"),
+                DateTime.parse("2013-06-20T11:56+00:00"), 12, 0, true));
+        vessel.addVoyageEntry(new Voyage("City2", "3 3.300N", "1 6.000W", DateTime.parse("2013-06-23T22:08+00:00"),
+                DateTime.parse("2013-06-25T20:19+00:00"), 11, 0, false));
 
         for (Voyage v : vessel.getSchedule()) {
             entityManager.persist(v);
@@ -124,7 +124,7 @@ public class ScheduleServiceImplTest {
         Assert.assertNotNull(voyages);
 
         ReflectionAssert.assertPropertyLenientEquals("arrival",
-                asList(LocalDateTime.parse("2013-06-19T12:23"), LocalDateTime.parse("2013-06-23T22:08")), voyages);
+                asList(DateTime.parse("2013-06-19T12:23+00:00"), DateTime.parse("2013-06-23T22:08+00:00")), voyages);
     }
 
     @Test

@@ -21,7 +21,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Vessel;
@@ -41,13 +41,13 @@ public class ScheduleDaoImpl extends DaoImpl implements ScheduleDao {
 
     @Override
     public List<Voyage> getSchedule(Long mmsi) {
-        TypedQuery<LocalDateTime> datequery = em.createQuery("select MAX(v.departure) from Voyage v where v.vessel.mmsi = :mmsi AND date(v.departure) < CURRENT_DATE()", LocalDateTime.class);
+        TypedQuery<DateTime> datequery = em.createQuery("select MAX(v.departure) from Voyage v where v.vessel.mmsi = :mmsi AND date(v.departure) < CURRENT_DATE()", DateTime.class);
         datequery.setParameter("mmsi", mmsi);
-        LocalDateTime date = datequery.getSingleResult();
+        DateTime date = datequery.getSingleResult();
 
-        TypedQuery<LocalDateTime> activeDateQuery = em.createQuery("select ves.activeVoyage.departure from Vessel ves where ves.mmsi = :mmsi", LocalDateTime.class);
+        TypedQuery<DateTime> activeDateQuery = em.createQuery("select ves.activeVoyage.departure from Vessel ves where ves.mmsi = :mmsi", DateTime.class);
         activeDateQuery.setParameter("mmsi", mmsi);
-        LocalDateTime activeDate = getSingleOrNull(activeDateQuery.getResultList());
+        DateTime activeDate = getSingleOrNull(activeDateQuery.getResultList());
 
         if(date != null && activeDate != null && date.isAfter(activeDate)){
             date = activeDate;

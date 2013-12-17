@@ -17,8 +17,8 @@ package dk.dma.embryo.rest.util;
 
 import java.util.Locale;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -44,11 +44,11 @@ public class DateTimeConverter {
         this.defaultFormatter = formatter.withLocale(DEFAULT_LOCALE);
     }
     
-    public LocalDateTime toObject(String value){
+    public DateTime toObject(String value){
         return toObject(value, null);
     }
 
-    public LocalDateTime toObject(String value, Locale locale){
+    public DateTime toObject(String value, Locale locale){
         if(value == null){
             return null;
         }
@@ -56,24 +56,9 @@ public class DateTimeConverter {
             return null;
         }
         if(locale != null){
-            return formatter.withLocale(locale).parseLocalDateTime(value);
+            return formatter.withLocale(locale).parseDateTime(value);
         }
         
-        return defaultFormatter.parseLocalDateTime(value);
+        return defaultFormatter.parseDateTime(value);
     }
-
-     public String toString(LocalDateTime value, Locale locale){
-        if(value == null){
-            return null;
-        }
-        if(locale != null){
-            return formatter.withLocale(locale).print(value);
-        }
-        
-        return defaultFormatter.print(value);
-    }
-
-     public String toString(LocalDateTime value){
-         return toString(value, null);
-     }
 }

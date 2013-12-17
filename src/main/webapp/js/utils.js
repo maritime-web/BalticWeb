@@ -77,20 +77,20 @@ function formatNauticalMile(km) {
         return result.toFixed(0) + " NM";
     return result.toFixed(1) + " NM";
 }
-
+	
 function formatDate(dato) {
     if (dato == null)
         return "-";
     var d = new Date(dato);
-    return d.getFullYear() + "-" + ("" + (101 + d.getMonth())).slice(1, 3) + "-"
-            + ("" + (100 + d.getDate())).slice(1, 3);
+    return d.getUTCFullYear() + "-" + ("" + (101 + d.getUTCMonth())).slice(1, 3) + "-"
+            + ("" + (100 + d.getUTCDate())).slice(1, 3);
 }
 
 function formatTime(dato) {
     if (dato == null)
         return "-";
     var d = new Date(dato);
-    return formatDate(dato) + " " + d.getHours() + ":" + ("" + (100 + d.getMinutes())).slice(1, 3);
+    return formatDate(dato) + " " + d.getUTCHours() + ":" + ("" + (100 + d.getUTCMinutes())).slice(1, 3);
 }
 
 function formatHour(hour) {

@@ -29,7 +29,8 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.DateTime;
 
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
@@ -53,9 +54,9 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     @NotNull
     private Integer personsOnBoard;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @NotNull
-    private LocalDateTime etaOfArrival;
+    private DateTime etaOfArrival;
 
     @Valid
     @OneToMany(cascade = CascadeType.ALL)
@@ -71,7 +72,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     // //////////////////////////////////////////////////////////////////////
 
     public static GreenPosSailingPlanReport fromJsonModel(GreenPos from) {
-        LocalDateTime eta = from.getEta() == null ? null : new LocalDateTime(from.getEta().getTime()); 
+        DateTime eta = from.getEta() == null ? null : new DateTime(from.getEta().getTime(), DateTimeZone.UTC); 
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosSailingPlanReport report = new GreenPosSailingPlanReport(from.getVesselName(), from.getMmsi(),
@@ -150,7 +151,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
 
     public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign,
             Position position, String weather, String iceInformation, Double speed, Integer course, String destination,
-            LocalDateTime eta, Integer personsOnBoard) {
+            DateTime eta, Integer personsOnBoard) {
         super(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation, speed, course);
 
         this.destination = destination;
@@ -160,7 +161,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
 
     public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign,
             Position position, String weather, String iceInformation, Double speed, Integer course, String destination,
-            LocalDateTime eta, Integer personsOnBoard, List<ReportedVoyage> voyages) {
+            DateTime eta, Integer personsOnBoard, List<ReportedVoyage> voyages) {
         this(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation, speed, course,
                 destination, eta, personsOnBoard);
 
@@ -182,7 +183,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         return destination;
     }
 
-    public LocalDateTime getEtaOfArrival() {
+    public DateTime getEtaOfArrival() {
         return etaOfArrival;
     }
 

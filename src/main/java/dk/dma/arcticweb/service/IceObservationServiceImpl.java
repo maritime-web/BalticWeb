@@ -27,6 +27,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -80,7 +83,8 @@ public class IceObservationServiceImpl implements IceObservationService {
                 }
 
                 if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
-                    iceObservations.add(new IceObservation("DMI", region, date, sfm.getFileSize(), prefix + sfm.getFileName()));
+                    DateTime d = new DateTime(date.getTime(), DateTimeZone.UTC);
+                    iceObservations.add(new IceObservation("DMI", region, d, sfm.getFileSize(), prefix + sfm.getFileName()));
                 }
             }
         } catch (ParseException e) {

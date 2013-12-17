@@ -34,7 +34,8 @@ import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 
@@ -360,7 +361,7 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(user);
 
-        LocalDateTime now = LocalDateTime.now();
+        DateTime now = DateTime.now(DateTimeZone.UTC);
 
         newVessel.addVoyageEntry(new Voyage("Is never shown", "25 47.16N", "080 22.410W", null, now.minusDays(6)
                 .withTime(17, 0, 0, 0), 0, 0, false));
@@ -407,7 +408,7 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(user);
 
-        LocalDateTime now = LocalDateTime.now();
+        DateTime now = DateTime.now(DateTimeZone.UTC);
 
         newVessel.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", now.plusDays(3).withTime(10, 30, 0, 0),
                 now.plusDays(5).withTime(9, 0, 0, 0)));
@@ -451,11 +452,11 @@ public class TestServiceBean {
 
         Vessel sarfaq = vesselDao.getVessel(331037000L);
 
-        LocalDateTime now = LocalDateTime.now();
+        DateTime now = DateTime.now(DateTimeZone.UTC);
 
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
 
-        LocalDateTime firstDeparture = converter.toObject("27-09-2013 21:00", null);
+        DateTime firstDeparture = converter.toObject("27-09-2013 21:00", null);
 
         sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", null, firstDeparture));
         sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("28-09-2013 07:00",
@@ -639,7 +640,7 @@ public class TestServiceBean {
 
         vesselDao.saveEntity(user);
 
-        LocalDateTime now = LocalDateTime.now();
+        DateTime now = DateTime.now(DateTimeZone.UTC);
 
         newVessel.addVoyageEntry(new Voyage("Copenhagen", "55 67.61N", "12 56.83E", null, now.withTime(12, 57, 0, 0),
                 12, 300, true));
@@ -719,11 +720,11 @@ public class TestServiceBean {
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
         Vessel vessel = vesselDao.getVesselByCallsign("OXPJ2");
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime minus8 = now.minusDays(8);
-        LocalDateTime minus7 = now.minusDays(7);
-        LocalDateTime minus2 = now.minusDays(2);
-        LocalDateTime minus1 = now.minusDays(1);
+        DateTime now = DateTime.now(DateTimeZone.UTC);
+        DateTime minus8 = now.minusDays(8);
+        DateTime minus7 = now.minusDays(7);
+        DateTime minus2 = now.minusDays(2);
+        DateTime minus1 = now.minusDays(1);
 
         List<ReportedVoyage> voyages = null;
         GreenPosReport report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel

@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
@@ -67,9 +67,9 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     @NotNull
     private String reportedBy;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @NotNull
-    private LocalDateTime ts;
+    private DateTime ts;
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
@@ -203,11 +203,11 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         return reportedBy;
     }
 
-    public LocalDateTime getTs() {
+    public DateTime getTs() {
         return ts;
     }
 
-    public void setTs(LocalDateTime ts) {
+    public void setTs(DateTime ts) {
         this.ts = ts;
     }
 

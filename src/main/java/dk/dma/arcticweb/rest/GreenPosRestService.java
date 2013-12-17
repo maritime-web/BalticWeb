@@ -27,7 +27,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.jboss.resteasy.annotations.GZIP;
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.GreenPosService;
@@ -127,12 +128,11 @@ public class GreenPosRestService {
             @QueryParam("max") Integer max) {
         logger.debug("list({})");
 
-        LocalDateTime dateTime = null;
+        DateTime dateTime = null;
         if (ts != null && ts.trim().length() > 0) {
             try {
                 long lts = Long.parseLong(ts);
-                dateTime = new LocalDateTime(lts);
-
+                dateTime = new DateTime(lts, DateTimeZone.UTC);
             } catch (NumberFormatException e) {
                 dateTime = DateTimeConverter.getDateTimeConverter().toObject(ts);
             }

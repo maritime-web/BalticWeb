@@ -16,7 +16,7 @@
 package dk.dma.embryo.domain;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 
 /**
  * 
@@ -37,7 +37,7 @@ public class GreenposSearch {
 
     private String reportedBy;
 
-    private LocalDateTime ts;
+    private DateTime ts;
 
     private String sortByField = "ts";
 
@@ -54,7 +54,7 @@ public class GreenposSearch {
     }
 
     public GreenposSearch(String reportType, String vesselName, Long vesselMmsi, String vesselCallSign,
-            String reportedBy, LocalDateTime ts, String sortBy, String sortOrder, Integer first, Integer numberOfReports) {
+            String reportedBy, DateTime ts, String sortBy, String sortOrder, Integer first, Integer numberOfReports) {
         super();
 
         if (sortOrder != null && sortOrder.trim().length() > 0) {
@@ -80,7 +80,7 @@ public class GreenposSearch {
         this.numberOfReports = numberOfReports;
     }
 
-    public GreenposSearch(String reportType, Long vesselMmsi, LocalDateTime ts, String sortBy, String sortOrder,
+    public GreenposSearch(String reportType, Long vesselMmsi, DateTime ts, String sortBy, String sortOrder,
             Integer first, Integer numberOfReports) {
         this(reportType, null, vesselMmsi, null, null, ts, sortBy, sortOrder, first, numberOfReports);
 
@@ -113,7 +113,7 @@ public class GreenposSearch {
         return reportedBy;
     }
 
-    public LocalDateTime getTs() {
+    public DateTime getTs() {
         return ts;
     }
 

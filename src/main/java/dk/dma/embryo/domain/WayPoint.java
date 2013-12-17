@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Type;
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 
 import dk.dma.enav.model.voyage.Waypoint;
 
@@ -50,8 +50,8 @@ public class WayPoint implements Serializable {
     @NotNull
     private Double turnRadius;
     
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
-    private LocalDateTime eta;
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime eta;
     
     @Valid
     private RouteLeg leg;
@@ -188,11 +188,11 @@ public class WayPoint implements Serializable {
         this.turnRadius = turnRadius;
     }
 
-    public LocalDateTime getEta() {
+    public DateTime getEta() {
         return eta;
     }
 
-    public void setEta(LocalDateTime eta) {
+    public void setEta(DateTime eta) {
         this.eta = eta;
     }
 }
