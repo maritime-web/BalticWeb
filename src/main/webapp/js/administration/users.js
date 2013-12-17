@@ -1,4 +1,12 @@
 $(function() {
+    
+    function roleText(logicalName){
+        if(logicalName == "Reporting"){
+            return "Reporting Authority";
+        }
+        return logicalName;
+    }
+    
     function updateTable() {
         $.ajax({
             url: embryo.baseUrl + "rest/user/list",
@@ -8,7 +16,7 @@ $(function() {
                 var html = "";
 
                 $.each(users, function(k, v) {
-                    html += "<tr><td>"+v.login+"</td><td>"+(v.shipMmsi ? v.shipMmsi : "-")+"</td><td>"+v.role+"</td><td><a href=# id="+v.login+">delete</a></td></tr>";
+                    html += "<tr><td>"+v.login+"</td><td>"+(v.shipMmsi ? v.shipMmsi : "-")+"</td><td>"+roleText(v.role)+"</td><td><a href=# id="+v.login+">delete</a></td></tr>";
                 });
 
                 $("#activeUsersTable").html(html);

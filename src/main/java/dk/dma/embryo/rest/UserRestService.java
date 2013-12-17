@@ -95,7 +95,7 @@ public class UserRestService {
 
             su.setRole(shore);
             break;
-        case "Greenpos Authority":
+        case "Reporting":
             ReportingAuthorityRole authority = new ReportingAuthorityRole();
             vesselDao.saveEntity(authority);
 
