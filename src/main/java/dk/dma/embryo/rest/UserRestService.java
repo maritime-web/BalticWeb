@@ -21,7 +21,6 @@ import java.util.List;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -112,9 +111,6 @@ public class UserRestService {
 
         vesselDao.saveEntity(su);
     }
-
-    @Inject
-    protected EntityManager em;
 
     @GET
     @Path("/list")
