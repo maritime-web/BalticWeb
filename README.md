@@ -169,12 +169,12 @@ The result may also contain names of other services. Job names ends with Job...
 
 The latest log entry of a specific Job/service can be retrieved by the URL
 
-    http(s)://host/arcticweb/rest/log/latest?service=dk.dma.arcticweb.filetransfer.DmiFtpReader
+    http(s)://host/arcticweb/rest/log/latest?service=dk.dma.arcticweb.filetransfer.DmiFtpReaderJob
 
 where dk.dma.arcticweb.filetransfer.DmiFtpReaderJob is the job name. This will return a JSON response in the format
 
     {
-      "service":"dk.dma.arcticweb.filetransfer.DmiFtpReader",
+      "service":"dk.dma.arcticweb.filetransfer.DmiFtpReaderJob",
       "status":"OK",
       "message":"Scanned DMI (ftp.ais.dk) for new files. Files transferred: 0",
       "stackTrace":null,
