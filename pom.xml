@@ -189,12 +189,12 @@
     <dependency>
       <groupId>dk.dma.enav</groupId>
       <artifactId>enav-model</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>0.1</version>
     </dependency>
     <dependency>
       <groupId>dk.dma.enav</groupId>
       <artifactId>enav-serialization</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>0.1</version>
     </dependency>
     <dependency>
       <groupId>dk.dma.commons</groupId>
