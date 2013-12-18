@@ -159,13 +159,11 @@ http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only avail
 
 ## Surveillance
 
-The application contains a number of jobs running at different schedules. The success rate of these are logged in the application database and can be retrieved using a public REST call. 
+The application contains a number of integrations with external systems. These may be either jobs running at different schedules or HTTP calls directly to the external system. The success rate of the integration executions are logged in the application database and can be retrieved using a public REST call. 
 
-Job names can be retrieved calling the URL:
+Names of the integration jobs/services of can be retrieved calling the URL:
 
     http(s)://host/arcticweb/rest/log/services
-
-The result may also contain names of other services. Job names ends with Job...
 
 The latest log entry of a specific Job/service can be retrieved by the URL
 
