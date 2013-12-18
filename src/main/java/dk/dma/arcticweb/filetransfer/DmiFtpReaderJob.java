@@ -49,7 +49,7 @@ import dk.dma.embryo.service.EmbryoLogService;
 
 @Singleton
 @Startup
-public class DmiFtpReader {
+public class DmiFtpReaderJob {
     private String[] charts = {
             "CapeFarewell_RIC",
             "CentralWest_RIC",
@@ -61,7 +61,7 @@ public class DmiFtpReader {
             "SouthWest_RIC"
     };
 
-    private final Logger logger = LoggerFactory.getLogger(DmiFtpReader.class);
+    private final Logger logger = LoggerFactory.getLogger(DmiFtpReaderJob.class);
 
     @Inject
     @Property("embryo.iceMaps.cron")

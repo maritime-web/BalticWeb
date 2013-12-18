@@ -42,7 +42,7 @@ import java.util.Map.Entry;
 
 @Singleton
 @Startup
-public class AisReplicator {
+public class AisReplicatorJob {
     @Inject
     private VesselDao vesselRepository;
 
@@ -69,7 +69,7 @@ public class AisReplicator {
     @Inject
     private EmbryoLogService embryoLogService;
 
-    public AisReplicator() {
+    public AisReplicatorJob() {
     }
 
     @PostConstruct
