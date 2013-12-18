@@ -71,11 +71,11 @@ In particular the file may contain URLs and passwords for the DMI Ice map server
 
 A local deployment will setup ArcticWeb at the following URL:
 
-http://localhost:8080/arcticweb/
+    http://localhost:8080/arcticweb/
 
 To setup test users and data you must first login with dma/qwerty and thereafter push the button at the following URL
 
-http://localhost:8080/arcticweb/testdata.html
+    http://localhost:8080/arcticweb/testdata.html
 
 Thereafter you can login with orasila/qwerty, oratank/qwerty, dmi/qwerty, etc. 
 
