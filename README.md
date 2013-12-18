@@ -16,12 +16,13 @@ On the client side we use:
 * Twitter Bootstrap (for basic layout)
 * AngularJS (for forms and similar)
 * HTML5 Application Cache
+* Karma (for unit testing)
 
 On the server side we use:
 
 * Java 7
 * Maven (for building)
-* EJB3/Hibernate (for persistance)
+* EJB3.1/JPA(Hibernate) (for persistance)
 * CDI/JSR330 (for dependency injection)
 * Resteasy (for JSON-webservices)
 * Shiro (for security)
@@ -38,7 +39,6 @@ On the server side we use:
 * MySQL (Maven configures JBoss datasource to use MySQL)
 * Node.js (Follow the installation instructions at http://nodejs.org)
 * Grunt.js (Follow the installation instructions at http://gruntjs.com)
-
 
 ## Initial setup
 
@@ -64,25 +64,36 @@ In particular the file may contain URLs and passwords for the DMI Ice map server
 
 ## Deploy to JBoss
 
-* mvn install -P fulldeploy - Clean, build, install database drivers environmental variables and deploy application (used for first deploy)
-* mvn jboss-as:deploy - Just deploy the WAR-file
-* mvn antrun:run - deploy js, css and html to temporary deploy folder on JBoss (fast deploy of web resources - web session not destroyed)
+* Initial deployment (Clean, build, install database drivers environmental variables and deploy application)
+    mvn install -P fulldeploy
+* Daily deployment
+    mvn jboss-as:deploy - Just deploy the WAR-file
 
 A local deployment will setup ArcticWeb at the following URL:
 
 http://localhost:8080/arcticweb/
 
-Use the following URL to setup test users and data:
+To setup test users and data you must first login with dma/qwerty and thereafter push the button at the following URL
 
 http://localhost:8080/arcticweb/testdata.html
 
-Login with e.g. orasila/qwerty
+Thereafter you can login with orasila/qwerty, oratank/qwerty, dmi/qwerty, etc. 
 
+## Instant reload of web resources
+
+Grunt has been setup to run a livereload server, which enables instant reload of static web resources (html, css, js, images) upon saving them. Go to the project folder and execute
+
+    grunt server
+
+Then visit the url: http://localhost:9000/arcticweb/front.html
+
+You will now be able to test/see changes to static web resources almost instantly. 
+
+(All REST http calls are proxied to the JBoss server installation at port 8080). 
 
 ## Checkstyle
 
 See https://github.com/dma-dk/dma-developers
-
 
 ## JSLint
 
@@ -145,4 +156,33 @@ http://test.e-navigation.net/arcticweb (requires credentials only available to d
 The CI server continuously deployes the latest and greatest to a separate test server:
 
 http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only available to development team)
+
+## Surveillance
+
+The application contains a number of jobs running at different schedules. The success rate of these are logged in the application database and can be retrieved using a public REST call. 
+
+Job names can be retrieved calling the URL:
+
+    http(s)://host/arcticweb/rest/log/services
+
+The result may also contain names of other services. Job names ends with Job...
+
+The latest log entry of a specific Job/service can be retrieved by the URL
+
+    http(s)://host/arcticweb/rest/log/latest?service=dk.dma.arcticweb.filetransfer.DmiFtpReader
+
+where dk.dma.arcticweb.filetransfer.DmiFtpReaderJob is the job name. This will return a JSON response in the format
+
+    {
+      "service":"dk.dma.arcticweb.filetransfer.DmiFtpReader",
+      "status":"OK",
+      "message":"Scanned DMI (ftp.ais.dk) for new files. Files transferred: 0",
+      "stackTrace":null,
+      "date":1387353901000
+    }
+
+where the important fields are 
+* status: may have the values "OK" or "ERROR" 
+* date: The time of logging in milliseconds since the standard base time known as "the epoch", namely January 1, 1970, 00:00:00 GMT.
+
 
