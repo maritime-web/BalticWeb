@@ -15,11 +15,9 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
-import dk.dma.embryo.domain.IceObservation;
-import dk.dma.embryo.domain.ShapeFileMeasurement;
-import dk.dma.embryo.security.AuthorizationChecker;
-import dk.dma.embryo.security.authorization.RolesAllowAll;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -27,18 +25,19 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
+import dk.dma.embryo.domain.IceObservation;
+import dk.dma.embryo.domain.ShapeFileMeasurement;
+import dk.dma.embryo.security.AuthorizationChecker;
+import dk.dma.embryo.security.authorization.RolesAllowAll;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-@Interceptors(value=AuthorizationChecker.class)
+@Interceptors(value = AuthorizationChecker.class)
 public class IceObservationServiceImpl implements IceObservationService {
 
     @Inject
@@ -50,45 +49,43 @@ public class IceObservationServiceImpl implements IceObservationService {
     public List<IceObservation> listAvailableIceObservations() {
         List<IceObservation> iceObservations = new ArrayList<>();
 
-        try {
-            for (ShapeFileMeasurement sfm : shapeFileMeasurementDao.list(prefix)) {
-                Date date = new SimpleDateFormat("yyyyMMddHHmm").parse(sfm.getFileName().substring(0, 12));
-                String region = sfm.getFileName().substring(13);
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmm").withZone(DateTimeZone.UTC);
 
-                switch (region) {
-                    case "CapeFarewell_RIC":
-                        region = "Cape Farewell";
-                        break;
-                    case "CentralWest_RIC":
-                        region = "Central West";
-                        break;
-                    case "Greenland_WA":
-                        region = "Greenland Overview";
-                        break;
-                    case "NorthEast_RIC":
-                        region = "North East";
-                        break;
-                    case "NorthWest_RIC":
-                        region = "North West";
-                        break;
-                    case "Qaanaaq_RIC":
-                        region = "Qaanaaq";
-                        break;
-                    case "SouthEast_RIC":
-                        region = "South East";
-                        break;
-                    case "SouthWest_RIC":
-                        region = "South West";
-                        break;
-                }
+        for (ShapeFileMeasurement sfm : shapeFileMeasurementDao.list(prefix)) {
+            Date date = formatter.parseDateTime(sfm.getFileName().substring(0, 12)).toDate();
+            String region = sfm.getFileName().substring(13);
 
-                if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
-                    DateTime d = new DateTime(date.getTime(), DateTimeZone.UTC);
-                    iceObservations.add(new IceObservation("DMI", region, d, sfm.getFileSize(), prefix + sfm.getFileName()));
-                }
+            switch (region) {
+            case "CapeFarewell_RIC":
+                region = "Cape Farewell";
+                break;
+            case "CentralWest_RIC":
+                region = "Central West";
+                break;
+            case "Greenland_WA":
+                region = "Greenland Overview";
+                break;
+            case "NorthEast_RIC":
+                region = "North East";
+                break;
+            case "NorthWest_RIC":
+                region = "North West";
+                break;
+            case "Qaanaaq_RIC":
+                region = "Qaanaaq";
+                break;
+            case "SouthEast_RIC":
+                region = "South East";
+                break;
+            case "SouthWest_RIC":
+                region = "South West";
+                break;
             }
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+
+            if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
+                iceObservations.add(new IceObservation("DMI", region, date, sfm.getFileSize(), prefix
+                        + sfm.getFileName()));
+            }
         }
 
         return iceObservations;
