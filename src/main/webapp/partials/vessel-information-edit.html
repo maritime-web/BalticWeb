@@ -5,7 +5,9 @@
     <p>Static information is expected maintained mainly in the vessels' AIS transponder. Additional
         information valuable in the Arctic region may be shared below.</p>
     <form name="vesselForm" class="form-horizontal" novalidate>
-        <div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+        <div x-ng-show="alertMessages" class="alert alert-error">
+			<span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+	 	</div>
         <div x-ng-show="message" class="alert alert-info">{{message}}</div>
         <div class="row-fluid">
             <div class="span6">

@@ -23,7 +23,7 @@
 
                 $scope.vessel = vesselDetails;
                 $scope.message = null;
-                $scope.alertMessage = null;
+                $scope.alertMessages = null;
                 $scope.$apply(function() {
                 });
             },
@@ -34,8 +34,15 @@
 
         $scope.save = function() {
             $scope.message = null;
-            VesselService.saveDetails($scope.vessel, function(error, data) {
-                $scope.message = "vessel information successfully submitted";
+            VesselService.saveDetails($scope.vessel, function(jqXHR, data) {
+                if(data != null){
+                    $scope.message = "vessel information successfully submitted";
+                }else if(jqXHR != null){
+                    
+                    console.log(jqXHR);
+                    
+                    $scope.alertMessages = embryo.ErrorService.extractError(jqXHR.statusText, jqXHR.status, null);
+                }
                 $scope.$apply();
             });
         };
@@ -43,7 +50,7 @@
         $scope.reset = function() {
             // TODO find a way to hide these
             $scope.message = null;
-            $scope.alertMessage = null;
+            $scope.alertMessages = null;
         };
     };
 
