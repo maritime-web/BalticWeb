@@ -96,7 +96,7 @@ embryo.authenticated(function() {
         embryo.additionalInformation.historicalTrack,
         embryo.additionalInformation.nearestShips,
         embryo.additionalInformation.distanceCircles,
-        embryo.additionalInformation.metoc
+        //embryo.additionalInformation.metoc
     ];
 
     embryo.vessel.actions.selectedVessel = [

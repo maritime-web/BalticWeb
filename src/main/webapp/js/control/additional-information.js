@@ -87,26 +87,26 @@ embryo.additionalInformation.route = {
     }
 }
 
-embryo.additionalInformation.metoc = {
-    title : "METOC on Route",
-    layer : new MetocLayer(),
-    init : function(map, group) {
-        addLayerToMap(group, this.layer, map)
-    },
-    available : function(vessel, vesselDetails) {
-        return vesselDetails.additionalInformation.routeId != null;
-    },
-    show : function(vessel, vesselDetails) {
-        var that = this;
-        embryo.metoc.service.getMetoc(vesselDetails.additionalInformation.routeId, function(metoc) {
-            that.layer.draw(metoc);
-            that.layer.zoomToExtent();
-        });
-    },
-    hide: function() {
-        this.layer.clear();
-    }
-}
+//embryo.additionalInformation.metoc = {
+//    title : "METOC on Route",
+//    layer : new MetocLayer(),
+//    init : function(map, group) {
+//        addLayerToMap(group, this.layer, map)
+//    },
+//    available : function(vessel, vesselDetails) {
+//        return vesselDetails.additionalInformation.routeId != null;
+//    },
+//    show : function(vessel, vesselDetails) {
+//        var that = this;
+//        embryo.metoc.service.getMetoc(vesselDetails.additionalInformation.routeId, function(metoc) {
+//            that.layer.draw(metoc);
+//            that.layer.zoomToExtent();
+//        });
+//    },
+//    hide: function() {
+//        this.layer.clear();
+//    }
+//}
 
 embryo.mapInitialized(function() {
     $.each(embryo.additionalInformation, function(k, v) {
