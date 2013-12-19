@@ -196,11 +196,6 @@
       <artifactId>enav-serialization</artifactId>
       <version>0.1</version>
     </dependency>
-    <dependency>
-      <groupId>dk.dma.commons</groupId>
-      <artifactId>dma-commons-model</artifactId>
-      <version>0.1-SNAPSHOT</version>
-    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
