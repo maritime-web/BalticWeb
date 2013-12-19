@@ -34,14 +34,12 @@
 
         $scope.save = function() {
             $scope.message = null;
+            $scope.alertMessages = null;
             VesselService.saveDetails($scope.vessel, function(jqXHR, data) {
-                if(data != null){
-                    $scope.message = "vessel information successfully submitted";
-                }else if(jqXHR != null){
-                    
-                    console.log(jqXHR);
-                    
+                if(jqXHR != null){
                     $scope.alertMessages = embryo.ErrorService.extractError(jqXHR.statusText, jqXHR.status, null);
+                }else{
+                    $scope.message = "vessel information successfully submitted";
                 }
                 $scope.$apply();
             });
