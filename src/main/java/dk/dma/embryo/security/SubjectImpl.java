@@ -25,7 +25,10 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.dao.RealmDao;
+import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.domain.Role;
+import dk.dma.embryo.domain.Route;
+import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 
 /**
@@ -42,6 +45,9 @@ public class SubjectImpl implements Subject {
 
     @Inject
     private transient RealmDao realmDao;
+
+    @Inject
+    private transient ScheduleDao scheduleDao;
 
     @Inject
     private transient Logger logger;
@@ -108,6 +114,62 @@ public class SubjectImpl implements Subject {
         }
         
         return false;
+    }
+
+    @Override
+    public boolean authorizedToModifyVessel(Long mmsi) {
+        logger.debug("authorizedToModifyVessel({})", mmsi);
+        if(!hasRole(SailorRole.class)){
+            logger.debug("authorizedToModifyVessel({}) - not Sailor", mmsi);
+            return false;
+        }
+
+        SailorRole sailor = realmDao.getSailor((Long)SecurityUtils.getSubject().getPrincipal());
+        logger.debug("authorizedToModifyVessel({}) - sailor={}", mmsi, sailor);
+
+        if(sailor != null){
+            logger.debug("authorizedToModifyVessel({}) - vessel={}", mmsi, sailor.getVessel());
+        }
+
+        return mmsi.equals(sailor.getVessel().getMmsi());
+    }
+
+
+    @Override
+    public boolean authorizedToModifyRoute(String enavId) {
+        if(!hasRole(SailorRole.class)){
+            return false;
+        }
+
+        if(enavId == null || enavId.length() == 0){
+            return false;
+        }
+
+        Long mmsi = scheduleDao.getMmsiByRouteEnavId(enavId);
+        
+        if(mmsi == null){
+            return false;
+        }
+        
+        return authorizedToModifyVessel(mmsi);
+    }
+    
+    @Override
+    public boolean authorizedToModifyVoyage(String enavId) {
+        if(!hasRole(SailorRole.class)){
+            return false;
+        }
+        
+        if(enavId == null || enavId.length() == 0){
+            return false;
+        }
+
+        Long mmsi = scheduleDao.getMmsiByVoyageEnavId(enavId);
+        if(mmsi == null){
+            return false;
+        }
+        
+        return authorizedToModifyVessel(mmsi);
     }
     
 }

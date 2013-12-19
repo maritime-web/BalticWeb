@@ -38,7 +38,9 @@ import org.joda.time.DateTimeZone;
 @NamedQueries({
         @NamedQuery(name = "Voyage:getByEnavId", query = "SELECT DISTINCT v FROM Voyage v where v.enavId = :enavId"),
         @NamedQuery(name = "Voyage:getByEnavIds", query = "SELECT DISTINCT v FROM Voyage v where v.enavId in :enavIds"),
-        @NamedQuery(name = "Voyage:getByMmsi", query = "SELECT DISTINCT v FROM Voyage v where v.vessel.mmsi = :mmsi AND (:date IS NULL OR DATE(v.departure) >= DATE(:date)) order by v.departure") })
+        @NamedQuery(name = "Voyage:getByMmsi", query = "SELECT DISTINCT v FROM Voyage v where v.vessel.mmsi = :mmsi AND (:date IS NULL OR DATE(v.departure) >= DATE(:date)) order by v.departure"),
+        @NamedQuery(name = "Voyage:mmsi", query = "SELECT ves.mmsi FROM Voyage v INNER JOIN v.vessel ves where v.enavId = :enavId")
+})
 public class Voyage extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;

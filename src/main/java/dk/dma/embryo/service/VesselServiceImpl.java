@@ -29,6 +29,7 @@ import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.AuthorizationChecker;
+import dk.dma.embryo.security.authorization.VesselModifierInterceptor;
 import dk.dma.embryo.security.authorization.Roles;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
 
@@ -53,6 +54,7 @@ public class VesselServiceImpl implements VesselService {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Roles(value=SailorRole.class)
+    @Interceptors(VesselModifierInterceptor.class)
     public void save(Vessel vessel) {
         Vessel managed = vesselRepository.getVessel(vessel.getMmsi());
 

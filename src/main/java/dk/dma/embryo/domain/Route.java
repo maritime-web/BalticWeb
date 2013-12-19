@@ -39,7 +39,8 @@ import dk.dma.enav.model.voyage.Waypoint;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "Route:getByEnavId", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.enavId = :enavId"),
-        @NamedQuery(name = "Route:getId", query = "SELECT r.id FROM Route r WHERE r.enavId = :enavId") })
+        @NamedQuery(name = "Route:getId", query = "SELECT r.id FROM Route r WHERE r.enavId = :enavId"),
+        @NamedQuery(name = "Route:mmsi", query = "SELECT ves.mmsi FROM Route r INNER JOIN r.voyage v INNER JOIN v.vessel ves WHERE r.enavId = :enavId") })
 public class Route extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -84,22 +85,23 @@ public class Route extends BaseEntity<Long> {
     }
 
     public static Route fromJsonModel(dk.dma.embryo.rest.json.Route from) {
-        
-        DateTime departure = from.getEtaDep() == null ? null : new DateTime(from.getEtaDep().getTime(), DateTimeZone.UTC);
-        
+
+        DateTime departure = from.getEtaDep() == null ? null : new DateTime(from.getEtaDep().getTime(),
+                DateTimeZone.UTC);
+
         Route route = new Route(from.getId(), from.getName(), from.getDep(), from.getDes());
         route.setEtaOfDeparture(departure);
 
         for (dk.dma.embryo.rest.json.Waypoint wayPoint : from.getWps()) {
             route.addWayPoint(WayPoint.fromJsonModel(wayPoint));
         }
-        
+
         return route;
     }
 
     public dk.dma.embryo.rest.json.Route toJsonModel() {
         Date departure = this.getEtaOfDeparture() == null ? null : this.getEtaOfDeparture().toDate();
-        
+
         dk.dma.embryo.rest.json.Route toRoute = new dk.dma.embryo.rest.json.Route(this.enavId);
         toRoute.setName(this.name);
         toRoute.setDep(this.origin);
@@ -131,8 +133,8 @@ public class Route extends BaseEntity<Long> {
         for (WayPoint wp : this.getWayPoints()) {
             toRoute.getWaypoints().add(wp.toEnavModel());
         }
-        
-        if(toRoute.getWaypoints().size() > 0 && toRoute.getWaypoints().get(0).getEta() == null){
+
+        if (toRoute.getWaypoints().size() > 0 && toRoute.getWaypoints().get(0).getEta() == null) {
             toRoute.getWaypoints().get(0).setEta(getEtaOfDeparture() == null ? null : getEtaOfDeparture().toDate());
         }
 

@@ -24,15 +24,18 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
 import javax.interceptor.Interceptors;
+import javax.interceptor.InvocationContext;
 
+import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.component.RouteSaver;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.dao.VesselDao;
-import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
@@ -40,6 +43,7 @@ import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.security.authorization.VesselModifierInterceptor;
 import dk.dma.embryo.security.authorization.Roles;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
 
@@ -72,6 +76,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Roles(value=SailorRole.class)
+    @Interceptors(VesselModifierInterceptor.class)
     public void updateSchedule(Long mmsi, List<Voyage> toBeSaved, String[] toBeDeleted) {
 
         List<String> ids = new ArrayList<>(toBeSaved.size());
@@ -124,7 +129,6 @@ public class ScheduleServiceImpl implements ScheduleService {
                 for (WayPoint w : r.getWayPoints()) {
                     w.getName();
                 }
-
             }
         }
 
@@ -138,13 +142,15 @@ public class ScheduleServiceImpl implements ScheduleService {
      * location, times etc.
      */
     @Override
-    @Roles({SailorRole.class, AdministratorRole.class})
+    @Roles({SailorRole.class})
+    @Interceptors(VoyageModifierInterceptor.class)
     public String saveRoute(Route route, String voyageId, Boolean active) {
         return new RouteSaver(scheduleRepository).saveRoute(route, voyageId, active);
     }
     
     @Override
     @Roles(SailorRole.class)
+    @Interceptors(RouteModifierInterceptor.class)
     public String saveRoute(Route route) {
         if (route.getId() == null) {
             Long id = scheduleRepository.getRouteId(route.getEnavId());
@@ -171,6 +177,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Roles(SailorRole.class)
+    @Interceptors(RouteModifierInterceptor.class)
     public Route activateRoute(String routeEnavId, Boolean activate) {
         logger.debug("activateRoute({}, {})", routeEnavId, activate);
         Route route = scheduleRepository.getRouteByEnavId(routeEnavId);
@@ -180,8 +187,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         Vessel vessel = realmDao.getSailor(subject.getUserId()).getVessel();
-
-        logger.debug("Vessel:{}", vessel.getMmsi());
 
         if (activate) {
             vessel.setActiveVoyage(route.getVoyage());
@@ -198,4 +203,44 @@ public class ScheduleServiceImpl implements ScheduleService {
         Route route = scheduleRepository.getRouteByEnavId(enavId);
         return route;
     }
+    
+    public static class RouteModifierInterceptor{
+        @Inject
+        private Subject subject;
+
+        @AroundInvoke
+        Object onlyOwnRoutes(InvocationContext ctx) throws Exception{
+            String enavId;
+            
+            if(ctx.getParameters()[0] instanceof Route){
+                enavId = ((Route)ctx.getParameters()[0]).getEnavId();
+            }else if (ctx.getParameters()[0] instanceof String){
+                enavId = (String)ctx.getParameters()[0];
+            }else{
+                throw new IllegalArgumentException("First argument must be one of types " + Route.class.getName() + ", " + String.class.getName());
+            }
+            
+            if(enavId != null && !subject.authorizedToModifyRoute(enavId)){
+                throw new AuthorizationException("Not authorized to modify route");
+            }
+            
+            return ctx.proceed();
+        }
+    }
+
+    public static class VoyageModifierInterceptor{
+        @Inject
+        private Subject subject;
+
+        @AroundInvoke
+        Object onlyOwnVoyages(InvocationContext ctx) throws Exception{
+            String voyageEnavId = (String)ctx.getParameters()[1];
+            if(!subject.authorizedToModifyVoyage(voyageEnavId)){
+                throw new AuthorizationException("Not authorized to modify voyage/route");
+            }
+            
+            return ctx.proceed();
+        }
+    }
+
 }

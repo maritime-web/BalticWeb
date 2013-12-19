@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import dk.dma.embryo.domain.Role;
+import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SecuredUser;
 
 /**
@@ -50,7 +51,13 @@ public interface Subject extends Serializable {
     SecuredUser getUser() ;
 
     boolean hasOneOfRoles(List<Class<? extends Role>> roleTypes) ;
+
+    boolean authorizedToModifyVessel(Long mmsi) ;
     
+    boolean authorizedToModifyRoute(String enavId) ;
+
+    boolean authorizedToModifyVoyage(String enavId) ;
+
     void logout();
 
     boolean isLoggedIn();

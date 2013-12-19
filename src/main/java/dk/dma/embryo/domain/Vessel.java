@@ -121,6 +121,18 @@ public class Vessel extends BaseEntity<Long> {
 
 
     // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return "Vessel [mmsi=" + mmsi + ", maxSpeed=" + maxSpeed + ", grossTonnage=" + grossTonnage
+                + ", commCapabilities=" + commCapabilities + ", persons=" + persons + ", iceClass=" + iceClass
+                + ", helipad=" + helipad + ", aisData=" + aisData + "]";
+    }
+
+    
+
+    // //////////////////////////////////////////////////////////////////////
     // Utility
     // //////////////////////////////////////////////////////////////////////
 

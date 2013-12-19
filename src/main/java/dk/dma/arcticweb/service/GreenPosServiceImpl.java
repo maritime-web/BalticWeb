@@ -21,8 +21,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptors;
+import javax.interceptor.InvocationContext;
 
+import org.apache.shiro.authz.AuthorizationException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -86,8 +89,8 @@ public class GreenPosServiceImpl implements GreenPosService {
      */
     @Override
     @Roles(SailorRole.class)
+    @Interceptors(SaveReportInterceptor.class)
     public String saveReport(GreenPosReport report) {
-        //TODO check if reporting for own ship 
         
         checkIfAlreadySaved(report);
 
@@ -171,4 +174,22 @@ public class GreenPosServiceImpl implements GreenPosService {
     public GreenPosReport get(String id) {
         return greenPosDao.findById(id);
     }
+
+    public static class SaveReportInterceptor{
+        
+        @Inject
+        private Subject subject;
+        
+        @AroundInvoke
+        Object onlyForOwnVessel(InvocationContext ctx) throws Exception{
+            GreenPosReport report = (GreenPosReport)ctx.getParameters()[0];
+            if(report.getVesselMmsi() == null || !subject.authorizedToModifyVessel(report.getVesselMmsi())){
+                throw new AuthorizationException("Not authorized to submit GreenposReports for vessel");
+            }
+            
+            return ctx.proceed();
+        }
+    }
+
+
 }

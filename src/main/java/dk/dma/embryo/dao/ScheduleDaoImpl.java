@@ -117,5 +117,23 @@ public class ScheduleDaoImpl extends DaoImpl implements ScheduleDao {
         List<Voyage> result = query.getResultList();
         return result;
     }
+    
+    @Override
+    public Long getMmsiByRouteEnavId(String enavId){
+        TypedQuery<Long> query = em.createNamedQuery("Route:mmsi", Long.class);
+        query.setParameter("enavId", enavId);
+        List<Long> result = query.getResultList();
+        return getSingleOrNull(result);
+        
+    }
+
+    @Override
+    public Long getMmsiByVoyageEnavId(String enavId){
+        TypedQuery<Long> query = em.createNamedQuery("Voyage:mmsi", Long.class);
+        query.setParameter("enavId", enavId);
+        List<Long> result = query.getResultList();
+        return getSingleOrNull(result);
+        
+    }
 
 }

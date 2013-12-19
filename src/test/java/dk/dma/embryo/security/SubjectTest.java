@@ -41,17 +41,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import dk.dma.embryo.dao.RealmDao;
+import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.domain.ReportingAuthorityRole;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.ShoreRole;
+import dk.dma.embryo.domain.Vessel;
 
 // DummyHttpSession and DummyHttpRequest are necessary to test SessionScoped Subject
 @AdditionalClasses({ SubjectImpl.class, DummyHttpSession.class, DummyHttpRequest.class })
 public class SubjectTest extends AbstractShiroTest {
-
-    private static final String PERMITTED_PERMISSION = "permission";
 
     @BeforeClass
     public static void initShiroRealm() {
@@ -63,6 +63,10 @@ public class SubjectTest extends AbstractShiroTest {
     @Produces
     @Mock
     RealmDao realmDao;
+
+    @Produces
+    @Mock
+    ScheduleDao scheduleDao;
 
     @Inject
     Subject subject;
@@ -100,6 +104,48 @@ public class SubjectTest extends AbstractShiroTest {
         subject.logout();
     }
 
+    @Test
+    @InSessionScope
+    public void testAuthorizedToModifyRoute() {
+        String user = "Ole";
+        String pw = "pw";
+        Long mmsi = 2L;
+
+        SailorRole sailor = new SailorRole();
+        sailor.setVessel(new Vessel(mmsi));
+        
+        Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw ,null));
+        Mockito.when(realmDao.getSailor(1L)).thenReturn(sailor);
+        Mockito.when(scheduleDao.getMmsiByRouteEnavId("foo")).thenReturn(mmsi);
+
+        subject.login(user, pw);
+        
+        boolean authorized = subject.authorizedToModifyRoute("foo");
+        
+        Assert.assertTrue(authorized);
+    }
+
+    @Test
+    @InSessionScope
+    public void testAuthorizedToModifyVessel() {
+        String user = "Ole";
+        String pw = "pw";
+        Long mmsi = 2L;
+        
+        SailorRole sailor = new SailorRole();
+        sailor.setVessel(new Vessel(mmsi));
+        
+        Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw ,null));
+        Mockito.when(realmDao.getSailor(1L)).thenReturn(sailor);
+        Mockito.when(scheduleDao.getMmsiByRouteEnavId("foo")).thenReturn(mmsi);
+
+        subject.login(user, pw);
+        
+        boolean authorized = subject.authorizedToModifyVessel(mmsi);
+        
+        Assert.assertTrue(authorized);
+    }
+
     
     public static class TestRealm extends AuthorizingRealm {
 
@@ -113,14 +159,12 @@ public class SubjectTest extends AbstractShiroTest {
         @Override
         protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authToken) {
             UsernamePasswordToken token = (UsernamePasswordToken) authToken;
-            return new SimpleAuthenticationInfo(token.getUsername(), new String(token.getPassword()), getName());
+            return new SimpleAuthenticationInfo(1L, new String(token.getPassword()), getName());
         }
 
         @Override
         protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals){
-            
-            
-            String userName = (String) principals.fromRealm(getName()).iterator().next();
+            Long userName = (Long) principals.fromRealm(getName()).iterator().next();
             if ("nopermission".equals(userName)) {
                 SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
                 info.addRole("role");
@@ -133,9 +177,6 @@ public class SubjectTest extends AbstractShiroTest {
                 } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
-//                info.addStringPermissions(Arrays.asList("never", "really", "used"));
-
-//                info.addStringPermissions(Arrays.asList("dummy", PERMITTED_PERMISSION));
                 return info;
 
             }

@@ -41,4 +41,8 @@ public interface ScheduleDao extends Dao {
     Voyage getVoyageByEnavId(String enavId);
 
     List<Voyage> getByEnavIds(List<String> enavIds);
+    
+    Long getMmsiByRouteEnavId(String enavId);
+
+    Long getMmsiByVoyageEnavId(String enavId);
 }
