@@ -29,7 +29,7 @@ public class EmbryoLogServiceImpl implements EmbryoLogService {
 
     private String className;
 
-    public EmbryoLogServiceImpl(LogEntryDao logEntryDao, Class klass) {
+    public EmbryoLogServiceImpl(LogEntryDao logEntryDao, Class<?> klass) {
         this.logEntryDao = logEntryDao;
         this.className = klass.getName();
     }
