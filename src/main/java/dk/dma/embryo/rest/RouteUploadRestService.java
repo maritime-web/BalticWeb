@@ -45,7 +45,7 @@ import dk.dma.embryo.service.ScheduleService;
  * @author Jesper Tejlgaard
  */
 @Path("/routeUpload")
-public class RouteUploadService {
+public class RouteUploadRestService {
 
     @Inject
     private ScheduleService scheduleService;
@@ -53,7 +53,7 @@ public class RouteUploadService {
     @Inject
     private Logger logger;
 
-    public RouteUploadService() {
+    public RouteUploadRestService() {
     }
 
     /**
