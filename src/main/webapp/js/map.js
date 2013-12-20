@@ -211,23 +211,23 @@ $(function() {
      */
     function saveViewCookie() {
         var center = map.getCenter();
-        setCookie("dma-ais-zoom", map.zoom, 30);
+        setCookie("dma-ais-zoom-"+ embryo.authentication.userName, map.zoom, 30);
         var lonlat = new OpenLayers.LonLat(map.center.lon, map.center.lat).
             transform(
                 map.getProjectionObject(), // from Spherical Mercator Projection
                 new OpenLayers.Projection("EPSG:4326") // to WGS 1984
             );
-        setCookie("dma-ais-lat", lonlat.lat, 30);
-        setCookie("dma-ais-lon", lonlat.lon, 30);
+        setCookie("dma-ais-lat-" + embryo.authentication.userName, lonlat.lat, 30);
+        setCookie("dma-ais-lon-" + embryo.authentication.userName, lonlat.lon, 30);
     }
     
     /**
      * Get settings from cookies
      */
     function loadViewCookie() {
-        var zoom = getCookie("dma-ais-zoom");
-        var lat = getCookie("dma-ais-lat");
-        var lon = getCookie("dma-ais-lon");
+        var zoom = getCookie("dma-ais-zoom-" + embryo.authentication.userName);
+        var lat = getCookie("dma-ais-lat-" + embryo.authentication.userName);
+        var lon = getCookie("dma-ais-lon-" + embryo.authentication.userName);
         if (zoom && lat && lon) {
             embryo.map.setCenter(parseFloat(lon), parseFloat(lat), parseInt(zoom));
         } else {
@@ -319,7 +319,7 @@ $(function() {
     }
 
     embryo.authenticated(function() {
-        var cookieMapName = getCookie("dma-ais-map");
+        var cookieMapName = getCookie("dma-ais-map-"+ embryo.authentication.userName);
         if (cookieMapName) embryo.baseMap = cookieMapName;
 
         setupBaseMap();
@@ -366,7 +366,7 @@ $(function() {
             if (newMap != embryo.baseMap) {
                 embryo.baseMap = newMap;
                 setupBaseMap(embryo.baseMap);
-                setCookie("dma-ais-map", embryo.baseMap, 30);
+                setCookie("dma-ais-map-" + embryo.authentication.userName, embryo.baseMap, 30);
             }
         })
 
