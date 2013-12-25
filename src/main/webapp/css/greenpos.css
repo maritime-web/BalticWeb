@@ -1,3 +1,8 @@
+#greenPosForm .row{
+	margin-left: inherit;
+}
+
+
 #greenposList .table tr.basic td {
 	padding-bottom: 0px;
 	border-top: none;

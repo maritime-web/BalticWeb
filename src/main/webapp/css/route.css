@@ -6,6 +6,15 @@
 	margin-top:30px;
 }
 
+#routeEdit .extend-label .control-label{
+	width:170px;
+}
+
+#routeEdit .extend-label .controls{
+	margin-left:190px;
+}
+
+
 #routeupload .progress {
 	margin-top: 7px;
 }

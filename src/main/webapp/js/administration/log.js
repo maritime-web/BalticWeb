@@ -17,7 +17,7 @@ embryo.authenticated(function() {
 
                 services.sort();
 
-                var html = "<tr><th>Date</th><th>Status</th><th>Message</th></tr>";
+                var html = "<tr><th>Time (UTC)</th><th>Status</th><th>Message</th></tr>";
 
                 $.each(services, function(i, service) {
                     html += "<tr><td colspan=3><h5>" + service + "</h5></td></tr>";
