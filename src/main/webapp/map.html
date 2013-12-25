@@ -22,6 +22,7 @@
 <link href="css/schedule.css" rel="stylesheet" type="text/css">
 <link href="css/route.css" rel="stylesheet" type="text/css">
 <link href="css/greenpos.css" rel="stylesheet" type="text/css">
+<link href="css/cookie.css" rel="stylesheet" type="text/css">
 <!-- endbuild -->
 
 <!-- script type="text/javascript" src="http://svn.osgeo.org/metacrs/proj4js/trunk/lib/proj4js-compressed.js"></script -->
@@ -103,6 +104,7 @@
 <script src="js/reporting/schedule.js" defer="defer" type="text/javascript"></script>
 <script src="js/reporting/route-upload.js" defer="defer" type="text/javascript"></script> 
 <script src="js/reporting/greenpos.js" defer="defer" type="text/javascript"></script>
+<script src="js/reporting/cookies.js" defer="defer" type="text/javascript"></script>
 
 <script src="js/control/vessel-actions.js" defer="defer" type="text/javascript"></script>
 <!-- endbuild -->
@@ -110,7 +112,7 @@
 <script defer="defer" type="text/javascript">
     angular.module('embryo.map', [ 'embryo.routeService',
             'embryo.greenpos', 'embryo.vessel', 'embryo.ice', 'embryo.msi',
-            'embryo.routeUpload' , 'embryo.schedule', 'embryo.routeEdit']);
+            'embryo.routeUpload' , 'embryo.schedule', 'embryo.routeEdit', 'embryo.cookies']);
     
 </script>
     <!--'embryo.metoc', -->
@@ -167,6 +169,9 @@
     </div>
     <div class="reportingPanel well" id="greenposListPanel">
         <div x-ng-include="'partials/greenpos-list.html'"></div>
+    </div>
+    <div class="reportingPanel well" id="cookiesViewPanel">
+        <div x-ng-include="'partials/cookies-view.html'"></div>
     </div>
 
 </body>

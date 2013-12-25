@@ -8,14 +8,19 @@
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-error" style="display: none" id="loginWrongLoginOrPassword">Wrong user name or password</div>
-		<div class="alert alert-warning" style="display: none" id="ie7">You are using Internet Explorer <span id="ie7ver"></span>. ArcticWeb has been tested and works with Internet Explorer 8 and 9. It is however recommended to use Internet Explorer 10 (or higher), Firefox (latest) and Safari (latest) as this will decrease connection usage.</div>
-		<div class="alert alert-warning" style="display: none" id="ie89">You are using Internet Explorer <span id="ie89ver"></span>. It is recommended to use Internet Explorer 10 (or higher), Firefox (latest) and Safari (latest) as this will decrease connection usage.</div>
+		<div class="alert alert-warning" style="display: none" id="ie7">
+			You are using Internet Explorer <span id="ie7ver"></span>. ArcticWeb has been tested and works with Internet Explorer
+			8 and 9. It is however recommended to use Internet Explorer 10 (or higher), Firefox (latest) and Safari (latest) as
+			this will decrease connection usage.
+		</div>
+		<div class="alert alert-warning" style="display: none" id="ie89">
+			You are using Internet Explorer <span id="ie89ver"></span>. It is recommended to use Internet Explorer 10 (or
+			higher), Firefox (latest) and Safari (latest) as this will decrease connection usage.
+		</div>
 		<form class="form-signin" name="login_form">
-			<label>User Name</label>
-			<input type="text" class="input-block-level" id="userName"
-                   autocapitalize="off" autocorrect="off" autocomplete="off"/>
-			<label>Password</label>
-            <input type="password" class="input-block-level" id="password" />
+			<label>User Name</label> <input type="text" class="input-block-level" id="userName" autocapitalize="off"
+				autocorrect="off" autocomplete="off" /> <label>Password</label> <input type="password" class="input-block-level"
+				id="password" />
 			<!--<label class="checkbox">  <input
 				type="checkbox" value="remember-me" /> Remember me 
 			</label>-->
@@ -60,34 +65,34 @@
 
 
 <div id="requestProperSignup" class="modal hide" tabindex="-1" role="dialog">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">x</button>
-        <h2>Request Access</h2>
-    </div>
-    <div class="modal-body">
-        <p class="alert alert-info" id="rFeedback"></p>
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">x</button>
+		<h2>Request Access</h2>
+	</div>
+	<div class="modal-body">
+		<p class="alert alert-info" id="rFeedback"></p>
 
-        <p>
-            Please fill out the form below to get access to ArcticWeb.
-        </p>
+		<p>Please fill out the form below to get access to ArcticWeb.</p>
 
-        <p>
-            MMSI-number may be left blank if you do not want your account to be tied to a particular vessel.
-        </p>
+		<p>MMSI-number may be left blank if you do not want your account to be tied to a particular vessel.</p>
 
-        <form class="form-signin">
-            <label for="rPreferredLogin">Preferred Login:</label>
-            <input type="text" class="input-block-level" placeholder="Prefered Login" id="rPreferredLogin">
-            <label for="rContactPerson">Contact Person:</label>
-            <input type="text" class="input-block-level"placeholder="Contact Person" id="rContactPerson">
-            <label for="rEmailAddress">Email Address:</label>
-            <input type="text" class="input-block-level" placeholder="Email Address" id="rEmailAddress">
-            <label for="rMmsiNumber">MMSI-number:</label>
-            <input type="text" class="input-block-level" placeholder="MMSI-number" id="rMmsiNumber">
-            <div style="margin-top: 24px">
-                <button class="btn btn-primary">Send Request</button>
-                <button class="btn" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
-            </div>
-        </form>
-    </div>
+		<form class="form-signin">
+			<label for="rPreferredLogin">Preferred Login:</label> <input type="text" class="input-block-level"
+				placeholder="Prefered Login" id="rPreferredLogin"> <label for="rContactPerson">Contact Person:</label> <input
+				type="text" class="input-block-level" placeholder="Contact Person" id="rContactPerson"> <label
+				for="rEmailAddress">Email Address:</label> <input type="text" class="input-block-level" placeholder="Email Address"
+				id="rEmailAddress"> <label for="rMmsiNumber">MMSI-number:</label> <input type="text"
+				class="input-block-level" placeholder="MMSI-number" id="rMmsiNumber">
+			<div style="margin-top: 24px">
+				<button class="btn btn-primary">Send Request</button>
+				<button class="btn" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<div id="cookiesUsage" >
+	<div id="cookiesMessage" class="alert alert-warning">This site is using cookies for security,
+		remembering user settings and caching of static application data. By logging in you accept usage of cookies.</div>
 </div>
