@@ -1,8 +1,8 @@
 $(function() {
     var yourShip;
 
+//  var yourShipRouteLayer = RouteLayerSingleton.getInstance();
     var yourShipRouteLayer = new RouteLayer();
-
     addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
 
     function updateBox(error, vesselOverview, vesselDetails) {

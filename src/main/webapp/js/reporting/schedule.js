@@ -206,8 +206,7 @@
             }
         };
 
-        $scope.routeLayer = new RouteLayer();
-        addLayerToMap("vessel", $scope.routeLayer, embryo.map);
+        $scope.routeLayer = RouteLayerSingleton.getInstance();
 
         $scope.scheduleLayer = new ScheduleLayer("#000000");
         addLayerToMap("vessel", $scope.scheduleLayer, embryo.map);

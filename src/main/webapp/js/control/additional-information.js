@@ -66,10 +66,11 @@ embryo.additionalInformation.distanceCircles = {
 
 embryo.additionalInformation.route = {
     title : "Route",
-    // Darker green #2a6237
-    layer : new RouteLayer(),
+    layer : null,
+    //new RouteLayer(),
     init : function(map, group) {
-        addLayerToMap(group, this.layer, map)
+        this.layer = RouteLayerSingleton.getInstance();
+//        addLayerToMap(group, this.layer, map)
     },
     available : function(vessel, vesselDetails) {
         return vesselDetails.additionalInformation.routeId != null;

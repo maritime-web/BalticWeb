@@ -12,7 +12,6 @@ function RouteLayer() {
         this.layers = [];
         // Create vector layer for routes
 
-        // Find a better color code. How to convert sRGB to HTML codes?
         var yourDefault = OpenLayers.Util.applyDefaults({
             strokeWidth : 2,
             strokeDashstyle : 'dashdot',
@@ -80,16 +79,46 @@ function RouteLayer() {
         }
         return features;
     };
-
+    
+//    function removeDrawnRoutes(layer, colorKey){
+//        if(colorKey == "active"){
+//            var features = layer.getFeaturesByAttribute('colorKey','active');
+//            console.log("active: " + features);
+//            layer.removeFeatures(features);
+//        }else{
+//            var features = layer.getFeaturesByAttribute('colorKey','planned');
+//            console.log("planned: " + features);
+//            layer.removeFeatures(features);
+//            features = layer.getFeaturesByAttribute('colorKey','other');
+//            console.log("other: " + features);
+//            layer.removeFeatures(features);
+//        }
+//    }
+    
     this.draw = function(route, colorKey) {
         this.layers.route.removeAllFeatures();
+        //        removeDrawnRoutes(this.layers.route, colorKey);
 
         if (route && route.wps) {
             this.layers.route.addFeatures(createVectorFeatures(route, colorKey));
             this.layers.route.refresh();
         }
-    }
+    };
 }
 
 RouteLayer.prototype = new EmbryoLayer();
+
+/*
+ * Can be used to create only one route layer instance and reuse this as  
+ */
+var RouteLayerSingleton = {
+    instance : null,
+    getInstance : function(){
+        if(this.instance == null){
+            this.instance = new RouteLayer();
+            addLayerToMap("vessel", this.instance, embryo.map);
+        }
+        return this.instance;
+    }
+}
 
