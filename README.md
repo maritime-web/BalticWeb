@@ -161,7 +161,6 @@ http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only avail
 
 Hibernate can be used to maintain the database (good in development mode) where as Liquibase is used in more stable environments (like production). Which strategy is used depends on two properties 
 
-
 <table>
   <tr>
     <th>Property</th><th>Values</th><th>Where</th><th>Dev (default)</th><th>Production</th>
