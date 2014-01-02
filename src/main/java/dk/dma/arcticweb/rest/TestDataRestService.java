@@ -21,7 +21,7 @@ import javax.ws.rs.Path;
 
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.TestServiceBean;
+import dk.dma.arcticweb.service.AppDataServiceBean;
 
 /**
  * 
@@ -31,7 +31,7 @@ import dk.dma.arcticweb.service.TestServiceBean;
 public class TestDataRestService {
 
     @Inject
-    private TestServiceBean testService;
+    private AppDataServiceBean testService;
 
     @Inject
     private Logger logger;

@@ -15,22 +15,16 @@
  */
 package dk.dma.embryo.domain;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
-import org.joda.time.DateTimeZone;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
@@ -57,11 +51,6 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @NotNull
     private DateTime etaOfArrival;
-
-    @Valid
-    @OneToMany(cascade = CascadeType.ALL)
-    @OrderColumn(name = "orderNumber")
-    private List<ReportedVoyage> voyages = new ArrayList<>();
 
     // //////////////////////////////////////////////////////////////////////
     // business logic
@@ -131,18 +120,6 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         return result;
     }
 
-    public GreenPosSailingPlanReport withVoyages(List<Voyage> voyages) {
-        List<ReportedVoyage> transformed = new ArrayList<>(voyages.size());
-
-//        for (Voyage voyage : voyages) {
-//            transformed.add(ReportedVoyage.from(voyage));
-//        }
-
-        return new GreenPosSailingPlanReport(getVesselName(), getVesselMmsi(), getVesselCallSign(),
-                getPosition(), getWeather(), getIceInformation(), getSpeed(), getCourse(), getDestination(),
-                getEtaOfArrival(), getPersonsOnBoard(), transformed);
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
@@ -157,15 +134,6 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         this.destination = destination;
         this.personsOnBoard = personsOnBoard;
         this.etaOfArrival = eta;
-    }
-
-    public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-            Position position, String weather, String iceInformation, Double speed, Integer course, String destination,
-            DateTime eta, Integer personsOnBoard, List<ReportedVoyage> voyages) {
-        this(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation, speed, course,
-                destination, eta, personsOnBoard);
-
-        this.voyages = voyages;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -190,11 +158,4 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     public Integer getPersonsOnBoard() {
         return personsOnBoard;
     }
-
-    public List<ReportedVoyage> getVoyages() {
-        return voyages;
-    }
-    
-    
-
 }

@@ -16,7 +16,6 @@
     <class>dk.dma.embryo.domain.Route</class>
     <class>dk.dma.embryo.domain.WayPoint</class>
     <class>dk.dma.embryo.domain.RouteLeg</class>
-    <class>dk.dma.embryo.domain.ReportedVoyage</class>
     <class>dk.dma.embryo.domain.GreenPosDeviationReport</class>
     <class>dk.dma.embryo.domain.GreenPosFinalReport</class>
     <class>dk.dma.embryo.domain.GreenPosPositionReport</class>

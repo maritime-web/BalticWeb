@@ -74,7 +74,7 @@ public class SecuredUser extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "SecuredUser [userName=" + userName + ", id=" + id + " hashedpassword=*]";
+        return "SecuredUser [userName=" + userName + ", id=" + id + ", email=" + email + " hashedpassword=*]";
     }
 
     // //////////////////////////////////////////////////////////////////////

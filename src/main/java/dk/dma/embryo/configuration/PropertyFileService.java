@@ -15,51 +15,25 @@
  */
 package dk.dma.embryo.configuration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.net.URISyntaxException;
+import java.util.Properties;
+import java.util.regex.Matcher;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.ScheduleExpression;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Singleton;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Properties;
-import java.util.regex.Matcher;
 
 @Singleton
 public class PropertyFileService {
-    private final Logger logger = LoggerFactory.getLogger(PropertyFileService.class);
-
-    private static String DEFAULT_CONFIGURATION_RESOURCE_NAME = "/default-configuration.properties";
-
     private Properties properties = new Properties();
 
     @PostConstruct
     public void init() throws IOException, URISyntaxException {
-        if (getClass().getResourceAsStream(DEFAULT_CONFIGURATION_RESOURCE_NAME) != null) {
-            properties.load(getClass().getResourceAsStream(DEFAULT_CONFIGURATION_RESOURCE_NAME));
-        }
-
-        String externalConfigurationSystemProperty = properties.getProperty(
-                "propertyFileService.externalConfigurationSystemProperty",
-                "configuration"
-        );
-
-        if (System.getProperty(externalConfigurationSystemProperty) != null) {
-            logger.info("Reading configuration from: " + System.getProperty(externalConfigurationSystemProperty));
-            FileInputStream fis = new FileInputStream(
-                    new File(new URI(System.getProperty(externalConfigurationSystemProperty)))
-            );
-            properties.load(fis);
-        } else {
-            logger.info("System property " + externalConfigurationSystemProperty + " is not set. Not reading external configuration.");
-        }
+        properties.putAll(new PropertiesReader().read());
     }
 
     public String getProperty(String name) {

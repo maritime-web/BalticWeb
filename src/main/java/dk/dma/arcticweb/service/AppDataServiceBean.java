@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 
 import dk.dma.embryo.component.RouteParserComponent;
 import dk.dma.embryo.component.RouteSaver;
+import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.dao.VesselDao;
@@ -53,7 +54,6 @@ import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.IEntity;
 import dk.dma.embryo.domain.Position;
-import dk.dma.embryo.domain.ReportedVoyage;
 import dk.dma.embryo.domain.ReportingAuthorityRole;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.Route;
@@ -70,7 +70,7 @@ import dk.dma.embryo.security.authorization.Roles;
 @Singleton
 @Startup
 @Interceptors(AuthorizationChecker.class)
-public class TestServiceBean {
+public class AppDataServiceBean {
 
     @Inject
     private RealmDao realmDao;
@@ -90,9 +90,17 @@ public class TestServiceBean {
     @Inject
     private EntityManager em;
 
+    private List<Berth> berthList = new ArrayList<>(100);
     
-    List<Berth> berthList = new ArrayList<>(100);
+    @Property("embryo.users.admin.initial.pw")
+    @Inject
+    private String dmaInitialPw;
 
+    @Property("embryo.users.admin.initial.email")
+    @Inject
+    private String dmainitialEmail;
+
+    
     @PostConstruct
     public void startup() {
         Map<String, Object> props = emf.getProperties();
@@ -103,9 +111,14 @@ public class TestServiceBean {
         setupBerthList();
 
         if ("create-drop".equals(hbm2dllAuto)) {
+            createAdmin();
             resetBaseData();
             resetTestData();
         } else if("update".equals(hbm2dllAuto)){
+            createAdmin();
+            resetBaseData();
+        } else if("validate".equals(hbm2dllAuto)){
+            createAdmin();
             resetBaseData();
         }
     }
@@ -213,11 +226,19 @@ public class TestServiceBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void resetBaseData() {
-        clearDmaUser();
         deleteAll(Berth.class);
-
-        createDmaAccount();
         createBerths();
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void createAdmin() {
+        SecuredUser user = realmDao.findByUsername("dma");
+        logger.debug("looked up admin user: {}", user);
+        if(user == null){
+            createDmaAccount();
+        }else{
+            logger.info("Admin user (dma) already exists in database");
+        }
     }
 
     @Roles(AdministratorRole.class)
@@ -284,11 +305,6 @@ public class TestServiceBean {
         }        
     }
 
-    public void clearDmaUser() {
-        clearUsers(true);
-        
-    }
-
     public void clearTestUsers() {
         clearUsers(false);
     }
@@ -316,11 +332,15 @@ public class TestServiceBean {
         logger.info("BEFORE CREATION - DMA");
 
         AdministratorRole auth = new AdministratorRole();
-        vesselDao.saveEntity(auth);
+        realmDao.saveEntity(auth);
 
-        SecuredUser user = SecurityUtil.createUser("dma", "qwerty", "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("dma", dmaInitialPw, dmainitialEmail);
         user.setRole(auth);
-        vesselDao.saveEntity(user);
+        SecuredUser saved = realmDao.saveEntity(user);
+
+        em.flush();
+        em.clear();
+        logger.info("SAVED DMA: " + saved);
     }
     
     private void createBerths() {
@@ -726,10 +746,9 @@ public class TestServiceBean {
         DateTime minus2 = now.minusDays(2);
         DateTime minus1 = now.minusDays(1);
 
-        List<ReportedVoyage> voyages = null;
         GreenPosReport report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel
                 .getAisData().getCallsign(), new Position("66 56.5N", "053 40.50W"), "Sun shine", "NO ICE", 4.1, 10,
-                "Nuuk", converter.toObject("19-09-2013 10:30"), 6, voyages);
+                "Nuuk", converter.toObject("19-09-2013 10:30"), 6);
         report.setReportedBy("oratank");
         report.setTs(minus8.withHourOfDay(13).withMinuteOfHour(9));
         vesselDao.saveEntity(report);
@@ -772,10 +791,9 @@ public class TestServiceBean {
         report.setTs(minus2.withHourOfDay(16).withMinuteOfHour(2));
         vesselDao.saveEntity(report);
 
-        voyages = null;
         report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
                 .getCallsign(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150, "KYSTFART",
-                converter.toObject("26-09-2013 10:30"), 6, voyages);
+                converter.toObject("26-09-2013 10:30"), 6);
         report.setReportedBy("orasila");
         report.setTs(minus2.withHourOfDay(23).withMinuteOfHour(12));
         vesselDao.saveEntity(report);

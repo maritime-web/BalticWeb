@@ -32,9 +32,7 @@ import org.joda.time.DateTimeZone;
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.dao.VesselDao;
-import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.domain.SailorRole;
@@ -101,13 +99,6 @@ public class GreenPosServiceImpl implements GreenPosService {
             validateVesselData(report, vessel);
         } else {
             vessel = getVesselFromReport(report);
-        }
-
-        if (report instanceof GreenPosSailingPlanReport) {
-            GreenPosSailingPlanReport spReport = (GreenPosSailingPlanReport) report;
-            report = spReport.withVoyages(vessel.getSchedule());
-        } else if (report instanceof GreenPosDeviationReport) {
-            GreenPosDeviationReport spReport = (GreenPosDeviationReport) report;
         }
 
         report.setReportedBy(subject.getUser().getUserName());

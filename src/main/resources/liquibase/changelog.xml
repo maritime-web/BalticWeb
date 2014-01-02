@@ -1,0 +1,302 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet author="jesper (generated)" id="1388419929491-1">
+        <createTable tableName="berth">
+            <column name="id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="alias" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-2">
+        <createTable tableName="berth_gst">
+            <column name="id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="alias" type="VARCHAR(255)"/>
+            <column name="latitude" type="VARCHAR(255)"/>
+            <column name="longitude" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-3">
+        <createTable tableName="greenposreport">
+            <column name="DTYPE" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enavId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+            <column name="reportedBy" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ts" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vesselCallSign" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vesselMmsi" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vesselName" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iceInformation" type="VARCHAR(255)"/>
+            <column name="weather" type="VARCHAR(255)"/>
+            <column name="course" type="INT(10)"/>
+            <column name="speed" type="DOUBLE"/>
+            <column name="destination" type="VARCHAR(255)"/>
+            <column name="etaOfArrival" type="datetime"/>
+            <column name="personsOnBoard" type="INT(10)"/>
+            <column name="deviation" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-5">
+        <createTable tableName="hibernate_sequences">
+            <column name="sequence_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="next_val" type="BIGINT(19)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-6">
+        <createTable tableName="logentry">
+            <column name="id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="VARCHAR(200)"/>
+            <column name="service" type="VARCHAR(100)"/>
+            <column name="stackTrace" type="VARCHAR(4000)"/>
+            <column name="status" type="INT(10)"/>
+            <column name="ts" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-7">
+        <createTable tableName="role">
+            <column name="DTYPE" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="logicalName" type="VARCHAR(255)"/>
+            <column name="vessel_id" type="BIGINT(19)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-8">
+        <createTable tableName="role_vessel">
+            <column name="Role_id" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vessels_id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-9">
+        <createTable tableName="route">
+            <column name="id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="destination" type="VARCHAR(255)"/>
+            <column name="enavId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="etaOfArrival" type="datetime"/>
+            <column name="etaOfDeparture" type="datetime"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="origin" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-10">
+        <createTable tableName="secureduser">
+            <column name="id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="hashedPassword" type="VARCHAR(255)"/>
+            <column name="salt" type="TINYBLOB"/>
+            <column name="userName" type="VARCHAR(255)"/>
+            <column name="role_id" type="INT(10)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-11">
+        <createTable tableName="shapefilemeasurement">
+            <column name="id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fileName" type="VARCHAR(255)"/>
+            <column name="fileSize" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="prefix" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-13">
+        <createTable tableName="vessel">
+            <column name="id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="callsign" type="VARCHAR(32)"/>
+            <column name="imoNo" type="BIGINT(19)"/>
+            <column name="name" type="VARCHAR(128)"/>
+            <column name="commCapabilities" type="VARCHAR(64)"/>
+            <column name="grossTonnage" type="INT(10)"/>
+            <column name="helipad" type="BIT"/>
+            <column name="iceClass" type="VARCHAR(32)"/>
+            <column name="maxSpeed" type="DECIMAL(19, 2)"/>
+            <column name="mmsi" type="BIGINT(19)"/>
+            <column name="persons" type="INT(10)"/>
+            <column name="activeVoyage_id" type="BIGINT(19)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-14">
+        <createTable tableName="voyage">
+            <column name="id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="arrival" type="datetime"/>
+            <column name="berthName" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="crewOnBoard" type="INT(10)"/>
+            <column name="departure" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="doctorOnBoard" type="BIT"/>
+            <column name="enavId" type="VARCHAR(255)"/>
+            <column name="passengersOnBoard" type="INT(10)"/>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+            <column name="route_id" type="BIGINT(19)"/>
+            <column name="vessel_id" type="BIGINT(19)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-15">
+        <createTable tableName="waypoint">
+            <column name="Route_id" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="eta" type="datetime"/>
+            <column name="SFLen" type="DOUBLE"/>
+            <column name="SFWidth" type="DOUBLE"/>
+            <column name="heading" type="INT(10)"/>
+            <column name="speed" type="DOUBLE"/>
+            <column name="xtdPort" type="DOUBLE"/>
+            <column name="xtdStarboard" type="DOUBLE"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+            <column name="rot" type="DOUBLE"/>
+            <column name="turnRadius" type="DOUBLE"/>
+            <column name="orderNumber" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-16">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="berth"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-17">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="berth_gst"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-18">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="greenposreport"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-20">
+        <addPrimaryKey columnNames="sequence_name" constraintName="PRIMARY" tableName="hibernate_sequences"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-21">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="logentry"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-22">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="role"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-23">
+        <addPrimaryKey columnNames="Role_id, vessels_id" constraintName="PRIMARY" tableName="role_vessel"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-24">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="route"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-25">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="secureduser"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-26">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="shapefilemeasurement"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-28">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="vessel"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-29">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="voyage"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-30">
+        <addPrimaryKey columnNames="Route_id, orderNumber" constraintName="PRIMARY" tableName="waypoint"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-31">
+        <addUniqueConstraint columnNames="id" constraintName="id" deferrable="false" disabled="false" initiallyDeferred="false" tableName="greenposreport"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-32">
+        <addUniqueConstraint columnNames="userName" constraintName="userName" deferrable="false" disabled="false" initiallyDeferred="false" tableName="secureduser"/>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-34">
+        <createIndex indexName="fk26f4965bd02361" tableName="role" unique="false">
+            <column name="vessel_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-35">
+        <createIndex indexName="fk2bd87c01c20632d3" tableName="waypoint" unique="false">
+            <column name="Route_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-36">
+        <createIndex indexName="fk5fc4e21f1d7fc430" tableName="role_vessel" unique="false">
+            <column name="Role_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-37">
+        <createIndex indexName="fk5fc4e21fb3f1573a" tableName="role_vessel" unique="false">
+            <column name="vessels_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-38">
+        <createIndex indexName="fk98860e562c7a767b" tableName="vessel" unique="false">
+            <column name="activeVoyage_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-39">
+        <createIndex indexName="fk9915703f5bd02361" tableName="voyage" unique="false">
+            <column name="vessel_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-40">
+        <createIndex indexName="fk9915703fc20632d3" tableName="voyage" unique="false">
+            <column name="route_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jesper (generated)" id="1388419929491-41">
+        <createIndex indexName="fkb8096d181640a921" tableName="secureduser" unique="false">
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
