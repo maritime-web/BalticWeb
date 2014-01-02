@@ -159,7 +159,7 @@ http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only avail
 
 ## Database maintenaince
 
-Hibernate can be used to maintain the database (good in development mode) where as Liquibase is used in more stable environments (like production). Which strategy is used depends on two properties 
+Hibernate can be used to maintain the database (good in development mode) where as Liquibase is used in more stable environments (like production). Which strategy is used depends on two properties hibernate.hbm2ddl.auto and embryo.liquibase.enabled.
 
 <table>
   <tr>
@@ -169,10 +169,10 @@ Hibernate can be used to maintain the database (good in development mode) where 
     <td>hibernate.hbm2ddl.auto</td><td>create, create-drop, update and validate</td><td>pom.xml or Maven command line property</td><td>update</td><td>validate</td>
   </tr>
   <tr>
-    <td>embryo.liquibase.enabled</td><td>true/false</td><td>default or system file (see above)</td><td>false</td><td>true</td>
+    <td>embryo.liquibase.enabled</td><td>true/false</td><td>default or system configuration file (see above)</td><td>false</td><td>true</td>
   </tr>
   <tr>
-    <td>embryo.liquibase.changelog</td><td>path to changelog file</td><td>default configuration file or system configuration file (see above)</td><td> - </td><td>/liquibase/changelog.xml</td>
+    <td>embryo.liquibase.changelog</td><td>path to changelog file</td><td>default or system configuration file (see above)</td><td> - </td><td>/liquibase/changelog.xml</td>
   </tr>
 </table>
 
