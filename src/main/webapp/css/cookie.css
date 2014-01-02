@@ -11,19 +11,3 @@
 	min-width:500px;
 	max-width:600px;
 }
-
-#cookiesUsage {
-	display:none;
-	z-index: 1060;
-	position: fixed;
-	width:100%;
-    bottom: 25px;
-}
-
-#cookiesMessage {
-    padding:20px;
-    float:none;
-    max-width:750px;
-    margin-left:auto;
-    margin-right:auto;
-}
