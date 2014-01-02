@@ -15,10 +15,12 @@
  */
 package dk.dma.arcticweb.dao;
 
-import dk.dma.embryo.dao.DaoImpl;
-import dk.dma.embryo.domain.GreenPosReport;
-import dk.dma.embryo.domain.GreenposMinimal;
-import dk.dma.embryo.domain.GreenposSearch;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TimeZone;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -31,10 +33,14 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import dk.dma.embryo.dao.DaoImpl;
+import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenposMinimal;
+import dk.dma.embryo.domain.GreenposSearch;
 
 @Stateless
 public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
@@ -60,14 +66,17 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
 
     @Override
     public List<GreenposMinimal> getLatest() {
-        Query query = em.createNativeQuery("SELECT vesselName, vesselMmsi, DTYPE, max(ts) FROM GreenPosReport WHERE :date <= DATE(ts) GROUP BY vesselName");
+        Query query = em.createNativeQuery("SELECT vesselName, vesselMmsi, DTYPE, max(ts) FROM GreenPosReport WHERE DATE(:date) <= DATE(ts) GROUP BY vesselName");
 
         query.setParameter("date", new Date(System.currentTimeMillis() - 7 * 24 * 3600 * 1000L), TemporalType.TIMESTAMP);
 
         List<Object[]> list = (List<Object[]>) query.getResultList();
         List<GreenposMinimal> result = new ArrayList<>(list.size());
+        Calendar cal = Calendar.getInstance();
+        int offset = cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET);
         for (Object[] greenpos : list) {
-            result.add(new GreenposMinimal((String) greenpos[0], Long.parseLong(greenpos[1].toString()), (String) greenpos[2], (Date) greenpos[3]));
+            DateTime datetime = new DateTime(((Date) greenpos[3]).getTime() + offset, DateTimeZone.UTC);
+            result.add(new GreenposMinimal((String) greenpos[0], Long.parseLong(greenpos[1].toString()), (String) greenpos[2], datetime.toDate()));
         }
 
         return result;
@@ -112,6 +121,5 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
 
         return getSingleOrNull(result);
     }
-
 
 }

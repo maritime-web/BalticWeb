@@ -18,8 +18,6 @@ package dk.dma.embryo.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.validation.constraints.NotNull;
-
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
@@ -33,7 +31,6 @@ public class GreenposMinimal implements Serializable{
     // //////////////////////////////////////////////////////////////////////
     // Class fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-    @NotNull
     private String name;
 
     private Long mmsi;
