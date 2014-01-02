@@ -163,16 +163,16 @@ Hibernate can be used to maintain the database (good in development mode) where 
 
 <table>
   <tr>
-    <th>Property</th><th>Values</th><th>Where</th><th>Dev environment (default)</th><th>Production</th>
+    <th>Property</th><th>Values</th><th>Where</th><th>Dev (default)</th><th>Production</th>
   </tr>
   <tr>
-    <td>hibernate.hbm2ddl.auto</td><td>create, create-drop, update and validate</td><td>pom.xml or as Maven command line property. The value is set into persistence.xml in the produced war file</td><td>validate</td>
+    <td>hibernate.hbm2ddl.auto</td><td>create, create-drop, update and validate</td><td>pom.xml or Maven command line property</td><td>update</td><td>validate</td>
   </tr>
   <tr>
-    <td>embryo.liquibase.enabled</td><td>true/false</td><td>default configuration file or system configuration file (see above)</td><td>true</td>
+    <td>embryo.liquibase.enabled</td><td>true/false</td><td>default or system configuration file (see above)</td><td>false</td><td>true</td>
   </tr>
   <tr>
-    <td>embryo.liquibase.changelog</td><td>path to changelog file</td><td>default configuration file or system configuration file (see above)</td><td> - </td><td>/liquibase/changelog.xml</td>
+    <td>embryo.liquibase.changelog</td><td>path to changelog file</td><td>default or system configuration file (see above)</td><td> - </td><td>/liquibase/changelog.xml</td>
   </tr>
 </table>
 
