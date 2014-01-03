@@ -88,6 +88,7 @@ embryo
                     $("#authentication #cookies").click(function(e) {
                         e.preventDefault();
 
+                        embryo.vessel.actions.hide();
                         embryo.controllers.cookies.show({});
                     });
 
