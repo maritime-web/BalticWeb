@@ -108,7 +108,7 @@ var browser = {
         var myNav = navigator.userAgent.toLowerCase();
         return myNav.indexOf('msie') != -1;
     },
-    version : function() {
+    ieVersion : function() {
         var index, version = 999; // we assume a sane browser
         var myNav = navigator.userAgent.toLowerCase();
 
@@ -120,5 +120,21 @@ var browser = {
             }
         }
         return version;
+    },
+    chromeVersion : function() {
+        var index, version = 999; // we assume a sane browser
+        var myNav = navigator.userAgent.toLowerCase();
+        var parts = myNav.split(" ");
+        
+        for(index in parts){
+            if(parts[index].indexOf("chrome") >= 0){
+                return parts[index].split("chrome/")[1];
+            }
+        }
+        return version;
+    },
+    isChrome : function(){
+        var myNav = navigator.userAgent.toLowerCase();
+        return myNav.indexOf('chrome') != -1;
     }
 };

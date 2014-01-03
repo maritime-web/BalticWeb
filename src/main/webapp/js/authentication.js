@@ -13,32 +13,39 @@ embryo
         .ready(function() {
 
             function detectBrowser() {
-                if (browser.isIE() && browser.version() <= 7) {
-                    $("#ie7ver").html(browser.version());
+                if (browser.isIE() && browser.ieVersion() <= 7) {
+                    $("#ie7ver").html(browser.ieVersion());
                     $("#ie7").show();
-                } else if (browser.isIE() && browser.version() <= 9) {
-                    $("#ie89ver").html(browser.version());
+                } else if (browser.isIE() && browser.ieVersion() <= 9) {
+                    $("#ie89ver").html(browser.ieVersion());
                     $("#ie89").show();
+                } else if (browser.isChrome()) {
+                    var ver = browser.chromeVersion();
+                    console.log(ver);
+                    if(parseFloat(ver) > 27){
+                        $("#chromeVer").html(ver);
+                        $("#chrome").show();
+                    }
                 }
             }
-            
-            function useCookies(){
-                if("true" != getCookie("cookies-accepted")){
+
+            function useCookies() {
+                if ("true" != getCookie("cookies-accepted")) {
                     $('#cookiesUsage').css("display", "block");
                 }
             }
 
-            function rememberUseCookies(){
+            function rememberUseCookies() {
                 $('#cookiesUsage').css("display", "none");
-                if("true" != getCookie("cookies-accepted")){
+                if ("true" != getCookie("cookies-accepted")) {
                     setCookie("cookies-accepted", "true", 365);
                 }
             }
 
-            
             function clearMessages() {
                 $("#ie89").hide();
                 $("#ie7").hide();
+                $("#chrome").hide();
                 $("#loginWrongLoginOrPassword").hide();
             }
 
@@ -129,10 +136,10 @@ embryo
                 useCookies();
                 $("#userName").focus();
             });
-            
-            $('#login').on('hide', function () {
+
+            $('#login').on('hide', function() {
                 $('#cookiesUsage').css("display", "none");
-              });
+            });
 
             $("#login button.btn-primary").click(function(e) {
                 e.preventDefault();
