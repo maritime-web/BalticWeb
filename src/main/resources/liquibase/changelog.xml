@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
     <changeSet author="jesper (generated)" id="1388419929491-1">
-        <createTable tableName="berth">
+        <createTable tableName="Berth">
             <column name="id" type="BIGINT(19)">
                 <constraints nullable="false"/>
             </column>
@@ -31,7 +31,7 @@
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-3">
-        <createTable tableName="greenposreport">
+        <createTable tableName="GreenPosReport">
             <column name="DTYPE" type="VARCHAR(31)">
                 <constraints nullable="false"/>
             </column>
@@ -77,7 +77,7 @@
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-6">
-        <createTable tableName="logentry">
+        <createTable tableName="LogEntry">
             <column name="id" type="BIGINT(19)">
                 <constraints nullable="false"/>
             </column>
@@ -89,7 +89,7 @@
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-7">
-        <createTable tableName="role">
+        <createTable tableName="Role">
             <column name="DTYPE" type="VARCHAR(31)">
                 <constraints nullable="false"/>
             </column>
@@ -97,11 +97,11 @@
                 <constraints nullable="false"/>
             </column>
             <column name="logicalName" type="VARCHAR(255)"/>
-            <column name="vessel_id" type="BIGINT(19)"/>
+            <column name="Vessel_id" type="BIGINT(19)"/>
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-8">
-        <createTable tableName="role_vessel">
+        <createTable tableName="Role_Vessel">
             <column name="Role_id" type="INT(10)">
                 <constraints nullable="false"/>
             </column>
@@ -111,7 +111,7 @@
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-9">
-        <createTable tableName="route">
+        <createTable tableName="Route">
             <column name="id" type="BIGINT(19)">
                 <constraints nullable="false"/>
             </column>
@@ -128,7 +128,7 @@
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-10">
-        <createTable tableName="secureduser">
+        <createTable tableName="SecuredUser">
             <column name="id" type="BIGINT(19)">
                 <constraints nullable="false"/>
             </column>
@@ -137,11 +137,11 @@
             <column name="hashedPassword" type="VARCHAR(255)"/>
             <column name="salt" type="TINYBLOB"/>
             <column name="userName" type="VARCHAR(255)"/>
-            <column name="role_id" type="INT(10)"/>
+            <column name="Role_id" type="INT(10)"/>
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-11">
-        <createTable tableName="shapefilemeasurement">
+        <createTable tableName="ShapeFileMeasurement">
             <column name="id" type="BIGINT(19)">
                 <constraints nullable="false"/>
             </column>
@@ -153,7 +153,7 @@
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-13">
-        <createTable tableName="vessel">
+        <createTable tableName="Vessel">
             <column name="id" type="BIGINT(19)">
                 <constraints nullable="false"/>
             </column>
@@ -171,7 +171,7 @@
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-14">
-        <createTable tableName="voyage">
+        <createTable tableName="Voyage">
             <column name="id" type="BIGINT(19)">
                 <constraints nullable="false"/>
             </column>
@@ -188,12 +188,12 @@
             <column name="passengersOnBoard" type="INT(10)"/>
             <column name="latitude" type="DOUBLE"/>
             <column name="longitude" type="DOUBLE"/>
-            <column name="route_id" type="BIGINT(19)"/>
-            <column name="vessel_id" type="BIGINT(19)"/>
+            <column name="Route_id" type="BIGINT(19)"/>
+            <column name="Vessel_id" type="BIGINT(19)"/>
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-15">
-        <createTable tableName="waypoint">
+        <createTable tableName="WayPoint">
             <column name="Route_id" type="BIGINT(19)">
                 <constraints nullable="false"/>
             </column>
@@ -215,88 +215,88 @@
         </createTable>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-16">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="berth"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Berth"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-17">
         <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="berth_gst"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-18">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="greenposreport"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="GreenPosReport"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-20">
         <addPrimaryKey columnNames="sequence_name" constraintName="PRIMARY" tableName="hibernate_sequences"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-21">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="logentry"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="LogEntry"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-22">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="role"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Role"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-23">
-        <addPrimaryKey columnNames="Role_id, vessels_id" constraintName="PRIMARY" tableName="role_vessel"/>
+        <addPrimaryKey columnNames="Role_id, vessels_id" constraintName="PRIMARY" tableName="Role_Vessel"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-24">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="route"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Route"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-25">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="secureduser"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="SecuredUser"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-26">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="shapefilemeasurement"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="ShapeFileMeasurement"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-28">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="vessel"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Vessel"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-29">
-        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="voyage"/>
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="Voyage"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-30">
-        <addPrimaryKey columnNames="Route_id, orderNumber" constraintName="PRIMARY" tableName="waypoint"/>
+        <addPrimaryKey columnNames="Route_id, orderNumber" constraintName="PRIMARY" tableName="WayPoint"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-31">
-        <addUniqueConstraint columnNames="id" constraintName="id" deferrable="false" disabled="false" initiallyDeferred="false" tableName="greenposreport"/>
+        <addUniqueConstraint columnNames="id" constraintName="id" deferrable="false" disabled="false" initiallyDeferred="false" tableName="GreenPosReport"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-32">
-        <addUniqueConstraint columnNames="userName" constraintName="userName" deferrable="false" disabled="false" initiallyDeferred="false" tableName="secureduser"/>
+        <addUniqueConstraint columnNames="userName" constraintName="userName" deferrable="false" disabled="false" initiallyDeferred="false" tableName="SecuredUser"/>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-34">
-        <createIndex indexName="fk26f4965bd02361" tableName="role" unique="false">
-            <column name="vessel_id"/>
+        <createIndex indexName="fk26f4965bd02361" tableName="Role" unique="false">
+            <column name="Vessel_id"/>
         </createIndex>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-35">
-        <createIndex indexName="fk2bd87c01c20632d3" tableName="waypoint" unique="false">
+        <createIndex indexName="fk2bd87c01c20632d3" tableName="WayPoint" unique="false">
             <column name="Route_id"/>
         </createIndex>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-36">
-        <createIndex indexName="fk5fc4e21f1d7fc430" tableName="role_vessel" unique="false">
+        <createIndex indexName="fk5fc4e21f1d7fc430" tableName="Role_Vessel" unique="false">
             <column name="Role_id"/>
         </createIndex>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-37">
-        <createIndex indexName="fk5fc4e21fb3f1573a" tableName="role_vessel" unique="false">
+        <createIndex indexName="fk5fc4e21fb3f1573a" tableName="Role_Vessel" unique="false">
             <column name="vessels_id"/>
         </createIndex>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-38">
-        <createIndex indexName="fk98860e562c7a767b" tableName="vessel" unique="false">
+        <createIndex indexName="fk98860e562c7a767b" tableName="Vessel" unique="false">
             <column name="activeVoyage_id"/>
         </createIndex>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-39">
-        <createIndex indexName="fk9915703f5bd02361" tableName="voyage" unique="false">
-            <column name="vessel_id"/>
+        <createIndex indexName="fk9915703f5bd02361" tableName="Voyage" unique="false">
+            <column name="Vessel_id"/>
         </createIndex>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-40">
-        <createIndex indexName="fk9915703fc20632d3" tableName="voyage" unique="false">
-            <column name="route_id"/>
+        <createIndex indexName="fk9915703fc20632d3" tableName="Voyage" unique="false">
+            <column name="Route_id"/>
         </createIndex>
     </changeSet>
     <changeSet author="jesper (generated)" id="1388419929491-41">
-        <createIndex indexName="fkb8096d181640a921" tableName="secureduser" unique="false">
-            <column name="role_id"/>
+        <createIndex indexName="fkb8096d181640a921" tableName="SecuredUser" unique="false">
+            <column name="Role_id"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>
