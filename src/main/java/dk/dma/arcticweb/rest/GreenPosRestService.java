@@ -37,6 +37,7 @@ import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
+import dk.dma.embryo.rest.json.GreenposRequest;
 import dk.dma.embryo.rest.util.DateTimeConverter;
 
 /**
@@ -57,15 +58,12 @@ public class GreenPosRestService {
 
     @POST
     @Consumes("application/json")
-    public void save(GreenPos report) {
-        logger.debug("save({})", report);
+    public void save(GreenposRequest request) {
+        logger.debug("save({})", request);
 
-        GreenPosReport toBeSaved = GreenPosReport.from(report);
-
-        reportingService.saveReport(toBeSaved);
-        // String result = "Product created : " + product;
-        // return Response.status(201).entity(result).build();
-        logger.debug("save() - done", report);
+        GreenPosReport toBeSaved = GreenPosReport.from(request.getReport());
+        reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive());
+        logger.debug("save() - done");
     }
 
     @GET

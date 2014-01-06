@@ -32,7 +32,7 @@ public interface GreenPosService{
 
     List<GreenposMinimal> getLatest();
 
-    String saveReport(GreenPosReport report);
+    String saveReport(GreenPosReport report, String routeEnavId, Boolean activate);
     
     List<GreenPosReport> findReports(GreenposSearch search);
 

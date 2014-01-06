@@ -25,13 +25,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
 import javax.interceptor.Interceptors;
 import javax.interceptor.InvocationContext;
 
 import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.component.RouteActivator;
 import dk.dma.embryo.component.RouteSaver;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.dao.ScheduleDao;
@@ -43,9 +43,9 @@ import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
-import dk.dma.embryo.security.authorization.VesselModifierInterceptor;
 import dk.dma.embryo.security.authorization.Roles;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
+import dk.dma.embryo.security.authorization.VesselModifierInterceptor;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -180,21 +180,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Interceptors(RouteModifierInterceptor.class)
     public Route activateRoute(String routeEnavId, Boolean activate) {
         logger.debug("activateRoute({}, {})", routeEnavId, activate);
-        Route route = scheduleRepository.getRouteByEnavId(routeEnavId);
-
-        if (route == null) {
-            throw new IllegalArgumentException("Unknown route with id '" + routeEnavId);
-        }
-
-        Vessel vessel = realmDao.getSailor(subject.getUserId()).getVessel();
-
-        if (activate) {
-            vessel.setActiveVoyage(route.getVoyage());
-        } else {
-            vessel.setActiveVoyage(null);
-        }
-        scheduleRepository.saveEntity(vessel);
-        return route;
+        return new RouteActivator(scheduleRepository, realmDao, subject).activateRoute(routeEnavId, activate);
     }
 
     @Override

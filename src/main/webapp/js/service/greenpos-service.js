@@ -45,8 +45,15 @@
 
                 $http.get(url).success(callback);
             },
-            save : function(greenpos, callback, error) {
-                $http.post(embryo.baseUrl + 'rest/greenpos', greenpos).success(function() {
+            save : function(greenpos, deactivateRoute, callback, error) {
+                var request = {
+                        activeRoute : {
+                            routeId: deactivateRoute.value ? deactivateRoute.routeId : null,
+                            active: deactivateRoute.value ? false : null
+                        },
+                        report : greenpos
+                };
+                $http.post(embryo.baseUrl + 'rest/greenpos', request).success(function() {
                     SessionStorageService.removeItem(latestGreenposKey(greenpos.mmsi));
                     callback();
                 }).error(function(data, status, headers, config) {

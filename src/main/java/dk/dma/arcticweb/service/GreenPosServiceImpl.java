@@ -30,7 +30,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
+import dk.dma.embryo.component.RouteActivator;
 import dk.dma.embryo.dao.RealmDao;
+import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenposMinimal;
@@ -60,7 +62,10 @@ public class GreenPosServiceImpl implements GreenPosService {
 
     @Inject
     private VesselDao vesselDao;
-    
+
+    @Inject
+    private ScheduleDao scheduleDao;
+
     @Inject
     private RealmDao realmDao;
 
@@ -88,7 +93,7 @@ public class GreenPosServiceImpl implements GreenPosService {
     @Override
     @Roles(SailorRole.class)
     @Interceptors(SaveReportInterceptor.class)
-    public String saveReport(GreenPosReport report) {
+    public String saveReport(GreenPosReport report, String routeEnavId, Boolean activate) {
         
         checkIfAlreadySaved(report);
 
@@ -105,6 +110,10 @@ public class GreenPosServiceImpl implements GreenPosService {
         report.setTs(DateTime.now(DateTimeZone.UTC));
 
         report = greenPosDao.saveEntity(report);
+        
+        if(routeEnavId != null && activate != null){
+            new RouteActivator(scheduleDao, realmDao, subject).activateRoute(routeEnavId, activate);
+        }
 
         mailService.newGreenposReport(report);
 
