@@ -47,7 +47,6 @@ public class WayPoint implements Serializable {
     private Double rot;
 
     /** Waypoint turn radius in nautical miles. */
-    @NotNull
     private Double turnRadius;
     
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")

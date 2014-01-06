@@ -209,7 +209,6 @@ public class ScheduleServiceImplTest {
             expected.add(new ConstraintViolationImpl("wayPoints[0].name", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].position.latitude", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].position.longitude", null, null));
-            expected.add(new ConstraintViolationImpl("wayPoints[0].turnRadius", null, null));
             expected.add(new ConstraintViolationImpl("wayPoints[0].leg.speed", null, null));
 
             Set<ConstraintViolation<?>> violations = ((ConstraintViolationException) e.getCause())
