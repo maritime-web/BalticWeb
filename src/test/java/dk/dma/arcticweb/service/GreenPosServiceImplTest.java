@@ -129,7 +129,7 @@ public class GreenPosServiceImplTest {
         role.setVessel(vessel);
         Mockito.when(realmDao.getSailor(1L)).thenReturn(role);
 
-        greenPosService.saveReport(spReport);
+        greenPosService.saveReport(spReport, null, null);
 
         entityManager.getTransaction().commit();
 
