@@ -242,10 +242,14 @@ $(function() {
 
         var messageId = embryo.messagePanel.show({
             text : "Requesting " + name + " data ..."
-        })
+        });
 
         embryo.ice.service.shapes(name, function(error, data) {
             if (data) {
+                messageId = embryo.messagePanel.replace(messageId, {
+                    text : "Drawing " + name,
+                });
+
                 var totalPolygons = 0;
                 var totalPoints = 0;
                 for ( var k in data) {
@@ -256,14 +260,22 @@ $(function() {
                             totalPoints += s.fragments[i].polygons[j].length;
                     }
                 }
-                embryo.messagePanel.replace(messageId, {
-                    text : totalPolygons + " polygons. " + totalPoints + " points returned.",
-                    type : "success"
-                })
-                embryo.logger.log(totalPolygons + " polygons. " + totalPoints + " points returned.");
-                iceLayer.draw(data);
-                if (onSuccess)
-                    onSuccess();
+
+                // Draw shapfile a bit later, just let the browser update the
+                // view and show above message
+                window.setTimeout(function() {
+                    iceLayer.draw(data);
+
+                    embryo.messagePanel.replace(messageId, {
+                        text : totalPolygons + " polygons. " + totalPoints + " points drawn.",
+                        type : "success"
+                    });
+                    embryo.logger.log(totalPolygons + " polygons. " + totalPoints + " points drawn.");
+                    if (onSuccess)
+                        onSuccess();
+
+                }, 10);
+                
             } else {
                 embryo.messagePanel.replace(messageId, {
                     text : "Server returned error code: " + error.status + " requesting ice data.",
@@ -284,7 +296,7 @@ $(function() {
                 embryo.messagePanel.replace(messageId, {
                     text : "List of " + data.length + " ice charts downloaded.",
                     type : "success"
-                })
+                });
 
                 data.sort(function(a, b) {
                     return b.date - a.date;
@@ -297,7 +309,7 @@ $(function() {
                         regions.push(data[i].region);
                 }
 
-                var sortFunction = function (reg1, reg2) {
+                var sortFunction = function(reg1, reg2) {
                     if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
                         return 1;
                     } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
