@@ -26,6 +26,8 @@ import javax.persistence.NamedQuery;
 })
 @Entity
 public class ShapeFileMeasurement extends BaseEntity<Long> {
+    private static final long serialVersionUID = -3131809653155886572L;
+
     private long fileSize;
     private String fileName;
     private String prefix;
