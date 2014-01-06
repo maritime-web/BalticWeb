@@ -222,23 +222,23 @@ Developer logging is performed using SLF4J. No binding to log4j or logback exist
 JBoss Logging is configured in configuration/standalone.xml. Development environment could be setup with the following values:
 
     <subsystem xmlns="urn:jboss:domain:logging:1.1">
-        &lt;console-handler name="CONSOLE"&gt;
-            &lt;level name="DEBUG"/&gt;
-        &lt;/console-handler&gt;
+        <console-handler name="CONSOLE">
+            <level name="DEBUG"/>
+        </console-handler>
 
 	...
 
-        &lt;logger category="dk.dma"&gt;
-            &lt;level name="DEBUG"/&gt;
-        &lt;/logger&gt;
-        &lt;root-logger&gt;
-            &lt;level name="DEBUG"/&gt;
-            &lt;handlers&gt;
-                &lt;handler name="CONSOLE"/&gt;
-                &lt;handler name="FILE"/&gt;
-            &lt;/handlers&gt;
-        &lt;/root-logger&gt;
-    &lt;/subsystem&gt;
+        <logger category="dk.dma">
+            <level name="DEBUG"/>
+        </logger>
+        <root-logger>
+            <level name="DEBUG"/>
+            <handlers>
+                <handler name="CONSOLE"/>
+                <handler name="FILE"/>
+            </handlers>
+        </root-logger>
+    </subsystem>
 
 
 
