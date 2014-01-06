@@ -43,7 +43,7 @@ var greenposScope;
         addLayerToMap("vessel", layer, embryo.map);
     })
 
-    embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, $timeout, RouteService) {
+    embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, VesselService, $timeout, RouteService) {
         $scope.reportTypes = [ {
             id : "SP",
             name : "Sailing Plan Report"
@@ -155,6 +155,7 @@ var greenposScope;
                 if ($scope.deactivate) {
                     RouteService.setActiveRoute($scope.activeRouteId, false, function() {
                         $scope.message += "Active route successsfully deactivated. ";
+                        VesselService.updateVesselDetailParameter($scope.report.mmsi, "additionalInformation.routeId", "");
                     }, function(error) {
                         $scope.alertMessages = error;
                         $scope.alertMessages[0] += "Greenpos submitted successfully, but failed route deactivation.";
@@ -172,7 +173,7 @@ var greenposScope;
         };
 
         $scope.setPositionOnMap = function(latitude, longitude) {
-            if (longitude !== null && latitude !== null && typeof latitude != "undefined" && typeof longitude != "undefined") {
+            if (longitude !== null && latitude !== null && typeof latitude != "undefined" && typeof longitude != "undefined") {
                 layer.draw(longitude, latitude);
             } else {
                 layer.clear();

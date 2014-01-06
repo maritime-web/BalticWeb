@@ -23,6 +23,8 @@ $(function() {
                     // embryo.logger.log("Drawing router layer for your vessel", data);
                     yourShipRouteLayer.draw(data, "active");
                 });
+            }else{
+                yourShipRouteLayer.clear();
             }
             embryo.vessel.actions.setup("#yourVesselActions", embryo.vessel.actions.yourVessel, vesselOverview, vesselDetails);
         }
