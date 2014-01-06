@@ -33,8 +33,6 @@ public class BerthGst extends BaseEntity<Long> {
     @NotNull
     private String name;
 
-    private String alias;
-
     private String latitude;
 
     private String longitude;
