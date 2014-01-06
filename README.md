@@ -215,3 +215,32 @@ At the time of writing the current services are subject to surveillance
 * dk.dma.embryo.msi.MsiClientImpl
 * dk.dma.embryo.service.MailServiceImpl
 
+## Developer Logging
+
+Developer logging is performed using SLF4J. No binding to log4j or logback exists in deployed war. Instead it depends on a suitable SLF4J binding (http://www.slf4j.org/manual.html#swapping) to be present on the classpath (with logging framework and configuration). 
+
+JBoss Logging is configured in configuration/standalone.xml. Development environment could be setup with the following values:
+
+    &lt;subsystem xmlns="urn:jboss:domain:logging:1.1"&gt;
+        &lt;console-handler name="CONSOLE"&gt;
+            &lt;level name="DEBUG"/&gt;
+        &lt;/console-handler&gt;
+
+	...
+
+        &lt;logger category="dk.dma"&gt;
+            &lt;level name="DEBUG"/&gt;
+        &lt;/logger&gt;
+        &lt;root-logger&gt;
+            &lt;level name="DEBUG"/&gt;
+            &lt;handlers&gt;
+                &lt;handler name="CONSOLE"/&gt;
+                &lt;handler name="FILE"/&gt;
+            &lt;/handlers&gt;
+        &lt;/root-logger&gt;
+    &lt;/subsystem&gt;
+
+
+
+
+
