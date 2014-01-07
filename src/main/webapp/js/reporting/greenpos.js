@@ -189,7 +189,7 @@ var greenposScope;
             }
         };
 
-        this.hide = function() {
+        this.close = function() {
             layer.clear();
         }
         
@@ -318,9 +318,6 @@ var greenposScope;
                 });
 
                 $scope.$apply();
-            },
-            hide : function() {
-                $("#greenposListPanel").css("display", "none");
             }
         };
 

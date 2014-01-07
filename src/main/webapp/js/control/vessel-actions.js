@@ -3,12 +3,22 @@ embryo.vessel.actions = {
     activeItemRow: null,
     hide: function() {
         if (this.activeItemRow) {
+            if(this.isHideable(this.activeItemRow)){
+                $("#"+this.activeItemRow).find("a").text("view");
+            }
             $("#"+this.activeItemRow).removeClass("alert");
         }
         if (this.activeItem && this.activeItem.hide) this.activeItem.hide();
+        if (this.activeItem && this.activeItem.close) this.activeItem.close();
         this.activeItem = null;
         this.activeItemRow = null;
         $(".reportingPanel").css("display", "none");
+    },
+    isMarkedActiveItem : function(rowId){
+        return this.activeItemRow == rowId;
+    },
+    isHideable : function(rowId){
+        return $("#"+rowId).find("a").text() == "hide";
     },
     markActiveItem: function() {
         if (this.activeItemRow) {
@@ -70,11 +80,20 @@ embryo.vessel.actions = {
         var that = this;
         $("a", id).click(function(e) {
             e.preventDefault();
-            that.hide();
-            that.activeItemRow = $(this).parents("tr").attr("id");
-            that.activeItem = items[$(this).attr("aid")];
-            that.markActiveItem();
-            that.activeItem.show(vesselOverview, vesselDetails);
+
+            var rowId = $(this).parents("tr").attr("id");
+            if(that.isMarkedActiveItem(rowId) && that.isHideable(rowId)){
+                that.hide();
+            }else{
+                that.hide();
+                that.activeItemRow = rowId;
+                that.activeItem = items[$(this).attr("aid")];
+                if(that.activeItem && that.activeItem.hide){
+                    $(this).text("hide");
+                }
+                that.markActiveItem();
+                that.activeItem.show(vesselOverview, vesselDetails);
+            }
         })
     }
 }

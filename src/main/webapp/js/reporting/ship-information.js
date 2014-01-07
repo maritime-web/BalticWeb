@@ -26,9 +26,6 @@
                 $scope.alertMessages = null;
                 $scope.$apply(function() {
                 });
-            },
-            hide : function() {
-                $("#vesselInformationEditPanel").css("display", "none");
             }
         };
 
@@ -66,9 +63,6 @@
                 $scope.vessel = vesselDetails;
                 $scope.$apply(function() {
                 });
-            },
-            hide : function() {
-                $("#vesselInformationViewPanel").css("display", "none");
             }
         };
     };

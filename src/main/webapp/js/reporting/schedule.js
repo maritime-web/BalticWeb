@@ -46,7 +46,7 @@
                 $scope.$apply(function() {
                 });
             },
-            hide : function() {
+            close : function() {
                 $scope.reset();
             }
         };
@@ -223,7 +223,7 @@
                 $scope.$apply(function() {
                 });
             },
-            hide : function() {
+            close : function() {
                 $scope.routeLayer.clear();
                 $scope.scheduleLayer.clear();
             }
