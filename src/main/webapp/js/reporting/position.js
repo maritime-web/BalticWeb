@@ -53,7 +53,8 @@
         if (h == null || m == null || ns == null) {
             throw "Format exception";
         }
-        if (!ns == "N" && !ns == "S") {
+        ns = ns.toUpperCase();
+        if (!(ns == "N") && !(ns == "S")) {
             throw "Format exception";
         }
         var lat = h + m / 60.0;
@@ -70,6 +71,7 @@
         if (h == null || m == null || ew == null) {
             throw "Format exception";
         }
+        ew = ew.toUpperCase();        
         if (!(ew == "E") && !(ew == "W")) {
             throw "Format exception";
         }
@@ -84,7 +86,7 @@
 
     function positionDirective(formatter1, parser) {
         function formatter(value) {
-            if (value || value === 0) return formatter1(value);
+            if (value || value === 0) return formatter1(value);
             return null;
         }
 
