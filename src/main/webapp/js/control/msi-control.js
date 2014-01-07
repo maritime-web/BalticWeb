@@ -24,18 +24,29 @@ $(function() {
 
             embryo.msi.service.list(function(error, data) {
                 if (data) {
+                    if(data.length == 0){
+                        var html = "No active warnings";
+                        $("#msiOverview div.accordion-inner").html(html);
+                        embryo.messagePanel.replace(messageId, { text: data.length + " MSI warnings returned.", type: "success" })
+                        return;
+                    }
+                    
                     data = data.sort(function(a,b) {
                         return b.created-a.created;
                     });
 
                     for (var i in data) data[i].id = i;
 
-                    var html = "<tr><th>Date</th><th>Type</th><th>Area</th></tr>";
+                    
+                    var html = "<table class='table table-condensed'><tr><th>Date</th><th>Type</th><th>Area</th></tr>";
 
                     for (var i in data) {
-                        html += "<tr index="+i+" style='cursor:pointer'><td>"+formatDate(data[i].created)+"</td><td>"+data[i].enctext+"</td><td>"+data[i].mainArea+" - "+data[i].subArea+"</td>";               }
-
-                    $("#msiOverview table").html(html);
+                        html += "<tr index="+i+" style='cursor:pointer'><td>"+formatDate(data[i].created)+"</td><td>"+data[i].enctext+"</td><td>"+data[i].mainArea+" - "+data[i].subArea+"</td>";               
+                    }
+                    
+                    html += "</table>";
+                    
+                     $("#msiOverview div.accordion-inner").html(html);
 
                     $("#msiOverview tr").click(function(e) {
                         var msi = data[$(this).attr("index")];
