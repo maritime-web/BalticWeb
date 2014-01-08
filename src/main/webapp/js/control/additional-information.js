@@ -30,15 +30,15 @@ embryo.additionalInformation.historicalTrack = {
 
 embryo.additionalInformation.nearestShips = {
     title : "Nearest Vessels",
-    layer : new NearestVesselsLayer(),
+    layer : null,
     init : function(map, group) {
-        addLayerToMap(group, this.layer, map)
+        this.layer = DistanceLayerSingleton.getInstance();
     },
     available : function(vessel, vesselDetails) {
         return vesselDetails.ais != null;
     },
     show : function(vessel, vesselDetails) {
-        this.layer.draw(vessel, vesselDetails, embryo.vessel.allVessels());
+        this.layer.drawNearestVessels(vessel, vesselDetails, embryo.vessel.allVessels());
         this.layer.zoomToExtent();
     },
     hide : function() {
@@ -48,15 +48,15 @@ embryo.additionalInformation.nearestShips = {
 
 embryo.additionalInformation.distanceCircles = {
     title : "3-6-9 hour distance circle based on SOG",
-    layer : new DistanceCirclesLayer(),
+    layer : null,
     init : function(map, group) {
-        addLayerToMap(group, this.layer, map)
+        this.layer = DistanceLayerSingleton.getInstance();
     },
     available : function(vessel, vesselDetails) {
         return vesselDetails.ais && vesselDetails.ais.sog > 0;
     },
     show : function(vessel, vesselDetails) {
-        this.layer.draw(vessel, vesselDetails);
+        this.layer.drawDistanceCircles(vessel, vesselDetails);
         this.layer.zoomToExtent();
     },
     hide : function() {
