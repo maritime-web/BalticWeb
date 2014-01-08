@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import liquibase.Liquibase;
@@ -41,19 +43,22 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.dma.embryo.configuration.IllegalConfigurationException;
+
 /**
  * @author Jesper Tejlgaard
  */
-public class LiquibaseMigrator implements Integrator{
-    
+public class LiquibaseMigrator implements Integrator {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(LiquibaseMigrator.class);
 
     private ConnectionProvider connectionProvider;
-    
+
     private LiquibaseConfig config;
-    
+
     @Override
-    public void integrate(final Configuration configuration, final SessionFactoryImplementor sessionFactoryImplementor, final SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
+    public void integrate(final Configuration configuration, final SessionFactoryImplementor sessionFactoryImplementor,
+            final SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
         try {
             config = new LiquibaseConfig();
         } catch (IOException | URISyntaxException e) {
@@ -70,8 +75,16 @@ public class LiquibaseMigrator implements Integrator{
             return;
         }
         if (!config.isEnabled()) {
-            LOGGER.info("Liquibase did not run on " + hostName + " because  'embryo.liquibase.enable' property was set to false or not present");
+            LOGGER.info("Liquibase did not run on " + hostName
+                    + " because  'embryo.liquibase.enable' property was set to false or not present");
             return;
+        }
+
+        List<String> disAllowed = Arrays.asList("update", "create", "create-drop");
+        String hbm2ddl = configuration.getProperty("hibernate.hbm2ddl.auto");
+        if (hbm2ddl != null && disAllowed.contains(hbm2ddl.trim())) {
+            throw new IllegalConfigurationException("Hibernate can not be used with hibernate.hbm2ddl.auto=" + hbm2ddl
+                    + " when Liquibase is enabled.");
         }
 
         LOGGER.info("Booting Liquibase " + LiquibaseUtil.getBuildVersion());
@@ -87,7 +100,7 @@ public class LiquibaseMigrator implements Integrator{
         Connection c = null;
         Liquibase liquibase = null;
         try {
-            //c = dataSource.getConnection();
+            // c = dataSource.getConnection();
             c = connectionProvider.getConnection();
             liquibase = createLiquibase(c);
             liquibase.update(config.getContexts());
@@ -101,7 +114,7 @@ public class LiquibaseMigrator implements Integrator{
                     c.rollback();
                     c.close();
                 } catch (SQLException e) {
-                    //nothing to do
+                    // nothing to do
                 }
 
             }
@@ -111,10 +124,11 @@ public class LiquibaseMigrator implements Integrator{
 
     private Liquibase createLiquibase(Connection c) throws LiquibaseException {
         System.out.println("LIQUIBASE CHANGELOG: " + config.getChangeLog());
-        
-        Liquibase liquibase = new Liquibase(config.getChangeLog(), new ClassLoaderResourceAccessor(getClass().getClassLoader()), createDatabase(c));
+
+        Liquibase liquibase = new Liquibase(config.getChangeLog(), new ClassLoaderResourceAccessor(getClass()
+                .getClassLoader()), createDatabase(c));
         if (config.getParameters() != null) {
-            for(Map.Entry<String, String> entry: config.getParameters().entrySet()) {
+            for (Map.Entry<String, String> entry : config.getParameters().entrySet()) {
                 liquibase.setChangeLogParameter(entry.getKey(), entry.getValue());
             }
         }
@@ -127,8 +141,9 @@ public class LiquibaseMigrator implements Integrator{
     }
 
     /**
-     * Subclasses may override this method add change some database settings such as
-     * default schema before returning the database object.
+     * Subclasses may override this method add change some database settings such as default schema before returning the
+     * database object.
+     * 
      * @param c
      * @return a Database implementation retrieved from the {@link liquibase.database.DatabaseFactory}.
      * @throws DatabaseException
@@ -141,14 +156,16 @@ public class LiquibaseMigrator implements Integrator{
         return database;
     }
 
-
     @Override
-    public void integrate(final MetadataImplementor metadataImplementor, final SessionFactoryImplementor sessionFactoryImplementor, final SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
-        //no-op
+    public void integrate(final MetadataImplementor metadataImplementor,
+            final SessionFactoryImplementor sessionFactoryImplementor,
+            final SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
+        // no-op
     }
 
     @Override
-    public void disintegrate(final SessionFactoryImplementor sessionFactoryImplementor, final SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
-        //no-op
+    public void disintegrate(final SessionFactoryImplementor sessionFactoryImplementor,
+            final SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
+        // no-op
     }
 }
