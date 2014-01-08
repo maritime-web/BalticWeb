@@ -29,7 +29,7 @@
     <jslint.predef>embryo</jslint.predef>
 
     <!-- developer setting -->
-    <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+    <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
   </properties>
 
   <dependencyManagement>
