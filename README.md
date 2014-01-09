@@ -163,22 +163,22 @@ Hibernate can be used to maintain the database (good in development mode) where 
 
 <table>
   <tr>
-    <th>Property</th><th>Values</th><th>Where</th><th>Dev (default)</th><th>Production</th>
+    <th>Property</th><th>Values</th><th>Where</th><th>Default</th>
   </tr>
   <tr>
-    <td>hibernate.hbm2ddl.auto</td><td>create, create-drop, update and validate</td><td>pom.xml or Maven command line property</td><td>update</td><td>validate</td>
+    <td>hibernate.hbm2ddl.auto</td><td>create, create-drop, update and validate</td><td>pom.xml or Maven command line property</td><td>validate</td>
   </tr>
   <tr>
-    <td>embryo.liquibase.enabled</td><td>true/false</td><td>default or system configuration file (see above)</td><td>false</td><td>true</td>
+    <td>embryo.liquibase.enabled</td><td>true/false</td><td>default or system configuration file (see above)</td><td>false (dev) / true (prod)</td>
   </tr>
   <tr>
-    <td>embryo.liquibase.changelog</td><td>path to changelog file</td><td>default or system configuration file (see above)</td><td> - </td><td>/liquibase/changelog.xml</td>
+    <td>embryo.liquibase.changelog</td><td>path to changelog file</td><td>default or system configuration file (see above)</td><td>/liquibase/changelog.xml</td>
   </tr>
 </table>
 
 hibernate.hbm2ddl.auto may be set on command line when building a war archive as follows: 
 
-    mvn clean package -Dhibernate.hbm2ddl.auto=validate
+    mvn clean package -Dhibernate.hbm2ddl.auto=update
 
 ## Surveillance
 
