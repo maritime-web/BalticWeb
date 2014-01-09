@@ -36,7 +36,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Period;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.component.RouteParserComponent;
@@ -91,7 +91,7 @@ public class AppDataServiceBean {
     private EntityManager em;
 
     private List<Berth> berthList = new ArrayList<>(100);
-    
+
     @Property("embryo.users.admin.initial.pw")
     @Inject
     private String dmaInitialPw;
@@ -100,7 +100,6 @@ public class AppDataServiceBean {
     @Inject
     private String dmainitialEmail;
 
-    
     @PostConstruct
     public void startup() {
         Map<String, Object> props = emf.getProperties();
@@ -114,10 +113,10 @@ public class AppDataServiceBean {
             createAdmin();
             resetBaseData();
             resetTestData();
-        } else if("update".equals(hbm2dllAuto)){
+        } else if ("update".equals(hbm2dllAuto)) {
             createAdmin();
             resetBaseData();
-        } else if("validate".equals(hbm2dllAuto)){
+        } else if ("validate".equals(hbm2dllAuto)) {
             createAdmin();
             resetBaseData();
         }
@@ -234,9 +233,9 @@ public class AppDataServiceBean {
     public void createAdmin() {
         SecuredUser user = realmDao.findByUsername("dma");
         logger.debug("looked up admin user: {}", user);
-        if(user == null){
+        if (user == null) {
             createDmaAccount();
-        }else{
+        } else {
             logger.info("Admin user (dma) already exists in database");
         }
     }
@@ -258,10 +257,9 @@ public class AppDataServiceBean {
         clearTestUsers();
         deleteAll(Vessel.class);
         deleteAll(GreenPosReport.class);
-        
+
         logger.info("AFTER DELETION");
     }
-
 
     private void internalResetTestData() {
         clearTestData();
@@ -271,8 +269,8 @@ public class AppDataServiceBean {
         createOraTankTestData();
         uploadOraTankRoutes();
         createSarfaqTestData();
-        // createSarfaqSchedule();
-        // uploadSarfaqRoutes();
+        createSarfaqSchedule();
+        uploadSarfaqRoutes();
         createNajaArcticaTestData();
         createArinaArcticaTestData();
 
@@ -302,7 +300,7 @@ public class AppDataServiceBean {
         } catch (RuntimeException e) {
             logger.error("Error deleting existing entries", e);
             throw e;
-        }        
+        }
     }
 
     public void clearTestUsers() {
@@ -342,14 +340,14 @@ public class AppDataServiceBean {
         em.clear();
         logger.info("SAVED DMA: " + saved);
     }
-    
+
     private void createBerths() {
         logger.info("BEFORE CREATION - Berths");
 
         for (Berth berth : berthList) {
             vesselDao.saveEntity(berth);
         }
-        
+
         em.flush();
         em.clear();
     }
@@ -476,68 +474,77 @@ public class AppDataServiceBean {
 
         DateTimeConverter converter = DateTimeConverter.getDateTimeConverter();
 
-        DateTime firstDeparture = converter.toObject("27-09-2013 21:00", null);
+        DateTime firstDeparture = converter.toObject("27-09-2013 21:00");
 
         sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", null, firstDeparture));
-        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("28-09-2013 07:00",
-                null), converter.toObject("28-09-2013 07:30", null)));
-        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("28-09-2013 10:45",
-                null), converter.toObject("28-09-2013 11:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("28-09-2013 18:00",
-                null), converter.toObject("28-09-2013 21:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 08:00",
-                null), converter.toObject("29-09-2013 08:30", null)));
-        sarfaq.addVoyageEntry(new Voyage("Ilulissat", "69 13.5N", "051 06.0W", converter.toObject("29-09-2013 13:00",
-                null), converter.toObject("29-09-2013 17:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 21:30",
-                null), converter.toObject("29-09-2013 22:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("30-09-2013 09:00",
-                null), converter.toObject("30-09-2013 10:30", null)));
-        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("30-09-2013 17:30",
-                null), converter.toObject("30-09-2013 17:45", null)));
-        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("30-09-2013 21:30",
-                null), converter.toObject("30-09-2013 22:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("01-10-2013 06:30", null),
-                converter.toObject("01-10-2013 09:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter.toObject(
-                "01-10-2013 16:30", null), converter.toObject("01-10-2013 16:45", null)));
+        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("28-09-2013 07:00"),
+                converter.toObject("28-09-2013 07:30")));
+        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("28-09-2013 10:45"),
+                converter.toObject("28-09-2013 11:00")));
+        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("28-09-2013 18:00"),
+                converter.toObject("28-09-2013 21:00")));
+        sarfaq.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 08:00"),
+                converter.toObject("29-09-2013 08:30")));
+        sarfaq.addVoyageEntry(new Voyage("Ilulissat", "69 13.5N", "051 06.0W", converter.toObject("29-09-2013 13:00"),
+                converter.toObject("29-09-2013 17:00")));
+        sarfaq.addVoyageEntry(new Voyage("Aasiaat", "68 42.6N", "052 53.0W", converter.toObject("29-09-2013 21:30"),
+                converter.toObject("29-09-2013 22:00")));
+        sarfaq.addVoyageEntry(new Voyage("Sisimiut", "66 56.5N", "053 40.5W", converter.toObject("30-09-2013 09:00"),
+                converter.toObject("30-09-2013 10:30")));
+        sarfaq.addVoyageEntry(new Voyage("Kangaamiut", "65 49.6N", "053 20.9W", converter.toObject("30-09-2013 17:30"),
+                converter.toObject("30-09-2013 17:45")));
+        sarfaq.addVoyageEntry(new Voyage("Maniitsoq", "65 24.8N", "052 54.3W", converter.toObject("30-09-2013 21:30"),
+                converter.toObject("30-09-2013 22:00")));
+        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("01-10-2013 06:30"),
+                converter.toObject("01-10-2013 09:00")));
+        sarfaq.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter
+                .toObject("01-10-2013 16:30"), converter.toObject("01-10-2013 16:45")));
 
-        sarfaq.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("01-10-2013 23:30",
-                null), converter.toObject("02-10-2013 00:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.1W",
-                converter.toObject("02-10-2013 06:45", null), converter.toObject("02-10-2013 07:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Qaqortoq", "60 43.1N", "046 02.4W", converter.toObject("02-10-2013 15:30",
-                null), converter.toObject("02-10-2013 19:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Narsaq", "60 54.5N", "046 03.0W", converter
-                .toObject("02-10-2013 21:00", null), converter.toObject("02-10-2013 21:30", null)));
+        sarfaq.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("01-10-2013 23:30"),
+                converter.toObject("02-10-2013 00:00")));
+        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.1W", converter.toObject("02-10-2013 06:45"),
+                converter.toObject("02-10-2013 07:00")));
+        sarfaq.addVoyageEntry(new Voyage("Qaqortoq", "60 43.1N", "046 02.4W", converter.toObject("02-10-2013 15:30"),
+                converter.toObject("02-10-2013 19:00")));
+        sarfaq.addVoyageEntry(new Voyage("Narsaq", "60 54.5N", "046 03.0W", converter.toObject("02-10-2013 21:00"),
+                converter.toObject("02-10-2013 21:30")));
 
-        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.2W",
-                converter.toObject("03-10-2013 06:45", null), converter.toObject("03-10-2013 07:00", null)));
-        sarfaq.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("03-10-2013 13:30",
-                null), converter.toObject("03-10-2013 14:30", null)));
+        sarfaq.addVoyageEntry(new Voyage("Arsuk", "61 10.5N", "048 27.2W", converter.toObject("03-10-2013 06:45"),
+                converter.toObject("03-10-2013 07:00")));
+        sarfaq.addVoyageEntry(new Voyage("Paamiut", "61 59.8N", "049 40.8W", converter.toObject("03-10-2013 13:30"),
+                converter.toObject("03-10-2013 14:30")));
         sarfaq.addVoyageEntry(new Voyage("Qeqertarsuatsiaat", "63 05.4N", "050 41.0W", converter
                 .toObject("03-10-2013 22:30"), converter.toObject("03-10-2013 22:45")));
-        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00"), null));
+        sarfaq.addVoyageEntry(new Voyage("Nuuk", "64 10.4N", "051 43.5W", converter.toObject("04-10-2013 09:00"),
+                converter.toObject("04-10-2013 11:00")));
 
         // firstDeparture.
 
-        Period p = new Period(firstDeparture, now);
-        if (p.getWeeks() > 0) {
+        Duration d = new Duration(firstDeparture, now);
+        int weeks = (int)d.getStandardDays()/7;
+        
+        logger.debug("Duration: {}, weeks:{}, days: {}", d, weeks, d.getStandardDays());
+        
+        if (weeks > 0) {
             for (Voyage v : sarfaq.getSchedule()) {
-                v.setArrival(v.getArrival() == null ? null : v.getArrival().plusWeeks(p.getWeeks()));
-                v.setDeparture(v.getDeparture() == null ? null : v.getDeparture().plusWeeks(p.getWeeks()));
+                v.setArrival(v.getArrival() == null ? null : v.getArrival().plusWeeks(weeks));
+                v.setDeparture(v.getDeparture() == null ? null : v.getDeparture().plusWeeks(weeks));
             }
         }
 
         for (Voyage v : sarfaq.getSchedule()) {
-            vesselDao.saveEntity(v);
+            scheduleDao.saveEntity(v);
         }
+        em.flush();
     }
 
     private void uploadSarfaqRoutes() {
         logger.info("BEFORE UPLOAD - SARFAQ");
 
         List<Voyage> schedule = scheduleDao.getSchedule(331037000L);
+        
+        logger.debug("schedule: {}", schedule);
+        
         insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
         insertDemoRoute(schedule.get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt", false);
         insertDemoRoute(schedule.get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt", false);
@@ -837,7 +844,7 @@ public class AppDataServiceBean {
             new RouteSaver(scheduleDao).saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);
-        } 
+        }
     }
 
 }
