@@ -4,7 +4,7 @@ var greenposScope;
     "use strict";
 
     var greenposModule = angular.module('embryo.greenpos', [ 'embryo.scheduleService', 'embryo.greenposService',
-            'embryo.position' ]);
+            'embryo.course', 'embryo.position']);
 
     /*
      * Inspired by http://jsfiddle.net/zbjLh/2/
@@ -176,7 +176,7 @@ var greenposScope;
             $scope.warningMessages = null;
             $scope.alertMessages = null;
             $scope.message = null;
-            
+
             initData();
         };
 
@@ -192,7 +192,7 @@ var greenposScope;
         this.close = function() {
             layer.clear();
         }
-        
+
         var vesselOverview, vesselDetails;
 
         this.show = function(vesselOverview2, vesselDetails2) {
@@ -200,7 +200,7 @@ var greenposScope;
             vesselDetails = vesselDetails2;
 
             initData();
-            
+
             $scope.$apply();
         }
 
@@ -322,8 +322,11 @@ var greenposScope;
         };
 
         $scope.formatDateTime = function(timeInMillis) {
-
             return formatTime(timeInMillis);
+        };
+
+        $scope.formatCourse = function(course) {
+            return formatCourse(course);
         };
 
         $scope.reportText = function(type) {

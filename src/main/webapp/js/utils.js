@@ -77,7 +77,25 @@ function formatNauticalMile(km) {
         return result.toFixed(0) + " NM";
     return result.toFixed(1) + " NM";
 }
-	
+
+function formatCourse(course) {
+    if(!course && course != 0){
+        return course;
+    }
+    
+    if(course < 0){
+        return course;
+    }
+    if(course < 10){
+        return "00" + course;
+    }
+    if(course < 100){
+        return "0" + course;
+    }
+    return course.toString();
+}
+
+
 function formatDate(dato) {
     if (dato == null)
         return "-";

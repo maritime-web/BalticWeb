@@ -84,7 +84,7 @@
 			<div class="control-group" x-ng-show="isVisible('course')">
 				<label class="control-label" for="gpCourse">Course</label>
 				<div class="controls">
-					<input name="gpCourse" id="gpCourse" type="text" class="input-small" x-ng-model="report.course"
+					<input embryo-course name="gpCourse" id="gpCourse" type="number" class="input-small" x-ng-model="report.course"
 						x-ng-required="isVisible('course')" /> <span
 						x-ng-show="greenPosForm.gpCourse.$error.required  && greenPosForm.gpCourse.$dirty" class="msg-invalid">Value
 						required</span>
