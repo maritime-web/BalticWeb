@@ -48,7 +48,7 @@ describe('Course', function() {
             expect(course).toBe(undefined);
         });
 
-        it('course.parse removes leading spaces.', function() {
+        it('course.parse removes leading zeros.', function() {
             var course = embryo.course.parse("000");
             expect(course).toBe(0);
 
