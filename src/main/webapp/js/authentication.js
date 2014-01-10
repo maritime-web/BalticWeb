@@ -21,7 +21,6 @@ embryo
                     $("#ie89").show();
                 } else if (browser.isChrome()) {
                     var ver = browser.chromeVersion();
-                    console.log(ver);
                     if(parseFloat(ver) > 27){
                         $("#chromeVer").html(ver);
                         $("#chrome").show();
@@ -177,8 +176,13 @@ embryo
                         embryo.messagePanel.replace(messageId, {
                             text : "Log in failed. (" + data.status + ")",
                             type : "error"
-                        })
-                        $("#loginWrongLoginOrPassword").css("display", "block");
+                        });
+                        var errorMessage = embryo.ErrorService.extractError(data, data.status);
+                        if(data.status == 401){
+                            $("#loginWrongLoginOrPassword").css("display", "block");
+                        }else{
+                            $("#error").text(errorMessage[0]).css("display", "block");
+                        }
                         setTimeout(function() {
                             $("#login").modal("show");
                         }, 1000);
@@ -187,6 +191,7 @@ embryo
 
                 $("#userName").val("");
                 $("#password").val("");
+                $("#error").css("display", "none");
                 $("#loginWrongLoginOrPassword").css("display", "none");
             });
 

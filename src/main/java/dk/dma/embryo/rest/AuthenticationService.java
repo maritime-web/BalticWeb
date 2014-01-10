@@ -118,7 +118,7 @@ public class AuthenticationService {
         } catch (org.apache.shiro.authc.IncorrectCredentialsException e) {
             logger.debug("User {} not logged in (wrong username / password)", userName);
             embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
-            throw e;
+            throw new UserNotAuthenticated();
         }
 
     }
