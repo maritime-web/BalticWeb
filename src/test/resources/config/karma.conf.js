@@ -22,6 +22,7 @@ module.exports = function(config) {
 				'src/main/webapp/js/menu.js', 
                 'src/main/webapp/js/reporting/course.js',
 				'src/main/webapp/js/reporting/position.js',
+                'src/main/webapp/js/reporting/decimal.js',
 				'src/main/webapp/js/reporting/route-upload.js',
 				'src/test/jsUnit/**/*Test.js' ],
 

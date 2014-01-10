@@ -93,7 +93,7 @@
 			<div class="control-group" x-ng-show="isVisible('speed')">
 				<label class="control-label" for="gpSpeed">Speed</label>
 				<div class="controls">
-					<input id="gpSpeed" name="gpSpeed" type="text" class="input-small" x-ng-model="report.speed"
+					<input id="gpSpeed" name="gpSpeed" type="text" class="input-small" x-ng-model="report.speed" x-embryo-decimal
 						x-ng-required="isVisible('speed')" /> <span
 						x-ng-show="greenPosForm.gpSpeed.$error.required && greenPosForm.gpSpeed.$dirty" class="msg-invalid">Value
 						required</span>
