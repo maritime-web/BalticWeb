@@ -24,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class IceObservationRestService {
     @Path("/list")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public List<IceObservation> listIceObservations() {
         return iceObservationService.listAvailableIceObservations();
     }

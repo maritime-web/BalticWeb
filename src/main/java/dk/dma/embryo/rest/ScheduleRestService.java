@@ -26,6 +26,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.domain.Route;
@@ -50,6 +51,7 @@ public class ScheduleRestService {
     @Path("/{mmsi}")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public dk.dma.embryo.rest.json.ScheduleResponse getScheduleView(@PathParam("mmsi") Long mmsi) {
         logger.trace("getScheduleView({})", mmsi);
 

@@ -15,8 +15,6 @@
  */
 package dk.dma.embryo.rest;
 
-import java.util.Date;
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -24,6 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.rest.json.Metoc;
@@ -53,6 +52,7 @@ public class MetocRestService {
     @Path("/{routeId}")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public Metoc getMetoc(@PathParam("routeId") String id) {
         logger.debug("getMetoc({})", id);
   

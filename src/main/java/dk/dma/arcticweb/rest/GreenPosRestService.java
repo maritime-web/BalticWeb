@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -70,6 +71,7 @@ public class GreenPosRestService {
     @Path("/latest/{mmsi}")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public GreenPos latest(@PathParam("mmsi") Long mmsi) {
         logger.debug("latest({})", mmsi);
 
@@ -90,6 +92,7 @@ public class GreenPosRestService {
     @Path("/latest")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public List<GreenposMinimal> listLatest() {
         logger.debug("listLatest()");
 
@@ -105,6 +108,7 @@ public class GreenPosRestService {
     @Path("/{id}")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public GreenPos get(@PathParam("id") String id) {
         logger.debug("get({})", id);
 
@@ -120,6 +124,7 @@ public class GreenPosRestService {
     @Path("/list")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public GreenPosShort[] list(@QueryParam("type") String type, @QueryParam("mmsi") Long mmsi,
             @QueryParam("ts") String ts, @QueryParam("sortBy") String sortBy,
             @QueryParam("sortOrder") String sortOrder, @QueryParam("start") Integer start,

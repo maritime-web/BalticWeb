@@ -28,6 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.dao.RealmDao;
@@ -115,6 +116,7 @@ public class UserRestService {
     @GET
     @Path("/list")
     @Produces("application/json")
+    @NoCache
     public List<User> list() {
         List<User> result = new ArrayList<>();
 

@@ -29,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.AisDataService;
@@ -76,6 +77,7 @@ public class VesselRestService {
     @Path("/historical-track")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public Object historicalTrack(@QueryParam("mmsi") long mmsi) {
         Map result = limitedAisViewService.vesselTargetDetails(mmsi, 1);
         return ((Map) result.get("pastTrack")).get("points");
@@ -85,6 +87,7 @@ public class VesselRestService {
     @Path("/list")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public List<VesselOverview> list() {
         List<VesselOverview> result = new ArrayList<>();
 
@@ -141,6 +144,7 @@ public class VesselRestService {
     @Path("/details")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public VesselDetails details(@QueryParam("mmsi") long mmsi) {
         try {
             Map result = fullAisViewService.vesselTargetDetails(mmsi, 0);

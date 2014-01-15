@@ -24,12 +24,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.dao.LogEntryDao;
 import dk.dma.embryo.rest.json.LogEntry;
 
 @Path("/log")
+@NoCache
 public class LogEntryRestService {
     @Inject
     private LogEntryDao logEntryDao;

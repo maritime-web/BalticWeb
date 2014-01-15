@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class MsiRestService {
     @Path("/list")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public List<MsiClient.MsiItem> listActiveWarnings() {
         return msiClient.getActiveWarnings();
     }

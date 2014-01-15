@@ -24,6 +24,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.rest.json.ActiveRoute;
@@ -51,6 +52,7 @@ public class RouteRestService {
     @Path("/{id}")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public Route getRoute(@PathParam("id") String id) {
         logger.debug("getRoute({})", id);
         dk.dma.embryo.domain.Route route = scheduleService.getRouteByEnavId(id);
@@ -62,6 +64,7 @@ public class RouteRestService {
     @Path("/active/{mmsi}")
     @Produces("application/json")
     @GZIP
+    @NoCache
     public Route getActive(@PathParam("mmsi") String mmsi) {
         logger.debug("getActive({})", mmsi);
 
