@@ -46,8 +46,10 @@ function DistanceLayer() {
 
         $.each(allVessels, function (k,v) {
             if (v.mmsi != vessel.mmsi) {
+                distance = embryo.adt.measureDistanceGc(vessel.x, vessel.y, v.x, v.y);
                 var o = {
-                    distance : embryo.adt.measureDistanceGc(vessel.x, vessel.y, v.x, v.y),
+                    distance : distance,
+                    timeInMinutes : v.msog ? (distance / (v.msog * 1.852) / 60) : Infinity,
                     vessel : v
                 }
                 if (o.distance > 0) {
@@ -57,7 +59,17 @@ function DistanceLayer() {
         });
 
         vessels.sort(function(a, b) {
-            return a.distance - b.distance;
+            if(a.timeInMinutes == Infinity && b.timeInMinutes == Infinity){
+                return 0;
+            }
+            if(a.timeInMinutes == Infinity && b.timeInMinutes != Infinity){
+                return 100;
+            }
+            if(a.timeInMinutes != Infinity && b.timeInMinutes == Infinity){
+                return -100;
+            }
+            
+            return a.timeInMinutes - b.timeInMinutes;
         });
 
         for (var i = 0; i < 5; i++) {
@@ -72,9 +84,9 @@ function DistanceLayer() {
                 // (parseFloat(vessel.x) + parseFloat(v.vessel.x)) / 2, (parseFloat(vessel.y) + parseFloat(v.vessel.y)) / 2
             ));
 
-            if (vesselDetails.ais.sog > 0) {
+            if (v.msog != Infinity) {
                 labelFeature.attributes = {
-                    label: formatNauticalMile(v.distance) + " " + formatHour(v.distance / (vesselDetails.ais.sog * 1.852))+ " hours"
+                    label: formatNauticalMile(v.distance) + " " + formatHour(v.distance / (v.vessel.msog * 1.852))+ " hours"
                 }
             } else {
                 labelFeature.attributes = {
