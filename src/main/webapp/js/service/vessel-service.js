@@ -5,92 +5,89 @@
 
     module.service('VesselService', function() {
         return {
-            list: function(callback) {
+            list : function(callback) {
                 $.ajax({
-                    url: embryo.baseUrl + "rest/vessel/list",
-                    timeout: embryo.defaultTimeout,
-                    success: function(data) {
+                    url : embryo.baseUrl + "rest/vessel/list",
+                    timeout : embryo.defaultTimeout,
+                    success : function(data) {
                         callback(null, data);
                     },
-                    error: function(data) {
+                    error : function(data) {
                         callback(data);
                     }
                 });
             },
-            details: function(mmsi, callback) {
+            details : function(mmsi, callback) {
                 $.ajax({
-                    url: embryo.baseUrl + "rest/vessel/details",
-                    timeout: embryo.defaultTimeout,
-                    data: {
+                    url : embryo.baseUrl + "rest/vessel/details",
+                    timeout : embryo.defaultTimeout,
+                    data : {
                         mmsi : mmsi
                     },
-                    success: function(data) {
+                    success : function(data) {
                         callback(null, data);
                     },
-                    error: function(data) {
+                    error : function(data) {
                         callback(data);
                     }
                 });
             },
-            saveDetails: function(details, callback) {
+            saveDetails : function(details, callback) {
                 $.ajax({
-                    url: embryo.baseUrl + "rest/vessel/save-details",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(details),
-                    success: function(data) {
+                    url : embryo.baseUrl + "rest/vessel/save-details",
+                    type : "POST",
+                    contentType : "application/json",
+                    data : JSON.stringify(details),
+                    success : function(data) {
                         callback(null, data);
                     },
-                    error: function(jqXHR, textStatus, errorThrown) {
+                    error : function(jqXHR, textStatus, errorThrown) {
                         callback(jqXHR, null);
                     }
                 })
             },
-            clientSideSearch: function(argument, callback) {
-                if (argument == null || argument == "") return [];
+            clientSideSearch : function(argument, callback) {
+                if (argument == null || argument == "")
+                    return [];
 
                 var result = [];
 
-                $.each(embryo.vessel.allVessels(), function (k,v) {
-                    var matches = false
-                    if (v.name) {
-                        if ((v.name.toLowerCase().indexOf(argument.toLowerCase()) == 0) || 
-                            (v.name.toLowerCase().indexOf(" "+argument.toLowerCase()) >= 0)) {
-                            matches = true;
-                        }
+                function match(propertyValue, searchStr) {
+                    if (!propertyValue) {
+                        return false;
                     }
-                    /*
-                    if (v.mmsi) {
-                        if ((""+v.mmsi).indexOf(argument) == 0) matches = true;
-                    }
-                    */
-                    if (matches) {
+                    var value = ("" + propertyValue).toLowerCase();
+                    return  ((value.indexOf(searchStr) == 0) || (value.indexOf(" " + searchStr) >= 0));
+                }
+
+                $.each(embryo.vessel.allVessels(), function(k, v) {
+                    var searchStr = argument.toLowerCase();
+                    if(match(v.name, searchStr) || match(v.mmsi, searchStr) || match(v.callSign, searchStr)){
                         result.push(v);
                     }
-                })
+                });
 
                 callback(result);
             },
-            updateVesselDetailParameter: function(mmsi, name, value) {
+            updateVesselDetailParameter : function(mmsi, name, value) {
                 var s = subscriptions[mmsi];
                 if (s) {
-                    eval("s.vesselDetails." + name + "='" + value+ "'");
+                    eval("s.vesselDetails." + name + "='" + value + "'");
                     this.fireVesselDetailsUpdate(s.vesselDetails);
                 }
             },
-            fireVesselDetailsUpdate: function(vesselDetails) {
+            fireVesselDetailsUpdate : function(vesselDetails) {
                 var s = subscriptions[vesselDetails.ais.mmsi];
                 if (s) {
                     s.vesselDetails = vesselDetails;
-                    for (var i in s.callbacks) {
-//                        function x(){
-//                            var count = i;
-//                            s.callbacks[count]();
-//                        }
-//                        setTimeout(x, 10);
-                        
-                        
-                        (function (callback) {
+                    for ( var i in s.callbacks) {
+                        // function x(){
+                        // var count = i;
+                        // s.callbacks[count]();
+                        // }
+                        // setTimeout(x, 10);
+
+                        (function(callback) {
                             setTimeout(function() {
                                 callback(null, s.vesselOverview, s.vesselDetails)
                             }, 10);
@@ -98,13 +95,13 @@
                     }
                 }
             },
-            subscribe: function (mmsi, callback) {
+            subscribe : function(mmsi, callback) {
                 if (subscriptions[mmsi] == null)
                     subscriptions[mmsi] = {
-                        callbacks: [],
-                        vesselOverview: null,
-                        vesselDetails: null,
-                        interval: null
+                        callbacks : [],
+                        vesselOverview : null,
+                        vesselDetails : null,
+                        interval : null
                     };
 
                 var s = subscriptions[mmsi];
@@ -120,16 +117,19 @@
                                 embryo.vesselDetails = vesselDetails;
                                 s.vesselOverview = vesselOverview;
                                 s.vesselDetails = vesselDetails;
-                                for (var i in s.callbacks)
-                                    if (s.callbacks[i]) s.callbacks[i](null, vesselOverview, vesselDetails);
+                                for ( var i in s.callbacks)
+                                    if (s.callbacks[i])
+                                        s.callbacks[i](null, vesselOverview, vesselDetails);
                             } else {
-                                for (var i in s.callbacks)
-                                    if (s.callbacks[i]) s.callbacks[i](error);
+                                for ( var i in s.callbacks)
+                                    if (s.callbacks[i])
+                                        s.callbacks[i](error);
                             }
                         })
                     } else {
-                        for (var i in s.callbacks)
-                            if (s.callbacks[i]) s.callbacks[i]("unable to find "+mmsi);
+                        for ( var i in s.callbacks)
+                            if (s.callbacks[i])
+                                s.callbacks[i]("unable to find " + mmsi);
                     }
                 }
 
@@ -143,26 +143,30 @@
                 }
 
                 if (s.vesselDetails) {
-                    callback(null,s.vesselOverview, s.vesselDetails)
+                    callback(null, s.vesselOverview, s.vesselDetails)
                 }
-                return { id: id, mmsi: mmsi }
+                return {
+                    id : id,
+                    mmsi : mmsi
+                }
             },
-            unsubscribe: function (id) {
+            unsubscribe : function(id) {
                 var s = subscriptions[id.mmsi];
                 s.callbacks[id.id] = null;
                 var allDead = true;
-                for (var i in s.callbacks) allDead &= s.callbacks[i] == null;
+                for ( var i in s.callbacks)
+                    allDead &= s.callbacks[i] == null;
                 if (allDead) {
                     clearInterval(s.interval);
                     subscriptions[id.mmsi] = null
                 }
             },
-            clientSideMmsiSearch: function(mmsi, callback) {
+            clientSideMmsiSearch : function(mmsi, callback) {
                 var that = this;
                 var result = [];
 
                 if (embryo.vessel.allVessels()) {
-                    $.each(embryo.vessel.allVessels(), function (k,v) {
+                    $.each(embryo.vessel.allVessels(), function(k, v) {
                         if (mmsi == v.mmsi) {
                             result.push(v);
                         }
@@ -174,17 +178,17 @@
                     }, 100);
                 }
             },
-            historicalTrack: function(vesselId, callback) {
+            historicalTrack : function(vesselId, callback) {
                 $.ajax({
-                    url: embryo.baseUrl + "rest/vessel/historical-track",
-                    timeout: embryo.defaultTimeout,
-                    data: {
+                    url : embryo.baseUrl + "rest/vessel/historical-track",
+                    timeout : embryo.defaultTimeout,
+                    data : {
                         mmsi : vesselId
                     },
-                    success: function(data) {
+                    success : function(data) {
                         callback(null, data);
                     },
-                    error: function(data) {
+                    error : function(data) {
                         callback(data);
                     }
                 });
@@ -193,7 +197,8 @@
     });
 
     module.run(function(VesselService) {
-        if (!embryo.vessel) embryo.vessel = {};
+        if (!embryo.vessel)
+            embryo.vessel = {};
         embryo.vessel.service = VesselService;
     })
 })();
