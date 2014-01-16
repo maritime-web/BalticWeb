@@ -4,14 +4,13 @@
 embryo = {};
 
 // fn to add blank (noOp) function for all console methods
-var key, names = [ "log", "debug", "info", "warn", "error", "assert", "dir", "dirxml", "group", "groupEnd", "time",
-        "timeEnd", "count", "trace", "profile", "profileEnd" ];
+var key, names = [ "log"];
 embryo.logger = {};
 
 for (key in names) {
-    if (window.console) {
+    if (window.console && window.console[names[key]]) {
         embryo.logger[names[key]] = function() {
-            return console[names[key]](arguments);
+            return window.console[names[key]](arguments);
         };
     } else {
         embryo.logger[names[key]] = function() {
