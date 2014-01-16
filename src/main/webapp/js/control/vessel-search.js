@@ -6,7 +6,7 @@ $(function() {
         var html = "<p><div class='btn searchResultItem' id='" + vessel.mmsi + "'>";
         html += "<div class='panelText btn-block'>" + vessel.name; // + " " + vessel.mmsi;
 
-        if (vessel.inArcticWeb) {
+        if (vessel.inAW) {
             html +=" <font color=#0080C0>AW</font>"
         }
 
