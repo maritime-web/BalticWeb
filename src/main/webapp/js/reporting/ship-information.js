@@ -12,7 +12,7 @@
         embryo.controllers.vesselInformationEdit = {
             title : "Vessel Information",
             available : function(vesselOverview, vesselDetails) {
-                if (vesselOverview.inArcticWeb) {
+                if (vesselOverview.inAW) {
                     return { text: "OK", klass: "success", action: "edit" }
                 }
                 return false;
@@ -54,7 +54,7 @@
         embryo.controllers.vesselInformationView = {
             title : "Vessel Information",
             available : function(vesselOverview, vesselDetails) {
-                return vesselOverview.inArcticWeb;
+                return vesselOverview.inAW;
             },
             show : function(vesselOverview, vesselDetails) {
                 $("#vesselInformationViewPanel").css("display", "block");
