@@ -231,7 +231,7 @@ function VesselLayer() {
         iconLayer.removeAllFeatures();
 
         $.each(vessels, function(k, v) {
-            if ((v.inArcticWeb) && (v.type != null)) {
+            if ((v.inAW) && (v.type != null)) {
                 iconLayer.addFeatures([
                     new OpenLayers.Feature.Vector(
                         embryo.map.createPoint(v.x, v.y), {
