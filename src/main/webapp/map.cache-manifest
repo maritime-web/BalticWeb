@@ -6,6 +6,8 @@ map.html
 css/ext/embryo.bootstrap.min.css
 css/ext/bootstrap-responsive.css
 //netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css
+//netdna.bootstrapcdn.com/font-awesome/3.2.1/font/fontawesome-webfont.woff?v=3.2.1
+
 css/arcticweb-map.css
 OpenLayers-2.13.1/theme/default/style.css
 
@@ -69,4 +71,4 @@ img/ring.png
 img/green_marker.png
 img/aw-logo.png
 
-# Version: 22
+# Version: 24

@@ -6,6 +6,7 @@ front.html
 css/ext/embryo.bootstrap.min.css
 css/ext/bootstrap-responsive.css
 //netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css
+//netdna.bootstrapcdn.com/font-awesome/3.2.1/font/fontawesome-webfont.woff?v=3.2.1
 
 css/arcticweb-front.css
 
@@ -28,4 +29,4 @@ img/front/ice.jpg
 partials/menu.html
 partials/authentication.html
 
-# Version: 5
+# Version: 7
