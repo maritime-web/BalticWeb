@@ -15,6 +15,7 @@
  */
 package dk.dma.arcticweb.service;
 
+import dk.dma.arcticweb.service.MaxSpeedJob.MaxSpeedRecording;
 import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
 import dk.dma.enav.model.geometry.CoordinateSystem;
@@ -23,12 +24,18 @@ import dk.dma.enav.model.geometry.Position;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class AisDataServiceImpl implements AisDataService {
     private List<String[]> vesselsInAisCircle = new ArrayList<>();
 
+    private List<String[]> vesselsOnMap = new ArrayList<>();
+    
+    private Map<Long, MaxSpeedRecording> maxSpeeds =  new HashMap<>();
+    
     @Inject
     @Property("embryo.aisCircle.latitude")
     private double aisCircleLatitude;
@@ -42,16 +49,33 @@ public class AisDataServiceImpl implements AisDataService {
     private double aisCircleRadius;
 
     @RolesAllowAll
-    public List<String[]> getVesselsInAisCircle() {
-        return vesselsInAisCircle;
+    public boolean isWithinAisCircle(double x, double y) {
+        return Position.create(y, x).distanceTo(Position.create(aisCircleLatitude, aisCircleLongitude), CoordinateSystem.GEODETIC) < aisCircleRadius;
+    }
+
+    @RolesAllowAll
+    public List<String[]> getVesselsOnMap() {
+        return new ArrayList<>(vesselsOnMap);
+    }
+    
+    @RolesAllowAll
+    public Map<Long, MaxSpeedRecording> getMaxSpeeds() {
+        return new HashMap<>(maxSpeeds);
     }
 
     public void setVesselsInAisCircle(List<String[]> vesselsInAisCircle) {
         this.vesselsInAisCircle = vesselsInAisCircle;
     }
 
-    @RolesAllowAll
-    public boolean isWithinAisCircle(double x, double y) {
-        return Position.create(y, x).distanceTo(Position.create(aisCircleLatitude, aisCircleLongitude), CoordinateSystem.GEODETIC) < aisCircleRadius;
+    public void setVesselsOnMap(List<String[]> vessels) {
+        this.vesselsOnMap = vessels;
     }
+    
+    public void setMaxSpeeds(Map<Long, MaxSpeedRecording> maxSpeeds) {
+        this.maxSpeeds = maxSpeeds;
+    }
+    public List<String[]> getVesselsInAisCircle() {
+        return new ArrayList<>(vesselsInAisCircle);
+    }
+
 }

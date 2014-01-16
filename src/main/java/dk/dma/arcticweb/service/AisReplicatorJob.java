@@ -15,15 +15,11 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.embryo.configuration.Property;
-import dk.dma.embryo.dao.VesselDao;
-import dk.dma.embryo.domain.Vessel;
-import dk.dma.embryo.restclients.AisViewService.VesselListResult;
-import dk.dma.embryo.restclients.FullAisViewService;
-import dk.dma.embryo.service.EmbryoLogService;
-
-import org.apache.commons.lang.ObjectUtils;
-import org.slf4j.Logger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -34,11 +30,20 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import javax.interceptor.Interceptors;
+
+import org.apache.commons.lang.ObjectUtils;
+import org.slf4j.Logger;
+
+import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.dao.VesselDao;
+import dk.dma.embryo.domain.AdministratorRole;
+import dk.dma.embryo.domain.Vessel;
+import dk.dma.embryo.restclients.AisViewService.VesselListResult;
+import dk.dma.embryo.restclients.FullAisViewService;
+import dk.dma.embryo.security.AuthorizationChecker;
+import dk.dma.embryo.security.authorization.Roles;
+import dk.dma.embryo.service.EmbryoLogService;
 
 @Singleton
 @Startup
@@ -84,6 +89,12 @@ public class AisReplicatorJob {
         }
     }
 
+    @Interceptors(value = AuthorizationChecker.class)
+    @Roles(AdministratorRole.class)
+    public void replicate() {
+        updateAis();
+    }
+
     /**
      * Executes on startup
      */
@@ -96,8 +107,8 @@ public class AisReplicatorJob {
 
             List<Vessel> awVesselsAsList = vesselRepository.getAll(Vessel.class);
 
-            logger.debug("aisView returns " + result.getVesselList().getVessels().size() + " items - " +
-                    "repository returns " + awVesselsAsList.size() + " items.");
+            logger.debug("aisView returns " + result.getVesselList().getVessels().size() + " items - "
+                    + "repository returns " + awVesselsAsList.size() + " items.");
 
             Map<Long, Vessel> awVesselsAsMap = new HashMap<>();
 
@@ -129,6 +140,7 @@ public class AisReplicatorJob {
             }
 
             List<String[]> vesselsInAisCircle = new ArrayList<>();
+            List<String[]> vesselsOnMap = new ArrayList<>();
 
             for (String[] aisVessel : result.getVesselList().getVessels().values()) {
                 double x = Double.parseDouble(aisVessel[2]);
@@ -136,15 +148,20 @@ public class AisReplicatorJob {
 
                 Long mmsi = asLong(aisVessel[6]);
 
-                if (aisDataService.isWithinAisCircle(x, y) ||
-                        awVesselsAsMap.containsKey(mmsi)) {
+                boolean isWithInAisCircle = aisDataService.isWithinAisCircle(x, y);
+                if (isWithInAisCircle || awVesselsAsMap.containsKey(mmsi)) {
+                    vesselsOnMap.add(aisVessel);
+                }
+                if (aisDataService.isWithinAisCircle(x, y)) {
                     vesselsInAisCircle.add(aisVessel);
                 }
             }
 
             logger.debug("Vessels in AIS circle: " + vesselsInAisCircle.size());
+            logger.debug("Vessels on Map : " + vesselsOnMap.size());
 
             aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
+            aisDataService.setVesselsOnMap(vesselsOnMap);
 
             embryoLogService.info("AIS data replicated. Vessel count: " + vesselsInAisCircle.size());
         } catch (Throwable t) {

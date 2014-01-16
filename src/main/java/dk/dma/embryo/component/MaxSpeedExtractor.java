@@ -13,26 +13,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.service;
+package dk.dma.embryo.component;
 
 import java.util.List;
 import java.util.Map;
 
 import dk.dma.arcticweb.service.MaxSpeedJob.MaxSpeedRecording;
 
-public interface AisDataService {
-    List<String[]> getVesselsInAisCircle();
+/**
+ * @author Jesper Tejlgaard
+ */
+public class MaxSpeedExtractor {
 
-    void setVesselsInAisCircle(List<String[]> vesselsInArcticCircle);
+    public MaxSpeedRecording extractMaxSpeed(Map result) {
+        List<Map<String, Object>> points = (List<Map<String, Object>>) ((Map) result.get("pastTrack")).get("points");
 
-    List<String[]> getVesselsOnMap();
+        double maxValue = 0;
 
-    void setVesselsOnMap(List<String[]> vesselsInArcticCircle);
+        for (Map<String, Object> point : points) {
+            Double value = (Double) point.get("sog");
+            if (value != null && value.doubleValue() > maxValue) {
+                maxValue = value.doubleValue();
+            }
+        }
 
-    boolean isWithinAisCircle(double x, double y);
-
-    Map<Long, MaxSpeedRecording> getMaxSpeeds();
-
-    void setMaxSpeeds(Map<Long, MaxSpeedRecording> maxSpeeds);
+        return new MaxSpeedRecording(maxValue);
+    }
 
 }

@@ -7,13 +7,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- build:css css/arcticweb-testdata.css -->
-    <link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
-    <link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <!-- endbuild -->
+<!-- build:css css/arcticweb-testdata.css -->
+<link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
+<link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<!-- endbuild -->
 
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
 <script src="js/ext/jquery-1.9.1.min.js"></script>
 
@@ -23,8 +23,11 @@
 
 <script type="text/javascript">
     var app = angular.module('embryo.testdata', []);
-    
+
     app.controller('TestDataController', function($scope, $http) {
+        $scope.message = null;
+        $scope.alertMessage = null;
+        
         $scope.reInitialize = function() {
             $scope.message = null;
             $scope.alertMessage = null;
@@ -33,14 +36,38 @@
             }).success(function(response) {
                 $scope.message = response;
                 sessionStorage.clear();
-            }).error(function(data, status, headers, config){
+            }).error(function(data, status, headers, config) {
                 $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
                 sessionStorage.clear();
             });
-
         }
-    });
 
+        $scope.replicateAis = function() {
+            $scope.message = null;
+            $scope.alertMessage = null;
+            $http.put('rest/vessel/update/ais', {
+                responseType : 'json'
+            }).success(function(response) {
+                $scope.message = "AIS replicated. " + response;
+            }).error(function(data, status, headers, config) {
+                $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
+            });
+       }
+
+       $scope.updateSpeeds = function() {
+           $scope.message = null;
+           $scope.alertMessage = null;
+           $http.put('rest/vessel/update/maxspeeds', {
+               responseType : 'json'
+           }).success(function(response) {
+               $scope.message = "Max Speeds updated. " + response;
+           }).error(function(data, status, headers, config) {
+               $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
+           });
+        }
+        
+   });
+        
 </script>
 
 </head>
@@ -86,8 +113,17 @@
 		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
 		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-		<form class="form-horizontal" >
-			<button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize Test Data</button>
+		<form class="form-horizontal">
+			<div style="margin:10px">
+				<button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize Test Data</button>
+			</div>
+			<div style="margin:10px">
+				<button class="btn btn-danger" x-ng-click="replicateAis()">Replicate AIS data</button>
+			</div>
+			<div style="margin:10px">
+				<button class="btn btn-danger" x-ng-click="updateSpeeds()">Update Max Speeds</button>
+			</div>
+
 		</form>
 
 	</div>

@@ -21,11 +21,15 @@ public class VesselOverview {
     private double y;
     private String name;
     private String type;
-    private Long mmsi;
+    private long mmsi;
     private String callSign;
-    private String imo;
     private boolean moored;
-    private boolean inArcticWeb;
+    private boolean inAW;
+    
+    /**
+     * The maximum speed over ground recorded from Historical track of the vessel
+     */
+    private Double msog;
 
     public double getX() {
         return x;
@@ -75,14 +79,6 @@ public class VesselOverview {
         this.callSign = callSign;
     }
 
-    public String getImo() {
-        return imo;
-    }
-
-    public void setImo(String imo) {
-        this.imo = imo;
-    }
-
     public boolean isMoored() {
         return moored;
     }
@@ -91,12 +87,12 @@ public class VesselOverview {
         this.moored = moored;
     }
 
-    public boolean isInArcticWeb() {
-        return inArcticWeb;
+    public boolean isInAW() {
+        return inAW;
     }
 
-    public void setInArcticWeb(boolean inArcticWeb) {
-        this.inArcticWeb = inArcticWeb;
+    public void setInAW(boolean inArcticWeb) {
+        this.inAW = inArcticWeb;
     }
 
     public double getAngle() {
@@ -106,4 +102,13 @@ public class VesselOverview {
     public void setAngle(double angle) {
         this.angle = angle;
     }
+
+    public Double getMsog() {
+        return msog;
+    }
+
+    public void setMsog(Double msog) {
+        this.msog = msog;
+    }
+    
 }

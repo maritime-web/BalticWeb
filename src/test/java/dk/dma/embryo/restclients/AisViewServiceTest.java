@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.restclients;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -52,4 +54,23 @@ public class AisViewServiceTest {
         Map details = fullAisViewService.vesselTargetDetails(220443000, 0);
         System.out.println("Details: "+details);
     }
+
+    @Test
+    @Ignore
+    public void testHistory() {
+        Map details = limitedAisViewService.vesselTargetDetails(220443000, 0);
+        
+        
+        System.out.println(((Map) details.get("pastTrack")).get("points").getClass());
+        
+        List list = (List)((Map) details.get("pastTrack")).get("points");
+        
+        System.out.println(list.get(0).getClass());
+        
+
+        System.out.println(new ArrayList( ((Map)list.get(0)).keySet()).get(0).getClass());
+
+
+        System.out.println(new ArrayList( ((Map)list.get(0)).values()).get(0).getClass());
+}
 }

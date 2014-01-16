@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -33,7 +34,10 @@ import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.AisDataService;
+import dk.dma.arcticweb.service.AisReplicatorJob;
 import dk.dma.arcticweb.service.GreenPosService;
+import dk.dma.arcticweb.service.MaxSpeedJob;
+import dk.dma.arcticweb.service.MaxSpeedJob.MaxSpeedRecording;
 import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.domain.ParseUtils;
@@ -56,7 +60,7 @@ public class VesselRestService {
     private FullAisViewService fullAisViewService;
 
     @Inject
-    private AisDataService aisReplicator;
+    private AisDataService aisDataService;
 
     @Inject
     private Logger logger;
@@ -72,6 +76,12 @@ public class VesselRestService {
 
     @Inject
     private GreenPosService greenposService;
+
+    @Inject
+    private MaxSpeedJob maxSpeedJob;
+
+    @Inject
+    private AisReplicatorJob aisReplicatorJob;
 
     @GET
     @Path("/historical-track")
@@ -91,24 +101,29 @@ public class VesselRestService {
     public List<VesselOverview> list() {
         List<VesselOverview> result = new ArrayList<>();
 
-        List<String[]> vessels = aisReplicator.getVesselsInAisCircle();
+        List<String[]> vessels = aisDataService.getVesselsOnMap();
+        
+        Map<Long, MaxSpeedRecording> speeds = aisDataService.getMaxSpeeds();
 
         for (String[] vessel : vessels) {
 
             VesselOverview vo = new VesselOverview();
-
+            Long mmsi = Long.valueOf(vessel[6]);
+            
             vo.setX(Double.parseDouble(vessel[2]));
             vo.setY(Double.parseDouble(vessel[1]));
             vo.setAngle(Double.parseDouble(vessel[0]));
-            vo.setMmsi(Long.parseLong(vessel[6]));
+            vo.setMmsi(mmsi);
             vo.setName(vessel[7]);
-            vo.setImo(vessel[9]);
             vo.setCallSign(vessel[8]);
             vo.setMoored("1".equals(vessel[5]));
             vo.setType(vessel[4]);
-            vo.setInArcticWeb(false);
-
+            vo.setInAW(false);
+            
             // What is vessel[3] seems to be either A or B ?
+
+            MaxSpeedRecording speed = speeds.get(mmsi);
+            vo.setMsog(speed != null ? speed.getMaxSpeed() : 0.0);
 
             result.add(vo);
         }
@@ -125,13 +140,12 @@ public class VesselRestService {
             VesselOverview vesselOverview = resultAsMap.get(v.getMmsi());
 
             if (vesselOverview != null) {
-                vesselOverview.setInArcticWeb(true);
+                vesselOverview.setInAW(true);
             } else {
                 VesselOverview vo = new VesselOverview();
-                vo.setInArcticWeb(true);
+                vo.setInAW(true);
                 vo.setCallSign(v.getAisData().getCallsign());
                 vo.setName(v.getAisData().getName());
-                vo.setImo("" + v.getAisData().getImoNo());
                 vo.setMmsi(v.getMmsi());
                 result.add(vo);
             }
@@ -154,7 +168,7 @@ public class VesselRestService {
             String lon = (String) result.get("lon");
             //EMBRYO-135: avoid NullPointer when lat/lon not present in AIS data
             if (lat != null && lon != null) {
-                historicalTrack = aisReplicator.isWithinAisCircle(ParseUtils.parseLongitude(lon), ParseUtils.parseLatitude(lat));
+                historicalTrack = aisDataService.isWithinAisCircle(ParseUtils.parseLongitude(lon), ParseUtils.parseLatitude(lat));
             }
 
             VesselDetails details;
@@ -215,7 +229,24 @@ public class VesselRestService {
     @Consumes("application/json")
     @GZIP
     public void saveDetails(VesselDetails details) {
-        logger.info("save({})", details);
+        logger.debug("save({})", details);
         vesselService.save(Vessel.fromJsonModel(details));
     }
+    
+    @PUT
+    @Path("/update/ais")
+    @Consumes("application/json")
+    public void updateAis() {
+        logger.debug("updateAis()");
+        aisReplicatorJob.replicate();
+    }
+
+    @PUT
+    @Path("/update/maxspeeds")
+    @Consumes("application/json")
+    public void updateMaxSpeeds() {
+        logger.debug("updateMaxSpeeds()");
+        maxSpeedJob.update();
+    }
+
 }
