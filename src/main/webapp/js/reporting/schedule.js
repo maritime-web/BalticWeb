@@ -23,7 +23,7 @@
         embryo.controllers.schedule = {
             title : "Schedule",
             available : function(vesselOverview, vesselDetails) {
-                if (vesselOverview.inArcticWeb) {
+                if (vesselOverview.inAW) {
                     if (vesselDetails.additionalInformation.routeId)
                         return {
                             text : "ACTIVE",
@@ -214,7 +214,7 @@
         embryo.controllers.scheduleView = {
             title : "Schedule",
             available : function(vesselOverview, vesselDetails) {
-                return vesselOverview.inArcticWeb;
+                return vesselOverview.inAW;
             },
             show : function(vesselOverview, vesselDetails) {
                 $scope.mmsi = vesselDetails.mmsi;
