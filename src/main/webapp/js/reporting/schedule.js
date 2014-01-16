@@ -4,7 +4,7 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.typeahead', 'embryo.position' ]);
+            'siyfion.typeahead', 'embryo.position', 'ui.bootstrap.collapse' ]);
 
     embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService) {
         var loadSchedule = function() {
@@ -196,7 +196,8 @@
     };
 
     embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService) {
-
+        $scope.collapse = false;
+        
         var loadSchedule = function() {
             if ($scope.mmsi) {
                 ScheduleService.getSchedule($scope.mmsi, function(schedule) {
@@ -217,6 +218,7 @@
                 return vesselOverview.inAW;
             },
             show : function(vesselOverview, vesselDetails) {
+                $scope.collapse = false;
                 $scope.mmsi = vesselDetails.mmsi;
                 $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
                 loadSchedule();
@@ -241,11 +243,6 @@
             return $scope.activeRouteId === voyage.route.id;
         };
 
-        $scope.view = function() {
-            $scope.scheduleLayer.draw($scope.voyages);
-            $scope.scheduleLayer.zoomToExtent();
-        };
-
         $scope.formatLatitude = function(latitude) {
             return formatLatitude(latitude);
         };
@@ -258,14 +255,20 @@
             return formatTime(timeInMillis);
         };
 
+        $scope.view = function() {
+            $scope.collapse = true;
+            $scope.scheduleLayer.draw($scope.voyages);
+            $scope.scheduleLayer.zoomToExtent();
+        };
+
         $scope.viewRoute = function(voyage) {
+            $scope.collapse = true;
             RouteService.getRoute(voyage.route.id, function(route) {
                 var routeType = embryo.route.service.getRouteType($scope.mmsi, voyage.route.id); 
                 $scope.routeLayer.draw(route, routeType);
                 $scope.routeLayer.zoomToExtent();
             });
         };
-
 
     };
 
