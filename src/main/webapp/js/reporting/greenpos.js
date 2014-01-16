@@ -243,7 +243,7 @@ var greenposScope;
         this.title = "Greenpos Reporting";
 
         this.available = function(vesselOverview, vesselDetails) {
-            if (vesselOverview.inArcticWeb)
+            if (vesselOverview.inAW)
                 return {
                     text : "OK",
                     klass : "success",
@@ -301,7 +301,7 @@ var greenposScope;
         embryo.controllers.greenposListView = {
             title : "Greenpos Reports",
             available : function(vesselOverview, vesselDetails) {
-                return vesselOverview.inArcticWeb;
+                return vesselOverview.inAW;
             },
             show : function(vesselOverview, vesselDetails) {
                 $("#greenposListPanel").css("display", "block");
