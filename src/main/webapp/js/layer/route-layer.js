@@ -83,14 +83,11 @@ function RouteLayer() {
 //    function removeDrawnRoutes(layer, colorKey){
 //        if(colorKey == "active"){
 //            var features = layer.getFeaturesByAttribute('colorKey','active');
-//            console.log("active: " + features);
 //            layer.removeFeatures(features);
 //        }else{
 //            var features = layer.getFeaturesByAttribute('colorKey','planned');
-//            console.log("planned: " + features);
 //            layer.removeFeatures(features);
 //            features = layer.getFeaturesByAttribute('colorKey','other');
-//            console.log("other: " + features);
 //            layer.removeFeatures(features);
 //        }
 //    }
