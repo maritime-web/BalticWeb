@@ -44,9 +44,10 @@
 							<input x-ng-model="route.des" type="text" id="destination" class="input-large" />
 						</div>
 					</div>
+
 				</div>
 			</div>
-
+			
 			<table class="table">
 				<thead>
 					<tr>
@@ -68,8 +69,8 @@
 						<td><input longitude x-ng-model="wp.longitude" class="input-medium" type="text" x-ng-required="!$last" /></td>
 						<td><input x-ng-model="wp.turnRad" class="input-small" type="text" /></td>
 						<td><select name="heading" x-ng-model="wp.heading" class="input-large input-heading" x-ng-required="!$last">
-								<option label="Rhumb line" value="RL"></option>
-								<option label="Great circle" value="GC"></option>
+								<option value="RL">Rhumb line</option>
+								<option value="GC">Great circle</option>
 						</select></td>
 						<td><input x-ng-model="wp.speed" class="input-medium" type="text" x-ng-required="!$last" /></td>
 						<td><button x-ng-show="!$last" type="button" class="btn btn-danger" x-ng-click="remove($index)">Delete</button></td>
