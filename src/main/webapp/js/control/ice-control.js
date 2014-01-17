@@ -275,7 +275,7 @@ $(function() {
                         onSuccess();
 
                 }, 10);
-                
+
             } else {
                 embryo.messagePanel.replace(messageId, {
                     text : "Server returned error code: " + error.status + " requesting ice data.",
@@ -330,8 +330,8 @@ $(function() {
                         if (data[i].region == region)
                             html += "<tr><td>" + data[i].source + "</td><td>" + formatTime(data[i].date) + "</td><td>"
                                     + formatSize(data[i].size) + "</td><td><a mid=" + i
-                                    + " href=# class=download>download</a><a mid=" + i
-                                    + " href=# class=zoom>zoom</a></td></tr>";
+                                    + " href=# class='download'>download</a><span class='zoomhide'>"
+                                    + "<a href=# class='zoom'>zoom</a> / <a href=# class='hideIce'>hide</a></span></td></tr>";
                     }
 
                 }
@@ -339,27 +339,32 @@ $(function() {
                 $("#icpIceMaps table").html(html);
 
                 // $("#icpIceMaps td:first").css("border-top", "none");
-
+                $("#icpIceMaps table span.zoomhide").css("display", "none");
                 $("#icpIceMaps table a.download").click(function(e) {
                     e.preventDefault();
                     var row = $(this).parents("tr");
                     requestShapefile(data[$(this).attr("mid")].shapeFileName, function() {
                         $("#icpIceMaps table tr").removeClass("alert");
                         $(row).addClass("alert");
-                        $("#icpIceMaps table a.zoom").css("display", "none");
+                        $("#icpIceMaps table span.zoomhide").css("display", "none");
                         $("#icpIceMaps table a.download").css("display", "block");
-                        $("a.zoom", row).css("display", "block");
+                        $("span.zoomhide", row).css("display", "block");
                         $("a.download", row).css("display", "none");
                     });
                     // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
                     // alert(data[$(this).attr("href")].shapeFileName);
                 });
-
                 $("#icpIceMaps table a.zoom").click(function(e) {
                     e.preventDefault();
                     embryo.map.zoomToExtent(iceLayer.layers);
                 });
-                $("#icpIceMaps table a.zoom").css("display", "none");
+                $("#icpIceMaps table a.hideIce").click(function(e) {
+                    e.preventDefault();
+                    iceLayer.clear();
+                    $("span.zoomhide").css("display", "none");
+                    var row = $(this).parents("tr");
+                    $("a.download", row).css("display", "block");
+                });
             } else {
                 embryo.messagePanel.replace(messageId, {
                     text : "Server returned error code: " + data.status + " requesting list of ice observations.",
