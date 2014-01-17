@@ -98,11 +98,9 @@ function DistanceLayer() {
 //                return coord1.y - coord2.y;
 //            });
 //            
-//            console.log(yCoords);
 //
 //            for ( var i = 1; i < 5; i++) {
 //                var diff = yCoords[i-1].y - yCoords[i].y;
-//                console.log(diff);
 //                if(diff <= 16){
 ////                    for ( var j = i; j < 5; j++) {
 ////                        yCoords[j].y += 15;
