@@ -21,7 +21,7 @@ embryo
                     $("#ie89").show();
                 } else if (browser.isChrome()) {
                     var ver = browser.chromeVersion();
-                    if(parseFloat(ver) > 27){
+                    if (parseFloat(ver) > 27) {
                         $("#chromeVer").html(ver);
                         $("#chrome").show();
                     }
@@ -81,12 +81,16 @@ embryo
                     var html = "";
                     html += '<ul  class="nav navtabs"><li>';
                     html += '<a id="cookies" href="#"><i class="icon-info-sign icon-white" style="vertical-align: middle; margin-bottom: 4px"></i> Cookies</a>';
-                    html += '</li><li>';
-                    html += "<span class='navbar-text'><i class='icon-user icon-white' style='vertical-align:middle; margin-bottom: 4px'></i> ";
+                    html += '</li><li class="dropdown">';
+                    html += "<a class='dropdown-toggle' data-toggle='dropdown' href='#'><i class='icon-user icon-white' style='vertical-align:middle; margin-bottom: 4px'></i> ";
                     html += embryo.authentication.userName;
-                    html += "</span>";
+                    html += "</a>";
+                    html += '<ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">'
+                    html += '<li><a tabindex="-1" href="docs/ArcticWeb_user_manual_v1_1.pdf" target="_blank">Manual</a></li>'
+                    html += '<li class="divider"></li>'
+                    html += '<li><a id="logout" tabindex="-1" href="#">Log Out</a></li>'
+                    html += '</ul></div>'
                     html += '</li></ul>';
-                    html += "<span><a id='logout' href=#>Log Out</a></span>"
                     html += '';
 
                     $("#authentication").html(html);
@@ -178,9 +182,9 @@ embryo
                             type : "error"
                         });
                         var errorMessage = embryo.ErrorService.extractError(data, data.status);
-                        if(data.status == 401){
+                        if (data.status == 401) {
                             $("#loginWrongLoginOrPassword").css("display", "block");
-                        }else{
+                        } else {
                             $("#error").text(errorMessage[0]).css("display", "block");
                         }
                         setTimeout(function() {
