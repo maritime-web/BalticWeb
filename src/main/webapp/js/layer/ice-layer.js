@@ -50,7 +50,7 @@ function IceLayer() {
         this.selectableAttribute = "iceDescription";
     }
 
-    this.draw = function(shapes) {
+    this.draw = function(shapes, callback) {
         function colorByDescription(description) {
 
             if (description.CT == 92)
@@ -69,49 +69,68 @@ function IceLayer() {
         this.layers.ice.removeAllFeatures();
 
         var waterCount = 0;
+        
+        var that = this;
+        function drawFragment(shape, fragment){
+            var rings = [];
+            var polygons = fragment.polygons;
+
+            for ( var k in polygons) {
+                var polygon = polygons[k];
+                var points = [];
+                for ( var j in polygon) {
+                    var p = polygon[j];
+                    points.push(embryo.map.createPoint(p.x, p.y));
+                }
+                rings.push(new OpenLayers.Geometry.LinearRing(points));
+            }
+
+            var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon(rings), {
+                fillOpacity : function() {
+                    return 0.4 * groupOpacity;
+                },
+                fillColor : colorByDescription(fragment.description),
+                iceDescription : fragment.description,
+                description : ""
+            });
+            feature.attributes.iceDescription = $.extend(fragment.description, {
+                source : shape.description.id
+            });
+            if (fragment.description.POLY_TYPE == 'I') {
+                feature.attributes.description = "";
+            } else if (fragment.description.POLY_TYPE == 'W') {
+                feature.attributes.description = waterCount == 0 ? shape.description.id : "";
+                // modify description to make sure we show it is open water
+                feature.attributes.iceDescription.CT = "1";
+                waterCount++;
+            }
+            that.layers.ice.addFeatures([feature]);
+            that.layers.ice.refresh();
+        }
+
+        function drawFragments(shape, fragments){
+            if(fragments.length > 0){
+                var fragment = fragments.pop();
+
+                drawFragment(shape, fragment);
+
+                window.setTimeout(function() {
+                    drawFragments(shape, fragments);
+                }, 20);
+            }else{
+                if(callback){
+                    callback();
+                }
+            }
+        }
+
 
         for ( var l in shapes) {
             var shape = shapes[l];
             var ice = shape.fragments;
-            var features = [];
-
-            for ( var i in ice) {
-                var rings = [];
-                var polygons = ice[i].polygons;
-
-                for ( var k in polygons) {
-                    var polygon = polygons[k];
-                    var points = [];
-                    for ( var j in polygon) {
-                        var p = polygon[j];
-                        points.push(embryo.map.createPoint(p.x, p.y));
-                    }
-                    rings.push(new OpenLayers.Geometry.LinearRing(points));
-                }
-
-                var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon(rings), {
-                    fillOpacity : function() {
-                        return 0.4 * groupOpacity;
-                    },
-                    fillColor : colorByDescription(ice[i].description),
-                    iceDescription : ice[i].description,
-                    description : ""
-                });
-                feature.attributes.iceDescription = $.extend(ice[i].description, {
-                    source : shape.description.id
-                });
-                if (ice[i].description.POLY_TYPE == 'I') {
-                    feature.attributes.description = "";
-                } else if (ice[i].description.POLY_TYPE == 'W') {
-                    feature.attributes.description = waterCount == 0 ? shape.description.id : "";
-                    // modify description to make sure we show it is open water
-                    feature.attributes.iceDescription.CT = "1";
-                    waterCount++;
-                }
-                features.push(feature);
-            }
-
-            this.layers.ice.addFeatures(features);
+            
+            fragments = ice.slice(0);
+            drawFragments(shape, fragments);
         }
     }
 }

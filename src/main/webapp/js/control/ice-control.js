@@ -243,7 +243,7 @@ $(function() {
         var messageId = embryo.messagePanel.show({
             text : "Requesting " + name + " data ..."
         });
-
+        
         embryo.ice.service.shapes(name, function(error, data) {
             if (data) {
                 messageId = embryo.messagePanel.replace(messageId, {
@@ -260,22 +260,24 @@ $(function() {
                             totalPoints += s.fragments[i].polygons[j].length;
                     }
                 }
-
-                // Draw shapfile a bit later, just let the browser update the
-                // view and show above message
-                window.setTimeout(function() {
-                    iceLayer.draw(data);
-
+                
+                function finishedDrawing(){
                     embryo.messagePanel.replace(messageId, {
                         text : totalPolygons + " polygons. " + totalPoints + " points drawn.",
                         type : "success"
                     });
                     embryo.logger.log(totalPolygons + " polygons. " + totalPoints + " points drawn.");
-                    if (onSuccess)
+
+                    if (onSuccess){
                         onSuccess();
-
+                    }
+                }
+                
+                // Draw shapfile a bit later, just let the browser update the
+                // view and show above message
+                window.setTimeout(function() {
+                    iceLayer.draw(data, finishedDrawing);
                 }, 10);
-
             } else {
                 embryo.messagePanel.replace(messageId, {
                     text : "Server returned error code: " + error.status + " requesting ice data.",
