@@ -164,7 +164,7 @@ embryo
                     success : function(data) {
                         sessionStorage.clear();
 
-                        if (location.pathname.indexOf("front.html") >= 0) {
+                        if (location.pathname.indexOf("front.html") >= 0 || location.pathname.indexOf(".html") < 0) {
                             location.href = "map.html#/vessel";
                         }
                         embryo.authentication = data;
