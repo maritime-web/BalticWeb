@@ -488,14 +488,17 @@ a.olControlZoomOut {
     transition: opacity 0.2s linear;
 }
 
+/* GPU support removed from Chrome because causing maps to not render */
+.olTileImage-turned-off {
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+}
 /* Turn on GPU support where available */
 .olTileImage {
-    -webkit-transform: translateZ(0);
     -moz-transform: translateZ(0);
     -o-transform: translateZ(0);
     -ms-transform: translateZ(0);
     transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
     -ms-backface-visibility: hidden;
     backface-visibility: hidden;
