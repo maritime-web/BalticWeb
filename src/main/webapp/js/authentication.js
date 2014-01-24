@@ -19,13 +19,14 @@ embryo
                 } else if (browser.isIE() && browser.ieVersion() <= 9) {
                     $("#ie89ver").html(browser.ieVersion());
                     $("#ie89").show();
-                } else if (browser.isChrome()) {
-                    var ver = browser.chromeVersion();
-                    if (parseFloat(ver) > 27) {
-                        $("#chromeVer").html(ver);
-                        $("#chrome").show();
-                    }
-                }
+                } 
+//                else if (browser.isChrome()) {
+//                    var ver = browser.chromeVersion();
+//                    if (parseFloat(ver) > 27) {
+//                        $("#chromeVer").html(ver);
+//                        $("#chrome").show();
+//                    }
+//                }
             }
 
             function useCookies() {
@@ -44,7 +45,7 @@ embryo
             function clearMessages() {
                 $("#ie89").hide();
                 $("#ie7").hide();
-                $("#chrome").hide();
+                //$("#chrome").hide();
                 $("#loginWrongLoginOrPassword").hide();
             }
 
