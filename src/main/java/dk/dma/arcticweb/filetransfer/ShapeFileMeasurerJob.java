@@ -146,8 +146,8 @@ public class ShapeFileMeasurerJob {
     }
 
     private class ShapeFileMeasurer {
-        private int newMeasurements = 0;
-        private int existingMeasurements = 0;
+        private int newMeasurements;
+        private int existingMeasurements;
 
         private List<ShapeFileMeasurement> measurements = new ArrayList<>(100);
 

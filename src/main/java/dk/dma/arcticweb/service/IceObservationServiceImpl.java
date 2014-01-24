@@ -45,10 +45,10 @@ public class IceObservationServiceImpl implements IceObservationService {
     @Inject
     ShapeFileMeasurementDao shapeFileMeasurementDao;
 
-    private static final Map<String, String> sources = new HashMap<>();
+    private static final Map<String, String> SOURCES = new HashMap<>();
     static {
-        sources.put("dmi.", "DMI");
-        sources.put("aari.", "AARI");
+        SOURCES.put("dmi.", "DMI");
+        SOURCES.put("aari.", "AARI");
     }
 
     @RolesAllowAll
@@ -92,7 +92,7 @@ public class IceObservationServiceImpl implements IceObservationService {
             }
 
             if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
-                iceObservations.add(new IceObservation(sources.get(sfm.getPrefix()), region, date, sfm.getFileSize(),
+                iceObservations.add(new IceObservation(SOURCES.get(sfm.getPrefix()), region, date, sfm.getFileSize(),
                         sfm.getPrefix() + sfm.getFileName()));
             }
         }
