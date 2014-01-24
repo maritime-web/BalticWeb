@@ -33,6 +33,20 @@ function WorldMapLayer() {
 
                     for (var j in polygon) {
                         var p = polygon[j];
+                        
+                        // easy fix to handles OpenLayers inability to draw polygons crossing the date line
+                        // https://dma-enav.atlassian.net/browse/EMBRYO-222
+                        if(j >= 1){
+                            var diff = Math.abs(polygon[j-1].x - p.x);
+                            if(diff > 180){
+                                if(p.x < polygon[j-1].x){
+                                    p.x += 360;
+                                }else {
+                                    p.x -= 360;
+                                }
+                            }
+                        }
+                        
                         points.push(embryo.map.createPoint(p.x, p.y));
                     }
 
