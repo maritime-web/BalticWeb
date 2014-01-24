@@ -312,7 +312,11 @@ $(function() {
                 }
 
                 var sortFunction = function(reg1, reg2) {
-                    if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
+                    if (reg1.indexOf("All Arctic") >= 0 && reg2.indexOf("All Arctic") < 0) {
+                        return 1;
+                    } else if (reg1.indexOf("All Arctic") < 0 && reg2.indexOf("All Arctic") >= 0) {
+                        return -1;
+                    } else if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
                         return 1;
                     } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
                         return -1;

@@ -15,22 +15,6 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.dataformats.dbf.DbfParser;
-import dk.dma.dataformats.shapefile.ProjectionFileParser;
-import dk.dma.dataformats.shapefile.ShapeFileParser;
-import dk.dma.embryo.configuration.Property;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.Cache;
-import org.slf4j.Logger;
-
-import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,11 +23,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.Cache;
+import org.slf4j.Logger;
+
+import dk.dma.dataformats.dbf.DbfParser;
+import dk.dma.dataformats.shapefile.ProjectionFileParser;
+import dk.dma.dataformats.shapefile.ShapeFileParser;
+import dk.dma.embryo.configuration.Property;
+
 @Path("/shapefile")
 public class ShapeFileService {
     @Inject
     @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
     String localDmiDirectory;
+
+    @Inject
+    @Property(value = "embryo.iceMaps.localAariDirectory", substituteSystemProperties = true)
+    String localAariDirectory;
 
     @Inject
     Logger logger;
@@ -117,6 +122,11 @@ public class ShapeFileService {
                 shpIs = new FileInputStream(localDmiDirectory + "/" + id + ".shp");
                 dbfIs = new FileInputStream(localDmiDirectory + "/" + id + ".dbf");
                 prjIs = new FileInputStream(localDmiDirectory + "/" + id + ".prj");
+            } else if (id.startsWith("aari.")) {
+                id = id.substring(5);
+                shpIs = new FileInputStream(localAariDirectory + "/" + id + ".shp");
+                dbfIs = new FileInputStream(localAariDirectory + "/" + id + ".dbf");
+                prjIs = new FileInputStream(localAariDirectory + "/" + id + ".prj");
             } else if (id.startsWith("static.")) {
                 id = id.substring(7);
                 shpIs = getClass().getResourceAsStream("/shapefiles/" + id + ".shp");
@@ -129,13 +139,13 @@ public class ShapeFileService {
             file = ShapeFileParser.parse(shpIs);
             data = DbfParser.parse(dbfIs);
         } finally {
-            if(prjIs != null){
+            if (prjIs != null) {
                 prjIs.close();
             }
-            if(shpIs != null){
+            if (shpIs != null) {
                 shpIs.close();
             }
-            if(dbfIs != null){
+            if (dbfIs != null) {
                 dbfIs.close();
             }
         }

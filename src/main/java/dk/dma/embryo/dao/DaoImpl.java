@@ -22,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import dk.dma.embryo.domain.IEntity;
 
@@ -74,5 +75,15 @@ public abstract class DaoImpl implements Dao {
         CriteriaQuery<E> cq = cb.createQuery(entityType);
         cq.from(entityType);
         return em.createQuery(cq).getResultList();
+    }
+
+    public <E extends IEntity<?>> Long count(Class<E> entityType) {
+        em.clear();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<E> root = cq.from(entityType);
+        cq.select(cb.countDistinct(root));
+        return em.createQuery(cq).getSingleResult();
     }
 }

@@ -77,11 +77,34 @@ function IceLayer() {
 
             for ( var k in polygons) {
                 var polygon = polygons[k];
+                
+//                var copy = []; 
+//                for(var counter in polygon){
+//                    copy.push({x:polygon[counter].x, y: polygon[counter].y});
+//                }    
                 var points = [];
                 for ( var j in polygon) {
                     var p = polygon[j];
+
+                    if(j >= 1){
+                        var diff = Math.abs(polygon[j-1].x - p.x);
+                        if(diff > 350){
+                            if(p.x < polygon[j-1].x){
+                                p.x += 360;
+                            }else {
+                                p.x -= 360;
+                            }
+                        }
+                    }
+                    
                     points.push(embryo.map.createPoint(p.x, p.y));
-                }
+                }                
+//                if(Math.abs(polygon[polygon.length - 2].x - polygon[0].x) > 180){
+//                    console.log("line problem detected");
+//                    console.log(Math.abs(polygon[polygon.length - 2].x - polygon[0].x));
+//                    console.log(polygon);
+//                    console.log(copy);
+//                }
                 rings.push(new OpenLayers.Geometry.LinearRing(points));
             }
 

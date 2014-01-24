@@ -17,7 +17,9 @@ package dk.dma.arcticweb.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -43,7 +45,11 @@ public class IceObservationServiceImpl implements IceObservationService {
     @Inject
     ShapeFileMeasurementDao shapeFileMeasurementDao;
 
-    private String prefix = "dmi.";
+    private static final Map<String, String> sources = new HashMap<>();
+    static {
+        sources.put("dmi.", "DMI");
+        sources.put("aari.", "AARI");
+    }
 
     @RolesAllowAll
     public List<IceObservation> listAvailableIceObservations() {
@@ -51,7 +57,7 @@ public class IceObservationServiceImpl implements IceObservationService {
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmm").withZone(DateTimeZone.UTC);
 
-        for (ShapeFileMeasurement sfm : shapeFileMeasurementDao.list(prefix)) {
+        for (ShapeFileMeasurement sfm : shapeFileMeasurementDao.getAll(ShapeFileMeasurement.class)) {
             Date date = formatter.parseDateTime(sfm.getFileName().substring(0, 12)).toDate();
             String region = sfm.getFileName().substring(13);
 
@@ -80,11 +86,14 @@ public class IceObservationServiceImpl implements IceObservationService {
             case "SouthWest_RIC":
                 region = "South West";
                 break;
+            case "aari_arc":
+                region = "All Arctic";
+                break;
             }
 
             if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
-                iceObservations.add(new IceObservation("DMI", region, date, sfm.getFileSize(), prefix
-                        + sfm.getFileName()));
+                iceObservations.add(new IceObservation(sources.get(sfm.getPrefix()), region, date, sfm.getFileSize(),
+                        sfm.getPrefix() + sfm.getFileName()));
             }
         }
 

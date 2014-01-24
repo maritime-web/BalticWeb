@@ -53,4 +53,6 @@ public interface Dao {
     <E extends IEntity<?>> List<E> getAll(Class<E> entityType);
 
 
+    public <E extends IEntity<?>> Long count(Class<E> entityType);
+
 }
