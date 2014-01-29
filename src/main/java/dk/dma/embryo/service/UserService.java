@@ -23,11 +23,11 @@ import dk.dma.embryo.domain.SecuredUser;
 
 public interface UserService {
 
-    public List<SecuredUser> list();
+    List<SecuredUser> list();
 
-    public void create(String login, String password, Long mmsi, String email, String role);
+    void create(String login, String password, Long mmsi, String email, String role);
 
-    public void edit(String login, Long mmsi, String email, String role);
+    void edit(String login, Long mmsi, String email, String role);
 
-    public void delete(String login);
+    void delete(String login);
 }
