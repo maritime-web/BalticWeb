@@ -29,6 +29,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import dk.dma.embryo.rest.json.VesselDetails;
 
@@ -40,7 +41,8 @@ import dk.dma.embryo.rest.json.VesselDetails;
 public class Vessel extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 
-    @Column(nullable = true)
+    @NotNull
+    @Column(unique = true)
     private Long mmsi;
 
     @Min(0)
