@@ -13,23 +13,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.dao;
+package dk.dma.embryo.service;
 
 import java.util.List;
 
-import javax.ejb.Local;
-
-import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 
-@Local
-public interface RealmDao extends Dao {
 
-    SecuredUser findByUsername(String username);
 
-    SecuredUser getByPrimaryKeyReturnAll(Long key);
+public interface UserService {
 
-    List<SecuredUser> list();
+    public List<SecuredUser> list();
 
-    SailorRole getSailor(Long userid);
+    public void create(String login, String password, Long mmsi, String email, String role);
+
+    public void edit(String login, Long mmsi, String email, String role);
+
+    public void delete(String login);
 }

@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.dao;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -45,7 +47,6 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
     public SecuredUser getByPrimaryKeyReturnAll(Long key) {
         TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:getByPrimaryKeyReturnAll", SecuredUser.class);
         query.setParameter("id", key);
-
         return (SecuredUser) getSingleOrNull(query.getResultList());
     }
 
@@ -54,6 +55,11 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
         TypedQuery<SailorRole> query = em.createNamedQuery("Sailor:withVessel", SailorRole.class);
         query.setParameter("id", userId);
         return query.getSingleResult();
+    }
+
+    public List<SecuredUser> list(){
+        TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:list", SecuredUser.class);
+        return query.getResultList();
     }
 
 }

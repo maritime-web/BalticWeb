@@ -1,114 +1,156 @@
 $(function() {
-    
-    function roleText(logicalName){
-        if(logicalName == "Reporting"){
-            return "Reporting Authority";
+    "use strict";
+
+    var scheduleModule = angular.module('embryo.users', [ 'embryo.userService', 'ui.bootstrap.modal',
+            'ui.bootstrap.tpls' ]);
+
+    embryo.UsersCtrl = function($scope, UserService, $modal, $log) {
+        var userList = [];
+        $scope.users = userList;
+
+        function loadUsers() {
+            UserService.userList(function(users) {
+                userList = users;
+                $scope.users = users;
+            }, function(error) {
+                $scope.alertMessages = error;
+            });
         }
-        return logicalName;
-    }
-    
-    function updateTable() {
-        $.ajax({
-            url: embryo.baseUrl + "rest/user/list",
-            data: {
-            },
-            success: function(users) {
-                var html = "";
 
-                $.each(users, function(k, v) {
-                    html += "<tr><td>"+v.login+"</td><td>"+(v.shipMmsi ? v.shipMmsi : "-")+"</td><td>"+roleText(v.role)+"</td><td><a href=# id="+v.login+">delete</a></td></tr>";
-                });
+        embryo.authenticated(function() {
+            loadUsers();
+        });
 
-                $("#activeUsersTable").html(html);
-
-                $("#activeUsersTable a").click(function(e) {
-                    e.preventDefault();
-                    var login = $(this).attr("id");
-                    $("#deleteUserDialog").modal("show");
-                    $("#deleteUserDialog .btn-primary").off("click");
-                    $("#deleteUserDialog .btn-primary").click(function() {
-                        $("#deleteUserDialog").modal("hide");
-
-                        feedback("Deleting "+login+" ...");
-
-                        $.ajax({
-                            url: embryo.baseUrl + "rest/user/delete",
-                            data: {
-                                login: login
-                            },
-                            success: function() {
-                                feedback("User "+login+" deleted.");
-                                updateTable();
-                            },
-                            error: function() {
-                                feedback("User "+login+" not deleted - check server side error log.");
-                            }
-                        })
-                    })
-                })
-
+        $scope.roleText = function(logicalName) {
+            if (logicalName == "Reporting") {
+                return "Reporting Authority";
             }
-        })
+            return logicalName;
+        };
 
-    }
-
-    function feedback(text) {
-        if (text) {
-            $("#feedback").css("display", "block");
-            $("#feedback").html(text);
-        } else {
-            $("#feedback").css("display", "none");
+        function match(propertyValue, searchStr) {
+            if (!propertyValue) {
+                return false;
+            }
+            var value = ("" + propertyValue).toLowerCase();
+            return ((value.indexOf(searchStr) == 0) || (value.indexOf(" " + searchStr) >= 0));
         }
-    }
 
-    updateTable();
-
-    feedback();
-
-    $("#createNewUserDialogButton").click(function(e) {
-        e.preventDefault();
-        $("#createNewUserDialog").modal("show");
-        $("#cLogin").focus();
-    })
-
-    $("#createNewUserDialog .btn-primary").click(function(e) {
-        e.preventDefault();
-        $("#createNewUserDialog").modal("hide");
-        var login = $("#cLogin").val();
-        var password = $("#cPassword").val();
-        var passwordAgain = $("#cPasswordAgain").val();
-        var role = $("#cRole").val();
-        var shipMmsi = $("#cShipMmsi").val();
-
-        if (password == passwordAgain && password != "" && login != "") {
-            var user = {
-                login: login,
-                shipMmsi: shipMmsi != "" ? parseInt(shipMmsi) : null,
-                password: password,
-                role: role
+        $scope.search = function() {
+            if ($scope.searchString == null || $scope.searchString == "") {
+                $scope.users = userList;
+                return;
             }
 
-            feedback("Creating "+login+" ...");
+            var users = [];
+            var searchStr = $scope.searchString.toLowerCase();
 
-            $.ajax({
-                url: embryo.baseUrl + "rest/user/save",
-                method: "POST",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(user),
-                success: function() {
-                    feedback("User "+login+" created.");
-                    updateTable();
-                },
-                error: function() {
-                    feedback("User "+login+" not created - check server side error log.");
+            for ( var index in userList) {
+                var user = userList[index];
+                if (match(user.login, searchStr) || match(user.shipMmsi, searchStr) || match(user.email, searchStr)) {
+                    users.push(user);
                 }
-            })
+            }
+            $scope.users = users;
+        };
 
-        } else {
-            feedback("User not created. Passwords must match and user may not already exist.")
-        }
+        $scope.edit = function(user) {
+            $scope.message = null;
+            $scope.alertMessages = null;
+            $scope.editUser = {
+                login : user.login,
+                email : user.email,
+                role : user.role,
+                shipMmsi : user.shipMmsi
+            };
+            $scope.action = "Edit";
+            $("#cLogin").focus();
+        };
 
-        $("#createNewUserDialog input").val("");
-    })
+        $scope.create = function() {
+            $scope.message = null;
+            $scope.alertMessages = null;
+            $scope.editUser = {};
+            $scope.action = "Create";
+            $("#cLogin").focus();
+        };
 
-});
+        $scope.submitCreate = function() {
+            if ($scope.editUser.password != $scope.passwordAgain || !$scope.editUser.password) {
+                $scope.alertMessages = [ "User not created. Passwords must match" ];
+                return;
+            }
+            if (!$scope.editUser.login) {
+                $scope.alertMessages = [ "User not created. User login must be provided." ];
+                return;
+            }
+
+            $scope.message = "Saving " + $scope.editUser.login + " ...";
+            $scope.alertMessages = null;
+            UserService.create($scope.editUser, function() {
+                $scope.message = "User " + $scope.editUser.login + " created.";
+                $scope.action = "Edit";
+                loadUsers();
+            }, function(error) {
+                $scope.message = null;
+                $scope.alertMessages = error;
+            });
+        };
+
+        $scope.submitEdit = function() {
+            $scope.message = "Saving " + $scope.editUser.login + " ...";
+            $scope.alertMessages = null;
+            UserService.edit($scope.editUser, function() {
+                $scope.message = "User " + $scope.editUser.login + " saved.";
+                loadUsers();
+            }, function(error) {
+                $scope.message = null;
+                $scope.alertMessages = error;
+            });
+        };
+
+        $scope.del = function(user) {
+            var modalInstance = $modal.open({
+                controller : embryo.DeleteModalCtrl,
+                templateUrl : "deleteUserDialog.html",
+                resolve : {
+                    user : function() {
+                        return user;
+                    }
+                }
+            });
+            modalInstance.result.then(function(user) {
+                $scope.message = "Deleting " + user.login + " ...";
+                UserService.deleteUser(user.login, function() {
+                    $scope.message = "User " + user.login + " deleted.";
+                    loadUsers();
+                }, function(error) {
+                    $scope.message = null;
+                    $scope.alertMessages = error;
+                });
+            });
+        };
+
+    };
+
+    embryo.DeleteModalCtrl = function($scope, $modalInstance, user) {
+        $scope.userToDelete = user;
+        $scope.ok = function() {
+            $modalInstance.close($scope.userToDelete);
+        };
+        $scope.cancel = function() {
+            $modalInstance.dismiss('cancel');
+        };
+    };
+
+    function fixScrollables() {
+        $(".scrollable").each(function(elem) {
+            var rect = this.getBoundingClientRect();
+            $(this).css("overflow", "auto");
+            $(this).css("max-height", ($(window).height() - rect.top - 20) + "px");
+        });
+    }
+    $(window).resize(fixScrollables);
+    setTimeout(fixScrollables, 100);
+
+}());

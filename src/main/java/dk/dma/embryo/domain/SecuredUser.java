@@ -30,7 +30,8 @@ import org.joda.time.DateTime;
 @NamedQueries({
         @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName"),
         // LEFT JOIN FETCH u.roles [identification variable] is not supported by JPA but by Hibernate
-        @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role WHERE u.id=:id") })
+        @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role WHERE u.id=:id"),
+        @NamedQuery(name = "SecuredUser:list", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role AS r LEFT JOIN FETCH r.vessel") })
 public class SecuredUser extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;

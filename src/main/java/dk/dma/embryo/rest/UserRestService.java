@@ -22,118 +22,79 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
+import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.dao.RealmDao;
-import dk.dma.embryo.dao.VesselDao;
-import dk.dma.embryo.domain.AdministratorRole;
-import dk.dma.embryo.domain.ReportingAuthorityRole;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.ShoreRole;
-import dk.dma.embryo.domain.Vessel;
-import dk.dma.embryo.security.SecurityUtil;
 import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.service.UserService;
 
 @Path("/user")
 public class UserRestService {
-    @Inject
-    private VesselDao vesselDao;
-
-    @Inject
-    private RealmDao realmDao;
 
     @Inject
     private Logger logger;
 
     @Inject
     private Subject subject;
+    
+    @Inject
+    private UserService userService;
 
-    @GET
-    @Path("/delete")
+    @DELETE
+    @Path("/delete/{login}")
     @Produces("application/json")
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void delete(@QueryParam("login") String login) {
+    public void delete(@PathParam("login") String login) {
         logger.info("Deleting " + login);
-        vesselDao.remove(realmDao.findByUsername(login));
+        userService.delete(login);
     }
 
-    @POST
-    @Path("/save")
+    @PUT
+    @Path("/create")
     @Consumes("application/json")
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(User user) {
+    public void create(User user) {
         logger.info("Creating new user " + user.getLogin() + "  in role " + user.getRole());
-
-        SecuredUser su = SecurityUtil.createUser(user.getLogin(), user.getPassword(), "obo@dma.dk");
-
-        switch (user.getRole()) {
-        case "Sailor":
-            Vessel vessel = new Vessel();
-
-            vessel.setMmsi(user.getShipMmsi());
-            vesselDao.saveEntity(vessel);
-
-            SailorRole sailor = new SailorRole();
-
-            sailor.setVessel(vessel);
-            vesselDao.saveEntity(sailor);
-
-            su.setRole(sailor);
-            break;
-        case "Shore":
-            ShoreRole shore = new ShoreRole();
-            vesselDao.saveEntity(shore);
-
-            su.setRole(shore);
-            break;
-        case "Reporting":
-            ReportingAuthorityRole authority = new ReportingAuthorityRole();
-            vesselDao.saveEntity(authority);
-
-            su.setRole(authority);
-            break;
-        case "Administrator":
-
-            AdministratorRole administator = new AdministratorRole();
-            vesselDao.saveEntity(administator);
-
-            su.setRole(administator);
-            break;
-        }
-
-        vesselDao.saveEntity(su);
+        userService.create(user.getLogin(), user.getPassword(), user.getShipMmsi(), user.getEmail(), user.getRole());
     }
 
+    @PUT
+    @Path("/edit")
+    @Consumes("application/json")
+    public void edit(User user) {
+        logger.info("Editing new user " + user.getLogin() + "  in role " + user.getRole());
+        userService.edit(user.getLogin(), user.getShipMmsi(), user.getEmail(), user.getRole());
+    }
+
+    
     @GET
+    @GZIP
     @Path("/list")
     @Produces("application/json")
     @NoCache
     public List<User> list() {
         List<User> result = new ArrayList<>();
 
-        for (SecuredUser su : realmDao.getAll(SecuredUser.class)) {
+        for (SecuredUser su : userService.list()) {
             User user = new User();
 
-            su = realmDao.getByPrimaryKeyReturnAll(su.getId());
-
             user.setLogin(su.getUserName());
+            user.setEmail(su.getEmail());
             Role role = su.getRole();
 
+            user.setRole(role == null ? null : role.getLogicalName());
             if (role instanceof SailorRole) {
-                user.setRole(role.getLogicalName());
-                SailorRole sailor = realmDao.getSailor(su.getId());
+                SailorRole sailor = (SailorRole)role;
                 user.setShipMmsi(sailor.getVessel().getMmsi());
-            } else {
-                user.setRole(role.getLogicalName());
             }
 
             result.add(user);
@@ -147,6 +108,7 @@ public class UserRestService {
         private String password;
         private String role;
         private Long shipMmsi;
+        private String email;
 
         public String getLogin() {
             return login;
@@ -178,6 +140,14 @@ public class UserRestService {
 
         public void setShipMmsi(Long shipMmsi) {
             this.shipMmsi = shipMmsi;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
     }
 }
