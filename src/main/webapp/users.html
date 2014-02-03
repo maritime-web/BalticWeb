@@ -49,7 +49,8 @@
 		<div class="row-fluid">
 			<div class="span6">
 				<form class="form-search">
-					<input type="text" class="input-medium search-query" x-ng-model="searchString" x-ng-change="search()" placeholder="Login / email / MMSI">
+					<input type="text" class="input-medium search-query" x-ng-model="searchString" x-ng-change="search()"
+						placeholder="Login / email / MMSI">
 					<button class="btn pull-right" x-ng-click="create()">Create New User</button>
 				</form>
 			</div>
@@ -115,7 +116,8 @@
 							<label class="control-label" for="cShipMmsi">Ship (MMSI - only for Sailors):</label>
 							<div class="controls">
 								<input type="text" id="cShipMmsi" class="input-medium" x-ng-model="editUser.shipMmsi"
-									x-ng-disabled="editUser.role != 'Sailor'">
+									x-ng-hide="editUser.role != 'Sailor'"> <input type="text" id="cShipMmsi" class="input-medium"
+									x-ng-hide="editUser.role == 'Sailor'" disabled='disabled'>
 							</div>
 							<div class="submitButton">
 								<button class="btn btn-primary" x-ng-click="submitCreate()" x-ng-show="action=='Create'">Save</button>
@@ -140,25 +142,23 @@
 	</div>
 
 
-	<script type="text/ng-template" id="deleteUserDialog.html">
+	<script type="text/ng-template" id="confirmDialog.html">
 		<div class="modal-header">
 			<button type="button" class="close" x-ng-click="$dismiss('aborted')">x</button>
-			<h2>Delete User</h2>
+			<h2>{{title}}</h2>
 		</div>
 		<div class="modal-body">
 			<form>
-				<div class="row-fluid">
-					<div class="span8">
-						<p>
-							This will delete user {{userToDelete.login}} <span x-ng-show="userToDelete.shipMmsi">/ {{userToDelete.shipMmsi}}</span>
-						</p>
-					</div>
-					<div class="span4">
-						<span class="pull-right">
-							<button class="btn btn-primary" x-ng-click="ok()">OK</button>
-							<button class="btn" x-ng-click="cancel()">Cancel</button>
-						</span>
-					</div>
+				<div>
+					<p x-ng-repeat="msg in messages">
+						{{msg}}
+					</p>
+				</div>
+				<div>
+					<span class="pull-right">
+						<button class="btn btn-primary" x-ng-click="$close()">OK</button>
+						<button class="btn" x-ng-click="$dismiss('aborted')">Cancel</button>
+					</span>
 				</div>
 			</form>
 		</div>

@@ -5,8 +5,11 @@ $(function() {
             'ui.bootstrap.tpls' ]);
 
     embryo.UsersCtrl = function($scope, UserService, $modal, $log) {
+        var editUser;
         var userList = [];
         $scope.users = userList;
+        $scope.message = null;
+        $scope.alertMessages = null;
 
         function loadUsers() {
             UserService.userList(function(users) {
@@ -55,6 +58,7 @@ $(function() {
         };
 
         $scope.edit = function(user) {
+            editUser = user;
             $scope.message = null;
             $scope.alertMessages = null;
             $scope.editUser = {
@@ -97,29 +101,59 @@ $(function() {
             });
         };
 
-        $scope.submitEdit = function() {
-            $scope.message = "Saving " + $scope.editUser.login + " ...";
-            $scope.alertMessages = null;
-            UserService.edit($scope.editUser, function() {
-                $scope.message = "User " + $scope.editUser.login + " saved.";
-                loadUsers();
-            }, function(error) {
-                $scope.message = null;
-                $scope.alertMessages = error;
-            });
-        };
-
-        $scope.del = function(user) {
-            var modalInstance = $modal.open({
-                controller : embryo.DeleteModalCtrl,
-                templateUrl : "deleteUserDialog.html",
+        function showModal(title, messages) {
+            return $modal.open({
+                controller : embryo.ConfirmModalCtrl,
+                templateUrl : "confirmDialog.html",
                 resolve : {
-                    user : function() {
-                        return user;
+                    title : function() {
+                        return title;
+                    },
+                    messages : function() {
+                        return messages;
                     }
                 }
             });
-            modalInstance.result.then(function(user) {
+        }
+
+        $scope.submitEdit = function() {
+            function save() {
+                $scope.message = "Saving " + $scope.editUser.login + " ...";
+                $scope.alertMessages = null;
+                UserService.edit($scope.editUser, function() {
+                    $scope.message = "User " + $scope.editUser.login + " saved.";
+                    $scope.action = null;
+                    loadUsers();
+                }, function(error) {
+                    $scope.message = null;
+                    $scope.alertMessages = error;
+                });
+            }
+            var warnings = [];
+            if (editUser.role != $scope.editUser.role) {
+                var msg = "You are about to change the role from " + editUser.role + " to " + $scope.editUser.role
+                        + ". ";
+                if (editUser.role == 'Sailor') {
+                    msg += "All information related to vessel with MMSI " + editUser.shipMmsi + " will be deleted.";
+                }
+                warnings.push(msg);
+            }
+            if (editUser.role == 'Sailor' && $scope.editUser.role == 'Sailor'
+                    && editUser.shipMmsi != $scope.editUser.shipMmsi) {
+                warnings.push("You are about to change the MMSI from " + editUser.shipMmsi + " to "
+                        + $scope.editUser.shipMmsi);
+            }
+            if (warnings.length > 0) {
+                warnings.push("Please confirm changes");
+                showModal("Save Modified User", warnings).result.then(save);
+            } else {
+                save();
+            }
+        };
+
+        $scope.del = function(user) {
+            var messages = [ "This will delete user " + user.login + (user.shipMmsi ? " / " + user.shipMmsi : "") ];
+            showModal("Delete User", messages).result.then(function() {
                 $scope.message = "Deleting " + user.login + " ...";
                 UserService.deleteUser(user.login, function() {
                     $scope.message = "User " + user.login + " deleted.";
@@ -130,17 +164,11 @@ $(function() {
                 });
             });
         };
-
     };
 
-    embryo.DeleteModalCtrl = function($scope, $modalInstance, user) {
-        $scope.userToDelete = user;
-        $scope.ok = function() {
-            $modalInstance.close($scope.userToDelete);
-        };
-        $scope.cancel = function() {
-            $modalInstance.dismiss('cancel');
-        };
+    embryo.ConfirmModalCtrl = function($scope, $modalInstance, title, messages) {
+        $scope.title = title;
+        $scope.messages = messages;
     };
 
     function fixScrollables() {
