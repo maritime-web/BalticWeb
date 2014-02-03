@@ -211,6 +211,7 @@ At the time of writing the current services are subject to surveillance
 * dk.dma.arcticweb.service.AisReplicatorJob
 * dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob 
 * dk.dma.arcticweb.filetransfer.DmiFtpReaderJob
+* dk.dma.arcticweb.service.MaxSpeedJob
 * dk.dma.embryo.rest.AuthenticationService
 * dk.dma.embryo.msi.MsiClientImpl
 * dk.dma.embryo.service.MailServiceImpl
