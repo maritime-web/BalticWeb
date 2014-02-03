@@ -2,7 +2,7 @@ $(function() {
     "use strict";
 
     var scheduleModule = angular.module('embryo.users', [ 'embryo.userService', 'ui.bootstrap.modal',
-            'ui.bootstrap.tpls' ]);
+            'ui.bootstrap.tpls', 'embryo.authentication' ]);
 
     embryo.UsersCtrl = function($scope, UserService, $modal, $log) {
         var editUser;
@@ -80,15 +80,6 @@ $(function() {
         };
 
         $scope.submitCreate = function() {
-            if ($scope.editUser.password != $scope.passwordAgain || !$scope.editUser.password) {
-                $scope.alertMessages = [ "User not created. Passwords must match" ];
-                return;
-            }
-            if (!$scope.editUser.login) {
-                $scope.alertMessages = [ "User not created. User login must be provided." ];
-                return;
-            }
-
             $scope.message = "Saving " + $scope.editUser.login + " ...";
             $scope.alertMessages = null;
             UserService.create($scope.editUser, function() {

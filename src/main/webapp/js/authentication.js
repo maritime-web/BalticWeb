@@ -19,14 +19,14 @@ embryo
                 } else if (browser.isIE() && browser.ieVersion() <= 9) {
                     $("#ie89ver").html(browser.ieVersion());
                     $("#ie89").show();
-                } 
-//                else if (browser.isChrome()) {
-//                    var ver = browser.chromeVersion();
-//                    if (parseFloat(ver) > 27) {
-//                        $("#chromeVer").html(ver);
-//                        $("#chrome").show();
-//                    }
-//                }
+                }
+                // else if (browser.isChrome()) {
+                // var ver = browser.chromeVersion();
+                // if (parseFloat(ver) > 27) {
+                // $("#chromeVer").html(ver);
+                // $("#chrome").show();
+                // }
+                // }
             }
 
             function useCookies() {
@@ -45,7 +45,7 @@ embryo
             function clearMessages() {
                 $("#ie89").hide();
                 $("#ie7").hide();
-                //$("#chrome").hide();
+                // $("#chrome").hide();
                 $("#loginWrongLoginOrPassword").hide();
             }
 
@@ -316,3 +316,32 @@ embryo.ready(function() {
     })
 
 });
+
+(function() {
+    "use strict";
+    var module = angular.module('embryo.authentication', []);
+
+    module.directive('passwordMatch', [ function() {
+        return {
+            restrict : 'A',
+            scope : true,
+            require : 'ngModel',
+            link : function(scope, elem, attrs, control) {
+                var checker = function() {
+                    // get the value of the first password
+                    var e1 = scope.$eval(attrs.ngModel);
+
+                    // get the value of the other password
+                    var e2 = scope.$eval(attrs.passwordMatch);
+                    return e1 == e2;
+                };
+                scope.$watch(checker, function(n) {
+                    // set the form control to valid if both
+                    // passwords are the same, else invalid
+                    control.$setValidity("passwordMatch", n);
+                });
+            }
+        };
+    } ]);
+
+}());

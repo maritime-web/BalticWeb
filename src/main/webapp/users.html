@@ -90,48 +90,59 @@
 			</div>
 			<div class="span1"></div>
 			<div class="span5" x-ng-show="action">
-				<form>
+				<form name="userForm">
 					<h3>{{action}}</h3>
 					<div class="row-fluid">
-						<div class="span7">
-							<label class="control-label" for="cLogin">Login:</label>
+						<div class="span12">
+							<label class="control-label" for="userLogin">Login:</label>
 							<div>
-								<input type="text" id="cLogin" class="input-medium" x-ng-model="editUser.login" x-ng-disabled="action=='Edit'">
+								<input type="text" id="userLogin" name="userLogin" class="input-medium" x-ng-model="editUser.login"
+									x-ng-disabled="action=='Edit'" required> <span class="text-error"
+									x-ng-show="userForm.userLogin.$error.required">Login required</span>
 							</div>
 
 							<label class="control-label" for="cLogin">Email:</label>
 							<div>
-								<input type="text" id="cLogin" class="input-medium" x-ng-model="editUser.email">
+								<input type="text" name="userEmail" class="input-medium" x-ng-model="editUser.email" required> <span
+									class="text-error" x-ng-show="userForm.userEmail.$error.required">Email required</span>
 							</div>
 
 							<label class="control-label" for="cRole">Role:</label>
 							<div>
-								<select x-ng-model="editUser.role">
+								<select name="userRole" x-ng-model="editUser.role" required>
 									<option value="Sailor">Sailor</option>
 									<option value="Shore">Shore</option>
 									<option value="Reporting">Reporting Authority</option>
 									<option value="Administration">Administration</option>
-								</select>
+								</select> <span class="text-error" x-ng-show="userForm.userRole.$error.required">Role required</span>
 							</div>
 							<label class="control-label" for="cShipMmsi">Ship (MMSI - only for Sailors):</label>
 							<div class="controls">
-								<input type="text" id="cShipMmsi" class="input-medium" x-ng-model="editUser.shipMmsi"
-									x-ng-hide="editUser.role != 'Sailor'"> <input type="text" id="cShipMmsi" class="input-medium"
-									x-ng-hide="editUser.role == 'Sailor'" disabled='disabled'>
+								<input type="text" name="userMmsi" class="input-medium" x-ng-model="editUser.shipMmsi"
+									x-ng-hide="editUser.role != 'Sailor'" x-ng-required="editUser.role == 'Sailor'"> <span
+									class="text-error" x-ng-show="editUser.role == 'Sailor' && userForm.userMmsi.$error.required">MMSI must
+									be provided for Sailors</span> <input type="text" class="input-medium" x-ng-hide="editUser.role == 'Sailor'"
+									disabled='disabled'>
+							</div>
+							<div x-ng-show="action=='Create'">
+								<label class="control-label" for="cPassword">Password:</label>
+								<div>
+									<input type="password" name="userPwd" class="input-small" x-ng-model="editUser.password" required> <span
+										class="text-error" x-ng-show="action=='Create' && userForm.userPwd.$error.required">Password required</span>
+								</div>
+
+								<label class="control-label" for="cPasswordAgain">Password repeated:</label>
+								<div>
+									<input type="password" name="userPwdAgain" class="input-small" x-ng-model="passwordAgain"
+										x-password-match="editUser.password"> <span class="text-error"
+										x-ng-show="action=='Create' && userForm.userPwdAgain.$error.passwordMatch">Passwords must match</span>
+								</div>
 							</div>
 							<div class="submitButton">
-								<button class="btn btn-primary" x-ng-click="submitCreate()" x-ng-show="action=='Create'">Save</button>
-								<button class="btn btn-primary" x-ng-click="submitEdit()" x-ng-show="action=='Edit'">Save</button>
-							</div>
-						</div>
-						<div class="span5" x-ng-show="action=='Create'">
-							<label class="control-label" for="cPassword">Password:</label>
-							<div>
-								<input type="password" id="cPassword" class="input-small" x-ng-model="editUser.password">
-							</div>
-							<label class="control-label" for="cPasswordAgain">Password Again:</label>
-							<div>
-								<input type="password" id="cPasswordAgain" class="input-small" x-ng-model="passwordAgain">
+								<button class="btn btn-primary" x-ng-click="submitCreate()" x-ng-show="action=='Create'"
+									x-ng-disabled="userForm.$invalid">Save</button>
+								<button class="btn btn-primary" x-ng-click="submitEdit()" x-ng-show="action=='Edit'"
+									x-ng-disabled="userForm.userEmail.$error.required || userForm.userRole.$error.required || (editUser.role=='Sailor' && userForm.userMmsi.$error.required)">Save</button>
 							</div>
 						</div>
 					</div>
