@@ -114,7 +114,7 @@ public class ShapeFileMeasurerJob {
     }
 
     @Timeout
-    public void measureFiles() throws IOException {
+    public void measureFiles() {
         try {
             long start = new Date().getTime();
 
@@ -138,8 +138,13 @@ public class ShapeFileMeasurerJob {
                 shapeFileMeasurementDao.saveEntity(sfm);
             }
 
-            embryoLogService.info(measurer.getExistingCount() + " files validated. " + measurer.getNewCount()
-                    + " new files measured. ");
+            String msg = measurer.getExistingCount() + " files validated. " + measurer.getNewCount()
+                    + " new files measured. ";
+            if (measurer.getFailedMeasurementCount() > 0) {
+                embryoLogService.error(msg + measurer.getFailedMeasurementCount() + " failed measurements.");
+            } else {
+                embryoLogService.info(msg);
+            }
         } catch (Throwable t) {
             embryoLogService.error("Unhandled error measuring shape files: " + t, t);
         }
@@ -148,6 +153,7 @@ public class ShapeFileMeasurerJob {
     private class ShapeFileMeasurer {
         private int newMeasurements;
         private int existingMeasurements;
+        private int failedMeasurementCount;
 
         private List<ShapeFileMeasurement> measurements = new ArrayList<>(100);
 
@@ -161,23 +167,16 @@ public class ShapeFileMeasurerJob {
         }
 
         private long measureFile(String pfn) throws IOException {
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                List<ShapeFileService.Shape> file = service.getMultipleFile(pfn, 0, "", true, 3);
+            ObjectMapper mapper = new ObjectMapper();
+            List<ShapeFileService.Shape> file = service.getMultipleFile(pfn, 0, "", true, 3);
 
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                GZIPOutputStream gos = new GZIPOutputStream(out);
-                String result = mapper.writeValueAsString(file);
-                gos.write(result.getBytes());
-                gos.close();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            GZIPOutputStream gos = new GZIPOutputStream(out);
+            String result = mapper.writeValueAsString(file);
+            gos.write(result.getBytes());
+            gos.close();
 
-                return out.toByteArray().length;
-
-            } catch (Throwable t) {
-                logger.error("Error measuring " + pfn + ": " + t, t);
-                embryoLogService.error("Error measuring " + pfn + ": " + t, t);
-                return -1;
-            }
+            return out.toByteArray().length;
         }
 
         public void measureFiles(String directory, String prefix, long start) throws IOException {
@@ -190,17 +189,19 @@ public class ShapeFileMeasurerJob {
                     if (System.currentTimeMillis() - start < TRANSACTION_LENGTH) {
                         logger.debug("Measuring file: " + fn);
 
-                        ShapeFileMeasurement sfm = new ShapeFileMeasurement();
-
-                        sfm.setFileName(fn);
-                        sfm.setFileSize(measureFile(prefix + fn));
-                        sfm.setPrefix(prefix);
-
-                        logger.debug("File size: " + sfm.getFileSize());
-
-                        measurements.add(sfm);
-
-                        newMeasurements++;
+                        try {
+                            ShapeFileMeasurement sfm = new ShapeFileMeasurement();
+                            sfm.setFileName(fn);
+                            sfm.setFileSize(measureFile(prefix + fn));
+                            sfm.setPrefix(prefix);
+                            logger.debug("File size: " + sfm.getFileSize());
+                            measurements.add(sfm);
+                            newMeasurements++;
+                        } catch (Throwable t) {
+                            failedMeasurementCount++;
+                            logger.error("Error measuring " + fn + ": " + t, t);
+                            embryoLogService.error("Error measuring " + fn + ": " + t, t);
+                        }
                     }
                 } else {
                     ShapeFileMeasurement sfm = new ShapeFileMeasurement();
@@ -225,6 +226,10 @@ public class ShapeFileMeasurerJob {
 
         public int getExistingCount() {
             return existingMeasurements;
+        }
+
+        public int getFailedMeasurementCount() {
+            return failedMeasurementCount;
         }
     }
 }
