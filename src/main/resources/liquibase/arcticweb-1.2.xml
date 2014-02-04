@@ -1,0 +1,13 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet author="jesper (generated)" id="1391528470656-1">
+    <addNotNullConstraint columnDataType="BIGINT(19)" columnName="mmsi" tableName="Vessel" />
+  </changeSet>
+  <changeSet author="jesper (generated)" id="1391528470656-2">
+    <addUniqueConstraint columnNames="mmsi" constraintName="mmsi" deferrable="false" disabled="false"
+      initiallyDeferred="false" tableName="Vessel" />
+  </changeSet>
+</databaseChangeLog>
