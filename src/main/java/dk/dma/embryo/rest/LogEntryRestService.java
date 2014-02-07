@@ -44,10 +44,8 @@ public class LogEntryRestService {
     @Produces("application/json")
     @GZIP
     public List<LogEntry> list() {
-        
         List<dk.dma.embryo.domain.LogEntry> result = logEntryDao.list();
         List<LogEntry> transformed = dk.dma.embryo.domain.LogEntry.fromJsonModel(result);
-        
         return transformed;
     }
 
