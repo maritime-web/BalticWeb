@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -39,20 +40,45 @@ import dk.dma.dataformats.dbf.DbfParser;
 import dk.dma.dataformats.shapefile.ProjectionFileParser;
 import dk.dma.dataformats.shapefile.ShapeFileParser;
 import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.configuration.PropertyFileService;
 
 @Path("/shapefile")
 public class ShapeFileService {
-    @Inject
-    @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
-    String localDmiDirectory;
 
     @Inject
-    @Property(value = "embryo.iceMaps.localAariDirectory", substituteSystemProperties = true)
-    String localAariDirectory;
+    @Property(value = "embryo.iceChart.providers")
+    private Map<String, String> providers;
+
+    @Inject
+    private PropertyFileService propertyService;
+
+    private Map<String, String> directories = new HashMap<>();
 
     @Inject
     Logger logger;
 
+    public ShapeFileService() {
+        super();
+    }
+
+    public ShapeFileService(Map<String, String> providers, Map<String, String> directories) {
+        super();
+        this.providers = providers;
+        this.directories = directories;
+    }
+
+    @PostConstruct
+    public void init(){
+        for (String providerKey : providers.keySet()) {
+            String property = "embryo.iceChart." + providerKey + ".localDirectory";
+            String value = propertyService.getProperty(property, true);
+            if (value != null) {
+                directories.put(providerKey, value);
+            }
+        }
+        logger.info("ShapeFileService initialized");
+    }
+    
     @GET
     @Path("/single/{id}")
     @Produces("application/json")
@@ -117,16 +143,24 @@ public class ShapeFileService {
         List<Map<String, Object>> data = null;
 
         try {
-            if (id.startsWith("dmi.")) {
-                id = id.substring(4);
-                shpIs = new FileInputStream(localDmiDirectory + "/" + id + ".shp");
-                dbfIs = new FileInputStream(localDmiDirectory + "/" + id + ".dbf");
-                prjIs = new FileInputStream(localDmiDirectory + "/" + id + ".prj");
-            } else if (id.startsWith("aari.")) {
-                id = id.substring(5);
-                shpIs = new FileInputStream(localAariDirectory + "/" + id + ".shp");
-                dbfIs = new FileInputStream(localAariDirectory + "/" + id + ".dbf");
-                prjIs = new FileInputStream(localAariDirectory + "/" + id + ".prj");
+            int index = id.indexOf(".");
+            String provider = id.substring(0, index);
+            
+            System.out.println(provider);
+            System.out.println(directories);
+            
+            if (directories.containsKey(provider)) {
+                String localDirectory = directories.get(provider);
+                
+                System.out.println(localDirectory);
+                
+                id = id.substring(index + 1);
+                
+                System.out.println(id);
+
+                shpIs = new FileInputStream(localDirectory + "/" + id + ".shp");
+                dbfIs = new FileInputStream(localDirectory + "/" + id + ".dbf");
+                prjIs = new FileInputStream(localDirectory + "/" + id + ".prj");
             } else if (id.startsWith("static.")) {
                 id = id.substring(7);
                 shpIs = getClass().getResourceAsStream("/shapefiles/" + id + ".shp");

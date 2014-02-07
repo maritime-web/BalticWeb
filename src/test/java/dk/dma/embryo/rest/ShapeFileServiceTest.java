@@ -19,24 +19,37 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 public class ShapeFileServiceTest {
-    private ShapeFileService service = new ShapeFileService();
+
+    private ShapeFileService service;
+
+    @Before
+    public void setup() {
+        Map<String, String> providers = new HashMap<String, String>();
+        providers.put("dmi", "DMI");
+        Map<String, String> directories = new HashMap<String, String>();
+        directories.put("dmi", "/Users/chvid/sfs/dmi");
+        service = new ShapeFileService(providers, directories);
+    }
 
     @Ignore
     @Test
     public void test() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         service.logger = LoggerFactory.getLogger(ShapeFileService.class);
-        service.localDmiDirectory = "/Users/chvid/sfs/dmi";
-        List<ShapeFileService.Shape> file = service.getMultipleFile("dmi.201311190920_CapeFarewell_RIC", 0, "", true, 4);
+        List<ShapeFileService.Shape> file = service
+                .getMultipleFile("dmi.201311190920_CapeFarewell_RIC", 0, "", true, 4);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gos = new GZIPOutputStream(out);
