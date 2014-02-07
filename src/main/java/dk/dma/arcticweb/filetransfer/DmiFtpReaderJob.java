@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -50,39 +51,32 @@ import dk.dma.embryo.service.EmbryoLogService;
 @Singleton
 @Startup
 public class DmiFtpReaderJob {
-    private String[] charts = {
-            "CapeFarewell_RIC",
-            "CentralWest_RIC",
-            "Greenland_WA",
-            "NorthEast_RIC",
-            "NorthWest_RIC",
-            "Qaanaaq_RIC",
-            "SouthEast_RIC",
-            "SouthWest_RIC"
-    };
 
     private final Logger logger = LoggerFactory.getLogger(DmiFtpReaderJob.class);
 
     @Inject
-    @Property("embryo.iceMaps.cron")
+    @Property("embryo.iceChart.dmi.cron")
     private ScheduleExpression cron;
     @Inject
-    @Property("embryo.iceMaps.dmiFtpServerName")
+    @Property("embryo.iceChart.dmi.regions")
+    private Map<String, String> regions;
+    @Inject
+    @Property("embryo.iceChart.dmi.ftp.serverName")
     private String dmiServer;
     @Inject
-    @Property("embryo.iceMaps.dmiFtpLogin")
+    @Property("embryo.iceChart.dmi.ftp.login")
     private String dmiLogin;
     @Inject
-    @Property("embryo.iceMaps.dmiFtpPassword")
+    @Property("embryo.iceChart.dmi.ftp.password")
     private String dmiPassword;
     @Inject
-    @Property("embryo.iceMaps.dmiFtpBaseDirectory")
+    @Property("embryo.iceChart.dmi.ftp.baseDirectory")
     private String dmiBaseDirectory;
     @Inject
-    @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
+    @Property(value = "embryo.iceChart.dmi.localDirectory", substituteSystemProperties = true)
     private String localDmiDirectory;
     @Inject
-    @Property("embryo.iceMaps.ftp.ageInDays")
+    @Property("embryo.iceChart.dmi.ftp.ageInDays")
     private Integer ageInDays;
     
     @Resource
@@ -138,7 +132,7 @@ public class DmiFtpReaderJob {
     private boolean filter(String fn, LocalDate limit) {
         boolean result = false;
 
-        for (String c : charts) {
+        for (String c : regions.keySet()) {
             result |= fn.endsWith(c);
         }
 
