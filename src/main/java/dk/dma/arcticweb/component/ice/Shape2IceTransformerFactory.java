@@ -25,15 +25,16 @@ import javax.inject.Named;
 @Named
 public class Shape2IceTransformerFactory {
     
-    private @Inject Instance<Shape2IceTransformer> availableTransformers;
+    @Inject
+    private Instance<Shape2IceTransformer> availableTransformers;
 
     public Shape2IceTransformer createTransformer(String provider) {
-       for (Shape2IceTransformer transformer: availableTransformers) {
-           if (transformer.getProvider().equals(provider)) { 
-             return transformer;
-          }
-       }
-       return null;
+        for (Shape2IceTransformer transformer : availableTransformers) {
+            if (transformer.getProvider().equals(provider)) {
+                return transformer;
+            }
+        }
+        return null;
     }
 
 }

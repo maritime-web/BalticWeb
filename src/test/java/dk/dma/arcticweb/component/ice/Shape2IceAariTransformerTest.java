@@ -28,7 +28,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import dk.dma.arcticweb.component.ice.Shape2IceAariTransformer;
 import dk.dma.embryo.domain.IceObservation;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 
