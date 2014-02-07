@@ -123,7 +123,7 @@ public class LiquibaseMigrator implements Integrator {
     }
 
     private Liquibase createLiquibase(Connection c) throws LiquibaseException {
-        System.out.println("LIQUIBASE CHANGELOG: " + config.getChangeLog());
+        LOGGER.info("LIQUIBASE CHANGELOG: {}", config.getChangeLog());
 
         Liquibase liquibase = new Liquibase(config.getChangeLog(), new ClassLoaderResourceAccessor(getClass()
                 .getClassLoader()), createDatabase(c));
