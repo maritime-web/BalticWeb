@@ -18,8 +18,8 @@ package dk.dma.arcticweb.filetransfer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.configuration.PropertyFileService;
 import dk.dma.embryo.service.EmbryoLogService;
 
 @Singleton
@@ -71,8 +72,7 @@ public class AariHttpReaderJob {
     private Integer timeout;
 
     @Inject
-    @Property("embryo.iceChart.aari.regions")
-    private Map<String, String> regions;
+    private PropertyFileService propertyService;
 
     @Inject
     @Property(value = "embryo.iceChart.aari.localDirectory", substituteSystemProperties = true)
@@ -84,14 +84,48 @@ public class AariHttpReaderJob {
     @Inject
     private EmbryoLogService embryoLogService;
 
+    private HashSet<String> paths = new HashSet<>();
+
+    
+    public AariHttpReaderJob() {
+        super();
+    }
+    
+    public AariHttpReaderJob(ScheduleExpression cron, String server, String dataSets,
+            PropertyFileService propertyService, TimerService timerService) {
+        super();
+        this.cron = cron;
+        this.server = server;
+        this.dataSets = dataSets;
+        this.propertyService = propertyService;
+        this.timerService = timerService;
+    }
+
     @PostConstruct
     public void init() {
         if (!server.trim().equals("") && (cron != null)) {
             logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+
+            for (String dataSet : dataSets.split(";")) {
+                String path = propertyService.getProperty("embryo.iceChart.http." + dataSet + ".path");
+                String regions = propertyService.getProperty("embryo.iceChart.http." + dataSet + ".regions");
+                if (regions != null && !regions.isEmpty()) {
+                    for (String region : regions.split(";")) {
+                        paths.add(replaceRegions(path, region));
+                    }
+                } else {
+                    paths.add(path);
+                }
+            }
+
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("AARI HTTP site is not configured - cron job not scheduled.");
         }
+    }
+    
+    HashSet<String> getPaths(){
+        return paths;
     }
 
     @PreDestroy
@@ -109,43 +143,40 @@ public class AariHttpReaderJob {
             File tmpDir = prepareTemporaryDirectory();
 
             Integer year = DateTime.now(DateTimeZone.UTC).getYear();
-            
+
             logger.info("protocol={}, server={}, timeout={}", protocol, server, timeout);
-            
+
             HttpReader reader = new HttpReader(protocol, server, timeout);
 
-            for (String dataSet : dataSets.split(";")) {
-                for (String region : regions.keySet()) {
-                    String path = replaceVariables(dataSet, region, year);
+            for (String p : paths) {
+                String path = replaceYear(p, year);
 
-                    List<String> files = null;
-                    try {
-                        logger.debug("Reading content in {}", path);
-                        files = reader.readContent(path);
-                    } catch (Exception e) {
-                        files = new ArrayList<>(0);
-                        errorCount++;
-                        logger.error("Error reading folder {}", path);
-                        embryoLogService
-                                .error("Error reading folder  '" + path + "' from AARI (" + server + "): "
-                                        + e.getMessage(), e);
-                    }
+                List<String> files = null;
+                try {
+                    logger.debug("Reading content in {}", path);
+                    files = reader.readContent(path);
+                } catch (Exception e) {
+                    files = new ArrayList<>(0);
+                    errorCount++;
+                    logger.error("Error reading folder {}", path);
+                    embryoLogService.error(
+                            "Error reading folder  '" + path + "' from AARI (" + server + "): " + e.getMessage(), e);
+                }
 
-                    for (String file : files) {
-                        if (!isFileDownloaded(file)) {
-                            try {
-                                logger.debug("Transfering file {}/{}", path, file);
-                                transferFile(reader, path, file, tmpDir);
-                                fileCount++;
-                            } catch (Exception e) {
-                                errorCount++;
-                                logger.error("Error transfering file {}/{}", path, file);
-                                embryoLogService.error("Error transfering file '" + path + "/" + file + "' from AARI ("
-                                        + server + "): " + e.getMessage(), e);
-                            }
+                for (String file : files) {
+                    if (!isFileDownloaded(file)) {
+                        try {
+                            logger.debug("Transfering file {}/{}", path, file);
+                            transferFile(reader, path, file, tmpDir);
+                            fileCount++;
+                        } catch (Exception e) {
+                            errorCount++;
+                            logger.error("Error transfering file {}/{}", path, file);
+                            embryoLogService.error("Error transfering file '" + path + "/" + file + "' from AARI ("
+                                    + server + "): " + e.getMessage(), e);
                         }
-
                     }
+
                 }
             }
         } catch (Exception e) {
@@ -196,9 +227,16 @@ public class AariHttpReaderJob {
         return new File(localDirectory + "/" + name).exists();
     }
 
-    private String replaceVariables(String path, String region, Integer year) {
-        path = path.replaceAll("\\{yyyy\\}", year.toString());
+    private String replaceRegions(String path, String region) {
         path = path.replaceAll("\\{region\\}", region);
+        return path;
+    }
+
+    private String replaceYear(String path, Integer year) {
+        System.out.println(path);
+        System.out.println(year);
+        
+        path = path.replaceAll("\\{yyyy\\}", year.toString());
         return path;
     }
 

@@ -33,8 +33,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Jesper Tejlgaard
@@ -42,6 +40,9 @@ import org.slf4j.LoggerFactory;
 public class HttpReader {
 
     private HttpContentFilesReader reader = new HttpContentFilesReader();
+    private HttpContext localContext = new BasicHttpContext();
+    private DefaultHttpClient httpclient = new DefaultHttpClient();
+
     private final int timeoutSeconds;
     private final String protocol;
     private final String host;
@@ -59,11 +60,6 @@ public class HttpReader {
     }
 
     public void getFile(String path, String file, File location) throws IOException {
-        
-        HttpContext localContext = new BasicHttpContext();
-        DefaultHttpClient httpclient = new DefaultHttpClient();
-
-        
         String filePath = path.startsWith("/") ? path : "/" + path;
         filePath = filePath.endsWith("/") ? filePath : filePath + "/";
         filePath += file;
