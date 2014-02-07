@@ -36,10 +36,10 @@ public class AariHttpReaderJobTest {
     public void test() {
 
         PropertyFileService mock = Mockito.mock(PropertyFileService.class);
-        Mockito.when(mock.getProperty("embryo.iceChart.http.d0004.path")).thenReturn("dataSets/{region}/sigrid/{yyyy}");
-        Mockito.when(mock.getProperty("embryo.iceChart.http.d0004.regions")).thenReturn("gre;bal;bar");
-        Mockito.when(mock.getProperty("embryo.iceChart.http.d0015.path")).thenReturn("dataSets/arctic/sigrid/{yyyy}");
-        Mockito.when(mock.getProperty("embryo.iceChart.http.d0015.regions")).thenReturn(null);
+        Mockito.when(mock.getProperty("embryo.iceChart.aari.http.d0004.path")).thenReturn("dataSets/{region}/sigrid/{yyyy}");
+        Mockito.when(mock.getProperty("embryo.iceChart.aari.http.d0004.regions")).thenReturn("gre;bal;bar");
+        Mockito.when(mock.getProperty("embryo.iceChart.aari.http.d0015.path")).thenReturn("dataSets/arctic/sigrid/{yyyy}");
+        Mockito.when(mock.getProperty("embryo.iceChart.aari.http.d0015.regions")).thenReturn(null);
 
         ScheduleExpression r = new ScheduleExpression();
 

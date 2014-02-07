@@ -105,10 +105,10 @@ public class AariHttpReaderJob {
     public void init() {
         if (!server.trim().equals("") && (cron != null)) {
             logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
-
+            
             for (String dataSet : dataSets.split(";")) {
-                String path = propertyService.getProperty("embryo.iceChart.http." + dataSet + ".path");
-                String regions = propertyService.getProperty("embryo.iceChart.http." + dataSet + ".regions");
+                String path = propertyService.getProperty("embryo.iceChart.aari.http." + dataSet + ".path");
+                String regions = propertyService.getProperty("embryo.iceChart.aari.http." + dataSet + ".regions");
                 if (regions != null && !regions.isEmpty()) {
                     for (String region : regions.split(";")) {
                         paths.add(replaceRegions(path, region));
@@ -233,9 +233,6 @@ public class AariHttpReaderJob {
     }
 
     private String replaceYear(String path, Integer year) {
-        System.out.println(path);
-        System.out.println(year);
-        
         path = path.replaceAll("\\{yyyy\\}", year.toString());
         return path;
     }
