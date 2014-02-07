@@ -61,8 +61,7 @@ public class HttpContentFilesReaderTest {
 
         Assert.assertNotNull(files);
         ReflectionAssert.assertReflectionEquals(new String[] { "aari_chu_20140107_pl_a.dbf",
-                "aari_chu_20140107_pl_a.prj", "aari_chu_20140107_pl_a.shp", "aari_chu_20140107_pl_a.shx",
-                "aari_chu_20140107_pl_a.zip" }, files.toArray());
+                "aari_chu_20140107_pl_a.prj", "aari_chu_20140107_pl_a.shp", "aari_chu_20140107_pl_a.shx" }, files.toArray());
     }
 
 }

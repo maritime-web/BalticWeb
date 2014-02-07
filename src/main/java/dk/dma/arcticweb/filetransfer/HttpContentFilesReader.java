@@ -35,7 +35,7 @@ public class HttpContentFilesReader {
     }
 
     public HttpContentFilesReader() {
-        this("(.*)(\\.dbf|\\.prj|\\.shp|\\.shx|\\.zip)");
+        this("(.*)(\\.dbf|\\.prj|\\.shp|\\.shx)");
     }
 
     public List<String> readFiles(Document doc) throws IOException {
