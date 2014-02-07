@@ -10,4 +10,9 @@
     <addUniqueConstraint columnNames="mmsi" constraintName="mmsi" deferrable="false" disabled="false"
       initiallyDeferred="false" tableName="Vessel" />
   </changeSet>
+  <changeSet author="jesper (generated)" id="1391528470656-3">
+    <renameColumn columnDataType="VARCHAR(255)" newColumnName="provider" oldColumnName="prefix"
+      tableName="ShapeFileMeasurement" />
+  </changeSet>
+
 </databaseChangeLog>

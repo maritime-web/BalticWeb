@@ -23,11 +23,11 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class ShapeFileMeasurementDaoImpl extends DaoImpl implements ShapeFileMeasurementDao {
-    public ShapeFileMeasurement lookup(String fn, String prefix) {
+    public ShapeFileMeasurement lookup(String fn, String provider) {
         TypedQuery<ShapeFileMeasurement> query = em.createNamedQuery("ShapeFileMeasurement:lookup", ShapeFileMeasurement.class);
 
         query.setParameter("fileName", fn);
-        query.setParameter("prefix", prefix);
+        query.setParameter("provider", provider);
         query.setMaxResults(1);
 
         List<ShapeFileMeasurement> result = query.getResultList();
@@ -35,16 +35,16 @@ public class ShapeFileMeasurementDaoImpl extends DaoImpl implements ShapeFileMea
         return getSingleOrNull(result);
     }
 
-    public void deleteAll(String prefix) {
+    public void deleteAll(String provider) {
         Query query = em.createNamedQuery("ShapeFileMeasurement:deleteAll");
-        query.setParameter("prefix", prefix);
+        query.setParameter("provider", provider);
         query.executeUpdate();
     }
 
-    public List<ShapeFileMeasurement> list(String prefix) {
+    public List<ShapeFileMeasurement> list(String provider) {
         TypedQuery<ShapeFileMeasurement> query = em.createNamedQuery("ShapeFileMeasurement:list", ShapeFileMeasurement.class);
 
-        query.setParameter("prefix", prefix);
+        query.setParameter("provider", provider);
 
         return query.getResultList();
     }

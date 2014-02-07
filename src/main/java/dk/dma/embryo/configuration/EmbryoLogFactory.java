@@ -15,20 +15,26 @@
  */
 package dk.dma.embryo.configuration;
 
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import dk.dma.embryo.dao.LogEntryDao;
 import dk.dma.embryo.service.EmbryoLogService;
 import dk.dma.embryo.service.EmbryoLogServiceImpl;
 
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-
-public class EmbryoLogConfiguration {
+@Named
+public class EmbryoLogFactory {
     @Inject
     LogEntryDao logEntryDao;
 
     @Produces
     public EmbryoLogService getLogger(InjectionPoint injectionPoint) {
         return new EmbryoLogServiceImpl(logEntryDao, injectionPoint.getMember().getDeclaringClass());
+    }
+
+    public EmbryoLogService getLogger(Class<?> type, String extraQualifier) {
+        return new EmbryoLogServiceImpl(logEntryDao, type, extraQualifier);
     }
 }

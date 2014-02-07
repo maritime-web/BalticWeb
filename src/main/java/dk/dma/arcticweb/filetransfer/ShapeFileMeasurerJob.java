@@ -21,8 +21,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
@@ -41,7 +44,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
+import dk.dma.embryo.configuration.EmbryoLogFactory;
 import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.configuration.PropertyFileService;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 import dk.dma.embryo.rest.ShapeFileService;
 import dk.dma.embryo.service.EmbryoLogService;
@@ -60,12 +65,13 @@ public class ShapeFileMeasurerJob {
     private ShapeFileMeasurementDao shapeFileMeasurementDao;
 
     @Inject
-    @Property(value = "embryo.iceMaps.localDmiDirectory", substituteSystemProperties = true)
-    private String localDmiDirectory;
+    private PropertyFileService propertyFileService;
 
     @Inject
-    @Property(value = "embryo.iceMaps.localAariDirectory", substituteSystemProperties = true)
-    private String localAariDirectory;
+    @Property(value = "embryo.iceChart.providers")
+    private Map<String, String> providers;
+
+    private Map<String, String> directories = new HashMap<>();;
 
     @Resource
     private TimerService timerService;
@@ -75,14 +81,25 @@ public class ShapeFileMeasurerJob {
     private ScheduleExpression cron;
 
     @Inject
-    private EmbryoLogService embryoLogService;
+    private EmbryoLogFactory embryoLogFactory;
 
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shx");
 
     @PostConstruct
     public void init() throws IOException {
+        logger.info("Initializing {} with {}", this.getClass().getSimpleName());
+
+        for (String providerKey : providers.keySet()) {
+            String property = "embryo.iceCharts." + providerKey + ".localDirectory";
+            String value = propertyFileService.getProperty(property, true);
+            if (value != null) {
+                directories.put(property, value);
+            }
+        }
+
         if (cron != null) {
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            logger.info("Initializing {} with {} and {}", this.getClass().getSimpleName(), cron.toString(),
+                    directories.toString());
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("Cron job not scheduled.");
@@ -115,38 +132,41 @@ public class ShapeFileMeasurerJob {
 
     @Timeout
     public void measureFiles() {
-        try {
-            long start = new Date().getTime();
+        long start = new Date().getTime();
 
-            logger.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
+        logger.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
+        
+        for (Entry<String, String> directory : directories.entrySet()) {
+            String provider = directory.getKey();
 
-            ShapeFileMeasurer measurer = new ShapeFileMeasurer(service, shapeFileMeasurementDao);
-            measurer.measureFiles(localDmiDirectory, "dmi.", start);
-            measurer.measureFiles(localAariDirectory, "aari.", start);
-            List<ShapeFileMeasurement> measurements = measurer.getMeasurements();
+            EmbryoLogService embryoLogger = embryoLogFactory.getLogger(this.getClass(), provider);
+            
+            try {
+                ShapeFileMeasurer measurer = new ShapeFileMeasurer(service, shapeFileMeasurementDao, embryoLogger);
+                measurer.measureFiles(directory.getValue(), provider, start);
+                List<ShapeFileMeasurement> measurements = measurer.getMeasurements();
+                logger.debug("{}: Done. Saving {} items ...", provider, measurements.size());
 
-            logger.debug("Done. Saving " + measurements.size() + " items ...");
+                logger.debug("Calling deleteAll({})", provider);
+                shapeFileMeasurementDao.deleteAll(provider);
 
-            logger.debug("Calling deleteAll");
+                logger.info("{}: Saving {} measurements", provider, measurements.size());
 
-            shapeFileMeasurementDao.deleteAll("dmi.");
-            shapeFileMeasurementDao.deleteAll("aari.");
+                for (ShapeFileMeasurement sfm : measurements) {
+                    shapeFileMeasurementDao.saveEntity(sfm);
+                }
 
-            logger.info("Saving " + measurements.size() + " measurements");
+                String msg = measurer.getExistingCount() + " files validated. " + measurer.getNewCount()
+                        + " new files measured. ";
+                if (measurer.getFailedMeasurementCount() > 0) {
+                    embryoLogger.error(msg + measurer.getFailedMeasurementCount() + " failed measurements.");
+                } else {
+                    embryoLogger.info(msg);
+                }
 
-            for (ShapeFileMeasurement sfm : measurements) {
-                shapeFileMeasurementDao.saveEntity(sfm);
+            } catch (Throwable t) {
+                embryoLogger.error("Unhandled error measuring shape files: " + t, t);
             }
-
-            String msg = measurer.getExistingCount() + " files validated. " + measurer.getNewCount()
-                    + " new files measured. ";
-            if (measurer.getFailedMeasurementCount() > 0) {
-                embryoLogService.error(msg + measurer.getFailedMeasurementCount() + " failed measurements.");
-            } else {
-                embryoLogService.info(msg);
-            }
-        } catch (Throwable t) {
-            embryoLogService.error("Unhandled error measuring shape files: " + t, t);
         }
     }
 
@@ -159,11 +179,13 @@ public class ShapeFileMeasurerJob {
 
         private final ShapeFileService service;
         private final ShapeFileMeasurementDao dao;
+        private final EmbryoLogService embryoLogger;
 
-        public ShapeFileMeasurer(ShapeFileService service, ShapeFileMeasurementDao dao) {
+        public ShapeFileMeasurer(ShapeFileService service, ShapeFileMeasurementDao dao, EmbryoLogService embryoLogService) {
             super();
             this.service = service;
             this.dao = dao;
+            this.embryoLogger = embryoLogService;
         }
 
         private long measureFile(String pfn) throws IOException {
@@ -179,10 +201,10 @@ public class ShapeFileMeasurerJob {
             return out.toByteArray().length;
         }
 
-        public void measureFiles(String directory, String prefix, long start) throws IOException {
+        public void measureFiles(String directory, String provider, long start) throws IOException {
             for (String fn : downloadedIceObservations(directory)) {
 
-                ShapeFileMeasurement lookup = dao.lookup(fn, prefix);
+                ShapeFileMeasurement lookup = dao.lookup(fn, provider);
                 if (lookup == null) {
                     logger.debug("" + (new Date().getTime() - start) + " vs " + TRANSACTION_LENGTH);
 
@@ -192,15 +214,15 @@ public class ShapeFileMeasurerJob {
                         try {
                             ShapeFileMeasurement sfm = new ShapeFileMeasurement();
                             sfm.setFileName(fn);
-                            sfm.setFileSize(measureFile(prefix + fn));
-                            sfm.setPrefix(prefix);
+                            sfm.setFileSize(measureFile(provider + "." + fn));
+                            sfm.setProvider(provider);
                             logger.debug("File size: " + sfm.getFileSize());
                             measurements.add(sfm);
                             newMeasurements++;
                         } catch (Throwable t) {
                             failedMeasurementCount++;
                             logger.error("Error measuring " + fn + ": " + t, t);
-                            embryoLogService.error("Error measuring " + fn + ": " + t, t);
+                            embryoLogger.error("Error measuring " + fn + ": " + t, t);
                         }
                     }
                 } else {
@@ -208,7 +230,7 @@ public class ShapeFileMeasurerJob {
 
                     sfm.setFileName(lookup.getFileName());
                     sfm.setFileSize(lookup.getFileSize());
-                    sfm.setPrefix(lookup.getPrefix());
+                    sfm.setProvider(lookup.getProvider());
 
                     measurements.add(sfm);
                     existingMeasurements++;

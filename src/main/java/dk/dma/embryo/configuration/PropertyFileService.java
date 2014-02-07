@@ -18,6 +18,8 @@ package dk.dma.embryo.configuration;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 
@@ -40,6 +42,17 @@ public class PropertyFileService {
         return properties.getProperty(name);
     }
 
+    public String getProperty(String name, boolean substituteSystemProperties) {
+        String property = properties.getProperty(name);
+
+        if (property != null && substituteSystemProperties) {
+            for (Object key : System.getProperties().keySet()) {
+                property = property.replaceAll("\\{" + key + "\\}", Matcher.quoteReplacement(System.getProperty("" + key)));
+            }
+        }
+        return property;
+    }
+
     @Produces
     @Property
     public String getStringPropertyByKey(InjectionPoint ip) {
@@ -53,15 +66,14 @@ public class PropertyFileService {
                 } else if (!property.defaultValue().equals("")) {
                     result = property.defaultValue();
                 } else {
-                    throw new RuntimeException(
-                            "Property " + property.value() + " set on " + ip.getMember() + " not configured. " +
-                                    "Add value in configuration or define defaultValue in annotation."
-                    );
+                    throw new RuntimeException("Property " + property.value() + " set on " + ip.getMember()
+                            + " not configured. " + "Add value in configuration or define defaultValue in annotation.");
                 }
 
                 if (property.substituteSystemProperties()) {
                     for (Object key : System.getProperties().keySet()) {
-                        result = result.replaceAll("\\{" + key + "\\}", Matcher.quoteReplacement(System.getProperty("" + key)));
+                        result = result.replaceAll("\\{" + key + "\\}",
+                                Matcher.quoteReplacement(System.getProperty("" + key)));
                     }
                 }
 
@@ -81,6 +93,22 @@ public class PropertyFileService {
     @Property
     public double getDoublePropertyByKey(InjectionPoint ip) {
         return Double.parseDouble(getStringPropertyByKey(ip));
+    }
+
+    @Produces
+    @Property
+    public Map<String, String> getMapPropertyByKey(InjectionPoint ip) {
+        String prop = getStringPropertyByKey(ip);
+
+        String[] providers = prop.split(";");
+
+        Map<String, String> result = new HashMap<String, String>();
+        for (String provider : providers) {
+            String[] keyValue = provider.split("=");
+            result.put(keyValue[0], keyValue[1]);
+        }
+
+        return result;
     }
 
     @Produces

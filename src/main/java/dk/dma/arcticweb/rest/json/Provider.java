@@ -13,32 +13,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.arcticweb.rest.json;
 
-import dk.dma.arcticweb.service.IceObservationService;
-import dk.dma.embryo.domain.IceObservation;
+/**
+ * @author Jesper Tejlgaard
+ */
+public class Provider {
+    private String key;
+    private String txt;
+    
+    public Provider(String key, String txt) {
+        super();
+        this.key = key;
+        this.txt = txt;
+    }
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-
-import java.util.List;
-
-@Path("/ice")
-public class IceObservationRestService {
-    @Inject
-    private IceObservationService iceObservationService;
-
-    @GET
-    @Path("/list")
-    @Produces("application/json")
-    @GZIP
-    @NoCache
-    public List<IceObservation> listIceObservations() {
-        return iceObservationService.listAvailableIceObservations();
+    public String getKey() {
+        return key;
+    }
+    public void setKey(String key) {
+        this.key = key;
+    }
+    public String getTxt() {
+        return txt;
+    }
+    public void setTxt(String txt) {
+        this.txt = txt;
     }
 }

@@ -34,6 +34,11 @@ public class EmbryoLogServiceImpl implements EmbryoLogService {
         this.className = klass.getName();
     }
 
+    public EmbryoLogServiceImpl(LogEntryDao logEntryDao, Class<?> klass, String extraQualifier) {
+        this.logEntryDao = logEntryDao;
+        this.className = klass.getName() + "." + extraQualifier;
+    }
+
     public void info(String message) {
         LogEntry entry = new LogEntry();
         entry.setTs(DateTime.now(DateTimeZone.UTC));

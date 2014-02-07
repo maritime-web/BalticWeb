@@ -15,9 +15,6 @@
  */
 package dk.dma.arcticweb.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +24,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
+import dk.dma.arcticweb.component.ice.Shape2IceTransformer;
+import dk.dma.arcticweb.component.ice.Shape2IceTransformerFactory;
 import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
+import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.domain.IceObservation;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 import dk.dma.embryo.security.AuthorizationChecker;
@@ -43,60 +39,25 @@ import dk.dma.embryo.security.authorization.RolesAllowAll;
 public class IceObservationServiceImpl implements IceObservationService {
 
     @Inject
-    ShapeFileMeasurementDao shapeFileMeasurementDao;
+    private ShapeFileMeasurementDao shapeFileMeasurementDao;
 
-    private static final Map<String, String> SOURCES = new HashMap<>();
-    static {
-        SOURCES.put("dmi.", "DMI");
-        SOURCES.put("aari.", "AARI");
+    @Property(value = "embryo.iceChart.providers")
+    @Inject
+    private Map<String, String> providers;
+    
+    @Inject
+    private Shape2IceTransformerFactory transformerFactory;
+
+    @Override
+    @RolesAllowAll
+    public Map<String, String> listIceChartProviders() {
+        return providers;
     }
 
     @RolesAllowAll
-    public List<IceObservation> listAvailableIceObservations() {
-        List<IceObservation> iceObservations = new ArrayList<>();
-
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmm").withZone(DateTimeZone.UTC);
-
-        for (ShapeFileMeasurement sfm : shapeFileMeasurementDao.getAll(ShapeFileMeasurement.class)) {
-            Date date = formatter.parseDateTime(sfm.getFileName().substring(0, 12)).toDate();
-            String region = sfm.getFileName().substring(13);
-
-            switch (region) {
-            case "CapeFarewell_RIC":
-                region = "Cape Farewell";
-                break;
-            case "CentralWest_RIC":
-                region = "Central West";
-                break;
-            case "Greenland_WA":
-                region = "Greenland Overview";
-                break;
-            case "NorthEast_RIC":
-                region = "North East";
-                break;
-            case "NorthWest_RIC":
-                region = "North West";
-                break;
-            case "Qaanaaq_RIC":
-                region = "Qaanaaq";
-                break;
-            case "SouthEast_RIC":
-                region = "South East";
-                break;
-            case "SouthWest_RIC":
-                region = "South West";
-                break;
-            case "aari_arc":
-                region = "All Arctic";
-                break;
-            }
-
-            if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
-                iceObservations.add(new IceObservation(SOURCES.get(sfm.getPrefix()), region, date, sfm.getFileSize(),
-                        sfm.getPrefix() + sfm.getFileName()));
-            }
-        }
-
-        return iceObservations;
+    public List<IceObservation> listAvailableIceObservations(String provider) {
+        List<ShapeFileMeasurement> shapeMeasurements = shapeFileMeasurementDao.list(provider);
+        Shape2IceTransformer transformer = transformerFactory.createTransformer(provider);
+        return transformer.transform(shapeMeasurements);
     }
 }

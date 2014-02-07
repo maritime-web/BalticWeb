@@ -20,20 +20,26 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @NamedQueries({
-        @NamedQuery(name = "ShapeFileMeasurement:lookup", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.fileName = :fileName AND m.prefix = :prefix"),
-        @NamedQuery(name = "ShapeFileMeasurement:deleteAll", query = "DELETE FROM ShapeFileMeasurement m WHERE m.prefix = :prefix"),
-        @NamedQuery(name = "ShapeFileMeasurement:list", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.prefix = :prefix")
-})
+        @NamedQuery(name = "ShapeFileMeasurement:lookup", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.fileName = :fileName AND m.provider = :provider"),
+        @NamedQuery(name = "ShapeFileMeasurement:deleteAll", query = "DELETE FROM ShapeFileMeasurement m WHERE m.provider = :provider"),
+        @NamedQuery(name = "ShapeFileMeasurement:list", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.provider = :provider") })
 @Entity
 public class ShapeFileMeasurement extends BaseEntity<Long> {
     private static final long serialVersionUID = -3131809653155886572L;
 
     private long fileSize;
     private String fileName;
-    private String prefix;
+    private String provider;
 
     public ShapeFileMeasurement() {
         super();
+    }
+
+    public ShapeFileMeasurement(String provider, String fileName, long fileSize) {
+        super();
+        this.fileSize = fileSize;
+        this.fileName = fileName;
+        this.provider = provider;
     }
 
     public long getFileSize() {
@@ -52,11 +58,16 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
         this.fileName = fileName;
     }
 
-    public String getPrefix() {
-        return prefix;
+    public String getProvider() {
+        return provider;
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    @Override
+    public String toString() {
+        return "ShapeFileMeasurement [fileSize=" + fileSize + ", fileName=" + fileName + ", provider=" + provider + "]";
     }
 }

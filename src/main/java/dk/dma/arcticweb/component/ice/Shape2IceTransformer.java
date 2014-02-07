@@ -13,16 +13,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.service;
-
-import dk.dma.embryo.domain.IceObservation;
+package dk.dma.arcticweb.component.ice;
 
 import java.util.List;
-import java.util.Map;
 
-public interface IceObservationService {
+import dk.dma.embryo.domain.IceObservation;
+import dk.dma.embryo.domain.ShapeFileMeasurement;
+
+/**
+ * @author Jesper Tejlgaard
+ */
+public interface Shape2IceTransformer {
     
-    Map<String, String> listIceChartProviders();
-        
-    List<IceObservation> listAvailableIceObservations(String provider);
+    List<IceObservation> transform(List<ShapeFileMeasurement> shapes);
+    
+    String getProvider();
+
 }

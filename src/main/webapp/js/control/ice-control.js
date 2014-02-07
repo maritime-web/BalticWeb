@@ -1,4 +1,145 @@
 $(function() {
+
+    embryo.IceController = function($scope, IceService, $timeout) {
+        $scope.selectedProvider = {
+            key : null
+        };
+
+        function loadProviders() {
+            IceService.providers(function(providers) {
+                $scope.providers = providers;
+                if (providers.length > 0) {
+                    $scope.selectedProvider = providers[0];
+                    // what if selectedProvider is no longer present?
+                }
+            }, function(error) {
+                alert(error);
+            });
+        }
+
+        $scope.getSelected = function() {
+            return $scope.selectedProvider;
+        }
+
+        $scope.$watch($scope.getSelected, function(newValue, oldValue) {
+            if (newValue.key) {
+                requestIceObservations();
+                $("#iceControlPanel .collapse").data("collapse", null);
+                openCollapse("#iceControlPanel #icpIceMaps");
+            }
+        }, true);
+
+        embryo.authenticated(function() {
+            loadProviders();
+            $timeout(loadProviders, 24 * 60 * 1000 * 60);
+            $timeout(requestIceObservations, 2 * 60 * 1000 * 60);
+        });
+
+        function requestIceObservations() {
+            var messageId = embryo.messagePanel.show({
+                text : "Requesting list of ice charts ..."
+            })
+
+            embryo.ice.service
+                    .listnew(
+                            $scope.selectedProvider.key,
+                            function(error, data) {
+                                if (data) {
+                                    embryo.messagePanel.replace(messageId, {
+                                        text : "List of " + data.length + " ice charts downloaded.",
+                                        type : "success"
+                                    });
+
+                                    data.sort(function(a, b) {
+                                        return b.date - a.date;
+                                    });
+
+                                    var regions = [];
+
+                                    for ( var i in data) {
+                                        if (regions.indexOf(data[i].region) < 0)
+                                            regions.push(data[i].region);
+                                    }
+
+                                    var sortFunction = function(reg1, reg2) {
+                                        if (reg1.indexOf("All Arctic") >= 0 && reg2.indexOf("All Arctic") < 0) {
+                                            return 1;
+                                        } else if (reg1.indexOf("All Arctic") < 0 && reg2.indexOf("All Arctic") >= 0) {
+                                            return -1;
+                                        } else if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
+                                            return 1;
+                                        } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
+                                            return -1;
+                                        }
+                                        return reg1.localeCompare(reg2);
+                                    }
+
+                                    regions.sort(sortFunction);
+
+                                    var html = "";
+
+                                    for ( var j in regions) {
+                                        var region = regions[j];
+                                        html += "<tr><td colspan=4><h5>" + region + "</h5></td></tr>";
+
+                                        for ( var i in data) {
+                                            if (data[i].region == region)
+                                                html += "<tr><td>"
+                                                        + data[i].source
+                                                        + "</td><td>"
+                                                        + formatTime(data[i].date)
+                                                        + "</td><td>"
+                                                        + formatSize(data[i].size)
+                                                        + "</td><td><a mid="
+                                                        + i
+                                                        + " href=# class='download'>download</a><span class='zoomhide'>"
+                                                        + "<a href=# class='zoom'>zoom</a> / <a href=# class='hideIce'>hide</a></span></td></tr>";
+                                        }
+
+                                    }
+
+                                    $("#icpIceMaps table").html(html);
+
+                                    // $("#icpIceMaps
+                                    // td:first").css("border-top", "none");
+                                    $("#icpIceMaps table span.zoomhide").css("display", "none");
+                                    $("#icpIceMaps table a.download").click(function(e) {
+                                        e.preventDefault();
+                                        var row = $(this).parents("tr");
+                                        requestShapefile(data[$(this).attr("mid")].shapeFileName, function() {
+                                            $("#icpIceMaps table tr").removeClass("alert");
+                                            $(row).addClass("alert");
+                                            $("#icpIceMaps table span.zoomhide").css("display", "none");
+                                            $("#icpIceMaps table a.download").css("display", "block");
+                                            $("span.zoomhide", row).css("display", "block");
+                                            $("a.download", row).css("display", "none");
+                                        });
+                                        // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
+                                        // alert(data[$(this).attr("href")].shapeFileName);
+                                    });
+                                    $("#icpIceMaps table a.zoom").click(function(e) {
+                                        e.preventDefault();
+                                        embryo.map.zoomToExtent(iceLayer.layers);
+                                    });
+                                    $("#icpIceMaps table a.hideIce").click(function(e) {
+                                        e.preventDefault();
+                                        iceLayer.clear();
+                                        $("span.zoomhide").css("display", "none");
+                                        var row = $(this).parents("tr");
+                                        $("a.download", row).css("display", "block");
+                                    });
+                                } else {
+                                    embryo.messagePanel.replace(messageId, {
+                                        text : "Server returned error code: " + data.status
+                                                + " requesting list of ice observations.",
+                                        type : "error"
+                                    })
+                                }
+                            })
+        }
+
+    }
+
     function createIceTable(d) {
         function c(v) {
             switch (v) {
@@ -243,7 +384,7 @@ $(function() {
         var messageId = embryo.messagePanel.show({
             text : "Requesting " + name + " data ..."
         });
-        
+
         embryo.ice.service.shapes(name, function(error, data) {
             if (data) {
                 messageId = embryo.messagePanel.replace(messageId, {
@@ -260,19 +401,19 @@ $(function() {
                             totalPoints += s.fragments[i].polygons[j].length;
                     }
                 }
-                
-                function finishedDrawing(){
+
+                function finishedDrawing() {
                     embryo.messagePanel.replace(messageId, {
                         text : totalPolygons + " polygons. " + totalPoints + " points drawn.",
                         type : "success"
                     });
                     embryo.logger.log(totalPolygons + " polygons. " + totalPoints + " points drawn.");
 
-                    if (onSuccess){
+                    if (onSuccess) {
                         onSuccess();
                     }
                 }
-                
+
                 // Draw shapfile a bit later, just let the browser update the
                 // view and show above message
                 window.setTimeout(function() {
@@ -288,108 +429,11 @@ $(function() {
         });
     }
 
-    function requestIceObservations() {
-        var messageId = embryo.messagePanel.show({
-            text : "Requesting list of ice charts ..."
-        })
-
-        embryo.ice.service.list(function(error, data) {
-            if (data) {
-                embryo.messagePanel.replace(messageId, {
-                    text : "List of " + data.length + " ice charts downloaded.",
-                    type : "success"
-                });
-
-                data.sort(function(a, b) {
-                    return b.date - a.date;
-                });
-
-                var regions = [];
-
-                for ( var i in data) {
-                    if (regions.indexOf(data[i].region) < 0)
-                        regions.push(data[i].region);
-                }
-
-                var sortFunction = function(reg1, reg2) {
-                    if (reg1.indexOf("All Arctic") >= 0 && reg2.indexOf("All Arctic") < 0) {
-                        return 1;
-                    } else if (reg1.indexOf("All Arctic") < 0 && reg2.indexOf("All Arctic") >= 0) {
-                        return -1;
-                    } else if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
-                        return 1;
-                    } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
-                        return -1;
-                    }
-                    return reg1.localeCompare(reg2);
-                }
-
-                regions.sort(sortFunction);
-
-                var html = "";
-
-                for ( var j in regions) {
-                    var region = regions[j];
-                    html += "<tr><td colspan=4><h5>" + region + "</h5></td></tr>";
-
-                    for ( var i in data) {
-                        if (data[i].region == region)
-                            html += "<tr><td>" + data[i].source + "</td><td>" + formatTime(data[i].date) + "</td><td>"
-                                    + formatSize(data[i].size) + "</td><td><a mid=" + i
-                                    + " href=# class='download'>download</a><span class='zoomhide'>"
-                                    + "<a href=# class='zoom'>zoom</a> / <a href=# class='hideIce'>hide</a></span></td></tr>";
-                    }
-
-                }
-
-                $("#icpIceMaps table").html(html);
-
-                // $("#icpIceMaps td:first").css("border-top", "none");
-                $("#icpIceMaps table span.zoomhide").css("display", "none");
-                $("#icpIceMaps table a.download").click(function(e) {
-                    e.preventDefault();
-                    var row = $(this).parents("tr");
-                    requestShapefile(data[$(this).attr("mid")].shapeFileName, function() {
-                        $("#icpIceMaps table tr").removeClass("alert");
-                        $(row).addClass("alert");
-                        $("#icpIceMaps table span.zoomhide").css("display", "none");
-                        $("#icpIceMaps table a.download").css("display", "block");
-                        $("span.zoomhide", row).css("display", "block");
-                        $("a.download", row).css("display", "none");
-                    });
-                    // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
-                    // alert(data[$(this).attr("href")].shapeFileName);
-                });
-                $("#icpIceMaps table a.zoom").click(function(e) {
-                    e.preventDefault();
-                    embryo.map.zoomToExtent(iceLayer.layers);
-                });
-                $("#icpIceMaps table a.hideIce").click(function(e) {
-                    e.preventDefault();
-                    iceLayer.clear();
-                    $("span.zoomhide").css("display", "none");
-                    var row = $(this).parents("tr");
-                    $("a.download", row).css("display", "block");
-                });
-            } else {
-                embryo.messagePanel.replace(messageId, {
-                    text : "Server returned error code: " + data.status + " requesting list of ice observations.",
-                    type : "error"
-                })
-            }
-        })
-    }
-
-    embryo.authenticated(function() {
-        setInterval(requestIceObservations, 2 * 60 * 1000 * 60);
-        requestIceObservations();
-    });
-
     embryo.groupChanged(function(e) {
         if (e.groupId == "ice") {
             $("#iceControlPanel").css("display", "block");
-            $("#iceControlPanel .collapse").data("collapse", null)
-            openCollapse("#iceControlPanel .accordion-body:first");
+            $("#iceControlPanel .collapse").data("collapse", null);
+            openCollapse("#iceControlPanel #icpIceMaps");
         } else {
             $("#iceControlPanel").css("display", "none");
         }

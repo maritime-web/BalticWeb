@@ -24,7 +24,6 @@ import javax.ws.rs.core.Application;
 
 import dk.dma.embryo.rest.AuthenticationService;
 import dk.dma.embryo.rest.BerthRestService;
-import dk.dma.embryo.rest.IceObservationRestService;
 import dk.dma.embryo.rest.LogEntryRestService;
 import dk.dma.embryo.rest.MetocRestService;
 import dk.dma.embryo.rest.MsiRestService;
