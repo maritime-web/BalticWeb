@@ -90,10 +90,12 @@ public class ShapeFileMeasurerJob {
         logger.info("Initializing {} with {}", this.getClass().getSimpleName());
 
         for (String providerKey : providers.keySet()) {
-            String property = "embryo.iceCharts." + providerKey + ".localDirectory";
+            String property = "embryo.iceChart." + providerKey + ".localDirectory";
             String value = propertyFileService.getProperty(property, true);
             if (value != null) {
-                directories.put(property, value);
+                directories.put(providerKey, value);
+            }else{
+                logger.info("Property {} not found", property);
             }
         }
 
