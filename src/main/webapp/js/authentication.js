@@ -86,11 +86,11 @@ embryo
                     html += "<a class='dropdown-toggle' data-toggle='dropdown' href='#'><i class='icon-user icon-white' style='vertical-align:middle; margin-bottom: 4px'></i> ";
                     html += embryo.authentication.userName;
                     html += "</a>";
-                    html += '<ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">'
-                    html += '<li><a tabindex="-1" href="docs/ArcticWeb_user_manual_v1_1.pdf" target="_blank">Manual</a></li>'
-                    html += '<li class="divider"></li>'
-                    html += '<li><a id="logout" tabindex="-1" href="#">Log Out</a></li>'
-                    html += '</ul></div>'
+                    html += '<ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
+                    html += '<li><a tabindex="-1" href="docs/ArcticWeb_user_manual_v1.2.pdf" target="_blank">Manual</a></li>';
+                    html += '<li class="divider"></li>';
+                    html += '<li><a id="logout" tabindex="-1" href="#">Log Out</a></li>';
+                    html += '</ul></div>';
                     html += '</li></ul>';
                     html += '';
 
