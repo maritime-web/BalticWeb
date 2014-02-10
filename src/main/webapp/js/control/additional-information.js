@@ -53,7 +53,7 @@ embryo.additionalInformation.distanceCircles = {
         this.layer = DistanceLayerSingleton.getInstance();
     },
     available : function(vessel, vesselDetails) {
-        return vesselDetails.ais && vesselDetails.ais.sog > 0;
+        return vessel.msog > 0;
     },
     show : function(vessel, vesselDetails) {
         this.layer.drawDistanceCircles(vessel, vesselDetails);
