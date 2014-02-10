@@ -87,21 +87,18 @@ public class ShapeFileMeasurerJob {
 
     @PostConstruct
     public void init() throws IOException {
-        logger.info("Initializing {} with {}", this.getClass().getSimpleName());
-
-        for (String providerKey : providers.keySet()) {
-            String property = "embryo.iceChart." + providerKey + ".localDirectory";
-            String value = propertyFileService.getProperty(property, true);
-            if (value != null) {
-                directories.put(providerKey, value);
-            }else{
-                logger.info("Property {} not found", property);
-            }
-        }
-
         if (cron != null) {
-            logger.info("Initializing {} with {} and {}", this.getClass().getSimpleName(), cron.toString(),
-                    directories.toString());
+            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            for (String providerKey : providers.keySet()) {
+                String property = "embryo.iceChart." + providerKey + ".localDirectory";
+                String value = propertyFileService.getProperty(property, true);
+                if (value != null) {
+                    directories.put(providerKey, value);
+                } else {
+                    logger.info("Property {} not found", property);
+                }
+            }
+            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), directories.toString());
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("Cron job not scheduled.");
@@ -137,12 +134,12 @@ public class ShapeFileMeasurerJob {
         long start = new Date().getTime();
 
         logger.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
-        
+
         for (Entry<String, String> directory : directories.entrySet()) {
             String provider = directory.getKey();
 
             EmbryoLogService embryoLogger = embryoLogFactory.getLogger(this.getClass(), provider);
-            
+
             try {
                 ShapeFileMeasurer measurer = new ShapeFileMeasurer(service, shapeFileMeasurementDao, embryoLogger);
                 measurer.measureFiles(directory.getValue(), provider, start);
@@ -183,7 +180,8 @@ public class ShapeFileMeasurerJob {
         private final ShapeFileMeasurementDao dao;
         private final EmbryoLogService embryoLogger;
 
-        public ShapeFileMeasurer(ShapeFileService service, ShapeFileMeasurementDao dao, EmbryoLogService embryoLogService) {
+        public ShapeFileMeasurer(ShapeFileService service, ShapeFileMeasurementDao dao,
+                EmbryoLogService embryoLogService) {
             super();
             this.service = service;
             this.dao = dao;

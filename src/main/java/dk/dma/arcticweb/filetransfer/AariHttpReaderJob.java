@@ -118,6 +118,7 @@ public class AariHttpReaderJob {
                 }
             }
 
+            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), paths);
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("AARI HTTP site is not configured - cron job not scheduled.");
