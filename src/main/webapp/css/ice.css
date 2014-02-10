@@ -1,0 +1,8 @@
+#icpIceChartProviders table td:first-child{
+	padding-left:0px;	
+	padding-right:0px;	
+}
+
+#icpIceChartProviders table td input{
+	margin:0;	
+}

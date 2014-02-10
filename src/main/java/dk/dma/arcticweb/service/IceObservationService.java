@@ -15,14 +15,14 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.embryo.domain.IceObservation;
-
 import java.util.List;
-import java.util.Map;
+
+import dk.dma.embryo.domain.IceObservation;
+import dk.dma.embryo.domain.Provider;
 
 public interface IceObservationService {
     
-    Map<String, String> listIceChartProviders();
+    List<Provider> listIceChartProviders();
         
     List<IceObservation> listAvailableIceObservations(String provider);
 }

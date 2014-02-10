@@ -9,10 +9,13 @@
 			</div>
 			<div id="icpIceChartProviders" class="accordion-body collapse">
 				<div class="accordion-inner">
-					<label class="radio" x-ng-repeat="provider in providers"> 
-						<input type="radio" x-ng-model="$parent.selectedProvider" ng-value="provider" name="providers">
-						{{provider.txt}}
-					</label>
+					<table class="table">
+						<tr x-ng-repeat="provider in providers">
+							<td><input type="radio" x-ng-model="$parent.selectedProvider" ng-value="provider" name="providers"/></td>
+							<td>{{provider.name}}</td>
+							<td>{{provider.shortName}}</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>

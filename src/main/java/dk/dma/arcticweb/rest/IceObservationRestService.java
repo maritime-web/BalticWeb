@@ -30,9 +30,9 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.rest.json.Provider;
 import dk.dma.arcticweb.service.IceObservationService;
 import dk.dma.embryo.domain.IceObservation;
+import dk.dma.embryo.domain.Provider;
 
 @Path("/ice")
 public class IceObservationRestService {
@@ -41,6 +41,8 @@ public class IceObservationRestService {
 
     @Inject
     private Logger logger;
+    
+    
 
     
     @GET
@@ -49,14 +51,7 @@ public class IceObservationRestService {
     @GZIP
     @NoCache
     public List<Provider> listIceChartProviders() {
-        Map<String, String> providers = iceObservationService.listIceChartProviders();
-        List<Provider> result = new ArrayList<>(providers.size());
-        
-        for(Entry<String, String> prov : providers.entrySet()){
-            result.add(new Provider(prov.getKey(), prov.getValue()));
-        }
-        
-        return result;
+        return iceObservationService.listIceChartProviders();
     }
 
     @GET

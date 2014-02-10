@@ -13,31 +13,45 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.arcticweb.rest.json;
+package dk.dma.embryo.domain;
 
 /**
  * @author Jesper Tejlgaard
  */
 public class Provider {
     private String key;
-    private String txt;
-    
-    public Provider(String key, String txt) {
+    private String name;
+    private String shortName;
+
+    public Provider(String key, String name, String shortName) {
         super();
         this.key = key;
-        this.txt = txt;
+        this.name = name;
+        this.shortName = shortName;
     }
 
     public String getKey() {
         return key;
     }
+
     public void setKey(String key) {
         this.key = key;
     }
-    public String getTxt() {
-        return txt;
+
+    public String getShortName() {
+        return shortName;
     }
-    public void setTxt(String txt) {
-        this.txt = txt;
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

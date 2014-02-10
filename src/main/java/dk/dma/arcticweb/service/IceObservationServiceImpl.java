@@ -15,8 +15,10 @@
  */
 package dk.dma.arcticweb.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -28,7 +30,9 @@ import dk.dma.arcticweb.component.ice.Shape2IceTransformer;
 import dk.dma.arcticweb.component.ice.Shape2IceTransformerFactory;
 import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
 import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.configuration.PropertyFileService;
 import dk.dma.embryo.domain.IceObservation;
+import dk.dma.embryo.domain.Provider;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
@@ -48,10 +52,21 @@ public class IceObservationServiceImpl implements IceObservationService {
     @Inject
     private Shape2IceTransformerFactory transformerFactory;
 
+    @Inject
+    private PropertyFileService propertyService;
+
+    
     @Override
     @RolesAllowAll
-    public Map<String, String> listIceChartProviders() {
-        return providers;
+    public List<Provider> listIceChartProviders() {
+        List<Provider> result = new ArrayList<>(providers.size());
+        
+        for(Entry<String, String> prov : providers.entrySet()){
+            String name = propertyService.getProperty("embryo.iceChart." + prov.getKey() + ".name");
+            result.add(new Provider(prov.getKey(), name, prov.getValue()));
+        }
+        
+        return result;
     }
 
     @RolesAllowAll
