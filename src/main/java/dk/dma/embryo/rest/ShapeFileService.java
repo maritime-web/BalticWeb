@@ -146,18 +146,9 @@ public class ShapeFileService {
             int index = id.indexOf(".");
             String provider = id.substring(0, index);
             
-            System.out.println(provider);
-            System.out.println(directories);
-            
             if (directories.containsKey(provider)) {
                 String localDirectory = directories.get(provider);
-                
-                System.out.println(localDirectory);
-                
                 id = id.substring(index + 1);
-                
-                System.out.println(id);
-
                 shpIs = new FileInputStream(localDirectory + "/" + id + ".shp");
                 dbfIs = new FileInputStream(localDirectory + "/" + id + ".dbf");
                 prjIs = new FileInputStream(localDirectory + "/" + id + ".prj");
