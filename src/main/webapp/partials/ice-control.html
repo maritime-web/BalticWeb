@@ -1,6 +1,6 @@
 <div id="iceControlPanel" class="controlPanel" x-ng-controller="embryo.IceController">
 	<div class="accordion" id="icpAccordion">
-		<div class="accordion-group">
+		<div class="accordion-group" x-ng-show="providers && providers.length > 1">
 			<div class="accordion-heading">
 				<h4>
 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpIceChartProviders">
