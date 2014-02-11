@@ -164,16 +164,18 @@ public class VesselDetails {
         private String routeId;
         private Boolean historicalTrack;
         private Boolean greenpos;
+        private Boolean schedule;
 
         public AdditionalInformation() {
 
         }
 
-        public AdditionalInformation(String routeId, Boolean historicalTrack, Boolean greenpos) {
+        public AdditionalInformation(String routeId, Boolean historicalTrack, Boolean greenpos, Boolean schedule) {
             super();
             this.routeId = routeId;
             this.historicalTrack = historicalTrack;
             this.greenpos = greenpos;
+            this.schedule = schedule;
         }
 
         public String getRouteId() {
@@ -198,6 +200,14 @@ public class VesselDetails {
 
         public void setGreenpos(Boolean greenpos) {
             this.greenpos = greenpos;
+        }
+
+        public Boolean getSchedule() {
+            return schedule;
+        }
+
+        public void setSchedule(Boolean schedule) {
+            this.schedule = schedule;
         } 
     }
 }

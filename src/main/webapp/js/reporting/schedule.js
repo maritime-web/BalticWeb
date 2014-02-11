@@ -215,7 +215,7 @@
         embryo.controllers.scheduleView = {
             title : "Schedule",
             available : function(vesselOverview, vesselDetails) {
-                return vesselOverview.inAW;
+                return vesselDetails.additionalInformation.schedule;
             },
             show : function(vesselOverview, vesselDetails) {
                 $scope.collapse = false;

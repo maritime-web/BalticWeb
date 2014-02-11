@@ -43,6 +43,7 @@ import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.domain.ParseUtils;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Vessel;
+import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.rest.json.VesselDetails;
 import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
 import dk.dma.embryo.rest.json.VesselOverview;
@@ -173,7 +174,7 @@ public class VesselRestService {
 
             VesselDetails details;
             Vessel vessel = vesselService.getVessel(mmsi);
-
+            List<Voyage> schedule = null;
             Route route = null;
 
             boolean greenpos = greenposService.findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1))
@@ -182,6 +183,7 @@ public class VesselRestService {
             if (vessel != null) {
                 route = scheduleService.getActiveRoute(mmsi);
                 details = vessel.toJsonModel();
+                schedule = scheduleService.getSchedule(mmsi);
                 details.getAis().putAll(result);
             } else {
                 details = new VesselDetails();
@@ -189,7 +191,7 @@ public class VesselRestService {
             }
 
             details.setAdditionalInformation(new AdditionalInformation(route != null ? route.getEnavId() : null,
-                    historicalTrack, greenpos));
+                    historicalTrack, greenpos, schedule != null && schedule.size() > 0));
 
             return details;
 
@@ -203,6 +205,7 @@ public class VesselRestService {
             if (vessel != null) {
                 VesselDetails details;
                 Route route = scheduleService.getActiveRoute(mmsi);
+                List<Voyage> schedule = scheduleService.getSchedule(mmsi);
 
                 boolean greenpos = greenposService.findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1))
                         .size() > 0;
@@ -215,7 +218,7 @@ public class VesselRestService {
                 details.getAis().put("name", "" + vessel.getAisData().getName());
 
                 details.setAdditionalInformation(new AdditionalInformation(route != null ? route.getEnavId() : null,
-                        false, greenpos));
+                        false, greenpos, schedule != null && schedule.size() > 0));
 
                 return details;
             } else {
