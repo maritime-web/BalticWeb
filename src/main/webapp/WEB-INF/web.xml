@@ -54,11 +54,11 @@
 
     <filter-mapping>
         <filter-name>SetCacheManifestContentTypeFilter</filter-name>
-        <url-pattern>/front.cache-manifest</url-pattern>
+        <url-pattern>/index.cache-manifest</url-pattern>
     </filter-mapping>
 
     <welcome-file-list>
-        <welcome-file>front.html</welcome-file>
+        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
 </web-app>

@@ -54,19 +54,34 @@ embryo
 
                 if (embryo.authentication.userName == null) {
                     var html = "";
-
+                    
+                    html += '<ul  class="nav navtabs">';
+                    html += ' <li class="dropdown">';
+                    html += '  <a class="dropdown-toggle" data-toggle="dropdown" href="#">About</a>';
+                    html += '  <ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
+                    html += '   <li><a tabindex="-1" href="index.html#cookies">Cookies</a></li>';
+                    html += '   <li><a tabindex="-1" href="index.html#disclaimer">Disclaimer</a></li>';
+                    html += '  </ul>';
+                    html += ' </li>';
+                    html += '</ul>';
                     html += "<span>";
                     html += "<a href=#login>Log In</a> | <a href=#requestAccess>Request Access</a>"
                     html += "</span>";
 
                     $("#authentication").html(html);
 
+                    $("#authentication #disclaimerLink").click(function(e) {
+                        e.preventDefault();
+                        $("#disclaimer").modal("show");
+                    });
+                    
                     $("#authentication a[href=\"#login\"]").click(function(e) {
                         e.preventDefault();
                         clearMessages();
                         detectBrowser();
                         $("#login").modal("show");
                     });
+                    
 
                     $("#authentication a[href=\"#requestAccess\"]").click(function(e) {
                         e.preventDefault();
@@ -76,33 +91,36 @@ embryo
                     $("#requestAccessBigButton").click(function(e) {
                         e.preventDefault();
                         embryo.authentication.showRequestAccess();
-                    })
+                    });
 
                 } else {
                     var html = "";
-                    html += '<ul  class="nav navtabs"><li>';
-                    html += '<a id="cookies" href="#"><i class="icon-info-sign icon-white" style="vertical-align: middle; margin-bottom: 4px"></i> Cookies</a>';
-                    html += '</li><li class="dropdown">';
-                    html += "<a class='dropdown-toggle' data-toggle='dropdown' href='#'><i class='icon-user icon-white' style='vertical-align:middle; margin-bottom: 4px'></i> ";
+                    html += '<ul  class="nav navtabs">';
+                    html += ' <li class="dropdown">';
+                    html += '  <a class="dropdown-toggle" data-toggle="dropdown" href="#">About</a>';
+                    html += '  <ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
+                    html += '   <li><a tabindex="-1" href="index.html#cookies">Cookies</a></li>';
+                    html += '   <li><a tabindex="-1" href="index.html#disclaimer">Disclaimer</a></li>';
+                    html += '  </ul>';
+                    html += ' </li>';
+                    html += ' <li class="dropdown">';
+                    html += "  <a class='dropdown-toggle' data-toggle='dropdown' href='#'><i class='icon-user icon-white' style='vertical-align:middle; margin-bottom: 4px'></i> ";
                     html += embryo.authentication.userName;
-                    html += "</a>";
-                    html += '<ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
-                    html += '<li><a tabindex="-1" href="docs/ArcticWeb_user_manual_v1.2.pdf" target="_blank">Manual</a></li>';
-                    html += '<li class="divider"></li>';
-                    html += '<li><a id="logout" tabindex="-1" href="#">Log Out</a></li>';
-                    html += '</ul></div>';
-                    html += '</li></ul>';
-                    html += '';
+                    html += "  </a>";
+                    html += '  <ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
+                    html += '   <li><a tabindex="-1" href="docs/ArcticWeb_user_manual_v1.2.pdf" target="_blank">Manual</a></li>';
+                    html += '   <li class="divider"></li>';
+                    html += '   <li><a id="logout" tabindex="-1" href="#">Log Out</a></li>';
+                    html += '  </ul>';
+                    html += ' </li>';
+                    html += '</ul>';
 
                     $("#authentication").html(html);
 
-                    $("#authentication #cookies").click(function(e) {
+                    $("#authentication a.dropdown-toggle").click(function(e) {
                         e.preventDefault();
-
-                        embryo.vessel.actions.hide();
-                        embryo.controllers.cookies.show({});
                     });
-
+                    
                     $("#authentication #logout").click(function(e) {
                         e.preventDefault();
 
@@ -117,7 +135,7 @@ embryo
                                 sessionStorage.clear();
                                 localStorage.clear();
                                 setTimeout(function() {
-                                    location = "front.html";
+                                    location = "index.html";
                                 }, 100);
                             },
                             error : function(data) {
@@ -145,6 +163,7 @@ embryo
                 $('#cookiesUsage').css("display", "none");
             });
 
+            
             $("#login button.btn-primary").click(function(e) {
                 e.preventDefault();
                 var messageId = embryo.messagePanel.show({
@@ -165,7 +184,7 @@ embryo
                     success : function(data) {
                         sessionStorage.clear();
 
-                        if (location.pathname.indexOf("front.html") >= 0 || location.pathname.indexOf(".html") < 0) {
+                        if (location.pathname.indexOf("index.html") >= 0 || location.pathname.indexOf(".html") < 0) {
                             location.href = "map.html#/vessel";
                         }
                         embryo.authentication = data;

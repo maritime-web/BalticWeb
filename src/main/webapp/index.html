@@ -1,0 +1,103 @@
+<html lang="en" ng-app="embryo.index" manifest="index.cache-manifest" type="text/cache-manifest">
+
+<head>
+<meta charset="utf-8" />
+<title>ArcticWeb - Greenland</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
+<link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+<!-- build:css css/arcticweb-front.css -->
+<link href="css/style.css" rel="stylesheet">
+<link href="css/front.css" rel="stylesheet">
+<link href="css/cookie.css" rel="stylesheet">
+<!-- endbuild -->
+
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
+<script src="//code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js"></script>
+
+<!-- build:js js/arcticweb-front.js -->
+<script src="js/utils.js" defer="defer"></script>
+<script src="js/embryo.js" defer="defer"></script>
+<script src="js/authentication.js" defer="defer" type="text/javascript"></script>
+<script src="js/menu.js" defer="defer"></script>
+<!-- endbuild -->
+
+<script type="text/javascript">
+    var indexApp = angular.module('embryo.index', [ 'ngRoute' ]);
+
+    indexApp.config([ '$routeProvider', function($routeProvider) {
+        $routeProvider.when('/disclaimer', {
+            templateUrl : 'partials/disclaimer.html',
+        }).when('/cookies', {
+            templateUrl : 'partials/cookies.html',
+        }).when('/', {
+            templateUrl : 'partials/front.html',
+        }).otherwise({
+            redirectTo : '/front'
+        });
+    } ]);
+</script>
+
+</head>
+
+<body>
+	<div x-ng-include="'partials/authentication.html'"></div>
+	<div x-ng-include="'partials/menu.html'"></div>
+
+	<!-- ============================================= -->
+
+	<!-- Carousel
+================================================== -->
+
+	<!-- Container
+================================================== -->
+	<div id="contentContainer" class="container">
+
+		<div x-ng-view></div>
+		<div id="push"></div>
+
+	</div>
+	<footer class="footer">
+		<div class="container">
+			<hr class="soften">
+			<div class="row-fluid">
+				<div class="span3 copyright">
+					<div class="navbar">
+						<div class="navbar-inner">
+							<ul class="nav navtabs">
+								<li><span class="navbar-text">&copy; 2013 - 2014</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="span3">
+					<img src="img/dmi/dmi_eng_h70.png" />
+				</div>
+				<div class="span3 dmi">
+					<img src="img/dma/dma-logo-h50.png" />
+				</div>
+				<div class="span3 content">
+					<div class="navbar">
+						<div class="navbar-inner">
+							<ul class="nav navtabs pull-right">
+								<li><a href="index.html#disclaimer">Disclaimer</a></li>
+								<li class="divider-vertical"></li>
+								<li><a href="index.html#cookies">Cookies</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- ============================================= -->
+
+</body>
+</html>

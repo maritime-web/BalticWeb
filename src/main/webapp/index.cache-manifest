@@ -13,7 +13,7 @@ css/arcticweb-front.css
 //ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js
 //code.jquery.com/ui/1.9.1/jquery-ui.js
 //netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js
-//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js
+//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js
 
 js/arcticweb-front.js
 
@@ -28,5 +28,8 @@ img/front/ice.jpg
 
 partials/menu.html
 partials/authentication.html
+partials/front.html
+partials/disclaimer.html
+partials/cookies.html
 
-# Version: 8
+# Version: 9
