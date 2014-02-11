@@ -1,3 +1,27 @@
+.indexcontent{
+	margin-top:60px;
+}
+
+.indexcontent,.indexcontent td  {
+	font-size: 14px;
+	line-height: 20px;
+}
+
+#contentContainer{
+	min-height:100%;
+	height:auto!important;
+	margin:0 auto -120px;
+}
+
+#push, .footer{
+	height:120px;
+}
+
+
+h1{
+	text-align:center;
+}
+
 #myCarousel{
 	margin-top:65px;
 }
@@ -81,6 +105,10 @@ h3 {
 	line-height:inherit;
 }
 
+footer li{
+	line-height: 10px;
+}
+
 footer img{
 	margin-left: auto;
 	margin-right: auto;
@@ -92,8 +120,24 @@ footer .dmi img{
 }
 
 footer .copyright {
-	margin-top:20px;
-	margin-bottom:40px;
-	text-align:center;
+	text-align:left;
 }
 
+
+footer .navbar{
+	-webkit-box-shadow:none;
+	-moz-box-shadow:none;
+	box-shadow:none;
+}
+
+footer .navbar-inner{
+	background-image:none;
+	border:none;
+	background-color:inherit;
+	box-shadow:none;
+}
+
+
+#disclaimer h1{
+	margin-bottom:40px;
+}
