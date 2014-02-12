@@ -1,22 +1,23 @@
 <div id="switchBaseMapDialog" class="modal hide" tabindex="-1" role="dialog">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">x</button>
-        <h2>Switch Base Map</h2>
-    </div>
-    <div class="modal-body">
-        <label class="radio">
-            <input type="radio" name="bsMap" id="bsOpenStreetMap">
-            <b>Open Street Map</b><br>Detailed on demand map - continous internet usage
-        </label>
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">x</button>
+		<h2>Switch Base Map</h2>
+	</div>
+	<div class="modal-body">
+		<label class="radio"> <input type="radio" name="bsMap" id="bsOpenStreetMap"> <b>Open Street Map</b><br>Detailed
+			on demand map - continuous Internet usage<br> <span style="display:none" id="accelerate"> <br/><input
+				type="checkbox" name="accelerate" /> Use Chrome hardware acceleration to improve user experience. <br/><br/><i>Without hardware
+				acceleration the map may blink twice when drawn or dragged. With hardware acceleration the map may be replaced by a
+				white screen if your hardware does not meet the Chrome expectations.</i><br/><br/>
+		</span>
 
-        <label class="radio">
-            <input type="radio" name="bsMap" id="bsSimpleVectorMap">
-            <b>Simple Vector Map</b><br>Low resolution map - one off internet usage (103 KB)
-        </label>
+		</label> <label class="radio"> <input type="radio" name="bsMap" id="bsSimpleVectorMap"> <b>Simple Vector
+				Map</b><br>Low resolution map - one off Internet usage (103 KB)
+		</label>
 
-        <div style="margin-top: 24px">
-            <button class="btn btn-primary">Switch</button>
-            <a role="button" class="btn" data-toggle="modal" data-dismiss="modal">Close</a>
-        </div>
-    </div>
+		<div style="margin-top: 24px">
+			<button class="btn btn-primary">Switch</button>
+			<a role="button" class="btn" data-toggle="modal" data-dismiss="modal">Close</a>
+		</div>
+	</div>
 </div>
