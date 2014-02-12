@@ -84,29 +84,29 @@ public class UserServiceImpl implements UserService {
         realmDao.saveEntity(su);
     }
 
-    public void edit(String login, Long mmsi, String email, String role){
-            SecuredUser user = realmDao.findByUsername(login);
-            
-            user.setEmail(email);
-            
-            if(user.getRole() != null && !user.getRole().getLogicalName().equalsIgnoreCase(role)){
-                if(user.getRole().getClass() == SailorRole.class){
-                    Role oldRole = user.getRole();
-                    Vessel oldVessel = ((SailorRole)oldRole).getVessel();
-                    user.setRole(null);
-                    realmDao.saveEntity(user);
-                    realmDao.remove(oldRole);
-                    vesselDao.remove(oldVessel);
-                }else if(user.getRole() != null){
-                    Role oldRole = user.getRole();
-                    user.setRole(null);
-                    realmDao.saveEntity(user);
-                    realmDao.remove(oldRole);
-                }
-            }
+    public void edit(String login, Long mmsi, String email, String role) {
+        SecuredUser user = realmDao.findByUsername(login);
 
+        user.setEmail(email);
+
+        if (user.getRole() != null && !user.getRole().getLogicalName().equalsIgnoreCase(role)) {
+            if (user.getRole().getClass() == SailorRole.class) {
+                Role oldRole = user.getRole();
+                Vessel oldVessel = ((SailorRole) oldRole).getVessel();
+                user.setRole(null);
+                realmDao.saveEntity(user);
+                realmDao.remove(oldRole);
+                vesselDao.remove(oldVessel);
+            } else if (user.getRole() != null) {
+                Role oldRole = user.getRole();
+                user.setRole(null);
+                realmDao.saveEntity(user);
+                realmDao.remove(oldRole);
+            }
             user.setRole(createRole(role, mmsi));
-            realmDao.saveEntity(user);
+        }
+
+        realmDao.saveEntity(user);
     }
 
     @Override
