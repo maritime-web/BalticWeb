@@ -130,10 +130,11 @@ $(function() {
             map.setCenter(pos, zoom);
             
             var newCenterPx = map.getPixelFromLonLat(pos);
-            // check if new center will provoke a blue rectangel in the top when using OSM tile Map (no tiles on the pole)
+            // check if new center will provoke a blue rectangel in the top when
+            // using OSM tile Map (no tiles on the pole)
             // and correct center value to remove blue rectangel
-            if (newCenterPx.y > (1000 - 50)/2) {
-                newCenterPx.y += (newCenterPx.y - (1000 - 50)/2);
+            if (newCenterPx.y > (1000 - 50) / 2) {
+                newCenterPx.y += (newCenterPx.y - (1000 - 50) / 2);
                 pos = map.getLonLatFromPixel(newCenterPx);
             }
 
@@ -317,11 +318,22 @@ $(function() {
         }
     }
 
+    function setupChromeAcceleration() {
+        if (browser.isChrome() && parseFloat(browser.chromeVersion()) > 27) {
+            var accelerate = getCookie("dma-ais-accelerate-" + embryo.authentication.userName);
+            $("#map").removeClass("noaccelerate");
+            if (accelerate != "true") {
+                $("#map").addClass("noaccelerate");
+            }
+        }
+    }
+
     embryo.authenticated(function() {
         var cookieMapName = getCookie("dma-ais-map-" + embryo.authentication.userName);
         if (cookieMapName)
             embryo.baseMap = cookieMapName;
 
+        setupChromeAcceleration();
         setupBaseMap();
 
         loadViewCookie();
@@ -348,12 +360,18 @@ $(function() {
     });
 
     embryo.ready(function() {
+        var accelerate;
         $("#switchBaseMap").click(function(e) {
             e.preventDefault();
 
             $("#bsOpenStreetMap").prop("checked", embryo.baseMap == "osm");
             $("#bsSimpleVectorMap").prop("checked", embryo.baseMap == "world_merc");
 
+            if (browser.isChrome() && parseFloat(browser.chromeVersion()) > 27) {
+                accelerate = getCookie("dma-ais-accelerate-" + embryo.authentication.userName);
+                $("#accelerate input").prop("checked", accelerate == "true");
+                $("#accelerate").css("display", "block");
+            }
             $("#switchBaseMapDialog").modal("show");
         });
 
@@ -366,6 +384,13 @@ $(function() {
                 newMap = "world_merc";
 
             $("#switchBaseMapDialog").modal("hide");
+
+            if (browser.isChrome() && parseFloat(browser.chromeVersion()) > 27) {
+                $("#accelerate").css("display", "none");
+                var accelerate = $("#accelerate input").prop("checked");
+                setCookie("dma-ais-accelerate-" + embryo.authentication.userName, accelerate, 30);
+                setupChromeAcceleration(accelerate);
+            }
 
             if (newMap != embryo.baseMap) {
                 embryo.baseMap = newMap;

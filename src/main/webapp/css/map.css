@@ -152,7 +152,7 @@ body {
 	}
 }
 
-.olTileImage {
+.noaccelerate .olTileImage {
 	-webkit-backface-visibility: visible !important;
 	-webkit-transform: none !important;
 }
