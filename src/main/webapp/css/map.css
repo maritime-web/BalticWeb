@@ -1,5 +1,5 @@
 html {
-    height: 100%;
+	height: 100%;
 }
 
 body {
@@ -8,20 +8,21 @@ body {
 	margin: 0;
 	padding: 0;
 	color: #5A5A5A;
-    overflow: hidden;
-    left:0;
-    top:0;
-    position: fixed;
+	overflow: hidden;
+	left: 0;
+	top: 0;
+	position: fixed;
 }
 
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation:portrait) {
-    body {
-        -webkit-transform: rotate(90deg);
-    }
+@media only screen and (min-device-width: 768px) and (max-device-width:
+	1024px) and (orientation:portrait) {
+	body {
+		-webkit-transform: rotate(90deg);
+	}
 }
 
 #messagePanel {
-    z-index: 1039;
+	z-index: 1039;
 	position: absolute;
 	bottom: -8px; /* 20 */
 	left: 10px; /* 20 */
@@ -35,7 +36,7 @@ body {
 	background-color: #d0e4fe;
 	width: 100%;
 	height: 100%;
-    position: fixed;
+	position: fixed;
 	left: 0;
 	top: 0;
 	-moz-user-select: none;
@@ -45,50 +46,50 @@ body {
 }
 
 .vesselNameBox {
-    margin-top: -24px;
+	margin-top: -24px;
 }
 
 #vesselPanel {
-    display:none;
+	display: none;
 }
 
-#vcpLegends .aw{
-	color:#0080C0;
+#vcpLegends .aw {
+	color: #0080C0;
 }
 
 #hoveringBox {
-    position: absolute;
+	position: absolute;
 }
 
 .controlPanel {
-    position: absolute;
-    top: 50px; /* 55 */
-    left: 10px;
-    width: 300px;
-    display: none;
+	position: absolute;
+	top: 50px; /* 55 */
+	left: 10px;
+	width: 300px;
+	display: none;
 }
 
 .accordion-group {
-    background-color:white;
+	background-color: white;
 }
 
 #zoomControlPanel {
-    position: absolute;
-    top: 50px;
-    right: 60px;
+	position: absolute;
+	top: 50px;
+	right: 60px;
 }
 
 #searchLoad {
-    display: none;
+	display: none;
 }
 
 .reportingPanel {
-    display: none;
-    background-color: white;
-    position: absolute;
-    top: 50px;
-    left: 315px;
-    z-index: 1039;
+	display: none;
+	background-color: white;
+	position: absolute;
+	top: 50px;
+	left: 315px;
+	z-index: 1039;
 }
 
 .input-mini {
@@ -116,44 +117,42 @@ body {
 }
 
 #searchField {
-    width: 235px;
+	width: 235px;
 }
 
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-    .controlPanel {
-        width: 250px;
-    }
+@media only screen and (min-device-width: 768px) and (max-device-width:
+	1024px) {
+	.controlPanel {
+		width: 250px;
+	}
+	.reportingPanel {
+		left: 265px;
+		max-width: 710px;
+	}
+	.input-mini {
+		width: 30px;
+	}
+	.input-small {
+		width: 50px;
+	}
+	.input-medium {
+		width: 70px;
+	}
+	.input-large {
+		width: 100px;
+	}
+	.input-xlarge {
+		width: 140px;
+	}
+	.input-xxlarge {
+		width: 180px;
+	}
+	#searchField {
+		width: 185px;
+	}
+}
 
-    .reportingPanel {
-        left: 265px;
-        max-width: 710px;
-    }
-
-    .input-mini {
-        width: 30px;
-    }
-
-    .input-small {
-        width: 50px;
-    }
-
-    .input-medium {
-        width: 70px;
-    }
-
-    .input-large {
-        width: 100px;
-    }
-
-    .input-xlarge {
-        width: 140px;
-    }
-
-    .input-xxlarge {
-        width: 180px;
-    }
-
-    #searchField {
-        width: 185px;
-    }
+.olTileImage {
+	-webkit-backface-visibility: visible !important;
+	-webkit-transform: none !important;
 }
