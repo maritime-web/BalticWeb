@@ -20,13 +20,6 @@ embryo
                     $("#ie89ver").html(browser.ieVersion());
                     $("#ie89").show();
                 }
-                // else if (browser.isChrome()) {
-                // var ver = browser.chromeVersion();
-                // if (parseFloat(ver) > 27) {
-                // $("#chromeVer").html(ver);
-                // $("#chrome").show();
-                // }
-                // }
             }
 
             function useCookies() {
@@ -45,7 +38,6 @@ embryo
             function clearMessages() {
                 $("#ie89").hide();
                 $("#ie7").hide();
-                // $("#chrome").hide();
                 $("#loginWrongLoginOrPassword").hide();
             }
 
