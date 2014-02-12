@@ -53,9 +53,9 @@ function IceLayer() {
     this.draw = function(shapes, callback) {
         function colorByDescription(description) {
 
-            if (description.CT == 92)
+            if (description.CT == 92 && parseInt(description.FA) == 8){
                 return "#979797";
-            if (description.CT == 79 || description.CT > 80)
+            } else if (description.CT == 79 || description.CT > 80)
                 return "#ff0000";
             if (description.CT == 57 || description.CT > 60)
                 return "#ff7c06";
@@ -69,42 +69,49 @@ function IceLayer() {
         this.layers.ice.removeAllFeatures();
 
         var waterCount = 0;
-        
+
         var that = this;
-        function drawFragment(shape, fragment){
+        function drawFragment(shape, fragment) {
             var rings = [];
             var polygons = fragment.polygons;
 
             for ( var k in polygons) {
                 var polygon = polygons[k];
-                
-//                var copy = []; 
-//                for(var counter in polygon){
-//                    copy.push({x:polygon[counter].x, y: polygon[counter].y});
-//                }    
+
+                // var copy = [];
+                // for(var counter in polygon){
+                // copy.push({x:polygon[counter].x, y: polygon[counter].y});
+                // }
                 var points = [];
                 for ( var j in polygon) {
                     var p = polygon[j];
 
-                    if(j >= 1){
-                        var diff = Math.abs(polygon[j-1].x - p.x);
-                        if(diff > 350){
-                            if(p.x < polygon[j-1].x){
+                    if (j >= 1) {
+                        var diff = Math.abs(polygon[j - 1].x - p.x);
+                        if (diff > 350) {
+                            if (p.x < polygon[j - 1].x) {
                                 p.x += 360;
-                            }else {
+                            } else {
                                 p.x -= 360;
                             }
                         }
                     }
-                    
+
                     points.push(embryo.map.createPoint(p.x, p.y));
-                }                
-//                if(Math.abs(polygon[polygon.length - 2].x - polygon[0].x) > 180){
-//                    console.log("line problem detected");
-//                    console.log(Math.abs(polygon[polygon.length - 2].x - polygon[0].x));
-//                    console.log(polygon);
-//                    console.log(copy);
+                }
+                // try to fix polygon crossing the world - not possible.
+                // if((polygon[polygon.length - 1].x - polygon[0].x) > 180){
+                // points.push(embryo.map.createPoint(polygon[0].x - 360,
+                // polygon[0].y));
+                // } else
+//                if ((polygon[polygon.length - 1].x - polygon[0].x) < -180) {
+//                    console.log(polygon[polygon.length - 1]);
+//                    console.log(points[points.length - 1]);
+
+                    // points.push(embryo.map.createPoint(polygon[0].x + 360,
+                    // polygon[0].y));
 //                }
+
                 rings.push(new OpenLayers.Geometry.LinearRing(points));
             }
 
@@ -127,12 +134,12 @@ function IceLayer() {
                 feature.attributes.iceDescription.CT = "1";
                 waterCount++;
             }
-            that.layers.ice.addFeatures([feature]);
+            that.layers.ice.addFeatures([ feature ]);
             that.layers.ice.refresh();
         }
 
-        function drawFragments(shape, fragments){
-            if(fragments.length > 0){
+        function drawFragments(shape, fragments) {
+            if (fragments.length > 0) {
                 var fragment = fragments.pop();
 
                 drawFragment(shape, fragment);
@@ -140,18 +147,17 @@ function IceLayer() {
                 window.setTimeout(function() {
                     drawFragments(shape, fragments);
                 }, 20);
-            }else{
-                if(callback){
+            } else {
+                if (callback) {
                     callback();
                 }
             }
         }
 
-
         for ( var l in shapes) {
             var shape = shapes[l];
             var ice = shape.fragments;
-            
+
             fragments = ice.slice(0);
             drawFragments(shape, fragments);
         }
