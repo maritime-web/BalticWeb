@@ -9,13 +9,12 @@
 		<div x-ng-show="alertMessages" class="alert alert-error">
 			<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
 		</div>
-		<div x-ng-show="showAcknowledgement" class="alert alert-info">
-			<p>Acknowledgement of successful transmission is indicated.</p>
-			<p>An acknowledgement mail is also sent from ArcticCommand mail server upon report reception to the mail address
-				supplied when requesting access to ArcticWeb.</p>
+		<div x-ng-show="reportAcknowledgement" class="alert alert-info">
+			<p>{{reportAcknowledgement}} successfully send.</p>
+			<p>An acknowledgement mail is sent from ArcticCommand mail server upon report reception to your mail address.</p>
 			<p>
-				<b>NB. In the event a transmission acknowledgement is not received from ArcticCommand you must use other means
-					of communication in accordance with the relevant rules</b>
+				<b>NB. In the event an acknowledgement is not received from ArcticCommand you must use other means
+					of communication in accordance with the relevant rules.</b>
 			</p>
 		</div>
 

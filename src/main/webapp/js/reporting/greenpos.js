@@ -58,6 +58,13 @@ var greenposScope;
             id : "DR",
             name : "Deviation Report"
         } ]
+        
+        
+        var reportNames = {};
+        for(var index in $scope.reportTypes){
+            var reportType = $scope.reportTypes[index];
+            reportNames[reportType.id] = reportType.name;
+        }
 
         // Beautiful thing that makes angular update form validity.
 
@@ -155,14 +162,14 @@ var greenposScope;
         $scope.sendReport = function() {
             $scope.warningMessages = null;
             $scope.alertMessages = null;
-            $scope.showAcknowledgement = null;
+            $scope.reportAcknowledgement = null;
 
             var deactivateRoute = {
                 value : $scope.deactivate && $scope.report.type == "FR",
                 routeId : vesselDetails.additionalInformation.routeId
             };
             GreenposService.save($scope.report, deactivateRoute, function() {
-                $scope.showAcknowledgement = true;
+                $scope.reportAcknowledgement = reportNames[$scope.report.type];
 
                 if ($scope.deactivate && $scope.report.type == "FR") {
                     VesselService.updateVesselDetailParameter($scope.report.mmsi, "additionalInformation.routeId", "");
@@ -175,7 +182,7 @@ var greenposScope;
         $scope.reset = function() {
             $scope.warningMessages = null;
             $scope.alertMessages = null;
-            $scope.showAcknowledgement = null;
+            $scope.reportAcknowledgement = null;
 
             initData();
         };
