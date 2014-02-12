@@ -155,16 +155,16 @@ var greenposScope;
         $scope.sendReport = function() {
             $scope.warningMessages = null;
             $scope.alertMessages = null;
-            $scope.message = null;
+            $scope.showAcknowledgement = null;
 
             var deactivateRoute = {
                 value : $scope.deactivate && $scope.report.type == "FR",
                 routeId : vesselDetails.additionalInformation.routeId
             };
             GreenposService.save($scope.report, deactivateRoute, function() {
-                $scope.message = "Greenpos report successfully submitted. ";
+                $scope.showAcknowledgement = true;
+
                 if ($scope.deactivate && $scope.report.type == "FR") {
-                    $scope.message += "Active route successsfully deactivated. ";
                     VesselService.updateVesselDetailParameter($scope.report.mmsi, "additionalInformation.routeId", "");
                 }
             }, function(error) {
@@ -175,7 +175,7 @@ var greenposScope;
         $scope.reset = function() {
             $scope.warningMessages = null;
             $scope.alertMessages = null;
-            $scope.message = null;
+            $scope.showAcknowledgement = null;
 
             initData();
         };

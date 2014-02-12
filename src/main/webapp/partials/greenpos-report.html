@@ -9,7 +9,18 @@
 		<div x-ng-show="alertMessages" class="alert alert-error">
 			<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
 		</div>
-		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+		<div x-ng-show="showAcknowledgement" class="alert alert-info">
+			<p>Acknowledgement of successful transmission is indicated.</p>
+			<p>An acknowledgement mail is also sent from ArcticCommand mail server upon report reception to the mail address
+				supplied when requesting access to ArcticWeb.</p>
+			<p>
+				<b>NB. In the event a transmission acknowledgement is not received from ArcticCommand you must use other means
+					of communication in accordance with the relevant rules</b>
+			</p>
+		</div>
+
+
+
 		<div class="row">
 			<div class="control-group">
 				<label class="control-label" for="gReportType">Report Type</label>
@@ -23,7 +34,7 @@
 				</div>
 			</div>
 
-            <!--
+			<!--
 
 			<div class="control-group">
 				<label class="control-label">Vessel Name</label>
@@ -66,8 +77,8 @@
 			<div class="control-group" x-ng-show="isVisible('eta')">
 				<label class="control-label" for="gpEta">Estimated Time of Arrival (UTC)</label>
 				<div class="controls">
-                    <datetimepicker id="gpEta" name="gpEta" type="text" class="input-medium" x-ng-model="report.eta"/> <span
-						x-ng-show="greenPosForm.gpEta.$error.required && greenPosForm.gpEta.$dirty" class="msg-invalid">Value
+					<datetimepicker id="gpEta" name="gpEta" type="text" class="input-medium" x-ng-model="report.eta" />
+					<span x-ng-show="greenPosForm.gpEta.$error.required && greenPosForm.gpEta.$dirty" class="msg-invalid">Value
 						required</span>
 				</div>
 			</div>
