@@ -9,8 +9,15 @@ $(function() {
             IceService.providers(function(providers) {
                 $scope.providers = providers;
                 if (providers.length > 0) {
-                    $scope.selectedProvider = providers[0];
-                    // what if selectedProvider is no longer present?
+                    var providerKey = getCookie("dma-ice-provider-" + embryo.authentication.userName);
+                    for(var index in providers){
+                        if(providers[index].key == providerKey){
+                            $scope.selectedProvider = providers[index];
+                        }
+                    }
+                    if(!$scope.selectedProvider.key){
+                        $scope.selectedProvider = providers[0];
+                    }
                 }
             }, function(error) {
                 alert(error);
@@ -23,6 +30,7 @@ $(function() {
 
         $scope.$watch($scope.getSelected, function(newValue, oldValue) {
             if (newValue.key) {
+                setCookie("dma-ice-provider-" + embryo.authentication.userName, newValue.key, 30);
                 requestIceObservations();
                 $("#iceControlPanel .collapse").data("collapse", null);
                 openCollapse("#iceControlPanel #icpIceMaps");
