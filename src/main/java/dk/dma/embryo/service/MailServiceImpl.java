@@ -43,6 +43,7 @@ import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.rest.RequestAccessRestService;
+import dk.dma.embryo.security.Subject;
 
 @Named
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -64,7 +65,7 @@ public class MailServiceImpl implements MailService {
 
     @Inject
     @Property("embryo.notification.mail.from")
-    private String fromEmail;
+    private String fromSystemEmail;
 
     @Inject
     @Property("embryo.notification.mail.smtp.host")
@@ -85,6 +86,9 @@ public class MailServiceImpl implements MailService {
     @Inject
     private PropertyFileService propertyFileService;
 
+    @Inject
+    Subject subject;
+
     public MailServiceImpl() {
     }
 
@@ -97,12 +101,13 @@ public class MailServiceImpl implements MailService {
         }
     }
 
-    private void sendEmail(String toEmail, String header, String body) {
+    private void sendEmail(String toEmail, String from, String header, String body) {
 
         logger.debug("enabled=" + enabled);
 
         if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
-            logger.info("Email sending has been disabled. Would have sent the following to " + toEmail + ":\n" + header + "\n" + body);
+            logger.info("Email sending has been disabled. Would have sent the following to " + toEmail + ":\n" + header
+                    + "\n" + body);
             return;
         }
 
@@ -119,18 +124,17 @@ public class MailServiceImpl implements MailService {
             properties.put("mail.smtp.starttls.enable", "true");
             properties.put("mail.smtp.port", "587");
 
-            session = Session.getInstance(properties,
-                    new javax.mail.Authenticator() {
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(username, password);
-                        }
-                    });
+            session = Session.getInstance(properties, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
         }
 
         try {
             MimeMessage message = new MimeMessage(session);
 
-            message.setFrom(new InternetAddress(fromEmail));
+            message.setFrom(new InternetAddress(from != null ? from : fromSystemEmail));
 
             for (String email : toEmail.split(";")) {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
@@ -142,7 +146,7 @@ public class MailServiceImpl implements MailService {
 
             Transport.send(message);
 
-            logger.info("The following email to "+toEmail+" have been sent:\n" + header + "\n" + body);
+            logger.info("The following email to " + toEmail + " have been sent:\n" + header + "\n" + body);
         } catch (Exception mex) {
             throw new RuntimeException(mex);
         }
@@ -178,7 +182,7 @@ public class MailServiceImpl implements MailService {
             String header = propertyFileService.getProperty("embryo.notification.template.signupRequest.header");
             String body = propertyFileService.getProperty("embryo.notification.template.signupRequest.body");
 
-            sendEmail(requestAccessToEmail, applyTemplate(header, environment), applyTemplate(body, environment));
+            sendEmail(requestAccessToEmail, null, applyTemplate(header, environment), applyTemplate(body, environment));
 
             embryoLogService.info(applyTemplate(header, environment) + " sent to " + requestAccessToEmail);
         } catch (Throwable t) {
@@ -227,14 +231,15 @@ public class MailServiceImpl implements MailService {
             String header = propertyFileService.getProperty("embryo.notification.template." + templateName + ".header");
             String body = propertyFileService.getProperty("embryo.notification.template." + templateName + ".body");
 
-            sendEmail(greenposToEmail, applyTemplate(header, environment), applyTemplate(body, environment));
+            String email = subject.getUser().getEmail();
+
+            sendEmail(greenposToEmail, email, applyTemplate(header, environment), applyTemplate(body, environment));
 
             embryoLogService.info(applyTemplate(header, environment) + " sent to " + greenposToEmail);
 
         } catch (Throwable t) {
-            embryoLogService.error("Error sending " +
-                    (report != null ? report.getClass().getSimpleName() : null) + "  to " + greenposToEmail, t
-            );
+            embryoLogService.error("Error sending " + (report != null ? report.getClass().getSimpleName() : null)
+                    + "  to " + greenposToEmail, t);
             throw new RuntimeException(t);
         }
     }
