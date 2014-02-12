@@ -46,4 +46,28 @@ public class ShapeFileParserTest {
 
         assertEquals("N.o. points in all parts equals total n.o. points", polyLine.getNumPoints(), sum);
     }
+
+    @Test
+    public void readGreenlandOverViewIceChartFromDmi() throws IOException {
+        ShapeFileParser.File f = ShapeFileParser.parse(getClass().getResourceAsStream("/ice/201402021200_Greenland_WA/201402021200_Greenland_WA.shp"));
+        assertEquals("Expected number of records", 81, f.getRecords().size());
+        assertEquals("PolyLine expected", true, f.getRecords().get(0).getShape() instanceof ShapeFileParser.PolyLine);
+        assertEquals("Expected number of points in first PolyLine", 4213, ((ShapeFileParser.PolyLine) f.getRecords().get(0).getShape()).getNumPoints());
+        assertEquals("Actual number of points in first PolyLine", ((ShapeFileParser.PolyLine) f.getRecords().get(0).getShape()).getNumPoints(),
+                ((ShapeFileParser.PolyLine) f.getRecords().get(0).getShape()).getPoints().size());
+
+        ShapeFileParser.PolyLine polyLine = (ShapeFileParser.PolyLine) f.getRecords().get(5).getShape();
+
+        assertEquals("Sixth record is a polyline with 4 parts", 54, polyLine.getNumParts());
+        assertEquals("Parts as points should split in 4 parts", 54, polyLine.getPartsAsPoints().size());
+
+        int sum = 0;
+
+
+        for (List<ShapeFileParser.Point> part : polyLine.getPartsAsPoints()) {
+            sum += part.size();
+        }
+
+        assertEquals("N.o. points in all parts equals total n.o. points", polyLine.getNumPoints(), sum);
+    }
 }
