@@ -62,9 +62,8 @@ embryo
 
                     $("#authentication").html(html);
 
-                    $("#authentication #disclaimerLink").click(function(e) {
+                    $("#authentication a.dropdown-toggle").click(function(e) {
                         e.preventDefault();
-                        $("#disclaimer").modal("show");
                     });
                     
                     $("#authentication a[href=\"#login\"]").click(function(e) {
@@ -138,11 +137,6 @@ embryo
                             }
                         });
                     });
-
-                    $("#authentication #cookies").click(function(e) {
-
-                    });
-
                 }
             }
 
