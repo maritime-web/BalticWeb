@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest.util;
+package dk.dma.embryo.util;
 
 import java.util.Locale;
 
@@ -23,42 +23,54 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class DateTimeConverter {
-    
+
     public static final Locale DEFAULT_LOCALE = new Locale("da", "DK");
-    
-     private final DateTimeFormatter formatter;
 
-     private final DateTimeFormatter defaultFormatter;
+    private final DateTimeFormatter formatter;
 
-    public static DateTimeFormatter getDateTimeFormatter(){
+    private final DateTimeFormatter defaultFormatter;
+    private final DateTimeFormatter defaultMMFormatter;
+
+    public static DateTimeFormatter getSSDateTimeFormatter() {
         return DateTimeFormat.forStyle("SS").withZone(DateTimeZone.UTC);
     }
     
-    public static DateTimeConverter getDateTimeConverter(){
+    public static DateTimeFormatter getMMDateTimeFormatter() {
+        return DateTimeFormat.forStyle("MM").withZone(DateTimeZone.UTC);
+    }
+    
+    public static DateTimeConverter getDateTimeConverter() {
         return new DateTimeConverter();
     }
-    
 
-    public DateTimeConverter(){
-        this.formatter = getDateTimeFormatter();
+    public DateTimeConverter() {
+        this.formatter = getSSDateTimeFormatter();
         this.defaultFormatter = formatter.withLocale(DEFAULT_LOCALE);
+        this.defaultMMFormatter = getMMDateTimeFormatter().withLocale(DEFAULT_LOCALE);
     }
-    
-    public DateTime toObject(String value){
+
+    public DateTime toObject(String value) {
         return toObject(value, null);
     }
 
-    public DateTime toObject(String value, Locale locale){
-        if(value == null){
+    public DateTime toObject(String value, Locale locale) {
+        if (value == null) {
             return null;
         }
-        if(value.trim().length() == 0){
+        if (value.trim().length() == 0) {
             return null;
         }
-        if(locale != null){
+        if (locale != null) {
             return formatter.withLocale(locale).parseDateTime(value);
         }
-        
+
         return defaultFormatter.parseDateTime(value);
+    }
+
+    public String toStringMedium(DateTime value) {
+        if (value == null) {
+            return null;
+        }
+        return defaultMMFormatter.print(value);
     }
 }

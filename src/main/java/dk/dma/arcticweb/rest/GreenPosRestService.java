@@ -39,7 +39,7 @@ import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
 import dk.dma.embryo.rest.json.GreenposRequest;
-import dk.dma.embryo.rest.util.DateTimeConverter;
+import dk.dma.embryo.util.DateTimeConverter;
 
 /**
  * 

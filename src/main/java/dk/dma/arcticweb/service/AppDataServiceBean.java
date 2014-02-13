@@ -62,10 +62,10 @@ import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.ShoreRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.rest.util.DateTimeConverter;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.SecurityUtil;
 import dk.dma.embryo.security.authorization.Roles;
+import dk.dma.embryo.util.DateTimeConverter;
 
 @Singleton
 @Startup
