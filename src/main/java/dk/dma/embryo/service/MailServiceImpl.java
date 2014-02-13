@@ -44,6 +44,7 @@ import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.rest.RequestAccessRestService;
 import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.util.DateTimeConverter;
 
 @Named
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -199,6 +200,7 @@ public class MailServiceImpl implements MailService {
             environment.put("VesselName", report.getVesselName());
             environment.put("VesselMmsi", "" + report.getVesselMmsi());
             environment.put("VesselCallSign", report.getVesselCallSign());
+            environment.put("ReportTS", DateTimeConverter.getDateTimeConverter().toStringMedium(report.getTs()));
             environment.put("Latitude", report.getPosition().getLatitudeAsString());
             environment.put("Longitude", report.getPosition().getLongitudeAsString());
 
@@ -215,9 +217,11 @@ public class MailServiceImpl implements MailService {
                 environment.put("Speed", "" + ((GreenPosPositionReport) report).getSpeed());
             }
             if (report instanceof GreenPosSailingPlanReport) {
+                String eta = DateTimeConverter.getDateTimeConverter().toStringMedium(
+                        ((GreenPosSailingPlanReport) report).getEtaOfArrival());
                 environment.put("Destination", ((GreenPosSailingPlanReport) report).getDestination());
                 environment.put("PersonsOnBoard", "" + ((GreenPosSailingPlanReport) report).getPersonsOnBoard());
-                environment.put("EtaOfArrival", "" + ((GreenPosSailingPlanReport) report).getEtaOfArrival());
+                environment.put("EtaOfArrival", eta == null ? "" : eta + "Z");
                 templateName = "greenposSailingPlanReport";
             }
             if (report instanceof GreenPosFinalReport) {
