@@ -167,7 +167,9 @@ public class DmiFtpReaderJob {
         ftp.setFileType(FTP.BINARY_FILE_TYPE);
 
         try {
-            ftp.changeWorkingDirectory(dmiBaseDirectory);
+            if(!ftp.changeWorkingDirectory(dmiBaseDirectory)){
+                throw new IOException("Could not change to base directory:" + dmiBaseDirectory);
+            }
 
             List<String> subdirectoriesAtServer = new ArrayList<String>();
 
