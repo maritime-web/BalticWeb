@@ -187,8 +187,10 @@ public class AariHttpReaderJob {
 
         String msg = "Scanned AARI (" + server + ") for new files. Files transferred: " + fileCount;
         if (errorCount == 0) {
+            logger.info(msg);
             embryoLogService.info(msg);
         } else {
+            logger.error(msg);
             embryoLogService.error(msg + ". Transfer errors: " + errorCount);
         }
     }

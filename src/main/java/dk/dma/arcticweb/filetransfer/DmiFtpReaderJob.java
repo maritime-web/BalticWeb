@@ -78,7 +78,7 @@ public class DmiFtpReaderJob {
     @Inject
     @Property("embryo.iceChart.dmi.ftp.ageInDays")
     private Integer ageInDays;
-    
+
     @Resource
     private TimerService timerService;
 
@@ -91,7 +91,8 @@ public class DmiFtpReaderJob {
     public void init() {
         if (!dmiServer.trim().equals("") && (cron != null)) {
             logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
-            logger.info("Initializing {} with localDirectory {} and regions {}", this.getClass().getSimpleName(), localDmiDirectory, regions);
+            logger.info("Initializing {} with localDirectory {} and regions {}", this.getClass().getSimpleName(),
+                    localDmiDirectory, regions);
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("DMI FTP site is not configured - cron job not scheduled.");
@@ -108,7 +109,9 @@ public class DmiFtpReaderJob {
             }
             logger.info("Calling transfer files ...");
             int count = transferFiles();
-            embryoLogService.info("Scanned DMI (" + dmiServer + ") for new files. Files transferred: " + count);
+            String msg = "Scanned DMI (" + dmiServer + ") for new files. Files transferred: " + count;
+            logger.info(msg);
+            embryoLogService.info(msg);
         } catch (Throwable t) {
             logger.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
             embryoLogService.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
@@ -137,15 +140,15 @@ public class DmiFtpReaderJob {
             result |= fn.endsWith(c);
         }
 
-        if(!result){
+        if (!result) {
             return false;
         }
-        
+
         try {
             Date date = new SimpleDateFormat("yyyyMMddHHmm").parse(fn.substring(0, 12));
             DateTime mapDate = new DateTime(date.getTime());
-            
-            return mapDate.toLocalDate().isAfter(limit) ;
+
+            return mapDate.toLocalDate().isAfter(limit);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -167,7 +170,7 @@ public class DmiFtpReaderJob {
             ftp.changeWorkingDirectory(dmiBaseDirectory);
 
             List<String> subdirectoriesAtServer = new ArrayList<String>();
-            
+
             LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(1);
 
             Thread.sleep(10);
