@@ -85,12 +85,13 @@ public class DmiFtpReaderJob {
     @Inject
     private EmbryoLogService embryoLogService;
 
-    private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shp.xml", ".shx");
+    private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shx");
 
     @PostConstruct
     public void init() {
         if (!dmiServer.trim().equals("") && (cron != null)) {
             logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            logger.info("Initializing {} with localDirectory {} and regions {}", this.getClass().getSimpleName(), localDmiDirectory, regions);
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("DMI FTP site is not configured - cron job not scheduled.");
@@ -102,7 +103,7 @@ public class DmiFtpReaderJob {
         try {
             logger.info("Making directory if necessary ...");
             if (!new File(localDmiDirectory).exists()) {
-                logger.info("Making local directort for DMI files: " + localDmiDirectory);
+                logger.info("Making local directory for DMI files: " + localDmiDirectory);
                 new File(localDmiDirectory).mkdirs();
             }
             logger.info("Calling transfer files ...");
