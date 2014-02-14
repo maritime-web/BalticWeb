@@ -26,17 +26,23 @@ import dk.dma.arcticweb.service.MaxSpeedJob.MaxSpeedRecording;
 public class MaxSpeedExtractor {
 
     public MaxSpeedRecording extractMaxSpeed(Map result) {
-        List<Map<String, Object>> points = (List<Map<String, Object>>) ((Map) result.get("pastTrack")).get("points");
-
         double maxValue = 0;
-
-        for (Map<String, Object> point : points) {
-            Double value = (Double) point.get("sog");
-            if (value != null && value.doubleValue() > maxValue) {
-                maxValue = value.doubleValue();
-            }
+        
+        Map<String, List<Map<String, Object>>> pastTrack = (Map<String, List<Map<String, Object>>>)result.get("pastTrack");
+        if(pastTrack == null){
+            return new MaxSpeedRecording(maxValue);
         }
 
+        List<Map<String, Object>> points = pastTrack.get("points");
+        if(points != null){
+            for (Map<String, Object> point : points) {
+                Double value = (Double) point.get("sog");
+                if (value != null && value.doubleValue() > maxValue) {
+                    maxValue = value.doubleValue();
+                }
+            }
+        }
+        
         return new MaxSpeedRecording(maxValue);
     }
 
