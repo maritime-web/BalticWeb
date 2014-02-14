@@ -180,6 +180,17 @@ hibernate.hbm2ddl.auto may be set on command line when building a war archive as
 
     mvn clean package -Dhibernate.hbm2ddl.auto=update
 
+
+## Scheduled Jobs
+The application contains a number of scheduled jobs responsible for fetching data from external systems or for calculating necessary values. These jboss are described below.
+
+* dk.dma.arcticweb.service.AisReplicatorJob : This job replicates data from the external AIS server to ArcticWeb on regular schedule configured in the property embryo.vessel.aisjob.cron. The data is keeped in memory. Data might therefore not be available immidiately after a server/application (re)start.
+* dk.dma.arcticweb.filetransfer.DmiFtpReaderJob : This jobs transferes ice chart shape files from an FTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.iceChart.dmi.localDirectory. The job will only transfer files not already transfered. Ice charts are not available to users before measured by dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob.
+* dk.dma.arcticweb.filetransfer.AariHttpReaderJob: This jobs transferes ice chart shape files from a HTTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.iceChart.aari.localDirectory. The job will only transfer files not already transfered. Ice charts are not available to users before measured by dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob.
+* dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob : This job collects all shape files in the file system, measure their sizes and repopulates the database table ShapeFileMeasurements. The job will only measure new files.
+* dk.dma.arcticweb.filetransfer.DeleteShapeFiles : TODO - not yet implemented. This job is to delete shape files being to old.
+* dk.dma.arcticweb.service.MaxSpeedJob : This job fetches a vessels route during the past 5 days from the AIS server and calculates the maximum speed for each vessel during those 5 days.
+
 ## Surveillance
 
 The application contains a number of integrations with external systems. These may be either jobs running at different schedules or HTTP calls directly to the external system. The success rate of the integration executions are logged in the application database and can be retrieved using a public REST call. 
