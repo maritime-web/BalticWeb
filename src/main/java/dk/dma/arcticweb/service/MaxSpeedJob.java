@@ -114,7 +114,7 @@ public class MaxSpeedJob {
 
             List<String[]> vesselsInAisCircle = aisDataService.getVesselsInAisCircle();
             Set<Long> mmsiNumbers = new HashSet<Long>(1000);
-            
+
             int errorCount = 0;
             int updateCount = 0;
             for (int i = 0; i < vesselsInAisCircle.size() && errorCount < 10; i++) {
@@ -125,14 +125,16 @@ public class MaxSpeedJob {
                 MaxSpeedRecording rec = oldRecordings.get(mmsi);
                 if (rec == null || rec.getCreated().isBefore(lastUpdatedLimit)) {
                     logger.debug("Updating max speed for vessel {}/{}", mmsi, vessel[7]);
-                    try{
+                    try {
                         Map result = limitedAisView.vesselTargetDetails(mmsi, 1);
                         MaxSpeedRecording newRec = new MaxSpeedExtractor().extractMaxSpeed(result);
                         newRecordings.put(mmsi, newRec);
                         updateCount++;
                         logger.debug("Updated max speed for vessel {}/{}: {}", mmsi, vessel[7], newRec);
-                    }catch(Exception e){
-                        logger.error("Error updating max speed for vessel {}/{}", mmsi, vessel[7], e);
+                    } catch (Exception e) {
+                        String msg = "Error updating max speed for vessel " + mmsi + "/" + vessel[7];
+                        logger.error(msg, e);
+                        embryoLogService.error(msg, e);
                         errorCount++;
                     }
                 } else {
@@ -158,15 +160,15 @@ public class MaxSpeedJob {
 
             aisDataService.setMaxSpeeds(newRecordings);
 
-            logger.debug("Updated max speed recordings. Updated: {}. Maintained {}: Total count: {}, Errors: {}", updateCount,
-                    maintainCount, newRecordings.size(), errorCount);
-            if(errorCount > 0){
-                embryoLogService.error("Some max speeds could not be updated. Error count count: " + errorCount);
-            }else{
+            logger.info("Updated max speed recordings. Updated: {}. Maintained {}: Total count: {}, Errors: {}",
+                    updateCount, maintainCount, newRecordings.size(), errorCount);
+            if (errorCount > 0) {
+                embryoLogService.error("Some max speeds could not be updated. Error count: " + errorCount);
+            } else {
                 embryoLogService.info("Max speeds recorded. Total count: " + newRecordings.size());
             }
         } catch (Exception e) {
-            logger.error("MaxSpeedJob failed",e);
+            logger.error("MaxSpeedJob failed", e);
             embryoLogService.error("" + e, e);
         }
     }
