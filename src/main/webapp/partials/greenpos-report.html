@@ -18,18 +18,14 @@
 			</p>
 		</div>
 
-
-
 		<div class="row">
 			<div class="control-group">
 				<label class="control-label" for="gReportType">Report Type</label>
 				<div class="controls">
-
 					<select id="gReportType" name="gpReportType" x-ng-options="i.id as i.name for i in reportTypes"
 						x-ng-model="report.type" class="input-large" required>
 					</select> <span x-ng-show="greenPosForm.gpReportType.$error.required && greenPosForm.gpReportType.$dirty"
 						class="msg-invalid">Value required</span>
-
 				</div>
 			</div>
 
@@ -125,6 +121,21 @@
 						required</span>
 				</div>
 			</div>
+			<div class="control-group" x-ng-show="isVisible('route')">
+				<label class="control-label" for="gpInclWps">Include Active Route WayPoints</label>
+				<div class="controls txt">
+					<input id="gpInclWps" name="inclWps" type="checkbox" x-ng-model="inclWps" x-ng-show="hasActiveRoute"/>
+					<span style="margin-top:5px;" x-ng-show="!hasActiveRoute"><i>No Active Route</i></span>
+				</div>
+			</div>
+			<div class="control-group" x-ng-show="isVisible('route')">
+				<label class="control-label" for="gpDescription">Route Description</label>
+				<div class="controls">
+					<textarea id="gpDescription" name="gpDescription" rows="3" x-ng-required="isVisible('route') && !inclWps" x-ng-model="report.description"></textarea>
+					<span x-ng-show="greenPosForm.gpDescription.$error.required && greenPosForm.gpDescription.$dirty" class="msg-invalid">Value
+						required</span>
+				</div>
+			</div>
 			<div class="control-group" x-ng-show="isVisible('weather')">
 				<label class="control-label" for="gpWeather">Weather</label>
 				<div class="controls">
@@ -138,14 +149,6 @@
 				<div class="controls">
 					<textarea id="gpIce" name="gpIce" rows="3" x-ng-model="report.ice" x-ng-required="isVisible('ice')"></textarea>
 					<span x-ng-show="greenPosForm.gpIce.$error.required && greenPosForm.gpIce.$dirty" class="msg-invalid">Value
-						required</span>
-				</div>
-			</div>
-			<div class="control-group" x-ng-show="isVisible('deviation')">
-				<label class="control-label" for="gpDeviation">Deviation Description</label>
-				<div class="controls">
-					<textarea id="gpDeviation" name="gpDeviation" rows="3" x-ng-model="report.deviation"></textarea>
-					<span x-ng-show="greenPosForm.gpDeviation.$error.required && greenPosForm.gpDeviation.$dirty" class="msg-invalid">Value
 						required</span>
 				</div>
 			</div>

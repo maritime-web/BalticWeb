@@ -50,7 +50,7 @@ public class GreenPos {
 
     private Date eta;
 
-    private String deviation;
+    private String description;
 
     private List<Voyage> voyages;
 
@@ -187,12 +187,12 @@ public class GreenPos {
         this.eta = eta;
     }
 
-    public String getDeviation() {
-        return deviation;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDeviation(String deviation) {
-        this.deviation = deviation;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<Voyage> getVoyages() {

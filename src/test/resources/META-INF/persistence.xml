@@ -21,6 +21,8 @@
     <class>dk.dma.embryo.domain.GreenPosPositionReport</class>
     <class>dk.dma.embryo.domain.GreenPosReport</class>
     <class>dk.dma.embryo.domain.GreenPosSailingPlanReport</class>
+    <class>dk.dma.embryo.domain.ReportedRoute</class>
+    <class>dk.dma.embryo.domain.ReportedWayPoint</class>
 
     <validation-mode>CALLBACK</validation-mode>
 

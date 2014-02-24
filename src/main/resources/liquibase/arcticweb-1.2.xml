@@ -14,5 +14,56 @@
     <renameColumn columnDataType="VARCHAR(255)" newColumnName="provider" oldColumnName="prefix"
       tableName="ShapeFileMeasurement" />
   </changeSet>
-
+  <changeSet author="jesper (generated)" id="1393243735449-1">
+    <createTable tableName="ReportedRoute">
+      <column name="id" type="BIGINT(19)">
+        <constraints nullable="false" />
+      </column>
+      <column name="enavId" type="VARCHAR(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="jesper (generated)" id="1393243735449-2">
+    <createTable tableName="ReportedWayPoint">
+      <column name="ReportedRoute_id" type="BIGINT(19)">
+        <constraints nullable="false" />
+      </column>
+      <column name="name" type="VARCHAR(255)" />
+      <column name="latitude" type="DOUBLE" />
+      <column name="longitude" type="DOUBLE" />
+      <column name="orderNumber" type="INT(10)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="jesper (generated)" id="1393243735449-3">
+    <addColumn tableName="GreenPosReport">
+      <column name="route_id" type="BIGINT(19)" />
+    </addColumn>
+  </changeSet>
+  <changeSet author="jesper (generated)" id="1393243735449-4">
+    <addColumn tableName="GreenPosReport">
+      <column name="routeDescription" type="VARCHAR(1000)" />
+    </addColumn>
+  </changeSet>
+  <changeSet author="jesper (generated)" id="1393243735449-5">
+    <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="ReportedRoute" />
+  </changeSet>
+  <changeSet author="jesper (generated)" id="1393243735449-6">
+    <addPrimaryKey columnNames="ReportedRoute_id, orderNumber" constraintName="PRIMARY" tableName="ReportedWayPoint" />
+  </changeSet>
+  <changeSet author="jesper (generated)" id="1393243735449-7">
+    <createIndex indexName="fkRWP_RR" tableName="ReportedWayPoint" unique="false">
+      <column name="ReportedRoute_id" />
+    </createIndex>
+  </changeSet>
+  <changeSet author="jesper (generated)" id="1393243735449-8">
+    <createIndex indexName="fkGPR_RR" tableName="GreenPosReport" unique="false">
+      <column name="route_id" />
+    </createIndex>
+  </changeSet>
 </databaseChangeLog>

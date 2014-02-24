@@ -63,7 +63,7 @@ public class GreenPosRestService {
         logger.debug("save({})", request);
 
         GreenPosReport toBeSaved = GreenPosReport.from(request.getReport());
-        reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive());
+        reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive(), request.getIncludeActiveRoute());
         logger.debug("save() - done");
     }
 

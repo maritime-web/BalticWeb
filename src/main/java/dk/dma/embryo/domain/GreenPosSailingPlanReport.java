@@ -17,9 +17,12 @@ package dk.dma.embryo.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
@@ -52,6 +55,13 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     @NotNull
     private DateTime etaOfArrival;
 
+    @Size(max = 1000)
+    private String routeDescription;
+
+    @OneToOne(cascade=CascadeType.PERSIST)
+    private ReportedRoute route;
+
+
     // //////////////////////////////////////////////////////////////////////
     // business logic
     // //////////////////////////////////////////////////////////////////////
@@ -61,24 +71,19 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     // //////////////////////////////////////////////////////////////////////
 
     public static GreenPosSailingPlanReport fromJsonModel(GreenPos from) {
-        DateTime eta = from.getEta() == null ? null : new DateTime(from.getEta().getTime(), DateTimeZone.UTC); 
+        DateTime eta = from.getEta() == null ? null : new DateTime(from.getEta().getTime(), DateTimeZone.UTC);
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosSailingPlanReport report = new GreenPosSailingPlanReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), pos, from.getWeather(), from.getIce(),
-                from.getSpeed(), from.getCourse(), from.getDestination(), eta, from.getPersonsOnBoard());
+                from.getCallSign(), pos, from.getWeather(), from.getIce(), from.getSpeed(), from.getCourse(),
+                from.getDestination(), eta, from.getPersonsOnBoard(), from.getDescription());
         return report;
     }
 
     @Override
     public GreenPos toJsonModel() {
-        Date eta = getEtaOfArrival() == null ? null : getEtaOfArrival().toDate(); 
-        
-//        List<dk.dma.embryo.rest.json.Voyage> transformed = new ArrayList<dk.dma.embryo.rest.json.Voyage>(getVoyages().size());
-//        for(ReportedVoyage v : getVoyages()){
-//            transformed.add(v.toJsonModel());
-//        }
-        
+        Date eta = getEtaOfArrival() == null ? null : getEtaOfArrival().toDate();
+
         GreenPos result = new GreenPos();
         result.setId(getEnavId());
         result.setType(getReportType());
@@ -94,7 +99,6 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setDestination(getDestination());
         result.setPersonsOnBoard(getPersonsOnBoard());
         result.setEta(eta);
-//        result.setVoyages(transformed);
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
         return result;
@@ -103,7 +107,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     @Override
     public GreenPosShort toJsonModelShort() {
         Date eta = getEtaOfArrival() == null ? null : getEtaOfArrival().toDate();
-        
+
         GreenPosShort result = new GreenPosShort();
         result.setId(getEnavId());
         result.setType(getReportType());
@@ -126,14 +130,15 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     public GreenPosSailingPlanReport() {
     }
 
-    public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-            Position position, String weather, String iceInformation, Double speed, Integer course, String destination,
-            DateTime eta, Integer personsOnBoard) {
+    public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign, Position position,
+            String weather, String iceInformation, Double speed, Integer course, String destination, DateTime eta,
+            Integer personsOnBoard, String routeDescription) {
         super(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation, speed, course);
 
         this.destination = destination;
         this.personsOnBoard = personsOnBoard;
         this.etaOfArrival = eta;
+        this.routeDescription = routeDescription;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -158,4 +163,16 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     public Integer getPersonsOnBoard() {
         return personsOnBoard;
     }
+
+    public String getRouteDescription() {
+        return routeDescription;
+    }
+
+    public ReportedRoute getRoute() {
+        return route;
+    }
+
+    public void setRoute(ReportedRoute route) {
+        this.route = route;
+    }    
 }

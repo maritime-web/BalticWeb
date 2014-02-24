@@ -34,9 +34,13 @@ import dk.dma.embryo.component.RouteActivator;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.dao.VesselDao;
+import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosReport;
+import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
+import dk.dma.embryo.domain.ReportedRoute;
+import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.AuthorizationChecker;
@@ -73,12 +77,13 @@ public class GreenPosServiceImpl implements GreenPosService {
     }
 
     public GreenPosServiceImpl(GreenPosDao reportingDao, VesselDao vesselDao, Subject subject,
-            RealmDao realmDao, MailService mailService) {
+            RealmDao realmDao, MailService mailService, ScheduleDao scheduleDao) {
         this.greenPosDao = reportingDao;
         this.vesselDao = vesselDao;
         this.subject = subject;
         this.realmDao = realmDao;
         this.mailService = mailService;
+        this.scheduleDao = scheduleDao;
     }
 
     @Override
@@ -93,7 +98,7 @@ public class GreenPosServiceImpl implements GreenPosService {
     @Override
     @Roles(SailorRole.class)
     @Interceptors(SaveReportInterceptor.class)
-    public String saveReport(GreenPosReport report, String routeEnavId, Boolean activate) {
+    public String saveReport(GreenPosReport report, String routeEnavId, Boolean activate, Boolean includeActiveWaypoints) {
         
         checkIfAlreadySaved(report);
 
@@ -109,6 +114,23 @@ public class GreenPosServiceImpl implements GreenPosService {
         report.setReportedBy(subject.getUser().getUserName());
         report.setTs(DateTime.now(DateTimeZone.UTC));
 
+        if(includeActiveWaypoints != null && includeActiveWaypoints.booleanValue()){
+            Route route = scheduleDao.getActiveRoute(report.getVesselMmsi());
+            
+            if(route == null){
+                throw new IllegalArgumentException("Active route with enavId " + routeEnavId + " not found.");
+            }
+            
+            ReportedRoute reported = ReportedRoute.fromModel(route);
+            
+            if(report instanceof GreenPosSailingPlanReport){
+                ((GreenPosSailingPlanReport)report).setRoute(reported);
+            }
+            if(report instanceof GreenPosDeviationReport){
+                ((GreenPosDeviationReport)report).setRoute(reported);
+            }
+        }
+        
         report = greenPosDao.saveEntity(report);
         
         if(routeEnavId != null && activate != null){

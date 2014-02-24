@@ -42,6 +42,7 @@ import dk.dma.embryo.domain.GreenPosFinalReport;
 import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
+import dk.dma.embryo.domain.ReportedRoute;
 import dk.dma.embryo.rest.RequestAccessRestService;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.util.DateTimeConverter;
@@ -194,13 +195,15 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void newGreenposReport(GreenPosReport report) {
-        try {
-            Map<String, String> environment = new HashMap<>();
 
+        try {
+            DateTimeConverter reportTsConverter = DateTimeConverter.getDateTimeConverter("MM");
+
+            Map<String, String> environment = new HashMap<>();
             environment.put("VesselName", report.getVesselName());
             environment.put("VesselMmsi", "" + report.getVesselMmsi());
             environment.put("VesselCallSign", report.getVesselCallSign());
-            environment.put("ReportTS", DateTimeConverter.getDateTimeConverter().toStringMedium(report.getTs()));
+            environment.put("ReportTS", reportTsConverter.toString(report.getTs()));
             environment.put("Latitude", report.getPosition().getLatitudeAsString());
             environment.put("Longitude", report.getPosition().getLongitudeAsString());
 
@@ -217,19 +220,28 @@ public class MailServiceImpl implements MailService {
                 environment.put("Speed", "" + ((GreenPosPositionReport) report).getSpeed());
             }
             if (report instanceof GreenPosSailingPlanReport) {
-                String eta = DateTimeConverter.getDateTimeConverter().toStringMedium(
-                        ((GreenPosSailingPlanReport) report).getEtaOfArrival());
-                environment.put("Destination", ((GreenPosSailingPlanReport) report).getDestination());
-                environment.put("PersonsOnBoard", "" + ((GreenPosSailingPlanReport) report).getPersonsOnBoard());
-                environment.put("EtaOfArrival", eta == null ? "" : eta + "Z");
+                DateTimeConverter converter = DateTimeConverter.getDateTimeConverter("MS");
+                GreenPosSailingPlanReport spReport = (GreenPosSailingPlanReport) report;
+                String eta = converter.toString(spReport.getEtaOfArrival());
+                ReportedRoute route = spReport.getRoute();
+
+                environment.put("RouteDescription", spReport.getRouteDescription());
+                environment.put("RouteWayPoints", route == null ? null : route.getWayPointsAsString());
+                environment.put("Destination", spReport.getDestination());
+                environment.put("PersonsOnBoard", "" + spReport.getPersonsOnBoard());
+                environment.put("EtaOfArrival", eta == null ? "" : eta + " UTC");
                 templateName = "greenposSailingPlanReport";
             }
             if (report instanceof GreenPosFinalReport) {
                 templateName = "greenposFinalReport";
             }
             if (report instanceof GreenPosDeviationReport) {
-                environment.put("Deviation", ((GreenPosDeviationReport) report).getDeviation());
+                GreenPosDeviationReport dReport = (GreenPosDeviationReport) report;
+                ReportedRoute route = dReport.getRoute();
+                environment.put("Deviation", dReport.getDeviation());
+                environment.put("RouteWayPoints", route == null ? null : route.getWayPointsAsString());
                 templateName = "greenposDeviationReport";
+
             }
 
             String header = propertyFileService.getProperty("embryo.notification.template." + templateName + ".header");

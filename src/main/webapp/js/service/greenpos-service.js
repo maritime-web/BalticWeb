@@ -45,8 +45,9 @@
 
                 $http.get(url).success(callback);
             },
-            save : function(greenpos, deactivateRoute, callback, error) {
+            save : function(greenpos, deactivateRoute, inclWps, callback, error) {
                 var request = {
+                        includeActiveRoute : inclWps,
                         activeRoute : {
                             routeId: deactivateRoute.value ? deactivateRoute.routeId : null,
                             active: deactivateRoute.value ? false : null

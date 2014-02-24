@@ -29,24 +29,30 @@ public class DateTimeConverter {
     private final DateTimeFormatter formatter;
 
     private final DateTimeFormatter defaultFormatter;
-    private final DateTimeFormatter defaultMMFormatter;
 
     public static DateTimeFormatter getSSDateTimeFormatter() {
         return DateTimeFormat.forStyle("SS").withZone(DateTimeZone.UTC);
     }
     
-    public static DateTimeFormatter getMMDateTimeFormatter() {
-        return DateTimeFormat.forStyle("MM").withZone(DateTimeZone.UTC);
+    public static DateTimeFormatter getDateTimeStyleFormatter(String style) {
+        return DateTimeFormat.forStyle(style).withZone(DateTimeZone.UTC).withLocale(DEFAULT_LOCALE);
     }
-    
+
     public static DateTimeConverter getDateTimeConverter() {
         return new DateTimeConverter();
     }
 
+    public static DateTimeConverter getDateTimeConverter(String style) {
+        return new DateTimeConverter(getDateTimeStyleFormatter(style));
+    }
+
     public DateTimeConverter() {
-        this.formatter = getSSDateTimeFormatter();
+        this(getSSDateTimeFormatter());
+    }
+
+    public DateTimeConverter(DateTimeFormatter formatter) {
+        this.formatter = formatter;
         this.defaultFormatter = formatter.withLocale(DEFAULT_LOCALE);
-        this.defaultMMFormatter = getMMDateTimeFormatter().withLocale(DEFAULT_LOCALE);
     }
 
     public DateTime toObject(String value) {
@@ -67,10 +73,10 @@ public class DateTimeConverter {
         return defaultFormatter.parseDateTime(value);
     }
 
-    public String toStringMedium(DateTime value) {
+    public String toString(DateTime value) {
         if (value == null) {
             return null;
         }
-        return defaultMMFormatter.print(value);
+        return formatter.print(value);
     }
 }

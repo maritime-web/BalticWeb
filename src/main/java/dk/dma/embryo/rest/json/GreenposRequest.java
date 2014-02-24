@@ -23,6 +23,9 @@ public class GreenposRequest {
 
     private GreenPos report;
 
+    private Boolean includeActiveRoute;
+
+    
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
@@ -54,5 +57,13 @@ public class GreenposRequest {
 
     public void setReport(GreenPos report) {
         this.report = report;
+    }
+
+    public Boolean getIncludeActiveRoute() {
+        return includeActiveRoute;
+    }
+
+    public void setIncludeActiveRoute(Boolean includeActiveRoute) {
+        this.includeActiveRoute = includeActiveRoute;
     }
 }

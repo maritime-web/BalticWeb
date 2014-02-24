@@ -15,14 +15,18 @@
  */
 package dk.dma.arcticweb.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
+
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.joda.time.DateTimeZone;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,15 +38,20 @@ import org.slf4j.LoggerFactory;
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.GreenPosDaoImpl;
 import dk.dma.embryo.dao.RealmDao;
+import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.dao.VesselDaoImpl;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.Position;
+import dk.dma.embryo.domain.ReportedRoute;
+import dk.dma.embryo.domain.ReportedWayPoint;
+import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
+import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.service.MailService;
 
@@ -54,21 +63,23 @@ public class GreenPosServiceImplTest {
 
     private static EntityManagerFactory factory;
 
-    EntityManager entityManager;
+    private static Vessel vessel;
 
-    RealmDao realmDao;
+    private EntityManager entityManager;
 
-    Subject subject;
+    private RealmDao realmDao;
 
-    GreenPosService greenPosService;
+    private Subject subject;
 
-    static Vessel vessel;
+    private GreenPosService greenPosService;
 
-    VesselDao vesselDao;
+    private VesselDao vesselDao;
 
-    GreenPosDao greenPosDao;
+    private GreenPosDao greenPosDao;
 
-    MailService mailService;
+    private MailService mailService;
+    
+    private ScheduleDao scheduleDao;
 
     @BeforeClass
     public static void setupForAll() {
@@ -84,8 +95,8 @@ public class GreenPosServiceImplTest {
 
         entityManager.persist(vessel);
 
-        Voyage v = new Voyage("Nuuk", "64 10.4N", "051 43.5W", DateTime.now(DateTimeZone.UTC), DateTime.now(DateTimeZone.UTC).plusDays(2),
-                12, 0, true);
+        Voyage v = new Voyage("Nuuk", "64 10.4N", "051 43.5W", DateTime.now(DateTimeZone.UTC), DateTime.now(
+                DateTimeZone.UTC).plusDays(2), 12, 0, true);
         vessel.addVoyageEntry(v);
         entityManager.persist(v);
 
@@ -102,8 +113,9 @@ public class GreenPosServiceImplTest {
         subject = Mockito.mock(Subject.class);
         realmDao = Mockito.mock(RealmDao.class);
         mailService = Mockito.mock(MailService.class);
+        scheduleDao = Mockito.mock(ScheduleDao.class);
 
-        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, realmDao, mailService);
+        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, realmDao, mailService, scheduleDao);
 
     }
 
@@ -118,7 +130,8 @@ public class GreenPosServiceImplTest {
         DateTime datetime = DateTime.now(DateTimeZone.UTC);
 
         GreenPosSailingPlanReport spReport = new GreenPosSailingPlanReport("MyShip", 0L, "AA", new Position(
-                "64 10.400N", "051 43.500W"), "Weather", "Ice", 12.0, 343, "Nuuk", datetime, 12);
+                "64 10.400N", "051 43.500W"), "Weather", "Ice", 12.0, 343, "Nuuk", datetime, 12,
+                "Route with no particular good description");
 
         entityManager.getTransaction().begin();
 
@@ -129,7 +142,13 @@ public class GreenPosServiceImplTest {
         role.setVessel(vessel);
         Mockito.when(realmDao.getSailor(1L)).thenReturn(role);
 
-        greenPosService.saveReport(spReport, null, null);
+        Route route = new Route("myKey", "myName", "myOrigin", "myDestination");
+        route.addWayPoint(new WayPoint("wp1", 60.0, -60.0, 1.0, 1.0));
+        route.addWayPoint(new WayPoint("wp2", 62.0, -62.0, 1.0, 1.0));
+        route.addWayPoint(new WayPoint("wp3", 64.0, -64.0, 1.0, 1.0));
+        Mockito.when(scheduleDao.getActiveRoute(0L)).thenReturn(route);
+        
+        greenPosService.saveReport(spReport, null, null, Boolean.TRUE);
 
         entityManager.getTransaction().commit();
 
@@ -156,7 +175,16 @@ public class GreenPosServiceImplTest {
         Assert.assertEquals("Nuuk", spResult.getDestination());
         Assert.assertEquals(datetime.getMillis(), spResult.getEtaOfArrival().getMillis());
         Assert.assertEquals(Integer.valueOf(12), spResult.getPersonsOnBoard());
+        Assert.assertEquals("Route with no particular good description", spResult.getRouteDescription());
 
+        ReportedRoute reported = spReport.getRoute();
+        assertEquals("myKey", reported.getEnavId());
+        assertEquals("myName", reported.getName());
+
+        List<ReportedWayPoint> expected = Arrays.asList(new ReportedWayPoint("wp1", 60.0, -60.0), new ReportedWayPoint(
+                "wp2", 62.0, -62.0), new ReportedWayPoint("wp3", 64.0, -64.0));
+        assertReflectionEquals(expected, reported.getWayPoints());
+        
         entityManager.getTransaction().commit();
     }
 

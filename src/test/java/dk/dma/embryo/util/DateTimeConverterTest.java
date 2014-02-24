@@ -26,13 +26,22 @@ import org.junit.Test;
 public class DateTimeConverterTest {
 
     @Test
-    public void test() {
-
+    public void testMMtoString() {
+        // TEST DATA
         DateTime dateTime = new DateTime(1392298200000L);
-
-        String str = DateTimeConverter.getDateTimeConverter().toStringMedium(dateTime);
-
+        // EXECUTE
+        String str = DateTimeConverter.getDateTimeConverter("MM").toString(dateTime);
+        // VERIFY
         assertEquals("13-02-2014 13:30:00", str);
     }
 
+    @Test
+    public void testMStoString() {
+        // TEST DATA
+        DateTime dateTime = new DateTime(1392298200000L);
+        // EXECUTE
+        String str = DateTimeConverter.getDateTimeConverter("MS").toString(dateTime);
+        // VERIFY
+        assertEquals("13-02-2014 13:30", str);
+    }
 }

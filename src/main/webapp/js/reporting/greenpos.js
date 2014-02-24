@@ -4,7 +4,7 @@ var greenposScope;
     "use strict";
 
     var greenposModule = angular.module('embryo.greenpos', [ 'embryo.scheduleService', 'embryo.greenposService',
-            'embryo.course', 'embryo.position']);
+            'embryo.course', 'embryo.position' ]);
 
     /*
      * Inspired by http://jsfiddle.net/zbjLh/2/
@@ -58,10 +58,9 @@ var greenposScope;
             id : "DR",
             name : "Deviation Report"
         } ]
-        
-        
+
         var reportNames = {};
-        for(var index in $scope.reportTypes){
+        for ( var index in $scope.reportTypes) {
             var reportType = $scope.reportTypes[index];
             reportNames[reportType.id] = reportType.name;
         }
@@ -117,10 +116,10 @@ var greenposScope;
         }
 
         $scope.visibility = {
-            "SP" : [ "destination", "eta", "personsOnBoard", "course", "speed", "weather", "ice" ],
+            "SP" : [ "destination", "eta", "personsOnBoard", "course", "speed", "route", "weather", "ice" ],
             "PR" : [ "course", "speed", "weather", "ice" ],
             "FR" : [ "weather", "ice" ],
-            "DR" : [ "deviation" ]
+            "DR" : [ "route" ]
         };
 
         $scope.getLatLon = function() {
@@ -168,7 +167,10 @@ var greenposScope;
                 value : $scope.deactivate && $scope.report.type == "FR",
                 routeId : vesselDetails.additionalInformation.routeId
             };
-            GreenposService.save($scope.report, deactivateRoute, function() {
+
+            var inclWps = $scope.inclWps && ($scope.report.type == "SP" || $scope.report.type == "DR");
+
+            GreenposService.save($scope.report, deactivateRoute, inclWps, function() {
                 $scope.reportAcknowledgement = reportNames[$scope.report.type];
 
                 if ($scope.deactivate && $scope.report.type == "FR") {
@@ -217,7 +219,8 @@ var greenposScope;
                 callSign : vesselOverview.callSign,
                 vesselName : vesselOverview.name
             };
-            $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId != null);
+            $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId && vesselDetails.additionalInformation.routeId.length > 0);
+            $scope.inclWps = $scope.hasActiveRoute;
 
             ScheduleService.getActiveVoyage(vesselOverview.mmsi, vesselDetails.additionalInformation.routeId, function(
                     voyageInfo) {
@@ -235,6 +238,7 @@ var greenposScope;
                         $scope.report.personsOnBoard = voyageInfo.passengers;
                     }
                 }
+                $scope.report.description = voyageInfo.dep + " to " + voyageInfo.des + ":";
 
             }, function(errorMsgs) {
                 $scope.warningMessages = errorMsgs;

@@ -15,8 +15,10 @@
  */
 package dk.dma.embryo.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
@@ -27,8 +29,8 @@ import dk.dma.embryo.rest.json.GreenPosShort;
  * Deviation may be reported as either a free form textual description {@link #deviation} or a modified voyage plan
  * or a combination of both.
  * 
- * The system is expected to insert a modified voyage plan if it exists. The textual description if filled in by either
- * vessel or authorities (Grønlandskommandoen).
+ * The system is expected to insert a modified voyage plan if it exists. The textual description is filled in by either
+ * vessel or authorities (Arctic Command).
  * 
  * @author Jesper Tejlgaard
  */
@@ -40,11 +42,9 @@ public class GreenPosDeviationReport extends GreenPosReport {
 
     private String deviation;
 
-    // @Valid
-    // @OneToMany(cascade=CascadeType.ALL)
-    // @OrderColumn(name = "orderNumber")
-    // private List<ReportedVoyage> modifiedPlan = new ArrayList<>();
-
+    @OneToOne(cascade=CascadeType.PERSIST)
+    private ReportedRoute route;
+    
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosDeviationReport report = new GreenPosDeviationReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), pos, from.getDeviation());
+                from.getCallSign(), pos, from.getDescription());
 
         return report;
     }
@@ -67,7 +67,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitude());
         result.setLat(getPosition().getLatitude());
-        result.setDeviation(getDeviation());
+        result.setDescription(getDeviation());
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
         
@@ -114,7 +114,11 @@ public class GreenPosDeviationReport extends GreenPosReport {
         return deviation;
     }
 
-    // public List<ReportedVoyage> getModifiedPlan() {
-    // return modifiedPlan;
-    // }
+    public ReportedRoute getRoute() {
+        return route;
+    }
+
+    public void setRoute(ReportedRoute route) {
+        this.route = route;
+    }    
 }

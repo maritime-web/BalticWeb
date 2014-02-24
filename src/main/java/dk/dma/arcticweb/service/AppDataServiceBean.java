@@ -521,10 +521,10 @@ public class AppDataServiceBean {
         // firstDeparture.
 
         Duration d = new Duration(firstDeparture, now);
-        int weeks = (int)d.getStandardDays()/7;
-        
+        int weeks = (int) d.getStandardDays() / 7;
+
         logger.debug("Duration: {}, weeks:{}, days: {}", d, weeks, d.getStandardDays());
-        
+
         if (weeks > 0) {
             for (Voyage v : sarfaq.getSchedule()) {
                 v.setArrival(v.getArrival() == null ? null : v.getArrival().plusWeeks(weeks));
@@ -542,9 +542,9 @@ public class AppDataServiceBean {
         logger.info("BEFORE UPLOAD - SARFAQ");
 
         List<Voyage> schedule = scheduleDao.getSchedule(331037000L);
-        
+
         logger.debug("schedule: {}", schedule);
-        
+
         insertDemoRoute(schedule.get(0).getEnavId(), "/demo/routes/SARFAQ-Nuuk-Maniitsoq.txt", true);
         insertDemoRoute(schedule.get(1).getEnavId(), "/demo/routes/SARFAQ-Maniitsoq-Kangaamiut.txt", false);
         insertDemoRoute(schedule.get(2).getEnavId(), "/demo/routes/SARFAQ-Kangaamiut-Sisimiut.txt", false);
@@ -755,7 +755,7 @@ public class AppDataServiceBean {
 
         GreenPosReport report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel
                 .getAisData().getCallsign(), new Position("66 56.5N", "053 40.50W"), "Sun shine", "NO ICE", 4.1, 10,
-                "Nuuk", converter.toObject("19-09-2013 10:30"), 6);
+                "Nuuk", converter.toObject("19-09-2013 10:30"), 6, "Route with no particular good route description");
         report.setReportedBy("oratank");
         report.setTs(minus8.withHourOfDay(13).withMinuteOfHour(9));
         vesselDao.saveEntity(report);
@@ -800,7 +800,7 @@ public class AppDataServiceBean {
 
         report = new GreenPosSailingPlanReport(vessel.getAisData().getName(), vessel.getMmsi(), vessel.getAisData()
                 .getCallsign(), new Position("64 10.4N", "051 43.5W"), "Sun shine", "NO ICE", 4.1, 150, "KYSTFART",
-                converter.toObject("26-09-2013 10:30"), 6);
+                converter.toObject("26-09-2013 10:30"), 6, "Route with no particular good route description");
         report.setReportedBy("orasila");
         report.setTs(minus2.withHourOfDay(23).withMinuteOfHour(12));
         vesselDao.saveEntity(report);
