@@ -55,16 +55,13 @@ public class AisViewServiceIT {
 
     @Test
     public void testHistory() {
-        Map<String, Object> details = limitedAisViewService.vesselTargetDetails(220443000, 0);
+        Map<String, Object> details = limitedAisViewService.vesselTargetDetails(434253250, 1);
 
-        System.out.println(((Map) details.get("pastTrack")).get("points").getClass());
-
-        List list = (List) ((Map) details.get("pastTrack")).get("points");
-
-        System.out.println(list.get(0).getClass());
-
-        System.out.println(new ArrayList(((Map) list.get(0)).keySet()).get(0).getClass());
-
-        System.out.println(new ArrayList(((Map) list.get(0)).values()).get(0).getClass());
+        System.out.println("Details with History: " + details);
+//        System.out.println(((Map) details.get("pastTrack")).get("points").getClass());
+//        List list = (List) ((Map) details.get("pastTrack")).get("points");
+//        System.out.println(list.get(0).getClass());
+//        System.out.println(new ArrayList(((Map) list.get(0)).keySet()).get(0).getClass());
+//        System.out.println(new ArrayList(((Map) list.get(0)).values()).get(0).getClass());
     }
 }
