@@ -30,15 +30,14 @@ import org.junit.runner.RunWith;
 import dk.dma.embryo.configuration.PropertyFileService;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses(value = {RestClientFactory.class, PropertyFileService.class})
-public class AisViewServiceTest {
+@AdditionalClasses(value = { RestClientFactory.class, PropertyFileService.class })
+public class AisViewServiceIT {
     @Inject
     FullAisViewService fullAisViewService;
 
     @Inject
     LimitedAisViewService limitedAisViewService;
 
-    @Ignore
     @Test
     public void test() {
         AisViewService.VesselListResult fullList = fullAisViewService.vesselList(0);
@@ -48,29 +47,24 @@ public class AisViewServiceTest {
         System.out.println("Limited list: " + limitedList.getVesselsInWorld());
     }
 
-    @Ignore
     @Test
     public void testDetails() {
-        Map details = fullAisViewService.vesselTargetDetails(220443000, 0);
-        System.out.println("Details: "+details);
+        Map<String, Object> details = fullAisViewService.vesselTargetDetails(220443000, 0);
+        System.out.println("Details: " + details);
     }
 
     @Test
-    @Ignore
     public void testHistory() {
-        Map details = limitedAisViewService.vesselTargetDetails(220443000, 0);
-        
-        
+        Map<String, Object> details = limitedAisViewService.vesselTargetDetails(220443000, 0);
+
         System.out.println(((Map) details.get("pastTrack")).get("points").getClass());
-        
-        List list = (List)((Map) details.get("pastTrack")).get("points");
-        
+
+        List list = (List) ((Map) details.get("pastTrack")).get("points");
+
         System.out.println(list.get(0).getClass());
-        
 
-        System.out.println(new ArrayList( ((Map)list.get(0)).keySet()).get(0).getClass());
+        System.out.println(new ArrayList(((Map) list.get(0)).keySet()).get(0).getClass());
 
-
-        System.out.println(new ArrayList( ((Map)list.get(0)).values()).get(0).getClass());
-}
+        System.out.println(new ArrayList(((Map) list.get(0)).values()).get(0).getClass());
+    }
 }
