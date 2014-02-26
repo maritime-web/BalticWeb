@@ -32,6 +32,8 @@ import org.mockito.Mock;
 import dk.dma.embryo.configuration.LogConfiguration;
 import dk.dma.embryo.configuration.PropertyFileService;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
+import dk.dma.embryo.domain.GreenPosFinalReport;
+import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.Position;
 import dk.dma.embryo.domain.ReportedRoute;
@@ -45,7 +47,7 @@ import dk.dma.embryo.util.DateTimeConverter;
  * @author Jesper Tejlgaard
  */
 @RunWith(CdiRunner.class)
-@AdditionalClasses(value = { PropertyFileService.class, LogConfiguration.class})
+@AdditionalClasses(value = { PropertyFileService.class, LogConfiguration.class })
 public class MailServiceImplTest {
     // mocks
 
@@ -61,30 +63,32 @@ public class MailServiceImplTest {
     @Mock
     MailSender mailSender;
 
-    // tested service
-    @Inject 
+    @Inject
     private MailServiceImpl mailService;
 
     @Test
     public void testSendDeviationReport_noWaypoints() throws MessagingException {
         // SETUP MOCKS
         when(subject.getUser()).thenReturn(new SecuredUser("name", "pwd", new byte[0], "test@test.dk"));
-        
+
+        // TEST DATA
         GreenPosDeviationReport report = new GreenPosDeviationReport("MyVessel", 12L, "callsign", new Position(10.0,
                 10.0), "My Deviation Description");
         report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-01-2014 12:00:34"));
-        
+
+        // EXECUTE
         mailService.newGreenposReport(report);
 
+        // VERIFY
         String header = "ArcticWeb Greenpos Deviation Report from MyVessel";
         String body = "A (Vessel): MyVessel/callsign MMSI 12\n";
-        body += "B (Report time): 01-01-2014 12:00:34 UTC\n"; 
+        body += "B (Report time): 01-01-2014 12:00:34 UTC\n";
         body += "C (Position): 10 00.000N 010 00.000E\n";
         body += "L (Deviation): My Deviation Description\n";
         body += "L (Route WayPoints): -\n";
         body += "\n";
         body += "Reported via ArcticWeb.";
-        
+
         verify(mailSender).sendEmail("arktiskcom@gmail.com", "test@test.dk", header, body);
     }
 
@@ -92,7 +96,8 @@ public class MailServiceImplTest {
     public void testSendDeviationReport_withWaypoints() throws MessagingException {
         // SETUP MOCKS
         when(subject.getUser()).thenReturn(new SecuredUser("name", "pwd", new byte[0], "test@test.dk"));
-        
+
+        // TEST DATA
         GreenPosDeviationReport report = new GreenPosDeviationReport("MyVessel", 12L, "callsign", new Position(10.0,
                 10.0), "My Deviation Description");
         report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-01-2014 12:00:34"));
@@ -100,18 +105,20 @@ public class MailServiceImplTest {
         route.addWayPoint(new ReportedWayPoint("wp1", 10.0, 10.0));
         route.addWayPoint(new ReportedWayPoint("wp2", 12.0, 12.0));
         report.setRoute(route);
-        
+
+        // EXECUTE
         mailService.newGreenposReport(report);
 
+        // VERIFY
         String header = "ArcticWeb Greenpos Deviation Report from MyVessel";
         String body = "A (Vessel): MyVessel/callsign MMSI 12\n";
-        body += "B (Report time): 01-01-2014 12:00:34 UTC\n"; 
+        body += "B (Report time): 01-01-2014 12:00:34 UTC\n";
         body += "C (Position): 10 00.000N 010 00.000E\n";
         body += "L (Deviation): My Deviation Description\n";
         body += "L (Route WayPoints): [10 00.000N,010 00.000E],  [12 00.000N,012 00.000E]\n";
         body += "\n";
         body += "Reported via ArcticWeb.";
-        
+
         verify(mailSender).sendEmail("arktiskcom@gmail.com", "test@test.dk", header, body);
     }
 
@@ -120,33 +127,35 @@ public class MailServiceImplTest {
         // SETUP MOCKS
         when(subject.getUser()).thenReturn(new SecuredUser("name", "pwd", new byte[0], "test@test.dk"));
 
+        // TEST DATA
         DateTime eta = DateTimeConverter.getDateTimeConverter("MS").toObject("02-02-2014 12:00");
-
-        GreenPosSailingPlanReport report = new GreenPosSailingPlanReport("MyVessel", 12L, "callsign", new Position(10.0,
-                10.0), "My Weather", "My Ice", 1.0, 230, "Nuuk", eta, 12, "My Route Description");
+        GreenPosSailingPlanReport report = new GreenPosSailingPlanReport("MyVessel", 12L, "callsign", new Position(
+                10.0, 10.0), "My Weather", "My Ice", 1.0, 230, "Nuuk", eta, 12, "My Route Description");
         report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-02-2014 14:01:25"));
         ReportedRoute route = new ReportedRoute("mykey", "myroute");
         route.addWayPoint(new ReportedWayPoint("wp1", 10.0, 10.0));
         route.addWayPoint(new ReportedWayPoint("wp2", 12.0, 12.0));
         report.setRoute(route);
-        
+
+        // EXECUTE
         mailService.newGreenposReport(report);
 
+        // VERIFY
         String header = "ArcticWeb Greenpos Sailing Plan Report from MyVessel";
         String body = "A (Vessel): MyVessel/callsign MMSI 12\n";
         body += "B (Report time): 01-02-2014 14:01:25 UTC\n";
         body += "C (Position): 10 00.000N 010 00.000E\n";
-        body += "E (Course): 230\n"; 
-        body += "F (Speed): 1.0\n"; 
-        body += "I (Destination & ETA): Nuuk, 02-02-2014 12:00 UTC\n"; 
-        body += "X (Persons on Board): 12\n"; 
-        body += "S (Ice): My Ice\n"; 
-        body += "S (Weather): My Weather\n"; 
+        body += "E (Course): 230\n";
+        body += "F (Speed): 1.0\n";
+        body += "I (Destination & ETA): Nuuk, 02-02-2014 12:00 UTC\n";
+        body += "X (Persons on Board): 12\n";
+        body += "S (Ice): My Ice\n";
+        body += "S (Weather): My Weather\n";
         body += "L (Route Description): My Route Description\n";
         body += "L (Route WayPoints): [10 00.000N,010 00.000E],  [12 00.000N,012 00.000E]\n";
         body += "\n";
         body += "Reported via ArcticWeb.";
-        
+
         verify(mailSender).sendEmail("arktiskcom@gmail.com", "test@test.dk", header, body);
     }
 
@@ -155,29 +164,86 @@ public class MailServiceImplTest {
         // SETUP MOCKS
         when(subject.getUser()).thenReturn(new SecuredUser("name", "pwd", new byte[0], "test@test.dk"));
 
+        // TEST DATA
         DateTime eta = DateTimeConverter.getDateTimeConverter("MS").toObject("02-02-2014 12:00");
-
-        GreenPosSailingPlanReport report = new GreenPosSailingPlanReport("MyVessel", 12L, "callsign", new Position(10.0,
-                10.0), "My Weather", "My Ice", 1.0, 230, "Nuuk", eta, 12, null);
+        GreenPosSailingPlanReport report = new GreenPosSailingPlanReport("MyVessel", 12L, "callsign", new Position(
+                10.0, 10.0), "My Weather", "My Ice", 1.0, 230, "Nuuk", eta, 12, null);
         report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-02-2014 14:01:25"));
-        
+
+        // EXECUTE
         mailService.newGreenposReport(report);
 
+        // VERIFY
         String header = "ArcticWeb Greenpos Sailing Plan Report from MyVessel";
         String body = "A (Vessel): MyVessel/callsign MMSI 12\n";
         body += "B (Report time): 01-02-2014 14:01:25 UTC\n";
         body += "C (Position): 10 00.000N 010 00.000E\n";
-        body += "E (Course): 230\n"; 
-        body += "F (Speed): 1.0\n"; 
-        body += "I (Destination & ETA): Nuuk, 02-02-2014 12:00 UTC\n"; 
-        body += "X (Persons on Board): 12\n"; 
-        body += "S (Ice): My Ice\n"; 
-        body += "S (Weather): My Weather\n"; 
+        body += "E (Course): 230\n";
+        body += "F (Speed): 1.0\n";
+        body += "I (Destination & ETA): Nuuk, 02-02-2014 12:00 UTC\n";
+        body += "X (Persons on Board): 12\n";
+        body += "S (Ice): My Ice\n";
+        body += "S (Weather): My Weather\n";
         body += "L (Route Description): -\n";
         body += "L (Route WayPoints): -\n";
         body += "\n";
         body += "Reported via ArcticWeb.";
-        
+
         verify(mailSender).sendEmail("arktiskcom@gmail.com", "test@test.dk", header, body);
     }
+
+    @Test
+    public void testSendFinalReport() throws MessagingException {
+        // SETUP MOCKS
+        when(subject.getUser()).thenReturn(new SecuredUser("name", "pwd", new byte[0], "test@test.dk"));
+
+        // TEST DATA
+        GreenPosFinalReport report = new GreenPosFinalReport("MyVessel", 12L, "callsign", new Position(10.0, 10.0),
+                "My Weather", "My Ice");
+        report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-02-2014 14:01:25"));
+
+        // EXECUTE
+        mailService.newGreenposReport(report);
+
+        // VERIFY
+        String header = "ArcticWeb Greenpos Final Report from MyVessel";
+        String body = "A (Vessel): MyVessel/callsign MMSI 12\n";
+        body += "B (Report time): 01-02-2014 14:01:25 UTC\n";
+        body += "C (Position): 10 00.000N 010 00.000E\n";
+        body += "S (Ice): My Ice\n";
+        body += "S (Weather): My Weather\n";
+        body += "\n";
+        body += "Reported via ArcticWeb.";
+
+        verify(mailSender).sendEmail("arktiskcom@gmail.com", "test@test.dk", header, body);
+    }
+
+    @Test
+    public void testSendPositionReport() throws MessagingException {
+        // SETUP MOCKS
+        when(subject.getUser()).thenReturn(new SecuredUser("name", "pwd", new byte[0], "test@test.dk"));
+
+        // TEST DATA
+        GreenPosPositionReport report = new GreenPosPositionReport("MyVessel", 12L, "callsign", new Position(10.0, 10.0),
+                "My Weather", "My Ice", 2.0, 134);
+        report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-02-2014 06:03:25"));
+
+        // EXECUTE
+        mailService.newGreenposReport(report);
+
+        // VERIFY
+        String header = "ArcticWeb Greenpos Position Report from MyVessel";
+        String body = "A (Vessel): MyVessel/callsign MMSI 12\n";
+        body += "B (Report time): 01-02-2014 06:03:25 UTC\n";
+        body += "C (Position): 10 00.000N 010 00.000E\n";
+        body += "E (Course): 134\n";
+        body += "F (Speed): 2.0\n";
+        body += "S (Ice): My Ice\n";
+        body += "S (Weather): My Weather\n";
+        body += "\n";
+        body += "Reported via ArcticWeb.";
+
+        verify(mailSender).sendEmail("arktiskcom@gmail.com", "test@test.dk", header, body);
+    }
+
 }
