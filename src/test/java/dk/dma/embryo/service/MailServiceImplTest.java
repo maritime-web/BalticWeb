@@ -40,6 +40,7 @@ import dk.dma.embryo.domain.ReportedRoute;
 import dk.dma.embryo.domain.ReportedWayPoint;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.mail.MailSender;
+import dk.dma.embryo.rest.RequestAccessRestService.SignupRequest;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.util.DateTimeConverter;
 
@@ -246,4 +247,28 @@ public class MailServiceImplTest {
         verify(mailSender).sendEmail("arktiskcom@gmail.com", "test@test.dk", header, body);
     }
 
+    @Test
+    public void testSendRequestAccess() throws MessagingException {
+        // SETUP MOCKS
+        when(subject.getUser()).thenReturn(new SecuredUser("name", "pwd", new byte[0], "test@test.dk"));
+
+        // TEST DATA
+        SignupRequest request = new SignupRequest();
+        request.setContactPerson("John Doe");
+        request.setEmailAddress("john@doe.com");
+        request.setMmsiNumber(12L);
+        request.setPreferredLogin("john");
+
+        // EXECUTE
+        mailService.newRequestAccess(request);
+
+        // VERIFY
+        String header = "Request Access for john@doe.com";
+        String body = "Preferred Login: john\n";
+        body += "Contact Person: John Doe\n";
+        body += "Email Address: john@doe.com\n";
+        body += "Mmsi Number: 12";
+
+        verify(mailSender).sendEmail("arktiskcom@gmail.com", "noreply@dma.dk", header, body);
+    }
 }
