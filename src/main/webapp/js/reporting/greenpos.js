@@ -238,7 +238,9 @@ var greenposScope;
                         $scope.report.personsOnBoard = voyageInfo.passengers;
                     }
                 }
-                $scope.report.description = voyageInfo.dep + " to " + voyageInfo.des + ":";
+                
+                $scope.report.description = !voyageInfo.dep ? "" : "From " + voyageInfo.dep + " ";
+                $scope.report.description += (!voyageInfo.des ? "" : "to " + voyageInfo.des);
 
             }, function(errorMsgs) {
                 $scope.warningMessages = errorMsgs;
