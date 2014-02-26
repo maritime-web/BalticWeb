@@ -17,20 +17,10 @@ package dk.dma.embryo.service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 
@@ -43,16 +33,19 @@ import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.ReportedRoute;
+import dk.dma.embryo.mail.MailSender;
 import dk.dma.embryo.rest.RequestAccessRestService;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.util.DateTimeConverter;
 
 @Named
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class MailServiceImpl implements MailService {
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private MailSender mailSender;
 
     @Inject
     private EmbryoLogService embryoLogService;
@@ -70,88 +63,21 @@ public class MailServiceImpl implements MailService {
     private String fromSystemEmail;
 
     @Inject
-    @Property("embryo.notification.mail.smtp.host")
-    private String smtpHost;
-
-    @Inject
-    @Property(value = "embryo.notification.mail.smtp.username", defaultValue = " ")
-    private String username;
-
-    @Inject
-    @Property(value = "embryo.notification.mail.smtp.password", defaultValue = " ")
-    private String password;
-
-    @Inject
-    @Property("embryo.notification.mail.enabled")
-    private String enabled;
-
-    @Inject
     private PropertyFileService propertyFileService;
 
     @Inject
-    Subject subject;
+    private Subject subject;
 
     public MailServiceImpl() {
     }
 
-    @PostConstruct
-    public void init() {
-        if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
-            logger.info("ArcticWeb MAIL SERVICE DISABLED");
-        } else {
-            logger.info("ArcticWeb MAIL SERVICE ENABLED");
-        }
-    }
-
-    private void sendEmail(String toEmail, String from, String header, String body) {
-
-        logger.debug("enabled=" + enabled);
-
-        if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
-            logger.info("Email sending has been disabled. Would have sent the following to " + toEmail + ":\n" + header
-                    + "\n" + body);
-            return;
-        }
-
-        Properties properties = new Properties();
-
-        properties.put("mail.smtp.host", smtpHost);
-
-        Session session;
-
-        if (username == null || username.trim().equals("")) {
-            session = Session.getDefaultInstance(properties);
-        } else {
-            properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.starttls.enable", "true");
-            properties.put("mail.smtp.port", "587");
-
-            session = Session.getInstance(properties, new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(username, password);
-                }
-            });
-        }
-
-        try {
-            MimeMessage message = new MimeMessage(session);
-
-            message.setFrom(new InternetAddress(from != null ? from : fromSystemEmail));
-
-            for (String email : toEmail.split(";")) {
-                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-            }
-
-            message.setSubject(header);
-
-            message.setText(body);
-
-            Transport.send(message);
-
-            logger.info("The following email to " + toEmail + " have been sent:\n" + header + "\n" + body);
-        } catch (Exception mex) {
-            throw new RuntimeException(mex);
-        }
+    public MailServiceImpl(Logger logger, EmbryoLogService logService, MailSender sender, Subject subject,
+            PropertyFileService propertyFileService) {
+        this.logger = logger;
+        this.embryoLogService = logService;
+        this.mailSender = sender;
+        this.propertyFileService = propertyFileService;
+        this.subject = subject;
     }
 
     private String applyTemplate(String template, Map<String, String> environment) {
@@ -184,7 +110,8 @@ public class MailServiceImpl implements MailService {
             String header = propertyFileService.getProperty("embryo.notification.template.signupRequest.header");
             String body = propertyFileService.getProperty("embryo.notification.template.signupRequest.body");
 
-            sendEmail(requestAccessToEmail, null, applyTemplate(header, environment), applyTemplate(body, environment));
+            mailSender.sendEmail(requestAccessToEmail, fromSystemEmail, applyTemplate(header, environment),
+                    applyTemplate(body, environment));
 
             embryoLogService.info(applyTemplate(header, environment) + " sent to " + requestAccessToEmail);
         } catch (Throwable t) {
@@ -246,10 +173,9 @@ public class MailServiceImpl implements MailService {
 
             String header = propertyFileService.getProperty("embryo.notification.template." + templateName + ".header");
             String body = propertyFileService.getProperty("embryo.notification.template." + templateName + ".body");
-
             String email = subject.getUser().getEmail();
 
-            sendEmail(greenposToEmail, email, applyTemplate(header, environment), applyTemplate(body, environment));
+            mailSender.sendEmail(greenposToEmail, email, applyTemplate(header, environment), applyTemplate(body, environment));
 
             embryoLogService.info(applyTemplate(header, environment) + " sent to " + greenposToEmail);
 

@@ -42,6 +42,11 @@ public class PropertyFileService {
         return properties.getProperty(name);
     }
 
+    public String getProperty(String name, String defValue) {
+        return properties.getProperty(name, defValue);
+    }
+
+    
     public String getProperty(String name, boolean substituteSystemProperties) {
         String property = properties.getProperty(name);
 

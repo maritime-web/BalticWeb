@@ -43,7 +43,7 @@ import dk.dma.embryo.security.authorization.Roles;
  * @author Jesper Tejlgaard
  */
 @RunWith(CdiRunner.class)
-@AdditionalClasses({ Configuration.class, LogConfiguration.class })
+@AdditionalClasses({ LogConfiguration.class })
 public class AuthorizationCheckerTest {
 
     @Produces

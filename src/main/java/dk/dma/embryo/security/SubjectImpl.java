@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.domain.Role;
-import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 

@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import dk.dma.embryo.domain.Role;
-import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SecuredUser;
 
 /**
