@@ -21,5 +21,5 @@ package dk.dma.embryo.mail;
  */
 public interface MailSender {
 
-    public void sendEmail(String toEmail, String from, String header, String body);
+    void sendEmail(String toEmail, String from, String header, String body);
 }
