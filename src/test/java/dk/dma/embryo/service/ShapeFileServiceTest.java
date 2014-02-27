@@ -13,14 +13,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.embryo.service;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
@@ -28,11 +27,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 public class ShapeFileServiceTest {
 
-    private ShapeFileService service;
+    private ShapeFileServiceImpl service;
 
     @Before
     public void setup() {
@@ -40,16 +38,16 @@ public class ShapeFileServiceTest {
         providers.put("dmi", "DMI");
         Map<String, String> directories = new HashMap<String, String>();
         directories.put("dmi", "/Users/chvid/sfs/dmi");
-        service = new ShapeFileService(providers, directories);
+        service = new ShapeFileServiceImpl(providers, directories);
+        //service.logger = LoggerFactory.getLogger(ShapeFileServiceImpl.class);
     }
 
     @Ignore
     @Test
     public void test() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        service.logger = LoggerFactory.getLogger(ShapeFileService.class);
-        List<ShapeFileService.Shape> file = service
-                .getMultipleFile("dmi.201311190920_CapeFarewell_RIC", 0, "", true, 4);
+        ShapeFileService.Shape file = service
+                .readSingleFile("dmi.201311190920_CapeFarewell_RIC", 0, "", true, 4, 0);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gos = new GZIPOutputStream(out);
@@ -63,9 +61,9 @@ public class ShapeFileServiceTest {
 
     @Test
     public void reprojectTest() throws IOException {
-        service.logger = LoggerFactory.getLogger(ShapeFileService.class);
-        List<ShapeFileService.Shape> file = service.getMultipleFile("static.world_merc", 0, "", true, 4);
-        assertEquals(-616867, file.get(0).getFragments().get(0).getPolygons().get(0).get(0).getX());
-        assertEquals(170244, file.get(0).getFragments().get(0).getPolygons().get(0).get(0).getY());
+        ShapeFileService.Shape file = service.readSingleFile("static.world_merc", 0, "", true, 4, 0);
+        assertEquals(-616867, file.getFragments().get(0).getPolygons().get(0).get(0).getX());
+        assertEquals(170244, file.getFragments().get(0).getPolygons().get(0).get(0).getY());
     }
+
 }

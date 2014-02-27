@@ -87,25 +87,19 @@
                     }
                 });
             },
-            shapes : function(argument, callback) {
-                var r;
-                if (typeof (argument) == "string") {
-                    r = {
-                        ids : argument,
-                        delta : embryo.ice.delta,
-                        exponent : embryo.ice.exponent
-                    }
-                } else {
-                    r = argument;
+            shapes : function(name, arguments, callback) {
+                var r = (typeof (arguments) != "object") ? {} : arguments;
+                if (!r.delta) {
+                    r.delta = embryo.ice.delta;
+                }
+                if (!r.exponent) {
+                    r.exponent = embryo.ice.exponent;
                 }
 
                 $.ajax({
-                    url : embryo.baseUrl + "rest/shapefile/multiple/" + r.ids,
+                    url : embryo.baseUrl + "rest/shapefile/multiple/" + name,
                     timeout : embryo.defaultTimeout,
-                    data : {
-                        delta : r.delta,
-                        exponent : r.exponent
-                    },
+                    data : r,
                     success : function(data) {
                         convert(data, r.delta, r.exponent);
                         callback(null, data);

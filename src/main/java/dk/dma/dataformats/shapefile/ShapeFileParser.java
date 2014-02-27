@@ -98,12 +98,17 @@ public class ShapeFileParser {
     public static class Point {
         private double x;
         private double y;
+        
+        public Point(double x, double y) {
+            super();
+            this.x = x;
+            this.y = y;
+        }
 
         public static Point read(InputStream is) throws IOException {
-            Point p = new Point();
-            p.x = readDoubleLittle(is);
-            p.y = readDoubleLittle(is);
-            return p;
+            double x = readDoubleLittle(is);
+            double y = readDoubleLittle(is);
+            return new Point(x, y);
         }
 
         public double getX() {
@@ -149,6 +154,12 @@ public class ShapeFileParser {
         public double getyMax() {
             return yMax;
         }
+
+        @Override
+        public String toString() {
+            return "Box [xMin=" + xMin + ", yMin=" + yMin + ", xMax=" + xMax + ", yMax=" + yMax + "]";
+        }
+        
     }
 
     public static class RecordHeader {

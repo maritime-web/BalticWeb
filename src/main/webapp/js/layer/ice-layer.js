@@ -88,6 +88,7 @@ function IceLayer() {
 
                     if (j >= 1) {
                         var diff = Math.abs(polygon[j - 1].x - p.x);
+//                        if (diff > 350 && !(Math.abs(polygon[j-1].x) == Math.abs(p.x) && polygon[j-1].y == p.y)) {
                         if (diff > 350) {
                             if (p.x < polygon[j - 1].x) {
                                 p.x += 360;
@@ -99,19 +100,6 @@ function IceLayer() {
 
                     points.push(embryo.map.createPoint(p.x, p.y));
                 }
-                // try to fix polygon crossing the world - not possible.
-                // if((polygon[polygon.length - 1].x - polygon[0].x) > 180){
-                // points.push(embryo.map.createPoint(polygon[0].x - 360,
-                // polygon[0].y));
-                // } else
-//                if ((polygon[polygon.length - 1].x - polygon[0].x) < -180) {
-//                    console.log(polygon[polygon.length - 1]);
-//                    console.log(points[points.length - 1]);
-
-                    // points.push(embryo.map.createPoint(polygon[0].x + 360,
-                    // polygon[0].y));
-//                }
-
                 rings.push(new OpenLayers.Geometry.LinearRing(points));
             }
 
