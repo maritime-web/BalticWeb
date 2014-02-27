@@ -48,8 +48,8 @@ import dk.dma.embryo.configuration.EmbryoLogFactory;
 import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.configuration.PropertyFileService;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
-import dk.dma.embryo.rest.ShapeFileService;
 import dk.dma.embryo.service.EmbryoLogService;
+import dk.dma.embryo.service.ShapeFileService;
 
 @Singleton
 @Startup
@@ -190,7 +190,7 @@ public class ShapeFileMeasurerJob {
 
         private long measureFile(String pfn) throws IOException {
             ObjectMapper mapper = new ObjectMapper();
-            List<ShapeFileService.Shape> file = service.getMultipleFile(pfn, 0, "", true, 3);
+            ShapeFileService.Shape file = service.internalReadSingleFile(pfn, 0, "", true, 3, 0);
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             GZIPOutputStream gos = new GZIPOutputStream(out);

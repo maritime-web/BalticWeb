@@ -22,6 +22,11 @@ import java.util.List;
 
 import org.junit.Test;
 
+import dk.dma.dataformats.shapefile.ShapeFileParser.Box;
+import dk.dma.dataformats.shapefile.ShapeFileParser.Point;
+import dk.dma.dataformats.shapefile.ShapeFileParser.PolyLine;
+import dk.dma.dataformats.shapefile.ShapeFileParser.Record;
+
 public class ShapeFileParserTest {
     @Test
     public void readFileFromDmi() throws IOException {
@@ -48,18 +53,49 @@ public class ShapeFileParserTest {
     }
 
     @Test
-    public void readGreenlandOverViewIceChartFromDmi() throws IOException {
-        ShapeFileParser.File f = ShapeFileParser.parse(getClass().getResourceAsStream("/ice/201402021200_Greenland_WA/201402021200_Greenland_WA.shp"));
-        assertEquals("Expected number of records", 81, f.getRecords().size());
+    public void readAllArcticFromAari() throws IOException {
+        ShapeFileParser.File f = ShapeFileParser.parse(getClass().getResourceAsStream("/ice/aari_arc_20140211_pl_a/aari_arc_20140211_pl_a.shp"));
+        assertEquals("Expected number of records", 342, f.getRecords().size());
         assertEquals("PolyLine expected", true, f.getRecords().get(0).getShape() instanceof ShapeFileParser.PolyLine);
-        assertEquals("Expected number of points in first PolyLine", 4213, ((ShapeFileParser.PolyLine) f.getRecords().get(0).getShape()).getNumPoints());
+        assertEquals("Expected number of points in first PolyLine", 6, ((ShapeFileParser.PolyLine) f.getRecords().get(0).getShape()).getNumPoints());
         assertEquals("Actual number of points in first PolyLine", ((ShapeFileParser.PolyLine) f.getRecords().get(0).getShape()).getNumPoints(),
                 ((ShapeFileParser.PolyLine) f.getRecords().get(0).getShape()).getPoints().size());
 
         ShapeFileParser.PolyLine polyLine = (ShapeFileParser.PolyLine) f.getRecords().get(5).getShape();
+        
+        for(Record record : f.getRecords()){
+            if(record.getShape() instanceof PolyLine){
+                Box box = ((PolyLine)record.getShape()).getBox();
+                System.out.println(box);
+                if(box.getxMax() >= 178 && box.getxMax() <= 180 && box.getxMin() >= -180 && box.getxMin() <= -178){
+                    System.out.println("juhu");
+                }
+                
+                for(List<Point> part : ((PolyLine)record.getShape()).getPartsAsPoints()){
+                    int sum = 0;
+                    Point old = null;
+                    for(Point point : part){
+                        if(old != null){
+                            if(point.getX() <= -179 && old.getX() >= 179){
+                                sum -= 1;
+                            }
+                            if(old.getX() <= -179 && point.getX() >= 179){
+                                sum += 1;
+                            }
+                            
+                        }
+                        old = point;
+                    }
+                    if(sum > 0){
+                        System.out.println("Found it");
+                    }
+                }
+                ;
+            }
+        }
 
-        assertEquals("Sixth record is a polyline with 4 parts", 54, polyLine.getNumParts());
-        assertEquals("Parts as points should split in 4 parts", 54, polyLine.getPartsAsPoints().size());
+        assertEquals("Sixth record is a polyline with 4 parts", 1, polyLine.getNumParts());
+        assertEquals("Parts as points should split in 4 parts", 1, polyLine.getPartsAsPoints().size());
 
         int sum = 0;
 

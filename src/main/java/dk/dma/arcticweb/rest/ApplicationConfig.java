@@ -31,7 +31,7 @@ import dk.dma.embryo.rest.RequestAccessRestService;
 import dk.dma.embryo.rest.RouteRestService;
 import dk.dma.embryo.rest.RouteUploadRestService;
 import dk.dma.embryo.rest.ScheduleRestService;
-import dk.dma.embryo.rest.ShapeFileService;
+import dk.dma.embryo.rest.ShapeFileRestService;
 import dk.dma.embryo.rest.UserRestService;
 import dk.dma.embryo.rest.VesselRestService;
 
@@ -39,7 +39,7 @@ import dk.dma.embryo.rest.VesselRestService;
 public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
         return new HashSet<Class<?>>(Arrays.asList(RouteRestService.class, RouteUploadRestService.class,
-                ShapeFileService.class, GreenPosRestService.class,
+                ShapeFileRestService.class, GreenPosRestService.class,
                 BerthRestService.class, AuthenticationService.class, TestDataRestService.class,
                 IceObservationRestService.class, MsiRestService.class, MetocRestService.class, VesselRestService.class,
                 ScheduleRestService.class, LogEntryRestService.class, UserRestService.class, RequestAccessRestService.class));

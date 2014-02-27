@@ -13,7 +13,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.embryo.service;
+
+import static javax.ejb.TransactionAttributeType.SUPPORTS;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,27 +26,30 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.interceptor.Interceptors;
 
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.Cache;
 import org.slf4j.Logger;
 
 import dk.dma.dataformats.dbf.DbfParser;
+import dk.dma.dataformats.shapefile.PolygonSplitter;
 import dk.dma.dataformats.shapefile.ProjectionFileParser;
 import dk.dma.dataformats.shapefile.ShapeFileParser;
 import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.configuration.PropertyFileService;
+import dk.dma.embryo.security.AuthorizationChecker;
+import dk.dma.embryo.security.authorization.RolesAllowAll;
 
-@Path("/shapefile")
-public class ShapeFileService {
-
+/**
+ * @author Jesper Tejlgaard
+ */
+@Stateless
+@TransactionAttribute(SUPPORTS)
+@Interceptors(value=AuthorizationChecker.class)
+public class ShapeFileServiceImpl implements ShapeFileService{
+    
     @Inject
     @Property(value = "embryo.iceChart.providers")
     private Map<String, String> providers;
@@ -57,18 +62,18 @@ public class ShapeFileService {
     @Inject
     Logger logger;
 
-    public ShapeFileService() {
+    public ShapeFileServiceImpl() {
         super();
     }
 
-    public ShapeFileService(Map<String, String> providers, Map<String, String> directories) {
+    public ShapeFileServiceImpl(Map<String, String> providers, Map<String, String> directories) {
         super();
         this.providers = providers;
         this.directories = directories;
     }
-
+    
     @PostConstruct
-    public void init(){
+    public void init() {
         for (String providerKey : providers.keySet()) {
             String property = "embryo.iceChart." + providerKey + ".localDirectory";
             String value = propertyService.getProperty(property, true);
@@ -76,64 +81,10 @@ public class ShapeFileService {
                 directories.put(providerKey, value);
             }
         }
-        logger.info("ShapeFileService initialized");
-    }
-    
-    @GET
-    @Path("/single/{id}")
-    @Produces("application/json")
-    @GZIP
-    @Cache(maxAge = 31556926, isPrivate = false)
-    public Shape getSingleFile(@PathParam("id") String id, @DefaultValue("0") @QueryParam("resolution") int resolution,
-            @DefaultValue("") @QueryParam("filter") String filter,
-            @DefaultValue("false") @QueryParam("delta") boolean delta,
-            @DefaultValue("2") @QueryParam("exponent") int exponent) throws IOException {
-        logger.info("Request for single file: {}", id);
-        return readSingleFile(id, resolution, filter, delta, exponent);
+        logger.info(getClass().getSimpleName() + " initialized");
     }
 
-    @GET
-    @Path("/multiple/{ids}")
-    @Produces("application/json")
-    @GZIP
-    @Cache(maxAge = 31556926, isPrivate = false)
-    public List<Shape> getMultipleFile(@PathParam("ids") String ids,
-            @DefaultValue("0") @QueryParam("resolution") int resolution,
-            @DefaultValue("") @QueryParam("filter") String filter,
-            @DefaultValue("false") @QueryParam("delta") boolean delta,
-            @DefaultValue("2") @QueryParam("exponent") int exponent) throws IOException {
-        logger.info("Request for multiple files: {}", ids);
-        List<Shape> result = new ArrayList<>();
-
-        for (String id : ids.split(",")) {
-            result.add(readSingleFile(id, resolution, filter, delta, exponent));
-        }
-
-        return result;
-    }
-
-    private static Position reprojectAndRound(ShapeFileParser.Point p, String projection, int exponent) {
-        if (projection.equals("GOOGLE_MERCATOR")) {
-            // after http://stackoverflow.com/questions/11957538/converting-geographic-wgs-84-to-web-mercator-102100
-
-            double x = p.getX();
-            double y = p.getY();
-            double num3 = x / 6378137.0;
-            double num4 = num3 * 57.295779513082323;
-            double num5 = Math.floor((num4 + 180.0) / 360.0);
-            double num6 = num4 - (num5 * 360.0);
-            double num7 = 1.5707963267948966 - (2.0 * Math.atan(Math.exp((-1.0 * y) / 6378137.0)));
-            double x1 = num6;
-            double y1 = num7 * 57.295779513082323;
-
-            return new Position(round(x1, exponent), round(y1, exponent));
-        } else {
-            return new Position(round(p.getX(), exponent), round(p.getY(), exponent));
-        }
-    }
-
-    private Shape readSingleFile(String id, int resolution, String filter, boolean delta, int exponent)
-            throws IOException {
+    public Shape internalReadSingleFile(String id, int resolution, String filter, boolean delta, int exponent, int mapParts) throws IOException {
         InputStream shpIs = null;
         InputStream dbfIs = null;
         InputStream prjIs = null;
@@ -145,7 +96,7 @@ public class ShapeFileService {
         try {
             int index = id.indexOf(".");
             String provider = id.substring(0, index);
-            
+
             if (directories.containsKey(provider)) {
                 String localDirectory = directories.get(provider);
                 id = id.substring(index + 1);
@@ -181,10 +132,12 @@ public class ShapeFileService {
             if (r.getShape() instanceof ShapeFileParser.PolyLine) {
                 Map<String, Object> description = data.get((int) r.getHeader().getRecordNumber() - 1);
                 if (filter.equals("") || description.get("POLY_TYPE").equals(filter)) {
+
                     List<List<Position>> polygons = new ArrayList<>();
 
-                    for (List<ShapeFileParser.Point> part : ((ShapeFileParser.PolyLine) r.getShape())
-                            .getPartsAsPoints()) {
+                    List<List<ShapeFileParser.Point>> parts = new PolygonSplitter(mapParts).execute(r);
+
+                    for (List<ShapeFileParser.Point> part : parts) {
                         List<Position> polygon = new ArrayList<>();
                         for (ShapeFileParser.Point p : part) {
                             polygon.add(reprojectAndRound(p, projection, exponent));
@@ -215,6 +168,31 @@ public class ShapeFileService {
         shapeDescription.put("id", id);
 
         return new Shape(shapeDescription, fragments);
+    }
+
+    @RolesAllowAll
+    public Shape readSingleFile(String id, int resolution, String filter, boolean delta, int exponent, int mapParts) throws IOException {
+        return internalReadSingleFile(id, resolution, filter, delta, exponent, mapParts);
+    }
+
+    private static Position reprojectAndRound(ShapeFileParser.Point p, String projection, int exponent) {
+        if (projection.equals("GOOGLE_MERCATOR")) {
+            // after http://stackoverflow.com/questions/11957538/converting-geographic-wgs-84-to-web-mercator-102100
+
+            double x = p.getX();
+            double y = p.getY();
+            double num3 = x / 6378137.0;
+            double num4 = num3 * 57.295779513082323;
+            double num5 = Math.floor((num4 + 180.0) / 360.0);
+            double num6 = num4 - (num5 * 360.0);
+            double num7 = 1.5707963267948966 - (2.0 * Math.atan(Math.exp((-1.0 * y) / 6378137.0)));
+            double x1 = num6;
+            double y1 = num7 * 57.295779513082323;
+
+            return new Position(round(x1, exponent), round(y1, exponent));
+        } else {
+            return new Position(round(p.getX(), exponent), round(p.getY(), exponent));
+        }
     }
 
     private static <T> List<T> resample(List<T> input, int size) {
@@ -269,61 +247,5 @@ public class ShapeFileService {
         return result;
     }
 
-    public static class Position {
-        private long x;
-        private long y;
 
-        public Position(long x, long y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public long getX() {
-            return x;
-        }
-
-        public long getY() {
-            return y;
-        }
-
-        public String toString() {
-            return "Position(" + x + ", " + y + ")";
-        }
-    }
-
-    public static class Fragment {
-        private List<List<Position>> polygons;
-        private Map<String, Object> description;
-
-        public Fragment(Map<String, Object> description, List<List<Position>> polygons) {
-            this.polygons = polygons;
-            this.description = description;
-        }
-
-        public List<List<Position>> getPolygons() {
-            return polygons;
-        }
-
-        public Map<String, Object> getDescription() {
-            return description;
-        }
-    }
-
-    public static class Shape {
-        private List<Fragment> fragments;
-        private Map<String, Object> description;
-
-        public Shape(Map<String, Object> description, List<Fragment> fragments) {
-            this.fragments = fragments;
-            this.description = description;
-        }
-
-        public List<Fragment> getFragments() {
-            return fragments;
-        }
-
-        public Map<String, Object> getDescription() {
-            return description;
-        }
-    }
 }

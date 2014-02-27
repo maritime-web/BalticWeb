@@ -10,12 +10,12 @@ $(function() {
                 $scope.providers = providers;
                 if (providers.length > 0) {
                     var providerKey = getCookie("dma-ice-provider-" + embryo.authentication.userName);
-                    for(var index in providers){
-                        if(providers[index].key == providerKey){
+                    for ( var index in providers) {
+                        if (providers[index].key == providerKey) {
                             $scope.selectedProvider = providers[index];
                         }
                     }
-                    if(!$scope.selectedProvider.key){
+                    if (!$scope.selectedProvider.key) {
                         $scope.selectedProvider = providers[0];
                     }
                 }
@@ -393,7 +393,9 @@ $(function() {
             text : "Requesting " + name + " data ..."
         });
 
-        embryo.ice.service.shapes(name, function(error, data) {
+        embryo.ice.service.shapes(name, {
+            parts : name.indexOf("aari.aari_arc") >= 0 ? 0 : 0
+        }, function(error, data) {
             if (data) {
                 messageId = embryo.messagePanel.replace(messageId, {
                     text : "Drawing " + name,
