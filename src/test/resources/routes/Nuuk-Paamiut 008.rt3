@@ -1,0 +1,197 @@
+<TSH_Route RtName="Nuuk-Paamiut 008" RtVersion="3">
+    TSH RtServer route data file. Info: amo.
+    <WayPoints WPCount="20" IdCounter="26">
+        <WayPoint Id="19" WPName="Nuuk Havn" LegType="0" Lat="3850.117000" Lon="-3103.123000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="18" WPName="Anduvning Nuuk" LegType="0" Lat="3849.698000" Lon="-3103.467000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="17" WPName="Rypeoe Nord" LegType="0" Lat="3848.438733" Lon="-3101.545967" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="16" WPName="Kobbefjord" LegType="0" Lat="3847.413827" Lon="-3099.846280" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="14" WPName="serfartoorssuaq" LegType="0" Lat="3846.257936" Lon="-3098.783879" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="26" WPName="" LegType="0" Lat="3845.384468" Lon="-3099.527875" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="25" WPName="" LegType="0" Lat="3843.377099" Lon="-3098.167011" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="13" WPName="Simiutaa  Syd" LegType="0" Lat="3841.918000" Lon="-3098.740000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="12" WPName="Baakeoe Nord" LegType="0" Lat="3841.299000" Lon="-3099.971000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="11" WPName="Baakeoe Syd" LegType="0" Lat="3840.406000" Lon="-3101.008000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="10" WPName="Qagssissagdut" LegType="0" Lat="3839.620000" Lon="-3101.040000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="9" WPName="Kigtorqat" LegType="0" Lat="3835.420000" Lon="-3093.753000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="8" WPName="Satut  Nord" LegType="0" Lat="3823.919000" Lon="-3095.750000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="7" WPName="Satut Syd" LegType="0" Lat="3821.120000" Lon="-3098.753000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="6" WPName="Tre Broedre" LegType="0" Lat="3809.920000" Lon="-3098.740000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="5" WPName="Hellefiskoer" LegType="0" Lat="3780.000000" Lon="-3067.224000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="4" WPName="Isblink" LegType="0" Lat="3746.294000" Lon="-3028.275000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="3" WPName="Off Paamiut" LegType="0" Lat="3720.400000" Lon="-2990.000000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="2" WPName="Paamiut fyrlinie" LegType="0" Lat="3718.348000" Lon="-2982.697000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="1" WPName="Paamiut havn" LegType="0" Lat="3719.728000" Lon="-2980.565000" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="0.000000" SafetyDepth="0.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+    </WayPoints>
+    <Calculations CalcCount="2">
+        <Calculation CalcName="Base Calculation" CalcOptions="0" CalcForecast="0" CalcDone="0">
+            <WayPointExs>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+            </WayPointExs>
+        </Calculation>
+        <Calculation CalcName="Schedule1" CalcOptions="0" CalcForecast="0" CalcDone="0">
+            <WayPointExs>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+            </WayPointExs>
+        </Calculation>
+    </Calculations>
+    <CustomData version="1.0">
+        <Calculation>
+            <WayPoint/>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+        </Calculation>
+        <Calculation>
+            <WayPoint/>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+        </Calculation>
+    </CustomData>
+</TSH_Route>

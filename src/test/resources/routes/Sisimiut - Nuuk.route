@@ -1,0 +1,453 @@
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:Locale="">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Summaries" msdata:Locale="">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Name">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="120" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="DepartureTime" type="xs:dateTime" />
+                <xs:element name="Distance" type="xs:double" />
+                <xs:element name="Description" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="2147483647" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Notes" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="2147483647" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Valid" type="xs:boolean" minOccurs="0" />
+                <xs:element name="LastModified" type="xs:dateTime" />
+                <xs:element name="ReadOnly" type="xs:boolean" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ControlPoints" msdata:Locale="">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="RouteName">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="120" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="SequenceNumber" type="xs:int" />
+                <xs:element name="Name" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="32" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Latitude" type="xs:double" />
+                <xs:element name="Longitude" type="xs:double" />
+                <xs:element name="TurnRadius" type="xs:double" />
+                <xs:element name="TurnSpeed" type="xs:double" />
+                <xs:element name="OffTrackAlarmLimitForTurn" type="xs:double" />
+                <xs:element name="DepartingTrackSpeed" type="xs:double" />
+                <xs:element name="OffTrackAlarmLimitForDepartingTrack" type="xs:double" />
+                <xs:element name="DepartingControlLineType">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="16" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="MinTurnSpeed" type="xs:double" minOccurs="0" />
+                <xs:element name="MaxTurnSpeed" type="xs:double" minOccurs="0" />
+                <xs:element name="MinDepartingTrackSpeed" type="xs:double" minOccurs="0" />
+                <xs:element name="MaxDepartingTrackSpeed" type="xs:double" minOccurs="0" />
+                <xs:element name="AdditionalData" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="1073741823" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="CriticalPoints" msdata:Locale="">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="RouteName">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="120" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="SequenceNumber" type="xs:int" />
+                <xs:element name="Name" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="32" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Latitude" type="xs:double" />
+                <xs:element name="Longitude" type="xs:double" />
+                <xs:element name="AlertType" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="8" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="AlarmValue" type="xs:double" />
+                <xs:element name="NotificationType" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="8" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Description" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="2147483647" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Summaries" />
+        <xs:field xpath="Name" />
+      </xs:unique>
+      <xs:unique name="ControlPoints_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//ControlPoints" />
+        <xs:field xpath="RouteName" />
+        <xs:field xpath="SequenceNumber" />
+      </xs:unique>
+      <xs:unique name="CriticalPoints_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CriticalPoints" />
+        <xs:field xpath="RouteName" />
+        <xs:field xpath="SequenceNumber" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <Summaries>
+    <Name>Sisimiut - Nuuk</Name>
+    <DepartureTime>2011-05-26T04:26:26.523+00:00</DepartureTime>
+    <Distance>380642.73337883735</Distance>
+    <Description />
+    <Notes />
+    <Valid>true</Valid>
+    <LastModified>2012-07-15T08:27:53.5+00:00</LastModified>
+    <ReadOnly>false</ReadOnly>
+  </Summaries>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>1</SequenceNumber>
+    <Name>W1 Anchor Sisimiut</Name>
+    <Latitude>1.1683225502151817</Latitude>
+    <Longitude>-0.93762267906239771</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>2</SequenceNumber>
+    <Latitude>1.1684068671001553</Latitude>
+    <Longitude>-0.93804445291534289</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>3</SequenceNumber>
+    <Latitude>1.1684282548239171</Latitude>
+    <Longitude>-0.93890103393386648</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>4</SequenceNumber>
+    <Name>W4 SOSP Qaraju</Name>
+    <Latitude>1.1683011974628967</Latitude>
+    <Longitude>-0.94043203183178847</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>5</SequenceNumber>
+    <Name>W5 Swing south</Name>
+    <Latitude>1.1683000329599407</Latitude>
+    <Longitude>-0.941326184976544</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>6</SequenceNumber>
+    <Name>W6 --3mtrs pach clear--</Name>
+    <Latitude>1.1681094728376935</Latitude>
+    <Longitude>-0.941909448829904</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>7</SequenceNumber>
+    <Latitude>1.1589336411640363</Latitude>
+    <Longitude>-0.94588889683616217</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>8</SequenceNumber>
+    <Latitude>1.1556406889361841</Latitude>
+    <Longitude>-0.94480489000174062</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>9</SequenceNumber>
+    <Latitude>1.1197103968667272</Latitude>
+    <Longitude>-0.91684877712885482</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>10</SequenceNumber>
+    <Latitude>1.1184651623196993</Latitude>
+    <Longitude>-0.91408710691116346</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>11</SequenceNumber>
+    <Name>W11 SBE - 2' b4 entrance</Name>
+    <Latitude>1.1180334842180395</Latitude>
+    <Longitude>-0.911486566325692</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>12</SequenceNumber>
+    <Latitude>1.1180335709104492</Latitude>
+    <Longitude>-0.91016782233944149</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>13</SequenceNumber>
+    <Name>W13 Qeqertang</Name>
+    <Latitude>1.1187064664089941</Latitude>
+    <Longitude>-0.90759165534971842</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>14</SequenceNumber>
+    <Latitude>1.1196447996200529</Latitude>
+    <Longitude>-0.90387106261209671</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>15</SequenceNumber>
+    <Latitude>1.1197590593737159</Latitude>
+    <Longitude>-0.902873691879031</Longitude>
+    <TurnRadius>530.84290107848619</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>16</SequenceNumber>
+    <Latitude>1.1198316610721539</Latitude>
+    <Longitude>-0.90276475422134028</Longitude>
+    <TurnRadius>530.84290107848619</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk</RouteName>
+    <SequenceNumber>17</SequenceNumber>
+    <Name>W17 Nuuk Pier</Name>
+    <Latitude>1.1199542945689027</Latitude>
+    <Longitude>-0.90266832012447307</Longitude>
+    <TurnRadius>530.84290107848619</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+</NewDataSet>

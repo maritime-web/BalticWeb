@@ -1,0 +1,732 @@
+<TSH_Route RtName="GOT to KIEL via South Channel 1,0N" RtVersion="3" Checked="1" CheckTime="41187.451505">
+    TSH RtServer route data file. Info: amo.
+    <WayPoints WPCount="56" IdCounter="69">
+        <WayPoint Id="1" WPName="Majnabbe" LegType="0" Lat="3461.627474" Lon="714.459258" PortXTE="0.000000" StbXTE="0.000000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="30.000000" SafetyDepth="30.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="2" WPName="Alvsborgsbron" LegType="0" Lat="3461.459000" Lon="714.090000" PortXTE="0.034064" StbXTE="0.036514" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="3" WPName="Rya nabbe" LegType="0" Lat="3461.322781" Lon="713.498387" PortXTE="0.034204" StbXTE="0.022185" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="59" WPName="Skarvik" LegType="0" Lat="3461.246033" Lon="712.893328" PortXTE="0.032731" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="55" WPName="Alvsborg" LegType="0" Lat="3461.033883" Lon="710.569220" PortXTE="0.045193" StbXTE="0.029379" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="4" WPName="Knippelholmen" LegType="0" Lat="3460.798928" Lon="708.562793" PortXTE="0.062589" StbXTE="0.039352" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="5" WPName="Gaveskar" LegType="0" Lat="3459.655313" Lon="706.562937" PortXTE="0.031315" StbXTE="0.082974" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="6" WPName="Botto" LegType="0" Lat="3458.979610" Lon="702.397739" PortXTE="0.057563" StbXTE="0.053993" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="8" WPName="Trubaduren" LegType="0" Lat="3456.284347" Lon="699.313926" PortXTE="0.119408" StbXTE="0.099999" TurnRate="0.000000" TurnRadius="1.500000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="9" WPName="Vanguards grund" LegType="0" Lat="3451.841454" Lon="697.926087" PortXTE="0.100000" StbXTE="0.324368" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="10" WPName="Boj T 4" LegType="0" Lat="3426.198104" Lon="698.753387" PortXTE="0.689954" StbXTE="0.927420" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="11" WPName="Boj T 5" LegType="0" Lat="3411.297613" Lon="708.785187" PortXTE="0.405642" StbXTE="0.928969" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="12" WPName="Boj T 6" LegType="0" Lat="3404.808112" Lon="711.509842" PortXTE="0.100000" StbXTE="0.515637" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="13" WPName="Boj T 7" LegType="0" Lat="3390.035579" Lon="696.438561" PortXTE="0.258518" StbXTE="0.502008" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="14" WPName="Boj T 9" LegType="0" Lat="3380.728410" Lon="687.023296" PortXTE="0.162336" StbXTE="0.310429" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="15" WPName="Boj T 11" LegType="0" Lat="3370.534416" Lon="676.150530" PortXTE="0.100000" StbXTE="0.092988" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="16" WPName="Schults grund" LegType="0" Lat="3368.888751" Lon="672.332008" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="17" WPName="Sjaellands rev N" LegType="0" Lat="3366.358730" Lon="668.495212" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="18" WPName="Boj T 13" LegType="0" Lat="3361.398233" Lon="664.558139" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="19" WPName="Great belt VTS Area 1" LegType="0" Lat="3360.034486" Lon="662.580131" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="20" WPName="Boj T 15" LegType="0" Lat="3357.342204" Lon="660.116903" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="21" WPName="Boj S 17" LegType="0" Lat="3355.689901" Lon="657.838133" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="22" WPName="Boj T 16" LegType="0" Lat="3355.235306" Lon="657.031118" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="23" WPName="Boj T 20" LegType="0" Lat="3349.433140" Lon="648.265801" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="24" WPName="Boj T 21" LegType="0" Lat="3345.714451" Lon="648.340252" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="25" WPName="Boj T 23" LegType="0" Lat="3339.078685" Lon="646.186752" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="26" WPName="Great Belt VTS Area 2" LegType="0" Lat="3334.984510" Lon="649.121726" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="27" WPName="Boj T 25" LegType="0" Lat="3330.546224" Lon="652.204606" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="28" WPName="Boj T 25A" LegType="0" Lat="3322.141981" Lon="661.941646" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="29" WPName="Boj T 28A" LegType="0" Lat="3318.864520" Lon="661.941503" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="30" WPName="Vengeancegrund 31" LegType="0" Lat="3313.980962" Lon="665.769920" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="1.500000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="31" WPName="Boj 33 Treblinka" LegType="0" Lat="3312.423684" Lon="666.365172" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="1.500000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="32" WPName="Boj DW 35" LegType="0" Lat="3311.387905" Lon="663.967149" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="1.500000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="33" WPName="Boj H 2" LegType="0" Lat="3309.993673" Lon="662.991581" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="34" WPName="Boj H 3" LegType="0" Lat="3305.493534" Lon="662.070256" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="35" WPName="DW 46" LegType="0" Lat="3301.766881" Lon="659.406609" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="36" WPName="DW 51" LegType="0" Lat="3298.477689" Lon="658.058858" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="37" WPName="DW 50" LegType="0" Lat="3296.502167" Lon="652.821916" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="38" WPName="Spodsbjearg" LegType="0" Lat="3294.783032" Lon="651.527014" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="39" WPName="Rojbjerg" LegType="0" Lat="3292.605454" Lon="650.167163" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="40" WPName="DW 57" LegType="0" Lat="3288.251077" Lon="649.982735" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="41" WPName="DW 59" LegType="0" Lat="3284.176902" Lon="646.616611" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="42" WPName="DW 61" LegType="0" Lat="3279.910363" Lon="643.980074" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="43" WPName="KO 3 " LegType="0" Lat="3278.843276" Lon="642.630480" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="44" WPName="KO 2" LegType="0" Lat="3270.953370" Lon="621.542121" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="45" WPName="KO 1" LegType="0" Lat="3270.047262" Lon="618.314706" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="46" WPName="Kielerforder" LegType="0" Lat="3269.279635" Lon="616.359633" PortXTE="0.100000" StbXTE="0.100000" TurnRate="0.000000" TurnRadius="2.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="47" WPName="KF 3" LegType="0" Lat="3265.562928" Lon="612.967800" PortXTE="0.020000" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="48" WPName="Fartboj" LegType="0" Lat="3264.789318" Lon="612.431752" PortXTE="0.020000" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="49" WPName="Laboe" LegType="0" Lat="3263.952675" Lon="612.020441" PortXTE="0.020000" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="50" WPName="Friedrichsort" LegType="0" Lat="3263.395564" Lon="611.886248" PortXTE="0.020000" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="51" WPName="Kielknal" LegType="0" Lat="3261.584927" Lon="609.948274" PortXTE="0.020000" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="52" WPName="Osthuferhafen" LegType="0" Lat="3260.226833" Lon="609.948274" PortXTE="0.020000" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="1.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="58" WPName="" LegType="0" Lat="3259.272810" Lon="608.710455" PortXTE="0.020000" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="0.500000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="57" WPName="" LegType="0" Lat="3259.115844" Lon="608.390456" PortXTE="0.020000" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="0.500000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+        <WayPoint Id="54" WPName="Kiel" LegType="0" Lat="3259.078728" Lon="608.216024" PortXTE="0.020000" StbXTE="0.020000" TurnRate="0.000000" TurnRadius="0.000000" SafetyContour="6.000000" SafetyDepth="6.000000" RudderAngle="0.000000" ArrivalC="0.000000"/>
+    </WayPoints>
+    <Calculations CalcCount="2">
+        <Calculation CalcName="BaseCalc" CalcOptions="0" CalcForecast="0" CalcDone="0">
+            <WayPointExs>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="0" TimeZone="0" ETA="0.000000" ETD="0.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+            </WayPointExs>
+        </Calculation>
+        <Calculation CalcName="Dep 1930" CalcOptions="0" CalcForecast="0" CalcDone="1">
+            <WayPointExs>
+                <WayPointEx ChangedData="5" TimeZone="0" ETA="0.000000" ETD="1349379000000.000000" Stay="0.000000" TTG="0.000000" TotalTime="0.000000" Speed="0.000000"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349379131052.635500" ETD="1349379131052.635500" Stay="0.000000" TTG="131052.635501" TotalTime="131052.635501" Speed="3.000000"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349379424317.792000" ETD="1349379424317.792000" Stay="0.000000" TTG="293265.156600" TotalTime="424317.792101" Speed="5.000000"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349379599134.233900" ETD="1349379599134.233900" Stay="0.000000" TTG="174816.441925" TotalTime="599134.234026" Speed="8.000000"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349380172517.613300" ETD="1349380172517.613300" Stay="0.000000" TTG="573383.379306" TotalTime="1172517.613332" Speed="8.000000"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349380324283.701200" ETD="1349380324283.701200" Stay="0.000000" TTG="151766.087839" TotalTime="1324283.701171" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349380621180.053700" ETD="1349380621180.053700" Stay="0.000000" TTG="296896.352436" TotalTime="1621180.053607" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349381033464.692600" ETD="1349381033464.692600" Stay="0.000000" TTG="412284.638942" TotalTime="2033464.692549" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349381633862.758500" ETD="1349381633862.758500" Stay="0.000000" TTG="600398.065948" TotalTime="2633862.758498" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349382493308.844700" ETD="1349382493308.844700" Stay="0.000000" TTG="859446.086269" TotalTime="3493308.844766" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349387251298.925300" ETD="1349387251298.925300" Stay="0.000000" TTG="4757990.080478" TotalTime="8251298.925244" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349390252425.991000" ETD="1349390252425.991000" Stay="0.000000" TTG="3001127.065648" TotalTime="11252425.990892" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349391374478.418500" ETD="1349391374478.418500" Stay="0.000000" TTG="1122052.427526" TotalTime="12374478.418418" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349394668049.204300" ETD="1349394668049.204300" Stay="0.000000" TTG="3293570.785787" TotalTime="15668049.204205" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349396654865.030000" ETD="1349396654865.030000" Stay="0.000000" TTG="1986815.825675" TotalTime="17654865.029879" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349398800544.067900" ETD="1349398800544.067900" Stay="0.000000" TTG="2145679.037849" TotalTime="19800544.067728" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349399333073.710900" ETD="1349399333073.710900" Stay="0.000000" TTG="532529.643035" TotalTime="20333073.710763" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349399937400.064700" ETD="1349399937400.064700" Stay="0.000000" TTG="604326.353717" TotalTime="20937400.064480" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349400953306.765900" ETD="1349400953306.765900" Stay="0.000000" TTG="1015906.701105" TotalTime="21953306.765585" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349401291211.280500" ETD="1349401291211.280500" Stay="0.000000" TTG="337904.514714" TotalTime="22291211.280299" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349401859981.284900" ETD="1349401859981.284900" Stay="0.000000" TTG="568770.004339" TotalTime="22859981.284638" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349402260843.904100" ETD="1349402260843.904100" Stay="0.000000" TTG="400862.619197" TotalTime="23260843.903835" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349402389044.300800" ETD="1349402389044.300800" Stay="0.000000" TTG="128200.396746" TotalTime="23389044.300581" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349403685160.734400" ETD="1349403685160.734400" Stay="0.000000" TTG="1296116.433685" TotalTime="24685160.734266" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349404470298.464100" ETD="1349404470298.464100" Stay="0.000000" TTG="785137.729675" TotalTime="25470298.463941" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349405656396.637500" ETD="1349405656396.637500" Stay="0.000000" TTG="1186098.173232" TotalTime="26656396.637172" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349406581465.346900" ETD="1349406581465.346900" Stay="0.000000" TTG="925068.709467" TotalTime="27581465.346639" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349407434656.522000" ETD="1349407434656.522000" Stay="0.000000" TTG="853191.174981" TotalTime="28434656.521620" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349409239187.580600" ETD="1349409239187.580600" Stay="0.000000" TTG="1804531.058680" TotalTime="30239187.580300" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349409876397.628900" ETD="1349409876397.628900" Stay="0.000000" TTG="637210.048225" TotalTime="30876397.628525" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349410923071.017800" ETD="1349410923071.017800" Stay="0.000000" TTG="1046673.388959" TotalTime="31923071.017484" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349411070247.821800" ETD="1349411070247.821800" Stay="0.000000" TTG="147176.803981" TotalTime="32070247.821465" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349411452406.746100" ETD="1349411452406.746100" Stay="0.000000" TTG="382158.924319" TotalTime="32452406.745784" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349411757008.650600" ETD="1349411757008.650600" Stay="0.000000" TTG="304601.904500" TotalTime="32757008.650284" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349412600185.151100" ETD="1349412600185.151100" Stay="0.000000" TTG="843176.500457" TotalTime="33600185.150741" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349413372665.362800" ETD="1349413372665.362800" Stay="0.000000" TTG="772480.211748" TotalTime="34372665.362489" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349413883867.561300" ETD="1349413883867.561300" Stay="0.000000" TTG="511202.198558" TotalTime="34883867.561048" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349414578936.626200" ETD="1349414578936.626200" Stay="0.000000" TTG="695069.064842" TotalTime="35578936.625889" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349415021696.418900" ETD="1349415021696.418900" Stay="0.000000" TTG="442759.792739" TotalTime="36021696.418629" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349415405048.948500" ETD="1349415405048.948500" Stay="0.000000" TTG="383352.529572" TotalTime="36405048.948201" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349416197301.714100" ETD="1349416197301.714100" Stay="0.000000" TTG="792252.765602" TotalTime="37197301.713803" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349417097901.924300" ETD="1349417097901.924300" Stay="0.000000" TTG="900600.210139" TotalTime="38097901.923943" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349417908078.291300" ETD="1349417908078.291300" Stay="0.000000" TTG="810176.366988" TotalTime="38908078.290930" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349418139431.561500" ETD="1349418139431.561500" Stay="0.000000" TTG="231353.270246" TotalTime="39139431.561176" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349420902133.516800" ETD="1349420902133.516800" Stay="0.000000" TTG="2762701.955411" TotalTime="41902133.516587" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349421287125.953400" ETD="1349421287125.953400" Stay="0.000000" TTG="384992.436529" TotalTime="42287125.953116" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349421477123.005900" ETD="1349421477123.005900" Stay="0.000000" TTG="189997.052425" TotalTime="42477123.005541" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349422341851.575700" ETD="1349422341851.575700" Stay="0.000000" TTG="864728.569755" TotalTime="43341851.575296" Speed="19.331051"/>
+                <WayPointEx ChangedData="91" TimeZone="0" ETA="1349422497530.844500" ETD="1349422497530.844500" Stay="0.000000" TTG="155679.268774" TotalTime="43497530.844069" Speed="19.331051"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349422805078.072000" ETD="1349422805078.072000" Stay="0.000000" TTG="307547.227571" TotalTime="43805078.071640" Speed="10.000000"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349422956510.655300" ETD="1349422956510.655300" Stay="0.000000" TTG="151432.583265" TotalTime="43956510.654906" Speed="10.000000"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349423697437.592300" ETD="1349423697437.592300" Stay="0.000000" TTG="740926.936924" TotalTime="44697437.591830" Speed="10.000000"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349424630537.721900" ETD="1349424630537.721900" Stay="0.000000" TTG="933100.129721" TotalTime="45630537.721551" Speed="5.000000"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349426377319.071300" ETD="1349426377319.071300" Stay="0.000000" TTG="1746781.349372" TotalTime="47377319.070922" Speed="3.000000"/>
+                <WayPointEx ChangedData="75" TimeZone="0" ETA="1349426631965.113500" ETD="1349426631965.113500" Stay="0.000000" TTG="254646.042245" TotalTime="47631965.113167" Speed="3.000000"/>
+                <WayPointEx ChangedData="78" TimeZone="0" ETA="1349427300000.000200" ETD="0.000000" Stay="0.000000" TTG="702363.062651" TotalTime="48334328.175818" Speed="1.000000"/>
+            </WayPointExs>
+        </Calculation>
+    </Calculations>
+    <CustomData version="1.0">
+        <Calculation>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+            <WayPoint/>
+        </Calculation>
+        <Calculation>
+            <WayPoint/>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+            <WayPoint>
+                <CustomType Name="DRAUGHT1.0" Type="5">5.900000</CustomType>
+                <CustomType Name="UKC1.0" Type="5">0.000000</CustomType>
+            </WayPoint>
+        </Calculation>
+    </CustomData>
+    <UserXML>
+        <check_list/>
+        <currents/>
+        <dangers>
+            <danger ref_id="8" type="reppoint" name="T" text="Communication channel: 13
+Information: For further information see Nautical Publication Information"/>
+            <danger ref_id="8" type="reppoint" name="T" text="Communication channel: 13
+Information: For further information see Nautical Publication Information"/>
+            <danger ref_id="8" type="reppoint" name="T" text="Communication channel: 13
+Information: For further information see Nautical Publication Information"/>
+            <danger ref_id="8" type="reppoint" name="" text="Information: No 1"/>
+            <danger ref_id="8" type="reppoint" name="" text="Information: No 1"/>
+            <danger ref_id="8" type="reppoint" name="" text="Information: No1"/>
+            <danger ref_id="26" type="reppoint" name="" text="Communication channel: '11'
+Information: Great Belt VTS Sector 2"/>
+            <danger ref_id="26" type="reppoint" name="" text="Communication channel: ´74´
+Information: Great Belt VTS Sector 1"/>
+            <danger ref_id="26" type="reppoint" name="" text="Communication channel: ´74´
+Information: Great Belt VTS Sector 1"/>
+            <danger ref_id="26" type="reppoint" name="" text="Communication channel: '11'
+Information: Great Belt VTS Sector 2"/>
+            <danger ref_id="50" type="reppoint" name="Kiel Canal 4" text="Communication channel: [12]"/>
+            <danger ref_id="1" type="area" text="Restricted area"/>
+            <danger ref_id="1" type="area" text="Caution area"/>
+            <danger ref_id="2" type="area" text="Restricted area"/>
+            <danger ref_id="2" type="area" text="Caution area"/>
+            <danger ref_id="3" type="area" text="Restricted area"/>
+            <danger ref_id="3" type="area" text="Caution area"/>
+            <danger ref_id="59" type="area" text="Restricted area"/>
+            <danger ref_id="59" type="area" text="Caution area"/>
+            <danger ref_id="55" type="area" text="Restricted area"/>
+            <danger ref_id="55" type="area" text="Caution area"/>
+            <danger ref_id="4" type="area" text="Caution area"/>
+            <danger ref_id="5" type="area" text="Restricted area"/>
+            <danger ref_id="5" type="area" text="Restricted area"/>
+            <danger ref_id="5" type="area" text="Restricted area"/>
+            <danger ref_id="5" type="area" text="Restricted area"/>
+            <danger ref_id="5" type="area" text="Restricted area"/>
+            <danger ref_id="5" type="area" text="Caution area"/>
+            <danger ref_id="5" type="area" text="Caution area"/>
+            <danger ref_id="5" type="area" text="Military practice area"/>
+            <danger ref_id="5" type="area" text="Military practice area"/>
+            <danger ref_id="5" type="area" text="Military practice area"/>
+            <danger ref_id="5" type="area" text="Military practice area"/>
+            <danger ref_id="6" type="area" text="Restricted area"/>
+            <danger ref_id="6" type="area" text="Restricted area"/>
+            <danger ref_id="6" type="area" text="Caution area"/>
+            <danger ref_id="6" type="area" text="Military practice area"/>
+            <danger ref_id="6" type="area" text="Military practice area"/>
+            <danger ref_id="6" type="area" text="Military practice area"/>
+            <danger ref_id="6" type="area" text="Military practice area"/>
+            <danger ref_id="8" type="area" text="Military practice area"/>
+            <danger ref_id="8" type="area" text="Military practice area"/>
+            <danger ref_id="8" type="area" text="Military practice area"/>
+            <danger ref_id="8" type="area" text="Anchorage area"/>
+            <danger ref_id="8" type="area" text="Anchorage area"/>
+            <danger ref_id="9" type="area" text="Military practice area"/>
+            <danger ref_id="9" type="area" text="Military practice area"/>
+            <danger ref_id="9" type="area" text="Military practice area"/>
+            <danger ref_id="9" type="area" text="Military practice area"/>
+            <danger ref_id="14" type="area" text="Military practice area"/>
+            <danger ref_id="14" type="area" text="Military practice area"/>
+            <danger ref_id="15" type="area" text="Military practice area"/>
+            <danger ref_id="15" type="area" text="Military practice area"/>
+            <danger ref_id="16" type="area" text="Military practice area"/>
+            <danger ref_id="16" type="area" text="Military practice area"/>
+            <danger ref_id="16" type="area" text="Military practice area"/>
+            <danger ref_id="16" type="area" text="Military practice area"/>
+            <danger ref_id="17" type="area" text="Military practice area"/>
+            <danger ref_id="17" type="area" text="Military practice area"/>
+            <danger ref_id="17" type="area" text="Military practice area"/>
+            <danger ref_id="17" type="area" text="Military practice area"/>
+            <danger ref_id="18" type="area" text="Caution area"/>
+            <danger ref_id="18" type="area" text="Caution area"/>
+            <danger ref_id="18" type="area" text="Caution area"/>
+            <danger ref_id="18" type="area" text="Caution area"/>
+            <danger ref_id="18" type="area" text="Caution area"/>
+            <danger ref_id="18" type="area" text="Military practice area"/>
+            <danger ref_id="18" type="area" text="Military practice area"/>
+            <danger ref_id="18" type="area" text="Military practice area"/>
+            <danger ref_id="18" type="area" text="Military practice area"/>
+            <danger ref_id="19" type="area" text="Caution area"/>
+            <danger ref_id="19" type="area" text="Caution area"/>
+            <danger ref_id="19" type="area" text="Caution area"/>
+            <danger ref_id="19" type="area" text="Caution area"/>
+            <danger ref_id="19" type="area" text="Caution area"/>
+            <danger ref_id="20" type="area" text="Caution area"/>
+            <danger ref_id="20" type="area" text="Caution area"/>
+            <danger ref_id="21" type="area" text="Caution area"/>
+            <danger ref_id="21" type="area" text="Caution area"/>
+            <danger ref_id="22" type="area" text="Caution area"/>
+            <danger ref_id="22" type="area" text="Caution area"/>
+            <danger ref_id="23" type="area" text="Caution area"/>
+            <danger ref_id="23" type="area" text="Caution area"/>
+            <danger ref_id="24" type="area" text="Caution area"/>
+            <danger ref_id="24" type="area" text="Caution area"/>
+            <danger ref_id="25" type="area" text="Caution area"/>
+            <danger ref_id="25" type="area" text="Caution area"/>
+            <danger ref_id="25" type="area" text="Caution area"/>
+            <danger ref_id="25" type="area" text="Caution area"/>
+            <danger ref_id="26" type="area" text="Caution area"/>
+            <danger ref_id="26" type="area" text="Caution area"/>
+            <danger ref_id="26" type="area" text="Caution area"/>
+            <danger ref_id="26" type="area" text="Caution area"/>
+            <danger ref_id="27" type="area" text="Caution area"/>
+            <danger ref_id="27" type="area" text="Caution area"/>
+            <danger ref_id="27" type="area" text="Caution area"/>
+            <danger ref_id="27" type="area" text="Caution area"/>
+            <danger ref_id="28" type="area" text="Caution area"/>
+            <danger ref_id="28" type="area" text="Caution area"/>
+            <danger ref_id="28" type="area" text="Caution area"/>
+            <danger ref_id="29" type="area" text="Caution area"/>
+            <danger ref_id="29" type="area" text="Caution area"/>
+            <danger ref_id="30" type="area" text="Caution area"/>
+            <danger ref_id="30" type="area" text="Caution area"/>
+            <danger ref_id="31" type="area" text="Caution area"/>
+            <danger ref_id="31" type="area" text="Caution area"/>
+            <danger ref_id="32" type="area" text="Caution area"/>
+            <danger ref_id="32" type="area" text="Caution area"/>
+            <danger ref_id="33" type="area" text="Caution area"/>
+            <danger ref_id="33" type="area" text="Caution area"/>
+            <danger ref_id="34" type="area" text="Caution area"/>
+            <danger ref_id="34" type="area" text="Caution area"/>
+            <danger ref_id="38" type="area" text="Caution area"/>
+            <danger ref_id="40" type="area" text="Restricted area"/>
+            <danger ref_id="40" type="area" text="Restricted area"/>
+            <danger ref_id="43" type="area" text="Military practice area"/>
+            <danger ref_id="43" type="area" text="Military practice area"/>
+            <danger ref_id="43" type="area" text="Military practice area"/>
+            <danger ref_id="43" type="area" text="Military practice area"/>
+            <danger ref_id="44" type="area" text="Military practice area"/>
+            <danger ref_id="44" type="area" text="Military practice area"/>
+            <danger ref_id="44" type="area" text="Military practice area"/>
+            <danger ref_id="45" type="area" text="Military practice area"/>
+            <danger ref_id="45" type="area" text="Military practice area"/>
+            <danger ref_id="49" type="area" text="Caution area"/>
+            <danger ref_id="50" type="area" text="Caution area"/>
+            <danger ref_id="50" type="area" text="Caution area"/>
+            <danger ref_id="51" type="area" text="Caution area"/>
+            <danger ref_id="51" type="area" text="Caution area"/>
+            <danger ref_id="52" type="area" text="Restricted area"/>
+            <danger ref_id="52" type="area" text="Caution area"/>
+            <danger ref_id="52" type="area" text="Caution area"/>
+            <danger ref_id="58" type="area" text="Caution area"/>
+            <danger ref_id="58" type="area" text="Caution area"/>
+            <danger ref_id="57" type="area" text="Caution area"/>
+            <danger ref_id="57" type="area" text="Caution area"/>
+        </dangers>
+        <enc_charts>
+            <item name="de110000" issue_date="39387.0423726852" correction_date="40137.0423726852" format="ENC"/>
+            <item name="de316001" issue_date="39692.0423726852" correction_date="40277.0423726852" format="ENC"/>
+            <item name="de416020" issue_date="39661.0423726852" correction_date="40347.0423726852" format="ENC"/>
+            <item name="de416030" issue_date="39692.0423726852" correction_date="40410.0423726852" format="ENC"/>
+            <item name="de516200" issue_date="39356.0423726852" correction_date="40347.0423726852" format="ENC"/>
+            <item name="dk2katgn" issue_date="40360.0423726852" correction_date="40393.0423726852" format="ENC"/>
+            <item name="dk2katgs" issue_date="40360.0423726852" correction_date="40388.0423726852" format="ENC"/>
+            <item name="dk2stobl" issue_date="40238.0423726852" correction_date="40316.0423726852" format="ENC"/>
+            <item name="dk4favsf" issue_date="40360.0423726852" correction_date="40393.0423726852" format="ENC"/>
+            <item name="dk4katgn" issue_date="40391.0423726852" correction_date="40400.0423726852" format="ENC"/>
+            <item name="dk4katgs" issue_date="40360.0423726852" correction_date="40392.0423726852" format="ENC"/>
+            <item name="dk4lglgs" issue_date="40087.0423726852" correction_date="40381.0423726852" format="ENC"/>
+            <item name="dk4stobn" issue_date="40360.0423726852" correction_date="40382.0423726852" format="ENC"/>
+            <item name="dk4stobs" issue_date="40179.0423726852" correction_date="40368.0423726852" format="ENC"/>
+            <item name="no2b0420" issue_date="40360.0423726852" correction_date="40371.0423726852" format="ENC"/>
+            <item name="se3di35a" issue_date="40238.0423726852" correction_date="40255.0423726852" format="ENC"/>
+            <item name="se3di5da" issue_date="40238.0423726852" correction_date="40340.0423726852" format="ENC"/>
+            <item name="se3di7la" issue_date="40360.0423726852" correction_date="40386.0423726852" format="ENC"/>
+            <item name="se4di5da" issue_date="40238.0423726852" correction_date="40256.0423726852" format="ENC"/>
+            <item name="se4ei7la" issue_date="40360.0423726852" correction_date="40386.0423726852" format="ENC"/>
+            <item name="se4ei7lb" issue_date="40360.0423726852" correction_date="40399.0423726852" format="ENC"/>
+            <item name="se5ei7la" issue_date="40360.0423726852" correction_date="40364.0423726852" format="ENC"/>
+            <item name="se5hi7lb" issue_date="40360.0423726852" correction_date="40380.0423726852" format="ENC"/>
+            <item name="se5ii7lb" issue_date="40360.0423726852" correction_date="40380.0423726852" format="ENC"/>
+            <item name="se6di7la" issue_date="40360.0423726852" correction_date="40382.0423726852" format="ENC"/>
+            <item name="world" issue_date="38657.0423726852" correction_date="38678.0423726852" format="TRS"/>
+        </enc_charts>
+        <paper_charts/>
+        <publications/>
+        <refpoints/>
+        <tides/>
+        <ukccalc>
+            <ukc ref_id="2" draught="5.9" depth="0" ukc="3.6"/>
+            <ukc ref_id="3" draught="5.9" depth="0" ukc="3.1"/>
+            <ukc ref_id="59" draught="5.9" depth="0" ukc="4.1"/>
+            <ukc ref_id="55" draught="5.9" depth="0" ukc="7.3"/>
+            <ukc ref_id="4" draught="5.9" depth="0" ukc="0"/>
+            <ukc ref_id="5" draught="5.9" depth="0" ukc="0"/>
+            <ukc ref_id="6" draught="5.9" depth="0" ukc="0"/>
+            <ukc ref_id="8" draught="5.9" depth="0" ukc="17.3"/>
+            <ukc ref_id="9" draught="5.9" depth="0" ukc="19.1"/>
+            <ukc ref_id="10" draught="5.9" depth="0" ukc="15.1"/>
+            <ukc ref_id="11" draught="5.9" depth="0" ukc="19.6"/>
+            <ukc ref_id="12" draught="5.9" depth="0" ukc="18.1"/>
+            <ukc ref_id="13" draught="5.9" depth="0" ukc="25.1"/>
+            <ukc ref_id="14" draught="5.9" depth="0" ukc="14.5"/>
+            <ukc ref_id="15" draught="5.9" depth="0" ukc="14.3"/>
+            <ukc ref_id="16" draught="5.9" depth="0" ukc="29.1"/>
+            <ukc ref_id="17" draught="5.9" depth="0" ukc="22.6"/>
+            <ukc ref_id="18" draught="5.9" depth="0" ukc="20.6"/>
+            <ukc ref_id="19" draught="5.9" depth="0" ukc="24.6"/>
+            <ukc ref_id="20" draught="5.9" depth="0" ukc="46.1"/>
+            <ukc ref_id="21" draught="5.9" depth="0" ukc="13.4"/>
+            <ukc ref_id="22" draught="5.9" depth="0" ukc="25.1"/>
+            <ukc ref_id="23" draught="5.9" depth="0" ukc="9.7"/>
+            <ukc ref_id="24" draught="5.9" depth="0" ukc="15"/>
+            <ukc ref_id="25" draught="5.9" depth="0" ukc="17.6"/>
+            <ukc ref_id="26" draught="5.9" depth="0" ukc="28.1"/>
+            <ukc ref_id="27" draught="5.9" depth="0" ukc="28.1"/>
+            <ukc ref_id="28" draught="5.9" depth="0" ukc="17.6"/>
+            <ukc ref_id="29" draught="5.9" depth="0" ukc="24.6"/>
+            <ukc ref_id="30" draught="5.9" depth="0" ukc="29.1"/>
+            <ukc ref_id="31" draught="5.9" depth="0" ukc="33.1"/>
+            <ukc ref_id="32" draught="5.9" depth="0" ukc="24.6"/>
+            <ukc ref_id="33" draught="5.9" depth="0" ukc="0"/>
+            <ukc ref_id="34" draught="5.9" depth="0" ukc="12"/>
+            <ukc ref_id="35" draught="5.9" depth="0" ukc="15.1"/>
+            <ukc ref_id="36" draught="5.9" depth="0" ukc="24.6"/>
+            <ukc ref_id="37" draught="5.9" depth="0" ukc="24.6"/>
+            <ukc ref_id="38" draught="5.9" depth="0" ukc="18.6"/>
+            <ukc ref_id="39" draught="5.9" depth="0" ukc="22.6"/>
+            <ukc ref_id="40" draught="5.9" depth="0" ukc="17.1"/>
+            <ukc ref_id="41" draught="5.9" depth="0" ukc="16.6"/>
+            <ukc ref_id="42" draught="5.9" depth="0" ukc="17.1"/>
+            <ukc ref_id="43" draught="5.9" depth="0" ukc="15.6"/>
+            <ukc ref_id="44" draught="5.9" depth="0" ukc="11.3"/>
+            <ukc ref_id="45" draught="5.9" depth="0" ukc="0"/>
+            <ukc ref_id="46" draught="5.9" depth="0" ukc="9.9"/>
+            <ukc ref_id="47" draught="5.9" depth="0" ukc="10.9"/>
+            <ukc ref_id="48" draught="5.9" depth="0" ukc="9.5"/>
+            <ukc ref_id="49" draught="5.9" depth="0" ukc="10.1"/>
+            <ukc ref_id="50" draught="5.9" depth="0" ukc="11.4"/>
+            <ukc ref_id="51" draught="5.9" depth="0" ukc="8.1"/>
+            <ukc ref_id="52" draught="5.9" depth="0" ukc="7.4"/>
+            <ukc ref_id="58" draught="5.9" depth="0" ukc="7.4"/>
+            <ukc ref_id="57" draught="5.9" depth="0" ukc="4.2"/>
+            <ukc ref_id="54" draught="5.9" depth="0" ukc="3"/>
+        </ukccalc>
+        <voyage_info voyage_no="S001" start_point="Gothenburg" end_point="Kiel" transit_point="S Ch and G Belt" arrival_draft="6" depart_draft="6" dbirth_refid="1" dbirth_name="" dpilot_refid="9" dpilot_name="" abirth_refid="54" abirth_name="" apilot_refid="46" apilot_name=""/>
+        <weather/>
+        <checklist>
+            <activity ref_id="1" name="Test main steering gear." time="-10" state="1"/>
+            <activity ref_id="1" name="Test auxiliary steering gear." time="0" state="1"/>
+            <activity ref_id="1" name="Emergency power supply." time="0" state="1"/>
+            <activity ref_id="1" name="Main and auxiliary engines." time="0" state="1"/>
+            <activity ref_id="1" name="Test communication with engine room." time="0" state="1"/>
+            <activity ref_id="1" name="Anchor gear." time="0" state="1"/>
+            <activity ref_id="1" name="The rudder angle indicator in relation to the actual position of the rudder." time="0" state="1"/>
+            <activity ref_id="1" name="Navigational and signal lights." time="0" state="1"/>
+            <activity ref_id="1" name="All life saving appliances in working order and ready for immediate use." time="0" state="1"/>
+            <activity ref_id="1" name="First radar." time="0" state="1"/>
+            <activity ref_id="1" name="Second radar." time="0" state="1"/>
+            <activity ref_id="1" name="Gyro compass." time="0" state="1"/>
+            <activity ref_id="1" name="Magnetic compass." time="0" state="1"/>
+            <activity ref_id="1" name="Electronic position fixing systems." time="0" state="1"/>
+            <activity ref_id="1" name="Equipment for measuring speed and distance." time="0" state="1"/>
+            <activity ref_id="1" name="Radio telegraphy equipment." time="0" state="1"/>
+            <activity ref_id="1" name="Radio telephony equipment." time="0" state="1"/>
+            <activity ref_id="1" name="GMDSS radio equipment." time="0" state="1"/>
+            <activity ref_id="1" name="Radio equipment for life-saving appliances." time="0" state="1"/>
+            <activity ref_id="1" name="Synchronization of time in recording instruments and clocks." time="0" state="1"/>
+            <activity ref_id="13" name="Report to VTS" time="-3" state="1"/>
+            <activity ref_id="10" name="Report to VTS" time="-3" state="1"/>
+        </checklist>
+        <overhead/>
+        <remarks/>
+    </UserXML>
+</TSH_Route>

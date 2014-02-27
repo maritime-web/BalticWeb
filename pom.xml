@@ -189,12 +189,7 @@
     <dependency>
       <groupId>dk.dma.enav</groupId>
       <artifactId>enav-model</artifactId>
-      <version>0.2-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>dk.dma.enav</groupId>
-      <artifactId>enav-serialization</artifactId>
-      <version>0.2-SNAPSHOT</version>
+      <version>0.1</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -279,7 +274,7 @@
       <artifactId>jsoup</artifactId>
       <version>1.7.3</version>
     </dependency>
-        <!-- <dependency> <groupId>org.liquibase.ext</groupId> <artifactId>liquibase-hibernate4</artifactId> <version>3.2</version> 
+    <!-- <dependency> <groupId>org.liquibase.ext</groupId> <artifactId>liquibase-hibernate4</artifactId> <version>3.2</version> 
       </dependency> -->
   </dependencies>
 

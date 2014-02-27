@@ -1,0 +1,787 @@
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:Locale="">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Summaries" msdata:Locale="">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Name">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="120" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="DepartureTime" type="xs:dateTime" />
+                <xs:element name="Distance" type="xs:double" />
+                <xs:element name="Description" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="2147483647" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Notes" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="2147483647" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Valid" type="xs:boolean" minOccurs="0" />
+                <xs:element name="LastModified" type="xs:dateTime" />
+                <xs:element name="ReadOnly" type="xs:boolean" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ControlPoints" msdata:Locale="">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="RouteName">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="120" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="SequenceNumber" type="xs:int" />
+                <xs:element name="Name" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="32" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Latitude" type="xs:double" />
+                <xs:element name="Longitude" type="xs:double" />
+                <xs:element name="TurnRadius" type="xs:double" />
+                <xs:element name="TurnSpeed" type="xs:double" />
+                <xs:element name="OffTrackAlarmLimitForTurn" type="xs:double" />
+                <xs:element name="DepartingTrackSpeed" type="xs:double" />
+                <xs:element name="OffTrackAlarmLimitForDepartingTrack" type="xs:double" />
+                <xs:element name="DepartingControlLineType">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="16" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="MinTurnSpeed" type="xs:double" minOccurs="0" />
+                <xs:element name="MaxTurnSpeed" type="xs:double" minOccurs="0" />
+                <xs:element name="MinDepartingTrackSpeed" type="xs:double" minOccurs="0" />
+                <xs:element name="MaxDepartingTrackSpeed" type="xs:double" minOccurs="0" />
+                <xs:element name="AdditionalData" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="1073741823" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="CriticalPoints" msdata:Locale="">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="RouteName">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="120" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="SequenceNumber" type="xs:int" />
+                <xs:element name="Name" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="32" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Latitude" type="xs:double" />
+                <xs:element name="Longitude" type="xs:double" />
+                <xs:element name="AlertType" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="8" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="AlarmValue" type="xs:double" />
+                <xs:element name="NotificationType" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="8" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+                <xs:element name="Description" minOccurs="0">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:maxLength value="2147483647" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Summaries" />
+        <xs:field xpath="Name" />
+      </xs:unique>
+      <xs:unique name="ControlPoints_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//ControlPoints" />
+        <xs:field xpath="RouteName" />
+        <xs:field xpath="SequenceNumber" />
+      </xs:unique>
+      <xs:unique name="CriticalPoints_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CriticalPoints" />
+        <xs:field xpath="RouteName" />
+        <xs:field xpath="SequenceNumber" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <Summaries>
+    <Name>Akureyri - Isafjordur</Name>
+    <DepartureTime>2011-05-26T09:24:54.27+00:00</DepartureTime>
+    <Distance>323724.54841672315</Distance>
+    <Description />
+    <Notes />
+    <Valid>true</Valid>
+    <LastModified>2012-05-29T14:15:24.01+00:00</LastModified>
+    <ReadOnly>false</ReadOnly>
+  </Summaries>
+  <Summaries>
+    <Name>Sisimiut - Nuuk, LONG, new</Name>
+    <DepartureTime>2011-05-26T04:26:26.523+00:00</DepartureTime>
+    <Distance>401616.189758586</Distance>
+    <Description />
+    <Notes />
+    <Valid>true</Valid>
+    <LastModified>2012-08-02T12:23:37.49+00:00</LastModified>
+    <ReadOnly>false</ReadOnly>
+  </Summaries>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>1</SequenceNumber>
+    <Name>W1 Anchor Sisimiut</Name>
+    <Latitude>1.1683225502151817</Latitude>
+    <Longitude>-0.93762267906239771</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>1</SequenceNumber>
+    <Name>W1 Pier Akureyri</Name>
+    <Latitude>1.1464158260201061</Latitude>
+    <Longitude>-0.31550409839439375</Longitude>
+    <TurnRadius>85.0150682947899</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>2</SequenceNumber>
+    <Name>W2 Appr. Pier</Name>
+    <Latitude>1.1464130226319333</Latitude>
+    <Longitude>-0.31537413430993344</Longitude>
+    <TurnRadius>85.0150682947899</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>10</SequenceNumber>
+    <Latitude>1.1184651623196993</Latitude>
+    <Longitude>-0.91408710691116346</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>11</SequenceNumber>
+    <Name>W11 SBE - 2' b4 entrance</Name>
+    <Latitude>1.1180334842180395</Latitude>
+    <Longitude>-0.911486566325692</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>12</SequenceNumber>
+    <Latitude>1.1180335709104492</Latitude>
+    <Longitude>-0.91016782233944149</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>13</SequenceNumber>
+    <Name>W13 Qeqertang</Name>
+    <Latitude>1.1187064664089941</Latitude>
+    <Longitude>-0.90759165534971842</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>14</SequenceNumber>
+    <Latitude>1.1196447996200529</Latitude>
+    <Longitude>-0.90387106261209671</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>15</SequenceNumber>
+    <Latitude>1.1197590593737159</Latitude>
+    <Longitude>-0.902873691879031</Longitude>
+    <TurnRadius>530.84290107848619</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>16</SequenceNumber>
+    <Latitude>1.1198316610721539</Latitude>
+    <Longitude>-0.90276475422134028</Longitude>
+    <TurnRadius>530.84290107848619</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>17</SequenceNumber>
+    <Name>W17 Nuuk Pier</Name>
+    <Latitude>1.1199542945689027</Latitude>
+    <Longitude>-0.90266832012447307</Longitude>
+    <TurnRadius>530.84290107848619</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>3</SequenceNumber>
+    <Latitude>1.1464409706263861</Latitude>
+    <Longitude>-0.31534864886895086</Longitude>
+    <TurnRadius>315.88135532800243</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>4</SequenceNumber>
+    <Name>W4 Pilot OFF</Name>
+    <Latitude>1.1465288451654219</Latitude>
+    <Longitude>-0.31538954172443012</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>5</SequenceNumber>
+    <Name>W5 Svalbards</Name>
+    <Latitude>1.1474675645841772</Latitude>
+    <Longitude>-0.31627164767503885</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>6</SequenceNumber>
+    <Name>W6 Gaseyri</Name>
+    <Latitude>1.1484621908829265</Latitude>
+    <Longitude>-0.31611217790105406</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>7</SequenceNumber>
+    <Name>W7 Hjalteyri</Name>
+    <Latitude>1.1494666538428404</Latitude>
+    <Longitude>-0.31692861785191229</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>8</SequenceNumber>
+    <Name>W8 Haganes</Name>
+    <Latitude>1.1504388916433046</Latitude>
+    <Longitude>-0.31830659305582487</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>9</SequenceNumber>
+    <Name>W9 Hrisey</Name>
+    <Latitude>1.1517583852340803</Latitude>
+    <Longitude>-0.31949694609023527</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>10</SequenceNumber>
+    <Name>W10 Hrolfssker</Name>
+    <Latitude>1.1535256780489198</Latitude>
+    <Longitude>-0.3205724117791266</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>11</SequenceNumber>
+    <Name>W11 Siglunes</Name>
+    <Latitude>1.1560235580042175</Latitude>
+    <Longitude>-0.32657354751051781</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>12</SequenceNumber>
+    <Name>W12 Horn - 4NM IN</Name>
+    <Latitude>1.1612098366621124</Latitude>
+    <Longitude>-0.39215220781066018</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>13</SequenceNumber>
+    <Name>W13 Kogurnes</Name>
+    <Latitude>1.1609194357200332</Latitude>
+    <Longitude>-0.40083719110650373</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>14</SequenceNumber>
+    <Name>W14 Straumnes</Name>
+    <Latitude>1.1602236894221809</Latitude>
+    <Longitude>-0.40466005048209963</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>15</SequenceNumber>
+    <Name>W15 Ritsta</Name>
+    <Latitude>1.1588591379689335</Latitude>
+    <Longitude>-0.4071389916132182</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>16</SequenceNumber>
+    <Name>W16 Ritur Swing</Name>
+    <Latitude>1.1577518142695</Latitude>
+    <Longitude>-0.40714055829445844</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>17</SequenceNumber>
+    <Name>W17 Swing-3NM to Anch.</Name>
+    <Latitude>1.1543092988726063</Latitude>
+    <Longitude>-0.40224217068195667</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Akureyri - Isafjordur</RouteName>
+    <SequenceNumber>18</SequenceNumber>
+    <Name>W18 Anchor Isafj.</Name>
+    <Latitude>1.1534783906839072</Latitude>
+    <Longitude>-0.40301483241739627</Longitude>
+    <TurnRadius>327.50550511798906</TurnRadius>
+    <TurnSpeed>1.5433333333333335</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>1.5433333333333335</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>1.5433333333333335</MinTurnSpeed>
+    <MaxTurnSpeed>1.5433333333333335</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>1.5433333333333335</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>1.5433333333333335</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>9</SequenceNumber>
+    <Name>W9 Swing</Name>
+    <Latitude>1.1232647153035988</Latitude>
+    <Longitude>-0.927192784264389</Longitude>
+    <TurnRadius>18520</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>2</SequenceNumber>
+    <Latitude>1.1684068671001553</Latitude>
+    <Longitude>-0.93804445291534289</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>3</SequenceNumber>
+    <Latitude>1.1684282548239171</Latitude>
+    <Longitude>-0.93890103393386648</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>4</SequenceNumber>
+    <Name>W4 SOSP Qaraju</Name>
+    <Latitude>1.1683011974628967</Latitude>
+    <Longitude>-0.94043203183178847</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>5</SequenceNumber>
+    <Name>W5 Swing south</Name>
+    <Latitude>1.1683000329599407</Latitude>
+    <Longitude>-0.941326184976544</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>6</SequenceNumber>
+    <Name>W6 --3mtrs pach clear--</Name>
+    <Latitude>1.1681094728376935</Latitude>
+    <Longitude>-0.941909448829904</Longitude>
+    <TurnRadius>966.82133492996763</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>7</SequenceNumber>
+    <Latitude>1.1606563435863626</Latitude>
+    <Longitude>-0.95390014209263285</Longitude>
+    <TurnRadius>5330.4791126461978</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+  <ControlPoints>
+    <RouteName>Sisimiut - Nuuk, LONG, new</RouteName>
+    <SequenceNumber>8</SequenceNumber>
+    <Latitude>1.1539826345918138</Latitude>
+    <Longitude>-0.95262979166094974</Longitude>
+    <TurnRadius>593.44580013781172</TurnRadius>
+    <TurnSpeed>5.1444444444444448</TurnSpeed>
+    <OffTrackAlarmLimitForTurn>100</OffTrackAlarmLimitForTurn>
+    <DepartingTrackSpeed>5.1444444444444448</DepartingTrackSpeed>
+    <OffTrackAlarmLimitForDepartingTrack>100</OffTrackAlarmLimitForDepartingTrack>
+    <DepartingControlLineType>RhumbLine</DepartingControlLineType>
+    <MinTurnSpeed>4.1155555555555559</MinTurnSpeed>
+    <MaxTurnSpeed>6.1733333333333338</MaxTurnSpeed>
+    <MinDepartingTrackSpeed>4.1155555555555559</MinDepartingTrackSpeed>
+    <MaxDepartingTrackSpeed>6.1733333333333338</MaxDepartingTrackSpeed>
+    <AdditionalData>&lt;AllAdditionalData /&gt;</AdditionalData>
+  </ControlPoints>
+</NewDataSet>
