@@ -90,7 +90,6 @@ public class ShapeFileParserTest {
                         System.out.println("Found it");
                     }
                 }
-                ;
             }
         }
 

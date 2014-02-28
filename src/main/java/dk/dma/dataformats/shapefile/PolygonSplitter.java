@@ -201,54 +201,6 @@ public class PolygonSplitter {
     // }
     // }
 
-    public static enum Direction {
-        EAST_2_WEST, WEST_2_EAST;
-    }
-
-    public static class SplitPoint {
-        private Point point1;
-        private Point point2;
-        private Point splitPoint;
-        private Direction direction;
-
-        public SplitPoint(Point point1, Point point2, Point splitPoint) {
-            super();
-            this.point1 = point1;
-            this.point2 = point2;
-            this.splitPoint = splitPoint;
-            this.direction = Direction.WEST_2_EAST;
-
-            if (point2.getX() <= -175 && point1.getX() >= 175) {
-                this.direction = Direction.EAST_2_WEST;
-            } else if (point1.getX() <= -175 && point2.getX() >= 175) {
-                this.direction = Direction.WEST_2_EAST;
-            } else if (point2.getX() < point1.getX()) {
-                this.direction = Direction.EAST_2_WEST;
-            }
-        }
-
-        public Point getPoint1() {
-            return point1;
-        }
-
-        public Point getPoint2() {
-            return point2;
-        }
-
-        public Point getSplitPoint() {
-            return splitPoint;
-        }
-
-        public Direction getDirection() {
-            return direction;
-        }
-
-        @Override
-        public String toString() {
-            return "SplitPoint [point1=" + point1 + ", point2=" + point2 + ", splitPoint=" + splitPoint
-                    + ", direction=" + direction + "]";
-        }
-    }
 
     private TreeMap<Double, List<SplitPoint>> buildMap(List<SplitPoint> intersections) {
         TreeMap<Double, List<SplitPoint>> map = new TreeMap<>();
@@ -414,4 +366,52 @@ public class PolygonSplitter {
         return new Point(points[0].getX() >= 0 ? 180 : -180, y);
     }
 
+    public static enum Direction {
+        EAST_2_WEST, WEST_2_EAST;
+    }
+
+    public static class SplitPoint {
+        private Point point1;
+        private Point point2;
+        private Point splitPoint;
+        private Direction direction;
+
+        public SplitPoint(Point point1, Point point2, Point splitPoint) {
+            super();
+            this.point1 = point1;
+            this.point2 = point2;
+            this.splitPoint = splitPoint;
+            this.direction = Direction.WEST_2_EAST;
+
+            if (point2.getX() <= -175 && point1.getX() >= 175) {
+                this.direction = Direction.EAST_2_WEST;
+            } else if (point1.getX() <= -175 && point2.getX() >= 175) {
+                this.direction = Direction.WEST_2_EAST;
+            } else if (point2.getX() < point1.getX()) {
+                this.direction = Direction.EAST_2_WEST;
+            }
+        }
+
+        public Point getPoint1() {
+            return point1;
+        }
+
+        public Point getPoint2() {
+            return point2;
+        }
+
+        public Point getSplitPoint() {
+            return splitPoint;
+        }
+
+        public Direction getDirection() {
+            return direction;
+        }
+
+        @Override
+        public String toString() {
+            return "SplitPoint [point1=" + point1 + ", point2=" + point2 + ", splitPoint=" + splitPoint
+                    + ", direction=" + direction + "]";
+        }
+    }
 }
