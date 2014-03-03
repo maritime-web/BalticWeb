@@ -47,17 +47,16 @@
 	<div class="modal-body">
 		<p>ArcticWeb is currently running a closed pilot test.</p>
 		<p>
-			Contact <a href="mailto:mcb@dma.dk">Mads Bentzen Billesø</a> for more information.
+			Contact Mads Bentzen Billesø for more information.
 		</p>
 		<form class="form-signin">
-			<!-- 
-			<input type="text" class="input-block-level" placeholder="Organization"> 
-			<input type="text" class="input-block-level" placeholder="Country"> 
-			<input type="text" class="input-block-level"placeholder="Contact person"> 
-			<input type="text" class="input-block-level" placeholder="Phone number">
-			<input type="text" class="input-block-level" placeholder="Email address"> 
-			<input type="text" class="input-block-level" placeholder="IMO number">
-		 -->
+			<label for="cName">Your Name:</label> 
+			<input type="text" class="input-block-level" placeholder="Name" id="cName"/> 
+			<label for="cEmail">Your Email:</label> 
+			<input type="text" class="input-block-level" placeholder="Email" id="cEmail"/> 
+			<label for="cMessage">Message:</label> 
+			<textarea class="input-block-level" id="cMessage" rows="5"></textarea> 
+			<span>Not implemented</span>
 			<div style="margin-top: 24px">
 				<button x-ng-hide="true" class="btn btn-primary">Send Request</button>
 				<button class="btn btn-primary" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
