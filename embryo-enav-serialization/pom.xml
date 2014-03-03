@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>embryo-enav-serialization</artifactId>
+  <packaging>jar</packaging>
+  <name>Embryonic E-Navigation Serialiation</name>
+  <description>This project contains (de)serialization logic for enav-model routes.</description>
+
+  <parent>
+    <groupId>dk.dma.arcticweb</groupId>
+    <artifactId>embryo-parent</artifactId>
+    <version>1.4-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <dependencies>
+
+    <!-- APACHE COMMONS -->
+      <dependency>
+        <groupId>dk.dma.enav</groupId>
+        <artifactId>enav-model</artifactId>
+      </dependency>
+
+  </dependencies>
+
+</project>
