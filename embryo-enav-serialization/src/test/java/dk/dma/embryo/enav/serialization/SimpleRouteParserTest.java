@@ -21,10 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
-import dk.dma.embryo.enav.serialization.SimpleRouteParser;
 import dk.dma.enav.model.geometry.Position;
 import dk.dma.enav.model.voyage.Route;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;

@@ -24,8 +24,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import dk.dma.embryo.enav.serialization.RouteParser;
-import dk.dma.embryo.enav.serialization.RouteRouteParser;
 import dk.dma.enav.model.voyage.Route;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 import dk.dma.enav.model.voyage.Waypoint;
