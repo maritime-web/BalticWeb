@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.enav.serialization.RouteParser;
+import dk.dma.embryo.enav.io.RouteParser;
 
 /**
  * @author Jesper Tejlgaard

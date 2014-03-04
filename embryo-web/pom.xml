@@ -146,11 +146,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-
-    <dependency>
       <!-- Used for Type annotation -->
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.enav.serialization;
+package dk.dma.embryo.enav.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +23,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import dk.dma.embryo.enav.io.RouRouteParser;
+import dk.dma.embryo.enav.io.RouteParser;
 import dk.dma.enav.model.voyage.Route;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 import dk.dma.enav.model.voyage.Waypoint;
