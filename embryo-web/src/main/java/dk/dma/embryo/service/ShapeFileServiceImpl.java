@@ -33,12 +33,12 @@ import javax.interceptor.Interceptors;
 
 import org.slf4j.Logger;
 
-import dk.dma.dataformats.dbf.DbfParser;
-import dk.dma.dataformats.shapefile.PolygonSplitter;
-import dk.dma.dataformats.shapefile.ProjectionFileParser;
-import dk.dma.dataformats.shapefile.ShapeFileParser;
 import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.configuration.PropertyFileService;
+import dk.dma.embryo.dataformats.dbf.DbfParser;
+import dk.dma.embryo.dataformats.shapefile.PolygonSplitter;
+import dk.dma.embryo.dataformats.shapefile.ProjectionFileParser;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
 

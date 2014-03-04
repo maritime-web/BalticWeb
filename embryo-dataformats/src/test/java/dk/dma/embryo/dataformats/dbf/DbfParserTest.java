@@ -13,32 +13,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.dataformats.shapefile;
+package dk.dma.embryo.dataformats.dbf;
 
-import java.io.BufferedReader;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
 
-public class ProjectionFileParser {
-    public static String parse(InputStream is) throws IOException {
-        try {
-            String projection = "EPSG:4326";
-            String data = "";
+import org.junit.Test;
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+public class DbfParserTest {
+    @Test
+    public void readFileFromDmi() throws IOException {
+        List<Map<String,Object>> result = DbfParser.parse(getClass().getResourceAsStream("/ice/201307222045_CapeFarewell_RIC.dbf"));
 
-            while (br.ready()) {
-                data += br.readLine() + "\n";
-            }
-
-            if (data.contains("Google Maps Global Mercator")) {
-                projection = "GOOGLE_MERCATOR";
-            }
-
-            return projection;
-        } finally {
-            is.close();
-        }
+        assertEquals(10, result.size());
+        assertEquals("3", result.get(0).get("FA"));
+        assertEquals("W", result.get(9).get("POLY_TYPE"));
     }
 }

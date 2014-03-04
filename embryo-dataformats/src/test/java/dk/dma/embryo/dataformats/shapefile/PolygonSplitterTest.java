@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.dataformats.shapefile;
+package dk.dma.embryo.dataformats.shapefile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +23,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
 
-import dk.dma.dataformats.shapefile.PolygonSplitter.SplitPoint;
-import dk.dma.dataformats.shapefile.ShapeFileParser.Point;
+import dk.dma.embryo.dataformats.shapefile.PolygonSplitter.SplitPoint;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Point;
 
 public class PolygonSplitterTest {
 

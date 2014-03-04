@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.dataformats.shapefile;
+package dk.dma.embryo.dataformats.shapefile;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.junit.Test;
 
-import dk.dma.dataformats.shapefile.ShapeFileParser.Box;
-import dk.dma.dataformats.shapefile.ShapeFileParser.Point;
-import dk.dma.dataformats.shapefile.ShapeFileParser.PolyLine;
-import dk.dma.dataformats.shapefile.ShapeFileParser.Record;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Box;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Point;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.PolyLine;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Record;
 
 public class ShapeFileParserTest {
     @Test

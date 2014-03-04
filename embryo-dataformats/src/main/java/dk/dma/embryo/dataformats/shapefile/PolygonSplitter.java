@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.dataformats.shapefile;
+package dk.dma.embryo.dataformats.shapefile;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,10 +26,10 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.dma.dataformats.shapefile.ShapeFileParser.Box;
-import dk.dma.dataformats.shapefile.ShapeFileParser.Point;
-import dk.dma.dataformats.shapefile.ShapeFileParser.PolyLine;
-import dk.dma.dataformats.shapefile.ShapeFileParser.Record;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Box;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Point;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.PolyLine;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Record;
 
 /**
  * @author Jesper Tejlgaard
