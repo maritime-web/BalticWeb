@@ -50,6 +50,13 @@
       <artifactId>enav-model</artifactId>
     </dependency>
 
+    <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse to work -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${dependencies.slf4j.version}</version>
+    </dependency>
+
     <!-- Import the Servlet API. -->
     <dependency>
       <groupId>javax.servlet</groupId>
