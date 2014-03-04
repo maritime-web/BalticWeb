@@ -126,7 +126,7 @@ public class MaxSpeedJob {
                 if (rec == null || rec.getCreated().isBefore(lastUpdatedLimit)) {
                     logger.debug("Updating max speed for vessel {}/{}", mmsi, vessel[7]);
                     try {
-                        Map result = limitedAisView.vesselTargetDetails(mmsi, 1);
+                        Map<String, Object> result = limitedAisView.vesselTargetDetails(mmsi, 1);
                         MaxSpeedRecording newRec = new MaxSpeedExtractor().extractMaxSpeed(result);
                         newRecordings.put(mmsi, newRec);
                         updateCount++;
