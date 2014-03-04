@@ -46,7 +46,7 @@
 
       <dependency>
         <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-enav-serialization</artifactId>
+        <artifactId>embryo-enav-io</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -324,7 +324,7 @@
   </repositories>
 
   <modules>
-    <module>embryo-enav-serialization</module>
+    <module>embryo-enav-io</module>
     <module>embryo-dataformats</module>
     <module>embryo-web</module>
   </modules>
