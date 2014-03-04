@@ -35,6 +35,21 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>dk.dma.arcticweb</groupId>
+      <artifactId>embryo-enav-serialization</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>dk.dma.arcticweb</groupId>
+      <artifactId>embryo-dataformats</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>dk.dma.enav</groupId>
+      <artifactId>enav-model</artifactId>
+    </dependency>
+
     <!-- Import the Servlet API. -->
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -109,8 +124,8 @@
       <artifactId>shiro-web</artifactId>
       <version>${shiro.version}</version>
     </dependency>
-    
-     <!-- JODA TIME - SUPPORT -->
+
+    <!-- JODA TIME - SUPPORT -->
     <dependency>
       <groupId>org.jadira.usertype</groupId>
       <artifactId>usertype.core</artifactId>
@@ -122,7 +137,7 @@
       <artifactId>joda-time</artifactId>
       <version>2.0</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -160,26 +175,6 @@
       <groupId>com.google.collections</groupId>
       <artifactId>google-collections</artifactId>
       <version>1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-database</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-enav-serialization</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-dataformats</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.enav</groupId>
-      <artifactId>enav-model</artifactId>
     </dependency>
 
     <!-- Test dependencies -->
