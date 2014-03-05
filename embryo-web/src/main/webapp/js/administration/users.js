@@ -1,7 +1,7 @@
 $(function() {
     "use strict";
 
-    var scheduleModule = angular.module('embryo.users', [ 'embryo.userService', 'ui.bootstrap.modal',
+    angular.module('embryo.users', [ 'embryo.userService', 'ui.bootstrap.modal',
             'ui.bootstrap.tpls', 'embryo.authentication' ]);
 
     embryo.UsersCtrl = function($scope, UserService, $modal, $log) {
