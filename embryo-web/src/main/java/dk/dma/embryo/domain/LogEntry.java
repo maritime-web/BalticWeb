@@ -30,11 +30,12 @@ import org.joda.time.DateTime;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "LogEntry:list", query = "SELECT m FROM LogEntry m WHERE m.ts > :date"),
+        @NamedQuery(name = "LogEntry:search", query = "SELECT m FROM LogEntry m WHERE m.ts > :date AND m.service = :service ORDER BY m.ts DESC"),
+        @NamedQuery(name = "LogEntry:list", query = "SELECT m FROM LogEntry m WHERE m.ts > :date ORDER BY m.ts"),
         @NamedQuery(name = "LogEntry:latest", query = "SELECT e FROM LogEntry e where e.service = :service order by e.ts desc"),
         @NamedQuery(name = "LogEntry:services", query = "SELECT DISTINCT e.service FROM LogEntry e where e.ts > :date") })
 public class LogEntry extends BaseEntity<Long> {
-    
+
     private static final long serialVersionUID = -7538708790704459110L;
 
     @Column(length = 100)
@@ -44,16 +45,16 @@ public class LogEntry extends BaseEntity<Long> {
     private String message;
     @Column(length = 4000)
     private String stackTrace;
-    
+
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime ts;
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
     public dk.dma.embryo.rest.json.LogEntry toJsonModel() {
         Date ts = getTs() == null ? null : getTs().toDate();
-        
+
         dk.dma.embryo.rest.json.LogEntry logEntry = new dk.dma.embryo.rest.json.LogEntry();
         logEntry.setService(getService());
         logEntry.setMessage(getMessage());
@@ -66,13 +67,12 @@ public class LogEntry extends BaseEntity<Long> {
 
     public static List<dk.dma.embryo.rest.json.LogEntry> fromJsonModel(List<LogEntry> list) {
         List<dk.dma.embryo.rest.json.LogEntry> result = new ArrayList<>(list.size());
-        for(LogEntry entry : list){
+        for (LogEntry entry : list) {
             result.add(entry.toJsonModel());
         }
         return result;
     }
 
-    
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////

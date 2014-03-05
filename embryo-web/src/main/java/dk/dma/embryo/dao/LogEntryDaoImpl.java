@@ -15,6 +15,7 @@
  */
 package dk.dma.embryo.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -45,6 +46,36 @@ public class LogEntryDaoImpl extends DaoImpl implements LogEntryDao {
     }
 
     @Override
+    public List<LogEntry> search(String type, Integer countPerType, DateTime from) {
+        if(from == null){
+            throw new IllegalArgumentException("You must specify a timestamp for when to search from");
+        }
+        
+        List<String> services = new ArrayList<>();
+        if(type != null && type.trim().length() > 0){
+            services.add(type);
+        }else{
+            services.addAll(services(from));
+        }
+        
+        List<LogEntry> result = new ArrayList<>();
+        for(String service : services){
+            TypedQuery<LogEntry> query = em.createNamedQuery("LogEntry:search", LogEntry.class);
+            query.setParameter("date", from);
+            query.setParameter("service", service);
+            if(countPerType != null){
+                query.setFirstResult(0);
+                query.setMaxResults(countPerType);
+            }
+            result.addAll(query.getResultList());
+        }
+        
+        return result;
+    }
+
+
+    
+    @Override
     public LogEntry latest(String service) {
         TypedQuery<LogEntry> query = em.createNamedQuery("LogEntry:latest", LogEntry.class);
         query.setParameter("service", service);
@@ -54,9 +85,9 @@ public class LogEntryDaoImpl extends DaoImpl implements LogEntryDao {
     }
 
     @Override
-    public List<String> services() {
+    public List<String> services(DateTime from) {
         TypedQuery<String> query = em.createNamedQuery("LogEntry:services", String.class);
-        query.setParameter("date", DateTime.now(DateTimeZone.UTC).minusMonths(1));
+        query.setParameter("date", from);
 
         return query.getResultList();
     }

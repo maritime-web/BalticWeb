@@ -15,16 +15,20 @@
  */
 package dk.dma.embryo.dao;
 
-import dk.dma.embryo.domain.LogEntry;
-
 import java.util.List;
+
+import org.joda.time.DateTime;
+
+import dk.dma.embryo.domain.LogEntry;
 
 public interface LogEntryDao {
     void save(LogEntry entry);
 
     List<LogEntry> list();
-    
+
+    List<LogEntry> search(String type, Integer count, DateTime from);
+
     LogEntry latest(String service);
 
-    List<String> services();
+    List<String> services(DateTime from);
 }

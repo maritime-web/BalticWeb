@@ -2,55 +2,104 @@
 <html lang="en" ng-app="embryo.administration.log">
 
 <head>
-    <title>ArcticWeb - Log</title>
-    <script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
+<title>ArcticWeb - Log</title>
 
-    <!-- build:css css/arcticweb-log.css -->
-    <link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
-    <link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <!-- endbuild -->
+<!-- build:css css/arcticweb-log.css -->
+<link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
+<link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/ext/tarruda-bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+<link href="css/style.css" rel="stylesheet">
+<link href="css/log.css" rel="stylesheet">
+<!-- endbuild -->
 
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="js/ext/bootstrap.min.js"></script>
-    <script src="js/ext/ui-bootstrap-tpls-0.6.0.js"></script>
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js"></script>
 
-    <!-- build:js js/arcticweb-log.js -->
-    <script src="js/embryo.js" defer="defer" type="text/javascript"></script>
-    <script src="js/utils.js" defer="defer" type="text/javascript"></script>
-    <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
-    <script src="js/menu.js" defer="defer" type="text/javascript"></script>
-    <script src="js/administration/log.js" defer="defer" type="text/javascript"></script>
-    <!-- endbuild -->
 
-    <script type="text/javascript" defer="defer">
-        angular.module('embryo.administration.log', [ ]);
-    </script>
+<!-- build:js js/arcticweb-log.js -->
+<script src="js/ext/tarruda-bootstrap-datetimepicker.js"></script>
+<script src="js/embryo.js" defer="defer" type="text/javascript"></script>
+<script src="js/utils.js" defer="defer" type="text/javascript"></script>
+<script src="js/authentication.js" defer="defer" type="text/javascript"></script>
+<script src="js/menu.js" defer="defer" type="text/javascript"></script>
+<script src="js/service/log-service.js" defer="defer" type="text/javascript"></script>
+<script src="js/reporting/datetimepicker.js" defer="defer"></script>
+<script src="js/administration/log.js" defer="defer" type="text/javascript"></script>
+<!-- endbuild -->
+
+<script type="text/javascript" defer="defer">
+    angular.module('embryo.administration.log', [ 'embryo.log' ]);
+</script>
 </head>
 
 <body>
 
-<div x-ng-include="'partials/authentication.html'"></div>
-<div x-ng-include="'partials/menu.html'"></div>
+	<div x-ng-include="'partials/authentication.html'"></div>
+	<div x-ng-include="'partials/menu.html'"></div>
 
-<div class="menuDivider"></div>
+	<div class="menuDivider"></div>
 
-<div class="container" style="padding-top: 50px;">
+	<div class="container" style="padding-top: 50px;" x-ng-controller="embryo.LogCtrl">
+		<h1>ArcticWeb - Log</h1>
+		<form name="LogForm">
+			<div x-ng-show="alertMessages" class="alert alert-error">
+				<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+			</div>
 
-    <div class="row">
-        <div class="span9">
-            <h1>ArcticWeb - Log</h1>
+			<div class="row-fluid">
+				<div class="span4">
+					<label for="lService">Service</label> <select id="lService" name="lService" x-ng-options="s for s in services"
+						x-ng-model="searchRequest.service" class="input-xlarge">
+					</select>
+				</div>
+				<div class="span2">
+					<label>Max count per type</label> <input type="number" class="input-small" x-ng-model="searchRequest.count">
+				</div>
+				<div class="span2">
+					<label>From</label>
+					<datetimepicker class="from" x-ng-model="searchRequest.from">
+				</div>
+				<div class="span1 searchbtn">
+					<button class="pull-right btn btn-primary" x-ng-click="search()">Search</button>
+				</div>
+			</div>
+			<div class="row-fluid">
+				<div class="span9">
+					<hr>
+				</div>
+			</div>
+		</form>
+		<div class="row-fluid">
+			<div class="span9">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Time (UTC)</th>
+							<th>Status</th>
+							<th>Message</th>
+						</tr>
+					</thead>
+					<tbody x-ng-repeat="log in logs">
+						<tr x-ng-show="!log.date">
+							<td colspan=3><h5>{{log}}</h5></td>
+						</tr>
+						<tr x-ng-show="log.date">
+							<td>{{formatTime(log.date)}}</td>
+							<td><span x-ng-show="log.status=='OK'" class='label label-success'>{{log.status}}</span> <span
+								x-ng-show="log.status=='ERROR'" class='label label-important'>{{log.status}}</span></td>
+							<td>{{log.message}}</td>
+						</tr>
+						<tr x-ng-show="log.stackTrace">
+							<td colspan=3><pre>{{log.stackTrace}}</pre></td>
+						</tr>
+					</tbody>
+				</table>
 
-            <table class="table" id="latestLogEntries">
-            </table>
-
-        </div>
-    </div>
-
-</div>
-
+			</div>
+		</div>
+	</div>
 </body>
-
 </html>
