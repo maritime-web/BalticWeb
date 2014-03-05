@@ -46,23 +46,23 @@ public class LogEntryDaoImpl extends DaoImpl implements LogEntryDao {
     }
 
     @Override
-    public List<LogEntry> search(String type, Integer countPerType, DateTime from) {
+    public List<LogEntry> search(String service, Integer countPerType, DateTime from) {
         if(from == null){
             throw new IllegalArgumentException("You must specify a timestamp for when to search from");
         }
         
         List<String> services = new ArrayList<>();
-        if(type != null && type.trim().length() > 0){
-            services.add(type);
+        if(service != null && service.trim().length() > 0){
+            services.add(service);
         }else{
             services.addAll(services(from));
         }
         
         List<LogEntry> result = new ArrayList<>();
-        for(String service : services){
+        for(String s : services){
             TypedQuery<LogEntry> query = em.createNamedQuery("LogEntry:search", LogEntry.class);
             query.setParameter("date", from);
-            query.setParameter("service", service);
+            query.setParameter("service", s);
             if(countPerType != null){
                 query.setFirstResult(0);
                 query.setMaxResults(countPerType);
