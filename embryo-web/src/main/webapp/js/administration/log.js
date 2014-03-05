@@ -13,9 +13,6 @@ $(function() {
         };
 
         function updateEntries(data) {
-
-            console.log(data);
-
             data.sort(function(a, b) {
                 return b.date - a.date;
             });
