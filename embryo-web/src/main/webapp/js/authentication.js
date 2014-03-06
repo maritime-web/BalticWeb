@@ -125,7 +125,7 @@ embryo
                                 sessionStorage.clear();
                                 localStorage.clear();
                                 setTimeout(function() {
-                                    location = "index.html";
+                                    location = ".";
                                 }, 100);
                             },
                             error : function(data) {
