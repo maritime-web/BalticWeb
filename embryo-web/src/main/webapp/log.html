@@ -18,6 +18,8 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js"></script>
 
+<script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="js/ext/ui-bootstrap-tpls-0.6.0.js"></script>
 
 <!-- build:js js/arcticweb-log.js -->
 <script src="js/ext/tarruda-bootstrap-datetimepicker.js" defer="defer" type="text/javascript"></script>
@@ -60,7 +62,7 @@
 				</div>
 				<div class="span2">
 					<label>From</label>
-					<datetimepicker class="from" x-ng-model="searchRequest.from">
+					<datetimepicker class="from" x-ng-model="searchRequest.from" >
 				</div>
 				<div class="span1 searchbtn">
 					<button class="pull-right btn btn-primary" x-ng-click="search()">Search</button>
