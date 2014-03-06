@@ -2,32 +2,29 @@ CACHE MANIFEST
 NETWORK:
 *
 CACHE:
-index.html
+content.html
 css/ext/embryo.bootstrap.min.css
 css/ext/bootstrap-responsive.css
 //netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css
 //netdna.bootstrapcdn.com/font-awesome/3.2.1/font/fontawesome-webfont.woff?v=3.2.1
 
-css/arcticweb-front.css
+css/arcticweb-content.css
 
 //ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js
 //code.jquery.com/ui/1.9.1/jquery-ui.js
 //netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js
+//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js
 
-js/arcticweb-front.js
+js/arcticweb-content.js
 
-img/front/iceChart.png
-img/front/weather.png
-img/front/safety_h270.jpg
 img/dmi/dmi_eng_h70.png
 img/dma/dma-logo-h50.png
-img/img6.jpg
-img/front/Konsol_h350.jpg
-img/front/ice.jpg
 
 partials/menu.html
 partials/authentication.html
 partials/footer.html
+partials/disclaimer.html
+partials/cookies.html
 
-# Version: 13
+# Version: 1

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="embryo.content" manifest="content.cache-manifest" type="text/cache-manifest">
+<head>
+<meta charset="utf-8" />
+<title>ArcticWeb Greenland - Content</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
+<link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+<!-- build:css css/arcticweb-content.css -->
+<link href="css/style.css" rel="stylesheet">
+<link href="css/content.css" rel="stylesheet">
+<!-- endbuild -->
+
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
+<script src="//code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js"></script>
+
+<!-- build:js js/arcticweb-content.js -->
+<script src="js/utils.js" defer="defer"></script>
+<script src="js/embryo.js" defer="defer"></script>
+<script src="js/authentication.js" defer="defer" type="text/javascript"></script>
+<script src="js/menu.js" defer="defer"></script>
+<!-- endbuild -->
+
+<script type="text/javascript">
+    var indexApp = angular.module('embryo.content', [ 'ngRoute' ]);
+
+    indexApp.config([ '$routeProvider', function($routeProvider) {
+        $routeProvider.when('/disclaimer', {
+            templateUrl : 'partials/disclaimer.html',
+        }).when('/cookies', {
+            templateUrl : 'partials/cookies.html',
+        }).otherwise({
+            redirectTo : '/'
+        });
+    } ]);
+
+    $(function() {
+        embryo.authentication.currentPageRequiresAuthentication = false;
+    });
+</script>
+
+</head>
+
+<body>
+	<div x-ng-include="'partials/authentication.html'"></div>
+	<div x-ng-include="'partials/menu.html'"></div>
+	<div class="menuDivider"></div>
+
+	<!-- ============================================= -->
+
+	<!-- Carousel
+================================================== -->
+
+	<!-- Container
+================================================== -->
+	<div id="contentContainer" class="container">
+
+		<div x-ng-view></div>
+		<div id="push"></div>
+
+	</div>
+	<div x-ng-include="'partials/footer.html'"></div>
+</body>
+</html>

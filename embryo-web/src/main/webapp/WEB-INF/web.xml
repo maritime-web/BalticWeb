@@ -57,6 +57,11 @@
         <url-pattern>/index.cache-manifest</url-pattern>
     </filter-mapping>
 
+    <filter-mapping>
+        <filter-name>SetCacheManifestContentTypeFilter</filter-name>
+        <url-pattern>/content.cache-manifest</url-pattern>
+    </filter-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

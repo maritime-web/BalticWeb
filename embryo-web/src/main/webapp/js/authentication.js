@@ -46,13 +46,13 @@ embryo
 
                 if (embryo.authentication.userName == null) {
                     var html = "";
-                    
+
                     html += '<ul  class="nav navtabs">';
                     html += ' <li class="dropdown">';
                     html += '  <a class="dropdown-toggle" data-toggle="dropdown" href="#">About</a>';
                     html += '  <ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
-                    html += '   <li><a tabindex="-1" href="index.html#cookies">Cookies</a></li>';
-                    html += '   <li><a tabindex="-1" href="index.html#disclaimer">Disclaimer</a></li>';
+                    html += '   <li><a tabindex="-1" href="content.html#cookies">Cookies</a></li>';
+                    html += '   <li><a tabindex="-1" href="content.html#disclaimer">Disclaimer</a></li>';
                     html += '  </ul>';
                     html += ' </li>';
                     html += '</ul>';
@@ -65,14 +65,13 @@ embryo
                     $("#authentication a.dropdown-toggle").click(function(e) {
                         e.preventDefault();
                     });
-                    
+
                     $("#authentication a[href=\"#login\"]").click(function(e) {
                         e.preventDefault();
                         clearMessages();
                         detectBrowser();
                         $("#login").modal("show");
                     });
-                    
 
                     $("#authentication a[href=\"#requestAccess\"]").click(function(e) {
                         e.preventDefault();
@@ -90,8 +89,8 @@ embryo
                     html += ' <li class="dropdown">';
                     html += '  <a class="dropdown-toggle" data-toggle="dropdown" href="#">About</a>';
                     html += '  <ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
-                    html += '   <li><a tabindex="-1" href="index.html#cookies">Cookies</a></li>';
-                    html += '   <li><a tabindex="-1" href="index.html#disclaimer">Disclaimer</a></li>';
+                    html += '   <li><a tabindex="-1" href="content.html#cookies">Cookies</a></li>';
+                    html += '   <li><a tabindex="-1" href="content.html#disclaimer">Disclaimer</a></li>';
                     html += '  </ul>';
                     html += ' </li>';
                     html += ' <li class="dropdown">';
@@ -111,7 +110,7 @@ embryo
                     $("#authentication a.dropdown-toggle").click(function(e) {
                         e.preventDefault();
                     });
-                    
+
                     $("#authentication #logout").click(function(e) {
                         e.preventDefault();
 
@@ -149,61 +148,63 @@ embryo
                 $('#cookiesUsage').css("display", "none");
             });
 
-            
-            $("#login button.btn-primary").click(function(e) {
-                e.preventDefault();
-                var messageId = embryo.messagePanel.show({
-                    text : "Logging in ..."
-                });
-
-                rememberUseCookies();
-                $("#login").modal("hide");
-
-                clearMessages();
-
-                $.ajax({
-                    url : embryo.baseUrl + "rest/authentication/login",
-                    data : {
-                        userName : $("#userName").val(),
-                        password : $("#password").val()
-                    },
-                    success : function(data) {
-                        sessionStorage.clear();
-
-                        if (location.pathname.indexOf("index.html") >= 0 || location.pathname.indexOf(".html") < 0) {
-                            location.href = "map.html#/vessel";
-                        }
-                        embryo.authentication = data;
-                        updateNavigationBar();
-                        embryo.messagePanel.replace(messageId, {
-                            text : "Succesfully logged in.",
-                            type : "success"
+            $("#login button.btn-primary").click(
+                    function(e) {
+                        e.preventDefault();
+                        var messageId = embryo.messagePanel.show({
+                            text : "Logging in ..."
                         });
-                        embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
-                    },
-                    error : function(data) {
-                        updateNavigationBar();
-                        embryo.messagePanel.replace(messageId, {
-                            text : "Log in failed. (" + data.status + ")",
-                            type : "error"
-                        });
-                        var errorMessage = embryo.ErrorService.extractError(data, data.status);
-                        if (data.status == 401) {
-                            $("#loginWrongLoginOrPassword").css("display", "block");
-                        } else {
-                            $("#error").text(errorMessage[0]).css("display", "block");
-                        }
-                        setTimeout(function() {
-                            $("#login").modal("show");
-                        }, 1000);
-                    }
-                });
 
-                $("#userName").val("");
-                $("#password").val("");
-                $("#error").css("display", "none");
-                $("#loginWrongLoginOrPassword").css("display", "none");
-            });
+                        rememberUseCookies();
+                        $("#login").modal("hide");
+
+                        clearMessages();
+
+                        $.ajax({
+                            url : embryo.baseUrl + "rest/authentication/login",
+                            data : {
+                                userName : $("#userName").val(),
+                                password : $("#password").val()
+                            },
+                            success : function(data) {
+                                sessionStorage.clear();
+
+                                if (location.pathname.indexOf("index.html")
+                                        && location.pathname.indexOf("content.html") >= 0
+                                        || location.pathname.indexOf(".html") < 0) {
+                                    location.href = "map.html#/vessel";
+                                }
+                                embryo.authentication = data;
+                                updateNavigationBar();
+                                embryo.messagePanel.replace(messageId, {
+                                    text : "Succesfully logged in.",
+                                    type : "success"
+                                });
+                                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+                            },
+                            error : function(data) {
+                                updateNavigationBar();
+                                embryo.messagePanel.replace(messageId, {
+                                    text : "Log in failed. (" + data.status + ")",
+                                    type : "error"
+                                });
+                                var errorMessage = embryo.ErrorService.extractError(data, data.status);
+                                if (data.status == 401) {
+                                    $("#loginWrongLoginOrPassword").css("display", "block");
+                                } else {
+                                    $("#error").text(errorMessage[0]).css("display", "block");
+                                }
+                                setTimeout(function() {
+                                    $("#login").modal("show");
+                                }, 1000);
+                            }
+                        });
+
+                        $("#userName").val("");
+                        $("#password").val("");
+                        $("#error").css("display", "none");
+                        $("#loginWrongLoginOrPassword").css("display", "none");
+                    });
 
             updateNavigationBar();
 

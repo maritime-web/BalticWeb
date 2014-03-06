@@ -1,3 +1,9 @@
+#contentContainer{
+	min-height:100%;
+	height:auto!important;
+	margin:0 auto -120px;
+}
+
 .navbar {
 	-webkit-box-shadow: 0 0 2px 2px rgba(0, 0, 0, .2);
 	-moz-box-shadow: 0 0 2px 2px rgba(0, 0, 0, .2);
@@ -20,6 +26,11 @@ hr.soften {
 	border: 0;
 }
 
+.menuDivider {
+	height: 42px;
+	width: 100%;
+}
+
 .menu-container {
     padding-left: 1em;
     padding-right: 1em;
@@ -27,4 +38,39 @@ hr.soften {
 
 .navbar {
 	font-size: 14px;
+}
+
+footer li{
+	line-height: 10px;
+}
+
+footer img{
+	margin-left: auto;
+	margin-right: auto;
+	display:block;
+}
+
+footer .dmi img{
+	margin-top: 10px;
+}
+
+footer .copyright {
+	text-align:left;
+}
+
+footer .navbar{
+	-webkit-box-shadow:none;
+	-moz-box-shadow:none;
+	box-shadow:none;
+}
+
+footer .navbar-inner{
+	background-image:none;
+	border:none;
+	background-color:inherit;
+	box-shadow:none;
+}
+
+#push, .footer{
+	height:120px;
 }
