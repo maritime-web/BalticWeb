@@ -32,6 +32,7 @@ import javax.ejb.TimerService;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 
+import org.jboss.resteasy.client.ClientResponseFailure;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -99,6 +100,12 @@ public class MaxSpeedJob {
         updateMaxSpeeds();
     }
 
+    private void logException(Long mmsi, String name, Exception e) {
+        String msg = "Error updating max speed for vessel " + mmsi + "/" + name;
+        logger.error(msg, e);
+        embryoLogService.error(msg, e);
+    }
+
     /**
      * Executes on startup
      */
@@ -131,10 +138,18 @@ public class MaxSpeedJob {
                         newRecordings.put(mmsi, newRec);
                         updateCount++;
                         logger.debug("Updated max speed for vessel {}/{}: {}", mmsi, vessel[7], newRec);
+                    } catch (ClientResponseFailure e) {
+                        if (e.getResponse() != null && e.getResponse().getStatus() == 400) {
+                            newRecordings.put(mmsi, new MaxSpeedRecording(0.0));
+                            updateCount++;
+                            logger.debug("Failed fetching track for vessel {}/{}: {}. It may be out of AIS circle",
+                                    mmsi, vessel[7], e.getMessage());
+                        } else {
+                            logException(mmsi, vessel[7], e);
+                            errorCount++;
+                        }
                     } catch (Exception e) {
-                        String msg = "Error updating max speed for vessel " + mmsi + "/" + vessel[7];
-                        logger.error(msg, e);
-                        embryoLogService.error(msg, e);
+                        logException(mmsi, vessel[7], e);
                         errorCount++;
                     }
                 } else {
