@@ -45,7 +45,6 @@ partials/route-upload.html
 partials/route-edit.html
 partials/greenpos-report.html
 partials/greenpos-list.html
-partials/cookies-view.html
 rest/shapefile/multiple/static.world_merc?delta=true&exponent=2
 img/load.gif
 img/vessel_blue.png
@@ -71,4 +70,4 @@ img/ring.png
 img/green_marker.png
 img/aw-logo.png
 
-# Version: 28
+# Version: 29
