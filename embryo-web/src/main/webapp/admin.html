@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="embryo.administration">
+
+<head>
+<title>ArcticWeb - Users</title>
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
+
+<!-- build:css css/arcticweb-administration.css -->
+<link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
+<link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/ext/tarruda-bootstrap-datetimepicker.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="css/admin.css" rel="stylesheet">
+<link href="css/users.css" rel="stylesheet">
+<link href="css/log.css" rel="stylesheet">
+<!-- endbuild -->
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+
+<script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="js/ext/ui-bootstrap-tpls-0.6.0.js"></script>
+
+
+<!-- build:js js/arcticweb-administration.js -->
+<script src="js/ext/tarruda-bootstrap-datetimepicker.js" defer="defer" type="text/javascript"></script>
+<script src="js/embryo.js" defer="defer" type="text/javascript"></script>
+<script src="js/utils.js" defer="defer" type="text/javascript"></script>
+<script src="js/authentication.js" defer="defer" type="text/javascript"></script>
+<script src="js/menu.js" defer="defer" type="text/javascript"></script>
+<script src="js/service/user-service.js" defer="defer" type="text/javascript"></script>
+<script src="js/service/log-service.js" defer="defer" type="text/javascript"></script>
+
+<script src="js/reporting/datetimepicker.js" defer="defer"></script>
+<script src="js/administration/users.js" defer="defer" type="text/javascript"></script>
+<script src="js/administration/log.js" defer="defer" type="text/javascript"></script>
+
+<!-- endbuild -->
+
+<script type="text/javascript" defer="defer">
+    var app = angular.module('embryo.administration', [ 'ngRoute', 'embryo.administration.log', 'embryo.administration.users' ]);
+    
+    app.config([ '$routeProvider', function($routeProvider) {
+        $routeProvider.when('/log', {
+            templateUrl : 'partials/admin/log.html',
+            permission : embryo.security.permissions.admin
+        }).when('/users', {
+            templateUrl : 'partials/admin/users.html',
+            permission : embryo.security.permissions.admin
+        }).otherwise({
+		    controller : function(){
+		        window.location.replace('/');
+		    }, 
+		    template : "<div></div>"
+		});
+    } ]);
+</script>
+</head>
+
+<body>
+	<div x-ng-include="'partials/authentication.html'"></div>
+	<div x-ng-include="'partials/menu.html'"></div>
+
+	<div class="menuDivider"></div>
+
+	<div class="container">
+		<div x-ng-view></div>
+		<div id="push"></div>
+	</div>
+	<div x-ng-include="'partials/footer.html'"></div>
+</body>
+
+</html>

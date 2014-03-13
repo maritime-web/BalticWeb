@@ -1,0 +1,25 @@
+<div x-ng-controller="embryo.RequestAccessCtrl" class="indexcontent">
+	<h1>Request Access</h1>
+
+	<form id="accessForm" name="accessForm" class="form-signin">
+		<div x-ng-show="alertMessages" class="alert alert-error">
+			<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+		</div>
+		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+		<p>Please fill out the form below to get access to ArcticWeb.</p>
+
+		<p>MMSI-number may be left blank if you do not want your account to be tied to a particular vessel.</p>
+
+		<label for="rPreferredLogin">Preferred Login:</label> <input type="text" class="input-block-level"
+			placeholder="Prefered Login" id="rPreferredLogin" x-ng-model="request.preferredLogin"> <label
+			for="rContactPerson">Contact Person:</label> <input type="text" class="input-block-level"
+			placeholder="Contact Person" id="rContactPerson" x-ng-model="request.contactPerson"> <label
+			for="rEmailAddress">Email Address:</label> <input type="text" class="input-block-level" placeholder="Email Address"
+			id="rEmailAddress" x-ng-model="request.emailAddress"> <label for="rMmsiNumber">MMSI-number:</label> <input
+			type="text" class="input-block-level" placeholder="MMSI-number" id="rMmsiNumber" x-ng-model="request.mmsiNumber">
+		<div id="accessFormBtns">
+			<button class="btn btn-primary pull-right" x-ng-click="sendRequest()">Send Request</button>
+		</div>
+	</form>
+</div>

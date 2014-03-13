@@ -1,13 +1,13 @@
-form {
+#logcontainer form {
 	margin-top:40px;	
 	margin-bottom:40px;
 }
 
-form div.searchbtn{
+#logcontainer form div.searchbtn{
 	margin-top:20px;	
 }
 
-div.from input{
+#logcontainer div.from input{
 	width: 100px;
 }
 

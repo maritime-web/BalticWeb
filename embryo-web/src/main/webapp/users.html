@@ -78,7 +78,7 @@
 					</thead>
 					<tbody id="activeUsersTable">
 						<tr x-ng-repeat="user in users">
-							<td><a href=# x-ng-click="edit(user)">{{user.login}}</a></td>
+							<td><a href="#" x-ng-click="edit(user)">{{user.login}}</a></td>
 							<td>{{user.email}}</td>
 							<td>{{user.shipMmsi ? user.shipMmsi : "-"}}</td>
 							<td>{{roleText(user.role)}}</td>

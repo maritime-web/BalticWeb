@@ -1,41 +1,39 @@
-
 <!-- Login modal ================================================== -->
+	<script type="text/ng-template" id="loginDialog.html">
+		<div class="modal-header">
+			<button type="button" class="close" x-ng-click="$dismiss('aborted')">x</button>
+			<h2>Log In</h2>
+		</div>
 
-<div id="login" class="modal hide" tabindex="-1" role="dialog">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">x</button>
-		<h2>Log In</h2>
-	</div>
-	<div class="modal-body">
-		<div class="alert alert-error" style="display: none" id="loginWrongLoginOrPassword">Wrong user name or password</div>
-		<div class="alert alert-error" style="display: none" id="error"></div>
-		<div class="alert alert-warning" style="display: none" id="ie7">
-			You are using Internet Explorer <span id="ie7ver"></span>. ArcticWeb has been tested and works with Internet Explorer
-			8 and 9. It is however recommended to use Internet Explorer 10 (or higher), Firefox (latest) and Safari (latest) as
-			this will decrease connection usage.
-		</div>
-		<div class="alert alert-warning" style="display: none" id="ie89">
-			You are using Internet Explorer <span id="ie89ver"></span>. It is recommended to use Internet Explorer 10 (or
-			higher), Firefox (latest) and Safari (latest) as this will decrease connection usage.
-		</div>
-		<div id="cookiesUsage" style="display: none" class="alert alert-info">This site is using cookies for security,
-			remembering user settings and caching of static application data. By logging in you accept usage of cookies.</div>
-		<form class="form-signin" name="login_form">
-			<label>User Name</label> <input type="text" class="input-block-level" id="userName" autocapitalize="off"
-				autocorrect="off" autocomplete="off" /> <label>Password</label> <input type="password" class="input-block-level"
-				id="password" />
-			<!--<label class="checkbox">  <input
-				type="checkbox" value="remember-me" /> Remember me 
-			</label>-->
-			<div style="margin-top: 24px">
-				<button type="submit" class="btn btn-primary">Log In</button>
-				<a role="button" class="btn" data-toggle="modal" data-dismiss="modal">Close</a>
-				<!-- a href="#forgot" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Forgot password</a>
-                <a href="#request" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Request login</a -->
+		<div class="modal-body">
+			<div class="alert alert-error" x-ng-show="msg">{{msg}}</div>
+			<div class="alert alert-warning" x-ng-show="ie7ver">
+				You are using Internet Explorer {{ie7ver}}. ArcticWeb has been tested and works with Internet Explorer
+				8 and 9. It is however recommended to use Internet Explorer 10 (or higher), Firefox (latest) and Safari (latest) as
+				this will decrease connection usage.
 			</div>
-		</form>
-	</div>
-</div>
+			<div class="alert alert-warning" x-ng-show="ie89ver">
+				You are using Internet Explorer {{ie89ver}}. It is recommended to use Internet Explorer 10 (or
+				higher), Firefox (latest) and Safari (latest) as this will decrease connection usage.
+			</div>
+			<div id="cookiesUsage" x-ng-show="showCookies" class="alert alert-info">This site is using cookies for security,
+				remembering user settings and caching of static application data. By logging in you accept usage of cookies.</div>
+			<form class="form-signin" name="login_form">
+				<label>User Name</label> <input focus="focusMe" type="text" class="input-block-level" x-ng-model="user.name" autocapitalize="off"
+					autocorrect="off" autocomplete="off" /> <label>Password</label> <input type="password" class="input-block-level"
+					x-ng-model="user.pwd" />
+				<!--<label class="checkbox">  <input
+					type="checkbox" value="remember-me" /> Remember me 
+				</label>-->
+				<div style="margin-top: 24px">
+					<button type="submit" class="btn btn-primary" x-ng-click="login()">Log In</button>
+					<button class="btn" x-ng-click="$dismiss('aborted')">Cancel</button>
+					<!-- a href="#forgot" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Forgot password</a>
+                	<a href="#request" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Request login</a -->
+				</div>
+			</form>
+		</div>
+	</script>
 
 <!-- Request login modal ================================================== -->
 
@@ -64,33 +62,4 @@
 		</form>
 	</div>
 </div>
-
-
-<div id="requestProperSignup" class="modal hide" tabindex="-1" role="dialog">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">x</button>
-		<h2>Request Access</h2>
-	</div>
-	<div class="modal-body">
-		<p class="alert alert-info" id="rFeedback"></p>
-
-		<p>Please fill out the form below to get access to ArcticWeb.</p>
-
-		<p>MMSI-number may be left blank if you do not want your account to be tied to a particular vessel.</p>
-
-		<form class="form-signin">
-			<label for="rPreferredLogin">Preferred Login:</label> <input type="text" class="input-block-level"
-				placeholder="Prefered Login" id="rPreferredLogin"> <label for="rContactPerson">Contact Person:</label> <input
-				type="text" class="input-block-level" placeholder="Contact Person" id="rContactPerson"> <label
-				for="rEmailAddress">Email Address:</label> <input type="text" class="input-block-level" placeholder="Email Address"
-				id="rEmailAddress"> <label for="rMmsiNumber">MMSI-number:</label> <input type="text"
-				class="input-block-level" placeholder="MMSI-number" id="rMmsiNumber">
-			<div style="margin-top: 24px">
-				<button class="btn btn-primary">Send Request</button>
-				<button class="btn" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
-			</div>
-		</form>
-	</div>
-</div>
-
 

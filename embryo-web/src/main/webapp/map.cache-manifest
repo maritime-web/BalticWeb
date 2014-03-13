@@ -20,7 +20,9 @@ OpenLayers-2.13.1/OpenLayers.js
 
 js/ext/typeahead-0.9.3.min.js
 
-//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js
+//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js
+//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js
+//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js
 
 js/ext/angular-typeahead.js
 js/ext/jquery.iframe-transport.js

@@ -171,3 +171,19 @@ $(function() {
         })
     }
 })
+
+$(function() {
+    "use strict";
+
+    var module = angular.module('embryo.base', []);
+
+    module.directive('focus', function($timeout) {
+        return function(scope, element, attrs) {
+            scope.$watch(attrs.focus, function(newValue) {
+                $timeout(function() {
+                    newValue && element.focus();
+                }, 100);
+            }, true);
+        };
+    });
+}());

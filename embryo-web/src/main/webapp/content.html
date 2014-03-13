@@ -16,10 +16,12 @@
 <!-- endbuild -->
 
 <script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
-<script src="//code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-route.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
 
 <!-- build:js js/arcticweb-content.js -->
 <script src="js/utils.js" defer="defer"></script>
@@ -29,16 +31,21 @@
 <!-- endbuild -->
 
 <script type="text/javascript">
-    var indexApp = angular.module('embryo.content', [ 'ngRoute' ]);
+    var indexApp = angular.module('embryo.content', [ 'ngRoute' , 'embryo.menu']);
 
     indexApp.config([ '$routeProvider', function($routeProvider) {
         $routeProvider.when('/disclaimer', {
             templateUrl : 'partials/disclaimer.html',
         }).when('/cookies', {
             templateUrl : 'partials/cookies.html',
+        }).when('/requestAccess', {
+            templateUrl : 'partials/security/access.html',
         }).otherwise({
-            redirectTo : '/'
-        });
+		    controller : function(){
+		        window.location.replace('/');
+		    }, 
+		    template : "<div></div>"
+		});
     } ]);
 
     $(function() {

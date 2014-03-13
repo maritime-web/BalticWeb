@@ -128,7 +128,7 @@ $(function() {
 
             // set position to find center in pixels
             map.setCenter(pos, zoom);
-            
+
             var newCenterPx = map.getPixelFromLonLat(pos);
             // check if new center will provoke a blue rectangel in the top when
             // using OSM tile Map (no tiles on the pole)
@@ -400,3 +400,10 @@ $(function() {
 
     })
 });
+
+embryo.ready(function(){
+    $("#controlContainer a").click(function(e) {
+        e.preventDefault();
+    });
+});
+

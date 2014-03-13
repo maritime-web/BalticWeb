@@ -2,6 +2,12 @@ embryo.authentication = {
     currentPageRequiresAuthentication : true
 };
 
+embryo.security = {};
+
+embryo.security.permissions = {
+    admin : "Administration"
+};
+
 embryo.eventbus.AuthenticatedEvent = function() {
     var event = jQuery.Event("AuthenticatedEvent");
     return event;
@@ -9,323 +15,146 @@ embryo.eventbus.AuthenticatedEvent = function() {
 
 embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authenticated");
 
-embryo
-        .ready(function() {
+// embryo.ready
+(function() {
 
-            function detectBrowser() {
-                if (browser.isIE() && browser.ieVersion() <= 7) {
-                    $("#ie7ver").html(browser.ieVersion());
-                    $("#ie7").show();
-                } else if (browser.isIE() && browser.ieVersion() <= 9) {
-                    $("#ie89ver").html(browser.ieVersion());
-                    $("#ie89").show();
-                }
-            }
+    if (embryo.authentication.userName == null) {
+        var messageId = embryo.messagePanel.show({
+            text : "Refreshing ..."
+        })
 
-            function useCookies() {
-                if ("true" != getCookie("cookies-accepted")) {
-                    $('#cookiesUsage').css("display", "block");
-                }
-            }
-
-            function rememberUseCookies() {
-                $('#cookiesUsage').css("display", "none");
-                if ("true" != getCookie("cookies-accepted")) {
-                    setCookie("cookies-accepted", "true", 365);
-                }
-            }
-
-            function clearMessages() {
-                $("#ie89").hide();
-                $("#ie7").hide();
-                $("#loginWrongLoginOrPassword").hide();
-            }
-
-            function updateNavigationBar() {
-                // is user logged in ?
-
-                if (embryo.authentication.userName == null) {
-                    var html = "";
-
-                    html += '<ul  class="nav navtabs">';
-                    html += ' <li class="dropdown">';
-                    html += '  <a class="dropdown-toggle" data-toggle="dropdown" href="#">About</a>';
-                    html += '  <ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
-                    html += '   <li><a tabindex="-1" href="content.html#cookies">Cookies</a></li>';
-                    html += '   <li><a tabindex="-1" href="content.html#disclaimer">Disclaimer</a></li>';
-                    html += '  </ul>';
-                    html += ' </li>';
-                    html += '</ul>';
-                    html += "<span>";
-                    html += "<a href=#login>Log In</a> | <a href=#requestAccess>Request Access</a>"
-                    html += "</span>";
-
-                    $("#authentication").html(html);
-
-                    $("#authentication a.dropdown-toggle").click(function(e) {
-                        e.preventDefault();
-                    });
-
-                    $("#authentication a[href=\"#login\"]").click(function(e) {
-                        e.preventDefault();
-                        clearMessages();
-                        detectBrowser();
-                        $("#login").modal("show");
-                    });
-
-                    $("#authentication a[href=\"#requestAccess\"]").click(function(e) {
-                        e.preventDefault();
-                        embryo.authentication.showRequestAccess();
-                    });
-
-                    $("#requestAccessBigButton").click(function(e) {
-                        e.preventDefault();
-                        embryo.authentication.showRequestAccess();
-                    });
-
-                } else {
-                    var html = "";
-                    html += '<ul  class="nav navtabs">';
-                    html += ' <li class="dropdown">';
-                    html += '  <a class="dropdown-toggle" data-toggle="dropdown" href="#">About</a>';
-                    html += '  <ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
-                    html += '   <li><a tabindex="-1" href="content.html#cookies">Cookies</a></li>';
-                    html += '   <li><a tabindex="-1" href="content.html#disclaimer">Disclaimer</a></li>';
-                    html += '  </ul>';
-                    html += ' </li>';
-                    html += ' <li class="dropdown">';
-                    html += "  <a class='dropdown-toggle' data-toggle='dropdown' href='#'><i class='icon-user icon-white' style='vertical-align:middle; margin-bottom: 4px'></i> ";
-                    html += embryo.authentication.userName;
-                    html += "  </a>";
-                    html += '  <ul style="width:70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">';
-                    html += '   <li><a tabindex="-1" href="docs/ArcticWeb_user_manual_v1.2.pdf" target="_blank">Manual</a></li>';
-                    html += '   <li class="divider"></li>';
-                    html += '   <li><a id="logout" tabindex="-1" href="#">Log Out</a></li>';
-                    html += '  </ul>';
-                    html += ' </li>';
-                    html += '</ul>';
-
-                    $("#authentication").html(html);
-
-                    $("#authentication a.dropdown-toggle").click(function(e) {
-                        e.preventDefault();
-                    });
-
-                    $("#authentication #logout").click(function(e) {
-                        e.preventDefault();
-
-                        var messageId = embryo.messagePanel.show({
-                            text : "Logging out ..."
-                        })
-
-                        $.ajax({
-                            url : embryo.baseUrl + "rest/authentication/logout",
-                            data : {},
-                            success : function(data) {
-                                sessionStorage.clear();
-                                localStorage.clear();
-                                setTimeout(function() {
-                                    location = ".";
-                                }, 100);
-                            },
-                            error : function(data) {
-                                embryo.messagePanel.replace(messageId, {
-                                    text : "Logout failed. (" + data.status + ")",
-                                    type : "error"
-                                })
-                            }
-                        });
-                    });
-                }
-            }
-
-            $("#login").on("shown", function() {
-                useCookies();
-                $("#userName").focus();
-            });
-
-            $('#login').on('hide', function() {
-                $('#cookiesUsage').css("display", "none");
-            });
-
-            $("#login button.btn-primary").click(
-                    function(e) {
-                        e.preventDefault();
-                        var messageId = embryo.messagePanel.show({
-                            text : "Logging in ..."
-                        });
-
-                        rememberUseCookies();
-                        $("#login").modal("hide");
-
-                        clearMessages();
-
-                        $.ajax({
-                            url : embryo.baseUrl + "rest/authentication/login",
-                            data : {
-                                userName : $("#userName").val(),
-                                password : $("#password").val()
-                            },
-                            success : function(data) {
-                                sessionStorage.clear();
-
-                                if (location.pathname.indexOf("index.html")
-                                        && location.pathname.indexOf("content.html") >= 0
-                                        || location.pathname.indexOf(".html") < 0) {
-                                    location.href = "map.html#/vessel";
-                                }
-                                embryo.authentication = data;
-                                updateNavigationBar();
-                                embryo.messagePanel.replace(messageId, {
-                                    text : "Succesfully logged in.",
-                                    type : "success"
-                                });
-                                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
-                            },
-                            error : function(data) {
-                                updateNavigationBar();
-                                embryo.messagePanel.replace(messageId, {
-                                    text : "Log in failed. (" + data.status + ")",
-                                    type : "error"
-                                });
-                                var errorMessage = embryo.ErrorService.extractError(data, data.status);
-                                if (data.status == 401) {
-                                    $("#loginWrongLoginOrPassword").css("display", "block");
-                                } else {
-                                    $("#error").text(errorMessage[0]).css("display", "block");
-                                }
-                                setTimeout(function() {
-                                    $("#login").modal("show");
-                                }, 1000);
-                            }
-                        });
-
-                        $("#userName").val("");
-                        $("#password").val("");
-                        $("#error").css("display", "none");
-                        $("#loginWrongLoginOrPassword").css("display", "none");
-                    });
-
-            updateNavigationBar();
-
-            if (embryo.authentication.userName == null) {
-                var messageId = embryo.messagePanel.show({
-                    text : "Refreshing ..."
-                })
-
-                $.ajax({
-                    url : embryo.baseUrl + "rest/authentication/details",
-                    data : {},
-                    success : function(data) {
-                        embryo.authentication = data;
-                        embryo.messagePanel.replace(messageId, {
-                            text : "Refresh succesful.",
-                            type : "success"
-                        });
-                        updateNavigationBar();
-                        embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
-                    },
-                    error : function(data) {
-                        if (data.status == 401 && embryo.authentication.currentPageRequiresAuthentication) {
-                            embryo.messagePanel.remove(messageId);
-                            clearMessages();
-                            detectBrowser();
-                            $("#login").modal("show");
-                        } else {
-                            embryo.messagePanel.replace(messageId, {
-                                text : "Refresh failed. (" + data.status + ")",
-                                type : "error"
-                            })
-                        }
-                    }
+        $.ajax({
+            url : embryo.baseUrl + "rest/authentication/details",
+            data : {},
+            success : function(data) {
+                embryo.authentication = data;
+                embryo.messagePanel.replace(messageId, {
+                    text : "Refresh succesful.",
+                    type : "success"
                 });
+                updateNavigationBar();
+                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+            },
+            error : function(data) {
+                if (data.status == 401 && embryo.authentication.currentPageRequiresAuthentication) {
+                    embryo.messagePanel.remove(messageId);
+                    clearMessages();
+                    detectBrowser();
+                    $("#login").modal("show");
+                } else {
+                    embryo.messagePanel.replace(messageId, {
+                        text : "Refresh failed. (" + data.status + ")",
+                        type : "error"
+                    })
+                }
             }
         });
-
-(function() {
-    "use strict";
-
-    var userModule = angular.module('embryo.UserService', []);
-
-    userModule.factory('UserService', function() {
-        return {
-            isPermitted : function(permission) {
-                var index, permissions = embryo.authentication.permissions;
-
-                for (index in permissions) {
-                    if (permissions[index] == permission) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
-    });
-
-}());
-
-embryo.ready(function() {
-    embryo.authentication.showRequestAccess = function() {
-        $("#requestProperSignup input").val("");
-        feedback();
-        $("#requestProperSignup").modal("show");
-        $("#rPreferredLogin").focus();
     }
-
-    function feedback(text) {
-        if (text) {
-            $("#rFeedback").html(text);
-            $("#rFeedback").css("display", "block");
-        } else {
-            $("#rFeedback").css("display", "none");
-        }
-    }
-
-    $("#requestProperSignup .btn-primary").click(function(e) {
-        e.preventDefault();
-
-        var r = {
-            preferredLogin : $("#rPreferredLogin").val(),
-            contactPerson : $("#rContactPerson").val(),
-            emailAddress : $("#rEmailAddress").val(),
-            mmsiNumber : $("#rMmsiNumber").val()
-        }
-
-        if (r.mmsiNumber) {
-            var x = r.mmsiNumber;
-            r.mmsiNumber = parseInt(x);
-            if (r.mmsiNumber != x) {
-                feedback("MMSI must be only digits.");
-                return;
-            }
-        }
-
-        if (!r.emailAddress) {
-            feedback("A proper email address is required.");
-        } else {
-            feedback("Sending request for access.")
-
-            $.ajax({
-                url : embryo.baseUrl + "rest/request-access/save",
-                method : "POST",
-                contentType : "application/json; charset=utf-8",
-                data : JSON.stringify(r),
-                success : function() {
-                    feedback("Request for access has been sent. We will get back to you via email.")
-                },
-                error : function() {
-                    feedback("Request for access has failed. Please try again.")
-                }
-            })
-        }
-
-    })
-
 });
 
 (function() {
     "use strict";
-    var module = angular.module('embryo.authentication', []);
+    var module = angular.module('embryo.authentication', [ 'embryo.base','ngCookies', 'ui.bootstrap.modal', 'ui.bootstrap.tpls' ]);
+
+    embryo.RequestAccessCtrl = function($scope, $http) {
+        $scope.request = {};
+        $scope.message = null;
+        $scope.alertMessages = null;
+        $("#rPreferredLogin").focus();
+
+        $scope.sendRequest = function() {
+            $scope.message = null;
+            $scope.alertMessages = null;
+            if ($scope.request.mmsiNumber) {
+                var x = $scope.request.mmsiNumber;
+                $scope.request.mmsiNumber = parseInt(x);
+                if ($scope.request.mmsiNumber != x) {
+                    $scope.alertMessages = [ "MMSI must be only digits." ];
+                    return;
+                }
+            }
+
+            if (!$scope.request.emailAddress) {
+                $scope.alertMessages = [ "A proper email address is required." ];
+            } else {
+                $scope.message = "Sending request for access.";
+
+                $http.post(embryo.baseUrl + "rest/request-access/save", $scope.request).success(function() {
+                    $scope.message = "Request for access has been sent. We will get back to you via email.";
+                }).error(function() {
+                    $scope.alertMessages = embryo.ErrorService.extractError(data, status);
+                    $scope.alertMessages.push("Request for access has failed. Please try again.");
+                });
+            }
+        };
+    };
+
+    module.service('Subject', [
+            '$cookieStore',
+            '$http',
+            '$rootScope',
+            function($cookieStore, $http, $rootScope) {
+                $rootScope.initialAuthentication = embryo.authentication;
+
+                var authentication = $cookieStore.get('embryo.authentication');
+                if (typeof authentication !== 'undefined') {
+                    embryo.authentication = authentication;
+                }
+                $rootScope.authentication = embryo.authentication;
+
+                return {
+                    roles : function() {
+                        return typeof embryo.authentication.permissions === 'undefined' ? []
+                                : embryo.authentication.permissions;
+                    },
+                    authorize : function(permission) {
+                        var index, permissions = this.roles();
+
+                        for (index in permissions) {
+                            if (permissions[index] == permission) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    },
+                    isLoggedIn : function(permission) {
+                        return this.roles().length > 0;
+                    },
+                    login : function(username, password, success, error) {
+                        var data = {
+                            params : {
+                                userName : username,
+                                password : password
+                            }
+                        };
+                        $http.get(embryo.baseUrl + "rest/authentication/login", data).success(function(details) {
+                            $cookieStore.put('embryo.authentication', details);
+                            sessionStorage.clear();
+                            $rootScope.authentication = details;
+                            embryo.authentication = details;
+                            embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+                            success(details);
+                        }).error(function(data, status) {
+                            if (error) {
+                                error(data, status);
+                            }
+                        });
+                    },
+                    logout : function(success, error) {
+                        $http.get(embryo.baseUrl + "rest/authentication/logout").success(function() {
+                            console.log("logged out");
+                            sessionStorage.clear();
+                            localStorage.clear();
+                            $cookieStore.remove('embryo.authentication');
+                            $rootScope.authentication = $rootScope.initialAuthentication;
+
+                            console.log($rootScope.authentication);
+                            embryo.authentication = $rootScope.initialAuthentication;
+                            success();
+                        }).error(error);
+                    },
+                };
+            } ]);
 
     module.directive('passwordMatch', [ function() {
         return {
@@ -348,6 +177,202 @@ embryo.ready(function() {
                 });
             }
         };
+    } ]);
+
+    module.directive('requiresPermission', [ '$rootScope', 'Subject', function($rootScope, Subject) {
+        return {
+            restrict : 'A',
+            link : function(scope, element, attrs) {
+                var prevDisp = element.css('display');
+                $rootScope.$watch("authentication", function(roles) {
+                    if (!Subject.authorize(attrs.requiresPermission)) {
+                        element.css('display', 'none');
+                    } else {
+                        element.css('display', prevDisp);
+                    }
+                });
+            }
+        };
+    } ]);
+
+    module.directive('requiresAuthenticated', [ '$rootScope', 'Subject', function($rootScope, Subject) {
+        return {
+            restrict : 'A',
+            link : function(scope, element, attrs) {
+                var prevDisp = element.css('display');
+                $rootScope.$watch("authentication", function(authentication) {
+                    if (!Subject.isLoggedIn()) {
+                        element.css('display', 'none');
+                    } else {
+                        element.css('display', prevDisp);
+                    }
+                });
+            }
+        };
+    } ]);
+
+    module.directive('requiresUnauthenticated', [ '$rootScope', 'Subject', function($rootScope, Subject) {
+        return {
+            restrict : 'A',
+            link : function(scope, element, attrs) {
+                var prevDisp = element.css('display');
+                $rootScope.$watch("authentication", function(roles) {
+                    if (Subject.isLoggedIn()) {
+                        element.css('display', 'none');
+                    } else {
+                        element.css('display', prevDisp);
+                    }
+                });
+            }
+        };
+    } ]);
+
+    function detectBrowser() {
+        if (browser.isIE() && browser.ieVersion() <= 7) {
+            $("#ie7ver").html(browser.ieVersion());
+            $("#ie7").show();
+        } else if (browser.isIE() && browser.ieVersion() <= 9) {
+            $("#ie89ver").html(browser.ieVersion());
+            $("#ie89").show();
+        }
+    }
+
+    function useCookies() {
+        return "true" == getCookie("cookies-accepted");
+    }
+
+    function rememberUseCookies() {
+        $('#cookiesUsage').css("display", "none");
+        if ("true" != getCookie("cookies-accepted")) {
+            setCookie("cookies-accepted", "true", 365);
+        }
+    }
+
+    embryo.LoginModalCtrl = function($scope, $modalInstance, $location, Subject, msg) {
+        $scope.msg = msg;
+        $scope.focusMe = true;
+
+        if (browser.isIE() && browser.ieVersion() <= 7) {
+            $scope.ie7ver = browser.ieVersion();
+        } else if (browser.isIE() && browser.ieVersion() <= 9) {
+            $scope.ie89ver = browser.ieVersion();
+        }
+
+        $scope.useCookies = useCookies();
+        $scope.user = {};
+
+        $scope.login = function() {
+            var messageId = embryo.messagePanel.show({
+                text : "Logging in ..."
+            });
+            rememberUseCookies();
+
+            $scope.$close();
+
+            Subject.login($scope.user.name, $scope.user.pwd, function() {
+                var path = $location.path();
+                if (path.indexOf("index.html") >= 0 || path.indexOf("content.html") >= 0 || path.indexOf(".html") < 0) {
+                    location.href = "map.html#/vessel";
+                }
+
+                embryo.messagePanel.replace(messageId, {
+                    text : "Succesfully logged in.",
+                    type : "success"
+                });
+                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+            }, function(data, status) {
+                // updateNavigationBar();
+                embryo.messagePanel.replace(messageId, {
+                    text : "Log in failed. (" + status + ")",
+                    type : "error"
+                });
+
+                var errorMessage = "";
+                if (status == 401) {
+                    errorMessage = "Wrong user name or password";
+                } else {
+                    errorMessage = embryo.ErrorService.extractError(data, status)[0];
+                }
+                setTimeout(function() {
+                    $scope.loginDlg({
+                        msg : errorMessage
+                    });
+                }, 1000);
+            });
+
+            $("#userName").val("");
+            $("#password").val("");
+            $("#error").css("display", "none");
+            $("#loginWrongLoginOrPassword").css("display", "none");
+
+        }
+    };
+
+    function clearMessages() {
+        $("#ie89").hide();
+        $("#ie7").hide();
+        $("#loginWrongLoginOrPassword").hide();
+    }
+
+    function logout() {
+        event.preventDefault();
+
+        var messageId = embryo.messagePanel.show({
+            text : "Logging out ..."
+        })
+
+        embryo.security.Subject.logout(function() {
+            var path = location.pathname;
+            if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
+                location = ".";
+                // setTimeout(function() {
+                // location = ".";
+                // }, 100);
+            }
+        }, function(data, status) {
+            embryo.messagePanel.replace(messageId, {
+                text : "Logout failed. (" + status + ")",
+                type : "error"
+            })
+        });
+    }
+
+    module.run([ 'Subject', '$rootScope', '$location', '$modal', function(Subject, $rootScope, $location, $modal) {
+        embryo.ready(function() {
+            embryo.security.Subject = Subject;
+
+            $rootScope.Subject = Subject;
+            $rootScope.logout = logout;
+
+            if (Subject.isLoggedIn()) {
+                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+            }
+
+            $rootScope.loginDlg = function(config) {
+                return $modal.open({
+                    controller : embryo.LoginModalCtrl,
+                    templateUrl : "loginDialog.html",
+                    resolve : {
+                        msg : function() {
+                            return typeof config === "object" ? config.msg : null;
+                        }
+                    }
+
+                });
+            };
+
+            $rootScope.$on("$routeChangeStart", function(event, next, current) {
+                if (typeof next.permission === 'string' && !Subject.authorize(next.permission)) {
+
+                    if (Subject.isLoggedIn()) {
+                        $location.path('/');
+                    } else {
+                        $rootScope.loginDlg();
+                    }
+                }
+            });
+
+        });
     } ]);
 
 }());

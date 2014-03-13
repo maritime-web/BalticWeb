@@ -9,7 +9,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
 (function() {
     "use strict";
     
-    var menuModule = angular.module('embryo.menu',[]);
+    var menuModule = angular.module('embryo.menu',[ 'embryo.authentication']);
 
     var embryoAuthenticated = false;
 
@@ -17,18 +17,18 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
         embryoAuthenticated = true;
     })
 
-    embryo.MenuCtrl = function($scope, $location, $element, $timeout) {
+    embryo.ready(function(){
+        $("#navigationBar .pull-right a.dropdown-toggle").click(function(e) {
+            e.preventDefault();
+        });
+    });
+
+    
+    embryo.MenuCtrl = function($scope, Subject, $location, $element, $timeout) {
+        
         $scope.$watch(function() {
             return $location.absUrl();
         }, function (url) {
-            $(".navtabs a", $element).each(function(k, v) {
-                var href = $(v).attr("href");
-                if (url.indexOf(href, url.length - href.length) >= 0) {
-                    $(v).parent("li").addClass("active");
-                } else {
-                    $(v).parent("li").removeClass("active");
-                }
-            });
 
             $(".navtabs a", $element).each(function(k, v) {
                 var href = $(v).attr("href");
@@ -38,16 +38,9 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
                     $(v).parent("li").removeClass("active");
                 }
             });
-
-            $("li", $element).each(function(k, v) {
-                if ($(v).attr("requires-permission")) $(v).css("display", "none");
-            })
 
             function authenticated() {
                 embryo.eventbus.fireEvent(embryo.eventbus.GroupChangedEvent(url.substring(url.lastIndexOf("/")+1)));
-                $("li", $element).each(function(k, v) {
-                    if (embryo.authentication.permissions.indexOf($(v).attr("requires-permission")) >= 0) $(v).css("display", "block");
-                })
             }
 
             if (!embryoAuthenticated) {
@@ -55,7 +48,6 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
             } else {
                 authenticated();
             }
-
-        });
+        });        
     };
 })();

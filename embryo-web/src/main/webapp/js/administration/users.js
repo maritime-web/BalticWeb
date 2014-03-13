@@ -1,10 +1,11 @@
 $(function() {
     "use strict";
 
-    angular.module('embryo.users', [ 'embryo.userService', 'ui.bootstrap.modal',
+    angular.module('embryo.administration.users', [ 'embryo.userService', 'ui.bootstrap.modal',
             'ui.bootstrap.tpls', 'embryo.authentication' ]);
 
     embryo.UsersCtrl = function($scope, UserService, $modal, $log) {
+        
         var editUser;
         var userList = [];
         $scope.users = userList;
@@ -20,9 +21,7 @@ $(function() {
             });
         }
 
-        embryo.authenticated(function() {
-            loadUsers();
-        });
+        loadUsers();
 
         $scope.roleText = function(logicalName) {
             if (logicalName == "Reporting") {
@@ -58,6 +57,8 @@ $(function() {
         };
 
         $scope.edit = function(user) {
+            event.preventDefault();
+            
             editUser = user;
             $scope.message = null;
             $scope.alertMessages = null;
@@ -143,6 +144,8 @@ $(function() {
         };
 
         $scope.del = function(user) {
+            event.preventDefault();
+
             var messages = [ "This will delete user " + user.login + (user.shipMmsi ? " / " + user.shipMmsi : "") ];
             showModal("Delete User", messages).result.then(function() {
                 $scope.message = "Deleting " + user.login + " ...";
@@ -173,3 +176,4 @@ $(function() {
     setTimeout(fixScrollables, 100);
 
 }());
+
