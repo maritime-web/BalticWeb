@@ -8,8 +8,30 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
 
 (function() {
     "use strict";
-    
-    var menuModule = angular.module('embryo.menu',[ 'embryo.authentication']);
+
+    var menuModule = angular.module('embryo.menu', [ 'ui.bootstrap', 'embryo.authentication' ]);
+
+    menuModule.directive('showActive', [ '$location', function($location) {
+        return {
+            restrict : 'A',
+            link : function(scope, element) {
+                scope.$watch(function() {
+                    return $location.absUrl();
+                }, function(url) {
+                    var menuItems = angular.element(element).children();
+                    menuItems.each(function(index, item){
+                        var menuItem = angular.element(item);
+                        var href = menuItem.find("a").attr('href');
+                        if (url.indexOf(href, url.length - href.length) >= 0) {
+                            menuItem.addClass("active");
+                        } else {
+                            menuItem.removeClass("active");
+                        }
+                    });
+                });
+            }
+        };
+    } ]);
 
     var embryoAuthenticated = false;
 
@@ -17,30 +39,12 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
         embryoAuthenticated = true;
     })
 
-    embryo.ready(function(){
-        $("#navigationBar .pull-right a.dropdown-toggle").click(function(e) {
-            e.preventDefault();
-        });
-    });
-
-    
     embryo.MenuCtrl = function($scope, Subject, $location, $element, $timeout) {
-        
         $scope.$watch(function() {
             return $location.absUrl();
-        }, function (url) {
-
-            $(".navtabs a", $element).each(function(k, v) {
-                var href = $(v).attr("href");
-                if (url.indexOf(href, url.length - href.length) >= 0) {
-                    $(v).parent("li").addClass("active");
-                } else {
-                    $(v).parent("li").removeClass("active");
-                }
-            });
-
+        }, function(url) {
             function authenticated() {
-                embryo.eventbus.fireEvent(embryo.eventbus.GroupChangedEvent(url.substring(url.lastIndexOf("/")+1)));
+                embryo.eventbus.fireEvent(embryo.eventbus.GroupChangedEvent(url.substring(url.lastIndexOf("/") + 1)));
             }
 
             if (!embryoAuthenticated) {
@@ -48,6 +52,6 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
             } else {
                 authenticated();
             }
-        });        
+        });
     };
 })();
