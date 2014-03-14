@@ -26,5 +26,6 @@ partials/authentication.html
 partials/footer.html
 partials/disclaimer.html
 partials/cookies.html
+partials/security/access.html
 
-# Version: 2
+# Version: 3
