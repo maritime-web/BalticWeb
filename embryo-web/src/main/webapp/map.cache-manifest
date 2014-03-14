@@ -18,21 +18,12 @@ OpenLayers-2.13.1/OpenLayers.js
 
 //code.jquery.com/ui/1.9.1/jquery-ui.js
 
-js/ext/typeahead-0.9.3.min.js
-
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js
 //cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js
 
-js/ext/angular-typeahead.js
-js/ext/jquery.iframe-transport.js
-js/ext/jquery.fileupload.js
-js/ext/jquery.fileupload-process.js
-js/ext/jquery.fileupload-validate.js
-js/ext/jquery.fileupload-angular.js
-js/ext/ui-bootstrap-tpls-0.6.0.js
-js/ext/tarruda-bootstrap-datetimepicker.js
 js/arcticweb-map.js
+
 partials/authentication.html
 partials/menu.html
 partials/vessel-control.html
@@ -72,4 +63,4 @@ img/ring.png
 img/green_marker.png
 img/aw-logo.png
 
-# Version: 29
+# Version: 30
