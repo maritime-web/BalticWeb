@@ -1,5 +1,5 @@
 <!-- Login modal ================================================== -->
-	<script type="text/ng-template" id="loginDialog.html">
+<script type="text/ng-template" id="loginDialog.html">
 		<div class="modal-header">
 			<button type="button" class="close" x-ng-click="$dismiss('aborted')">x</button>
 			<h2>Log In</h2>
@@ -31,6 +31,9 @@
 					<!-- a href="#forgot" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Forgot password</a>
                 	<a href="#request" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Request login</a -->
 				</div>
+				<div style="margin-top: 14px" class="pull-right" >
+						<a href="content.html#/requestAccess">Request access</a> to get username and password. 
+				</div>
 			</form>
 		</div>
 	</script>
@@ -44,16 +47,12 @@
 	</div>
 	<div class="modal-body">
 		<p>ArcticWeb is currently running a closed pilot test.</p>
-		<p>
-			Contact Mads Bentzen Billesø for more information.
-		</p>
+		<p>Contact Mads Bentzen Billesø for more information.</p>
 		<form class="form-signin">
-			<label for="cName">Your Name:</label> 
-			<input type="text" class="input-block-level" placeholder="Name" id="cName"/> 
-			<label for="cEmail">Your Email:</label> 
-			<input type="text" class="input-block-level" placeholder="Email" id="cEmail"/> 
-			<label for="cMessage">Message:</label> 
-			<textarea class="input-block-level" id="cMessage" rows="5"></textarea> 
+			<label for="cName">Your Name:</label> <input type="text" class="input-block-level" placeholder="Name" id="cName" /> <label
+				for="cEmail">Your Email:</label> <input type="text" class="input-block-level" placeholder="Email" id="cEmail" /> <label
+				for="cMessage">Message:</label>
+			<textarea class="input-block-level" id="cMessage" rows="5"></textarea>
 			<span>Not implemented</span>
 			<div style="margin-top: 24px">
 				<button x-ng-hide="true" class="btn btn-primary">Send Request</button>
