@@ -6,7 +6,14 @@ $(function() {
         };
 
         function loadProviders() {
+            var messageId = embryo.messagePanel.show({
+                text : "Requesting ice chart providers ..."
+            });
             IceService.providers(function(providers) {
+                embryo.messagePanel.replace(messageId, {
+                    text : "List of " + providers.length + " ice chart providers downloaded",
+                    type : "success"
+                });
                 $scope.providers = providers;
                 if (providers.length > 0) {
                     var providerKey = getCookie("dma-ice-provider-" + embryo.authentication.userName);
@@ -20,7 +27,10 @@ $(function() {
                     }
                 }
             }, function(error) {
-                alert(error);
+                embryo.messagePanel.replace(messageId, {
+                    text : error + " Requesting ice chart providers",
+                    type : "error"
+                })
             });
         }
 
