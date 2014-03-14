@@ -3,7 +3,6 @@
 
 <head>
 <title>ArcticWeb - Users</title>
-<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
 
 <!-- build:css css/arcticweb-administration.css -->
 <link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
@@ -17,14 +16,13 @@
 
 <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
+
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-route.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js"></script>
-
+<!-- replace by modal specific file -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
-
-<script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<script src="js/ext/ui-bootstrap-tpls-0.6.0.js"></script>
 
 
 <!-- build:js js/arcticweb-administration.js -->
@@ -43,7 +41,7 @@
 <!-- endbuild -->
 
 <script type="text/javascript" defer="defer">
-    var app = angular.module('embryo.administration', [ 'ngRoute', 'embryo.administration.log',
+    var app = angular.module('embryo.administration', [ 'ui.bootstrap', 'ngRoute', 'embryo.administration.log',
             'embryo.administration.users' ]);
 
     app.config([ '$routeProvider', function($routeProvider) {

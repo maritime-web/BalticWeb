@@ -11,7 +11,6 @@ css/ext/bootstrap-responsive.css
 css/arcticweb-content.css
 
 //ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js
-//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-route.min.js

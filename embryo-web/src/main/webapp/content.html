@@ -16,7 +16,6 @@
 <!-- endbuild -->
 
 <script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-route.min.js"></script>
@@ -31,7 +30,7 @@
 <!-- endbuild -->
 
 <script type="text/javascript">
-    var indexApp = angular.module('embryo.content', [ 'ngRoute' , 'embryo.menu']);
+    var indexApp = angular.module('embryo.content', [ 'ngRoute' , 'embryo.menu', 'ui.bootstrap']);
 
     indexApp.config([ '$routeProvider', function($routeProvider) {
         $routeProvider.when('/disclaimer', {
