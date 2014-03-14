@@ -105,8 +105,12 @@
 				<p>ArcticWeb is an effort from the Danish Maritime Authority to improve maritime safety in the Arctic region.
 					ArcticWeb serves as a single access point to safety related information, provides streamlined reporting and allows
 					for voluntary coordinated voyage through sharing of positions and planned routes. Ships in the area and their
-					organizations may request access to ArcticWeb via the button below.</p>
-				<a class="btn btn-large btn-primary" href="content.html#/requestAccess" role="button">Request Access</a>
+					organizations may may login or request access to ArcticWeb or login via the buttons below.</p>
+
+				<div class="btn-group">
+					<button class="btn btn-large btn-primary" x-ng-click="loginDlg()">Log In</button>
+					<a class="btn btn-large  btn-success btn-inverse" href="content.html#/requestAccess" role="button">Request Access</a>
+				</div>
 
 			</div>
 
