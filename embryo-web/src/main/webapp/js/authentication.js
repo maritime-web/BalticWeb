@@ -54,7 +54,8 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
 
 (function() {
     "use strict";
-    var module = angular.module('embryo.authentication', [ 'embryo.base','ngCookies', 'ui.bootstrap.modal', 'ui.bootstrap.tpls' ]);
+    var module = angular.module('embryo.authentication', [ 'embryo.base', 'ngCookies', 'ui.bootstrap.modal',
+            'ui.bootstrap.tpls' ]);
 
     embryo.RequestAccessCtrl = function($scope, $http) {
         $scope.request = {};
@@ -270,7 +271,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             $scope.$close();
 
             Subject.login($scope.user.name, $scope.user.pwd, function() {
-                var path = $location.path();
+                var path = location.pathname;
                 if (path.indexOf("index.html") >= 0 || path.indexOf("content.html") >= 0 || path.indexOf(".html") < 0) {
                     location.href = "map.html#/vessel";
                 }
@@ -338,6 +339,18 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
     }
 
     module.run([ 'Subject', '$rootScope', '$location', '$modal', function(Subject, $rootScope, $location, $modal) {
+        $rootScope.loginDlg = function(config) {
+            return $modal.open({
+                controller : embryo.LoginModalCtrl,
+                templateUrl : "loginDialog.html",
+                resolve : {
+                    msg : function() {
+                        return typeof config === "object" ? config.msg : null;
+                    }
+                }
+            });
+        };
+
         embryo.ready(function() {
             embryo.security.Subject = Subject;
 
@@ -346,33 +359,24 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
 
             if (Subject.isLoggedIn()) {
                 embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+            } else if (embryo.authentication.currentPageRequiresAuthentication) {
+                $rootScope.loginDlg();
             }
-
-            $rootScope.loginDlg = function(config) {
-                return $modal.open({
-                    controller : embryo.LoginModalCtrl,
-                    templateUrl : "loginDialog.html",
-                    resolve : {
-                        msg : function() {
-                            return typeof config === "object" ? config.msg : null;
-                        }
-                    }
-
-                });
-            };
-
-            $rootScope.$on("$routeChangeStart", function(event, next, current) {
-                if (typeof next.permission === 'string' && !Subject.authorize(next.permission)) {
-
-                    if (Subject.isLoggedIn()) {
-                        $location.path('/');
-                    } else {
-                        $rootScope.loginDlg();
-                    }
-                }
-            });
 
         });
     } ]);
 
+    embryo.security.routeSecurityResolver = function(access) {
+        return {
+            load : function($q, Subject, $rootScope) {
+                if (Subject.authorize(access)) {
+                    var deferred = $q.defer();
+                    deferred.resolve();
+                    return deferred.promise;
+                } else {
+                    location.href = "/";
+                }
+            }
+        }
+    }
 }());

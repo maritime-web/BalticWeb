@@ -43,21 +43,22 @@
 <!-- endbuild -->
 
 <script type="text/javascript" defer="defer">
-    var app = angular.module('embryo.administration', [ 'ngRoute', 'embryo.administration.log', 'embryo.administration.users' ]);
-    
+    var app = angular.module('embryo.administration', [ 'ngRoute', 'embryo.administration.log',
+            'embryo.administration.users' ]);
+
     app.config([ '$routeProvider', function($routeProvider) {
         $routeProvider.when('/log', {
             templateUrl : 'partials/admin/log.html',
-            permission : embryo.security.permissions.admin
+            resolve: embryo.security.routeSecurityResolver(embryo.security.permissions.admin)
         }).when('/users', {
             templateUrl : 'partials/admin/users.html',
-            permission : embryo.security.permissions.admin
+            resolve: embryo.security.routeSecurityResolver(embryo.security.permissions.admin)
         }).otherwise({
-		    controller : function(){
-		        window.location.replace('/');
-		    }, 
-		    template : "<div></div>"
-		});
+            controller : function() {
+                window.location.replace('/');
+            },
+            template : "<div></div>"
+        });
     } ]);
 </script>
 </head>
