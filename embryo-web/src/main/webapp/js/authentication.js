@@ -133,7 +133,6 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
                             sessionStorage.clear();
                             $rootScope.authentication = details;
                             embryo.authentication = details;
-                            embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
                             success(details);
                         }).error(function(data, status) {
                             if (error) {
