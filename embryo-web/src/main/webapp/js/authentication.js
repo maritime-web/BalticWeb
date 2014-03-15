@@ -16,41 +16,41 @@ embryo.eventbus.AuthenticatedEvent = function() {
 embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authenticated");
 
 // embryo.ready
-(function() {
-
-    if (embryo.authentication.userName == null) {
-        var messageId = embryo.messagePanel.show({
-            text : "Refreshing ..."
-        })
-
-        $.ajax({
-            url : embryo.baseUrl + "rest/authentication/details",
-            data : {},
-            success : function(data) {
-                embryo.authentication = data;
-                embryo.messagePanel.replace(messageId, {
-                    text : "Refresh succesful.",
-                    type : "success"
-                });
-                updateNavigationBar();
-                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
-            },
-            error : function(data) {
-                if (data.status == 401 && embryo.authentication.currentPageRequiresAuthentication) {
-                    embryo.messagePanel.remove(messageId);
-                    clearMessages();
-                    detectBrowser();
-                    $("#login").modal("show");
-                } else {
-                    embryo.messagePanel.replace(messageId, {
-                        text : "Refresh failed. (" + data.status + ")",
-                        type : "error"
-                    })
-                }
-            }
-        });
-    }
-});
+//(function() {
+//
+//    if (embryo.authentication.userName == null) {
+//        var messageId = embryo.messagePanel.show({
+//            text : "Refreshing ..."
+//        })
+//
+//        $.ajax({
+//            url : embryo.baseUrl + "rest/authentication/details",
+//            data : {},
+//            success : function(data) {
+//                embryo.authentication = data;
+//                embryo.messagePanel.replace(messageId, {
+//                    text : "Refresh succesful.",
+//                    type : "success"
+//                });
+//                updateNavigationBar();
+//                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+//            },
+//            error : function(data) {
+//                if (data.status == 401 && embryo.authentication.currentPageRequiresAuthentication) {
+//                    embryo.messagePanel.remove(messageId);
+//                    clearMessages();
+//                    detectBrowser();
+//                    $("#login").modal("show");
+//                } else {
+//                    embryo.messagePanel.replace(messageId, {
+//                        text : "Refresh failed. (" + data.status + ")",
+//                        type : "error"
+//                    })
+//                }
+//            }
+//        });
+//    }
+//});
 
 (function() {
     "use strict";
