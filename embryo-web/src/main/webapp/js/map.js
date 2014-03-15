@@ -346,6 +346,7 @@ $(function() {
 
     embryo.groupChanged(function(e) {
         selectControl.unselectAll();
+        
         selectControl.setLayer(selectLayerByGroup[e.groupId]);
         for ( var i in controlsByGroup) {
             if (i == e.groupId) {
@@ -402,7 +403,7 @@ $(function() {
 });
 
 embryo.ready(function(){
-    $("#controlContainer a").click(function(e) {
+    $(".controlContainer a").click(function(e) {
         e.preventDefault();
     });
 });

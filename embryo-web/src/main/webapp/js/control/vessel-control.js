@@ -80,6 +80,11 @@ $(function() {
     });
 
     embryo.authenticated(function() {
+        
+        if (embryo.authentication.permissions.indexOf("Reporting") < 0) {
+            $("#vcpGreenposList").parent().remove();
+        }
+
         function fixAccordionSize() {
             $("#vesselControlPanel .accordion-inner").css("overflow", "auto");
             $("#vesselControlPanel .accordion-inner").css("max-height", Math.max(100, $("#map").height() - $("#vesselControlPanel .accordion-group").length * 51 - 80)+"px");
@@ -88,12 +93,6 @@ $(function() {
         $(window).resize(fixAccordionSize);
 
         setTimeout(fixAccordionSize, 100);
-    });
-
-    embryo.authenticated(function() {
-        if (embryo.authentication.permissions.indexOf("Reporting") < 0) {
-            $("#vcpGreenposList").parent().remove();
-        }
     });
 })
 

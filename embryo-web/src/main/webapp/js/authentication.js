@@ -143,13 +143,11 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
                     },
                     logout : function(success, error) {
                         $http.get(embryo.baseUrl + "rest/authentication/logout").success(function() {
-                            console.log("logged out");
                             sessionStorage.clear();
                             localStorage.clear();
                             $cookieStore.remove('embryo.authentication');
                             $rootScope.authentication = $rootScope.initialAuthentication;
 
-                            console.log($rootScope.authentication);
                             embryo.authentication = $rootScope.initialAuthentication;
                             success();
                         }).error(error);
@@ -315,7 +313,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         $("#loginWrongLoginOrPassword").hide();
     }
 
-    function logout() {
+    function logout(event) {
         event.preventDefault();
 
         var messageId = embryo.messagePanel.show({

@@ -22,7 +22,7 @@ $(function() {
         $("#searchResultsContainer").empty();
         $("#searchMatch").html('');
 
-        if (arg.length > 0) {
+        if (typeof arg === 'string' && arg.length > 0) {
             $("#searchLoad").css('display', 'block');
 
             latestSearch = arg;

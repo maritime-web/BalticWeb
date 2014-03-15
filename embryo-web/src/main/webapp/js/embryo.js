@@ -4,7 +4,7 @@
 embryo = {};
 
 // fn to add blank (noOp) function for all console methods
-var key, names = [ "log"];
+var key, names = [ "log" ];
 embryo.logger = {};
 
 for (key in names) {
@@ -66,17 +66,25 @@ $(function() {
     var interval = setInterval(function() {
         var allIncludesLoaded = true;
 
-        $("ng-include").each(function(k, v) {
-            var l = $(v).html().trim().length;
-            if (l == 0)
-                allIncludesLoaded = false;
-        });
+        if ($("ng-include,div[x-ng-include]").length == 0) {
+            allIncludesLoaded = false;
+        }
 
-        $("div[x-ng-include]").each(function(k, v) {
-            var l = $(v).html().trim().length;
-            if (l == 0)
-                allIncludesLoaded = false;
-        });
+        if (allIncludesLoaded) {
+            $("ng-include").each(function(k, v) {
+                var l = $(v).html().trim().length;
+                if (l == 0)
+                    allIncludesLoaded = false;
+            });
+        }
+
+        if (allIncludesLoaded) {
+            $("div[x-ng-include]").each(function(k, v) {
+                var l = $(v).html().trim().length;
+                if (l == 0)
+                    allIncludesLoaded = false;
+            });
+        }
 
         if (allIncludesLoaded) {
             clearInterval(interval);
@@ -84,7 +92,7 @@ $(function() {
         }
 
     }, 100);
-});
+}());
 
 embryo.messagePanel = {
     render : function(id, msg) {

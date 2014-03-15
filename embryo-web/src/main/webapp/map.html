@@ -7,6 +7,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
+
 <link href="css/ext/embryo.bootstrap.min.css" rel="stylesheet">
 <link href="css/ext/bootstrap-responsive.css" rel="stylesheet">
 <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
@@ -27,14 +29,14 @@
 
 <!-- script type="text/javascript" src="http://svn.osgeo.org/metacrs/proj4js/trunk/lib/proj4js-compressed.js"></script -->
 
-<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
 
 <!-- <script src="js/ext/angular.min.js"></script>-->
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-cookies.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+
+<script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 
 <script src="OpenLayers-2.13.1/OpenLayers.js"></script>
 
@@ -107,15 +109,16 @@
 <!-- endbuild -->
 
 <script defer="defer" type="text/javascript">
-    angular.module('embryo.map', [ 'embryo.routeService', 'embryo.greenpos', 'embryo.vessel', 'embryo.ice',
+    angular.module('embryo.map', [ 'ui.bootstrap', 'embryo.menu', 'embryo.routeService', 'embryo.greenpos', 'embryo.vessel', 'embryo.ice',
             'embryo.msi', 'embryo.routeUpload', 'embryo.schedule', 'embryo.routeEdit', 'embryo.decimal',
-            'embryo.authentication', 'embryo.menu' ]);
+            'embryo.authentication' ]);
 </script>
 <!--'embryo.metoc', -->
 
 </head>
 
 <body>
+	
 	<div x-ng-include="'partials/authentication.html'"></div>
 	<div x-ng-include="'partials/menu.html'"></div>
 
@@ -125,7 +128,7 @@
 
 	<div id="messagePanel"></div>
 
-	<div id="controlContainer">
+	<div class="controlContainer">
 		<div x-ng-include="'partials/vessel-control.html'"></div>
 		<div x-ng-include="'partials/ice-control.html'"></div>
 		<div x-ng-include="'partials/msi-control.html'"></div>
@@ -168,6 +171,7 @@
 	<div class="reportingPanel well" id="greenposListPanel">
 		<div x-ng-include="'partials/greenpos-list.html'"></div>
 	</div>
-
 </body>
+
+
 </html>
