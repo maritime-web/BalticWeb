@@ -37,7 +37,6 @@
                     language : 'en-US',
                     pickSeconds : false
                 });
-
                 var picker = $(element).data('datetimepicker');
 
                 ngModelController.$formatters.push(function(modelValue) {
