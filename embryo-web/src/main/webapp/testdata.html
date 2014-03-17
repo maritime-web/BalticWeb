@@ -15,19 +15,26 @@
 
 <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
-<script src="js/ext/jquery-1.9.1.min.js"></script>
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
 
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
-<script src="js/embryo.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
 
+<!-- build:css css/arcticweb-testdata.js -->
+<script src="js/utils.js" defer="defer"></script>
+<script src="js/embryo.js" defer="defer"></script>
+<script src="js/authentication.js" defer="defer" type="text/javascript"></script>
+<script src="js/menu.js" defer="defer"></script>
+<!-- endbuild -->
 
 <script type="text/javascript">
-    var app = angular.module('embryo.testdata', []);
+    var app = angular.module('embryo.testdata', [ 'embryo.menu' ]);
 
     app.controller('TestDataController', function($scope, $http) {
         $scope.message = null;
         $scope.alertMessage = null;
-        
+
         $scope.reInitialize = function() {
             $scope.message = null;
             $scope.alertMessage = null;
@@ -52,54 +59,29 @@
             }).error(function(data, status, headers, config) {
                 $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
             });
-       }
-
-       $scope.updateSpeeds = function() {
-           $scope.message = null;
-           $scope.alertMessage = null;
-           $http.put('rest/vessel/update/maxspeeds', {
-               responseType : 'json'
-           }).success(function(response) {
-               $scope.message = "Max Speeds updated. " + response;
-           }).error(function(data, status, headers, config) {
-               $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
-           });
         }
-        
-   });
-        
+
+        $scope.updateSpeeds = function() {
+            $scope.message = null;
+            $scope.alertMessage = null;
+            $http.put('rest/vessel/update/maxspeeds', {
+                responseType : 'json'
+            }).success(function(response) {
+                $scope.message = "Max Speeds updated. " + response;
+            }).error(function(data, status, headers, config) {
+                $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
+            });
+        }
+
+    });
 </script>
 
 </head>
 
 <body>
-
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-					<i class="icon-th-list"></i>
-				</button>
-				<a class="brand" href="."> <font color="#0080C0">ArcticWeb</font><font color="#888888" size="3">Greenland</font>
-				</a>
-				<div class="nav-collapse collapse" id="navigationBar">
-					<p class="navbar-text pull-right" id="authentication"></p>
-
-					<ul class="nav navtabs">
-						<li><a href="map.html#/vessel"> <i class="icon-globe icon-white"
-								style="vertical-align: middle; margin-bottom: 4px"></i> Vessels
-						</a></li>
-						<li class=""><a href="map.html#/ice"> <i class="icon-asterisk icon-white"
-								style="vertical-align: middle; margin-bottom: 4px"></i> Ice
-						</a></li>
-						<li class=""><a href="report.html#/vessel"> <i class="icon-tasks icon-white"
-								style="vertical-align: middle; margin-bottom: 4px"></i> Report
-						</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
+	<div x-ng-include="'partials/authentication.html'"></div>
+	<div x-ng-include="'partials/menu.html'"></div>
+	<div class="menuDivider"></div>
 	<!-- ============================================= -->
 
 	<div class="container" x-ng-controller="TestDataController" style="padding-top: 50px;">
@@ -110,20 +92,24 @@
 		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
 		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-		<form class="form-horizontal">
-			<div style="margin:10px">
-				<button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize Test Data</button>
-			</div>
-			<div style="margin:10px">
-				<button class="btn btn-danger" x-ng-click="replicateAis()">Replicate AIS data</button>
-			</div>
-			<div style="margin:10px">
-				<button class="btn btn-danger" x-ng-click="updateSpeeds()">Update Max Speeds</button>
-			</div>
+		<div x-requires-permission="Administration">
+			<form class="form-horizontal">
+				<div style="margin: 10px">
+					<button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize Test Data</button>
+				</div>
+				<div style="margin: 10px">
+					<button class="btn btn-danger" x-ng-click="replicateAis()">Replicate AIS data</button>
+				</div>
+				<div style="margin: 10px">
+					<button class="btn btn-danger" x-ng-click="updateSpeeds()">Update Max Speeds</button>
+				</div>
 
-		</form>
+			</form>
+		</div>
 
 	</div>
+
+	<div x-ng-include="'partials/footer.html'"></div>
 
 </body>
 </html>
