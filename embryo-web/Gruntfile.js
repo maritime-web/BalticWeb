@@ -44,10 +44,9 @@ module.exports = function(grunt) {
                 // Change this to '0.0.0.0' to access the server from outside.
                 hostname : '0.0.0.0',
                 livereload : 35729,
-                directory : 'arcticweb'
             },
             proxies : [ {
-                context : [ '/arcticweb/rest' ],
+                context : [ '/rest' ],
                 host : 'localhost',
                 port : '8080',
                 https : false,
@@ -162,7 +161,7 @@ module.exports = function(grunt) {
                     expand : true,
                     cwd : '<%= proj.src %>',
                     src : '{,**/}*.*',
-                    dest : '<%= proj.livereload %>/arcticweb'
+                    dest : '<%= proj.livereload %>/'
                 } ]
             }
         },
