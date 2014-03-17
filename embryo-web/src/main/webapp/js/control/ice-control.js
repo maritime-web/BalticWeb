@@ -148,7 +148,7 @@ $(function() {
                                     });
                                 } else {
                                     embryo.messagePanel.replace(messageId, {
-                                        text : "Server returned error code: " + data.status
+                                        text : "Server returned error code: " + error.status
                                                 + " requesting list of ice observations.",
                                         type : "error"
                                     })
