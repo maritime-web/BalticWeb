@@ -4,12 +4,11 @@ $(function() {
     angular.module('embryo.administration.users', [ 'embryo.userService', 'ui.bootstrap.modal',
             'ui.bootstrap.tpls', 'embryo.authentication' ]);
 
-    embryo.UsersCtrl = function($scope, UserService, $modal, $log) {
-        
+    embryo.UsersCtrl = function($scope, UserService, $modal) {
         var editUser;
         var userList = [];
         $scope.users = userList;
-        $scope.message = null;
+        $scope.message = null; 
         $scope.alertMessages = null;
 
         function loadUsers() {
@@ -174,6 +173,4 @@ $(function() {
     }
     $(window).resize(fixScrollables);
     setTimeout(fixScrollables, 100);
-
 }());
-
