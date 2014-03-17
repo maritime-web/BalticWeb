@@ -10,7 +10,6 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
     "use strict";
 
     var menuModule = angular.module('embryo.menu', [ 'ui.bootstrap', 'embryo.authentication' ]);
-
     menuModule.directive('showActive', [ '$location', function($location) {
         return {
             restrict : 'A',
@@ -38,8 +37,8 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
     embryo.authenticated(function() {
         embryoAuthenticated = true;
     })
-
-    embryo.MenuCtrl = function($scope, Subject, $location, $element, $timeout) {
+    
+    embryo.MenuCtrl = function($scope, Subject, $location, $timeout) {
         $scope.$watch(function() {
             return $location.absUrl();
         }, function(url) {
