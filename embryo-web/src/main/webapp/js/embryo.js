@@ -91,7 +91,7 @@ $(function() {
             embryo.eventbus.fireEvent(embryo.eventbus.EmbryoReadyEvent());
         }
 
-    }, 100);
+    }, 500);
 }());
 
 embryo.messagePanel = {
