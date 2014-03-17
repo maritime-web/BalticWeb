@@ -18,7 +18,6 @@ module.exports = function(config) {
                 'src/main/webapp/js/utils.js',
 				'src/main/webapp/js/embryo-for-test.js',
 				'src/main/webapp/js/reporting/index-base.js',
-				'src/main/webapp/js/gammelt/contextMenu.js',
 				'src/main/webapp/js/menu.js', 
                 'src/main/webapp/js/reporting/course.js',
 				'src/main/webapp/js/reporting/position.js',
