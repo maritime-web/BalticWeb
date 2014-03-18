@@ -17,6 +17,7 @@ package dk.dma.embryo.rest.ex;
 
 import dk.dma.embryo.domain.FormatException;
 
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ import java.util.List;
 /**
  * @author Jesper Tejlgaard
  */
-@WebFilter(filterName = "ExceptionFilter", urlPatterns = { "/rest/schedule", "/rest/routeUpload", "/rest/route" })
+@WebFilter(filterName = "ExceptionFilter", urlPatterns = { "/rest/*"})
 public class ExceptionFilter implements Filter {
 
     @Inject
@@ -109,8 +110,10 @@ public class ExceptionFilter implements Filter {
             e = getCause(e);
         }
 
-        if (e instanceof AuthorizationException) {
+        if (e instanceof AuthenticationException) {
             ((HttpServletResponse) response).setStatus(Status.UNAUTHORIZED.getStatusCode());
+        }else if (e instanceof AuthorizationException) {
+            ((HttpServletResponse) response).setStatus(Status.FORBIDDEN.getStatusCode());
         } else if (e instanceof ConstraintViolationException) {
             ((HttpServletResponse) response).setStatus(Status.BAD_REQUEST.getStatusCode());
         } else if (e instanceof IllegalArgumentException) {
