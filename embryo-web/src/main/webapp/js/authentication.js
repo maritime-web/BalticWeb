@@ -15,47 +15,11 @@ embryo.eventbus.AuthenticatedEvent = function() {
 
 embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authenticated");
 
-// embryo.ready
-//(function() {
-//
-//    if (embryo.authentication.userName == null) {
-//        var messageId = embryo.messagePanel.show({
-//            text : "Refreshing ..."
-//        })
-//
-//        $.ajax({
-//            url : embryo.baseUrl + "rest/authentication/details",
-//            data : {},
-//            success : function(data) {
-//                embryo.authentication = data;
-//                embryo.messagePanel.replace(messageId, {
-//                    text : "Refresh succesful.",
-//                    type : "success"
-//                });
-//                updateNavigationBar();
-//                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
-//            },
-//            error : function(data) {
-//                if (data.status == 401 && embryo.authentication.currentPageRequiresAuthentication) {
-//                    embryo.messagePanel.remove(messageId);
-//                    clearMessages();
-//                    detectBrowser();
-//                    $("#login").modal("show");
-//                } else {
-//                    embryo.messagePanel.replace(messageId, {
-//                        text : "Refresh failed. (" + data.status + ")",
-//                        type : "error"
-//                    })
-//                }
-//            }
-//        });
-//    }
-//});
-
 (function() {
     "use strict";
+
     var module = angular.module('embryo.authentication', [ 'embryo.base', 'ngCookies', 'ui.bootstrap.modal',
-            'ui.bootstrap.tpls' ]);
+            'ui.bootstrap.tpls']);
 
     embryo.RequestAccessCtrl = function($scope, $http) {
         $scope.request = {};
@@ -90,69 +54,76 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         };
     };
 
-    module.service('Subject', [
-            '$cookieStore',
-            '$http',
-            '$rootScope',
-            function($cookieStore, $http, $rootScope) {
-                $rootScope.initialAuthentication = embryo.authentication;
+    
+    function clearSessionData($cookieStore, $rootScope){
+        sessionStorage.clear();
+        localStorage.clear();
+        $cookieStore.remove('embryo.authentication');
+        $rootScope.authentication = $rootScope.initialAuthentication;
+        embryo.authentication = $rootScope.initialAuthentication;
+    }
+    
+    module.provider('Subject', function() {
+        function Subject($http, $rootScope, $cookieStore) {
+            $rootScope.initialAuthentication = embryo.authentication;
+            var authentication = $cookieStore.get('embryo.authentication');
+            if (typeof authentication !== 'undefined') {
+                embryo.authentication = authentication;
+            }
+            $rootScope.authentication = embryo.authentication;
 
-                var authentication = $cookieStore.get('embryo.authentication');
-                if (typeof authentication !== 'undefined') {
-                    embryo.authentication = authentication;
+            this.roles = function() {
+                return typeof embryo.authentication.permissions === 'undefined' ? []
+                        : embryo.authentication.permissions;
+            };
+
+            this.authorize = function(permission) {
+                var index, permissions = this.roles();
+
+                for (index in permissions) {
+                    if (permissions[index] == permission) {
+                        return true;
+                    }
                 }
-                $rootScope.authentication = embryo.authentication;
+                return false;
+            };
 
-                return {
-                    roles : function() {
-                        return typeof embryo.authentication.permissions === 'undefined' ? []
-                                : embryo.authentication.permissions;
-                    },
-                    authorize : function(permission) {
-                        var index, permissions = this.roles();
+            this.isLoggedIn = function(permission) {
+                return this.roles().length > 0;
+            };
 
-                        for (index in permissions) {
-                            if (permissions[index] == permission) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    },
-                    isLoggedIn : function(permission) {
-                        return this.roles().length > 0;
-                    },
-                    login : function(username, password, success, error) {
-                        var data = {
-                            params : {
-                                userName : username,
-                                password : password
-                            }
-                        };
-                        $http.get(embryo.baseUrl + "rest/authentication/login", data).success(function(details) {
-                            $cookieStore.put('embryo.authentication', details);
-                            sessionStorage.clear();
-                            $rootScope.authentication = details;
-                            embryo.authentication = details;
-                            success(details);
-                        }).error(function(data, status) {
-                            if (error) {
-                                error(data, status);
-                            }
-                        });
-                    },
-                    logout : function(success, error) {
-                        $http.get(embryo.baseUrl + "rest/authentication/logout").success(function() {
-                            sessionStorage.clear();
-                            localStorage.clear();
-                            $cookieStore.remove('embryo.authentication');
-                            $rootScope.authentication = $rootScope.initialAuthentication;
-
-                            embryo.authentication = $rootScope.initialAuthentication;
-                            success();
-                        }).error(error);
-                    },
+            this.login = function(username, password, success, error) {
+                var data = {
+                    params : {
+                        userName : username,
+                        password : password
+                    }
                 };
-            } ]);
+                $http.get(embryo.baseUrl + "rest/authentication/login", data).success(function(details) {
+                    $cookieStore.put('embryo.authentication', details);
+                    sessionStorage.clear();
+                    $rootScope.authentication = details;
+                    embryo.authentication = details;
+                    success(details);
+                }).error(function(data, status) {
+                    if (error) {
+                        error(data, status);
+                    }
+                });
+            };
+
+            this.logout = function(success, error) {
+                $http.get(embryo.baseUrl + "rest/authentication/logout").success(function() {
+                    clearSessionData($cookieStore, $rootScope);
+                    success();
+                }).error(error);
+            };
+        }
+
+        this.$get = function($http, $rootScope, $cookieStore) {
+            return new Subject($http, $rootScope, $cookieStore);
+        }
+    });
 
     module.directive('passwordMatch', [ function() {
         return {
@@ -306,12 +277,6 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         }
     };
 
-    function clearMessages() {
-        $("#ie89").hide();
-        $("#ie7").hide();
-        $("#loginWrongLoginOrPassword").hide();
-    }
-
     function logout(event) {
         event.preventDefault();
 
@@ -335,31 +300,59 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         });
     }
 
-    module.run([ 'Subject', '$rootScope', '$location', '$modal', function(Subject, $rootScope, $location, $modal) {
-        $rootScope.loginDlg = function(config) {
-            return $modal.open({
-                controller : embryo.LoginModalCtrl,
-                templateUrl : "loginDialog.html",
-                resolve : {
-                    msg : function() {
-                        return typeof config === "object" ? config.msg : null;
-                    }
-                }
-            });
-        };
+    module.config([
+            '$httpProvider',
+            function($httpProvider) {
+                $httpProvider.responseInterceptors.push([ '$location', '$q', '$cookieStore', '$rootScope', 
+                        function($location, $q, $cookieStore, $rootScope) {
+                            function success(response) {
+                                return response;
+                            }
+                            function error(response) {
+                                if (response.status === 401) {
+                                    embryo.messagePanel.show({
+                                        text : "Session Lost. You will be logged out ..."
+                                    })
+                                    clearSessionData($cookieStore, $rootScope);
+                                    var path = location.pathname;
+                                    if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
+                                        location = ".";
+                                    }                                    
+                                    return $q.reject(response);
+                                } else {
+                                    return $q.reject(response);
+                                }
+                            }
+                            return function(promise) {
+                                return promise.then(success, error);
+                            };
+                        } ]);
+            } ]);
 
+    module.run([ 'Subject', '$rootScope', '$location', '$modal', function(Subject, $rootScope, $location, $modal) {
         embryo.ready(function() {
             embryo.security.Subject = Subject;
 
             $rootScope.Subject = Subject;
             $rootScope.logout = logout;
 
+            $rootScope.loginDlg = function(config) {
+                return $modal.open({
+                    controller : embryo.LoginModalCtrl,
+                    templateUrl : "loginDialog.html",
+                    resolve : {
+                        msg : function() {
+                            return typeof config === "object" ? config.msg : null;
+                        }
+                    }
+                });
+            };
+
             if (Subject.isLoggedIn()) {
                 embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
             } else if (embryo.authentication.currentPageRequiresAuthentication) {
                 $rootScope.loginDlg();
             }
-
         });
     } ]);
 
