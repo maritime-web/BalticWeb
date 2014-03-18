@@ -20,11 +20,11 @@ js/arcticweb-front.js
 
 img/front/iceChart.png
 img/front/weather.png
-img/front/safety_h270.jpg
-img/dmi/dmi_eng_h70.png
+img/front/safety.jpg
+img/dmi/dmi-logo.png
 img/dma/dma-logo-h50.png
 img/img6.jpg
-img/front/Konsol_h350.jpg
+img/front/Konsol-h350.jpg
 img/front/ice.jpg
 
 partials/menu.html
