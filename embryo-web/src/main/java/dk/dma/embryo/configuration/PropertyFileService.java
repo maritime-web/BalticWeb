@@ -128,7 +128,8 @@ public class PropertyFileService {
         String[] items = e.split(" ");
 
         ScheduleExpression r = new ScheduleExpression();
-
+        
+        r.timezone("GMT");
         r.minute(items[0]);
         r.hour(items[1]);
         r.dayOfWeek(items[2]);
