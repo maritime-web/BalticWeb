@@ -15,8 +15,6 @@
  */
 package dk.dma.embryo.service;
 
-import static javax.ejb.TransactionAttributeType.SUPPORTS;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +26,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 
@@ -46,7 +45,7 @@ import dk.dma.embryo.security.authorization.RolesAllowAll;
  * @author Jesper Tejlgaard
  */
 @Stateless
-@TransactionAttribute(SUPPORTS)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Interceptors(value=AuthorizationChecker.class)
 public class ShapeFileServiceImpl implements ShapeFileService{
     
