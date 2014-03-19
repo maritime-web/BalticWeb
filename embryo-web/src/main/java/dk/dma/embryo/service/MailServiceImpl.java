@@ -133,7 +133,13 @@ public class MailServiceImpl implements MailService {
             StringWriter sw = new StringWriter();
             error.printStackTrace(new PrintWriter(sw));
             
+            String msg = error.getMessage();
+            if(msg.contains("Expected to read")){
+                msg = "Possible corrupt ice chart (" + msg + ")";
+            }
+            
             environment.put("IceChart", iceChart);
+            environment.put("Message", msg);
             environment.put("Error", sw.toString());
 
             String header = propertyFileService.getProperty("embryo.notification.template.icechartImportError.header");
@@ -144,7 +150,7 @@ public class MailServiceImpl implements MailService {
 
             embryoLogService.info(applyTemplate(header, environment) + " sent to " + requestAccessToEmail);
         } catch (Throwable t) {
-            embryoLogService.error("Error sending sign up request to " + requestAccessToEmail, t);
+            embryoLogService.error("Error sending notificationmail to " + dmiNotificationEmail, t);
             throw new RuntimeException(t);
         }
     }
