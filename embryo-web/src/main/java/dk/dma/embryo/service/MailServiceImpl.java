@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.service;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -62,6 +64,10 @@ public class MailServiceImpl implements MailService {
     @Property("embryo.notification.mail.from")
     private String fromSystemEmail;
 
+    @Inject
+    @Property("embryo.iceChart.dmi.notification.email")
+    private String dmiNotificationEmail;
+    
     @Inject
     private PropertyFileService propertyFileService;
 
@@ -120,6 +126,30 @@ public class MailServiceImpl implements MailService {
         }
     }
 
+    public void dmiNotification(String iceChart, Throwable error) {
+        try {
+            Map<String, String> environment = new HashMap<>();
+
+            StringWriter sw = new StringWriter();
+            error.printStackTrace(new PrintWriter(sw));
+            
+            environment.put("IceChart", iceChart);
+            environment.put("Error", sw.toString());
+
+            String header = propertyFileService.getProperty("embryo.notification.template.icechartImportError.header");
+            String body = propertyFileService.getProperty("embryo.notification.template.icechartImportError.body");
+
+            mailSender.sendEmail(dmiNotificationEmail, fromSystemEmail, applyTemplate(header, environment),
+                    applyTemplate(body, environment));
+
+            embryoLogService.info(applyTemplate(header, environment) + " sent to " + requestAccessToEmail);
+        } catch (Throwable t) {
+            embryoLogService.error("Error sending sign up request to " + requestAccessToEmail, t);
+            throw new RuntimeException(t);
+        }
+    }
+
+    
     @Override
     public void newGreenposReport(GreenPosReport report) {
 

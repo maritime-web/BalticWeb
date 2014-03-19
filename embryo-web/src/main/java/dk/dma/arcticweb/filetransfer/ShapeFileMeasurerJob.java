@@ -49,6 +49,7 @@ import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.configuration.PropertyFileService;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 import dk.dma.embryo.service.EmbryoLogService;
+import dk.dma.embryo.service.MailService;
 import dk.dma.embryo.service.ShapeFileService;
 
 @Singleton
@@ -67,6 +68,9 @@ public class ShapeFileMeasurerJob {
     @Inject
     private PropertyFileService propertyFileService;
 
+    @Inject
+    private MailService mailService;
+    
     @Inject
     @Property(value = "embryo.iceChart.providers")
     private Map<String, String> providers;
@@ -223,6 +227,7 @@ public class ShapeFileMeasurerJob {
                             failedMeasurementCount++;
                             logger.error("Error measuring " + fn + ": " + t, t);
                             embryoLogger.error("Error measuring " + fn + ": " + t, t);
+                            mailService.dmiNotification(fn, t);
                         }
                     }
                 } else {

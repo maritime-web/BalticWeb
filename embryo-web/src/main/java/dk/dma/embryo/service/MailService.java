@@ -26,5 +26,7 @@ public interface MailService{
     void newRequestAccess(RequestAccessRestService.SignupRequest request);
 
     void newGreenposReport(GreenPosReport report);
+    
+    void dmiNotification(String iceChart, Throwable error);
 
 }
