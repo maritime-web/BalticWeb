@@ -164,6 +164,9 @@ embryo.ErrorService = {
             texts = texts.concat(data);
         }
         return texts;
+    },
+    errorStatus : function(data, status, msg) {
+        return "Server returned error code: " + status + " " + msg + ". ";
     }
 
 };

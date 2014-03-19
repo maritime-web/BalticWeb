@@ -1,23 +1,17 @@
 (function() {
     var module = angular.module('embryo.msi', []);
 
-    module.service('MsiService', function() {
+    module.service('MsiService', [ '$http', function($http) {
         return {
-            list: function(callback) {
-                $.ajax({
-                    url: embryo.baseUrl+"rest/msi/list",
-                    timeout: embryo.defaultTimeout,
-                    data: { },
-                    success: function(data) {
-                        callback(null, data);
-                    },
-                    error: function(error) {
-                        callback(error);
-                    }
+            list: function(success,error) {
+                $http.get(embryo.baseUrl + "rest/msi/list", {
+                    timeout : embryo.defaultTimeout
+                }).success(success).error(function(data, status, headers, config) {
+                    error(embryo.ErrorService.errorStatus(data, status, "requesting MSI warnings"), status);
                 });
             }
         };
-    });
+    }]);
 
     embryo.msi = {};
 

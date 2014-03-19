@@ -60,17 +60,12 @@ $(function() {
     function loadVesselList() {
         var messageId = embryo.messagePanel.show( { text: "Loading vessels ..." })
 
-        embryo.vessel.service.list(function(error, data) {
-            if (data) {
-                vessels = data;
-
-                embryo.messagePanel.replace(messageId, { text: vessels.length + " vessels loaded.", type: "success" })
-
-                vesselLayer.draw(vessels);
-            } else {
-                embryo.messagePanel.replace(messageId, { text: "Server returned error code: " + error.status + " loading vessels.", type: "error" });
-                embryo.logger.log("Server returned error code: " + error.status + " loading vessels.");
-            }
+        embryo.vessel.service.list(function(data) {
+            vessels = data;
+            embryo.messagePanel.replace(messageId, { text: vessels.length + " vessels loaded.", type: "success" })
+            vesselLayer.draw(vessels);
+        }, function(errorMsg, status){
+            embryo.messagePanel.replace(messageId, { text: errorMsg, type: "error" });
         })
     }
 

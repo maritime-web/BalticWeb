@@ -47,7 +47,7 @@
                 $http.get(embryo.baseUrl + "rest/ice/provider/list", {
                     timeout : embryo.defaultTimeout
                 }).success(success).error(function(data, status, headers, config) {
-                    error(embryo.ErrorService.extractError(data, status, config));
+                    error(embryo.ErrorService.errorStatus(data, status, "requesting ice chart providers"), status);
                 });
             },
             getSelectedProvider : function(defaultProvider) {
@@ -61,33 +61,14 @@
             setSelectedProvider : function(rovider) {
                 setCookie("selectedProvider");
             },
-            listnew : function(provider, callback) {
-                $.ajax({
-                    url : embryo.baseUrl + "rest/ice/provider/" + provider + "/observations",
+            listByProvider : function(provider, success, error) {
+                $http.get(embryo.baseUrl + "rest/ice/provider/" + provider + "/observations", {
                     timeout : embryo.defaultTimeout,
-                    data : {},
-                    success : function(data) {
-                        callback(null, data);
-                    },
-                    error : function(error) {
-                        callback(error);
-                    }
+                }).success(success).error(function(data, status, headers, config) {
+                    error(embryo.ErrorService.errorStatus(data, status, "requesting list of ice observations"), status);
                 });
             },
-            list : function(callback) {
-                $.ajax({
-                    url : embryo.baseUrl + "rest/ice/list",
-                    timeout : embryo.defaultTimeout,
-                    data : {},
-                    success : function(data) {
-                        callback(null, data);
-                    },
-                    error : function(error) {
-                        callback(error);
-                    }
-                });
-            },
-            shapes : function(name, arguments, callback) {
+            shapes : function(name, arguments, success, error) {
                 var r = (typeof (arguments) != "object") ? {} : arguments;
                 if (!r.delta) {
                     r.delta = embryo.ice.delta;
@@ -96,17 +77,14 @@
                     r.exponent = embryo.ice.exponent;
                 }
 
-                $.ajax({
-                    url : embryo.baseUrl + "rest/shapefile/multiple/" + name,
+                $http.get(embryo.baseUrl + "rest/shapefile/multiple/" + name, {
                     timeout : embryo.defaultTimeout,
-                    data : r,
-                    success : function(data) {
-                        convert(data, r.delta, r.exponent);
-                        callback(null, data);
-                    },
-                    error : function(error) {
-                        callback(error);
-                    }
+                    params : r
+                }).success(function(data){
+                    convert(data, r.delta, r.exponent);
+                    success(data);
+                }).error(function(data, status, headers, config) {
+                    error(embryo.ErrorService.errorStatus(data, status, "requesting ice data"), status);
                 });
             }
         };
