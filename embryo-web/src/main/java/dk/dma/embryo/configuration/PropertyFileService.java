@@ -131,9 +131,10 @@ public class PropertyFileService {
 
         r.minute(items[0]);
         r.hour(items[1]);
-        r.dayOfMonth(items[2]);
-        r.month(items[3]);
-        r.year(items[4]);
+        r.dayOfWeek(items[2]);
+        r.dayOfMonth(items[3]);
+        r.month(items[4]);
+        r.year(items[5]);
 
         return r;
     }
