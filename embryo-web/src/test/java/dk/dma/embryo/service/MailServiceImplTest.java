@@ -18,6 +18,7 @@ package dk.dma.embryo.service;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import javax.ejb.EJBException;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -268,6 +269,28 @@ public class MailServiceImplTest {
         body += "Contact Person: John Doe\n";
         body += "Email Address: john@doe.com\n";
         body += "Mmsi Number: 12";
+
+        verify(mailSender).sendEmail("arktiskcom@gmail.com", "noreply@dma.dk", header, body);
+    }
+
+
+    @Test
+    public void testSendDmiNotification() throws MessagingException {
+        // SETUP MOCKS
+        when(subject.getUser()).thenReturn(new SecuredUser("name", "pwd", new byte[0], "test@test.dk"));
+
+        // TEST DATA
+        String iceChart = "my ice chart";
+        Throwable t = new EJBException(new RuntimeException("Expected to read lots of bytes"));
+
+        // EXECUTE
+        mailService.dmiNotification(iceChart, t);
+
+        // VERIFY
+        String header = "ArcticWeb detected an error importing ice chart " + iceChart;
+        String body = "Ice Chart: " + iceChart + "\n";
+        body += "Message: Possible corrupt ice chart. You may want to delete the ice chart.\n";
+        body += "Error: java.lang.RuntimeException: Expected to read lots of bytes";
 
         verify(mailSender).sendEmail("arktiskcom@gmail.com", "noreply@dma.dk", header, body);
     }

@@ -67,7 +67,7 @@ public class MailServiceImpl implements MailService {
     @Inject
     @Property("embryo.iceChart.dmi.notification.email")
     private String dmiNotificationEmail;
-    
+
     @Inject
     private PropertyFileService propertyFileService;
 
@@ -130,17 +130,14 @@ public class MailServiceImpl implements MailService {
         try {
             Map<String, String> environment = new HashMap<>();
 
-            StringWriter sw = new StringWriter();
-            error.printStackTrace(new PrintWriter(sw));
-            
             String msg = error.getMessage();
-            if(msg.contains("Expected to read")){
-                msg = "Possible corrupt ice chart (" + msg + ")";
+            if (msg.contains("Expected to read")) {
+                msg = "Possible corrupt ice chart. You may want to delete the ice chart.";
             }
-            
+
             environment.put("IceChart", iceChart);
             environment.put("Message", msg);
-            environment.put("Error", sw.toString());
+            environment.put("Error", error.getMessage());
 
             String header = propertyFileService.getProperty("embryo.notification.template.icechartImportError.header");
             String body = propertyFileService.getProperty("embryo.notification.template.icechartImportError.body");
@@ -155,7 +152,6 @@ public class MailServiceImpl implements MailService {
         }
     }
 
-    
     @Override
     public void newGreenposReport(GreenPosReport report) {
 
@@ -211,7 +207,8 @@ public class MailServiceImpl implements MailService {
             String body = propertyFileService.getProperty("embryo.notification.template." + templateName + ".body");
             String email = subject.getUser().getEmail();
 
-            mailSender.sendEmail(greenposToEmail, email, applyTemplate(header, environment), applyTemplate(body, environment));
+            mailSender.sendEmail(greenposToEmail, email, applyTemplate(header, environment),
+                    applyTemplate(body, environment));
 
             embryoLogService.info(applyTemplate(header, environment) + " sent to " + greenposToEmail);
 
