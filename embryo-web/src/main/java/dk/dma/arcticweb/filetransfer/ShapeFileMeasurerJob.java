@@ -40,6 +40,8 @@ import javax.ejb.TimerService;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,12 +72,14 @@ public class ShapeFileMeasurerJob {
 
     @Inject
     private MailService mailService;
-    
+
     @Inject
     @Property(value = "embryo.iceChart.providers")
     private Map<String, String> providers;
 
-    private Map<String, String> directories = new HashMap<>();;
+    private Map<String, String> directories = new HashMap<>();
+
+    private NamedTimeStamps notifications = new NamedTimeStamps();
 
     @Resource
     private TimerService timerService;
@@ -138,6 +142,8 @@ public class ShapeFileMeasurerJob {
         long start = new Date().getTime();
 
         logger.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
+
+        notifications.clearOldThanMinutes(60*24);
 
         for (Entry<String, String> directory : directories.entrySet()) {
             String provider = directory.getKey();
@@ -205,6 +211,14 @@ public class ShapeFileMeasurerJob {
             return out.toByteArray().length;
         }
 
+        private void sendEmail(String provider, String chartName, Throwable t) {
+            String to = propertyFileService.getProperty("embryo.iceChart." + provider + ".notification.email");
+            if (to != null && to.trim().length() > 0 && !notifications.contains(chartName)) {
+                mailService.dmiNotification(chartName, t);
+                notifications.add(chartName, DateTime.now(DateTimeZone.UTC));
+            }
+        }
+
         public void measureFiles(String directory, String provider, long start) throws IOException {
             for (String fn : downloadedIceObservations(directory)) {
 
@@ -227,7 +241,7 @@ public class ShapeFileMeasurerJob {
                             failedMeasurementCount++;
                             logger.error("Error measuring " + fn + ": " + t, t);
                             embryoLogger.error("Error measuring " + fn + ": " + t, t);
-                            mailService.dmiNotification(fn, t);
+                            sendEmail(provider, fn, t);
                         }
                     }
                 } else {
@@ -257,6 +271,34 @@ public class ShapeFileMeasurerJob {
 
         public int getFailedMeasurementCount() {
             return failedMeasurementCount;
+        }
+    }
+
+    public static class NamedTimeStamps {
+        private Map<String, DateTime> notifications = new HashMap<>();
+
+        public void clearOldThanMinutes(int minutes) {
+            DateTime now = DateTime.now(DateTimeZone.UTC);
+
+            List<String> toDelete = new ArrayList<>(notifications.size());
+
+            for (Entry<String, DateTime> entry : notifications.entrySet()) {
+                if (entry.getValue().plusMinutes(minutes).isBefore(now)) {
+                    toDelete.add(entry.getKey());
+                }
+            }
+
+            for (String name : toDelete) {
+                notifications.remove(name);
+            }
+        }
+
+        public boolean contains(String name) {
+            return notifications.containsKey(name);
+        }
+
+        public void add(String name, DateTime ts) {
+            notifications.put(name, ts);
         }
     }
 }
