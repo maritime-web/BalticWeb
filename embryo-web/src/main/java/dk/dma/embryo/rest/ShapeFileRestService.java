@@ -23,6 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -68,6 +69,7 @@ public class ShapeFileRestService {
         }
     }
 
+    @HEAD
     @GET
     @Path("/multiple/{ids}")
     @Produces("application/json")
@@ -91,5 +93,4 @@ public class ShapeFileRestService {
             throw new WebApplicationException(Response.Status.GONE);
         }
     }
-
 }
