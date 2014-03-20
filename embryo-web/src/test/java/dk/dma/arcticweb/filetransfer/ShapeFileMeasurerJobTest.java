@@ -36,13 +36,15 @@ public class ShapeFileMeasurerJobTest {
 
         ts.add("first", now.minusHours(1));
         ts.add("second", now.minusHours(2));
-        ts.add("third", now.minusDays(1));
+        ts.add("third", now.minusDays(1).minusMinutes(1));
         ts.add("fourth", now.minusDays(2));
 
         ts.clearOldThanMinutes(60*24);
 
         Assert.assertTrue(ts.contains("first"));
         Assert.assertTrue(ts.contains("second"));
+        Assert.assertFalse(ts.contains("third"));
+        Assert.assertFalse(ts.contains("fourth"));
     }
 
 }

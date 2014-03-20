@@ -15,6 +15,7 @@
  */
 package dk.dma.embryo.rest;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.Cache;
@@ -55,10 +58,14 @@ public class ShapeFileRestService {
     public Shape getSingleFile(@PathParam("id") String id, @DefaultValue("0") @QueryParam("resolution") int resolution,
             @DefaultValue("") @QueryParam("filter") String filter,
             @DefaultValue("false") @QueryParam("delta") boolean delta,
-            @DefaultValue("2") @QueryParam("exponent") int exponent,
-            @DefaultValue("0") @QueryParam("parts") int parts) throws IOException {
+            @DefaultValue("2") @QueryParam("exponent") int exponent, @DefaultValue("0") @QueryParam("parts") int parts)
+            throws IOException {
         logger.info("Request for single file: {}", id);
-        return shapeFileService.readSingleFile(id, resolution, filter, delta, exponent, parts);
+        try {
+            return shapeFileService.readSingleFile(id, resolution, filter, delta, exponent, parts);
+        } catch (FileNotFoundException e) {
+            throw new WebApplicationException(Response.Status.GONE);
+        }
     }
 
     @GET
@@ -70,16 +77,19 @@ public class ShapeFileRestService {
             @DefaultValue("0") @QueryParam("resolution") int resolution,
             @DefaultValue("") @QueryParam("filter") String filter,
             @DefaultValue("false") @QueryParam("delta") boolean delta,
-            @DefaultValue("2") @QueryParam("exponent") int exponent,
-            @DefaultValue("0") @QueryParam("parts") int parts) throws IOException {
+            @DefaultValue("2") @QueryParam("exponent") int exponent, @DefaultValue("0") @QueryParam("parts") int parts)
+            throws IOException {
         logger.info("Request for multiple files: {}", ids);
-        List<Shape> result = new ArrayList<>();
 
-        for (String id : ids.split(",")) {
-            result.add(shapeFileService.readSingleFile(id, resolution, filter, delta, exponent, parts));
+        try {
+            List<Shape> result = new ArrayList<>();
+            for (String id : ids.split(",")) {
+                result.add(shapeFileService.readSingleFile(id, resolution, filter, delta, exponent, parts));
+            }
+            return result;
+        } catch (FileNotFoundException e) {
+            throw new WebApplicationException(Response.Status.GONE);
         }
-
-        return result;
     }
 
 }

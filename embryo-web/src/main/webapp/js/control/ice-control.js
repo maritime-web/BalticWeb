@@ -153,6 +153,59 @@ $(function() {
                             });
         }
 
+        function requestShapefile(name, onSuccess) {
+            var messageId = embryo.messagePanel.show({
+                text : "Requesting " + name + " data ..."
+            });
+
+            embryo.ice.service.shapes(name, {
+                parts : name.indexOf("aari.aari_arc") >= 0 ? 2 : 0
+            }, function(data) {
+                messageId = embryo.messagePanel.replace(messageId, {
+                    text : "Drawing " + name,
+                });
+
+                var totalPolygons = 0;
+                var totalPoints = 0;
+                for ( var k in data) {
+                    var s = data[k];
+                    for ( var i in s.fragments) {
+                        totalPolygons += s.fragments[i].polygons.length;
+                        for ( var j in s.fragments[i].polygons)
+                            totalPoints += s.fragments[i].polygons[j].length;
+                    }
+                }
+
+                function finishedDrawing() {
+                    embryo.messagePanel.replace(messageId, {
+                        text : totalPolygons + " polygons. " + totalPoints + " points drawn.",
+                        type : "success"
+                    });
+
+                    if (onSuccess) {
+                        onSuccess();
+                    }
+                }
+
+                // Draw shapefile a bit later, just let the browser update the
+                // view and show above message
+                window.setTimeout(function() {
+                    iceLayer.draw(data, finishedDrawing);
+                }, 10);
+            }, function(errorMsg, status) {
+                if(status == 410){
+                    errorMsg = errorMsg + " Refreshing ice chart list ... "
+                }
+                embryo.messagePanel.replace(messageId, {
+                    text : errorMsg,
+                    type : "error"
+                })
+                
+                requestIceObservations();
+            });
+        }
+
+        
     }
 
     function createIceTable(d) {
@@ -392,53 +445,6 @@ $(function() {
             hideIceInformation();
         }
     })
-
-    function requestShapefile(name, onSuccess) {
-        var messageId = embryo.messagePanel.show({
-            text : "Requesting " + name + " data ..."
-        });
-
-        embryo.ice.service.shapes(name, {
-            parts : name.indexOf("aari.aari_arc") >= 0 ? 2 : 0
-        }, function(data) {
-            messageId = embryo.messagePanel.replace(messageId, {
-                text : "Drawing " + name,
-            });
-
-            var totalPolygons = 0;
-            var totalPoints = 0;
-            for ( var k in data) {
-                var s = data[k];
-                for ( var i in s.fragments) {
-                    totalPolygons += s.fragments[i].polygons.length;
-                    for ( var j in s.fragments[i].polygons)
-                        totalPoints += s.fragments[i].polygons[j].length;
-                }
-            }
-
-            function finishedDrawing() {
-                embryo.messagePanel.replace(messageId, {
-                    text : totalPolygons + " polygons. " + totalPoints + " points drawn.",
-                    type : "success"
-                });
-
-                if (onSuccess) {
-                    onSuccess();
-                }
-            }
-
-            // Draw shapefile a bit later, just let the browser update the
-            // view and show above message
-            window.setTimeout(function() {
-                iceLayer.draw(data, finishedDrawing);
-            }, 10);
-        }, function(errorMsg, status) {
-            embryo.messagePanel.replace(messageId, {
-                text : errorMsg,
-                type : "error"
-            })
-        });
-    }
 
     embryo.groupChanged(function(e) {
         if (e.groupId == "ice") {
