@@ -45,7 +45,9 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
 import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.domain.ShapeFileMeasurement;
 import dk.dma.embryo.service.EmbryoLogService;
 
 @Singleton
@@ -85,6 +87,9 @@ public class DmiFtpReaderJob {
     @Inject
     private EmbryoLogService embryoLogService;
 
+    @Inject
+    private ShapeFileMeasurementDao shapeFileMeasurementDao;
+
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shx");
 
     @PostConstruct
@@ -108,10 +113,16 @@ public class DmiFtpReaderJob {
                 new File(localDmiDirectory).mkdirs();
             }
             logger.info("Calling transfer files ...");
-            int count = transferFiles();
-            String msg = "Scanned DMI (" + dmiServer + ") for new files. Files transferred: " + count;
-            logger.info(msg);
-            embryoLogService.info(msg);
+            Counts counts = transferFiles();
+            String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + counts.transferCount
+                    + ", Deleted: " + counts.deleteCount + ", Errors: " + counts.errorCount;
+            if (counts.errorCount == 0) {
+                logger.info(msg);
+                embryoLogService.info(msg);
+            } else {
+                logger.error(msg);
+                embryoLogService.error(msg);
+            }
         } catch (Throwable t) {
             logger.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
             embryoLogService.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
@@ -154,8 +165,9 @@ public class DmiFtpReaderJob {
         }
     }
 
-    public int transferFiles() throws IOException, InterruptedException {
-        int count = 0;
+    public Counts transferFiles() throws IOException, InterruptedException {
+        Counts counts = new Counts();
+        List<String> subdirectoriesAtServer = new ArrayList<String>();
 
         FTPClient ftp = new FTPClient();
         logger.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
@@ -167,55 +179,89 @@ public class DmiFtpReaderJob {
         ftp.setFileType(FTP.BINARY_FILE_TYPE);
 
         try {
-            if(!ftp.changeWorkingDirectory(dmiBaseDirectory)){
+            if (!ftp.changeWorkingDirectory(dmiBaseDirectory)) {
                 throw new IOException("Could not change to base directory:" + dmiBaseDirectory);
             }
 
-            List<String> subdirectoriesAtServer = new ArrayList<String>();
-
-            LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(1);
+            LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(15);
 
             Thread.sleep(10);
 
             logger.info("Reading files in: " + dmiBaseDirectory);
 
             for (FTPFile f : ftp.listFiles()) {
-                if (filter(f.getName(), mapsYoungerThan) && !isIceObservationFullyDownloaded(f.getName())) {
+                if (filter(f.getName(), mapsYoungerThan)) {
                     subdirectoriesAtServer.add(f.getName());
                 }
             }
 
             for (String subdirectory : subdirectoriesAtServer) {
-                Thread.sleep(10);
+                if (!isIceObservationFullyDownloaded(subdirectory)) {
+                    Thread.sleep(10);
 
-                logger.info("Reading files from subdirectories: " + subdirectory);
+                    logger.info("Reading files from subdirectories: " + subdirectory);
 
-                ftp.changeWorkingDirectory(subdirectory);
+                    ftp.changeWorkingDirectory(subdirectory);
 
-                List<String> filesInSubdirectory = new ArrayList<>();
+                    List<String> filesInSubdirectory = new ArrayList<>();
 
-                for (FTPFile f : ftp.listFiles()) {
-                    filesInSubdirectory.add(f.getName());
-                }
+                    for (FTPFile f : ftp.listFiles()) {
+                        filesInSubdirectory.add(f.getName());
+                    }
 
-                for (String fn : filesInSubdirectory) {
-                    for (String prefix : requiredFilesInIceObservation) {
-                        if (fn.endsWith(prefix)) {
-                            if (transferFile(ftp, fn)) {
-                                count++;
+                    for (String fn : filesInSubdirectory) {
+                        for (String prefix : requiredFilesInIceObservation) {
+                            if (fn.endsWith(prefix)) {
+                                if (transferFile(ftp, fn)) {
+                                    counts.transferCount++;
+                                }
                             }
                         }
                     }
+                    ftp.changeToParentDirectory();
                 }
-
-                ftp.changeToParentDirectory();
             }
-
         } finally {
             ftp.logout();
         }
 
-        return count;
+        List<ShapeFileMeasurement> dmiMeasurements = shapeFileMeasurementDao.list("dmi");
+        logger.info("Deleting charts no longer existing on FTP");
+        for (ShapeFileMeasurement measurement : dmiMeasurements) {
+            if (!subdirectoriesAtServer.contains(measurement.getFileName())) {
+                try {
+                    logger.info("Deleting chart {}", measurement.getFileName());
+                    deleteFiles(measurement.getFileName());
+                    shapeFileMeasurementDao.remove(measurement);
+                    counts.deleteCount++;
+                } catch (Exception e) {
+                    String msg = "Error deleting ice chart " + dmiServer + " from ArcticWeb server";
+                    logger.error(msg, e);
+                    embryoLogService.error(msg, e);
+                    counts.errorCount++;
+                }
+            }
+        }
+
+        return counts;
+    }
+
+    private boolean deleteFiles(String name) throws IOException, InterruptedException {
+        String localName = localDmiDirectory + "/" + name;
+        boolean deleted = true;
+
+        for (String suffix : requiredFilesInIceObservation) {
+            File file = new File(localName + suffix);
+            if (file.exists()) {
+                file.delete();
+                Thread.sleep(10);
+                if (file.exists()) {
+                    deleted = false;
+                }
+            }
+        }
+
+        return deleted;
     }
 
     private boolean transferFile(FTPClient ftp, String name) throws IOException, InterruptedException {
@@ -245,5 +291,11 @@ public class DmiFtpReaderJob {
         new File(fn).renameTo(new File(localName));
 
         return true;
+    }
+
+    private class Counts {
+        int transferCount;
+        int deleteCount;
+        int errorCount;
     }
 }
