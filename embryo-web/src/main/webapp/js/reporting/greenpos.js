@@ -142,22 +142,6 @@ var greenposScope;
             return fields.indexOf(fieldName) > -1;
         };
 
-        // $scope.$watch("greenPosForm", function(newValue, oldValue) {
-        // embryo.logger.log("greenposForm");
-        // embryo.logger.log(newValue);
-        // }, true);
-        // $scope.$watch("greenPosForm.gpShipName", function(newValue, oldValue)
-        // {
-        // embryo.logger.log("gpShipName");
-        // embryo.logger.log(newValue);
-        // }, true);
-        // $scope.$watch("greenPosForm.gpShipName.$error", function(newValue,
-        // oldValue)
-        // {
-        // embryo.logger.log("error");
-        // embryo.logger.log(newValue);
-        // }, true);
-
         $scope.sendReport = function() {
             $scope.warningMessages = null;
             $scope.alertMessages = null;
@@ -305,11 +289,6 @@ var greenposScope;
 
     embryo.GreenposListCtrl = function($scope, GreenposService) {
         $scope.max = 10;
-        // $scope.options = {
-        // fnSort : function(sort, order) {
-        // embryo.logger.log('fnSort' + sort + order);
-        // }
-        // };
 
         embryo.controllers.greenposListView = {
             title : "Greenpos Reports",
