@@ -287,12 +287,10 @@ $(function() {
         embryo.ice.service.shapes("static." + name, {
             exponent : 2,
             delta : true
-        }, function(error, data) {
-            if (data) {
-                layer.draw(data);
-            } else {
-                embryo.logger.log("unhandled error", error);
-            }
+        }, function(data) {
+            layer.draw(data);
+        }, function(error, status) {
+            embryo.logger.log("unhandled error", error);
         });
     }
 
@@ -401,9 +399,8 @@ $(function() {
     })
 });
 
-embryo.authenticated(function(){
+embryo.authenticated(function() {
     $(".controlContainer a").click(function(e) {
         e.preventDefault();
     });
 });
-
