@@ -565,6 +565,19 @@
               <executable>grunt</executable>
             </configuration>
           </execution>
+          <execution>
+            <id>jsunit</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>grunt</executable>
+              <arguments>
+                <argument>test</argument>
+              </arguments>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -608,22 +621,6 @@
   </build>
 
   <profiles>
-    <profile>
-      <id>karma</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.kelveden</groupId>
-            <artifactId>maven-karma-plugin</artifactId>
-            <configuration>
-              <configFile>${basedir}/src/test/resources/config/karma.conf.js</configFile>
-              <browsers>PhantomJS</browsers>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
     <profile>
       <id>fulldeploy</id>
       <build>

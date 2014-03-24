@@ -106,26 +106,17 @@ Execute the following Maven command to lint your JavaScript files:
 
 ## JavaScript Unit Test
 
-JavaScript may be tested using Node.js, NPM and Karma. Follow this blog (http://jespertejlgaard.blogspot.dk/2013/08/installing-nodejs-npm-and-karma-on.html) to install Node.js, NPM and Karma (at least on Linux) and install the plugins:
+JavaScript may be tested using Node.js, NPM, Grunt and Karma. Follow this blog (http://jespertejlgaard.blogspot.dk/2013/08/installing-nodejs-npm-and-karma-on.html) to install Node.js and NPM, but leave out Karma  (at least on Linux) Install Grunt:
 
-    sudo npm install -g karma-junit-reporter
-    sudo npm install -g karma-phantomjs-launcher
+    sudo npm install -g karma
 
-Execution of unit tests are performed on the developer machines by a Karma server, which will discover changes in the project JavaScript files and execute all JS unit tests. The Karma server is started by executing:
+JS unit tests are performed in PhantomJS as part of the Maven build in the Maven test phase. 
+ 
+The unit tests can however also be executed by a Karma server, which will discover changes in the project JavaScript files and execute all JS unit tests. The Karma server is started by executing 
 
-    scripts/test.sh (unit tests on linux/MaC)
-    scripts\test.bat (unit tests on Windows)
+    embryo-web$ grunt karma:unit
 
-Test execution is performed on the continuous integration server using the maven-karma-plugin. The plugin can be executed on any machine with Node.js and karma installed by executing the command
-
-    mvn 'karma:start'
-
-or as part of the build:
-
-    'mvn -Pkarma install'
-
-The installation of karma and usage of the maven-karma-plugin is described here 'TO BE INSERTED'.
-
+It will by default execute all JS Unit Tests in PhantomJS, Chrome and Firefox.
 
 ## Eclipse setup ##
 
