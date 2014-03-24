@@ -17,6 +17,7 @@ package dk.dma.arcticweb.filetransfer;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -115,7 +116,8 @@ public class DmiFtpReaderJob {
             logger.info("Calling transfer files ...");
             Counts counts = transferFiles();
             String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + counts.transferCount
-                    + ", Deleted: " + counts.deleteCount + ", Errors: " + counts.errorCount;
+                    + ", Shapes deleted: " + counts.shapeDeleteCount + ". Files deleted: " + counts.fileDeleteCount
+                    + ", Errors: " + counts.errorCount;
             if (counts.errorCount == 0) {
                 logger.info(msg);
                 embryoLogService.info(msg);
@@ -167,7 +169,7 @@ public class DmiFtpReaderJob {
 
     public Counts transferFiles() throws IOException, InterruptedException {
         Counts counts = new Counts();
-        List<String> subdirectoriesAtServer = new ArrayList<String>();
+        final List<String> subdirectoriesAtServer = new ArrayList<String>();
 
         FTPClient ftp = new FTPClient();
         logger.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
@@ -225,17 +227,16 @@ public class DmiFtpReaderJob {
             ftp.logout();
         }
 
+        logger.info("Deleting Shape entries no longer existing on FTP");
         List<ShapeFileMeasurement> dmiMeasurements = shapeFileMeasurementDao.list("dmi");
-        logger.info("Deleting charts no longer existing on FTP");
         for (ShapeFileMeasurement measurement : dmiMeasurements) {
             if (!subdirectoriesAtServer.contains(measurement.getFileName())) {
                 try {
-                    logger.info("Deleting chart {}", measurement.getFileName());
-                    deleteFiles(measurement.getFileName());
+                    logger.info("Deleting shape entry {}", measurement.getFileName());
                     shapeFileMeasurementDao.remove(measurement);
-                    counts.deleteCount++;
+                    counts.shapeDeleteCount++;
                 } catch (Exception e) {
-                    String msg = "Error deleting ice chart " + dmiServer + " from ArcticWeb server";
+                    String msg = "Error deleting shape entry " + measurement.getFileName() + " from ArcticWeb server";
                     logger.error(msg, e);
                     embryoLogService.error(msg, e);
                     counts.errorCount++;
@@ -243,25 +244,28 @@ public class DmiFtpReaderJob {
             }
         }
 
-        return counts;
-    }
+        FileUtility fileService = new FileUtility(localDmiDirectory);
+        String[] filesToDelete = fileService.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                String[] parts = name.split("\\.");
+                return !subdirectoriesAtServer.contains(parts[0]);
+            }
+        });
 
-    private boolean deleteFiles(String name) throws IOException, InterruptedException {
-        String localName = localDmiDirectory + "/" + name;
-        boolean deleted = true;
-
-        for (String suffix : requiredFilesInIceObservation) {
-            File file = new File(localName + suffix);
-            if (file.exists()) {
-                file.delete();
-                Thread.sleep(10);
-                if (file.exists()) {
-                    deleted = false;
-                }
+        for (String file : filesToDelete) {
+            try {
+                logger.info("Deleting chart files {}", file);
+                fileService.deleteFile(file);
+                counts.fileDeleteCount++;
+            } catch (Exception e) {
+                String msg = "Error deleting chart file " + file + " from ArcticWeb server";
+                logger.error(msg, e);
+                embryoLogService.error(msg, e);
+                counts.errorCount++;
             }
         }
-
-        return deleted;
+        return counts;
     }
 
     private boolean transferFile(FTPClient ftp, String name) throws IOException, InterruptedException {
@@ -295,7 +299,8 @@ public class DmiFtpReaderJob {
 
     private class Counts {
         int transferCount;
-        int deleteCount;
+        int shapeDeleteCount;
+        int fileDeleteCount;
         int errorCount;
     }
 }
