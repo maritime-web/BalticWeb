@@ -198,7 +198,7 @@ public class AariHttpReaderJob {
     private void prepareLocalDirectory() {
         logger.info("Making directory if necessary ...");
         if (!new File(localDirectory).exists()) {
-            logger.info("Making local directort for AARI files: " + localDirectory);
+            logger.info("Making local directory for AARI files: " + localDirectory);
             new File(localDirectory).mkdirs();
         }
     }
