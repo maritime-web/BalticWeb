@@ -20,14 +20,6 @@ module.exports = function(grunt) {
                 files : [ '<%= proj.src %>/{,**/}*.*' ],
                 tasks : [ 'copy:all2Livereload' ]
             },
-            jsTest : {
-                files : [ '<%= proj.test %>/{,*/}*.js' ],
-                tasks : [ 'test' ]
-            },
-            // styles: {
-            // files: ['<%= proj.src %>/css/{,*/}*.css'],
-            // tasks: ['copy:styles', 'autoprefixer']
-            // },
             livereload : {
                 options : {
                     livereload : '<%= connect.options.livereload %>'
@@ -101,7 +93,8 @@ module.exports = function(grunt) {
         // }
         // },
         useminPrepare : {
-            html : [ '<%= proj.src %>/index.html', '<%= proj.src %>/content.html', '<%= proj.src %>/map.html', '<%= proj.src %>/admin.html', '<%= proj.src %>/testdata.html' ],
+            html : [ '<%= proj.src %>/index.html', '<%= proj.src %>/content.html', '<%= proj.src %>/map.html',
+                    '<%= proj.src %>/admin.html', '<%= proj.src %>/testdata.html' ],
             options : {
                 dest : '<%= proj.build %>'
             // flow : {
@@ -182,8 +175,24 @@ module.exports = function(grunt) {
             server : [ 'concat:dist' ],
             // test : [ 'coffee', 'copy:styles' ],
             build : [ 'copy:styles2Build', 'copy:html2Build' ]
-        }
+        },
+        karma : {
+            options : {
+                configFile : 'src/test/resources/karma.conf.js',
+                browsers : [ 'Chrome', 'Firefox', 'PhantomJS' ],
+            },
+            continuous : {
+                port : 5678,
+                singleRun : true,
+                browsers : [ 'PhantomJS' ],
+            },
+            unit : {
+                singleRun : false,
+                autoWatch : true,
+                keepalive : true
+            }
 
+        }
     });
 
     // Load the plugin that provides the "uglify" task.
@@ -196,6 +205,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-usemin');
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-connect-proxy');
+    grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask('server',
             function(target) {
@@ -209,6 +219,8 @@ module.exports = function(grunt) {
 
     // grunt.registerTask('test', [ 'clean:server', 'concurrent:test',
     // 'autoprefixer', 'connect:test', 'karma' ]);
+
+    grunt.registerTask('test', [ 'karma:continuous' ]);
 
     grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'concat', 'usemin', 'copy:gen2Build',
             'copy:toTarget' ]);

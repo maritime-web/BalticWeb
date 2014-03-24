@@ -1,7 +1,7 @@
 module.exports = function(config) {
 	config.set({
 		// base path, that will be used to resolve files and exclude
-		basePath : '../../../../',
+		basePath : '../../../',
 
 		frameworks : [ 'jasmine' ],
 
@@ -81,11 +81,6 @@ module.exports = function(config) {
 		// report which specs are slower than 500ms
 		// CLI --report-slower-than 500
 		reportSlowerThan : 500,
-
-		// compile coffee scripts
-		preprocessors : {
-			'**/*.coffee' : 'coffee'
-		},
 
 		plugins : [ 'karma-jasmine', 'karma-chrome-launcher',
 				'karma-firefox-launcher', 'karma-junit-reporter', 'karma-phantomjs-launcher' ]
