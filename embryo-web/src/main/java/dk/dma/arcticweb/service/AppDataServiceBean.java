@@ -39,9 +39,9 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.component.RouteParserComponent;
 import dk.dma.embryo.component.RouteSaver;
-import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.dao.VesselDao;

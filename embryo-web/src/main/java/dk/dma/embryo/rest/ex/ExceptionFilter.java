@@ -15,12 +15,10 @@
  */
 package dk.dma.embryo.rest.ex;
 
-import dk.dma.embryo.domain.FormatException;
-
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authz.AuthorizationException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
@@ -36,10 +34,13 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.LinkedList;
-import java.util.List;
+
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authz.AuthorizationException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+
+import dk.dma.embryo.domain.FormatException;
 
 /**
  * @author Jesper Tejlgaard

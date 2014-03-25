@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import dk.dma.embryo.configuration.PropertiesReader;
+import dk.dma.embryo.common.configuration.PropertiesReader;
+
 
 /**
  * @author Jesper Tejlgaard

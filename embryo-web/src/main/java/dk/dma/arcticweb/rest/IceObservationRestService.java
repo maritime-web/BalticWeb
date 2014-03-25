@@ -15,10 +15,7 @@
  */
 package dk.dma.arcticweb.rest;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;

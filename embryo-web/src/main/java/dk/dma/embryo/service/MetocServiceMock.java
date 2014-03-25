@@ -24,8 +24,8 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 
+import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.component.RouteDecorator;
-import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.restclients.DmiSejlRuteService;

@@ -31,6 +31,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 
+import dk.dma.embryo.common.configuration.PropertyFileService;
+
 public class Configuration implements Serializable {
 
     private static final long serialVersionUID = 5538000455989826397L;

@@ -38,6 +38,13 @@
         <scope>import</scope>
       </dependency>
 
+
+      <dependency>
+        <groupId>dk.dma.arcticweb</groupId>
+        <artifactId>embryo-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>dk.dma.arcticweb</groupId>
         <artifactId>embryo-database</artifactId>
@@ -55,7 +62,6 @@
         <artifactId>embryo-dataformats</artifactId>
         <version>${project.version}</version>
       </dependency>
-
 
       <dependency>
         <groupId>dk.dma.enav</groupId>
@@ -287,6 +293,7 @@
 
   <modules>
     <module>embryo-enav-io</module>
+    <module>embryo-common</module>
     <module>embryo-dataformats</module>
     <module>embryo-web</module>
   </modules>

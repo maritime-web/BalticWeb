@@ -1,3 +1,4 @@
+package dk.dma.embryo.common.configuration;
 /* Copyright (c) 2011 Danish Maritime Authority
  *
  * This library is free software; you can redistribute it and/or
@@ -13,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.configuration;
+
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,6 +24,7 @@ import javax.inject.Inject;
 
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,6 +37,7 @@ public class PropertyConfigurationTest {
 
     static {
         try {
+            System.out.println("setting property");
             String name = PropertyConfigurationTest.class.getResource("/configuration-test.properties").toURI().toString();
             System.setProperty("arcticweb.configuration", name);
         } catch (Throwable t) {

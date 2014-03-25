@@ -42,6 +42,11 @@
 
     <dependency>
       <groupId>dk.dma.arcticweb</groupId>
+      <artifactId>embryo-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>dk.dma.arcticweb</groupId>
       <artifactId>embryo-dataformats</artifactId>
     </dependency>
 

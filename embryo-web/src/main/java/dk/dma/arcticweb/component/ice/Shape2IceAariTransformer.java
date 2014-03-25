@@ -27,7 +27,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.domain.IceObservation;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 
@@ -52,7 +52,7 @@ public class Shape2IceAariTransformer implements Shape2IceTransformer {
         this.providers = providers;
         this.regions = regions;
     }
-
+    
     @Override
     public List<IceObservation> transform(List<ShapeFileMeasurement> shapes) {
         List<IceObservation> iceObservations = new ArrayList<>();

@@ -24,7 +24,7 @@ import org.jglue.cdiunit.CdiRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import dk.dma.embryo.configuration.PropertyFileService;
+import dk.dma.embryo.common.configuration.PropertyFileService;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {RestClientFactory.class, PropertyFileService.class})

@@ -37,8 +37,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.component.MaxSpeedExtractor;
-import dk.dma.embryo.configuration.Property;
 import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.restclients.LimitedAisViewService;
 import dk.dma.embryo.security.AuthorizationChecker;

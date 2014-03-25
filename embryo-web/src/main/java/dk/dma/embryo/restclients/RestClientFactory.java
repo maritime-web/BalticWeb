@@ -15,15 +15,16 @@
  */
 package dk.dma.embryo.restclients;
 
-import dk.dma.embryo.configuration.Property;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.jboss.resteasy.client.ProxyFactory;
+import java.io.IOException;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.IOException;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.jboss.resteasy.client.ProxyFactory;
+
+import dk.dma.embryo.common.configuration.Property;
 
 @Singleton
 public class RestClientFactory {

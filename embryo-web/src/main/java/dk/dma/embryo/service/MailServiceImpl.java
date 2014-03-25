@@ -15,8 +15,6 @@
  */
 package dk.dma.embryo.service;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -26,8 +24,8 @@ import javax.inject.Named;
 
 import org.slf4j.Logger;
 
-import dk.dma.embryo.configuration.Property;
-import dk.dma.embryo.configuration.PropertyFileService;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.domain.GreenPosDMIReport;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosFinalReport;

@@ -28,7 +28,7 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;

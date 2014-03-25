@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.configuration;
+package dk.dma.embryo.common.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +39,8 @@ public class PropertiesReader {
         if (getClass().getResourceAsStream(DEFAULT_CONFIGURATION_RESOURCE_NAME) != null) {
             properties.load(getClass().getResourceAsStream(DEFAULT_CONFIGURATION_RESOURCE_NAME));
         }
+        
+        System.out.println("reading 2");
 
         String externalConfigurationSystemProperty = properties.getProperty(
                 "propertyFileService.externalConfigurationSystemProperty", "configuration");

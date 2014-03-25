@@ -32,8 +32,8 @@ import javax.interceptor.Interceptors;
 
 import org.slf4j.Logger;
 
-import dk.dma.embryo.configuration.Property;
-import dk.dma.embryo.configuration.PropertyFileService;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.dataformats.dbf.DbfParser;
 import dk.dma.embryo.dataformats.shapefile.PolygonSplitter;
 import dk.dma.embryo.dataformats.shapefile.ProjectionFileParser;

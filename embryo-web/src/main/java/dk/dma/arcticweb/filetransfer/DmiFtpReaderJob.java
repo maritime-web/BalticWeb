@@ -47,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.dma.arcticweb.dao.ShapeFileMeasurementDao;
-import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
 import dk.dma.embryo.service.EmbryoLogService;
 

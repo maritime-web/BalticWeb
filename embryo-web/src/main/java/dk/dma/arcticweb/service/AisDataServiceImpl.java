@@ -15,18 +15,19 @@
  */
 package dk.dma.arcticweb.service;
 
-import dk.dma.arcticweb.service.MaxSpeedJob.MaxSpeedRecording;
-import dk.dma.embryo.configuration.Property;
-import dk.dma.embryo.security.authorization.RolesAllowAll;
-import dk.dma.enav.model.geometry.CoordinateSystem;
-import dk.dma.enav.model.geometry.Position;
-
-import javax.ejb.Singleton;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.ejb.Singleton;
+import javax.inject.Inject;
+
+import dk.dma.arcticweb.service.MaxSpeedJob.MaxSpeedRecording;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.security.authorization.RolesAllowAll;
+import dk.dma.enav.model.geometry.CoordinateSystem;
+import dk.dma.enav.model.geometry.Position;
 
 @Singleton
 public class AisDataServiceImpl implements AisDataService {

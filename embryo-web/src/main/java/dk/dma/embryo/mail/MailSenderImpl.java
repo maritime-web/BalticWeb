@@ -26,7 +26,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 
-import dk.dma.embryo.configuration.Property;
+import dk.dma.embryo.common.configuration.Property;
 
 /**
  * @author Jesper Tejlgaard
