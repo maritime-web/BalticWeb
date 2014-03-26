@@ -65,6 +65,12 @@
       </dependency>
 
       <dependency>
+        <groupId>dk.dma.arcticweb</groupId>
+        <artifactId>embryo-msi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>dk.dma.enav</groupId>
         <artifactId>enav-model</artifactId>
         <version>0.1</version>
@@ -246,6 +252,27 @@
             </options>
           </configuration>
         </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.8</version>
+          <executions>
+            <execution>
+              <id>add-source</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>add-source</goal>
+              </goals>
+              <configuration>
+                <sources>
+                  <source>${project.build.directory}/generated</source>
+                </sources>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
       </plugins>
     </pluginManagement>
 
@@ -316,6 +343,7 @@
     <module>embryo-enav-io</module>
     <module>embryo-common</module>
     <module>embryo-dataformats</module>
+    <module>embryo-msi</module>
     <module>embryo-web</module>
   </modules>
 
