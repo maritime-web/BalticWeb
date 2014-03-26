@@ -30,8 +30,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.configuration.LogConfiguration;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosFinalReport;
 import dk.dma.embryo.domain.GreenPosPositionReport;

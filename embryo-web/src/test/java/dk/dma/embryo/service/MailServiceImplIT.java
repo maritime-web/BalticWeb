@@ -22,8 +22,8 @@ import org.jglue.cdiunit.CdiRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.configuration.LogConfiguration;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;

@@ -27,7 +27,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.configuration.IllegalConfigurationException;
+import dk.dma.embryo.common.configuration.IllegalConfigurationException;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.security.authorization.Roles;
 import dk.dma.embryo.security.authorization.RolesAllowAll;

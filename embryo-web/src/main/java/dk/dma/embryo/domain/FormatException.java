@@ -15,7 +15,7 @@
  */
 package dk.dma.embryo.domain;
 
-import dk.dma.embryo.EmbryonicException;
+import dk.dma.embryo.common.EmbryonicException;
 
 public class FormatException extends EmbryonicException {
 

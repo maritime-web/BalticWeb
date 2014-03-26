@@ -13,16 +13,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.configuration;
+package dk.dma.embryo.common;
 
-import dk.dma.embryo.EmbryonicException;
+public class EmbryonicException extends RuntimeException {
 
-public class IllegalConfigurationException extends EmbryonicException {
+    private static final long serialVersionUID = -1784615849841605764L;
 
-    private static final long serialVersionUID = -6115396714055995638L;
-
-    public IllegalConfigurationException(String msg) {
-        super(msg);
+    private void init() {
+        // Generate GUID!
+        // Get THREAD ID
+        // Get User id
+    }
+    
+    public EmbryonicException(String message) {
+        super(message);
+        init();
     }
 
+    public EmbryonicException(Throwable cause) {
+        super(cause);
+        init();
+    }
+
+    public EmbryonicException(String message, Throwable cause) {
+        super(message, cause);
+        init();
+    }
 }
