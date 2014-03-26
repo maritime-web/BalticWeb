@@ -1,4 +1,3 @@
-package dk.dma.embryo.common.configuration;
 /* Copyright (c) 2011 Danish Maritime Authority
  *
  * This library is free software; you can redistribute it and/or
@@ -14,6 +13,7 @@ package dk.dma.embryo.common.configuration;
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
+package dk.dma.embryo.common.configuration;
 
 
 import static org.junit.Assert.assertEquals;
