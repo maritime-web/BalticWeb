@@ -32,7 +32,7 @@ import dk.frv.enav.msi.ws.warning.MsiService;
 import dk.frv.enav.msi.ws.warning.WarningService;
 import dk.frv.msiedit.core.webservice.message.MsiDto;
 
-@Interceptors(value=AuthorizationChecker.class)
+
 public class MsiClientImpl implements MsiClient {
     @Inject
     @Property("embryo.msi.endpoint")
@@ -57,7 +57,6 @@ public class MsiClientImpl implements MsiClient {
         );
     }
 
-    @RolesAllowAll
     public List<MsiClient.MsiItem> getActiveWarnings() {
         try {
             List<MsiClient.MsiItem> result = new ArrayList<>();
