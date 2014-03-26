@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.service.EmbryoLogService;
+import dk.dma.embryo.common.log.EmbryoLogService;
 
 @Singleton
 @Startup

@@ -13,16 +13,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.configuration;
+package dk.dma.embryo.common.log;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import dk.dma.embryo.dao.LogEntryDao;
-import dk.dma.embryo.service.EmbryoLogService;
-import dk.dma.embryo.service.EmbryoLogServiceImpl;
 
 @Named
 public class EmbryoLogFactory {

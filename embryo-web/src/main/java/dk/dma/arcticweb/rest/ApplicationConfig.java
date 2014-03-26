@@ -22,9 +22,9 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.rest.AuthenticationService;
 import dk.dma.embryo.rest.BerthRestService;
-import dk.dma.embryo.rest.LogEntryRestService;
 import dk.dma.embryo.rest.MetocRestService;
 import dk.dma.embryo.rest.MsiRestService;
 import dk.dma.embryo.rest.RequestAccessRestService;

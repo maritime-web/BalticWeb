@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.service;
+package dk.dma.embryo.common.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -21,8 +21,6 @@ import java.io.StringWriter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import dk.dma.embryo.dao.LogEntryDao;
-import dk.dma.embryo.domain.LogEntry;
 
 public class EmbryoLogServiceImpl implements EmbryoLogService {
     private LogEntryDao logEntryDao;

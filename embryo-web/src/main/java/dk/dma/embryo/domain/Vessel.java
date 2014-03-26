@@ -31,6 +31,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
 import dk.dma.embryo.rest.json.VesselDetails;
 
 @Entity

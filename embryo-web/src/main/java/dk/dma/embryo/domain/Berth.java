@@ -20,6 +20,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
+
 
 @Entity
 @NamedQueries({@NamedQuery(name="Berth:findByQuery", query="SELECT b FROM Berth b WHERE b.name LIKE :query OR b.alias like :query")})

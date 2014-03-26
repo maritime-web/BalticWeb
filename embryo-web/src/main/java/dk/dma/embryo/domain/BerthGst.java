@@ -21,6 +21,8 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
+
 @Entity
 @Table(name = "berth_gst")
 public class BerthGst extends BaseEntity<Long> {

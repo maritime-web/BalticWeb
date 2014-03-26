@@ -13,15 +13,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest.json;
+package dk.dma.embryo.common.log;
 
 import java.util.Date;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import dk.dma.embryo.domain.LogEntry.Status;
+import dk.dma.embryo.common.log.LogEntry.Status;
 
-public class LogEntry {
+
+public class JsonLogEntry {
     
     private String service;
     private Status status;

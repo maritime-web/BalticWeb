@@ -13,12 +13,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.service;
+package dk.dma.embryo.common.log;
 
-public interface EmbryoLogService {
-    void info(String message);
+import java.util.List;
 
-    void error(String message);
+import org.joda.time.DateTime;
 
-    void error(String message, Throwable exception);
+
+public interface LogEntryDao {
+    void save(LogEntry entry);
+
+    List<LogEntry> list();
+
+    List<LogEntry> search(String type, Integer count, DateTime from);
+
+    LogEntry latest(String service);
+
+    List<String> services(DateTime from);
 }

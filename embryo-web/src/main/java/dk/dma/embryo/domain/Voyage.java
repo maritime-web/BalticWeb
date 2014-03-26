@@ -34,6 +34,8 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
+
 @Entity
 @NamedQueries({
         @NamedQuery(name = "Voyage:getByEnavId", query = "SELECT DISTINCT v FROM Voyage v where v.enavId = :enavId"),

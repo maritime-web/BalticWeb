@@ -15,10 +15,10 @@
  */
 package dk.dma.arcticweb.dao;
 
-import dk.dma.embryo.dao.Dao;
-import dk.dma.embryo.domain.ShapeFileMeasurement;
-
 import java.util.List;
+
+import dk.dma.embryo.common.persistence.Dao;
+import dk.dma.embryo.domain.ShapeFileMeasurement;
 
 public interface ShapeFileMeasurementDao extends Dao {
     ShapeFileMeasurement lookup(String fn, String prefix);

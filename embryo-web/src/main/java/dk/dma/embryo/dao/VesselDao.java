@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.ejb.Local;
 
+import dk.dma.embryo.common.persistence.Dao;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.Vessel;

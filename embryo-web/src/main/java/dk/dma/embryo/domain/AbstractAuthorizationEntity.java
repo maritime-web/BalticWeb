@@ -17,6 +17,8 @@ package dk.dma.embryo.domain;
 
 import javax.persistence.MappedSuperclass;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
+
 
 @MappedSuperclass
 public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {

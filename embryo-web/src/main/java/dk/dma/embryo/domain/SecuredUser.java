@@ -26,6 +26,8 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTimeZone;
 import org.joda.time.DateTime;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
+
 @Entity
 @NamedQueries({
         @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName"),

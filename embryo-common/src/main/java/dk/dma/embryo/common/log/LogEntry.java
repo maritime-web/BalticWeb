@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.domain;
+package dk.dma.embryo.common.log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +27,8 @@ import javax.persistence.NamedQuery;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+
+import dk.dma.embryo.common.persistence.BaseEntity;
 
 @Entity
 @NamedQueries({
@@ -52,10 +54,10 @@ public class LogEntry extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public dk.dma.embryo.rest.json.LogEntry toJsonModel() {
+    public JsonLogEntry toJsonModel() {
         Date ts = getTs() == null ? null : getTs().toDate();
 
-        dk.dma.embryo.rest.json.LogEntry logEntry = new dk.dma.embryo.rest.json.LogEntry();
+        JsonLogEntry logEntry = new JsonLogEntry();
         logEntry.setService(getService());
         logEntry.setMessage(getMessage());
         logEntry.setStatus(getStatus());
@@ -65,8 +67,8 @@ public class LogEntry extends BaseEntity<Long> {
         return logEntry;
     }
 
-    public static List<dk.dma.embryo.rest.json.LogEntry> fromJsonModel(List<LogEntry> list) {
-        List<dk.dma.embryo.rest.json.LogEntry> result = new ArrayList<>(list.size());
+    public static List<JsonLogEntry> fromJsonModel(List<LogEntry> list) {
+        List<JsonLogEntry> result = new ArrayList<>(list.size());
         for (LogEntry entry : list) {
             result.add(entry.toJsonModel());
         }

@@ -36,6 +36,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.domain.Vessel;
@@ -43,7 +44,6 @@ import dk.dma.embryo.restclients.AisViewService.VesselListResult;
 import dk.dma.embryo.restclients.FullAisViewService;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.authorization.Roles;
-import dk.dma.embryo.service.EmbryoLogService;
 
 @Singleton
 @Startup

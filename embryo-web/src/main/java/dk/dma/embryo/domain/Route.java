@@ -34,6 +34,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
 import dk.dma.enav.model.voyage.Waypoint;
 
 @Entity

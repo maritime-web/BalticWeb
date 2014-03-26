@@ -25,9 +25,9 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
-import dk.dma.embryo.service.EmbryoLogService;
 import dk.frv.enav.msi.ws.warning.MsiService;
 import dk.frv.enav.msi.ws.warning.WarningService;
 import dk.frv.msiedit.core.webservice.message.MsiDto;

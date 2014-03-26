@@ -13,11 +13,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.dao;
+package dk.dma.embryo.common.persistence;
 
 import java.util.List;
-
-import dk.dma.embryo.domain.IEntity;
 
 public interface Dao {
 

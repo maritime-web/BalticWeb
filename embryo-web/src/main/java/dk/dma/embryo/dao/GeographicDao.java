@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import dk.dma.embryo.common.persistence.Dao;
 import dk.dma.embryo.domain.Berth;
 
 @Local

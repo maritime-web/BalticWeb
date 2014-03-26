@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.dao;
+package dk.dma.embryo.common.persistence;
 
 import java.util.List;
 
@@ -23,8 +23,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
-import dk.dma.embryo.domain.IEntity;
 
 public abstract class DaoImpl implements Dao {
 

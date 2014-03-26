@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.domain.GreenPosDMIReport;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosFinalReport;

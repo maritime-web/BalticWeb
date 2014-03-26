@@ -25,6 +25,8 @@ import javax.persistence.OrderColumn;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
+
 @Entity
 public class ReportedRoute extends BaseEntity<Long> {
 

@@ -36,7 +36,7 @@ import javax.persistence.criteria.Root;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import dk.dma.embryo.dao.DaoImpl;
+import dk.dma.embryo.common.persistence.DaoImpl;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;

@@ -40,6 +40,7 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.persistence.IEntity;
 import dk.dma.embryo.component.RouteParserComponent;
 import dk.dma.embryo.component.RouteSaver;
 import dk.dma.embryo.dao.RealmDao;
@@ -52,7 +53,6 @@ import dk.dma.embryo.domain.GreenPosFinalReport;
 import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
-import dk.dma.embryo.domain.IEntity;
 import dk.dma.embryo.domain.Position;
 import dk.dma.embryo.domain.ReportingAuthorityRole;
 import dk.dma.embryo.domain.Role;

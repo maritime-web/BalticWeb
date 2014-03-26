@@ -32,6 +32,7 @@ import org.mockito.Mock;
 
 import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosFinalReport;
 import dk.dma.embryo.domain.GreenPosPositionReport;

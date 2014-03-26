@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.dao;
+package dk.dma.embryo.common.log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import dk.dma.embryo.domain.LogEntry;
+import dk.dma.embryo.common.persistence.DaoImpl;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

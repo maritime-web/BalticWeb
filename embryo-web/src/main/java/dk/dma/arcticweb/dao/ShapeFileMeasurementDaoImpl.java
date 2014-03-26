@@ -15,12 +15,13 @@
  */
 package dk.dma.arcticweb.dao;
 
-import dk.dma.embryo.dao.DaoImpl;
-import dk.dma.embryo.domain.ShapeFileMeasurement;
+import java.util.List;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.List;
+
+import dk.dma.embryo.common.persistence.DaoImpl;
+import dk.dma.embryo.domain.ShapeFileMeasurement;
 
 public class ShapeFileMeasurementDaoImpl extends DaoImpl implements ShapeFileMeasurementDao {
     public ShapeFileMeasurement lookup(String fn, String provider) {

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.embryo.common.log;
 
 import java.util.List;
 
@@ -29,9 +29,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.dao.LogEntryDao;
-import dk.dma.embryo.rest.json.LogEntry;
-
 @Path("/log")
 @NoCache
 public class LogEntryRestService {
@@ -45,12 +42,12 @@ public class LogEntryRestService {
     @Path("/search")
     @Produces("application/json")
     @GZIP
-    public List<LogEntry> search(@QueryParam("service") String service, @QueryParam("count") Integer count, @QueryParam("from") Long from) {
+    public List<JsonLogEntry> search(@QueryParam("service") String service, @QueryParam("count") Integer count, @QueryParam("from") Long from) {
         logger.debug("search({}, {}, {})", service, count, from);
 
         DateTime ts = new DateTime(from, DateTimeZone.UTC);
-        List<dk.dma.embryo.domain.LogEntry> result = logEntryDao.search(service, count, ts);
-        List<LogEntry> transformed = dk.dma.embryo.domain.LogEntry.fromJsonModel(result);
+        List<dk.dma.embryo.common.log.LogEntry> result = logEntryDao.search(service, count, ts);
+        List<JsonLogEntry> transformed = LogEntry.fromJsonModel(result);
         logger.debug("search() {}: ", transformed);
         return transformed;
     }
@@ -58,12 +55,12 @@ public class LogEntryRestService {
     @GET
     @Path("/latest")
     @Produces("application/json")
-    public LogEntry latest(@QueryParam("service") String service) {
+    public JsonLogEntry latest(@QueryParam("service") String service) {
         logger.debug("latest({})", service);
         
-        dk.dma.embryo.domain.LogEntry latest = logEntryDao.latest(service); 
+        dk.dma.embryo.common.log.LogEntry latest = logEntryDao.latest(service); 
 
-        LogEntry result = latest == null ? null : latest.toJsonModel();
+        JsonLogEntry result = latest == null ? null : latest.toJsonModel();
         
         logger.debug("latest({}) : {}", service, result);
         return result;

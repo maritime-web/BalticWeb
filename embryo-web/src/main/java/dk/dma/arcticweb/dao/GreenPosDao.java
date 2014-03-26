@@ -19,7 +19,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import dk.dma.embryo.dao.Dao;
+import dk.dma.embryo.common.persistence.Dao;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;

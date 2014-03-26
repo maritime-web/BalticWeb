@@ -23,6 +23,7 @@ import javax.persistence.TypedQuery;
 
 import org.joda.time.DateTime;
 
+import dk.dma.embryo.common.persistence.DaoImpl;
 import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
