@@ -36,7 +36,6 @@ public class PropertyConfigurationTest {
 
     static {
         try {
-            System.out.println("setting property");
             String name = PropertyConfigurationTest.class.getResource("/configuration-test.properties").toURI().toString();
             System.setProperty("arcticweb.configuration", name);
         } catch (Throwable t) {

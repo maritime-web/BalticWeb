@@ -40,8 +40,6 @@ public class PropertiesReader {
             properties.load(getClass().getResourceAsStream(DEFAULT_CONFIGURATION_RESOURCE_NAME));
         }
         
-        System.out.println("reading 2");
-
         String externalConfigurationSystemProperty = properties.getProperty(
                 "propertyFileService.externalConfigurationSystemProperty", "configuration");
 
