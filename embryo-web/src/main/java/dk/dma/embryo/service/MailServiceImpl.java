@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.common.util.DateTimeConverter;
 import dk.dma.embryo.domain.GreenPosDMIReport;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
@@ -35,7 +36,6 @@ import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.ReportedRoute;
-import dk.dma.embryo.mail.MailSender;
 import dk.dma.embryo.rest.RequestAccessRestService;
 import dk.dma.embryo.security.Subject;
 

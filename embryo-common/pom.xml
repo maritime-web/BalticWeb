@@ -21,17 +21,23 @@
       <version>${dependencies.slf4j.version}</version>
     </dependency>
 
-    <!-- JAX-RS  -->
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-    </dependency>
-
     <!-- APACHE COMMONS -->
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.6</version>
+    </dependency>
+
+    <!-- Mail  -->
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+    </dependency>
+
+    <!-- JAX-RS  -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
     </dependency>
 
     <!-- Import the CDI API. -->

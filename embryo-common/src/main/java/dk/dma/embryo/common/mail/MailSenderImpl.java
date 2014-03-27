@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.mail;
+package dk.dma.embryo.common.mail;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;

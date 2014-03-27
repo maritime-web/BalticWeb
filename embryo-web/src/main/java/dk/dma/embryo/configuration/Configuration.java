@@ -45,34 +45,7 @@ public class Configuration implements Serializable {
     @PersistenceUnit(name = "arcticweb")
     EntityManagerFactory entityManagerFactory;
 
-    @Produces
-    public Session getMailSession(PropertyFileService propertyFileService) {
-        final String enabled = propertyFileService.getProperty("embryo.notification.mail.enabled");
-        final String smtpHost = propertyFileService.getProperty("embryo.notification.mail.smtp.host");
-        final String username = propertyFileService.getProperty("embryo.notification.mail.smtp.username", "");
-        final String password = propertyFileService.getProperty("embryo.notification.mail.smtp.password", "");
-        
-        if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
-            return null;
-        }
 
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", smtpHost);
-        Session session;
-        if (username == null || username.trim().equals("")) {
-            session = Session.getDefaultInstance(properties);
-        } else {
-            properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.starttls.enable", "true");
-            properties.put("mail.smtp.port", "587");
-            session = Session.getInstance(properties, new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(username, password);
-                }
-            });
-        }
-        return session;
-    }
 
     public static BeanManager getContainerBeanManager() {
         BeanManager bm;
