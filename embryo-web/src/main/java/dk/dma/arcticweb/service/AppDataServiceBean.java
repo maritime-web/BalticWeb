@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.persistence.IEntity;
+import dk.dma.embryo.common.util.DateTimeConverter;
 import dk.dma.embryo.component.RouteParserComponent;
 import dk.dma.embryo.component.RouteSaver;
 import dk.dma.embryo.dao.RealmDao;
@@ -65,7 +66,6 @@ import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.SecurityUtil;
 import dk.dma.embryo.security.authorization.Roles;
-import dk.dma.embryo.util.DateTimeConverter;
 
 @Singleton
 @Startup

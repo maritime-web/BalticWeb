@@ -33,13 +33,13 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 
 import dk.dma.arcticweb.service.GreenPosService;
+import dk.dma.embryo.common.util.DateTimeConverter;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
 import dk.dma.embryo.rest.json.GreenposRequest;
-import dk.dma.embryo.util.DateTimeConverter;
 
 /**
  * 

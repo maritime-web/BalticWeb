@@ -33,6 +33,7 @@ import org.mockito.Mock;
 import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.util.DateTimeConverter;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosFinalReport;
 import dk.dma.embryo.domain.GreenPosPositionReport;
@@ -44,7 +45,6 @@ import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.mail.MailSender;
 import dk.dma.embryo.rest.RequestAccessRestService.SignupRequest;
 import dk.dma.embryo.security.Subject;
-import dk.dma.embryo.util.DateTimeConverter;
 
 /**
  * @author Jesper Tejlgaard
