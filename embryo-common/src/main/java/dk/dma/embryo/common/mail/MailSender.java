@@ -20,6 +20,5 @@ package dk.dma.embryo.common.mail;
  * @author Jesper Tejlgaard
  */
 public interface MailSender {
-
-    void sendEmail(String toEmail, String from, String header, String body);
+    void sendEmail(Mail<?> mail);
 }

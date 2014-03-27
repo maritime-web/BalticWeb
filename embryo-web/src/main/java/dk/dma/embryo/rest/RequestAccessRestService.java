@@ -15,23 +15,28 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.embryo.service.MailService;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.user.RequestAccessMail;
+
 @Path("/request-access")
 public class RequestAccessRestService {
     @Inject
-    MailService mailService;
-
+    MailSender mailSender;
+    
+    @Inject
+    PropertyFileService propertyFileService;
+    
     @POST
     @Path("/save")
     @Consumes("application/json")
     public void save(SignupRequest request) {
-        mailService.newRequestAccess(request);
+        mailSender.sendEmail(new RequestAccessMail(request, propertyFileService));
     }
 
     public static class SignupRequest {

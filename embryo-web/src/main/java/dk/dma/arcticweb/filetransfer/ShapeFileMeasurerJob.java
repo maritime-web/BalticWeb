@@ -50,8 +50,8 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogFactory;
 import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.domain.ShapeFileMeasurement;
-import dk.dma.embryo.service.MailService;
 import dk.dma.embryo.service.ShapeFileService;
 
 @Singleton
@@ -71,7 +71,7 @@ public class ShapeFileMeasurerJob {
     private PropertyFileService propertyFileService;
 
     @Inject
-    private MailService mailService;
+    private MailSender mailSender;
 
     @Inject
     @Property(value = "embryo.iceChart.providers")
@@ -214,7 +214,7 @@ public class ShapeFileMeasurerJob {
         private void sendEmail(String provider, String chartName, Throwable t) {
             String to = propertyFileService.getProperty("embryo.iceChart." + provider + ".notification.email");
             if (to != null && to.trim().length() > 0 && !notifications.contains(chartName)) {
-                mailService.dmiNotification(chartName, t);
+                new IceChartNotificationMail(provider, chartName, t, propertyFileService).send(mailSender);
                 notifications.add(chartName, DateTime.now(DateTimeZone.UTC));
             }
         }

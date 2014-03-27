@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.GreenPosDaoImpl;
+import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.dao.VesselDao;
@@ -53,7 +54,6 @@ import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.domain.Voyage;
 import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.security.Subject;
-import dk.dma.embryo.service.MailService;
 
 /**
  * 
@@ -77,7 +77,7 @@ public class GreenPosServiceImplTest {
 
     private GreenPosDao greenPosDao;
 
-    private MailService mailService;
+    private MailSender mailSender;
     
     private ScheduleDao scheduleDao;
 
@@ -112,10 +112,10 @@ public class GreenPosServiceImplTest {
 
         subject = Mockito.mock(Subject.class);
         realmDao = Mockito.mock(RealmDao.class);
-        mailService = Mockito.mock(MailService.class);
+        mailSender = Mockito.mock(MailSender.class);
         scheduleDao = Mockito.mock(ScheduleDao.class);
 
-        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, realmDao, mailService, scheduleDao);
+        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, realmDao, mailSender, scheduleDao);
 
     }
 

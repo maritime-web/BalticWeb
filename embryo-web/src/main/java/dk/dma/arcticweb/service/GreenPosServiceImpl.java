@@ -30,6 +30,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
+import dk.dma.arcticweb.report.ReportMail;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.component.RouteActivator;
 import dk.dma.embryo.dao.RealmDao;
 import dk.dma.embryo.dao.ScheduleDao;
@@ -47,7 +50,6 @@ import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.Roles;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
-import dk.dma.embryo.service.MailService;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -59,7 +61,7 @@ public class GreenPosServiceImpl implements GreenPosService {
     private GreenPosDao greenPosDao;
 
     @Inject
-    private MailService mailService;
+    private MailSender mailSender;
 
     @Inject
     private Subject subject;
@@ -69,6 +71,9 @@ public class GreenPosServiceImpl implements GreenPosService {
 
     @Inject
     private ScheduleDao scheduleDao;
+    
+    @Inject 
+    private PropertyFileService propertyFileService;
 
     @Inject
     private RealmDao realmDao;
@@ -77,12 +82,12 @@ public class GreenPosServiceImpl implements GreenPosService {
     }
 
     public GreenPosServiceImpl(GreenPosDao reportingDao, VesselDao vesselDao, Subject subject,
-            RealmDao realmDao, MailService mailService, ScheduleDao scheduleDao) {
+            RealmDao realmDao, MailSender mailSender, ScheduleDao scheduleDao) {
         this.greenPosDao = reportingDao;
         this.vesselDao = vesselDao;
         this.subject = subject;
         this.realmDao = realmDao;
-        this.mailService = mailService;
+        this.mailSender = mailSender;
         this.scheduleDao = scheduleDao;
     }
 
@@ -137,7 +142,7 @@ public class GreenPosServiceImpl implements GreenPosService {
             new RouteActivator(scheduleDao, realmDao, subject).activateRoute(routeEnavId, activate);
         }
 
-        mailService.newGreenposReport(report);
+        mailSender.sendEmail(new ReportMail(report, subject.getUser().getEmail(), propertyFileService));
 
         return report.getEnavId();
     }
