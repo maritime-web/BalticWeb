@@ -18,6 +18,7 @@ package dk.dma.embryo.common.configuration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
@@ -36,8 +37,25 @@ public class PropertiesReader {
     public Properties read() throws IOException, URISyntaxException {
         Properties properties = new Properties();
         
-        if (getClass().getResourceAsStream(DEFAULT_CONFIGURATION_RESOURCE_NAME) != null) {
-            properties.load(getClass().getResourceAsStream(DEFAULT_CONFIGURATION_RESOURCE_NAME));
+        InputStream defaultStream = getClass().getResourceAsStream(DEFAULT_CONFIGURATION_RESOURCE_NAME);
+        if (defaultStream != null) {
+            Properties temp = new Properties();
+            temp.load(defaultStream);
+        
+            String moduleDefaults = temp.getProperty("propertyFileService.moduleDefaultConfigurations");
+            if(moduleDefaults!= null && moduleDefaults.trim().length() > 0){
+                for(String moduleDefault : moduleDefaults.split(",")){
+                    InputStream is = getClass().getResourceAsStream(moduleDefault + ".properties");
+                    if(is == null){
+                        logger.info("Could not find property file {}");
+                    }else{
+                        properties.load(is);
+                    }
+                }
+            }
+
+            // Add properties from main default configuration (and possibly overwrite properties from module properties)
+            properties.putAll(temp);
         }
         
         String externalConfigurationSystemProperty = properties.getProperty(

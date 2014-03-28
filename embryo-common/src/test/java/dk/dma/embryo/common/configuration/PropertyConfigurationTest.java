@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,12 +35,15 @@ public class PropertyConfigurationTest {
     @Inject
     ConfiguredClass service;
 
-    static {
+    @BeforeClass
+    public static void init() throws Exception {
         try {
-            String name = PropertyConfigurationTest.class.getResource("/configuration-test.properties").toURI().toString();
+            String name = PropertyConfigurationTest.class.getResource("/external-configuration.properties").toURI()
+                    .toString();
             System.setProperty("arcticweb.configuration", name);
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 
