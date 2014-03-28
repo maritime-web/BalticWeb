@@ -40,7 +40,7 @@ import org.apache.shiro.authz.AuthorizationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.domain.FormatException;
+import dk.dma.embryo.common.util.FormatException;
 
 /**
  * @author Jesper Tejlgaard

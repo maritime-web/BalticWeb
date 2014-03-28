@@ -23,6 +23,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import dk.dma.embryo.vessel.model.Route;
+import dk.dma.embryo.vessel.model.WayPoint;
+
 /**
  * @author Jesper Tejlgaard
  */

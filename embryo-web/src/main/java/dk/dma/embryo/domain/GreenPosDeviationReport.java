@@ -24,6 +24,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
+import dk.dma.embryo.vessel.model.Position;
 
 /**
  * Deviation may be reported as either a free form textual description {@link #deviation} or a modified voyage plan

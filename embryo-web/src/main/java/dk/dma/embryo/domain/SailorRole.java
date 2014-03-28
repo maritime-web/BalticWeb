@@ -21,6 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import dk.dma.embryo.vessel.model.Vessel;
+
 @NamedQueries({ @NamedQuery(name = "Sailor:withVessel", query = "SELECT r FROM SailorRole r inner join r.user AS u JOIN FETCH r.vessel where u.id = :id") })
 @Entity
 public class SailorRole extends Role {

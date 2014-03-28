@@ -38,21 +38,21 @@ import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.GreenPosDaoImpl;
 import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.dao.RealmDao;
-import dk.dma.embryo.dao.ScheduleDao;
-import dk.dma.embryo.dao.VesselDao;
-import dk.dma.embryo.dao.VesselDaoImpl;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
-import dk.dma.embryo.domain.Position;
 import dk.dma.embryo.domain.ReportedRoute;
 import dk.dma.embryo.domain.ReportedWayPoint;
-import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.Vessel;
-import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.domain.WayPoint;
 import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.vessel.model.Position;
+import dk.dma.embryo.vessel.model.Route;
+import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.model.Voyage;
+import dk.dma.embryo.vessel.model.WayPoint;
+import dk.dma.embryo.vessel.persistence.ScheduleDao;
+import dk.dma.embryo.vessel.persistence.VesselDao;
+import dk.dma.embryo.vessel.persistence.VesselDaoImpl;
 
 /**
  * 

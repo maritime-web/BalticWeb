@@ -23,6 +23,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
+import dk.dma.embryo.vessel.model.Position;
 
 /**
  * 

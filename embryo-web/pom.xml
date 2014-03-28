@@ -23,6 +23,7 @@
     <!-- persistence.xml properties -->
     <embryo-common.jar>embryo-common-${project.version}.jar</embryo-common.jar>
     <embryo-dataformats.jar>embryo-dataformats-${project.version}.jar</embryo-dataformats.jar>
+    <embryo-vessel.jar>embryo-vessel-${project.version}.jar</embryo-vessel.jar>
     
   </properties>
 
@@ -52,12 +53,22 @@
 
     <dependency>
       <groupId>dk.dma.arcticweb</groupId>
+      <artifactId>embryo-vessel</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>dk.dma.arcticweb</groupId>
       <artifactId>embryo-dataformats</artifactId>
     </dependency>
 
     <dependency>
       <groupId>dk.dma.arcticweb</groupId>
       <artifactId>embryo-msi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>dk.dma.arcticweb</groupId>
+      <artifactId>embryo-metoc</artifactId>
     </dependency>
 
     <dependency>
@@ -195,15 +206,6 @@
       <artifactId>validation-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.liquibase</groupId>
-      <artifactId>liquibase-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.mattbertolini</groupId>
-      <artifactId>liquibase-slf4j</artifactId>
-    </dependency>
 
 
     <!-- Test dependencies -->

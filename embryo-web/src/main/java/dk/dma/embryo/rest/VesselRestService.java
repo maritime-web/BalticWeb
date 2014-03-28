@@ -33,24 +33,24 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.AisDataService;
-import dk.dma.arcticweb.service.AisReplicatorJob;
 import dk.dma.arcticweb.service.GreenPosService;
-import dk.dma.arcticweb.service.MaxSpeedJob;
-import dk.dma.arcticweb.service.MaxSpeedJob.MaxSpeedRecording;
-import dk.dma.embryo.dao.VesselDao;
+import dk.dma.embryo.common.util.ParseUtils;
 import dk.dma.embryo.domain.GreenposSearch;
-import dk.dma.embryo.domain.ParseUtils;
-import dk.dma.embryo.domain.Route;
-import dk.dma.embryo.domain.Vessel;
-import dk.dma.embryo.domain.Voyage;
-import dk.dma.embryo.rest.json.VesselDetails;
-import dk.dma.embryo.rest.json.VesselDetails.AdditionalInformation;
-import dk.dma.embryo.rest.json.VesselOverview;
-import dk.dma.embryo.restclients.FullAisViewService;
-import dk.dma.embryo.restclients.LimitedAisViewService;
-import dk.dma.embryo.service.ScheduleService;
-import dk.dma.embryo.service.VesselService;
+import dk.dma.embryo.vessel.job.AisDataService;
+import dk.dma.embryo.vessel.job.AisReplicatorJob;
+import dk.dma.embryo.vessel.job.MaxSpeedJob;
+import dk.dma.embryo.vessel.job.MaxSpeedJob.MaxSpeedRecording;
+import dk.dma.embryo.vessel.json.VesselDetails;
+import dk.dma.embryo.vessel.json.VesselDetails.AdditionalInformation;
+import dk.dma.embryo.vessel.json.client.FullAisViewService;
+import dk.dma.embryo.vessel.json.client.LimitedAisViewService;
+import dk.dma.embryo.vessel.json.VesselOverview;
+import dk.dma.embryo.vessel.model.Route;
+import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.model.Voyage;
+import dk.dma.embryo.vessel.persistence.VesselDao;
+import dk.dma.embryo.vessel.service.ScheduleService;
+import dk.dma.embryo.vessel.service.VesselService;
 
 @Path("/vessel")
 public class VesselRestService {

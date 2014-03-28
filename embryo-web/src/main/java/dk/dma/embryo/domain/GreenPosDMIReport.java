@@ -20,6 +20,8 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import dk.dma.embryo.vessel.model.Position;
+
 /**
  * 
  * @author Jesper Tejlgaard

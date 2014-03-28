@@ -25,10 +25,10 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.dao.RealmDao;
-import dk.dma.embryo.dao.ScheduleDao;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
+import dk.dma.embryo.vessel.persistence.ScheduleDao;
 
 /**
  * Subject class wrapping all access to shiro security and also decorating with extra syntactic sugar.

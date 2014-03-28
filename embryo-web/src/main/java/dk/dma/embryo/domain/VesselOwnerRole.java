@@ -22,6 +22,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 
+import dk.dma.embryo.vessel.model.Vessel;
+
 @Entity
 public class VesselOwnerRole extends Role {
     private static final long serialVersionUID = 1L;

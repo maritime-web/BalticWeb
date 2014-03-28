@@ -21,8 +21,8 @@ import javax.interceptor.InvocationContext;
 
 import org.apache.shiro.authz.AuthorizationException;
 
-import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.Subject;
+import dk.dma.embryo.vessel.model.Vessel;
 
 public class VesselModifierInterceptor{
     

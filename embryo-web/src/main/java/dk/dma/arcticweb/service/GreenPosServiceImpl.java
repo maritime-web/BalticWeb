@@ -33,23 +33,23 @@ import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.report.ReportMail;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.component.RouteActivator;
 import dk.dma.embryo.dao.RealmDao;
-import dk.dma.embryo.dao.ScheduleDao;
-import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
 import dk.dma.embryo.domain.GreenposMinimal;
 import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.domain.ReportedRoute;
-import dk.dma.embryo.domain.Route;
 import dk.dma.embryo.domain.SailorRole;
-import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.Subject;
 import dk.dma.embryo.security.authorization.Roles;
 import dk.dma.embryo.security.authorization.RolesAllowAll;
+import dk.dma.embryo.vessel.component.RouteActivator;
+import dk.dma.embryo.vessel.model.Route;
+import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.persistence.ScheduleDao;
+import dk.dma.embryo.vessel.persistence.VesselDao;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -139,7 +139,7 @@ public class GreenPosServiceImpl implements GreenPosService {
         report = greenPosDao.saveEntity(report);
         
         if(routeEnavId != null && activate != null){
-            new RouteActivator(scheduleDao, realmDao, subject).activateRoute(routeEnavId, activate);
+            new RouteActivator(scheduleDao).activateRoute(routeEnavId, activate);
         }
 
         mailSender.sendEmail(new ReportMail(report, subject.getUser().getEmail(), propertyFileService));

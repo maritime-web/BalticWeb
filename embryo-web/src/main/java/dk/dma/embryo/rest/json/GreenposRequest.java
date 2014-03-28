@@ -17,6 +17,8 @@ package dk.dma.embryo.rest.json;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import dk.dma.embryo.vessel.json.ActiveRoute;
+
 public class GreenposRequest {
 
     private ActiveRoute activeRoute;

@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import dk.dma.embryo.vessel.json.Voyage;
+
 public class GreenPos {
 
     private String id;

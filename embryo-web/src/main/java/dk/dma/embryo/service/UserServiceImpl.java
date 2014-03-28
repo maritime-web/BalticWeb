@@ -24,17 +24,17 @@ import javax.interceptor.Interceptors;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.dao.RealmDao;
-import dk.dma.embryo.dao.VesselDao;
 import dk.dma.embryo.domain.AdministratorRole;
 import dk.dma.embryo.domain.ReportingAuthorityRole;
 import dk.dma.embryo.domain.Role;
 import dk.dma.embryo.domain.SailorRole;
 import dk.dma.embryo.domain.SecuredUser;
 import dk.dma.embryo.domain.ShoreRole;
-import dk.dma.embryo.domain.Vessel;
 import dk.dma.embryo.security.AuthorizationChecker;
 import dk.dma.embryo.security.SecurityUtil;
 import dk.dma.embryo.security.authorization.Roles;
+import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.persistence.VesselDao;
 
 @Stateless
 @Interceptors(value = AuthorizationChecker.class)

@@ -24,17 +24,17 @@ import javax.ws.rs.core.Application;
 
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.dataformats.json.IceObservationRestService;
+import dk.dma.embryo.metoc.json.MetocRestService;
 import dk.dma.embryo.rest.AuthenticationService;
 import dk.dma.embryo.rest.BerthRestService;
-import dk.dma.embryo.rest.MetocRestService;
 import dk.dma.embryo.rest.MsiRestService;
 import dk.dma.embryo.rest.RequestAccessRestService;
-import dk.dma.embryo.rest.RouteRestService;
-import dk.dma.embryo.rest.RouteUploadRestService;
-import dk.dma.embryo.rest.ScheduleRestService;
 import dk.dma.embryo.rest.ShapeFileRestService;
 import dk.dma.embryo.rest.UserRestService;
 import dk.dma.embryo.rest.VesselRestService;
+import dk.dma.embryo.vessel.json.RouteRestService;
+import dk.dma.embryo.vessel.json.RouteUploadRestService;
+import dk.dma.embryo.vessel.json.ScheduleRestService;
 
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {

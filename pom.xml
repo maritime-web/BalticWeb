@@ -40,6 +40,13 @@
       </dependency>
 
 
+
+      <dependency>
+        <groupId>dk.dma.arcticweb</groupId>
+        <artifactId>embryo-enav-io</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>dk.dma.arcticweb</groupId>
         <artifactId>embryo-common</artifactId>
@@ -48,13 +55,13 @@
 
       <dependency>
         <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-database</artifactId>
+        <artifactId>embryo-vessel</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-enav-io</artifactId>
+        <artifactId>embryo-metoc</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -342,8 +349,10 @@
   <modules>
     <module>embryo-enav-io</module>
     <module>embryo-common</module>
+    <module>embryo-vessel</module>
     <module>embryo-dataformats</module>
     <module>embryo-msi</module>
+    <module>embryo-metoc</module>
     <module>embryo-web</module>
   </modules>
 

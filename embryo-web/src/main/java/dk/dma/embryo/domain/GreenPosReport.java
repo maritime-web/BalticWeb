@@ -33,6 +33,7 @@ import org.joda.time.DateTime;
 import dk.dma.embryo.common.persistence.BaseEntity;
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
+import dk.dma.embryo.vessel.model.Position;
 
 /**
  * 

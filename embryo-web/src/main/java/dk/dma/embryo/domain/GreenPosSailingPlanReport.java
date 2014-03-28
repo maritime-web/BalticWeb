@@ -31,6 +31,7 @@ import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.rest.json.GreenPos;
 import dk.dma.embryo.rest.json.GreenPosShort;
+import dk.dma.embryo.vessel.model.Position;
 
 /**
  * 

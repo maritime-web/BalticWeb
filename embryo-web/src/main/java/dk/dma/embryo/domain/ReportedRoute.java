@@ -26,6 +26,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import dk.dma.embryo.common.persistence.BaseEntity;
+import dk.dma.embryo.vessel.model.Route;
+import dk.dma.embryo.vessel.model.WayPoint;
 
 @Entity
 public class ReportedRoute extends BaseEntity<Long> {

@@ -31,9 +31,9 @@ import dk.dma.embryo.domain.GreenPosDeviationReport;
 import dk.dma.embryo.domain.GreenPosFinalReport;
 import dk.dma.embryo.domain.GreenPosPositionReport;
 import dk.dma.embryo.domain.GreenPosSailingPlanReport;
-import dk.dma.embryo.domain.Position;
 import dk.dma.embryo.domain.ReportedRoute;
 import dk.dma.embryo.domain.ReportedWayPoint;
+import dk.dma.embryo.vessel.model.Position;
 
 /**
  * @author Jesper Tejlgaard
