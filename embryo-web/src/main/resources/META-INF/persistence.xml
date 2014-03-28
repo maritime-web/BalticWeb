@@ -7,6 +7,7 @@
     <jta-data-source>java:jboss/datasources/embryoDS</jta-data-source>
     
     <jar-file>lib/${embryo-common.jar}</jar-file>
+    <jar-file>lib/${embryo-dataformats.jar}</jar-file>
 
     <properties>
       <!-- Properties for Hibernate -->

@@ -35,8 +35,8 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.Cache;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.service.ShapeFileService;
-import dk.dma.embryo.service.ShapeFileService.Shape;
+import dk.dma.embryo.dataformats.service.ShapeFileService;
+import dk.dma.embryo.dataformats.service.ShapeFileService.Shape;
 
 @Path("/shapefile")
 public class ShapeFileRestService {

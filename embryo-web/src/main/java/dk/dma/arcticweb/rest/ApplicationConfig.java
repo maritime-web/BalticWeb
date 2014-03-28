@@ -23,6 +23,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import dk.dma.embryo.common.log.LogEntryRestService;
+import dk.dma.embryo.dataformats.json.IceObservationRestService;
 import dk.dma.embryo.rest.AuthenticationService;
 import dk.dma.embryo.rest.BerthRestService;
 import dk.dma.embryo.rest.MetocRestService;
