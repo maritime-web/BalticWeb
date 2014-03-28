@@ -8,10 +8,11 @@
     
     <jar-file>lib/${embryo-common.jar}</jar-file>
     <jar-file>lib/${embryo-dataformats.jar}</jar-file>
+    <jar-file>lib/${embryo-vessel.jar}</jar-file>
 
     <properties>
       <!-- Properties for Hibernate -->
-      <property name="hibernate.dialect" value="dk.dma.embryo.db.MySql5BitBooleanDialect" />
+      <property name="hibernate.dialect" value="dk.dma.embryo.common.db.MySql5BitBooleanDialect" />
       <property name="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
       <property name="hibernate.show_sql" value="false" />
     </properties>
