@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 
 import dk.dma.arcticweb.dao.GreenPosDao;
 import dk.dma.arcticweb.dao.GreenPosDaoImpl;
@@ -155,8 +154,6 @@ public class GreenPosServiceImplTest {
         entityManager.clear();
 
         entityManager.getTransaction().begin();
-
-        LoggerFactory.getLogger(getClass()).error("WHYWHY");
 
         List<GreenPosReport> reports = greenPosService.listReports();
         Assert.assertEquals(1, reports.size());
