@@ -84,6 +84,10 @@ public class MaxSpeedJob {
 
         if (enabled != null && "true".equals(enabled.trim().toLowerCase()) && cron != null) {
             TimerConfig config = new TimerConfig(null, false);
+            // Initial calculation - 30 seconds later than initial AIS replication
+            service.createSingleActionTimer(30000, config);
+
+            // Scheduled calculation
             service.createCalendarTimer(cron, config);
         } else {
             logger.info("Max Speed job not enabled");
