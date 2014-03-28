@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.dataformats.job.AariHttpReaderJob;
 
 /**
  * @author Jesper Tejlgaard

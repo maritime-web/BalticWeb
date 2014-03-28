@@ -24,8 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
 
-import dk.dma.embryo.dataformats.job.HttpContentFilesReader;
-
 /**
  * @author Jesper Tejlgaard
  */

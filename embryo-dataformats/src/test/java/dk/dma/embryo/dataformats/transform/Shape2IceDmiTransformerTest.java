@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import dk.dma.embryo.dataformats.model.IceObservation;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
-import dk.dma.embryo.dataformats.transform.Shape2IceDmiTransformer;
 
 /**
  * @author Jesper Tejlgaard

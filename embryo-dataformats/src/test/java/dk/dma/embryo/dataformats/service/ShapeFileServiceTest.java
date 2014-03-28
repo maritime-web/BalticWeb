@@ -28,9 +28,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import dk.dma.embryo.dataformats.service.ShapeFileService;
-import dk.dma.embryo.dataformats.service.ShapeFileServiceImpl;
-
 public class ShapeFileServiceTest {
 
     private ShapeFileServiceImpl service;

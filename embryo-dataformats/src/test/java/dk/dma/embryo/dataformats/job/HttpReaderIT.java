@@ -20,8 +20,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import dk.dma.embryo.dataformats.job.HttpReader;
-
 /**
  * Integration Test reading folder and files from Russian Wether Service (AARI)
  * 

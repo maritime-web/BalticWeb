@@ -21,8 +21,6 @@ import java.io.FilenameFilter;
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
 
-import dk.dma.embryo.dataformats.job.FileUtility;
-
 /**
  * @author Jesper Tejlgaard
  */
