@@ -13,6 +13,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
+
   <dependencies>
     <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse to work -->
     <dependency>
