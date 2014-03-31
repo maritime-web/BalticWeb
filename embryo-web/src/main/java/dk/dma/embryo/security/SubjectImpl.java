@@ -132,24 +132,4 @@ public class SubjectImpl implements Subject {
 
         return mmsi.equals(sailor.getVessel().getMmsi());
     }
-
-
-    @Override
-    public boolean authorizedToModifyRoute(String enavId) {
-        if(!hasRole(SailorRole.class)){
-            return false;
-        }
-
-        if(enavId == null || enavId.length() == 0){
-            return false;
-        }
-
-        Long mmsi = scheduleDao.getMmsiByRouteEnavId(enavId);
-        
-        if(mmsi == null){
-            return false;
-        }
-        
-        return authorizedToModifyVessel(mmsi);
-    }
 }

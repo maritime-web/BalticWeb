@@ -53,8 +53,6 @@ public interface Subject extends Serializable {
 
     boolean authorizedToModifyVessel(Long mmsi) ;
     
-    boolean authorizedToModifyRoute(String enavId) ;
-
     void logout();
 
     boolean isLoggedIn();

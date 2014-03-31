@@ -106,27 +106,6 @@ public class SubjectTest extends AbstractShiroTest {
 
     @Test
     @InSessionScope
-    public void testAuthorizedToModifyRoute() {
-        String user = "Ole";
-        String pw = "pw";
-        Long mmsi = 2L;
-
-        SailorRole sailor = new SailorRole();
-        sailor.setVessel(new Vessel(mmsi));
-        
-        Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw ,null));
-        Mockito.when(realmDao.getSailor(1L)).thenReturn(sailor);
-        Mockito.when(scheduleDao.getMmsiByRouteEnavId("foo")).thenReturn(mmsi);
-
-        subject.login(user, pw);
-        
-        boolean authorized = subject.authorizedToModifyRoute("foo");
-        
-        Assert.assertTrue(authorized);
-    }
-
-    @Test
-    @InSessionScope
     public void testAuthorizedToModifyVessel() {
         String user = "Ole";
         String pw = "pw";
