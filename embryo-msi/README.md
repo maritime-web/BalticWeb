@@ -9,7 +9,7 @@ Add dependency to your POM:
     <dependency>
       <groupId>dk.dma.embryo</groupId>
       <artifactId>embryo-msi</artifactId>
-      <artifactId>1.6</artifactId>
+      <version>1.6</version>
     </dependency>
 
 ### For Non-Maven Users
