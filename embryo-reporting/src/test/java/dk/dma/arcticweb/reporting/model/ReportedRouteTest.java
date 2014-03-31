@@ -23,8 +23,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import dk.dma.arcticweb.reporting.model.ReportedRoute;
-import dk.dma.arcticweb.reporting.model.ReportedWayPoint;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.WayPoint;
 

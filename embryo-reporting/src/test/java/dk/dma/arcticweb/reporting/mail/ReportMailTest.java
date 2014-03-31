@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import dk.dma.arcticweb.reporting.mail.ReportMail;
 import dk.dma.arcticweb.reporting.model.GreenPosDeviationReport;
 import dk.dma.arcticweb.reporting.model.GreenPosFinalReport;
 import dk.dma.arcticweb.reporting.model.GreenPosPositionReport;

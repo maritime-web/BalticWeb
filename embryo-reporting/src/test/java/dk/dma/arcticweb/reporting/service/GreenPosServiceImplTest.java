@@ -40,8 +40,6 @@ import dk.dma.arcticweb.reporting.model.ReportedRoute;
 import dk.dma.arcticweb.reporting.model.ReportedWayPoint;
 import dk.dma.arcticweb.reporting.persistence.GreenPosDao;
 import dk.dma.arcticweb.reporting.persistence.GreenPosDaoImpl;
-import dk.dma.arcticweb.reporting.service.GreenPosService;
-import dk.dma.arcticweb.reporting.service.GreenPosServiceImpl;
 import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
