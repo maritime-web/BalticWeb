@@ -33,9 +33,9 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.GreenPosService;
+import dk.dma.arcticweb.reporting.model.GreenposSearch;
+import dk.dma.arcticweb.reporting.service.GreenPosService;
 import dk.dma.embryo.common.util.ParseUtils;
-import dk.dma.embryo.domain.GreenposSearch;
 import dk.dma.embryo.vessel.job.AisDataService;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
 import dk.dma.embryo.vessel.job.MaxSpeedJob;

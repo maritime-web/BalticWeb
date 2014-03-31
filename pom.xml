@@ -83,6 +83,12 @@
       </dependency>
 
       <dependency>
+        <groupId>dk.dma.arcticweb</groupId>
+        <artifactId>embryo-reporting</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>dk.dma.enav</groupId>
         <artifactId>enav-model</artifactId>
         <version>0.1</version>
@@ -359,6 +365,7 @@
     <module>embryo-dataformats</module>
     <module>embryo-msi</module>
     <module>embryo-metoc</module>
+    <module>embryo-reporting</module>
     <module>embryo-web</module>
   </modules>
 

@@ -24,6 +24,7 @@
     <embryo-dataformats.jar>embryo-dataformats-${project.version}.jar</embryo-dataformats.jar>
     <embryo-vessel.jar>embryo-vessel-${project.version}.jar</embryo-vessel.jar>
     <embryo-user.jar>embryo-user-${project.version}.jar</embryo-user.jar>
+    <embryo-reporting.jar>embryo-reporting-${project.version}.jar</embryo-reporting.jar>
     
   </properties>
 
@@ -75,6 +76,12 @@
       <groupId>dk.dma.arcticweb</groupId>
       <artifactId>embryo-metoc</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>dk.dma.arcticweb</groupId>
+      <artifactId>embryo-reporting</artifactId>
+    </dependency>
+
 
     <dependency>
       <groupId>dk.dma.enav</groupId>

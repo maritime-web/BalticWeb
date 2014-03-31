@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import dk.dma.arcticweb.reporting.json.GreenPosRestService;
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.dataformats.json.IceObservationRestService;
 import dk.dma.embryo.metoc.json.MetocRestService;

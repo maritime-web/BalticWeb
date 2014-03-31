@@ -16,42 +16,12 @@
     <class>dk.dma.embryo.vessel.model.Route</class>
     <class>dk.dma.embryo.vessel.model.WayPoint</class>
     <class>dk.dma.embryo.vessel.model.RouteLeg</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosDeviationReport</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosFinalReport</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosPositionReport</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosReport</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosSailingPlanReport</class>
-    <class>dk.dma.arcticweb.reporting.model.ReportedRoute</class>
-    <class>dk.dma.arcticweb.reporting.model.ReportedWayPoint</class>
 
     <validation-mode>CALLBACK</validation-mode>
 
     <properties>
       <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
       <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:target/h2/testdb;create=true" />
-      <property name="javax.persistence.jdbc.user" value="embryo" />
-      <property name="javax.persistence.jdbc.password" value="embryo" />
-
-      <!-- Properties for Hibernate -->
-      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-      <property name="hibernate.show_sql" value="false" />
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-    </properties>
-
-  </persistence-unit>
-  <persistence-unit name="mysqlTest" transaction-type="RESOURCE_LOCAL">
-    <class>dk.dma.arcticweb.reporting.model.ReportedVoyage</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosDeviationReport</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosFinalReport</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosPositionReport</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosReport</class>
-    <class>dk.dma.arcticweb.reporting.model.GreenPosSailingPlanReport</class>
-
-    <validation-mode>CALLBACK</validation-mode>
-
-    <properties>
-      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-      <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:target/h2/mysqldb;MODE=MySQL;create=true" />
       <property name="javax.persistence.jdbc.user" value="embryo" />
       <property name="javax.persistence.jdbc.password" value="embryo" />
 

@@ -10,6 +10,7 @@
     <jar-file>lib/${embryo-dataformats.jar}</jar-file>
     <jar-file>lib/${embryo-vessel.jar}</jar-file>
     <jar-file>lib/${embryo-user.jar}</jar-file>
+    <jar-file>lib/${embryo-reporting.jar}</jar-file>
 
     <properties>
       <!-- Properties for Hibernate -->
