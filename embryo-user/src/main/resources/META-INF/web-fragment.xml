@@ -26,24 +26,5 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
-    <filter>
-        <filter-name>CacheForeverFilter</filter-name>
-        <filter-class>dk.dma.embryo.servlets.CacheForeverFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>CacheForeverFilter</filter-name>
-        <url-pattern>/map/*</url-pattern>
-    </filter-mapping>
-
-    <filter>
-        <filter-name>SetCacheManifestContentTypeFilter</filter-name>
-        <filter-class>dk.dma.embryo.servlets.SetContentTypeFilter</filter-class>
-        <init-param>
-            <param-name>ContentType</param-name>
-            <param-value>text/cache-manifest</param-value>
-        </init-param>
-    </filter>
-
 </web-fragment>
     
