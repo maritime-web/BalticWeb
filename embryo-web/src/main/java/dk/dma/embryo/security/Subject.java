@@ -55,8 +55,6 @@ public interface Subject extends Serializable {
     
     boolean authorizedToModifyRoute(String enavId) ;
 
-    boolean authorizedToModifyVoyage(String enavId) ;
-
     void logout();
 
     boolean isLoggedIn();

@@ -152,23 +152,4 @@ public class SubjectImpl implements Subject {
         
         return authorizedToModifyVessel(mmsi);
     }
-    
-    @Override
-    public boolean authorizedToModifyVoyage(String enavId) {
-        if(!hasRole(SailorRole.class)){
-            return false;
-        }
-        
-        if(enavId == null || enavId.length() == 0){
-            return false;
-        }
-
-        Long mmsi = scheduleDao.getMmsiByVoyageEnavId(enavId);
-        if(mmsi == null){
-            return false;
-        }
-        
-        return authorizedToModifyVessel(mmsi);
-    }
-    
 }
