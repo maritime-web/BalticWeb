@@ -26,11 +26,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dk.dma.embryo.domain.Role;
-import dk.dma.embryo.domain.SailorRole;
-import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.ShoreRole;
-import dk.dma.embryo.domain.VesselOwnerRole;
+import dk.dma.embryo.user.model.Role;
+import dk.dma.embryo.user.model.SailorRole;
+import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.ShoreRole;
+import dk.dma.embryo.user.model.VesselOwnerRole;
+import dk.dma.embryo.user.persistence.RealmDao;
+import dk.dma.embryo.user.persistence.RealmDaoImpl;
 
 public class RealmDaoImplTest {
 

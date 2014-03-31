@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-fragment metadata-complete="true" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
+
+    <context-param>
+        <param-name>shiroEnvironmentClass</param-name>
+        <param-value>dk.dma.embryo.user.security.ShiroWebEnvironment</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>ShiroFilter</filter-name>
+        <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ShiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>CacheForeverFilter</filter-name>
+        <filter-class>dk.dma.embryo.servlets.CacheForeverFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CacheForeverFilter</filter-name>
+        <url-pattern>/map/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>SetCacheManifestContentTypeFilter</filter-name>
+        <filter-class>dk.dma.embryo.servlets.SetContentTypeFilter</filter-class>
+        <init-param>
+            <param-name>ContentType</param-name>
+            <param-value>text/cache-manifest</param-value>
+        </init-param>
+    </filter>
+
+</web-fragment>
+    

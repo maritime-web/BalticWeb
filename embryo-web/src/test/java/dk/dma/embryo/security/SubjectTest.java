@@ -40,12 +40,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import dk.dma.embryo.dao.RealmDao;
-import dk.dma.embryo.domain.ReportingAuthorityRole;
-import dk.dma.embryo.domain.Role;
-import dk.dma.embryo.domain.SailorRole;
-import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.domain.ShoreRole;
+import dk.dma.embryo.user.model.ReportingAuthorityRole;
+import dk.dma.embryo.user.model.Role;
+import dk.dma.embryo.user.model.SailorRole;
+import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.ShoreRole;
+import dk.dma.embryo.user.persistence.RealmDao;
+import dk.dma.embryo.user.security.Subject;
+import dk.dma.embryo.user.security.SubjectImpl;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
 

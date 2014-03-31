@@ -27,8 +27,8 @@ import org.jglue.cdiunit.CdiRunner;
 import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 
+import dk.dma.embryo.common.configuration.Configuration;
 import dk.dma.embryo.common.configuration.LogConfiguration;
-import dk.dma.embryo.configuration.Configuration;
 
 /**
  * Abstract test case enabling Shiro in test environments.

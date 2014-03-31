@@ -16,8 +16,8 @@
 package dk.dma.embryo.rest;
 
 import dk.dma.embryo.msi.MsiClient;
-import dk.dma.embryo.security.AuthorizationChecker;
-import dk.dma.embryo.security.authorization.RolesAllowAll;
+import dk.dma.embryo.user.security.AuthorizationChecker;
+import dk.dma.embryo.user.security.authorization.RolesAllowAll;
 
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;

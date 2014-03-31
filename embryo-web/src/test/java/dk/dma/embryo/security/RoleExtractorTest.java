@@ -22,9 +22,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import dk.dma.embryo.domain.SailorRole;
-import dk.dma.embryo.security.authorization.Roles;
-import dk.dma.embryo.security.authorization.RolesAllowAll;
+import dk.dma.embryo.user.model.SailorRole;
+import dk.dma.embryo.user.security.RoleExtractor;
+import dk.dma.embryo.user.security.authorization.Roles;
+import dk.dma.embryo.user.security.authorization.RolesAllowAll;
 
 /**
  * @author Jesper Tejlgaard

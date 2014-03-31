@@ -24,6 +24,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+    <shiro.version>1.2.2</shiro.version>
     <version.org.jboss.spec.javaee6>3.0.2.Final</version.org.jboss.spec.javaee6>
     <hibernate.version>4.0.1.Final</hibernate.version>
     <jodatime.version>4.0.1.Final</jodatime.version>
@@ -38,8 +39,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
-
 
       <dependency>
         <groupId>dk.dma.arcticweb</groupId>
@@ -56,6 +55,12 @@
       <dependency>
         <groupId>dk.dma.arcticweb</groupId>
         <artifactId>embryo-vessel</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>dk.dma.arcticweb</groupId>
+        <artifactId>embryo-user</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -350,6 +355,7 @@
     <module>embryo-enav-io</module>
     <module>embryo-common</module>
     <module>embryo-vessel</module>
+    <module>embryo-user</module>
     <module>embryo-dataformats</module>
     <module>embryo-msi</module>
     <module>embryo-metoc</module>

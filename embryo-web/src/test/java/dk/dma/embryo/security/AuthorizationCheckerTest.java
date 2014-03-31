@@ -33,10 +33,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import dk.dma.embryo.common.configuration.LogConfiguration;
-import dk.dma.embryo.domain.Role;
-import dk.dma.embryo.domain.SailorRole;
-import dk.dma.embryo.domain.SecuredUser;
-import dk.dma.embryo.security.authorization.Roles;
+import dk.dma.embryo.user.model.Role;
+import dk.dma.embryo.user.model.SailorRole;
+import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.security.AuthorizationChecker;
+import dk.dma.embryo.user.security.Subject;
+import dk.dma.embryo.user.security.authorization.Roles;
 
 /**
  * @author Jesper Tejlgaard
