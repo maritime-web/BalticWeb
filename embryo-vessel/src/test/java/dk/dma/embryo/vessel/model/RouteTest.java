@@ -18,7 +18,6 @@ package dk.dma.embryo.vessel.model;
 import org.junit.Assert;
 import org.junit.Test;
 
-import dk.dma.embryo.vessel.model.WayPoint;
 import dk.dma.enav.model.voyage.Route;
 import dk.dma.enav.model.voyage.RouteLeg;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;

@@ -23,7 +23,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import dk.dma.embryo.vessel.component.MaxSpeedExtractor;
 import dk.dma.embryo.vessel.job.MaxSpeedJob.MaxSpeedRecording;
 
 /**

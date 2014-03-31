@@ -20,7 +20,6 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import dk.dma.embryo.vessel.component.RouteDecorator;
 import dk.dma.enav.model.voyage.Route;
 import dk.dma.enav.model.voyage.RouteLeg;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;

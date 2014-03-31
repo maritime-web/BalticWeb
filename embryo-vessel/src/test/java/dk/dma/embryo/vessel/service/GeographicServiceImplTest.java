@@ -29,8 +29,6 @@ import org.junit.Test;
 
 import dk.dma.embryo.vessel.model.Berth;
 import dk.dma.embryo.vessel.persistence.GeographicDaoImpl;
-import dk.dma.embryo.vessel.service.GeographicService;
-import dk.dma.embryo.vessel.service.GeographicServiceImpl;
 
 public class GeographicServiceImplTest {
 

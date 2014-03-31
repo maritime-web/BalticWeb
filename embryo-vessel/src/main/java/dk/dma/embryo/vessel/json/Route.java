@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import dk.dma.enav.model.MaritimeId;
+
 public class Route {
 
     private final List<Waypoint> waypoints = new ArrayList<>();

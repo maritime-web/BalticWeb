@@ -44,8 +44,6 @@ import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
 import dk.dma.embryo.vessel.model.WayPoint;
 import dk.dma.embryo.vessel.persistence.ScheduleDaoImpl;
-import dk.dma.embryo.vessel.service.ScheduleService;
-import dk.dma.embryo.vessel.service.ScheduleServiceImpl;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 
 public class ScheduleServiceImplTest {

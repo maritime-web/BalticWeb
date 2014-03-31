@@ -25,8 +25,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.client.ProxyFactory;
 
 import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.vessel.json.client.FullAisViewService;
-import dk.dma.embryo.vessel.json.client.LimitedAisViewService;
 
 @Singleton
 public class AisJsonClientFactory {
