@@ -41,6 +41,10 @@ public class CommonExceptionMappers {
         return t;
     }
 
+    public static Class<?>[] getMappers(){
+        return CommonExceptionMappers.class.getClasses();
+    }
+
     @Provider
     public static class EJBTransactionRolledbackMapper implements ExceptionMapper<EJBTransactionRolledbackException> {
         @Override
@@ -94,9 +98,5 @@ public class CommonExceptionMappers {
         public Response toResponse(FormatException exception) {
             return Response.status(Status.BAD_REQUEST).entity(exception.getMessage()).build();
         }
-    }
-    
-    public static Class<?>[] getMappers(){
-        return CommonExceptionMappers.class.getClasses();
     }
 }
