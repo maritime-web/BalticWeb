@@ -11,7 +11,6 @@ module.exports = function(config) {
 		        'http://openlayers.org/api/OpenLayers.js',
 		        'http://www.openstreetmap.org/openlayers/OpenStreetMap.js',
 		        'http://code.jquery.com/ui/1.9.1/jquery-ui.js',
-		        'src/main/webapp/js/ext/bootstrap.min.js',
 		        'http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js',
 				'src/main/webapp/js/ext/*.js',
 				'src/test/lib/angular-1.1.5/angular-mocks.js',
