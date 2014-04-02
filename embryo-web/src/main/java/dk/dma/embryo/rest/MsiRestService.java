@@ -15,9 +15,7 @@
  */
 package dk.dma.embryo.rest;
 
-import dk.dma.embryo.msi.MsiClient;
-import dk.dma.embryo.user.security.AuthorizationChecker;
-import dk.dma.embryo.user.security.authorization.RolesAllowAll;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
@@ -28,10 +26,12 @@ import javax.ws.rs.Produces;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 
-import java.util.List;
+import dk.dma.embryo.msi.MsiClient;
+import dk.dma.embryo.user.security.AuthorizationChecker;
+import dk.dma.embryo.user.security.authorization.RolesAllowAll;
 
 @Path("/msi")
-@Interceptors(value=AuthorizationChecker.class)
+//@Interceptors(value=AuthorizationChecker.class)
 public class MsiRestService {
     @Inject
     private MsiClient msiClient;
@@ -41,7 +41,7 @@ public class MsiRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    @RolesAllowAll
+//    @RolesAllowAll
     public List<MsiClient.MsiItem> listActiveWarnings() {
         return msiClient.getActiveWarnings();
     }
