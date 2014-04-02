@@ -29,7 +29,6 @@ import dk.frv.enav.msi.ws.warning.MsiService;
 import dk.frv.enav.msi.ws.warning.WarningService;
 import dk.frv.msiedit.core.webservice.message.MsiDto;
 
-
 public class MsiClientImpl implements MsiClient {
     @Inject
     @Property("embryo.msi.endpoint")
@@ -46,26 +45,23 @@ public class MsiClientImpl implements MsiClient {
 
     @PostConstruct
     public void init() {
-        msiService = new WarningService(getClass().getResource("/wsdl/warning.wsdl"),
-                new QName("http://enav.frv.dk/msi/ws/warning", "WarningService")).getMsiServiceBeanPort();
+        msiService = new WarningService(getClass().getResource("/wsdl/warning.wsdl"), new QName("http://enav.frv.dk/msi/ws/warning", "WarningService"))
+                .getMsiServiceBeanPort();
 
-        ((BindingProvider) msiService).getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpoint
-        );
+        ((BindingProvider) msiService).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpoint);
     }
 
     public List<MsiClient.MsiItem> getActiveWarnings() {
         try {
             List<MsiClient.MsiItem> result = new ArrayList<>();
-            
+
             String[] countriesArr = countries.split(",");
 
-            for(String country : countriesArr) {
-            	for (MsiDto md : msiService.getActiveWarningCountry(country).getItem()) {
-            		result.add(new MsiClient.MsiItem(md));
-            	}
+            for (String country : countriesArr) {
+                for (MsiDto md : msiService.getActiveWarningCountry(country).getItem()) {
+                    result.add(new MsiClient.MsiItem(md));
+                }
             }
-            
 
             embryoLogService.info("Read " + result.size() + " warnings from MSI service: " + endpoint);
             return result;
