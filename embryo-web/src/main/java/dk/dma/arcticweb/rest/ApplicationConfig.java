@@ -24,6 +24,7 @@ import javax.ws.rs.core.Application;
 
 import dk.dma.arcticweb.reporting.json.GreenPosRestService;
 import dk.dma.embryo.common.log.LogEntryRestService;
+import dk.dma.embryo.common.rs.CommonExceptionMappers;
 import dk.dma.embryo.dataformats.json.IceObservationRestService;
 import dk.dma.embryo.metoc.json.MetocRestService;
 import dk.dma.embryo.rest.BerthRestService;
@@ -40,10 +41,19 @@ import dk.dma.embryo.vessel.json.ScheduleRestService;
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
-        return new HashSet<Class<?>>(Arrays.asList(RouteRestService.class, RouteUploadRestService.class,
-                ShapeFileRestService.class, GreenPosRestService.class,
-                BerthRestService.class, AuthenticationService.class, TestDataRestService.class,
-                IceObservationRestService.class, MsiRestService.class, MetocRestService.class, VesselRestService.class,
-                ScheduleRestService.class, LogEntryRestService.class, UserRestService.class, RequestAccessRestService.class));
+        HashSet<Class<?>> set = new HashSet<>();
+
+        // ADD ExceptionMappers
+        set.addAll(Arrays.asList(CommonExceptionMappers.getMappers()));
+
+        // ADD RS ENDPOINTS
+        set.addAll(Arrays.asList(RouteRestService.class, RouteUploadRestService.class, ShapeFileRestService.class,
+                GreenPosRestService.class, BerthRestService.class, AuthenticationService.class,
+                TestDataRestService.class, IceObservationRestService.class, MsiRestService.class,
+                MetocRestService.class, VesselRestService.class, ScheduleRestService.class, LogEntryRestService.class,
+                UserRestService.class, RequestAccessRestService.class));
+
+        return set;
     }
+
 }
