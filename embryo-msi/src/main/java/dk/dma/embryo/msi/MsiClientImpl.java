@@ -36,8 +36,8 @@ public class MsiClientImpl implements MsiClient {
     String endpoint;
 
     @Inject
-    @Property("embryo.msi.country")
-    String country;
+    @Property("embryo.msi.countries")
+    String countries;
 
     @Inject
     private EmbryoLogService embryoLogService;
@@ -57,13 +57,17 @@ public class MsiClientImpl implements MsiClient {
     public List<MsiClient.MsiItem> getActiveWarnings() {
         try {
             List<MsiClient.MsiItem> result = new ArrayList<>();
+            
+            String[] countriesArr = countries.split(",");
 
-            for (MsiDto md : msiService.getActiveWarningCountry(country).getItem()) {
-                result.add(new MsiClient.MsiItem(md));
+            for(String country : countriesArr) {
+            	for (MsiDto md : msiService.getActiveWarningCountry(country).getItem()) {
+            		result.add(new MsiClient.MsiItem(md));
+            	}
             }
+            
 
             embryoLogService.info("Read " + result.size() + " warnings from MSI service: " + endpoint);
-
             return result;
 
         } catch (Throwable t) {
