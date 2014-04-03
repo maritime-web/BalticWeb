@@ -8,8 +8,7 @@ module.exports = function(config) {
 		// list of files / patterns to load in the browser
 		files : [
 		        'http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js',
-		        'http://openlayers.org/api/OpenLayers.js',
-		        'http://www.openstreetmap.org/openlayers/OpenStreetMap.js',
+		        'src/main/webapp/OpenLayers-2.13.1/OpenLayers.js',
 		        'http://code.jquery.com/ui/1.9.1/jquery-ui.js',
 		        'http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js',
 				'src/main/webapp/js/ext/*.js',
@@ -22,7 +21,7 @@ module.exports = function(config) {
 				'src/main/webapp/js/reporting/position.js',
                 'src/main/webapp/js/reporting/decimal.js',
 				'src/main/webapp/js/reporting/route-upload.js',
-				'src/test/jsUnit/**/*Test.js' ],
+				'src/test/jsUnit/*Test.js' ],
 
 		// list of files to exclude
 		exclude : ['src/main/webapp/js/ext/jquery.fileupload*.js'],
