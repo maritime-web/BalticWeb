@@ -82,6 +82,7 @@ In particular the file may contain URLs and passwords for the DMI Ice map server
 
     Embryo> mvn install -P deploy - build the whole application and deploy WAR-file
 
+
 A local deployment will setup ArcticWeb at the following URL:
 
     http://localhost:8080/arcticweb/
