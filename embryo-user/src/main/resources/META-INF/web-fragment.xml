@@ -4,8 +4,8 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
 
     <context-param>
-        <param-name>shiroEnvironmentClass</param-name>
-        <param-value>dk.dma.embryo.user.security.ShiroWebEnvironment</param-value>
+        <param-name>shiroConfigLocations</param-name>
+        <param-value>classpath:default-embryo-shiro.ini</param-value>
     </context-param>
 
     <listener>

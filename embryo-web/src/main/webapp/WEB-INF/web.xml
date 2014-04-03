@@ -4,6 +4,12 @@
 
   <display-name>ArcticWeb - Greenland</display-name>
 
+  <!-- Overwrite default security configuration -->
+  <context-param>
+    <param-name>shiroConfigLocations</param-name>
+    <param-value>classpath:arcticweb-shiro.ini</param-value>
+  </context-param>
+
   <filter>
     <filter-name>CacheForeverFilter</filter-name>
     <filter-class>dk.dma.embryo.servlets.CacheForeverFilter</filter-class>

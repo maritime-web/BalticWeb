@@ -76,6 +76,7 @@ public class RouteRestService {
     }
 
     @PUT
+    @Path("/save")
     @Consumes("application/json")
     public void save(SaveRouteRequest request) {
         logger.debug("save({})", request);

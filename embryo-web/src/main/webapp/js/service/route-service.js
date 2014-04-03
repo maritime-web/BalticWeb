@@ -41,7 +41,7 @@
                 SessionStorageService.getItem(routeKey(routeId), callback, remoteCall);
             },
             save : function(route, voyageId, success, error) {
-                $http.put(embryo.baseUrl + 'rest/route', {
+                $http.put(embryo.baseUrl + 'rest/route/save', {
                     route : route,
                     voyageId : voyageId
                 }).success(function() {

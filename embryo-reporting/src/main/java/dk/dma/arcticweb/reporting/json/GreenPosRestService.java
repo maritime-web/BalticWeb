@@ -58,6 +58,7 @@ public class GreenPosRestService {
     }
 
     @POST
+    @Path("/save")
     @Consumes("application/json")
     public void save(GreenposRequest request) {
         logger.debug("save({})", request);
