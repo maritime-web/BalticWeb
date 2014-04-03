@@ -30,7 +30,6 @@ import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -54,9 +53,7 @@ import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.persistence.RealmDao;
-import dk.dma.embryo.user.security.AuthorizationChecker;
 import dk.dma.embryo.user.security.SecurityUtil;
-import dk.dma.embryo.user.security.authorization.Roles;
 import dk.dma.embryo.vessel.component.RouteParserComponent;
 import dk.dma.embryo.vessel.component.RouteSaver;
 import dk.dma.embryo.vessel.model.Berth;
@@ -69,7 +66,6 @@ import dk.dma.embryo.vessel.persistence.VesselDao;
 
 @Singleton
 @Startup
-@Interceptors(AuthorizationChecker.class)
 public class AppDataServiceBean {
 
     @Inject
@@ -245,7 +241,6 @@ public class AppDataServiceBean {
         }
     }
 
-    @Roles(AdministratorRole.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void resetTestData() {
         internalResetTestData();

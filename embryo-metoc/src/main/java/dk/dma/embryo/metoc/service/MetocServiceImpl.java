@@ -31,7 +31,6 @@ import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 import dk.dma.enav.model.geometry.Position;
 
-//@Interceptors(value=AuthorizationChecker.class)
 public class MetocServiceImpl {
 
     @Inject
@@ -56,7 +55,6 @@ public class MetocServiceImpl {
     }
 
 //    @Override
-//    @Roles(value=SailorRole.class)
     public DmiSejlRuteService.SejlRuteResponse getMetoc(String routeId) {
         Route route = vesselDao.getRouteByEnavId(routeId);
         if (route == null) {

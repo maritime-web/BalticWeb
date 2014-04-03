@@ -61,7 +61,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    //@Roles(value=SailorRole.class)
     //@Interceptors(VesselModifierInterceptor.class)
     public void updateSchedule(Long mmsi, List<Voyage> toBeSaved, String[] toBeDeleted) {
 
@@ -105,7 +104,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    //@RolesAllowAll
     public List<Voyage> getSchedule(Long mmsi) {
         List<Voyage> schedule = scheduleRepository.getSchedule(mmsi);
 
@@ -128,14 +126,12 @@ public class ScheduleServiceImpl implements ScheduleService {
      * location, times etc.
      */
     @Override
-    //@Roles({SailorRole.class})
     @Interceptors(VoyageModifierInterceptor.class)
     public String saveRoute(Route route, String voyageId, Boolean active) {
         return new RouteSaver(scheduleRepository).saveRoute(route, voyageId, active);
     }
     
     @Override
-    //@Roles(SailorRole.class)
     @Interceptors(RouteModifierInterceptor.class)
     public String saveRoute(Route route) {
         if (route.getId() == null) {
@@ -149,7 +145,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    //@RolesAllowAll
     public Route getActiveRoute(Long mmsi) {
         Route r = scheduleRepository.getActiveRoute(mmsi);
         if (r != null) {
@@ -162,7 +157,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
     @Override
-    //@Roles(SailorRole.class)
     @Interceptors(RouteModifierInterceptor.class)
     public Route activateRoute(String routeEnavId, Boolean activate) {
         logger.debug("activateRoute({}, {})", routeEnavId, activate);
@@ -170,7 +164,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    //@RolesAllowAll
     public Route getRouteByEnavId(String enavId) {
         Route route = scheduleRepository.getRouteByEnavId(enavId);
         return route;
