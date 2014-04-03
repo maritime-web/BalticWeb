@@ -46,8 +46,6 @@ import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.persistence.RealmDao;
-import dk.dma.embryo.user.security.Subject;
-import dk.dma.embryo.user.security.SubjectImpl;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
 
