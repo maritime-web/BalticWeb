@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest.json;
+package dk.dma.embryo.vessel.json;
 
 public class TypeaheadDatum {
     private String value;

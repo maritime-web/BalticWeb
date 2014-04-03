@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.embryo.vessel.json;
 
 import java.util.List;
 
@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-import dk.dma.embryo.rest.json.TypeaheadDatum;
 import dk.dma.embryo.vessel.model.Berth;
 import dk.dma.embryo.vessel.service.GeographicService;
 
