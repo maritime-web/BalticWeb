@@ -29,7 +29,6 @@ import dk.dma.embryo.vessel.persistence.VesselDao;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-//@Interceptors(value=AuthorizationChecker.class)
 public class VesselServiceImpl implements VesselService {
 
     @Inject
@@ -47,7 +46,6 @@ public class VesselServiceImpl implements VesselService {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-//    @Roles(value=SailorRole.class)
 //    @Interceptors(VesselModifierInterceptor.class)
     public void save(Vessel vessel) {
         Vessel managed = vesselRepository.getVessel(vessel.getMmsi());
@@ -69,13 +67,11 @@ public class VesselServiceImpl implements VesselService {
     }
     
     @Override
-//    @RolesAllowAll
     public Vessel getVessel(Long mmsi) {
         return vesselRepository.getVessel(mmsi);
     }
 
     @Override
-//    @RolesAllowAll
     public List<Vessel> getAll() {
         return vesselRepository.getAll(Vessel.class);
     }

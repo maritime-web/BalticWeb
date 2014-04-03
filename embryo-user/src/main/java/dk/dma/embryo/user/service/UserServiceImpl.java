@@ -19,7 +19,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.interceptor.Interceptors;
 
 import org.slf4j.Logger;
 
@@ -30,15 +29,11 @@ import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.persistence.RealmDao;
-import dk.dma.embryo.user.security.AuthorizationChecker;
 import dk.dma.embryo.user.security.SecurityUtil;
-import dk.dma.embryo.user.security.authorization.Roles;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 
 @Stateless
-@Interceptors(value = AuthorizationChecker.class)
-@Roles(AdministratorRole.class)
 public class UserServiceImpl implements UserService {
 
     @Inject
