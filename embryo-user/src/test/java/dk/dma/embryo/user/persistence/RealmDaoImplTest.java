@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.dao;
+package dk.dma.embryo.user.persistence;
 
 import static org.junit.Assert.assertEquals;
 
