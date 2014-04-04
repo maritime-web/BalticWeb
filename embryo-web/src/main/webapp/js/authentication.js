@@ -18,8 +18,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
 (function() {
     "use strict";
 
-    var module = angular.module('embryo.authentication', [ 'embryo.base', 'ngCookies', 'ui.bootstrap.modal',
-            'ui.bootstrap.tpls']);
+    var module = angular.module('embryo.authentication', [ 'embryo.base', 'ngCookies', 'ui.bootstrap.modal', 'ui.bootstrap.tpls' ]);
 
     embryo.RequestAccessCtrl = function($scope, $http) {
         $scope.request = {};
@@ -53,68 +52,64 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             }
         };
     };
-    
+
     embryo.ChangePasswordCtrl = function($scope, $http, $routeParams) {
         $scope.request = {};
         $scope.message = null;
         $scope.alertMessages = null;
-        
+
         var pwf = $('#passwordfield');
         pwf.focus();
-        
+
         $scope.user = null;
-        
+
         var uuid = $routeParams.uuid;
-        
-        $http.get('/rest/authentication/change-password?uuid=' + uuid)
-        .success(function(data) {
-        	if(!data) {
-        		$scope.alertMessages= ['Did not find any user matching the URL. Perhaps the password has already been changed?'];
-        	} else {
-        		$scope.user = data;
-        	}
-        })
-        .error(function(data, status) {
-        	$scope.alertMessages = embryo.ErrorService.extractError(data, status);
+
+        $http.get('/rest/authentication/change-password?uuid=' + uuid).success(function(data) {
+            if (!data) {
+                $scope.alertMessages = [ 'Did not find any user matching the URL. Perhaps the password has already been changed?' ];
+            } else {
+                $scope.user = data;
+            }
+        }).error(function(data, status) {
+            $scope.alertMessages = embryo.ErrorService.extractError(data, status);
         });
-        
+
         $scope.changePassword = function() {
-        	if(!$scope.change.password) {
-        		$scope.alertMessages = $scope.alertMessages.concat('You must enter a password.');
-        	}
-        	if(!$scope.change.passwordrepeat) {
-        		$scope.alertMessages = $scope.alertMessages.concat('You must repeat the password.');
-        	}
-        	if($scope.change.password != $scope.change.passwordrepeat) {
-        		$scope.alertMessages = $scope.alertMessages.concat('The two passwords must match.');
-        	}
-        	
-        	if(!$scope.alertMessages) {
-        		var data = {
-        				password : $scope.change.password,
-        				uuid : uuid
-        		};
-        		$http.post('/rest/authentication/change-password', data)
-        		.success(function(data) {
-        			$scope.message = 'Your password has now been updated.';
-        			$scope.user = null;
-        		})
-        		.error(function(data, status) {
-        			$scope.alertMessages = embryo.ErrorService.extractError(data, status);
-        		});
-        	}
-        	
+            if (!$scope.change.password) {
+                $scope.alertMessages = $scope.alertMessages.concat('You must enter a password.');
+            }
+            if (!$scope.change.passwordrepeat) {
+                $scope.alertMessages = $scope.alertMessages.concat('You must repeat the password.');
+            }
+            if ($scope.change.password != $scope.change.passwordrepeat) {
+                $scope.alertMessages = $scope.alertMessages.concat('The two passwords must match.');
+            }
+
+            if (!$scope.alertMessages) {
+                var data = {
+                    password : $scope.change.password,
+                    uuid : uuid
+                };
+                $http.post('/rest/authentication/change-password', data).success(function(data) {
+                    $scope.message = 'Your password has now been updated.';
+                    $scope.user = null;
+                }).error(function(data, status) {
+                    $scope.alertMessages = embryo.ErrorService.extractError(data, status);
+                });
+            }
+
         };
     };
-    
-    function clearSessionData($cookieStore, $rootScope){
+
+    function clearSessionData($cookieStore, $rootScope) {
         sessionStorage.clear();
         localStorage.clear();
         $cookieStore.remove('embryo.authentication');
         $rootScope.authentication = $rootScope.initialAuthentication;
         embryo.authentication = $rootScope.initialAuthentication;
     }
-    
+
     module.provider('Subject', function() {
         function Subject($http, $rootScope, $cookieStore) {
             $rootScope.initialAuthentication = embryo.authentication;
@@ -125,8 +120,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             $rootScope.authentication = embryo.authentication;
 
             this.roles = function() {
-                return typeof embryo.authentication.permissions === 'undefined' ? []
-                        : embryo.authentication.permissions;
+                return typeof embryo.authentication.permissions === 'undefined' ? [] : embryo.authentication.permissions;
             };
 
             this.authorize = function(permission) {
@@ -278,7 +272,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         } else if (browser.isIE() && browser.ieVersion() <= 9) {
             $scope.ie89ver = browser.ieVersion();
         }
-        
+
         $scope.useCookies = useCookies();
         $scope.user = {};
         $scope.forgot = false;
@@ -328,32 +322,30 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             $("#loginWrongLoginOrPassword").css("display", "none");
 
         };
-        
+
         $scope.sendPassword = function() {
-        	var data = {
-        			emailAddress : $scope.user.email
-        	};
-        	$http.post(embryo.baseUrl + "rest/forgot-password/request", data)
-        	.success(function(details) {
-        		$scope.msg = 'E-mail sent!';
-        		$scope.user.email = '';
-        	})
-        	.error(function(data, status) {
-        		$scope.msg = data;
-        	});
+            var data = {
+                emailAddress : $scope.user.email
+            };
+            $http.post(embryo.baseUrl + "rest/forgot-password/request", data).success(function(details) {
+                $scope.msg = 'E-mail sent!';
+                $scope.user.email = '';
+            }).error(function(data, status) {
+                $scope.msg = data;
+            });
         };
-        
+
         $scope.passwordEnabled = function() {
-        	return $scope.user.email && angular.element('.emailfield').$valid;
+            return $scope.user.email && angular.element('.emailfield').$valid;
         };
-        
+
         $scope.forgotPassword = function() {
-        	$scope.forgot = true;
-        	
+            $scope.forgot = true;
+
         };
-        
+
         $scope.back = function() {
-        	$scope.forgot = false;
+            $scope.forgot = false;
         };
     };
 
@@ -380,34 +372,31 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         });
     }
 
-    module.config([
-            '$httpProvider',
-            function($httpProvider) {
-                $httpProvider.responseInterceptors.push([ '$location', '$q', '$cookieStore', '$rootScope', 
-                        function($location, $q, $cookieStore, $rootScope) {
-                            function success(response) {
-                                return response;
-                            }
-                            function error(response) {
-                                if (response.status === 401) {
-                                    embryo.messagePanel.show({
-                                        text : "Session Lost. You will be logged out ..."
-                                    });
-                                    clearSessionData($cookieStore, $rootScope);
-                                    var path = location.pathname;
-                                    if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
-                                        location = ".";
-                                    }                                    
-                                    return $q.reject(response);
-                                } else {
-                                    return $q.reject(response);
-                                }
-                            }
-                            return function(promise) {
-                                return promise.then(success, error);
-                            };
-                        } ]);
-            } ]);
+    module.config([ '$httpProvider', function($httpProvider) {
+        $httpProvider.responseInterceptors.push([ '$location', '$q', '$cookieStore', '$rootScope', function($location, $q, $cookieStore, $rootScope) {
+            function success(response) {
+                return response;
+            }
+            function error(response) {
+                if (response.status === 401) {
+                    embryo.messagePanel.show({
+                        text : "Session Lost. You will be logged out ..."
+                    });
+                    clearSessionData($cookieStore, $rootScope);
+                    var path = location.pathname;
+                    if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
+                        location = ".";
+                    }
+                    return $q.reject(response);
+                } else {
+                    return $q.reject(response);
+                }
+            }
+            return function(promise) {
+                return promise.then(success, error);
+            };
+        } ]);
+    } ]);
 
     module.run([ 'Subject', '$rootScope', '$location', '$modal', function(Subject, $rootScope, $location, $modal) {
         embryo.ready(function() {
@@ -439,11 +428,11 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
     embryo.security.routeSecurityResolver = function(access) {
         return {
             load : function($q, Subject, $rootScope) {
-            	if((access && Subject.authorize(access)) || Subject.isLoggedIn()) {
-            		var deferred = $q.defer();
-            		deferred.resolve();
-            		return deferred.promise;
-            	} else {
+                if ((access && Subject.authorize(access)) || Subject.isLoggedIn()) {
+                    var deferred = $q.defer();
+                    deferred.resolve();
+                    return deferred.promise;
+                } else {
                     location.href = "/";
                 }
             }
