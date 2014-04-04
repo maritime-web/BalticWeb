@@ -833,7 +833,7 @@ public class AppDataServiceBean {
     private void insertDemoRoute(String voyageId, String file, boolean activate) {
         InputStream is = getClass().getResourceAsStream(file);
         try {
-            Route r = new RouteParserComponent().parseRoute(file, is, new HashMap());
+            Route r = new RouteParserComponent().parseRoute(file, is, new HashMap<String, String>());
             new RouteSaver(scheduleDao).saveRoute(r, voyageId, activate);
         } catch (IOException e) {
             logger.error("Failed uploading demo route Miami-Nuuk.txt", e);

@@ -37,6 +37,7 @@
 <script src="js/reporting/datetimepicker.js" defer="defer"></script>
 <script src="js/administration/users.js" defer="defer" type="text/javascript"></script>
 <script src="js/administration/log.js" defer="defer" type="text/javascript"></script>
+<script src="js/administration/settings.js" defer="defer" type="text/javascript"></script>
 <!-- endbuild -->
 
 <script type="text/javascript">
@@ -52,6 +53,9 @@
 	        }).when('/users', {
 	            templateUrl : 'partials/admin/users.html',
 	            resolve: embryo.security.routeSecurityResolver(embryo.security.permissions.admin)
+	        }).when('/settings', {
+	        	templateUrl : 'partials/admin/settings.html',
+	        	resolve: embryo.security.routeSecurityResolver()
 	        }).otherwise({
 	            controller : function() {
 	                window.location.replace('/');

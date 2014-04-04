@@ -90,7 +90,7 @@ public class VesselRestService {
     @GZIP
     @NoCache
     public Object historicalTrack(@QueryParam("mmsi") long mmsi) {
-        Map result = limitedAisViewService.vesselTargetDetails(mmsi, 1);
+        Map<String, Object> result = limitedAisViewService.vesselTargetDetails(mmsi, 1);
         return ((Map) result.get("pastTrack")).get("points");
     }
 
@@ -162,7 +162,7 @@ public class VesselRestService {
     @NoCache
     public VesselDetails details(@QueryParam("mmsi") long mmsi) {
         try {
-            Map result = fullAisViewService.vesselTargetDetails(mmsi, 0);
+            Map<String, Object> result = fullAisViewService.vesselTargetDetails(mmsi, 0);
 
             boolean historicalTrack = false;
             String lat = (String) result.get("lat");

@@ -16,14 +16,11 @@
 package dk.dma.embryo.common.configuration;
 
 import java.io.Serializable;
-import java.util.Properties;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;

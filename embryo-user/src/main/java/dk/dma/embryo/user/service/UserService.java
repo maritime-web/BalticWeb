@@ -17,6 +17,8 @@ package dk.dma.embryo.user.service;
 
 import java.util.List;
 
+import javax.ejb.FinderException;
+
 import dk.dma.embryo.user.model.SecuredUser;
 
 
@@ -30,4 +32,9 @@ public interface UserService {
     void edit(String login, Long mmsi, String email, String role);
 
     void delete(String login);
+
+    void createPasswordUuid(SecuredUser user);
+    
+    void changePassword(String uuid, String password) throws FinderException;
+    
 }

@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
-import dk.dma.embryo.user.security.Subject;
 import dk.dma.embryo.user.service.UserService;
 
 @Path("/user")
@@ -43,9 +42,6 @@ public class UserRestService {
     @Inject
     private Logger logger;
 
-    @Inject
-    private Subject subject;
-    
     @Inject
     private UserService userService;
 

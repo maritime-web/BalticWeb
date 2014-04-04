@@ -15,13 +15,17 @@
  */
 package dk.dma.embryo.user.json;
 
+import javax.ejb.FinderException;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jboss.resteasy.annotations.GZIP;
@@ -34,11 +38,15 @@ import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.persistence.RealmDao;
 import dk.dma.embryo.user.security.Subject;
+import dk.dma.embryo.user.service.UserService;
 
 @Path("/authentication")
 public class AuthenticationService {
     @Inject
     private Subject subject;
+
+    @Inject
+    private UserService userService;
 
     @Inject
     private RealmDao realmRepository;
@@ -71,7 +79,7 @@ public class AuthenticationService {
             details.setShipMmsi("" + sailor.getVessel().getMmsi());
         }
 
-        String[] rolesJson = new String[]{user.getRole().getLogicalName()};
+        String[] rolesJson = new String[] { user.getRole().getLogicalName() };
         details.setProjection("EPSG:900913");
         details.setUserName(user.getUserName());
         details.setPermissions(rolesJson);
@@ -123,11 +131,70 @@ public class AuthenticationService {
 
     }
 
+    @GET
+    @Path("/change-password")
+    @GZIP
+    @NoCache
+    public String getUserForUuid(@QueryParam("uuid") String uuid) {
+        SecuredUser user = subject.findUserWithUuid(uuid);
+        if (user != null) {
+            return user.getUserName();
+        }
+        return null;
+    }
+
     public static class UserNotAuthenticated extends WebApplicationException {
         private static final long serialVersionUID = 7940360206022406100L;
 
         public UserNotAuthenticated() {
             super(Response.Status.UNAUTHORIZED);
+        }
+    }
+
+    public static class ParameterMissing extends WebApplicationException {
+        private static final long serialVersionUID = 3153251523607924598L;
+
+        public ParameterMissing(String error) {
+            super(Response.status(Response.Status.BAD_REQUEST).entity(error).build());
+        }
+    }
+
+    @POST
+    @Path("/change-password")
+    @Consumes("application/json")
+    @GZIP
+    public void changePassword(ChangedPassword changedPassword) {
+        if (changedPassword.getUuid() == null || changedPassword.getUuid().isEmpty()) {
+            throw new ParameterMissing("UUID is missing.");
+        } else if (changedPassword.getPassword() == null || changedPassword.getPassword().isEmpty()) {
+            throw new ParameterMissing("Password is missing.");
+        } else {
+            try {
+                userService.changePassword(changedPassword.getUuid(), changedPassword.getPassword());
+            } catch (FinderException e) {
+                throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity(e.getMessage()).build());
+            }
+        }
+    }
+
+    public static class ChangedPassword {
+        private String uuid;
+        private String password;
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public void setUuid(String uuid) {
+            this.uuid = uuid;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
         }
     }
 

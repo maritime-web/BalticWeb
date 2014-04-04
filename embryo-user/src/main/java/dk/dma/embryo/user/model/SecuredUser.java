@@ -23,8 +23,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Type;
-import org.joda.time.DateTimeZone;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.common.persistence.BaseEntity;
 
@@ -33,7 +33,9 @@ import dk.dma.embryo.common.persistence.BaseEntity;
         @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName"),
         // LEFT JOIN FETCH u.roles [identification variable] is not supported by JPA but by Hibernate
         @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role WHERE u.id=:id"),
-        @NamedQuery(name = "SecuredUser:list", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role AS r LEFT JOIN FETCH r.vessel") })
+        @NamedQuery(name = "SecuredUser:list", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role AS r LEFT JOIN FETCH r.vessel"),
+        @NamedQuery(name="SecuredUser:findByEmail", query = "SELECT u FROM SecuredUser u WHERE u.email=:email"),
+        @NamedQuery(name="SecuredUser:findByUuid", query = "SELECT u FROM SecuredUser u WHERE u.forgotUuid=:uuid")})
 public class SecuredUser extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;
@@ -50,6 +52,8 @@ public class SecuredUser extends BaseEntity<Long> {
     private String userName;
 
     private String email;
+    
+    private String forgotUuid;
     
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime created;
@@ -131,6 +135,14 @@ public class SecuredUser extends BaseEntity<Long> {
         this.role = role;
 //        roles.add(role);
 //        role.users.add(this);
+    }
+    
+    public String getForgotUuid() {
+        return forgotUuid;
+    }
+    
+    public void setForgotUuid(String forgotUuid) {
+        this.forgotUuid = forgotUuid;
     }
 
 }

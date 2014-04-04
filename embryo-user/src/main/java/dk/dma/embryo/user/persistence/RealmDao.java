@@ -33,4 +33,8 @@ public interface RealmDao extends Dao {
     List<SecuredUser> list();
 
     SailorRole getSailor(Long userid);
+
+    SecuredUser findByEmail(String email);
+
+    SecuredUser findByUuid(String uuid);
 }

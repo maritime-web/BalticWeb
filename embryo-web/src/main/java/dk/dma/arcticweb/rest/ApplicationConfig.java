@@ -32,6 +32,7 @@ import dk.dma.embryo.rest.MsiRestService;
 import dk.dma.embryo.rest.ShapeFileRestService;
 import dk.dma.embryo.rest.VesselRestService;
 import dk.dma.embryo.user.json.AuthenticationService;
+import dk.dma.embryo.user.json.ForgotPasswordRestService;
 import dk.dma.embryo.user.json.RequestAccessRestService;
 import dk.dma.embryo.user.json.UserRestService;
 import dk.dma.embryo.vessel.json.RouteRestService;
@@ -51,7 +52,7 @@ public class ApplicationConfig extends Application {
                 GreenPosRestService.class, BerthRestService.class, AuthenticationService.class,
                 TestDataRestService.class, IceObservationRestService.class, MsiRestService.class,
                 MetocRestService.class, VesselRestService.class, ScheduleRestService.class, LogEntryRestService.class,
-                UserRestService.class, RequestAccessRestService.class));
+                UserRestService.class, RequestAccessRestService.class, ForgotPasswordRestService.class));
 
         return set;
     }

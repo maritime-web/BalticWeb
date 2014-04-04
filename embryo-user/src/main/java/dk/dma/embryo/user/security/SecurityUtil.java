@@ -33,6 +33,15 @@ public class SecurityUtil{
 
     
     public static SecuredUser createUser(String userName, String password, String email){
+       
+        HashedPassword hashedPassword = hashPassword(password);
+        
+        SecuredUser user = new SecuredUser(userName, hashedPassword.getPassword(), hashedPassword.getSalt(), email);
+        
+        return user;
+    }
+    
+    public static HashedPassword hashPassword(String password) {
         RandomNumberGenerator rng = new SecureRandomNumberGenerator();
         ByteSource salt = rng.nextBytes();
 
@@ -44,9 +53,26 @@ public class SecurityUtil{
         //iterations and then Base64-encode the value (requires less space than Hex):
         String hashedPasswordBase64 = new SimpleHash(algorithmName, password, salt, iterations).toBase64();
         
-        SecuredUser user = new SecuredUser(userName, hashedPasswordBase64, salt.getBytes(), email);
+        HashedPassword hashedPassword = new HashedPassword(hashedPasswordBase64, salt.getBytes());
         
-        return user;
-    }
+        return hashedPassword;
+     }
     
+    public static class HashedPassword {
+        private String password;
+        private byte[] salt;
+        
+        public HashedPassword(String password, byte[] salt) {
+            this.password = password;
+            this.salt = salt;
+        }
+        
+        public String getPassword() {
+            return password;
+        }
+        
+        public byte[] getSalt() {
+            return salt;
+        }
+    }
 }

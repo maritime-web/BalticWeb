@@ -63,7 +63,14 @@ public class SubjectImpl implements Subject {
 
         return realmDao.findByUsername(userName);
     }
+    
+    @Override
+    public SecuredUser findUserWithUuid(String uuid) {
+        SecuredUser user = realmDao.findByUuid(uuid);
+        return user;
+    }
 
+    @Override
     public SecuredUser login(String userName, String password) {
         return login(userName, password, Boolean.FALSE);
     }
@@ -132,4 +139,10 @@ public class SubjectImpl implements Subject {
 
         return mmsi.equals(sailor.getVessel().getMmsi());
     }
+    
+    @Override
+    public SecuredUser getUserForEmail(String email) {
+        return realmDao.findByEmail(email);
+    }
+    
 }

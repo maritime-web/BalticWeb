@@ -19,17 +19,27 @@
 			<div id="cookiesUsage" x-ng-show="showCookies" class="alert alert-info">This site is using cookies for security,
 				remembering user settings and caching of static application data. By logging in you accept usage of cookies.</div>
 			<form class="form-signin" name="login_form">
-				<label>User Name</label> <input focus="focusMe" type="text" class="input-block-level" x-ng-model="user.name" autocapitalize="off"
-					autocorrect="off" autocomplete="off" /> <label>Password</label> <input type="password" class="input-block-level"
-					x-ng-model="user.pwd" />
-				<!--<label class="checkbox">  <input
-					type="checkbox" value="remember-me" /> Remember me 
-				</label>-->
-				<div style="margin-top: 24px">
-					<button type="submit" class="btn btn-primary" x-ng-click="login()">Log In</button>
-					<button class="btn" x-ng-click="$dismiss('aborted')">Cancel</button>
-					<!-- a href="#forgot" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Forgot password</a>
-                	<a href="#request" role="button" class="btn" data-toggle="modal" data-dismiss="modal">Request login</a -->
+				<div id="credentials" x-ng-hide="forgot">
+					<label>User Name <input focus="focusMe" type="text" name="usernamefield" class="input-block-level" x-ng-model="user.name" autocapitalize="off"
+						autocorrect="off" autocomplete="off" required /></label> <label>Password <input type="password" name="passwordfield" class="input-block-level"
+						x-ng-model="user.pwd" required /></label>
+					<!--<label class="checkbox">  <input
+						type="checkbox" value="remember-me" /> Remember me 
+					</label>-->
+					<a href="" x-ng-click="forgotPassword()">Forgot password?</a>
+					<div style="margin-top: 24px">
+						<button type="submit" class="btn btn-primary" x-ng-disabled="!(login_form.usernamefield.$valid && login_form.passwordfield.$valid)" x-ng-click="login()">Log In</button>
+						<button class="btn" x-ng-click="$dismiss('aborted')">Cancel</button>
+					</div>
+				</div>
+				<div id="forgotpass" x-ng-show="forgot">
+					<label>E-mail address <input type="email" name="emailfield" class="input-block-level" x-ng-model="user.email" autocapitalize="off"
+					autocorrect="off" autocomplete="off" required /></label>
+					<a href="" x-ng-click="back()">Back</a>
+					<div style="margin-top: 24px">
+						<button type="submit" class="btn btn-primary" x-ng-disabled="!login_form.emailfield.$valid" x-ng-click="sendPassword()">Send password</button>
+						<button class="btn" x-ng-click="$dismiss('aborted')">Cancel</button>
+					</div>
 				</div>
 				<div style="margin-top: 14px" class="pull-right" >
 						<a href="content.html#/requestAccess">Request access</a> to get username and password. 

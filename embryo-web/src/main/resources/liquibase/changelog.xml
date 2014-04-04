@@ -301,5 +301,6 @@
   </changeSet>
   
   <include file="liquibase/arcticweb-1.2.xml"/>
+  <include file="liquibase/arcticweb-1.6.xml"/>
 
 </databaseChangeLog>

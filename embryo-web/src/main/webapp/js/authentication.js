@@ -53,7 +53,59 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             }
         };
     };
-
+    
+    embryo.ChangePasswordCtrl = function($scope, $http, $routeParams) {
+        $scope.request = {};
+        $scope.message = null;
+        $scope.alertMessages = null;
+        
+        var pwf = $('#passwordfield');
+        pwf.focus();
+        
+        $scope.user = null;
+        
+        var uuid = $routeParams.uuid;
+        
+        $http.get('/rest/authentication/change-password?uuid=' + uuid)
+        .success(function(data) {
+        	if(!data) {
+        		$scope.alertMessages= ['Did not find any user matching the URL. Perhaps the password has already been changed?'];
+        	} else {
+        		$scope.user = data;
+        	}
+        })
+        .error(function(data, status) {
+        	$scope.alertMessages = embryo.ErrorService.extractError(data, status);
+        });
+        
+        $scope.changePassword = function() {
+        	if(!$scope.change.password) {
+        		$scope.alertMessages = $scope.alertMessages.concat('You must enter a password.');
+        	}
+        	if(!$scope.change.passwordrepeat) {
+        		$scope.alertMessages = $scope.alertMessages.concat('You must repeat the password.');
+        	}
+        	if($scope.change.password != $scope.change.passwordrepeat) {
+        		$scope.alertMessages = $scope.alertMessages.concat('The two passwords must match.');
+        	}
+        	
+        	if(!$scope.alertMessages) {
+        		var data = {
+        				password : $scope.change.password,
+        				uuid : uuid
+        		};
+        		$http.post('/rest/authentication/change-password', data)
+        		.success(function(data) {
+        			$scope.message = 'Your password has now been updated.';
+        			$scope.user = null;
+        		})
+        		.error(function(data, status) {
+        			$scope.alertMessages = embryo.ErrorService.extractError(data, status);
+        		});
+        	}
+        	
+        };
+    };
     
     function clearSessionData($cookieStore, $rootScope){
         sessionStorage.clear();
@@ -78,7 +130,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             };
 
             this.authorize = function(permission) {
-                var index, permissions = this.roles();
+                var index = null, permissions = this.roles();
 
                 for (index in permissions) {
                     if (permissions[index] == permission) {
@@ -122,7 +174,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
 
         this.$get = function($http, $rootScope, $cookieStore) {
             return new Subject($http, $rootScope, $cookieStore);
-        }
+        };
     });
 
     module.directive('passwordMatch', [ function() {
@@ -217,7 +269,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         }
     }
 
-    embryo.LoginModalCtrl = function($scope, $modalInstance, $location, Subject, msg) {
+    embryo.LoginModalCtrl = function($scope, $http, $modalInstance, $location, Subject, msg) {
         $scope.msg = msg;
         $scope.focusMe = true;
 
@@ -226,9 +278,10 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         } else if (browser.isIE() && browser.ieVersion() <= 9) {
             $scope.ie89ver = browser.ieVersion();
         }
-
+        
         $scope.useCookies = useCookies();
         $scope.user = {};
+        $scope.forgot = false;
 
         $scope.login = function() {
             var messageId = embryo.messagePanel.show({
@@ -274,7 +327,34 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             $("#error").css("display", "none");
             $("#loginWrongLoginOrPassword").css("display", "none");
 
-        }
+        };
+        
+        $scope.sendPassword = function() {
+        	var data = {
+        			emailAddress : $scope.user.email
+        	};
+        	$http.post(embryo.baseUrl + "rest/forgot-password/request", data)
+        	.success(function(details) {
+        		$scope.msg = 'E-mail sent!';
+        		$scope.user.email = '';
+        	})
+        	.error(function(data, status) {
+        		$scope.msg = data;
+        	});
+        };
+        
+        $scope.passwordEnabled = function() {
+        	return $scope.user.email && angular.element('.emailfield').$valid;
+        };
+        
+        $scope.forgotPassword = function() {
+        	$scope.forgot = true;
+        	
+        };
+        
+        $scope.back = function() {
+        	$scope.forgot = false;
+        };
     };
 
     function logout(event) {
@@ -282,7 +362,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
 
         var messageId = embryo.messagePanel.show({
             text : "Logging out ..."
-        })
+        });
 
         embryo.security.Subject.logout(function() {
             var path = location.pathname;
@@ -296,7 +376,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             embryo.messagePanel.replace(messageId, {
                 text : "Logout failed. (" + status + ")",
                 type : "error"
-            })
+            });
         });
     }
 
@@ -312,7 +392,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
                                 if (response.status === 401) {
                                     embryo.messagePanel.show({
                                         text : "Session Lost. You will be logged out ..."
-                                    })
+                                    });
                                     clearSessionData($cookieStore, $rootScope);
                                     var path = location.pathname;
                                     if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
@@ -359,14 +439,14 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
     embryo.security.routeSecurityResolver = function(access) {
         return {
             load : function($q, Subject, $rootScope) {
-                if (Subject.authorize(access)) {
-                    var deferred = $q.defer();
-                    deferred.resolve();
-                    return deferred.promise;
-                } else {
+            	if((access && Subject.authorize(access)) || Subject.isLoggedIn()) {
+            		var deferred = $q.defer();
+            		deferred.resolve();
+            		return deferred.promise;
+            	} else {
                     location.href = "/";
                 }
             }
-        }
-    }
+        };
+    };
 }());

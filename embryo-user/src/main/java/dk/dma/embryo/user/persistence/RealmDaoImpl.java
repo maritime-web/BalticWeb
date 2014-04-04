@@ -58,9 +58,24 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
         return query.getSingleResult();
     }
 
+    @Override
     public List<SecuredUser> list(){
         TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:list", SecuredUser.class);
         return query.getResultList();
+    }
+    
+    @Override
+    public SecuredUser findByEmail(String email) {
+        TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:findByEmail", SecuredUser.class);
+        query.setParameter("email", email);
+        return getSingleOrNull(query.getResultList());
+    }
+    
+    @Override
+    public SecuredUser findByUuid(String uuid) {
+        TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:findByUuid", SecuredUser.class);
+        query.setParameter("uuid", uuid);
+        return getSingleOrNull(query.getResultList());
     }
 
 }

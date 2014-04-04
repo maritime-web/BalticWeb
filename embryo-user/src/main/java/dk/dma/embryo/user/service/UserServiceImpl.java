@@ -16,10 +16,11 @@
 package dk.dma.embryo.user.service;
 
 import java.util.List;
+import java.util.UUID;
 
+import javax.ejb.FinderException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.interceptor.Interceptors;
 
 import org.slf4j.Logger;
 
@@ -30,15 +31,12 @@ import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.persistence.RealmDao;
-import dk.dma.embryo.user.security.AuthorizationChecker;
 import dk.dma.embryo.user.security.SecurityUtil;
-import dk.dma.embryo.user.security.authorization.Roles;
+import dk.dma.embryo.user.security.SecurityUtil.HashedPassword;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 
 @Stateless
-@Interceptors(value = AuthorizationChecker.class)
-@Roles(AdministratorRole.class)
 public class UserServiceImpl implements UserService {
 
     @Inject
@@ -118,4 +116,27 @@ public class UserServiceImpl implements UserService {
     public List<SecuredUser> list() {
         return realmDao.list();
     }
+
+    @Override
+    public void createPasswordUuid(SecuredUser user) {
+        UUID uuid = UUID.randomUUID();
+        user.setForgotUuid(uuid.toString());
+        realmDao.saveEntity(user);
+    }
+    
+    @Override
+    public void changePassword(String uuid, String password) throws FinderException {
+        SecuredUser user = realmDao.findByUuid(uuid);
+        if(user == null) {
+            throw new FinderException("No user for given UUID.");
+        }
+        HashedPassword hashedPassword = SecurityUtil.hashPassword(password);
+        
+        user.setHashedPassword(hashedPassword.getPassword());
+        user.setSalt(hashedPassword.getSalt());
+        user.setForgotUuid(null);
+        
+        realmDao.saveEntity(user);
+    }
+
 }

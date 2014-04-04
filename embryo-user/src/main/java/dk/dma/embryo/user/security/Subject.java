@@ -22,7 +22,8 @@ import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SecuredUser;
 
 /**
- * Subject class wrapping all access to shiro security and also decorating with extra syntactic sugar.
+ * Subject class wrapping all access to shiro security and also decorating with
+ * extra syntactic sugar.
  * 
  * 
  * @author Jesper Tejlgaard
@@ -30,30 +31,34 @@ import dk.dma.embryo.user.model.SecuredUser;
  */
 public interface Subject extends Serializable {
 
-
     SecuredUser login(String userName, String password, Boolean rememberMe);
-    
+
     SecuredUser login(String userName, String password);
-    
+
     /**
      * TODO remove me.
      * 
-     * Expected used while transitioning from role base security to feature base security
+     * Expected used while transitioning from role base security to feature base
+     * security
      * 
      * @param permission
      * @return
      */
-    <R extends Role> boolean hasRole(Class<R> roleType) ;
+    <R extends Role> boolean hasRole(Class<R> roleType);
 
-    Long getUserId() ;
+    Long getUserId();
 
-    SecuredUser getUser() ;
+    SecuredUser getUser();
 
-    boolean hasOneOfRoles(List<Class<? extends Role>> roleTypes) ;
+    boolean hasOneOfRoles(List<Class<? extends Role>> roleTypes);
 
-    boolean authorizedToModifyVessel(Long mmsi) ;
-    
+    boolean authorizedToModifyVessel(Long mmsi);
+
     void logout();
 
     boolean isLoggedIn();
+
+    SecuredUser getUserForEmail(String email);
+
+    SecuredUser findUserWithUuid(String uuid);
 }
