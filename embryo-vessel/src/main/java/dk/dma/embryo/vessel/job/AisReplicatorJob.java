@@ -89,8 +89,6 @@ public class AisReplicatorJob {
         }
     }
 
-    //@Interceptors(value = AuthorizationChecker.class)
-    //@Roles(AdministratorRole.class)
     public void replicate() {
         updateAis();
     }

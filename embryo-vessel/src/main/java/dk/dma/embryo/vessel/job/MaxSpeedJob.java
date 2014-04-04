@@ -94,8 +94,6 @@ public class MaxSpeedJob {
         }
     }
 
-//    @Interceptors(value = AuthorizationChecker.class)
-//    @Roles(AdministratorRole.class)
     public void update() {
         updateMaxSpeeds();
     }

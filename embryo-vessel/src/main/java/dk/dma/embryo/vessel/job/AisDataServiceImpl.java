@@ -48,17 +48,14 @@ public class AisDataServiceImpl implements AisDataService {
     @Property("embryo.aisCircle.radius")
     private double aisCircleRadius;
 
-    //@RolesAllowAll
     public boolean isWithinAisCircle(double x, double y) {
         return Position.create(y, x).distanceTo(Position.create(aisCircleLatitude, aisCircleLongitude), CoordinateSystem.GEODETIC) < aisCircleRadius;
     }
 
-    //@RolesAllowAll
     public List<String[]> getVesselsOnMap() {
         return new ArrayList<>(vesselsOnMap);
     }
     
-    //@RolesAllowAll
     public Map<Long, MaxSpeedRecording> getMaxSpeeds() {
         return new HashMap<>(maxSpeeds);
     }

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.security;
+package dk.dma.embryo.user.security;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -46,8 +46,6 @@ import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.persistence.RealmDao;
-import dk.dma.embryo.user.security.Subject;
-import dk.dma.embryo.user.security.SubjectImpl;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
 

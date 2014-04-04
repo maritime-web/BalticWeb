@@ -22,8 +22,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
+import org.apache.shiro.web.filter.authc.UserFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -34,27 +33,19 @@ import dk.dma.embryo.user.shiro.Error.AuthCode;
 /**
  * @author Jesper Tejlgaard
  */
-public class EmbryoAuthorizationFilter extends RolesAuthorizationFilter {
+public class EmbryoUserFilter extends UserFilter {
 
-    Logger logger = LoggerFactory.getLogger(EmbryoAuthorizationFilter.class);
+    Logger logger = LoggerFactory.getLogger(EmbryoUserFilter.class);
 
     @Override
-    protected boolean onAccessDenied(ServletRequest request, ServletResponse response, Object mappedValue)
+    protected boolean onAccessDenied(ServletRequest request, ServletResponse response)
             throws IOException {
-        logger.debug("Access denied: {}, {}", WebUtils.toHttp(request).getRequestURI(), mappedValue);
-
-        Subject subject = getSubject(request, response);
+        logger.debug("Access denied: {}", WebUtils.toHttp(request).getRequestURI());
 
         HttpServletResponse httpResp = WebUtils.toHttp(response);
         httpResp.setContentType("application/json");
-        if (subject.getPrincipal() == null) {
-            httpResp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            writeJson(httpResp, new Error(AuthCode.UNAUTHENTICATED, "User not logged in"));
-        } else {
-            httpResp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            writeJson(httpResp, new Error(AuthCode.UNAUTHORIZED,
-                    "User is logged in, but does not have necessary permissions"));
-        }
+        httpResp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        writeJson(httpResp, new Error(AuthCode.UNAUTHENTICATED, "User not logged in"));
         return false;
     }
 
@@ -70,5 +61,4 @@ public class EmbryoAuthorizationFilter extends RolesAuthorizationFilter {
 
         writer.close();
     }
-
 }

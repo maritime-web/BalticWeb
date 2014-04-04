@@ -18,14 +18,14 @@
 
     <!-- developer setting -->
     <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
-    
+
     <!-- persistence.xml properties -->
     <embryo-common.jar>embryo-common-${project.version}.jar</embryo-common.jar>
     <embryo-dataformats.jar>embryo-dataformats-${project.version}.jar</embryo-dataformats.jar>
     <embryo-vessel.jar>embryo-vessel-${project.version}.jar</embryo-vessel.jar>
     <embryo-user.jar>embryo-user-${project.version}.jar</embryo-user.jar>
     <embryo-reporting.jar>embryo-reporting-${project.version}.jar</embryo-reporting.jar>
-    
+
   </properties>
 
   <dependencyManagement>
@@ -88,7 +88,8 @@
       <artifactId>enav-model</artifactId>
     </dependency>
 
-    <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse to work -->
+    <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse 
+      to work -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -98,8 +99,8 @@
     <!-- Import the Servlet API. -->
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.0.1</version>
       <scope>provided</scope>
     </dependency>
 
@@ -121,12 +122,6 @@
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.spec.javax.servlet</groupId>
-      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -195,17 +190,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.collections</groupId>
-      <artifactId>google-collections</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
     </dependency>
-
-
 
     <!-- Test dependencies -->
     <dependency>
@@ -369,7 +356,7 @@
         <plugin>
           <groupId>org.jboss.as.plugins</groupId>
           <artifactId>jboss-as-maven-plugin</artifactId>
-          <version>7.4.Final</version>
+          <version>7.5.Final</version>
         </plugin>
         <plugin>
           <groupId>com.kelveden</groupId>
@@ -407,64 +394,6 @@
         <groupId>org.jboss.as.plugins</groupId>
         <artifactId>jboss-as-maven-plugin</artifactId>
       </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <configuration>
-          <target>
-            <property environment="env" />
-            <property name="searchPath" value="META-INF/maven/${project.groupId}/${project.artifactId}/pom.properties" />
-
-            <first id="first">
-              <fileset dir="${env.JBOSS_HOME}/standalone/tmp/vfs/" includes="**/${searchPath}" />
-            </first>
-            <script language="javascript">
-              var before = project.getProperty("toString:first");
-              var replace =
-              project.getProperty("searchPath");
-              project.setProperty("jbossTmpDir", before.replaceAll(replace, ""));
-            </script>
-            <!-- Place any Ant task here. You can add anything you can add between <target> and </target> in a build.xml. -->
-            <echo message="${jbossTmpDir}" />
-            <copy todir="${jbossTmpDir}">
-              <fileset dir="src/main/webapp">
-                <include name="bootstrap/**/*.*" />
-                <include name="js/**/*.*" />
-                <include name="css/**/*.*" />
-                <include name="img/**/*.*" />
-                <include name="**/*.html" />
-              </fileset>
-            </copy>
-            <copy todir="${jbossTmpDir}/WEB-INF/classes">
-              <fileset dir="src/main/java">
-                <include name="**/*.html" />
-              </fileset>
-            </copy>
-          </target>
-
-
-          <macrodef name="find">
-            <attribute name="dir" />
-            <attribute name="name" />
-            <attribute name="property" />
-            <sequential>
-              <pathconvert property="@{property}.matches" pathsep="${line.separator}">
-                <fileset dir="@{dir}">
-                  <include name="@{name}" />
-                </fileset>
-              </pathconvert>
-              <loadresource property="@{property}">
-                <string value="${@{property}.matches}" />
-                <filterchain>
-                  <headfilter lines="1" />
-                </filterchain>
-              </loadresource>
-            </sequential>
-          </macrodef>
-        </configuration>
-      </plugin>
-
-
       <plugin>
         <groupId>com.googlecode.jslint4java</groupId>
         <artifactId>jslint4java-maven-plugin</artifactId>
@@ -555,13 +484,32 @@
 
   <profiles>
     <profile>
+      <id>deploy</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jboss.as.plugins</groupId>
+            <artifactId>jboss-as-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy-only</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>deploy-only</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
       <id>fulldeploy</id>
       <build>
         <plugins>
           <plugin>
             <groupId>org.jboss.as.plugins</groupId>
             <artifactId>jboss-as-maven-plugin</artifactId>
-            <version>7.4.Final</version>
             <executions>
               <execution>
                 <id>install-undeploy</id>

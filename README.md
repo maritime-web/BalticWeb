@@ -66,10 +66,21 @@ In particular the file may contain URLs and passwords for the DMI Ice map server
 
 ## Deploy to JBoss
 
-* Initial deployment (Clean, build, install database drivers environmental variables and deploy application)
-    mvn install -P fulldeploy
-* Daily deployment
-    mvn jboss-as:deploy - Just deploy the WAR-file
+Initial deployment (Clean, build, install database drivers environmental variables and deploy application)
+
+    embryo-web> mvn install -P fulldeploy
+
+    or 
+
+    Embryo> mvn install -P fulldeploy
+
+Daily deployment
+
+    embryo-web> mvn jboss-as:deploy - just build and deploy the WAR-file
+
+    or 
+
+    Embryo> mvn install -P deploy - build the whole application and deploy WAR-file
 
 A local deployment will setup ArcticWeb at the following URL:
 

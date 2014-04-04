@@ -90,6 +90,13 @@
       <artifactId>validation-api</artifactId>
     </dependency>
 
+    <!-- Google -->
+    <dependency>
+      <groupId>com.google.collections</groupId>
+      <artifactId>google-collections</artifactId>
+      <version>1.0</version>
+    </dependency>
+
 
     <!-- Test dependencies -->
     <dependency>

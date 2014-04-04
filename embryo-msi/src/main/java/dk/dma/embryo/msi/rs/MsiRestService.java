@@ -13,17 +13,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.user.security.authorization;
+package dk.dma.embryo.msi.rs;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.List;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Authorization
-public @interface RolesAllowAll {
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+
+import dk.dma.embryo.msi.MsiClient;
+
+@Path("/msi")
+public class MsiRestService {
+    @Inject
+    private MsiClient msiClient;
+
+    @GET
+    @Path("/list")
+    @Produces("application/json")
+    @GZIP
+    @NoCache
+    public List<MsiClient.MsiItem> listActiveWarnings() {
+        return msiClient.getActiveWarnings();
+    }
 }

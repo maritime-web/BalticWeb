@@ -41,10 +41,7 @@ import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.persistence.RealmDao;
-import dk.dma.embryo.user.security.AuthorizationChecker;
 import dk.dma.embryo.user.security.Subject;
-import dk.dma.embryo.user.security.authorization.Roles;
-import dk.dma.embryo.user.security.authorization.RolesAllowAll;
 import dk.dma.embryo.vessel.component.RouteActivator;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
@@ -53,8 +50,6 @@ import dk.dma.embryo.vessel.persistence.VesselDao;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-@Interceptors(value=AuthorizationChecker.class)
-@RolesAllowAll
 public class GreenPosServiceImpl implements GreenPosService {
 
     @Inject
@@ -101,7 +96,6 @@ public class GreenPosServiceImpl implements GreenPosService {
      * This saves a report coming from a vessel
      */
     @Override
-    @Roles(SailorRole.class)
     @Interceptors(SaveReportInterceptor.class)
     public String saveReport(GreenPosReport report, String routeEnavId, Boolean activate, Boolean includeActiveWaypoints) {
         

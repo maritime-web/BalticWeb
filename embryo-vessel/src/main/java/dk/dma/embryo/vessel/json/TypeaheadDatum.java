@@ -13,16 +13,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.user.security.authorization;
+package dk.dma.embryo.vessel.json;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class TypeaheadDatum {
+    private String value;
+    private String[] tokens;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface Authorization {
+    public TypeaheadDatum(String value, String... tokens) {
+        this.value = value;
+        this.tokens = tokens;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public String[] getTokens() {
+        return tokens;
+    }
+
 }
