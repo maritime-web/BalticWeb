@@ -143,22 +143,6 @@ public class AuthenticationService {
         return null;
     }
 
-    public static class UserNotAuthenticated extends WebApplicationException {
-        private static final long serialVersionUID = 7940360206022406100L;
-
-        public UserNotAuthenticated() {
-            super(Response.Status.UNAUTHORIZED);
-        }
-    }
-
-    public static class ParameterMissing extends WebApplicationException {
-        private static final long serialVersionUID = 3153251523607924598L;
-
-        public ParameterMissing(String error) {
-            super(Response.status(Response.Status.BAD_REQUEST).entity(error).build());
-        }
-    }
-
     @POST
     @Path("/change-password")
     @Consumes("application/json")
@@ -174,6 +158,22 @@ public class AuthenticationService {
             } catch (FinderException e) {
                 throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity(e.getMessage()).build());
             }
+        }
+    }
+
+    public static class UserNotAuthenticated extends WebApplicationException {
+        private static final long serialVersionUID = 7940360206022406100L;
+
+        public UserNotAuthenticated() {
+            super(Response.Status.UNAUTHORIZED);
+        }
+    }
+
+    public static class ParameterMissing extends WebApplicationException {
+        private static final long serialVersionUID = 3153251523607924598L;
+
+        public ParameterMissing(String error) {
+            super(Response.status(Response.Status.BAD_REQUEST).entity(error).build());
         }
     }
 
