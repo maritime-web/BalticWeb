@@ -68,6 +68,11 @@ public class MaxSpeedJob {
     @Inject
     @Property("embryo.vessel.maxspeedjob.lastrecordedlimit")
     private Integer lastRecordedLimit;
+    
+    
+    @Inject
+    @Property("embryo.vessel.maxspeedjob.initialExecution")
+    private int initialExecution;
 
     @Inject
     private Logger logger;
@@ -85,7 +90,12 @@ public class MaxSpeedJob {
         if (enabled != null && "true".equals(enabled.trim().toLowerCase()) && cron != null) {
             TimerConfig config = new TimerConfig(null, false);
             // Initial calculation - 30 seconds later than initial AIS replication
-            service.createSingleActionTimer(30000, config);
+            if (initialExecution >= 0) {
+                logger.info("Initial Execution with delay of {} milliseconds", initialExecution);
+                service.createSingleActionTimer(initialExecution, config);
+            }else{
+                logger.info("no value for embryo.vessel.maxspeedjob.initialExecution, skipping initial execution");
+            }
 
             // Scheduled calculation
             service.createCalendarTimer(cron, config);

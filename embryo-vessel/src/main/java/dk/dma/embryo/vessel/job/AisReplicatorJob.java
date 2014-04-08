@@ -65,6 +65,10 @@ public class AisReplicatorJob {
     private ScheduleExpression cron;
 
     @Inject
+    @Property("embryo.vessel.aisjob.initialExecution")
+    private int initialExecution;
+
+    @Inject
     private Logger logger;
 
     @Inject
@@ -79,7 +83,12 @@ public class AisReplicatorJob {
 
         if (enabled != null && "true".equals(enabled.trim().toLowerCase()) && cron != null) {
             // Replicate AIS information 5 seconds after startup
-            service.createSingleActionTimer(5000, new TimerConfig(null, false));
+            if (initialExecution >= 0) {
+                logger.info("Initial Execution with delay of {} milliseconds", initialExecution);
+                service.createSingleActionTimer(5000, new TimerConfig(null, false));
+            } else {
+                logger.info("no value for embryo.vessel.aisjob.initialExecution, skipping initial execution");
+            }
 
             // Replite AIS data on confired interval
             TimerConfig config = new TimerConfig(null, false);
@@ -163,7 +172,7 @@ public class AisReplicatorJob {
 
             embryoLogService.info("AIS data replicated. Vessel count: " + vesselsInAisCircle.size());
         } catch (Throwable t) {
-            logger.error("AIS Replication Error",t);
+            logger.error("AIS Replication Error", t);
             embryoLogService.error("" + t, t);
         }
     }
