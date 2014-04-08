@@ -44,8 +44,10 @@ public class VesselDetails {
 
     private Boolean helipad;
 
-    private AdditionalInformation additionalInformation;
-
+    private Map<String, Object> additionalInformation;
+    
+//    private Map<String, Object> reporting;
+    
     private Map<String, Object> ais;
 
     // //////////////////////////////////////////////////////////////////////
@@ -139,11 +141,11 @@ public class VesselDetails {
         this.maxPersons = maxPersons;
     }
 
-    public AdditionalInformation getAdditionalInformation() {
+    public Map<String, Object> getAdditionalInformation() {
         return additionalInformation;
     }
 
-    public void setAdditionalInformation(AdditionalInformation additionalInformation) {
+    public void setAdditionalInformation(Map<String, Object> additionalInformation) {
         this.additionalInformation = additionalInformation;
     }
 
@@ -155,59 +157,11 @@ public class VesselDetails {
         this.ais = ais;
     }
 
-
-    // //////////////////////////////////////////////////////////////////////
-    // Inner classes
-    // //////////////////////////////////////////////////////////////////////
-    public static class AdditionalInformation{
-        
-        private String routeId;
-        private Boolean historicalTrack;
-        private Boolean greenpos;
-        private Boolean schedule;
-
-        public AdditionalInformation() {
-
-        }
-
-        public AdditionalInformation(String routeId, Boolean historicalTrack, Boolean greenpos, Boolean schedule) {
-            super();
-            this.routeId = routeId;
-            this.historicalTrack = historicalTrack;
-            this.greenpos = greenpos;
-            this.schedule = schedule;
-        }
-
-        public String getRouteId() {
-            return routeId;
-        }
-
-        public void setRouteId(String routeId) {
-            this.routeId = routeId;
-        }
-
-        public Boolean getHistoricalTrack() {
-            return historicalTrack;
-        }
-
-        public void setHistoricalTrack(Boolean historicalTrack) {
-            this.historicalTrack = historicalTrack;
-        }
-
-        public Boolean getGreenpos() {
-            return greenpos;
-        }
-
-        public void setGreenpos(Boolean greenpos) {
-            this.greenpos = greenpos;
-        }
-
-        public Boolean getSchedule() {
-            return schedule;
-        }
-
-        public void setSchedule(Boolean schedule) {
-            this.schedule = schedule;
-        } 
-    }
+//    public Map<String, Object> getReporting() {
+//        return reporting;
+//    }
+//
+//    public void setReporting(Map<String, Object> reporting) {
+//        this.reporting = reporting;
+//    }
 }

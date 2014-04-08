@@ -13,13 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.rest;
+package dk.dma.embryo.vessel.json;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -33,18 +34,13 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.reporting.model.GreenposSearch;
-import dk.dma.arcticweb.reporting.service.GreenPosService;
 import dk.dma.embryo.common.util.ParseUtils;
 import dk.dma.embryo.vessel.job.AisDataService;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
 import dk.dma.embryo.vessel.job.MaxSpeedJob;
 import dk.dma.embryo.vessel.job.MaxSpeedJob.MaxSpeedRecording;
-import dk.dma.embryo.vessel.json.VesselDetails;
-import dk.dma.embryo.vessel.json.VesselDetails.AdditionalInformation;
 import dk.dma.embryo.vessel.json.client.FullAisViewService;
 import dk.dma.embryo.vessel.json.client.LimitedAisViewService;
-import dk.dma.embryo.vessel.json.VesselOverview;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
@@ -53,6 +49,7 @@ import dk.dma.embryo.vessel.service.ScheduleService;
 import dk.dma.embryo.vessel.service.VesselService;
 
 @Path("/vessel")
+@RequestScoped
 public class VesselRestService {
     @Inject
     private LimitedAisViewService limitedAisViewService;
@@ -74,9 +71,6 @@ public class VesselRestService {
 
     @Inject
     private VesselDao vesselDao;
-
-    @Inject
-    private GreenPosService greenposService;
 
     @Inject
     private MaxSpeedJob maxSpeedJob;
@@ -103,14 +97,14 @@ public class VesselRestService {
         List<VesselOverview> result = new ArrayList<>();
 
         List<String[]> vessels = aisDataService.getVesselsOnMap();
-        
+
         Map<Long, MaxSpeedRecording> speeds = aisDataService.getMaxSpeeds();
 
         for (String[] vessel : vessels) {
 
             VesselOverview vo = new VesselOverview();
             Long mmsi = Long.valueOf(vessel[6]);
-            
+
             vo.setX(Double.parseDouble(vessel[2]));
             vo.setY(Double.parseDouble(vessel[1]));
             vo.setAngle(Double.parseDouble(vessel[0]));
@@ -120,7 +114,7 @@ public class VesselRestService {
             vo.setMoored("1".equals(vessel[5]));
             vo.setType(vessel[4]);
             vo.setInAW(false);
-            
+
             // What is vessel[3] seems to be either A or B ?
 
             MaxSpeedRecording speed = speeds.get(mmsi);
@@ -160,25 +154,26 @@ public class VesselRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
+    @Details
     public VesselDetails details(@QueryParam("mmsi") long mmsi) {
+        logger.debug("details({})", mmsi);
+
         try {
             Map<String, Object> result = fullAisViewService.vesselTargetDetails(mmsi, 0);
 
             boolean historicalTrack = false;
             String lat = (String) result.get("lat");
             String lon = (String) result.get("lon");
-            //EMBRYO-135: avoid NullPointer when lat/lon not present in AIS data
+            // EMBRYO-135: avoid NullPointer when lat/lon not present in AIS data
             if (lat != null && lon != null) {
-                historicalTrack = aisDataService.isWithinAisCircle(ParseUtils.parseLongitude(lon), ParseUtils.parseLatitude(lat));
+                historicalTrack = aisDataService.isWithinAisCircle(ParseUtils.parseLongitude(lon),
+                        ParseUtils.parseLatitude(lat));
             }
 
             VesselDetails details;
             Vessel vessel = vesselService.getVessel(mmsi);
             List<Voyage> schedule = null;
             Route route = null;
-
-            boolean greenpos = greenposService.findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1))
-                    .size() > 0;
 
             if (vessel != null) {
                 route = scheduleService.getActiveRoute(mmsi);
@@ -190,8 +185,15 @@ public class VesselRestService {
                 details.setAis(result);
             }
 
-            details.setAdditionalInformation(new AdditionalInformation(route != null ? route.getEnavId() : null,
-                    historicalTrack, greenpos, schedule != null && schedule.size() > 0));
+            // Map<String, Object> reporting = new HashMap<>();
+            // details.setReporting(reporting);
+
+            Map<String, Object> additionalInformation = new HashMap<>();
+            additionalInformation.put("historicalTrack", historicalTrack);
+            additionalInformation.put("routeId", route != null ? route.getEnavId() : null);
+            additionalInformation.put("schedule", schedule != null && schedule.size() > 0);
+
+            details.setAdditionalInformation(additionalInformation);
 
             return details;
 
@@ -207,9 +209,6 @@ public class VesselRestService {
                 Route route = scheduleService.getActiveRoute(mmsi);
                 List<Voyage> schedule = scheduleService.getSchedule(mmsi);
 
-                boolean greenpos = greenposService.findReports(new GreenposSearch(null, mmsi, null, null, null, 0, 1))
-                        .size() > 0;
-
                 details = vessel.toJsonModel();
 
                 details.getAis().put("callsign", vessel.getAisData().getCallsign());
@@ -217,8 +216,11 @@ public class VesselRestService {
                 details.getAis().put("mmsi", "" + vessel.getMmsi());
                 details.getAis().put("name", "" + vessel.getAisData().getName());
 
-                details.setAdditionalInformation(new AdditionalInformation(route != null ? route.getEnavId() : null,
-                        false, greenpos, schedule != null && schedule.size() > 0));
+                Map<String, Object> additionalInformation = new HashMap<>();
+                additionalInformation.put("routeId", route != null ? route.getEnavId() : null);
+                additionalInformation.put("historicalTrack", false);
+                additionalInformation.put("schedule", schedule != null && schedule.size() > 0);
+                details.setAdditionalInformation(additionalInformation);
 
                 return details;
             } else {
@@ -235,7 +237,7 @@ public class VesselRestService {
         logger.debug("save({})", details);
         vesselService.save(Vessel.fromJsonModel(details));
     }
-    
+
     @PUT
     @Path("/update/ais")
     @Consumes("application/json")

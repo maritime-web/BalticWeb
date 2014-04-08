@@ -163,6 +163,7 @@ public class AisReplicatorJob {
 
             embryoLogService.info("AIS data replicated. Vessel count: " + vesselsInAisCircle.size());
         } catch (Throwable t) {
+            logger.error("AIS Replication Error",t);
             embryoLogService.error("" + t, t);
         }
     }
