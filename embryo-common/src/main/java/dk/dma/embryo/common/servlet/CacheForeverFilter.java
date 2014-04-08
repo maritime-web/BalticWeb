@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.servlets;
+package dk.dma.embryo.common.servlet;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -21,18 +21,20 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class SetContentTypeFilter implements Filter {
-    private String mimeType;
-
+public class CacheForeverFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
-        mimeType = filterConfig.getInitParameter("ContentType");
+
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletResponse resp = (HttpServletResponse) response;
+        resp.setDateHeader("Expires", System.currentTimeMillis() + 3600 * 24 * 365 * 1000L);
+        resp.setDateHeader("Last-Modified", 1);
+        resp.setHeader("Cache-Control", "public, max-age=" + (3600 * 24 * 365));
         chain.doFilter(request, response);
-        response.setContentType(mimeType);
     }
 
     public void destroy() {
