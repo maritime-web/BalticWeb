@@ -29,7 +29,6 @@ import dk.dma.embryo.dataformats.json.IceObservationRestService;
 import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 import dk.dma.embryo.metoc.json.MetocRestService;
 import dk.dma.embryo.msi.rs.MsiRestService;
-import dk.dma.embryo.rest.VesselRestService;
 import dk.dma.embryo.user.json.AuthenticationService;
 import dk.dma.embryo.user.json.RequestAccessRestService;
 import dk.dma.embryo.user.json.UserRestService;
@@ -37,6 +36,7 @@ import dk.dma.embryo.vessel.json.BerthRestService;
 import dk.dma.embryo.vessel.json.RouteRestService;
 import dk.dma.embryo.vessel.json.RouteUploadRestService;
 import dk.dma.embryo.vessel.json.ScheduleRestService;
+import dk.dma.embryo.vessel.json.VesselRestService;
 
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
