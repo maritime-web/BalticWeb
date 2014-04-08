@@ -16,7 +16,6 @@
 package dk.dma.embryo.user.mail;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
@@ -36,7 +35,7 @@ public class RequestAccessMailTest {
     private PropertyFileService propertyFileService;
     
     @Test
-    public void test() throws MessagingException {
+    public void test() throws Exception {
         // TEST DATA
         SignupRequest request = new SignupRequest();
         request.setContactPerson("John Doe");

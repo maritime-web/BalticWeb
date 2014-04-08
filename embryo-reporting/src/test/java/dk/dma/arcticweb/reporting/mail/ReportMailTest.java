@@ -16,7 +16,6 @@
 package dk.dma.arcticweb.reporting.mail;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
@@ -39,14 +38,14 @@ import dk.dma.embryo.vessel.model.Position;
  * @author Jesper Tejlgaard
  */
 @RunWith(CdiRunner.class)
-@AdditionalClasses(value = { PropertyFileService.class})
+@AdditionalClasses(value = { PropertyFileService.class })
 public class ReportMailTest {
 
     @Inject
     PropertyFileService propertyFileService;
-    
+
     @Test
-    public void testSendDeviationReport_noWaypoints() throws MessagingException {
+    public void testSendDeviationReport_noWaypoints() throws Exception {
         // TEST DATA
         GreenPosDeviationReport report = new GreenPosDeviationReport("MyVessel", 12L, "callsign", new Position(10.0,
                 10.0), "My Deviation Description");
@@ -54,7 +53,7 @@ public class ReportMailTest {
 
         // EXECUTE
         ReportMail mail = new ReportMail(report, "test@test.dk", propertyFileService).build();
-        
+
         // VERIFY
         String header = "ArcticWeb Greenpos Deviation Report from MyVessel";
         String body = "A (Vessel): MyVessel/callsign MMSI 12\n";
@@ -72,7 +71,7 @@ public class ReportMailTest {
     }
 
     @Test
-    public void testSendDeviationReport_withWaypoints() throws MessagingException {
+    public void testSendDeviationReport_withWaypoints() throws Exception {
         // TEST DATA
         GreenPosDeviationReport report = new GreenPosDeviationReport("MyVessel", 12L, "callsign", new Position(10.0,
                 10.0), "My Deviation Description");
@@ -102,7 +101,7 @@ public class ReportMailTest {
     }
 
     @Test
-    public void testSendSailingPlanReport_withRouteData() throws MessagingException {
+    public void testSendSailingPlanReport_withRouteData() throws Exception {
 
         // TEST DATA
         DateTime eta = DateTimeConverter.getDateTimeConverter("MS").toObject("02-02-2014 12:00");
@@ -140,7 +139,7 @@ public class ReportMailTest {
     }
 
     @Test
-    public void testSendSailingPlanReport_noRouteData() throws MessagingException {
+    public void testSendSailingPlanReport_noRouteData() throws Exception {
         // TEST DATA
         DateTime eta = DateTimeConverter.getDateTimeConverter("MS").toObject("02-02-2014 12:00");
         GreenPosSailingPlanReport report = new GreenPosSailingPlanReport("MyVessel", 12L, "callsign", new Position(
@@ -173,7 +172,7 @@ public class ReportMailTest {
     }
 
     @Test
-    public void testSendFinalReport() throws MessagingException {
+    public void testSendFinalReport() throws Exception {
 
         // TEST DATA
         GreenPosFinalReport report = new GreenPosFinalReport("MyVessel", 12L, "callsign", new Position(10.0, 10.0),
@@ -200,10 +199,10 @@ public class ReportMailTest {
     }
 
     @Test
-    public void testSendPositionReport() throws MessagingException {
+    public void testSendPositionReport() throws Exception {
         // TEST DATA
-        GreenPosPositionReport report = new GreenPosPositionReport("MyVessel", 12L, "callsign", new Position(10.0, 10.0),
-                "My Weather", "My Ice", 2.0, 134);
+        GreenPosPositionReport report = new GreenPosPositionReport("MyVessel", 12L, "callsign",
+                new Position(10.0, 10.0), "My Weather", "My Ice", 2.0, 134);
         report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-02-2014 06:03:25"));
 
         // EXECUTE
