@@ -17,13 +17,16 @@ package dk.dma.embryo.user.shiro;
 
 import java.io.IOException;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
+import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,27 +35,36 @@ import dk.dma.embryo.user.shiro.Error.AuthCode;
 /**
  * @author Jesper Tejlgaard
  */
-public class EmbryoAuthorizationFilter extends RolesAuthorizationFilter {
+public abstract class EmbryoVesselDataFilter extends AccessControlFilter {
 
-    Logger logger = LoggerFactory.getLogger(EmbryoAuthorizationFilter.class);
+    Logger logger = LoggerFactory.getLogger(EmbryoVesselDataFilter.class);
+
+    @Override
+    public void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
+        MultiReadHttpServletRequest multiReadRequest = new MultiReadHttpServletRequest((HttpServletRequest) request);
+        super.doFilterInternal(multiReadRequest, response, chain);
+    }
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response, Object mappedValue)
             throws IOException {
-        logger.debug("Access denied: {}, {}", WebUtils.toHttp(request).getRequestURI(), mappedValue);
-
-        Subject subject = getSubject(request, response);
+        logger.debug("Access denied: {}, {}", WebUtils.toHttp(request).getRequestURI(), ((String[]) mappedValue)[0]);
 
         HttpServletResponse httpResp = WebUtils.toHttp(response);
         httpResp.setContentType("application/json");
-        if (subject.getPrincipal() == null) {
-            httpResp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            Util.writeJson(httpResp, new Error(AuthCode.UNAUTHENTICATED, "User not logged in"));
-        } else {
-            httpResp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            Util.writeJson(httpResp, new Error(AuthCode.UNAUTHORIZED,
-                    "User is logged in, but does not have necessary permissions"));
-        }
+        httpResp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        Util.writeJson(httpResp, new Error(AuthCode.UNAUTHORIZED,
+                "User not authorized to modify data for vessel in question"));
         return false;
     }
+    
+
+    @Override
+    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
+        // never invoked
+        return false;
+    }
+
+
 }
