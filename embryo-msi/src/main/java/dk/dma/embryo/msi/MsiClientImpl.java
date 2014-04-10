@@ -42,7 +42,15 @@ public class MsiClientImpl implements MsiClient {
     private EmbryoLogService embryoLogService;
 
     private MsiService msiService;
+    
+    public MsiClientImpl(){
+    }
 
+    public MsiClientImpl(EmbryoLogService logService){
+        this.embryoLogService = logService;
+    }
+
+    
     @PostConstruct
     public void init() {
         msiService = new WarningService(getClass().getResource("/wsdl/warning.wsdl"), new QName("http://enav.frv.dk/msi/ws/warning", "WarningService"))
