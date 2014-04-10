@@ -169,6 +169,7 @@ var greenposScope;
             $scope.warningMessages = null;
             $scope.alertMessages = null;
             $scope.reportAcknowledgement = null;
+            $scope.greenPosForm.$setPristine();
 
             initData();
         };
@@ -195,6 +196,13 @@ var greenposScope;
             initData();
 
             $scope.$apply();
+        }
+        
+        this.hide = function(){
+            $scope.warningMessages = null;
+            $scope.alertMessages = null;
+            $scope.reportAcknowledgement = null;
+            $scope.greenPosForm.$setPristine();
         }
 
         function initData() {
