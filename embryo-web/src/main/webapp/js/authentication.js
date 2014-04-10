@@ -45,7 +45,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
 
                 $http.post(embryo.baseUrl + "rest/request-access/save", $scope.request).success(function() {
                     $scope.message = "Request for access has been sent. We will get back to you via email.";
-                }).error(function() {
+                }).error(function(data, status) {
                     $scope.alertMessages = embryo.ErrorService.extractError(data, status);
                     $scope.alertMessages.push("Request for access has failed. Please try again.");
                 });

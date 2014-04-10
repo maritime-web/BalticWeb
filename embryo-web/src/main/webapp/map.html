@@ -38,7 +38,7 @@
 
 <script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 
-<script src="OpenLayers-2.13.1/OpenLayers.js"></script>
+<script src="OpenLayers-2.13.1/OpenLayers.debug.js"></script>
 
 <!-- The main application script -->
 <!-- build:js js/arcticweb-map.js -->
@@ -137,13 +137,23 @@
 
 	<div id="zoomControlPanel">
 		<p>
-			<button class="btn btn-small" id="zoomAll">Zoom All Arctic</button>
+			<div style="float:right">
+				<p>
+					<button id="dmaZoomIn" class="btn e-btn-tall btn-primary btn-small"><i class="icon-white icon-plus"></i></button>
+				<br /><br />
+					<button id="dmaZoomOut" class="btn e-btn-tall btn-primary btn-small"><i class="icon-white icon-minus"></i></button>
+				</p>
+			</div>
+			<button class="btn e-btn-wide btn-primary btn-small" id="zoomAll">Zoom All Arctic</button>
 		</p>
 		<p>
-			<button class="btn btn-small" id="zoomToYourShip">Zoom to Your Vessel</button>
+			<button class="btn e-btn-wide btn-primary btn-small" id="zoomToYourShip">Zoom to Your Vessel</button>
 		</p>
 		<p>
-			<button class="btn btn-small" id="switchBaseMap">Switch Base Map</button>
+			<button class="btn e-btn-wide btn-primary btn-small" id="switchBaseMap">Switch Base Map</button>
+		</p>
+		<p>
+			<b>Pointer coordinates:</b> <br /><span id="coords"></span>
 		</p>
 	</div>
 
