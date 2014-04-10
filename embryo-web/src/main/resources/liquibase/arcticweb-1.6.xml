@@ -4,8 +4,12 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
   <changeSet id="1396450216940-1" author="jacob">
-      <addColumn tableName="SecuredUser">
-          <column name="forgotUuid" type="VARCHAR(36)" />
-      </addColumn>
-  </changeSet>  
+    <addColumn tableName="SecuredUser">
+      <column name="forgotUuid" type="VARCHAR(36)" />
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="1397142579000" author="jesper">
+    <renameColumn columnDataType="VARCHAR(255)" newColumnName="location" oldColumnName="berthName" tableName="Voyage" />
+  </changeSet>
 </databaseChangeLog>

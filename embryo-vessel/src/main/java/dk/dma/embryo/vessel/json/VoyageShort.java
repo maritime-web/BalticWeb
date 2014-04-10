@@ -44,10 +44,10 @@ public class VoyageShort {
         super();
     }
 
-    public VoyageShort(String maritimeId, String berthName, Date arrival, Date departure) {
+    public VoyageShort(String maritimeId, String location, Date arrival, Date departure) {
         super();
         this.maritimeId = maritimeId;
-        this.loc = berthName;
+        this.loc = location;
         this.arr = arrival;
         this.dep = departure;
     }

@@ -29,7 +29,7 @@ public class Voyage {
 
     private String maritimeId;
 
-    private String berthName;
+    private String location;
 
     private Double latitude;
 
@@ -54,11 +54,11 @@ public class Voyage {
         super();
     }
     
-    public Voyage(String maritimeId, String berthName, Double latitude, Double longitude, Date arrival,
+    public Voyage(String maritimeId, String location, Double latitude, Double longitude, Date arrival,
             Date departure, Integer crew, Integer passengers) {
         super();
         this.maritimeId = maritimeId;
-        this.berthName = berthName;
+        this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
         this.arrival = arrival;
@@ -67,11 +67,11 @@ public class Voyage {
         this.passengers = passengers;
     }
 
-    public Voyage(String maritimeId, String berthName, Double latitude, Double longitude, Date arrival,
+    public Voyage(String maritimeId, String location, Double latitude, Double longitude, Date arrival,
             Date departure, Integer crew, Integer passengers, Boolean doctor) {
         super();
         this.maritimeId = maritimeId;
-        this.berthName = berthName;
+        this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
         this.arrival = arrival;
@@ -101,12 +101,12 @@ public class Voyage {
         this.maritimeId = maritimeId;
     }
 
-    public String getBerthName() {
-        return berthName;
+    public String getLocation() {
+        return location;
     }
 
-    public void setBerthName(String berthName) {
-        this.berthName = berthName;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Double getLatitude() {

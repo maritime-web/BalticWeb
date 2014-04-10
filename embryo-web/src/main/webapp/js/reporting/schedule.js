@@ -111,11 +111,11 @@
                 mmsi : $scope.mmsi,
                 routeId : $scope.voyages[index].route ? $scope.voyages[index].route.id : null,
                 voyageId : $scope.voyages[index].maritimeId,
-                dep : $scope.voyages[index].berthName,
+                dep : $scope.voyages[index].location,
                 etdep : $scope.voyages[index].departure,
             };
             if (index < $scope.voyages.length - 1) {
-                context.des = $scope.voyages[index + 1].berthName;
+                context.des = $scope.voyages[index + 1].location;
                 context.etdes = $scope.voyages[index + 1].arrival;
             }
 
