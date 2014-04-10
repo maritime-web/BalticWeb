@@ -31,3 +31,11 @@ embryo.eventbus.EmbryoReadyEvent = function() {
 
 embryo.eventbus.registerShorthand(embryo.eventbus.EmbryoReadyEvent, "ready");
 embryo.eventbus.registerShorthand(embryo.eventbus.EmbryoReadyEvent, "authenticated");
+
+
+embryo.eventbus.MapInitialized = function() {
+    var event = jQuery.Event("MapInitializedEvent");
+    return event;
+};
+
+embryo.eventbus.registerShorthand(embryo.eventbus.MapInitialized, "mapInitialized");

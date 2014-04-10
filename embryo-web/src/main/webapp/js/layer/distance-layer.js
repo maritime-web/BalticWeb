@@ -57,14 +57,16 @@ function DistanceLayer() {
 
         $.each(allVessels, function(k, v) {
             if (v.mmsi != vessel.mmsi) {
-                distance = embryo.adt.measureDistanceGc(vessel.x, vessel.y, v.x, v.y);
-                var o = {
-                    distance : distance,
-                    timeInMinutes : v.msog ? (distance / (v.msog * 1.852) / 60) : Infinity,
-                    vessel : v
-                }
-                if (o.distance > 0) {
-                    vessels.push(o);
+                if(v.msog){
+                    distance = embryo.adt.measureDistanceGc(vessel.x, vessel.y, v.x, v.y);
+                    var o = {
+                        distance : distance,
+                        timeInMinutes : (distance / (v.msog * 1.852) / 60),
+                        vessel : v
+                    }
+                    if (o.distance > 0) {
+                        vessels.push(o);
+                    }
                 }
             }
         });

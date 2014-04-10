@@ -3,8 +3,9 @@ embryo.additionalInformation = {}
 embryo.additionalInformation.historicalTrack = {
     doShow : false,
     title : "Historical Track",
-    layer : new HistoricalTrackLayer(),
+    layer : null,
     init : function(map, group) {
+        this.layer = new HistoricalTrackLayer(); 
         addLayerToMap(group, this.layer, map)
     },
     available : function(vessel, vesselDetails) {
@@ -41,7 +42,13 @@ embryo.additionalInformation.nearestShips = {
         this.layer = DistanceLayerSingleton.getInstance();
     },
     available : function(vessel, vesselDetails) {
-        return vesselDetails.ais != null;
+        var vessels = embryo.vessel.allVessels();
+        for(index in vessels){
+            if(vessels[index].msog){
+                return true;
+            }
+        }
+        return false;
     },
     show : function(vessel, vesselDetails) {
         this.layer.drawNearestVessels(vessel, vesselDetails, embryo.vessel.allVessels());
