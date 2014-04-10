@@ -12,7 +12,7 @@
         function buildVoyageInfo(index, schecule) {
             var result = {
                 id : schecule.voyages[index].maritimeId,
-                dep : schecule.voyages[index].berthName,
+                dep : schecule.voyages[index].location,
                 depEta : schecule.voyages[index].departure,
                 crew : schecule.voyages[index].crew,
                 passengers : schecule.voyages[index].passengers,
@@ -21,7 +21,7 @@
                 result.routeId = schecule.voyages[index].route.id;
             }
             if (index < schecule.voyages.length - 1) {
-                result.des = schecule.voyages[index + 1].berthName;
+                result.des = schecule.voyages[index + 1].location;
                 result.desEta = schecule.voyages[index + 1].arrival;
             }
             return result;

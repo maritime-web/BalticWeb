@@ -58,7 +58,7 @@ public class RouteSaver {
         }
 
         if(route.getOrigin() == null){
-            route.setOrigin(voyage.getBerthName());
+            route.setOrigin(voyage.getLocation());
         }
         if(route.getEtaOfDeparture() == null){
             route.setEtaOfDeparture(voyage.getDeparture());
@@ -75,7 +75,7 @@ public class RouteSaver {
             }
         }
         if (count < voyages.size()) {
-            route.setDestination(voyages.get(count).getBerthName());
+            route.setDestination(voyages.get(count).getLocation());
         }
 
         route.setVoyage(voyage);
