@@ -52,24 +52,30 @@ public class MsiClientImpl implements MsiClient {
     }
 
     public List<MsiClient.MsiItem> getActiveWarnings() {
-        try {
-            List<MsiClient.MsiItem> result = new ArrayList<>();
+        List<MsiClient.MsiItem> result = new ArrayList<>();
 
-            String[] countriesArr = countries.split(",");
+        String[] countriesArr = countries.split(",");
 
-            for (String country : countriesArr) {
+        boolean error = false;
+        for (String country : countriesArr) {
+            int count = 0;
+            try {
                 for (MsiDto md : msiService.getActiveWarningCountry(country).getItem()) {
                     result.add(new MsiClient.MsiItem(md));
+                    count++;
                 }
+            } catch (Throwable t) {
+                embryoLogService.error("Error reading warnings from MSI service: " + endpoint + " for country: " + country, t);
+                error = true;
             }
-
-            embryoLogService.info("Read " + result.size() + " warnings from MSI service: " + endpoint);
-            return result;
-
-        } catch (Throwable t) {
-            embryoLogService.error("Error reading warnings from MSI service: " + endpoint, t);
-
-            throw new RuntimeException(t);
+            embryoLogService.info("Read " + count + " warnings from MSI provider: " + country);
         }
+        embryoLogService.info("Read " + result.size() + " warnings from MSI service: " + endpoint);
+        if(error) {
+            embryoLogService.error("There was a problem reading MSI warnings from endpoint " + endpoint);
+            throw new RuntimeException();
+        }
+        return result;
+
     }
 }
