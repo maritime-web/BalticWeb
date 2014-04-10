@@ -30,11 +30,17 @@ $(function() {
 
     var map = new OpenLayers.Map({
         div : "map",
-        controls : [ new OpenLayers.Control.Navigation({
-            dragPanOptions : {
-                enableKinetic : false
-            }
-        }), new OpenLayers.Control.Zoom() ],
+        controls : [ 
+            new OpenLayers.Control.Navigation({
+                dragPanOptions : {
+                    enableKinetic : false
+                }
+            }),
+            new OpenLayers.Control.Zoom({
+                zoomInId : 'dmaZoomIn',
+                zoomOutId : 'dmaZoomOut'
+            })
+        ],
         projection : embryo.projection,
         maxExtent : e1,
         fractionalZoom : false
@@ -84,8 +90,7 @@ $(function() {
             }
         },
         createPoint : function(longitude, latitude) {
-            return new OpenLayers.Geometry.Point(longitude, latitude).transform(new OpenLayers.Projection("EPSG:4326"),
-                    map.getProjectionObject());
+            return new OpenLayers.Geometry.Point(longitude, latitude).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         },
         select : function(feature) {
             selectControl.unselectAll();
@@ -161,8 +166,8 @@ $(function() {
 
                 trigger : function(e) {
                     var lonlat1 = this.map.getLonLatFromPixel(e.xy);
-                    var lonlat = new OpenLayers.LonLat(lonlat1.lon, lonlat1.lat).transform(this.map
-                            .getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+                    var lonlat = new OpenLayers.LonLat(lonlat1.lon, lonlat1.lat).transform(this.map.getProjectionObject(), new OpenLayers.Projection(
+                            "EPSG:4326"));
                     return handler(lonlat);
                 }
             });
@@ -196,6 +201,19 @@ $(function() {
     map.addControl(selectControl);
     selectControl.activate();
 
+    map.events.register("mousemove", map, function(e) {
+        var position = this.events.getMousePosition(e);
+        pixel = new OpenLayers.Pixel(position.x, position.y);
+        var lonLat = map.getLonLatFromPixel(pixel);
+        if (lonLat) {
+            lonLat.transform(map.getProjectionObject(), // from Spherical
+                                                        // Mercator Projection
+            new OpenLayers.Projection("EPSG:4326") // to WGS 1984
+            );
+            $('#coords').html(formatLatitude(lonLat.lat) + ', ' + formatLongitude(lonLat.lon));
+        }
+    });
+
     /**
      * Transforms a position to a position that can be used by OpenLayers. The
      * transformation uses OpenLayers.Projection("EPSG:4326").
@@ -207,8 +225,7 @@ $(function() {
      * @returns The transformed position as a OpenLayers.LonLat instance.
      */
     function transformPosition(lon, lat) {
-        return new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map
-                .getProjectionObject());
+        return new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
     }
 
     /**
@@ -344,14 +361,16 @@ $(function() {
 
     embryo.groupChanged(function(e) {
         selectControl.unselectAll();
-        selectControl.setLayer(selectLayerByGroup[e.groupId]);
-        for ( var i in controlsByGroup) {
-            if (i == e.groupId) {
-                for ( var j in controlsByGroup[i])
-                    controlsByGroup[i][j].activate();
-            } else {
-                for ( var j in controlsByGroup[i])
-                    controlsByGroup[i][j].deactivate();
+        if (selectLayerByGroup[e.groupId]) {
+            selectControl.setLayer(selectLayerByGroup[e.groupId]);
+            for ( var i in controlsByGroup) {
+                if (i == e.groupId) {
+                    for ( var j in controlsByGroup[i])
+                        controlsByGroup[i][j].activate();
+                } else {
+                    for ( var j in controlsByGroup[i])
+                        controlsByGroup[i][j].deactivate();
+                }
             }
         }
     });

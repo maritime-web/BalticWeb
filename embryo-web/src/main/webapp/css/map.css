@@ -75,12 +75,26 @@ body {
 
 #zoomControlPanel {
 	position: absolute;
+	width: 150px;
 	top: 50px;
-	right: 60px;
+	right: 30px;
+	background-color: white;
+	padding: 8px;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
 }
 
 #searchLoad {
 	display: none;
+}
+
+.e-btn-tall {
+	height: 32px;
+}
+
+.e-btn-wide {
+	width: 110px;
 }
 
 .reportingPanel {
