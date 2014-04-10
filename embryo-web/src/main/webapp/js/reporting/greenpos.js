@@ -301,7 +301,7 @@ var greenposScope;
         embryo.controllers.greenposListView = {
             title : "Greenpos Reports",
             available : function(vesselOverview, vesselDetails) {
-                return vesselOverview.inAW;
+                return vesselDetails.additionalInformation.greenpos;
             },
             show : function(vesselOverview, vesselDetails) {
                 $("#greenposListPanel").css("display", "block");
