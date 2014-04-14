@@ -66,6 +66,7 @@ public class ReportMailTest {
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
     }
@@ -96,6 +97,7 @@ public class ReportMailTest {
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
     }
@@ -134,6 +136,7 @@ public class ReportMailTest {
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
     }
@@ -167,6 +170,7 @@ public class ReportMailTest {
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
     }
@@ -194,6 +198,7 @@ public class ReportMailTest {
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
     }
@@ -222,6 +227,7 @@ public class ReportMailTest {
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
     }

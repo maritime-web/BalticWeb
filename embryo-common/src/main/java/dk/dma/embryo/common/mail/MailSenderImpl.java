@@ -59,13 +59,13 @@ public class MailSenderImpl implements MailSender {
 
     public void sendEmail(Mail<?> mail) {
         logger.debug("enabled={}", enabled);
-        
+
         try {
             mail.build();
-            
+
             if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
-                logger.info("Email sending has been disabled. Would have sent the following to {}:\n{}\n{}", mail.getTo(),
-                        mail.getHeader(), mail.getBody());
+                logger.info("Email sending has been disabled. Would have sent the following to {} (cc {}):\n{}\n{}",
+                        mail.getTo(), mail.getCc(), mail.getHeader(), mail.getBody());
                 return;
             }
 
@@ -77,17 +77,24 @@ public class MailSenderImpl implements MailSender {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
             }
 
+            if (mail.getCc() != null && mail.getCc().trim().length() > 0) {
+                for (String email : mail.getCc().split(";")) {
+                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(email));
+                }
+            }
+
             message.setSubject(mail.getHeader());
             message.setText(mail.getBody());
             Transport.send(message);
 
-            logger.info("The following email to {} have been sent:\n{}\n{}", mail.getTo(), mail.getHeader(),
-                    mail.getBody());
-            embryoLogService.info(mail.getHeader() + " sent to " + mail.getTo());
+            logger.info("The following email to {} (cc {}) have been sent:\n{}\n{}", mail.getTo(), mail.getCc(),
+                    mail.getHeader(), mail.getBody());
+            embryoLogService.info(mail.getHeader() + " sent to " + mail.getTo() + " (cc: " + mail.getCc() + ")");
         } catch (Exception mex) {
-            embryoLogService.error("Error sending mail '" + mail.getHeader() + "' to " + mail.getTo(), mex);
+            embryoLogService.error(
+                    "Error sending mail '" + mail.getHeader() + "' to " + mail.getTo() + " (cc: " + mail.getCc() + ")",
+                    mex);
             throw new RuntimeException(mex);
         }
     }
-
 }
