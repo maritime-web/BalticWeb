@@ -132,7 +132,7 @@ module.exports = function(grunt) {
                 }, {
                     expand : true,
                     cwd : '<%= proj.src %>',
-                    src : '{,*/}*.html',
+                    src : 'partials/*.html',
                     dest : '<%= proj.build %>'
                 } ]
             },
@@ -171,6 +171,44 @@ module.exports = function(grunt) {
             // },
             server : '<%= proj.build %>'
         },
+        replace : {
+            run : {
+                src : [ '<%= proj.src %>/*.{html,cache-manifest}' ],
+                dest : '<%= proj.build %>/', // destination directory or file
+                replacements : [ {
+                    from : 'js/ext/cdn.cloudflare', // string replacement
+                    to : '//cdnjs.cloudflare.com/ajax/libs'
+                }, {
+                    from : 'js/ext/cdn.googleapis', // string replacement
+                    to : '//ajax.googleapis.com/ajax/libs'
+                }, {
+                    from : 'js/ext/cdn.netdna', // string replacement
+                    to : '//netdna.bootstrapcdn.com'
+                }, {
+                    from : 'css/ext/cdn.netdna', // string replacement
+                    to : '//netdna.bootstrapcdn.com'
+                }, ]
+            }
+        },
+        cdnify : {
+            cdn : {
+                options : {
+                    rewriter : function(url) {
+                        url = url.replace("js/ext/cdn.cloudflare", "//cdnjs.cloudflare.com/ajax/libs");
+                        url = url.replace("js/ext/cdn.googleapis", "//ajax.googleapis.com/ajax/libs");
+                        url = url.replace("js/ext/cdn.netdna", "//netdna.bootstrapcdn.com");
+                        url = url.replace("css/ext/cdn.netdna", "//netdna.bootstrapcdn.com");
+                        return url;
+                    }
+                },
+                files : [ {
+                    expand : true,
+                    cwd : '<%= proj.build %>/webapp',
+                    src : '*.{html}',
+                    dest : '<%= proj.build %>'
+                } ]
+            }
+        },
         concurrent : {
             server : [ 'concat:dist' ],
             // test : [ 'coffee', 'copy:styles' ],
@@ -192,7 +230,7 @@ module.exports = function(grunt) {
                 keepalive : true
             }
 
-        }
+        },
     });
 
     // Load the plugin that provides the "uglify" task.
@@ -206,6 +244,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-connect-proxy');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-cdnify');
+    grunt.loadNpmTasks('grunt-text-replace');
 
     grunt.registerTask('server',
             function(target) {
@@ -222,8 +262,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask('test', [ 'karma:continuous' ]);
 
-    grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'concat', 'usemin', 'copy:gen2Build',
-            'copy:toTarget' ]);
+    grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'replace:run', 'concat', 'usemin',
+            'copy:gen2Build', 'copy:toTarget' ]);
 
     // 'clean:dist',
     // 'useminPrepare',

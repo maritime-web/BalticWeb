@@ -7,10 +7,10 @@ module.exports = function(config) {
 
 		// list of files / patterns to load in the browser
 		files : [
-		        'http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js',
-		        'src/main/webapp/OpenLayers-2.13.1/OpenLayers.js',
-		        'http://code.jquery.com/ui/1.9.1/jquery-ui.js',
-		        'http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js',
+		        'src/main/webapp/js/ext/cdn.cloudflare/jquery/1.9.1/jquery.js',
+		        'src/main/webapp/js/ext/cdn.cloudflare/openlayers/2.13.1/OpenLayers.js',
+		        'src/main/webapp/js/ext/cdn.cloudflare/jqueryui/1.9.1/jquery-ui.min.js',
+		        'src/main/webapp/js/ext/cdn.googleapis/angularjs/1.2.14/angular.min.js',
 				'src/main/webapp/js/ext/*.js',
 				'src/test/lib/angular-1.1.5/angular-mocks.js',
                 'src/main/webapp/js/utils.js',

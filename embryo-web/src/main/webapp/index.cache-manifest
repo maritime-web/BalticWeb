@@ -5,16 +5,16 @@ CACHE:
 index.html
 css/ext/embryo.bootstrap.min.css
 css/ext/bootstrap-responsive.css
-//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css
-//netdna.bootstrapcdn.com/font-awesome/3.2.1/font/fontawesome-webfont.woff?v=3.2.1
+css/ext/cdn.netdna/font-awesome/3.2.1/css/font-awesome.css
+css/ext/cdn.netdna/font-awesome/3.2.1/font/fontawesome-webfont.woff?v=3.2.1
 
 css/arcticweb-front.css
 
-//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js
-//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js
-//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js
-//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js
-//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js
+js/ext/cdn.cloudflare/jquery/1.9.1/jquery.min.js
+js/ext/cdn.netdna/bootstrap/2.3.2/js/bootstrap.min.js
+js/ext/cdn.googleapis/angularjs/1.2.14/angular.min.js
+js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.min.js
+js/ext/cdn.cloudflare/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js
 
 js/arcticweb-front.js
 
@@ -31,4 +31,4 @@ partials/menu.html
 partials/authentication.html
 partials/footer.html
 
-# Version: 15
+# Version: 16
