@@ -4,7 +4,7 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.typeahead', 'embryo.position', 'ui.bootstrap.collapse' ]);
+            'siyfion.typeahead', 'embryo.position']);
 
     embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService) {
         var loadSchedule = function() {
@@ -195,7 +195,7 @@
         };
     };
 
-    embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService) {
+    embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService, $timeout) {
         $scope.collapse = false;
         
         var loadSchedule = function() {
@@ -222,8 +222,6 @@
                 $scope.mmsi = vesselDetails.mmsi;
                 $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
                 loadSchedule();
-                $scope.$apply(function() {
-                });
             },
             close : function() {
                 $scope.routeLayer.clear();
