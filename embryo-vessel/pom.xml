@@ -14,8 +14,8 @@
   </parent>
 
   <dependencies>
-    <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse 
-      to work -->
+    <!-- Added here again because weld jar contains older version of slf4j. 
+      This must be first in the classpath for Eclipse to work -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -97,6 +97,12 @@
       <version>1.0</version>
     </dependency>
 
+    <!-- POI -->
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>3.10-FINAL</version>
+    </dependency>
 
     <!-- Test dependencies -->
     <dependency>

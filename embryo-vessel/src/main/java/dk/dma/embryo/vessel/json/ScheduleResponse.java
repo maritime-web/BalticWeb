@@ -26,6 +26,8 @@ public class ScheduleResponse {
     // Properties relevant for current functionality. Extra can be added.
 
     private Voyage[] voyages;
+    
+    private String[] errors;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -51,5 +53,13 @@ public class ScheduleResponse {
 
     public void setVoyages(Voyage[] voyages) {
         this.voyages = voyages;
+    }
+    
+    public String[] getErrors() {
+        return errors;
+    }
+    
+    public void setErrors(String[] errors) {
+        this.errors = errors;
     }
 }

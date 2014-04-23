@@ -1,7 +1,9 @@
 (function() {
     "use strict";
 
-    var url = embryo.baseUrl + 'rest/routeUpload/single';
+    var route = false;
+    var routeUrl = embryo.baseUrl + 'rest/routeUpload/single';
+    var scheduleUrl = embryo.baseUrl + 'rest/routeUpload/schedule';
 
     var module = angular.module('embryo.routeUpload', [ 'embryo.scheduleService', 'embryo.routeService',
             'blueimp.fileupload' ]);
@@ -11,9 +13,10 @@
         fileUploadProvider.defaults.redirect = window.location.href.replace(/\/[^\/]*$/, '/cors/result.html?%s');
         angular.extend(fileUploadProvider.defaults, {
             maxFileSize : 1000000,
-            acceptFileTypes : /(\.|\/)(txt|rou|rt3|route)$/i,
+            // Ideally, routes and schedules should make different checks, but this can't be done at config time.
+            acceptFileTypes : /(\.|\/)(txt|rou|rt3|route|xls)$/i,
             messages : {
-                acceptFileTypes : 'File type not allowed. Accepted types are txt, rou, rt3 and route.',
+                acceptFileTypes : 'File type not allowed. Accepted types are txt, rou, rt3, xls and route.',
                 maxFileSize : 'File is too large. Size may not exceed 1 MB.',
             }
         });
@@ -33,9 +36,16 @@
         embryo.controllers.uploadroute = {
             show : function(context) {
                 embryo.vessel.actions.hide();
-                $scope.vesselDetails = context.vesselDetails;
-                $scope.mmsi = context.vesselDetails.mmsi;
-                $scope.voyageId = context.voyageId;
+                if(context) {
+                    if(context.schedule) {
+                        $scope.lastDeparture = context.departure;
+                    } else {
+                        $scope.vesselDetails = context.vesselDetails;
+                        $scope.mmsi = context.vesselDetails.mmsi;
+                        $scope.voyageId = context.voyageId;
+                        route = true;
+                    }
+                }
                 $scope.reset();
                 initUpload();
                 $("#routeUploadPanel").css("display", "block");
@@ -90,7 +100,7 @@
                     });
                 };
             }
-        }
+        };
 
         // Choosing a new file will replace the old one
         $scope.$on('fileuploadadd', function(e, data) {
@@ -117,18 +127,23 @@
         };
 
         function done(e, data) {
-            $.each(data.result.files, function(index, file) {
-                $scope.uploadedFile = file;
-                if ($scope.activate) {
-                    VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId",
-                            file.routeId);
-                }
-                ScheduleService.clearYourSchedule();
-            });
+            if(route) {
+                $.each(data.result.files, function(index, file) {
+                    $scope.uploadedFile = file;
+                    if ($scope.activate) {
+                        VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId",
+                                file.routeId);
+                    }
+                    ScheduleService.clearYourSchedule();
+                });
+            } else {
+                embryo.controllers.schedule.updateSchedule(data.result);
+                $("#routeUploadPanel").css("display", "none");
+            }
         }
 
         $scope.options = {
-            url : url,
+            url : route ? routeUrl : scheduleUrl,
             dataType : 'json',
         };
 
@@ -140,7 +155,10 @@
         };
 
         $scope.activeVoyage = function() {
-            return $scope.vesselDetails.additionalInformation.routeId == $scope.voyageInfo.routeId;
+            if(route) {
+                return $scope.vesselDetails.additionalInformation.routeId == $scope.voyageInfo.routeId;
+            }
+            return null;
         };
 
         $scope.uploaded = function() {
@@ -175,6 +193,10 @@
                 if ($scope.nameFromFile) {
                     data.formData.name = $scope.nameFromFile;
                 }
+            } else if($scope.lastDeparture) {
+                data.formData = {
+                        lastDeparture : $scope.lastDeparture
+                };
             }
         });
     };

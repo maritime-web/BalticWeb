@@ -5,14 +5,23 @@
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
             'siyfion.typeahead', 'embryo.position', 'ui.bootstrap.collapse' ]);
+    
+    var voyages = [];
+    var pageSize = 5;
 
     embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService) {
-        var loadSchedule = function() {
+        var loadSchedule = function(vs) {
             if ($scope.mmsi) {
+                $scope.alertMessages = [];
                 ScheduleService.getYourSchedule($scope.mmsi, function(schedule) {
                     $scope.idsOfVoyages2Delete = [];
-                    $scope.voyages = schedule.voyages.slice();
-                    $scope.voyages.push({});
+                    voyages = schedule.voyages.slice();
+                    if(vs) {
+                        voyages = voyages.concat(vs);
+                    }
+                    voyages.push({});
+                    $scope.voyages = voyages.slice(0, pageSize);
+                    $scope.allVoyages = voyages.length;
                     $("#schedulePanel").css("display", "block");
                 }, function(error) {
                     $scope.alertMessages = error;
@@ -29,12 +38,12 @@
                             text : "ACTIVE",
                             klass : "success",
                             action : "edit"
-                        }
+                        };
                     else
                         return {
                             text : "INACTIVE",
                             action : "edit"
-                        }
+                        };
                 }
                 return false;
             },
@@ -48,6 +57,10 @@
             },
             close : function() {
                 $scope.reset();
+            },
+            updateSchedule : function(data) {
+                loadSchedule(data.voyages);
+                $scope.alertMessages = data.errors;
             }
         };
 
@@ -79,6 +92,26 @@
                 $scope.voyages.push({});
             }
         }, true);
+        
+        $scope.moreVoyages = function() {
+            return $scope.voyages && $scope.voyages.length < voyages.length;
+        };
+        
+        $scope.loadAll = function() {
+            $scope.loading = true;
+            $scope.voyages = voyages;
+            $scope.$apply();
+            $scope.loading = false;
+        };
+
+        $scope.loadMore = function() {
+            if($scope.voyages) {
+                var vl = $scope.voyages.length;
+                if(vl < voyages.length) {
+                    $scope.voyages = voyages.slice(0, vl + pageSize);
+                }
+            }
+        };
 
         $scope.del = function(index) {
             if ($scope.voyages[index].maritimeId) {
@@ -128,6 +161,20 @@
                 voyageId : voyage.maritimeId
             });
         };
+        
+        $scope.uploadSchedule = function() {
+            var biggestDate = 0;
+            for(var x in voyages) {
+                var departure = voyages[x].departure;
+                if(departure > biggestDate) {
+                    biggestDate = departure;
+                }
+            }
+            embryo.controllers.uploadroute.show({
+                schedule : true,
+                departure : biggestDate
+            });
+        };
 
         $scope.activate = function(voyage) {
             resetMessages();
@@ -159,7 +206,7 @@
             $scope.idsOfVoyages2Delete = [];
             loadSchedule();
         };
-
+        
         $scope.saveable = function() {
             if ($scope.scheduleEditForm.$invalid) {
                 return false;
@@ -173,7 +220,7 @@
         };
 
         $scope.save = function() {
-            var index;
+            var index = null;
             // remove last empty element
             var scheduleRequest = {
                 mmsi : $scope.mmsi,
@@ -271,5 +318,19 @@
         };
 
     };
+    
+    // This is where we implement the "infinite scrolling" part for large datasets.
+    // Usage: x-when-scrolled="loadMore()" <-- see that method for more info
+    scheduleModule.directive('whenScrolled', function() {
+        return function(scope, elm, attr) {
+            var div = elm.parent().parent();
+            var raw = div[0];
+            div.bind('scroll', function() {
+                if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+                    scope.$apply(attr.whenScrolled);
+                }
+            });
+        };
+    });
 
 }());

@@ -52,7 +52,7 @@ embryo.eventbus.fireEvent = function(event) {
 embryo.eventbus.registerShorthand = function(eventType, name) {
     embryo[name] = function(handler) {
         embryo.eventbus.registerHandler(eventType, handler);
-    }
+    };
 };
 
 embryo.eventbus.EmbryoReadyEvent = function() {
@@ -179,9 +179,9 @@ $(function() {
             if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
                 window.location.reload();
             }
-        })
+        });
     }
-})
+});
 
 $(function() {
     "use strict";

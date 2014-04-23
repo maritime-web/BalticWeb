@@ -15,7 +15,6 @@
  */
 package dk.dma.embryo.common.util;
 
-
 /**
  * Utility class different parsing tasks
  */
@@ -36,11 +35,20 @@ public class ParseUtils {
         if (str == null || str.length() == 0) {
             return null;
         }
-        try {
-            return Integer.parseInt(str);
-        } catch (NumberFormatException e) {
+        if (!isNumeric(str)) {
             throw new FormatException("Could not parse " + str + " as an integer");
         }
+        return Integer.parseInt(str);
+    }
+
+    public static Long parseLong(String str) {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        if (!isNumeric(str)) {
+            throw new FormatException("Could not parse " + str + " as a long");
+        }
+        return Long.parseLong(str);
     }
 
     public static String parseString(String str) {
@@ -110,6 +118,15 @@ public class ParseUtils {
             lon *= -1;
         }
         return lon;
+    }
+
+    public static boolean isNumeric(String str) {
+        for (char c : str.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

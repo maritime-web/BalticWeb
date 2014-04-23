@@ -1,7 +1,7 @@
 <div id="routeupload">
 	<div>
 		<h2>
-			<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Upload route
+			<a class="close embryo-close-panel" href="#" style="float: right">&times;</a> Upload {{route ? "route" : "schedule"}}
 		</h2>
 	</div>
 	<div id="routeUpload" x-ng-controller="embryo.RouteUploadCtrl">
@@ -21,7 +21,7 @@
 
 			<div class="row-fluid">
 				<div class="span12">
-					<span>From {{voyageInfo.dep}} <span x-ng-show="voyageInfo.depEta">({{formatDateTime(voyageInfo.depEta)}})</span>
+					<span x-ng-if="voyageInfo">From {{voyageInfo.dep}} <span x-ng-show="voyageInfo.depEta">({{formatDateTime(voyageInfo.depEta)}})</span>
 						to {{voyageInfo.des}} <span x-ng-show="voyageInfo.desEta">({{formatDateTime(voyageInfo.desEta)}})</span></span>
 				</div>
 			</div>
