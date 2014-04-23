@@ -31,7 +31,7 @@ public class GreenPosVoyage implements Serializable{
     // //////////////////////////////////////////////////////////////////////
     private String maritimeId;
 
-    private String berthName;
+    private String location;
 
     private Position position;
 
@@ -61,10 +61,10 @@ public class GreenPosVoyage implements Serializable{
     public GreenPosVoyage() {
     }
 
-    public GreenPosVoyage(String maritimeId, String name, Position position, Date arrival,
+    public GreenPosVoyage(String maritimeId, String location, Position position, Date arrival,
             Date departure, Integer personsOnBoard, boolean doctorOnBoard) {
         this();
-        this.berthName = name;
+        this.location = location;
         this.position = position;
         this.arrival = arrival;
         this.departure = departure;
@@ -83,8 +83,8 @@ public class GreenPosVoyage implements Serializable{
         return departure;
     }
 
-    public String getBerthName() {
-        return berthName;
+    public String getLocation() {
+        return location;
     }
 
     public Position getPosition() {

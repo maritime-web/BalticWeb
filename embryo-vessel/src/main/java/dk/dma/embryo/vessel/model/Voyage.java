@@ -53,7 +53,7 @@ public class Voyage extends BaseEntity<Long> {
     private String enavId;
 
     @NotNull
-    private String berthName;
+    private String location;
 
     @Valid
     private Position position;
@@ -83,7 +83,7 @@ public class Voyage extends BaseEntity<Long> {
         Date arrival = getArrival() == null ? null : getArrival().toDate();
         Date departure = getDeparture() == null ? null : getDeparture().toDate();
 
-        dk.dma.embryo.vessel.json.Voyage voyage = new dk.dma.embryo.vessel.json.Voyage(getEnavId(), getBerthName(),
+        dk.dma.embryo.vessel.json.Voyage voyage = new dk.dma.embryo.vessel.json.Voyage(getEnavId(), getLocation(),
                 getPosition().getLatitude(), getPosition().getLongitude(), arrival, departure,
                 getCrewOnBoard(), getPassengersOnBoard(), getDoctorOnBoard());
 
@@ -106,7 +106,7 @@ public class Voyage extends BaseEntity<Long> {
         Position position = new Position(voyage.getLatitude(), voyage.getLongitude());
 
         Voyage result = new Voyage(voyage.getMaritimeId());
-        result.setBerthName(voyage.getBerthName());
+        result.setLocation(voyage.getLocation());
         result.setPosition(position);
         result.setArrival(arrival);
         result.setDeparture(departure);
@@ -139,18 +139,18 @@ public class Voyage extends BaseEntity<Long> {
         this(null);
     }
 
-    public Voyage(String name, String latitude, String longitude, DateTime arrival, DateTime departure) {
+    public Voyage(String location, String latitude, String longitude, DateTime arrival, DateTime departure) {
         this();
-        this.berthName = name;
+        this.location = location;
         this.position = new Position(latitude, longitude);
         this.arrival = arrival;
         this.departure = departure;
     }
 
-    public Voyage(String name, String latitude, String longitude, DateTime arrival, DateTime departure,
+    public Voyage(String location, String latitude, String longitude, DateTime arrival, DateTime departure,
             Integer crewOnBoard, Integer passengers, boolean doctorOnBoard) {
         this();
-        this.berthName = name;
+        this.location = location;
         this.position = new Position(latitude, longitude);
         this.arrival = arrival;
         this.departure = departure;
@@ -164,7 +164,7 @@ public class Voyage extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "Voyage [" + baseToString() + ", enavId=" + enavId + ", berthName=" + berthName + ", position="
+        return "Voyage [" + baseToString() + ", enavId=" + enavId + ", location=" + location + ", position="
                 + position + ", arrival=" + arrival + ", departure=" + departure + ", crewOnBoard=" + crewOnBoard
                 + ", passengersOnBoard=" + passengersOnBoard + ", doctorOnBoard=" + doctorOnBoard + "]";
     }
@@ -188,12 +188,12 @@ public class Voyage extends BaseEntity<Long> {
         this.departure = departure;
     }
 
-    public String getBerthName() {
-        return berthName;
+    public String getLocation() {
+        return location;
     }
 
-    public void setBerthName(String berthName) {
-        this.berthName = berthName;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Position getPosition() {

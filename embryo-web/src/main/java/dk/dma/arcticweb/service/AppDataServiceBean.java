@@ -100,6 +100,10 @@ public class AppDataServiceBean {
     @Inject
     private String testPassword;
 
+    @Property("embryo.users.test.email")
+    @Inject
+    private String testEmail;
+
     
     @PostConstruct
     public void startup() {
@@ -373,7 +377,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("orasila", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("orasila", testPassword, testEmail);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -420,7 +424,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("oratank", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("oratank", testPassword, testEmail);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -457,7 +461,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("sarfaq", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("sarfaq", testPassword, testEmail);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -524,14 +528,16 @@ public class AppDataServiceBean {
 
         logger.debug("Duration: {}, weeks:{}, days: {}", d, weeks, d.getStandardDays());
 
+        List<Voyage> schedule =sarfaq.getSchedule();
         if (weeks > 0) {
-            for (Voyage v : sarfaq.getSchedule()) {
+            for (Voyage v : schedule) {
                 v.setArrival(v.getArrival() == null ? null : v.getArrival().plusWeeks(weeks));
                 v.setDeparture(v.getDeparture() == null ? null : v.getDeparture().plusWeeks(weeks));
             }
         }
+        logger.debug("Schedule: {}", schedule);
 
-        for (Voyage v : sarfaq.getSchedule()) {
+        for (Voyage v : schedule) {
             scheduleDao.saveEntity(v);
         }
         em.flush();
@@ -562,7 +568,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("naja", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("naja", testPassword, testEmail);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -581,7 +587,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("arina", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("arina", testPassword, testEmail);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -600,7 +606,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("silver", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("silver", testPassword, testEmail);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -619,7 +625,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("artania", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("artania", testPassword, testEmail);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -638,7 +644,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("princess", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("princess", testPassword, testEmail);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -661,7 +667,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("carnivalLegend", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("carnivalLegend", testPassword, testEmail);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -692,7 +698,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(role);
 
-        SecuredUser user = SecurityUtil.createUser("arcticCommand", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("arcticCommand", testPassword, testEmail);
         user.setRole(role);
 
         vesselDao.saveEntity(user);
@@ -704,7 +710,7 @@ public class AppDataServiceBean {
         ReportingAuthorityRole role = new ReportingAuthorityRole();
         vesselDao.saveEntity(role);
 
-        SecuredUser user = SecurityUtil.createUser("aasiaat", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("aasiaat", testPassword, testEmail);
         user.setRole(role);
         vesselDao.saveEntity(user);
     }
@@ -715,7 +721,7 @@ public class AppDataServiceBean {
         ShoreRole role = new ShoreRole();
         vesselDao.saveEntity(role);
 
-        SecuredUser user = SecurityUtil.createUser("nanoq", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("nanoq", testPassword, testEmail);
         user.setRole(role);
         vesselDao.saveEntity(user);
     }
@@ -726,7 +732,7 @@ public class AppDataServiceBean {
         ShoreRole role = new ShoreRole();
         vesselDao.saveEntity(role);
 
-        SecuredUser user = SecurityUtil.createUser("dmi", testPassword, "obo@dma.dk");
+        SecuredUser user = SecurityUtil.createUser("dmi", testPassword, testEmail);
         user.setRole(role);
         vesselDao.saveEntity(user);
     }

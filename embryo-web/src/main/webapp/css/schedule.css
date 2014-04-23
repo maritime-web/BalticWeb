@@ -41,6 +41,10 @@
 	margin-right: 20px;
 }
 
+#scheduleViewPanel{
+	min-width: 400px;
+}
+
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
     #schedule input.lon {
         width: 50px;

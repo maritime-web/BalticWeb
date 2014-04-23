@@ -5,16 +5,16 @@ CACHE:
 content.html
 css/ext/embryo.bootstrap.min.css
 css/ext/bootstrap-responsive.css
-//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css
-//netdna.bootstrapcdn.com/font-awesome/3.2.1/font/fontawesome-webfont.woff?v=3.2.1
+css/ext/cdn.netdna/font-awesome/3.2.1/css/font-awesome.css
+css/ext/cdn.netdna/font-awesome/3.2.1/font/fontawesome-webfont.woff?v=3.2.1
 
 css/arcticweb-content.css
 
-//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js
-//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js
-//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js
-//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-route.min.js
-//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js
+js/ext/cdn.cloudflare/jquery/1.9.1/jquery.min.js
+js/ext/cdn.googleapis/angularjs/1.2.14/angular.min.js
+js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.min.js
+js/ext/cdn.googleapis/angularjs/1.2.14/angular-route.min.js
+js/ext/cdn.cloudflare/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js
 
 js/arcticweb-content.js
 
@@ -28,4 +28,4 @@ partials/disclaimer.html
 partials/cookies.html
 partials/security/access.html
 
-# Version: 3
+# Version: 4

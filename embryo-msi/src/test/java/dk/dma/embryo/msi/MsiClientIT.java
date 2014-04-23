@@ -15,13 +15,26 @@
  */
 package dk.dma.embryo.msi;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import dk.dma.embryo.common.log.EmbryoLogService;
+
 
 public class MsiClientIT {
 
+    private EmbryoLogService logService;
+    
+    @Before
+    public void setup(){
+        logService = Mockito.mock(EmbryoLogService.class);
+    }
+    
     @Test
     public void test() {
-        MsiClientImpl msiClientImpl = new MsiClientImpl();
+        
+        MsiClientImpl msiClientImpl = new MsiClientImpl(logService);
 
         msiClientImpl.endpoint = "http://msi-beta.e-navigation.net/msi/ws/warning";
         msiClientImpl.countries = "GL,DK";

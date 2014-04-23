@@ -33,6 +33,7 @@ public abstract class Mail<T> {
     private String body;
     private String to;
     private String from;
+    private String cc;
 
     public Mail(String templateName, PropertyFileService propertyFileService) {
         this.propertyFileService = propertyFileService;
@@ -84,12 +85,20 @@ public abstract class Mail<T> {
         return from;
     }
 
+    public String getCc() {
+        return cc;
+    }
+
     public void setTo(String to) {
         this.to = to;
     }
 
     public void setFrom(String from) {
         this.from = from;
+    }
+
+    public void setCc(String cc) {
+        this.cc = cc;
     }
 
     public void send(MailSender sender) {

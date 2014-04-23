@@ -4,7 +4,7 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.typeahead', 'embryo.position', 'ui.bootstrap.collapse' ]);
+            'siyfion.typeahead', 'embryo.position' ]);
     
     var voyages = [];
     var pageSize = 5;
@@ -52,8 +52,7 @@
                 $scope.vesselDetails = vesselDetails;
                 $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
                 loadSchedule();
-                $scope.$apply(function() {
-                });
+                $scope.$apply();
             },
             close : function() {
                 $scope.reset();
@@ -88,7 +87,7 @@
 
         $scope.$watch($scope.getLastVoyage, function(newValue, oldValue) {
             // add extra empty voyage on initialization
-            if (newValue && Object.keys(newValue).length > 0 && Object.keys(oldValue).length === 0) {
+            if (newValue && Object.keys(newValue).length > 0 && (!oldValue || Object.keys(oldValue).length === 0)) {
                 $scope.voyages.push({});
             }
         }, true);
@@ -117,6 +116,7 @@
             if ($scope.voyages[index].maritimeId) {
                 $scope.idsOfVoyages2Delete.push($scope.voyages[index].maritimeId);
             }
+            voyages.splice(index, 1);
             $scope.voyages.splice(index, 1);
         };
 
@@ -144,11 +144,11 @@
                 mmsi : $scope.mmsi,
                 routeId : $scope.voyages[index].route ? $scope.voyages[index].route.id : null,
                 voyageId : $scope.voyages[index].maritimeId,
-                dep : $scope.voyages[index].berthName,
+                dep : $scope.voyages[index].location,
                 etdep : $scope.voyages[index].departure,
             };
             if (index < $scope.voyages.length - 1) {
-                context.des = $scope.voyages[index + 1].berthName;
+                context.des = $scope.voyages[index + 1].location;
                 context.etdes = $scope.voyages[index + 1].arrival;
             }
 
@@ -242,7 +242,7 @@
         };
     };
 
-    embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService) {
+    embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService, $timeout) {
         $scope.collapse = false;
         
         var loadSchedule = function() {
@@ -269,8 +269,6 @@
                 $scope.mmsi = vesselDetails.mmsi;
                 $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
                 loadSchedule();
-                $scope.$apply(function() {
-                });
             },
             close : function() {
                 $scope.routeLayer.clear();

@@ -40,6 +40,7 @@ import dk.dma.arcticweb.reporting.model.GreenposMinimal;
 import dk.dma.arcticweb.reporting.model.GreenposSearch;
 import dk.dma.arcticweb.reporting.service.GreenPosService;
 import dk.dma.embryo.common.util.DateTimeConverter;
+import dk.dma.embryo.user.security.Subject;
 
 /**
  * 
@@ -52,6 +53,10 @@ public class GreenPosRestService {
     private GreenPosService reportingService;
 
     @Inject
+    private Subject subject;
+
+    
+    @Inject
     private Logger logger;
 
     public GreenPosRestService() {
@@ -60,12 +65,17 @@ public class GreenPosRestService {
     @POST
     @Path("/save")
     @Consumes("application/json")
-    public void save(GreenposRequest request) {
+    @Produces("application/json")
+    public String save(GreenposRequest request) {
         logger.debug("save({})", request);
 
         GreenPosReport toBeSaved = GreenPosReport.from(request.getReport());
         reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive(), request.getIncludeActiveRoute());
-        logger.debug("save() - done");
+        
+        String email = subject.getUser().getEmail();
+        
+        logger.debug("save() : {}" , email);
+        return email;
     }
 
     @GET

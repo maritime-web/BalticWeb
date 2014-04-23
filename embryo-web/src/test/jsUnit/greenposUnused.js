@@ -19,7 +19,7 @@ describe('GreenPos Controller', function() {
             voyageService = {
                 getYourActive : function(callback) {
                     callback({
-                        berthName : "Nuuk",
+                        location : "Nuuk",
                         arrival : "22-10-13 10:10",
                         personsOnBoard : 12
                     });

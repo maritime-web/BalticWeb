@@ -8,7 +8,7 @@
 		<span class="pull-right" style="margin-right: 8px;" x-ng-if="moreVoyages()">{{voyages.length}} of {{allVoyages}} voyages loaded. <button id="load-all" class="btn btn-primary" x-ng-click="loadAll()">Load all</button> </span> 
 	</div>
 	<div x-ng-if="alertMessages" class="alert alert-error">
-		<span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+		<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
 	</div>
 	<div x-ng-if="message" class="alert alert-info">{{message}}</div>
 	
@@ -29,8 +29,8 @@
 			</thead>
 			<tbody x-ng-repeat="voyage in voyages" class="content">
 				<tr class="voyage" x-ng-class="{warning : activeRouteId && activeRouteId == voyage.route.id}">
-					<td><input x-ng-model="voyage.berthName" fn-selected="berthSelected(voyage, datum)"
-						fn-autocompleted="berthSelected(voyage, datum)" class="input-large siyTypeahead" datasets="berths" type="text"
+					<td><input x-ng-model="voyage.location" x-fn-selected="berthSelected(voyage, datum)"
+						x-fn-autocompleted="berthSelected(voyage, datum)" class="input-large siyTypeahead" datasets="berths" type="text"
 						x-ng-required="!$parent.$last" /></td>
 					<td><input latitude x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
 					<td><input longitude x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
@@ -39,14 +39,14 @@
 					<td><input x-ng-model="voyage.crew" type="text" class="input-mini" /></td>
 					<td><input x-ng-model="voyage.passengers" type="text" class="input-mini" /></td>
 					<td><select x-ng-model="voyage.doctor" class="input-small"
-						ng-options="value as key for (key, value) in options">
+						x-ng-options="value as key for (key, value) in options">
 							<option value="">---</option>
 					</select></td>
 				</tr>
 				<tr class="route" x-ng-class="{warning : activeRouteId && activeRouteId == voyage.route.id}">
 					<td colspan="3"><span x-ng-if="voyage.route">Route <span style="font-style: italic;">{{voyage.route.name}}</span>
 							from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points
-					</span> <span ng-if="!voyage.route">No route</span></td>
+					</span> <span x-ng-if="!voyage.route">No route</span></td>
 					<td colspan="4"><span class="pull-right">
 							<button type="button" x-ng-if="activeRouteId != voyage.route.id && voyage.route" class="btn btn-success"
 								x-ng-click="activate(voyage, $event)">Activate</button>

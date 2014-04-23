@@ -154,9 +154,9 @@ var greenposScope;
 
             var inclWps = $scope.inclWps && ($scope.report.type == "SP" || $scope.report.type == "DR");
 
-            GreenposService.save($scope.report, deactivateRoute, inclWps, function() {
+            GreenposService.save($scope.report, deactivateRoute, inclWps, function(email) {
                 $scope.reportAcknowledgement = reportNames[$scope.report.type];
-
+                $scope.userEmail = email;
                 if ($scope.deactivate && $scope.report.type == "FR") {
                     VesselService.updateVesselDetailParameter($scope.report.mmsi, "additionalInformation.routeId", "");
                 }
@@ -169,6 +169,7 @@ var greenposScope;
             $scope.warningMessages = null;
             $scope.alertMessages = null;
             $scope.reportAcknowledgement = null;
+            $scope.greenPosForm.$setPristine();
 
             initData();
         };
@@ -195,6 +196,13 @@ var greenposScope;
             initData();
 
             $scope.$apply();
+        }
+        
+        this.hide = function(){
+            $scope.warningMessages = null;
+            $scope.alertMessages = null;
+            $scope.reportAcknowledgement = null;
+            $scope.greenPosForm.$setPristine();
         }
 
         function initData() {
@@ -293,7 +301,7 @@ var greenposScope;
         embryo.controllers.greenposListView = {
             title : "Greenpos Reports",
             available : function(vesselOverview, vesselDetails) {
-                return vesselOverview.inAW;
+                return vesselDetails.additionalInformation.greenpos;
             },
             show : function(vesselOverview, vesselDetails) {
                 $("#greenposListPanel").css("display", "block");

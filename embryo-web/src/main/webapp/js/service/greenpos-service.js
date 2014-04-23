@@ -54,9 +54,9 @@
                         },
                         report : greenpos
                 };
-                $http.post(embryo.baseUrl + 'rest/greenpos/save', request).success(function() {
+                $http.post(embryo.baseUrl + 'rest/greenpos/save', request).success(function(email) {
                     SessionStorageService.removeItem(latestGreenposKey(greenpos.mmsi));
-                    callback();
+                    callback(email);
                 }).error(function(data, status, headers, config) {
                     error(embryo.ErrorService.extractError(data, status, config));
                 });

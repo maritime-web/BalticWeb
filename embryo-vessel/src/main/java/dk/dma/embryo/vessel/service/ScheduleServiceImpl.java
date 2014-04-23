@@ -80,7 +80,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 v = persistedAsMap.get(voyage.getEnavId());
 
                 v.setArrival(voyage.getArrival());
-                v.setBerthName(voyage.getBerthName());
+                v.setLocation(voyage.getLocation());
                 v.setDeparture(voyage.getDeparture());
                 v.setPosition(voyage.getPosition());
                 v.setCrewOnBoard(voyage.getCrewOnBoard());

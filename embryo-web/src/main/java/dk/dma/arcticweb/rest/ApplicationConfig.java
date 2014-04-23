@@ -37,7 +37,6 @@ import dk.dma.embryo.vessel.json.BerthRestService;
 import dk.dma.embryo.vessel.json.RouteRestService;
 import dk.dma.embryo.vessel.json.RouteUploadRestService;
 import dk.dma.embryo.vessel.json.ScheduleRestService;
-import dk.dma.embryo.vessel.json.VesselRestService;
 
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
@@ -51,7 +50,7 @@ public class ApplicationConfig extends Application {
         set.addAll(Arrays.asList(RouteRestService.class, RouteUploadRestService.class, ShapeFileRestService.class,
                 GreenPosRestService.class, BerthRestService.class, AuthenticationService.class,
                 TestDataRestService.class, IceObservationRestService.class, MsiRestService.class,
-                MetocRestService.class, VesselRestService.class, ScheduleRestService.class, LogEntryRestService.class,
+                MetocRestService.class, ArcticWebVesselRestService.class, ScheduleRestService.class, LogEntryRestService.class,
                 UserRestService.class, RequestAccessRestService.class, ForgotPasswordRestService.class));
 
         return set;

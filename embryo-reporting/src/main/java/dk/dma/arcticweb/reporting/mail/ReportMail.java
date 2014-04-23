@@ -88,6 +88,7 @@ public class ReportMail extends Mail<ReportMail> {
 
         setTo(propertyFileService.getProperty("embryo.notification.mail.to.greenpos"));
         setFrom(userEmail);
+        setCc(userEmail);
 
         return this;
     }
