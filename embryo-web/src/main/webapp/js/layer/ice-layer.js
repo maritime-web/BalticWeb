@@ -61,7 +61,7 @@ function IceLayer() {
                 return "#ff7c06";
             if (description.CT == 24 || description.CT > 30)
                 return "#ffff00";
-            if (description.CT > 10)
+            if (description.CT >= 10)
                 return "#8effa0";
             return "#96C7FF";
         }
