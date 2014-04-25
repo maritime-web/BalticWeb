@@ -36,6 +36,11 @@
 	max-width: 450px;
 }
 
+#upload-button {
+	float: right;
+	margin-right: 20px;
+}
+
 #scheduleViewPanel{
 	min-width: 400px;
 }

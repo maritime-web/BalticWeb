@@ -16,6 +16,7 @@
 package dk.dma.embryo.vessel.json;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.vessel.component.RouteParserComponent;
+import dk.dma.embryo.vessel.component.ScheduleParserComponent;
 import dk.dma.embryo.vessel.service.ScheduleService;
 
 /**
@@ -49,6 +51,9 @@ public class RouteUploadRestService {
 
     @Inject
     private ScheduleService scheduleService;
+    
+    @Inject
+    private ScheduleParserComponent scheduleParserComponent;
 
     @Inject
     private Logger logger;
@@ -141,6 +146,32 @@ public class RouteUploadRestService {
             throw new RuntimeException(e);
         }
     }
+    
+    
+    
+    @POST
+    @Path("/schedule")
+    @Consumes("multipart/form-data")
+    @Produces({ "application/json" })
+    public ScheduleResponse uploadSchedule(@Context HttpServletRequest req) throws FileUploadException, IOException {
+        
+        FileItemFactory factory = new DiskFileItemFactory();
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        InputStream inputStream = null;
+        String lastDeparture = null;
+
+        List<FileItem> items = upload.parseRequest(req);
+        for(FileItem item : items) {
+            if("lastDeparture".equals(item.getFieldName())) {
+                lastDeparture = item.getString();
+            } else {
+                inputStream = item.getInputStream();
+            }
+        }
+        ScheduleResponse response = scheduleParserComponent.parseSchedule(inputStream, lastDeparture);
+        
+        return response;
+    }
 
     public static class Files {
         List<RestFile> files = new ArrayList<>(2);
@@ -174,4 +205,5 @@ public class RouteUploadRestService {
             return routeId;
         }
     }
+    
 }
