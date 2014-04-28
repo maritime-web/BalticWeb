@@ -106,17 +106,6 @@ embryo.ready(function() {
 });
 
 embryo.authenticated(function() {
-    embryo.vessel.actions.yourVessel = [
-        "ArcticWeb Reporting",
-        embryo.controllers.vesselInformationEdit,
-        embryo.controllers.schedule,
-        embryo.controllers.greenpos,
-        "Additional Information",
-        embryo.additionalInformation.historicalTrack,
-        embryo.additionalInformation.nearestShips,
-        embryo.additionalInformation.distanceCircles,
-        //embryo.additionalInformation.metoc
-    ];
 
     embryo.vessel.actions.selectedVessel = [
         "ArcticWeb Reporting",

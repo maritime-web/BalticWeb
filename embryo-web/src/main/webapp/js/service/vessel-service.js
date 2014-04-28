@@ -173,9 +173,32 @@
                 };
             } ]);
 
-    module.run(function(VesselService) {
+    
+    embryo.eventbus.VesselInformationAddedEvent = function() {
+        var event = jQuery.Event("VesselInformationAddedEvent");
+        return event;
+    };
+
+    embryo.eventbus.registerShorthand(embryo.eventbus.VesselInformationAddedEvent, "vesselInformationAddedEvent");
+
+    module.service('VesselInformation', function() {
+        var vesselInformation = [];
+
+        this.addInformationProvider = function(information) {
+            vesselInformation.push(information);
+            embryo.eventbus.fireEvent(embryo.eventbus.VesselInformationAddedEvent());
+        }
+        
+        this.getVesselInformation = function(){
+            return vesselInformation;
+        }
+
+    });
+
+    module.run(function(VesselService, VesselInformation) {
         if (!embryo.vessel)
             embryo.vessel = {};
         embryo.vessel.service = VesselService;
+        embryo.vessel.information = VesselInformation;
     })
 })();

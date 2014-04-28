@@ -4,12 +4,12 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.typeahead', 'embryo.position' ]);
+            'siyfion.typeahead', 'embryo.position' , 'embryo.vessel']);
     
     var voyages = [];
     var pageSize = 5;
 
-    embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService) {
+    embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService, VesselInformation) {
         var loadSchedule = function(vs) {
             if ($scope.mmsi) {
                 $scope.alertMessages = [];
@@ -62,6 +62,8 @@
                 $scope.alertMessages = data.errors;
             }
         };
+        
+        VesselInformation.addInformationProvider(embryo.controllers.schedule);
 
         $scope.options = {
             "Yes" : true,
