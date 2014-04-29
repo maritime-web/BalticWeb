@@ -1,11 +1,11 @@
 function RouteLayer() {
     this.init = function() {
         var colors = {
-           "active" : "#FF0000",
-           "planned" : "#D5672D",
-           "other" : "#3E7D1D"
-               // Another green : "#2AAC0C"
-               // orig green 2a6237
+            "active" : "#FF0000",
+            "planned" : "#D5672D",
+            "other" : "#3E7D1D"
+        // Another green : "#2AAC0C"
+        // orig green 2a6237
         };
         var that = this;
 
@@ -23,7 +23,7 @@ function RouteLayer() {
             getOpacity : function() {
                 return that.active ? 1 : 0.3;
             },
-            getColor : function(feature){
+            getColor : function(feature) {
                 return colors[feature.data.colorKey];
             }
         };
@@ -45,30 +45,36 @@ function RouteLayer() {
         });
     }
 
-    function createVectorFeatures(route, colorKey) {
+    this.createVectorFeatures = function(route, colorKey) {
         var features = [];
 
         if (route && route.wps) {
             var firstPoint = true;
-            var currentPoint;
-            var previousPoint = null;
-
+            var previousWps = null;
             var points = [];
-            var lines = [];
 
             for ( var index in route.wps) {
-                currentPoint = embryo.map
-                        .createPoint(route.wps[index].longitude, route.wps[index].latitude);
-
-                // points.push(embryo.route.createWaypointFeature(currentPoint));
-                if (!firstPoint) {
-                    lines.push(new OpenLayers.Geometry.LineString([ previousPoint, currentPoint ]));
+                if (!firstPoint && previousWps.heading === 'GC') {
+                    var linePoints = this.createGeoDesicLineAsGeometryPoints({
+                        y : previousWps.latitude,
+                        x : previousWps.longitude
+                    }, {
+                        y : route.wps[index].latitude,
+                        x : route.wps[index].longitude
+                    });
+                    linePoints.shift();
+                    points = points.concat(linePoints);
                 }
+ 
+                points = points.concat(this.toGeometryPoints([ {
+                    y : route.wps[index].latitude,
+                    x : route.wps[index].longitude
+                } ]));
                 firstPoint = false;
-                previousPoint = currentPoint;
+                previousWps = route.wps[index];
             }
 
-            var multiLine = new OpenLayers.Geometry.MultiLineString(lines);
+            var multiLine = new OpenLayers.Geometry.MultiLineString([ new OpenLayers.Geometry.LineString(points) ]);
             var feature = new OpenLayers.Feature.Vector(multiLine, {
                 featureType : 'route',
                 route : route,
@@ -77,27 +83,28 @@ function RouteLayer() {
 
             features.push(feature);
         }
+
         return features;
-    };
-    
-//    function removeDrawnRoutes(layer, colorKey){
-//        if(colorKey == "active"){
-//            var features = layer.getFeaturesByAttribute('colorKey','active');
-//            layer.removeFeatures(features);
-//        }else{
-//            var features = layer.getFeaturesByAttribute('colorKey','planned');
-//            layer.removeFeatures(features);
-//            features = layer.getFeaturesByAttribute('colorKey','other');
-//            layer.removeFeatures(features);
-//        }
-//    }
-    
+    }
+    // function removeDrawnRoutes(layer, colorKey){
+    // if(colorKey == "active"){
+    // var features = layer.getFeaturesByAttribute('colorKey','active');
+    // layer.removeFeatures(features);
+    // }else{
+    // var features = layer.getFeaturesByAttribute('colorKey','planned');
+    // layer.removeFeatures(features);
+    // features = layer.getFeaturesByAttribute('colorKey','other');
+    // layer.removeFeatures(features);
+    // }
+    // }
+
     this.draw = function(route, colorKey) {
         this.layers.route.removeAllFeatures();
-        //        removeDrawnRoutes(this.layers.route, colorKey);
+        // removeDrawnRoutes(this.layers.route, colorKey);
 
         if (route && route.wps) {
-            this.layers.route.addFeatures(createVectorFeatures(route, colorKey));
+            var features = this.createVectorFeatures(route, colorKey);
+            this.layers.route.addFeatures(features);
             this.layers.route.refresh();
         }
     };
@@ -106,16 +113,15 @@ function RouteLayer() {
 RouteLayer.prototype = new EmbryoLayer();
 
 /*
- * Can be used to create only one route layer instance and reuse this as  
+ * Can be used to create only one route layer instance and reuse this as
  */
 var RouteLayerSingleton = {
     instance : null,
-    getInstance : function(){
-        if(this.instance == null){
+    getInstance : function() {
+        if (this.instance == null) {
             this.instance = new RouteLayer();
             addLayerToMap("vessel", this.instance, embryo.map);
         }
         return this.instance;
     }
 }
-
