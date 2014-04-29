@@ -148,6 +148,7 @@
                 voyageId : $scope.voyages[index].maritimeId,
                 dep : $scope.voyages[index].location,
                 etdep : $scope.voyages[index].departure,
+                vesselDetails : $scope.vesselDetails
             };
             if (index < $scope.voyages.length - 1) {
                 context.des = $scope.voyages[index + 1].location;

@@ -83,7 +83,7 @@
 			<div>
 				<span class="pull-right">
 					<button type="button" class="btn" x-ng-click="reset()" x-ng-disabled="active()">Reset</button>
-					<button type="button" class="btn btn-primary" x-ng-click="save()" x-ng-disabled="!saveable()">Save</button>
+					<button type="button" class="btn btn-primary" x-ng-click="save()" x-ng-disabled="!saveable() || activeVoyage()">Save</button>
 					<button type="button" class="btn btn-primary" x-ng-click="saveAndActivate()" x-ng-disabled="!saveable()">Save
 						and activate</button>
 				</span>
