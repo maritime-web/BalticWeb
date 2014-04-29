@@ -5,8 +5,6 @@
 
     embryo.vessel.information =
 
-    console.log("ship-information");
-
     module.controller('VesselInformationEditCtrl', [ '$scope', 'VesselService', 'VesselInformation',
             function($scope, VesselService, VesselInformation) {
                 $scope.editable = false;
