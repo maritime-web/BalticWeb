@@ -79,7 +79,7 @@ public class ShapeFileMeasurerJob {
 
     private Map<String, String> directories = new HashMap<>();
 
-    private NamedTimeStamps notifications = new NamedTimeStamps();
+    private NamedtimeStamps notifications = new NamedtimeStamps();
 
     @Resource
     private TimerService timerService;
@@ -274,31 +274,4 @@ public class ShapeFileMeasurerJob {
         }
     }
 
-    public static class NamedTimeStamps {
-        private Map<String, DateTime> notifications = new HashMap<>();
-
-        public void clearOldThanMinutes(int minutes) {
-            DateTime now = DateTime.now(DateTimeZone.UTC);
-
-            List<String> toDelete = new ArrayList<>(notifications.size());
-
-            for (Entry<String, DateTime> entry : notifications.entrySet()) {
-                if (entry.getValue().plusMinutes(minutes).isBefore(now)) {
-                    toDelete.add(entry.getKey());
-                }
-            }
-
-            for (String name : toDelete) {
-                notifications.remove(name);
-            }
-        }
-
-        public boolean contains(String name) {
-            return notifications.containsKey(name);
-        }
-
-        public void add(String name, DateTime ts) {
-            notifications.put(name, ts);
-        }
-    }
 }
