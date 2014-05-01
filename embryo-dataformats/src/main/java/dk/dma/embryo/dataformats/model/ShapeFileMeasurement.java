@@ -32,6 +32,7 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
     private long fileSize;
     private String fileName;
     private String provider;
+    private int version = 0;
 
     public ShapeFileMeasurement() {
         super();
@@ -42,6 +43,14 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
         this.fileSize = fileSize;
         this.fileName = fileName;
         this.provider = provider;
+    }
+
+    public ShapeFileMeasurement(String provider, String fileName, long fileSize, int version) {
+        super();
+        this.fileSize = fileSize;
+        this.fileName = fileName;
+        this.provider = provider;
+        this.version = version;
     }
 
     public long getFileSize() {
@@ -66,6 +75,14 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
 
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+    
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     @Override
