@@ -1,162 +1,175 @@
-<div id="aesModal" class="modal hide" tabindex="-1" role="dialog">
+<div id="aesModal" class="modal" tabindex="-1" role="dialog">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">x</button>
 		<h2>AIS Information</h2>
 	</div>
 	<div class="modal-body">
 		<p>
-		<table class="table table-condensed"></table>
-		</p>
+			<table class="table table-condensed"></table>
 		<p>
 		<form>
-			<button class="btn btn-primary" role="button" data-toggle="modal" data-dismiss="modal">Close</button>
+			<button class="btn btn-primary btn-sm" role="button" data-toggle="modal"
+				data-dismiss="modal">Close</button>
 		</form>
-		</p>
 	</div>
 </div>
 
-<div id="vesselControlPanel" class="controlPanel">
-	<div class="accordion" id="ycpAccordion">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                <h4>
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpGreenposList"> Greenpos Reports </a>
-                </h4>
-            </div>
-            <div id="vcpGreenposList" class="accordion-body collapse">
-                <div class="accordion-inner">
+<div id="vesselControlPanel" class="controlPanel panel-group">
+	<div class="panel panel-default">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#vesselControlPanel" href="#vcpGreenposList"> Greenpos
+					Reports </a>
+			</h4>
+		</div>
+		<div id="vcpGreenposList"
+			class="e-accordion-body collapse panel-collapse in">
+			<div class="e-accordion-inner panel-body">
 
-                    <p>Vessel that have Greeenpos-reported within the last 7 days.</p>
+				<p>Vessel that have Greeenpos-reported within the last 7 days.</p>
 
-                    <table id="greenposTable" class="table table-condensed" style="display: block">
-                        <tr><th>Name</th><th>Type</th><th>Time (UTC)</th><th></th></tr>
-                        <tbody id="greenposTableBody">
-                        </tbody>
-                    </table>
+				<table id="greenposTable" class="table table-condensed"
+					style="display: block">
+					<tr>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Time (UTC)</th>
+						<th></th>
+					</tr>
+					<tbody id="greenposTableBody">
+					</tbody>
+				</table>
 
-                </div>
-            </div>
-        </div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpYourShip"> Your Vessel </a>
-				</h4>
-			</div>
-			<div id="vcpYourShip" class="accordion-body collapse">
-				<div class="accordion-inner">
-					<div id="yourShipAesInformation">
-						<h4>
-							<small style="float: right"><a href="#" id="yourShipAesInformationLink">view all</a></small>AIS Information
-						</h4>
-						<table class="table table-condensed"></table>
-					</div>
-
-                    <div id="yourVesselActions"></div>
-
-				</div>
 			</div>
 		</div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSearch"> Search Vessels
-					</a>
-				</h4>
-			</div>
-			<div id="vcpSearch" class="accordion-body collapse">
-				<div class="accordion-inner">
-					<form>
-						<p>
-							<input type="text" id="searchField" class="input-medium search-query"
-                                   autocapitalize="off" autocorrect="off" autocomplete="off">
-						</p>
-
-						<p id="searchLoad">
-							<img src="img/load.gif">
-						</p>
-						<div id="searchResultsContainer"></div>
-						<p id="searchMatch"></p>
-
-					</form>
+	</div>
+	<div class="panel panel-default">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#vesselControlPanel" href="#vcpYourShip"> Your Vessel </a>
+			</h4>
+		</div>
+		<div id="vcpYourShip" class="e-accordion-body collapse panel-collapse">
+			<div class="e-accordion-inner panel-body">
+				<div id="yourShipAesInformation">
+					<h4>
+						<small style="float: right"><a href="#"
+							id="yourShipAesInformationLink">view all</a></small>AIS Information
+					</h4>
+					<table class="table table-condensed"></table>
 				</div>
+
+				<div id="yourVesselActions"></div>
+
 			</div>
 		</div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpSelectedShip">
-						Selected Vessel </a>
-				</h4>
-			</div>
-			<div id="vcpSelectedShip" class="accordion-body collapse">
-				<div class="accordion-inner">
-                    <div id="selectedAesInformation">
-                        <h4>
-                            <small style="float: right"><a href="#" id="selectedAesInformationLink">view all</a></small>AIS Information
-                        </h4>
-                        <table class="table table-condensed"></table>
-                    </div>
+	</div>
+	<div class="panel panel-default">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#vesselControlPanel" href="#vcpSearch"> Search Vessels </a>
+			</h4>
+		</div>
+		<div id="vcpSearch" class="e-accordion-body collapse panel-collapse">
+			<div class="e-accordion-inner panel-body">
+				<form>
+					<p>
+						<input type="text" id="searchField" placeholder="Enter search term"
+							class="input-sm search-query form-control" autocapitalize="off"
+							autocorrect="off" autocomplete="off">
+					</p>
 
-                    <div id="selectedVesselActions"></div>
-				</div>
+					<p id="searchLoad">
+						<img src="img/load.gif">
+					</p>
+					<div id="searchResultsContainer"></div>
+					<p id="searchMatch"></p>
+
+				</form>
 			</div>
 		</div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#ycpAccordion" href="#vcpLegends"> Legends </a>
-				</h4>
-			</div>
-			<div id="vcpLegends" class="accordion-body collapse">
-				<div class="accordion-inner">
-					<table class="table table-condensed">
-						<tr>
-							<td><img src="img/vessel_blue.png" /></td>
-							<td>Passenger</td>
-						</tr>
-						<tr>
-							<td><img src="img/vessel_green.png" /></td>
-							<td>Cargo</td>
-						</tr>
-						<tr>
-							<td><img src="img/vessel_red.png" /></td>
-							<td>Tanker</td>
-						</tr>
-						<tr>
-							<td><img src="img/vessel_yellow.png" /></td>
-							<td>High speed craft and WIG</td>
-						</tr>
-						<tr>
-							<td><img src="img/vessel_orange.png" /></td>
-							<td>Fishing</td>
-						</tr>
-						<tr>
-								<td><img src="img/vessel_purple.png" /></td>
-							<td>Sailing and pleasure</td>
-						</tr>
-						<tr>
-							<td><img src="img/vessel_turquoise.png" /></td>
-							<td>Pilot, tug and others</td>
-						</tr>
-						<tr>
-							<td><img src="img/vessel_gray.png" /></td>
-							<td>Undefined / unknown</td>
-						</tr>
-						<tr>
-							<td><img src="img/vessel_white.png" /></td>
-							<td>Sailing</td>
-						</tr>
-						<tr>
-							<td><img src="img/vessel_white_moored.png" /></td>
-							<td>Anchored/Moored</td>
-						</tr>
-						<tr>
-							<td class="aw">AW</td>
-							<td>Vessel participating in ArcticWeb</td>
-						</tr>
-					</table>
+	</div>
+	<div class="panel panel-default">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#vesselControlPanel" href="#vcpSelectedShip"> Selected
+					Vessel </a>
+			</h4>
+		</div>
+		<div id="vcpSelectedShip"
+			class="e-accordion-body collapse panel-collapse">
+			<div class="e-accordion-inner panel-body">
+				<div id="selectedAesInformation">
+					<h4>
+						<small style="float: right"><a href="#"
+							id="selectedAesInformationLink">view all</a></small>AIS Information
+					</h4>
+					<table class="table table-condensed"></table>
 				</div>
+
+				<div id="selectedVesselActions"></div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#vesselControlPanel" href="#vcpLegends"> Legends </a>
+			</h4>
+		</div>
+		<div id="vcpLegends" class="e-accordion-body collapse panel-collapse">
+			<div class="e-accordion-inner panel-body">
+				<table class="table table-condensed">
+					<tr>
+						<td><img src="img/vessel_blue.png" /></td>
+						<td>Passenger</td>
+					</tr>
+					<tr>
+						<td><img src="img/vessel_green.png" /></td>
+						<td>Cargo</td>
+					</tr>
+					<tr>
+						<td><img src="img/vessel_red.png" /></td>
+						<td>Tanker</td>
+					</tr>
+					<tr>
+						<td><img src="img/vessel_yellow.png" /></td>
+						<td>High speed craft and WIG</td>
+					</tr>
+					<tr>
+						<td><img src="img/vessel_orange.png" /></td>
+						<td>Fishing</td>
+					</tr>
+					<tr>
+						<td><img src="img/vessel_purple.png" /></td>
+						<td>Sailing and pleasure</td>
+					</tr>
+					<tr>
+						<td><img src="img/vessel_turquoise.png" /></td>
+						<td>Pilot, tug and others</td>
+					</tr>
+					<tr>
+						<td><img src="img/vessel_gray.png" /></td>
+						<td>Undefined / unknown</td>
+					</tr>
+					<tr>
+						<td><img src="img/vessel_white.png" /></td>
+						<td>Sailing</td>
+					</tr>
+					<tr>
+						<td><img src="img/vessel_white_moored.png" /></td>
+						<td>Anchored/Moored</td>
+					</tr>
+					<tr>
+						<td class="aw">AW</td>
+						<td>Vessel participating in ArcticWeb</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>

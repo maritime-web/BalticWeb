@@ -13,7 +13,7 @@
             title : "Vessel Information",
             available : function(vesselOverview, vesselDetails) {
                 if (vesselOverview.inAW) {
-                    return { text: "OK", klass: "success", action: "edit" }
+                    return { text: "OK", klass: "success", action: "edit" };
                 }
                 return false;
             },

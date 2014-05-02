@@ -23,7 +23,7 @@ function openCollapse(id) {
         if (!$(id).hasClass("in")) {
             $("a[href=#" + $(id).attr("id") + "]").click();
         }
-    }, 10)
+    }, 10);
 }
 
 function closeCollapse(id) {
@@ -127,7 +127,7 @@ var browser = {
         return myNav.indexOf('msie') != -1;
     },
     ieVersion : function() {
-        var index, version = 999; // we assume a sane browser
+        var index = null, version = 999; // we assume a sane browser
         var myNav = navigator.userAgent.toLowerCase();
 
         var parts = myNav.split(";");
@@ -140,7 +140,7 @@ var browser = {
         return version;
     },
     chromeVersion : function() {
-        var index, version = 999; // we assume a sane browser
+        var index = null, version = 999; // we assume a sane browser
         var myNav = navigator.userAgent.toLowerCase();
         var parts = myNav.split(" ");
         

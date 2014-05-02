@@ -59,6 +59,10 @@ public class GreenPos {
     private String reporter;
 
     private Date ts;
+    
+    private boolean coastalControl;
+    
+    private boolean greenpos;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -220,4 +224,21 @@ public class GreenPos {
     public void setId(String id) {
         this.id = id;
     }
+
+    public boolean isCoastalControl() {
+        return coastalControl;
+    }
+
+    public void setCoastalControl(boolean coastalControl) {
+        this.coastalControl = coastalControl;
+    }
+
+    public boolean isGreenpos() {
+        return greenpos;
+    }
+
+    public void setGreenpos(boolean greenpos) {
+        this.greenpos = greenpos;
+    }
+    
 }

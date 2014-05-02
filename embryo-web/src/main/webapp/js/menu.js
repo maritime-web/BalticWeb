@@ -36,7 +36,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
 
     embryo.authenticated(function() {
         embryoAuthenticated = true;
-    })
+    });
     
     embryo.MenuCtrl = function($scope, Subject, $location, $timeout) {
         $scope.$watch(function() {

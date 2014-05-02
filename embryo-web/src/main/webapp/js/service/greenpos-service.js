@@ -29,7 +29,7 @@
                 $http.get(url).success(callback);
             },
             findReports : function(params, callback) {
-                var key, url = findReportsUrl;
+                var url = findReportsUrl;
 
                 if (params && Object.keys(params).length > 0) {
                     url = url + "?";

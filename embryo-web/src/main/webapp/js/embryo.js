@@ -101,16 +101,16 @@ embryo.messagePanel = {
             setTimeout(function() {
                 embryo.messagePanel.remove(id);
             }, 30000);
-            return "<div id=" + id + "><div class='alert alert-error' style=display:inline-block>" + msg.text
+            return "<div id=" + id + "><div class='alert alert-danger e-small-font' style=display:inline-block>" + msg.text
                     + "</div></div>";
         case "success":
             setTimeout(function() {
                 embryo.messagePanel.remove(id);
             }, 10000);
-            return "<div id=" + id + "><div class='alert alert-success' style=display:inline-block>" + msg.text
+            return "<div id=" + id + "><div class='alert alert-success e-small-font' style=display:inline-block>" + msg.text
                     + "</div></div>";
         default:
-            return "<div id=" + id + "><div class='alert' style=display:inline-block>" + msg.text + "</div></div>";
+            return "<div id=" + id + "><div class='alert alert-warning e-small-font' style=display:inline-block>" + msg.text + "</div></div>";
         }
     },
     show : function(msg) {

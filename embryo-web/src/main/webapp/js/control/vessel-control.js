@@ -81,15 +81,15 @@ $(function() {
         }
 
         function fixAccordionSize() {
-            $("#vesselControlPanel .accordion-inner").css("overflow", "auto");
-            $("#vesselControlPanel .accordion-inner").css("max-height", Math.max(100, $("#map").height() - $("#vesselControlPanel .accordion-group").length * 51 - 80)+"px");
+            $("#vesselControlPanel .e-accordion-inner").css("overflow", "auto");
+            $("#vesselControlPanel .e-accordion-inner").css("max-height", Math.max(100, $(window).height() - 233) + "px");
         }
 
         $(window).resize(fixAccordionSize);
 
         setTimeout(fixAccordionSize, 100);
     });
-})
+});
 
 embryo.ready(function() {
     function fixReportingPanelSize() {
@@ -100,4 +100,4 @@ embryo.ready(function() {
     $(window).resize(fixReportingPanelSize);
 
     setTimeout(fixReportingPanelSize, 100);
-})
+});

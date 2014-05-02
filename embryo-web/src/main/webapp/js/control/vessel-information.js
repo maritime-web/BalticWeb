@@ -13,7 +13,7 @@ embryo.vesselInformation = {
             "Destination": data.ais.destination,
             "Nav Status": data.ais.navStatus,
             "ETA": data.ais.eta
-        }
+        };
 
         $.each(egenskaber, function(k,v) {
             if (v != null && v != "") html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
@@ -37,7 +37,7 @@ embryo.vesselInformation = {
             "Destination": data.ais.destination,
             "Nav Status": data.ais.navStatus,
             "ETA": data.ais.eta
-        }
+        };
         
         $.each(egenskaber, function(k,v) {
             if (v != null && v != "") html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
@@ -78,7 +78,7 @@ embryo.vesselInformation = {
             "Position Accuracy": data.ais.posAcc,
             "Last Report": data.ais.lastReport,
             "More Information": "<a href='"+link+"' target='new_window'>"+link+"</a>"
-        }
+        };
         
         $.each(egenskaber, function(k,v) {
             if (v != null && v != "") html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
@@ -88,7 +88,7 @@ embryo.vesselInformation = {
         $("#aesModal table").html(html);
         $("#aesModal").modal("show");
     }
-}
+};
 
 $(function() {
     var shipSelected = false;
@@ -100,7 +100,7 @@ $(function() {
         $("#selectedAesInformationLink").off("click");
         $("#selectedAesInformationLink").on("click", function(e) {
             e.preventDefault();
-            embryo.vesselInformation.showAesDialog(vesselDetails);
+            embryo.controllers.ais.open(vesselDetails.ais);
         });
     }
     
@@ -131,7 +131,7 @@ $(function() {
     embryo.groupChanged(function(e) {
         if (e.groupId == "vessel") {
             $("#vesselControlPanel").css("display", "block");
-            $("#vesselControlPanel .collapse").data("collapse", null)
+            $("#vesselControlPanel .collapse").data("collapse", null);
             openCollapse("#vesselControlPanel .accordion-body:first");
         } else {
             $("#vesselControlPanel").css("display", "none");

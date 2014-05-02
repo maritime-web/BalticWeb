@@ -1,5 +1,9 @@
-#schedule input.lon {
-	width: 70px;
+#schedule input.lon input.lat {
+	width: 105px;
+}
+
+#schedule div.date {
+	width: 150px;
 }
 
 #schedule input.tt-hint {
@@ -41,8 +45,12 @@
 	margin-right: 20px;
 }
 
-#scheduleViewPanel{
+#scheduleViewPanel {
 	min-width: 400px;
+}
+
+.e-location-typeahead {
+	width: 150px;
 }
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {

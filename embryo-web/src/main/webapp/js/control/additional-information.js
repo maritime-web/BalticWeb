@@ -1,4 +1,4 @@
-embryo.additionalInformation = {}
+embryo.additionalInformation = {};
 
 embryo.additionalInformation.historicalTrack = {
     doShow : false,
@@ -6,7 +6,7 @@ embryo.additionalInformation.historicalTrack = {
     layer : null,
     init : function(map, group) {
         this.layer = new HistoricalTrackLayer(); 
-        addLayerToMap(group, this.layer, map)
+        addLayerToMap(group, this.layer, map);
     },
     available : function(vessel, vesselDetails) {
         return vesselDetails.additionalInformation.historicalTrack;
@@ -24,7 +24,7 @@ embryo.additionalInformation.historicalTrack = {
                 that.layer.zoomToExtent();
             }
             var points = !track ? 0 : track.length;
-            embryo.messagePanel.replace(messageId, { text: "Loaded historical track with " +  points + " points.", type: "success" })
+            embryo.messagePanel.replace(messageId, { text: "Loaded historical track with " +  points + " points.", type: "success" });
         }, function(errorMsg, status) {
             embryo.messagePanel.replace(messageId, { text: errorMsg, type: "error" });
         });
@@ -33,7 +33,7 @@ embryo.additionalInformation.historicalTrack = {
         this.doShow = false;
         this.layer.clear();
     }
-}
+};
 
 embryo.additionalInformation.nearestShips = {
     title : "Nearest Vessels",
@@ -57,7 +57,7 @@ embryo.additionalInformation.nearestShips = {
     hide : function() {
         this.layer.clear();
     }
-}
+};
 
 embryo.additionalInformation.distanceCircles = {
     title : "3-6-9 hour distance circle based on SOG",
@@ -75,7 +75,7 @@ embryo.additionalInformation.distanceCircles = {
     hide : function() {
         this.layer.clear();
     }
-}
+};
 
 embryo.additionalInformation.route = {
     title : "Route",
@@ -100,7 +100,7 @@ embryo.additionalInformation.route = {
     hide : function() {
         this.layer.clear();
     }
-}
+};
 
 // embryo.additionalInformation.metoc = {
 // title : "METOC on Route",

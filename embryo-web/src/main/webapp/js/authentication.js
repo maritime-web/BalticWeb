@@ -409,6 +409,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
                 return $modal.open({
                     controller : embryo.LoginModalCtrl,
                     templateUrl : "loginDialog.html",
+                    windowClass : "embryo-small-modal",
                     resolve : {
                         msg : function() {
                             return typeof config === "object" ? config.msg : null;

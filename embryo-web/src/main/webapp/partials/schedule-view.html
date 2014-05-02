@@ -2,13 +2,13 @@
 	<div>
 		<h2>
 			Schedule <a class="close embryo-close-panel" href="#" style="float: right" x-ng-hide="collapse">&times;</a>
-			<button type="button" class="btn btn-primary" style="float: right" x-ng-click="collapse=false" x-ng-hide="!collapse">Open
+			<button type="button" class="btn btn-primary btn-sm" style="float: right" x-ng-click="collapse=false" x-ng-hide="!collapse">Open
 				Schedule</button>
 		</h2>
 	</div>
 
-	<div ng-hide="collapse">
-		<div x-ng-show="alertMessage" class="alert alert-error">{{alertMessage}}</div>
+	<div x-ng-hide="collapse">
+		<div x-ng-show="alertMessage" class="alert alert-danger">{{alertMessage}}</div>
 		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
 		<form class="form-horizontal">
@@ -23,6 +23,7 @@
 						<th>Crew</th>
 						<th>Passengers</th>
 						<th>Doctor</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody x-ng-repeat="voyage in voyages" class="content">
@@ -35,7 +36,7 @@
 						<td>{{voyage.crew}}</td>
 						<td>{{voyage.passengers}}</td>
 						<td><span ng-show="voyage.doctor">Yes</span><span ng-show="voyage.doctor==false">No</span></td>
-						<td><button type="button" x-ng-show="voyage.route" class="btn" x-ng-click="viewRoute(voyage)">View
+						<td><button type="button" x-ng-show="voyage.route" class="btn btn-sm" x-ng-click="viewRoute(voyage)">View
 								Route</button></td>
 					</tr>
 					<tr class="route" x-ng-class="{warning : activeRouteId && activeRouteId == voyage.route.id}">
@@ -48,7 +49,7 @@
 					<tr class="lastRow">
 						<td colspan="7"></td>
 						<td colspan="2">
-							<button type="button" class="btn btn-primary" x-ng-click="view()">View Schedule on Map</button>
+							<button type="button" class="btn btn-primary btn-sm" x-ng-click="view()">View Schedule on Map</button>
 						</td>
 					</tr>
 				</tbody>

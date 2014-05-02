@@ -5,43 +5,43 @@
 		</h2>
 	</div>
 	<div>
-		<div x-ng-show="alertMessages" class="alert alert-error">
-			<span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+		<div x-ng-show="alertMessages" class="alert alert-danger">
+			<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
 		</div>
 		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-		<form name="routeEditForm" class="form-horizontal route" ng-submit="save()">
+		<form name="routeEditForm" class="form-horizontal route" x-ng-submit="save()">
 
 
-			<div class="row-fluid">
-				<div class="span6 extend-label">
-					<div class="control-group">
-						<label class="control-label" for="name">Name</label>
-						<div class="controls">
-							<input x-ng-model="route.name" type="text" id="name" name="name" class="input-large" required /> <span
+			<div class="row">
+				<div class="col-xs-6 extend-label">
+					<div class="control-group form-group">
+						<label class="e-control-label" for="name">Name</label>
+						<div class="col-xs-5">
+							<input x-ng-model="route.name" type="text" id="name" name="name" class="input-sm form-control" required /> <span
 								x-ng-show="routeEditForm.name.$error.required && routeEditForm.name.$dirty" class="msg-invalid">Value
 								required</span>
 						</div>
 					</div>
-					<div class="control-group">
-						<label class="control-label" >Estimated time of Departure (UTC)</label>
-						<div class="controls">
+					<div class="control-group form-group">
+						<label class="e-control-label" >Estimated time of Departure (UTC)</label>
+						<div class="col-xs-5">
 							<datetimepicker x-ng-model="route.etaDep"></datetimepicker>
 						</div>
 					</div>
 				</div>
 
-				<div class="span6">
-					<div class="control-group">
-						<label class="control-label" for="origin">Origin</label>
-						<div class="controls">
-							<input x-ng-model="route.dep" type="text" id="origin" class="input-large" />
+				<div class="col-xs-6">
+					<div class="control-group form-group">
+						<label class="e-control-label" for="origin">Origin</label>
+						<div class="col-xs-5">
+							<input x-ng-model="route.dep" type="text" id="origin" class="input-sm form-control" />
 						</div>
 					</div>
-					<div class="control-group">
-						<label class="control-label" for="destination">Destination</label>
-						<div class="controls">
-							<input x-ng-model="route.des" type="text" id="destination" class="input-large" />
+					<div class="control-group form-group">
+						<label class="e-control-label" for="destination">Destination</label>
+						<div class="col-xs-5">
+							<input x-ng-model="route.des" type="text" id="destination" class="input-sm form-control" />
 						</div>
 					</div>
 
@@ -64,17 +64,17 @@
 
 				<tbody>
 					<tr name="wayPointsNestedForm" x-ng-form x-ng-repeat="wp in waypoints">
-						<td><input x-ng-model="wp.name" class="input-medium" type="text" x-ng-required="!$last" /></td>
-						<td><input latitude x-ng-model="wp.latitude" class="input-medium" type="text" x-ng-required="!$last" /></td>
-						<td><input longitude x-ng-model="wp.longitude" class="input-medium" type="text" x-ng-required="!$last" /></td>
-						<td><input x-ng-model="wp.turnRad" class="input-small" type="text" /></td>
-						<td><select name="heading" x-ng-model="wp.heading" class="input-large input-heading" x-ng-required="!$last">
+						<td><input x-ng-model="wp.name" class="input-sm form-control" type="text" x-ng-required="!$last" /></td>
+						<td><input latitude x-ng-model="wp.latitude" class="input-sm form-control" type="text" x-ng-required="!$last" /></td>
+						<td><input longitude x-ng-model="wp.longitude" class="input-sm form-control" type="text" x-ng-required="!$last" /></td>
+						<td><input x-ng-model="wp.turnRad" class="input-sm form-control" type="text" /></td>
+						<td><select name="heading" x-ng-model="wp.heading" class="input-sm form-control input-heading" x-ng-required="!$last">
 								<option value="RL">Rhumb line</option>
 								<option value="GC">Great circle</option>
 						</select></td>
-						<td><input x-ng-model="wp.speed" class="input-medium" type="text" x-ng-required="!$last" /></td>
-						<td><button x-ng-show="!$last" type="button" class="btn btn-danger" x-ng-click="remove($index)">Delete</button></td>
-						<td><button x-ng-show="!$last" type="button" class="btn" x-ng-click="add($index)">Add below</button></td>
+						<td><input x-ng-model="wp.speed" class="input-sm form-control" type="text" x-ng-required="!$last" /></td>
+						<td><button x-ng-show="!$last" type="button" class="btn btn-danger btn-sm" x-ng-click="remove($index)">Delete</button></td>
+						<td><button x-ng-show="!$last" type="button" class="btn btn-sm" x-ng-click="add($index)">Add below</button></td>
 
 					</tr>
 				</tbody>

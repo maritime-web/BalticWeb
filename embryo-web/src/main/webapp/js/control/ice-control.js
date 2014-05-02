@@ -36,7 +36,7 @@ $(function() {
 
         $scope.getSelected = function() {
             return $scope.selectedProvider;
-        }
+        };
 
         $scope.$watch($scope.getSelected, function(newValue, oldValue) {
             if (newValue.key) {
@@ -56,7 +56,7 @@ $(function() {
         function requestIceObservations() {
             var messageId = embryo.messagePanel.show({
                 text : "Requesting list of ice charts ..."
-            })
+            });
 
             embryo.ice.service
                     .listByProvider(
@@ -89,7 +89,7 @@ $(function() {
                                         return -1;
                                     }
                                     return reg1.localeCompare(reg2);
-                                }
+                                };
 
                                 regions.sort(sortFunction);
 
@@ -194,19 +194,19 @@ $(function() {
                 }, 10);
             }, function(errorMsg, status) {
                 if(status == 410){
-                    errorMsg = errorMsg + " Refreshing ice chart list ... "
+                    errorMsg = errorMsg + " Refreshing ice chart list ... ";
                 }
                 embryo.messagePanel.replace(messageId, {
                     text : errorMsg,
                     type : "error"
-                })
+                });
                 
                 requestIceObservations();
             });
         }
 
         
-    }
+    };
 
     function createIceTable(d) {
         function c(v) {
@@ -436,7 +436,7 @@ $(function() {
 
     var iceLayer = new IceLayer();
 
-    addLayerToMap("ice", iceLayer, embryo.map)
+    addLayerToMap("ice", iceLayer, embryo.map);
 
     iceLayer.select(function(ice) {
         if (ice != null) {
@@ -444,7 +444,7 @@ $(function() {
         } else {
             hideIceInformation();
         }
-    })
+    });
 
     embryo.groupChanged(function(e) {
         if (e.groupId == "ice") {
@@ -458,8 +458,8 @@ $(function() {
 
     embryo.ready(function() {
         function fixAccordionSize() {
-            $("#iceControlPanel .accordion-inner").css("overflow", "auto");
-            $("#iceControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - 233) + "px");
+            $("#iceControlPanel .e-accordion-inner").css("overflow", "auto");
+            $("#iceControlPanel .e-accordion-inner").css("max-height", Math.max(100, $(window).height() - 233) + "px");
         }
 
         $(window).resize(fixAccordionSize);

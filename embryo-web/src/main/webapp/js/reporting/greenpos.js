@@ -37,12 +37,12 @@ var greenposScope;
         };
     });
 
-    var layer;
+    var layer = null;
 
     $(function() {
         layer = new GreenposMarkerLayer();
         addLayerToMap("vessel", layer, embryo.map);
-    })
+    });
 
     embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, VesselService, $timeout, RouteService) {
         $scope.reportTypes = [ {
@@ -57,7 +57,7 @@ var greenposScope;
         }, {
             id : "DR",
             name : "Deviation Report"
-        } ]
+        } ];
 
         var reportNames = {};
         for ( var index in $scope.reportTypes) {
@@ -69,7 +69,7 @@ var greenposScope;
 
         $scope.report = {
             type : "PR"
-        }
+        };
 
         $.each($scope.reportTypes, function(k, v) {
             setTimeout(function() {
@@ -185,9 +185,9 @@ var greenposScope;
 
         this.close = function() {
             layer.clear();
-        }
+        };
 
-        var vesselOverview, vesselDetails;
+        var vesselOverview = null, vesselDetails = null;
 
         this.show = function(vesselOverview2, vesselDetails2) {
             vesselOverview = vesselOverview2;
@@ -196,14 +196,14 @@ var greenposScope;
             initData();
 
             $scope.$apply();
-        }
+        };
         
         this.hide = function(){
             $scope.warningMessages = null;
             $scope.alertMessages = null;
             $scope.reportAcknowledgement = null;
             $scope.greenPosForm.$setPristine();
-        }
+        };
 
         function initData() {
             $scope.report = {
@@ -245,7 +245,7 @@ var greenposScope;
 
         }
 
-        this.title = "Greenpos Reporting";
+        this.title = "Reporting";
 
         this.available = function(vesselOverview, vesselDetails) {
             if (vesselOverview.inAW)
@@ -255,7 +255,7 @@ var greenposScope;
                     action : "edit"
                 };
             return false;
-        }
+        };
 
         embryo.controllers.greenpos = this;
     };
@@ -268,7 +268,7 @@ var greenposScope;
                 sort : '='
             },
             link : function(scope, element, attrs) {
-                var sort, order;
+                var sort = null, order = null;
 
                 element.bind('click',
                         function() {
