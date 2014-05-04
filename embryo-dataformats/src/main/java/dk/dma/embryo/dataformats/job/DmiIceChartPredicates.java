@@ -80,13 +80,13 @@ public class DmiIceChartPredicates {
                             return false;
                         }
                         try {
-                            Integer.valueOf(version.substring(1));
+                            int value = Integer.parseInt(version.substring(1));
+                            return value > 0;
                         } catch (NumberFormatException e) {
                             return false;
                         }
                     }
                     return true;
-
                 }
             }
             return false;

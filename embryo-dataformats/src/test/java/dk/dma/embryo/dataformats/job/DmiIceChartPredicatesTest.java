@@ -125,7 +125,10 @@ public class DmiIceChartPredicatesTest {
 
         file.setName("201401301200_MyRegionRIC_vv1");
         Assert.assertFalse(predicate.apply(file));
-    }
+
+        file.setName("201401301200_MyRegionRIC_v0");
+        Assert.assertFalse(predicate.apply(file));
+}
 
     @Test
     public void testValidDateValue() {
