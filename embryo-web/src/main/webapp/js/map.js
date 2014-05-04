@@ -301,7 +301,7 @@ $(function() {
         var layer = new WorldMapLayer();
 
         addLayerToMap("world", layer, embryo.map);
-        embryo.ice.service.shapes("static." + name, {
+        embryo.shape.service.staticShapes("static." + name, {
             exponent : 2,
             delta : true
         }, function(data) {

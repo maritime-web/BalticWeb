@@ -242,6 +242,7 @@ public class ShapeFileMeasurerJob {
 
                         try {
                             sfm.setFileSize(measureFile(provider + "." + fn));
+                            sfm.setCreated(DateTime.now(DateTimeZone.UTC));
                             logger.debug("File size: " + sfm.getFileSize());
                             measurements.put(sfm.getFileName(), sfm);
                             newMeasurements++;
@@ -257,6 +258,7 @@ public class ShapeFileMeasurerJob {
                     sfm.setFileSize(lookup.getFileSize());
                     sfm.setProvider(lookup.getProvider());
                     sfm.setVersion(lookup.getVersion());
+                    sfm.setCreated(lookup.getCreated());
 
                     measurements.put(sfm.getFileName(), sfm);
                     existingMeasurements++;
