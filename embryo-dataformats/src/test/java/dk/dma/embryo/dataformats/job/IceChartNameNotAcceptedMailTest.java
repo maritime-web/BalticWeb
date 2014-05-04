@@ -15,8 +15,6 @@
  */
 package dk.dma.embryo.dataformats.job;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -63,7 +61,7 @@ public class IceChartNameNotAcceptedMailTest {
         body += "HH - The hour of day. Accepted values are 00 - 23.\n";
         body += "mm - The minute of hour. Accepted values are 00 - 59.\n";
         body += "region - An ice chart region. Accepted values are region1_RIC, region2_WA\n";
-        body += "version - The version of the ice chart in question. This attribute is optional. Valid values starts with a v and ends with a number, e.g. v1, v2, v3, v10, v15.\n\n";
+        body += "version - The version of the ice chart in question. This attribute is optional. Valid values starts with a v and ends with a positive number, e.g. v1, v2, v3, v10, v15.\n\n";
         body += "Examples of valid values are 201401231045_CapeFarewell_RIC and 201401231045_CapeFarewell_RIC_v2\n";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
