@@ -29,4 +29,14 @@
   <changeSet id="1398866955677-3" author="jesper">
     <addNotNullConstraint columnDataType="INT(10)" columnName="version" tableName="ShapeFileMeasurement" />
   </changeSet>
+  <changeSet id="1398866955677-4" author="jesper">
+    <delete tableName="ShapeFileMeasurement"/>
+  </changeSet>
+  <changeSet id="1398866955677-5" author="jesper">
+    <addColumn tableName="ShapeFileMeasurement">
+      <column name="created" type="datetime">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
