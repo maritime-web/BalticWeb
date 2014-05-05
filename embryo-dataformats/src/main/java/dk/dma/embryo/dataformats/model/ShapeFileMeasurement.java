@@ -36,7 +36,7 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
     private long fileSize;
     private String fileName;
     private String provider;
-    private int version = 0;
+    private int version;
     
     @NotNull
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
