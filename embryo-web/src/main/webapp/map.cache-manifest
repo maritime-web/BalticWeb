@@ -35,7 +35,7 @@ partials/route-upload.html
 partials/route-edit.html
 partials/greenpos-report.html
 partials/greenpos-list.html
-rest/shapefile/multiple/static.world_merc?delta=true&exponent=2
+rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2
 img/load.gif
 img/vessel_blue.png
 img/vessel_green.png
