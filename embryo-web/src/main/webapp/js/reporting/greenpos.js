@@ -43,7 +43,8 @@ var greenposScope;
         addLayerToMap("vessel", layer, embryo.map);
     });
 
-    embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, VesselService, $timeout, RouteService) {
+    embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, VesselService, $timeout, RouteService,
+            VesselInformation) {
         $scope.reportTypes = [ {
             id : "SP",
             name : "Sailing Plan Report"
@@ -206,21 +207,32 @@ var greenposScope;
 
         var vesselOverview = null, vesselDetails = null;
 
-        this.show = function(vesselOverview2, vesselDetails2) {
-            vesselOverview = vesselOverview2;
-            vesselDetails = vesselDetails2;
+        VesselInformation.addInformationProvider({
+            title : "Greenpos Reporting",
+            available : function(vesselOverview, vesselDetails) {
+                if (vesselOverview.inAW)
+                    return {
+                        text : "OK",
+                        klass : "success",
+                        action : "edit"
+                    };
+                return false;
+            },
+            show : function(vesselOverview2, vesselDetails2) {
+                vesselOverview = vesselOverview2;
+                vesselDetails = vesselDetails2;
 
-            initData();
+                initData();
 
-            $scope.$apply();
-        };
-
-        this.hide = function() {
-            $scope.warningMessages = null;
-            $scope.alertMessages = null;
-            $scope.reportAcknowledgement = null;
-            $scope.greenPosForm.$setPristine();
-        };
+                $scope.$apply();
+            },
+            hide : function() {
+                $scope.warningMessages = null;
+                $scope.alertMessages = null;
+                $scope.reportAcknowledgement = null;
+                $scope.greenPosForm.$setPristine();
+            }
+        });
 
         function initData() {
             $scope.report = {
@@ -260,21 +272,7 @@ var greenposScope;
             });
 
         }
-
-        this.title = "Reporting";
-
-        this.available = function(vesselOverview, vesselDetails) {
-            if (vesselOverview.inAW)
-                return {
-                    text : "OK",
-                    klass : "success",
-                    action : "edit"
-                };
-            return false;
-        };
-
-        embryo.controllers.greenpos = this;
-    }
+    };
 
     greenposModule.directive('sort', function() {
         return {

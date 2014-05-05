@@ -41,24 +41,12 @@ function ScheduleLayer(color) {
         var features = [];
 
         if (voyages) {
-            var firstPoint = true;
-            var currentPoint;
-            var previousPoint = null;
-
             var points = [];
-            var lines = [];
-
             for ( var index in voyages) {
-                currentPoint = embryo.map.createPoint(voyages[index].longitude, voyages[index].latitude);
-
-                if (!firstPoint) {
-                    lines.push(new OpenLayers.Geometry.LineString([ previousPoint, currentPoint ]));
-                }
-                firstPoint = false;
-                previousPoint = currentPoint;
+                points.push(embryo.map.createPoint(voyages[index].longitude, voyages[index].latitude));
             }
 
-            var multiLine = new OpenLayers.Geometry.MultiLineString(lines);
+            var multiLine = new OpenLayers.Geometry.MultiLineString(new OpenLayers.Geometry.LineString(points));
             var feature = new OpenLayers.Feature.Vector(multiLine, {
                 featureType : 'schedule',
                 schedule : schedule

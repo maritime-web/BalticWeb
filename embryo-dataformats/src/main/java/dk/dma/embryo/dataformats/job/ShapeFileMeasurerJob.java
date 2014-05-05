@@ -51,6 +51,8 @@ import dk.dma.embryo.common.log.EmbryoLogFactory;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParser;
+import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParserFactory;
 import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
 import dk.dma.embryo.dataformats.service.ShapeFileService;
 
@@ -79,7 +81,7 @@ public class ShapeFileMeasurerJob {
 
     private Map<String, String> directories = new HashMap<>();
 
-    private NamedTimeStamps notifications = new NamedTimeStamps();
+    private NamedtimeStamps notifications = new NamedtimeStamps();
 
     @Resource
     private TimerService timerService;
@@ -90,6 +92,9 @@ public class ShapeFileMeasurerJob {
 
     @Inject
     private EmbryoLogFactory embryoLogFactory;
+
+    @Inject
+    private ShapeFileNameParserFactory parserFactory;
 
     private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shx");
 
@@ -143,7 +148,7 @@ public class ShapeFileMeasurerJob {
 
         logger.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
 
-        notifications.clearOldThanMinutes(60*24);
+        notifications.clearOldThanMinutes(60 * 24);
 
         for (Entry<String, String> directory : directories.entrySet()) {
             String provider = directory.getKey();
@@ -151,7 +156,8 @@ public class ShapeFileMeasurerJob {
             EmbryoLogService embryoLogger = embryoLogFactory.getLogger(this.getClass(), provider);
 
             try {
-                ShapeFileMeasurer measurer = new ShapeFileMeasurer(service, shapeFileMeasurementDao, embryoLogger);
+                ShapeFileMeasurer measurer = new ShapeFileMeasurer(service, shapeFileMeasurementDao, embryoLogger,
+                        parserFactory);
                 measurer.measureFiles(directory.getValue(), provider, start);
                 List<ShapeFileMeasurement> measurements = measurer.getMeasurements();
                 logger.debug("{}: Done. Saving {} items ...", provider, measurements.size());
@@ -184,18 +190,20 @@ public class ShapeFileMeasurerJob {
         private int existingMeasurements;
         private int failedMeasurementCount;
 
-        private List<ShapeFileMeasurement> measurements = new ArrayList<>(100);
+        private Map<String, ShapeFileMeasurement> measurements = new HashMap<>();
 
         private final ShapeFileService service;
         private final ShapeFileMeasurementDao dao;
         private final EmbryoLogService embryoLogger;
+        private final ShapeFileNameParserFactory parserFactory;
 
         public ShapeFileMeasurer(ShapeFileService service, ShapeFileMeasurementDao dao,
-                EmbryoLogService embryoLogService) {
+                EmbryoLogService embryoLogService, ShapeFileNameParserFactory parserFactory) {
             super();
             this.service = service;
             this.dao = dao;
             this.embryoLogger = embryoLogService;
+            this.parserFactory = parserFactory;
         }
 
         private long measureFile(String pfn) throws IOException {
@@ -222,20 +230,21 @@ public class ShapeFileMeasurerJob {
         public void measureFiles(String directory, String provider, long start) throws IOException {
             for (String fn : downloadedIceObservations(directory)) {
 
-                ShapeFileMeasurement lookup = dao.lookup(fn, provider);
-                if (lookup == null) {
+                ShapeFileNameParser parser = parserFactory.createParser(provider);
+                ShapeFileMeasurement sfm = parser.parse(fn);
+
+                ShapeFileMeasurement lookup = dao.lookup(sfm.getFileName(), provider);
+                if (lookup == null || lookup.getVersion() < sfm.getVersion()) {
                     logger.debug("" + (new Date().getTime() - start) + " vs " + TRANSACTION_LENGTH);
 
                     if (System.currentTimeMillis() - start < TRANSACTION_LENGTH) {
                         logger.debug("Measuring file: " + fn);
 
                         try {
-                            ShapeFileMeasurement sfm = new ShapeFileMeasurement();
-                            sfm.setFileName(fn);
                             sfm.setFileSize(measureFile(provider + "." + fn));
-                            sfm.setProvider(provider);
+                            sfm.setCreated(DateTime.now(DateTimeZone.UTC));
                             logger.debug("File size: " + sfm.getFileSize());
-                            measurements.add(sfm);
+                            measurements.put(sfm.getFileName(), sfm);
                             newMeasurements++;
                         } catch (Throwable t) {
                             failedMeasurementCount++;
@@ -244,21 +253,23 @@ public class ShapeFileMeasurerJob {
                             sendEmail(provider, fn, t);
                         }
                     }
-                } else {
-                    ShapeFileMeasurement sfm = new ShapeFileMeasurement();
-
+                } else if (!measurements.containsKey(lookup.getFileName())) {
                     sfm.setFileName(lookup.getFileName());
                     sfm.setFileSize(lookup.getFileSize());
                     sfm.setProvider(lookup.getProvider());
+                    sfm.setVersion(lookup.getVersion());
+                    sfm.setCreated(lookup.getCreated());
 
-                    measurements.add(sfm);
+                    measurements.put(sfm.getFileName(), sfm);
                     existingMeasurements++;
                 }
             }
         }
 
         public List<ShapeFileMeasurement> getMeasurements() {
-            return measurements;
+            List<ShapeFileMeasurement> result = new ArrayList<>();
+            result.addAll(measurements.values());
+            return result;
         }
 
         public int getNewCount() {
@@ -274,31 +285,4 @@ public class ShapeFileMeasurerJob {
         }
     }
 
-    public static class NamedTimeStamps {
-        private Map<String, DateTime> notifications = new HashMap<>();
-
-        public void clearOldThanMinutes(int minutes) {
-            DateTime now = DateTime.now(DateTimeZone.UTC);
-
-            List<String> toDelete = new ArrayList<>(notifications.size());
-
-            for (Entry<String, DateTime> entry : notifications.entrySet()) {
-                if (entry.getValue().plusMinutes(minutes).isBefore(now)) {
-                    toDelete.add(entry.getKey());
-                }
-            }
-
-            for (String name : toDelete) {
-                notifications.remove(name);
-            }
-        }
-
-        public boolean contains(String name) {
-            return notifications.containsKey(name);
-        }
-
-        public void add(String name, DateTime ts) {
-            notifications.put(name, ts);
-        }
-    }
 }

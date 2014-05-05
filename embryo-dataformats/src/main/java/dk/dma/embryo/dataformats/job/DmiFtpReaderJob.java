@@ -15,15 +15,17 @@
  */
 package dk.dma.embryo.dataformats.job;
 
+import static com.google.common.base.Predicates.not;
+import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.acceptedIceCharts;
+import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.validFormat;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -41,13 +43,20 @@ import javax.inject.Inject;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPFileFilters;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
 
@@ -77,10 +86,18 @@ public class DmiFtpReaderJob {
     private String dmiBaseDirectory;
     @Inject
     @Property(value = "embryo.iceChart.dmi.localDirectory", substituteSystemProperties = true)
-    private String localDmiDirectory;
+    private String localDmiDir;
     @Inject
     @Property("embryo.iceChart.dmi.ftp.ageInDays")
     private Integer ageInDays;
+
+    @Inject
+    @Property("embryo.iceChart.dmi.notification.email")
+    private String mailTo;
+
+    @Inject
+    @Property("embryo.iceChart.dmi.notification.silenceperiod")
+    private Integer silencePeriod;
 
     @Resource
     private TimerService timerService;
@@ -89,16 +106,24 @@ public class DmiFtpReaderJob {
     private EmbryoLogService embryoLogService;
 
     @Inject
+    private MailSender mailSender;
+
+    @Inject
     private ShapeFileMeasurementDao shapeFileMeasurementDao;
 
-    private List<String> requiredFilesInIceObservation = Arrays.asList(".prj", ".dbf", ".shp", ".shx");
+    @Inject
+    private PropertyFileService propertyFileService;
+
+    private String[] iceChartExts = new String[] { ".prj", ".dbf", ".shp", ".shx" };
+
+    private NamedtimeStamps notifications = new NamedtimeStamps();
 
     @PostConstruct
     public void init() {
         if (!dmiServer.trim().equals("") && (cron != null)) {
             logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
             logger.info("Initializing {} with localDirectory {} and regions {}", this.getClass().getSimpleName(),
-                    localDmiDirectory, regions);
+                    localDmiDir, regions);
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("DMI FTP site is not configured - cron job not scheduled.");
@@ -107,11 +132,13 @@ public class DmiFtpReaderJob {
 
     @Timeout
     public void timeout() {
+        notifications.clearOldThanMinutes(silencePeriod);
+
         try {
             logger.info("Making directory if necessary ...");
-            if (!new File(localDmiDirectory).exists()) {
-                logger.info("Making local directory for DMI files: " + localDmiDirectory);
-                new File(localDmiDirectory).mkdirs();
+            if (!new File(localDmiDir).exists()) {
+                logger.info("Making local directory for DMI files: " + localDmiDir);
+                new File(localDmiDir).mkdirs();
             }
             logger.info("Calling transfer files ...");
             Counts counts = transferFiles();
@@ -136,34 +163,10 @@ public class DmiFtpReaderJob {
         logger.info("Shutdown called.");
     }
 
-    private boolean isIceObservationFullyDownloaded(String name) {
-        for (String suffix : requiredFilesInIceObservation) {
-            if (!new File(localDmiDirectory + "/" + name + suffix).exists()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean filter(String fn, LocalDate limit) {
-        boolean result = false;
-
-        for (String c : regions.keySet()) {
-            result |= fn.endsWith(c);
-        }
-
-        if (!result) {
-            return false;
-        }
-
-        try {
-            Date date = new SimpleDateFormat("yyyyMMddHHmm").parse(fn.substring(0, 12));
-            DateTime mapDate = new DateTime(date.getTime());
-
-            return mapDate.toLocalDate().isAfter(limit);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+    private void sendEmail(String chartName) {
+        if (mailTo != null && mailTo.trim().length() > 0 && !notifications.contains(chartName)) {
+            new IceChartNameNotAcceptedMail("dmi", chartName, regions.keySet(), propertyFileService).send(mailSender);
+            notifications.add(chartName, DateTime.now(DateTimeZone.UTC));
         }
     }
 
@@ -191,37 +194,40 @@ public class DmiFtpReaderJob {
 
             logger.info("Reading files in: " + dmiBaseDirectory);
 
-            for (FTPFile f : ftp.listFiles()) {
-                if (filter(f.getName(), mapsYoungerThan)) {
-                    subdirectoriesAtServer.add(f.getName());
-                }
+            List<FTPFile> allDirs = Arrays.asList(ftp.listFiles(null, FTPFileFilters.DIRECTORIES));
+            Collection<FTPFile> rejected = Collections2.filter(allDirs, not(validFormat(regions.keySet())));
+            Collection<FTPFile> accepted = Collections2.filter(allDirs,
+                    acceptedIceCharts(regions.keySet(), mapsYoungerThan, localDmiDir, iceChartExts));
+
+            subdirectoriesAtServer.addAll(Collections2.transform(allDirs, new NameFunction()));
+
+            for (FTPFile file : rejected) {
+                sendEmail(file.getName());
             }
 
-            for (String subdirectory : subdirectoriesAtServer) {
-                if (!isIceObservationFullyDownloaded(subdirectory)) {
-                    Thread.sleep(10);
+            for (FTPFile subdirectory : accepted) {
+                Thread.sleep(10);
 
-                    logger.info("Reading files from subdirectories: " + subdirectory);
+                logger.info("Reading files from subdirectories: " + subdirectory.getName());
 
-                    ftp.changeWorkingDirectory(subdirectory);
+                ftp.changeWorkingDirectory(subdirectory.getName());
 
-                    List<String> filesInSubdirectory = new ArrayList<>();
+                List<String> filesInSubdirectory = new ArrayList<>();
 
-                    for (FTPFile f : ftp.listFiles()) {
-                        filesInSubdirectory.add(f.getName());
-                    }
+                for (FTPFile f : ftp.listFiles()) {
+                    filesInSubdirectory.add(f.getName());
+                }
 
-                    for (String fn : filesInSubdirectory) {
-                        for (String prefix : requiredFilesInIceObservation) {
-                            if (fn.endsWith(prefix)) {
-                                if (transferFile(ftp, fn)) {
-                                    counts.transferCount++;
-                                }
+                for (String fn : filesInSubdirectory) {
+                    for (String prefix : iceChartExts) {
+                        if (fn.endsWith(prefix)) {
+                            if (transferFile(ftp, fn)) {
+                                counts.transferCount++;
                             }
                         }
                     }
-                    ftp.changeToParentDirectory();
                 }
+                ftp.changeToParentDirectory();
             }
         } finally {
             ftp.logout();
@@ -244,7 +250,7 @@ public class DmiFtpReaderJob {
             }
         }
 
-        FileUtility fileService = new FileUtility(localDmiDirectory);
+        FileUtility fileService = new FileUtility(localDmiDir);
         String[] filesToDelete = fileService.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -269,7 +275,7 @@ public class DmiFtpReaderJob {
     }
 
     private boolean transferFile(FTPClient ftp, String name) throws IOException, InterruptedException {
-        String localName = localDmiDirectory + "/" + name;
+        String localName = localDmiDir + "/" + name;
 
         if (new File(localName).exists()) {
             logger.debug("Not transfering " + name + " since the file already exists in " + localName);
@@ -295,6 +301,14 @@ public class DmiFtpReaderJob {
         new File(fn).renameTo(new File(localName));
 
         return true;
+    }
+
+    public class NameFunction implements Function<FTPFile, String> {
+        @Override
+        public String apply(FTPFile input) {
+            return input.getName();
+        }
+
     }
 
     private class Counts {

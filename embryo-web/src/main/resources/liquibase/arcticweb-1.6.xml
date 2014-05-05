@@ -10,7 +10,34 @@
   </changeSet>
 
   <changeSet id="1397142579000" author="jesper">
-    <renameColumn columnDataType="VARCHAR(255)" newColumnName="location" oldColumnName="berthName" tableName="Voyage" />
+    <renameColumn columnDataType="VARCHAR(255)" newColumnName="location" oldColumnName="berthName"
+      tableName="Voyage" />
+  </changeSet>
+  <changeSet id="1398866955677" author="jesper">
+    <addColumn tableName="ShapeFileMeasurement">
+      <column name="version" type="INT(10)" />
+    </addColumn>
+  </changeSet>
+  <changeSet id="1398866955677-2" author="jesper">
+    <update tableName="ShapeFileMeasurement">
+      <column name="version" value="0" />
+      <where>version IS NULL</where>
+    </update>
+    <rollback>
+    </rollback>
+  </changeSet>
+  <changeSet id="1398866955677-3" author="jesper">
+    <addNotNullConstraint columnDataType="INT(10)" columnName="version" tableName="ShapeFileMeasurement" />
+  </changeSet>
+  <changeSet id="1398866955677-4" author="jesper">
+    <delete tableName="ShapeFileMeasurement"/>
+  </changeSet>
+  <changeSet id="1398866955677-5" author="jesper">
+    <addColumn tableName="ShapeFileMeasurement">
+      <column name="created" type="datetime">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
   </changeSet>
   
   <changeSet id="1399034010000-1" author="jacob">

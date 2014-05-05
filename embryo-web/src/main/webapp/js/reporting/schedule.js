@@ -4,7 +4,7 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.sfTypeahead', 'embryo.position' ]);
+            'siyfion.sfTypeahead', 'embryo.position' , 'embryo.vessel']);
     
     var voyages = [];
     var pageSize = 5;
@@ -21,7 +21,7 @@
     });
     berths.initialize();
 
-    embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService) {
+    embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService, VesselInformation) {
         var loadSchedule = function(vs) {
             if ($scope.mmsi) {
                 $scope.alertMessages = [];
@@ -74,6 +74,8 @@
                 $scope.alertMessages = data.errors;
             }
         };
+        
+        VesselInformation.addInformationProvider(embryo.controllers.schedule);
 
         $scope.options = {
             "Yes" : true,
@@ -170,6 +172,7 @@
                 voyageId : $scope.voyages[index].maritimeId,
                 dep : $scope.voyages[index].location,
                 etdep : $scope.voyages[index].departure,
+                vesselDetails : $scope.vesselDetails
             };
             if (index < $scope.voyages.length - 1) {
                 context.des = $scope.voyages[index + 1].location;

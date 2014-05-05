@@ -14,7 +14,8 @@
   </parent>
 
   <dependencies>
-    <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse to work -->
+    <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse 
+      to work -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -66,15 +67,15 @@
       <version>2.2</version>
       <scope>compile</scope>
     </dependency>
-    
-    
+
+
     <!-- JSOUP -->
     <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
       <version>1.7.3</version>
     </dependency>
-    
+
 
     <!-- Test dependencies -->
     <dependency>
@@ -88,6 +89,14 @@
       <artifactId>cdi-unit</artifactId>
       <scope>test</scope>
     </dependency>
+
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>17.0</version>
+    </dependency>
+
 
 
   </dependencies>

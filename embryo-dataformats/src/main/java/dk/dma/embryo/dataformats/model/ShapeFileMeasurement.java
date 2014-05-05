@@ -18,6 +18,10 @@ package dk.dma.embryo.dataformats.model;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import dk.dma.embryo.common.persistence.BaseEntity;
 
@@ -32,7 +36,12 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
     private long fileSize;
     private String fileName;
     private String provider;
-
+    private int version;
+    
+    @NotNull
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime created;
+    
     public ShapeFileMeasurement() {
         super();
     }
@@ -42,6 +51,14 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
         this.fileSize = fileSize;
         this.fileName = fileName;
         this.provider = provider;
+    }
+
+    public ShapeFileMeasurement(String provider, String fileName, long fileSize, int version) {
+        super();
+        this.fileSize = fileSize;
+        this.fileName = fileName;
+        this.provider = provider;
+        this.version = version;
     }
 
     public long getFileSize() {
@@ -66,6 +83,22 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
 
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+    
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public DateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(DateTime created) {
+        this.created = created;
     }
 
     @Override

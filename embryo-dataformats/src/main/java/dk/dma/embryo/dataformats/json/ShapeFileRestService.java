@@ -18,7 +18,10 @@ package dk.dma.embryo.dataformats.json;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -29,12 +32,20 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.Cache;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParserFactory;
+import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
 import dk.dma.embryo.dataformats.service.ShapeFileService;
 import dk.dma.embryo.dataformats.service.ShapeFileService.Shape;
 
@@ -47,12 +58,24 @@ public class ShapeFileRestService {
     @Inject
     ShapeFileService shapeFileService;
 
+    @Inject
+    ShapeFileMeasurementDao dao;
+
+    @Inject
+    ShapeFileNameParserFactory factory;
+
     public ShapeFileRestService() {
         super();
     }
+    
+    public ShapeFileRestService(ShapeFileService service, ShapeFileMeasurementDao dao, ShapeFileNameParserFactory factory){
+        this.shapeFileService = service;
+        this.dao = dao;
+        this.factory = factory;
+    }
 
     @GET
-    @Path("/single/{id}")
+    @Path("/static/single/{id}")
     @Produces("application/json")
     @GZIP
     @Cache(maxAge = 31556926, isPrivate = false)
@@ -71,7 +94,7 @@ public class ShapeFileRestService {
 
     @HEAD
     @GET
-    @Path("/multiple/{ids}")
+    @Path("/static/multiple/{ids}")
     @Produces("application/json")
     @GZIP
     @Cache(maxAge = 31556926, isPrivate = false)
@@ -93,4 +116,58 @@ public class ShapeFileRestService {
             throw new WebApplicationException(Response.Status.GONE);
         }
     }
+
+    private CacheControl getCacheControl() {
+        CacheControl cc = new CacheControl();
+        // 15 minutter
+        cc.setMaxAge(60*15);
+        cc.setPrivate(false);
+        cc.setNoTransform(false);
+        return cc;
+    }
+
+    @GET
+    @Path("/single/{id}")
+    @Produces("application/json")
+    @GZIP
+    public Response getSingleFile(@PathParam("id") String id,
+            @DefaultValue("0") @QueryParam("resolution") int resolution,
+            @DefaultValue("") @QueryParam("filter") String filter,
+            @DefaultValue("false") @QueryParam("delta") boolean delta,
+            @DefaultValue("2") @QueryParam("exponent") int exponent, @DefaultValue("0") @QueryParam("parts") int parts,
+            @Context Request request) throws IOException {
+        logger.info("Request for single file: {}", id);
+
+        try {
+            CacheControl cc = getCacheControl();
+
+            int index = id.indexOf(".");
+            String provider = id.substring(0, index);
+            String chart = id.substring(index + 1);
+            ShapeFileMeasurement measurement = dao.lookup(chart, provider);
+            DateTime lastModified = measurement.getCreated();
+
+            ResponseBuilder builder = request.evaluatePreconditions(lastModified.toDate());
+
+            // cached resource did change -> serve updated content
+            if (builder == null) {
+                String file = id + (measurement.getVersion() > 0 ? "_v" + measurement.getVersion() : ""); 
+                logger.debug("looking up shape file {}", file);
+                Shape shape = shapeFileService.readSingleFile(file, resolution, filter, delta, exponent, parts);
+                builder = Response.ok(shape);
+            }
+
+            System.out.println("lastmodified:" + lastModified);
+            System.out.println("lastmodified:" + lastModified.toCalendar(Locale.ENGLISH).getTime());
+            
+            builder.lastModified(lastModified.toCalendar(Locale.ENGLISH).getTime());
+            
+            builder.cacheControl(cc);
+            return builder.build();
+
+        } catch (FileNotFoundException e) {
+            throw new WebApplicationException(Response.Status.GONE);
+        }
+    }
+
 }

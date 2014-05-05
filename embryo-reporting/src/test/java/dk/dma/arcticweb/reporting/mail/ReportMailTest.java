@@ -65,7 +65,7 @@ public class ReportMailTest {
         body += "Reported via ArcticWeb.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
-        Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("noreply@dma.dk", mail.getFrom());
         Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
@@ -96,7 +96,7 @@ public class ReportMailTest {
         body += "Reported via ArcticWeb.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
-        Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("noreply@dma.dk", mail.getFrom());
         Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
@@ -135,7 +135,7 @@ public class ReportMailTest {
         body += "Reported via ArcticWeb.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
-        Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("noreply@dma.dk", mail.getFrom());
         Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
@@ -169,7 +169,7 @@ public class ReportMailTest {
         body += "Reported via ArcticWeb.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
-        Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("noreply@dma.dk", mail.getFrom());
         Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
@@ -197,7 +197,7 @@ public class ReportMailTest {
         body += "Reported via ArcticWeb.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
-        Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("noreply@dma.dk", mail.getFrom());
         Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());
@@ -226,7 +226,7 @@ public class ReportMailTest {
         body += "Reported via ArcticWeb.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
-        Assert.assertEquals("test@test.dk", mail.getFrom());
+        Assert.assertEquals("noreply@dma.dk", mail.getFrom());
         Assert.assertEquals("test@test.dk", mail.getCc());
         Assert.assertEquals(header, mail.getHeader());
         Assert.assertEquals(body, mail.getBody());

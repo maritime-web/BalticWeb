@@ -123,7 +123,6 @@ embryo.additionalInformation.route = {
 // this.layer.clear();
 // }
 // }
-
 embryo.mapInitialized(function() {
     $.each(embryo.additionalInformation, function(k, v) {
         if (v.init)

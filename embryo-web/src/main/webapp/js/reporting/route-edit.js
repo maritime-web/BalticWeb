@@ -39,6 +39,7 @@
                 embryo.vessel.actions.hide();
                 $scope.mmsi = context.mmsi;
                 $scope.routeId = context.routeId;
+                $scope.vesselDetails = context.vesselDetails;
                 
                 $scope.date = new Date();
 
@@ -67,6 +68,11 @@
                 $scope.waypoints.push({});
             }
         }, true);
+        
+        $scope.activeVoyage = function() {
+            return $scope.vesselDetails.additionalInformation.routeId == $scope.routeId;
+        };
+
 
         $scope.remove = function(index) {
             $scope.waypoints.splice(index, 1);
