@@ -147,7 +147,7 @@ public class GreenPosServiceImplTest {
         route.addWayPoint(new WayPoint("wp3", 64.0, -64.0, 1.0, 1.0));
         Mockito.when(scheduleDao.getActiveRoute(0L)).thenReturn(route);
         
-        greenPosService.saveReport(spReport, null, null, Boolean.TRUE);
+        greenPosService.saveReport(spReport, null, null, Boolean.TRUE, new String[]{"greenpos"});
 
         entityManager.getTransaction().commit();
 

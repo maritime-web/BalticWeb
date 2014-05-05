@@ -60,9 +60,7 @@ public class GreenPos {
 
     private Date ts;
     
-    private boolean coastalControl;
-    
-    private boolean greenpos;
+    private String[] recipients;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -225,20 +223,11 @@ public class GreenPos {
         this.id = id;
     }
 
-    public boolean isCoastalControl() {
-        return coastalControl;
-    }
-
-    public void setCoastalControl(boolean coastalControl) {
-        this.coastalControl = coastalControl;
-    }
-
-    public boolean isGreenpos() {
-        return greenpos;
-    }
-
-    public void setGreenpos(boolean greenpos) {
-        this.greenpos = greenpos;
+    public String[] getRecipients() {
+        return recipients;
     }
     
+    public void setRecipients(String[] receipients) {
+        this.recipients = receipients;
+    }
 }

@@ -3,8 +3,7 @@ var greenposScope;
 (function() {
     "use strict";
 
-    var greenposModule = angular.module('embryo.greenpos', [ 'embryo.scheduleService', 'embryo.greenposService',
-            'embryo.course', 'embryo.position' ]);
+    var greenposModule = angular.module('embryo.greenpos', [ 'embryo.scheduleService', 'embryo.greenposService', 'embryo.course', 'embryo.position' ]);
 
     /*
      * Inspired by http://jsfiddle.net/zbjLh/2/
@@ -154,15 +153,34 @@ var greenposScope;
 
             var inclWps = $scope.inclWps && ($scope.report.type == "SP" || $scope.report.type == "DR");
 
+            $scope.report.recipients = [];
+            var possibleRecipients;
+            possibleRecipients = [ 'coastalcontrol', 'greenpos' ];
+            for ( var x in possibleRecipients) {
+                if($scope.report[possibleRecipients[x]]) {
+                    $scope.report.recipients.push(possibleRecipients[x]);
+                }
+                delete $scope.report[possibleRecipients[x]];
+            }
+            
             GreenposService.save($scope.report, deactivateRoute, inclWps, function(email) {
+                for(var x in $scope.report.recipients) {
+                    $scope.report[$scope.report.recipients[x]] = true;
+                }
                 $scope.reportAcknowledgement = reportNames[$scope.report.type];
                 $scope.userEmail = email;
+                $scope.recipientName = '';
+                $scope.recipientName += $scope.report.coastalcontrol ? 'Coastal Control' : '';
+                $scope.recipientName += $scope.report.coastalcontrol && $scope.report.greenpos ? '/' : '';
+                $scope.recipientName += $scope.report.greenpos ? 'ArcticCommand' : '';
                 if ($scope.deactivate && $scope.report.type == "FR") {
                     VesselService.updateVesselDetailParameter($scope.report.mmsi, "additionalInformation.routeId", "");
                 }
             }, function(error) {
                 $scope.alertMessages = error;
             });
+            
+            
         };
 
         $scope.reset = function() {
@@ -175,8 +193,7 @@ var greenposScope;
         };
 
         $scope.setPositionOnMap = function(latitude, longitude) {
-            if (longitude !== null && latitude !== null && typeof latitude != "undefined"
-                    && typeof longitude != "undefined") {
+            if (longitude !== null && latitude !== null && typeof latitude != "undefined" && typeof longitude != "undefined") {
                 layer.draw(longitude, latitude);
             } else {
                 layer.clear();
@@ -197,8 +214,8 @@ var greenposScope;
 
             $scope.$apply();
         };
-        
-        this.hide = function(){
+
+        this.hide = function() {
             $scope.warningMessages = null;
             $scope.alertMessages = null;
             $scope.reportAcknowledgement = null;
@@ -214,8 +231,7 @@ var greenposScope;
             $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId && vesselDetails.additionalInformation.routeId.length > 0);
             $scope.inclWps = $scope.hasActiveRoute;
 
-            ScheduleService.getActiveVoyage(vesselOverview.mmsi, vesselDetails.additionalInformation.routeId, function(
-                    voyageInfo) {
+            ScheduleService.getActiveVoyage(vesselOverview.mmsi, vesselDetails.additionalInformation.routeId, function(voyageInfo) {
                 if (!voyageInfo)
                     return;
                 $scope.report.destination = voyageInfo.des;
@@ -230,7 +246,7 @@ var greenposScope;
                         $scope.report.personsOnBoard = voyageInfo.passengers;
                     }
                 }
-                
+
                 $scope.report.description = !voyageInfo.dep ? "" : "From " + voyageInfo.dep + " ";
                 $scope.report.description += (!voyageInfo.des ? "" : "to " + voyageInfo.des);
 
@@ -258,7 +274,7 @@ var greenposScope;
         };
 
         embryo.controllers.greenpos = this;
-    };
+    }
 
     greenposModule.directive('sort', function() {
         return {
@@ -270,21 +286,19 @@ var greenposScope;
             link : function(scope, element, attrs) {
                 var sort = null, order = null;
 
-                element.bind('click',
-                        function() {
+                element.bind('click', function() {
 
-                            if (!scope.sort || scope.sort != attrs.sort) {
-                                scope.sort = attrs.sort;
-                                scope.order = attrs.options && attrs.options.defaultorder ? attrs.options.defaultorder
-                                        : 'DESC';
-                                element.find('i').addClass('icon-chevron-up');
-                            } else {
-                                scope.order = (scope.order == 'ASC' ? 'DESC' : 'ASC');
-                                element.find('i').toggleClass('icon-chevron-up icon-chevron-down');
-                            }
+                    if (!scope.sort || scope.sort != attrs.sort) {
+                        scope.sort = attrs.sort;
+                        scope.order = attrs.options && attrs.options.defaultorder ? attrs.options.defaultorder : 'DESC';
+                        element.find('i').addClass('icon-chevron-up');
+                    } else {
+                        scope.order = (scope.order == 'ASC' ? 'DESC' : 'ASC');
+                        element.find('i').toggleClass('icon-chevron-up icon-chevron-down');
+                    }
 
-                            scope.options.fnSort(sort, order);
-                        });
+                    scope.options.fnSort(sort, order);
+                });
 
                 scope.$watch('sort', function(newValue) {
                     // elem.find('i').toggleClass('');

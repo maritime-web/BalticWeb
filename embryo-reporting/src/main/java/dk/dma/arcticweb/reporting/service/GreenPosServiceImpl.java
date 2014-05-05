@@ -97,7 +97,7 @@ public class GreenPosServiceImpl implements GreenPosService {
      */
     @Override
     @Interceptors(SaveReportInterceptor.class)
-    public String saveReport(GreenPosReport report, String routeEnavId, Boolean activate, Boolean includeActiveWaypoints) {
+    public String saveReport(GreenPosReport report, String routeEnavId, Boolean activate, Boolean includeActiveWaypoints, String[] recipients) {
         
         checkIfAlreadySaved(report);
 
@@ -130,13 +130,17 @@ public class GreenPosServiceImpl implements GreenPosService {
             }
         }
         
-        report = greenPosDao.saveEntity(report);
-        
-        if(routeEnavId != null && activate != null){
-            new RouteActivator(scheduleDao).activateRoute(routeEnavId, activate);
+        for(String rec : recipients) {
+            report.setRecipient(rec);
+            report = greenPosDao.saveEntity(report);
+            
+            if(routeEnavId != null && activate != null){
+                new RouteActivator(scheduleDao).activateRoute(routeEnavId, activate);
+            }
+            
+            mailSender.sendEmail(new ReportMail(report, subject.getUser().getEmail(), rec, propertyFileService));
         }
-
-        mailSender.sendEmail(new ReportMail(report, subject.getUser().getEmail(), propertyFileService));
+        
 
         return report.getEnavId();
     }

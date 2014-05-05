@@ -12,4 +12,10 @@
   <changeSet id="1397142579000" author="jesper">
     <renameColumn columnDataType="VARCHAR(255)" newColumnName="location" oldColumnName="berthName" tableName="Voyage" />
   </changeSet>
+  
+  <changeSet id="1399034010000-1" author="jacob">
+      <addColumn tableName="GreenPosReport">
+          <column name="recipient" type="VARCHAR(30)" />
+      </addColumn>
+  </changeSet>
 </databaseChangeLog>
