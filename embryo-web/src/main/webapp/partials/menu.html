@@ -2,13 +2,13 @@
 	x-ng-controller="embryo.MenuCtrl">
 	<div class="navbar-header">
 		<!--button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-				<i class="icon-th-list"></i>
+				<i class="fa fa-th-list"></i>
 			</button-->
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
           <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
+          <span class="fa fa-bar"></span>
+          <span class="fa fa-bar"></span>
+          <span class="fa fa-bar"></span>
         </button>
 		<a class="navbar-brand" href="."> <font color="#0080C0">ArcticWeb</font><font
 			color="#888888" size="3">Greenland</font>
@@ -17,27 +17,27 @@
 		<div class="navbar-collapse collapse" id="navigationBar">
 			<ul class="nav navbar-nav navtabs" show-active>
 				<li><a href="map.html#/vessel"> <i
-						class="icon-boat icon-white"
+						class="fa fa-boat"
 						style="vertical-align: middle; margin-bottom: 4px"></i> Vessels
 				</a></li>
 				<li><a href="map.html#/ice"> <i
-						class="icon-asterisk icon-white"
+						class="fa fa-asterisk"
 						style="vertical-align: middle; margin-bottom: 4px"></i> Ice
 				</a></li>
 				<li><a href="map.html#/msi"> <i
-						class="icon-bullhorn icon-white"
+						class="fa fa-bullhorn"
 						style="vertical-align: middle; margin-bottom: 4px"></i> Maritime
 						Safety
 				</a></li>
 				<li x-requires-permission="Administration"><a
-					href="admin.html#/users"> <i class="icon-user icon-white"
+					href="admin.html#/users"> <i class="fa fa-user"
 						style="vertical-align: middle; margin-bottom: 4px"></i> Users
 				</a></li>
 				<li x-requires-permission="Administration"><a
-					href="admin.html#/log"> <i class="icon-fire icon-white"
+					href="admin.html#/log"> <i class="fa fa-fire"
 						style="vertical-align: middle; margin-bottom: 4px"></i> Log
 				</a></li>
-				<!-- li><a href="map.html#/adt"> <i class="icon-gift icon-white"
+				<!-- li><a href="map.html#/adt"> <i class="fa fa-gift"
 							style="vertical-align: middle; margin-bottom: 4px"></i> Assistance
 					</a></li -->
 			</ul>
@@ -57,7 +57,7 @@
 					</ul></li>
 				<li class="dropdown" x-requires-authenticated><a
 					class='dropdown-toggle' data-toggle='dropdown' href='#'><i
-						class='icon-user icon-white'
+						class='fa fa-user'
 						style='vertical-align: middle; margin-bottom: 4px'></i>
 						{{authentication.userName}} </a>
 					<ul style="width: 70px;" class="dropdown-menu" role="menu"

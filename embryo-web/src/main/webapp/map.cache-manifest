@@ -4,8 +4,8 @@ NETWORK:
 CACHE:
 map.html
 css/ext/cdn.netdna/bootstrap/3.1.1/css/bootstrap.min.css
-css/ext/cdn.netdna/font-awesome/3.2.1/css/font-awesome.css
-css/ext/cdn.netdna/font-awesome/3.2.1/font/fontawesome-webfont.woff?v=3.2.1
+css/ext/cdn.netdna/font-awesome/4.0.3/css/font-awesome.min.css
+css/ext/cdn.netdna/font-awesome/4.0.3/font/fontawesome-webfont.woff?v=4.0.3
 
 css/arcticweb-map.css
 js/ext/cdn.cloudflare/openlayers/2.13.1/theme/default/style.css
