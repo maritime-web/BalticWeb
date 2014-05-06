@@ -3,8 +3,7 @@ NETWORK:
 *
 CACHE:
 content.html
-css/ext/embryo.bootstrap.min.css
-css/ext/bootstrap-responsive.css
+css/ext/cdn.netdna/bootstrap/3.1.1/css/bootstrap.min.css
 css/ext/cdn.netdna/font-awesome/3.2.1/css/font-awesome.css
 css/ext/cdn.netdna/font-awesome/3.2.1/font/fontawesome-webfont.woff?v=3.2.1
 
@@ -28,4 +27,4 @@ partials/disclaimer.html
 partials/cookies.html
 partials/security/access.html
 
-# Version: 5
+# Version: 7
