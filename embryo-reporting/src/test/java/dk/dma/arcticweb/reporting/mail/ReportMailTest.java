@@ -52,7 +52,7 @@ public class ReportMailTest {
         report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-01-2014 12:00:34"));
 
         // EXECUTE
-        ReportMail mail = new ReportMail(report, "test@test.dk", propertyFileService).build();
+        ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
         String header = "ArcticWeb Greenpos Deviation Report from MyVessel";
@@ -83,7 +83,7 @@ public class ReportMailTest {
         report.setRoute(route);
 
         // EXECUTE
-        ReportMail mail = new ReportMail(report, "test@test.dk", propertyFileService).build();
+        ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
         String header = "ArcticWeb Greenpos Deviation Report from MyVessel";
@@ -116,7 +116,7 @@ public class ReportMailTest {
         report.setRoute(route);
 
         // EXECUTE
-        ReportMail mail = new ReportMail(report, "test@test.dk", propertyFileService).build();
+        ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
         String header = "ArcticWeb Greenpos Sailing Plan Report from MyVessel";
@@ -150,7 +150,7 @@ public class ReportMailTest {
         report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-02-2014 14:01:25"));
 
         // EXECUTE
-        ReportMail mail = new ReportMail(report, "test@test.dk", propertyFileService).build();
+        ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
         String header = "ArcticWeb Greenpos Sailing Plan Report from MyVessel";
@@ -184,7 +184,7 @@ public class ReportMailTest {
         report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-02-2014 14:01:25"));
 
         // EXECUTE
-        ReportMail mail = new ReportMail(report, "test@test.dk", propertyFileService).build();
+        ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
         String header = "ArcticWeb Greenpos Final Report from MyVessel";
@@ -211,7 +211,7 @@ public class ReportMailTest {
         report.setTs(DateTimeConverter.getDateTimeConverter("MM").toObject("01-02-2014 06:03:25"));
 
         // EXECUTE
-        ReportMail mail = new ReportMail(report, "test@test.dk", propertyFileService).build();
+        ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
         String header = "ArcticWeb Greenpos Position Report from MyVessel";

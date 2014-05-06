@@ -75,7 +75,7 @@ body {
 
 #zoomControlPanel {
 	position: absolute;
-	width: 150px;
+	width: 160px;
 	top: 50px;
 	right: 30px;
 	background-color: white;
@@ -89,12 +89,63 @@ body {
 	display: none;
 }
 
+#scheduleViewPanel {
+	padding: 0 15px;
+}
+
+#icpIceMaps h5 {
+	font-size: 12px;
+}
+
 .e-btn-tall {
 	height: 32px;
+	font-size: 10px;
 }
 
 .e-btn-wide {
 	width: 110px;
+	font-size: 10px;
+}
+
+.e-accordion-toggle {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.e-accordion-inner {
+	overflow: auto;
+}
+
+.e-accordion-inner h4 {
+	font-size: 14px;
+}
+
+.e-control-label {
+	float: left;
+	width: 120px;
+	padding-top: 5px;
+	text-align: right;
+}
+
+.e-panel-heading {
+	padding: 10px;
+}
+
+.e-panel-header {
+	margin: 0;
+}
+
+.e-iceprovider label {
+	font-weight: normal;
+}
+
+.txt, .txt span, .txt div {
+	padding-left: 10px;
+	padding-top: 5px;
+}
+
+.txt input[type='checkbox'] {
+	margin-left: 10px;
 }
 
 .reportingPanel {
@@ -104,6 +155,19 @@ body {
 	top: 50px;
 	left: 315px;
 	z-index: 1039;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	font-size: 11px;
+}
+
+.reportingPanel label {
+		font-weight: normal;
+}
+
+.input-sm, .input-group-addon, select.input-sm, button.btn-sm {
+	height: 25px;
+	padding: 3px 6px;
 }
 
 .input-mini {

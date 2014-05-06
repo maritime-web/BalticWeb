@@ -33,11 +33,13 @@ public class ReportMail extends Mail<ReportMail> {
 
     private final GreenPosReport report;
     private final String userEmail;
+    private final String recipient;
 
-    public ReportMail(GreenPosReport report, String userEmail, PropertyFileService propertyFileService) {
+    public ReportMail(GreenPosReport report, String userEmail, String recipient, PropertyFileService propertyFileService) {
         super(propertyFileService);
         this.report = report;
         this.userEmail = userEmail;
+        this.recipient = recipient;
     }
 
     public ReportMail build() {
@@ -86,7 +88,7 @@ public class ReportMail extends Mail<ReportMail> {
             template("greenposDeviationReport");
         }
 
-        setTo(propertyFileService.getProperty("embryo.notification.mail.to.greenpos"));
+        setTo(propertyFileService.getProperty("embryo.notification.mail.to." + recipient));
         setFrom(propertyFileService.getProperty("embryo.notification.mail.from"));
         setCc(userEmail);
 

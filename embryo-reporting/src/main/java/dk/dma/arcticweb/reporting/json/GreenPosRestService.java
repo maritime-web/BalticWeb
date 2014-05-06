@@ -70,7 +70,7 @@ public class GreenPosRestService {
         logger.debug("save({})", request);
 
         GreenPosReport toBeSaved = GreenPosReport.from(request.getReport());
-        reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive(), request.getIncludeActiveRoute());
+        reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive(), request.getIncludeActiveRoute(), request.getReport().getRecipients());
         
         String email = subject.getUser().getEmail();
         

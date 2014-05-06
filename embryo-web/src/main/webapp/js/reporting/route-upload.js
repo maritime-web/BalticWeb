@@ -39,6 +39,7 @@
                 if(context) {
                     if(context.schedule) {
                         $scope.lastDeparture = context.departure;
+                        route = false;
                     } else {
                         $scope.vesselDetails = context.vesselDetails;
                         $scope.mmsi = context.vesselDetails.mmsi;
@@ -46,6 +47,7 @@
                         route = true;
                     }
                 }
+                $scope.route = route;
                 $scope.reset();
                 initUpload();
                 $("#routeUploadPanel").css("display", "block");

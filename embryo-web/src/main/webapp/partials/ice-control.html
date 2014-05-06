@@ -1,98 +1,108 @@
-<div id="iceControlPanel" class="controlPanel" x-ng-controller="embryo.IceController">
-	<div class="accordion" id="icpAccordion">
-		<div class="accordion-group" x-ng-show="providers && providers.length > 1">
-			<div class="accordion-heading">
-				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpIceChartProviders">
-						Ice Chart Providers </a>
-				</h4>
-			</div>
-			<div id="icpIceChartProviders" class="accordion-body collapse">
-				<div class="accordion-inner">
-					<table class="table">
-						<tr x-ng-repeat="provider in providers">
-							<td><input type="radio" x-ng-model="$parent.selectedProvider" ng-value="provider" name="providers"/></td>
-							<td>{{provider.name}}</td>
-							<td>{{provider.shortName}}</td>
-						</tr>
-					</table>
-				</div>
+<div id="iceControlPanel" class="controlPanel panel-group"
+	x-ng-controller="embryo.IceController">
+	<div class="panel panel-default" x-ng-show="providers && providers.length > 1">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#iceControlPanel" href="#icpIceChartProviders"> Ice
+					Chart Providers </a>
+			</h4>
+		</div>
+		<div id="icpIceChartProviders" class="e-accordion-body collapse panel-collapse">
+			<div class="e-accordion-inner panel-body">
+				<table class="table">
+					<tr x-ng-repeat="provider in providers" class="e-iceprovider">
+						<td><input type="radio" x-ng-model="$parent.selectedProvider"
+							ng-value="provider" name="providers" id="provider_{{$index}}" /></td>
+						<td><label for="provider_{{$index}}">{{provider.name}}</label></td>
+						<td><label for="provider_{{$index}}">{{provider.shortName}}</label></td>
+					</tr>
+				</table>
 			</div>
 		</div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpIceMaps"> Ice Charts</a>
-				</h4>
-			</div>
-			<div id="icpIceMaps" class="accordion-body collapse in">
-				<div class="accordion-inner">
-					<table class="table table-condensed">
-					</table>
-				</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#iceControlPanel" href="#icpIceMaps"> Ice Charts</a>
+			</h4>
+		</div>
+		<div id="icpIceMaps" class="e-accordion-body collapse in">
+			<div class="e-accordion-inner panel-body">
+				<table class="table table-condensed">
+				</table>
 			</div>
 		</div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpSelectedIce"> Selected
-						Ice Observation </a>
-				</h4>
-			</div>
-			<div id="icpSelectedIce" class="accordion-body collapse">
-				<div class="accordion-inner">
-					<p></p>
-					<table class="table table-condensed">
-					</table>
-				</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#iceControlPanel" href="#icpSelectedIce"> Selected
+					Ice Observation </a>
+			</h4>
+		</div>
+		<div id="icpSelectedIce" class="e-accordion-body collapse">
+			<div class="e-accordion-inner panel-body">
+				<p></p>
+				<table class="table table-condensed">
+				</table>
 			</div>
 		</div>
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<h4>
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#icpAccordion" href="#icpLegends"> Legends </a>
-				</h4>
-			</div>
-			<div id="icpLegends" class="accordion-body collapse">
-				<div class="accordion-inner">
-					<table class="table table-condensed">
-						<tr>
-							<th>Color</th>
-							<th>Ice Concentration</th>
-							<th>Definition</th>
-						</tr>
-						<tr>
-							<td><span style="background-color: #979797; width: 30px; display: block;">&nbsp;</span></td>
-							<td>10/10</td>
-							<td>Fast Ice</td>
-						</tr>
-						<tr>
-							<td><span style="background-color: #ff0000; width: 30px; display: block;">&nbsp;</span></td>
-							<td>9/10-10/10</td>
-							<td>Very Close Drift Ice</td>
-						</tr>
-						<tr>
-							<td><span style="background-color: #ff7c06; width: 30px; display: block;">&nbsp;</span></td>
-							<td>7/10-8/10</td>
-							<td>Close Drift Ice</td>
-						</tr>
-						<tr>
-							<td><span style="background-color: #ffff00; width: 30px; display: block;">&nbsp;</span></td>
-							<td>4/10-6/10</td>
-							<td>Open Drift Ice</td>
-						</tr>
-						<tr>
-							<td><span style="background-color: #8effa0; width: 30px; display: block;">&nbsp;</span></td>
-							<td>1/10-3/10</td>
-							<td>Very Open Drift Ice</td>
-						</tr>
-						<tr>
-							<td><span style="background-color: #96C7FF; width: 30px; display: block;">&nbsp;</span></td>
-							<td>&lt;1/10</td>
-							<td>Open Water</td>
-						</tr>
-					</table>
-				</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#iceControlPanel" href="#icpLegends"> Legends </a>
+			</h4>
+		</div>
+		<div id="icpLegends" class="e-accordion-body collapse">
+			<div class="e-accordion-inner panel-body">
+				<table class="table table-condensed">
+					<tr>
+						<th>Color</th>
+						<th>Ice Concentration</th>
+						<th>Definition</th>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #979797; width: 30px; display: block;">&nbsp;</span></td>
+						<td>10/10</td>
+						<td>Fast Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ff0000; width: 30px; display: block;">&nbsp;</span></td>
+						<td>9/10-10/10</td>
+						<td>Very Close Drift Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ff7c06; width: 30px; display: block;">&nbsp;</span></td>
+						<td>7/10-8/10</td>
+						<td>Close Drift Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ffff00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>4/10-6/10</td>
+						<td>Open Drift Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #8effa0; width: 30px; display: block;">&nbsp;</span></td>
+						<td>1/10-3/10</td>
+						<td>Very Open Drift Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #96C7FF; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt;1/10</td>
+						<td>Open Water</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>

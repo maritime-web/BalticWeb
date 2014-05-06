@@ -1,54 +1,76 @@
-<div class="navbar navbar-inverse navbar-fixed-top" x-ng-controller="embryo.MenuCtrl">
-	<div class="navbar-inner">
-		<div class="menu-container">
-			<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+<div class="navbar navbar-default navbar-fixed-top"
+	x-ng-controller="embryo.MenuCtrl">
+	<div class="navbar-header">
+		<!--button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 				<i class="icon-th-list"></i>
-			</button>
-			<a class="brand" href="."> <font color="#0080C0">ArcticWeb</font><font color="#888888" size="3">Greenland</font>
-			</a>
-			<div class="nav-collapse collapse" id="navigationBar">
-				<ul class="nav navtabs" show-active>
-					<li><a href="map.html#/vessel"> <i class="icon-boat icon-white"
-							style="vertical-align: middle; margin-bottom: 4px"></i> Vessels
-					</a></li>
-					<li><a href="map.html#/ice"> <i class="icon-asterisk icon-white"
-							style="vertical-align: middle; margin-bottom: 4px"></i> Ice
-					</a></li>
-					<li><a href="map.html#/msi"> <i class="icon-bullhorn icon-white"
-							style="vertical-align: middle; margin-bottom: 4px"></i> Maritime Safety
-					</a></li>
-					<li x-requires-permission="Administration"><a href="admin.html#/users"> <i class="icon-user icon-white"
-							style="vertical-align: middle; margin-bottom: 4px"></i> Users
-					</a></li>
-					<li x-requires-permission="Administration"><a href="admin.html#/log"> <i class="icon-fire icon-white"
-							style="vertical-align: middle; margin-bottom: 4px"></i> Log
-					</a></li>
-					<!-- li><a href="map.html#/adt"> <i class="icon-gift icon-white"
+			</button-->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+		<a class="navbar-brand" href="."> <font color="#0080C0">ArcticWeb</font><font
+			color="#888888" size="3">Greenland</font>
+		</a>
+		</div>
+		<div class="navbar-collapse collapse" id="navigationBar">
+			<ul class="nav navbar-nav navtabs" show-active>
+				<li><a href="map.html#/vessel"> <i
+						class="icon-boat icon-white"
+						style="vertical-align: middle; margin-bottom: 4px"></i> Vessels
+				</a></li>
+				<li><a href="map.html#/ice"> <i
+						class="icon-asterisk icon-white"
+						style="vertical-align: middle; margin-bottom: 4px"></i> Ice
+				</a></li>
+				<li><a href="map.html#/msi"> <i
+						class="icon-bullhorn icon-white"
+						style="vertical-align: middle; margin-bottom: 4px"></i> Maritime
+						Safety
+				</a></li>
+				<li x-requires-permission="Administration"><a
+					href="admin.html#/users"> <i class="icon-user icon-white"
+						style="vertical-align: middle; margin-bottom: 4px"></i> Users
+				</a></li>
+				<li x-requires-permission="Administration"><a
+					href="admin.html#/log"> <i class="icon-fire icon-white"
+						style="vertical-align: middle; margin-bottom: 4px"></i> Log
+				</a></li>
+				<!-- li><a href="map.html#/adt"> <i class="icon-gift icon-white"
 							style="vertical-align: middle; margin-bottom: 4px"></i> Assistance
 					</a></li -->
-				</ul>
+			</ul>
 
-				<p class="navbar-text pull-right" x-requires-unauthenticated>
-					<span> <a href="" x-ng-click="loginDlg()">Log In</a> | <a href="content.html#/requestAccess">Request Access</a>
-					</span>
-				</p>
-				<ul class="nav navtabs pull-right">
-					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">About</a>
-						<ul style="width: 70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-							<li><a tabindex="-1" href="content.html#cookies">Cookies</a></li>
-							<li><a tabindex="-1" href="content.html#disclaimer">Disclaimer</a></li>
-						</ul></li>
-					<li class="dropdown" x-requires-authenticated><a class='dropdown-toggle' data-toggle='dropdown' href='#'><i
-							class='icon-user icon-white' style='vertical-align: middle; margin-bottom: 4px'></i> {{authentication.userName}} </a>
-						<ul style="width: 70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-							<!-- li><a tabindex="-1" href="admin.html#settings">Settings</a></li -->
-							<li><a tabindex="-1" href="docs/ArcticWeb_user_manual_v1.2.pdf" target="_blank">Manual</a></li>
-							<li class="divider"></li>
-							<li><a tabindex="-1" href="#" x-ng-click="logout($event)">Log Out</a></li>
-						</ul></li>
-				</ul>
+			<p class="navbar-text navbar-right" x-requires-unauthenticated>
+				<span> <a href="" x-ng-click="loginDlg()">Log In</a> | <a
+					href="content.html#/requestAccess">Request Access</a>
+				</span>
+			</p>
+			<ul class="nav navbar-nav navtabs navbar-right" style="padding-right: 10px;">
+				<li class="dropdown"><a class="dropdown-toggle"
+					data-toggle="dropdown" href="#">About</a>
+					<ul style="width: 70px;" class="dropdown-menu" role="menu"
+						aria-labelledby="dropdownMenu">
+						<li><a tabindex="-1" href="content.html#cookies">Cookies</a></li>
+						<li><a tabindex="-1" href="content.html#disclaimer">Disclaimer</a></li>
+					</ul></li>
+				<li class="dropdown" x-requires-authenticated><a
+					class='dropdown-toggle' data-toggle='dropdown' href='#'><i
+						class='icon-user icon-white'
+						style='vertical-align: middle; margin-bottom: 4px'></i>
+						{{authentication.userName}} </a>
+					<ul style="width: 70px;" class="dropdown-menu" role="menu"
+						aria-labelledby="dropdownMenu">
+						<!-- li><a tabindex="-1" href="admin.html#settings">Settings</a></li -->
+						<li><a tabindex="-1"
+							href="docs/ArcticWeb_user_manual_v1.2.pdf" target="_blank">Manual</a></li>
+						<li class="divider"></li>
+						<li><a tabindex="-1" href="#" x-ng-click="logout($event)">Log
+								Out</a></li>
+					</ul></li>
+			</ul>
+			
 
-			</div>
-		</div>
 	</div>
 </div>

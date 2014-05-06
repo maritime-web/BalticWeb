@@ -68,6 +68,9 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
 
     @NotNull
     private String reportedBy;
+    
+    @NotNull
+    private String recipient;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @NotNull
@@ -212,5 +215,12 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     public void setTs(DateTime ts) {
         this.ts = ts;
     }
-
+    
+    public String getRecipient() {
+        return recipient;
+    }
+    
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
 }

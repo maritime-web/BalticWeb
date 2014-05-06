@@ -1,18 +1,6 @@
 /*globals angular, moment, jQuery */
 /*jslint vars:true */
 
-/**
- * @license angular-bootstrap-datetimepicker  v0.1.5
- * (c) 2013 Knight Rider Consulting, Inc. http://www.knightrider.com
- * License: MIT
- */
-
-/**
- * 
- * @author Dale "Ducky" Lotts
- * @since 2013-Jul-8
- */
-
 (function() {
     "use strict";
 
@@ -23,9 +11,9 @@
             require : '^ngModel',
             restrict : 'E',
             replace : true,
-            template : '<div class="input-append date">'
-                    + '<input type="text" class="input-medium" data-format="yyyy-MM-dd hh:mm" />'
-                    + '<span class="add-on">' + ' <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>'
+            template : '<div class="input-group date" data-date-format="YYYY-MM-DD hh:mm">'
+                    + '<input type="text" class="input-sm form-control" data-format="yyyy-MM-dd hh:mm" />'
+                    + '<span class="input-group-addon">' + ' <span class="glyphicon glyphicon-calendar"></span>'
                     + '</span>' + '</div>',
             //              
             // '<div>' +
@@ -35,9 +23,14 @@
             link : function(scope, element, attrs, ngModelController) {
                 $(element).datetimepicker({
                     language : 'en-US',
-                    pickSeconds : false
+                    pick12HourFormat : false,
+                    useSeconds : false,
+                    useCurrent : true,
+                    showToday : true
                 });
-                var picker = $(element).data('datetimepicker');
+                var picker = $(element).data('DateTimePicker');
+                
+                picker.setDate(new Date());
 
                 ngModelController.$formatters.push(function(modelValue) {
                     if (!modelValue) {
@@ -51,7 +44,7 @@
                     if (!picker.getDate()) {
                         return null;
                     } 
-                    return picker.getDate().getTime();
+                    return Date.parse(picker.getDate());
                 });
 
                 element.bind('changeDate', function(e) {
@@ -60,12 +53,17 @@
                 });
                 
                 element.bind('blur change', function() {
-                    var millis = !picker.getDate() ? null : picker.getDate().getTime();
+                    var millis = null;
+                    var date = picker.getDate();
+                    if(date) {
+                        millis = Date.parse(date);
+                    }
+                    console.log('DATE: ' + date);
                     ngModelController.$modelValue = millis;
                     ngModelController.$render();
                 });
             }
-        }
+        };
     });
 
 }());

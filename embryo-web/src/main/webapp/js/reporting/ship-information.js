@@ -22,7 +22,7 @@
                                 text : "OK",
                                 klass : "success",
                                 action : "edit"
-                            }
+                            };
                         }
                         return false;
                     },

@@ -11,6 +11,7 @@ module.exports = function(config) {
 		        'src/main/webapp/js/ext/cdn.cloudflare/openlayers/2.13.1/OpenLayers.js',
 		        'src/main/webapp/js/ext/cdn.cloudflare/jqueryui/1.9.1/jquery-ui.min.js',
 		        'src/main/webapp/js/ext/cdn.googleapis/angularjs/1.2.14/angular.min.js',
+                'src/main/webapp/js/ext/moment.min.js',
 				'src/main/webapp/js/ext/*.js',
 				'src/test/lib/angular-1.1.5/angular-mocks.js',
                 'src/main/webapp/js/utils.js',

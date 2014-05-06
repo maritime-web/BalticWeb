@@ -59,6 +59,8 @@ public class GreenPos {
     private String reporter;
 
     private Date ts;
+    
+    private String[] recipients;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -219,5 +221,13 @@ public class GreenPos {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String[] getRecipients() {
+        return recipients;
+    }
+    
+    public void setRecipients(String[] receipients) {
+        this.recipients = receipients;
     }
 }

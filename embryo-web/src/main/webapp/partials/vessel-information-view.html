@@ -4,55 +4,57 @@
     </h2>
     <p>Static information about the vessel is expected maintained mainly in the vessels AIS transponder.</p>
     <form class="form-horizontal" novalidate>
-        <div class="row-fluid">
-            <div class="span6">
-                <div class="control-group">
-                    <div class="control-label">MMSI</div>
-                    <div class="controls" style="padding-top: 5px">{{vessel.mmsi}}</div>
-                </div>
-                <div class="control-group">
-                    <div class="control-label">Max Speed (kn)</div>
-                    <div class="controls txt">
-                        {{vessel.maxSpeed}}
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <div class="e-control-label">MMSI</div>
+                    <div class="controls txt" style="padding-top: 5px">
+                    	<span>{{vessel.mmsi}}</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <div class="control-label">Ice Class</div>
-                    <div class="controls txt">
-                        {{vessel.iceClass}}
+                <div class="form-group">
+                    <div class="e-control-label">Max Speed (kn)</div>
+                    <div class="txt">
+                        <span>{{vessel.maxSpeed}}</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="e-control-label">Ice Class</div>
+                    <div class="txt">
+                        <span>{{vessel.iceClass}}</span>
                     </div>
                 </div>
             </div>
 
-            <div class="span6">
-                <div class="control-group">
-                    <div class="control-label">Gross Tonnage</div>
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <div class="e-control-label">Gross Tonnage</div>
                     <div class="controls txt">
-                        {{vessel.grossTon}}
+                        <span>{{vessel.grossTon}}</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <div class="control-label">Estimated Rescue Capacity (Persons)</div>
-                    <div class="controls txt">
-                        {{vessel.maxPersons}}
+                <div class="form-group">
+                    <div class="e-control-label">Estimated Rescue Capacity (Persons)</div>
+                    <div class="txt">
+                    	<span>{{vessel.maxPersons}}</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <div class="control-label">Helipad</div>
-                    <div class="controls txt">
-                        <span ng-show="vessel.helipad">Yes</span>
-                        <span ng-show="!vessel.helipad">No</span>
+                <div class="form-group">
+                    <div class="e-control-label">Helipad</div>
+                    <div class="txt">
+                        <span x-ng-if="vessel.helipad">Yes</span>
+                        <span x-ng-if="!vessel.helipad">No</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span12">
-                <div class="control-group">
-                    <div class="control-label">Communication Capabilities</div>
-                    <div class="controls txt">
-                        {{vessel.commCapabilities}}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <div class="e-control-label">Communication Capabilities</div>
+                    <div class="txt">
+                        <span>{{vessel.commCapabilities}}</span>
                     </div>
                 </div>
             </div>

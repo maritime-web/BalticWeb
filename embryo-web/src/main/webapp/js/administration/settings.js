@@ -5,6 +5,6 @@ $(function() {
 	
 	embryo.SettingsCtrl = function($scope) {
 		
-	}
+	};
 	
 })();

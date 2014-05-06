@@ -3,19 +3,17 @@ $(function() {
     var lastSearch = "";
 
     function searchResultToHTML(vessel){
-        var html = "<p><div class='btn searchResultItem' id='" + vessel.mmsi + "'>";
-        html += "<div class='panelText btn-block'>" + vessel.name; // + " " + vessel.mmsi;
+        var html = '<p><div class="searchResultItem" id="' + vessel.mmsi + '">';
+        html += '<a href="#" class="panelText">' + vessel.name; // + ' ' + vessel.mmsi;
 
         if (vessel.inAW) {
-            html +=" <font color=#0080C0>AW</font>"
+            html +=" <font color=#0080C0>AW</font>";
         }
 
-        html +=	"</div></div><p>";
+        html +=	"</a></div><p>";
 
         return html;
     }
-
-    var latestSearch = "";
 
     function search(arg) {
         $("#searchResultsTop").empty();
@@ -60,15 +58,16 @@ $(function() {
                         embryo.vessel.selectVessel(vessel);
 
                         var t = $(this);
-                        t.addClass("btn-info");
+                        //t.addClass("btn-info");
                         $("#vcpSearch").on("hidden.selected", function() {
                             t.removeClass("btn-info");
                             $("#vcpSearch").off("hidden.selected");
-                        })
+                        });
                     }
-                })
+                    e.preventDefault();
+                });
 
-            })
+            });
         } else {
             $("#searchMatch").html('');
             $("#searchResults").css('visibility', 'hidden');

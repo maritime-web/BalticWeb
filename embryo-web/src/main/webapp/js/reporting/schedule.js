@@ -4,10 +4,22 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.typeahead', 'embryo.position' , 'embryo.vessel']);
+            'siyfion.sfTypeahead', 'embryo.position' , 'embryo.vessel']);
     
     var voyages = [];
     var pageSize = 5;
+    
+    var berths = new Bloodhound({
+        datumTokenizer : Bloodhound.tokenizers.obj.whitespace('value'),
+        queryTokenizer : Bloodhound.tokenizers.whitespace, 
+        prefetch : {
+            url : berthUrl,
+            // 1 time
+            ttl : 3600000
+        },
+        remote : berthUrl
+    });
+    berths.initialize();
 
     embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService, VesselInformation) {
         var loadSchedule = function(vs) {
@@ -71,13 +83,15 @@
         };
 
         $scope.berths = {
-            name : 'embryo_berths7',
+            /*name : 'embryo_berths7',
             prefetch : {
                 url : berthUrl,
                 // 1 time
                 ttl : 3600000
             },
-            remote : berthUrl
+            remote : berthUrl*/
+            displayKey : 'value',
+            source : berths.ttAdapter()
         };
 
         $scope.getLastVoyage = function() {
@@ -86,7 +100,7 @@
             }
             return $scope.voyages[$scope.voyages.length - 1];
         };
-
+        
         $scope.$watch($scope.getLastVoyage, function(newValue, oldValue) {
             // add extra empty voyage on initialization
             if (newValue && Object.keys(newValue).length > 0 && (!oldValue || Object.keys(oldValue).length === 0)) {
@@ -99,10 +113,8 @@
         };
         
         $scope.loadAll = function() {
-            $scope.loading = true;
             $scope.voyages = voyages;
             $scope.$apply();
-            $scope.loading = false;
         };
 
         $scope.loadMore = function() {
@@ -128,6 +140,18 @@
                 voyage.longitude = datum.longitude;
             }
         };
+
+        $scope.$on('typeahead:selected', function(e, suggestion, dataset) {
+            var voyage = voyages[dataset];
+            voyage.latitude = suggestion.latitude;
+            voyage.longitude = suggestion.longitude;
+            $scope.voyages[dataset] = voyage;
+            $scope.$apply();
+        });
+        
+        $scope.$on('typeahead:opened', function(e) {
+            
+        });
 
         $scope.isActive = function(voyage) {
             if (!voyage || !voyage.route || !voyage.route.id) {
@@ -333,5 +357,19 @@
             });
         };
     });
+    
+    /*scheduleModule.directive('eLocationTypeahead', function() {
+        return {
+            restrict : 'C',
+            link : function(scope, elm, attr) {
+                elm.bind('click', function() {
+                    var ev = $.Event("keydown");
+                    ev.keyCode = ev.which = 40;
+                    $(this).trigger(ev);
+                    return true;
+                });
+            }
+        }; 
+    });*/
 
 }());

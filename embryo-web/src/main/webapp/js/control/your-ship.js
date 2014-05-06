@@ -17,7 +17,7 @@ $(function() {
             $("#yourShipAesInformationLink").off("click");
             $("#yourShipAesInformationLink").on("click", function(e) {
                 e.preventDefault();
-                embryo.vesselInformation.showAesDialog(vesselDetails);
+                embryo.controllers.ais.open(vesselDetails.ais);
             });
             if (vesselDetails.additionalInformation.routeId) {
                 embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {

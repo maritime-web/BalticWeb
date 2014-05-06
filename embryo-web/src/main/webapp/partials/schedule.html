@@ -4,10 +4,10 @@
 			Schedule
 		</h2>
 		<a class="close embryo-close-panel pull-right" href="#">&times;</a>
-		<button id="upload-button" class="btn btn-primary" x-ng-click="uploadSchedule()">Upload new schedule</button>
+		<button id="upload-button" class="btn btn-primary btn-sm" x-ng-click="uploadSchedule()">Upload new schedule</button>
 		<span class="pull-right" style="margin-right: 8px;" x-ng-if="moreVoyages()">{{voyages.length}} of {{allVoyages}} voyages loaded. <button id="load-all" class="btn btn-primary" x-ng-click="loadAll()">Load all</button> </span> 
 	</div>
-	<div x-ng-if="alertMessages" class="alert alert-error">
+	<div x-ng-if="alertMessages" class="alert alert-danger">
 		<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
 	</div>
 	<div x-ng-if="message" class="alert alert-info">{{message}}</div>
@@ -15,6 +15,16 @@
 
 	<form name="scheduleEditForm" class="form-horizontal">
 		<table class="table">
+			<colgroup>
+				<col span="1" />
+				<col span="1" />
+				<col span="1" />
+				<col span="1" />
+				<col span="1" />
+				<col span="1" style="width: 40px;" />
+				<col span="1" style="width: 40px;" />
+				<col span="1" style="width: 70px;" />
+			</colgroup>
 			<thead>
 				<tr>
 					<th>Location</th>
@@ -23,22 +33,21 @@
 					<th>Arrival (UTC)</th>
 					<th>Departure (UTC)</th>
 					<th>Crew</th>
-					<th>Passengers</th>
+					<th>Pass.</th>
 					<th>Doctor</th>
 				</tr>
 			</thead>
 			<tbody x-ng-repeat="voyage in voyages" class="content">
 				<tr class="voyage" x-ng-class="{warning : activeRouteId && activeRouteId == voyage.route.id}">
-					<td><input x-ng-model="voyage.location" x-fn-selected="berthSelected(voyage, datum)"
-						x-fn-autocompleted="berthSelected(voyage, datum)" class="input-large siyTypeahead" datasets="berths" type="text"
+					<td><input x-ng-model="voyage.location" class="input-sm form-control e-location-typeahead sfTypeahead" datasets="berths" type="text"
 						x-ng-required="!$parent.$last" /></td>
-					<td><input latitude x-ng-model="voyage.latitude" type="text" class="input-small lat" /></td>
-					<td><input longitude x-ng-model="voyage.longitude" type="text" class="input-small lon" /></td>
+					<td><input latitude x-ng-model="voyage.latitude" type="text" class="form-control input-sm lat" /></td>
+					<td><input longitude x-ng-model="voyage.longitude" type="text" class="form-control input-sm lon" /></td>
 					<td><datetimepicker x-ng-model="voyage.arrival" x-ng-required="!$last"/></td>
 					<td><datetimepicker x-ng-model="voyage.departure" x-ng-required="!$last" /></td>
-					<td><input x-ng-model="voyage.crew" type="text" class="input-mini" /></td>
-					<td><input x-ng-model="voyage.passengers" type="text" class="input-mini" /></td>
-					<td><select x-ng-model="voyage.doctor" class="input-small"
+					<td><input x-ng-model="voyage.crew" type="text" class="form-control input-sm" /></td>
+					<td><input x-ng-model="voyage.passengers" type="text" class="form-control input-sm" /></td>
+					<td><select x-ng-model="voyage.doctor" class="form-control input-sm"
 						x-ng-options="value as key for (key, value) in options">
 							<option value="">---</option>
 					</select></td>
@@ -48,27 +57,27 @@
 							from {{voyage.route.dep}} to {{voyage.route.des}} with {{voyage.route.waypointCount}} way points
 					</span> <span x-ng-if="!voyage.route">No route</span></td>
 					<td colspan="4"><span class="pull-right">
-							<button type="button" x-ng-if="activeRouteId != voyage.route.id && voyage.route" class="btn btn-success"
+							<button type="button" x-ng-if="activeRouteId != voyage.route.id && voyage.route" class="btn btn-success btn-sm"
 								x-ng-click="activate(voyage, $event)">Activate</button>
-							<button type="button" x-ng-if="activeRouteId == voyage.route.id && voyage.route" class="btn btn-warning"
+							<button type="button" x-ng-if="activeRouteId == voyage.route.id && voyage.route" class="btn btn-warning btn-sm"
 								x-ng-click="deactivate(voyage, $event)">Deactivate</button>
-							<button type="button" x-ng-if="voyage.maritimeId" class="btn" x-ng-click="editRoute($index)">
+							<button type="button" x-ng-if="voyage.maritimeId" class="btn btn-sm" x-ng-click="editRoute($index)">
 								<span x-ng-if="voyage.route">Edit route</span><span x-ng-if="!voyage.route">Create route</span>
 							</button>
-							<button type="button" x-ng-if="voyage.maritimeId" class="btn" x-ng-click="uploadRoute(voyage)">Upload
+							<button type="button" x-ng-if="voyage.maritimeId" class="btn btn-sm" x-ng-click="uploadRoute(voyage)">Upload
 								route</button>
 					</span></td>
-					<td><button class="btn btn-danger" x-ng-if="!$last" x-ng-disabled="isActive(voyage)"
+					<td><button class="btn btn-danger btn-sm pull-right" x-ng-if="!$last" x-ng-disabled="isActive(voyage)"
 							x-ng-click="del($index)">Delete</button></td>
 				</tr>
 			</tbody>
 			<tbody>
 				<tr class="lastRow">
 					<td colspan="7"><span class="pull-right">
-							<button type="button" class="btn" x-ng-click="reset()">Reset</button>
+							<button type="button" class="btn btn-sm" x-ng-click="reset()">Reset</button>
 					</span></td>
 					<td>
-						<button type="button" class="btn btn-primary" x-ng-click="save()">Save</button>
+						<button type="button" class="btn btn-primary btn-sm" x-ng-click="save()">Save</button>
 					</td>
 				</tr>
 			</tbody>

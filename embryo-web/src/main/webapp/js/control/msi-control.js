@@ -11,7 +11,7 @@ $(function() {
     embryo.groupChanged(function(e) {
         if (e.groupId == "msi") {
             $("#msiControlPanel").css("display", "block");
-            $("#msiControlPanel .collapse").data("collapse", null)
+            $("#msiControlPanel .collapse").data("collapse", null);
             openCollapse("#msiControlPanel .accordion-body:first");
         } else {
             $("#msiControlPanel").css("display", "none");
@@ -20,13 +20,13 @@ $(function() {
 
     embryo.authenticated(function() {
         function requestMsiList() {
-            var messageId = embryo.messagePanel.show( { text: "Requesting active MSI warnings ..." })
+            var messageId = embryo.messagePanel.show( { text: "Requesting active MSI warnings ..." });
 
             embryo.msi.service.list(function(data) {
                 if(data.length == 0){
                     var html = "No active warnings";
-                    $("#msiOverview div.accordion-inner").html(html);
-                    embryo.messagePanel.replace(messageId, { text: data.length + " MSI warnings returned.", type: "success" })
+                    $("#msiOverview div.e-accordion-inner").html(html);
+                    embryo.messagePanel.replace(messageId, { text: data.length + " MSI warnings returned.", type: "success" });
                     return;
                 }
                 
@@ -45,7 +45,7 @@ $(function() {
                 
                 html += "</table>";
                 
-                 $("#msiOverview div.accordion-inner").html(html);
+                 $("#msiOverview div.e-accordion-inner").html(html);
 
                 $("#msiOverview tr").click(function(e) {
                     var msi = data[$(this).attr("index")];
@@ -79,8 +79,8 @@ $(function() {
 
     embryo.ready(function() {
         function fixAccordionSize() {
-            $("#msiControlPanel .accordion-inner").css("overflow", "auto");
-            $("#msiControlPanel .accordion-inner").css("max-height", Math.max(100, $(window).height() - 233)+"px");
+            $("#msiControlPanel .e-accordion-inner").css("overflow", "auto");
+            $("#msiControlPanel .e-accordion-inner").css("max-height", Math.max(100, $(window).height() - 233)+"px");
         }
 
         $(window).resize(fixAccordionSize);
