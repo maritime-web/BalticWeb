@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public interface ShapeFileService {
 
-    Shape readSingleFile(String id, int resolution, String filter, boolean delta, int exponent, int mapParts)
+    Shape readSingleFile(String id, Integer resolution, String filter, boolean delta, Integer exponent, Integer mapParts)
             throws IOException;
 
     public static class Position {
@@ -70,10 +70,12 @@ public interface ShapeFileService {
     public static class Shape {
         private List<Fragment> fragments;
         private Map<String, Object> description;
+        private Integer exponent;
 
-        public Shape(Map<String, Object> description, List<Fragment> fragments) {
+        public Shape(Map<String, Object> description, List<Fragment> fragments, Integer exponent) {
             this.fragments = fragments;
             this.description = description;
+            this.exponent = exponent;
         }
 
         public List<Fragment> getFragments() {
@@ -82,6 +84,10 @@ public interface ShapeFileService {
 
         public Map<String, Object> getDescription() {
             return description;
+        }
+
+        public Integer getExponent() {
+            return exponent;
         }
     }
 

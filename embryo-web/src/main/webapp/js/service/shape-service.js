@@ -53,17 +53,14 @@
         function retrieveShapes(url, name, arguments, success, error){
             var r = (typeof (arguments) != "object") ? {} : arguments;
             if (!r.delta) {
-                r.delta = embryo.ice.delta;
-            }
-            if (!r.exponent) {
-                r.exponent = embryo.ice.exponent;
+                r.delta = embryo.shape.delta;
             }
 
             $http.get(url, {
                 timeout : embryo.defaultTimeout,
                 params : r
             }).success(function(data) {
-                convert(data, r.delta, r.exponent);
+                convert(data, r.delta, data.exponent);
                 success(data);
             }).error(function(data, status, headers, config) {
                 error(embryo.ErrorService.errorStatus(data, status, "requesting shape data"), status);
@@ -87,8 +84,7 @@
     });
 
     embryo.shape = {
-        delta : true,
-        exponent : 3
+        delta : true
     };
 
     module.run(function(ShapeService) {

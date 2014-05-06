@@ -32,6 +32,13 @@ import javax.inject.Singleton;
 @Singleton
 public class PropertyFileService {
     private Properties properties = new Properties();
+    
+    public PropertyFileService() {
+    }
+
+    public PropertyFileService(Properties properties) {
+        this.properties.putAll(properties);
+    }
 
     @PostConstruct
     public void init() throws IOException, URISyntaxException {
@@ -58,6 +65,22 @@ public class PropertyFileService {
         return property;
     }
 
+    public Map<String, String> getMapProperty(String property){
+        String prop = getProperty(property);
+
+        String[] providers = prop.split(";");
+
+        Map<String, String> result = new HashMap<String, String>();
+        for (String provider : providers) {
+            String[] keyValue = provider.split("=");
+            result.put(keyValue[0], keyValue[1]);
+        }
+
+        return result;
+        
+    }
+
+    
     @Produces
     @Property
     public String getStringPropertyByKey(InjectionPoint ip) {

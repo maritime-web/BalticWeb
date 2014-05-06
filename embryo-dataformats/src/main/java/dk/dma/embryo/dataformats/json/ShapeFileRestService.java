@@ -18,10 +18,8 @@ package dk.dma.embryo.dataformats.json;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -131,10 +129,10 @@ public class ShapeFileRestService {
     @Produces("application/json")
     @GZIP
     public Response getSingleFile(@PathParam("id") String id,
-            @DefaultValue("0") @QueryParam("resolution") int resolution,
+            @QueryParam("resolution") Integer resolution,
             @DefaultValue("") @QueryParam("filter") String filter,
             @DefaultValue("false") @QueryParam("delta") boolean delta,
-            @DefaultValue("2") @QueryParam("exponent") int exponent, @DefaultValue("0") @QueryParam("parts") int parts,
+            @QueryParam("exponent") Integer exponent, @QueryParam("parts") Integer parts,
             @Context Request request) throws IOException {
         logger.info("Request for single file: {}", id);
 

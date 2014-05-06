@@ -105,7 +105,7 @@ public class ShapeFileRestServiceTest {
 
         Map<String, Object> map = new HashMap<>();
         map.put("test", "test");
-        Shape shape = new Shape(map, new ArrayList<Fragment>());
+        Shape shape = new Shape(map, new ArrayList<Fragment>(), 2);
         
         when(service.readSingleFile("dmi.MyRegion",0, "", true, 0, 0)).thenReturn(shape);
         
@@ -134,7 +134,7 @@ public class ShapeFileRestServiceTest {
 
         Map<String, Object> map = new HashMap<>();
         map.put("test", "test");
-        Shape shape = new Shape(map, new ArrayList<Fragment>());
+        Shape shape = new Shape(map, new ArrayList<Fragment>(), 2);
         
         when(service.readSingleFile("dmi.MyRegion_v2",0, "", true, 0, 0)).thenReturn(shape);
         
