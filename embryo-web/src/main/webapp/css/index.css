@@ -7,14 +7,14 @@ h1{
 }
 
 /** Carousel **/
-.carousel .container {
+#myCarousel .container {
 	position: absolute;
 	right: 0;
 	bottom: 0;
 	left: 0;
 }
 
-.carousel img {
+#myCarousel img {
 	min-width: 100%;
 	height: 320px;
 }
@@ -26,6 +26,8 @@ h1{
 	padding: 16px;
 	margin: 20px;
 	margin-left: 50px;
+	text-shadow: none;
+	color: black;
 }
 
 .carousel-caption .lead {

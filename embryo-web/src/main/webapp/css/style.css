@@ -104,11 +104,7 @@ footer .navbar-inner{
 	height:120px;
 }
 
-.carousel-caption {
-	text-shadow: none;
-	color: black;
-}
-
 .tt-suggestion:hover {
 	background-color: #eee;
 }
+

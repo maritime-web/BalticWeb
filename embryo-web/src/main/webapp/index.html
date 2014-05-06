@@ -34,7 +34,7 @@
 <!-- endbuild -->
 
 <script type="text/javascript">
-    var indexApp = angular.module('embryo.front', [ 'embryo.menu' ]);
+    var indexApp = angular.module('embryo.front', [ 'embryo.menu', 'ui.bootstrap.carousel' ]);
     $(function() {
         embryo.authentication.currentPageRequiresAuthentication = false;
     });
@@ -56,42 +56,31 @@
 ================================================== -->
 	<div id="contentContainer" class="container">
 
-		<div id="myCarousel" class="carousel slide">
-			<div class="carousel-inner">
-				<div class="item active">
-					<img src="img/front/ice.jpg" alt="Arctic ice">
-					<div class="container">
-						<div class="carousel-caption">
-							<h2>Tailored Weather Forecasts and Ice Charts</h2>
-							<p class="lead">Latest ice charts from Danish Meteorological Institute. Tailored weather forecasts for
-								uploaded sailing routes.</p>
-						</div>
-					</div>
+		<carousel id="myCarousel" interval="8000"> 
+			<slide> 
+				<img src="img/front/ice.jpg" alt="Arctic ice">
+				<div class="carousel-caption">
+					<h2>Tailored Weather Forecasts and Ice Charts</h2>
+					<p class="lead">Latest ice charts from Danish Meteorological Institute. Tailored weather forecasts for
+						uploaded sailing routes.</p>
 				</div>
+			</slide> 
+			<slide> 
+				<img src="img/front/Konsol-h350.jpg" alt="Vessel bridge">
+				<div class="carousel-caption">
+					<h2>Coordinated Voyage</h2>
+					<p class="lead">Share routes and schedules with other ships and Arctic Command.</p>
+				</div>
+			</slide> 
+			<slide> 
+				<img src="img/img6.jpg" alt="Live AIS-data">
+				<div class="carousel-caption">
+					<h2>Live AIS-data and Streamlined Reporting</h2>
+					<p class="lead">AIS-data from satellite and base stations. Simplified and streamlined Greenpos reporting.</p>
+				</div>
+			</slide> 
+		</carousel>
 
-				<div class="item">
-					<img src="img/front/Konsol-h350.jpg" alt="Vessel bridge">
-					<div class="container">
-						<div class="carousel-caption">
-							<h2>Coordinated Voyage</h2>
-							<p class="lead">Share routes and schedules with other ships and Arctic Command.</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="item">
-					<img src="img/img6.jpg" alt="Live AIS-data">
-					<div class="container">
-						<div class="carousel-caption">
-							<h2>Live AIS-data and Streamlined Reporting</h2>
-							<p class="lead">AIS-data from satellite and base stations. Simplified and streamlined Greenpos reporting.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a> <a class="right carousel-control"
-				href="#myCarousel" data-slide="next">&rsaquo;</a>
-		</div>
 		<!-- ================================================= -->
 
 		<hr class="soften">
@@ -183,13 +172,5 @@
 	</div>
 	<div x-ng-include="'partials/footer.html'"></div>
 	<!-- ============================================= -->
-
-	<script type="text/javascript">
-        $(function() {
-            $('#myCarousel').carousel({
-                interval : 8000
-            });
-        });
-    </script>
 </body>
 </html>
