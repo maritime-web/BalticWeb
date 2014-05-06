@@ -60,7 +60,7 @@
                 timeout : embryo.defaultTimeout,
                 params : r
             }).success(function(data) {
-                convert(data, r.delta, data.exponent);
+                convert(data, r.delta, !data.exponent ? r.exponent : data.exponent);
                 success(data);
             }).error(function(data, status, headers, config) {
                 error(embryo.ErrorService.errorStatus(data, status, "requesting shape data"), status);
