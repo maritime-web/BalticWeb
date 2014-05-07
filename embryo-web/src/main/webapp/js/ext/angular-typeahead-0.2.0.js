@@ -1,3 +1,9 @@
+/**
+ * https://github.com/Siyfion/angular-typeahead
+ * 
+ * Patched to work with string values in ngModel
+ */
+
 angular.module('siyfion.sfTypeahead', [])
   .directive('sfTypeahead', function () {
     return {
@@ -73,6 +79,8 @@ angular.module('siyfion.sfTypeahead', [])
 
             return ''; // loading
           }
+          
+          element.typeahead('val', fromModel);
           return fromModel;
         });
 
@@ -131,13 +139,13 @@ angular.module('siyfion.sfTypeahead', [])
 
         // Update the value binding when a query is autocompleted.
         element.bind('typeahead:autocompleted', function(object, suggestion, dataset) {
-            updateScope(object, suggestion, dataset);
+          updateScope(object, suggestion, dataset);
           scope.$emit('typeahead:autocompleted', suggestion, dataset);
         });
 
         // Propagate the opened event
         element.bind('typeahead:opened', function() {
-          scope.$emit('typeahead:opened');
+            scope.$emit('typeahead:opened');
         });
 
         // Propagate the closed event

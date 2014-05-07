@@ -10,7 +10,7 @@
     var pageSize = 5;
     
     var berths = new Bloodhound({
-        datumTokenizer : Bloodhound.tokenizers.obj.whitespace('value'),
+        datumTokenizer : Bloodhound.tokenizers.obj.nonword('value'),
         queryTokenizer : Bloodhound.tokenizers.whitespace, 
         prefetch : {
             url : berthUrl,
@@ -83,13 +83,6 @@
         };
 
         $scope.berths = {
-            /*name : 'embryo_berths7',
-            prefetch : {
-                url : berthUrl,
-                // 1 time
-                ttl : 3600000
-            },
-            remote : berthUrl*/
             displayKey : 'value',
             source : berths.ttAdapter()
         };
@@ -133,26 +126,19 @@
             voyages.splice(index, 1);
             $scope.voyages.splice(index, 1);
         };
-
-        $scope.berthSelected = function(voyage, datum) {
-            if (typeof datum !== 'undefined') {
-                voyage.latitude = datum.latitude;
-                voyage.longitude = datum.longitude;
-            }
-        };
-
-        $scope.$on('typeahead:selected', function(e, suggestion, dataset) {
+        
+        function berthSelected(e, suggestion, dataset){
             var voyage = voyages[dataset];
             voyage.latitude = suggestion.latitude;
             voyage.longitude = suggestion.longitude;
             $scope.voyages[dataset] = voyage;
             $scope.$apply();
-        });
+        };
         
-        $scope.$on('typeahead:opened', function(e) {
-            
-        });
-
+        $scope.$on('typeahead:selected', berthSelected);
+        $scope.$on('typeahead:autocompleted', berthSelected);
+        $scope.$on('typeahead:cursorchanged', berthSelected);
+        
         $scope.isActive = function(voyage) {
             if (!voyage || !voyage.route || !voyage.route.id) {
                 return false;
