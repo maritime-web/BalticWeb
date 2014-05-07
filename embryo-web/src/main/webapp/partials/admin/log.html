@@ -29,7 +29,7 @@
 		</div>
 	</form>
 	<div class="row">
-		<div class="col-md-9">
+		<div class="col-md-12 table-responsive">
 			<table class="table">
 				<thead>
 					<tr>
@@ -45,11 +45,11 @@
 					<tr x-ng-show="log.date">
 						<td>{{formatTime(log.date)}}</td>
 						<td><span x-ng-show="log.status=='OK'" class='label label-success'>{{log.status}}</span> <span
-							x-ng-show="log.status=='ERROR'" class='label label-important'>{{log.status}}</span></td>
+							x-ng-show="log.status=='ERROR'" class='label label-danger'>{{log.status}}</span></td>
 						<td>{{log.message}}</td>
 					</tr>
 					<tr x-ng-show="log.stackTrace">
-						<td colspan=3><pre>{{log.stackTrace}}</pre></td>
+						<td colspan="3"><pre>{{log.stackTrace}}</pre></td>
 					</tr>
 				</tbody>
 			</table>
