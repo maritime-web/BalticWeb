@@ -33,6 +33,10 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -86,7 +90,7 @@ public class AppDataServiceBean {
     @Inject
     private EntityManager em;
 
-    private List<Berth> berthList = new ArrayList<>(100);
+    private List<Berth> berthList = new ArrayList<>(200);
 
     @Property("embryo.users.admin.initial.pw")
     @Inject
@@ -226,6 +230,50 @@ public class AppDataServiceBean {
         berthList.add(new Berth("Seqinnersuusaq", null, "64 58.7N", "051 34.9W"));
         berthList.add(new Berth("Maarmorilik", null, "71 07.6N", "051 16.5W"));
         berthList.add(new Berth("Zackenberg Forskningsstation", null, "74 28.0N", "020 34.0W"));
+        
+        addBerthsFromFiles(berthList);
+    }
+    
+    private void addBerthsFromFiles(List<Berth> berthList) {
+        if(berthList == null) {
+            berthList = new ArrayList<Berth>();
+        }
+        InputStream berthStream = getClass().getResourceAsStream("/berths/berths_no.json");
+        try {
+            JsonParser jsonParser = new JsonFactory().createJsonParser(berthStream);
+            String currentName = null;
+            double currentLat = 0;
+            double currentLon = 0;
+            while(jsonParser.nextToken() != JsonToken.END_ARRAY) {
+                String name = jsonParser.getCurrentName();
+                JsonToken currentToken = jsonParser.getCurrentToken();
+                if("name".equals(name)) {
+                    jsonParser.nextToken();
+                    currentName = jsonParser.getText();
+                }
+                if("lat".equals(name)) {
+                    jsonParser.nextToken();
+                    currentLat = jsonParser.getDoubleValue();
+                }
+                if("lon".equals(name)) {
+                    jsonParser.nextToken();
+                    currentLon = jsonParser.getDoubleValue();
+                }
+                if(currentToken == JsonToken.END_OBJECT) {
+                    Position position = new Position(currentLat, currentLon);
+                    Berth berth = new Berth(currentName, position.getLatitudeAsString(), position.getLongitudeAsString());
+                    berthList.add(berth);
+                    currentName = null;
+                    currentLat = 0;
+                    currentLon = 0;
+                }
+            }
+            berthStream.close();
+        } catch (JsonParseException e) {
+            logger.error("JSON parsing exception when importing berths from file", e);
+        } catch (IOException e) {
+            logger.error("I/O exception when importing berths from file", e);
+        }
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
