@@ -1,10 +1,23 @@
-#schedule input.lon input.lat {
-	width: 105px;
+#schedule input.lat {
+	width: 80px;
+}
+
+#schedule input.lon {
+	width: 90px;
 }
 
 #schedule div.date {
-	width: 150px;
+	width: 140px;
 }
+
+#schedule input.lon {
+	width: 90px;
+}
+
+#schedule input.lon {
+	width: 90px;
+}
+
 
 #schedule input.tt-hint {
 	width: 150px;
