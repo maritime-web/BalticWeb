@@ -13,7 +13,7 @@
             replace : true,
             template : '<div class="input-group date" data-date-format="YYYY-MM-DD hh:mm">'
                     + '<input type="text" class="input-sm form-control" data-format="yyyy-MM-dd hh:mm" />'
-                    + '<span class="input-group-addon">' + ' <span class="glyphicon glyphicon-calendar"></span>'
+                    + '<span class="input-group-addon">' + ' <span class="fa fa-calendar"></span>'
                     + '</span>' + '</div>',
             //              
             // '<div>' +
@@ -26,7 +26,13 @@
                     pick12HourFormat : false,
                     useSeconds : false,
                     useCurrent : true,
-                    showToday : true
+                    showToday : true,
+                    icons : {
+                            time: 'fa fa-clock-o',
+                            date: 'fa fa-calendar',
+                            up: 'fa fa-chevron-up',
+                            down: 'fa fa-chevron-down'
+                        }
                 });
                 var picker = $(element).data('DateTimePicker');
                 
