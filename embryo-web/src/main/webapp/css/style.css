@@ -27,9 +27,19 @@
 	padding: 10px;
 }
 
+.navbar-nav ul.dropdown-menu li a {
+	padding: 5px;
+}
+
+.navbar-nav ul.dropdown-menu li.divider {
+	margin: 5px 0;
+}
+
 .navbar-nav li a {
 	padding: 10px;
 }
+
+
 
 /* Faded out hr */
 hr.soften {

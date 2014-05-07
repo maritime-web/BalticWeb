@@ -97,7 +97,7 @@ $(function() {
 
                                 for ( var j in regions) {
                                     var region = regions[j];
-                                    html += "<tr><td colspan=4><h5>" + region + "</h5></td></tr>";
+                                    html += "<tr><td colspan=4><h4>" + region + "</h4></td></tr>";
 
                                     for ( var i in data) {
                                         if (data[i].region == region)
