@@ -22,6 +22,15 @@
     berths.initialize();
 
     embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService, VesselInformation) {
+        var idExists = function(voyages, id) {
+            for(var vid in voyages) {
+                if(voyages[vid].maritimeId == id) {
+                    return vid;
+                }
+            }
+            return false;
+        };
+
         var loadSchedule = function(vs) {
             if ($scope.mmsi) {
                 $scope.alertMessages = [];
@@ -29,6 +38,14 @@
                     $scope.idsOfVoyages2Delete = [];
                     voyages = schedule.voyages.slice();
                     if(vs) {
+                        for(var i = vs.length - 1; i > -1; i--) {
+                            var id = vs[i].maritimeId;
+                            var foundVoyageId = idExists(voyages, id);
+                            if(foundVoyageId) {
+                                voyages[foundVoyageId] = vs[i];
+                                vs.splice(i, 1);
+                            }
+                        }
                         voyages = voyages.concat(vs);
                     }
                     voyages.push({});
@@ -107,7 +124,7 @@
         
         $scope.loadAll = function() {
             $scope.voyages = voyages;
-            $scope.$apply();
+            //$scope.$apply();
         };
 
         $scope.loadMore = function() {
@@ -126,19 +143,7 @@
             voyages.splice(index, 1);
             $scope.voyages.splice(index, 1);
         };
-        
-        function berthSelected(e, suggestion, dataset){
-            var voyage = voyages[dataset];
-            voyage.latitude = suggestion.latitude;
-            voyage.longitude = suggestion.longitude;
-            $scope.voyages[dataset] = voyage;
-            $scope.$apply();
-        };
-        
-        $scope.$on('typeahead:selected', berthSelected);
-        $scope.$on('typeahead:autocompleted', berthSelected);
-        $scope.$on('typeahead:cursorchanged', berthSelected);
-        
+
         $scope.isActive = function(voyage) {
             if (!voyage || !voyage.route || !voyage.route.id) {
                 return false;
@@ -253,6 +258,20 @@
                 $scope.alertMessages = error;
             });
         };
+    };
+    
+    embryo.VoyageCtrl = function($scope) {
+        function berthSelected(e, suggestion, dataset){
+            var voyage = $scope.$parent.voyage;
+            voyage.latitude = suggestion.latitude;
+            voyage.longitude = suggestion.longitude;
+            voyage.location = suggestion.value;
+            $scope.$apply();
+        };
+        
+        $scope.$on('typeahead:selected', berthSelected);
+        $scope.$on('typeahead:autocompleted', berthSelected);
+        $scope.$on('typeahead:cursorchanged', berthSelected);
     };
 
     embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService, $timeout) {
