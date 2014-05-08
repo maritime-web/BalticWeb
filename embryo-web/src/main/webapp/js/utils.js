@@ -121,6 +121,14 @@ function formatSize(size) {
     return (Math.round(size / 1024 / 1024 * 10) / 10) + " MB";
 }
 
+function adjustDateForUTC(millis) {
+    return millis + (new Date().getTimezoneOffset() * 60000);
+}
+
+function adjustDateForLocal(millis) {
+    return millis - (new Date().getTimezoneOffset() * 60000);
+}
+
 var browser = {
     isIE : function(){
         var myNav = navigator.userAgent.toLowerCase();

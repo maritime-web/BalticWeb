@@ -63,6 +63,7 @@ public class ScheduleParser {
         int crewId = -1;
         int passengersId = -1;
         int doctorId = -1;
+        int idId = -1;
         while (rowNo <= sheet.getLastRowNum()) {
             HSSFRow row = sheet.getRow(rowNo);
             if (!processing) {
@@ -89,6 +90,9 @@ public class ScheduleParser {
                                 break;
                             case "doctor":
                                 doctorId = j;
+                                break;
+                            case "id":
+                                idId = j;
                                 break;
                             }
                         }
@@ -118,6 +122,7 @@ public class ScheduleParser {
                 Integer crew = crewId == -1 ? null : (int) row.getCell(crewId).getNumericCellValue();
                 Integer passengers = passengersId == -1 ? null : (int) row.getCell(passengersId).getNumericCellValue();
                 Boolean doctor = doctorId == -1 ? null : row.getCell(doctorId).getBooleanCellValue();
+                String id = idId == -1 ? null : row.getCell(idId).getStringCellValue();
 
                 CachedPosition cp = berthCache.get(berthName);
                 if(cp == null) {
@@ -137,7 +142,7 @@ public class ScheduleParser {
                     lat = cp.position.getLatitude();
                     lon = cp.position.getLongitude();
                 }
-                Voyage voyage = new Voyage(null, berthName, lat, lon, arrival, departure, crew, passengers, doctor);
+                Voyage voyage = new Voyage(id, berthName, lat, lon, arrival, departure, crew, passengers, doctor);
                 voyages.add(voyage);
             }
             rowNo++;

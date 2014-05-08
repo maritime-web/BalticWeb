@@ -11,8 +11,8 @@
             require : '^ngModel',
             restrict : 'E',
             replace : true,
-            template : '<div class="input-group date" data-date-format="YYYY-MM-DD hh:mm">'
-                    + '<input type="text" class="input-sm form-control" data-format="yyyy-MM-dd hh:mm" />'
+            template : '<div class="input-group date" data-date-format="YYYY-MM-DD HH:mm">'
+                    + '<input type="text" class="input-sm form-control" />'
                     + '<span class="input-group-addon">' + ' <span class="fa fa-calendar"></span>'
                     + '</span>' + '</div>',
             //              
@@ -22,7 +22,7 @@
             // '</div>',
             link : function(scope, element, attrs, ngModelController) {
                 $(element).datetimepicker({
-                    language : 'en-US',
+                    language : 'da',
                     pick12HourFormat : false,
                     useSeconds : false,
                     useCurrent : true,
@@ -36,21 +36,20 @@
                 });
                 var picker = $(element).data('DateTimePicker');
                 
-                picker.setDate(new Date());
-
                 ngModelController.$formatters.push(function(modelValue) {
                     if (!modelValue) {
                         picker.setDate(null);
                     } else {
-                        picker.setDate(new Date(modelValue));
+                        var adjustedDate = adjustDateForUTC(modelValue);
+                        picker.setDate(moment(adjustedDate).format('YYYY-MM-DD HH:mm'));
                     }
                 });
-
+                
                 ngModelController.$parsers.push(function(valueFromInput) {
                     if (!picker.getDate()) {
                         return null;
                     } 
-                    return Date.parse(picker.getDate());
+                    return adjustDateForLocal(picker.getDate().valueOf());
                 });
 
                 element.bind('changeDate', function(e) {
@@ -62,9 +61,9 @@
                     var millis = null;
                     var date = picker.getDate();
                     if(date) {
-                        millis = Date.parse(date);
+                        millis = adjustDateForLocal(date.valueOf());
                     }
-                    console.log('DATE: ' + date);
+                    ngModelController.$setViewValue(millis);
                     ngModelController.$modelValue = millis;
                     ngModelController.$render();
                 });

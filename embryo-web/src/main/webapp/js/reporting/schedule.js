@@ -22,6 +22,15 @@
     berths.initialize();
 
     embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService, VesselInformation) {
+        var idExists = function(voyages, id) {
+            for(var vid in voyages) {
+                if(voyages[vid].maritimeId == id) {
+                    return vid;
+                }
+            }
+            return false;
+        };
+
         var loadSchedule = function(vs) {
             if ($scope.mmsi) {
                 $scope.alertMessages = [];
@@ -29,6 +38,14 @@
                     $scope.idsOfVoyages2Delete = [];
                     voyages = schedule.voyages.slice();
                     if(vs) {
+                        for(var i = vs.length - 1; i > -1; i--) {
+                            var id = vs[i].maritimeId;
+                            var foundVoyageId = idExists(voyages, id);
+                            if(foundVoyageId) {
+                                voyages[foundVoyageId] = vs[i];
+                                vs.splice(i, 1);
+                            }
+                        }
                         voyages = voyages.concat(vs);
                     }
                     voyages.push({});
@@ -114,7 +131,7 @@
         
         $scope.loadAll = function() {
             $scope.voyages = voyages;
-            $scope.$apply();
+            //$scope.$apply();
         };
 
         $scope.loadMore = function() {
@@ -141,13 +158,13 @@
             }
         };
 
-        $scope.$on('typeahead:selected', function(e, suggestion, dataset) {
+        /*$scope.$on('typeahead:selected', function(e, suggestion, dataset) {
             var voyage = voyages[dataset];
             voyage.latitude = suggestion.latitude;
             voyage.longitude = suggestion.longitude;
             $scope.voyages[dataset] = voyage;
             $scope.$apply();
-        });
+        });*/
         
         $scope.$on('typeahead:opened', function(e) {
             
@@ -267,6 +284,16 @@
                 $scope.alertMessages = error;
             });
         };
+    };
+    
+    embryo.VoyageCtrl = function($scope) {
+        $scope.$on('typeahead:selected', function(e, suggestion, dataset) {
+            var voyage = $scope.$parent.voyage;
+            voyage.latitude = suggestion.latitude;
+            voyage.longitude = suggestion.longitude;
+            voyage.location = suggestion.value;
+            $scope.$apply();
+        });
     };
 
     embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService, $timeout) {
