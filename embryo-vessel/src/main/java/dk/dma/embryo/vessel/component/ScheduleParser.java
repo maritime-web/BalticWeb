@@ -110,19 +110,22 @@ public class ScheduleParser {
                     HSSFCell arrivalCell = row.getCell(arrivalId);
                     Date arrival = arrivalCell.getDateCellValue();
 
-                    if (lastDeparture.getTime() > arrival.getTime()) {
-                        arrivalErrors++;
-                        arrival = null;
-                    }
-                    if (lastDeparture.getTime() > departure.getTime()) {
-                        departureErrors++;
-                        departure = null;
+                    String id = idId == -1 ? null : row.getCell(idId).getStringCellValue();
+                    
+                    if (id == null) {
+                        if (lastDeparture.getTime() > arrival.getTime()) {
+                            arrivalErrors++;
+                            arrival = null;
+                        }
+                        if (lastDeparture.getTime() > departure.getTime()) {
+                            departureErrors++;
+                            departure = null;
+                        }
                     }
 
                     Integer crew = crewId == -1 ? null : (int) row.getCell(crewId).getNumericCellValue();
                     Integer passengers = passengersId == -1 ? null : (int) row.getCell(passengersId).getNumericCellValue();
                     Boolean doctor = doctorId == -1 ? null : row.getCell(doctorId).getBooleanCellValue();
-                    String id = idId == -1 ? null : row.getCell(idId).getStringCellValue();
 
                     CachedPosition cp = berthCache.get(berthName);
                     if (cp == null) {

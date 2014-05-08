@@ -37,9 +37,15 @@ public class EmbryoRouteFilter extends EmbryoVesselDataFilter {
             throws Exception {
         Object jsonObject = Util.getJson(request.getInputStream(), Object.class);
         String routeId = Util.getValue(jsonObject, ((String[]) mappedValue)[0]);
-
+        
         ScheduleDao scheduleService = Configuration.getBean(ScheduleDao.class);
-        Long mmsi = scheduleService.getMmsiByRouteEnavId(routeId);
+        Long mmsi = null;
+        if(((Object[])mappedValue).length > 1){
+            String voyageId = Util.getValue(jsonObject, ((String[]) mappedValue)[1]);
+            mmsi = scheduleService.getMmsiByVoyageEnavId(voyageId);
+        }else{
+            mmsi = scheduleService.getMmsiByRouteEnavId(routeId);
+        }
         
         Subject subject = Configuration.getBean(Subject.class);
         return subject.authorizedToModifyVessel(mmsi);

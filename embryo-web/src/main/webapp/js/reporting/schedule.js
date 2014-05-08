@@ -71,6 +71,7 @@
                     else
                         return {
                             text : "INACTIVE",
+                            klass : "warning",
                             action : "edit"
                         };
                 }
