@@ -42,7 +42,6 @@ public class ScheduleParser {
 
     @Inject
     private GeographicService geographicService;
-    
 
     public ScheduleResponse parse(InputStream stream, Date lastDeparture) throws IOException {
         if (stream == null) {
@@ -102,48 +101,50 @@ public class ScheduleParser {
                 }
             } else {
                 HSSFCell siteCell = row.getCell(siteId);
-                String berthName = siteCell.getStringCellValue();
+                if (siteCell != null) {
+                    String berthName = siteCell.getStringCellValue();
 
-                HSSFCell departureCell = row.getCell(departureId);
-                Date departure = departureCell.getDateCellValue();
+                    HSSFCell departureCell = row.getCell(departureId);
+                    Date departure = departureCell.getDateCellValue();
 
-                HSSFCell arrivalCell = row.getCell(arrivalId);
-                Date arrival = arrivalCell.getDateCellValue();
-                
-                if(lastDeparture.getTime() > arrival.getTime()){
-                    arrivalErrors++;
-                    arrival = null;
-                }
-                if(lastDeparture.getTime() > departure.getTime()) {
-                    departureErrors++;
-                    departure = null;
-                }
+                    HSSFCell arrivalCell = row.getCell(arrivalId);
+                    Date arrival = arrivalCell.getDateCellValue();
 
-                Integer crew = crewId == -1 ? null : (int) row.getCell(crewId).getNumericCellValue();
-                Integer passengers = passengersId == -1 ? null : (int) row.getCell(passengersId).getNumericCellValue();
-                Boolean doctor = doctorId == -1 ? null : row.getCell(doctorId).getBooleanCellValue();
-                String id = idId == -1 ? null : row.getCell(idId).getStringCellValue();
-
-                CachedPosition cp = berthCache.get(berthName);
-                if(cp == null) {
-                    List<Berth> berthList = geographicService.findBerths(berthName);
-                    cp = new CachedPosition();
-                    if (berthList.size() != 1) {
-                        cp.notFound = true;
-                    } else {
-                        cp.position = berthList.get(0).getPosition();
+                    if (lastDeparture.getTime() > arrival.getTime()) {
+                        arrivalErrors++;
+                        arrival = null;
                     }
-                    berthCache.put(berthName, cp);
+                    if (lastDeparture.getTime() > departure.getTime()) {
+                        departureErrors++;
+                        departure = null;
+                    }
+
+                    Integer crew = crewId == -1 ? null : (int) row.getCell(crewId).getNumericCellValue();
+                    Integer passengers = passengersId == -1 ? null : (int) row.getCell(passengersId).getNumericCellValue();
+                    Boolean doctor = doctorId == -1 ? null : row.getCell(doctorId).getBooleanCellValue();
+                    String id = idId == -1 ? null : row.getCell(idId).getStringCellValue();
+
+                    CachedPosition cp = berthCache.get(berthName);
+                    if (cp == null) {
+                        List<Berth> berthList = geographicService.findBerths(berthName);
+                        cp = new CachedPosition();
+                        if (berthList.size() != 1) {
+                            cp.notFound = true;
+                        } else {
+                            cp.position = berthList.get(0).getPosition();
+                        }
+                        berthCache.put(berthName, cp);
+                    }
+                    Double lat = null, lon = null;
+                    if (cp.notFound) {
+                        locationErrors++;
+                    } else {
+                        lat = cp.position.getLatitude();
+                        lon = cp.position.getLongitude();
+                    }
+                    Voyage voyage = new Voyage(id, berthName, lat, lon, arrival, departure, crew, passengers, doctor);
+                    voyages.add(voyage);
                 }
-                Double lat = null, lon = null;
-                if(cp.notFound) {
-                    locationErrors++;
-                } else {
-                    lat = cp.position.getLatitude();
-                    lon = cp.position.getLongitude();
-                }
-                Voyage voyage = new Voyage(id, berthName, lat, lon, arrival, departure, crew, passengers, doctor);
-                voyages.add(voyage);
             }
             rowNo++;
         }
@@ -152,22 +153,22 @@ public class ScheduleParser {
         if (voyages != null && voyages.size() > 0) {
             response.setVoyages(voyages.toArray(new Voyage[0]));
             List<String> errors = new ArrayList<String>();
-            if(departureErrors > 0) {
-                errors.add( departureErrors + " departure dates were before last existing departure date, please enter new departure dates.");
+            if (departureErrors > 0) {
+                errors.add(departureErrors + " departure dates were before last existing departure date, please enter new departure dates.");
             }
-            if(arrivalErrors > 0) {
-                errors.add( arrivalErrors + " arrival dates were before last existing departure date, please enter new arrival dates.");
+            if (arrivalErrors > 0) {
+                errors.add(arrivalErrors + " arrival dates were before last existing departure date, please enter new arrival dates.");
             }
-            if(locationErrors > 0) {
+            if (locationErrors > 0) {
                 errors.add(locationErrors + " locations could not be found, please add them manually.");
             }
             response.setErrors(errors.toArray(new String[0]));
         } else {
-            response.setErrors(new String[]{"No voyages found in document."});
+            response.setErrors(new String[] { "No voyages found in document." });
         }
         return response;
     }
-    
+
     private static class CachedPosition {
         private Position position;
         private boolean notFound;

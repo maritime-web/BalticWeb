@@ -27,9 +27,19 @@
 	padding: 10px;
 }
 
+.navbar-nav ul.dropdown-menu li a {
+	padding: 5px;
+}
+
+.navbar-nav ul.dropdown-menu li.divider {
+	margin: 5px 0;
+}
+
 .navbar-nav li a {
 	padding: 10px;
 }
+
+
 
 /* Faded out hr */
 hr.soften {
@@ -108,3 +118,7 @@ footer .navbar-inner{
 	background-color: #eee;
 }
 
+.input-sm, .input-group-addon, select.input-sm, button.btn-sm {
+	height: 25px;
+	padding: 3px 6px;
+}

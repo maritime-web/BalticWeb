@@ -55,7 +55,7 @@ embryo.vessel.actions = {
 
                     switch (available) {
                         case false:
-                            html += "<td><span class='label'>NOT AVAILABLE</span></td><td></td>"
+                            html += "<td><span class='label label-default'>NOT AVAILABLE</span></td><td></td>"
                             break;
                         case true:
                             html += "<td><span class='label label-success'>AVAILABLE</span></td><td><a href=# aid="+i+">view</a></td>"
