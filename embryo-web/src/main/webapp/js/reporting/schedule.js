@@ -271,7 +271,6 @@
         
         $scope.$on('typeahead:selected', berthSelected);
         $scope.$on('typeahead:autocompleted', berthSelected);
-        $scope.$on('typeahead:cursorchanged', berthSelected);
     };
 
     embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService, $timeout) {
