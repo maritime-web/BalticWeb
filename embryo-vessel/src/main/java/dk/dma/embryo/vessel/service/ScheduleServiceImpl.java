@@ -60,39 +60,40 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    //@Interceptors(VesselModifierInterceptor.class)
+    // @Interceptors(VesselModifierInterceptor.class)
     public void updateSchedule(Long mmsi, List<Voyage> toBeSaved, String[] toBeDeleted) {
 
-        List<String> ids = new ArrayList<>(toBeSaved.size());
-        for (int i = 0; i < toBeSaved.size(); i++) {
-            ids.add(toBeSaved.get(i).getEnavId());
-        }
-
-        List<Voyage> persisted = scheduleRepository.getByEnavIds(ids);
-        Map<String, Voyage> persistedAsMap = Voyage.asMap(persisted);
-
-        Vessel vessel = vesselRepository.getVessel(mmsi);
-
-        // In order to maintain JPA relations we have to select from DB and merge data manually
-        for (Voyage voyage : toBeSaved) {
-            Voyage v = null;
-            if (persistedAsMap.containsKey(voyage.getEnavId())) {
-                v = persistedAsMap.get(voyage.getEnavId());
-
-                v.setArrival(voyage.getArrival());
-                v.setLocation(voyage.getLocation());
-                v.setDeparture(voyage.getDeparture());
-                v.setPosition(voyage.getPosition());
-                v.setCrewOnBoard(voyage.getCrewOnBoard());
-                v.setPassengersOnBoard(voyage.getPassengersOnBoard());
-                v.setDoctorOnBoard(voyage.getDoctorOnBoard());
-            } else {
-                v = voyage;
-                vessel.addVoyageEntry(v);
+        if (!toBeSaved.isEmpty()) {
+            List<String> ids = new ArrayList<>(toBeSaved.size());
+            for (int i = 0; i < toBeSaved.size(); i++) {
+                ids.add(toBeSaved.get(i).getEnavId());
             }
-            scheduleRepository.saveEntity(v);
-        }
+            List<Voyage> persisted = scheduleRepository.getByEnavIds(ids);
+            Map<String, Voyage> persistedAsMap = Voyage.asMap(persisted);
 
+            Vessel vessel = vesselRepository.getVessel(mmsi);
+
+            // In order to maintain JPA relations we have to select from DB and
+            // merge data manually
+            for (Voyage voyage : toBeSaved) {
+                Voyage v = null;
+                if (persistedAsMap.containsKey(voyage.getEnavId())) {
+                    v = persistedAsMap.get(voyage.getEnavId());
+
+                    v.setArrival(voyage.getArrival());
+                    v.setLocation(voyage.getLocation());
+                    v.setDeparture(voyage.getDeparture());
+                    v.setPosition(voyage.getPosition());
+                    v.setCrewOnBoard(voyage.getCrewOnBoard());
+                    v.setPassengersOnBoard(voyage.getPassengersOnBoard());
+                    v.setDoctorOnBoard(voyage.getDoctorOnBoard());
+                } else {
+                    v = voyage;
+                    vessel.addVoyageEntry(v);
+                }
+                scheduleRepository.saveEntity(v);
+            }
+        }
         if (toBeDeleted.length > 0) {
             List<String> toBeDeletedAsList = Arrays.asList(toBeDeleted);
             List<Voyage> toDelete = scheduleRepository.getByEnavIds(toBeDeletedAsList);
@@ -121,15 +122,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     /**
      * Used to save uploaded routes.
      * 
-     * Automatically fills out route fields also being part of voyage information, like departure location, destination
-     * location, times etc.
+     * Automatically fills out route fields also being part of voyage
+     * information, like departure location, destination location, times etc.
      */
     @Override
     @Interceptors(VoyageModifierInterceptor.class)
     public String saveRoute(Route route, String voyageId, Boolean active) {
         return new RouteSaver(scheduleRepository).saveRoute(route, voyageId, active);
     }
-    
+
     @Override
     @Interceptors(RouteModifierInterceptor.class)
     public String saveRoute(Route route) {
@@ -154,7 +155,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         return r;
     }
 
-
     @Override
     @Interceptors(RouteModifierInterceptor.class)
     public Route activateRoute(String routeEnavId, Boolean activate) {
@@ -167,42 +167,44 @@ public class ScheduleServiceImpl implements ScheduleService {
         Route route = scheduleRepository.getRouteByEnavId(enavId);
         return route;
     }
-    
-    public static class RouteModifierInterceptor{
-//        @Inject
-//        private Subject subject;
+
+    public static class RouteModifierInterceptor {
+        // @Inject
+        // private Subject subject;
 
         @AroundInvoke
-        Object onlyOwnRoutes(InvocationContext ctx) throws Exception{
+        Object onlyOwnRoutes(InvocationContext ctx) throws Exception {
             String enavId;
-            
-            if(ctx.getParameters()[0] instanceof Route){
-                enavId = ((Route)ctx.getParameters()[0]).getEnavId();
-            }else if (ctx.getParameters()[0] instanceof String){
-                enavId = (String)ctx.getParameters()[0];
-            }else{
+
+            if (ctx.getParameters()[0] instanceof Route) {
+                enavId = ((Route) ctx.getParameters()[0]).getEnavId();
+            } else if (ctx.getParameters()[0] instanceof String) {
+                enavId = (String) ctx.getParameters()[0];
+            } else {
                 throw new IllegalArgumentException("First argument must be one of types " + Route.class.getName() + ", " + String.class.getName());
             }
-            
-//            if(enavId != null && !subject.authorizedToModifyRoute(enavId)){
-//                throw new AuthorizationException("Not authorized to modify route");
-//            }
-            
+
+            // if(enavId != null && !subject.authorizedToModifyRoute(enavId)){
+            // throw new
+            // AuthorizationException("Not authorized to modify route");
+            // }
+
             return ctx.proceed();
         }
     }
 
-    public static class VoyageModifierInterceptor{
-//        @Inject
-//        private Subject subject;
+    public static class VoyageModifierInterceptor {
+        // @Inject
+        // private Subject subject;
 
         @AroundInvoke
-        Object onlyOwnVoyages(InvocationContext ctx) throws Exception{
-            String voyageEnavId = (String)ctx.getParameters()[1];
-//            if(!subject.authorizedToModifyVoyage(voyageEnavId)){
-//                throw new AuthorizationException("Not authorized to modify voyage/route");
-//            }
-            
+        Object onlyOwnVoyages(InvocationContext ctx) throws Exception {
+            String voyageEnavId = (String) ctx.getParameters()[1];
+            // if(!subject.authorizedToModifyVoyage(voyageEnavId)){
+            // throw new
+            // AuthorizationException("Not authorized to modify voyage/route");
+            // }
+
             return ctx.proceed();
         }
     }

@@ -66,7 +66,7 @@
 							<button type="button" x-ng-if="voyage.maritimeId" class="btn btn-sm" x-ng-click="uploadRoute(voyage)">Upload
 								route</button>
 					</span></td>
-					<td><button class="btn btn-danger btn-sm pull-right" x-ng-if="!$last" x-ng-disabled="isActive(voyage)"
+					<td><button class="btn btn-danger btn-sm pull-right" x-ng-if="!$last" x-ng-disabled="activeRouteId == voyage.route.id && voyage.route"
 							x-ng-click="del($index)">Delete</button></td>
 				</tr>
 			</tbody>
