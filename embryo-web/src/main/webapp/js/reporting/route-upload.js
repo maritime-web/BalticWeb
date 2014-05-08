@@ -14,7 +14,7 @@
         angular.extend(fileUploadProvider.defaults, {
             maxFileSize : 1000000,
             // Ideally, routes and schedules should make different checks, but this can't be done at config time.
-            acceptFileTypes : /(\.|\/)(txt|rou|rt3|route|xls)$/i,
+            acceptFileTypes : /(\.|\/)(txt|rou|rt3|xls|route)$/i,
             messages : {
                 acceptFileTypes : 'File type not allowed. Accepted types are txt, rou, rt3, xls and route.',
                 maxFileSize : 'File is too large. Size may not exceed 1 MB.',
@@ -48,6 +48,11 @@
                     }
                 }
                 $scope.route = route;
+                $scope.options = {
+                        url : route ? routeUrl : scheduleUrl,
+                        dataType : 'json',
+                    };
+                    
                 $scope.reset();
                 initUpload();
                 $("#routeUploadPanel").css("display", "block");
@@ -143,18 +148,8 @@
                 $("#routeUploadPanel").css("display", "none");
             }
         }
-
-        $scope.options = {
-            url : route ? routeUrl : scheduleUrl,
-            dataType : 'json',
-        };
-
+        
         $scope.$on('fileuploaddone', done);
-
-        $scope.uploadAndActivate = function() {
-            $scope.activate = true;
-            $scope.submit();
-        };
 
         $scope.activeVoyage = function() {
             if(route) {
@@ -175,7 +170,7 @@
             $scope.activate = false;
             $scope.nameFromFile = null;
             $scope.names = null;
-            $scope.cancel();
+            $scope.$$childHead.cancel();
             
             // if already uploaded then cleared by setting queue empty
             $scope.num = 0;
