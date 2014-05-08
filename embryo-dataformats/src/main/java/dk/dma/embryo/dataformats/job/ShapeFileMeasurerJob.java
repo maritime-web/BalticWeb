@@ -208,7 +208,7 @@ public class ShapeFileMeasurerJob {
 
         private long measureFile(String pfn) throws IOException {
             ObjectMapper mapper = new ObjectMapper();
-            ShapeFileService.Shape file = service.readSingleFile(pfn, 0, "", true, 3, 0);
+            ShapeFileService.Shape file = service.readSingleFile(pfn, null, "", true, null, 0);
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             GZIPOutputStream gos = new GZIPOutputStream(out);
