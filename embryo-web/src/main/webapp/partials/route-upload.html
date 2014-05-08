@@ -65,7 +65,7 @@
 							x-ng-disabled="!queue[0] || activeVoyage() || uploaded() || uploadRouteForm.$invalid">
 							<i class="fa fa-upload"></i> <span>Upload</span>
 						</button>
-						<button type="button" class="btn btn-primary btn-sm start" x-ng-click="activate=true;submit()" x-ng-if="route"
+						<button type="button" class="btn btn-primary btn-sm start" x-ng-click="uploadAndActivate()" x-ng-if="route"
 							x-ng-show="!voyageInfo.active" x-ng-disabled="!queue[0] || uploaded() || uploadRouteForm.$invalid">
 							<i class="fa fa-upload"></i> <span>Upload and activate</span>
 						</button>

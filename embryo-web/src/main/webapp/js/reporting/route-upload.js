@@ -151,6 +151,11 @@
         
         $scope.$on('fileuploaddone', done);
 
+        $scope.uploadAndActivate = function() {
+            $scope.activate = true;
+            $scope.$$childHead.submit();
+        };
+
         $scope.activeVoyage = function() {
             if(route) {
                 return $scope.vesselDetails.additionalInformation.routeId == $scope.voyageInfo.routeId;
