@@ -18,16 +18,23 @@ function getCookie(c_name) {
 }
 
 function openCollapse(id) {
-    $(".collapse", $(id).parents(".accordion")).data("collapse", null);
-    setTimeout(function() {
+    $(".collapse", $(id).parents(".panel-group")).data("collapse", null);
+    
+    function openSelected(){
         if (!$(id).hasClass("in")) {
             $("a[href=#" + $(id).attr("id") + "]").click();
         }
-    }, 10);
+        
+        if (!$(id).hasClass("in")) {
+            setTimeout(openSelected, 10);
+        }
+    }
+    
+    openSelected();
 }
 
 function closeCollapse(id) {
-    $(".collapse", $(id).parents(".accordion")).data("collapse", null);
+    $(".collapse", $(id).parents(".panel-group")).data("collapse", null);
     if ($(id).hasClass("in")) {
         $("a[href=#" + $(id).attr("id") + "]").click();
     }
