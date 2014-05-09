@@ -123,5 +123,5 @@ footer .navbar-inner{
 	padding: 3px 6px;
 }
 
-.nav, .pagination, .carousel, .panel-title, .e-panel-header, a { cursor: pointer; }
-a.embryo-close-panel { cursor: pointer; }
+.nav, .pagination, .carousel, .panel-title, .e-panel-header a { cursor: pointer; }
+a.embryo-close-panel{ cursor: pointer; }

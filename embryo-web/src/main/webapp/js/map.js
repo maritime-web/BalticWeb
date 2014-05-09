@@ -425,8 +425,8 @@ $(function() {
     })
 });
 
-embryo.authenticated(function() {
-    $(".controlContainer a").click(function(e) {
+embryo.ready(function() {
+    $(".controlPanel a").click(function(e) {
         e.preventDefault();
     });
 });

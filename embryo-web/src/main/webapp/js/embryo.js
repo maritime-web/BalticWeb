@@ -90,7 +90,7 @@ $(function() {
             clearInterval(interval);
             embryo.eventbus.fireEvent(embryo.eventbus.EmbryoReadyEvent());
         }
-    }, 50);
+    }, 100);
 }());
 
 embryo.messagePanel = {

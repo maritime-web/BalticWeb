@@ -130,13 +130,33 @@ $(function() {
     });
 
     embryo.groupChanged(function(e) {
-        if (e.groupId == "vessel") {
-            $("#vesselControlPanel").css("display", "block");
-            $("#vesselControlPanel .collapse").data("collapse", null);
-            openCollapse("#vesselControlPanel .e-accordion-body:first");
-        } else {
-            $("#vesselControlPanel").css("display", "none");
-            embryo.vessel.actions.hide();
+        var groupId = e.groupId;
+        var count = 0;
+
+        function init(){
+            if(count < 10 && ($('#vesselControlPanel').length == 0 || $('#vcpLegends').length == 0)){
+                count++;
+                setTimeout(init, 500);
+                return;
+            }
+            
+            if (groupId == "vessel") {
+                $("#vesselControlPanel .controlPanel a").on('click', function(e) {
+                    e.preventDefault();
+                });
+                if (embryo.authentication.permissions.indexOf("Reporting") < 0) {
+                    $("#vesselControlPanel #vcpGreenposList").parent().remove();
+                }           
+                
+                $("#vesselControlPanel").css("display", "block");
+                $("#vesselControlPanel .collapse").data("collapse", null);                
+                openCollapse("#vesselControlPanel .e-accordion-body:first");
+            } else {
+                $("#vesselControlPanel").css("display", "none");
+                embryo.vessel.actions.hide();
+            }
         }
+        
+        init();
     });
 });
