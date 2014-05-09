@@ -25,11 +25,11 @@ $(function() {
             if (vessels[i].mmsi == id) return vessels[i];
         }
         return null;
-    }
+    };
 
     embryo.vessel.allVessels = function() {
         return vessels;
-    }
+    };
 
     embryo.vessel.goToVesselLocation = function (vessel) {
         if (vessel.type != null) embryo.map.setCenter(vessel.x, vessel.y, 8);
@@ -41,12 +41,12 @@ $(function() {
             vesselLayer.select(null);
             embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(vessel.mmsi))
         }
-    }
+    };
 
     embryo.vessel.setMarkedVessel = function(markedVesselId) {
         vesselLayer.markedVesselId = markedVesselId;
         vesselLayer.draw(vessels);
-    }
+    };
 
     var selectedId = null;
 
@@ -55,18 +55,18 @@ $(function() {
         if (id) embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(id));
         else embryo.eventbus.fireEvent(embryo.eventbus.VesselUnselectedEvent());
         selectedId = id;
-    })
+    });
 
     function loadVesselList() {
-        var messageId = embryo.messagePanel.show( { text: "Loading vessels ..." })
+        var messageId = embryo.messagePanel.show( { text: "Loading vessels ..." });
 
         embryo.vessel.service.list(function(data) {
             vessels = data;
-            embryo.messagePanel.replace(messageId, { text: vessels.length + " vessels loaded.", type: "success" })
+            embryo.messagePanel.replace(messageId, { text: vessels.length + " vessels loaded.", type: "success" });
             vesselLayer.draw(vessels);
         }, function(errorMsg, status){
             embryo.messagePanel.replace(messageId, { text: errorMsg, type: "error" });
-        })
+        });
     }
 
     embryo.mapInitialized(function() {

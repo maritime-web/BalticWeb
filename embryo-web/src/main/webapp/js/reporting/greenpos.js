@@ -208,7 +208,7 @@ var greenposScope;
         var vesselOverview = null, vesselDetails = null;
 
         VesselInformation.addInformationProvider({
-            title : "Greenpos Reporting",
+            title : "Reporting",
             available : function(vesselOverview, vesselDetails) {
                 if (vesselOverview.inAW)
                     return {
@@ -311,7 +311,7 @@ var greenposScope;
         $scope.max = 10;
 
         embryo.controllers.greenposListView = {
-            title : "Greenpos Reports",
+            title : "Reports",
             available : function(vesselOverview, vesselDetails) {
                 return vesselDetails.additionalInformation.greenpos;
             },
