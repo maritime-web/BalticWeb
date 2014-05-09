@@ -321,8 +321,8 @@ public class AppDataServiceBean {
         createOraTankTestData();
         uploadOraTankRoutes();
         createSarfaqTestData();
-        createSarfaqSchedule();
-        uploadSarfaqRoutes();
+        //createSarfaqSchedule();
+        //uploadSarfaqRoutes();
         createNajaArcticaTestData();
         createArinaArcticaTestData();
 
