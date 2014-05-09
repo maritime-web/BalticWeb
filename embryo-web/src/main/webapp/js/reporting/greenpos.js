@@ -309,6 +309,10 @@ var greenposScope;
 
     embryo.GreenposListCtrl = function($scope, GreenposService) {
         $scope.max = 10;
+        $scope.recipient = {
+                coastalcontrol : true,
+                greenpos : true
+        };
 
         embryo.controllers.greenposListView = {
             title : "Reports",
@@ -355,6 +359,10 @@ var greenposScope;
                 return 'Position';
             }
             return null;
+        };
+        
+        $scope.filterReports = function(report) {
+            return $scope.recipient[report.recipient];
         };
     };
 

@@ -5,7 +5,8 @@
 		</h2>
 	</div>
 	<div>
-
+		<label><input type="checkbox" x-ng-model="recipient.coastalcontrol" /> Coastal Control Reports</label>
+		<label><input type="checkbox" x-ng-model="recipient.greenpos" /> Greenpos Reports</label>
 		<table class="table">
 			<thead>
 				<tr>
@@ -21,7 +22,7 @@
 				</tr>
 			</thead>
 
-			<tbody x-ng-repeat="report in reports">
+			<tbody x-ng-repeat="report in reports | filter: filterReports">
 				<tr class="basic">
 					<td>{{reportText(report.type)}}</td>
 					<td>{{formatDateTime(report.ts)}}</td>

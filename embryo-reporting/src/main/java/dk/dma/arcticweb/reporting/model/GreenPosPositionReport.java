@@ -73,6 +73,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setCourse(getCourse());
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
+        result.setRecipients(new String[]{getRecipient()});
         
         return result;
     }
@@ -89,6 +90,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setSpeed(getSpeed());
         result.setCourse(getCourse());
         result.setTs(getTs().toDate());
+        result.setRecipient(getRecipient());
         
         return result;
     }

@@ -71,6 +71,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setDescription(getDeviation());
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
+        result.setRecipients(new String[]{getRecipient()});
         
         return result;
     }
@@ -84,7 +85,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setLat(getPosition().getLatitudeAsString());
         result.setDeviation(getDeviation());
         result.setTs(getTs().toDate());
-        
+        result.setRecipient(getRecipient());
         return result;
     }
     

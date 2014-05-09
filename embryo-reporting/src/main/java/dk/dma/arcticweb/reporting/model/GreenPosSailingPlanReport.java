@@ -102,6 +102,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setEta(eta);
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
+        result.setRecipients(new String[]{getRecipient()});
         return result;
     }
 
@@ -122,6 +123,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setPersonsOnBoard(getPersonsOnBoard());
         result.setEta(eta);
         result.setTs(getTs().toDate());
+        result.setRecipient(getRecipient());
         return result;
     }
 

@@ -46,6 +46,8 @@ public class GreenPosShort {
     private String deviation;
 
     private Date ts;
+    
+    private String recipient;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -167,5 +169,13 @@ public class GreenPosShort {
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public String getRecipient() {
+        return recipient;
+    }
+    
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 }
