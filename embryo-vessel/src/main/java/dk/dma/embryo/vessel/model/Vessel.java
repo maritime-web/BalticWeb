@@ -106,7 +106,9 @@ public class Vessel extends BaseEntity<Long> {
         result.setPersons(details.getMaxPersons());
         result.setHelipad(details.getHelipad());
         result.setIceClass(details.getIceClass());
-        result.setMaxSpeed(BigDecimal.valueOf(details.getMaxSpeed()));
+        if(details.getMaxSpeed() != null) {
+            result.setMaxSpeed(BigDecimal.valueOf(details.getMaxSpeed()));
+        }
         return result;
     }
 

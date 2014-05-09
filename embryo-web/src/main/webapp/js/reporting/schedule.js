@@ -4,7 +4,7 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var scheduleModule = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.sfTypeahead', 'embryo.position' , 'embryo.vessel']);
+            'siyfion.sfTypeahead', 'embryo.position' , 'embryo.vessel', 'ui.bootstrap']);
     
     var voyages = [];
     var pageSize = 5;
@@ -21,7 +21,7 @@
     });
     berths.initialize();
 
-    embryo.ScheduleCtrl = function($scope, VesselService, ScheduleService, RouteService, VesselInformation) {
+    embryo.ScheduleCtrl = function($scope, $q, VesselService, ScheduleService, RouteService, VesselInformation) {
         var idExists = function(voyages, id) {
             for(var vid in voyages) {
                 if(voyages[vid].maritimeId == id) {
@@ -100,10 +100,23 @@
             "No" : false
         };
 
-        $scope.berths = {
+        /*$scope.berths = {
             displayKey : 'value',
             source : berths.ttAdapter()
+        };*/
+        //$scope.berths = ['test','test2'];
+        $scope.getBerths = function(query) {
+            return function() {
+                var deferred = $q.defer();
+                berths.get(query, function(suggestions) {
+                    deferred.resolve(suggestions);
+                });
+                return deferred.promise;
+            }().then(function(res) {
+                return res;
+            });
         };
+        
 
         $scope.getLastVoyage = function() {
             if (!$scope.voyages) {
@@ -272,6 +285,14 @@
         
         $scope.$on('typeahead:selected', berthSelected);
         $scope.$on('typeahead:autocompleted', berthSelected);
+
+        $scope.getCoords = function(item, model, label) {
+            var voyage = $scope.$parent.voyage;
+            voyage.latitude = item.latitude;
+            voyage.longitude = item.longitude;
+            //$scope.$apply();
+        };
+
     };
 
     embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService, $timeout) {
@@ -366,12 +387,20 @@
     /*scheduleModule.directive('eLocationTypeahead', function() {
         return {
             restrict : 'C',
-            link : function(scope, elm, attr) {
+            require: ['ngModel'],
+            link : function(scope, elm, attr, ctrls) {
                 elm.bind('click', function() {
                     var ev = $.Event("keydown");
                     ev.keyCode = ev.which = 40;
                     $(this).trigger(ev);
                     return true;
+                });
+                elm.bind('keydown', function(e) {
+                    if(e.keyCode == 40) {
+                        //if(scope.matches.length < 1) {
+                            ctrls[0].$setViewValue('');
+                        //}
+                    }
                 });
             }
         }; 

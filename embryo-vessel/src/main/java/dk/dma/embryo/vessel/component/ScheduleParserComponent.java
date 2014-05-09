@@ -51,8 +51,13 @@ public class ScheduleParserComponent {
     private ScheduleParser scheduleParser;
 
     public ScheduleResponse parseSchedule(InputStream stream, String lastDeparture) throws IOException {
-        Long lastDepartureLong = ParseUtils.parseLong(lastDeparture);
-        Date lastDepartureDate = new Date(lastDepartureLong);
+        Date lastDepartureDate = null;
+        if(lastDeparture == null || lastDeparture.isEmpty()) {
+            lastDepartureDate = new Date(0);
+        } else {
+            Long lastDepartureLong = ParseUtils.parseLong(lastDeparture);
+            lastDepartureDate = new Date(lastDepartureLong);
+        }
 
         ScheduleResponse response = scheduleParser.parse(stream, lastDepartureDate);
 
