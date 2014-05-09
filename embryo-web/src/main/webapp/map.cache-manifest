@@ -16,7 +16,7 @@ js/ext/cdn.cloudflare/jqueryui/1.9.1/jquery-ui.min.js
 
 js/ext/cdn.googleapis/angularjs/1.2.14/angular.min.js
 js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.min.js
-js/ext/cdn.cloudflare/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js
+js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js
 
 js/arcticweb-map.js
 

@@ -42,7 +42,7 @@
                     $scope.message = null;
                     $scope.alertMessages = null;
                     VesselService.saveDetails($scope.vessel, function() {
-                        $scope.message = "vessel information successfully submitted";
+                        $scope.message = "Vessel information successfully submitted";
                     }, function(error, status) {
                         $scope.alertMessages = error;
                     });
