@@ -377,6 +377,34 @@ $(function() {
 
     embryo.ready(function() {
         var accelerate;
+        
+        function registerEvents(){
+            $("#switchBaseMapDialog .btn-primary").off();
+            $("#switchBaseMapDialog .btn-primary").on('click', function(e) {
+                var newMap;
+                
+                if ($("#bsOpenStreetMap").prop("checked"))
+                    newMap = "osm";
+                if ($("#bsSimpleVectorMap").prop("checked"))
+                    newMap = "world_merc";
+
+                $("#switchBaseMapDialog").modal("hide");
+
+                if (browser.isChrome() && parseFloat(browser.chromeVersion()) > 27) {
+                    $("#accelerate").css("display", "none");
+                    var accelerate = $("#accelerate input").prop("checked");
+                    setCookie("dma-ais-accelerate-" + embryo.authentication.userName, accelerate, 30);
+                    setupChromeAcceleration(accelerate);
+                }
+
+                if (newMap != embryo.baseMap) {
+                    embryo.baseMap = newMap;
+                    setupBaseMap(embryo.baseMap);
+                    setCookie("dma-ais-map-" + embryo.authentication.userName, embryo.baseMap, 30);
+                }
+            })
+        }
+        
         $("#switchBaseMap").click(function(e) {
             e.preventDefault();
 
@@ -389,31 +417,10 @@ $(function() {
                 $("#accelerate").css("display", "block");
             }
             $("#switchBaseMapDialog").modal("show");
+            
+            registerEvents();
         });
 
-        $("#switchBaseMapDialog .btn-primary").click(function(e) {
-            var newMap;
-
-            if ($("#bsOpenStreetMap").prop("checked"))
-                newMap = "osm";
-            if ($("#bsSimpleVectorMap").prop("checked"))
-                newMap = "world_merc";
-
-            $("#switchBaseMapDialog").modal("hide");
-
-            if (browser.isChrome() && parseFloat(browser.chromeVersion()) > 27) {
-                $("#accelerate").css("display", "none");
-                var accelerate = $("#accelerate input").prop("checked");
-                setCookie("dma-ais-accelerate-" + embryo.authentication.userName, accelerate, 30);
-                setupChromeAcceleration(accelerate);
-            }
-
-            if (newMap != embryo.baseMap) {
-                embryo.baseMap = newMap;
-                setupBaseMap(embryo.baseMap);
-                setCookie("dma-ais-map-" + embryo.authentication.userName, embryo.baseMap, 30);
-            }
-        })
 
     })
 });
