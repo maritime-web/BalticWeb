@@ -47,11 +47,11 @@
                 $scope.link = 'http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi=' + data['mmsi'];
                 $scope.$apply();
             },
-            open : function(data) {
+            show : function(data) {
                 embryo.controllers.ais.updateInfo(data);
                 $('#aisInformationPanel').css('display', 'block');
             },
-            close : function(data) {
+            hide : function(data) {
                 $('#aisInformationPanel').css('display', 'none');
             }
         };

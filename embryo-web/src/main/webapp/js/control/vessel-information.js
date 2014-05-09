@@ -100,7 +100,8 @@ $(function() {
         $("#selectedAesInformationLink").off("click");
         $("#selectedAesInformationLink").on("click", function(e) {
             e.preventDefault();
-            embryo.controllers.ais.open(vesselDetails.ais);
+            embryo.vessel.actions.hide();
+            embryo.controllers.ais.show(vesselDetails.ais);
         });
     }
     
