@@ -1,5 +1,10 @@
+
+#routeEdit {
+	max-width:950px;
+}
+
 #routeEdit .input-heading{
-	width:100px;
+	min-width:110px;
 }
 
 #routeEdit .table{

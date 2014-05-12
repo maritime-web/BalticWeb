@@ -65,8 +65,8 @@
 				<tbody>
 					<tr name="wayPointsNestedForm" x-ng-form x-ng-repeat="wp in waypoints">
 						<td><input x-ng-model="wp.name" class="input-sm form-control" type="text" x-ng-required="!$last" /></td>
-						<td><input latitude x-ng-model="wp.latitude" class="input-sm form-control" type="text" x-ng-required="!$last" /></td>
-						<td><input longitude x-ng-model="wp.longitude" class="input-sm form-control" type="text" x-ng-required="!$last" /></td>
+						<td><input latitude x-ng-model="wp.latitude" class="input-sm form-control lat" type="text" x-ng-required="!$last" /></td>
+						<td><input longitude x-ng-model="wp.longitude" class="input-sm form-control lon" type="text" x-ng-required="!$last" /></td>
 						<td><input x-ng-model="wp.turnRad" class="input-sm form-control" type="text" /></td>
 						<td><select name="heading" x-ng-model="wp.heading" class="input-sm form-control input-heading" x-ng-required="!$last">
 								<option value="RL">Rhumb line</option>
