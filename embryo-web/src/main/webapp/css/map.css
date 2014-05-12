@@ -99,6 +99,11 @@ body {
 
 .e-btn-tall {
 	height: 32px;
+	font-size:10px;
+}
+
+.e-btn-low {
+	height: 19px;
 	font-size: 10px;
 }
 

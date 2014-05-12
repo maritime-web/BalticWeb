@@ -374,7 +374,7 @@ $(function() {
             }
         }
     });
-
+    
     embryo.ready(function() {
         var accelerate;
         
@@ -429,4 +429,18 @@ embryo.ready(function() {
     $(".controlPanel a").click(function(e) {
         e.preventDefault();
     });
+});
+
+var mapModule = angular.module('embryo.zoom', [ 'embryo.authentication' ]);
+
+mapModule.controller('ZoomController', function($scope, Subject){
+    embryo.authenticated(function(){
+        var zoom2YourVessel = Subject.authorize('Sailor');
+        
+        if(zoom2YourVessel){
+            $('#dmaZoomIn').removeClass('e-btn-low').addClass('e-btn-tall');
+            $('#dmaZoomOut').removeClass('e-btn-low').addClass('e-btn-tall');
+        }
+    });
+    
 });

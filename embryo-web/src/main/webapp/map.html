@@ -114,16 +114,16 @@
 <!-- endbuild -->
 
 <script defer="defer" type="text/javascript">
-    angular.module('embryo.map', [ 'ui.bootstrap', 'embryo.menu', 'embryo.routeService', 'embryo.greenpos', 'embryo.vessel.controller', 'embryo.ice',
-            'embryo.msi', 'embryo.routeUpload', 'embryo.schedule', 'embryo.routeEdit', 'embryo.decimal',
-            'embryo.authentication', 'embryo.shape' ]);
+    angular.module('embryo.map', [ 'embryo.zoom', 'ui.bootstrap', 'embryo.menu', 'embryo.routeService', 'embryo.greenpos',
+            'embryo.vessel.controller', 'embryo.ice', 'embryo.msi', 'embryo.routeUpload', 'embryo.schedule',
+            'embryo.routeEdit', 'embryo.decimal', 'embryo.authentication', 'embryo.shape' ]);
 </script>
 <!--'embryo.metoc', -->
 
 </head>
 
 <body>
-	
+
 	<div x-ng-include="'partials/authentication.html'"></div>
 	<div x-ng-include="'partials/menu.html'"></div>
 
@@ -140,15 +140,20 @@
 		<div x-ng-include="'partials/switch-base-map.html'"></div>
 	</div>
 
-	<div id="zoomControlPanel" class="e-small-font">
+	<div id="zoomControlPanel"  x-ng-controller="ZoomController" class="e-small-font">
+		<div class="pull-right">
+			<p>
+				<button id="dmaZoomIn" class="btn btn-primary btn-xs e-btn-low">
+					<i class="fa fa-plus"></i>
+				</button>
+			</p>
+			<p>
+				<button id="dmaZoomOut" x-ng-class="" class="btn btn-primary btn-xs e-btn-low">
+					<i class="fa fa-minus"></i>
+				</button>
+			</p>
+		</div>
 		<p>
-			<div style="float:right">
-				<p>
-					<button id="dmaZoomIn" class="btn e-btn-tall btn-primary btn-xs"><i class="fa fa-plus"></i></button>
-					<br /><br />
-					<button id="dmaZoomOut" class="btn e-btn-tall btn-primary btn-xs"><i class="fa fa-minus"></i></button>
-				</p>
-			</div>
 			<button class="btn e-btn-wide btn-primary btn-xs" id="zoomAll">Zoom All Arctic</button>
 		</p>
 		<p>
@@ -157,9 +162,10 @@
 		<p>
 			<button class="btn e-btn-wide btn-primary btn-xs" id="switchBaseMap">Switch Base Map</button>
 		</p>
-		<p>
-			<b>Pointer coordinates:</b> <br /><span id="coords"></span>
-		</p>
+		<div style="float: left" class="e-small-font">
+			<b>Pointer coordinates:</b> <br />
+			<span id="coords"></span>
+		</div>
 	</div>
 
 	<div class="reportingPanel well" id="vesselInformationEditPanel">
