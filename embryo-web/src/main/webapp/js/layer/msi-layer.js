@@ -18,9 +18,12 @@ function MsiLayer() {
                 return -context.size() / 2;
             },
             size: function() {
-                return [16, 20, 24][that.zoomLevel]
+                return [16, 20, 24][that.zoomLevel];
+            },
+            description: function(feature) {
+                return feature.cluster ? feature.cluster.length + ' warnings' : feature.data.description;
             }
-        }
+        };
 
         this.layers.msi = new OpenLayers.Layer.Vector("MSI", {
             styleMap: new OpenLayers.StyleMap({
@@ -69,12 +72,18 @@ function MsiLayer() {
                     strokeOpacity: 0.8
                 }, { context: context} )
 
-            })
+            }),
+            strategies: [
+                    new OpenLayers.Strategy.Cluster({
+                        distance: 25,
+                        threshold: 3
+                    })
+            ]
         });
 
         this.selectableLayer = this.layers.msi;
         this.selectableAttribute = "msi";
-    }
+    };
 
     this.draw = function(data) {
         this.layers.msi.removeAllFeatures();
@@ -87,7 +96,7 @@ function MsiLayer() {
                 description: data[i].enctext,
                 type : "msi",
                 msi : data[i]
-            }
+            };
 
             switch (data[i].type) {
                 case "Point":
@@ -134,7 +143,7 @@ function MsiLayer() {
         }
 
         this.layers.msi.addFeatures(features);
-    }
+    };
 }
 
 MsiLayer.prototype = new EmbryoLayer();
