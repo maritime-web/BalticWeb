@@ -344,6 +344,16 @@ var greenposScope;
         $scope.formatCourse = function(course) {
             return formatCourse(course);
         };
+        
+        $scope.formatRecipient = function(recipient) {
+            switch(recipient) {
+                case 'coastalcontrol':
+                   return 'Coastal Control';
+                case 'greenpos':
+                    return 'Greenpos';
+            };
+            return '';
+        };
 
         $scope.reportText = function(type) {
             if (type === 'SP') {

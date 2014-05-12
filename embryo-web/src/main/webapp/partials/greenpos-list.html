@@ -19,6 +19,7 @@
 					<th>Persons</th>
 					<th>Destination</th>
 					<th>ETA (UTC)</th>
+					<th>Recipient</th>
 				</tr>
 			</thead>
 
@@ -33,6 +34,7 @@
 					<td>{{report.personsOnBoard}}</td>
 					<td>{{report.destination}}</td>
 					<td>{{formatDateTime(report.eta)}}</td>
+					<td>{{formatRecipient(report.recipient)}}</td>
 				</tr>
 				<tr class="extra" x-ng-show="report.type=='SP' || report.type=='FR' || report.type=='PR'">
 					<td colspan="9">Weather: {{report.weather}}<br />Ice: {{report.ice}}
