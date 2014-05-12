@@ -116,7 +116,7 @@ $(function() {
             if (shipSelected == false) return;
             var vessel = embryo.vessel.lookupVessel(e.vesselId);
             showVesselInformation(vessel, data);
-            embryo.vessel.actions.setup("#selectedVesselActions", embryo.vessel.actions.selectedVessel, vessel, data);
+            embryo.vessel.actions.setup("#selectedVesselActions", embryo.vessel.actions.selectedVessel(), vessel, data);
         }, function(errorMsg, status){
             embryo.messagePanel.show({ text: errorMsg, type: "error" });
         });

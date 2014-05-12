@@ -1,37 +1,39 @@
 embryo.vessel.actions = {
-    activeItem: null,
-    activeItemRow: null,
-    hide: function() {
+    activeItem : null,
+    activeItemRow : null,
+    hide : function() {
         if (this.activeItemRow) {
-            if(this.isHideable(this.activeItemRow)){
-                $("#"+this.activeItemRow).find("a").text("view");
+            if (this.isHideable(this.activeItemRow)) {
+                $("#" + this.activeItemRow).find("a").text("view");
             }
-            $("#"+this.activeItemRow).removeClass("alert");
+            $("#" + this.activeItemRow).removeClass("alert");
         }
-        if (this.activeItem && this.activeItem.hide) this.activeItem.hide();
-        if (this.activeItem && this.activeItem.close) this.activeItem.close();
+        if (this.activeItem && this.activeItem.hide)
+            this.activeItem.hide();
+        if (this.activeItem && this.activeItem.close)
+            this.activeItem.close();
         this.activeItem = null;
         this.activeItemRow = null;
         $(".reportingPanel").css("display", "none");
     },
-    isMarkedActiveItem : function(rowId){
+    isMarkedActiveItem : function(rowId) {
         return this.activeItemRow == rowId;
     },
-    isHideable : function(rowId){
-        return $("#"+rowId).find("a").text() == "hide";
+    isHideable : function(rowId) {
+        return $("#" + rowId).find("a").text() == "hide";
     },
-    markActiveItem: function() {
+    markActiveItem : function() {
         if (this.activeItemRow) {
-            $("#"+this.activeItemRow).addClass("alert");
+            $("#" + this.activeItemRow).addClass("alert");
         }
     },
-    setup: function(id, items, vesselOverview, vesselDetails) {
+    setup : function(id, items, vesselOverview, vesselDetails) {
         var html = "";
         var inTable = false;
-        for (var i in items) {
+        for ( var i in items) {
             var item = items[i];
             if (item) {
-                switch (typeof(item)) {
+                switch (typeof (item)) {
                 case "string":
                     if (inTable) {
                         inTable = false;
@@ -45,7 +47,7 @@ embryo.vessel.actions = {
                         html += "<table class='table table-condensed'>"
                     }
 
-                    html += "<tr id=" + $(id).attr("id") + "_" + i + "><th>"+item.title+"</th>";
+                    html += "<tr id=" + $(id).attr("id") + "_" + i + "><th>" + item.title + "</th>";
 
                     var available = false;
 
@@ -54,17 +56,20 @@ embryo.vessel.actions = {
                     }
 
                     switch (available) {
-                        case false:
-                            html += "<td><span class='label label-default'>NOT AVAILABLE</span></td><td></td>"
-                            break;
-                        case true:
-                            html += "<td><span class='label label-success'>AVAILABLE</span></td><td><a href=# aid="+i+">view</a></td>"
-                            break;
-                        default:
-                            var klass = "";
-                            if (available.klass) klass = "label-"+available.klass;
-                            html += "<td><span class='label "+klass+"'>"+available.text+"</span></td><td><a href=# aid="+i+">"+available.action+"</a></td>"
-                            break;
+                    case false:
+                        html += "<td><span class='label label-default'>NOT AVAILABLE</span></td><td></td>"
+                        break;
+                    case true:
+                        html += "<td><span class='label label-success'>AVAILABLE</span></td><td><a href=# aid=" + i
+                                + ">view</a></td>"
+                        break;
+                    default:
+                        var klass = "";
+                        if (available.klass)
+                            klass = "label-" + available.klass;
+                        html += "<td><span class='label " + klass + "'>" + available.text
+                                + "</span></td><td><a href=# aid=" + i + ">" + available.action + "</a></td>"
+                        break;
                     }
 
                     html += "</tr>";
@@ -82,13 +87,13 @@ embryo.vessel.actions = {
             e.preventDefault();
 
             var rowId = $(this).parents("tr").attr("id");
-            if(that.isMarkedActiveItem(rowId) && that.isHideable(rowId)){
+            if (that.isMarkedActiveItem(rowId) && that.isHideable(rowId)) {
                 that.hide();
-            }else{
+            } else {
                 that.hide();
                 that.activeItemRow = rowId;
                 that.activeItem = items[$(this).attr("aid")];
-                if(that.activeItem && that.activeItem.hide){
+                if (that.activeItem && that.activeItem.hide) {
                     $(this).text("hide");
                 }
                 that.markActiveItem();
@@ -105,17 +110,15 @@ embryo.ready(function() {
     });
 });
 
-embryo.authenticated(function() {
-
-    embryo.vessel.actions.selectedVessel = [
-        "ArcticWeb Reporting",
-        embryo.controllers.vesselInformationView,
-        embryo.controllers.scheduleView,
-        embryo.additionalInformation.route,
-        (embryo.authentication.permissions.indexOf("Reporting") >= 0) ? embryo.controllers.greenposListView : null,
-        "Additional Information",
-        embryo.additionalInformation.historicalTrack,
-        embryo.additionalInformation.nearestShips,
-        embryo.additionalInformation.distanceCircles
-    ];
-});
+embryo.vessel.actions.selectedVessel = function() {
+    return [ "ArcticWeb Reporting", 
+             embryo.controllers.vesselInformationView, 
+             embryo.controllers.scheduleView,
+             embryo.additionalInformation.route,
+             (embryo.authentication.permissions.indexOf("Reporting") >= 0) ? embryo.controllers.greenposListView : null,
+             "Additional Information", 
+             embryo.additionalInformation.historicalTrack,
+             embryo.additionalInformation.nearestShips, 
+             embryo.additionalInformation.distanceCircles 
+           ];
+};
