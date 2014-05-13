@@ -85,6 +85,10 @@ $(function() {
                     allIncludesLoaded = false;
             });
         }
+        
+        $(".controlPanel a").off('click').on('click',function(e) {
+            e.preventDefault();
+        });
 
         if (allIncludesLoaded) {
             clearInterval(interval);
