@@ -297,11 +297,13 @@
 
     embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService, $timeout) {
         $scope.collapse = false;
+        $scope.viewAll = true;
         
         var loadSchedule = function() {
             if ($scope.mmsi) {
                 ScheduleService.getSchedule($scope.mmsi, function(schedule) {
                     $scope.voyages = schedule.voyages.slice();
+                    $scope.toggleView();
                     $("#scheduleViewPanel").css("display", "block");
                 });
             }
@@ -352,10 +354,40 @@
         $scope.formatDateTime = function(timeInMillis) {
             return formatTime(timeInMillis);
         };
+        
+        $scope.toggleView = function() {
+            for(var i in $scope.voyages) {
+                $scope.voyages[i].showRoute = $scope.viewAll;
+            }
+        };
+        
+        $scope.checkAll = function() {
+            for(var i in $scope.voyages) {
+                if(!$scope.voyages[i].showRoute) {
+                    $scope.viewAll = false;
+                    return;
+                }
+            }
+            $scope.viewAll = true;
+        };
 
         $scope.view = function() {
             $scope.collapse = true;
-            $scope.scheduleLayer.draw($scope.voyages);
+            var voyagesToDraw = [];
+            for(var i in $scope.voyages) {
+                var voyage = $scope.voyages[i];
+                if(voyage.showRoute) {
+                    if(voyage.route) {
+                        RouteService.getRoute(voyage.route.id, function(route) {
+                            var routeType = embryo.route.service.getRouteType($scope.mmsi, voyage.route.id); 
+                            $scope.routeLayer.draw(route, routeType);
+                        });
+                    } else {
+                        voyagesToDraw.push(voyage);
+                    }
+                }
+            }
+            $scope.scheduleLayer.draw(voyagesToDraw);
             $scope.scheduleLayer.zoomToExtent();
         };
 

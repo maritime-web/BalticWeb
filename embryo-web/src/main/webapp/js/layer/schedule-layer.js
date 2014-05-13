@@ -35,7 +35,7 @@ function ScheduleLayer(color) {
                 'temporary' : temporaryStyle
             })
         });
-    }
+    };
 
     function createVectorFeatures(voyages) {
         var features = [];
@@ -65,7 +65,7 @@ function ScheduleLayer(color) {
             this.layers.schedule.addFeatures(createVectorFeatures(schedule));
             this.layers.schedule.refresh();
         }
-    }
+    };
 }
 
 ScheduleLayer.prototype = new EmbryoLayer();

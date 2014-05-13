@@ -3,7 +3,8 @@ function RouteLayer() {
         var colors = {
             "active" : "#FF0000",
             "planned" : "#D5672D",
-            "other" : "#3E7D1D"
+            "otheractive" : "#3E7D1D",
+            "otherplanned" : "#2AAC0C"
         // Another green : "#2AAC0C"
         // orig green 2a6237
         };
@@ -37,13 +38,14 @@ function RouteLayer() {
         this.layers.route = new OpenLayers.Layer.Vector("routeLayer", {
             styleMap : new OpenLayers.StyleMap({
                 'default' : new OpenLayers.Style(yourDefault, {
-                    context : context
+                    context : context,
+                    orientation : true
                 }),
                 'select' : selectStyle,
                 'temporary' : temporaryStyle
             })
         });
-    }
+    };
 
     this.createVectorFeatures = function(route, colorKey) {
         var features = [];
@@ -76,6 +78,7 @@ function RouteLayer() {
 
             var multiLine = new OpenLayers.Geometry.MultiLineString([ new OpenLayers.Geometry.LineString(points) ]);
             var feature = new OpenLayers.Feature.Vector(multiLine, {
+                renderers : ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
                 featureType : 'route',
                 route : route,
                 colorKey : colorKey
@@ -85,7 +88,7 @@ function RouteLayer() {
         }
 
         return features;
-    }
+    };
     // function removeDrawnRoutes(layer, colorKey){
     // if(colorKey == "active"){
     // var features = layer.getFeaturesByAttribute('colorKey','active');
@@ -124,4 +127,4 @@ var RouteLayerSingleton = {
         }
         return this.instance;
     }
-}
+};
