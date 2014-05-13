@@ -4,8 +4,12 @@ function MsiLayer() {
 
         var that = this;
 
+        var noTransparency = browser.isChrome() && parseFloat(browser.chromeVersion())== 34;
         var context = {
             transparency: function() {
+                if(noTransparency){
+                    return 1.0;      
+                }
                 return that.active ? 0.8 : 0.4;
             },
             labelTransparency: function() {
