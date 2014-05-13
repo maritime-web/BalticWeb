@@ -11,8 +11,8 @@ css/arcticweb-front.css
 
 js/ext/cdn.cloudflare/jquery/1.9.1/jquery.min.js
 js/ext/cdn.netdna/bootstrap/3.1.1/js/bootstrap.min.js
-js/ext/cdn.googleapis/angularjs/1.2.14/angular.min.js
-js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.min.js
+js/ext/modified-angular-1.2.14/angular.min.js
+js/ext/modified-angular-1.2.14/angular-cookies.min.js
 js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js
 
 js/arcticweb-front.js
@@ -30,4 +30,4 @@ partials/menu.html
 partials/authentication.html
 partials/footer.html
 
-# Version: 21
+# Version: 22

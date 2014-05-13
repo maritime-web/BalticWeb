@@ -31,9 +31,8 @@
 
 <script src="js/ext/cdn.cloudflare/jqueryui/1.9.1/jquery-ui.min.js"></script>
 
-<!-- <script src="js/ext/angular.min.js"></script>-->
-<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular.min.js"></script>
-<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.min.js"></script>
+<script src="js/ext/modified-angular-1.2.14/angular.min.js"></script>
+<script src="js/ext/modified-angular-1.2.14/angular-cookies.min.js"></script>
 <script src="js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
 
 <script src="js/ext/cdn.netdna/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -114,9 +113,9 @@
 <!-- endbuild -->
 
 <script defer="defer" type="text/javascript">
-    angular.module('embryo.map', [ 'embryo.zoom', 'ui.bootstrap', 'embryo.menu', 'embryo.routeService', 'embryo.greenpos',
+    angular.module('embryo.map', [ 'ui.bootstrap', 'embryo.menu', 'embryo.routeService', 'embryo.greenpos',
             'embryo.vessel.controller', 'embryo.ice', 'embryo.msi', 'embryo.routeUpload', 'embryo.schedule',
-            'embryo.routeEdit', 'embryo.decimal', 'embryo.authentication', 'embryo.shape' ]);
+            'embryo.routeEdit', 'embryo.decimal', 'embryo.authentication', 'embryo.shape', 'embryo.zoom' ]);
 </script>
 <!--'embryo.metoc', -->
 

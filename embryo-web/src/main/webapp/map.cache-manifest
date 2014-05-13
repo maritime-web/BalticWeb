@@ -14,8 +14,8 @@ js/ext/cdn.cloudflare/openlayers/2.13.1/OpenLayers.js
 js/ext/cdn.netdna/bootstrap/3.1.1/js/bootstrap.min.js
 js/ext/cdn.cloudflare/jqueryui/1.9.1/jquery-ui.min.js
 
-js/ext/cdn.googleapis/angularjs/1.2.14/angular.min.js
-js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.min.js
+js/ext/modified-angular-1.2.14/angular.min.js
+js/ext/modified-angular-1.2.14/angular-cookies.min.js
 js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js
 
 js/arcticweb-map.js
@@ -59,4 +59,4 @@ img/ring.png
 img/green_marker.png
 img/aw-logo.png
 
-# Version: 39
+# Version: 40
