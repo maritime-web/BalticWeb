@@ -8,7 +8,7 @@
     
     var voyages = [];
     var pageSize = 5;
-    
+
     var berths = new Bloodhound({
         datumTokenizer : Bloodhound.tokenizers.obj.nonword('value'),
         queryTokenizer : Bloodhound.tokenizers.whitespace, 
@@ -19,7 +19,11 @@
         },
         remote : berthUrl
     });
-    berths.initialize();
+    
+    embryo.authenticated(function(){
+        berths.initialize();
+    });
+
 
     embryo.ScheduleCtrl = function($scope, $q, VesselService, ScheduleService, RouteService, VesselInformation) {
         var idExists = function(voyages, id) {

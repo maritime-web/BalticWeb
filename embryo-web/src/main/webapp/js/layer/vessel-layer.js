@@ -38,7 +38,7 @@ function VesselLayer() {
 
         var that = this;
 
-	var noTransparency = browser.isChrome() && parseFloat(browser.chromeVersion())== 34;
+	    var noTransparency = browser.isChrome() && parseFloat(browser.chromeVersion())== 34;
         this.context = {
             transparency: function() {
         		if(noTransparency){
