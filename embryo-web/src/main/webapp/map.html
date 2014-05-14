@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" x-ng-app="embryo.map" manifest="map.cache-manifest" type="text/cache-manifest">
+<html lang="en" x-ng-app="embryo.map" manifest="map.appcache" type="text/cache-manifest">
 <head>
 <meta charset="utf-8" />
 <title>ArcticWeb Greenland - Map</title>
@@ -31,8 +31,8 @@
 
 <script src="js/ext/cdn.cloudflare/jqueryui/1.9.1/jquery-ui.min.js"></script>
 
-<script src="js/ext/modified-angular-1.2.14/angular.js"></script>
-<script src="js/ext/modified-angular-1.2.14/angular-cookies.js"></script>
+<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular.js"></script>
+<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.js"></script>
 <script src="js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
 
 <script src="js/ext/cdn.netdna/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -108,11 +108,10 @@
 <script src="js/reporting/schedule.js" defer="defer" type="text/javascript"></script>
 <script src="js/reporting/route-upload.js" defer="defer" type="text/javascript"></script>
 <script src="js/reporting/greenpos.js" defer="defer" type="text/javascript"></script>
-
 <script src="js/control/vessel-actions.js" defer="defer" type="text/javascript"></script>
-<!-- endbuild -->
 
-<!--'embryo.metoc', -->
+<script src="js/mapapp.js" defer="defer" type="text/javascript"></script>
+<!-- endbuild -->
 
 </head>
 
@@ -189,15 +188,6 @@
 	<div class="reportingPanel well" id="greenposListPanel">
 		<div x-ng-include="'partials/greenpos-list.html'"></div>
 	</div>
-
-	<script defer="defer" type="text/javascript">
-	(function() {
-	    "use strict";
-	    angular.module('embryo.map', [ 'ui.bootstrap', 'embryo.menu', 'embryo.routeService', 'embryo.greenpos',
-	            'embryo.vessel.controller', 'embryo.ice', 'embryo.msi', 'embryo.routeUpload', 'embryo.schedule',
-	            'embryo.routeEdit', 'embryo.decimal', 'embryo.authentication', 'embryo.shape', 'embryo.zoom' ]);
-	})();
-	</script>
 
 </body>
 

@@ -173,7 +173,7 @@ module.exports = function(grunt) {
         },
         replace : {
             run : {
-                src : [ '<%= proj.src %>/*.{html,cache-manifest}' ],
+                src : [ '<%= proj.src %>/*.{html,appcache}' ],
                 dest : '<%= proj.build %>/', // destination directory or file
                 replacements : [ {
                     from : 'js/ext/cdn.cloudflare', // string replacement

@@ -31,17 +31,17 @@
 
   <filter-mapping>
     <filter-name>SetCacheManifestContentTypeFilter</filter-name>
-    <url-pattern>/map.cache-manifest</url-pattern>
+    <url-pattern>/map.appcache</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
     <filter-name>SetCacheManifestContentTypeFilter</filter-name>
-    <url-pattern>/index.cache-manifest</url-pattern>
+    <url-pattern>/index.appcache</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
     <filter-name>SetCacheManifestContentTypeFilter</filter-name>
-    <url-pattern>/content.cache-manifest</url-pattern>
+    <url-pattern>/content.appcache</url-pattern>
   </filter-mapping>
 
   <welcome-file-list>
