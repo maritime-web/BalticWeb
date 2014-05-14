@@ -18,7 +18,7 @@ $(function() {
         }
     });
 
-    embryo.authenticated(function() {
+    
         function requestMsiList() {
             var messageId = embryo.messagePanel.show( { text: "Requesting active MSI warnings ..." });
 
@@ -75,8 +75,19 @@ $(function() {
 
         requestMsiList();
         setInterval(requestMsiList, 1 * 60 * 1000 * 60);
-    });
+        
+        
+        if(typeof embryo.authentication.permissions === 'undefined'){
+            embryo.authenticated(function() {
+                requestMsiList();
+                setInterval(requestMsiList, 1 * 60 * 1000 * 60);
+            });
+        }else{
+            requestMsiList();
+            setInterval(requestMsiList, 1 * 60 * 1000 * 60);
+        }
 
+    
     embryo.ready(function() {
         function fixAccordionSize() {
             $("#msiControlPanel .e-accordion-inner").css("overflow", "auto");

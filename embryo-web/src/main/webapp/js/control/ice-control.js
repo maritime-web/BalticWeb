@@ -47,11 +47,19 @@ $(function() {
             }
         }, true);
 
-        embryo.authenticated(function() {
+        function init(){
             loadProviders();
             $timeout(loadProviders, 24 * 60 * 1000 * 60);
             $timeout(requestIceObservations, 2 * 60 * 1000 * 60);
-        });
+        }
+        
+        if(typeof embryo.authentication.permissions === 'undefined'){
+            embryo.authenticated(function() {
+                init();
+            });
+        }else{
+            init();
+        }
 
         function requestIceObservations() {
             var messageId = embryo.messagePanel.show({
