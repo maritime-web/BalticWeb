@@ -15,10 +15,10 @@ embryo.eventbus.registerShorthand(embryo.eventbus.VesselSelectedEvent, "vesselSe
 embryo.eventbus.registerShorthand(embryo.eventbus.VesselUnselectedEvent, "vesselUnselected");
 
 $(function() {
-    var vessels;
+    var vessels = null;
     var vesselLayer = new VesselLayer();
 
-    addLayerToMap("vessel", vesselLayer, embryo.map)
+    addLayerToMap("vessel", vesselLayer, embryo.map);
 
     embryo.vessel.lookupVessel = function(id) {
         for (var i in vessels) {
@@ -33,13 +33,14 @@ $(function() {
 
     embryo.vessel.goToVesselLocation = function (vessel) {
         if (vessel.type != null) embryo.map.setCenter(vessel.x, vessel.y, 8);
-    }
+    };
 
     embryo.vessel.selectVessel = function (vessel) {
-        if (vessel.type) vesselLayer.select(vessel.mmsi);
-        else {
+        if (vessel.type) {
+            vesselLayer.select(vessel.mmsi);
+        } else {
             vesselLayer.select(null);
-            embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(vessel.mmsi))
+            embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(vessel.mmsi));
         }
     };
 
@@ -76,7 +77,7 @@ $(function() {
 
     embryo.authenticated(function() {
         
-        if (embryo.authentication.permissions.indexOf("Reporting") < 0) {
+        if (!$.inArray("Reporting", embryo.authentication.permissions)) {
             $("#vcpGreenposList").parent().remove();
         }
 

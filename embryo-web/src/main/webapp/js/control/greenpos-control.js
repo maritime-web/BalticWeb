@@ -36,12 +36,12 @@
 
             embryo.vesselUnselected(function() {
                 $("tr", "#greenposTableBody").removeClass("alert");
-            })
+            });
         });
     }
 
     embryo.authenticated(function() {
-        if (embryo.authentication.permissions.indexOf("Reporting") >= 0) {
+        if ($.inArray("Reporting", embryo.authentication.permissions)) {
             loadGreenposReports();
         }
     });

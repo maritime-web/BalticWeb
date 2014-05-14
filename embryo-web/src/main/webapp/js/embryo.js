@@ -72,7 +72,9 @@ $(function() {
 
         if (allIncludesLoaded) {
             $("ng-include").each(function(k, v) {
-                var l = $(v).html().trim().length;
+                var html = $(v).html();
+                // IE 8 doesn't support trim(), so we use the jQuery version instead
+                var l = $.trim(html).length;
                 if (l == 0)
                     allIncludesLoaded = false;
             });
@@ -80,7 +82,9 @@ $(function() {
 
         if (allIncludesLoaded) {
             $("div[x-ng-include]").each(function(k, v) {
-                var l = $(v).html().trim().length;
+                var html = $(v).html();
+                // IE 8 doesn't support trim(), so we use the jQuery version instead
+                var l = $.trim(html).length;
                 if (l == 0)
                     allIncludesLoaded = false;
             });

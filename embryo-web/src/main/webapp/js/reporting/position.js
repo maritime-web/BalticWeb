@@ -4,7 +4,7 @@
     embryo.position = {};
 
     embryo.position.parseLatitude = function (value) {
-        if (value.trim().indexOf(" ") < 0) {
+        if ($.trim(value).indexOf(" ") < 0) {
             var parsed = parseFloat(value);
             if (parsed == value) {
                 return parsed;
@@ -15,7 +15,7 @@
     };
 
     embryo.position.parseLongitude = function (value) {
-        if (value.trim().indexOf(" ") < 0) {
+        if ($.trim(value).indexOf(" ") < 0) {
             var parsed = parseFloat(value);
             if (parsed == value) {
                 return parsed;
@@ -29,7 +29,7 @@
         var parts = [];
         parts[2] = posStr.substring(posStr.length - 1);
         posStr = posStr.substring(0, posStr.length - 1);
-        var posParts = posStr.trim().split(" ");
+        var posParts = $.trim(posStr).split(" ");
         if (posParts.length != 2) {
             throw "Format exception";
         }
@@ -39,7 +39,7 @@
     }
 
     function parseString(str){
-        str = str.trim();
+        str = $.trim(str);
         if (str == null || str.length == 0) {
             return null;
         }
