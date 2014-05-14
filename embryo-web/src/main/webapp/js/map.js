@@ -19,7 +19,22 @@ embryo.eventbus.registerShorthand(embryo.eventbus.HighLightEvent, "highlight");
 embryo.eventbus.registerShorthand(embryo.eventbus.UnHighLightEvent, "unhighlight");
 embryo.eventbus.registerShorthand(embryo.eventbus.MapInitialized, "mapInitialized");
 
+var mapModule = angular.module('embryo.zoom', [ 'embryo.authentication' ]);
+
+mapModule.controller('ZoomController', ['$scope', 'Subject', function($scope, Subject){
+    embryo.authenticated(function(){
+        var zoom2YourVessel = Subject.authorize('Sailor');
+        
+        if(zoom2YourVessel){
+            $('#dmaZoomIn').removeClass('e-btn-low').addClass('e-btn-tall');
+            $('#dmaZoomOut').removeClass('e-btn-low').addClass('e-btn-tall');
+        }
+    });
+    
+}]);
+
 $(function() {
+    
     var selectLayerByGroup = {};
 
     var controlsByGroup = {};
@@ -431,16 +446,3 @@ embryo.ready(function() {
     });
 });
 
-var mapModule = angular.module('embryo.zoom', [ 'embryo.authentication' ]);
-
-mapModule.controller('ZoomController', function($scope, Subject){
-    embryo.authenticated(function(){
-        var zoom2YourVessel = Subject.authorize('Sailor');
-        
-        if(zoom2YourVessel){
-            $('#dmaZoomIn').removeClass('e-btn-low').addClass('e-btn-tall');
-            $('#dmaZoomOut').removeClass('e-btn-low').addClass('e-btn-tall');
-        }
-    });
-    
-});

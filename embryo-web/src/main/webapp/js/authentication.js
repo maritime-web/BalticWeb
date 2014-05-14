@@ -399,9 +399,9 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
     } ]);
 
     module.run([ 'Subject', '$rootScope', '$location', '$modal', function(Subject, $rootScope, $location, $modal) {
-        embryo.ready(function() {
-            embryo.security.Subject = Subject;
+        embryo.security.Subject = Subject;
 
+        embryo.ready(function() {
             $rootScope.Subject = Subject;
             $rootScope.logout = logout;
 
