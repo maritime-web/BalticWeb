@@ -243,12 +243,12 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
     } ]);
 
     function detectBrowser() {
-        if (browser.isIE() && browser.ieVersion() <= 7) {
-            $("#ie7ver").html(browser.ieVersion());
-            $("#ie7").show();
-        } else if (browser.isIE() && browser.ieVersion() <= 9) {
-            $("#ie89ver").html(browser.ieVersion());
-            $("#ie89").show();
+        if (browser.isIE() && browser.ieVersion() <= 8) {
+            $("#ie78ver").html(browser.ieVersion());
+            $("#ie78").show();
+        } else if (browser.isIE() && browser.ieVersion() == 9) {
+            $("#ie9ver").html(browser.ieVersion());
+            $("#ie9").show();
         }
     }
 
@@ -267,10 +267,10 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         $scope.msg = msg;
         $scope.focusMe = true;
 
-        if (browser.isIE() && browser.ieVersion() <= 7) {
-            $scope.ie7ver = browser.ieVersion();
-        } else if (browser.isIE() && browser.ieVersion() <= 9) {
-            $scope.ie89ver = browser.ieVersion();
+        if (browser.isIE() && browser.ieVersion() <= 8) {
+            $scope.ie78ver = browser.ieVersion();
+        } else if (browser.isIE() && browser.ieVersion() == 9) {
+            $scope.ie9ver = browser.ieVersion();
         }
 
         $scope.useCookies = useCookies();
