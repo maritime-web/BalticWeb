@@ -73,10 +73,6 @@ $(function() {
             });
         }
 
-        requestMsiList();
-        setInterval(requestMsiList, 1 * 60 * 1000 * 60);
-        
-        
         if(typeof embryo.authentication.permissions === 'undefined'){
             embryo.authenticated(function() {
                 requestMsiList();
