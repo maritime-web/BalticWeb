@@ -104,10 +104,18 @@ embryo.vessel.actions = {
 }
 
 embryo.ready(function() {
-    $(".embryo-close-panel").click(function(e) {
-        e.preventDefault();
-        embryo.vessel.actions.hide();
-    });
+    function registerClosePanels(){
+        $("a.embryo-close-panel").off('click').on('click', function(e) {
+            e.preventDefault();
+            embryo.vessel.actions.hide();
+        });
+    }
+    registerClosePanels();
+
+    // delayed in case all resources were not loaded. 
+    setTimeout(registerClosePanels, 1000);
+
+    setTimeout(registerClosePanels, 5000);
 });
 
 embryo.vessel.actions.selectedVessel = function() {
