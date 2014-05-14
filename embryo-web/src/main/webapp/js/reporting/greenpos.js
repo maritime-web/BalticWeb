@@ -226,7 +226,7 @@ var greenposScope;
 
                 $scope.$apply();
             },
-            hide : function() {
+            close : function() {
                 $scope.warningMessages = null;
                 $scope.alertMessages = null;
                 $scope.reportAcknowledgement = null;
