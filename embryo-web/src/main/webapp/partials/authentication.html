@@ -7,13 +7,13 @@
 
 		<div class="modal-body e-small-font">
 			<div class="alert alert-danger" x-ng-show="msg">{{msg}}</div>
-			<div class="alert alert-warning" x-ng-show="ie7ver">
-				You are using Internet Explorer {{ie7ver}}. ArcticWeb has been tested and works with Internet Explorer
-				8 and 9. It is however recommended to use Internet Explorer 10 (or higher), Firefox (latest) and Safari (latest) as
+			<div class="alert alert-warning" x-ng-show="ie78ver">
+				You are using Internet Explorer {{ie78ver}}. ArcticWeb has been tested and works with Internet Explorer
+				9. It is however recommended to use Internet Explorer 10 (or higher), Firefox (latest) and Safari (latest) as
 				this will decrease connection usage.
 			</div>
-			<div class="alert alert-warning" x-ng-show="ie89ver">
-				You are using Internet Explorer {{ie89ver}}. It is recommended to use Internet Explorer 10 (or
+			<div class="alert alert-warning" x-ng-show="ie9ver">
+				You are using Internet Explorer {{ie9ver}}. It is recommended to use Internet Explorer 10 (or
 				higher), Firefox (latest) and Safari (latest) as this will decrease connection usage.
 			</div>
 			<div id="cookiesUsage" x-ng-show="showCookies" class="alert alert-info">This site is using cookies for security,
@@ -22,11 +22,11 @@
 				<div id="credentials" x-ng-hide="forgot" class="embryo-form-controls">
 					<div class="form-group">
 						<label for="usernamefield">User Name</label> <input focus="focusMe" type="text" id="usernamefield" name="usernamefield" class="form-control input-sm" x-ng-model="user.name" autocapitalize="off"
-							autocorrect="off" autocomplete="off" required />
+							autocorrect="off" autocomplete="off" x-ng-disabled="ie78ver" required />
 					</div>
 					<div class="form-group">
 						<label for="passwordfield">Password</label> <input type="password" id="passwordfield" name="passwordfield" class="form-control input-sm"
-							x-ng-model="user.pwd" required />
+							x-ng-model="user.pwd" x-ng-disabled="ie78ver" required />
 					</div>
 					<!--<label class="checkbox">  <input
 						type="checkbox" value="remember-me" /> Remember me 
@@ -65,7 +65,7 @@
 	</div>
 	<div class="modal-body">
 		<p>ArcticWeb is currently running a closed pilot test.</p>
-		<p>Contact Mads Bentzen Billesø for more information.</p>
+		<p>Contact Mads Bentzen BillesÃ¸ for more information.</p>
 		<form class="form-signin">
 			<label for="cName">Your Name:</label> <input type="text"
 				class="input-block-level" placeholder="Name" id="cName" /> <label
