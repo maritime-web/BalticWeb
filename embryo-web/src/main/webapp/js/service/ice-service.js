@@ -1,7 +1,7 @@
 (function() {
     var module = angular.module('embryo.ice', []);
 
-    module.service('IceService', function($http) {
+    module.service('IceService', ['$http', function($http) {
         return {
             providers : function(success, error) {
                 $http.get(embryo.baseUrl + "rest/ice/provider/list", {
@@ -28,7 +28,7 @@
                     error(embryo.ErrorService.errorStatus(data, status, "requesting list of ice observations"), status);
                 });
             }        };
-    });
+    }]);
 
     embryo.ice = {
         delta : true,

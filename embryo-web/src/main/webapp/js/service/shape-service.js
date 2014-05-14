@@ -1,7 +1,7 @@
 (function() {
     var module = angular.module('embryo.shape', []);
 
-    module.service('ShapeService', function($http) {
+    module.service('ShapeService', ['$http', function($http) {
         function convert(data, delta, exponent) {
             function convertPolygon(input) {
                 var result = [];
@@ -81,7 +81,7 @@
             }
 
         };
-    });
+    }]);
 
     embryo.shape = {
         delta : true
