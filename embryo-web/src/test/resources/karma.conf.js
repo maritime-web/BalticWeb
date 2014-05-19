@@ -20,6 +20,8 @@ module.exports = function(config) {
 				'src/main/webapp/js/reporting/index-base.js',
 				'src/main/webapp/js/menu.js', 
                 'src/main/webapp/js/authentication.js', 
+                'src/main/webapp/js/layer/embryo-layer.js',
+                'src/main/webapp/js/layer/metoc-layer.js',
                 'src/main/webapp/js/reporting/course.js',
 				'src/main/webapp/js/reporting/position.js',
                 'src/main/webapp/js/reporting/decimal.js',
