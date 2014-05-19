@@ -103,49 +103,6 @@
             });
     
             return html;
-        },
-        showAesDialog: function (data) {
-            if (!data.ais) return;
-    
-            var html = "";
-    
-            var link = "http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi="+data.ais.mmsi;
-    
-            var egenskaber = {
-                "MMSI": data.ais.mmsi,
-                "Class": data.ais["class"],
-                "Name": data.ais.name,
-                "Call Sign": data.ais.callsign,
-                "Vessel Type": data.ais.vesselType,
-                "Cargo": data.ais.cargo != "N/A" && data.ais.cargo != "Undefined" ? data.ais.cargo : null,
-                "Lat": data.ais.lat,
-                "Lon": data.ais.lon,
-                "IMO": data.ais.imo,
-                "Source": data.ais.source,
-                "Type": data.ais.type,
-                "Country": data.ais.country,
-                "SOG": data.ais.sog,
-                "COG": data.ais.cog,
-                "Heading": data.ais.heading,
-                "Draught": data.ais.draught,
-                "ROT": data.ais.rot,
-                "Width": data.ais.width,
-                "Length": data.ais.length,
-                "Destination": data.ais.destination,
-                "Nav Status": data.ais.navStatus,
-                "ETA": data.ais.eta,
-                "Position Accuracy": data.ais.posAcc,
-                "Last Report": data.ais.lastReport,
-                "More Information": "<a href='"+link+"' target='new_window'>"+link+"</a>"
-            };
-            
-            $.each(egenskaber, function(k,v) {
-                if (v != null && v != "") html += "<tr><th>"+k+"</th><td>"+v+"</td></tr>";
-            });
-    
-            $("#aesModal h2").html("AIS Information - " + data.ais.name);
-            $("#aesModal table").html(html);
-            $("#vesselControlPanel").css("display", "block");
         }
     };
 })();

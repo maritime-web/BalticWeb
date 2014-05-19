@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" x-ng-app="embryo.map" manifest="map.appcache" type="text/cache-manifest">
+<html lang="en" manifest="map.appcache" type="text/cache-manifest">
 <head>
 <meta charset="utf-8" />
 <title>ArcticWeb Greenland - Map</title>
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script src="js/ext/cdn.cloudflare/jquery/1.11.0/jquery.min.js"></script>
 
 <link href="css/ext/cdn.netdna/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 <link href="css/ext/cdn.netdna/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
@@ -27,101 +25,16 @@
 <link href="css/greenpos.css" rel="stylesheet" type="text/css">
 <!-- endbuild -->
 
-<!-- script type="text/javascript" src="http://svn.osgeo.org/metacrs/proj4js/trunk/lib/proj4js-compressed.js"></script -->
+<script src="js/ext/cdn.cloudflare/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
+<script src="js/ext/cdn.cloudflare/jqueryui/1.9.1/jquery-ui.min.js" type="text/javascript"></script>
 
-<!--[if lt IE 9]>
-<script src="js/ext/ie8comp/modernizr.js"></script>
-<script src="js/ext/ie8comp/css3-mediaqueries.js"></script>
-<script src="js/ext/ie8comp/html5shiv.min.js"></script>
-<script src="js/ext/ie8comp/respond.min.js"></script>
-<script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
+<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular.js" type="text/javascript"></script>
+<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.js" type="text/javascript"></script>
+<script src="js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
 
-<![endif]-->
+<script src="js/ext/cdn.netdna/bootstrap/3.1.1/js/bootstrap.min.js" type="text/javascript"></script>
 
-<script src="js/ext/cdn.cloudflare/jqueryui/1.9.1/jquery-ui.min.js"></script>
-
-<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular.js"></script>
-<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.js"></script>
-<script src="js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
-
-<script src="js/ext/cdn.netdna/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-
-<script src="js/ext/cdn.cloudflare/openlayers/2.13.1/OpenLayers.debug.js"></script>
-<script src="js/ext/cdn.cloudflare/openlayers/ExtendedRenderers.js"></script>
-
-<!-- The main application script -->
-<!-- build:js js/arcticweb-map.js -->
-<!--script src="js/ext/typeahead-0.9.3.min.js" defer="defer"></script-->
-<script src="js/ext/typeahead.bundle.js" defer="defer"></script>
-<script src="js/ext/angular-typeahead-0.2.0.js" defer="defer"></script>
-
-<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.iframe-transport.js" defer="defer"></script>
-<!-- The basic File Upload plugin -->
-<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.fileupload.js" defer="defer"></script>
-<!-- The File Upload processing plugin -->
-<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.fileupload-process.js" defer="defer"></script>
-<!-- The File Upload validation plugin -->
-<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.fileupload-validate.js" defer="defer"></script>
-<!-- The File Upload Angular JS module -->
-<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.fileupload-angular.js" defer="defer"></script>
-
-<script src="js/ext/moment.min.js" defer="defer"></script>
-<script src="js/ext/bootstrap-datetimepicker.js" defer="defer"></script>
-
-<script src="js/utils.js" defer="defer"></script>
-<script src="js/embryo.js" defer="defer"></script>
-<script src="js/layer/embryo-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/authentication.js" defer="defer" type="text/javascript"></script>
-<script src="js/menu.js" defer="defer" type="text/javascript"></script>
-
-<script src="js/service/storage-services.js" defer="defer"></script>
-<script src="js/service/route-service.js" defer="defer"></script>
-<script src="js/service/schedule-service.js" defer="defer"></script>
-<script src="js/service/greenpos-service.js" defer="defer"></script>
-<script src="js/service/vessel-service.js" defer="defer" type="text/javascript"></script>
-<script src="js/service/shape-service.js" defer="defer"></script>
-<script src="js/service/ice-service.js" defer="defer" type="text/javascript"></script>
-<script src="js/service/msi-service.js" defer="defer" type="text/javascript"></script>
-
-<script src="js/map.js" defer="defer"></script>
-
-<script src="js/control/vessel-control.js" defer="defer"></script>
-<script src="js/control/vessel-information.js" defer="defer"></script>
-<script src="js/control/vessel-search.js" defer="defer"></script>
-<script src="js/control/your-ship.js" type="text/javascript" defer="defer"></script>
-<script src="js/control/ice-control.js" defer="defer" type="text/javascript"></script>
-<script src="js/control/msi-control.js" defer="defer" type="text/javascript"></script>
-<script src="js/control/greenpos-control.js" defer="defer" type="text/javascript"></script>
-<script src="js/control/ais-information.js" defer="defer"></script>
-
-<script src="js/ext/arc.js" defer="defer"></script>
-<script src="js/layer/vessel-layer.js" defer="defer"></script>
-<script src="js/layer/ice-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/layer/msi-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/layer/adt-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/layer/historical-track-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/layer/route-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/layer/schedule-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/layer/distance-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/layer/world-map-layer.js" defer="defer" type="text/javascript"></script>
-<script src="js/layer/greenpos-marker-layer.js" defer="defer" type="text/javascript"></script>
-
-<script src="js/control/additional-information.js" defer="defer" type="text/javascript"></script>
-
-<script src="js/reporting/position.js" defer="defer"></script>
-<script src="js/reporting/course.js" defer="defer"></script>
-<script src="js/reporting/decimal.js" defer="defer"></script>
-<script src="js/reporting/datetimepicker.js" defer="defer"></script>
-<script src="js/reporting/ship-information.js" defer="defer" type="text/javascript"></script>
-<script src="js/reporting/route-edit.js" defer="defer" type="text/javascript"></script>
-<script src="js/reporting/schedule.js" defer="defer" type="text/javascript"></script>
-<script src="js/reporting/route-upload.js" defer="defer" type="text/javascript"></script>
-<script src="js/reporting/greenpos.js" defer="defer" type="text/javascript"></script>
-<script src="js/control/vessel-actions.js" defer="defer" type="text/javascript"></script>
-
-<script src="js/mapapp.js" defer="defer" type="text/javascript"></script>
-<!-- endbuild -->
+<script src="js/ext/cdn.cloudflare/openlayers/2.13.1/OpenLayers.js" type="text/javascript"></script>
 
 </head>
 
@@ -199,6 +112,81 @@
 		<div x-ng-include="'partials/greenpos-list.html'"></div>
 	</div>
 
+	<!-- The main application script -->
+	<!-- build:js js/arcticweb-map.js -->
+	<script src="js/ext/typeahead.bundle.js" ></script>
+	<script src="js/ext/angular-typeahead-0.2.0.js" ></script>
+	
+	<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+	<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.iframe-transport.js" ></script>
+	<!-- The basic File Upload plugin -->
+	<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.fileupload.js" ></script>
+	<!-- The File Upload processing plugin -->
+	<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.fileupload-process.js" ></script>
+	<!-- The File Upload validation plugin -->
+	<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.fileupload-validate.js" ></script>
+	<!-- The File Upload Angular JS module -->
+	<script src="js/ext/jquery-file-upload-9.5.7/js/jquery.fileupload-angular.js" ></script>
+	
+	<script src="js/ext/moment.min.js" ></script>
+	<script src="js/ext/bootstrap-datetimepicker.js" ></script>
+	
+	<script src="js/utils.js" ></script>
+	<script src="js/embryo.js" ></script>
+	<script src="js/layer/embryo-layer.js"  type="text/javascript"></script>
+	<script src="js/authentication.js"  type="text/javascript"></script>
+	<script src="js/menu.js"  type="text/javascript"></script>
+	
+	<script src="js/service/storage-services.js" ></script>
+	<script src="js/service/route-service.js" ></script>
+	<script src="js/service/schedule-service.js" ></script>
+	<script src="js/service/greenpos-service.js" ></script>
+	<script src="js/service/vessel-service.js"  type="text/javascript"></script>
+	<script src="js/service/shape-service.js" ></script>
+	<script src="js/service/ice-service.js"  type="text/javascript"></script>
+	<script src="js/service/msi-service.js"  type="text/javascript"></script>
+	<script src="js/service/metoc-service.js"  type="text/javascript"></script>
+	
+	<script src="js/map.js" ></script>
+	
+	<script src="js/control/vessel-control.js" ></script>
+	<script src="js/control/vessel-information.js" ></script>
+	<script src="js/control/vessel-search.js" ></script>
+	<script src="js/control/your-ship.js" type="text/javascript" ></script>
+	<script src="js/control/ice-control.js"  type="text/javascript"></script>
+	<script src="js/control/msi-control.js"  type="text/javascript"></script>
+	<script src="js/control/greenpos-control.js"  type="text/javascript"></script>
+	<script src="js/control/ais-information.js" ></script>
+	
+	<script src="js/ext/arc.js" ></script>
+	<script src="js/layer/vessel-layer.js" ></script>
+	<script src="js/layer/ice-layer.js"  type="text/javascript"></script>
+	<script src="js/layer/msi-layer.js"  type="text/javascript"></script>
+	<script src="js/layer/adt-layer.js"  type="text/javascript"></script>
+	<script src="js/layer/historical-track-layer.js"  type="text/javascript"></script>
+	<script src="js/layer/route-layer.js"  type="text/javascript"></script>
+	<script src="js/layer/schedule-layer.js"  type="text/javascript"></script>
+	<script src="js/layer/distance-layer.js"  type="text/javascript"></script>
+	<script src="js/layer/world-map-layer.js"  type="text/javascript"></script>
+	<script src="js/layer/greenpos-marker-layer.js"  type="text/javascript"></script>
+	<script src="js/layer/metoc-layer.js"  type="text/javascript"></script>
+	
+	<script src="js/control/additional-information.js"  type="text/javascript"></script>
+	
+	<script src="js/reporting/position.js" ></script>
+	<script src="js/reporting/course.js" ></script>
+	<script src="js/reporting/decimal.js" ></script>
+	<script src="js/reporting/datetimepicker.js" ></script>
+	<script src="js/reporting/ship-information.js"  type="text/javascript"></script>
+	<script src="js/reporting/route-edit.js"  type="text/javascript"></script>
+	<script src="js/reporting/schedule.js"  type="text/javascript"></script>
+	<script src="js/reporting/route-upload.js"  type="text/javascript"></script>
+	<script src="js/reporting/greenpos.js"  type="text/javascript"></script>
+	<script src="js/control/vessel-actions.js"  type="text/javascript"></script>
+	
+	
+	<script src="js/mapapp.js"  type="text/javascript"></script>
+<!-- endbuild -->
 </body>
 
 
