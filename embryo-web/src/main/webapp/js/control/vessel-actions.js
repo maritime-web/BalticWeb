@@ -127,6 +127,7 @@ embryo.vessel.actions.selectedVessel = function() {
              "Additional Information", 
              embryo.additionalInformation.historicalTrack,
              embryo.additionalInformation.nearestShips, 
-             embryo.additionalInformation.distanceCircles 
+             embryo.additionalInformation.distanceCircles, 
+             embryo.additionalInformation.metoc 
            ];
 };
