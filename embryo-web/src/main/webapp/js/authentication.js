@@ -15,10 +15,16 @@ embryo.eventbus.AuthenticatedEvent = function() {
 
 embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authenticated");
 
+embryo.eventbus.AuthenticationChangedEvent = function() {
+    var event = jQuery.Event("AuthenticationChangedEvent");
+    return event;
+};
+embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "authenticationChanged");
+
 (function() {
     "use strict";
 
-    var module = angular.module('embryo.authentication', [ 'embryo.base', 'ngCookies', 'ui.bootstrap.modal', 'ui.bootstrap.tpls' ]);
+    var serviceModule = angular.module('embryo.authentication.service', [ 'ngCookies']);
 
     embryo.RequestAccessCtrl = function($scope, $http) {
         $scope.request = {};
@@ -65,15 +71,18 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
 
         var uuid = $routeParams.uuid;
 
-        $http.get('/rest/authentication/change-password?uuid=' + uuid).success(function(data) {
-            if (!data) {
-                $scope.alertMessages = [ 'Did not find any user matching the URL. Perhaps the password has already been changed?' ];
-            } else {
-                $scope.user = data;
-            }
-        }).error(function(data, status) {
-            $scope.alertMessages = embryo.ErrorService.extractError(data, status);
-        });
+        $http
+                .get('/rest/authentication/change-password?uuid=' + uuid)
+                .success(
+                        function(data) {
+                            if (!data) {
+                                $scope.alertMessages = [ 'Did not find any user matching the URL. Perhaps the password has already been changed?' ];
+                            } else {
+                                $scope.user = data;
+                            }
+                        }).error(function(data, status) {
+                    $scope.alertMessages = embryo.ErrorService.extractError(data, status);
+                });
 
         $scope.changePassword = function() {
             if (!$scope.change.password) {
@@ -110,7 +119,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         embryo.authentication = $rootScope.initialAuthentication;
     }
 
-    module.provider('Subject', function() {
+    serviceModule.provider('Subject', function() {
         function Subject($http, $rootScope, $cookieStore) {
             $rootScope.initialAuthentication = embryo.authentication;
             var authentication = $cookieStore.get('embryo.authentication');
@@ -120,7 +129,8 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             $rootScope.authentication = embryo.authentication;
 
             this.roles = function() {
-                return typeof embryo.authentication.permissions === 'undefined' ? [] : embryo.authentication.permissions;
+                return typeof embryo.authentication.permissions === 'undefined' ? []
+                        : embryo.authentication.permissions;
             };
 
             this.authorize = function(permission) {
@@ -150,6 +160,11 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
                     sessionStorage.clear();
                     $rootScope.authentication = details;
                     embryo.authentication = details;
+
+                    embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+
+                    // EMBRYO-325
+                    embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
                     success(details);
                 }).error(function(data, status) {
                     if (error) {
@@ -161,8 +176,13 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
             this.logout = function(success, error) {
                 $http.get(embryo.baseUrl + "rest/authentication/logout").success(function() {
                     clearSessionData($cookieStore, $rootScope);
+                    embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
                     success();
                 }).error(error);
+            };
+
+            this.authenticationChanged = function(callback) {
+                embryo.authenticationChanged(callback);
             };
         }
 
@@ -171,7 +191,9 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         };
     });
 
-    module.directive('passwordMatch', [ function() {
+    var moduleDirectives = angular.module('embryo.authentication.directives', [ 'embryo.authentication.service' ]);
+
+    moduleDirectives.directive('passwordMatch', [ function() {
         return {
             restrict : 'A',
             scope : true,
@@ -194,50 +216,63 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         };
     } ]);
 
-    module.directive('requiresPermission', [ '$rootScope', 'Subject', function($rootScope, Subject) {
+    function templateFn(expr) {
+        return function(element, attr) {
+            var ngIf = attr.ngIf;
+            var value = typeof expr === 'function' ? expr(attr) : expr;
+
+            /**
+             * Make sure to combine with existing ngIf!
+             */
+            if (ngIf) {
+                value += ' && ' + ngIf;
+            }
+
+            var inner = element.get(0);
+            // we have to clear all the values because angular
+            // is going to merge the attrs collection
+            // back into the element after this function finishes
+            angular.forEach(inner.attributes, function(attr, key) {
+                attr.value = '';
+            });
+            attr.$set('ng-if', value);
+            return inner.outerHTML;
+        }
+    }
+
+    moduleDirectives.directive('requiresAuthenticated', [ 'Subject', function(Subject) {
         return {
             restrict : 'A',
+            replace : true,
+            template : templateFn('user.isLoggedIn()'),
             link : function(scope, element, attrs) {
-                var prevDisp = element.css('display');
-                $rootScope.$watch("authentication", function(roles) {
-                    if (!Subject.authorize(attrs.requiresPermission)) {
-                        element.css('display', 'none');
-                    } else {
-                        element.css('display', prevDisp);
-                    }
-                });
+                scope.user = Subject;
             }
-        };
+        }
+
     } ]);
 
-    module.directive('requiresAuthenticated', [ '$rootScope', 'Subject', function($rootScope, Subject) {
+    moduleDirectives.directive('requiresUnauthenticated', [ 'Subject', function(Subject) {
         return {
             restrict : 'A',
+            replace : true,
+            template : templateFn('!user.isLoggedIn()'),
             link : function(scope, element, attrs) {
-                var prevDisp = element.css('display');
-                $rootScope.$watch("authentication", function(authentication) {
-                    if (!Subject.isLoggedIn()) {
-                        element.css('display', 'none');
-                    } else {
-                        element.css('display', prevDisp);
-                    }
-                });
+                scope.user = Subject;
             }
-        };
+        }
     } ]);
 
-    module.directive('requiresUnauthenticated', [ '$rootScope', 'Subject', function($rootScope, Subject) {
+    moduleDirectives.directive('requiresPermission', [ 'Subject', function(Subject) {
         return {
             restrict : 'A',
+            replace : true,
+            template : templateFn(function(attr) {
+                var value = attr.requiresPermission;
+                return "user.authorize('" + value + "')";
+            }),
             link : function(scope, element, attrs) {
-                var prevDisp = element.css('display');
-                $rootScope.$watch("authentication", function(roles) {
-                    if (Subject.isLoggedIn()) {
-                        element.css('display', 'none');
-                    } else {
-                        element.css('display', prevDisp);
-                    }
-                });
+                scope.user = Subject;
             }
         };
     } ]);
@@ -295,7 +330,6 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
                     text : "Succesfully logged in.",
                     type : "success"
                 });
-                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
             }, function(data, status) {
                 // updateNavigationBar();
                 embryo.messagePanel.replace(messageId, {
@@ -372,31 +406,37 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
         });
     }
 
-    module.config([ '$httpProvider', function($httpProvider) {
-        $httpProvider.responseInterceptors.push([ '$location', '$q', '$cookieStore', '$rootScope', function($location, $q, $cookieStore, $rootScope) {
-            function success(response) {
-                return response;
-            }
-            function error(response) {
-                if (response.status === 401) {
-                    embryo.messagePanel.show({
-                        text : "Session Lost. You will be logged out ..."
-                    });
-                    clearSessionData($cookieStore, $rootScope);
-                    var path = location.pathname;
-                    if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
-                        location = ".";
-                    }
-                    return $q.reject(response);
-                } else {
-                    return $q.reject(response);
-                }
-            }
-            return function(promise) {
-                return promise.then(success, error);
-            };
-        } ]);
-    } ]);
+    var module = angular.module('embryo.authentication', [ 'embryo.base', 'ui.bootstrap.modal', 'ui.bootstrap.tpls',
+            'embryo.authentication.service', 'embryo.authentication.directives' ]);
+
+    module.config([
+            '$httpProvider',
+            function($httpProvider) {
+                $httpProvider.responseInterceptors.push([ '$location', '$q', '$cookieStore', '$rootScope',
+                        function($location, $q, $cookieStore, $rootScope) {
+                            function success(response) {
+                                return response;
+                            }
+                            function error(response) {
+                                if (response.status === 401) {
+                                    embryo.messagePanel.show({
+                                        text : "Session Lost. You will be logged out ..."
+                                    });
+                                    clearSessionData($cookieStore, $rootScope);
+                                    var path = location.pathname;
+                                    if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
+                                        location = ".";
+                                    }
+                                    return $q.reject(response);
+                                } else {
+                                    return $q.reject(response);
+                                }
+                            }
+                            return function(promise) {
+                                return promise.then(success, error);
+                            };
+                        } ]);
+            } ]);
 
     module.run([ 'Subject', '$rootScope', '$location', '$modal', function(Subject, $rootScope, $location, $modal) {
         embryo.security.Subject = Subject;
@@ -420,6 +460,9 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticatedEvent, "authentic
 
             if (Subject.isLoggedIn()) {
                 embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+
+                // EMBRYO-325
+                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
             } else if (embryo.authentication.currentPageRequiresAuthentication) {
                 $rootScope.loginDlg();
             }
