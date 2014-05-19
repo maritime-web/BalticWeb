@@ -6,19 +6,19 @@ function EmbryoLayer() {
         for ( var i in this.layers) {
             this.layers[i].redraw();
         }
-    }
+    };
 
     this.active = false;
 
     this.show = function() {
         this.active = true;
         this.redraw();
-    }
+    };
 
     this.hide = function() {
         this.active = false;
         this.redraw();
-    }
+    };
 
     this.zoomLevels = [];
     this.zoomLevel = 0;
@@ -34,7 +34,7 @@ function EmbryoLayer() {
             this.zoomLevel = newZoomLevel;
             this.redraw();
         }
-    }
+    };
 
     this.selectListeners = [];
     this.selectableLayer = null;
@@ -59,7 +59,7 @@ function EmbryoLayer() {
                 emit(null);
             }
         });
-    }
+    };
 
     this.select = function(a, b) {
         if (a instanceof Function) {
@@ -78,18 +78,18 @@ function EmbryoLayer() {
             if (!didSelect)
                 this.map.select(null);
         }
-    }
+    };
 
     this.clear = function() {
         for ( var i in this.layers)
             this.layers[i].removeAllFeatures();
         for ( var i in this.layers)
             this.layers[i].refresh();
-    }
+    };
 
     this.zoomToExtent = function() {
         this.map.zoomToExtent(this.layers);
-    }
+    };
 
     this.createGeoDesicLine = function(p1, p2) {
         var generator = new arc.GreatCircle(p1, p2, {
@@ -99,7 +99,7 @@ function EmbryoLayer() {
             offset : 10
         });
         
-        var points = []
+        var points = [];
         for(var i in line.geometries){
             for(j in line.geometries[i].coords){
                 points.push({x : line.geometries[i].coords[j][0],y : line.geometries[i].coords[j][1]});
@@ -107,7 +107,7 @@ function EmbryoLayer() {
         }
             
         return points;
-    }
+    };
 
     this.toGeometryPoints = function(points) {
         var geometryPoints = [];
@@ -115,7 +115,7 @@ function EmbryoLayer() {
             geometryPoints.push(embryo.map.createPoint(points[index].x, points[index].y));
         }
         return geometryPoints;
-    }
+    };
 
     this.createGeoDesicLineAsGeometryPoints = function(p1, p2) {
         var generator = new arc.GreatCircle(p1, p2, {
@@ -133,7 +133,7 @@ function EmbryoLayer() {
         }
             
         return points;
-    }
+    };
 }
 
 // This will be moved into map.js later
@@ -148,18 +148,18 @@ function addLayerToMap(id, layer, map) {
             group : id,
             layer : layer.layers[i],
             select : layer.layers[i] == layer.selectableLayer
-        })
+        });
     }
 
     for ( var i in layer.controls) {
         map.add({
             group : id,
             layer : layer.controls[i]
-        })
+        });
     }
 
     map.internalMap.events.register("zoomend", map, function() {
-        layer.zoom(map.internalMap.zoom)
+        layer.zoom(map.internalMap.zoom);
     });
 
     embryo.groupChanged(function(e) {

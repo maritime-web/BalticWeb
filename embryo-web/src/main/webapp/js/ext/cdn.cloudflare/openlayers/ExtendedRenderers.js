@@ -93,7 +93,7 @@ OpenLayers.Renderer.prototype.removeArrows = function(geometry) {
         arrowsToRemove = [];
     for (i = 0; i < children.length; i++) {
         var child = children[i];
-        if (child.id.indexOf(geometry.id + "_arrow") != -1) {
+        if (child.id.indexOf(geometry.components[0].id + "_arrow") != -1) {
             arrowsToRemove.push(child);
         }
     }
@@ -105,8 +105,8 @@ OpenLayers.Renderer.prototype.drawArrows = function(geometry, style) {
     var i;
     if (style.orientation) {
         var pts = geometry.components;
-        var prevArrow,
-            distance;
+        var prevArrow = null,
+            distance = null;
         for (i = 0, len = pts.length; i < len - 1; ++i) {
             var prevVertex = pts[i];
             var nextVertex = pts[i + 1];
@@ -122,8 +122,8 @@ OpenLayers.Renderer.prototype.drawArrows = function(geometry, style) {
 
 
             if (prevArrow) {
-                var pt1 = map.getPixelFromLonLat(new OpenLayers.LonLat(arrow.x, arrow.y)),
-                    pt2 = map.getPixelFromLonLat(new OpenLayers.LonLat(prevArrow.x, prevArrow.y)),
+                var pt1 = embryo.map.internalMap.getPixelFromLonLat(new OpenLayers.LonLat(arrow.x, arrow.y)),
+                    pt2 = embryo.map.internalMap.getPixelFromLonLat(new OpenLayers.LonLat(prevArrow.x, prevArrow.y)),
                     w = pt2.x - pt1.x,
                     h = pt2.y - pt1.y;
                 distance = Math.sqrt(w*w + h*h);

@@ -167,7 +167,7 @@
                 return false;
             }
 
-            if (!$scope.activeRoute) {
+            if (!$scope.activeRouteId) {
                 return false;
             }
 
@@ -340,7 +340,7 @@
                 return false;
             }
 
-            if (!$scope.activeRoute) {
+            if (!$scope.activeRouteId) {
                 return false;
             }
 
@@ -377,22 +377,28 @@
 
         $scope.view = function() {
             $scope.collapse = true;
+            $scope.routeLayer.clear();
             var voyagesToDraw = [];
             for(var i in $scope.voyages) {
                 var voyage = $scope.voyages[i];
                 if(voyage.showRoute) {
                     if(voyage.route) {
                         RouteService.getRoute(voyage.route.id, function(route) {
-                            var routeType = embryo.route.service.getRouteType($scope.mmsi, voyage.route.id); 
-                            $scope.routeLayer.draw(route, routeType);
+                            var routeType = embryo.route.service.getRouteType($scope.mmsi, voyage.route.id, $scope.isActive(voyage)); 
+                            $scope.routeLayer.draw(route, routeType, true);
                         });
                     } else {
                         voyagesToDraw.push(voyage);
                     }
                 }
             }
-            $scope.scheduleLayer.draw(voyagesToDraw);
-            $scope.scheduleLayer.zoomToExtent();
+            var scheduleType = $scope.mmsi == embryo.authentication.shipMmsi ? 'own' : 'other';
+            $scope.scheduleLayer.draw(voyagesToDraw, scheduleType);
+            if(voyagesToDraw.length > 0) {
+                $scope.scheduleLayer.zoomToExtent();
+            } else {
+                $scope.routeLayer.zoomToExtent();
+            }
         };
 
         $scope.viewRoute = function(voyage) {

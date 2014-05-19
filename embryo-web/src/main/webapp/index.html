@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" x-ng-app="embryo.front" id="ng-app" manifest="index.cache-manifest" type="text/cache-manifest">
+<html lang="en" x-ng-app="embryo.front" id="ng-app" manifest="index.appcache" type="text/cache-manifest">
 <head>
 <meta charset="utf-8" />
 <title>ArcticWeb Greenland</title>
@@ -20,8 +20,8 @@
 
 <script src="js/ext/cdn.cloudflare/jquery/1.11.0/jquery.min.js"></script>
 
-<script src="js/ext/modified-angular-1.2.14/angular.js"></script>
-<script src="js/ext/modified-angular-1.2.14/angular-cookies.js"></script>
+<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular.js"></script>
+<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.js"></script>
 <script src="js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
 
 <!-- build:js js/arcticweb-front.js -->
@@ -29,14 +29,8 @@
 <script src="js/embryo.js" defer="defer"></script>
 <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
 <script src="js/menu.js" defer="defer"></script>
+<script src="js/indexapp.js" defer="defer" type="text/javascript"></script>
 <!-- endbuild -->
-
-<script type="text/javascript">
-    var indexApp = angular.module('embryo.front', [ 'embryo.menu', 'ui.bootstrap.carousel' ]);
-    $(function() {
-        embryo.authentication.currentPageRequiresAuthentication = false;
-    });
-</script>
 
 </head>
 
@@ -92,16 +86,12 @@
 					ArcticWeb serves as a single point of access to safety related information, provides streamlined reporting and allows
 					for voluntary coordinated voyage through sharing of positions and planned routes. Ships in the area and their
 					organizations may login or request access to ArcticWeb via the buttons below.</p>
-
 				<div class="btn-group">
 					<button class="btn btn-large btn-primary" x-ng-click="loginDlg()">Log In</button>
 					<a class="btn btn-large  btn-success btn-default" href="content.html#/requestAccess" role="button">Request Access</a>
 				</div>
-
 			</div>
-
-			<hr class="soften">
-
+			<hr class="soften" />
 			<!-- Top row -->
 			<div class="row">
 				<div class="col-md-4 subsection">

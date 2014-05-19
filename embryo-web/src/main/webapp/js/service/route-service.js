@@ -62,12 +62,12 @@
                     error(embryo.ErrorService.getText(data, status, config));
                 });
             },
-            getRouteType : function(mmsi, routeId) {
+            getRouteType : function(mmsi, routeId, active) {
                 var str = "";
                 if (mmsi != embryo.authentication.shipMmsi) {
                     str += "other";
                 }
-                if (routeId == loggedInVesselDetails.additionalInformation.routeId) {
+                if (active) {
                     return str += "active";
                 } else {
                     return str += "planned";

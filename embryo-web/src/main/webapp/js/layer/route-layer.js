@@ -13,11 +13,14 @@ function RouteLayer() {
         this.layers = [];
         // Create vector layer for routes
 
+//        OpenLayers.DirectionStyle = OpenLayers.Util.extend({orientation : true}, OpenLayers.Feature.Vector.style["default"]);
+        
         var yourDefault = OpenLayers.Util.applyDefaults({
+            orientation : true,
             strokeWidth : 2,
             strokeDashstyle : 'dashdot',
             strokeColor : "${getColor}",
-            strokeOpacity : "${getOpacity}",
+            strokeOpacity : "${getOpacity}"
         }, OpenLayers.Feature.Vector.style["default"]);
 
         var context = {
@@ -29,18 +32,20 @@ function RouteLayer() {
             }
         };
 
+        var defaultStyle = new OpenLayers.Style(yourDefault, {
+            context : context
+        });
+
         var select = OpenLayers.Util.applyDefaults({}, OpenLayers.Feature.Vector.style.select);
         var selectStyle = new OpenLayers.Style(select);
 
         var temporary = OpenLayers.Util.applyDefaults({}, OpenLayers.Feature.Vector.style.temporary);
         var temporaryStyle = new OpenLayers.Style(temporary);
-
+        
         this.layers.route = new OpenLayers.Layer.Vector("routeLayer", {
+            renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
             styleMap : new OpenLayers.StyleMap({
-                'default' : new OpenLayers.Style(yourDefault, {
-                    context : context,
-                    orientation : true
-                }),
+                'default' : defaultStyle,
                 'select' : selectStyle,
                 'temporary' : temporaryStyle
             })
@@ -100,9 +105,15 @@ function RouteLayer() {
     // layer.removeFeatures(features);
     // }
     // }
+    
+    this.clear = function() {
+      this.layers.route.removeAllFeatures();
+    };
 
-    this.draw = function(route, colorKey) {
-        this.layers.route.removeAllFeatures();
+    this.draw = function(route, colorKey, noClear) {
+        if(!noClear) {
+            this.layers.route.removeAllFeatures();
+        }
         // removeDrawnRoutes(this.layers.route, colorKey);
 
         if (route && route.wps) {

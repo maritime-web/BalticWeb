@@ -4,15 +4,17 @@ NETWORK:
 CACHE:
 index.html
 css/ext/cdn.netdna/bootstrap/3.1.1/css/bootstrap.min.css
+css/ext/cdn.netdna/bootstrap/3.1.1/fonts/glyphicons-halflings-regular.woff
 css/ext/cdn.netdna/font-awesome/4.0.3/css/font-awesome.min.css
-css/ext/cdn.netdna/font-awesome/4.0.3/font/fontawesome-webfont.woff?v=4.0.3
+css/ext/cdn.netdna/font-awesome/4.0.3/fonts/fontawesome-webfont.woff?v=4.0.3
+
 
 css/arcticweb-front.css
 
-js/ext/cdn.cloudflare/jquery/1.9.1/jquery.min.js
+js/ext/cdn.cloudflare/jquery/1.11.0/jquery.min.js
 js/ext/cdn.netdna/bootstrap/3.1.1/js/bootstrap.min.js
-js/ext/modified-angular-1.2.14/angular.min.js
-js/ext/modified-angular-1.2.14/angular-cookies.min.js
+js/ext/cdn.googleapis/angularjs/1.2.14/angular.js
+js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.js
 js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js
 
 js/arcticweb-front.js
