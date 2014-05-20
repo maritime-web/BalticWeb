@@ -106,7 +106,7 @@ embryo.additionalInformation.route = {
     title : "METOC on Route",
     layer : new MetocLayer(),
     init : function(map, group) {
-        addLayerToMap(group, this.layer, map)
+        addLayerToMap(group, this.layer, map);
     },
     available : function(vessel, vesselDetails) {
         return vesselDetails.additionalInformation.routeId != null;
@@ -121,7 +121,7 @@ embryo.additionalInformation.route = {
     hide : function() {
         this.layer.clear();
     }
-}
+};
 embryo.mapInitialized(function() {
     $.each(embryo.additionalInformation, function(k, v) {
         if (v.init)

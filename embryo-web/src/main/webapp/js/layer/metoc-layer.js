@@ -219,11 +219,11 @@ function MetocLayer(color) {
             }
         );
 
-    }
+    };
     this.draw = function(metoc) {
         this.layers.metoc.removeAllFeatures();
 
-        var index, attr, geom, forecast, features = [], labelFeatures = [];
+        var index = null, attr, geom, forecast, features = [], labelFeatures = [];
 
         for (index in metoc.forecasts) {
             forecast = metoc.forecasts[index];
@@ -285,7 +285,7 @@ function MetocLayer(color) {
 
         this.layers.labels.addFeatures(labelFeatures);
         this.layers.labels.refresh();
-    }
+    };
 }
 
 MetocLayer.prototype = new EmbryoLayer();
