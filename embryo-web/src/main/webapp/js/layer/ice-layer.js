@@ -6,7 +6,7 @@ function IceLayer() {
             transparency : function() {
                 return that.active ? 0.5 : 0.25;
             }
-        }
+        };
 
         this.layers.ice = new OpenLayers.Layer.Vector("Ice", {
             styleMap : new OpenLayers.StyleMap({
@@ -48,7 +48,7 @@ function IceLayer() {
 
         this.selectableLayer = this.layers.ice;
         this.selectableAttribute = "iceDescription";
-    }
+    };
 
     this.draw = function(shapes, callback) {
         function colorByDescription(description) {
@@ -149,7 +149,7 @@ function IceLayer() {
             fragments = ice.slice(0);
             drawFragments(shape, fragments);
         }
-    }
+    };
 }
 
 IceLayer.prototype = new EmbryoLayer();

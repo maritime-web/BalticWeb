@@ -112,7 +112,7 @@ function RouteLayer() {
 
     this.draw = function(route, colorKey, noClear) {
         if(!noClear) {
-            this.layers.route.removeAllFeatures();
+            this.clear();
         }
         // removeDrawnRoutes(this.layers.route, colorKey);
 

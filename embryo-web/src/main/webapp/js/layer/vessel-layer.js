@@ -132,7 +132,10 @@ function VesselLayer() {
 
         this.select(function(id) {
             that.selectedId = id;
-
+            if(id) {
+                RouteLayerSingleton.getInstance().clear();
+                ScheduleLayerSingleton.getInstance().clear();
+            }
             that.layers.selection.removeAllFeatures();
 
             $.each(that.layers.vessel.features, function (k,v) {

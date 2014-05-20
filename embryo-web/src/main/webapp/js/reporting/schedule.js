@@ -315,7 +315,7 @@
 
         $scope.routeLayer = RouteLayerSingleton.getInstance();
 
-        $scope.scheduleLayer = new ScheduleLayer("#000000");
+        $scope.scheduleLayer = ScheduleLayerSingleton.getInstance();
         addLayerToMap("vessel", $scope.scheduleLayer, embryo.map);
 
         embryo.controllers.scheduleView = {
@@ -330,8 +330,8 @@
                 loadSchedule();
             },
             close : function() {
-                $scope.routeLayer.clear();
-                $scope.scheduleLayer.clear();
+                //$scope.routeLayer.clear();
+                //$scope.scheduleLayer.clear();
             }
         };
 

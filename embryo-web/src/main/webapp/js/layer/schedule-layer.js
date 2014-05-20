@@ -1,4 +1,4 @@
-function ScheduleLayer(color) {
+function ScheduleLayer() {
     this.init = function() {
         var colors = {
                 "own" : "#000000",
@@ -80,3 +80,17 @@ function ScheduleLayer(color) {
 }
 
 ScheduleLayer.prototype = new EmbryoLayer();
+
+/*
+ * Can be used to create only one schedule layer instance and reuse this as
+ */
+var ScheduleLayerSingleton = {
+    instance : null,
+    getInstance : function() {
+        if (this.instance == null) {
+            this.instance = new ScheduleLayer();
+            addLayerToMap("vessel", this.instance, embryo.map);
+        }
+        return this.instance;
+    }
+};
