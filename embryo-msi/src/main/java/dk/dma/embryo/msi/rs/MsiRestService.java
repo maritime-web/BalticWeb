@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
@@ -37,7 +38,16 @@ public class MsiRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public List<MsiClient.MsiItem> listActiveWarnings() {
-        return msiClient.getActiveWarnings();
+    public List<MsiClient.MsiItem> listActiveWarnings(@QueryParam("regions") List<String> regions) {
+        return msiClient.getActiveWarnings(regions);
+    }
+    
+    @GET
+    @Path("/regions")
+    @Produces("application/json")
+    @GZIP
+    @NoCache
+    public List<MsiClient.Region> getRegions() {
+        return msiClient.getRegions();
     }
 }

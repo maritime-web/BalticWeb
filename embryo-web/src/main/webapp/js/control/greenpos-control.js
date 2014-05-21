@@ -41,7 +41,7 @@
     }
 
     embryo.authenticated(function() {
-        if ($.inArray("Reporting", embryo.authentication.permissions)) {
+        if ($.inArray("Reporting", embryo.authentication.permissions) != -1) {
             loadGreenposReports();
         }
     });

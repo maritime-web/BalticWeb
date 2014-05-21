@@ -37,11 +37,11 @@ public class MsiClientIT {
         MsiClientImpl msiClientImpl = new MsiClientImpl(logService);
 
         msiClientImpl.endpoint = "http://msi-beta.e-navigation.net/msi/ws/warning";
-        msiClientImpl.countries = "GL,DK";
+        msiClientImpl.regions = "GL,DK";
 
         msiClientImpl.init();
 
-        for (MsiClient.MsiItem msiItem : msiClientImpl.getActiveWarnings()) {
+        for (MsiClient.MsiItem msiItem : msiClientImpl.getActiveWarnings(null)) {
             System.out.println(""+msiItem);
         }
     }

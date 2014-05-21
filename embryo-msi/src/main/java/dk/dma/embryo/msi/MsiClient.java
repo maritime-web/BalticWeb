@@ -23,7 +23,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface MsiClient {
-    List<MsiItem> getActiveWarnings();
+    List<MsiItem> getActiveWarnings(List<String> regions);
+    List<Region> getRegions();
 
     public enum Type {Point, Polygon, Polyline, Points, General}
 
@@ -44,6 +45,27 @@ public interface MsiClient {
 
         public String toString() {
             return "(Latitude: " + getLatitude() + " Longitude: " + getLongitude() + ")";
+        }
+    }
+    
+    class Region {
+        private String name;
+        private String description;
+        
+        public String getName() {
+            return name;
+        }
+        
+        public void setName(String name) {
+            this.name = name;
+        }
+        
+        public String getDescription() {
+            return description;
+        }
+        
+        public void setDescription(String description) {
+            this.description = description;
         }
     }
 

@@ -101,7 +101,7 @@ $(function() {
                 $("#vesselControlPanel .controlPanel a").on('click', function(e) {
                     e.preventDefault();
                 });
-                if (!$.inArray("Reporting", embryo.authentication.permissions)) {
+                if ($.inArray("Reporting", embryo.authentication.permissions) == -1) {
                     $("#vesselControlPanel #vcpGreenposList").parent().remove();
                 }           
                 
