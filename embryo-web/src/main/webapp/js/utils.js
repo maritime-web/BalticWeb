@@ -136,6 +136,17 @@ function adjustDateForLocal(millis) {
     return millis - (new Date().getTimezoneOffset() * 60000);
 }
 
+function arrayToHttpParams(arr, paramName) {
+    if(!(arr && paramName)) {
+        return '';
+    }
+    var result = paramName + '=' + arr[0];
+    for(var i = 1; i < arr.length; i++) {
+        result += '&' + paramName + '=' + arr[i];
+    }
+    return result;
+}
+
 var browser = {
     isIE : function(){
         var myNav = navigator.userAgent.toLowerCase();

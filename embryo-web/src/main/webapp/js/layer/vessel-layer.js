@@ -21,7 +21,7 @@ function VesselLayer() {
                 height: 12,
                 xOffset: -6,
                 yOffset: -6
-            }
+            };
         } else {
             return {
                 name: "vessel_" + colorName + ".png",
@@ -29,7 +29,7 @@ function VesselLayer() {
                 height: 10,
                 xOffset: -10,
                 yOffset: -5
-            }
+            };
         }
     }
 
@@ -42,14 +42,14 @@ function VesselLayer() {
         this.context = {
             transparency: function() {
         		if(noTransparency){
-        		    return 1.0		
+        		    return 1.0;	
         		}
                 return that.active ? 0.8 : 0.4;
             },
             vesselSize: function() {
                 return [0.5, 0.75, 1.0][that.zoomLevel];
             }
-        }
+        };
 
         this.layers.vessel = new OpenLayers.Layer.Vector("Vessels", {
             styleMap : new OpenLayers.StyleMap({
@@ -132,7 +132,10 @@ function VesselLayer() {
 
         this.select(function(id) {
             that.selectedId = id;
-
+            if(id) {
+                RouteLayerSingleton.getInstance().clear();
+                ScheduleLayerSingleton.getInstance().clear();
+            }
             that.layers.selection.removeAllFeatures();
 
             $.each(that.layers.vessel.features, function (k,v) {
@@ -144,29 +147,29 @@ function VesselLayer() {
                                 angle : v.attributes.vessel.angle - 90,
                                 opacity : 1,
                                 image : "img/selection.png",
-                                imageWidth : function() { return 32 * that.context.vesselSize() },
-                                imageHeight : function() { return 32 * that.context.vesselSize() },
-                                imageYOffset : function() { return -16 * that.context.vesselSize() },
-                                imageXOffset : function() { return -16 * that.context.vesselSize() },
+                                imageWidth : function() { return 32 * that.context.vesselSize(); },
+                                imageHeight : function() { return 32 * that.context.vesselSize(); },
+                                imageYOffset : function() { return -16 * that.context.vesselSize(); },
+                                imageXOffset : function() { return -16 * that.context.vesselSize(); },
                                 type : "selection"
                             })
                     ]);
                 }
-            })
+            });
 
             that.layers.selection.redraw();
-        })
-    }
+        });
+    };
 
     this.draw = function(vessels) {
-        var selectedFeature;
+        var selectedFeature = null;
         var that = this;
 
         $.each(this.layers.vessel.features, function(k, v) {
             if (v.attributes.vessel.mmsi == that.selectedId) {
                 selectedFeature = v;
             }
-        })
+        });
 
         var vesselLayer = this.layers.vessel;
         var vesselFeatures = [];
@@ -178,13 +181,13 @@ function VesselLayer() {
                 id : value.id,
                 angle : value.angle - 90,
                 image : "img/" + image.name,
-                imageWidth : function() { return image.width * context.vesselSize() },
-                imageHeight : function() { return image.height * context.vesselSize() },
-                imageYOffset : function() { return image.yOffset * context.vesselSize() },
-                imageXOffset : function() { return image.xOffset * context.vesselSize() },
+                imageWidth : function() { return image.width * context.vesselSize(); },
+                imageHeight : function() { return image.height * context.vesselSize(); },
+                imageYOffset : function() { return image.yOffset * context.vesselSize(); },
+                imageXOffset : function() { return image.xOffset * context.vesselSize(); },
                 type : "vessel",
                 vessel : value
-            }
+            };
 
             var geom = embryo.map.createPoint(value.x, value.y);
 
@@ -198,7 +201,7 @@ function VesselLayer() {
         });
 
         var arr = vesselLayer.features.slice();
-        var idx = arr.indexOf(selectedFeature);
+        var idx = $.inArray(selectedFeature, arr);
         if (idx != -1) arr.splice(idx, 1);
         vesselLayer.addFeatures(vesselFeatures);
         vesselLayer.destroyFeatures(arr);
@@ -217,10 +220,10 @@ function VesselLayer() {
                             angle : 0,
                             opacity : "{transparency}",
                             image : "img/green_marker.png",
-                            imageWidth : function() { return 32 * context.vesselSize() },
-                            imageHeight : function() { return 32 * context.vesselSize() },
-                            imageYOffset : function() { return -16 * context.vesselSize() },
-                            imageXOffset : function() { return -16 * context.vesselSize() },
+                            imageWidth : function() { return 32 * context.vesselSize(); },
+                            imageHeight : function() { return 32 * context.vesselSize(); },
+                            imageYOffset : function() { return -16 * context.vesselSize(); },
+                            imageXOffset : function() { return -16 * context.vesselSize(); },
                             type : "marker"
                         })
                 ]);
@@ -242,10 +245,10 @@ function VesselLayer() {
                             id : -1,
                             angle : 0,
                             image : "img/aw-logo.png",
-                            imageWidth : function() { return 32 * context.vesselSize() },
-                            imageHeight : function() { return 16 * context.vesselSize() },
-                            imageYOffset : function() { return 8 * context.vesselSize() },
-                            imageXOffset : function() { return -16 * context.vesselSize() },
+                            imageWidth : function() { return 32 * context.vesselSize(); },
+                            imageHeight : function() { return 16 * context.vesselSize(); },
+                            imageYOffset : function() { return 8 * context.vesselSize(); },
+                            imageXOffset : function() { return -16 * context.vesselSize(); },
                             type : "marker"
                         })
                 ]);
@@ -253,8 +256,7 @@ function VesselLayer() {
         });
 
         iconLayer.redraw();
-
-    }
+    };
 }
 
 VesselLayer.prototype = new EmbryoLayer();

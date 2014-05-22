@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" x-ng-app="embryo.front" manifest="index.appcache" type="text/cache-manifest">
+<html lang="en" x-ng-app="embryo.front" id="ng-app" manifest="index.appcache" type="text/cache-manifest">
 <head>
 <meta charset="utf-8" />
 <title>ArcticWeb Greenland</title>
@@ -48,30 +48,30 @@
 ================================================== -->
 	<div id="contentContainer" class="container">
 
-		<carousel id="myCarousel" interval="8000"> 
-			<slide> 
-				<img src="img/front/ice.jpg" alt="Arctic ice">
+		<div x-carousel id="myCarousel" x-interval="8000"> 
+			<div x-slide> 
+				<img x-ng-src="img/front/ice.jpg" alt="Arctic ice">
 				<div class="carousel-caption">
 					<h2>Tailored Weather Forecasts and Ice Charts</h2>
 					<p>Latest ice charts from Danish Meteorological Institute. Tailored weather forecasts for
 						uploaded sailing routes.</p>
 				</div>
-			</slide> 
-			<slide> 
-				<img src="img/front/Konsol-h350.jpg" alt="Vessel bridge">
+			</div> 
+			<div x-slide> 
+				<img x-ng-src="img/front/Konsol-h350.jpg" alt="Vessel bridge">
 				<div class="carousel-caption">
 					<h2>Coordinated Voyage</h2>
 					<p>Share routes and schedules with other ships and Arctic Command.</p>
 				</div>
-			</slide> 
-			<slide> 
-				<img src="img/img6.jpg" alt="Live AIS-data">
+			</div> 
+			<div x-slide> 
+				<img x-ng-src="img/img6.jpg" alt="Live AIS-data">
 				<div class="carousel-caption">
 					<h2>Live AIS-data and Streamlined Reporting</h2>
 					<p>AIS-data from satellite and base stations. Simplified and streamlined Greenpos reporting.</p>
 				</div>
-			</slide> 
-		</carousel>
+			</div> 
+		</div>
 
 		<!-- ================================================= -->
 
@@ -86,16 +86,12 @@
 					ArcticWeb serves as a single point of access to safety related information, provides streamlined reporting and allows
 					for voluntary coordinated voyage through sharing of positions and planned routes. Ships in the area and their
 					organizations may login or request access to ArcticWeb via the buttons below.</p>
-
 				<div class="btn-group">
 					<button class="btn btn-large btn-primary" x-ng-click="loginDlg()">Log In</button>
 					<a class="btn btn-large  btn-success btn-default" href="content.html#/requestAccess" role="button">Request Access</a>
 				</div>
-
 			</div>
-
-			<hr class="soften">
-
+			<hr class="soften" />
 			<!-- Top row -->
 			<div class="row">
 				<div class="col-md-4 subsection">

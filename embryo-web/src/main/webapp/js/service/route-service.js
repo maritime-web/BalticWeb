@@ -10,7 +10,7 @@
             return 'route_' + routeId;
         };
         
-        var loggedInVesselDetails;
+        var loggedInVesselDetails = null;
         function updateLoggedInVessel(error, vesselOverview, vesselDetails) {
             loggedInVesselDetails = vesselDetails;
         }
@@ -66,20 +66,21 @@
                     error(embryo.ErrorService.getText(data, status, config));
                 });
             },
-            getRouteType : function(mmsi, routeId) {
-                if (mmsi == embryo.authentication.shipMmsi) {
-                    if (routeId == loggedInVesselDetails.additionalInformation.routeId) {
-                        return "active";
-                    } else {
-                        return "planned";
-                    }
-                }   
-                return "other";
+            getRouteType : function(mmsi, routeId, active) {
+                var str = "";
+                if (mmsi != embryo.authentication.shipMmsi) {
+                    str += "other";
+                }
+                if (active) {
+                    return str += "active";
+                } else {
+                    return str += "planned";
+                }
             }
         };
     });
 
     module.run(function(RouteService) {
         embryo.route.service = RouteService;
-    })
+    });
 }());

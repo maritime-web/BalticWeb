@@ -13,7 +13,7 @@
 				<table class="table">
 					<tr x-ng-repeat="provider in providers" class="e-iceprovider">
 						<td><input type="radio" x-ng-model="$parent.selectedProvider"
-							ng-value="provider" name="providers" id="provider_{{$index}}" /></td>
+							x-ng-value="provider" name="providers" id="provider_{{$index}}" /></td>
 						<td><label for="provider_{{$index}}">{{provider.name}}</label></td>
 						<td><label for="provider_{{$index}}">{{provider.shortName}}</label></td>
 					</tr>

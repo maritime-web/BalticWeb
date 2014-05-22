@@ -17,6 +17,7 @@ package dk.dma.embryo.msi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.frv.enav.msi.ws.warning.MsiService;
 import dk.frv.enav.msi.ws.warning.WarningService;
@@ -35,13 +37,18 @@ public class MsiClientImpl implements MsiClient {
     String endpoint;
 
     @Inject
-    @Property("embryo.msi.countries")
-    String countries;
+    @Property("embryo.msi.regions")
+    String regions;
 
     @Inject
     private EmbryoLogService embryoLogService;
+    
+    @Inject
+    private PropertyFileService propertyFileService;
 
     private MsiService msiService;
+
+    private Map<String, String> descriptions;
     
     public MsiClientImpl(){
     }
@@ -53,30 +60,29 @@ public class MsiClientImpl implements MsiClient {
     
     @PostConstruct
     public void init() {
+        descriptions = getDescriptions();
         msiService = new WarningService(getClass().getResource("/wsdl/warning.wsdl"), new QName("http://enav.frv.dk/msi/ws/warning", "WarningService"))
                 .getMsiServiceBeanPort();
 
         ((BindingProvider) msiService).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpoint);
     }
 
-    public List<MsiClient.MsiItem> getActiveWarnings() {
+    public List<MsiClient.MsiItem> getActiveWarnings(List<String> regions) {
         List<MsiClient.MsiItem> result = new ArrayList<>();
 
-        String[] countriesArr = countries.split(",");
-
         boolean error = false;
-        for (String country : countriesArr) {
+        for (String region : regions) {
             int count = 0;
             try {
-                for (MsiDto md : msiService.getActiveWarningCountry(country).getItem()) {
+                for (MsiDto md : msiService.getActiveWarningCountry(region).getItem()) {
                     result.add(new MsiClient.MsiItem(md));
                     count++;
                 }
             } catch (Throwable t) {
-                embryoLogService.error("Error reading warnings from MSI service: " + endpoint + " for country: " + country, t);
+                embryoLogService.error("Error reading warnings from MSI service: " + endpoint + " for country: " + region, t);
                 error = true;
             }
-            embryoLogService.info("Read " + count + " warnings from MSI provider: " + country);
+            embryoLogService.info("Read " + count + " warnings from MSI provider: " + region);
         }
         embryoLogService.info("Read " + result.size() + " warnings from MSI service: " + endpoint);
         if(error) {
@@ -84,6 +90,23 @@ public class MsiClientImpl implements MsiClient {
             throw new RuntimeException();
         }
         return result;
-
+    }
+    
+    @Override
+    public List<Region> getRegions() {
+        String[] regionStrs = regions.split(",");
+        ArrayList<Region> result = new ArrayList<>();
+        for(String r : regionStrs) {
+            Region region = new Region();
+            region.setName(r);
+            region.setDescription(descriptions.get(r));
+            result.add(region);
+        }
+        return result;
+    }
+    
+    private Map<String, String> getDescriptions() {
+        Map<String, String> descriptions = propertyFileService.getMapProperty("embryo.msi.region.descriptions");
+        return descriptions;
     }
 }

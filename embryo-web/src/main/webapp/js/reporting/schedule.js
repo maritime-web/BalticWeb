@@ -167,7 +167,7 @@
                 return false;
             }
 
-            if (!$scope.activeRoute) {
+            if (!$scope.activeRouteId) {
                 return false;
             }
 
@@ -301,11 +301,13 @@
 
     embryo.ScheduleViewCtrl = function($scope, ScheduleService, RouteService, $timeout) {
         $scope.collapse = false;
+        $scope.viewAll = true;
         
         var loadSchedule = function() {
             if ($scope.mmsi) {
                 ScheduleService.getSchedule($scope.mmsi, function(schedule) {
                     $scope.voyages = schedule.voyages.slice();
+                    $scope.toggleView();
                     $("#scheduleViewPanel").css("display", "block");
                 });
             }
@@ -313,7 +315,7 @@
 
         $scope.routeLayer = RouteLayerSingleton.getInstance();
 
-        $scope.scheduleLayer = new ScheduleLayer("#000000");
+        $scope.scheduleLayer = ScheduleLayerSingleton.getInstance();
         addLayerToMap("vessel", $scope.scheduleLayer, embryo.map);
 
         embryo.controllers.scheduleView = {
@@ -328,8 +330,8 @@
                 loadSchedule();
             },
             close : function() {
-                $scope.routeLayer.clear();
-                $scope.scheduleLayer.clear();
+                //$scope.routeLayer.clear();
+                //$scope.scheduleLayer.clear();
             }
         };
 
@@ -338,7 +340,7 @@
                 return false;
             }
 
-            if (!$scope.activeRoute) {
+            if (!$scope.activeRouteId) {
                 return false;
             }
 
@@ -356,11 +358,47 @@
         $scope.formatDateTime = function(timeInMillis) {
             return formatTime(timeInMillis);
         };
+        
+        $scope.toggleView = function() {
+            for(var i in $scope.voyages) {
+                $scope.voyages[i].showRoute = $scope.viewAll;
+            }
+        };
+        
+        $scope.checkAll = function() {
+            for(var i in $scope.voyages) {
+                if(!$scope.voyages[i].showRoute) {
+                    $scope.viewAll = false;
+                    return;
+                }
+            }
+            $scope.viewAll = true;
+        };
 
         $scope.view = function() {
             $scope.collapse = true;
-            $scope.scheduleLayer.draw($scope.voyages);
-            $scope.scheduleLayer.zoomToExtent();
+            $scope.routeLayer.clear();
+            var voyagesToDraw = [];
+            for(var i in $scope.voyages) {
+                var voyage = $scope.voyages[i];
+                if(voyage.showRoute) {
+                    if(voyage.route) {
+                        RouteService.getRoute(voyage.route.id, function(route) {
+                            var routeType = embryo.route.service.getRouteType($scope.mmsi, voyage.route.id, $scope.isActive(voyage)); 
+                            $scope.routeLayer.draw(route, routeType, true);
+                        });
+                    } else {
+                        voyagesToDraw.push(voyage);
+                    }
+                }
+            }
+            var scheduleType = $scope.mmsi == embryo.authentication.shipMmsi ? 'own' : 'other';
+            $scope.scheduleLayer.draw(voyagesToDraw, scheduleType);
+            if(voyagesToDraw.length > 0) {
+                $scope.scheduleLayer.zoomToExtent();
+            } else {
+                $scope.routeLayer.zoomToExtent();
+            }
         };
 
         $scope.viewRoute = function(voyage) {

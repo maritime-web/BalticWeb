@@ -1,4 +1,24 @@
-<div id="msiControlPanel" class="controlPanel panel-group">
+<div id="msiControlPanel" class="controlPanel panel-group" x-ng-controller="embryo.MSIController">
+	<div class="panel panel-default" x-ng-show="regions && regions.length > 1">
+		<div class="e-accordion-heading e-panel-heading">
+			<h4 class="e-panel-header">
+				<a class="e-accordion-toggle" data-toggle="collapse"
+					data-parent="#msiControlPanel" href="#msiRegions"> MSI Regions </a>
+			</h4>
+		</div>
+		<div id="msiRegions" class="e-accordion-body collapse panel-collapse">
+			<div class="e-accordion-inner panel-body">
+				<table class="table">
+					<tr x-ng-repeat="region in regions" class="e-iceprovider">
+						<td><input type="checkbox" x-ng-change="showMsi()" x-ng-model="region.selected"
+							name="regions" id="region_{{$index}}" /></td>
+						<td><label for="region_{{$index}}">{{region.name}}</label></td>
+						<td><label for="region_{{$index}}">{{region.description}}</label></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
 	<div class="panel panel-default">
 			<div class="e-accordion-heading e-panel-heading">
 				<h4 class="e-panel-header">

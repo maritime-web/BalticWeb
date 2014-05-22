@@ -139,7 +139,8 @@ var greenposScope;
             }
             var fields = $scope.visibility[$scope.report.type];
 
-            return fields.indexOf(fieldName) > -1;
+            //return fields.indexOf(fieldName) > -1;
+            return $.inArray(fieldName, fields) > -1;
         };
 
         $scope.sendReport = function() {
