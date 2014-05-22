@@ -59,7 +59,6 @@ $(function() {
             informations.push(embryo.additionalInformation.historicalTrack);
             informations.push(embryo.additionalInformation.nearestShips);
             informations.push(embryo.additionalInformation.distanceCircles);
-            informations.push(embryo.additionalInformation.metoc);
 
             embryo.vessel.actions.setup("#yourVesselActions", informations, vesselOverview, vesselDetails);
         };

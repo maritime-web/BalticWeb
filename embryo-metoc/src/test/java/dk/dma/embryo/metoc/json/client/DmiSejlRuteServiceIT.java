@@ -50,9 +50,22 @@ public class DmiSejlRuteServiceIT {
         wp2.setHeading("RL");
         wp2.setLat(55.725183333333334);
         wp2.setLon(12.648666666666667);
-        request.setWaypoints(new DmiSejlRuteService.Waypoint[]{wp1, wp2});
 
-        System.out.println(request);
+        DmiSejlRuteService.Waypoint wp3 = new DmiSejlRuteService.Waypoint();
+        wp3.setEta(DmiSejlRuteService.DATE_FORMAT.format(new Date(System.currentTimeMillis() + 1000L * 3600 * 0)));
+        wp3.setHeading("RL");
+        wp3.setLat(63.725183333333334);
+        wp3.setLon(53.648666666666667);
+
+        DmiSejlRuteService.Waypoint wp4 = new DmiSejlRuteService.Waypoint();
+        wp4.setEta(DmiSejlRuteService.DATE_FORMAT.format(new Date(System.currentTimeMillis() + 1000L * 3600 * 3)));
+        wp4.setHeading("RL");
+        wp4.setLat(63.725183333333334);
+        wp4.setLon(52.648666666666667);
+
+        
+        request.setWaypoints(new DmiSejlRuteService.Waypoint[]{wp3, wp4});
+        System.out.println("request : " + request);
         
         DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
         System.out.println("" + sejlRuteResponse);

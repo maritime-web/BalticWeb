@@ -31,7 +31,7 @@ import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 import dk.dma.enav.model.geometry.Position;
 
-public class MetocServiceImpl {
+public class MetocServiceImpl implements MetocService {
 
     @Inject
     private DmiSejlRuteService dmiSejlRuteService;
@@ -116,6 +116,16 @@ public class MetocServiceImpl {
         }
 
         return sejlRuteResponse;
+    }
+    
+    public DmiSejlRuteService.SejlRuteResponse[] listMetocs(String[] routeIds){
+        DmiSejlRuteService.SejlRuteResponse[] metocs = new DmiSejlRuteService.SejlRuteResponse[routeIds.length];
+        
+        for(int i = 0; i < metocs.length; i ++){
+            metocs[i] = getMetoc(routeIds[i]);
+        }
+        
+        return metocs;
     }
 
 }

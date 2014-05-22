@@ -38,7 +38,7 @@ import dk.dma.enav.model.voyage.RouteLeg;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 import dk.dma.enav.model.voyage.Waypoint;
 
-public class MetocServiceMock implements MetocService {
+public class MetocServiceMock /*implements MetocService */{
 
     @Inject
     private VesselDao vesselDao;
@@ -88,7 +88,7 @@ public class MetocServiceMock implements MetocService {
         this.vesselDao = vesselService;
     }
 
-    @Override
+    //@Override
     public DmiSejlRuteService.SejlRuteResponse getMetoc(String routeId) {
         Route route = vesselDao.getRouteByEnavId(routeId);
         if (route == null) {

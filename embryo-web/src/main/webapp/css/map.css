@@ -69,6 +69,14 @@ body {
 	display: none;
 }
 
+.controlPanel2 {
+	position: absolute;
+	top: 50px; /* 55 */
+	left: 10px;
+	width: 300px;
+	display: none;
+}
+
 .accordion-group {
 	background-color: white;
 }
@@ -130,6 +138,23 @@ body {
 	width: 120px;
 	padding-top: 5px;
 	text-align: right;
+}
+
+.panel-group .panel-heading{
+	padding: 10px;
+	background-color : inherit;
+	color : inherit;
+	border-bottom:none;	
+}
+
+.panel-group .panel-heading .panel-title a{
+	color : #428bca;
+	font-size : 14px;
+	font-weight : bold;
+}
+
+.panel-group .panel-heading+.panel-collapse .panel-body{
+	border-top : none;
 }
 
 .e-panel-heading {

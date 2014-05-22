@@ -89,6 +89,13 @@ public class RouteDecorator {
         return route.getDestination();
     }
 
+    public Date getEta() {
+        if(waypoints.size() == 0){
+            return null;
+        }
+        return waypoints.get(waypoints.size() - 1).getEta();
+    }
+
     public String getName() {
         return route.getName();
     }

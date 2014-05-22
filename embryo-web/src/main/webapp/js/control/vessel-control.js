@@ -21,8 +21,9 @@ $(function() {
     addLayerToMap("vessel", vesselLayer, embryo.map)
 
     embryo.vessel.lookupVessel = function(id) {
-        for (var i in vessels) {
-            if (vessels[i].mmsi == id) return vessels[i];
+        for ( var i in vessels) {
+            if (vessels[i].mmsi == id)
+                return vessels[i];
         }
         return null;
     };
@@ -31,12 +32,14 @@ $(function() {
         return vessels;
     };
 
-    embryo.vessel.goToVesselLocation = function (vessel) {
-        if (vessel.type != null) embryo.map.setCenter(vessel.x, vessel.y, 8);
+    embryo.vessel.goToVesselLocation = function(vessel) {
+        if (vessel.type != null)
+            embryo.map.setCenter(vessel.x, vessel.y, 8);
     }
 
-    embryo.vessel.selectVessel = function (vessel) {
-        if (vessel.type) vesselLayer.select(vessel.mmsi);
+    embryo.vessel.selectVessel = function(vessel) {
+        if (vessel.type)
+            vesselLayer.select(vessel.mmsi);
         else {
             vesselLayer.select(null);
             embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(vessel.mmsi))
@@ -50,22 +53,33 @@ $(function() {
 
     var selectedId = null;
 
-    vesselLayer.select(function (id) {
-        if (selectedId != id && selectedId != null) embryo.eventbus.fireEvent(embryo.eventbus.VesselUnselectedEvent());
-        if (id) embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(id));
-        else embryo.eventbus.fireEvent(embryo.eventbus.VesselUnselectedEvent());
+    vesselLayer.select(function(id) {
+        if (selectedId != id && selectedId != null)
+            embryo.eventbus.fireEvent(embryo.eventbus.VesselUnselectedEvent());
+        if (id)
+            embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(id));
+        else
+            embryo.eventbus.fireEvent(embryo.eventbus.VesselUnselectedEvent());
         selectedId = id;
     });
 
     function loadVesselList() {
-        var messageId = embryo.messagePanel.show( { text: "Loading vessels ..." });
+        var messageId = embryo.messagePanel.show({
+            text : "Loading vessels ..."
+        });
 
         embryo.vessel.service.list(function(data) {
             vessels = data;
-            embryo.messagePanel.replace(messageId, { text: vessels.length + " vessels loaded.", type: "success" });
+            embryo.messagePanel.replace(messageId, {
+                text : vessels.length + " vessels loaded.",
+                type : "success"
+            });
             vesselLayer.draw(vessels);
-        }, function(errorMsg, status){
-            embryo.messagePanel.replace(messageId, { text: errorMsg, type: "error" });
+        }, function(errorMsg, status) {
+            embryo.messagePanel.replace(messageId, {
+                text : errorMsg,
+                type : "error"
+            });
         });
     }
 
@@ -75,14 +89,15 @@ $(function() {
     });
 
     embryo.authenticated(function() {
-        
+
         if (embryo.authentication.permissions.indexOf("Reporting") < 0) {
             $("#vcpGreenposList").parent().remove();
         }
 
         function fixAccordionSize() {
             $("#vesselControlPanel .e-accordion-inner").css("overflow", "auto");
-            $("#vesselControlPanel .e-accordion-inner").css("max-height", Math.max(100, $(window).height() - 233) + "px");
+            $("#vesselControlPanel .e-accordion-inner").css("max-height",
+                    Math.max(100, $(window).height() - 233) + "px");
         }
 
         $(window).resize(fixAccordionSize);
@@ -94,7 +109,7 @@ $(function() {
 embryo.ready(function() {
     function fixReportingPanelSize() {
         $(".reportingPanel").css("overflow", "auto");
-        $(".reportingPanel").css("max-height", Math.max(100, $("#map").height() - 100)+"px");
+        $(".reportingPanel").css("max-height", Math.max(100, $("#map").height() - 100) + "px");
     }
 
     $(window).resize(fixReportingPanelSize);

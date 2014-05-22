@@ -24,4 +24,6 @@ public interface MetocService{
 
     DmiSejlRuteService.SejlRuteResponse getMetoc(String routeId);
 
+    DmiSejlRuteService.SejlRuteResponse[] listMetocs(String[] routeIds);
+
 }
