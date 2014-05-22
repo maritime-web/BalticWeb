@@ -30,7 +30,7 @@ import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.ForecastValue;
 public class ForecastPredicateTest {
 
     private ForecastPredicate predicate = new ForecastPredicate();
-    private Forecast forecast = null;
+    private Forecast forecast;
 
     @Before
     public void setup() {
