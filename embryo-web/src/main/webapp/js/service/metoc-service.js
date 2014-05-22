@@ -4,7 +4,7 @@
 
     metocModule.factory('MetocService', function($http) {
         return {
-            listMetoc : function(routeIds, callback) {
+            listMetoc : function(routeIds, callback, error) {
                 var messageId = embryo.messagePanel.show({
                     text : "Loading metoc ..."
                 });
@@ -33,7 +33,9 @@
                         text : "Failed loading metoc. Server returned error: " + status,
                         type : "error"
                     });
-                    callback(null);
+                    if(error){
+                        error();
+                    }
                 });
             }
         };

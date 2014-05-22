@@ -23,6 +23,46 @@ $(function() {
                 $scope.routes = [];
                 $scope.selectedOpen = false;
 
+                function available(route) {
+                    return Math.abs((route.etaDep - Date.now()) < 1000 * 3600 * 55) || Date.now() < route.eta;
+                }
+
+                if (embryo.authentication.shipMmsi) {
+                    $scope.routes.push({
+                        name : 'Active route',
+                        available : false,
+                        ids : null
+                    });
+
+                    RouteService.getActiveMeta(embryo.authentication.shipMmsi, function(route) {
+                        $scope.routes[0].available = available(route);
+                        $scope.routes[0].ids = [ route.id ];
+                    });
+                }
+
+                $scope.routes.push({
+                    name : 'Selected routes',
+                    available : false,
+                    ids : []
+                });
+
+                $scope.$watch(RouteService.getSelectedRoutes, function(newValue, oldValue) {
+                    
+                    var routes = RouteService.getSelectedRoutes();
+                    
+                    console.log("watch");
+                    
+                    for ( var index in routes) {
+                        if (available(routes[index])){
+                            console.log("available");
+                            console.log(routes[index]);
+                            $scope.routes[$scope.routes.length - 1].available = true;
+                            $scope.routes[$scope.routes.length - 1].ids.push(routes[index].id);
+                        }
+                    }
+                });
+                
+                
 
                 $scope.toggleShowMetoc = function($event, route) {
                     $event.preventDefault();
@@ -39,30 +79,6 @@ $(function() {
                         $scope.selectedOpen = false;
                     }
                 };
-
-                if (embryo.authentication.shipMmsi) {
-                    $scope.routes.push({
-                        name : 'Active route',
-                        available : false,
-                        ids : null
-                    });
-
-                    RouteService.getActiveMeta(embryo.authentication.shipMmsi, function(route) {
-                        $scope.routes[0].available = Math.abs((route.etaDep - Date.now()) < 1000 * 3600 * 55)
-                                || Date.now() < route.eta;
-                        $scope.routes[0].ids = [ route.id ];
-
-                        $scope.toggleShowMetoc({
-                            preventDefault : function() {
-                            }
-                        }, $scope.routes[0]);
-                    });
-                }
-
-                $scope.routes.push({
-                    name : 'Selected routes',
-                    available : true
-                });
 
                 metocLayer.select("metocCtrl", function(forecast) {
                     $scope.selected = forecast;

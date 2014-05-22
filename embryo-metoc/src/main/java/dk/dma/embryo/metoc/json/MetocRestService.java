@@ -54,7 +54,7 @@ public class MetocRestService {
     public List<Metoc> getMetoc(@PathParam("routeIds") String routeIds) {
         logger.debug("getMetoc({})", routeIds);
   
-        String[] ids = routeIds.split(";");
+        String[] ids = routeIds.split(":");
         
         SejlRuteResponse[] sejlRuteResponses = metocService.listMetocs(ids);
 

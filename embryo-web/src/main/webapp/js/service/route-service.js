@@ -19,6 +19,8 @@
                 embryo.vessel.service.subscribe(embryo.authentication.shipMmsi, updateLoggedInVessel);
             }
         });
+        
+        var selectedRoutes = null;
 
         return {            
             getActive : function(mmsi, success, error) {
@@ -76,6 +78,15 @@
                 } else {
                     return str += "planned";
                 }
+            }, 
+            addSelectedRoute : function(route){
+                selectedRoutes.push(route);
+            },
+            clearSelection : function(){
+                return selectedRoutes = [];
+            },
+            getSelectedRoutes : function(){
+                return selectedRoutes;
             }
         };
     });
