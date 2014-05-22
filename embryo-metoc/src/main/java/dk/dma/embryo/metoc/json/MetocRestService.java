@@ -39,10 +39,10 @@ import dk.dma.embryo.metoc.service.MetocService;
 public class MetocRestService {
     @Inject
     private MetocService metocService;
-    
+
     @Inject
     private Logger logger;
-    
+
     public MetocRestService() {
     }
 
@@ -51,20 +51,20 @@ public class MetocRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public List<Metoc> getMetoc(@PathParam("routeIds") String routeIds) {
+    public List<Metoc> getMetocs(@PathParam("routeIds") String routeIds) {
         logger.debug("getMetoc({})", routeIds);
-  
+
         String[] ids = routeIds.split(":");
-        
+
         SejlRuteResponse[] sejlRuteResponses = metocService.listMetocs(ids);
 
         List<Metoc> metocs = new ArrayList<>(sejlRuteResponses.length);
-        for(SejlRuteResponse sejlRuteResponse : sejlRuteResponses){
-            if(sejlRuteResponse.getMetocForecast() != null){
-                metocs.add(Metoc.from(sejlRuteResponse.getMetocForecast()));
+        for (SejlRuteResponse sejlRuteResponse : sejlRuteResponses) {
+            if (sejlRuteResponse.getMetocForecast() != null) {
+                metocs.add(Metoc.from(sejlRuteResponse.getMetocForecast(), new ForecastPredicate()));
             }
         }
-        
+
         logger.debug("getMetoc({}) : {}", ids, metocs);
         return metocs;
     }
