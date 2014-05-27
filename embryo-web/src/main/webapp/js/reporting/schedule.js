@@ -378,12 +378,16 @@
         $scope.view = function() {
             $scope.collapse = true;
             $scope.routeLayer.clear();
+            
+            RouteService.clearSelection();
+            
             var voyagesToDraw = [];
             for(var i in $scope.voyages) {
                 var voyage = $scope.voyages[i];
                 if(voyage.showRoute) {
                     if(voyage.route) {
                         RouteService.getRoute(voyage.route.id, function(route) {
+                            RouteService.addSelectedRoute(route);
                             var routeType = embryo.route.service.getRouteType($scope.mmsi, voyage.route.id, $scope.isActive(voyage)); 
                             $scope.routeLayer.draw(route, routeType, true);
                         });

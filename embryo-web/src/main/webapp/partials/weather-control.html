@@ -1,0 +1,43 @@
+<div ng-controller="WeatherController">
+	<div id="weatherControlPanel" accordion close-others="true" class="controlPanel2">
+		<div accordion-group heading="Weather forecast on route">
+			<table class="table table-condensed" >
+				<tr x-ng-repeat="route in routes">
+					<td>{{route.name}}</td>
+					<td><span x-ng-if="route.available" class="label label-success">AVAILABLE</span><span
+						x-ng-if="!route.available" class="label label-default">NOT AVAILABLE</span></td>
+					<td><a x-ng-if="route.available" href="#" x-ng-click="toggleShowMetoc($event, route)"><span
+							x-ng-if="shown.name !== route.name">view</span><span x-ng-if="shown.name === route.name">hide</span></a></td>
+				</tr>
+			</table>
+		</div>
+		<div accordion-group heading="Selected Weather" is-open="!!selected">
+			<div ng-if="!selected">
+				Nothing selected
+			</div>
+			<table class="table table-condensed" ng-if="selected">
+				<tr>
+					<th>Time</th>
+					<td>{{selected.time}}</td>
+				</tr>
+				<tr>
+					<th>Current</th>
+					<td>{{selected.curSpeed ? selected.curSpeed + " kn" : "N/A"}} - {{selected.curDir ? selected.curDir + "°" : "N/A"}}</td>
+				</tr>
+				<tr>
+					<th>Wind</th>
+					<td>{{selected.windSpeed ? selected.windSpeed + " m/s" : "N/A"}} - {{selected.windDir ? selected.windDir + "°" : "N/A"}}</td>
+				</tr>
+				<tr>
+					<th>Wave</th>
+					<td>{{selected.waveHeight ? selected.waveHeight + " m" : "N/A"}} - {{selected.waveDir ? selected.waveDir + "°" : "N/A"}} ({{selected.wavePeriod ? selected.wavePeriod + " sec" : "N/A"}})</td>
+				</tr>
+				<tr>
+					<th>Sea level</th>
+					<td>{{selected.sealevel ? selected.sealevel + " m" : "N/A"}}</td>
+				</tr>
+			</table>
+		</div>
+		<div accordion-group heading="Legends">Legends content</div>
+	</div>
+</div>

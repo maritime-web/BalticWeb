@@ -16,7 +16,11 @@
 package dk.dma.embryo.metoc.json;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.google.common.base.Predicate;
 
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.MetocForecast;
@@ -24,7 +28,7 @@ import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.MetocForecast;
 public class Metoc {
 
     private String created;
-    private Forecast[] forecasts;
+    private List<Forecast> forecasts;
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
@@ -33,10 +37,9 @@ public class Metoc {
         Metoc result = new Metoc();
 
         try {
-            Forecast[] forecasts = new Forecast[metocForecast.getForecasts().length];
-            int count = 0;
+            List<Forecast> forecasts = new ArrayList<Forecast>(metocForecast.getForecasts().length);
             for (DmiSejlRuteService.Forecast dmiForecast : metocForecast.getForecasts()) {
-                forecasts[count++] = Forecast.from(dmiForecast);
+                forecasts.add(Forecast.from(dmiForecast));
             }
             result.setCreated(metocForecast.getCreated());
             result.setForecasts(forecasts);
@@ -47,6 +50,26 @@ public class Metoc {
         return result;
     }
 
+    public static Metoc from(MetocForecast metocForecast, Predicate<DmiSejlRuteService.Forecast> predicate) {
+        Metoc result = new Metoc();
+
+        try {
+            List<Forecast> forecasts = new ArrayList<Forecast>(metocForecast.getForecasts().length);
+            for (DmiSejlRuteService.Forecast dmiForecast : metocForecast.getForecasts()) {
+                if(predicate.apply(dmiForecast)){
+                    forecasts.add(Forecast.from(dmiForecast));
+                }
+            }
+            result.setCreated(metocForecast.getCreated());
+            result.setForecasts(forecasts);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        return result;
+    }
+
+    
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -58,11 +81,11 @@ public class Metoc {
         this.created = created;
     }
 
-    public Forecast[] getForecasts() {
+    public List<Forecast> getForecasts() {
         return forecasts;
     }
 
-    public void setForecasts(Forecast[] forecasts) {
+    public void setForecasts(List<Forecast> forecasts) {
         this.forecasts = forecasts;
     }
 

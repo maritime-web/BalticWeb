@@ -15,6 +15,9 @@
  */
 package dk.dma.embryo.metoc.json;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,7 +28,6 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.SejlRuteResponse;
 import dk.dma.embryo.metoc.service.MetocService;
 
@@ -37,32 +39,33 @@ import dk.dma.embryo.metoc.service.MetocService;
 public class MetocRestService {
     @Inject
     private MetocService metocService;
-    
+
     @Inject
     private Logger logger;
-    
-    @Inject
-    DmiSejlRuteService dmiSejlRuteService;
-    
+
     public MetocRestService() {
     }
 
     @GET
-    @Path("/{routeId}")
+    @Path("/list/{routeIds}")
     @Produces("application/json")
     @GZIP
     @NoCache
-    public Metoc getMetoc(@PathParam("routeId") String id) {
-        logger.debug("getMetoc({})", id);
-  
-        SejlRuteResponse sejlRuteResponse = metocService.getMetoc(id);
+    public List<Metoc> getMetocs(@PathParam("routeIds") String routeIds) {
+        logger.debug("getMetoc({})", routeIds);
 
-        Metoc metoc = null; 
-        if(sejlRuteResponse.getMetocForecast() != null){
-            metoc = Metoc.from(sejlRuteResponse.getMetocForecast());
+        String[] ids = routeIds.split(":");
+
+        SejlRuteResponse[] sejlRuteResponses = metocService.listMetocs(ids);
+
+        List<Metoc> metocs = new ArrayList<>(sejlRuteResponses.length);
+        for (SejlRuteResponse sejlRuteResponse : sejlRuteResponses) {
+            if (sejlRuteResponse.getMetocForecast() != null) {
+                metocs.add(Metoc.from(sejlRuteResponse.getMetocForecast(), new ForecastPredicate()));
+            }
         }
 
-        logger.debug("getMetoc({}) : {}", id, metoc);
-        return metoc;
+        logger.debug("getMetoc({}) : {}", ids, metocs);
+        return metocs;
     }
 }

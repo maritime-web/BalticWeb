@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,6 +29,7 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.vessel.component.RouteDecorator;
 import dk.dma.embryo.vessel.service.ScheduleService;
 
 /**
@@ -72,6 +75,35 @@ public class RouteRestService {
         Route result = route != null ? route.toJsonModel() : null;
 
         logger.debug("getActive({}) : {}", mmsi, result);
+        return result;
+    }
+
+    @GET
+    @Path("/active/meta/{mmsi}")
+    @Produces("application/json")
+    @GZIP
+    @NoCache
+    public Route getActiveMeta(@PathParam("mmsi") String mmsi) {
+        logger.debug("getActiveMeta({})", mmsi);
+
+        Route result = null;
+        dk.dma.embryo.vessel.model.Route route;
+
+        route = scheduleService.getActiveRoute(Long.valueOf(mmsi));
+        
+        if(route != null){
+            RouteDecorator decorator = new RouteDecorator(route.toEnavModel());
+            Date departure = route.getEtaOfDeparture() == null ? null : route.getEtaOfDeparture().toDate();
+            
+            result = new Route(route.getEnavId());
+            result.setDes(route.getDestination());
+            result.setEtaDep(departure);
+            result.setDep(route.getOrigin());
+            result.setEta(decorator.getEta());
+            result.getWps().clear();
+        }
+
+        logger.debug("getActiveMeta({}) : {}", mmsi, result);
         return result;
     }
 

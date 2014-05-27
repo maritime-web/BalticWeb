@@ -19,10 +19,16 @@
                 embryo.vessel.service.subscribe(embryo.authentication.shipMmsi, updateLoggedInVessel);
             }
         });
+        
+        var selectedRoutes = null;
 
-        return {
+        return {            
             getActive : function(mmsi, success, error) {
                 var url = embryo.baseUrl + 'rest/route/active/' + mmsi;
+                $http.get(url).success(success);
+            },
+            getActiveMeta : function(mmsi, success, error) {
+                var url = embryo.baseUrl + 'rest/route/active/meta/' + mmsi;
                 $http.get(url).success(success);
             },
             setActiveRoute : function(routeId, activity, callback, error) {
@@ -72,6 +78,15 @@
                 } else {
                     return str += "planned";
                 }
+            }, 
+            addSelectedRoute : function(route){
+                selectedRoutes.push(route);
+            },
+            clearSelection : function(){
+                return selectedRoutes = [];
+            },
+            getSelectedRoutes : function(){
+                return selectedRoutes;
             }
         };
     });

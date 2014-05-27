@@ -3,7 +3,6 @@ describe('authentication directives', function() {
     var elm, // our directive jqLite element
     scope; // the scope where our directive is inserted
 
-
     beforeEach(function() {
         var mockSubject = {
                 role : "Shore",

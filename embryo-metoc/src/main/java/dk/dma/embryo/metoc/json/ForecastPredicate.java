@@ -13,17 +13,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dma.embryo.metoc.service;
+package dk.dma.embryo.metoc.json;
 
-import javax.ejb.Local;
+import com.google.common.base.Predicate;
 
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
+import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.Forecast;
 
-@Local
-public interface MetocService{
+/**
+ * @author Jesper Tejlgaard
+ */
+public class ForecastPredicate implements Predicate<DmiSejlRuteService.Forecast> {
 
-    DmiSejlRuteService.SejlRuteResponse getMetoc(String routeId);
-
-    DmiSejlRuteService.SejlRuteResponse[] listMetocs(String[] routeIds);
+    @Override
+    public boolean apply(Forecast input) {
+        return (input.getCurrentDir() != null && input.getCurrentSpeed() != null)
+                || (input.getWaveDir() != null && input.getWaveHeight() != null && input.getWavePeriod() != null)
+                || (input.getWindDir() != null && input.getWindSpeed() != null);
+    }
 
 }

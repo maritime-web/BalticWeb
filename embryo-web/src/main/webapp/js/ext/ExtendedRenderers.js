@@ -1,5 +1,10 @@
 /* Copyright Pierre GIRAUD, https://gist.github.com/pgiraud/6131715
- * Published under WTFPL license. */
+
+ * Published under WTFPL license. 
+ * 
+ * Customized by Jacob Avlund the Zen master
+ * 
+ * */
 
 /**
  * @requires OpenLayers/Renderer/SVG.js

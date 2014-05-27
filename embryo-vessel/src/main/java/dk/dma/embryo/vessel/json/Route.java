@@ -30,6 +30,7 @@ public class Route {
     private String destination;
     private String departure;
     private Date etaDep;
+    private Date etaDes;
 
     /** Should this be implemented as a {@link MaritimeId} ? */
     private String id;
@@ -116,6 +117,14 @@ public class Route {
 
     public void setEtaDep(Date eta) {
         this.etaDep = eta;
+    }
+
+    public Date getEta() {
+        return etaDes;
+    }
+
+    public void setEta(Date eta) {
+        this.etaDes = eta;
     }
 
 }

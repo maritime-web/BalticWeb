@@ -4,12 +4,20 @@
 
     metocModule.factory('MetocService', function($http) {
         return {
-            getMetoc : function(routeId, callback) {
+            listMetoc : function(routeIds, callback, error) {
                 var messageId = embryo.messagePanel.show({
                     text : "Loading metoc ..."
                 });
 
-                var url = embryo.baseUrl + 'rest/metoc/' + routeId;
+                var ids = "";
+                for(var index in routeIds){
+                    if(ids.length !== 0){
+                        ids += ":";
+                    }
+                    ids += routeIds[index];
+                }
+                
+                var url = embryo.baseUrl + 'rest/metoc/list/' + ids;
 
                 $http.get(url, {
                     responseType : 'json'
@@ -25,7 +33,9 @@
                         text : "Failed loading metoc. Server returned error: " + status,
                         type : "error"
                     });
-                    callback(null);
+                    if(error){
+                        error();
+                    }
                 });
             }
         };
