@@ -4,7 +4,7 @@ $(function() {
         $scope.selectedProvider = {
             key : null
         };
-
+        
         function loadProviders() {
             var messageId = embryo.messagePanel.show({
                 text : "Requesting ice chart providers ..."
@@ -41,7 +41,7 @@ $(function() {
         $scope.$watch($scope.getSelected, function(newValue, oldValue) {
             if (newValue.key) {
                 setCookie("dma-ice-provider-" + embryo.authentication.userName, newValue.key, 30);
-                requestIceObservations();
+                requestAllIceObservations();
                 $("#iceControlPanel .collapse").data("collapse", null);
                 openCollapse("#iceControlPanel #icpIceMaps");
             }
@@ -50,7 +50,7 @@ $(function() {
         function init(){
             loadProviders();
             $timeout(loadProviders, 24 * 60 * 1000 * 60);
-            $timeout(requestIceObservations, 2 * 60 * 1000 * 60);
+            $timeout(requestAllIceObservations, 2 * 60 * 1000 * 60);
         }
         
         if(typeof embryo.authentication.permissions === 'undefined'){
@@ -60,18 +60,33 @@ $(function() {
         }else{
             init();
         }
+        
+        function requestAllIceObservations() {
+            requestIceChartObservations();
+            requestIcebergObservations();
+        }
+        
+        function requestIceChartObservations() {
+            requestIceObservations('iceChart');
+        }
+        
+        function requestIcebergObservations() {
+            requestIceObservations('iceberg');
+        }
 
-        function requestIceObservations() {
+        function requestIceObservations(chartType) {
             var messageId = embryo.messagePanel.show({
                 text : "Requesting list of ice charts ..."
             });
 
+            var divId = (chartType == 'iceberg' ? '#icpIcebergs' : '#icpIceMaps');
             embryo.ice.service
                     .listByProvider(
+                            chartType,
                             $scope.selectedProvider.key,
                             function(data) {
                                 embryo.messagePanel.replace(messageId, {
-                                    text : "List of " + data.length + " ice charts downloaded.",
+                                    text : "List of " + data.length + (chartType == "iceberg" ? " icebergs" : " ice charts") + " downloaded.",
                                     type : "success"
                                 });
 
@@ -123,30 +138,32 @@ $(function() {
 
                                 }
 
-                                $("#icpIceMaps table").html(html);
+                                $(divId + " table").html(html);
 
                                 // $("#icpIceMaps
                                 // td:first").css("border-top", "none");
-                                $("#icpIceMaps table span.zoomhide").css("display", "none");
-                                $("#icpIceMaps table a.download").click(function(e) {
+                                $(divId + " table span.zoomhide").css("display", "none");
+                                $(divId + " table a.download").click(function(e) {
                                     e.preventDefault();
                                     var row = $(this).parents("tr");
-                                    requestShapefile(data[$(this).attr("mid")].shapeFileName, function() {
-                                        $("#icpIceMaps table tr").removeClass("alert");
+                                    requestShapefile(chartType, data[$(this).attr("mid")].shapeFileName, function() {
+                                        $(divId + "table tr").removeClass("alert");
                                         $(row).addClass("alert");
                                         $("#icpIceMaps table span.zoomhide").css("display", "none");
+                                        $("#icpIcebergs table span.zoomhide").css("display", "none");
                                         $("#icpIceMaps table a.download").css("display", "block");
+                                        $("#icpIcebergs table a.download").css("display", "block");
                                         $("span.zoomhide", row).css("display", "block");
                                         $("a.download", row).css("display", "none");
                                     });
                                     // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
                                     // alert(data[$(this).attr("href")].shapeFileName);
                                 });
-                                $("#icpIceMaps table a.zoom").click(function(e) {
+                                $(divId + " table a.zoom").click(function(e) {
                                     e.preventDefault();
                                     embryo.map.zoomToExtent(iceLayer.layers);
                                 });
-                                $("#icpIceMaps table a.hideIce").click(function(e) {
+                                $(divId + " table a.hideIce").click(function(e) {
                                     e.preventDefault();
                                     iceLayer.clear();
                                     $("span.zoomhide").css("display", "none");
@@ -161,7 +178,7 @@ $(function() {
                             });
         }
 
-        function requestShapefile(name, onSuccess) {
+        function requestShapefile(chartType, name, onSuccess) {
             var messageId = embryo.messagePanel.show({
                 text : "Requesting " + name + " data ..."
             });
@@ -175,10 +192,14 @@ $(function() {
 
                 var totalPolygons = 0;
                 var totalPoints = 0;
-                for ( var i in data.fragments) {
-                    totalPolygons += data.fragments[i].polygons.length;
-                    for ( var j in data.fragments[i].polygons)
-                        totalPoints += data.fragments[i].polygons[j].length;
+                if(chartType == 'iceberg') {
+                    totalPoints = data.fragments.length;
+                } else {
+                    for (var i in data.fragments) {
+                        totalPolygons += data.fragments[i].polygons.length;
+                        for ( var j in data.fragments[i].polygons)
+                            totalPoints += data.fragments[i].polygons[j].length;
+                    }
                 }
 
                 function finishedDrawing() {
@@ -195,7 +216,7 @@ $(function() {
                 // Draw shapefile a bit later, just let the browser update the
                 // view and show above message
                 window.setTimeout(function() {
-                    iceLayer.draw([data], finishedDrawing);
+                    iceLayer.draw(chartType, [data], finishedDrawing);
                 }, 10);
             }, function(errorMsg, status) {
                 if(status == 410){

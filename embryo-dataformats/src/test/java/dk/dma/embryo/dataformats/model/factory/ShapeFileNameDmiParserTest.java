@@ -40,7 +40,7 @@ public class ShapeFileNameDmiParserTest {
 
     @Test
     public void testParseNameNoVersion() {
-        ShapeFileMeasurement measurement = parser.parse("201412012345_CapeFarewell_RIC");
+        ShapeFileMeasurement measurement = parser.parse("iceChart", "201412012345_CapeFarewell_RIC");
         
         Assert.assertEquals("dmi", measurement.getProvider());
         Assert.assertEquals("201412012345_CapeFarewell_RIC", measurement.getFileName());
@@ -50,7 +50,7 @@ public class ShapeFileNameDmiParserTest {
 
     @Test
     public void testParseNameWithVersion() {
-        ShapeFileMeasurement measurement = parser.parse("201412012345_CapeFarewell_RIC_v2");
+        ShapeFileMeasurement measurement = parser.parse("iceChart", "201412012345_CapeFarewell_RIC_v2");
         
         Assert.assertEquals("dmi", measurement.getProvider());
         Assert.assertEquals("201412012345_CapeFarewell_RIC", measurement.getFileName());

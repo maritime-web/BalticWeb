@@ -25,16 +25,18 @@ import java.util.List;
 public class ShapeFileParser {
     private static int readInt(InputStream is) throws IOException {
         byte[] bytes = new byte[4];
-        if (is.read(bytes) != 4) {
-            throw new RuntimeException("Expected to read 4 bytes");
+        int read = is.read(bytes);
+        if (read != 4) {
+            throw new RuntimeException("Expected to read 4 bytes, read " + read);
         }
         return ByteBuffer.wrap(bytes).getInt();
     }
 
     private static int readIntLittle(InputStream is) throws IOException {
         byte[] bytes = new byte[4];
-        if (is.read(bytes) != 4) {
-            throw new RuntimeException("Expected to read 4 bytes");
+        int read = is.read(bytes);
+        if (read != 4) {
+            throw new RuntimeException("Expected to read 4 bytes, read " + read);
         }
         ByteBuffer wrapper = ByteBuffer.wrap(bytes);
         wrapper.order(ByteOrder.LITTLE_ENDIAN);
@@ -43,8 +45,9 @@ public class ShapeFileParser {
 
     private static double readDoubleLittle(InputStream is) throws IOException {
         byte[] bytes = new byte[8];
-        if (is.read(bytes) != 8) {
-            throw new RuntimeException("Expected to read 8 bytes");
+        int read = is.read(bytes);
+        if (read != 8) {
+            throw new RuntimeException("Expected to read 8 bytes, read " + read);
         }
         ByteBuffer wrapper = ByteBuffer.wrap(bytes);
         wrapper.order(ByteOrder.LITTLE_ENDIAN);
@@ -57,7 +60,7 @@ public class ShapeFileParser {
 
             f.header = FileHeader.read(is);
             f.records = new ArrayList<>();
-
+            
             long sum = 50;
 
             do {
@@ -68,9 +71,15 @@ public class ShapeFileParser {
                 int shapeId = readIntLittle(is); // 4
 
                 switch (shapeId) {
+                    // Point
+                    case 1:
+                        r.shape = Point.read(is);
+                        break;
+                    // Polygon
                     case 5:
                         r.shape = PolyLine.read(is);
                         break;
+                    // Null shape
                     case 0:
                         is.read(new byte[Math.max(0, (int) r.header.contentLength * 2 - 4)]);
                         r.shape = new Unknown();
@@ -85,7 +94,6 @@ public class ShapeFileParser {
                 } else {
                     sum += r.header.contentLength + 4;
                 }
-
                 f.records.add(r);
             } while (sum < f.header.fileLength);
 
@@ -95,7 +103,7 @@ public class ShapeFileParser {
         }
     }
 
-    public static class Point {
+    public static class Point extends Shape {
         private double x;
         private double y;
         

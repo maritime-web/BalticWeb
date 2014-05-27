@@ -58,7 +58,7 @@ public class ShapeFileServiceTest {
     @Test
     public void test() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        ShapeFileService.Shape file = service.readSingleFile("dmi.201311190920_CapeFarewell_RIC", 0, "", true, 4, 0);
+        ShapeFileService.Shape file = service.readSingleFile("iceChart-dmi.201311190920_CapeFarewell_RIC", 0, "", true, 4, 0);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gos = new GZIPOutputStream(out);
@@ -74,24 +74,24 @@ public class ShapeFileServiceTest {
     @Test
     public void reprojectTest() throws IOException {
         ShapeFileService.Shape file = service.readSingleFile("static.world_merc", 0, "", true, 4, 0);
-        assertEquals(-616867, file.getFragments().get(0).getPolygons().get(0).get(0).getX());
-        assertEquals(170244, file.getFragments().get(0).getPolygons().get(0).get(0).getY());
+        assertEquals(-616867, ((Fragment)file.getFragments().get(0)).getPolygons().get(0).get(0).getX());
+        assertEquals(170244, ((Fragment)file.getFragments().get(0)).getPolygons().get(0).get(0).getY());
     }
 
     @Test
     public void testResolutionDefault() throws IOException {
-        ShapeFileService.Shape def = service.readSingleFile("dmi.201304100920_CapeFarewell_RIC", null, "", false, null, 0);
-        ShapeFileService.Shape eqDef = service.readSingleFile("dmi.201304100920_CapeFarewell_RIC", 0, "", false, null, 0);
-        ShapeFileService.Shape diff = service.readSingleFile("dmi.201304100920_CapeFarewell_RIC", 4, "", false, null, 0);
+        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", null, "", false, null, 0);
+        ShapeFileService.Shape eqDef = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false, null, 0);
+        ShapeFileService.Shape diff = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 4, "", false, null, 0);
 
         testResolution(def, eqDef, diff);
     }
 
     @Test
     public void testResolutionRegionDefault() throws IOException {
-        ShapeFileService.Shape def = service.readSingleFile("dmi.201405011000_SouthWest_RIC", null, "", false, null, 0);
-        ShapeFileService.Shape eqDef = service.readSingleFile("dmi.201405011000_SouthWest_RIC", 3, "", false, null, 0);
-        ShapeFileService.Shape diff = service.readSingleFile("dmi.201405011000_SouthWest_RIC", 4, "", false, null, 0);
+        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", null, "", false, null, 0);
+        ShapeFileService.Shape eqDef = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 3, "", false, null, 0);
+        ShapeFileService.Shape diff = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 4, "", false, null, 0);
 
         testResolution(def, eqDef, diff);
     }
@@ -99,9 +99,9 @@ public class ShapeFileServiceTest {
     
     @Test
     public void testExponentDefault() throws IOException {
-        ShapeFileService.Shape def = service.readSingleFile("dmi.201304100920_CapeFarewell_RIC", 0, "", false, null, 0);
-        ShapeFileService.Shape three = service.readSingleFile("dmi.201304100920_CapeFarewell_RIC", 0, "", false, 3, 0);
-        ShapeFileService.Shape six = service.readSingleFile("dmi.201304100920_CapeFarewell_RIC", 0, "", false, 6, 0);
+        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false, null, 0);
+        ShapeFileService.Shape three = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false, 3, 0);
+        ShapeFileService.Shape six = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false, 6, 0);
 
         assertEquals(Integer.valueOf(3), def.getExponent());
         assertEquals(Integer.valueOf(3), three.getExponent());
@@ -113,11 +113,11 @@ public class ShapeFileServiceTest {
     @Test
     public void testExponentRegionDefault() throws IOException {
         // Read file using default exponent;
-        ShapeFileService.Shape def = service.readSingleFile("dmi.201405011000_SouthWest_RIC", 0, "", false, null, 0);
+        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 0, "", false, null, 0);
         // Read file using supposed default exponent 2
-        ShapeFileService.Shape eqShape = service.readSingleFile("dmi.201405011000_SouthWest_RIC", 0, "", false, 2, 0);
+        ShapeFileService.Shape eqShape = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 0, "", false, 2, 0);
         // Read file using exponent 6
-        ShapeFileService.Shape diff = service.readSingleFile("dmi.201405011000_SouthWest_RIC", 0, "", false, 6, 0);
+        ShapeFileService.Shape diff = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 0, "", false, 6, 0);
 
         assertEquals(Integer.valueOf(2), def.getExponent());
         assertEquals(Integer.valueOf(2), eqShape.getExponent());
@@ -132,8 +132,8 @@ public class ShapeFileServiceTest {
 
         assertTrue(defShape.getFragments().size() == eqShape.getFragments().size());
         for (int i = 0; i < defShape.getFragments().size(); i++) {
-            Fragment defFrag = defShape.getFragments().get(i);
-            Fragment eqFrag = eqShape.getFragments().get(i);
+            Fragment defFrag = (Fragment) defShape.getFragments().get(i);
+            Fragment eqFrag = (Fragment) eqShape.getFragments().get(i);
 
             assertTrue(defFrag.getPolygons().size() == eqFrag.getPolygons().size());
 
@@ -147,8 +147,8 @@ public class ShapeFileServiceTest {
         }
         assertTrue(defShape.getFragments().size() == diffShape.getFragments().size());
         for (int i = 0; i < defShape.getFragments().size(); i++) {
-            Fragment defFrag = defShape.getFragments().get(i);
-            Fragment diffFrag = diffShape.getFragments().get(i);
+            Fragment defFrag = (Fragment) defShape.getFragments().get(i);
+            Fragment diffFrag = (Fragment) diffShape.getFragments().get(i);
 
             assertTrue(defFrag.getPolygons().size() == diffFrag.getPolygons().size());
 
@@ -172,8 +172,8 @@ public class ShapeFileServiceTest {
         // Assert same number of fragments
         assertTrue(defShape.getFragments().size() == eqShape.getFragments().size());
         for (int i = 0; i < defShape.getFragments().size(); i++) {
-            Fragment defFrag = defShape.getFragments().get(i);
-            Fragment eqFrag = eqShape.getFragments().get(i);
+            Fragment defFrag = (Fragment) defShape.getFragments().get(i);
+            Fragment eqFrag = (Fragment) eqShape.getFragments().get(i);
 
             // Assert same number of polygons for each fragment
             assertTrue(defFrag.getPolygons().size() == eqFrag.getPolygons().size());
@@ -192,8 +192,8 @@ public class ShapeFileServiceTest {
         // Assert same number of fragments in diff
         assertTrue(defShape.getFragments().size() == diffShape.getFragments().size());
         for (int i = 0; i < defShape.getFragments().size(); i++) {
-            Fragment defFrag = defShape.getFragments().get(i);
-            Fragment diffFrag = diffShape.getFragments().get(i);
+            Fragment defFrag = (Fragment) defShape.getFragments().get(i);
+            Fragment diffFrag = (Fragment) diffShape.getFragments().get(i);
 
             // Assert same number of polygons for each fragment
             assertTrue(defFrag.getPolygons().size() == diffFrag.getPolygons().size());

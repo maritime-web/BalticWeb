@@ -37,6 +37,7 @@ import dk.dma.embryo.dataformats.dbf.DbfParser;
 import dk.dma.embryo.dataformats.shapefile.PolygonSplitter;
 import dk.dma.embryo.dataformats.shapefile.ProjectionFileParser;
 import dk.dma.embryo.dataformats.shapefile.ShapeFileParser;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Point;
 
 /**
  * @author Jesper Tejlgaard
@@ -47,7 +48,11 @@ public class ShapeFileServiceImpl implements ShapeFileService {
 
     @Inject
     @Property(value = "embryo.iceChart.providers")
-    private Map<String, String> providers;
+    private Map<String, String> iceChartProviders;
+    
+    @Inject
+    @Property(value = "embryo.iceberg.providers")
+    private Map<String, String> icebergProviders;
 
     @Inject
     private PropertyFileService propertyService;
@@ -66,16 +71,17 @@ public class ShapeFileServiceImpl implements ShapeFileService {
     public ShapeFileServiceImpl(PropertyFileService service) {
         super();
         this.propertyService = service;
-        this.providers = service.getMapProperty("embryo.iceChart.providers");
+        this.iceChartProviders = service.getMapProperty("embryo.iceChart.providers");
+        this.icebergProviders = service.getMapProperty("embryo.iceberg.providers");
     }
 
-    private void readJsonProperty(String provider, String region) {
-        String propertyKey = "embryo.iceChart." + provider + ".json." + (region == null ? "default" : region);
+    private void readJsonProperty(String provider, String region, String chartType) {
+        String propertyKey = "embryo." + chartType + "." + provider + ".json." + (region == null ? "default" : region);
         String value = propertyService.getProperty(propertyKey);
         if (value != null) {
             for (String setting : value.split(";")) {
                 String[] settingArr = setting.split("=");
-                String key = provider + (region == null ? "" : "." + region) + "." + settingArr[0];
+                String key = chartType + "-" + provider + (region == null ? "" : "." + region) + "." + settingArr[0];
                 settings.put(key, settingArr[1]);
             }
         }
@@ -83,23 +89,28 @@ public class ShapeFileServiceImpl implements ShapeFileService {
 
     @PostConstruct
     public void init() {
-        for (String providerKey : providers.keySet()) {
-            String property = "embryo.iceChart." + providerKey + ".localDirectory";
-            String value = propertyService.getProperty(property, true);
-            if (value != null) {
-                directories.put(providerKey, value);
-            }
-
-            readJsonProperty(providerKey, null);
-
-            String regions = propertyService.getProperty("embryo.iceChart." + providerKey + ".regions");
-            for (String region : regions.split(";")) {
-                String[] regArr = region.split("=");
-                readJsonProperty(providerKey,regArr[0]);
-            }
-        }
+        populateDirectories(iceChartProviders, "iceChart");
+        populateDirectories(icebergProviders, "iceberg");
 
         logger.info(getClass().getSimpleName() + " initialized");
+    }
+    
+    private void populateDirectories(Map<String, String> providers, String chartType) {
+        for (String providerKey : providers.keySet()) {
+            String property = "embryo." + chartType + "." + providerKey + ".localDirectory";
+            String value = propertyService.getProperty(property, true);
+            if (value != null) {
+                directories.put(chartType + "-" + providerKey, value);
+            }
+
+            readJsonProperty(providerKey, null, chartType);
+
+            String regions = propertyService.getProperty("embryo." + chartType + "." + providerKey + ".regions");
+            for (String region : regions.split(";")) {
+                String[] regArr = region.split("=");
+                readJsonProperty(providerKey,regArr[0], chartType);
+            }
+        }
     }
 
     private Integer getIntegerValue(Integer value, String provider, String id, String settingKey, Integer defaultValue) {
@@ -166,7 +177,8 @@ public class ShapeFileServiceImpl implements ShapeFileService {
         
         logger.debug("resolution={}, exponent={}, parts={}", resolution, exponent, mapParts);
 
-        List<Fragment> fragments = new ArrayList<>();
+        List<BaseFragment> fragments = new ArrayList<>();
+        boolean polylines = false;
 
         for (ShapeFileParser.Record r : file.getRecords()) {
             if (r.getShape() instanceof ShapeFileParser.PolyLine) {
@@ -200,6 +212,11 @@ public class ShapeFileServiceImpl implements ShapeFileService {
                         fragments.add(new Fragment(description, polygons));
                     }
                 }
+            } else if(r.getShape() instanceof ShapeFileParser.Point) {
+                Map<String, Object> description = data.get((int) r.getHeader().getRecordNumber() - 1);
+                ShapeFileParser.Point point = (Point) r.getShape();
+                Position position = reprojectAndRound(point, projection, exponent);
+                fragments.add(new PointFragment(description, position));
             }
         }
 

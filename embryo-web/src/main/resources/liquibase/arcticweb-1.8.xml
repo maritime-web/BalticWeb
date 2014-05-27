@@ -1,0 +1,17 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet id="1400755859000-1" author="jacob">
+    <addColumn tableName="ShapeFileMeasurement">
+      <column name="chartType" type="VARCHAR(36)" />
+    </addColumn>
+  </changeSet>
+  <changeSet id="1400755859000-2" author="jacob">
+      <update tableName="ShapeFileMeasurement">
+          <column name="chartType" value="iceChart" />
+          <where>chartType IS NULL</where>
+      </update>
+  </changeSet>  
+</databaseChangeLog>

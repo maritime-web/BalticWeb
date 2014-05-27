@@ -21,9 +21,9 @@ import dk.dma.embryo.common.persistence.Dao;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
 public interface ShapeFileMeasurementDao extends Dao {
-    ShapeFileMeasurement lookup(String fn, String prefix);
+    ShapeFileMeasurement lookup(String fn, String chartType, String provider);
 
-    void deleteAll(String prefix);
+    void deleteAll(String chartType, String provider);
 
-    List<ShapeFileMeasurement> list(String prefix);
+    List<ShapeFileMeasurement> list(String chartType, String provider);
 }

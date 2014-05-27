@@ -43,14 +43,62 @@ function IceLayer() {
                 }, {
                     context : iceContext
                 })
-            })
+            })/*,
+            strategies: [
+                 new OpenLayers.Strategy.Cluster({
+                      distance: 10,
+                      threshold: 3
+                 })
+            ]*/
         });
-
+        this.layers.iceberg = new OpenLayers.Layer.Vector("Ice", {
+            styleMap : new OpenLayers.StyleMap({
+                "default" : new OpenLayers.Style({
+                    externalGraphic : 'img/iceberg.png',
+                    graphicWidth : 10,
+                    graphicHeight : 12,
+                    graphicOpacity : "${transparency}",
+                    strokeWidth : "1",
+                    strokeColor : "#000000",
+                    strokeOpacity : "0.2"
+                }, {
+                    context : iceContext
+                }),
+                "temporary" : new OpenLayers.Style({
+                    externalGraphic : 'img/iceberg.png',
+                    graphicWidth : 10,
+                    graphicHeight : 12,
+                    graphicOpacity : "${transparency}",
+                    strokeWidth : "1",
+                    strokeColor : "#000000",
+                    strokeOpacity : "0.7",
+                }, {
+                    context : iceContext
+                }),
+                "select" : new OpenLayers.Style({
+                    externalGraphic : 'img/iceberg.png',
+                    graphicWidth : 10,
+                    graphicHeight : 12,
+                    graphicOpacity : "${transparency}",
+                    strokeWidth : "1",
+                    strokeColor : "#000",
+                    strokeOpacity : "1",
+                }, {
+                    context : iceContext
+                })
+            })/*,
+            strategies: [
+                 new OpenLayers.Strategy.Cluster({
+                      distance: 10,
+                      threshold: 3
+                 })
+            ]*/
+        });
         this.selectableLayer = this.layers.ice;
         this.selectableAttribute = "iceDescription";
     };
 
-    this.draw = function(shapes, callback) {
+    this.draw = function(chartType, shapes, callback) {
         function colorByDescription(description) {
 
             if (description.CT == 92 && parseInt(description.FA) == 8){
@@ -123,6 +171,8 @@ function IceLayer() {
                 waterCount++;
             }
             that.layers.ice.addFeatures([ feature ]);
+            //that.layers.ice.strategies[0].deactivate();
+            that.layers.iceberg.removeAllFeatures();
             that.layers.ice.refresh();
         }
 
@@ -141,13 +191,35 @@ function IceLayer() {
                 }
             }
         }
+        
+        function drawPoints() {
+            /*var styleData = {
+                    externalGraphic : 'img/iceberg.png',
+                    graphicWidth : 10,
+                    graphicHeight : 12,
+                    fillOpacity : "${transparency}"
+            };
+            var style = new OpenLayers.Style(styleData, {context : attrs});*/
+            for(var f in fragments) {
+                var feature = new OpenLayers.Feature.Vector(embryo.map.createPoint(fragments[f].description.Long, fragments[f].description.Lat));
+                that.layers.iceberg.addFeatures([feature]);
+            }
+            //that.layers.ice.strategies[0].activate();
+            that.layers.ice.removeAllFeatures();
+            that.layers.iceberg.refresh();
+            callback();
+        }
 
         for ( var l in shapes) {
             var shape = shapes[l];
             var ice = shape.fragments;
 
             fragments = ice.slice(0);
-            drawFragments(shape, fragments);
+            if(chartType == 'iceberg') {
+                drawPoints(fragments);
+            } else {
+                drawFragments(shape, fragments);
+            }
         }
     };
 }

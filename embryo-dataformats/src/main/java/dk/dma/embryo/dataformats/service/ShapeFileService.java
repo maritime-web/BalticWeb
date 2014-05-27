@@ -48,10 +48,17 @@ public interface ShapeFileService {
             return "Position(" + x + ", " + y + ")";
         }
     }
+    
+    public static class BaseFragment {
+        protected Map<String, Object> description;
+        
+        public Map<String, Object> getDescription() {
+            return description;
+        }
+    }
 
-    public static class Fragment {
+    public static class Fragment extends BaseFragment {
         private List<List<Position>> polygons;
-        private Map<String, Object> description;
 
         public Fragment(Map<String, Object> description, List<List<Position>> polygons) {
             this.polygons = polygons;
@@ -61,24 +68,33 @@ public interface ShapeFileService {
         public List<List<Position>> getPolygons() {
             return polygons;
         }
-
-        public Map<String, Object> getDescription() {
-            return description;
+    }
+    
+    public static class PointFragment extends BaseFragment {
+        private Position point;
+        
+        public PointFragment(Map<String, Object> description, Position point) {
+            this.point = point;
+            this.description = description;
+        }
+        
+        public Position getPoint() {
+            return point;
         }
     }
 
     public static class Shape {
-        private List<Fragment> fragments;
+        private List<BaseFragment> fragments;
         private Map<String, Object> description;
         private Integer exponent;
 
-        public Shape(Map<String, Object> description, List<Fragment> fragments, Integer exponent) {
+        public Shape(Map<String, Object> description, List<BaseFragment> fragments, Integer exponent) {
             this.fragments = fragments;
             this.description = description;
             this.exponent = exponent;
         }
 
-        public List<Fragment> getFragments() {
+        public List<BaseFragment> getFragments() {
             return fragments;
         }
 

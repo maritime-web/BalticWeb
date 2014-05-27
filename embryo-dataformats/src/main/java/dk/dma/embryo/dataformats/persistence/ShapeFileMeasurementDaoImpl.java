@@ -24,11 +24,12 @@ import dk.dma.embryo.common.persistence.DaoImpl;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
 public class ShapeFileMeasurementDaoImpl extends DaoImpl implements ShapeFileMeasurementDao {
-    public ShapeFileMeasurement lookup(String fn, String provider) {
+    public ShapeFileMeasurement lookup(String fn, String chartType, String provider) {
         TypedQuery<ShapeFileMeasurement> query = em.createNamedQuery("ShapeFileMeasurement:lookup", ShapeFileMeasurement.class);
 
         query.setParameter("fileName", fn);
         query.setParameter("provider", provider);
+        query.setParameter("chartType", chartType);
         query.setMaxResults(1);
 
         List<ShapeFileMeasurement> result = query.getResultList();
@@ -36,17 +37,19 @@ public class ShapeFileMeasurementDaoImpl extends DaoImpl implements ShapeFileMea
         return getSingleOrNull(result);
     }
 
-    public void deleteAll(String provider) {
+    public void deleteAll(String chartType, String provider) {
         Query query = em.createNamedQuery("ShapeFileMeasurement:deleteAll");
+        query.setParameter("chartType", chartType);
         query.setParameter("provider", provider);
         query.executeUpdate();
     }
 
-    public List<ShapeFileMeasurement> list(String provider) {
+    public List<ShapeFileMeasurement> list(String chartType, String provider) {
         TypedQuery<ShapeFileMeasurement> query = em.createNamedQuery("ShapeFileMeasurement:list", ShapeFileMeasurement.class);
 
+        query.setParameter("chartType", chartType);
         query.setParameter("provider", provider);
-
+        
         return query.getResultList();
     }
 }

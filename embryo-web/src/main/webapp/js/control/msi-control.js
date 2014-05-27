@@ -3,19 +3,20 @@ $(function() {
     embryo.MSIController = function($scope, $interval, MsiService) {
         var showRegions = function(data) {
             $scope.regions = data;
-            var savedData = JSON.parse(getCookie("dma-msi-regions-" + embryo.authentication.userName));
+            var cookie = getCookie("dma-msi-regions-" + embryo.authentication.userName);
+            var savedData = cookie ? JSON.parse(cookie) : getRegionsAsArray(true);
             for(var x in $scope.regions) {
-                if($.inArray($scope.regions[x].name, savedData) != -1) {
+                if(!savedData || $.inArray($scope.regions[x].name, savedData) != -1) {
                     $scope.regions[x].selected = true;
                 }
             }
             requestMsiList(savedData);
         };
         
-        var getRegionsAsArray = function() {
+        var getRegionsAsArray = function(all) {
             var regions = [];
             for(var x in $scope.regions) {
-                if($scope.regions[x].selected) {
+                if(all || $scope.regions[x].selected) {
                     regions.push($scope.regions[x].name);
                 }
             }

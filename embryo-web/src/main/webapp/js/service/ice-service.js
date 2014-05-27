@@ -18,11 +18,11 @@
                 }
                 return value;
             },
-            setSelectedProvider : function(rovider) {
-                setCookie("selectedProvider");
+            setSelectedProvider : function(provider) {
+                setCookie("selectedProvider", provider);
             },
-            listByProvider : function(provider, success, error) {
-                $http.get(embryo.baseUrl + "rest/ice/provider/" + provider + "/observations", {
+            listByProvider : function(type, provider, success, error) {
+                $http.get(embryo.baseUrl + "rest/ice/provider/" + type + "/" + provider + "/observations", {
                     timeout : embryo.defaultTimeout,
                 }).success(success).error(function(data, status, headers, config) {
                     error(embryo.ErrorService.errorStatus(data, status, "requesting list of ice observations"), status);

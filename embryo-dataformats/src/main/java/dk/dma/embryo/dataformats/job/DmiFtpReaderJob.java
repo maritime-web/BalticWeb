@@ -234,7 +234,7 @@ public class DmiFtpReaderJob {
         }
 
         logger.info("Deleting Shape entries no longer existing on FTP");
-        List<ShapeFileMeasurement> dmiMeasurements = shapeFileMeasurementDao.list("dmi");
+        List<ShapeFileMeasurement> dmiMeasurements = shapeFileMeasurementDao.list("iceChart", "dmi");
         for (ShapeFileMeasurement measurement : dmiMeasurements) {
             if (!subdirectoriesAtServer.contains(measurement.getFileName())) {
                 try {

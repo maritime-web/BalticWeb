@@ -29,11 +29,12 @@ public class ShapeFileNameAariParser implements ShapeFileNameParser {
     }
 
     @Override
-    public ShapeFileMeasurement parse(String name) {
+    public ShapeFileMeasurement parse(String chartType, String name) {
         ShapeFileMeasurement measurement = new ShapeFileMeasurement();
         measurement.setFileName(name);
         measurement.setVersion(0);
         measurement.setProvider(getProvider());
+        measurement.setChartType(chartType);
         return measurement;
     }
 

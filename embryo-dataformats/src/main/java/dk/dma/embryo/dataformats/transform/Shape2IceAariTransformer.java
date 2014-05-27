@@ -54,7 +54,7 @@ public class Shape2IceAariTransformer implements Shape2IceTransformer {
     }
     
     @Override
-    public List<IceObservation> transform(List<ShapeFileMeasurement> shapes) {
+    public List<IceObservation> transform(String chartType, List<ShapeFileMeasurement> shapes) {
         List<IceObservation> iceObservations = new ArrayList<>();
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd").withZone(DateTimeZone.UTC);
@@ -72,7 +72,7 @@ public class Shape2IceAariTransformer implements Shape2IceTransformer {
                 }
 
                 iceObservations.add(new IceObservation(providers.get(sfm.getProvider()), region, date, sfm
-                        .getFileSize(), sfm.getProvider() + "." + sfm.getFileName()));
+                        .getFileSize(), sfm.getChartType() + "-" + sfm.getProvider() + "." + sfm.getFileName()));
             }
         }
 

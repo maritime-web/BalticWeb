@@ -61,10 +61,10 @@ public class Shape2IceDmiTransformerTest {
         String dateStr = formatter.print(DateTime.now(DateTimeZone.UTC));
 
         List<ShapeFileMeasurement> measurements = new ArrayList<>();
-        measurements.add(new ShapeFileMeasurement("dmi", dateStr + "_CapeFarewell_RIC", 20000));
-        measurements.add(new ShapeFileMeasurement("dmi", dateStr + "_Greenland_WA", 30000));
+        measurements.add(new ShapeFileMeasurement("iceChart", "dmi", dateStr + "_CapeFarewell_RIC", 20000));
+        measurements.add(new ShapeFileMeasurement("iceChart", "dmi", dateStr + "_Greenland_WA", 30000));
 
-        List<IceObservation> observations = transformer.transform(measurements);
+        List<IceObservation> observations = transformer.transform("iceChart", measurements);
 
         Assert.assertNotNull(observations);
         Assert.assertEquals(2, observations.size());
@@ -72,7 +72,7 @@ public class Shape2IceDmiTransformerTest {
         IceObservation ice = observations.get(0);
         Assert.assertEquals(20000, ice.getSize());
         Assert.assertEquals("Cape Farewell", ice.getRegion());
-        Assert.assertEquals("dmi." + dateStr + "_CapeFarewell_RIC", ice.getShapeFileName());
+        Assert.assertEquals("iceChart-dmi." + dateStr + "_CapeFarewell_RIC", ice.getShapeFileName());
         Assert.assertEquals("DMI", ice.getSource());
         Assert.assertNotNull(ice.getDate());
         Assert.assertEquals(formatter.print(DateTime.now(DateTimeZone.UTC)), formatter.print(ice.getDate().getTime()));
@@ -81,7 +81,7 @@ public class Shape2IceDmiTransformerTest {
         ice = observations.get(1);
         Assert.assertEquals(30000, ice.getSize());
         Assert.assertEquals("Greenland Overview", ice.getRegion());
-        Assert.assertEquals("dmi." + dateStr + "_Greenland_WA", ice.getShapeFileName());
+        Assert.assertEquals("iceChart-dmi." + dateStr + "_Greenland_WA", ice.getShapeFileName());
         Assert.assertEquals("DMI", ice.getSource());
         Assert.assertNotNull(ice.getDate());
         Assert.assertEquals(formatter.print(DateTime.now(DateTimeZone.UTC)), formatter.print(ice.getDate().getTime()));

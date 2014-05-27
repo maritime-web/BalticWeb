@@ -52,13 +52,13 @@ public class IceObservationRestService {
     }
 
     @GET
-    @Path("/provider/{provider}/observations")
+    @Path("/provider/{charttype}/{provider}/observations")
     @Produces("application/json")
     @GZIP
     @NoCache
-    public List<IceObservation> listIceObservations(@PathParam("provider") String providerKey) {
+    public List<IceObservation> listIceObservations(@PathParam("charttype") String chartType, @PathParam("provider") String providerKey) {
         logger.debug("listIceObservations({})", providerKey);
         
-        return iceObservationService.listAvailableIceObservations(providerKey);
+        return iceObservationService.listAvailableIceObservations(chartType, providerKey);
     }
 }

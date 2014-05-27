@@ -20,7 +20,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
 /**
@@ -29,12 +29,12 @@ import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 @Named
 public class ShapeFileNameDmiParser implements ShapeFileNameParser {
 
-    @Property(value = "embryo.iceChart.dmi.regions")
-    @Inject
     private Map<String, String> regions;
     
+    @Inject
+    private PropertyFileService propertyFileService;
+    
     public ShapeFileNameDmiParser() {
-        super();
     }
 
     public ShapeFileNameDmiParser(Map<String, String> regions) {
@@ -43,7 +43,11 @@ public class ShapeFileNameDmiParser implements ShapeFileNameParser {
     }
 
     @Override
-    public ShapeFileMeasurement parse(String name) {
+    public ShapeFileMeasurement parse(String chartType, String name) {
+        if(regions == null) {
+            regions = propertyFileService.getMapProperty("embryo." + chartType + ".dmi.regions");
+        }
+        
         String fileName = name; 
         int version = 0;
         
@@ -61,6 +65,7 @@ public class ShapeFileNameDmiParser implements ShapeFileNameParser {
         measurement.setFileName(fileName);
         measurement.setVersion(version);
         measurement.setProvider(getProvider());
+        measurement.setChartType(chartType);
         return measurement;
     }
 

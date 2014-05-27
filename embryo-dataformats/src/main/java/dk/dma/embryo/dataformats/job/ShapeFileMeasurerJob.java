@@ -77,7 +77,11 @@ public class ShapeFileMeasurerJob {
 
     @Inject
     @Property(value = "embryo.iceChart.providers")
-    private Map<String, String> providers;
+    private Map<String, String> iceChartProviders;
+    
+    @Inject
+    @Property(value = "embryo.iceberg.providers")
+    private Map<String, String> icebergProviders;
 
     private Map<String, String> directories = new HashMap<>();
 
@@ -102,19 +106,24 @@ public class ShapeFileMeasurerJob {
     public void init() throws IOException {
         if (cron != null) {
             logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
-            for (String providerKey : providers.keySet()) {
-                String property = "embryo.iceChart." + providerKey + ".localDirectory";
-                String value = propertyFileService.getProperty(property, true);
-                if (value != null) {
-                    directories.put(providerKey, value);
-                } else {
-                    logger.info("Property {} not found", property);
-                }
-            }
+            initProvider(iceChartProviders, "iceChart");
+            initProvider(icebergProviders, "iceberg");
             logger.info("Initializing {} with {}", this.getClass().getSimpleName(), directories.toString());
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("Cron job not scheduled.");
+        }
+    }
+    
+    private void initProvider(Map<String, String> providers, String chartType) {
+        for (String providerKey : providers.keySet()) {
+        String property = "embryo." + chartType + "." + providerKey + ".localDirectory";
+        String value = propertyFileService.getProperty(property, true);
+        if (value != null) {
+            directories.put(chartType + "-" + providerKey, value);
+        } else {
+            logger.info("Property {} not found", property);
+        }
         }
     }
 
@@ -149,21 +158,23 @@ public class ShapeFileMeasurerJob {
         logger.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
 
         notifications.clearOldThanMinutes(60 * 24);
-
+        
         for (Entry<String, String> directory : directories.entrySet()) {
-            String provider = directory.getKey();
+            String key = directory.getKey();
+            String chartType = key.substring(0, key.indexOf("-"));
+            String provider = key.substring(key.indexOf("-") + 1);
 
             EmbryoLogService embryoLogger = embryoLogFactory.getLogger(this.getClass(), provider);
 
             try {
                 ShapeFileMeasurer measurer = new ShapeFileMeasurer(service, shapeFileMeasurementDao, embryoLogger,
                         parserFactory);
-                measurer.measureFiles(directory.getValue(), provider, start);
+                measurer.measureFiles(directory.getValue(), chartType, provider, start);
                 List<ShapeFileMeasurement> measurements = measurer.getMeasurements();
                 logger.debug("{}: Done. Saving {} items ...", provider, measurements.size());
 
                 logger.debug("Calling deleteAll({})", provider);
-                shapeFileMeasurementDao.deleteAll(provider);
+                shapeFileMeasurementDao.deleteAll(chartType, provider);
 
                 logger.info("{}: Saving {} measurements", provider, measurements.size());
 
@@ -219,21 +230,21 @@ public class ShapeFileMeasurerJob {
             return out.toByteArray().length;
         }
 
-        private void sendEmail(String provider, String chartName, Throwable t) {
-            String to = propertyFileService.getProperty("embryo.iceChart." + provider + ".notification.email");
+        private void sendEmail(String chartType, String provider, String chartName, Throwable t) {
+            String to = propertyFileService.getProperty("embryo." + chartType + "." + provider + ".notification.email");
             if (to != null && to.trim().length() > 0 && !notifications.contains(chartName)) {
                 new ShapeNotificationMail(provider, chartName, t, propertyFileService).send(mailSender);
                 notifications.add(chartName, DateTime.now(DateTimeZone.UTC));
             }
         }
 
-        public void measureFiles(String directory, String provider, long start) throws IOException {
+        public void measureFiles(String directory, String chartType, String provider, long start) throws IOException {
             for (String fn : downloadedIceObservations(directory)) {
 
                 ShapeFileNameParser parser = parserFactory.createParser(provider);
-                ShapeFileMeasurement sfm = parser.parse(fn);
+                ShapeFileMeasurement sfm = parser.parse(chartType, fn);
 
-                ShapeFileMeasurement lookup = dao.lookup(sfm.getFileName(), provider);
+                ShapeFileMeasurement lookup = dao.lookup(sfm.getFileName(), chartType, provider);
                 if (lookup == null || lookup.getVersion() < sfm.getVersion()) {
                     logger.debug("" + (new Date().getTime() - start) + " vs " + TRANSACTION_LENGTH);
 
@@ -241,7 +252,7 @@ public class ShapeFileMeasurerJob {
                         logger.debug("Measuring file: " + fn);
 
                         try {
-                            sfm.setFileSize(measureFile(provider + "." + fn));
+                            sfm.setFileSize(measureFile(chartType + "-" + provider + "." + fn));
                             sfm.setCreated(DateTime.now(DateTimeZone.UTC));
                             logger.debug("File size: " + sfm.getFileSize());
                             measurements.put(sfm.getFileName(), sfm);
@@ -250,7 +261,7 @@ public class ShapeFileMeasurerJob {
                             failedMeasurementCount++;
                             logger.error("Error measuring " + fn + ": " + t, t);
                             embryoLogger.error("Error measuring " + fn + ": " + t, t);
-                            sendEmail(provider, fn, t);
+                            sendEmail(chartType, provider, fn, t);
                         }
                     }
                 } else if (!measurements.containsKey(lookup.getFileName())) {

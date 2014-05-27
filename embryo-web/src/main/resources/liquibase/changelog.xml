@@ -302,5 +302,6 @@
   
   <include file="liquibase/arcticweb-1.2.xml"/>
   <include file="liquibase/arcticweb-1.6.xml"/>
+  <include file="liquibase/arcticweb-1.8.xml"/>
 
 </databaseChangeLog>

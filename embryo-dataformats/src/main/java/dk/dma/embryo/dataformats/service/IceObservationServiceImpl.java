@@ -64,9 +64,9 @@ public class IceObservationServiceImpl implements IceObservationService {
         return result;
     }
 
-    public List<IceObservation> listAvailableIceObservations(String provider) {
-        List<ShapeFileMeasurement> shapeMeasurements = shapeFileMeasurementDao.list(provider);
+    public List<IceObservation> listAvailableIceObservations(String chartType, String provider) {
+        List<ShapeFileMeasurement> shapeMeasurements = shapeFileMeasurementDao.list(chartType, provider);
         Shape2IceTransformer transformer = transformerFactory.createTransformer(provider);
-        return transformer.transform(shapeMeasurements);
+        return transformer.transform(chartType, shapeMeasurements);
     }
 }

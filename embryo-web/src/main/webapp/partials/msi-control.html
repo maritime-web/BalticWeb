@@ -3,7 +3,7 @@
 		<div class="e-accordion-heading e-panel-heading">
 			<h4 class="e-panel-header">
 				<a class="e-accordion-toggle" data-toggle="collapse"
-					data-parent="#msiControlPanel" href="#msiRegions"> MSI Regions </a>
+					data-parent="#msiControlPanel" href="#msiRegions"> Warning Regions </a>
 			</h4>
 		</div>
 		<div id="msiRegions" class="e-accordion-body collapse panel-collapse">
@@ -12,8 +12,8 @@
 					<tr x-ng-repeat="region in regions" class="e-iceprovider">
 						<td><input type="checkbox" x-ng-change="showMsi()" x-ng-model="region.selected"
 							name="regions" id="region_{{$index}}" /></td>
-						<td><label for="region_{{$index}}">{{region.name}}</label></td>
 						<td><label for="region_{{$index}}">{{region.description}}</label></td>
+						<td><label for="region_{{$index}}">({{region.name}})</label></td>
 					</tr>
 				</table>
 			</div>

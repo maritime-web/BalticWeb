@@ -22,7 +22,7 @@ import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
  */
 public interface ShapeFileNameParser {
     
-    ShapeFileMeasurement parse(String name);
+    ShapeFileMeasurement parse(String chartType, String name);
     
     String getProvider();
 

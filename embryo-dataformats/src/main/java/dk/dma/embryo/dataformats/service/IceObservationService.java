@@ -24,5 +24,5 @@ public interface IceObservationService {
     
     List<Provider> listIceChartProviders();
         
-    List<IceObservation> listAvailableIceObservations(String provider);
+    List<IceObservation> listAvailableIceObservations(String chartType, String provider);
 }

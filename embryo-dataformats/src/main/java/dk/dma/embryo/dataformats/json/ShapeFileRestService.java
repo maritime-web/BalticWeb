@@ -139,10 +139,12 @@ public class ShapeFileRestService {
         try {
             CacheControl cc = getCacheControl();
 
-            int index = id.indexOf(".");
-            String provider = id.substring(0, index);
-            String chart = id.substring(index + 1);
-            ShapeFileMeasurement measurement = dao.lookup(chart, provider);
+            int dashIndex = id.indexOf("-");
+            int dotIndex = id.indexOf(".");
+            String chartType = id.substring(0, dashIndex);
+            String provider = id.substring(dashIndex + 1, dotIndex);
+            String chart = id.substring(dotIndex + 1);
+            ShapeFileMeasurement measurement = dao.lookup(chart, chartType, provider);
             DateTime lastModified = measurement.getCreated();
 
             ResponseBuilder builder = request.evaluatePreconditions(lastModified.toDate());

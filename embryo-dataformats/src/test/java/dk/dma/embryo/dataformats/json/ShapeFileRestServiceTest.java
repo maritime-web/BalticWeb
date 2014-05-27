@@ -43,7 +43,7 @@ import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParserFactory;
 import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
 import dk.dma.embryo.dataformats.service.ShapeFileService;
-import dk.dma.embryo.dataformats.service.ShapeFileService.Fragment;
+import dk.dma.embryo.dataformats.service.ShapeFileService.BaseFragment;
 import dk.dma.embryo.dataformats.service.ShapeFileService.Shape;
 
 /**
@@ -76,12 +76,12 @@ public class ShapeFileRestServiceTest {
     public void testCachedRetrieval() throws IOException {
         DateTime now = DateTime.now(DateTimeZone.UTC);
 
-        ShapeFileMeasurement measurement = new ShapeFileMeasurement("dmi", "MyRegion", 12, 0);
+        ShapeFileMeasurement measurement = new ShapeFileMeasurement("iceChart", "dmi", "MyRegion", 12, 0);
         measurement.setCreated(now);
-        when(dao.lookup("MyRegion", "dmi")).thenReturn(measurement);
+        when(dao.lookup("MyRegion", "iceChart", "dmi")).thenReturn(measurement);
         when(request.evaluatePreconditions(now.toDate())).thenReturn(Response.notModified());
 
-        Response response = jsonService.getSingleFile("dmi.MyRegion", 0, "", true, 0, 0, request);
+        Response response = jsonService.getSingleFile("iceChart-dmi.MyRegion", 0, "", true, 0, 0, request);
 
         assertEquals(304, response.getStatus());
 
@@ -98,18 +98,18 @@ public class ShapeFileRestServiceTest {
     public void testNonCachedRetrieval() throws IOException {
         DateTime now = DateTime.now(DateTimeZone.UTC);
 
-        ShapeFileMeasurement measurement = new ShapeFileMeasurement("dmi", "MyRegion", 12, 0);
+        ShapeFileMeasurement measurement = new ShapeFileMeasurement("iceChart", "dmi", "MyRegion", 12, 0);
         measurement.setCreated(now);
-        when(dao.lookup("MyRegion", "dmi")).thenReturn(measurement);
+        when(dao.lookup("MyRegion", "iceChart", "dmi")).thenReturn(measurement);
         when(request.evaluatePreconditions(now.toDate())).thenReturn(null);
 
         Map<String, Object> map = new HashMap<>();
         map.put("test", "test");
-        Shape shape = new Shape(map, new ArrayList<Fragment>(), 2);
+        Shape shape = new Shape(map, new ArrayList<BaseFragment>(), 2);
         
-        when(service.readSingleFile("dmi.MyRegion",0, "", true, 0, 0)).thenReturn(shape);
+        when(service.readSingleFile("iceChart-dmi.MyRegion",0, "", true, 0, 0)).thenReturn(shape);
         
-        Response response = jsonService.getSingleFile("dmi.MyRegion", 0, "", true, 0, 0, request);
+        Response response = jsonService.getSingleFile("iceChart-dmi.MyRegion", 0, "", true, 0, 0, request);
 
         assertEquals(200, response.getStatus());
 
@@ -127,18 +127,18 @@ public class ShapeFileRestServiceTest {
     public void testUpdated() throws IOException {
         DateTime now = DateTime.now(DateTimeZone.UTC);
 
-        ShapeFileMeasurement measurement = new ShapeFileMeasurement("dmi", "MyRegion", 12, 2);
+        ShapeFileMeasurement measurement = new ShapeFileMeasurement("iceChart", "dmi", "MyRegion", 12, 2);
         measurement.setCreated(now);
-        when(dao.lookup("MyRegion", "dmi")).thenReturn(measurement);
+        when(dao.lookup("MyRegion", "iceChart", "dmi")).thenReturn(measurement);
         when(request.evaluatePreconditions(now.toDate())).thenReturn(null);
 
         Map<String, Object> map = new HashMap<>();
         map.put("test", "test");
-        Shape shape = new Shape(map, new ArrayList<Fragment>(), 2);
+        Shape shape = new Shape(map, new ArrayList<BaseFragment>(), 2);
         
-        when(service.readSingleFile("dmi.MyRegion_v2",0, "", true, 0, 0)).thenReturn(shape);
+        when(service.readSingleFile("iceChart-dmi.MyRegion_v2",0, "", true, 0, 0)).thenReturn(shape);
         
-        Response response = jsonService.getSingleFile("dmi.MyRegion", 0, "", true, 0, 0, request);
+        Response response = jsonService.getSingleFile("iceChart-dmi.MyRegion", 0, "", true, 0, 0, request);
 
         assertEquals(200, response.getStatus());
 

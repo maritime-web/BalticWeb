@@ -35,7 +35,7 @@ public class ShapeFileNameAariParserTest {
 
     @Test
     public void testParseNameNoVersion() {
-        ShapeFileMeasurement measurement = parser.parse("aari_whi_20140408_pl_a");
+        ShapeFileMeasurement measurement = parser.parse("iceChart", "aari_whi_20140408_pl_a");
         
         Assert.assertEquals("aari", measurement.getProvider());
         Assert.assertEquals("aari_whi_20140408_pl_a", measurement.getFileName());

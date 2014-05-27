@@ -26,9 +26,9 @@ import org.joda.time.DateTime;
 import dk.dma.embryo.common.persistence.BaseEntity;
 
 @NamedQueries({
-        @NamedQuery(name = "ShapeFileMeasurement:lookup", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.fileName = :fileName AND m.provider = :provider"),
-        @NamedQuery(name = "ShapeFileMeasurement:deleteAll", query = "DELETE FROM ShapeFileMeasurement m WHERE m.provider = :provider"),
-        @NamedQuery(name = "ShapeFileMeasurement:list", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.provider = :provider") })
+        @NamedQuery(name = "ShapeFileMeasurement:lookup", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.fileName = :fileName AND m.provider = :provider AND m.chartType = :chartType"),
+        @NamedQuery(name = "ShapeFileMeasurement:deleteAll", query = "DELETE FROM ShapeFileMeasurement m WHERE m.provider = :provider AND m.chartType = :chartType"),
+        @NamedQuery(name = "ShapeFileMeasurement:list", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.provider = :provider AND m.chartType = :chartType") })
 @Entity
 public class ShapeFileMeasurement extends BaseEntity<Long> {
     private static final long serialVersionUID = -3131809653155886572L;
@@ -36,6 +36,7 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
     private long fileSize;
     private String fileName;
     private String provider;
+    private String chartType;
     private int version;
     
     @NotNull
@@ -46,15 +47,13 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
         super();
     }
 
-    public ShapeFileMeasurement(String provider, String fileName, long fileSize) {
-        super();
-        this.fileSize = fileSize;
-        this.fileName = fileName;
-        this.provider = provider;
+    public ShapeFileMeasurement(String chartType, String provider, String fileName, long fileSize) {
+        this(chartType, provider, fileName, fileSize, 0);
     }
 
-    public ShapeFileMeasurement(String provider, String fileName, long fileSize, int version) {
+    public ShapeFileMeasurement(String chartType, String provider, String fileName, long fileSize, int version) {
         super();
+        this.chartType = chartType;
         this.fileSize = fileSize;
         this.fileName = fileName;
         this.provider = provider;
@@ -83,6 +82,14 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
 
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+    
+    public String getChartType() {
+        return chartType;
+    }
+    
+    public void setChartType(String chartType) {
+        this.chartType = chartType;
     }
     
     public int getVersion() {
