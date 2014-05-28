@@ -1,7 +1,7 @@
-<div ng-controller="WeatherController">
-	<div id="weatherControlPanel" accordion close-others="true" class="controlPanel2">
-		<div accordion-group heading="Weather forecast on route">
-			<table class="table table-condensed" >
+<div>
+	<div id="weatherControlPanel" e-left-bar accordion close-others="true" class="controlPanel2">
+		<div accordion-group heading="Forecast on route">
+			<table class="table table-condensed" ng-controller="WeatherController" e-left-bar-selection="{{selectedForecast}}">
 				<tr x-ng-repeat="route in routes">
 					<td>{{route.name}}</td>
 					<td><span x-ng-if="route.available" class="label label-success">AVAILABLE</span><span
@@ -11,33 +11,80 @@
 				</tr>
 			</table>
 		</div>
-		<div accordion-group heading="Selected Weather" is-open="!!selected">
-			<div ng-if="!selected">
-				Nothing selected
+		<div accordion-group heading="Selected Forecast" e-left-bar-show>
+			<div e-left-bar-selected="showSelected" x-ng-controller="SelectController">
+				<div ng-if="!selected">Nothing selected</div>
+				<table class="table table-condensed" ng-if="selected">
+					<tr>
+						<th>Time</th>
+						<td>{{selected.time}}</td>
+					</tr>
+					<tr>
+						<th>Current</th>
+						<td>{{selected.curSpeed ? selected.curSpeed + " kn" : "N/A"}} - {{selected.curDir ? selected.curDir + "°" :
+							"N/A"}}</td>
+					</tr>
+					<tr>
+						<th>Wind</th>
+						<td>{{selected.windSpeed ? selected.windSpeed + " m/s" : "N/A"}} - {{selected.windDir ? selected.windDir +
+							"°" : "N/A"}}</td>
+					</tr>
+					<tr>
+						<th>Wave</th>
+						<td>{{selected.waveHeight ? selected.waveHeight + " m" : "N/A"}} - {{selected.waveDir ? selected.waveDir +
+							"°" : "N/A"}} ({{selected.wavePeriod ? selected.wavePeriod + " sec" : "N/A"}})</td>
+					</tr>
+					<tr>
+						<th>Sea level</th>
+						<td>{{selected.sealevel ? selected.sealevel + " m" : "N/A"}}</td>
+					</tr>
+				</table>
 			</div>
-			<table class="table table-condensed" ng-if="selected">
-				<tr>
-					<th>Time</th>
-					<td>{{selected.time}}</td>
-				</tr>
-				<tr>
-					<th>Current</th>
-					<td>{{selected.curSpeed ? selected.curSpeed + " kn" : "N/A"}} - {{selected.curDir ? selected.curDir + "°" : "N/A"}}</td>
-				</tr>
-				<tr>
-					<th>Wind</th>
-					<td>{{selected.windSpeed ? selected.windSpeed + " m/s" : "N/A"}} - {{selected.windDir ? selected.windDir + "°" : "N/A"}}</td>
-				</tr>
-				<tr>
-					<th>Wave</th>
-					<td>{{selected.waveHeight ? selected.waveHeight + " m" : "N/A"}} - {{selected.waveDir ? selected.waveDir + "°" : "N/A"}} ({{selected.wavePeriod ? selected.wavePeriod + " sec" : "N/A"}})</td>
-				</tr>
-				<tr>
-					<th>Sea level</th>
-					<td>{{selected.sealevel ? selected.sealevel + " m" : "N/A"}}</td>
-				</tr>
-			</table>
 		</div>
-		<div accordion-group heading="Legends">Legends content</div>
+		<div accordion-group heading="Settings">
+			<div>
+				<table class="table table-condensed" 
+					<tr x-ng-controller="SettingsMetocCtrl">
+						<td>Forecast on route</td>
+						<td><a href="#" x-ng-click="open($event)">edit</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div accordion-group heading="Legends">
+			<div x-ng-controller="LegendsController" class="legends">
+				<h5>Wave</h5>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="limit in waveLimits">
+						<td><img style="width: 15px; height: 15px;" x-ng-src="{{limit.first.img}}" /></td>
+						<td><span x-ng-if="limit.first.max">{{limit.first.min}} - {{limit.first.max}} meters</span><span
+							x-ng-if="!limit.second.max">&gt; {{limit.first.min}} meters</span></td>
+						<td><img x-ng-if="limit.second" style="width: 15px; height: 15px;" x-ng-src="{{limit.second.img}}" /></td>
+						<td><span x-ng-if="limit.second.max">{{limit.second.min}} - {{limit.second.max}} meters</span><span
+							x-ng-if="limit.second && !limit.second.max">&gt; {{limit.second.min}} meters</span></td>
+					</tr>
+				</table>
+				<h5>Current</h5>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="limit in currentLimits">
+						<td><img style="width: 10px; height: 20px;" x-ng-src="{{limit.first.img}}" /></td>
+						<td x-ng-repeat-end><span x-ng-if="limit.first.max">{{limit.first.min}} - {{limit.first.max}} knots</span><span
+							x-ng-if="!limit.first.max">&gt; {{limit.first.min}} knots</span></td>
+						<td><img x-ng-if="limit.second" style="width: 10px; height: 20px;" x-ng-src="{{limit.second.img}}" /></td>
+						<td><span x-ng-if="limit.second.max">{{limit.second.min}} - {{limit.second.max}} knots</span><span
+							x-ng-if="limit.second && !limit.second.max">&gt; {{limit.second.min}} knots</span></td>
+					</tr>
+				</table>
+				<h5>Wind</h5>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="limit in windLimits">
+						<td><img style="width: 15px; height: 30px;" x-ng-src="{{limit.first.img}}" /></td>
+						<td x-ng-repeat-end>{{limit.first.min}} - {{limit.first.max}} meters</td>
+						<td><img x-ng-if="limit.second" style="width: 15px; height: 30px;" x-ng-src="{{limit.second.img}}" /></td>
+						<td><span x-ng-if="limit.second">{{limit.second.min}} - {{limit.second.max}} m/s</span></td>
+					</tr>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>

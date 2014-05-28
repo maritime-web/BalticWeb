@@ -1,11 +1,15 @@
-function MetocLayer(color) {
+function MetocLayer(service) {
+    var metocService = service;
+
     var defaultCurrentLow = 1.0;
     var defaultCurrentMedium = 2.0;
-    var defaultCurrentWarnLimit = 4.0;
     var defaultWaveLow = 1.0;
     var defaultWaveMedium = 2.0;
-    var defaultWaveWarnLimit = 3.0;
-    var defaultWindWarnLimit = 10.0;
+    
+    var defaultCurrentWarnLimit = 2.0;
+    var defaultWaveWarnLimit = 2.0;
+    var defaultWindWarnLimit = 15.0;
+
 
     this.init = function() {
         var that = this;
@@ -256,6 +260,14 @@ function MetocLayer(color) {
     };
 
     this.drawMetoc = function(metoc) {
+        metocService = embryo.metoc.service;
+        
+        if(metocService.getDefaultWarnLimits()){
+            defaultCurrentWarnLimit = metocService.getDefaultWarnLimits().defaultCurrentWarnLimit;
+            defaultWaveWarnLimit= metocService.getDefaultWarnLimits().defaultWaveWarnLimit;
+            defaultWindWarnLimit= metocService.getDefaultWarnLimits().defaultWindWarnLimit;
+        }
+        
         var index = null, attr, geom, forecast, features = [], labelFeatures = [];
 
         for (index in metoc.forecasts) {

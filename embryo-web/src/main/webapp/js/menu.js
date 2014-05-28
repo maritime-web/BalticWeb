@@ -31,14 +31,54 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
             }
         };
     } ]);
+    
+    function templateFn(expr) {
+        return function(element, attr) {
+            var ngIf = attr.ngIf;
+            var value = typeof expr === 'function' ? expr(attr) : expr;
 
+            /**
+             * Make sure to combine with existing ngIf!
+             */
+            if (ngIf) {
+                value += ' && ' + ngIf;
+            }
+
+            var inner = element.get(0);
+            // we have to clear all the values because angular
+            // is going to merge the attrs collection
+            // back into the element after this function finishes
+            angular.forEach(inner.attributes, function(attr, key) {
+                attr.value = '';
+            });
+            attr.$set('ng-if', value);
+            return inner.outerHTML;
+        }
+    }
+
+    menuModule.directive('eLocationEnabled', [ '$location', function($location) {
+        return {
+            restrict : 'A',
+            replace : true,
+            template : templateFn('location'),
+            link : function(scope, element, attrs) {
+                scope.$watch(function() {
+                    return $location.absUrl();
+                }, function(url) {
+                    var loc = attrs.eLocationEnabled;
+                    scope.location = url.indexOf(loc, url.length - loc.length) >= 0;
+                });
+            }
+        };
+    } ]);
+    
     var embryoAuthenticated = false;
 
     embryo.authenticated(function() {
         embryoAuthenticated = true;
     });
     
-    embryo.MenuCtrl = function($scope, Subject, $location, $timeout) {
+    embryo.MenuCtrl = function($scope, Subject, $location) {
         $scope.$watch(function() {
             return $location.absUrl();
         }, function(url) {

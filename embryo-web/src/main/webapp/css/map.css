@@ -74,7 +74,6 @@ body {
 	top: 50px; /* 55 */
 	left: 10px;
 	width: 300px;
-	display: none;
 }
 
 .accordion-group {
@@ -263,4 +262,8 @@ body {
 .noaccelerate .olTileImage {
 	-webkit-backface-visibility: visible !important;
 	-webkit-transform: none !important;
+}
+
+.legends table tbody tr td{
+	vertical-align:middle;
 }

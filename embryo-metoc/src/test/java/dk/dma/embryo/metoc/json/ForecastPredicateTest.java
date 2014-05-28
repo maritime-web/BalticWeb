@@ -35,7 +35,6 @@ public class ForecastPredicateTest {
     @Before
     public void setup() {
         forecast = new Forecast();
-
     }
 
     private ForecastValue value(Double dv) {

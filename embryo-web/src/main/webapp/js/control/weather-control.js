@@ -1,24 +1,12 @@
 $(function() {
 
-    embryo.groupChanged(function(e) {
-        if (e.groupId == "weather") {
-            $("#weatherControlPanel").css("display", "block");
-            $("#weatherControlPanel .collapse").data("collapse", null);
-            openCollapse("#weatherControlPanel .accordion-body:first");
-        } else {
-            $("#weatherControlPanel").css("display", "none");
-        }
-    });
-
     var metocLayer = new MetocLayer();
     addLayerToMap("weather", metocLayer, embryo.map);
 
-    var module = angular.module('embryo.weather.control', [ 'embryo.metoc', 'ui.bootstrap.accordion' ]);
+    var module = angular.module('embryo.weather.control',
+            [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control' ]);
 
-    module.controller("WeatherController", [
-            '$scope',
-            'RouteService',
-            'MetocService',
+    module.controller("WeatherController", [ '$scope', 'RouteService', 'MetocService',
             function($scope, RouteService, MetocService) {
                 $scope.routes = [];
                 $scope.selectedOpen = false;
@@ -47,22 +35,23 @@ $(function() {
                 });
 
                 $scope.$watch(RouteService.getSelectedRoutes, function(newValue, oldValue) {
-                    
                     var routes = RouteService.getSelectedRoutes();
-                    
-                    console.log("watch");
-                    
+
                     for ( var index in routes) {
-                        if (available(routes[index])){
-                            console.log("available");
-                            console.log(routes[index]);
+                        if (available(routes[index])) {
                             $scope.routes[$scope.routes.length - 1].available = true;
                             $scope.routes[$scope.routes.length - 1].ids.push(routes[index].id);
                         }
                     }
                 });
-                
-                
+
+                $scope.$watch(function() {
+                    return MetocService.getDefaultWarnLimits();
+                }, function(defaultLimits) {
+                    if ($scope.metocs) {
+                        metocLayer.draw($scope.metocs);
+                    }
+                }, true);
 
                 $scope.toggleShowMetoc = function($event, route) {
                     $event.preventDefault();
@@ -70,47 +59,95 @@ $(function() {
                     if (!$scope.shown || $scope.shown.name !== route.name) {
                         MetocService.listMetoc(route.ids, function(metocs) {
                             $scope.shown = route;
+                            $scope.metocs = metocs;
                             metocLayer.draw(metocs);
                             metocLayer.zoomToExtent();
                         });
                     } else {
                         $scope.shown = null;
-                        $scope.selected = null;
-                        $scope.selectedOpen = false;
+                        $scope.selectedForecast = null;
+                        $scope.metocs = null;
                     }
                 };
 
                 metocLayer.select("metocCtrl", function(forecast) {
-                    $scope.selected = forecast;
-                    $scope.selectedOpen = true;
-
+                    $scope.selectedForecast = forecast;
                     $scope.$apply(function() {
                     });
                 });
 
             } ]);
 
-    // var iceLayer = new IceLayer();
-    //
-    // addLayerToMap("ice", iceLayer, embryo.map);
-    //
-    // iceLayer.select(function(ice) {
-    // if (ice != null) {
-    // showIceInformation(ice);
-    // } else {
-    // hideIceInformation();
-    // }
-    // });
-    //
-    embryo.ready(function() {
-        function fixAccordionSize() {
-            $("#weatherControlPanel .e-accordion-inner").css("overflow", "auto");
-            $("#weatherControlPanel .e-accordion-inner").css("max-height",
-                    Math.max(100, $(window).height() - 233) + "px");
+    module.controller("SelectController", [ '$scope', function($scope) {
+        $scope.showSelected = function(selected) {
+            $scope.selected = selected;
+        };
+    } ]);
+
+    module.controller("SettingsCtrl", [ '$scope', 'MetocService', function($scope, MetocService) {
+        var warnLimits = MetocService.getDefaultWarnLimits();
+        $scope.settings = [ {
+            text : "Warning limit for waves",
+            value : warnLimits.defaultWaveWarnLimit,
+            type : "number"
+        }, {
+            text : "Warning limit for current",
+            value : warnLimits.defaultCurrentWarnLimit,
+            type : "number"
+        }, {
+            text : "Warning limit for wind",
+            value : warnLimits.defaultWindWarnLimit,
+            type : "number"
+        } ];
+
+        $scope.save = function() {
+            MetocService.saveDefaultWarnLimits({
+                defaultWaveWarnLimit : $scope.settings[0].value,
+                defaultCurrentWarnLimit : $scope.settings[1].value,
+                defaultWindWarnLimit : $scope.settings[2].value
+            });
+        };
+
+        embryo.controllers.settings = {
+            show : function(context) {
+                $scope.title = context.title;
+                $("#settingsPanel").css("display", "block");
+            }
+        };
+
+    } ]);
+
+    module.controller("SettingsMetocCtrl", [ '$scope', function($scope) {
+        $scope.open = function($event) {
+            $event.preventDefault();
+
+            embryo.controllers.settings.show({
+                title : "Forecasts on route"
+            });
+        };
+    } ]);
+
+    module.controller("LegendsController", [ '$scope', 'MetocService', function($scope, MetocService) {
+        function buildLimits(limits) {
+            var result = [];
+            for ( var index = 0; index < limits.length; index += 2) {
+                var object = {
+                    "first" : limits[index],
+                }
+                if (index < limits.length - 2) {
+                    object["second"] = limits[index + 1];
+                }
+                result.push(object);
+            }
+            return result;
         }
 
-        $(window).resize(fixAccordionSize);
-
-        fixAccordionSize();
-    });
+        $scope.$watch(function() {
+            return MetocService.getDefaultWarnLimits();
+        }, function(defaultLimits) {
+            $scope.waveLimits = buildLimits(MetocService.getWaveLimits());
+            $scope.currentLimits = buildLimits(MetocService.getCurrentLimits());
+            $scope.windLimits = buildLimits(MetocService.getWindLimits());
+        }, true);
+    } ]);
 });
