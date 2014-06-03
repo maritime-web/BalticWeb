@@ -2,13 +2,22 @@ function IceLayer() {
     this.init = function() {
         var that = this;
 
-        var iceContext = {
+        this.context = {
+            sizes : {
+                'S' : 1,
+                'M' : 1.5,
+                'L' : 2,
+                'VL' : 2.5
+            },
             transparency : function() {
                 return that.active ? 0.5 : 0.25;
+            },
+            icebergSize : function(size) {
+                return this.sizes[size];
             }
         };
 
-        this.layers.ice = new OpenLayers.Layer.Vector("Ice", {
+        this.layers.ice = new OpenLayers.Layer.Vector("IceChart", {
             styleMap : new OpenLayers.StyleMap({
                 "default" : new OpenLayers.Style({
                     fillColor : "${fillColor}",
@@ -23,7 +32,7 @@ function IceLayer() {
                     fontOpacity : "${transparency}",
                     fontWeight : "bold"
                 }, {
-                    context : iceContext
+                    context : this.context
                 }),
                 "temporary" : new OpenLayers.Style({
                     fillColor : "${fillColor}",
@@ -32,7 +41,7 @@ function IceLayer() {
                     strokeColor : "#000000",
                     strokeOpacity : "0.7",
                 }, {
-                    context : iceContext
+                    context : this.context
                 }),
                 "select" : new OpenLayers.Style({
                     fillColor : "${fillColor}",
@@ -41,67 +50,86 @@ function IceLayer() {
                     strokeColor : "#000",
                     strokeOpacity : "1",
                 }, {
-                    context : iceContext
+                    context : this.context
                 })
-            })/*,
-            strategies: [
-                 new OpenLayers.Strategy.Cluster({
-                      distance: 10,
-                      threshold: 3
-                 })
-            ]*/
+            })
+        /*
+         * , strategies: [ new OpenLayers.Strategy.Cluster({ distance: 10,
+         * threshold: 3 }) ]
+         */
         });
-        this.layers.iceberg = new OpenLayers.Layer.Vector("Ice", {
+        this.layers.iceberg = new OpenLayers.Layer.Vector("Iceberg", {
             styleMap : new OpenLayers.StyleMap({
                 "default" : new OpenLayers.Style({
                     externalGraphic : 'img/iceberg.png',
-                    graphicWidth : 10,
-                    graphicHeight : 12,
+                    graphicWidth : '${imageWidth}',
+                    graphicHeight : '${imageHeight}',
                     graphicOpacity : "${transparency}",
                     strokeWidth : "1",
                     strokeColor : "#000000",
                     strokeOpacity : "0.2"
                 }, {
-                    context : iceContext
+                    context : this.context
                 }),
                 "temporary" : new OpenLayers.Style({
                     externalGraphic : 'img/iceberg.png',
-                    graphicWidth : 10,
-                    graphicHeight : 12,
+                    graphicWidth : '${imageWidth}',
+                    graphicHeight : '${imageHeight}',
                     graphicOpacity : "${transparency}",
                     strokeWidth : "1",
                     strokeColor : "#000000",
                     strokeOpacity : "0.7",
                 }, {
-                    context : iceContext
+                    context : this.context
                 }),
                 "select" : new OpenLayers.Style({
                     externalGraphic : 'img/iceberg.png',
-                    graphicWidth : 10,
-                    graphicHeight : 12,
+                    graphicWidth : '${imageWidth}',
+                    graphicHeight : '${imageHeight}',
                     graphicOpacity : "${transparency}",
                     strokeWidth : "1",
                     strokeColor : "#000",
                     strokeOpacity : "1",
                 }, {
-                    context : iceContext
+                    context : this.context
                 })
-            })/*,
-            strategies: [
-                 new OpenLayers.Strategy.Cluster({
-                      distance: 10,
-                      threshold: 3
-                 })
-            ]*/
+            })
+        /*
+         * , strategies: [ new OpenLayers.Strategy.Cluster({ distance: 10,
+         * threshold: 3 }) ]
+         */
         });
-        this.selectableLayer = this.layers.ice;
+        this.layers.selection = new OpenLayers.Layer.Vector("Selection", {
+            styleMap : new OpenLayers.StyleMap({
+                "default" : new OpenLayers.Style({
+                    externalGraphic : "${image}",
+                    graphicWidth : "${imageWidth}",
+                    graphicHeight : "${imageHeight}",
+                    graphicYOffset : "${imageYOffset}",
+                    graphicXOffset : "${imageXOffset}",
+                    graphicOpacity : "${transparency}",
+                    rotation : "${angle}"
+                }, {
+                    context : this.context
+                }),
+                "select" : new OpenLayers.Style({
+                    cursor : "crosshair",
+                    externalGraphic : "${image}"
+                }, {
+                    context : this.context
+                })
+            }, {
+                context : this.context
+            })
+        });
+        this.selectableLayers = [ this.layers.ice, this.layers.iceberg ];
         this.selectableAttribute = "iceDescription";
     };
 
     this.draw = function(chartType, shapes, callback) {
         function colorByDescription(description) {
 
-            if (description.CT == 92 && parseInt(description.FA) == 8){
+            if (description.CT == 92 && parseInt(description.FA) == 8) {
                 return "#979797";
             } else if (description.CT == 79 || description.CT > 80)
                 return "#ff0000";
@@ -113,8 +141,6 @@ function IceLayer() {
                 return "#8effa0";
             return "#96C7FF";
         }
-
-        this.layers.ice.removeAllFeatures();
 
         var waterCount = 0;
 
@@ -136,7 +162,8 @@ function IceLayer() {
 
                     if (j >= 1) {
                         var diff = Math.abs(polygon[j - 1].x - p.x);
-//                        if (diff > 350 && !(Math.abs(polygon[j-1].x) == Math.abs(p.x) && polygon[j-1].y == p.y)) {
+                        // if (diff > 350 && !(Math.abs(polygon[j-1].x) ==
+                        // Math.abs(p.x) && polygon[j-1].y == p.y)) {
                         if (diff > 350) {
                             if (p.x < polygon[j - 1].x) {
                                 p.x += 360;
@@ -156,11 +183,11 @@ function IceLayer() {
                     return 0.4 * groupOpacity;
                 },
                 fillColor : colorByDescription(fragment.description),
-                iceDescription : fragment.description,
+                iceDescription : $.extend(fragment.description, {
+                    source : shape.description.id,
+                    type : 'iceChart'
+                }),
                 description : ""
-            });
-            feature.attributes.iceDescription = $.extend(fragment.description, {
-                source : shape.description.id
             });
             if (fragment.description.POLY_TYPE == 'I') {
                 feature.attributes.description = "";
@@ -171,8 +198,8 @@ function IceLayer() {
                 waterCount++;
             }
             that.layers.ice.addFeatures([ feature ]);
-            //that.layers.ice.strategies[0].deactivate();
-            that.layers.iceberg.removeAllFeatures();
+            // that.layers.ice.strategies[0].deactivate();
+            // that.layers.iceberg.removeAllFeatures();
             that.layers.ice.refresh();
         }
 
@@ -191,23 +218,44 @@ function IceLayer() {
                 }
             }
         }
-        
+
         function drawPoints() {
-            /*var styleData = {
-                    externalGraphic : 'img/iceberg.png',
-                    graphicWidth : 10,
-                    graphicHeight : 12,
-                    fillOpacity : "${transparency}"
-            };
-            var style = new OpenLayers.Style(styleData, {context : attrs});*/
-            for(var f in fragments) {
-                var feature = new OpenLayers.Feature.Vector(embryo.map.createPoint(fragments[f].description.Long, fragments[f].description.Lat));
-                that.layers.iceberg.addFeatures([feature]);
+            /*
+             * var styleData = { externalGraphic : 'img/iceberg.png',
+             * graphicWidth : 10, graphicHeight : 12, fillOpacity :
+             * "${transparency}" }; var style = new OpenLayers.Style(styleData,
+             * {context : attrs});
+             */
+            for ( var f in fragments) {
+                var desc = fragments[f].description;
+                var feature = new OpenLayers.Feature.Vector(embryo.map.createPoint(desc.Long, desc.Lat), {
+                    imageWidth : function() {
+                        var size = desc.Size_Catg;
+                        return function() {
+                            return that.context.icebergSize(size) * 5;
+                        };
+                    }(),
+                    imageHeight : function() {
+                        var size = desc.Size_Catg;
+                        return function() {
+                            return that.context.icebergSize(size) * 6;
+                        };
+                    }(),
+                    iceDescription : $.extend(desc, {
+                        source : 'Lat: ' + desc.Lat.substr(0, 7) + ', Lon: ' + desc.Long.substr(0, 7),
+                        type : 'iceberg'
+                    }),
+                });
+                that.layers.iceberg.addFeatures([ feature ]);
             }
-            //that.layers.ice.strategies[0].activate();
-            that.layers.ice.removeAllFeatures();
+            // that.layers.ice.strategies[0].activate();
             that.layers.iceberg.refresh();
             callback();
+        }
+        if (chartType == 'iceberg') {
+            that.layers.iceberg.removeAllFeatures();
+        } else {
+            that.layers.ice.removeAllFeatures();
         }
 
         for ( var l in shapes) {
@@ -215,11 +263,49 @@ function IceLayer() {
             var ice = shape.fragments;
 
             fragments = ice.slice(0);
-            if(chartType == 'iceberg') {
+            if (chartType == 'iceberg') {
                 drawPoints(fragments);
             } else {
                 drawFragments(shape, fragments);
             }
+        }
+    };
+
+    this.selectIceberg = function(lon, lat) {
+        var that = this;
+        that.layers.selection.removeAllFeatures();
+        if(lon && lat) {
+            that.layers.selection.addFeatures([ new OpenLayers.Feature.Vector(embryo.map.createPoint(lon, lat), {
+                id : -1,
+                angle : 0,
+                opacity : 1,
+                image : "img/selection.png",
+                imageWidth : function() {
+                    return 32;
+                },
+                imageHeight : function() {
+                    return 32;
+                },
+                imageYOffset : function() {
+                    return -16;
+                },
+                imageXOffset : function() {
+                    return -16;
+                },
+                type : "selection"
+            }) ]);
+        }
+    };
+
+    this.clear = function(chartType) {
+        if (chartType) {
+            if (chartType == 'iceberg') {
+                this.layers.iceberg.removeAllFeatures();
+            } else {
+                this.layers.ice.removeAllFeatures();
+            }
+        } else {
+            this.prototype.clear();
         }
     };
 }

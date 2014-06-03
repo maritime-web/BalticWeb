@@ -248,7 +248,7 @@ function MetocLayer(service) {
                             })
                 });
 
-        this.selectableLayer = this.layers.metoc;
+        this.selectableLayers = [this.layers.metoc];
         this.selectableAttribute = "forecast";
     }
 

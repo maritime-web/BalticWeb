@@ -37,11 +37,11 @@ function EmbryoLayer() {
     };
 
     this.selectListeners = [];
-    this.selectableLayer = null;
+    this.selectableLayers = null;
     this.selectableAttribute = null;
 
     this.bindSelectEvents = function() {
-        if (this.selectableLayer == null)
+        if (!this.selectableLayers)
             return;
 
         var that = this;
@@ -50,15 +50,17 @@ function EmbryoLayer() {
             for ( var i in that.selectListeners)
                 that.selectListeners[i](value);
         }
-
-        this.selectableLayer.events.on({
-            featureselected : function(e) {
-                emit(eval("e.feature.attributes." + that.selectableAttribute));
-            },
-            featureunselected : function(e) {
-                emit(null);
-            }
-        });
+        
+        for(var l in this.selectableLayers) {
+            this.selectableLayers[l].events.on({
+                featureselected : function(e) {
+                    emit(eval("e.feature.attributes." + that.selectableAttribute));
+                },
+                featureunselected : function(e) {
+                    emit(null);
+                }
+            });
+        }
     };
 
     this.select = function(a, b) {
@@ -68,11 +70,14 @@ function EmbryoLayer() {
             this.selectListeners[a] = b;
         } else {
             var didSelect = false;
-            for ( var i in this.selectableLayer.features) {
-                var feature = this.selectableLayer.features[i];
-                if (eval("feature.attributes." + this.selectableAttribute) == a) {
-                    this.map.select(feature);
-                    didSelect = true;
+            for(var l in this.selectableLayers) {
+                var layer = this.selectableLayers[l];
+                for ( var i in layer.features) {
+                    var feature = layer.features[i];
+                    if (eval("feature.attributes." + this.selectableAttribute) == a) {
+                        this.map.select(feature);
+                        didSelect = true;
+                    }
                 }
             }
             if (!didSelect)
@@ -144,10 +149,17 @@ function addLayerToMap(id, layer, map) {
     layer.bindSelectEvents();
 
     for ( var i in layer.layers) {
+        var select = false;
+        for(var l in layer.selectableLayers) {
+            if(layer.selectableLayers[l] == layer.layers[i]) {
+                select = true;
+                break;
+            }
+        }
         map.add({
             group : id,
             layer : layer.layers[i],
-            select : layer.layers[i] == layer.selectableLayer
+            select : select
         });
     }
 

@@ -85,7 +85,7 @@ function MsiLayer() {
             ]
         });
 
-        this.selectableLayer = this.layers.msi;
+        this.selectableLayers = [this.layers.msi];
         this.selectableAttribute = "msi";
     };
 

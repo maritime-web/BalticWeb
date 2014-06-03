@@ -4,7 +4,7 @@ $(function() {
         $scope.selectedProvider = {
             key : null
         };
-        
+
         function loadProviders() {
             var messageId = embryo.messagePanel.show({
                 text : "Requesting ice chart providers ..."
@@ -47,29 +47,29 @@ $(function() {
             }
         }, true);
 
-        function init(){
+        function init() {
             loadProviders();
             $timeout(loadProviders, 24 * 60 * 1000 * 60);
             $timeout(requestAllIceObservations, 2 * 60 * 1000 * 60);
         }
-        
-        if(typeof embryo.authentication.permissions === 'undefined'){
+
+        if (typeof embryo.authentication.permissions === 'undefined') {
             embryo.authenticated(function() {
                 init();
             });
-        }else{
+        } else {
             init();
         }
-        
+
         function requestAllIceObservations() {
             requestIceChartObservations();
             requestIcebergObservations();
         }
-        
+
         function requestIceChartObservations() {
             requestIceObservations('iceChart');
         }
-        
+
         function requestIcebergObservations() {
             requestIceObservations('iceberg');
         }
@@ -80,102 +80,89 @@ $(function() {
             });
 
             var divId = (chartType == 'iceberg' ? '#icpIcebergs' : '#icpIceMaps');
-            embryo.ice.service
-                    .listByProvider(
-                            chartType,
-                            $scope.selectedProvider.key,
-                            function(data) {
-                                embryo.messagePanel.replace(messageId, {
-                                    text : "List of " + data.length + (chartType == "iceberg" ? " icebergs" : " ice charts") + " downloaded.",
-                                    type : "success"
-                                });
+            embryo.ice.service.listByProvider(chartType, $scope.selectedProvider.key, function(data) {
+                embryo.messagePanel.replace(messageId, {
+                    text : "List of " + data.length + (chartType == "iceberg" ? " icebergs" : " ice charts") + " downloaded.",
+                    type : "success"
+                });
 
-                                data.sort(function(a, b) {
-                                    return b.date - a.date;
-                                });
+                data.sort(function(a, b) {
+                    return b.date - a.date;
+                });
 
-                                var regions = [];
+                var regions = [];
 
-                                for ( var i in data) {
-                                    if (regions.indexOf(data[i].region) < 0)
-                                        regions.push(data[i].region);
-                                }
+                for ( var i in data) {
+                    if (regions.indexOf(data[i].region) < 0)
+                        regions.push(data[i].region);
+                }
 
-                                var sortFunction = function(reg1, reg2) {
-                                    if (reg1.indexOf("All Arctic") >= 0 && reg2.indexOf("All Arctic") < 0) {
-                                        return 1;
-                                    } else if (reg1.indexOf("All Arctic") < 0 && reg2.indexOf("All Arctic") >= 0) {
-                                        return -1;
-                                    } else if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
-                                        return 1;
-                                    } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
-                                        return -1;
-                                    }
-                                    return reg1.localeCompare(reg2);
-                                };
+                var sortFunction = function(reg1, reg2) {
+                    if (reg1.indexOf("All Arctic") >= 0 && reg2.indexOf("All Arctic") < 0) {
+                        return 1;
+                    } else if (reg1.indexOf("All Arctic") < 0 && reg2.indexOf("All Arctic") >= 0) {
+                        return -1;
+                    } else if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
+                        return 1;
+                    } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
+                        return -1;
+                    }
+                    return reg1.localeCompare(reg2);
+                };
 
-                                regions.sort(sortFunction);
+                regions.sort(sortFunction);
 
-                                var html = "";
+                var html = "";
 
-                                for ( var j in regions) {
-                                    var region = regions[j];
-                                    html += "<tr><td colspan=4><h4>" + region + "</h4></td></tr>";
+                for ( var j in regions) {
+                    var region = regions[j];
+                    html += "<tr><td colspan=4><h4>" + region + "</h4></td></tr>";
 
-                                    for ( var i in data) {
-                                        if (data[i].region == region)
-                                            html += "<tr><td>"
-                                                    + data[i].source
-                                                    + "</td><td>"
-                                                    + formatTime(data[i].date)
-                                                    + "</td><td>"
-                                                    + formatSize(data[i].size)
-                                                    + "</td><td><a mid="
-                                                    + i
-                                                    + " href=# class='download'>download</a><span class='zoomhide'>"
-                                                    + "<a href=# class='zoom'>zoom</a> / <a href=# class='hideIce'>hide</a></span></td></tr>";
-                                    }
+                    for ( var i in data) {
+                        if (data[i].region == region)
+                            html += "<tr><td>" + data[i].source + "</td><td>" + formatTime(data[i].date) + "</td><td>" + formatSize(data[i].size)
+                                    + "</td><td><a mid=" + i + " href=# class='download'>download</a><span class='zoomhide'>"
+                                    + "<a href=# class='zoom'>zoom</a> / <a href=# class='hideIce'>hide</a></span></td></tr>";
+                    }
 
-                                }
+                }
 
-                                $(divId + " table").html(html);
+                $(divId + " table").html(html);
 
-                                // $("#icpIceMaps
-                                // td:first").css("border-top", "none");
-                                $(divId + " table span.zoomhide").css("display", "none");
-                                $(divId + " table a.download").click(function(e) {
-                                    e.preventDefault();
-                                    var row = $(this).parents("tr");
-                                    requestShapefile(chartType, data[$(this).attr("mid")].shapeFileName, function() {
-                                        $(divId + "table tr").removeClass("alert");
-                                        $(row).addClass("alert");
-                                        $("#icpIceMaps table span.zoomhide").css("display", "none");
-                                        $("#icpIcebergs table span.zoomhide").css("display", "none");
-                                        $("#icpIceMaps table a.download").css("display", "block");
-                                        $("#icpIcebergs table a.download").css("display", "block");
-                                        $("span.zoomhide", row).css("display", "block");
-                                        $("a.download", row).css("display", "none");
-                                    });
-                                    // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
-                                    // alert(data[$(this).attr("href")].shapeFileName);
-                                });
-                                $(divId + " table a.zoom").click(function(e) {
-                                    e.preventDefault();
-                                    embryo.map.zoomToExtent(iceLayer.layers);
-                                });
-                                $(divId + " table a.hideIce").click(function(e) {
-                                    e.preventDefault();
-                                    iceLayer.clear();
-                                    $("span.zoomhide").css("display", "none");
-                                    var row = $(this).parents("tr");
-                                    $("a.download", row).css("display", "block");
-                                });
-                            }, function(errorMsg, status) {
-                                embryo.messagePanel.replace(messageId, {
-                                    text : errorMsg,
-                                    type : "error"
-                                });
-                            });
+                // $("#icpIceMaps
+                // td:first").css("border-top", "none");
+                $(divId + " table span.zoomhide").css("display", "none");
+                $(divId + " table a.download").click(function(e) {
+                    e.preventDefault();
+                    var row = $(this).parents("tr");
+                    requestShapefile(chartType, data[$(this).attr("mid")].shapeFileName, function() {
+                        $(divId + "table tr").removeClass("alert");
+                        $(row).addClass("alert");
+                        $(divId + " table span.zoomhide").css("display", "none");
+                        $(divId + " table a.download").css("display", "block");
+                        $("span.zoomhide", row).css("display", "block");
+                        $("a.download", row).css("display", "none");
+                    });
+                    // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
+                    // alert(data[$(this).attr("href")].shapeFileName);
+                });
+                $(divId + " table a.zoom").click(function(e) {
+                    e.preventDefault();
+                    embryo.map.zoomToExtent(iceLayer.layers);
+                });
+                $(divId + " table a.hideIce").click(function(e) {
+                    e.preventDefault();
+                    iceLayer.clear(chartType);
+                    $(divId + " span.zoomhide").css("display", "none");
+                    var row = $(this).parents("tr");
+                    $("a.download", row).css("display", "block");
+                });
+            }, function(errorMsg, status) {
+                embryo.messagePanel.replace(messageId, {
+                    text : errorMsg,
+                    type : "error"
+                });
+            });
         }
 
         function requestShapefile(chartType, name, onSuccess) {
@@ -192,10 +179,10 @@ $(function() {
 
                 var totalPolygons = 0;
                 var totalPoints = 0;
-                if(chartType == 'iceberg') {
+                if (chartType == 'iceberg') {
                     totalPoints = data.fragments.length;
                 } else {
-                    for (var i in data.fragments) {
+                    for ( var i in data.fragments) {
                         totalPolygons += data.fragments[i].polygons.length;
                         for ( var j in data.fragments[i].polygons)
                             totalPoints += data.fragments[i].polygons[j].length;
@@ -216,23 +203,34 @@ $(function() {
                 // Draw shapefile a bit later, just let the browser update the
                 // view and show above message
                 window.setTimeout(function() {
-                    iceLayer.draw(chartType, [data], finishedDrawing);
+                    iceLayer.draw(chartType, [ data ], finishedDrawing);
                 }, 10);
             }, function(errorMsg, status) {
-                if(status == 410){
+                if (status == 410) {
                     errorMsg = errorMsg + " Refreshing ice chart list ... ";
                 }
                 embryo.messagePanel.replace(messageId, {
                     text : errorMsg,
                     type : "error"
                 });
-                
+
                 requestIceObservations();
             });
         }
 
-        
     };
+
+    function createTableHeaderRow(headline) {
+        return '<tr><th colspan="2" style="background-color:#eee;">' + headline + '</th></tr>';
+    }
+
+    function createTableRow(props) {
+        var result = '';
+        $.each(props, function(k, v) {
+            result += "<tr><th>" + k + "</th><td>" + v + "</td></tr>";
+        });
+        return result;
+    }
 
     function createIceTable(d) {
         function c(v) {
@@ -405,40 +403,34 @@ $(function() {
 
         var html = "";
 
-        function o(egenskaber) {
-            $.each(egenskaber, function(k, v) {
-                html += "<tr><th>" + k + "</th><td>" + v + "</td></tr>";
-            });
-        }
+        html += createTableHeaderRow('Total');
 
-        html += "<tr><th colspan=2 style=background-color:#eee>Total</th></tr>";
-
-        o({
+        html += createTableRow({
             "Concentration" : c(d.CT),
             "Stage of Development (S0)" : s(d.CN),
             "Stage of Development (Sd)" : s(d.CD),
             "Form of Ice" : f(d.CF)
         });
 
-        html += "<tr><th colspan=2 style=background-color:#eee>Thickest Partial</th></tr>";
+        html += createTableHeaderRow('Thickest Partial');
 
-        o({
+        html += createTableRow({
             "Concentration" : c(d.CA),
             "Stage of Development" : s(d.SA),
             "Form of Ice" : f(d.FA)
         });
 
-        html += "<tr><th colspan=2 style=background-color:#eee>Second Thickest Partial</th></tr>";
+        html += createTableHeaderRow('Second Thickest Partial');
 
-        o({
+        html += createTableRow({
             "Concentration" : c(d.CB),
             "Stage of Development" : s(d.SB),
             "Form of Ice" : f(d.FB)
         });
 
-        html += "<tr><th colspan=2 style=background-color:#eee>Third Thickest Partial</th></tr>";
+        html += createTableHeaderRow('Third Thickest Partial');
 
-        o({
+        html += createTableRow({
             "Concentration" : c(d.CC),
             "Stage of Development" : s(d.SC),
             "Form of Ice" : f(d.FC)
@@ -447,11 +439,45 @@ $(function() {
         return html;
     }
 
+    function createIcebergTable(desc) {
+        function getIcebergSize(size) {
+            switch (size) {
+            case 'S':
+                return 'Small';
+            case 'M':
+                return 'Medium';
+            case 'L':
+                return 'Large';
+            case 'VL':
+                return 'Very large';
+            default:
+                return 'Uncategorized';
+            }
+        }
+
+        var html = '';
+
+        html += createTableHeaderRow('Iceberg');
+
+        html += createTableRow({
+            'Area (m2)' : desc.Area_m2,
+            'Size (m)' : desc.Size_m,
+            'Adjusted size (m)' : desc.Adj_Size_m,
+            'Size category' : getIcebergSize(desc.Size_Catg)
+        });
+
+        return html;
+    }
+
     function showIceInformation(iceDescription) {
         $("a[href=#icpSelectedIce]").html("Selected Ice Observation");
-        $("#icpSelectedIce table").html(createIceTable($.extend(iceDescription, {
-            size : 160
-        })));
+        if (iceDescription.type == 'iceberg') {
+            $("#icpSelectedIce table").html(createIcebergTable(iceDescription));
+        } else {
+            $("#icpSelectedIce table").html(createIceTable($.extend(iceDescription, {
+                size : 160
+            })));
+        }
         $("#icpSelectedIce p").html("Source: " + iceDescription.source);
         openCollapse("#icpSelectedIce");
     }
@@ -465,6 +491,12 @@ $(function() {
     addLayerToMap("ice", iceLayer, embryo.map);
 
     iceLayer.select(function(ice) {
+        var lon = null, lat = null;
+        if(ice && ice.type == 'iceberg') {
+            lon = ice.Long;
+            lat = ice.Lat;
+        }
+        iceLayer.selectIceberg(lon, lat);
         if (ice != null) {
             showIceInformation(ice);
         } else {
