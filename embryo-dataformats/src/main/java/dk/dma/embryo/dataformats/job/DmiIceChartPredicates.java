@@ -16,7 +16,9 @@
 package dk.dma.embryo.dataformats.job;
 
 import static com.google.common.base.Predicates.not;
+
 import java.io.File;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,7 +54,9 @@ public class DmiIceChartPredicates {
     }
 
     private static class ValidFormatPredicate implements Predicate<FTPFile> {
+        private static final String DATE_FORMAT_STR = "yyyyMMddHHmm";
         private final Set<String> regions;
+        private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_STR);
 
         public ValidFormatPredicate(Set<String> regions) {
             this.regions = regions;
@@ -62,7 +66,7 @@ public class DmiIceChartPredicates {
         public boolean apply(FTPFile input) {
             String fn = input.getName();
             try {
-                new SimpleDateFormat("yyyyMMddHHmm").parse(fn.substring(0, 12));
+                dateFormat.parse(fn.substring(0, 12));
             } catch (ParseException e) {
                 return false;
             }
