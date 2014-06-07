@@ -32,7 +32,7 @@ import javax.inject.Singleton;
 @Singleton
 public class PropertyFileService {
     private Properties properties = new Properties();
-    
+
     public PropertyFileService() {
     }
 
@@ -53,34 +53,36 @@ public class PropertyFileService {
         return properties.getProperty(name, defValue);
     }
 
-    
     public String getProperty(String name, boolean substituteSystemProperties) {
         String property = properties.getProperty(name);
 
         if (property != null && substituteSystemProperties) {
             for (Object key : System.getProperties().keySet()) {
-                property = property.replaceAll("\\{" + key + "\\}", Matcher.quoteReplacement(System.getProperty("" + key)));
+                property = property.replaceAll("\\{" + key + "\\}",
+                        Matcher.quoteReplacement(System.getProperty("" + key)));
             }
         }
         return property;
     }
 
-    public Map<String, String> getMapProperty(String property){
+    public Map<String, String> getMapProperty(String property) {
         String prop = getProperty(property);
 
-        String[] providers = prop.split(";");
-
         Map<String, String> result = new HashMap<String, String>();
-        for (String provider : providers) {
-            String[] keyValue = provider.split("=");
-            result.put(keyValue[0], keyValue[1]);
+
+        if (prop != null) {
+            String[] providers = prop.split(";");
+
+            for (String provider : providers) {
+                String[] keyValue = provider.split("=");
+                result.put(keyValue[0], keyValue[1]);
+            }
         }
 
         return result;
-        
+
     }
 
-    
     @Produces
     @Property
     public String getStringPropertyByKey(InjectionPoint ip) {
@@ -151,7 +153,7 @@ public class PropertyFileService {
         String[] items = e.split(" ");
 
         ScheduleExpression r = new ScheduleExpression();
-        
+
         r.timezone("GMT");
         r.minute(items[0]);
         r.hour(items[1]);
