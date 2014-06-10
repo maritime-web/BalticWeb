@@ -10,7 +10,6 @@ function MetocLayer(service) {
     var defaultWaveWarnLimit = 2.0;
     var defaultWindWarnLimit = 15.0;
 
-
     this.init = function() {
         var that = this;
 

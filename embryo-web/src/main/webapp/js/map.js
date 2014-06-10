@@ -119,15 +119,22 @@ $(function() {
             extent.left = 9999999;
             extent.right = -9999999;
             extent.top = -9999999;
+            
+            var dataPresent = false;
 
             for ( var i in layers) {
                 var e = layers[i].getDataExtent();
                 if (e != null) {
+                    dataPresent = true;
                     extent.bottom = Math.min(extent.bottom, e.bottom);
                     extent.left = Math.min(extent.left, e.left);
                     extent.top = Math.max(extent.top, e.top);
                     extent.right = Math.max(extent.right, e.right);
                 }
+            }
+            
+            if(!dataPresent){
+                return;
             }
 
             // nudge extent so that the left overlay does not overlay the zoomed
