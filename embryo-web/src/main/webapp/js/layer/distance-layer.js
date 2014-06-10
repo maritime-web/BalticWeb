@@ -41,7 +41,7 @@ function DistanceLayer() {
             // (parseFloat(vessel.x) + parseFloat(v.vessel.x)) / 2,
             // (parseFloat(vessel.y) + parseFloat(v.vessel.y)) / 2
             labelFeature.attributes = {
-                label : "Based on maximum recorded SOG: " + vessel.msog + " NM",
+                label : "Based on maximum recorded SOG: " + vessel.msog + " kn",
                 labelXOffset : 140,
                 labelYOffset : -15
             }
@@ -127,7 +127,7 @@ function DistanceLayer() {
                         + ": "
                         + formatNauticalMile(v.distance)
                         + (v.vessel.msog == Infinity ? "" : ", " + formatHour(v.distance / (v.vessel.msog * 1.852))
-                                + " hours, Max SOG " + v.vessel.msog)
+                                + " hours, Max SOG " + v.vessel.msog + " kn")
             };
             this.layers.labels.addFeatures([ labelFeature ]);
         }
