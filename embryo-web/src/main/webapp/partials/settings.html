@@ -10,8 +10,8 @@
 			<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 		</div>
 		<div class="form-group" x-ng-repeat="setting in settings">
-			<label for="setting{{$index}}" class="col-sm-4 control-label">{{setting.text}}</label>
-			<div class="col-sm-6">
+			<label for="setting{{$index}}" class="col-sm-5 control-label">{{setting.text}}</label>
+			<div class="col-sm-5">
 				<input type="{{setting.type}}" class="form-control input-sm" id="setting{{$index}}" x-ng-model="setting.value">
 			</div>
 			<span class="col-sm-2 control-label">{{setting.unit}}</label>

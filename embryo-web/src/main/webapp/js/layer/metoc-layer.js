@@ -118,7 +118,7 @@ function MetocLayer(service) {
                     var markerDir = 'img/wind/mark';
                     var windSpeed = feature.attributes.forecast.windSpeed;
 
-                    var windSpeedKnots = windSpeed * (3.6 / 1.852);
+                    var windSpeedKnots = ms2Knots(windSpeed);
 
                     if (windSpeedKnots >= 0 && windSpeedKnots <= 5) {
                         markerDir += "005";

@@ -6,7 +6,28 @@ $(function() {
     var module = angular.module('embryo.weather.control',
             [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control' ]);
 
-    module.controller("WeatherController", [ '$scope', 'RouteService', 'MetocService', 'Subject',
+    module.controller("WeatherController", [ '$scope', function($scope) {
+        $scope.selected = {};
+
+        $scope.ms2Knots = function(ms){
+            return Math.round(ms2Knots(ms) * 100) / 100;
+        }
+
+        metocLayer.select("metocCtrl", function(forecast) {
+            $scope.selected.open = !!forecast;
+            $scope.selected.forecast = forecast; 
+            if (!$scope.$$phase) {
+                $scope.$apply(function() {
+                });
+            }
+        });
+        
+        $scope.formatTs = function(ts){
+            return formatTime(ts);
+        };
+    } ]);
+
+    module.controller("MetocController", [ '$scope', 'RouteService', 'MetocService', 'Subject',
             function($scope, RouteService, MetocService, Subject) {
                 $scope.routes = [];
                 $scope.selectedOpen = false;
@@ -52,8 +73,8 @@ $(function() {
                         metocLayer.draw($scope.metocs);
                     }
                 }, true);
-                
-                function clearScope(){
+
+                function clearScope() {
                     $scope.shown = null;
                     $scope.selectedForecast = null;
                     $scope.metocs = null;
@@ -64,12 +85,12 @@ $(function() {
                     metocLayer.clear();
                     if (!$scope.shown || $scope.shown.name !== route.name) {
                         MetocService.listMetoc(route.ids, function(metocs) {
-                            if(MetocService.forecastCount(metocs) > 0){
+                            if (MetocService.forecastCount(metocs) > 0) {
                                 $scope.shown = route;
                                 $scope.metocs = metocs;
                                 metocLayer.draw(metocs);
                                 metocLayer.zoomToExtent();
-                            }else{
+                            } else {
                                 clearScope();
                             }
                         });
@@ -78,34 +99,26 @@ $(function() {
                     }
                 };
 
-                metocLayer.select("metocCtrl", function(forecast) {
-                    $scope.selectedForecast = forecast;
-                    $scope.$apply(function() {
-                    });
-                });
-
             } ]);
-
-    module.controller("SelectController", [ '$scope', function($scope) {
-        $scope.showSelected = function(selected) {
-            $scope.selected = selected;
-        };
-    } ]);
 
     module.controller("SettingsCtrl", [ '$scope', 'MetocService', function($scope, MetocService) {
         var warnLimits = MetocService.getDefaultWarnLimits();
         $scope.settings = [ {
             text : "Warning limit for waves",
             value : warnLimits.defaultWaveWarnLimit,
-            type : "number"
+            type : "number",
+            unit : "meter"
+                
         }, {
             text : "Warning limit for current",
             value : warnLimits.defaultCurrentWarnLimit,
-            type : "number"
+            type : "number",
+            unit : "knots"
         }, {
             text : "Warning limit for wind",
             value : warnLimits.defaultWindWarnLimit,
-            type : "number"
+            type : "number",
+            unit : "knots"
         } ];
 
         $scope.save = function() {
@@ -128,9 +141,8 @@ $(function() {
     module.controller("SettingsMetocCtrl", [ '$scope', function($scope) {
         $scope.open = function($event) {
             $event.preventDefault();
-
             embryo.controllers.settings.show({
-                title : "Forecasts on route"
+                title : "Forecast on route"
             });
         };
     } ]);
@@ -157,5 +169,9 @@ $(function() {
             $scope.currentLimits = buildLimits(MetocService.getCurrentLimits());
             $scope.windLimits = buildLimits(MetocService.getWindLimits());
         }, true);
+        
+        $scope.knots2Ms = function(knots){
+            return Math.round(knots2Ms(knots) * 10) / 10;
+        }
     } ]);
 });

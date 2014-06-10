@@ -1,7 +1,7 @@
-<div>
-	<div id="weatherControlPanel" e-left-bar accordion close-others="true" class="controlPanel2">
+<div x-ng-controller="WeatherController">
+	<div id="weatherControlPanel" accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
 		<div accordion-group heading="Forecast on route">
-			<table class="table table-condensed" ng-controller="WeatherController" e-left-bar-selection="{{selectedForecast}}">
+			<table class="table table-condensed" ng-controller="MetocController">
 				<tr x-ng-repeat="route in routes">
 					<td>{{route.name}}</td>
 					<td><span x-ng-if="route.available" class="label label-success">AVAILABLE</span><span
@@ -11,35 +11,33 @@
 				</tr>
 			</table>
 		</div>
-		<div accordion-group heading="Selected Forecast" e-left-bar-show>
-			<div e-left-bar-selected="showSelected" x-ng-controller="SelectController">
-				<div ng-if="!selected">Nothing selected</div>
-				<table class="table table-condensed" ng-if="selected">
-					<tr>
-						<th>Time</th>
-						<td>{{selected.time}}</td>
-					</tr>
-					<tr>
-						<th>Current</th>
-						<td>{{selected.curSpeed ? selected.curSpeed + " kn" : "N/A"}} - {{selected.curDir ? selected.curDir + "°" :
-							"N/A"}}</td>
-					</tr>
-					<tr>
-						<th>Wind</th>
-						<td>{{selected.windSpeed ? selected.windSpeed + " m/s" : "N/A"}} - {{selected.windDir ? selected.windDir +
-							"°" : "N/A"}}</td>
-					</tr>
-					<tr>
-						<th>Wave</th>
-						<td>{{selected.waveHeight ? selected.waveHeight + " m" : "N/A"}} - {{selected.waveDir ? selected.waveDir +
-							"°" : "N/A"}} ({{selected.wavePeriod ? selected.wavePeriod + " sec" : "N/A"}})</td>
-					</tr>
-					<tr>
-						<th>Sea level</th>
-						<td>{{selected.sealevel ? selected.sealevel + " m" : "N/A"}}</td>
-					</tr>
-				</table>
-			</div>
+		<div accordion-group heading="Selected Forecast" is-open="selected.open">
+			<div ng-if="!selected.forecast">Nothing selected</div>
+			<table class="table table-condensed" ng-if="selected.forecast">
+				<tr>
+					<th>Time</th>
+					<td>{{formatTs(selected.forecast.time)}}</td>
+				</tr>
+				<tr>
+					<th>Current</th>
+					<td>{{selected.forecast.curSpeed ? selected.forecast.curSpeed + " kn" : "N/A"}} - {{selected.forecast.curDir ? selected.forecast.curDir + "°" :
+						"N/A"}}</td>
+				</tr>
+				<tr>
+					<th>Wind</th>
+					<td>{{selected.forecast.windSpeed ? ms2Knots(selected.forecast.windSpeed) + " knots" : "N/A"}} - {{selected.forecast.windDir ? selected.forecast.windDir + "°"
+						: "N/A"}}</td>
+				</tr>
+				<tr>
+					<th>Wave</th>
+					<td>{{selected.forecast.waveHeight ? selected.forecast.waveHeight + " m" : "N/A"}} - {{selected.forecast.waveDir ? selected.forecast.waveDir + "°"
+						: "N/A"}} ({{selected.forecast.wavePeriod ? selected.forecast.wavePeriod + " sec" : "N/A"}})</td>
+				</tr>
+				<tr>
+					<th>Sea level</th>
+					<td>{{selected.forecast.sealevel ? selected.forecast.sealevel + " m" : "N/A"}}</td>
+				</tr>
+			</table>
 		</div>
 		<div accordion-group heading="Settings">
 			<div>
@@ -79,9 +77,9 @@
 				<table class="table table-condensed">
 					<tr x-ng-repeat="limit in windLimits">
 						<td><img style="width: 15px; height: 30px;" x-ng-src="{{limit.first.img}}" /></td>
-						<td x-ng-repeat-end>{{limit.first.min}} - {{limit.first.max}} meters</td>
+						<td x-ng-repeat-end>{{limit.first.max}} knots ({{knots2Ms(limit.first.max)}} m/s)</td>
 						<td><img x-ng-if="limit.second" style="width: 15px; height: 30px;" x-ng-src="{{limit.second.img}}" /></td>
-						<td><span x-ng-if="limit.second">{{limit.second.min}} - {{limit.second.max}} m/s</span></td>
+						<td><span x-ng-if="limit.second">{{limit.second.max}} knots  ({{knots2Ms(limit.second.max)}} m/s)</span></td>
 					</tr>
 				</table>
 			</div>

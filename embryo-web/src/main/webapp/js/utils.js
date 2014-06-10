@@ -147,6 +147,15 @@ function arrayToHttpParams(arr, paramName) {
     return result;
 }
 
+function knots2Ms(knots){
+    return knots * 1.852 / 3.6;
+}
+
+function ms2Knots(ms){
+    return ms * 3.6 / 1.852;
+}
+
+
 var browser = {
     isIE : function(){
         var myNav = navigator.userAgent.toLowerCase();
