@@ -6,16 +6,16 @@ $(function() {
     var module = angular.module('embryo.weather.control',
             [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control' ]);
 
-    module.controller("WeatherController", [ '$scope', 'RouteService', 'MetocService',
-            function($scope, RouteService, MetocService) {
+    module.controller("WeatherController", [ '$scope', 'RouteService', 'MetocService', 'Subject',
+            function($scope, RouteService, MetocService, Subject) {
                 $scope.routes = [];
                 $scope.selectedOpen = false;
 
                 function available(route) {
-                    return Math.abs((route.etaDep - Date.now()) < 1000 * 3600 * 55) || Date.now() < route.eta;
+                    return (Math.abs(route.etaDep - Date.now()) < 1000 * 3600 * 55) || Date.now() < route.eta;
                 }
 
-                if (embryo.authentication.shipMmsi) {
+                if (Subject.getDetails().shipMmsi) {
                     $scope.routes.push({
                         name : 'Active route',
                         available : false,
@@ -52,21 +52,29 @@ $(function() {
                         metocLayer.draw($scope.metocs);
                     }
                 }, true);
+                
+                function clearScope(){
+                    $scope.shown = null;
+                    $scope.selectedForecast = null;
+                    $scope.metocs = null;
+                }
 
                 $scope.toggleShowMetoc = function($event, route) {
                     $event.preventDefault();
                     metocLayer.clear();
                     if (!$scope.shown || $scope.shown.name !== route.name) {
                         MetocService.listMetoc(route.ids, function(metocs) {
-                            $scope.shown = route;
-                            $scope.metocs = metocs;
-                            metocLayer.draw(metocs);
-                            metocLayer.zoomToExtent();
+                            if(MetocService.forecastCount(metocs) > 0){
+                                $scope.shown = route;
+                                $scope.metocs = metocs;
+                                metocLayer.draw(metocs);
+                                metocLayer.zoomToExtent();
+                            }else{
+                                clearScope();
+                            }
                         });
                     } else {
-                        $scope.shown = null;
-                        $scope.selectedForecast = null;
-                        $scope.metocs = null;
+                        clearScope();
                     }
                 };
 

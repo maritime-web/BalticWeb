@@ -81,20 +81,16 @@
                         }
 
                         var url = embryo.baseUrl + 'rest/metoc/list/' + ids;
+                        var that = this;
 
                         $http.get(url, {
                             responseType : 'json'
                         }).success(function(result) {
-                            var count = 0;
-                            for (index in result) {
-                                if (result[index].forecasts) {
-                                    count += result[index].forecasts.length;
-                                }
-                            }
-
+                            var count = that.forecastCount(result);
+                            
                             embryo.messagePanel.replace(messageId, {
                                 text : "List of " + count + " forecasts downloaded.",
-                                type : "success"
+                                type : count > 0 ? "success" : "error"
                             });
 
                             callback(result);
@@ -107,6 +103,15 @@
                                 error();
                             }
                         });
+                    },
+                    forecastCount : function(metocs){
+                        var count = 0;
+                        for (index in metocs) {
+                            if (metocs[index].forecasts) {
+                                count += metocs[index].forecasts.length;
+                            }
+                        }
+                        return count;
                     },
                     getWaveLimits : function() {
                         var defaultWaveWarnLimit = this.getDefaultWarnLimits().defaultWaveWarnLimit;
