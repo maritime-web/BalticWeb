@@ -204,13 +204,13 @@ public class DmiFtpReaderJob {
         Thread.sleep(10);
 
         logger.info("Reading files in: " + dmiBaseDirectory + "/" + typedir.getName());
-
+        
         List<FTPFile> allDirs = Arrays.asList(ftp.listFiles(typedir.getName(), FTPFileFilters.DIRECTORIES));
         Collection<FTPFile> rejected = Collections2.filter(allDirs, not(validFormat(regions.keySet())));
         Collection<FTPFile> accepted = Collections2.filter(allDirs, acceptedIceCharts(regions.keySet(), mapsYoungerThan, localDmiDir, iceChartExts));
 
         subdirectoriesAtServer.addAll(Collections2.transform(allDirs, new NameFunction()));
-
+        
         for (FTPFile file : rejected) {
             sendEmail(file.getName(), chartType);
         }
@@ -239,7 +239,6 @@ public class DmiFtpReaderJob {
             }
             ftp.changeToParentDirectory();
         }
-        ftp.changeToParentDirectory();
         return counts;
     }
 
