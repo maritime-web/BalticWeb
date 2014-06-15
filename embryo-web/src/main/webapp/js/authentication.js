@@ -24,7 +24,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
 (function() {
     "use strict";
 
-    var serviceModule = angular.module('embryo.authentication.service', [ 'ngCookies']);
+    var serviceModule = angular.module('embryo.authentication.service', [ 'ngCookies' ]);
 
     embryo.RequestAccessCtrl = function($scope, $http) {
         $scope.request = {};
@@ -127,6 +127,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
                 embryo.authentication = authentication;
             }
             $rootScope.authentication = embryo.authentication;
+            var details = embryo.authentication;
 
             this.roles = function() {
                 return typeof embryo.authentication.permissions === 'undefined' ? []
@@ -144,7 +145,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
                 return false;
             };
 
-            this.isLoggedIn = function(permission) {
+            this.isLoggedIn = function() {
                 return this.roles().length > 0;
             };
 
@@ -184,6 +185,10 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             this.authenticationChanged = function(callback) {
                 embryo.authenticationChanged(callback);
             };
+
+            this.getDetails = function() {
+                return embryo.authentication;
+            }
         }
 
         this.$get = function($http, $rootScope, $cookieStore) {
@@ -252,7 +257,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
 
     } ]);
 
-    moduleDirectives.directive('requiresUnauthenticated', [ 'Subject', function(Subject) {
+    moduleDirectives.directive('requiresUnauthenticated', [ 'Subject', '$animate', function(Subject, $animate) {
         return {
             restrict : 'A',
             replace : true,
@@ -263,19 +268,49 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
         }
     } ]);
 
-    moduleDirectives.directive('requiresPermission', [ 'Subject', function(Subject) {
-        return {
-            restrict : 'A',
-            replace : true,
-            template : templateFn(function(attr) {
-                var value = attr.requiresPermission;
-                return "user.authorize('" + value + "')";
-            }),
-            link : function(scope, element, attrs) {
-                scope.user = Subject;
-            }
-        };
-    } ]);
+    moduleDirectives.directive('requiresPermission', [
+            'Subject',
+            '$animate',
+            function(Subject, $animate) {
+                return {
+                    transclude : 'element',
+                    priority : 600,
+                    terminal : true,
+                    restrict : 'A',
+                    $$tlb : true,
+                    link : function($scope, $element, $attr, ctrl, $transclude) {
+                        var block = null, childScope = null;
+                        var value = $attr.requiresPermission;
+                        $scope.$watch(function() {
+                            return Subject.authorize(value);
+                        }, function(condition) {
+                            if (condition) {
+                                if (!childScope) {
+                                    childScope = $scope.$new();
+                                    $transclude(childScope, function(clone) {
+                                        block = {
+                                            startNode : clone[0],
+                                            endNode : clone[clone.length++] = document
+                                                    .createComment(' end requiresPermission: '
+                                                            + $attr.requiresPermission + ' ')
+                                        };
+                                        $animate.enter(clone, $element.parent(), $element);
+                                    });
+                                }
+                            } else {
+                                if (childScope) {
+                                    childScope.$destroy();
+                                    childScope = null;
+                                }
+                                if (block) {
+                                    $animate.leave(getBlockElements(block));
+                                    block = null;
+                                }
+                            }
+                        });
+                    }
+                };
+            } ]);
 
     function detectBrowser() {
         if (browser.isIE() && browser.ieVersion() <= 8) {

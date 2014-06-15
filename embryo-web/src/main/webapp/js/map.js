@@ -19,22 +19,8 @@ embryo.eventbus.registerShorthand(embryo.eventbus.HighLightEvent, "highlight");
 embryo.eventbus.registerShorthand(embryo.eventbus.UnHighLightEvent, "unhighlight");
 embryo.eventbus.registerShorthand(embryo.eventbus.MapInitialized, "mapInitialized");
 
-var mapModule = angular.module('embryo.zoom', [ 'embryo.authentication' ]);
-
-mapModule.controller('ZoomController', ['$scope', 'Subject', function($scope, Subject){
-    embryo.authenticated(function(){
-        var zoom2YourVessel = Subject.authorize('Sailor');
-        
-        if(zoom2YourVessel){
-            $('#dmaZoomIn').removeClass('e-btn-low').addClass('e-btn-tall');
-            $('#dmaZoomOut').removeClass('e-btn-low').addClass('e-btn-tall');
-        }
-    });
-    
-}]);
-
 $(function() {
-    
+
     var selectLayerByGroup = {};
 
     var controlsByGroup = {};
@@ -45,17 +31,14 @@ $(function() {
 
     var map = new OpenLayers.Map({
         div : "map",
-        controls : [ 
-            new OpenLayers.Control.Navigation({
-                dragPanOptions : {
-                    enableKinetic : false
-                }
-            }),
-            new OpenLayers.Control.Zoom({
-                zoomInId : 'dmaZoomIn',
-                zoomOutId : 'dmaZoomOut'
-            })
-        ],
+        controls : [ new OpenLayers.Control.Navigation({
+            dragPanOptions : {
+                enableKinetic : false
+            }
+        }), new OpenLayers.Control.Zoom({
+            zoomInId : 'dmaZoomIn',
+            zoomOutId : 'dmaZoomOut'
+        }) ],
         projection : embryo.projection,
         maxExtent : e1,
         fractionalZoom : false
@@ -105,7 +88,8 @@ $(function() {
             }
         },
         createPoint : function(longitude, latitude) {
-            return new OpenLayers.Geometry.Point(longitude, latitude).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+            return new OpenLayers.Geometry.Point(longitude, latitude).transform(new OpenLayers.Projection("EPSG:4326"),
+                    map.getProjectionObject());
         },
         select : function(feature) {
             selectControl.unselectAll();
@@ -119,7 +103,7 @@ $(function() {
             extent.left = 9999999;
             extent.right = -9999999;
             extent.top = -9999999;
-            
+
             var dataPresent = false;
 
             for ( var i in layers) {
@@ -132,8 +116,8 @@ $(function() {
                     extent.right = Math.max(extent.right, e.right);
                 }
             }
-            
-            if(!dataPresent){
+
+            if (!dataPresent) {
                 return;
             }
 
@@ -188,8 +172,8 @@ $(function() {
 
                 trigger : function(e) {
                     var lonlat1 = this.map.getLonLatFromPixel(e.xy);
-                    var lonlat = new OpenLayers.LonLat(lonlat1.lon, lonlat1.lat).transform(this.map.getProjectionObject(), new OpenLayers.Projection(
-                            "EPSG:4326"));
+                    var lonlat = new OpenLayers.LonLat(lonlat1.lon, lonlat1.lat).transform(this.map
+                            .getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
                     return handler(lonlat);
                 }
             });
@@ -229,7 +213,7 @@ $(function() {
         var lonLat = map.getLonLatFromPixel(pixel);
         if (lonLat) {
             lonLat.transform(map.getProjectionObject(), // from Spherical
-                                                        // Mercator Projection
+            // Mercator Projection
             new OpenLayers.Projection("EPSG:4326") // to WGS 1984
             );
             $('#coords').html(formatLatitude(lonLat.lat) + ', ' + formatLongitude(lonLat.lon));
@@ -247,7 +231,8 @@ $(function() {
      * @returns The transformed position as a OpenLayers.LonLat instance.
      */
     function transformPosition(lon, lat) {
-        return new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+        return new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map
+                .getProjectionObject());
     }
 
     /**
@@ -377,10 +362,6 @@ $(function() {
         embryo.eventbus.fireEvent(embryo.eventbus.MapInitialized());
     });
 
-    $("#zoomAll").click(function() {
-        embryo.map.setCenter(-65, 70, 3);
-    });
-
     embryo.groupChanged(function(e) {
         selectControl.unselectAll();
         if (selectLayerByGroup[e.groupId]) {
@@ -396,40 +377,42 @@ $(function() {
             }
         }
     });
-    
-    embryo.ready(function() {
-        var accelerate;
-        
-        function registerEvents(){
-            $("#switchBaseMapDialog .btn-primary").off();
-            $("#switchBaseMapDialog .btn-primary").on('click', function(e) {
-                var newMap;
-                
-                if ($("#bsOpenStreetMap").prop("checked"))
-                    newMap = "osm";
-                if ($("#bsSimpleVectorMap").prop("checked"))
-                    newMap = "world_merc";
 
-                $("#switchBaseMapDialog").modal("hide");
+    function registerEvents() {
+        $("#switchBaseMapDialog .btn-primary").off();
+        $("#switchBaseMapDialog .btn-primary").on('click', function(e) {
+            var newMap;
 
-                if (browser.isChrome() && parseFloat(browser.chromeVersion()) > 27) {
-                    $("#accelerate").css("display", "none");
-                    var accelerate = $("#accelerate input").prop("checked");
-                    setCookie("dma-ais-accelerate-" + embryo.authentication.userName, accelerate, 30);
-                    setupChromeAcceleration(accelerate);
-                }
+            if ($("#bsOpenStreetMap").prop("checked"))
+                newMap = "osm";
+            if ($("#bsSimpleVectorMap").prop("checked"))
+                newMap = "world_merc";
 
-                if (newMap != embryo.baseMap) {
-                    embryo.baseMap = newMap;
-                    setupBaseMap(embryo.baseMap);
-                    setCookie("dma-ais-map-" + embryo.authentication.userName, embryo.baseMap, 30);
-                }
-            })
-        }
-        
-        $("#switchBaseMap").click(function(e) {
-            e.preventDefault();
+            $("#switchBaseMapDialog").modal("hide");
 
+            if (browser.isChrome() && parseFloat(browser.chromeVersion()) > 27) {
+                $("#accelerate").css("display", "none");
+                var accelerate = $("#accelerate input").prop("checked");
+                setCookie("dma-ais-accelerate-" + embryo.authentication.userName, accelerate, 30);
+                setupChromeAcceleration(accelerate);
+            }
+
+            if (newMap != embryo.baseMap) {
+                embryo.baseMap = newMap;
+                setupBaseMap(embryo.baseMap);
+                setCookie("dma-ais-map-" + embryo.authentication.userName, embryo.baseMap, 30);
+            }
+        })
+    }
+
+    var mapModule = angular.module('embryo.zoom', [ 'embryo.authentication' ]);
+
+    mapModule.controller('ZoomController', [ '$scope', 'Subject', function($scope, Subject) {
+        $scope.zoomAll = function() {
+            embryo.map.setCenter(-65, 70, 3);
+        };
+
+        $scope.switchBaseMap = function() {
             $("#bsOpenStreetMap").prop("checked", embryo.baseMap == "osm");
             $("#bsSimpleVectorMap").prop("checked", embryo.baseMap == "world_merc");
 
@@ -439,17 +422,14 @@ $(function() {
                 $("#accelerate").css("display", "block");
             }
             $("#switchBaseMapDialog").modal("show");
-            
+
             registerEvents();
-        });
+        }
 
+        $scope.zoomClasses = function() {
+            var zoom2YourVessel = Subject.authorize('Sailor');
+            return zoom2YourVessel ? 'e-btn-tall' : 'e-btn-low'
+        }
+    } ]);
 
-    })
 });
-
-embryo.ready(function() {
-    $(".controlPanel a").click(function(e) {
-        e.preventDefault();
-    });
-});
-

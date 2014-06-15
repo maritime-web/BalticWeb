@@ -89,12 +89,18 @@ $(function() {
                     allIncludesLoaded = false;
             });
         }
+
         
-        $(".controlPanel a").off('click').on('click',function(e) {
-            e.preventDefault();
-        });
 
         if (allIncludesLoaded) {
+            function fixControlPanels(){
+                $(".controlPanel a").off('click').on('click',function(e) {
+                    e.preventDefault();
+                });
+            }
+            fixControlPanels();
+            setTimeout(fixControlPanels, 1000);
+            
             clearInterval(interval);
             embryo.eventbus.fireEvent(embryo.eventbus.EmbryoReadyEvent());
         }
