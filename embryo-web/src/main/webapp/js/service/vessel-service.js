@@ -1,5 +1,5 @@
 (function() {
-    var module = angular.module('embryo.vessel', []);
+    var module = angular.module('embryo.vessel.service', []);
 
     var subscriptions = {};
 
@@ -173,7 +173,6 @@
                 };
             } ]);
 
-    
     embryo.eventbus.VesselInformationAddedEvent = function() {
         var event = jQuery.Event("VesselInformationAddedEvent");
         return event;
@@ -182,15 +181,48 @@
     embryo.eventbus.registerShorthand(embryo.eventbus.VesselInformationAddedEvent, "vesselInformationAddedEvent");
 
     module.service('VesselInformation', function() {
-        var vesselInformation = [];
+        var vesselInformations = [];
+        var that = this;
 
-        this.addInformationProvider = function(information) {
-            vesselInformation.push(information);
+        this.addInformationProvider = function(info) {
+            for ( var index in vesselInformations) {
+                var vi = vesselInformations[index];
+                if (vi.title === info.title && (vi.type && info.type ? vi.type === info.type : true)) {
+                    // already added. Replace
+                    vesselInformations[index] = info;
+                    return;
+                }
+            }
+            vesselInformations.push(info);
             embryo.eventbus.fireEvent(embryo.eventbus.VesselInformationAddedEvent());
         }
-        
-        this.getVesselInformation = function(){
-            return vesselInformation;
+
+        this.getVesselInformation = function() {
+            return vesselInformations;
+        }
+
+        this.show = function(provider, vesselOverview, vesselDetails) {
+            for ( var index in vesselInformations) {
+                var vi = vesselInformations[index];
+                if (vi.title !== provider.title || (vi.type && provider.type ? vi.type !== provider.type : true)) {
+                    that.hide(vi);
+                }
+            }
+            $(".reportingPanel").css("display", "none");
+            provider.show(vesselOverview, vesselDetails);
+        }
+
+        this.hide = function(provider) {
+            if (provider.hide)
+                provider.hide();
+            if (provider.close)
+                provider.close();
+        }
+
+        this.hideAll = function() {
+            for ( var index in vesselInformations) {
+                that.hide(vesselInformations[index]);
+            }
         }
 
     });

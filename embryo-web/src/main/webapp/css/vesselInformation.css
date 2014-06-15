@@ -5,3 +5,7 @@
 #vesselInformationViewPanel .txt {
 	padding-top:5px;
 }
+
+#vesselInformationViewPanel{
+	min-width:600px;
+}

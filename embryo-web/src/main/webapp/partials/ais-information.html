@@ -1,24 +1,23 @@
-<div x-ng-controller="embryo.AISInformationCtrl">
-    <h2>
-        <a class="close embryo-close-panel" href="#" style="float: right">&times;</a> AIS Information - {{vname}}
-    </h2>
-    <p>Static information about the vessel is expected maintained mainly in the vessels AIS transponder.</p>
-    <form class="form-horizontal" novalidate>
-        <div class="row">
-            <div class="col-xs-12">
-            	<table class="table table-condensed">
-	                <tr x-ng-repeat="v in vessel">
-	                    <th>{{v.key}}</th>
-	                    <td>{{v.value}}</td>
-	                </tr>
-            	</table>
-            	<div>
-	            	More information: <a href="{{link}}" target="_blank">{{link}}</a>
-            	</div>
-                <!--div class="form-group pull-right">
-                    <button class="btn btn-primary" x-ng-click="close()">Close</button>
-                </div-->
-            </div>
-        </div>
-    </form>
+<div x-ng-controller="AISInformationCtrl">
+	<div e-reporting-panel x-ng-if="provider.doShow">
+		<h2>
+			<a class="close" href="#" style="float: right" x-ng-click="close($event)">&times;</a> AIS Information - {{vname}}
+		</h2>
+		<p>Static information about the vessel is expected maintained mainly in the vessels AIS transponder.</p>
+		<form class="form-horizontal" novalidate>
+			<div class="row">
+				<div class="col-xs-12">
+					<table class="table table-condensed">
+						<tr x-ng-repeat="v in vessel">
+							<th>{{v.key}}</th>
+							<td>{{v.value}}</td>
+						</tr>
+					</table>
+					<div>
+						More information: <a href="{{link}}" target="_blank">{{link}}</a>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
 </div>

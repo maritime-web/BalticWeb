@@ -15,6 +15,57 @@ function EmbryoLayer() {
         this.redraw();
     };
 
+    this.containsFeatures = function() {
+        for ( var index in this.layers) {
+            if (this.layers[index].features && this.layers[index].features.length > 0) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    this.containsFeature = function(input, layer) {
+
+        function inLayer(input, layer) {
+            for ( var j in layer.features) {
+                if (typeof input == 'function' && input(layer.features[j]))
+                    return true;
+                else if (layer.features[j].attributes.id === input)
+                    return true;
+            }
+            return false;
+        }
+
+        if (layer) {
+            return inLayer(input, layer);
+        } else {
+            for ( var index in this.layers) {
+                if (inLayer(input, this.layers[index])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    this.hideFeatures = function(input) {
+        function hideFeaturesInLayer(input, layer) {
+            var toRemove = [];
+            for ( var j in layer.features) {
+                if (typeof input == 'function' && input(layer.features[j])) {
+                    toRemove.push(layer.features[j]);
+                } else if (layer.features[j].attributes.id === input) {
+                    toRemove.push(layer.features[j]);
+                }
+            }
+            layer.removeFeatures(toRemove);
+        }
+
+        for ( var index in this.layers) {
+            hideFeaturesInLayer(input, this.layers[index]);
+        }
+    };
+
     this.hide = function() {
         this.active = false;
         this.redraw();
@@ -50,8 +101,8 @@ function EmbryoLayer() {
             for ( var i in that.selectListeners)
                 that.selectListeners[i](value);
         }
-        
-        for(var l in this.selectableLayers) {
+
+        for ( var l in this.selectableLayers) {
             this.selectableLayers[l].events.on({
                 featureselected : function(e) {
                     emit(eval("e.feature.attributes." + that.selectableAttribute));
@@ -70,7 +121,7 @@ function EmbryoLayer() {
             this.selectListeners[a] = b;
         } else {
             var didSelect = false;
-            for(var l in this.selectableLayers) {
+            for ( var l in this.selectableLayers) {
                 var layer = this.selectableLayers[l];
                 for ( var i in layer.features) {
                     var feature = layer.features[i];
@@ -103,14 +154,17 @@ function EmbryoLayer() {
         var line = generator.Arc(100, {
             offset : 10
         });
-        
+
         var points = [];
-        for(var i in line.geometries){
-            for(j in line.geometries[i].coords){
-                points.push({x : line.geometries[i].coords[j][0],y : line.geometries[i].coords[j][1]});
+        for ( var i in line.geometries) {
+            for (j in line.geometries[i].coords) {
+                points.push({
+                    x : line.geometries[i].coords[j][0],
+                    y : line.geometries[i].coords[j][1]
+                });
             }
         }
-            
+
         return points;
     };
 
@@ -129,14 +183,14 @@ function EmbryoLayer() {
         var line = generator.Arc(100, {
             offset : 10
         });
-        
+
         var points = [];
-        for(var i in line.geometries){
-            for(j in line.geometries[i].coords){
-                points.push(embryo.map.createPoint(line.geometries[i].coords[j][0],line.geometries[i].coords[j][1]));
+        for ( var i in line.geometries) {
+            for (j in line.geometries[i].coords) {
+                points.push(embryo.map.createPoint(line.geometries[i].coords[j][0], line.geometries[i].coords[j][1]));
             }
         }
-            
+
         return points;
     };
 }
@@ -150,8 +204,8 @@ function addLayerToMap(id, layer, map) {
 
     for ( var i in layer.layers) {
         var select = false;
-        for(var l in layer.selectableLayers) {
-            if(layer.selectableLayers[l] == layer.layers[i]) {
+        for ( var l in layer.selectableLayers) {
+            if (layer.selectableLayers[l] == layer.layers[i]) {
                 select = true;
                 break;
             }

@@ -86,7 +86,8 @@ function RouteLayer() {
                 renderers : ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
                 featureType : 'route',
                 route : route,
-                colorKey : colorKey
+                colorKey : colorKey,
+                id : route.id
             });
 
             features.push(feature);
@@ -109,7 +110,7 @@ function RouteLayer() {
     this.clear = function() {
       this.layers.route.removeAllFeatures();
     };
-
+    
     this.draw = function(route, colorKey, noClear) {
         if(!noClear) {
             this.clear();

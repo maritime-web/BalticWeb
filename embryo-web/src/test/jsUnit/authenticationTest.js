@@ -97,7 +97,7 @@ describe('authentication directives', function() {
 
     describe('requiresPermission directive', function() {
         beforeEach(function() {
-            compileDirective('<div><div x-requires-permission="Administration"><span id="requiresAdm">Anonymous</span></div></div>');
+            compileDirective('<div><div requires-permission="Administration"><span id="requiresAdm">Anonymous</span></div></div>');
         });
 
         // a single test example, check the produced DOM
@@ -110,7 +110,6 @@ describe('authentication directives', function() {
         it('child elements are not in DOM if logged in', inject(function(Subject) {
             Subject.role = 'Administration';
             scope.$digest();
-            
             expect(elm.find('span').length).toEqual(1);
             expect(elm.find('#requiresAdm').length).toEqual(1);
         }));

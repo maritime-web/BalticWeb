@@ -1,7 +1,8 @@
 (function() {
     "use strict";
 
-    var module = angular.module('embryo.routeEdit', [ 'embryo.routeService', 'embryo.datepicker', 'embryo.position'  ]);
+    var module = angular.module('embryo.routeEdit', [ 'embryo.routeService', 'embryo.datepicker', 'embryo.position',
+            'embryo.controller.reporting' ]);
 
     function setDefault(context, field, defaultValue) {
         if (!context[field]) {
@@ -9,14 +10,14 @@
         }
     }
 
-    embryo.RouteEditCtrl = function($scope, RouteService, VesselService, ScheduleService) {
+    embryo.RouteEditCtrl = function($scope, RouteService, VesselService, ScheduleService, VesselInformation) {
         function initRouteMeta(route, meta) {
             setDefault(route, "etaDep", meta.etdep);
             setDefault($scope, "etaDes", meta.etdes);
             setDefault(route, "dep", meta.dep);
             setDefault(route, "des", meta.des);
         }
-        
+
         function initRoute() {
             if ($scope.routeId) {
                 RouteService.getRoute($scope.routeId, function(route) {
@@ -34,13 +35,15 @@
             }
         }
 
-        embryo.controllers.editroute = {
+        $scope.provider = {
+            doShow : false,
+            title : "Route edit",
             show : function(context) {
-                embryo.vessel.actions.hide();
+                this.doShow = true;
                 $scope.mmsi = context.mmsi;
                 $scope.routeId = context.routeId;
                 $scope.vesselDetails = context.vesselDetails;
-                
+
                 $scope.date = new Date();
 
                 $scope.scheduleData = {
@@ -51,9 +54,19 @@
                     etdes : context.etdes
                 };
                 $scope.reset();
-                $("#routeEditPanel").css("display", "block");
+            },
+            close : function() {
+                this.doShow = false;
             }
         };
+
+        embryo.controllers.editroute = $scope.provider;
+        VesselInformation.addInformationProvider($scope.provider);
+
+        $scope.close = function($event) {
+            $event.preventDefault();
+            $scope.provider.close();
+        }
 
         $scope.getLastWaypoint = function() {
             if (!$scope.waypoints) {
@@ -68,11 +81,10 @@
                 $scope.waypoints.push({});
             }
         }, true);
-        
+
         $scope.activeVoyage = function() {
             return $scope.vesselDetails.additionalInformation.routeId == $scope.routeId;
         };
-
 
         $scope.remove = function(index) {
             $scope.waypoints.splice(index, 1);
@@ -106,6 +118,14 @@
             });
         };
 
+        $scope.reset = function() {
+            $scope.alertMessages = null;
+            $scope.message = null;
+            initRoute();
+        };
+    };
+
+    module.controller("RouteEditFormCtrl", [ '$scope', 'VesselInformation', function($scope, VesselInformation) {
         $scope.saveable = function() {
             if ($scope.routeEditForm.$invalid) {
                 return false;
@@ -122,10 +142,6 @@
             return true;
         };
 
-        $scope.reset = function() {
-            $scope.alertMessages = null;
-            $scope.message = null;
-            initRoute();
-        };
-    };
+    } ]);
+
 }());

@@ -129,34 +129,39 @@ $(function() {
 
                 $(divId + " table").html(html);
 
-                // $("#icpIceMaps
-                // td:first").css("border-top", "none");
-                $(divId + " table span.zoomhide").css("display", "none");
-                $(divId + " table a.download").click(function(e) {
-                    e.preventDefault();
-                    var row = $(this).parents("tr");
-                    requestShapefile(chartType, data[$(this).attr("mid")].shapeFileName, function() {
-                        $(divId + "table tr").removeClass("alert");
-                        $(row).addClass("alert");
-                        $(divId + " table span.zoomhide").css("display", "none");
-                        $(divId + " table a.download").css("display", "block");
-                        $("span.zoomhide", row).css("display", "block");
-                        $("a.download", row).css("display", "none");
+                function registerClicks(){
+                    // $("#icpIceMaps
+                    // td:first").css("border-top", "none");
+                    $(divId + " table span.zoomhide").css("display", "none");
+                    $(divId + " table a.download").on('click', function(e) {
+                        console.log('clicked');
+                        e.preventDefault();
+                        var row = $(this).parents("tr");
+                        requestShapefile(chartType, data[$(this).attr("mid")].shapeFileName, function() {
+                            $(divId + "table tr").removeClass("alert");
+                            $(row).addClass("alert");
+                            $(divId + " table span.zoomhide").css("display", "none");
+                            $(divId + " table a.download").css("display", "block");
+                            $("span.zoomhide", row).css("display", "block");
+                            $("a.download", row).css("display", "none");
+                        });
+                        // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
+                        // alert(data[$(this).attr("href")].shapeFileName);
                     });
-                    // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
-                    // alert(data[$(this).attr("href")].shapeFileName);
-                });
-                $(divId + " table a.zoom").click(function(e) {
-                    e.preventDefault();
-                    embryo.map.zoomToExtent(iceLayer.layers);
-                });
-                $(divId + " table a.hideIce").click(function(e) {
-                    e.preventDefault();
-                    iceLayer.clear(chartType);
-                    $(divId + " span.zoomhide").css("display", "none");
-                    var row = $(this).parents("tr");
-                    $("a.download", row).css("display", "block");
-                });
+                    $(divId + " table a.zoom").click(function(e) {
+                        e.preventDefault();
+                        embryo.map.zoomToExtent(iceLayer.layers);
+                    });
+                    $(divId + " table a.hideIce").click(function(e) {
+                        e.preventDefault();
+                        iceLayer.clear(chartType);
+                        $(divId + " span.zoomhide").css("display", "none");
+                        var row = $(this).parents("tr");
+                        $("a.download", row).css("display", "block");
+                    });
+                }
+                
+                setTimeout(registerClicks, 5);
             }, function(errorMsg, status) {
                 embryo.messagePanel.replace(messageId, {
                     text : errorMsg,

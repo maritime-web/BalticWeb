@@ -128,7 +128,7 @@ body {
 	overflow: auto;
 }
 
-.e-accordion-inner h4 {
+.e-accordion-inner h4, .controlPanel2 .panel-group .panel-body h4{
 	font-size: 14px;
 }
 
@@ -177,8 +177,7 @@ body {
 	margin-left: 10px;
 }
 
-.reportingPanel {
-	display: none;
+.reportingPanel, .reportingPanel2, .e-reporting-panel {
 	background-color: white;
 	position: absolute;
 	top: 50px;
@@ -190,7 +189,7 @@ body {
 	font-size: 11px;
 }
 
-.reportingPanel label {
+.reportingPanel label, .reportingPanel2 label {
 		font-weight: normal;
 }
 
@@ -266,4 +265,9 @@ body {
 
 .legends table tbody tr td{
 	vertical-align:middle;
+}
+
+.searchResultItem{
+	margin-top:5px;
+	margin-bottom:5px;
 }

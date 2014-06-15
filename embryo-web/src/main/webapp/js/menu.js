@@ -60,6 +60,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.GroupChangedEvent, "groupChang
         return {
             restrict : 'A',
             replace : true,
+            scope : true,
             template : templateFn('location'),
             link : function(scope, element, attrs) {
                 scope.$watch(function() {

@@ -1,86 +1,122 @@
 $(function() {
-    var yourShip;
 
     // var yourShipRouteLayer = RouteLayerSingleton.getInstance();
     var yourShipRouteLayer = new RouteLayer();
     addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
 
-    var updateInformationFn;
+    var module = angular.module('embryo.yourvessel.control', [ 'embryo.scheduleService', 'embryo.vessel.service' ]);
 
-    function updateBox(error, vesselOverview, vesselDetails) {
-        if (!error) {
-            yourShip = vesselOverview;
-            embryo.vessel.setMarkedVessel(vesselOverview.mmsi);
+    function yourAis(data) {
+        if (!data.ais) {
+            return null;
+        }
+        return embryo.vessel.aisToArray({
+            "MMSI" : data.ais.mmsi,
+            "Call Sign" : data.ais.callsign,
+            "Country" : data.ais.country,
+            "Destination" : data.ais.destination,
+            "Nav Status" : data.ais.navStatus,
+            "ETA" : data.ais.eta
+        });
+    }
 
-            $("a[href=#vcpYourShip]").html("Your Vessel - " + vesselOverview.name);
-            $("#yourShipAesInformation table").html(embryo.vesselInformation.renderYourShipShortTable(vesselDetails));
-            $("#yourShipAesInformationLink").off("click");
-            $("#yourShipAesInformationLink").on("click", function(e) {
-                e.preventDefault();
-                embryo.vessel.actions.hide();
-                embryo.controllers.ais.show(vesselDetails.ais);
-            });
-            if (vesselDetails.additionalInformation.routeId) {
-                embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
-                    yourShipRouteLayer.draw(data, "active");
+    var awNameSequence = [ "Vessel Information", "Schedule", "Reporting" ];
+    var awSorter = embryo.vessel.createSorter(awNameSequence);
+    var awFilter = embryo.vessel.createFilter(awNameSequence, function(provider, index, array) {
+        return provider.type === 'edit';
+    });
+
+    function initSections(scope) {
+        if (!scope.vesselOverview || !scope.vesselDetails) {
+            return [];
+        }
+
+        var sections = [ {
+            name : "ArcticWeb Reporting",
+            services : [],
+            type : "edit"
+        }, {
+            name : "Additional Information",
+            services : [],
+            type : "view"
+        } ];
+
+        function editProvidersFilter(provider, index, array) {
+            return provider.type === 'edit'
+        }
+        var vesselInformation = embryo.vessel.information.getVesselInformation().filter(awFilter);
+        for ( var i in vesselInformation) {
+            sections[0].services.push(embryo.vessel.controllers.service(vesselInformation[i], scope));
+        }
+        sections[0].services.sort(awSorter);
+
+        sections[1].services.push(embryo.vessel.controllers
+                .service(embryo.additionalInformation.historicalTrack, scope));
+        sections[1].services.push(embryo.vessel.controllers.service(embryo.additionalInformation.nearestShips, scope));
+        sections[1].services.push(embryo.vessel.controllers
+                .service(embryo.additionalInformation.distanceCircles, scope));
+
+        return sections;
+    }
+
+    module.controller("YourVesselLayerControl", [ '$scope', 'VesselService', 'Subject', 'RouteService',
+            function($scope, VesselService, Subject, RouteService) {
+                var mmsi = Subject.getDetails().shipMmsi;
+
+                VesselService.subscribe(mmsi, function(error, vesselOverview, vesselDetails) {
+                    if (!error) {
+                        embryo.vessel.setMarkedVessel(mmsi);
+
+                        if (vesselDetails.additionalInformation.routeId) {
+                            RouteService.getRoute(vesselDetails.additionalInformation.routeId, function(route) {
+                                yourShipRouteLayer.draw(route, "active");
+                            });
+                        } else {
+                            yourShipRouteLayer.clear();
+                        }
+                    }
                 });
-            } else {
-                yourShipRouteLayer.clear();
-            }
+            } ]);
 
-            updateInformationFn = updateInformation(vesselOverview, vesselDetails);
-            updateInformationFn();
-        }
-    }
+    module.controller("YourVesselControl", [ '$scope', 'VesselService', 'Subject', 'VesselInformation',
+            function($scope, VesselService, Subject, VesselInformation) {
+                var mmsi = Subject.getDetails().shipMmsi;
 
-    function updateInformation(vesselOverview, vesselDetails) {
-        return function() {
-            var informations;
-            informations = [ "ArcticWeb Reporting" ];
+                $scope.$watch('vesselOverview', function(newValue, oldValue) {
+                    $scope.sections = initSections($scope);
+                }, true);
 
-            var vesselInformation = embryo.vessel.information.getVesselInformation();
-            vesselInformation.sort(function(object1, object2) {
-                if (object1.title === "Vessel Information")
-                    return -1;
-                if (object2.title === "Vessel Information")
-                    return 1;
-                if (object1.title === "Schedule")
-                    return -1;
-                if (object2.title === "Schedule")
-                    return 1;
-                return 0;
-            });
+                $scope.$watch('vesselDetails', function(newValue, oldValue) {
+                    $scope.sections = initSections($scope);
+                }, true);
 
-            for ( var i in embryo.vessel.information.getVesselInformation()) {
-                informations.push(vesselInformation[i]);
-            }
+                $scope.$watch(function() {
+                    return embryo.vessel.information.getVesselInformation().length;
+                }, function(newValue, oldValue) {
+                    if (newValue > 0 && newValue !== oldValue) {
+                        $scope.sections = initSections($scope);
+                    }
+                });
 
-            informations.push("Additional Information");
-            informations.push(embryo.additionalInformation.historicalTrack);
-            informations.push(embryo.additionalInformation.nearestShips);
-            informations.push(embryo.additionalInformation.distanceCircles);
-            informations.push(embryo.additionalInformation.metoc);
+                VesselService.subscribe(mmsi, function(error, vesselOverview, vesselDetails) {
+                    if (!error) {
+                        $scope.yourAis = yourAis(vesselDetails);
+                        $scope.vesselOverview = vesselOverview;
+                        $scope.vesselScope.yourVesselName = vesselOverview.name;
+                        $scope.vesselDetails = vesselDetails;
+                    }
+                });
 
-            embryo.vessel.actions.setup("#yourVesselActions", informations, vesselOverview, vesselDetails);
-        };
-    }
-
-    embryo.authenticated(function() {
-        if (embryo.authentication.shipMmsi) {
-            embryo.vessel.service.subscribe(embryo.authentication.shipMmsi, updateBox);
-
-            embryo.vesselInformationAddedEvent(function(e) {
-                if(typeof updateInformationFn === "function"){
-                    updateInformationFn();
+                $scope.viewAis = function($event) {
+                    $event.preventDefault();
+                    VesselInformation.hideAll();
+                    embryo.controllers.ais.show($scope.vesselDetails.ais);
                 }
-            });
-        } else {
-            $("#vcpYourShip").parent().remove();
-            $("#zoomToYourShip").remove();
-        }
-    });
+            } ]);
 
-    $("#zoomToYourShip").click(function() {
-        embryo.vessel.goToVesselLocation(embryo.vessel.lookupVessel(yourShip.mmsi));
-    });
+    module.controller("ZoomYourVesselCtrl", [ '$scope', 'Subject', function($scope, Subject) {
+        $scope.zoomToYourVessel = function() {
+            embryo.vessel.goToVesselLocation(embryo.vessel.lookupVessel(Subject.getDetails().shipMmsi));
+        }
+    } ]);
 });

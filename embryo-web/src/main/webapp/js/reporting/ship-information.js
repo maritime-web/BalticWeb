@@ -1,7 +1,7 @@
 (function() {
     "use strict";
 
-    var module = angular.module('embryo.vessel.controller', [ 'embryo.vessel' ]);
+    var module = angular.module('embryo.vessel.controller', [ 'embryo.vessel.service','embryo.controller.reporting' ]);
 
     embryo.vessel.information =
 
@@ -14,8 +14,10 @@
                     "No" : false
                 };
 
-                VesselInformation.addInformationProvider({
+                $scope.provider = {
                     title : "Vessel Information",
+                    type : "edit",
+                    doShow : false,
                     available : function(vesselOverview, vesselDetails) {
                         if (vesselOverview.inAW) {
                             return {
@@ -27,16 +29,26 @@
                         return false;
                     },
                     show : function(vesselOverview, vesselDetails) {
-                        $("#vesselInformationEditPanel").css("display", "block");
-                        // $("#maxSpeed").focus();
-
+                        $("#maxSpeed").focus();
+                        this.doShow = true;
                         $scope.vessel = vesselDetails;
                         $scope.message = null;
                         $scope.alertMessages = null;
-                        $scope.$apply(function() {
-                        });
+                    },
+                    shown : function(vesselOverview, vesselDetails) {
+                        return this.doShow;
+                    },
+                    close : function() {
+                        this.doShow = false;
                     }
-                });
+                }
+
+                VesselInformation.addInformationProvider($scope.provider);
+
+                $scope.close = function($event) {
+                    $event.preventDefault();
+                    $scope.provider.close();
+                }
 
                 $scope.save = function() {
                     $scope.message = null;
@@ -55,20 +67,33 @@
                 };
             } ]);
 
-    embryo.VesselInformationViewCtrl = function($scope, VesselService) {
-        embryo.controllers.vesselInformationView = {
+    module.controller('VesselInformationViewCtrl', [ '$scope', 'VesselService', 'VesselInformation', function($scope, VesselService, VesselInformation) {
+        $scope.provider = {
             title : "Vessel Information",
+            type : "view",
+            doShow : false,
             available : function(vesselOverview, vesselDetails) {
                 return vesselOverview.inAW;
             },
             show : function(vesselOverview, vesselDetails) {
-                $("#vesselInformationViewPanel").css("display", "block");
+                this.doShow = true;
                 $("#maxSpeed").focus();
-
                 $scope.vessel = vesselDetails;
-                $scope.$apply(function() {
-                });
+            },
+            shown: function(vo, vd){
+                return this.doShow;
+            },
+            close : function() {
+                this.doShow = false;
             }
         };
-    };
+
+        VesselInformation.addInformationProvider($scope.provider);
+
+        $scope.close = function($event) {
+            $event.preventDefault();
+            $scope.provider.close();
+        }
+
+    } ]);
 }());

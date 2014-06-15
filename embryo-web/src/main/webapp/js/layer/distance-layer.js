@@ -31,16 +31,48 @@ function DistanceLayer() {
         });
     };
 
-    this.drawDistanceCircles = function(vessel, vesselDetails) {
-        this.layers.lines.removeAllFeatures();
-        this.layers.labels.removeAllFeatures();
-        this.layers.lines.addFeatures(embryo.adt.createRing(vessel.x, vessel.y, vessel.msog * 3 * 1.852, 3));
+    this.containsDistanceCircle = function(vessel) {
+        function featureFilter(feature) {
+            return feature.attributes.id === vessel.mmsi && feature.attributes.type === 'circle';
+        }
+        return this.containsFeature(featureFilter, this.layers.lines);
+    };
+
+    this.containsNearestVessel = function(vessel) {
+        function featureFilter(feature) {
+            return feature.attributes.id === vessel.mmsi && feature.attributes.type === 'nearest';
+        }
+        return this.containsFeature(featureFilter, this.layers.lines);
+    };
+
+    this.removeDistanceCircle = function(vessel) {
+        function featureFilter(feature) {
+            return feature.attributes.id === vessel.mmsi && feature.attributes.type === 'circle';
+        }
+        return this.hideFeatures(featureFilter);
+    };
+
+    this.removeNearestVessel = function(vessel) {
+        function featureFilter(feature) {
+            return feature.attributes.id === vessel.mmsi && feature.attributes.type === 'nearest';
+        }
+        return this.hideFeatures(featureFilter);
+    };
+
+    this.drawDistanceCircles = function(vessel) {
+        this.layers.lines.addFeatures(embryo.adt.createRing(vessel.x, vessel.y, vessel.msog * 3 * 1.852, 3,
+                vessel.mmsi, 'circle'), {
+            id : vessel.mmsi,
+            type : 'circle'
+        });
 
         if (vessel.msog) {
             var labelFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(vessel.x, vessel.y));
             // (parseFloat(vessel.x) + parseFloat(v.vessel.x)) / 2,
             // (parseFloat(vessel.y) + parseFloat(v.vessel.y)) / 2
             labelFeature.attributes = {
+                id : vessel.mmsi,
+                type : 'circle',
                 label : "Based on maximum recorded SOG: " + vessel.msog + " kn",
                 labelXOffset : 140,
                 labelYOffset : -15
@@ -49,15 +81,12 @@ function DistanceLayer() {
         }
     };
 
-    this.drawNearestVessels = function(vessel, vesselDetails, allVessels) {
-        this.layers.lines.removeAllFeatures();
-        this.layers.labels.removeAllFeatures();
-
+    this.drawNearestVessels = function(vessel, allVessels) {
         var vessels = [];
 
         $.each(allVessels, function(k, v) {
             if (v.mmsi != vessel.mmsi) {
-                if(v.msog){
+                if (v.msog) {
                     distance = embryo.adt.measureDistanceGc(vessel.x, vessel.y, v.x, v.y);
                     var o = {
                         distance : distance,
@@ -85,42 +114,48 @@ function DistanceLayer() {
             return a.timeInMinutes - b.timeInMinutes;
         });
 
-//        function getVesselsWithYOffsets() {
-//            var yCoords = [];
-//            for ( var i = 0; i < 5; i++) {
-//                
-//                embryo.map.internalMap.getViewPortPxFromLonLat();
-//                
-//                yCoords.push({
-//                    y : vessels[i].vessel.y,
-//                    vessel : vessels[i].vessel
-//                });
-//            }
-//            yCoords.sort(function(coord1, coord2){
-//                return coord1.y - coord2.y;
-//            });
-//            
-//
-//            for ( var i = 1; i < 5; i++) {
-//                var diff = yCoords[i-1].y - yCoords[i].y;
-//                if(diff <= 16){
-////                    for ( var j = i; j < 5; j++) {
-////                        yCoords[j].y += 15;
-////                    }
-//                }
-//            }
-//        }
-//        
-//        var vesselsWithYOffsets = getVesselsWithYOffsets();
+        // function getVesselsWithYOffsets() {
+        // var yCoords = [];
+        // for ( var i = 0; i < 5; i++) {
+        //                
+        // embryo.map.internalMap.getViewPortPxFromLonLat();
+        //                
+        // yCoords.push({
+        // y : vessels[i].vessel.y,
+        // vessel : vessels[i].vessel
+        // });
+        // }
+        // yCoords.sort(function(coord1, coord2){
+        // return coord1.y - coord2.y;
+        // });
+        //            
+        //
+        // for ( var i = 1; i < 5; i++) {
+        // var diff = yCoords[i-1].y - yCoords[i].y;
+        // if(diff <= 16){
+        // // for ( var j = i; j < 5; j++) {
+        // // yCoords[j].y += 15;
+        // // }
+        // }
+        // }
+        // }
+        //        
+        // var vesselsWithYOffsets = getVesselsWithYOffsets();
 
         for ( var i = 0; i < 5; i++) {
             var v = vessels[i];
 
             this.layers.lines.addFeatures([ new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([
-                    embryo.map.createPoint(vessel.x, vessel.y), embryo.map.createPoint(v.vessel.x, v.vessel.y) ])) ]);
+                    embryo.map.createPoint(vessel.x, vessel.y), embryo.map.createPoint(v.vessel.x, v.vessel.y) ]), {
+                id : vessel.mmsi,
+                type : 'nearest'
+
+            }) ]);
 
             var labelFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(v.vessel.x, v.vessel.y));
             labelFeature.attributes = {
+                id : vessel.mmsi,
+                type : 'nearest',
                 labelXOffset : 0,
                 labelYOffset : -15,
                 label : v.vessel.name

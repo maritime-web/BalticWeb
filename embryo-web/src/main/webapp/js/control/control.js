@@ -23,9 +23,24 @@ $(function() {
                 fixAccordionSize();
 
                 // open first
+                if (attrs.openFirst) {
+                    $timeout(function() {
+                        var headers = element.find("div h4 a");
+                        headers.first().click();
+                    }, 5);
+                }
+            }
+        };
+    } ]);
+
+    module.directive('eLeftBarOpenOnInit', [ '$timeout', function($timeout) {
+        return {
+            require : '^eLeftBar',
+            restrict : 'A',
+            link : function(scope, element, attrs) {
+                // open first
                 $timeout(function() {
-                    var headers = element.find("div h4 a");
-                    headers.first().click();
+                    $(element.get(0)).find("h4 a.accordion-toggle").click();
                 }, 5);
             }
         };
@@ -50,7 +65,11 @@ $(function() {
             require : '^eLeftBar',
             restrict : 'A',
             link : function(scope, element, attrs, leftBarCtrl) {
-                scope.ctrl = leftBarCtrl
+                var aElem = $(element).find("div h4 a.accordion-toggle");
+                aElem.on('click', function(e) {
+                    e.preventDefault();
+                });
+                scope.ctrl = leftBarCtrl;
                 scope.$watch('ctrl.selected', function(newValue, oldValue) {
                     if ((newValue && !oldValue) || (!newValue && oldValue)) {
                         // Force to execute click with a timeout to avoid
@@ -58,13 +77,11 @@ $(function() {
                         // Timeout of 250 ms used for new value to force open
                         // close animation.
                         var ts = newValue ? 250 : 5;
-                        var aElem = element.find("div h4 a");
                         $timeout(function() {
                             aElem.click();
                         }, ts);
                     }
                 });
-
             }
         };
     } ]);

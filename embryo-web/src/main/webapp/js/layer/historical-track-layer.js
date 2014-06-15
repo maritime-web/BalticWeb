@@ -1,5 +1,5 @@
 function HistoricalTrackLayer() {
-    this.init = function () {
+    this.init = function() {
         this.layers.tracks = new OpenLayers.Layer.Vector("trackLayer", {
             styleMap : new OpenLayers.StyleMap({
                 'default' : {
@@ -23,35 +23,32 @@ function HistoricalTrackLayer() {
                     labelOutlineColor : "#fff",
                     labelOutlineWidth : 2,
                     labelOutline : 1,
-                    pointRadius: 3,
-                    fill: true,
+                    pointRadius : 3,
+                    fill : true,
                     fillColor : "#CC2222",
                     strokeColor : "#CC2222",
-                    stroke: true
+                    stroke : true
                 }
             })
         });
     }
 
-    this.draw = function (tracks) {
+    this.draw = function(tracks, id) {
         // Remove old tracks
-
-        this.layers.tracks.removeAllFeatures();
-        this.layers.timestamp.removeAllFeatures();
-
-        if (tracks == null || tracks.length < 2) return;
+        if (tracks == null || tracks.length < 2)
+            return;
 
         // Draw tracks layer
 
-        for (var i = 1; i < tracks.length; i++) {
+        for ( var i = 1; i < tracks.length; i++) {
             // Insert line
-            var points = new Array(
-                embryo.map.createPoint(tracks[i-1].lon, tracks[i-1].lat),
-                embryo.map.createPoint(tracks[i].lon, tracks[i].lat)
-            );
+            var points = new Array(embryo.map.createPoint(tracks[i - 1].lon, tracks[i - 1].lat), embryo.map
+                    .createPoint(tracks[i].lon, tracks[i].lat));
 
             var line = new OpenLayers.Geometry.LineString(points);
-            var lineFeature = new OpenLayers.Feature.Vector(line);
+            var lineFeature = new OpenLayers.Feature.Vector(line, {
+                id : id
+            });
             this.layers.tracks.addFeatures([ lineFeature ]);
         }
 
@@ -63,7 +60,7 @@ function HistoricalTrackLayer() {
 
         var oldHatCounter = -1;
 
-        for (var i in tracks) {
+        for ( var i in tracks) {
             var track = tracks[i];
 
             var hatCounter = Math.floor((track.time - tracks[0].time) * delta);
@@ -76,9 +73,10 @@ function HistoricalTrackLayer() {
                 time = formatTime(track.time);
 
                 timeStampFeature.attributes = {
+                    id : id,
                     timeStamp : time,
-                    align: "lm",
-                    xOffset: 10
+                    align : "lm",
+                    xOffset : 10
                 };
 
                 this.layers.timestamp.addFeatures([ timeStampFeature ]);
