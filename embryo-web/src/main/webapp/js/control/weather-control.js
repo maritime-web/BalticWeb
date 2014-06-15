@@ -25,6 +25,10 @@ $(function() {
         $scope.formatTs = function(ts){
             return formatTime(ts);
         };
+        
+        $scope.$on("$destroy", function() {
+            embryo.controllers.settings.close();
+        });
     } ]);
 
     module.controller("MetocController", [ '$scope', 'RouteService', 'MetocService', 'Subject',
@@ -127,14 +131,28 @@ $(function() {
                 defaultCurrentWarnLimit : $scope.settings[1].value,
                 defaultWindWarnLimit : $scope.settings[2].value
             });
+            
+            $scope.message = "Weater forecast settings saved.";
         };
 
-        embryo.controllers.settings = {
+        $scope.provider =  {
+            doShow : false,
             show : function(context) {
+                $scope.message = null;
+                this.doShow = true;
                 $scope.title = context.title;
-                $("#settingsPanel").css("display", "block");
+            },
+            close : function(){
+                this.doShow = false;
             }
         };
+        
+        $scope.close = function($event) {
+            $event.preventDefault();
+            $scope.provider.close();
+        }
+
+        embryo.controllers.settings = $scope.provider;
 
     } ]);
 
