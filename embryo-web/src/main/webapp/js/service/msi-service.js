@@ -1,5 +1,5 @@
 (function() {
-    var module = angular.module('embryo.msi', []);
+    var module = angular.module('embryo.msi.service', []);
 
     module.service('MsiService', [ '$http', function($http) {
         return {
@@ -20,10 +20,4 @@
             }
         };
     }]);
-
-    embryo.msi = {};
-
-    module.run(function(MsiService) {
-        embryo.msi.service = MsiService;
-    });
 })();
