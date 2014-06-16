@@ -69,9 +69,11 @@ public class DmiFtpReaderJob {
     @Inject
     @Property("embryo.iceChart.dmi.cron")
     private ScheduleExpression cron;
-    /*@Inject
-    @Property("embryo.iceChart.dmi.regions")
-    private Map<String, String> regions;*/
+    /*
+     * @Inject
+     * 
+     * @Property("embryo.iceChart.dmi.regions") private Map<String, String> regions;
+     */
     @Inject
     @Property("embryo.iceChart.dmi.ftp.serverName")
     private String dmiServer;
@@ -87,8 +89,8 @@ public class DmiFtpReaderJob {
     /*
      * @Inject
      * 
-     * @Property(value = "embryo.iceChart.dmi.localDirectory",
-     * substituteSystemProperties = true) private String localDmiDir;
+     * @Property(value = "embryo.iceChart.dmi.localDirectory", substituteSystemProperties = true) private String
+     * localDmiDir;
      */
     @Inject
     @Property("embryo.iceChart.dmi.ftp.ageInDays")
@@ -136,7 +138,8 @@ public class DmiFtpReaderJob {
                 Map<String, String> regionsForChartType = getRegions(chartType);
                 regions.addAll(regionsForChartType.keySet());
             }
-            logger.info("Initializing {} with localDirectories {} and regions {}", this.getClass().getSimpleName(), localDirs, regions);
+            logger.info("Initializing {} with localDirectories {} and regions {}", this.getClass().getSimpleName(),
+                    localDirs, regions);
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
             logger.info("DMI FTP site is not configured - cron job not scheduled.");
@@ -158,8 +161,9 @@ public class DmiFtpReaderJob {
             }
             logger.info("Calling transfer files ...");
             Counts counts = transferFiles();
-            String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + counts.transferCount + ", Shapes deleted: " + counts.shapeDeleteCount
-                    + ". Files deleted: " + counts.fileDeleteCount + ", Errors: " + counts.errorCount;
+            String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + counts.transferCount
+                    + ", Shapes deleted: " + counts.shapeDeleteCount + ". Files deleted: " + counts.fileDeleteCount
+                    + ", Errors: " + counts.errorCount;
             if (counts.errorCount == 0) {
                 logger.info(msg);
                 embryoLogService.info(msg);
@@ -180,7 +184,8 @@ public class DmiFtpReaderJob {
 
     private void sendEmail(String chartName, String chartType) {
         if (mailTo != null && mailTo.trim().length() > 0 && !notifications.contains(chartName)) {
-            new IceChartNameNotAcceptedMail("dmi", chartName, getRegions(chartType).keySet(), propertyFileService).send(mailSender);
+            new IceChartNameNotAcceptedMail("dmi", chartName, getRegions(chartType).keySet(), propertyFileService)
+                    .send(mailSender);
             notifications.add(chartName, DateTime.now(DateTimeZone.UTC));
         }
     }
@@ -188,12 +193,13 @@ public class DmiFtpReaderJob {
     private String getLocalDmiDir(String chartType) {
         return propertyFileService.getProperty("embryo." + chartType + ".dmi.localDirectory", true);
     }
-    
+
     private Map<String, String> getRegions(String chartType) {
         return propertyFileService.getMapProperty("embryo." + chartType + ".dmi.regions");
     }
 
-    private Counts readFromDmiTypedir(FTPFile typedir, FTPClient ftp, List<String> subdirectoriesAtServer) throws IOException, InterruptedException {
+    private Counts readFromDmiTypedir(FTPFile typedir, FTPClient ftp, List<String> subdirectoriesAtServer)
+            throws IOException, InterruptedException {
         Counts counts = new Counts();
         String chartType = charttypes.get(typedir.getName());
         String localDmiDir = getLocalDmiDir(chartType);
@@ -203,14 +209,21 @@ public class DmiFtpReaderJob {
 
         Thread.sleep(10);
 
-        logger.info("Reading files in: " + dmiBaseDirectory + "/" + typedir.getName());
-        
-        List<FTPFile> allDirs = Arrays.asList(ftp.listFiles(typedir.getName(), FTPFileFilters.DIRECTORIES));
-        Collection<FTPFile> rejected = Collections2.filter(allDirs, not(validFormat(regions.keySet())));
-        Collection<FTPFile> accepted = Collections2.filter(allDirs, acceptedIceCharts(regions.keySet(), mapsYoungerThan, localDmiDir, iceChartExts));
+        logger.info("Reading files in: {}/{}", ftp.printWorkingDirectory(), typedir.getName());
 
-        subdirectoriesAtServer.addAll(Collections2.transform(allDirs, new NameFunction()));
+        List<FTPFile> allDirs = Arrays.asList(ftp.listFiles(typedir.getName(), FTPFileFilters.DIRECTORIES));
+
+        logger.debug("{}/{} contains files: {}", ftp.printWorkingDirectory(), typedir.getName(), allDirs);
+
+        Collection<FTPFile> rejected = Collections2.filter(allDirs, not(validFormat(regions.keySet())));
+        Collection<FTPFile> accepted = Collections2.filter(allDirs,
+                acceptedIceCharts(regions.keySet(), mapsYoungerThan, localDmiDir, iceChartExts));
+
+        logger.debug("rejected: {}", allDirs);
+        logger.debug("accepted: {}", allDirs);
         
+        subdirectoriesAtServer.addAll(Collections2.transform(allDirs, new NameFunction()));
+
         for (FTPFile file : rejected) {
             sendEmail(file.getName(), chartType);
         }
@@ -220,7 +233,7 @@ public class DmiFtpReaderJob {
 
             logger.info("Reading files from subdirectories: " + subdirectory.getName());
 
-            ftp.changeWorkingDirectory(dmiBaseDirectory + "/" + typedir.getName() + "/" + subdirectory.getName());
+            ftp.changeWorkingDirectory(typedir.getName() + "/" + subdirectory.getName());
 
             List<String> filesInSubdirectory = new ArrayList<>();
 
@@ -237,6 +250,7 @@ public class DmiFtpReaderJob {
                     }
                 }
             }
+            ftp.changeToParentDirectory();
             ftp.changeToParentDirectory();
         }
         return counts;
@@ -312,7 +326,8 @@ public class DmiFtpReaderJob {
         return counts;
     }
 
-    private boolean transferFile(FTPClient ftp, String name, String localDmiDir) throws IOException, InterruptedException {
+    private boolean transferFile(FTPClient ftp, String name, String localDmiDir) throws IOException,
+            InterruptedException {
         String localName = localDmiDir + "/" + name;
 
         if (new File(localName).exists()) {
