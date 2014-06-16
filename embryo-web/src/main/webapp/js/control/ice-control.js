@@ -134,7 +134,6 @@ $(function() {
                     // td:first").css("border-top", "none");
                     $(divId + " table span.zoomhide").css("display", "none");
                     $(divId + " table a.download").on('click', function(e) {
-                        console.log('clicked');
                         e.preventDefault();
                         var row = $(this).parents("tr");
                         requestShapefile(chartType, data[$(this).attr("mid")].shapeFileName, function() {
@@ -161,7 +160,9 @@ $(function() {
                     });
                 }
                 
-                setTimeout(registerClicks, 5);
+                registerClicks();
+                
+                setTimeout(registerClicks, 1000);
             }, function(errorMsg, status) {
                 embryo.messagePanel.replace(messageId, {
                     text : errorMsg,
@@ -473,6 +474,16 @@ $(function() {
 
         return html;
     }
+    
+    function prettyPrintPosition(source){
+        if(source){
+            var array = source.split(/[:,]+/);
+            if(array.length > 4){
+                source = formatLatitude(array[1]) + ', ' + formatLongitude(array[3]);
+            }
+        }
+        return source;
+    }
 
     function showIceInformation(iceDescription) {
         $("a[href=#icpSelectedIce]").html("Selected Ice Observation");
@@ -483,7 +494,8 @@ $(function() {
                 size : 160
             })));
         }
-        $("#icpSelectedIce p").html("Source: " + iceDescription.source);
+        var source = iceDescription.type == 'iceberg' ? prettyPrintPosition(iceDescription.source) : iceDescription.source;
+        $("#icpSelectedIce p").html("Source: " + source);
         openCollapse("#icpSelectedIce");
     }
 
