@@ -467,8 +467,8 @@ $(function() {
 
         html += createTableRow({
             'Area (m2)' : desc.Area_m2,
-            'Size (m)' : desc.Size_m,
-            'Adjusted size (m)' : desc.Adj_Size_m,
+            'Længste diameter (m)' : desc.Size_m,
+            'Korrigeret længste diameter (m)' : desc.Adj_Size_m,
             'Size category' : getIcebergSize(desc.Size_Catg)
         });
 
