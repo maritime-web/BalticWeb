@@ -478,7 +478,7 @@ $(function() {
     function prettyPrintPosition(source){
         if(source){
             var array = source.split(/[:,]+/);
-            if(array.length > 4){
+            if(array.length >= 4){
                 source = formatLatitude(array[1]) + ', ' + formatLongitude(array[3]);
             }
         }
