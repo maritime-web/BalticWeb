@@ -4,10 +4,10 @@ function IceLayer() {
 
         this.context = {
             sizes : {
-                'S' : 1,
-                'M' : 1.5,
-                'L' : 2,
-                'VL' : 2.5
+                'S' : 0.8,
+                'M' : 1,
+                'L' : 1.2,
+                'VL' : 1.4
             },
             transparency : function() {
                 return that.active ? 0.5 : 0.25;
