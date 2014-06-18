@@ -5,7 +5,7 @@
   <groupId>dk.dma.arcticweb</groupId>
   <artifactId>embryo-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.8</version>
+  <version>1.9-SNAPSHOT</version>
   <name>embryo parent</name>
   <description></description>
 
@@ -340,7 +340,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.8</version>
         <executions>
           <execution>
             <id>add-source</id>
