@@ -35,9 +35,6 @@ $(function() {
             dragPanOptions : {
                 enableKinetic : false
             }
-        }), new OpenLayers.Control.Zoom({
-            zoomInId : 'dmaZoomIn',
-            zoomOutId : 'dmaZoomOut'
         }) ],
         projection : embryo.projection,
         maxExtent : e1,
@@ -408,6 +405,12 @@ $(function() {
     var mapModule = angular.module('embryo.zoom', [ 'embryo.authentication' ]);
 
     mapModule.controller('ZoomController', [ '$scope', 'Subject', function($scope, Subject) {
+        var control = new OpenLayers.Control.Zoom({
+            zoomInId : 'dmaZoomIn',
+            zoomOutId : 'dmaZoomOut'
+        })
+        embryo.map.internalMap.addControl(control);
+
         $scope.zoomAll = function() {
             embryo.map.setCenter(-65, 70, 3);
         };
@@ -430,6 +433,10 @@ $(function() {
             var zoom2YourVessel = Subject.authorize('Sailor');
             return zoom2YourVessel ? 'e-btn-tall' : 'e-btn-low'
         }
+        
+        $scope.$on('$destroy', function() {
+            embryo.map.internalMap.removeControl(control);
+        });
     } ]);
 
 });
