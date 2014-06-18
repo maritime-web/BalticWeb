@@ -20,6 +20,7 @@
             }
         }
 
+        
         function getMsiData() {
             function getWarnings(regionNames){
                 subscription.selectedRegions = service.getSelectedRegions();
