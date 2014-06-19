@@ -108,6 +108,13 @@ embryo.additionalInformation.distanceCircles = {
     }
 };
 
+function routeFeatureFilter(feature){
+    if(feature.attributes.featureType === "route"){
+        return !feature.attributes.data.active || !feature.attributes.data.own;
+    }
+    return true;
+}
+
 embryo.additionalInformation.route = {
     title : "Route",
     layer : null,
@@ -139,14 +146,10 @@ embryo.additionalInformation.route = {
             return this.routeId != null && this.layer && this.layer.containsFeature(this.routeId);
         }
         
-        return this.layer && this.layer.containsFeature(function(feature) {
-            return feature.attributes.featureType === "route" && (!feature.attributes.data.own || !feature.attributes.data.active);
-        });
+        return this.layer && this.layer.containsFeature(routeFeatureFilter);
     },
     hideAll : function() {
-        this.layer.hideFeatures(function(feature) {
-            return feature.attributes.featureType === "route" && (!feature.attributes.data.active || !feature.attributes.data.own)
-        });
+        this.layer.hideFeatures(routeFeatureFilter);
     }
 };
 
