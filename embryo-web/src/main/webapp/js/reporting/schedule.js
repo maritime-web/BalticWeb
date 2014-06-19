@@ -333,15 +333,19 @@
             '$timeout',
             function($scope, ScheduleService, RouteService, VesselInformation, $timeout) {
                 $scope.state = {
-                        collapse : false,
-                        viewAll : true
+                    collapse : false,
+                    viewAll : true
                 };
                 $scope.routeLayer = RouteLayerSingleton.getInstance();
 
                 function initViewRoute(voyages) {
                     if (voyages) {
                         for ( var index in voyages) {
-                            voyages[index].showRoute = $scope.routeLayer.containsVoyageRoute(voyages[index]);
+                            if (voyages[index].route || index < voyages.length - 1) {
+                                voyages[index].showRoute = {
+                                    value : $scope.routeLayer.containsVoyageRoute(voyages[index])
+                                };
+                            }
                         }
                     }
                 }
@@ -377,9 +381,9 @@
                     close : function() {
                         this.doShow = false;
                     },
-                    hideAll : function(){
+                    hideAll : function() {
                         function featureFilter(feature) {
-                            if(feature.attributes.featureType === 'route'){
+                            if (feature.attributes.featureType === 'route') {
                                 return !feature.attributes.active || !feature.attributes.own;
                             }
                             return true;
@@ -423,13 +427,15 @@
                     $scope.checkAll();
                     $scope.state.viewAll = !$scope.state.viewAll;
                     for ( var i in $scope.voyages) {
-                        $scope.voyages[i].showRoute = $scope.state.viewAll;
+                        if ($scope.voyages[i].showRoute) {
+                            $scope.voyages[i].showRoute.value = $scope.state.viewAll;
+                        }
                     }
                 };
 
                 $scope.checkAll = function() {
                     for ( var i in $scope.voyages) {
-                        if (!$scope.voyages[i].showRoute) {
+                        if ($scope.voyages[i].showRoute && !$scope.voyages[i].showRoute.value) {
                             $scope.state.viewAll = false;
                             return;
                         }
@@ -439,12 +445,12 @@
 
                 $scope.view = function() {
                     $scope.state.collapse = true;
-                    
+
                     for ( var index in $scope.voyages) {
                         var voyage = $scope.voyages[index];
-                        if(!voyage.showRoute){
+                        if (voyage.showRoute && !voyage.showRoute.value) {
                             $scope.routeLayer.removeVoyageRoute(voyage);
-                            if(voyage.route){
+                            if (voyage.route) {
                                 RouteService.removeSelection(voyage.route);
                             }
                         }
@@ -455,7 +461,8 @@
 
                     for ( var index = 0; index < $scope.voyages.length; index++) {
                         var voyage = $scope.voyages[index];
-                        if (voyage.showRoute && !$scope.routeLayer.containsVoyageRoute(voyage)) {
+                        if (voyage.showRoute && voyage.showRoute.value
+                                && !$scope.routeLayer.containsVoyageRoute(voyage)) {
                             if (voyage.route) {
                                 if ($scope.mmsi != embryo.authentication.shipMmsi
                                         || voyage.route.id != $scope.activeRouteId) {

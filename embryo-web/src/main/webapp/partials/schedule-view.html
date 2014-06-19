@@ -38,9 +38,9 @@
 							<td>{{voyage.passengers}}</td>
 							<td><span ng-show="voyage.doctor">Yes</span><span ng-show="voyage.doctor==false">No</span></td>
 							<td>
-								<!--button type="button" x-ng-show="voyage.route" class="btn btn-sm" x-ng-click="viewRoute(voyage)">View
-								Route</button--> <label><input type="checkbox" x-ng-model="voyage.showRoute" x-ng-change="checkAll()" />
-									Show</label>
+								<div x-ng-if="voyage.showRoute">
+									<label><input type="checkbox" x-ng-model="voyage.showRoute.value" x-ng-change="checkAll()" /> Show</label>
+								</div>
 							</td>
 						</tr>
 						<tr class="route" x-ng-class="{warning : activeRouteId && activeRouteId == voyage.route.id}">
