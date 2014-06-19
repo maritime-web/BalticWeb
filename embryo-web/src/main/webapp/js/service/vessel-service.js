@@ -208,7 +208,6 @@
                     that.hide(vi);
                 }
             }
-            $(".reportingPanel").css("display", "none");
             provider.show(vesselOverview, vesselDetails);
         }
 

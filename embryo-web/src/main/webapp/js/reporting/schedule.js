@@ -4,7 +4,8 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var module = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.sfTypeahead', 'embryo.position', 'embryo.vessel.service', 'ui.bootstrap', 'embryo.controller.reporting' ]);
+            'siyfion.sfTypeahead', 'embryo.position', 'embryo.vessel.service', 'ui.bootstrap',
+            'embryo.controller.reporting' ]);
 
     var voyages = [];
     var pageSize = 5;
@@ -20,14 +21,14 @@
         remote : berthUrl
     });
 
-   module.controller('ScheduleEditCtrl', [
-           '$scope',
-           '$q',
-           'VesselService',
-           'ScheduleService',
-           'RouteService',
-           'VesselInformation',
-           function($scope, $q, VesselService, ScheduleService, RouteService, VesselInformation) {
+    module.controller('ScheduleEditCtrl', [
+            '$scope',
+            '$q',
+            'VesselService',
+            'ScheduleService',
+            'RouteService',
+            'VesselInformation',
+            function($scope, $q, VesselService, ScheduleService, RouteService, VesselInformation) {
                 var idExists = function(voyages, id) {
                     for ( var vid in voyages) {
                         if (voyages[vid].maritimeId == id) {
@@ -36,8 +37,8 @@
                     }
                     return false;
                 };
-        
-                var loadSchedule = function(vs) {
+
+                function loadSchedule(vs) {
                     if ($scope.mmsi) {
                         $scope.alertMessages = [];
                         ScheduleService.getYourSchedule($scope.mmsi, function(schedule) {
@@ -61,8 +62,9 @@
                             $scope.alertMessages = error;
                         });
                     }
-                };
-        
+                }
+                ;
+
                 $scope.provider = {
                     doShow : false,
                     title : "Schedule",
@@ -103,41 +105,42 @@
                         $scope.alertMessages = data.errors;
                     }
                 };
-        
+
                 $scope.close = function($event) {
                     $event.preventDefault();
                     $scope.provider.close();
                 }
-        
+
                 VesselInformation.addInformationProvider($scope.provider);
-        
+
                 $scope.options = {
                     "Yes" : true,
                     "No" : false
                 };
-        
+
                 $scope.getLastVoyage = function() {
                     if (!$scope.voyages) {
                         return null;
                     }
                     return $scope.voyages[$scope.voyages.length - 1];
                 };
-        
+
                 $scope.$watch($scope.getLastVoyage, function(newValue, oldValue) {
                     // add extra empty voyage on initialization
-                    if (newValue && Object.keys(newValue).length > 0 && (!oldValue || Object.keys(oldValue).length === 0)) {
+                    if (newValue && Object.keys(newValue).length > 0
+                            && (!oldValue || Object.keys(oldValue).length === 0)) {
                         $scope.voyages.push({});
                     }
                 }, true);
-        
+
                 $scope.moreVoyages = function() {
                     return $scope.voyages && $scope.voyages.length < voyages.length;
                 };
-        
+
                 $scope.loadAll = function() {
                     $scope.voyages = voyages;
                 };
-        
+
                 $scope.loadMore = function() {
                     if ($scope.voyages) {
                         var vl = $scope.voyages.length;
@@ -146,7 +149,7 @@
                         }
                     }
                 };
-        
+
                 $scope.del = function(index) {
                     if ($scope.voyages[index].maritimeId) {
                         $scope.idsOfVoyages2Delete.push($scope.voyages[index].maritimeId);
@@ -154,7 +157,7 @@
                     voyages.splice(index, 1);
                     $scope.voyages.splice(index, 1);
                 };
-        
+
                 $scope.uploadSchedule = function() {
                     var biggestDate = 0;
                     for ( var x in voyages) {
@@ -169,17 +172,17 @@
                         departure : biggestDate
                     });
                 };
-                $scope.resetMessages = function () {
+                $scope.resetMessages = function() {
                     $scope.message = null;
                     $scope.alertMessages = null;
                 }
-        
+
                 $scope.reset = function() {
                     $scope.resetMessages();
                     $scope.idsOfVoyages2Delete = [];
                     loadSchedule();
                 };
-        
+
                 $scope.save = function() {
                     var index = null;
                     // remove last empty element
@@ -188,11 +191,11 @@
                         voyages : $scope.voyages.slice(0, $scope.voyages.length - 1),
                         toDelete : $scope.idsOfVoyages2Delete
                     };
-        
+
                     for (index in scheduleRequest.voyages) {
                         delete scheduleRequest.voyages[index].route;
                     }
-        
+
                     $scope.resetMessages();
                     ScheduleService.save(scheduleRequest, function() {
                         $scope.message = "Schedule saved successfully";
@@ -201,101 +204,104 @@
                         $scope.alertMessages = error;
                     });
                 };
-            }]);
-   
-   module.controller('ScheduleEditFormCtrl', [
-           '$scope',
-           '$q',
-           'VesselService',
-           'ScheduleService',
-           'RouteService',
-           function($scope, $q, VesselService, ScheduleService, RouteService) {
-               berths.initialize();
+            } ]);
 
-               $scope.getBerths = function(query) {
-                   return function() {
-                       var deferred = $q.defer();
-                       berths.get(query, function(suggestions) {
-                           deferred.resolve(suggestions);
-                       });
-                       return deferred.promise;
-                   }().then(function(res) {
-                       return res;
-                   });
-               };
-               
-               $scope.editRoute = function(index) {
-                   var context = {
-                       mmsi : $scope.mmsi,
-                       routeId : $scope.voyages[index].route ? $scope.voyages[index].route.id : null,
-                       voyageId : $scope.voyages[index].maritimeId,
-                       dep : $scope.voyages[index].location,
-                       etdep : $scope.voyages[index].departure,
-                       vesselDetails : $scope.vesselDetails
-                   };
-                   if (index < $scope.voyages.length - 1) {
-                       context.des = $scope.voyages[index + 1].location;
-                       context.etdes = $scope.voyages[index + 1].arrival;
-                   }
-       
-                   $scope.provider.close();
-                   embryo.controllers.editroute.show(context);
-               };
-               
-               $scope.saveable = function() {
-                   if ($scope.scheduleEditForm.$invalid) {
-                       return false;
-                   }
-       
-                   if (!(($scope.voyages && $scope.voyages.length >= 1) || ($scope.idsOfVoyages2Delete && $scope.idsOfVoyages2Delete.length > 0))) {
-                       return false;
-                   }
-       
-                   return true;
-               };
-               
-               $scope.activate = function(voyage) {
-                   $scope.resetMessages();
-                   RouteService.setActiveRoute(voyage.route.id, true, function() {
-                       VesselService
-                               .updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", voyage.route.id);
-                       $scope.activeRouteId = voyage.route.id;
-                   }, function(error) {
-                       $scope.alertMessages = error;
-                   });
-               };
-               $scope.deactivate = function(voyage) {
-                   $scope.resetMessages();
-                   RouteService.setActiveRoute(voyage.route.id, false, function() {
-                       VesselService.updateVesselDetailParameter($scope.mmsi, "additionalInformation.routeId", "");
-                       $scope.activeRouteId = null;
-                   }, function(error) {
-                       $scope.alertMessages = error;
-                   });
-               };
-               
-               $scope.uploadRoute = function(voyage) {
-                   $scope.provider.close();
-                   embryo.controllers.uploadroute.show({
-                       vesselDetails : $scope.vesselDetails,
-                       voyageId : voyage.maritimeId
-                   });
-               };
-               
-               $scope.isActive = function(voyage) {
-                   if (!voyage || !voyage.route || !voyage.route.id) {
-                       return false;
-                   }
-       
-                   if (!$scope.activeRouteId) {
-                       return false;
-                   }
-       
-                   return $scope.activeRouteId === voyage.route.id;
-               };
+    module
+            .controller(
+                    'ScheduleEditFormCtrl',
+                    [
+                            '$scope',
+                            '$q',
+                            'VesselService',
+                            'ScheduleService',
+                            'RouteService',
+                            function($scope, $q, VesselService, ScheduleService, RouteService) {
+                                berths.initialize();
 
-           }]);
+                                $scope.getBerths = function(query) {
+                                    return function() {
+                                        var deferred = $q.defer();
+                                        berths.get(query, function(suggestions) {
+                                            deferred.resolve(suggestions);
+                                        });
+                                        return deferred.promise;
+                                    }().then(function(res) {
+                                        return res;
+                                    });
+                                };
 
+                                $scope.editRoute = function(index) {
+                                    var context = {
+                                        mmsi : $scope.mmsi,
+                                        routeId : $scope.voyages[index].route ? $scope.voyages[index].route.id : null,
+                                        voyageId : $scope.voyages[index].maritimeId,
+                                        dep : $scope.voyages[index].location,
+                                        etdep : $scope.voyages[index].departure,
+                                        vesselDetails : $scope.vesselDetails
+                                    };
+                                    if (index < $scope.voyages.length - 1) {
+                                        context.des = $scope.voyages[index + 1].location;
+                                        context.etdes = $scope.voyages[index + 1].arrival;
+                                    }
+
+                                    $scope.provider.close();
+                                    embryo.controllers.editroute.show(context);
+                                };
+
+                                $scope.saveable = function() {
+                                    if ($scope.scheduleEditForm.$invalid) {
+                                        return false;
+                                    }
+
+                                    if (!(($scope.voyages && $scope.voyages.length >= 1) || ($scope.idsOfVoyages2Delete && $scope.idsOfVoyages2Delete.length > 0))) {
+                                        return false;
+                                    }
+
+                                    return true;
+                                };
+
+                                $scope.activate = function(voyage) {
+                                    $scope.resetMessages();
+                                    RouteService.setActiveRoute(voyage.route.id, true, function() {
+                                        VesselService.updateVesselDetailParameter($scope.mmsi,
+                                                "additionalInformation.routeId", voyage.route.id);
+                                        $scope.activeRouteId = voyage.route.id;
+                                    }, function(error) {
+                                        $scope.alertMessages = error;
+                                    });
+                                };
+                                $scope.deactivate = function(voyage) {
+                                    $scope.resetMessages();
+                                    RouteService.setActiveRoute(voyage.route.id, false, function() {
+                                        VesselService.updateVesselDetailParameter($scope.mmsi,
+                                                "additionalInformation.routeId", "");
+                                        $scope.activeRouteId = null;
+                                    }, function(error) {
+                                        $scope.alertMessages = error;
+                                    });
+                                };
+
+                                $scope.uploadRoute = function(voyage) {
+                                    $scope.provider.close();
+                                    embryo.controllers.uploadroute.show({
+                                        vesselDetails : $scope.vesselDetails,
+                                        voyageId : voyage.maritimeId
+                                    });
+                                };
+
+                                $scope.isActive = function(voyage) {
+                                    if (!voyage || !voyage.route || !voyage.route.id) {
+                                        return false;
+                                    }
+
+                                    if (!$scope.activeRouteId) {
+                                        return false;
+                                    }
+
+                                    return $scope.activeRouteId === voyage.route.id;
+                                };
+
+                            } ]);
 
     embryo.VoyageCtrl = function($scope) {
         function berthSelected(e, suggestion, dataset) {
@@ -326,22 +332,30 @@
             'VesselInformation',
             '$timeout',
             function($scope, ScheduleService, RouteService, VesselInformation, $timeout) {
-                $scope.collapse = false;
-                $scope.viewAll = true;
+                $scope.state = {
+                        collapse : false,
+                        viewAll : true
+                };
+                $scope.routeLayer = RouteLayerSingleton.getInstance();
 
-                var loadSchedule = function() {
+                function initViewRoute(voyages) {
+                    if (voyages) {
+                        for ( var index in voyages) {
+                            voyages[index].showRoute = $scope.routeLayer.containsVoyageRoute(voyages[index]);
+                        }
+                    }
+                }
+
+                function loadSchedule() {
                     if ($scope.mmsi) {
                         ScheduleService.getSchedule($scope.mmsi, function(schedule) {
                             $scope.voyages = schedule.voyages.slice();
-                            $scope.toggleView();
+                            initViewRoute($scope.voyages);
+                            $scope.checkAll();
                         });
                     }
-                };
-
-                $scope.routeLayer = RouteLayerSingleton.getInstance();
-
-                $scope.scheduleLayer = ScheduleLayerSingleton.getInstance();
-                addLayerToMap("vessel", $scope.scheduleLayer, embryo.map);
+                }
+                ;
 
                 $scope.provider = {
                     doShow : false,
@@ -352,18 +366,26 @@
                     },
                     show : function(vesselOverview, vesselDetails) {
                         this.doShow = true;
-                        $scope.collapse = false;
+                        $scope.state.collapse = false;
                         $scope.mmsi = vesselDetails.mmsi;
                         $scope.activeRouteId = vesselDetails.additionalInformation.routeId;
                         loadSchedule();
                     },
                     shown : function(vo, vd) {
-                        return this.doShow;
+                        return this.doShow && !$scope.state.collapse;
                     },
                     close : function() {
                         this.doShow = false;
-                        // $scope.routeLayer.clear();
-                        // $scope.scheduleLayer.clear();
+                    },
+                    hideAll : function(){
+                        function featureFilter(feature) {
+                            if(feature.attributes.featureType === 'route'){
+                                return !feature.attributes.active || !feature.attributes.own;
+                            }
+                            return true;
+                        }
+                        return $scope.routeLayer.hideFeatures(featureFilter);
+
                     }
                 };
 
@@ -397,55 +419,77 @@
                     return formatTime(timeInMillis);
                 };
 
-                $scope.toggleView = function() {
+                $scope.toggleViewAll = function() {
+                    $scope.checkAll();
+                    $scope.state.viewAll = !$scope.state.viewAll;
                     for ( var i in $scope.voyages) {
-                        $scope.voyages[i].showRoute = $scope.viewAll;
+                        $scope.voyages[i].showRoute = $scope.state.viewAll;
                     }
                 };
 
                 $scope.checkAll = function() {
                     for ( var i in $scope.voyages) {
                         if (!$scope.voyages[i].showRoute) {
-                            $scope.viewAll = false;
+                            $scope.state.viewAll = false;
                             return;
                         }
                     }
-                    $scope.viewAll = true;
+                    $scope.state.viewAll = true;
                 };
 
                 $scope.view = function() {
-                    $scope.collapse = true;
-                    $scope.routeLayer.clear();
-
-                    RouteService.clearSelection();
-
-                    var voyagesToDraw = [];
-                    for ( var i in $scope.voyages) {
-                        var voyage = $scope.voyages[i];
-                        if (voyage.showRoute) {
-                            if (voyage.route) {
-                                RouteService.getRoute(voyage.route.id, function(route) {
-                                    RouteService.addSelectedRoute(route);
-                                    var routeType = embryo.route.service.getRouteType($scope.mmsi, voyage.route.id,
-                                            $scope.isActive(voyage));
-                                    $scope.routeLayer.draw(route, routeType, true);
-                                });
-                            } else {
-                                voyagesToDraw.push(voyage);
+                    $scope.state.collapse = true;
+                    
+                    for ( var index in $scope.voyages) {
+                        var voyage = $scope.voyages[index];
+                        if(!voyage.showRoute){
+                            $scope.routeLayer.removeVoyageRoute(voyage);
+                            if(voyage.route){
+                                RouteService.removeSelection(voyage.route);
                             }
                         }
                     }
-                    var scheduleType = $scope.mmsi == embryo.authentication.shipMmsi ? 'own' : 'other';
-                    $scope.scheduleLayer.draw(voyagesToDraw, scheduleType);
-                    if (voyagesToDraw.length > 0) {
-                        $scope.scheduleLayer.zoomToExtent();
+
+                    var routesToDraw = [];
+                    var routeIds = [];
+
+                    for ( var index = 0; index < $scope.voyages.length; index++) {
+                        var voyage = $scope.voyages[index];
+                        if (voyage.showRoute && !$scope.routeLayer.containsVoyageRoute(voyage)) {
+                            if (voyage.route) {
+                                if ($scope.mmsi != embryo.authentication.shipMmsi
+                                        || voyage.route.id != $scope.activeRouteId) {
+                                    // do not display own active route again
+                                    routeIds.push(voyage.route.id);
+                                }
+                            } else if (index <= ($scope.voyages.length - 2)) {
+                                routesToDraw.push({
+                                    own : $scope.mmsi == embryo.authentication.shipMmsi,
+                                    voyages : [ voyage, $scope.voyages[index + 1] ]
+                                });
+                            }
+                        }
+                    }
+                    if (routeIds.length > 0) {
+                        RouteService.getRoutes(routeIds, function(routes) {
+                            for ( var index in routes) {
+                                var route = routes[index];
+                                RouteService.addSelectedRoute(route);
+                                route.own = $scope.mmsi == embryo.authentication.shipMmsi;
+                                route.active = route.id == $scope.activeRouteId;
+                                routesToDraw.push(route);
+                                $scope.routeLayer.draw(routesToDraw);
+                                $scope.routeLayer.zoomToExtent();
+                            }
+                        });
                     } else {
+                        $scope.routeLayer.draw(routesToDraw);
                         $scope.routeLayer.zoomToExtent();
                     }
                 };
 
                 $scope.viewRoute = function(voyage) {
-                    $scope.collapse = true;
+                    $scope.state.collapse = true;
                     RouteService.getRoute(voyage.route.id, function(route) {
                         var routeType = embryo.route.service.getRouteType($scope.mmsi, voyage.route.id);
                         $scope.routeLayer.draw(route, routeType);

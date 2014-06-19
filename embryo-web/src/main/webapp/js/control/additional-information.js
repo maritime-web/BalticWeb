@@ -114,32 +114,39 @@ embryo.additionalInformation.route = {
     // new RouteLayer(),
     init : function(map, group) {
         this.layer = RouteLayerSingleton.getInstance();
-        // addLayerToMap(group, this.layer, map)
     },
     available : function(vessel, vesselDetails) {
         return vesselDetails.additionalInformation.routeId != null;
     },
     show : function(vessel, vesselDetails) {
         var that = this;
-        embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(data) {
-            var routeType = embryo.route.service.getRouteType(vesselDetails.mmsi,
-                    vesselDetails.additionalInformation.routeId);
-            that.layer.draw(data, routeType);
+        embryo.route.service.getRoute(vesselDetails.additionalInformation.routeId, function(route) {
+            route.active = vesselDetails.additionalInformation.routeId == route.id;
+            route.own = embryo.authentication.shipMmsi == vesselDetails.mmsi;
+            that.layer.draw([ route ]);
             that.layer.zoomToExtent();
         });
     },
     hide : function() {
-        this.layer.clear();
+        if (this.routeId) {
+            this.layer.hideFeatures(this.routeId);
+        }
     },
     shown : function(vessel, vesselDetails) {
         if (vesselDetails) {
-            return vesselDetails.additionalInformation.routeId != null && this.layer
-                    && this.layer.containsFeature(vesselDetails.additionalInformation.routeId);
+            this.routeId = vesselDetails.additionalInformation.routeId ? vesselDetails.additionalInformation.routeId
+                    : null;
+            return this.routeId != null && this.layer && this.layer.containsFeature(this.routeId);
         }
-        return this.layer && this.layer.containsFeatures();
+        
+        return this.layer && this.layer.containsFeature(function(feature) {
+            return feature.attributes.featureType === "route" && (!feature.attributes.data.own || !feature.attributes.data.active);
+        });
     },
     hideAll : function() {
-        this.layer.clear();
+        this.layer.hideFeatures(function(feature) {
+            return feature.attributes.featureType === "route" && (!feature.attributes.data.active || !feature.attributes.data.own)
+        });
     }
 };
 

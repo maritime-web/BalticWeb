@@ -15,7 +15,9 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -58,6 +60,31 @@ public class RouteRestService {
         dk.dma.embryo.vessel.model.Route route = scheduleService.getRouteByEnavId(id);
 
         return route != null ? route.toJsonModel() : null;
+    }
+
+    
+    @GET
+    @Path("/list/{ids}")
+    @Produces("application/json")
+    @GZIP
+    @NoCache
+    public List<Route> getRoutes(@PathParam("ids") String ids) {
+        logger.debug("getRoutes({})", ids);
+        
+        String[] idsArr = ids.split(":");
+        List<Route> result = new ArrayList<>(idsArr.length);
+        
+        for(String id : idsArr){
+            dk.dma.embryo.vessel.model.Route route = scheduleService.getRouteByEnavId(id);
+            if(route != null){
+                result.add(route.toJsonModel());
+            }else{
+                logger.info("No route found for id: {}", id);
+            }
+        }
+
+        logger.debug("getRoutes({}) : {}", ids, result);
+        return result;
     }
 
     @GET

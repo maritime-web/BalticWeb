@@ -1,14 +1,14 @@
 <div id="scheduleview" class="schedule" x-ng-controller="ScheduleViewCtrl">
-	<div e-reporting-panel x-ng-if="provider.doShow">
+	<div id="scheduleViewPanel" e-reporting-panel x-ng-if="provider.doShow">
 		<div>
 			<h2>
-				Schedule <a class="close" href="#" style="float: right" x-ng-hide="collapse" x-ng-click="close($event)">&times;</a>
-				<button type="button" class="btn btn-primary btn-sm" style="float: right" x-ng-click="collapse=false"
-					x-ng-hide="!collapse">Open Schedule</button>
+				Schedule <a class="close" href="#" style="float: right" x-ng-hide="state.collapse" x-ng-click="close($event)">&times;</a>
+				<button type="button" class="btn btn-primary btn-sm" style="float: right" x-ng-click="state.collapse=false"
+					x-ng-hide="!state.collapse">Open Schedule</button>
 			</h2>
 		</div>
 
-		<div x-ng-hide="collapse">
+		<div x-ng-hide="state.collapse">
 			<div x-ng-show="alertMessage" class="alert alert-danger">{{alertMessage}}</div>
 			<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
@@ -24,7 +24,7 @@
 							<th>Crew</th>
 							<th>Passengers</th>
 							<th>Doctor</th>
-							<th style="width: 70px;"><input type="checkbox" x-ng-model="viewAll" x-ng-change="toggleView()" /></th>
+							<th style="width: 70px;"><input type="checkbox" x-ng-model="state.viewAll" x-ng-change="toggleViewAll()" /></th>
 						</tr>
 					</thead>
 					<tbody x-ng-repeat="voyage in voyages" class="content">
