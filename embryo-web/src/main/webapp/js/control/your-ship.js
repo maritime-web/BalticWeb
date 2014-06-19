@@ -1,8 +1,8 @@
 $(function() {
 
-    var yourShipRouteLayer = RouteLayerSingleton.getInstance();
-//    var yourShipRouteLayer = new RouteLayer();
-//    addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
+    //var yourShipRouteLayer = RouteLayerSingleton.getInstance();
+    var yourShipRouteLayer = new RouteLayer();
+    addLayerToMap("vessel", yourShipRouteLayer, embryo.map);
 
     var module = angular.module('embryo.yourvessel.control', [ 'embryo.scheduleService', 'embryo.vessel.service' ]);
 
