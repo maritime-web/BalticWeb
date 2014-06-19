@@ -55,8 +55,8 @@ $(function() {
             $scope.users = users;
         };
 
-        $scope.edit = function(user) {
-            event.preventDefault();
+        $scope.edit = function($event, user) {
+            $event.preventDefault();
             
             editUser = user;
             $scope.message = null;
@@ -142,8 +142,8 @@ $(function() {
             }
         };
 
-        $scope.del = function(user) {
-            event.preventDefault();
+        $scope.del = function($event, user) {
+            $event.preventDefault();
 
             var messages = [ "This will delete user " + user.login + (user.shipMmsi ? " / " + user.shipMmsi : "") ];
             showModal("Delete User", messages).result.then(function() {

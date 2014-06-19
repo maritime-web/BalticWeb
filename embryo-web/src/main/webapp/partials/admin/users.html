@@ -39,11 +39,11 @@
 					</thead>
 					<tbody id="activeUsersTable">
 						<tr x-ng-repeat="user in users">
-							<td><a href=# x-ng-click="edit(user)">{{user.login}}</a></td>
+							<td><a href=# x-ng-click="edit($event, user)">{{user.login}}</a></td>
 							<td>{{user.email}}</td>
 							<td>{{user.shipMmsi ? user.shipMmsi : "-"}}</td>
 							<td>{{roleText(user.role)}}</td>
-							<td><a href="#" x-ng-click="del(user)">delete</a></td>
+							<td><a href="#" x-ng-click="del($event, user)">delete</a></td>
 						</tr>
 					</tbody>
 				</table>
