@@ -90,6 +90,10 @@
       <artifactId>embryo-reporting</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>dk.dma.enav.embryo</groupId>
+      <artifactId>embryo-weather</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>dk.dma.enav</groupId>

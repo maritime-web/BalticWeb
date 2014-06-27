@@ -52,6 +52,7 @@
 	<div x-requires-authenticated>
 		<div x-ng-controller="YourVesselLayerControl" requires-permission="Sailor" ></div>
 		<div x-ng-controller="MsiLayerControl" ></div>
+		<div x-ng-controller="WeatherForecastLayerControl" ></div>
 
 		<div x-ng-include="'partials/settings.html'"></div>
 
@@ -153,6 +154,7 @@
 	<script src="js/service/ice-service.js" type="text/javascript"></script>
 	<script src="js/service/msi-service.js" type="text/javascript"></script>
 	<script src="js/service/metoc-service.js" type="text/javascript"></script>
+	<script src="js/service/weather-service.js" type="text/javascript"></script>
 
 	<script src="js/map.js"></script>
 
@@ -176,6 +178,7 @@
 	<script src="js/layer/world-map-layer.js" type="text/javascript"></script>
 	<script src="js/layer/greenpos-marker-layer.js" type="text/javascript"></script>
 	<script src="js/layer/metoc-layer.js" type="text/javascript"></script>
+	<script src="js/layer/sea-forecast-layer.js" type="text/javascript"></script>
 
 	<script src="js/control/additional-information.js" type="text/javascript"></script>
 

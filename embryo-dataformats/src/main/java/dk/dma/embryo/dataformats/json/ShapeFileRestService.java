@@ -102,7 +102,7 @@ public class ShapeFileRestService {
             @DefaultValue("false") @QueryParam("delta") boolean delta,
             @DefaultValue("2") @QueryParam("exponent") int exponent, @DefaultValue("0") @QueryParam("parts") int parts)
             throws IOException {
-        logger.info("Request for multiple files: {}", ids);
+        logger.info("getMultipleFile({}, {}, {}, {}, {}, {})", ids, resolution, filter, delta, exponent, parts);
 
         try {
             List<Shape> result = new ArrayList<>();
@@ -157,9 +157,6 @@ public class ShapeFileRestService {
                 builder = Response.ok(shape);
             }
 
-            System.out.println("lastmodified:" + lastModified);
-            System.out.println("lastmodified:" + lastModified.toCalendar(Locale.ENGLISH).getTime());
-            
             builder.lastModified(lastModified.toCalendar(Locale.ENGLISH).getTime());
             
             builder.cacheControl(cc);

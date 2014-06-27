@@ -75,6 +75,10 @@ public class ShapeFileParser {
                     case 1:
                         r.shape = Point.read(is);
                         break;
+                    // Polyline
+                    case 3:
+                        r.shape = PolyLine.read(is);
+                        break;
                     // Polygon
                     case 5:
                         r.shape = PolyLine.read(is);

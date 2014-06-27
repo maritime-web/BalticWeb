@@ -89,6 +89,13 @@
       </dependency>
 
       <dependency>
+        <groupId>dk.dma.enav.embryo</groupId>
+        <artifactId>embryo-weather</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+
+      <dependency>
         <groupId>dk.dma.enav</groupId>
         <artifactId>enav-model</artifactId>
         <version>0.1</version>
@@ -154,17 +161,17 @@
         <scope>provided</scope>
       </dependency>
 
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se</artifactId>
-      <version>1.1.10.Final</version>
-    </dependency>
+      <dependency>
+        <groupId>org.jboss.weld.se</groupId>
+        <artifactId>weld-se</artifactId>
+        <version>1.1.10.Final</version>
+      </dependency>
 
-    <dependency>
-      <groupId>org.jglue.cdi-unit</groupId>
-      <artifactId>cdi-unit</artifactId>
-      <version>2.1.0</version>
-    </dependency>
+      <dependency>
+        <groupId>org.jglue.cdi-unit</groupId>
+        <artifactId>cdi-unit</artifactId>
+        <version>2.1.0</version>
+      </dependency>
 
 
     </dependencies>
@@ -406,6 +413,7 @@
     <module>embryo-msi</module>
     <module>embryo-metoc</module>
     <module>embryo-reporting</module>
+    <module>embryo-weather</module>
     <module>embryo-web</module>
   </modules>
 

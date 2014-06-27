@@ -18,6 +18,7 @@ package dk.dma.embryo.dataformats.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -78,6 +79,21 @@ public class ShapeFileServiceTest {
         assertEquals(170244, ((Fragment)file.getFragments().get(0)).getPolygons().get(0).get(0).getY());
     }
 
+    @Test
+    public void forecastAreas() throws IOException {
+//        System.out.println("forecastAreas");
+//        
+//        String name = "Farvande_GRL_modified";
+//        ShapeFileService.Shape shape = service.readSingleFile("static." + name, 0, "", true, 2, 0);
+//        
+//        assertEquals(Integer.valueOf(2), shape.getExponent());
+//        assertTrue(shape.getFragments().size() > 0);
+//        assertNotNull(shape.getDescription());
+//        assertTrue(shape.getDescription().containsKey("id"));
+//        assertEquals(name, shape.getDescription().get("id"));
+    }
+
+    
     @Test
     public void testResolutionDefault() throws IOException {
         ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", null, "", false, null, 0);

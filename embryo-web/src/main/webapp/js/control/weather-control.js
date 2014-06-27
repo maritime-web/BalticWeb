@@ -1,34 +1,41 @@
 $(function() {
 
+    var seaForecastLayer = new SeaForecastLayer();
+    addLayerToMap("weather", seaForecastLayer, embryo.map);
+
     var metocLayer = new MetocLayer();
     addLayerToMap("weather", metocLayer, embryo.map);
 
-    var module = angular.module('embryo.weather.control',
-            [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control' ]);
+    var module = angular.module('embryo.weather.control', [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control',
+            'embryo.weather.service' ]);
 
     module.controller("WeatherController", [ '$scope', function($scope) {
         $scope.selected = {};
 
-        $scope.ms2Knots = function(ms){
+        $scope.$on("$destroy", function() {
+            embryo.controllers.settings.close();
+        });
+    } ]);
+
+    module.controller("SelectedMetocController", [ '$scope', function($scope) {
+
+        $scope.ms2Knots = function(ms) {
             return Math.round(ms2Knots(ms) * 100) / 100;
         }
 
         metocLayer.select("metocCtrl", function(forecast) {
             $scope.selected.open = !!forecast;
-            $scope.selected.forecast = forecast; 
+            $scope.selected.forecast = forecast;
+            $scope.selected.type = "msi"
             if (!$scope.$$phase) {
                 $scope.$apply(function() {
                 });
             }
         });
-        
-        $scope.formatTs = function(ts){
+
+        $scope.formatTs = function(ts) {
             return formatTime(ts);
         };
-        
-        $scope.$on("$destroy", function() {
-            embryo.controllers.settings.close();
-        });
     } ]);
 
     module.controller("MetocController", [ '$scope', 'RouteService', 'MetocService', 'Subject',
@@ -105,6 +112,89 @@ $(function() {
 
             } ]);
 
+    module.controller("WeatherForecastLayerControl", [ '$scope', 'ShapeService', 'WeatherService', function($scope, ShapeService, WeatherService) {
+        function merge(shapes, weather){
+            for(var index in shapes){
+                var shape = shapes[index];
+                for(var j in shape.fragments){
+                    var fragment = shape.fragments[j];
+                    for(var k in weather.forecast.districts){
+                        if(fragment.description.name == weather.forecast.districts[k].name){
+                            fragment.district = weather.forecast.districts[k];
+                        }
+                    }
+                }
+            }
+            
+            return shapes;
+        }
+        
+        function drawAreas(weather) {
+            ShapeService.staticShapes('static.Farvande_GRL_dissolve3', {
+                exponent : 4,
+                delta : true
+            }, function(shapes) {
+                if(weather){
+                    shapes = merge(shapes, weather);
+                }
+                
+                seaForecastLayer.draw(shapes);
+            }, function(errorMsg) {
+            });
+        }
+
+        WeatherService.subscribe(function(error, weather) {
+            if (!error) {
+                $scope.weather = weather;
+                drawAreas($scope.weather);
+            } else {
+                drawAreas(null);
+            }
+        });
+
+    } ]);
+
+    module.controller("WeatherForecastController", [ '$scope', 'WeatherService', function($scope, WeatherService) {
+        var id = WeatherService.subscribe(function(error, weather) {
+            if (error) {
+                $scope.errorMsg = error;
+            } else {
+                $scope.errorMsg = null;
+                $scope.forecast = weather.forecast;
+            }
+        });
+
+        $scope.viewForecast = function($event, district) {
+            $event.preventDefault();
+            seaForecastLayer.select(district);
+        }
+
+        $scope.from = function() {
+            return $scope.forecast && $scope.forecast.from ? formatTime($scope.forecast.from) : null;
+        }
+
+        $scope.to = function() {
+            return $scope.forecast && $scope.forecast.to ? formatTime($scope.forecast.to) : null;
+        }
+
+        $scope.$on("$destroy", function() {
+            WeatherService.unsubscribe(id);
+        });
+    } ]);
+
+    module.controller("SelectWeatherForecastCtrl", [ '$scope', function($scope) {
+        seaForecastLayer.select("forecastCtrl", function(district) {
+            $scope.selected.open = !!district;
+            $scope.selected.forecast = district;
+            $scope.selected.type = "district";
+            $scope.selected.name = district ? district.name : null;
+            if (!$scope.$$phase) {
+                $scope.$apply(function() {
+                });
+            }
+        });
+    } ]);
+
     module.controller("SettingsCtrl", [ '$scope', 'MetocService', function($scope, MetocService) {
         var warnLimits = MetocService.getDefaultWarnLimits();
         $scope.settings = [ {
@@ -112,7 +202,7 @@ $(function() {
             value : warnLimits.defaultWaveWarnLimit,
             type : "number",
             unit : "meter"
-                
+
         }, {
             text : "Warning limit for current",
             value : warnLimits.defaultCurrentWarnLimit,
@@ -131,22 +221,22 @@ $(function() {
                 defaultCurrentWarnLimit : $scope.settings[1].value,
                 defaultWindWarnLimit : $scope.settings[2].value
             });
-            
+
             $scope.message = "Weater forecast settings saved.";
         };
 
-        $scope.provider =  {
+        $scope.provider = {
             doShow : false,
             show : function(context) {
                 $scope.message = null;
                 this.doShow = true;
                 $scope.title = context.title;
             },
-            close : function(){
+            close : function() {
                 this.doShow = false;
             }
         };
-        
+
         $scope.close = function($event) {
             $event.preventDefault();
             $scope.provider.close();
@@ -187,8 +277,8 @@ $(function() {
             $scope.currentLimits = buildLimits(MetocService.getCurrentLimits());
             $scope.windLimits = buildLimits(MetocService.getWindLimits());
         }, true);
-        
-        $scope.knots2Ms = function(knots){
+
+        $scope.knots2Ms = function(knots) {
             return Math.round(knots2Ms(knots) * 10) / 10;
         }
     } ]);

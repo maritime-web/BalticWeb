@@ -38,7 +38,9 @@ public class ProjectionFileParser {
 
             return projection;
         } finally {
-            is.close();
+            if (is != null) {
+                is.close();
+            }
         }
     }
 }
