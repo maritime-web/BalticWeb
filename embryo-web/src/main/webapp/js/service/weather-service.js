@@ -25,9 +25,11 @@
                 }
                 
                 function mergeWeatherStructure(weather){
-                    for ( var index in weather.forecast.districts) {
-                        var forecastDistrict = weather.forecast.districts[index];
-                        forecastDistrict.warning = weather.warning.districts[forecastDistrict.name];
+                    if(weather && weather.forecast){
+                        for ( var index in weather.forecast.districts) {
+                            var forecastDistrict = weather.forecast.districts[index];
+                            forecastDistrict.warning = weather.warning.districts[forecastDistrict.name];
+                        }
                     }
                     return weather;
                 }
