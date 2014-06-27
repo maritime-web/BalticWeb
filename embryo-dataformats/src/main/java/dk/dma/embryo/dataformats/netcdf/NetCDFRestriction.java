@@ -1,4 +1,4 @@
-/* Copyright (c) 2014 Danish Maritime Authority
+/* Copyright (c) 2011 Danish Maritime Authority
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,11 +22,11 @@ package dk.dma.embryo.dataformats.netcdf;
  *
  */
 public class NetCDFRestriction {
-    private int minLat = 0;
-    private int maxLat = 0;
-    private int minLon = 0;
-    private int maxLon = 0;
-    private int timeStart = 0;
+    private int minLat;
+    private int maxLat;
+    private int minLon;
+    private int maxLon;
+    private int timeStart;
     private int timeInterval = 1;
     public int getMinLat() {
         return minLat;

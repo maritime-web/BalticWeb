@@ -1,4 +1,4 @@
-/* Copyright (c) 2014 Danish Maritime Authority
+/* Copyright (c) 2011 Danish Maritime Authority
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -215,7 +215,7 @@ public class NetCDFParser {
                         // The time dimension from the range needs to correspond
                         // to the range we're using, so we're converting the i
                         // variable back to the "original" index.
-                        SmallEntry entry = new SmallEntry(j, k, (i * 24 + 12), val);
+                        SmallEntry entry = new SmallEntry(j, k, i * 24 + 12, val);
                         entries.add(entry);
                     }
                 }
