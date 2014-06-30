@@ -61,6 +61,9 @@ public class DmiWeatherJob {
 
     @Inject
     private EmbryoLogService embryoLogService;
+    
+    @Inject
+    private WeatherServiceImpl weatherService;
 
     @Inject
     @Property("embryo.weather.dmi.ftp.cron")
@@ -111,7 +114,7 @@ public class DmiWeatherJob {
 
             logger.info("Transfer files ...");
             final List<String> transfered = new ArrayList<>();
-            final List<String> transfererror = new ArrayList<>();
+            final List<String> error = new ArrayList<>();
 
             try {
                 List<FTPFile> files = Arrays.asList(ftp.listFiles(null, DmiFTPFileFilters.FILES));
@@ -121,16 +124,23 @@ public class DmiWeatherJob {
                             transfered.add(file.getName());
                         }
                     } catch (RuntimeException e) {
-                        transfererror.add(file.getName());
+                        error.add(file.getName());
                     }
                 }
             } finally {
                 ftp.logout();
             }
+            
+            try {
+                weatherService.refresh();
+            }catch(Exception e){
+                embryoLogService.error("Error reading transfered file", e);
+                error.add(e.getMessage());
+            }
 
             String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + toString(transfered)
-                    + ", Errors: " + toString(transfererror);
-            if (transfererror.size() == 0) {
+                    + ", Errors: " + toString(error);
+            if (error.size() == 0) {
                 logger.info(msg);
                 embryoLogService.info(msg);
             } else {
