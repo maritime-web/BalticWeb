@@ -71,6 +71,7 @@ $(function() {
                             RouteService.getRoute(vesselDetails.additionalInformation.routeId, function(route) {
                                 route.active = true;
                                 route.own = true;
+                                yourShipRouteLayer.clear();
                                 yourShipRouteLayer.draw([route], "active");
                             });
                         } else {
