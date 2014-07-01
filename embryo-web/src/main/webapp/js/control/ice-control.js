@@ -483,6 +483,8 @@ $(function() {
 
         html += createTableHeaderRow('Iceberg');
 
+        console.log(desc)
+        
         html += createTableRow({
             'Area (m2)' : desc.Area_m2,
             'Longest diameter (m)' : desc.Adj_Size_m,
@@ -505,7 +507,7 @@ $(function() {
         var source = "Region: " + iceDescription.information.region + "<br/>";
         source += ("Created: " + formatTime(iceDescription.information.date) + " UTC");
         if (iceDescription.type == 'iceberg') {
-            source += ("<br/>Position:" + formatLatitude(iceDescription.Lat) + ', ' + formatLongitude(iceDescription.Long));
+            source += ("<br/>Position: " + formatLatitude(iceDescription.Lat) + ', ' + formatLongitude(iceDescription.Long));
         }
         $("#icpSelectedIce p").html(source);
         openCollapse("#icpSelectedIce");
