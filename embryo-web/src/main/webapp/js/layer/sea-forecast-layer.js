@@ -3,19 +3,39 @@ function SeaForecastLayer() {
     this.init = function() {
         var that = this;
 
+        this.zoomLevels = [ 3, 4, 5];
+        
         this.context = {
-            transparency : function() {
-                return that.active ? 0.5 : 0.25;
-            },
             fillColor : function(feature){
                 //#ff0000
                 //#f2dede
                 return feature.attributes.district.warning ? "#ff0000" : "transparent";
+            },
+            transparency : function() {
+                return that.active ? 0.5 : 0.25;
+            },
+            fontSize : function(feature){
+                if(that.zoomLevel <= 1){
+                    return "8px";
+                }                
+                if(that.zoomLevel == 2){
+                    return "10px";
+                }                
+                return "12px";
+            },
+            label : function(feature){
+                if(that.active){
+                    return "" + feature.attributes.id + "\n" + feature.attributes.name;
+                }                
+                return "";
+            },
+            display : function(feature){
+                return feature.attributes.district.warning || that.active ? "yes" : "none";
             }
         
         };
 
-        this.layers.forecasts = new OpenLayers.Layer.Vector("SeaForecasts", {
+        this.layers.forecasts = new OpenLayers.Layer.Vector("DistrictForecasts", {
             styleMap : new OpenLayers.StyleMap({
                 "default" : new OpenLayers.Style({
                     fillColor : "${fillColor}",
@@ -24,11 +44,12 @@ function SeaForecastLayer() {
                     strokeColor : "#000000",
                     strokeOpacity : "0.2",
                     fontColor : "#000000",
-                    fontSize : "12px",
+                    fontSize : "${fontSize}",
                     fontFamily : "Courier New, monospace",
-                    label : "${id}\n${name}",
+                    label : "${label}",
                     fontOpacity : "${transparency}",
-                    fontWeight : "bold"
+                    fontWeight : "bold",
+                    display : "${display}"
                 }, {
                     context : this.context
                 }),

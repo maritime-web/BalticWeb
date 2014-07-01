@@ -29,6 +29,7 @@
                         for ( var index in weather.forecast.districts) {
                             var forecastDistrict = weather.forecast.districts[index];
                             forecastDistrict.warning = weather.warning.districts[forecastDistrict.name];
+                            forecastDistrict.validTo = weather.forecast.to;
                         }
                     }
                     return weather;

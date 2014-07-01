@@ -2,14 +2,13 @@
 	<div id="weatherControlPanel" accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
 		<div accordion-group heading="Weather">
 			<div x-ng-controller="WeatherForecastController">
-				<p>Created: {{from()}}</p>
+				<p>Created: {{from()}} UTC</p>
 				<h4>Overview</h4>
 				<p>
 					{{forecast.desc}}<br /> {{forecast.time}}
 				</p>
 
 				<h4>Forecasts</h4>
-				<span>Valid to {{to()}}</span>
 				<table class="table table-condensed">
 					<tr x-ng-repeat="district in forecast.districts">
 						<td>{{district.name}}</td>
@@ -17,6 +16,7 @@
 						<td><a href="#" x-ng-click="viewForecast($event, district)">view</a></td>
 					</tr>
 				</table>
+				<span>Valid to {{to()}} UTC</span>
 			</div>
 
 		</div>
@@ -64,7 +64,7 @@
 			</div>
 			<div x-ng-controller="SelectWeatherForecastCtrl">
 				<div ng-if="selected.forecast && selected.type === 'district'">
-					{{selected.forecast.name}}
+					Valid to: {{formatDateTime(selected.forecast.validTo)}} UTC
 
 					<div x-ng-if="selected.forecast.warning" class="e-alert-danger">
 						<h5>Gale Warning</h5>

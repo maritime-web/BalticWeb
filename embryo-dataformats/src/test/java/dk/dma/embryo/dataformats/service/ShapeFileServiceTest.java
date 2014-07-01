@@ -17,8 +17,8 @@ package dk.dma.embryo.dataformats.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,7 +34,9 @@ import org.slf4j.LoggerFactory;
 
 import dk.dma.embryo.common.configuration.PropertiesReader;
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.dataformats.service.ShapeFileService.BaseFragment;
 import dk.dma.embryo.dataformats.service.ShapeFileService.Fragment;
+import dk.dma.embryo.dataformats.service.ShapeFileService.Shape;
 
 public class ShapeFileServiceTest {
 
@@ -46,7 +48,7 @@ public class ShapeFileServiceTest {
     public void setup() throws IOException, URISyntaxException {
         properties = new PropertiesReader().read();
         properties.setProperty("embryo.iceChart.dmi.localDirectory", getClass().getResource("/ice").getPath());
-        properties.setProperty("embryo.iceChart.dmi.json.SouthWest_RIC","exponent=2;resolution=3");
+        properties.setProperty("embryo.iceChart.dmi.json.SouthWest_RIC", "exponent=2;resolution=3");
 
         propertyFileService = new PropertyFileService(properties);
 
@@ -59,7 +61,8 @@ public class ShapeFileServiceTest {
     @Test
     public void test() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        ShapeFileService.Shape file = service.readSingleFile("iceChart-dmi.201311190920_CapeFarewell_RIC", 0, "", true, 4, 0);
+        ShapeFileService.Shape file = service.readSingleFile("iceChart-dmi.201311190920_CapeFarewell_RIC", 0, "", true,
+                4, 0);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gos = new GZIPOutputStream(out);
@@ -71,74 +74,114 @@ public class ShapeFileServiceTest {
 
     }
 
-    
     @Test
     public void reprojectTest() throws IOException {
         ShapeFileService.Shape file = service.readSingleFile("static.world_merc", 0, "", true, 4, 0);
-        assertEquals(-616867, ((Fragment)file.getFragments().get(0)).getPolygons().get(0).get(0).getX());
-        assertEquals(170244, ((Fragment)file.getFragments().get(0)).getPolygons().get(0).get(0).getY());
+        assertEquals(-616867, ((Fragment) file.getFragments().get(0)).getPolygons().get(0).get(0).getX());
+        assertEquals(170244, ((Fragment) file.getFragments().get(0)).getPolygons().get(0).get(0).getY());
     }
 
     @Test
     public void forecastAreas() throws IOException {
-//        System.out.println("forecastAreas");
-//        
-//        String name = "Farvande_GRL_modified";
-//        ShapeFileService.Shape shape = service.readSingleFile("static." + name, 0, "", true, 2, 0);
-//        
-//        assertEquals(Integer.valueOf(2), shape.getExponent());
-//        assertTrue(shape.getFragments().size() > 0);
-//        assertNotNull(shape.getDescription());
-//        assertTrue(shape.getDescription().containsKey("id"));
-//        assertEquals(name, shape.getDescription().get("id"));
+        String name = "Farvande_GRL";
+        ShapeFileService.Shape shape = service.readSingleFile("static." + name, 0, "", true, 4, 0);
+
+        assertEquals(Integer.valueOf(4), shape.getExponent());
+        assertEquals(14, shape.getFragments().size());
+        assertNotNull(shape.getDescription());
+        assertTrue(shape.getDescription().containsKey("id"));
+        assertEquals(name, shape.getDescription().get("id"));
+
+        testFragment(shape, "Daneborg", 1L, 14);
+        testFragment(shape, "Kangikajik", 2L, 14);
+        testFragment(shape, "Aputiteeq", 3L, 13);
+        testFragment(shape, "Kulusuk", 4L, 132);
+        testFragment(shape, "Nunap Isuata Kangia",6L,12);
+        testFragment(shape, "Nunap Isuata Kitaa",7L, 12);
+        testFragment(shape, "Nunarsuit",8L,12);
+        testFragment(shape, "Narsalik",9L, 12);
+        testFragment(shape, "Meqquitsoq",10L, 12);
+        testFragment(shape, "Attu",11L, 12);
+        testFragment(shape, "Uiffaq",12L, 3);
+        testFragment(shape, "Qimusseriarsuaq",13L, 23);
+        testFragment(shape, "Kiatak",14L, 1);
     }
 
-    
+    private void testFragment(Shape shape, String fragmentName, Long expectedId, int expectedPoints) {
+        BaseFragment baseFragment = getFragment(shape, fragmentName);
+
+        assertTrue(baseFragment instanceof Fragment);
+        Fragment fragment = (Fragment) baseFragment;
+
+        assertEquals(expectedId, fragment.getDescription().get("Id"));
+        assertEquals(1, fragment.getPolygons().size());
+        //assertEquals(expectedPoints, fragment.getPolygons().get(0).size());
+    }
+
+    private BaseFragment getFragment(Shape shape, String name) {
+        for (BaseFragment fragment : shape.getFragments()) {
+            if (name.equals(fragment.getDescription().get("name"))) {
+                return fragment;
+            }
+        }
+        return null;
+    }
+
     @Test
     public void testResolutionDefault() throws IOException {
-        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", null, "", false, null, 0);
-        ShapeFileService.Shape eqDef = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false, null, 0);
-        ShapeFileService.Shape diff = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 4, "", false, null, 0);
+        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", null, "",
+                false, null, 0);
+        ShapeFileService.Shape eqDef = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "",
+                false, null, 0);
+        ShapeFileService.Shape diff = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 4, "",
+                false, null, 0);
 
         testResolution(def, eqDef, diff);
     }
 
     @Test
     public void testResolutionRegionDefault() throws IOException {
-        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", null, "", false, null, 0);
-        ShapeFileService.Shape eqDef = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 3, "", false, null, 0);
-        ShapeFileService.Shape diff = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 4, "", false, null, 0);
+        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", null, "", false,
+                null, 0);
+        ShapeFileService.Shape eqDef = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 3, "", false,
+                null, 0);
+        ShapeFileService.Shape diff = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 4, "", false,
+                null, 0);
 
         testResolution(def, eqDef, diff);
     }
 
-    
     @Test
     public void testExponentDefault() throws IOException {
-        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false, null, 0);
-        ShapeFileService.Shape three = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false, 3, 0);
-        ShapeFileService.Shape six = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false, 6, 0);
+        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false,
+                null, 0);
+        ShapeFileService.Shape three = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "",
+                false, 3, 0);
+        ShapeFileService.Shape six = service.readSingleFile("iceChart-dmi.201304100920_CapeFarewell_RIC", 0, "", false,
+                6, 0);
 
         assertEquals(Integer.valueOf(3), def.getExponent());
         assertEquals(Integer.valueOf(3), three.getExponent());
         assertEquals(Integer.valueOf(6), six.getExponent());
-        
+
         testExponents(def, three, six);
     }
 
     @Test
     public void testExponentRegionDefault() throws IOException {
         // Read file using default exponent;
-        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 0, "", false, null, 0);
+        ShapeFileService.Shape def = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 0, "", false,
+                null, 0);
         // Read file using supposed default exponent 2
-        ShapeFileService.Shape eqShape = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 0, "", false, 2, 0);
+        ShapeFileService.Shape eqShape = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 0, "",
+                false, 2, 0);
         // Read file using exponent 6
-        ShapeFileService.Shape diff = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 0, "", false, 6, 0);
+        ShapeFileService.Shape diff = service.readSingleFile("iceChart-dmi.201405011000_SouthWest_RIC", 0, "", false,
+                6, 0);
 
         assertEquals(Integer.valueOf(2), def.getExponent());
         assertEquals(Integer.valueOf(2), eqShape.getExponent());
         assertEquals(Integer.valueOf(6), diff.getExponent());
-
 
         testExponents(def, eqShape, diff);
     }

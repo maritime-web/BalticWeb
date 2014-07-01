@@ -130,7 +130,7 @@ $(function() {
         }
         
         function drawAreas(weather) {
-            ShapeService.staticShapes('static.Farvande_GRL_dissolve3', {
+            ShapeService.staticShapes('static.Farvande_GRL', {
                 exponent : 4,
                 delta : true
             }, function(shapes) {
@@ -193,7 +193,11 @@ $(function() {
                 });
             }
         });
-    } ]);
+
+        $scope.formatDateTime = function(validTo) {
+            return validTo ? formatTime(validTo) : null;
+        }
+} ]);
 
     module.controller("SettingsCtrl", [ '$scope', 'MetocService', function($scope, MetocService) {
         var warnLimits = MetocService.getDefaultWarnLimits();
