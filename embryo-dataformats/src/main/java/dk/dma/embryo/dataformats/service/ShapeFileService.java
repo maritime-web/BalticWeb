@@ -16,6 +16,7 @@
 package dk.dma.embryo.dataformats.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +76,9 @@ public interface ShapeFileService {
         
         public PointFragment(Map<String, Object> description, Position point) {
             this.point = point;
-            this.description = description;
+            this.description = new HashMap<>();
+            this.description.putAll(description);
+            this.description.remove("Size_m");
         }
         
         public Position getPoint() {
