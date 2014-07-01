@@ -54,7 +54,7 @@
                             timeout : embryo.defaultTimeout
                         }).success(function(weather) {
                             embryo.messagePanel.replace(messageId, {
-                                text : "weather forecast and warnings returned.",
+                                text : "Weather forecast downloaded.",
                                 type : "success"
                             });
                             success(weather);
