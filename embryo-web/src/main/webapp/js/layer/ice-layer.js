@@ -185,6 +185,7 @@ function IceLayer() {
                 fillColor : colorByDescription(fragment.description),
                 iceDescription : $.extend(fragment.description, {
                     source : shape.description.id,
+                    information : shape.information,
                     type : 'iceChart'
                 }),
                 description : ""
@@ -242,7 +243,8 @@ function IceLayer() {
                         };
                     }(),
                     iceDescription : $.extend(desc, {
-                        source : 'Lat: ' + desc.Lat.substr(0, 7) + ', Lon: ' + desc.Long.substr(0, 7),
+                        source: shape.description.id,
+                        information : shape.information,
                         type : 'iceberg'
                     }),
                 });

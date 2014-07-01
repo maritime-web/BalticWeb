@@ -80,101 +80,115 @@ $(function() {
             });
 
             var divId = (chartType == 'iceberg' ? '#icpIcebergs' : '#icpIceMaps');
-            embryo.ice.service.listByProvider(chartType, $scope.selectedProvider.key, function(data) {
-                embryo.messagePanel.replace(messageId, {
-                    text : "List of " + data.length + (chartType == "iceberg" ? " icebergs" : " ice charts") + " downloaded.",
-                    type : "success"
-                });
+            embryo.ice.service
+                    .listByProvider(
+                            chartType,
+                            $scope.selectedProvider.key,
+                            function(data) {
+                                embryo.messagePanel.replace(messageId, {
+                                    text : "List of " + data.length
+                                            + (chartType == "iceberg" ? " icebergs" : " ice charts") + " downloaded.",
+                                    type : "success"
+                                });
 
-                data.sort(function(a, b) {
-                    return b.date - a.date;
-                });
+                                data.sort(function(a, b) {
+                                    return b.date - a.date;
+                                });
 
-                var regions = [];
+                                var regions = [];
 
-                for ( var i in data) {
-                    if (regions.indexOf(data[i].region) < 0)
-                        regions.push(data[i].region);
-                }
+                                for ( var i in data) {
+                                    if (regions.indexOf(data[i].region) < 0)
+                                        regions.push(data[i].region);
+                                }
 
-                var sortFunction = function(reg1, reg2) {
-                    if (reg1.indexOf("All Arctic") >= 0 && reg2.indexOf("All Arctic") < 0) {
-                        return 1;
-                    } else if (reg1.indexOf("All Arctic") < 0 && reg2.indexOf("All Arctic") >= 0) {
-                        return -1;
-                    } else if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
-                        return 1;
-                    } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
-                        return -1;
-                    }
-                    return reg1.localeCompare(reg2);
-                };
+                                var sortFunction = function(reg1, reg2) {
+                                    if (reg1.indexOf("All Arctic") >= 0 && reg2.indexOf("All Arctic") < 0) {
+                                        return 1;
+                                    } else if (reg1.indexOf("All Arctic") < 0 && reg2.indexOf("All Arctic") >= 0) {
+                                        return -1;
+                                    } else if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
+                                        return 1;
+                                    } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
+                                        return -1;
+                                    }
+                                    return reg1.localeCompare(reg2);
+                                };
 
-                regions.sort(sortFunction);
+                                regions.sort(sortFunction);
 
-                var html = "";
+                                var html = "";
 
-                for ( var j in regions) {
-                    var region = regions[j];
-                    html += "<tr><td colspan=4><h4>" + region + "</h4></td></tr>";
+                                for ( var j in regions) {
+                                    var region = regions[j];
+                                    html += "<tr><td colspan=4><h4>" + region + "</h4></td></tr>";
 
-                    for ( var i in data) {
-                        if (data[i].region == region)
-                            html += "<tr><td>" + data[i].source + "</td><td>" + formatTime(data[i].date) + "</td><td>" + formatSize(data[i].size)
-                                    + "</td><td><a mid=" + i + " href=# class='download'>download</a><span class='zoomhide'>"
-                                    + "<a href=# class='zoom'>zoom</a> / <a href=# class='hideIce'>hide</a></span></td></tr>";
-                    }
+                                    for ( var i in data) {
+                                        if (data[i].region == region)
+                                            html += "<tr><td>"
+                                                    + data[i].source
+                                                    + "</td><td>"
+                                                    + formatTime(data[i].date)
+                                                    + "</td><td>"
+                                                    + formatSize(data[i].size)
+                                                    + "</td><td><a mid="
+                                                    + i
+                                                    + " href=# class='download'>download</a><span class='zoomhide'>"
+                                                    + "<a href=# class='zoom'>zoom</a> / <a href=# class='hideIce'>hide</a></span></td></tr>";
+                                    }
 
-                }
+                                }
 
-                $(divId + " table").html(html);
+                                $(divId + " table").html(html);
 
-                function registerClicks(){
-                    // $("#icpIceMaps
-                    // td:first").css("border-top", "none");
-                    $(divId + " table span.zoomhide").css("display", "none");
-                    $(divId + " table a.download").on('click', function(e) {
-                        e.preventDefault();
-                        var row = $(this).parents("tr");
-                        requestShapefile(chartType, data[$(this).attr("mid")].shapeFileName, function() {
-                            $(divId + "table tr").removeClass("alert");
-                            $(row).addClass("alert");
-                            $(divId + " table span.zoomhide").css("display", "none");
-                            $(divId + " table a.download").css("display", "block");
-                            $("span.zoomhide", row).css("display", "block");
-                            $("a.download", row).css("display", "none");
-                        });
-                        // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
-                        // alert(data[$(this).attr("href")].shapeFileName);
-                    });
-                    $(divId + " table a.zoom").click(function(e) {
-                        e.preventDefault();
-                        embryo.map.zoomToExtent(iceLayer.layers);
-                    });
-                    $(divId + " table a.hideIce").click(function(e) {
-                        e.preventDefault();
-                        iceLayer.clear(chartType);
-                        $(divId + " span.zoomhide").css("display", "none");
-                        var row = $(this).parents("tr");
-                        $("a.download", row).css("display", "block");
-                    });
-                }
-                
-                registerClicks();
-                
-                setTimeout(registerClicks, 1000);
-            }, function(errorMsg, status) {
-                embryo.messagePanel.replace(messageId, {
-                    text : errorMsg,
-                    type : "error"
-                });
-            });
+                                function registerClicks() {
+                                    // $("#icpIceMaps
+                                    // td:first").css("border-top", "none");
+                                    $(divId + " table span.zoomhide").css("display", "none");
+                                    $(divId + " table a.download").on('click', function(e) {
+                                        e.preventDefault();
+                                        var row = $(this).parents("tr");
+                                        requestShapefile(chartType, data[$(this).attr("mid")], function() {
+                                            $(divId + "table tr").removeClass("alert");
+                                            $(row).addClass("alert");
+                                            $(divId + " table span.zoomhide").css("display", "none");
+                                            $(divId + " table a.download").css("display", "block");
+                                            $("span.zoomhide", row).css("display", "block");
+                                            $("a.download", row).css("display", "none");
+                                        });
+                                        // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
+                                        // alert(data[$(this).attr("href")].shapeFileName);
+                                    });
+                                    $(divId + " table a.zoom").click(function(e) {
+                                        e.preventDefault();
+                                        embryo.map.zoomToExtent(iceLayer.layers);
+                                    });
+                                    $(divId + " table a.hideIce").click(function(e) {
+                                        e.preventDefault();
+                                        iceLayer.clear(chartType);
+                                        $(divId + " span.zoomhide").css("display", "none");
+                                        var row = $(this).parents("tr");
+                                        $("a.download", row).css("display", "block");
+                                    });
+                                }
+
+                                registerClicks();
+
+                                setTimeout(registerClicks, 1000);
+                            }, function(errorMsg, status) {
+                                embryo.messagePanel.replace(messageId, {
+                                    text : errorMsg,
+                                    type : "error"
+                                });
+                            });
         }
 
-        function requestShapefile(chartType, name, onSuccess) {
+        function requestShapefile(chartType, x, onSuccess) {
             var messageId = embryo.messagePanel.show({
                 text : "Requesting " + name + " data ..."
             });
+
+            var name = x.shapeFileName;
 
             embryo.shape.service.shape(name, {
                 parts : name.indexOf("aari.aari_arc") >= 0 ? 2 : 0
@@ -206,6 +220,10 @@ $(function() {
                     }
                 }
 
+                data.information = {
+                    region : x.region,
+                    date : x.date
+                };
                 // Draw shapefile a bit later, just let the browser update the
                 // view and show above message
                 window.setTimeout(function() {
@@ -473,16 +491,6 @@ $(function() {
 
         return html;
     }
-    
-    function prettyPrintPosition(source){
-        if(source){
-            var array = source.split(/[:,]+/);
-            if(array.length >= 4){
-                source = formatLatitude(array[1]) + ', ' + formatLongitude(array[3]);
-            }
-        }
-        return source;
-    }
 
     function showIceInformation(iceDescription) {
         $("a[href=#icpSelectedIce]").html("Selected Ice Observation");
@@ -493,8 +501,13 @@ $(function() {
                 size : 160
             })));
         }
-        var source = iceDescription.type == 'iceberg' ? prettyPrintPosition(iceDescription.source) : iceDescription.source;
-        $("#icpSelectedIce p").html("Source: " + source);
+
+        var source = "Region: " + iceDescription.information.region + "<br/>";
+        source += ("Created: " + formatTime(iceDescription.information.date) + " UTC");
+        if (iceDescription.type == 'iceberg') {
+            source += ("<br/>Position:" + formatLatitude(iceDescription.Lat) + ', ' + formatLongitude(iceDescription.Long));
+        }
+        $("#icpSelectedIce p").html(source);
         openCollapse("#icpSelectedIce");
     }
 
@@ -508,7 +521,7 @@ $(function() {
 
     iceLayer.select(function(ice) {
         var lon = null, lat = null;
-        if(ice && ice.type == 'iceberg') {
+        if (ice && ice.type == 'iceberg') {
             lon = ice.Long;
             lat = ice.Lat;
         }
