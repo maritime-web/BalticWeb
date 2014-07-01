@@ -166,7 +166,7 @@ public class DmiWeatherJob {
         return builder.toString();
     }
 
-    FTPClient connect() throws SocketException, IOException {
+    FTPClient connect() throws IOException {
         FTPClient ftp = new FTPClient();
         logger.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
 

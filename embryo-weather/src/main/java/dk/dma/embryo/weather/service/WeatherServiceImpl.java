@@ -46,8 +46,8 @@ public class WeatherServiceImpl {
     @Property(value = "embryo.weather.dmi.localDirectory", substituteSystemProperties = true)
     private String localDmiDir;
 
-    private RegionForecast forecast = null;
-    private GaleWarning warning = null;
+    private RegionForecast forecast;
+    private GaleWarning warning;
 
     @Inject
     private Logger logger;

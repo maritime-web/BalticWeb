@@ -25,14 +25,14 @@ import org.apache.commons.net.ftp.FTPFileFilter;
  */
 public class DmiFTPFileFilters {
     
-    private static final String[] acceptedFileNames = new String[]{"gronvar.xml", "gruds.xml"};
+    private static final String[] ACCEPTED_FILE_NAMES = new String[]{"gronvar.xml", "gruds.xml"};
     
     /**
      * Accepts all (non-null) FTPFile directory entries
      */
     public static final FTPFileFilter FILES = new FTPFileFilter() {
         public boolean accept(FTPFile file) {
-            return file != null && !file.isDirectory() && Arrays.binarySearch(acceptedFileNames, file.getName()) >= 0;
+            return file != null && !file.isDirectory() && Arrays.binarySearch(ACCEPTED_FILE_NAMES, file.getName()) >= 0;
         }
     };
 

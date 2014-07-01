@@ -43,8 +43,8 @@ public class DmiForecastParserTest {
                 "Kangikajik",
                 "I den sydlige del endnu skiftende, under 6 m/s. Ellers sydøst, 3 til 8 m/s, til formiddag drejende syd og sydvest og i aften 5 til 10 m/s. I den sydlige del endnu stedvis regn, ellers mest god sigt, dog risiko for tåge.",
                 "Signifikant bølgehøjde: 1,5 m. Dønning: 1,5 m."));
-        expected.add(new DistrictForecast("Aputiteeq", 
-                "Nordøst eller skiftende, under 8 m/s. Stedvis regn, moderat til god sigt, dog risiko for tåge.", 
+        expected.add(new DistrictForecast("Aputiteeq",
+                "Nordøst eller skiftende, under 8 m/s. Stedvis regn, moderat til god sigt, dog risiko for tåge.",
                 "Signifikant bølgehøjde: 1,5 m. Dønning: 2 m."));
 
         InputStream is = getClass().getResourceAsStream("/dmi/gruds-mini.xml");
@@ -52,11 +52,11 @@ public class DmiForecastParserTest {
         DmiForecastParser parser = new DmiForecastParser(is);
         RegionForecast forecast = parser.parse();
 
-        String expectedOverview = "Et højtryk, 1025 hPa, over Norskehavet ligger stille. Et lavtryk, 1010 hPa, øst " +
-        		"for Kap Farvel fyldes op. Et lavtryk, ca 995 hPa, over Baffin bugt fyldes kun langsomt op og tilhørende" +
-        		" fronter giver endnu regn og blæst til store dele af Vestgrønland. Et lavtryk, ca 1010 hPa, bevæger sig " +
-        		"i løbet af dagen til syd for Kap Farvel sydvestfra og derfra lidt videre mod nordøst."; 
-        
+        String expectedOverview = "Et højtryk, 1025 hPa, over Norskehavet ligger stille. Et lavtryk, 1010 hPa, øst "
+                + "for Kap Farvel fyldes op. Et lavtryk, ca 995 hPa, over Baffin bugt fyldes kun langsomt op og tilhørende"
+                + " fronter giver endnu regn og blæst til store dele af Vestgrønland. Et lavtryk, ca 1010 hPa, bevæger sig "
+                + "i løbet af dagen til syd for Kap Farvel sydvestfra og derfra lidt videre mod nordøst.";
+
         Assert.assertEquals(expectedOverview, forecast.getDesc());
         Assert.assertEquals("00 utc", forecast.getTime());
         Assert.assertNotNull(forecast.getFrom());
@@ -64,7 +64,7 @@ public class DmiForecastParserTest {
         Assert.assertNotNull(forecast.getTo());
         Assert.assertEquals(1403762400000L, forecast.getTo().getTime());
         Assert.assertEquals(3, forecast.getDistricts().size());
-        
+
         ReflectionAssert.assertReflectionEquals(expected, forecast.getDistricts());
     }
 

@@ -61,28 +61,37 @@ public class DistrictForecast {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj){
             return true;
-        if (obj == null)
+        }
+        if (obj == null){
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()){
             return false;
+        }
         DistrictForecast other = (DistrictForecast) obj;
         if (forecast == null) {
-            if (other.forecast != null)
+            if (other.forecast != null){
                 return false;
-        } else if (!forecast.equals(other.forecast))
+            }
+        } else if (!forecast.equals(other.forecast)){
             return false;
+        }
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null){
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)){
             return false;
+        }
         if (waves == null) {
-            if (other.waves != null)
+            if (other.waves != null){
                 return false;
-        } else if (!waves.equals(other.waves))
+            }
+        } else if (!waves.equals(other.waves)){
             return false;
+        }
         return true;
     }
 
