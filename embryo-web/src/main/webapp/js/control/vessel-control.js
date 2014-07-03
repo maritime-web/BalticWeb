@@ -300,7 +300,7 @@ $(function() {
                 $scope.viewAis = function($event) {
                     $event.preventDefault();
                     VesselInformation.hideAll();
-                    embryo.controllers.ais.show($scope.vesselDetails.ais);
+                    embryo.controllers.ais.show($scope.selected.vesselDetails.ais);
                 };
 
                 $scope.$watch('selected.vesselOverview', function(newValue, oldValue) {
