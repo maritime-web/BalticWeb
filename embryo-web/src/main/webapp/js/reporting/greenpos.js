@@ -203,8 +203,9 @@ var greenposScope;
             }
         };
 
-        this.close = function() {
-            layer.clear();
+        this.close = function($event) {
+            $event.preventDefault();
+            $scope.provider.close();
         };
 
         var vesselOverview = null, vesselDetails = null;
@@ -233,6 +234,7 @@ var greenposScope;
                 return this.doShow;
             },
             close : function() {
+                layer.clear();
                 this.doShow = false;
                 $scope.warningMessages = null;
                 $scope.alertMessages = null;
