@@ -75,7 +75,7 @@ $(function() {
                                 yourShipRouteLayer.draw([route], "active");
                             });
                         } else {
-                            this.layer.hideFeatures(function(feature) {
+                            yourShipRouteLayer.hideFeatures(function(feature) {
                                 return feature.attributes.featureType === "route" && feature.attributes.data.active && feature.attributes.data.own;
                             });
                         }
