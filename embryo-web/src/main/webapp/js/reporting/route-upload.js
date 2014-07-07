@@ -15,7 +15,7 @@
             maxFileSize : 1000000,
             // Ideally, routes and schedules should make different checks, but
             // this can't be done at config time.
-            acceptFileTypes : /(\.|\/)(txt|rou|rt3|xls|route)$/i,
+            acceptFileTypes : /map\d{4}t|((\.|\/)(txt|rou|rt3|xls|route))$/i,
             messages : {
                 acceptFileTypes : 'File type not allowed. Accepted types are txt, rou, rt3, xls and route.',
                 maxFileSize : 'File is too large. Size may not exceed 1 MB.',

@@ -43,6 +43,10 @@ public abstract class RouteParser {
             return new Rt3RouteParser(file);
         case "ROUTE":
             return new RouteRouteParser(file);
+        case "" : 
+            if(file.getName().matches("map\\d{4}t")){
+                return new SAMRouteParser(file);
+            }
         default:
             throw new IllegalArgumentException("Unknown file extension. Known extensions are 'TXT' and 'ROU'.");
 //            return new PertinaciousRouteParser(file);
@@ -60,6 +64,10 @@ public abstract class RouteParser {
             return new Rt3RouteParser(io, config);
         case "ROUTE":
             return new RouteRouteParser(io, config);
+        case "" : 
+            if(fileName.matches("map\\d{4}t")){
+                return new SAMRouteParser(io, config);
+            }
         default:
             throw new IllegalArgumentException("Unknown file extension. Known extensions are 'TXT' and 'ROU'.");
 //            return new PertinaciousRouteParser(file);
@@ -68,6 +76,9 @@ public abstract class RouteParser {
     
     private static String getExtension(String fileName){
         int position = fileName.lastIndexOf('.');
+        if(position == -1){
+            return "";
+        }
         return fileName.substring(position + 1).trim().toUpperCase();        
     }
     

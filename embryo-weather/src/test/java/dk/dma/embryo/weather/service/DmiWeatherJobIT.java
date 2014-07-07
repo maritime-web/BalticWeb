@@ -41,7 +41,6 @@ import dk.dma.embryo.common.log.EmbryoLogService;
  */
 @RunWith(CdiRunner.class)
 @AdditionalClasses({PropertyFileService.class, LogConfiguration.class})
-
 public class DmiWeatherJobIT {
     
     @Inject
