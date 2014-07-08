@@ -22,7 +22,7 @@ package dk.dma.embryo.weather.model;
 public class Weather {
 
     private RegionForecast forecast;
-    private GaleWarning warning;
+    private Warnings warnings;
     
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -31,10 +31,10 @@ public class Weather {
         super();
     }
     
-    public Weather(RegionForecast forecast, GaleWarning warning) {
+    public Weather(RegionForecast forecast, Warnings warning) {
         super();
         this.forecast = forecast;
-        this.warning = warning;
+        this.warnings = warning;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -46,10 +46,10 @@ public class Weather {
     public void setForecast(RegionForecast forecast) {
         this.forecast = forecast;
     }
-    public GaleWarning getWarning() {
-        return warning;
+    public Warnings getWarnings() {
+        return warnings;
     }
-    public void setWarning(GaleWarning warning) {
-        this.warning = warning;
+    public void setWarnings(Warnings warning) {
+        this.warnings = warning;
     }
 }

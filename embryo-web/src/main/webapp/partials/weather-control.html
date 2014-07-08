@@ -2,7 +2,9 @@
 	<div id="weatherControlPanel" accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
 		<div accordion-group heading="Weather">
 			<div x-ng-controller="WeatherForecastController">
-				<p>Created: {{from()}} UTC</p>
+				<p>
+					Danish Meteorological Institute<br /> Created: {{from()}} UTC
+				</p>
 				<h4>Overview</h4>
 				<p>
 					{{forecast.desc}}<br /> {{forecast.time}}
@@ -12,7 +14,9 @@
 				<table class="table table-condensed">
 					<tr x-ng-repeat="district in forecast.districts">
 						<td>{{district.name}}</td>
-						<td><span x-ng-show="district.warning" class="label label-danger">GALE WARNING</span></td>
+						<td class="warning"><div x-ng-show="district.warnings && district.warnings.gale" class="label label-danger">GALE</div>
+							<div x-ng-show="district.warnings && district.warnings.storm" class="label label-danger">STORM</div>
+							<div x-ng-show="district.warnings && district.warnings.icing" class="label label-danger">ICING</div></td>
 						<td><a href="#" x-ng-click="viewForecast($event, district)">view</a></td>
 					</tr>
 				</table>
@@ -32,7 +36,8 @@
 			</table>
 		</div>
 
-		<div accordion-group heading="Selected Forecast {{selected.name ? ' - ' + selected.name : ''}}" is-open="selected.open">
+		<div accordion-group heading="Selected Forecast {{selected.name ? ' - ' + selected.name : ''}}"
+			is-open="selected.open">
 			<div ng-if="!selected.forecast">Nothing selected</div>
 			<div x-ng-controller="SelectedMetocController">
 				<table class="table table-condensed" ng-if="selected.forecast && selected.type === 'msi'">
@@ -64,11 +69,20 @@
 			</div>
 			<div x-ng-controller="SelectWeatherForecastCtrl">
 				<div ng-if="selected.forecast && selected.type === 'district'">
-					Valid to: {{formatDateTime(selected.forecast.validTo)}} UTC
-
-					<div x-ng-if="selected.forecast.warning" class="e-alert-danger">
+					<p>
+						Danish Meteorological Institute<br /> Valid to: {{formatDateTime(selected.forecast.validTo)}} UTC
+					</p>
+					<div x-ng-if="selected.forecast.warnings && selected.forecast.warnings.storm" class="e-alert-danger">
+						<h5>Storm Warning</h5>
+						<p>{{selected.forecast.warnings.storm}}</p>
+					</div>
+					<div x-ng-if="selected.forecast.warnings && selected.forecast.warnings.gale" class="e-alert-danger">
 						<h5>Gale Warning</h5>
-						<p >{{selected.forecast.warning}}</p>
+						<p>{{selected.forecast.warnings.gale}}</p>
+					</div>
+					<div x-ng-if="selected.forecast.warnings && selected.forecast.warnings.icing" class="e-alert-danger">
+						<h5>Icing Warning</h5>
+						<p>{{selected.forecast.warnings.icing}}</p>
 					</div>
 					<h5>Forecast</h5>
 					<p>{{selected.forecast.forecast}}</p>

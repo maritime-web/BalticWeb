@@ -23,12 +23,25 @@
                         }
                     }
                 }
-                
-                function mergeWeatherStructure(weather){
-                    if(weather && weather.forecast){
+
+                function mergeWeatherStructure(weather) {
+                    if (weather && weather.forecast) {
                         for ( var index in weather.forecast.districts) {
                             var forecastDistrict = weather.forecast.districts[index];
-                            forecastDistrict.warning = weather.warning.districts[forecastDistrict.name];
+
+                            
+                            
+                            if (weather.warnings.gale[forecastDistrict.name]
+                                    || weather.warnings.storm[forecastDistrict.name]
+                                    || weather.warnings.icing[forecastDistrict.name]) {
+
+                                console.log(weather.warnings);
+                                forecastDistrict.warnings = {
+                                    gale : weather.warnings.gale[forecastDistrict.name],
+                                    storm : weather.warnings.storm[forecastDistrict.name],
+                                    icing : weather.warnings.icing[forecastDistrict.name],
+                                };
+                            }
                             forecastDistrict.validTo = weather.forecast.to;
                         }
                     }

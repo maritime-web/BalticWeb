@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.weather.model.GaleWarning;
+import dk.dma.embryo.weather.model.Warnings;
 import dk.dma.embryo.weather.model.RegionForecast;
 
 /**
@@ -47,7 +47,7 @@ public class WeatherServiceImpl {
     private String localDmiDir;
 
     private RegionForecast forecast;
-    private GaleWarning warning;
+    private Warnings warning;
     
     @Inject
     private DmiForecastParser_En parser;
@@ -64,12 +64,12 @@ public class WeatherServiceImpl {
     }
 
     @Lock(LockType.READ)
-    public GaleWarning getWarning() {
+    public Warnings getWarning() {
         return warning;
     }
     
     @Lock(LockType.WRITE)
-    public void setValues(RegionForecast forecast, GaleWarning warning){
+    public void setValues(RegionForecast forecast, Warnings warning){
         this.forecast = forecast;
         this.warning = warning;
     }
@@ -85,7 +85,7 @@ public class WeatherServiceImpl {
     
     public void refresh() throws IOException {
         RegionForecast fResult = readForecasts();
-        GaleWarning wResult = readGaleWarnings();
+        Warnings wResult = readGaleWarnings();
         setValues(fResult, wResult);
     }
 
@@ -94,9 +94,10 @@ public class WeatherServiceImpl {
         return parser.parse(new File(fn));
     }
 
-    private GaleWarning readGaleWarnings() throws IOException {
+    private Warnings readGaleWarnings() throws IOException {
         String fn = localDmiDir + "/gronvar.xml";
-        DmiGaleWarningParser parser = new DmiGaleWarningParser(new File(fn));
-        return parser.parse();
+        DmiWarningParser parser = new DmiWarningParser(new File(fn));
+        WarningTranslator translator = new WarningTranslator();
+        return translator.fromDanishToEnglish(parser.parse());
     }
 }

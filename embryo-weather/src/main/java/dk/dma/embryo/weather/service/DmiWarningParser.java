@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,21 +40,21 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import dk.dma.embryo.weather.model.GaleWarning;
+import dk.dma.embryo.weather.model.Warnings;
 
 /**
  * Parser for reading routes in RT3 format. RT3 format is among others used by Transas ECDIS.
  * 
  * @author Jesper Tejlgaard
  */
-public class DmiGaleWarningParser {
+public class DmiWarningParser {
 
     public static final Locale DEFAULT_LOCALE = new Locale("da", "DK");
 
     private boolean closeReader;
     private BufferedInputStream is;
 
-    public DmiGaleWarningParser(InputStream is) {
+    public DmiWarningParser(InputStream is) {
         if (is instanceof BufferedInputStream) {
             this.is = (BufferedInputStream) is;
         } else {
@@ -61,11 +62,11 @@ public class DmiGaleWarningParser {
         }
     }
 
-    public DmiGaleWarningParser(File file) throws FileNotFoundException {
+    public DmiWarningParser(File file) throws FileNotFoundException {
         this(new FileInputStream(file));
     }
 
-    public GaleWarning parse() throws IOException {
+    public Warnings parse() throws IOException {
         try {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -84,8 +85,8 @@ public class DmiGaleWarningParser {
         }
     }
 
-    private GaleWarning parseGaleWarnings(String input) throws IOException {
-        GaleWarning result = new GaleWarning();
+    private Warnings parseGaleWarnings(String input) throws IOException {
+        Warnings result = new Warnings();
 
         BufferedReader reader = new BufferedReader(new StringReader(input));
 
@@ -96,19 +97,32 @@ public class DmiGaleWarningParser {
         DateTime ts = formatter.parseDateTime(date);
         result.setFrom(ts.toDate());
 
+        Map<String, String> warnings = null;
         String line;
+        boolean useMetersPerSecond = false;
         while ((line = reader.readLine()) != null) {
             if (line.trim().length() != 0) {
                 if (line.indexOf("Varsel nummer") == 0) {
                     result.setNumber(Integer.valueOf(line.substring(14)));
-                } else if (line.indexOf("Kulingvarsel") != 0) {
+                }else if (line.indexOf("Kulingvarsel") >= 0 || line.indexOf("kulingvarsel") >= 0){
+                    warnings = result.getGale();
+                    useMetersPerSecond = true;
+                }else if (line.indexOf("Stormvarsel") >= 0 || line.indexOf("stormvarsel") >= 0){
+                    warnings = result.getStorm();
+                    useMetersPerSecond = false;
+                }else if (line.indexOf("Overisningsvarsel") >= 0 || line.indexOf("overisningsvarsel") >= 0){
+                    warnings = result.getIcing();
+                    useMetersPerSecond = false;
+                } else {
                     String value = reader.readLine();
-                    value = value.replace(" m/s.", ".");
-                    value = value.replace("m/s.", ".");
-                    value = value.replace(".", " m/s.");
+                    if(useMetersPerSecond){
+                        value = value.replace(" m/s.", ".");
+                        value = value.replace("m/s.", ".");
+                        value = value.replace(".", " m/s.");
+                    }
                     String name = line.replace(":", "");
-                    result.getDistricts().put(name, value);
-                }
+                    warnings.put(name, value);
+                } 
             }
         }
         return result;
