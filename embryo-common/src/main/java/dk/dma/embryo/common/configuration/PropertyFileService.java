@@ -18,9 +18,12 @@ package dk.dma.embryo.common.configuration;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import javax.annotation.PostConstruct;
@@ -141,6 +144,18 @@ public class PropertyFileService {
         return result;
     }
 
+    @Produces
+    @Property
+    public Set<String> getSetPropertyByKey(InjectionPoint ip) {
+        String prop = getStringPropertyByKey(ip);
+        Set<String> result = new HashSet<>();
+        String[] value = prop.split(",");
+        Collections.addAll(result, value);
+
+        return result;
+    }
+
+    
     @Produces
     @Property
     public ScheduleExpression getScheduleExpressionPropertyByKey(InjectionPoint ip) {

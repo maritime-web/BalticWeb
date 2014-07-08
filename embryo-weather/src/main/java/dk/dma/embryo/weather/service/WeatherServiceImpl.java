@@ -48,6 +48,9 @@ public class WeatherServiceImpl {
 
     private RegionForecast forecast;
     private GaleWarning warning;
+    
+    @Inject
+    private DmiForecastParser_En parser;
 
     @Inject
     private Logger logger;
@@ -87,9 +90,8 @@ public class WeatherServiceImpl {
     }
 
     private RegionForecast readForecasts() throws IOException {
-        String fn = localDmiDir + "/gruds.xml";
-        DmiForecastParser parser = new DmiForecastParser(new File(fn));
-        return parser.parse();
+        String fn = localDmiDir + "/grudseng.xml";
+        return parser.parse(new File(fn));
     }
 
     private GaleWarning readGaleWarnings() throws IOException {
