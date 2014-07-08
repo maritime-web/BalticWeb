@@ -24,7 +24,7 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.weather.model.GaleWarning;
+import dk.dma.embryo.weather.model.Warnings;
 import dk.dma.embryo.weather.model.RegionForecast;
 import dk.dma.embryo.weather.model.Weather;
 import dk.dma.embryo.weather.service.WeatherServiceImpl;
@@ -47,10 +47,10 @@ public class WeatherRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public GaleWarning getWarning(String provider, String region) {
+    public Warnings getWarning(String provider, String region) {
         logger.debug("getWarning({})");
 
-        GaleWarning warning = weatherService.getWarning();
+        Warnings warning = weatherService.getWarning();
         
         logger.debug("getWarning({}, {}) : {}", provider, region, warning);
         return warning;
@@ -79,7 +79,7 @@ public class WeatherRestService {
         logger.debug("getWeather({}, {})", provider, region);
 
         RegionForecast forecast = weatherService.getRegionForecast();
-        GaleWarning warning = weatherService.getWarning();
+        Warnings warning = weatherService.getWarning();
         
         Weather weather = new Weather(forecast, warning);
 

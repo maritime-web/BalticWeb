@@ -9,7 +9,7 @@ function SeaForecastLayer() {
             fillColor : function(feature){
                 //#ff0000
                 //#f2dede
-                return feature.attributes.district.warning ? "#ff0000" : "transparent";
+                return feature.attributes.district.warnings ? "#ff0000" : "transparent";
             },
             transparency : function() {
                 return that.active ? 0.5 : 0.25;
@@ -140,10 +140,7 @@ function SeaForecastLayer() {
 
         for ( var l in shapes) {
             var shape = shapes[l];
-            var ice = shape.fragments;
-
-            fragments = ice.slice(0);
-            drawFragments(shape, fragments);
+            drawFragments(shape, shape.fragments.slice(0));
         }
     };
 }

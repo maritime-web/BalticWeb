@@ -23,8 +23,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import dk.dma.embryo.weather.model.DistrictForecast;
-import dk.dma.embryo.weather.model.GaleWarning;
+import dk.dma.embryo.weather.model.Warnings;
 
 /**
  * @author Jesper Tejlgaard
@@ -42,13 +41,41 @@ public class DmiGaleWarningParserTest {
 
         InputStream is = getClass().getResourceAsStream("/dmi/gronvar.xml");
 
-        DmiGaleWarningParser parser = new DmiGaleWarningParser(is);
-        GaleWarning warning = parser.parse();
+        DmiWarningParser parser = new DmiWarningParser(is);
+        Warnings warning = parser.parse();
 
         Assert.assertNotNull(warning.getFrom());
         Assert.assertEquals(1403679360000L, warning.getFrom().getTime());
         Assert.assertEquals(Integer.valueOf(614), warning.getNumber());
-        Assert.assertEquals(expected, warning.getDistricts());
+        Assert.assertEquals(expected, warning.getGale());
+    }
 
+    @Test
+    public void testWithAllWarningTypes() throws IOException {
+
+        Map<String, String> expectedGaleWarnings = new HashMap<>();
+        expectedGaleWarnings.put("Nunarsuit", "Sydøst 18 m/s.");
+        expectedGaleWarnings.put("Narsalik", "Sydøst 23 m/s.");
+        expectedGaleWarnings.put("Meqquitsoq", "Sydsydøst 23 m/s.");
+        expectedGaleWarnings.put("Attu", "Sydøst 20 m/s.");
+
+        Map<String, String> expectedStormWarnings = new HashMap<>();
+        expectedStormWarnings.put("Nunarsuit", "Sydøst 10 m/s.");
+        expectedStormWarnings.put("Narsalik", "Sydøst 15.");
+
+        Map<String, String> expectedIceWarnings = new HashMap<>();
+        expectedIceWarnings.put("Attu", "Hep hey");
+        
+        InputStream is = getClass().getResourceAsStream("/dmi/gronvar-all-selfinvented.xml");
+
+        DmiWarningParser parser = new DmiWarningParser(is);
+        Warnings warning = parser.parse();
+
+        Assert.assertNotNull(warning.getFrom());
+        Assert.assertEquals(1403679360000L, warning.getFrom().getTime());
+        Assert.assertEquals(Integer.valueOf(687), warning.getNumber());
+        Assert.assertEquals(expectedGaleWarnings, warning.getGale());
+        Assert.assertEquals(expectedStormWarnings, warning.getStorm());
+        Assert.assertEquals(expectedIceWarnings, warning.getIcing());
     }
 }

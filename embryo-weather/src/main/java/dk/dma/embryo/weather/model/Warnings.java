@@ -22,12 +22,14 @@ import java.util.Map;
 /**
  * @author Jesper Tejlgaard
  */
-public class GaleWarning {
+public class Warnings {
 
     private Integer number;
     private Date from;
 
-    private Map<String, String> districts = new HashMap<>();
+    private Map<String, String> gale = new HashMap<>();
+    private Map<String, String> storm = new HashMap<>();
+    private Map<String, String> icing = new HashMap<>();
 
     public Integer getNumber() {
         return number;
@@ -45,11 +47,29 @@ public class GaleWarning {
         this.from = from;
     }
 
-    public Map<String, String> getDistricts() {
-        return districts;
+    public Map<String, String> getGale() {
+        return gale;
     }
 
-    public void setDistricts(Map<String, String> districts) {
-        this.districts = districts;
+    public void setGale(Map<String, String> gale) {
+        this.gale = gale;
     }
+
+    public Map<String, String> getStorm() {
+        return storm;
+    }
+
+    public void setStorm(Map<String, String> storm) {
+        this.storm = storm;
+    }
+
+    public Map<String, String> getIcing() {
+        return icing;
+    }
+
+    public void setIce(Map<String, String> icing) {
+        this.icing = icing;
+    }
+
+    
 }
