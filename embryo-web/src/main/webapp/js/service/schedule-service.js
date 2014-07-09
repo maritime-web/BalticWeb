@@ -14,6 +14,8 @@
                 id : schecule.voyages[index].maritimeId,
                 dep : schecule.voyages[index].location,
                 depEta : schecule.voyages[index].departure,
+                depLat : schecule.voyages[index].latitude,
+                depLon : schecule.voyages[index].longitude,
                 crew : schecule.voyages[index].crew,
                 passengers : schecule.voyages[index].passengers,
             };
@@ -23,6 +25,8 @@
             if (index < schecule.voyages.length - 1) {
                 result.des = schecule.voyages[index + 1].location;
                 result.desEta = schecule.voyages[index + 1].arrival;
+                result.desLat = schecule.voyages[index + 1].latitude;
+                result.desLon = schecule.voyages[index + 1].longitude;
             }
             return result;
         }

@@ -148,6 +148,34 @@ $(function() {
 
             map.setCenter(pos, zoom);
         },
+        getPxFromPosition : function(longitude, latitude) {
+            var lonLat = transformPosition(longitude, latitude);
+            var pixel = map.getViewPortPxFromLonLat(lonLat);
+            return pixel;
+        },
+        getLonLatFromPixel : function(x, y) {
+            return map.getLonLatFromPixel(new OpenLayers.Pixel(x, y));
+        },
+        lonLatDifference : function(lonLat1, lonLat2) {
+            var lonDiff = lonLat2.lon - lonLat1.lon;
+            var latDiff = lonLat2.lat - lonlat1.lat;
+            return new OpenLayers.LonLat(lonDiff, latDiff);
+        },
+        lonLatDifference : function(lonLat1, lonLat2) {
+            var lonDiff = lonLat2.lon - lonLat1.lon;
+            var latDiff = lonLat2.lat - lonLat1.lat;
+            return new OpenLayers.LonLat(lonDiff, latDiff);
+        },
+        transformPosition : function(longitude, latitude){
+            return transformPosition(longitude, latitude);
+        },
+        addToLonLat : function(lonLat, lonLatDiff) {
+            return new OpenLayers.LonLat(lonLat.lon + lonLatDiff.lon, lonLat.lat + lonLatDiff.lat);
+        },
+        isWithinBorders : function(longitude, latitude) {
+            var lonLat = transformPosition(longitude, latitude);
+            return map.getExtent().containsLonLat(lonLat);
+        },
         internalMap : map,
         createClickControl : function(handler) {
             var Control = OpenLayers.Class(OpenLayers.Control, {
@@ -433,7 +461,7 @@ $(function() {
             var zoom2YourVessel = Subject.authorize('Sailor');
             return zoom2YourVessel ? 'e-btn-tall' : 'e-btn-low'
         }
-        
+
         $scope.$on('$destroy', function() {
             embryo.map.internalMap.removeControl(control);
         });

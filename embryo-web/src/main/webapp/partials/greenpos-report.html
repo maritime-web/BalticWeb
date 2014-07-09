@@ -26,8 +26,9 @@
 					<label class="e-control-label">Report recipient(s)</label>
 					<div class="controls col-xs-6">
 						<input type="checkbox" name="gpCoastalControl" id="chkCoastalControl" x-ng-model="report.coastalcontrol" /> <label
-							for="chkCoastalControl" style="padding-right: 10px;">Coastal Control</label> <input type="checkbox"
-							name="gpGreenpos" id="chkGreenpos" x-ng-model="report.greenpos" /> <label for="chkGreenpos">Greenpos</label>
+							for="chkCoastalControl" style="padding-right: 10px;">Coastal Control</label>
+						<input type="checkbox" name="gpGreenpos" id="chkGreenpos" x-ng-model="report.greenpos" /> <label
+							for="chkGreenpos">Greenpos</label>
 					</div>
 				</div>
 
@@ -84,7 +85,7 @@
 				<div class="control-group form-group row" x-ng-show="isVisible('eta')">
 					<label class="e-control-label" for="gpEta">Estimated Time of Arrival (UTC)</label>
 					<div class="controls col-xs-6">
-						<datetimepicker id="gpEta" name="gpEta" type="text" x-ng-model="report.eta" />
+						<datetimepicker id="gpEta" name="gpEta" type="text" x-ng-model="report.eta" placeholder="e.g. 2014-07-08 16:53" />
 						<span x-ng-show="greenPosForm.gpEta.$error.required && greenPosForm.gpEta.$dirty" class="msg-invalid">Value
 							required</span>
 					</div>
@@ -103,7 +104,7 @@
 					<label class="e-control-label" for="gpCourse">Course</label>
 					<div class="controls col-xs-4">
 						<input embryo-course name="gpCourse" id="gpCourse" type="number" class="input-sm form-control"
-							x-ng-model="report.course" x-ng-required="isVisible('course')" /> <span
+							x-ng-model="report.course" x-ng-required="isVisible('course')" placeholder="e.g. 025" /> <span
 							x-ng-show="greenPosForm.gpCourse.$error.required  && greenPosForm.gpCourse.$dirty" class="msg-invalid">Value
 							required</span>
 					</div>
@@ -112,25 +113,34 @@
 					<label class="e-control-label" for="gpSpeed">Speed</label>
 					<div class="controls col-xs-4">
 						<input id="gpSpeed" name="gpSpeed" type="text" class="input-sm form-control" x-ng-model="report.speed"
-							x-embryo-decimal x-ng-required="isVisible('speed')" /> <span
+							x-embryo-decimal x-ng-required="isVisible('speed')" placeholder="e.g. 10.5 or 12" /> <span
 							x-ng-show="greenPosForm.gpSpeed.$error.required && greenPosForm.gpSpeed.$dirty" class="msg-invalid">Value
 							required</span>
 					</div>
 				</div>
+				<div class="control-group form-group row" x-ng-if="position.location">
+					<label x-ng-if="report.type == 'SP'" class="e-control-label" for="gpPos">Departure position</label> <label
+						x-ng-if="report.type == 'FR'" class="e-control-label" for="gpPos">Destination position</label>
+					<div class="controls txt col-xs-4">
+						<input id="gpPos" name="gpPos" type="checkbox" x-ng-model="position.use" /> <span>{{position.location}}</span>
+					</div>
+				</div>
 				<div class="control-group form-group row">
 					<label class="e-control-label" for="gpLat">Latitude</label>
-					<div class="controls col-xs-4">
-						<input latitude id="gpLat" name="gpLat" type="text" class="input-sm form-control" x-ng-model="report.lat" required />
-						<span x-ng-show="greenPosForm.gpLat.$error.required && greenPosForm.gpLat.$dirty" class="msg-invalid">Value
+					<div class="controls col-xs-5">
+						<input x-ng-disabled="position.location && position.use" latitude id="gpLat" name="gpLat" type="text"
+							class="input-sm form-control" x-ng-model="report.lat" placeholder="e.g. 65 45.123N" required x-ng-change="updatePositionOnMap()"/> <span
+							x-ng-show="greenPosForm.gpLat.$error.required && greenPosForm.gpLat.$dirty" class="msg-invalid">Value
 							required</span>
 					</div>
 				</div>
 				<div class="control-group form-group row">
 					<label class="e-control-label" for="gpLon">Longitude</label>
-					<div class="controls control-group col-xs-4">
-						<input longitude id="gpLon" name="gpLon" type="text" class="input-sm form-control" x-ng-model="report.lon"
-							required /> <span x-ng-show="greenPosForm.gpLon.$error.required && greenPosForm.gpLon.$dirty"
-							class="msg-invalid">Value required</span>
+					<div class="controls col-xs-5">
+						<input x-ng-disabled="position.location && position.use" longitude id="gpLon" name="gpLon" type="text"
+							class="input-sm form-control" x-ng-model="report.lon" placeholder="e.g. 051 322.121W" required x-ng-change="updatePositionOnMap()"/> <span
+							x-ng-show="greenPosForm.gpLon.$error.required && greenPosForm.gpLon.$dirty" class="msg-invalid">Value
+							required</span>
 					</div>
 				</div>
 				<div class="control-group form-group row" x-ng-show="isVisible('route')">
