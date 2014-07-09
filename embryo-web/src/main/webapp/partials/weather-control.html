@@ -14,7 +14,7 @@
 				<table class="table table-condensed">
 					<tr x-ng-repeat="district in forecast.districts">
 						<td>{{district.name}}</td>
-						<td class="warning"><div x-ng-show="district.warnings && district.warnings.gale" class="label label-danger">GALE</div>
+						<td><div x-ng-show="district.warnings && district.warnings.gale" class="label label-danger">GALE</div>
 							<div x-ng-show="district.warnings && district.warnings.storm" class="label label-danger">STORM</div>
 							<div x-ng-show="district.warnings && district.warnings.icing" class="label label-danger">ICING</div></td>
 						<td><a href="#" x-ng-click="viewForecast($event, district)">view</a></td>
