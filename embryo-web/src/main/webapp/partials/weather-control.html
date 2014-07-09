@@ -73,17 +73,13 @@
 					<p>
 						Danish Meteorological Institute<br /> Valid to: {{formatDateTime(selected.forecast.validTo)}} UTC
 					</p>
-					<div x-ng-if="selected.forecast.warnings && selected.forecast.warnings.storm" class="e-alert-danger">
-						<h5>Storm Warning</h5>
-						<p>{{selected.forecast.warnings.storm}}</p>
-					</div>
-					<div x-ng-if="selected.forecast.warnings && selected.forecast.warnings.gale" class="e-alert-danger">
-						<h5>Gale Warning</h5>
-						<p>{{selected.forecast.warnings.gale}}</p>
-					</div>
-					<div x-ng-if="selected.forecast.warnings && selected.forecast.warnings.icing" class="e-alert-danger">
-						<h5>Icing Warning</h5>
-						<p>{{selected.forecast.warnings.icing}}</p>
+					<div>
+						<h5><span x-ng-if="selected.forecast.warnings && selected.forecast.warnings.storm" class="label label-danger">Storm
+							Warning</span></h5>
+						<h5><span x-ng-if="selected.forecast.warnings && selected.forecast.warnings.gale" class="label label-danger">Gale
+							Warning</span></h5>
+						<h5><span x-ng-if="selected.forecast.warnings && selected.forecast.warnings.icing" class="label label-danger">Icing
+							Warning</span></h5>
 					</div>
 					<h5>Forecast</h5>
 					<p>{{selected.forecast.forecast}}</p>
