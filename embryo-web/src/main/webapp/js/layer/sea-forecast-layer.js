@@ -30,7 +30,7 @@ function SeaForecastLayer() {
                 return "";
             },
             display : function(feature){
-                return feature.attributes.district.warning || that.active ? "yes" : "none";
+                return feature.attributes.district.warnings || that.active ? "yes" : "none";
             }
         
         };
