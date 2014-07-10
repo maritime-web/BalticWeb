@@ -483,8 +483,6 @@ $(function() {
 
         html += createTableHeaderRow('Iceberg');
 
-        console.log(desc)
-        
         html += createTableRow({
             'Area (m2)' : desc.Area_m2,
             'Longest diameter (m)' : desc.Adj_Size_m,
