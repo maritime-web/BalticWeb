@@ -12,9 +12,8 @@
             restrict : 'E',
             replace : true,
             template : '<div class="input-group date" data-date-format="YYYY-MM-DD HH:mm">'
-                    + '<input type="text" class="input-sm form-control" />'
-                    + '<span class="input-group-addon">' + ' <span class="fa fa-calendar"></span>'
-                    + '</span>' + '</div>',
+                    + '<input type="text" class="input-sm form-control" />' + '<span class="input-group-addon">'
+                    + ' <span class="fa fa-calendar"></span>' + '</span>' + '</div>',
             //              
             // '<div>' +
             // '<input type="text" readonly data-date-format="yyyy-mm-dd hh:ii"
@@ -28,14 +27,14 @@
                     useCurrent : true,
                     showToday : true,
                     icons : {
-                            time: 'fa fa-clock-o',
-                            date: 'fa fa-calendar',
-                            up: 'fa fa-chevron-up',
-                            down: 'fa fa-chevron-down'
-                        }
+                        time : 'fa fa-clock-o',
+                        date : 'fa fa-calendar',
+                        up : 'fa fa-chevron-up',
+                        down : 'fa fa-chevron-down'
+                    }
                 });
                 var picker = $(element).data('DateTimePicker');
-                
+
                 ngModelController.$formatters.push(function(modelValue) {
                     if (!modelValue) {
                         picker.setDate(null);
@@ -44,11 +43,11 @@
                         picker.setDate(moment(adjustedDate).format('YYYY-MM-DD HH:mm'));
                     }
                 });
-                
+
                 ngModelController.$parsers.push(function(valueFromInput) {
                     if (!picker.getDate()) {
                         return null;
-                    } 
+                    }
                     return adjustDateForLocal(picker.getDate().valueOf());
                 });
 
@@ -56,13 +55,14 @@
                     var val = $(element).find('input').val();
                     ngModelController.$setViewValue(val);
                 });
-                
-                element.bind('blur change', function() {
+
+                element.bind('blur change dp.change dp.hide', function() {
                     var millis = null;
                     var date = picker.getDate();
-                    if(date) {
+                    if (date) {
                         millis = adjustDateForLocal(date.valueOf());
                     }
+
                     ngModelController.$setViewValue(millis);
                     ngModelController.$modelValue = millis;
                     ngModelController.$render();

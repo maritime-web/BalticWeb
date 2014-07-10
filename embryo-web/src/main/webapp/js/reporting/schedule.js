@@ -311,7 +311,6 @@
             voyage.location = suggestion.value;
             $scope.$apply();
         }
-        ;
 
         $scope.$on('typeahead:selected', berthSelected);
         $scope.$on('typeahead:autocompleted', berthSelected);
