@@ -35,7 +35,6 @@
                                     || weather.warnings.storm[forecastDistrict.name]
                                     || weather.warnings.icing[forecastDistrict.name]) {
 
-                                console.log(weather.warnings);
                                 forecastDistrict.warnings = {
                                     gale : weather.warnings.gale[forecastDistrict.name],
                                     storm : weather.warnings.storm[forecastDistrict.name],
