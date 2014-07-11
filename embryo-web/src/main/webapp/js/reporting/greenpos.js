@@ -312,8 +312,10 @@ var greenposScope;
 
             ScheduleService.getActiveVoyage(vesselOverview.mmsi, vesselDetails.additionalInformation.routeId, function(
                     voyageInfo) {
-                if (!voyageInfo)
-                    return;
+                if (!voyageInfo){
+                    $scope.voyageInfo = null;
+                    return
+                }
                 $scope.report.destination = voyageInfo.des;
                 $scope.report.eta = voyageInfo.desEta;
                 if (voyageInfo.crew) {
