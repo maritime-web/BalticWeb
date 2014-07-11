@@ -188,12 +188,13 @@ hibernate.hbm2ddl.auto may be set on command line when building a war archive as
 ## Scheduled Jobs
 The application contains a number of scheduled jobs responsible for fetching data from external systems or for calculating necessary values. These jboss are described below.
 
-* dk.dma.arcticweb.service.AisReplicatorJob : This job replicates data from the external AIS server to ArcticWeb on regular schedule configured in the property embryo.vessel.aisjob.cron. The data is keeped in memory. Data might therefore not be available immidiately after a server/application (re)start.
-* dk.dma.arcticweb.filetransfer.DmiFtpReaderJob : This jobs transferes ice chart shape files from an FTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.iceChart.dmi.localDirectory. The job will only transfer files not already transfered. Ice charts are not available to users before measured by dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob.
-* dk.dma.arcticweb.filetransfer.AariHttpReaderJob: This jobs transferes ice chart shape files from a HTTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.iceChart.aari.localDirectory. The job will only transfer files not already transfered. Ice charts are not available to users before measured by dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob.
-* dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob : This job collects all shape files in the file system, measure their sizes and repopulates the database table ShapeFileMeasurements. The job will only measure new files.
-* dk.dma.arcticweb.filetransfer.DeleteShapeFiles : TODO - not yet implemented. This job is to delete shape files being to old.
-* dk.dma.arcticweb.service.MaxSpeedJob : This job fetches a vessels route during the past 5 days from the AIS server and calculates the maximum speed for each vessel during those 5 days. Data is keeped in memory. 
+* dk.dma.embryo.vessel.job.AisReplicatorJob : This job replicates data from the external AIS server to ArcticWeb on regular schedule configured in the property embryo.vessel.aisjob.cron. The data is keeped in memory. Data might therefore not be available immidiately after a server/application (re)start.
+* dk.dma.embryo.vessel.job.MaxSpeedJob : This job fetches a vessels route during the past 5 days from the AIS server and calculates the maximum speed for each vessel during those 5 days. Data is keeped in memory. 
+* dk.dma.embryo.dataformats.job.DmiFtpReaderJob : This jobs transfers ice chart shape files from an FTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.iceChart.dmi.localDirectory. The job will only transfer files not already transfered. Ice charts are not available to users before measured by dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob.
+* dk.dma.embryo.dataformats.job.AariHttpReaderJob: This jobs transfers ice chart shape files from a HTTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.iceChart.aari.localDirectory. The job will only transfer files not already transfered. Ice charts are not available to users before measured by dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob.
+* dk.dma.embryo.dataformats.job.ShapeFileMeasurerJob : This job collects all shape files in the file system, measure their sizes and repopulates the database table ShapeFileMeasurements. The job will only measure new files.
+* dk.dma.embryo.weather.service.DmiWeatherJob : This job transfers weather forecasts and warnings (XML files) from DMIs FTP server to the file system.
+
 
 ## Surveillance
 
@@ -210,7 +211,7 @@ The latest log entry of a specific job/service can be retrieved by the URL
 where dk.dma.arcticweb.filetransfer.DmiFtpReaderJob is the job name. This will return a JSON response in the format
 
     {
-      "service":"dk.dma.arcticweb.filetransfer.DmiFtpReaderJob",
+      "service":"dk.dma.embryo.dataformats.job.DmiFtpReaderJob",
       "status":"OK",
       "message":"Scanned DMI (ftp.ais.dk) for new files. Files transferred: 0",
       "stackTrace":null,
@@ -223,13 +224,14 @@ where the important fields are
 
 At the time of writing the current services are subject to surveillance
 
-* dk.dma.arcticweb.service.AisReplicatorJob
-* dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob.dmi 
-* dk.dma.arcticweb.filetransfer.DmiFtpReaderJob
-* dk.dma.arcticweb.service.MaxSpeedJob
-* dk.dma.embryo.rest.AuthenticationService
+* dk.dma.embryo.vessel.job.AisReplicatorJob
+* dk.dma.embryo.vessel.job.MaxSpeedJob
+* dk.dma.embryo.dataformats.job.ShapeFileMeasurerJob.dmi 
+* dk.dma.embryo.dataformats.job.DmiFtpReaderJob
+* dk.dma.embryo.weather.service.DmiWeatherJob
+* dk.dma.embryo.user.json.AuthenticationService
 * dk.dma.embryo.msi.MsiClientImpl
-* dk.dma.embryo.service.MailServiceImpl
+* dk.dma.embryo.common.mail.MailServiceImpl
 
 ## Developer Logging
 
