@@ -12,9 +12,7 @@
     <version>1.10-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-
-    <version>1.9</version>
-
+    
 
   <properties>
     <jslint.predef>embryo</jslint.predef>
