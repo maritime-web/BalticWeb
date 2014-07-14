@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.Forecast;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.Waypoint;
@@ -40,21 +41,27 @@ public class MetocServiceImpl implements MetocService {
     private VesselDao vesselDao;
 
     @Inject
+    private EmbryoLogService logService;
+
+    @Inject
     private Logger logger;
 
     @Inject
     @Property("embryo.metoc.minDistance")
     private Integer minimumMetocDistance;
-    
+
+    @Inject
+    @Property("dk.dma.embryo.restclients.dmiSejlRuteServiceUrl")
+    private String dmiSejlRuteServiceUrl;
+
     public MetocServiceImpl() {
     }
 
     public MetocServiceImpl(VesselDao vesselDao) {
         this.vesselDao = vesselDao;
-//        this.subject = subject;
     }
 
-//    @Override
+    @Override
     public DmiSejlRuteService.SejlRuteResponse getMetoc(String routeId) {
         Route route = vesselDao.getRouteByEnavId(routeId);
         if (route == null) {
@@ -84,47 +91,59 @@ public class MetocServiceImpl implements MetocService {
 
         request.setWaypoints(waypoints);
 
-        logger.debug("Sending METOC request: {}", request);
+        try {
+            logger.debug("Sending METOC request: {}", request);
 
-        DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
+            DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
 
-        logger.debug("Received METOC response: {}", sejlRuteResponse);
+            logger.debug("Received METOC response: {}", sejlRuteResponse);
+            int number = sejlRuteResponse.getMetocForecast() != null
+                    && sejlRuteResponse.getMetocForecast().getForecasts() != null ? sejlRuteResponse.getMetocForecast()
+                    .getForecasts().length : 0;
+                    
+            logService.info("Received " + number + " forecasts from " + dmiSejlRuteServiceUrl);
 
-        // Filtering result such that metoc points are at least minimumMetocDistance a part
-        if (sejlRuteResponse.getMetocForecast() != null && sejlRuteResponse.getMetocForecast().getForecasts() != null) {
-            Forecast[] forecasts = sejlRuteResponse.getMetocForecast().getForecasts();
-            ArrayList<Forecast> result = new ArrayList<>(forecasts.length);
-            Position lastPosition = null;
-            for (int i = 0; i < forecasts.length; i++) {
-                Position position = Position.create(forecasts[i].getLat(), forecasts[i].getLon());
-                if (lastPosition != null) {
-                    // Using geodesic distance. Because the small distances in the comparison, geodesic vs rhumbline
-                    // shouldnt matter
-                    if (position.rhumbLineDistanceTo(lastPosition) > minimumMetocDistance) {
+            // Filtering result such that metoc points are at least minimumMetocDistance a part
+            if (sejlRuteResponse.getMetocForecast() != null
+                    && sejlRuteResponse.getMetocForecast().getForecasts() != null) {
+                Forecast[] forecasts = sejlRuteResponse.getMetocForecast().getForecasts();
+                ArrayList<Forecast> result = new ArrayList<>(forecasts.length);
+                Position lastPosition = null;
+                for (int i = 0; i < forecasts.length; i++) {
+                    Position position = Position.create(forecasts[i].getLat(), forecasts[i].getLon());
+                    if (lastPosition != null) {
+                        // Using geodesic distance. Because the small distances in the comparison, geodesic vs rhumbline
+                        // shouldnt matter
+                        if (position.rhumbLineDistanceTo(lastPosition) > minimumMetocDistance) {
+                            result.add(forecasts[i]);
+                            lastPosition = position;
+                        }
+                    } else {
                         result.add(forecasts[i]);
                         lastPosition = position;
                     }
-                } else {
-                    result.add(forecasts[i]);
-                    lastPosition = position;
                 }
+
+                Forecast[] filtered = new Forecast[result.size()];
+                filtered = result.toArray(filtered);
+                sejlRuteResponse.getMetocForecast().setForecasts(filtered);
             }
 
-            Forecast[] filtered = new Forecast[result.size()];
-            filtered = result.toArray(filtered);
-            sejlRuteResponse.getMetocForecast().setForecasts(filtered);
+            return sejlRuteResponse;
+        } catch (Exception e) {
+            logService.error("Error requesting METOC from " + dmiSejlRuteServiceUrl, e);
+            throw e;
         }
 
-        return sejlRuteResponse;
     }
-    
-    public DmiSejlRuteService.SejlRuteResponse[] listMetocs(String[] routeIds){
+
+    public DmiSejlRuteService.SejlRuteResponse[] listMetocs(String[] routeIds) {
         DmiSejlRuteService.SejlRuteResponse[] metocs = new DmiSejlRuteService.SejlRuteResponse[routeIds.length];
-        
-        for(int i = 0; i < metocs.length; i ++){
+
+        for (int i = 0; i < metocs.length; i++) {
             metocs[i] = getMetoc(routeIds[i]);
         }
-        
+
         return metocs;
     }
 

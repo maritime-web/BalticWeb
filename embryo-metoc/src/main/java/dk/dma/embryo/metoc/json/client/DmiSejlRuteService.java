@@ -17,6 +17,7 @@ package dk.dma.embryo.metoc.json.client;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -254,6 +255,48 @@ public interface DmiSejlRuteService {
         public void setLon(double lon) {
             this.lon = lon;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((eta == null) ? 0 : eta.hashCode());
+            result = prime * result + ((heading == null) ? 0 : heading.hashCode());
+            long temp;
+            temp = Double.doubleToLongBits(lat);
+            result = prime * result + (int) (temp ^ (temp >>> 32));
+            temp = Double.doubleToLongBits(lon);
+            result = prime * result + (int) (temp ^ (temp >>> 32));
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Waypoint other = (Waypoint) obj;
+            if (eta == null) {
+                if (other.eta != null)
+                    return false;
+            } else if (!eta.equals(other.eta))
+                return false;
+            if (heading == null) {
+                if (other.heading != null)
+                    return false;
+            } else if (!heading.equals(other.heading))
+                return false;
+            if (Double.doubleToLongBits(lat) != Double.doubleToLongBits(other.lat))
+                return false;
+            if (Double.doubleToLongBits(lon) != Double.doubleToLongBits(other.lon))
+                return false;
+            return true;
+        }
+        
+        
     }
 
     public static class SejlRuteRequest {
@@ -297,5 +340,43 @@ public interface DmiSejlRuteService {
         public void setMssi(long mssi) {
             this.mssi = mssi;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.hashCode(datatypes);
+            result = prime * result + dt;
+            result = prime * result + (int) (mssi ^ (mssi >>> 32));
+            result = prime * result + Arrays.hashCode(waypoints);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            System.out.println(obj);
+            
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            SejlRuteRequest other = (SejlRuteRequest) obj;
+            if (!Arrays.equals(datatypes, other.datatypes))
+                return false;
+            if (dt != other.dt)
+                return false;
+            if (mssi != other.mssi)
+                return false;
+            if (!Arrays.equals(waypoints, other.waypoints))
+                return false;
+            return true;
+        }
+        
+        
+        
     }
+    
+    
 }
