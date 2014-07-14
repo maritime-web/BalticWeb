@@ -89,7 +89,7 @@
 		<div x-ng-show="alertMessage" class="alert alert-danger">{{alertMessage}}</div>
 		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-		<div x-requires-permission="Administration">
+		<div x-requires-permissions="Administration">
 			<form class="form-horizontal">
 				<div style="margin: 10px">
 					<button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize Test Data</button>

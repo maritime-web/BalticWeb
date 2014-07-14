@@ -134,14 +134,19 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
                         : embryo.authentication.permissions;
             };
 
-            this.authorize = function(permission) {
-                var index = null, permissions = this.roles();
+            this.authorize = function(permissions) {
+                var roles = this.roles();
 
-                for (index in permissions) {
-                    if (permissions[index] == permission) {
-                        return true;
+                var allowed = permissions.split(",");
+                
+                for(var i in allowed){
+                    for (var j in roles) {
+                        if (roles[j] == allowed[i].trim()) {
+                            return true;
+                        }
                     }
                 }
+                
                 return false;
             };
 
@@ -268,7 +273,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
         }
     } ]);
 
-    moduleDirectives.directive('requiresPermission', [
+    moduleDirectives.directive('requiresPermissions', [
             'Subject',
             '$animate',
             function(Subject, $animate) {
@@ -280,7 +285,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
                     $$tlb : true,
                     link : function($scope, $element, $attr, ctrl, $transclude) {
                         var block = null, childScope = null;
-                        var value = $attr.requiresPermission;
+                        var value = $attr.requiresPermissions;
                         $scope.$watch(function() {
                             return Subject.authorize(value);
                         }, function(condition) {

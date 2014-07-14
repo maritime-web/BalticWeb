@@ -50,7 +50,7 @@
 	<div id="messagePanel"></div>
 
 	<div x-requires-authenticated>
-		<div x-ng-controller="YourVesselLayerControl" requires-permission="Sailor" ></div>
+		<div x-ng-controller="YourVesselLayerControl" requires-permissions="Sailor" ></div>
 		<div x-ng-controller="MsiLayerControl" ></div>
 		<div x-ng-controller="WeatherForecastLayerControl" ></div>
 
@@ -64,9 +64,9 @@
 			<div x-ng-include="'partials/ais-information.html'"></div>
 			<div x-ng-include="'partials/vessel-information-view.html'"></div>
 			<div x-ng-include="'partials/schedule-view.html'"></div>
-			<div x-ng-include="'partials/greenpos-list.html'" requires-permission="Reporting" ></div>
+			<div x-ng-include="'partials/greenpos-list.html'" requires-permissions="Reporting,Administration" ></div>
 
-			<div requires-permission="Sailor">
+			<div requires-permissions="Sailor">
 				<div x-ng-include="'partials/vessel-information-edit.html'"></div>
 				<div x-ng-include="'partials/schedule.html'"></div>
 				<div x-ng-include="'partials/route-upload.html'"></div>
@@ -101,7 +101,7 @@
 			<p>
 				<button class="btn e-btn-wide btn-primary btn-xs" x-ng-click="zoomAll()">Zoom All Arctic</button>
 			</p>
-			<p requires-permission="Sailor" x-ng-controller="ZoomYourVesselCtrl">
+			<p requires-permissions="Sailor" x-ng-controller="ZoomYourVesselCtrl">
 				<button class="btn e-btn-wide btn-primary btn-xs" x-ng-click="zoomToYourVessel()">Zoom to Your Vessel</button>
 			</p>
 			<p>

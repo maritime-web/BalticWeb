@@ -95,9 +95,9 @@ describe('authentication directives', function() {
         }));
     });
 
-    describe('requiresPermission directive', function() {
+    describe('requiresPermissions directive', function() {
         beforeEach(function() {
-            compileDirective('<div><div requires-permission="Administration"><span id="requiresAdm">Anonymous</span></div></div>');
+            compileDirective('<div><div requires-permissions="Administration"><span id="requiresAdm">Anonymous</span></div></div>');
         });
 
         // a single test example, check the produced DOM

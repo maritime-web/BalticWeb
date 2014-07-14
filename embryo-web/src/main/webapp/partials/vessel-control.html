@@ -1,6 +1,6 @@
 <div x-ng-controller="VesselController">
 	<div id="vesselControlPanel" accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
-		<div requires-permission="Reporting" accordion-group heading="Reports">
+		<div requires-permissions="Reporting,Administration" accordion-group heading="Reports">
 			<div x-ng-controller="ReportingController">
 				<p>Vessel that have reported within the last 7 days.</p>
 
@@ -25,7 +25,7 @@
 		</div>
 
 		<div accordion-group heading="Your Vessel {{vesselScope.yourVesselName ? ' - ' + vesselScope.yourVesselName : ''}}"
-			requires-permission="Sailor">
+			requires-permissions="Sailor">
 			<div x-ng-controller="YourVesselControl">
 				<h4>
 					AIS Information<small style="float: right"><a href="#" x-ng-click="viewAis($event)">view all</a></small>
