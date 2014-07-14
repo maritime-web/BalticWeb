@@ -272,27 +272,36 @@ public interface DmiSejlRuteService {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj){
                 return true;
-            if (obj == null)
+            }
+            if (obj == null){
+                return false;                
+            }
+            if (getClass() != obj.getClass()){
                 return false;
-            if (getClass() != obj.getClass())
-                return false;
+            }
             Waypoint other = (Waypoint) obj;
             if (eta == null) {
-                if (other.eta != null)
+                if (other.eta != null){
                     return false;
-            } else if (!eta.equals(other.eta))
+                }
+            } else if (!eta.equals(other.eta)){
                 return false;
+            }
             if (heading == null) {
-                if (other.heading != null)
+                if (other.heading != null){
                     return false;
-            } else if (!heading.equals(other.heading))
+                }
+            } else if (!heading.equals(other.heading)){
                 return false;
-            if (Double.doubleToLongBits(lat) != Double.doubleToLongBits(other.lat))
+            }
+            if (Double.doubleToLongBits(lat) != Double.doubleToLongBits(other.lat)){
                 return false;
-            if (Double.doubleToLongBits(lon) != Double.doubleToLongBits(other.lon))
+            }
+            if (Double.doubleToLongBits(lon) != Double.doubleToLongBits(other.lon)){
                 return false;
+            }
             return true;
         }
         
@@ -354,23 +363,28 @@ public interface DmiSejlRuteService {
 
         @Override
         public boolean equals(Object obj) {
-            System.out.println(obj);
-            
-            if (this == obj)
+            if (this == obj){
                 return true;
-            if (obj == null)
+            }
+            if (obj == null){
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()){
                 return false;
+            }
             SejlRuteRequest other = (SejlRuteRequest) obj;
-            if (!Arrays.equals(datatypes, other.datatypes))
+            if (!Arrays.equals(datatypes, other.datatypes)){
                 return false;
-            if (dt != other.dt)
+            }
+            if (dt != other.dt){
                 return false;
-            if (mssi != other.mssi)
+            }
+            if (mssi != other.mssi){
                 return false;
-            if (!Arrays.equals(waypoints, other.waypoints))
+            }
+            if (!Arrays.equals(waypoints, other.waypoints)){
                 return false;
+            }
             return true;
         }
         
