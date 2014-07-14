@@ -1,7 +1,7 @@
 (function() {
     "use strict";
 
-    var module = angular.module('embryo.controller.reporting', [ 'embryo.scheduleService', 'embryo.greenposService' ]);
+    var module = angular.module('embryo.reporting.control', [ 'embryo.greenposService' ]);
 
     var greenposTypes = {
             "SP" : "Sailing Plan",
