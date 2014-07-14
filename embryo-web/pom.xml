@@ -12,7 +12,6 @@
     <version>1.10-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-    
 
   <properties>
     <jslint.predef>embryo</jslint.predef>
@@ -262,6 +261,9 @@
           <groupId>org.jboss.as.plugins</groupId>
           <artifactId>jboss-as-maven-plugin</artifactId>
           <version>7.5.Final</version>
+          <configuration>
+            <name>arcticweb.war</name>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>com.kelveden</groupId>
