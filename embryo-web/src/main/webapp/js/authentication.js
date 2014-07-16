@@ -421,6 +421,14 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
         $scope.back = function() {
             $scope.forgot = false;
         };
+        
+        $scope.cancel = function(cb) {
+            var path = location.pathname;
+            if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
+                location = ".";
+            }
+            cb('aborted');
+        };
     };
 
     function logout(event) {
@@ -458,7 +466,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
                                 return response;
                             }
                             function error(response) {
-                                if (response.status === 401) {
+                                if (response.status === 401 && !(response.data.error && response.data.error == 'login failed')) {
                                     embryo.messagePanel.show({
                                         text : "Session Lost. You will be logged out ..."
                                     });

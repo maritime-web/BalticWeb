@@ -69,7 +69,7 @@ public class AuthenticationService {
     public Details details() {
         SecuredUser user = subject.getUser();
         if (user == null) {
-            throw new UserNotAuthenticated();
+            throw new UserNotAuthenticated("details");
         }
 
         Details details = new Details();
@@ -119,14 +119,15 @@ public class AuthenticationService {
                 embryoLogService.info("User " + userName + " logged in");
                 return details();
             } else {
+                // We should probably never end in this block.
                 logger.debug("User {} not logged in (wrong username / password)", userName);
                 embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
-                throw new UserNotAuthenticated();
+                throw new UserNotAuthenticated("not shiro");
             }
         } catch (org.apache.shiro.authc.IncorrectCredentialsException e) {
             logger.debug("User {} not logged in (wrong username / password)", userName);
             embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
-            throw new UserNotAuthenticated();
+            throw new UserNotAuthenticated("login failed");
         }
 
     }
@@ -160,12 +161,12 @@ public class AuthenticationService {
             }
         }
     }
-
+    
     public static class UserNotAuthenticated extends WebApplicationException {
         private static final long serialVersionUID = 7940360206022406100L;
 
-        public UserNotAuthenticated() {
-            super(Response.Status.UNAUTHORIZED);
+        public UserNotAuthenticated(String error) {
+            super(Response.status(Status.UNAUTHORIZED).entity("{\"error\":\"" + error + "\"}").build());
         }
     }
 
