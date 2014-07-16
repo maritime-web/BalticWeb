@@ -148,7 +148,7 @@ public class SAMRouteParserTest {
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdPort(), 0.0);
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
 
-        // Checking 1oth waypoint
+        // Checking 10th waypoint
         waypoint = r.getWaypoints().get(9);
         pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
         Assert.assertEquals("Buoy No.8", waypoint.getName());
