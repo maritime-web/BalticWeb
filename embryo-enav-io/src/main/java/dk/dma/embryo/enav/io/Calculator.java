@@ -37,5 +37,9 @@ public class Calculator {
     public static double metersToNm(double meters) {
         return meters / NM_IN_METERS;
     }
+    
+    public static double metersPerSecond2Knots(double metersPerSecond){
+        return metersPerSecond * 1.943844;
+    }
 
 }

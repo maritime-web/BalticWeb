@@ -95,21 +95,21 @@ public class SAMRouteParser extends RouteParser {
         String latitude = reader.readLine();
         String longitude = reader.readLine();
         String unknown = reader.readLine();
-        unknown = reader.readLine();
+        String remark = reader.readLine();
 
         for (int i = 0; i < 5; i++) {
             reader.readLine();
         }
 
         unknown = reader.readLine();
-        unknown = reader.readLine();
+        String heading = reader.readLine();
         unknown = reader.readLine();
         unknown = reader.readLine();
         String turnRad = reader.readLine();
         unknown = reader.readLine();
         unknown = reader.readLine();
         unknown = reader.readLine();
-        unknown = reader.readLine();
+        String speed = reader.readLine();
         unknown = reader.readLine();
 
         reader.readLine();
@@ -125,32 +125,43 @@ public class SAMRouteParser extends RouteParser {
 
 
         // Set defaults
-        wp.setName(String.format("%03d", wpCount));
+        wp.setName(String.format("%04d", wpCount));
         // EPDNavSettings navSettings = (EPDNavSettings) EeINS.getSettings().getNavSettings();
 
         leg.setSpeed(sogDefault);
         wp.setTurnRad(getDefaults().getDefaultTurnRad());
+        leg.setHeading(Heading.RL);
         leg.setXtdPort(getDefaults().getDefaultXtd());
         leg.setXtdStarboard(getDefaults().getDefaultXtd());
 
         if (latitude != null && longitude != null) {
+            if(remark != null && remark.trim().length() > 0){
+                wp.setName(remark.trim());
+            }
+
+            
             Double lat = ParseUtils.parseDouble(latitude) * 57.2957795;
             Double lon = ParseUtils.parseDouble(longitude) * 57.2957795;
             Position.verifyLatitude(lat);
             Position.verifyLongitude(lon);
             wp.setLatitude(lat);
             wp.setLongitude(lon);
+            
+            if("1".equals(heading)){
+                leg.setHeading(Heading.RL);
+            }else if ("0".equals(heading)){
+                leg.setHeading(Heading.GC);
+            }
 
             if (route.getWaypoints().size() > 0) {
                 Waypoint before = route.getWaypoints().get(route.getWaypoints().size() - 1);
-
-                double speed = Calculator.distanceInNm(before.getLatitude(), before.getLongitude(), before
-                        .getRouteLeg().getHeading(), wp.getLatitude(), wp.getLongitude());
-                // before.getRouteLeg().setSpeed(speed);
+                double metersPerSecond = Double.parseDouble(speed);
+                double knots = Calculator.metersPerSecond2Knots(metersPerSecond);
+                knots = Math.round(knots * 10000) / 10000;
+                before.getRouteLeg().setSpeed(knots);
             }
 
             if (turnRad != null && turnRad.length() > 0) {
-                leg.setHeading(Heading.RL);
                 wp.setTurnRad(Double.parseDouble(turnRad) / 1852.0);
             }
 

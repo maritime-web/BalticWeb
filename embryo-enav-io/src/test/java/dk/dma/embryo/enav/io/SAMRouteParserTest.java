@@ -35,18 +35,6 @@ import dk.dma.enav.model.voyage.Waypoint;
 public class SAMRouteParserTest {
 
     @Test
-    public void test() {
-        // System.out.println(1389 / 1.78);
-        // System.out.println(11112 / 5.52);
-        // System.out.println(5556 / 11.56);
-        // System.out.println(11112 / 23.17);
-
-        System.out.println(463 / 7.04);
-        System.out.println(7.04 / 463);
-
-    }
-
-    @Test
     public void testParseMap0137t() throws IOException {
 
         // Data
@@ -66,11 +54,11 @@ public class SAMRouteParserTest {
         // Checking first waypoint
         Waypoint waypoint = r.getWaypoints().get(0);
         Position pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
-        Assert.assertEquals("001", waypoint.getName());
+        Assert.assertEquals("0001", waypoint.getName());
         Assert.assertEquals("71 14.889N", pos.getLatitudeAsString());
         Assert.assertEquals("053 33.619W", pos.getLongitudeAsString());
         Assert.assertEquals(0.600, waypoint.getTurnRad(), 0.0);
-        Assert.assertEquals(10.00, waypoint.getRouteLeg().getSpeed(), 0.0);
+        Assert.assertEquals(0.00, waypoint.getRouteLeg().getSpeed(), 0.0);
         Assert.assertEquals(Heading.RL, waypoint.getRouteLeg().getHeading());
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdPort(), 0.0);
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
@@ -78,12 +66,12 @@ public class SAMRouteParserTest {
         // Checking second waypoint
         waypoint = r.getWaypoints().get(1);
         pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
-        Assert.assertEquals("002", waypoint.getName());
+        Assert.assertEquals("0002", waypoint.getName());
         Assert.assertEquals("71 16.458N", pos.getLatitudeAsString());
         Assert.assertEquals("053 30.995W", pos.getLongitudeAsString());
 
         Assert.assertEquals(0.600, waypoint.getTurnRad(), 0.0);
-        Assert.assertEquals(10.00, waypoint.getRouteLeg().getSpeed(), 0.0);
+        Assert.assertEquals(0.00, waypoint.getRouteLeg().getSpeed(), 0.0);
         Assert.assertEquals(Heading.RL, waypoint.getRouteLeg().getHeading());
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdPort(), 0.0);
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
@@ -91,12 +79,12 @@ public class SAMRouteParserTest {
         // Checking third waypoint
         waypoint = r.getWaypoints().get(2);
         pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
-        Assert.assertEquals("003", waypoint.getName());
+        Assert.assertEquals("0003", waypoint.getName());
         Assert.assertEquals("71 20.030N", pos.getLatitudeAsString());
         Assert.assertEquals("053 34.458W", pos.getLongitudeAsString());
 
         Assert.assertEquals(1.00, waypoint.getTurnRad(), 0.0);
-        Assert.assertEquals(10.00, waypoint.getRouteLeg().getSpeed(), 0.0);
+        Assert.assertEquals(0.00, waypoint.getRouteLeg().getSpeed(), 0.0);
         Assert.assertEquals(Heading.RL, waypoint.getRouteLeg().getHeading());
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdPort(), 0.0);
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
@@ -104,7 +92,7 @@ public class SAMRouteParserTest {
         // Checking last waypoint
         waypoint = r.getWaypoints().get(r.getWaypoints().size() - 1);
         pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
-        Assert.assertEquals("015", waypoint.getName());
+        Assert.assertEquals("Upernavik", waypoint.getName());
         Assert.assertEquals("72 47.332N", pos.getLatitudeAsString());
         Assert.assertEquals("056 08.830W", pos.getLongitudeAsString());
 
@@ -115,73 +103,100 @@ public class SAMRouteParserTest {
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
     }
 
-    @Test
-    public void testParseMap0304t() throws IOException {
-
-        // Data
-        Map<String, String> config = new HashMap<>();
-        InputStream is = getClass().getResourceAsStream("/routes/map0304t");
-        RouteParser parser = new SAMRouteParser(is, config);
-
-        // Execute
-        Route r = parser.parse();
-
-        Assert.assertEquals("AAR-ZWD 4NM", r.getName());
+    private void assertionsMap020xt(Route r, String title, Heading heading){
+        Assert.assertEquals(title, r.getName());
         Assert.assertNull(r.getDeparture());
         Assert.assertNull(r.getDestination());
 
-        Assert.assertEquals(47, r.getWaypoints().size());
+        Assert.assertEquals(25, r.getWaypoints().size());
 
         // Checking first waypoint
         Waypoint waypoint = r.getWaypoints().get(0);
         Position pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
-        Assert.assertEquals("001", waypoint.getName());
-        Assert.assertEquals("56 09.206N", pos.getLatitudeAsString());
-        Assert.assertEquals("010 13.254E", pos.getLongitudeAsString());
-        Assert.assertEquals(0.300, waypoint.getTurnRad(), 0.0);
-        Assert.assertEquals(10.00, waypoint.getRouteLeg().getSpeed(), 0.0);
-        Assert.assertEquals(Heading.RL, waypoint.getRouteLeg().getHeading());
+        Assert.assertEquals("SBB/RM BERTH No.7", waypoint.getName());
+        Assert.assertEquals("59 56.694N", pos.getLatitudeAsString());
+        Assert.assertEquals("030 10.986E", pos.getLongitudeAsString());
+        Assert.assertEquals(0.30, waypoint.getTurnRad(), 0.0);
+        Assert.assertEquals(6.00, waypoint.getRouteLeg().getSpeed(), 0.0);
+        Assert.assertEquals(heading, waypoint.getRouteLeg().getHeading());
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdPort(), 0.0);
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
 
         // Checking second waypoint
         waypoint = r.getWaypoints().get(1);
         pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
-        Assert.assertEquals("002", waypoint.getName());
-        Assert.assertEquals("56 09.881N", pos.getLatitudeAsString());
-        Assert.assertEquals("010 13.953E", pos.getLongitudeAsString());
+        Assert.assertEquals("Buoy No.5&6", waypoint.getName());
+        Assert.assertEquals("59 56.927N", pos.getLatitudeAsString());
+        Assert.assertEquals("030 10.704E", pos.getLongitudeAsString());
 
-        Assert.assertEquals(0.300, waypoint.getTurnRad(), 0.0);
+        Assert.assertEquals(0.30, waypoint.getTurnRad(), 0.0);
         Assert.assertEquals(10.00, waypoint.getRouteLeg().getSpeed(), 0.0);
-        Assert.assertEquals(Heading.RL, waypoint.getRouteLeg().getHeading());
+        Assert.assertEquals(heading, waypoint.getRouteLeg().getHeading());
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdPort(), 0.0);
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
 
         // Checking third waypoint
         waypoint = r.getWaypoints().get(2);
         pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
-        Assert.assertEquals("003", waypoint.getName());
-        Assert.assertEquals("56 09.127N", pos.getLatitudeAsString());
-        Assert.assertEquals("010 16.057E", pos.getLongitudeAsString());
+        Assert.assertEquals("Buoy No.1", waypoint.getName());
+        Assert.assertEquals("59 57.135N", pos.getLatitudeAsString());
+        Assert.assertEquals("030 08.567E", pos.getLongitudeAsString());
 
-        Assert.assertEquals(3.00, waypoint.getTurnRad(), 0.0);
+        Assert.assertEquals(0.50, waypoint.getTurnRad(), 0.0);
         Assert.assertEquals(10.00, waypoint.getRouteLeg().getSpeed(), 0.0);
-        Assert.assertEquals(Heading.RL, waypoint.getRouteLeg().getHeading());
+        Assert.assertEquals(heading, waypoint.getRouteLeg().getHeading());
+        Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdPort(), 0.0);
+        Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
+
+        // Checking second last waypoint
+        waypoint = r.getWaypoints().get(r.getWaypoints().size() - 2);
+        pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
+        Assert.assertEquals("APPROACH", waypoint.getName());
+        Assert.assertEquals("59 27.904N", pos.getLatitudeAsString());
+        Assert.assertEquals("024 46.004E", pos.getLongitudeAsString());
+
+        Assert.assertEquals(0.50, waypoint.getTurnRad(), 0.00001);
+        Assert.assertEquals(3.00, waypoint.getRouteLeg().getSpeed(), 0.0);
+        Assert.assertEquals(heading, waypoint.getRouteLeg().getHeading());
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdPort(), 0.0);
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
 
         // Checking last waypoint
         waypoint = r.getWaypoints().get(r.getWaypoints().size() - 1);
         pos = Position.create(waypoint.getLatitude(), waypoint.getLongitude());
-        Assert.assertEquals("047", waypoint.getName());
-        Assert.assertEquals("54 09.560N", pos.getLatitudeAsString());
-        Assert.assertEquals("012 06.299E", pos.getLongitudeAsString());
+        Assert.assertEquals("PIER 27 SSTQ", waypoint.getName());
+        Assert.assertEquals("59 26.997N", pos.getLatitudeAsString());
+        Assert.assertEquals("024 46.030E", pos.getLongitudeAsString());
 
-        Assert.assertEquals(0.40, waypoint.getTurnRad(), 0.00001);
+        Assert.assertEquals(0.50, waypoint.getTurnRad(), 0.00001);
         Assert.assertEquals(10.00, waypoint.getRouteLeg().getSpeed(), 0.0);
-        Assert.assertEquals(Heading.RL, waypoint.getRouteLeg().getHeading());
+        Assert.assertEquals(heading, waypoint.getRouteLeg().getHeading());
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdPort(), 0.0);
         Assert.assertEquals(0.100, waypoint.getRouteLeg().getXtdStarboard(), 0.0);
     }
+    
+    @Test
+    public void testParseMap0700t() throws IOException {
+        // Data
+        Map<String, String> config = new HashMap<>();
+        InputStream is = getClass().getResourceAsStream("/routes/map0700t");
+        RouteParser parser = new SAMRouteParser(is, config);
+        // Execute
+        Route r = parser.parse();
 
+        assertionsMap020xt(r, "LED-TLL", Heading.RL);
+    }
+
+    @Test
+    public void testParseMap0702t() throws IOException {
+        // Data
+        Map<String, String> config = new HashMap<>();
+        InputStream is = getClass().getResourceAsStream("/routes/map0702t");
+        RouteParser parser = new SAMRouteParser(is, config);
+        // Execute
+        Route r = parser.parse();
+
+        assertionsMap020xt(r, "GREAT C. LED-TLL", Heading.GC);
+    }
+    
 }
