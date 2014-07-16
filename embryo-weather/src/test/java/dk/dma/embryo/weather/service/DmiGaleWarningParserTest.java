@@ -78,4 +78,24 @@ public class DmiGaleWarningParserTest {
         Assert.assertEquals(expectedStormWarnings, warning.getStorm());
         Assert.assertEquals(expectedIceWarnings, warning.getIcing());
     }
+
+    @Test
+    public void testWithNoWarnings() throws IOException {
+
+        Map<String, String> expectedGaleWarnings = new HashMap<>();
+        Map<String, String> expectedStormWarnings = new HashMap<>();
+        Map<String, String> expectedIceWarnings = new HashMap<>();
+        
+        InputStream is = getClass().getResourceAsStream("/dmi/gronvar-2014-07-15-warningscancelled.xml");
+
+        DmiWarningParser parser = new DmiWarningParser(is);
+        Warnings warning = parser.parse();
+
+        Assert.assertNotNull(warning.getFrom());
+        Assert.assertEquals(1405461780000L, warning.getFrom().getTime());
+        Assert.assertEquals(Integer.valueOf(676), warning.getNumber());
+        Assert.assertEquals(expectedGaleWarnings, warning.getGale());
+        Assert.assertEquals(expectedStormWarnings, warning.getStorm());
+        Assert.assertEquals(expectedIceWarnings, warning.getIcing());
+    }
 }

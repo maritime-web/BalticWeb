@@ -102,7 +102,7 @@ public class DmiWarningParser {
         boolean useMetersPerSecond = false;
         while ((line = reader.readLine()) != null) {
             if (line.trim().length() != 0) {
-                if (line.indexOf("Varsel nummer") == 0) {
+                if (line.indexOf("Varsel nummer") == 0 && line.indexOf("ophører") < 0) {
                     result.setNumber(Integer.valueOf(line.substring(14)));
                 }else if (line.indexOf("Kulingvarsel") >= 0 || line.indexOf("kulingvarsel") >= 0){
                     warnings = result.getGale();
@@ -113,7 +113,7 @@ public class DmiWarningParser {
                 }else if (line.indexOf("Overisningsvarsel") >= 0 || line.indexOf("overisningsvarsel") >= 0){
                     warnings = result.getIcing();
                     useMetersPerSecond = false;
-                } else {
+                } else if(warnings != null){
                     String value = reader.readLine();
                     if(useMetersPerSecond){
                         value = value.replace(" m/s.", ".");
