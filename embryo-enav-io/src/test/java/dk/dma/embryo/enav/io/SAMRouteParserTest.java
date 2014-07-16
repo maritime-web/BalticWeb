@@ -200,7 +200,6 @@ public class SAMRouteParserTest {
 
         assertionsMap020xt(r, "LED-TLL", Heading.RL);
     }
-
     @Test
     public void testParseMap0702t() throws IOException {
         // Data
