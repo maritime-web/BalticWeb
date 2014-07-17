@@ -232,6 +232,7 @@ At the time of writing the current services are subject to surveillance
 * dk.dma.embryo.user.json.AuthenticationService
 * dk.dma.embryo.msi.MsiClientImpl
 * dk.dma.embryo.common.mail.MailServiceImpl
+* dk.dma.embryo.metoc.service.MetocServiceImpl
 
 ## Developer Logging
 
