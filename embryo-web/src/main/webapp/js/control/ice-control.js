@@ -1,233 +1,182 @@
 $(function() {
 
-    embryo.IceController = function($scope, IceService, $timeout) {
+    var module = angular.module('embryo.ice.control', [ 'ui.bootstrap.accordion', 'embryo.control',
+            'embryo.ice.service', 'embryo.shape' ]);
+
+    var iceLayer = new IceLayer();
+    addLayerToMap("ice", iceLayer, embryo.map);
+
+    var chartsDisplayed = {};
+
+    function displayChartList(divId, chartType, data) {
+        data.sort(function(a, b) {
+            return b.date - a.date;
+        });
+
+        var regionNames = [];
+        for ( var i in data) {
+            if (regionNames.indexOf(data[i].region) < 0)
+                regionNames.push(data[i].region);
+        }
+
+        var sortFunction = function(reg1, reg2) {
+            if (reg1.indexOf("All Arctic") >= 0 && reg2.indexOf("All Arctic") < 0) {
+                return 1;
+            } else if (reg1.indexOf("All Arctic") < 0 && reg2.indexOf("All Arctic") >= 0) {
+                return -1;
+            } else if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
+                return 1;
+            } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
+                return -1;
+            }
+            return reg1.localeCompare(reg2);
+        };
+
+        regionNames.sort(sortFunction);
+
+        var regions = [];
+        for ( var j in regionNames) {
+            var regionName = regionNames[j];
+            regions.push(regionName);
+            for ( var i in data) {
+                if (data[i].region == regionName) {
+                    regions.push({
+                        type : chartType,
+                        source : data[i].source,
+                        ts : formatTime(data[i].date),
+                        size : formatSize(data[i].size),
+                        shape : data[i].shapeFileName,
+                        date : data[i].date,
+                        region : data[i].region
+                    });
+                }
+            }
+        }
+        return regions;
+    }
+
+    function iceController($scope, IceService, $timeout, ShapeService) {
+        $scope.selected = {};
+
         $scope.selectedProvider = {
             key : null
         };
 
-        function loadProviders() {
-            var messageId = embryo.messagePanel.show({
-                text : "Requesting ice chart providers ..."
-            });
-            IceService.providers(function(providers) {
-                embryo.messagePanel.replace(messageId, {
-                    text : "List of " + providers.length + " ice chart providers downloaded",
-                    type : "success"
-                });
+        $scope.changeProvider = function() {
+            IceService.setSelectedProvider($scope.selectedProvider);
+            IceService.update();
+            $("#iceControlPanel .collapse").data("collapse", null);
+            openCollapse("#iceControlPanel #icpIceMaps");
+        }
+
+        var subscriptionConfig = {
+            name : "ice-control",
+            providers : function(error, providers) {
                 $scope.providers = providers;
-                if (providers.length > 0) {
-                    var providerKey = getCookie("dma-ice-provider-" + embryo.authentication.userName);
-                    for ( var index in providers) {
-                        if (providers[index].key == providerKey) {
-                            $scope.selectedProvider = providers[index];
-                        }
-                    }
-                    if (!$scope.selectedProvider.key) {
-                        $scope.selectedProvider = providers[0];
-                    }
+                $scope.selectedProvider = IceService.getSelectedProvider("");
+            },
+            iceCharts : function(error, iceCharts) {
+                if (!error) {
+                    $scope.iceCharts = displayChartList("#icpIceMaps", "iceChart", iceCharts);
                 }
-            }, function(errorMsg, status) {
-                embryo.messagePanel.replace(messageId, {
-                    text : errorMsg,
-                    type : "error"
-                });
-            });
-        }
-
-        $scope.getSelected = function() {
-            return $scope.selectedProvider;
-        };
-
-        $scope.$watch($scope.getSelected, function(newValue, oldValue) {
-            if (newValue.key) {
-                setCookie("dma-ice-provider-" + embryo.authentication.userName, newValue.key, 30);
-                requestAllIceObservations();
-                $("#iceControlPanel .collapse").data("collapse", null);
-                openCollapse("#iceControlPanel #icpIceMaps");
+            },
+            icebergs : function(error, icebergs) {
+                if (!error) {
+                    $scope.icebergs = displayChartList("#icpIcebergs", "iceberg", icebergs);
+                }
             }
-        }, true);
-
-        function init() {
-            loadProviders();
-            $timeout(loadProviders, 24 * 60 * 1000 * 60);
-            $timeout(requestAllIceObservations, 2 * 60 * 1000 * 60);
         }
 
-        if (typeof embryo.authentication.permissions === 'undefined') {
-            embryo.authenticated(function() {
-                init();
+        IceService.subscribe(subscriptionConfig);
+
+        iceLayer.select(function(ice) {
+            var lon = null, lat = null;
+            if (ice && ice.type == 'iceberg') {
+                lon = ice.Long;
+                lat = ice.Lat;
+            }
+            iceLayer.selectIceberg(lon, lat);
+            if (ice != null) {
+                $scope.selected.open = true
+                $scope.selected.observation = ice;
+                showIceInformation(ice);
+            } else {
+                $scope.selected.open = false;
+                $scope.selected.observation = null;
+            }
+            
+            if (!$scope.$$phase) {
+                $scope.$apply(function() {
+                });
+            }
+        });
+
+        $scope.isDownloaded = function(chart) {
+            return chartsDisplayed[chart.type] == chart.shape;
+        }
+
+        $scope.download = function($event, chart, charts) {
+            $event.preventDefault();
+            requestShapefile(chart, function(){
+                chartsDisplayed[chart.type] = chart.shape;
+                if (!$scope.$$phase) {
+                    $scope.$apply(function() {
+                    });
+                }
             });
-        } else {
-            init();
         }
 
-        function requestAllIceObservations() {
-            requestIceChartObservations();
-            requestIcebergObservations();
+        $scope.hideIce = function($event, chart) {
+            $event.preventDefault();
+            delete chartsDisplayed[chart.type];
+            iceLayer.clear(chart.type);
         }
 
-        function requestIceChartObservations() {
-            requestIceObservations('iceChart');
+        $scope.zoom = function($event, chart) {
+            $event.preventDefault();
+            embryo.map.zoomToExtent(iceLayer.layers);
         }
 
-        function requestIcebergObservations() {
-            requestIceObservations('iceberg');
-        }
-
-        function requestIceObservations(chartType) {
+        function requestShapefile(chart, onSuccess) {
+            var name = chart.shape;
             var messageId = embryo.messagePanel.show({
-                text : "Requesting list of ice charts ..."
+                text : "Requesting " + chart.name + " data ..."
             });
-
-            var divId = (chartType == 'iceberg' ? '#icpIcebergs' : '#icpIceMaps');
-            embryo.ice.service
-                    .listByProvider(
-                            chartType,
-                            $scope.selectedProvider.key,
-                            function(data) {
-                                embryo.messagePanel.replace(messageId, {
-                                    text : "List of " + data.length
-                                            + (chartType == "iceberg" ? " icebergs" : " ice charts") + " downloaded.",
-                                    type : "success"
-                                });
-
-                                data.sort(function(a, b) {
-                                    return b.date - a.date;
-                                });
-
-                                var regions = [];
-
-                                for ( var i in data) {
-                                    if (regions.indexOf(data[i].region) < 0)
-                                        regions.push(data[i].region);
-                                }
-
-                                var sortFunction = function(reg1, reg2) {
-                                    if (reg1.indexOf("All Arctic") >= 0 && reg2.indexOf("All Arctic") < 0) {
-                                        return 1;
-                                    } else if (reg1.indexOf("All Arctic") < 0 && reg2.indexOf("All Arctic") >= 0) {
-                                        return -1;
-                                    } else if (reg1.indexOf("Overview") >= 0 && reg2.indexOf("Overview") < 0) {
-                                        return 1;
-                                    } else if (reg1.indexOf("Overview") < 0 && reg2.indexOf("Overview") >= 0) {
-                                        return -1;
-                                    }
-                                    return reg1.localeCompare(reg2);
-                                };
-
-                                regions.sort(sortFunction);
-
-                                var html = "";
-
-                                for ( var j in regions) {
-                                    var region = regions[j];
-                                    html += "<tr><td colspan=4><h4>" + region + "</h4></td></tr>";
-
-                                    for ( var i in data) {
-                                        if (data[i].region == region)
-                                            html += "<tr><td>"
-                                                    + data[i].source
-                                                    + "</td><td>"
-                                                    + formatTime(data[i].date)
-                                                    + "</td><td>"
-                                                    + formatSize(data[i].size)
-                                                    + "</td><td><a mid="
-                                                    + i
-                                                    + " href=# class='download'>download</a><span class='zoomhide'>"
-                                                    + "<a href=# class='zoom'>zoom</a> / <a href=# class='hideIce'>hide</a></span></td></tr>";
-                                    }
-
-                                }
-
-                                $(divId + " table").html(html);
-
-                                function registerClicks() {
-                                    // $("#icpIceMaps
-                                    // td:first").css("border-top", "none");
-                                    $(divId + " table span.zoomhide").css("display", "none");
-                                    $(divId + " table a.download").on('click', function(e) {
-                                        e.preventDefault();
-                                        var row = $(this).parents("tr");
-                                        requestShapefile(chartType, data[$(this).attr("mid")], function() {
-                                            $(divId + "table tr").removeClass("alert");
-                                            $(row).addClass("alert");
-                                            $(divId + " table span.zoomhide").css("display", "none");
-                                            $(divId + " table a.download").css("display", "block");
-                                            $("span.zoomhide", row).css("display", "block");
-                                            $("a.download", row).css("display", "none");
-                                        });
-                                        // "201304100920_CapeFarewell_RIC,201308141200_Greenland_WA,201308132150_Qaanaaq_RIC,201308070805_NorthEast_RIC");
-                                        // alert(data[$(this).attr("href")].shapeFileName);
-                                    });
-                                    $(divId + " table a.zoom").click(function(e) {
-                                        e.preventDefault();
-                                        embryo.map.zoomToExtent(iceLayer.layers);
-                                    });
-                                    $(divId + " table a.hideIce").click(function(e) {
-                                        e.preventDefault();
-                                        iceLayer.clear(chartType);
-                                        $(divId + " span.zoomhide").css("display", "none");
-                                        var row = $(this).parents("tr");
-                                        $("a.download", row).css("display", "block");
-                                    });
-                                }
-
-                                registerClicks();
-
-                                setTimeout(registerClicks, 1000);
-                            }, function(errorMsg, status) {
-                                embryo.messagePanel.replace(messageId, {
-                                    text : errorMsg,
-                                    type : "error"
-                                });
-                            });
-        }
-
-        function requestShapefile(chartType, x, onSuccess) {
-            var messageId = embryo.messagePanel.show({
-                text : "Requesting " + name + " data ..."
-            });
-
-            var name = x.shapeFileName;
-
-            embryo.shape.service.shape(name, {
+            ShapeService.shape(name, {
                 parts : name.indexOf("aari.aari_arc") >= 0 ? 2 : 0
             }, function(data) {
                 messageId = embryo.messagePanel.replace(messageId, {
                     text : "Drawing " + name,
                 });
 
-                var totalPolygons = 0;
-                var totalPoints = 0;
-                if (chartType == 'iceberg') {
-                    totalPoints = data.fragments.length;
-                } else {
-                    for ( var i in data.fragments) {
-                        totalPolygons += data.fragments[i].polygons.length;
-                        for ( var j in data.fragments[i].polygons)
-                            totalPoints += data.fragments[i].polygons[j].length;
-                    }
-                }
-
                 function finishedDrawing() {
+                    var totalPolygons = 0;
+                    var totalPoints = 0;
+                    if (chart.type == 'iceberg') {
+                        totalPoints = data.fragments.length;
+                    } else {
+                        for ( var i in data.fragments) {
+                            totalPolygons += data.fragments[i].polygons.length;
+                            for ( var j in data.fragments[i].polygons)
+                                totalPoints += data.fragments[i].polygons[j].length;
+                        }
+                    }
                     embryo.messagePanel.replace(messageId, {
                         text : totalPolygons + " polygons. " + totalPoints + " points drawn.",
                         type : "success"
                     });
 
-                    if (onSuccess) {
-                        onSuccess();
-                    }
+                    onSuccess ? onSuccess() : null;
                 }
-
                 data.information = {
-                    region : x.region,
-                    date : x.date
+                    region : chart.region,
+                    date : chart.date
                 };
-                // Draw shapefile a bit later, just let the browser update the
+                // Draw shapefile a bit later, just let
+                // the browser update the
                 // view and show above message
-                window.setTimeout(function() {
-                    iceLayer.draw(chartType, [ data ], finishedDrawing);
+                $timeout(function() {
+                    iceLayer.draw(chart.type, [ data ], finishedDrawing);
                 }, 10);
             }, function(errorMsg, status) {
                 if (status == 410) {
@@ -238,11 +187,13 @@ $(function() {
                     type : "error"
                 });
 
-                requestIceObservations();
+                IceService.update(chart.type + "s");
             });
         }
 
-    };
+    }
+
+    module.controller("IceController", [ '$scope', 'IceService', '$timeout', 'ShapeService', iceController ]);
 
     function createTableHeaderRow(headline) {
         return '<tr><th colspan="2" style="background-color:#eee;">' + headline + '</th></tr>';
@@ -508,49 +459,5 @@ $(function() {
             source += ("<br/>Position: " + formatLatitude(iceDescription.Lat) + ', ' + formatLongitude(iceDescription.Long));
         }
         $("#icpSelectedIce p").html(source);
-        openCollapse("#icpSelectedIce");
     }
-
-    function hideIceInformation() {
-        closeCollapse("#icpSelectedIce");
-    }
-
-    var iceLayer = new IceLayer();
-
-    addLayerToMap("ice", iceLayer, embryo.map);
-
-    iceLayer.select(function(ice) {
-        var lon = null, lat = null;
-        if (ice && ice.type == 'iceberg') {
-            lon = ice.Long;
-            lat = ice.Lat;
-        }
-        iceLayer.selectIceberg(lon, lat);
-        if (ice != null) {
-            showIceInformation(ice);
-        } else {
-            hideIceInformation();
-        }
-    });
-
-    embryo.groupChanged(function(e) {
-        if (e.groupId == "ice") {
-            $("#iceControlPanel").css("display", "block");
-            $("#iceControlPanel .collapse").data("collapse", null);
-            openCollapse("#iceControlPanel #icpIceMaps");
-        } else {
-            $("#iceControlPanel").css("display", "none");
-        }
-    });
-
-    embryo.ready(function() {
-        function fixAccordionSize() {
-            $("#iceControlPanel .e-accordion-inner").css("overflow", "auto");
-            $("#iceControlPanel .e-accordion-inner").css("max-height", Math.max(100, $(window).height() - 233) + "px");
-        }
-
-        $(window).resize(fixAccordionSize);
-
-        fixAccordionSize();
-    });
 });

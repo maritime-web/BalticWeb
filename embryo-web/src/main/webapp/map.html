@@ -50,9 +50,9 @@
 	<div id="messagePanel"></div>
 
 	<div x-requires-authenticated>
-		<div x-ng-controller="YourVesselLayerControl" requires-permissions="Sailor" ></div>
-		<div x-ng-controller="MsiLayerControl" ></div>
-		<div x-ng-controller="WeatherForecastLayerControl" ></div>
+		<div x-ng-controller="YourVesselLayerControl" requires-permissions="Sailor"></div>
+		<div x-ng-controller="MsiLayerControl"></div>
+		<div x-ng-controller="WeatherForecastLayerControl"></div>
 
 		<div x-ng-include="'partials/settings.html'"></div>
 
@@ -64,7 +64,7 @@
 			<div x-ng-include="'partials/ais-information.html'"></div>
 			<div x-ng-include="'partials/vessel-information-view.html'"></div>
 			<div x-ng-include="'partials/schedule-view.html'"></div>
-			<div x-ng-include="'partials/greenpos-list.html'" requires-permissions="Reporting,Administration" ></div>
+			<div x-ng-include="'partials/greenpos-list.html'" requires-permissions="Reporting,Administration"></div>
 
 			<div requires-permissions="Sailor">
 				<div x-ng-include="'partials/vessel-information-edit.html'"></div>
@@ -83,6 +83,10 @@
 			<div e-location-enabled="weather">
 				<div x-ng-include="'partials/weather-control.html'"></div>
 			</div>
+			<div e-location-enabled="ice" >
+				<div x-ng-include="'partials/ice-control.html'"></div>
+			</div>
+
 			<div x-ng-include="'partials/switch-base-map.html'"></div>
 		</div>
 
@@ -111,10 +115,6 @@
 				<b>Pointer coordinates:</b> <br /> <span id="coords"></span>
 			</div>
 		</div>
-	</div>
-
-	<div class="controlContainer e-small-font">
-		<div x-ng-include="'partials/ice-control.html'"></div>
 	</div>
 
 	<!-- The main application script -->
