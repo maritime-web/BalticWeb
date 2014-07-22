@@ -65,7 +65,7 @@ public class GreenPosDaoImpl extends DaoImpl implements GreenPosDao {
 
     @Override
     public List<GreenposMinimal> getLatest() {
-        Query query = em.createNativeQuery("SELECT vesselName, vesselMmsi, DTYPE, max(ts) FROM GreenPosReport WHERE DATE(:date) <= DATE(ts) GROUP BY vesselName");
+        Query query = em.createNativeQuery("SELECT vesselName, vesselMmsi, DTYPE, max(ts) FROM (SELECT vesselName, vesselMmsi, DTYPE, ts FROM GreenPosReport WHERE DATE(:date) <= DATE(ts) ORDER BY ts DESC) rep GROUP BY vesselName");
 
         query.setParameter("date", new Date(System.currentTimeMillis() - 7 * 24 * 3600 * 1000L), TemporalType.TIMESTAMP);
 
