@@ -38,9 +38,5 @@ public class EmbryonicException extends RuntimeException {
     public EmbryonicException(String message, Throwable cause) {
         super(message, cause);
         init();
-
-        int i = 0;
-        i++;
-        System.out.println(i);
     }
 }
