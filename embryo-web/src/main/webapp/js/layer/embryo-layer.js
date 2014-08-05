@@ -105,7 +105,15 @@ function EmbryoLayer() {
         for ( var l in this.selectableLayers) {
             this.selectableLayers[l].events.on({
                 featureselected : function(e) {
-                    emit(eval("e.feature.attributes." + that.selectableAttribute));
+                    if (e.feature.cluster) {
+                        var result = [];
+                        for ( var i in e.feature.cluster) {
+                            result.push(e.feature.cluster[i].attributes[that.selectableAttribute]);
+                        }
+                        emit(result);
+                    } else {
+                        emit(e.feature.attributes[that.selectableAttribute]);
+                    }
                 },
                 featureunselected : function(e) {
                     emit(null);
@@ -125,7 +133,7 @@ function EmbryoLayer() {
                 var layer = this.selectableLayers[l];
                 for ( var i in layer.features) {
                     var feature = layer.features[i];
-                    if (eval("feature.attributes." + this.selectableAttribute) == a) {
+                    if (feature.attributes[this.selectableAttribute] == a) {
                         this.map.select(feature);
                         didSelect = true;
                     }

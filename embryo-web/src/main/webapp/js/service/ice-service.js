@@ -136,6 +136,32 @@
                             this.listByProvider("iceberg", provider.key, success, error);
                         }
                     },
+                    inshoreIceReport : function(success, error) {
+                        var provider = this.getSelectedProvider("");
+                        var messageId = embryo.messagePanel.show({
+                            text : "Requesting inshore ice report ..."
+                        });
+                        function onSuccess(data) {
+                            embryo.messagePanel.replace(messageId, {
+                                text : "Inshore ice report downloaded.",
+                                type : "success"
+                            });
+                            success(data);
+                        }
+                        function onError(data, status, headers, config) {
+                            var txt = "requesting inshore ice report";
+                            var errorMsg = embryo.ErrorService.errorStatus(data, status, txt);
+                            embryo.messagePanel.replace(messageId, {
+                                text : errorMsg,
+                                type : "error"
+                            });
+                            error(errorMsg, status);
+                        }
+
+                        $http.get(embryo.baseUrl + "rest/ice/provider/" + provider.key + "/inshoreicereport", {
+                            timeout : embryo.defaultTimeout,
+                        }).success(onSuccess).error(onError);
+                    },
                     subscribe : function(callbackConfig) {
                         var ids = {};
                         var keys = Object.keys(callbackConfig);
