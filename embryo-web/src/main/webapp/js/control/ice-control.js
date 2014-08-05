@@ -6,6 +6,9 @@ $(function() {
     var iceLayer = new IceLayer();
     addLayerToMap("ice", iceLayer, embryo.map);
 
+    var inshoreLayer = new InshoreIceReportLayer();
+    addLayerToMap("ice", inshoreLayer, embryo.map);
+
     var chartsDisplayed = {};
 
     function displayChartList(divId, chartType, data) {
@@ -55,6 +58,56 @@ $(function() {
         return regions;
     }
 
+    function findFragments(number, shapes) {
+        var fragments = [];
+        for ( var i in shapes) {
+            for ( var j in shapes[i].fragments) {
+                var fragment = shapes[i].fragments[j];
+                if (fragment.description.Number == number) {
+                    fragments.push(fragment);
+                }
+            }
+        }
+        return fragments;
+    }
+
+    function buildIceReportShapes(inshoreIceReports, shapes) {
+        var keys = Object.keys(inshoreIceReports.notifications);
+        for ( var i in keys) {
+            var key = keys[i];
+            var fragments = findFragments(key, shapes);
+            for ( var i in fragments) {
+                fragments[i].description.hasReport = !!inshoreIceReports.notifications[key];
+            }
+        }
+
+        return shapes;
+    }
+
+    function buildIceReport(inshoreIceReport, shapes) {
+        var report = [];
+        var keys = Object.keys(inshoreIceReport.notifications);
+
+        for ( var i in keys) {
+            var key = keys[i];
+            var fragments = findFragments(key, shapes);
+            if (fragments.length > 0) {
+                report.push({
+                    number : fragments[0].description.Number,
+                    placename : fragments[0].description.Placename,
+                    latitude : fragments[0].description.Latitude,
+                    longitude : fragments[0].description.Longitude
+                });
+            }
+        }
+
+        report.sort(function(r1, r2) {
+            return r1.number - r2.number;
+        })
+
+        return report;
+    }
+
     function iceController($scope, IceService, $timeout, ShapeService) {
         $scope.selected = {};
 
@@ -84,27 +137,69 @@ $(function() {
                 if (!error) {
                     $scope.icebergs = displayChartList("#icpIcebergs", "iceberg", icebergs);
                 }
+            },
+            inshoreIceReport : function(error, inshoreIceReport) {
+                if (!error) {
+                    $scope.inshoreIceReport = inshoreIceReport;
+                    ShapeService.staticShapes("static.gre-inshore-icereport", {
+                        delta : false,
+                        exponent : 1
+                    }, function(shapes) {
+                        $scope.inshoreLocations = buildIceReport($scope.inshoreIceReport, shapes);
+                        var shapesToDisplay = buildIceReportShapes($scope.inshoreIceReport, shapes);
+                        inshoreLayer.draw(shapesToDisplay);
+                    }, function(error) {
+                    });
+
+                }
             }
         }
 
         IceService.subscribe(subscriptionConfig);
 
         iceLayer.select(function(ice) {
-            var lon = null, lat = null;
-            if (ice && ice.type == 'iceberg') {
-                lon = ice.Long;
-                lat = ice.Lat;
-            }
-            iceLayer.selectIceberg(lon, lat);
-            if (ice != null) {
+            if (ice == null) {
+                $scope.selected.open = false;
+                $scope.selected.inshore = false;
+                $scope.selected.observation = null;
+            } else {
+                var lon = null, lat = null;
+                if (ice && ice.type == 'iceberg') {
+                    lon = ice.Long;
+                    lat = ice.Lat;
+                }
                 $scope.selected.open = true
                 $scope.selected.observation = ice;
                 showIceInformation(ice);
-            } else {
-                $scope.selected.open = false;
-                $scope.selected.observation = null;
             }
-            
+
+            if (!$scope.$$phase) {
+                $scope.$apply(function() {
+                });
+            }
+        });
+
+        inshoreLayer.select(function(reports) {
+            if (reports == null) {
+                $scope.selected.open = false;
+                $scope.selected.inshore = false;
+                $scope.selected.observation = null;
+            } else if (Array.isArray(reports)) {
+                // expect inshore cluster value
+                var observation = {};
+                for ( var i in reports) {
+                    observation[reports[i]] = $scope.inshoreIceReport.notifications[reports[i]];
+                }
+                $scope.selected.observation = observation;
+                $scope.selected.inshore = true;
+                $scope.selected.open = true;
+            } else {
+                $scope.selected.observation = {};
+                $scope.selected.observation[reports] =  $scope.inshoreIceReport.notifications[reports]; 
+                $scope.selected.inshore = true;
+                $scope.selected.open = true;
+            }
+
             if (!$scope.$$phase) {
                 $scope.$apply(function() {
                 });
@@ -117,7 +212,7 @@ $(function() {
 
         $scope.download = function($event, chart, charts) {
             $event.preventDefault();
-            requestShapefile(chart, function(){
+            requestShapefile(chart, function() {
                 chartsDisplayed[chart.type] = chart.shape;
                 if (!$scope.$$phase) {
                     $scope.$apply(function() {
@@ -135,6 +230,12 @@ $(function() {
         $scope.zoom = function($event, chart) {
             $event.preventDefault();
             embryo.map.zoomToExtent(iceLayer.layers);
+        }
+
+        $scope.showInshore = function($event, location) {
+            $event.preventDefault();
+            embryo.map.setCenter(location.longitude.replace(",", "."), location.latitude.replace(",", "."), 9);
+            inshoreLayer.select(location.number);
         }
 
         function requestShapefile(chart, onSuccess) {
@@ -190,7 +291,6 @@ $(function() {
                 IceService.update(chart.type + "s");
             });
         }
-
     }
 
     module.controller("IceController", [ '$scope', 'IceService', '$timeout', 'ShapeService', iceController ]);

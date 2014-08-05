@@ -1,17 +1,5 @@
 <div x-ng-controller="IceController">
 	<div id="iceControlPanel" accordion close-others="true" e-left-bar class="controlPanel2">
-		<div accordion-group heading="Weather" x-ng-if="providers && providers.length > 1">
-			<div class="e-accordion-inner panel-body">
-				<table class="table">
-					<tr x-ng-repeat="provider in providers" class="e-iceprovider">
-						<td><input type="radio" x-ng-model="$parent.selectedProvider" x-ng-value="provider" name="providers"
-							id="provider_{{$index}}" /></td>
-						<td><label for="provider_{{$index}}">{{provider.name}}</label></td>
-						<td><label for="provider_{{$index}}">{{provider.shortName}}</label></td>
-					</tr>
-				</table>
-			</div>
-		</div>
 		<div accordion-group heading="Ice Charts" e-left-bar-open-on-init>
 			<table class="table table-condensed">
 				<tbody x-ng-repeat="chart in iceCharts">
@@ -48,15 +36,58 @@
 			</table>
 		</div>
 
+		<div accordion-group heading="Inshore ice report">
+			<p>
+				Danish Meteorological Institute<br /> Ice central, Narsasuaq<br />
+			</p>
+			<p>
+				<span>{{inshoreIceReport.overview}}<br /></span>
+			</p>
+
+
+			<table class="table table-condensed">
+				<tr x-ng-repeat="location in inshoreLocations">
+					<td>{{location.number}}</td>
+					<td>{{location.placename}}</td>
+					<td><a href="#" x-ng-click="showInshore($event, location)">view</a></td>
+				</tr>
+			</table>
+			<p x-ng-repeat="footer in inshoreIceReport.footers">{{footer}}</p>
+		</div>
+
+
 		<div accordion-group heading="Selected Ice Observation" is-open="selected.open">
 			<div x-ng-if="!selected.observation">Nothing selected</div>
-			<div id="icpSelectedIce">
+			<div id="icpSelectedIce" x-ng-show="!selected.inshore">
 				<p></p>
 				<table class="table table-condensed">
 				</table>
 			</div>
+			<div x-ng-if="selected.inshore">
+				<p>
+					Danish Meteorological Institute<br /> Ice central, Narsasuaq<br />
+				</p>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="(number, text) in selected.observation">
+						<td>{{number}}</td>
+						<td>{{text}}</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 
+		<div accordion-group heading="Providers" x-ng-if="providers && providers.length > 1">
+			<div class="e-accordion-inner panel-body">
+				<table class="table">
+					<tr x-ng-repeat="provider in providers" class="e-iceprovider">
+						<td><input type="radio" x-ng-model="$parent.selectedProvider" x-ng-value="provider" name="providers"
+							id="provider_{{$index}}" /></td>
+						<td><label for="provider_{{$index}}">{{provider.name}}</label></td>
+						<td><label for="provider_{{$index}}">{{provider.shortName}}</label></td>
+					</tr>
+				</table>
+			</div>
+		</div>
 		<div accordion-group heading="Legends">
 			<div id="icpLegends">
 				<h4>Ice charts</h4>

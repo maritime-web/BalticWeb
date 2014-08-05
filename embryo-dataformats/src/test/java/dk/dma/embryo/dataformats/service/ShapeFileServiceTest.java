@@ -23,6 +23,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
 
@@ -36,6 +38,7 @@ import dk.dma.embryo.common.configuration.PropertiesReader;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.dataformats.service.ShapeFileService.BaseFragment;
 import dk.dma.embryo.dataformats.service.ShapeFileService.Fragment;
+import dk.dma.embryo.dataformats.service.ShapeFileService.PointFragment;
 import dk.dma.embryo.dataformats.service.ShapeFileService.Shape;
 
 public class ShapeFileServiceTest {
@@ -96,35 +99,79 @@ public class ShapeFileServiceTest {
         testFragment(shape, "Kangikajik", 2L, 14);
         testFragment(shape, "Aputiteeq", 3L, 13);
         testFragment(shape, "Kulusuk", 4L, 132);
-        testFragment(shape, "Nunap Isuata Kangia",6L,12);
-        testFragment(shape, "Nunap Isuata Kitaa",7L, 12);
-        testFragment(shape, "Nunarsuit",8L,12);
-        testFragment(shape, "Narsalik",9L, 12);
-        testFragment(shape, "Meqquitsoq",10L, 12);
-        testFragment(shape, "Attu",11L, 12);
-        testFragment(shape, "Uiffaq",12L, 3);
-        testFragment(shape, "Qimusseriarsuaq",13L, 23);
-        testFragment(shape, "Kiatak",14L, 1);
+        testFragment(shape, "Nunap Isuata Kangia", 6L, 12);
+        testFragment(shape, "Nunap Isuata Kitaa", 7L, 12);
+        testFragment(shape, "Nunarsuit", 8L, 12);
+        testFragment(shape, "Narsalik", 9L, 12);
+        testFragment(shape, "Meqquitsoq", 10L, 12);
+        testFragment(shape, "Attu", 11L, 12);
+        testFragment(shape, "Uiffaq", 12L, 3);
+        testFragment(shape, "Qimusseriarsuaq", 13L, 23);
+        testFragment(shape, "Kiatak", 14L, 1);
     }
 
     private void testFragment(Shape shape, String fragmentName, Long expectedId, int expectedPoints) {
-        BaseFragment baseFragment = getFragment(shape, fragmentName);
+        BaseFragment baseFragment = getFragment(shape, "name", fragmentName);
 
         assertTrue(baseFragment instanceof Fragment);
         Fragment fragment = (Fragment) baseFragment;
 
         assertEquals(expectedId, fragment.getDescription().get("Id"));
         assertEquals(1, fragment.getPolygons().size());
-        //assertEquals(expectedPoints, fragment.getPolygons().get(0).size());
+        // assertEquals(expectedPoints, fragment.getPolygons().get(0).size());
     }
 
-    private BaseFragment getFragment(Shape shape, String name) {
+    private BaseFragment getFragment(Shape shape, String key, String value) {
         for (BaseFragment fragment : shape.getFragments()) {
-            if (name.equals(fragment.getDescription().get("name"))) {
+            if (value.equals(fragment.getDescription().get(key))) {
                 return fragment;
             }
         }
         return null;
+    }
+
+    private List<BaseFragment> getFragments(Shape shape, String key, String value) {
+        List<BaseFragment> fragments = new ArrayList<>();
+        for (BaseFragment fragment : shape.getFragments()) {
+            if (value.equals(fragment.getDescription().get(key))) {
+                fragments.add(fragment);
+            }
+        }
+        return fragments;
+    }
+
+    @Test
+    public void testGreenlandInshoreIceReport() throws IOException {
+        String name = "gre-inshore-icereport";
+        ShapeFileService.Shape shape = service.readSingleFile("static." + name, 0, "", true, 4, 0);
+
+        assertEquals(Integer.valueOf(4), shape.getExponent());
+        assertEquals(104, shape.getFragments().size());
+        assertNotNull(shape.getDescription());
+        assertTrue(shape.getDescription().containsKey("id"));
+        assertEquals(name, shape.getDescription().get("id"));
+
+        testInshoreIceReportFragment(shape, "12", "Knækket", 12L, 1);
+        testInshoreIceReportFragment(shape, "11", "Torssukatak", 11L, 1);
+        testInshoreIceReportFragment(shape, "85", "Frederiksdal-Augpilagtoq", 85L, 3);
+    }
+
+    private void testInshoreIceReportFragment(Shape shape, String fragmentName, String expectedPlaceName,
+            Long expectedNumber, int expectedCount) {
+
+        List<BaseFragment> baseFragments = getFragments(shape, "NAME", fragmentName);
+        assertEquals(expectedCount, baseFragments.size());
+
+        for (BaseFragment baseFragment : baseFragments) {
+            assertNotNull(baseFragment);
+            assertTrue(baseFragment instanceof PointFragment);
+            PointFragment fragment = (PointFragment) baseFragment;
+
+            assertEquals(expectedPlaceName, fragment.getDescription().get("Placename"));
+            assertEquals(expectedNumber, fragment.getDescription().get("Number"));
+            assertNotNull(fragment.getPoint());
+
+        }
     }
 
     @Test

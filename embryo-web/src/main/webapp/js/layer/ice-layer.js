@@ -1,4 +1,5 @@
 function IceLayer() {
+
     this.init = function() {
         var that = this;
 
@@ -14,6 +15,21 @@ function IceLayer() {
             },
             icebergSize : function(size) {
                 return this.sizes[size];
+            },
+            imageWidth : function(feature) {
+                if (feature.attributes.iceDescription.type === 'iceberg') {
+                    return that.context.icebergSize(feature.attributes.iceDescription.Size_Catg) * 5;
+                }
+                return 0;
+            },
+            imageHeight : function(feature) {
+                if (feature.attributes.iceDescription.type === 'iceberg') {
+                    return that.context.icebergSize(feature.attributes.iceDescription.Size_Catg) * 6;
+                }
+                return 0;
+            },
+            description : function(feature) {
+                return feature.attributes.description;
             }
         };
 
@@ -34,30 +50,23 @@ function IceLayer() {
                 }, {
                     context : this.context
                 }),
-                "temporary" : new OpenLayers.Style({
-                    fillColor : "${fillColor}",
-                    fillOpacity : "${transparency}",
-                    strokeWidth : "1",
-                    strokeColor : "#000000",
-                    strokeOpacity : "0.7",
-                }, {
-                    context : this.context
-                }),
                 "select" : new OpenLayers.Style({
                     fillColor : "${fillColor}",
                     fillOpacity : "${transparency}",
                     strokeWidth : "1",
                     strokeColor : "#000",
                     strokeOpacity : "1",
+
+                    externalGraphic : '${graphic}',
+                    graphicWidth : '${imageWidth}',
+                    graphicHeight : '${imageHeight}',
+                    graphicOpacity : "${transparency}",
                 }, {
                     context : this.context
                 })
             })
-        /*
-         * , strategies: [ new OpenLayers.Strategy.Cluster({ distance: 10,
-         * threshold: 3 }) ]
-         */
         });
+
         this.layers.iceberg = new OpenLayers.Layer.Vector("Iceberg", {
             styleMap : new OpenLayers.StyleMap({
                 "default" : new OpenLayers.Style({
@@ -71,17 +80,6 @@ function IceLayer() {
                 }, {
                     context : this.context
                 }),
-                "temporary" : new OpenLayers.Style({
-                    externalGraphic : 'img/iceberg.png',
-                    graphicWidth : '${imageWidth}',
-                    graphicHeight : '${imageHeight}',
-                    graphicOpacity : "${transparency}",
-                    strokeWidth : "1",
-                    strokeColor : "#000000",
-                    strokeOpacity : "0.7",
-                }, {
-                    context : this.context
-                }),
                 "select" : new OpenLayers.Style({
                     externalGraphic : 'img/iceberg.png',
                     graphicWidth : '${imageWidth}',
@@ -90,6 +88,14 @@ function IceLayer() {
                     strokeWidth : "1",
                     strokeColor : "#000",
                     strokeOpacity : "1",
+                    opacity : 1,
+                    cursor : "crosshair",
+                    backgroundGraphic : "img/selection.png",
+                    backgroundXOffset : -16,
+                    backgroundYOffset : -16,
+                    backgroundHeight : 32,
+                    backgroundWidth : 32,
+                    backgroundRotation : 0,                    
                 }, {
                     context : this.context
                 })
@@ -99,29 +105,7 @@ function IceLayer() {
          * threshold: 3 }) ]
          */
         });
-        this.layers.selection = new OpenLayers.Layer.Vector("Selection", {
-            styleMap : new OpenLayers.StyleMap({
-                "default" : new OpenLayers.Style({
-                    externalGraphic : "${image}",
-                    graphicWidth : "${imageWidth}",
-                    graphicHeight : "${imageHeight}",
-                    graphicYOffset : "${imageYOffset}",
-                    graphicXOffset : "${imageXOffset}",
-                    graphicOpacity : "${transparency}",
-                    rotation : "${angle}"
-                }, {
-                    context : this.context
-                }),
-                "select" : new OpenLayers.Style({
-                    cursor : "crosshair",
-                    externalGraphic : "${image}"
-                }, {
-                    context : this.context
-                })
-            }, {
-                context : this.context
-            })
-        });
+
         this.selectableLayers = [ this.layers.ice, this.layers.iceberg ];
         this.selectableAttribute = "iceDescription";
     };
@@ -152,10 +136,6 @@ function IceLayer() {
             for ( var k in polygons) {
                 var polygon = polygons[k];
 
-                // var copy = [];
-                // for(var counter in polygon){
-                // copy.push({x:polygon[counter].x, y: polygon[counter].y});
-                // }
                 var points = [];
                 for ( var j in polygon) {
                     var p = polygon[j];
@@ -184,7 +164,6 @@ function IceLayer() {
                 },
                 fillColor : colorByDescription(fragment.description),
                 iceDescription : $.extend(fragment.description, {
-//                    source : shape.description.id,
                     information : shape.information,
                     type : 'iceChart'
                 }),
@@ -221,29 +200,10 @@ function IceLayer() {
         }
 
         function drawPoints() {
-            /*
-             * var styleData = { externalGraphic : 'img/iceberg.png',
-             * graphicWidth : 10, graphicHeight : 12, fillOpacity :
-             * "${transparency}" }; var style = new OpenLayers.Style(styleData,
-             * {context : attrs});
-             */
             for ( var f in fragments) {
                 var desc = fragments[f].description;
                 var feature = new OpenLayers.Feature.Vector(embryo.map.createPoint(desc.Long, desc.Lat), {
-                    imageWidth : function() {
-                        var size = desc.Size_Catg;
-                        return function() {
-                            return that.context.icebergSize(size) * 5;
-                        };
-                    }(),
-                    imageHeight : function() {
-                        var size = desc.Size_Catg;
-                        return function() {
-                            return that.context.icebergSize(size) * 6;
-                        };
-                    }(),
                     iceDescription : $.extend(desc, {
-//                        source: shape.description.id,
                         information : shape.information,
                         type : 'iceberg'
                     }),
@@ -254,6 +214,7 @@ function IceLayer() {
             that.layers.iceberg.refresh();
             callback();
         }
+
         if (chartType == 'iceberg') {
             that.layers.iceberg.removeAllFeatures();
         } else {
@@ -270,32 +231,6 @@ function IceLayer() {
             } else {
                 drawFragments(shape, fragments);
             }
-        }
-    };
-
-    this.selectIceberg = function(lon, lat) {
-        var that = this;
-        that.layers.selection.removeAllFeatures();
-        if(lon && lat) {
-            that.layers.selection.addFeatures([ new OpenLayers.Feature.Vector(embryo.map.createPoint(lon, lat), {
-                id : -1,
-                angle : 0,
-                opacity : 1,
-                image : "img/selection.png",
-                imageWidth : function() {
-                    return 32;
-                },
-                imageHeight : function() {
-                    return 32;
-                },
-                imageYOffset : function() {
-                    return -16;
-                },
-                imageXOffset : function() {
-                    return -16;
-                },
-                type : "selection"
-            }) ]);
         }
     };
 

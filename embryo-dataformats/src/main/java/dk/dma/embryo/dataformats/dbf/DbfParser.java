@@ -134,7 +134,7 @@ public class DbfParser {
                 break;
             }
         }
-        stringbuffer.append(new String(abyte0, 0, i));
+        stringbuffer.append(new String(abyte0, 0, i,"ISO-8859-1"));
 
         char c = (char) abyte0[11];
         stream.readFully(abyte0);
@@ -172,7 +172,7 @@ public class DbfParser {
         for (int j = 0; j < aobj.length; j++) {
             int k = fields[j].getLength();
             StringBuffer stringbuffer = new StringBuffer(k);
-            stringbuffer.append(new String(nextRecord, i, k));
+            stringbuffer.append(new String(nextRecord, i, k ,"ISO-8859-1"));
             aobj[j] = fields[j].parse(stringbuffer.toString());
             i += fields[j].getLength();
         }

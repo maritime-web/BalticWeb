@@ -27,8 +27,10 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.dataformats.model.InshoreIceReport;
 import dk.dma.embryo.dataformats.model.IceObservation;
 import dk.dma.embryo.dataformats.model.Provider;
+import dk.dma.embryo.dataformats.service.InshoreIceReportService;
 import dk.dma.embryo.dataformats.service.IceObservationService;
 
 @Path("/ice")
@@ -36,6 +38,10 @@ public class IceObservationRestService {
     @Inject
     private IceObservationService iceObservationService;
 
+    @Inject
+    private InshoreIceReportService iceInformationService;
+
+    
     @Inject
     private Logger logger;
     
@@ -60,5 +66,15 @@ public class IceObservationRestService {
         logger.debug("listIceObservations({})", providerKey);
         
         return iceObservationService.listAvailableIceObservations(chartType, providerKey);
+    }
+
+    @GET
+    @Path("/provider/{provider}/inshoreicereport")
+    @Produces("application/json")
+    @GZIP
+    @NoCache
+    public InshoreIceReport inshoreIceReport(@PathParam("provider") String providerKey) {
+        logger.debug("iceInformations({})", providerKey);
+        return iceInformationService.getInshoreIceReport(providerKey);
     }
 }
