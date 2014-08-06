@@ -12,17 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.notification;
+package dk.dma.embryo.dataformats.inshore;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
-
-import dk.dma.embryo.dataformats.model.InshoreIceReport;
 
 /**
  * @author Jesper Tejlgaard
@@ -39,7 +35,7 @@ public class InshoreIceReportParserTest {
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-        expected.addHeader("www.dmi.dk");
+//        expected.addHeader("www.dmi.dk");
         expected.setOverview("På indenskærs isrekognoscering onsdag den 02. juli 2014 mellem Skovfjord, Bredefjord, Julianehåbsfjord, Mågeløbene, Knækket og Narsarsuaq blev følgende observeret:");
 
         expected.addNotification(11, "I Torssukatak: Var der Tåge.");
@@ -50,7 +46,7 @@ public class InshoreIceReportParserTest {
 
         expected.addFooter("Næste isrekognoscering forventes mandag den. 07. juli  2014");
         expected.addFooter("For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk");
-        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
+//        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
 
         InshoreIceReport notifications = parser.parse();
 
@@ -60,14 +56,14 @@ public class InshoreIceReportParserTest {
     @Test
     public void testWithLineBreakInOverview() throws IOException {
 
-        InputStream is = getClass().getResourceAsStream("/inshore-ice-reports/2014-07-10-for-test.txt");
+        InputStream is = getClass().getResourceAsStream("/inshore-ice-reports/2014-07-10_for-test.txt");
         InshoreIceReportParser parser = new InshoreIceReportParser(is);
 
         InshoreIceReport expected = new InshoreIceReport();
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-        expected.addHeader("www.dmi.dk");
+//        expected.addHeader("www.dmi.dk");
 
         expected.setOverview("På indenskærs isrekognoscering torsdag den 10. juli 2014 mellem Prins Chr. Sund, Frederiksdal, Nanortalik, Julianehåbs Fjord, Hollænder Løbet, Mågeløbene, Knækket, Bredefjord, Narsaq Sund og Narsarsuaq blev følgende observeret:");
 
@@ -78,7 +74,7 @@ public class InshoreIceReportParserTest {
 
         expected.addFooter("Næste isrekognoscering forventes onsdag den 16. juli 2014.");
         expected.addFooter("For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk");
-        expected.addFooter("Iscentralen Narsarsuaq, torssdag den 10. juli 2014");
+//        expected.addFooter("Iscentralen Narsarsuaq, torssdag den 10. juli 2014");
 
         InshoreIceReport notifications = parser.parse();
 
@@ -102,7 +98,7 @@ public class InshoreIceReportParserTest {
 
         expected.addFooter("Næste isrekognoscering forventes mandag den. 07. juli  2014");
         expected.addFooter("For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk");
-        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
+//        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
 
         InshoreIceReport notifications = parser.parse();
 
@@ -125,7 +121,7 @@ public class InshoreIceReportParserTest {
 
         expected.addFooter("Næste isrekognoscering forventes mandag den. 07. juli  2014");
         expected.addFooter("For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk");
-        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
+//        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
 
         InshoreIceReport notifications = parser.parse();
 
@@ -142,7 +138,7 @@ public class InshoreIceReportParserTest {
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-        expected.addHeader("www.dmi.dk");
+//        expected.addHeader("www.dmi.dk");
 
         expected.addNotification(11, "I Torssukatak: Var der Tåge.");
         expected.addNotification(12, "I Knækket: Var der isfrit.");
@@ -152,7 +148,7 @@ public class InshoreIceReportParserTest {
 
         expected.addFooter("Næste isrekognoscering forventes mandag den. 07. juli  2014");
         expected.addFooter("For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk");
-        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
+//        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
 
         InshoreIceReport notifications = parser.parse();
 
@@ -170,7 +166,7 @@ public class InshoreIceReportParserTest {
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-        expected.addHeader("www.dmi.dk");
+//        expected.addHeader("www.dmi.dk");
         expected.setOverview("På indenskærs isrekognoscering onsdag den 02. juli 2014 mellem Skovfjord, Bredefjord, Julianehåbsfjord, Mågeløbene, Knækket og Narsarsuaq blev følgende observeret:");
 
         expected.addNotification(11, "I Torssukatak: Var der Tåge.");
@@ -194,17 +190,42 @@ public class InshoreIceReportParserTest {
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-        expected.addHeader("www.dmi.dk");
+//        expected.addHeader("www.dmi.dk");
         expected.setOverview("På indenskærs isrekognoscering onsdag den 02. juli 2014 mellem Skovfjord, Bredefjord, Julianehåbsfjord, Mågeløbene, Knækket og Narsarsuaq blev følgende observeret:");
 
         expected.addFooter("Næste isrekognoscering forventes mandag den. 07. juli  2014");
         expected.addFooter("For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk");
-        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
+//        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
 
         InshoreIceReport notifications = parser.parse();
 
         ReflectionAssert.assertReflectionEquals(expected, notifications);
     }
 
+    @Test
+    public void testWithObservationLineBreak() throws IOException {
+
+        InputStream is = getClass().getResourceAsStream("/inshore-ice-reports/linebreak.txt");
+        InshoreIceReportParser parser = new InshoreIceReportParser(is);
+
+        InshoreIceReport expected = new InshoreIceReport();
+        expected.addHeader("DMI");
+        expected.addHeader("Iscentralen Ismelding");
+        expected.addHeader("Narsarsuaq");
+//        expected.addHeader("www.dmi.dk");
+        expected.setOverview("På indenskærs isrekognoscering fredag den 1. august 2014 mellem Prins Christian Sund, Frederiksdal, Båkeruten, Nanortalik, Sydprøven, Sardloq, Julianehåbs Fjord, Skovfjord, Narsaq Sund, Bredefjord og Narsarsuaq blev følgende observeret:");
+
+        expected.addNotification(87, "I Prins Christian Sund ved det smalle sted: Var der enkelte isfjelde og skosser. Der var et mindre bælte med spredte skosser der kunne passeres.");
+        expected.addNotification(88, "I Prins Christian Sund østlige del: Var der enkelte isfjelde og skosser. Der var områder med spredte skosser ud for bræerne.");
+        expected.addNotification(89, "I Prins Christian Sund Ø-lig ved mundingen: Var der spredte isfjelde der kunne passeres.");
+
+        expected.addFooter("Næste isrekognoscering forventes onsdag den 6. august 2014.");
+        expected.addFooter("For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk.");
+//        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
+
+        InshoreIceReport notifications = parser.parse();
+
+        ReflectionAssert.assertReflectionEquals(expected, notifications);
+    }
     
 }

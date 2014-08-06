@@ -38,13 +38,8 @@
 
 		<div accordion-group heading="Inshore ice report">
 			<p>
-				Danish Meteorological Institute<br /> Ice central, Narsasuaq<br />
+				<span x-ng-repeat="header in inshoreIceReport.header">{{header}}<br /></span>
 			</p>
-			<p>
-				<span>{{inshoreIceReport.overview}}<br /></span>
-			</p>
-
-
 			<table class="table table-condensed">
 				<tr x-ng-repeat="location in inshoreLocations">
 					<td>{{location.number}}</td>
@@ -52,7 +47,8 @@
 					<td><a href="#" x-ng-click="showInshore($event, location)">view</a></td>
 				</tr>
 			</table>
-			<p x-ng-repeat="footer in inshoreIceReport.footers">{{footer}}</p>
+
+			<p x-ng-repeat="footer in inshoreIceReport.footer">{{footer}}</p>
 		</div>
 
 
@@ -67,10 +63,19 @@
 				<p>
 					Danish Meteorological Institute<br /> Ice central, Narsasuaq<br />
 				</p>
+
 				<table class="table table-condensed">
-					<tr x-ng-repeat="(number, text) in selected.observation">
+					<col style="width: 70px" />
+					<col span="2"/>
+					<tr>
+						<th>Observed</th>
+						<th>No</th>
+						<th>Description</th>
+					</tr>
+					<tr x-ng-repeat="(number, observation) in selected.observation">
+						<td>{{formatDate(observation.from)}}</td>
 						<td>{{number}}</td>
-						<td>{{text}}</td>
+						<td>{{observation.text}}</td>
 					</tr>
 				</table>
 			</div>

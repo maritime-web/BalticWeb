@@ -12,19 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.job;
+package dk.dma.embryo.dataformats.inshore;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.net.ftp.FTPFile;
+import org.joda.time.DateMidnight;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.base.Predicate;
+
+import dk.dma.embryo.dataformats.inshore.InshoreIceReportServiceImpl.FileInfo;
 
 /**
  * @author Jesper Tejlgaard
@@ -94,6 +100,61 @@ public class DmiInshoreIceReportPredicatesTest {
         file.setName("2014-08-30.txt");
         Assert.assertTrue(predicate.apply(file));
 
+    }
+
+    @Test
+    public void testDateLimit() {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd").withZoneUTC();
+        DateMidnight dateLimit = formatter.parseDateTime("2014-07-24").toDateTime(DateTimeZone.UTC).toDateMidnight();
+        
+        Predicate<FileInfo> predicate = DmiInshoreIceReportPredicates.dateLimit(dateLimit);
+
+        FileInfo info = new FileInfo();
+        //info.file = new File(getClass().getResource("/inshore-ice-reports/2014-07-23.txt").getFile());
+
+        info.date = formatter.parseDateTime("2014-07-23").toDateMidnight();
+        Assert.assertFalse(predicate.apply(info));
+
+        info.date = formatter.parseDateTime("2014-07-25").toDateMidnight();
+        Assert.assertTrue(predicate.apply(info));
+
+        info.date = formatter.parseDateTime("2014-07-30").toDateTime(DateTimeZone.UTC).toDateMidnight();
+        Assert.assertTrue(predicate.apply(info));
+    }
+
+    
+    @Test
+    public void testFileNameAndVersion() {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd").withZoneUTC();
+        List<FileInfo> allFiles = new ArrayList<>();
+        FileInfo first = new FileInfo();
+        first.file = new File(getClass().getResource("/inshore-ice-reports/2014-07-10.txt").getFile());
+        first.date = formatter.parseDateTime("2014-07-10").toDateMidnight();
+        allFiles.add(first);
+        
+        FileInfo second = new FileInfo();
+        second.file = new File(getClass().getResource("/inshore-ice-reports/2014-07-10_for-test.txt").getFile());
+        second.date = formatter.parseDateTime("2014-07-10").toDateMidnight();
+        second.version = "for-test";
+        allFiles.add(second);
+
+        FileInfo third = new FileInfo();
+        third.file = new File(getClass().getResource("/inshore-ice-reports/2014-07-10_v3.txt").getFile());
+        third.date = formatter.parseDateTime("2014-07-10").toDateMidnight();
+        third.version = "v3";
+        allFiles.add(third);
+        
+        FileInfo fourth = new FileInfo();
+        fourth.file = new File(getClass().getResource("/inshore-ice-reports/2014-07-24.txt").getFile());
+        fourth.date = formatter.parseDateTime("2014-07-24").toDateMidnight();
+        allFiles.add(fourth);
+
+        Predicate<FileInfo> predicate = DmiInshoreIceReportPredicates.fileInfoPredicate(allFiles);
+
+        Assert.assertFalse(predicate.apply(first));
+        Assert.assertFalse(predicate.apply(second));
+        Assert.assertTrue(predicate.apply(third));
+        Assert.assertTrue(predicate.apply(fourth));
     }
 
 }

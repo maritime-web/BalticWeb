@@ -12,19 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.job;
+package dk.dma.embryo.dataformats.inshore;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 
 import org.apache.commons.net.ftp.FTPFile;
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+
+import dk.dma.embryo.dataformats.inshore.InshoreIceReportServiceImpl.FileInfo;
 
 /**
  * @author Jesper Tejlgaard
@@ -47,13 +51,25 @@ public class DmiInshoreIceReportPredicates {
         return Predicates.not(validFormat());
     }
 
+    public static Predicate<FileInfo> allPredicates(Collection<FileInfo> allFiles, DateMidnight date) {
+        return Predicates.and(dateLimit(date), fileInfoPredicate(allFiles));
+    }
+
+    public static Predicate<FileInfo> fileInfoPredicate(Collection<FileInfo> allFiles) {
+        return new FileInfoPredicate(allFiles);
+    }
+
+    public static Predicate<FileInfo> dateLimit(DateMidnight date) {
+        return new DateLimitPredicate(date);
+    }
+    
     private static class ValidFormatPredicate implements Predicate<FTPFile> {
         private static final String DATE_FORMAT_STR = "yyyy-MM-dd";
         private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_STR);
-        
-        public ValidFormatPredicate(){
+
+        public ValidFormatPredicate() {
             dateFormat.setLenient(false);
-            
+
         }
 
         @Override
@@ -87,4 +103,44 @@ public class DmiInshoreIceReportPredicates {
             }
         }
     }
+
+    private static final class FileInfoPredicate implements Predicate<FileInfo> {
+        private Collection<FileInfo> allFiles;
+
+        private FileInfoPredicate(Collection<FileInfo> allFiles) {
+            this.allFiles = allFiles;
+        }
+
+        @Override
+        public boolean apply(FileInfo input) {
+            for (FileInfo other : allFiles) {
+                if (other.date.isEqual(input.date)) {
+                    if (other.version != null && input.version == null) {
+                        return false;
+                    }
+                    if (other.version != null && input.version.compareTo(other.version) < 0) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+
+    private static final class DateLimitPredicate implements Predicate<FileInfo> {
+        private final DateMidnight limit;
+
+        private DateLimitPredicate(DateMidnight date) {
+            limit = date;
+        }
+
+        @Override
+        public boolean apply(FileInfo input) {
+            System.out.println(input.date);
+            System.out.println(limit);
+            return !input.date.isBefore(limit);
+        }
+    }
+
 }

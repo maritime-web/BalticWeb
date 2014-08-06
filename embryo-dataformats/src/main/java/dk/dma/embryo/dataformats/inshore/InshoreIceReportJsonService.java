@@ -12,9 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.json;
-
-import java.util.List;
+package dk.dma.embryo.dataformats.inshore;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -26,35 +24,24 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.model.Provider;
-import dk.dma.embryo.dataformats.service.IceObservationService;
 
-@Path("/ice")
-public class IceObservationRestService {
+@Path("/inshore-ice-report")
+public class InshoreIceReportJsonService {
+
     @Inject
-    private IceObservationService iceObservationService;
+    private InshoreIceReportService iceInformationService;
 
+    
     @Inject
     private Logger logger;
     
     @GET
-    @Path("/provider/list")
+    @Path("/provider/{provider}")
     @Produces("application/json")
     @GZIP
     @NoCache
-    public List<Provider> listIceChartProviders() {
-        return iceObservationService.listIceChartProviders();
-    }
-
-    @GET
-    @Path("/provider/{charttype}/{provider}/observations")
-    @Produces("application/json")
-    @GZIP
-    @NoCache
-    public List<IceObservation> listIceObservations(@PathParam("charttype") String chartType, @PathParam("provider") String providerKey) {
-        logger.debug("listIceObservations({})", providerKey);
-        
-        return iceObservationService.listAvailableIceObservations(chartType, providerKey);
+    public InshoreIceReportMerged inshoreIceReport(@PathParam("provider") String providerKey) {
+        logger.debug("iceInformations({})", providerKey);
+        return iceInformationService.getInshoreIceReportsMerged(providerKey);
     }
 }

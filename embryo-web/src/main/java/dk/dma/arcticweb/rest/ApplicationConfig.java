@@ -24,6 +24,7 @@ import javax.ws.rs.core.Application;
 import dk.dma.arcticweb.reporting.json.GreenPosRestService;
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
+import dk.dma.embryo.dataformats.inshore.InshoreIceReportJsonService;
 import dk.dma.embryo.dataformats.json.IceObservationRestService;
 import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 import dk.dma.embryo.metoc.json.MetocRestService;
@@ -50,8 +51,9 @@ public class ApplicationConfig extends Application {
         set.addAll(Arrays.asList(RouteRestService.class, RouteUploadRestService.class, ShapeFileRestService.class,
                 GreenPosRestService.class, BerthRestService.class, AuthenticationService.class,
                 TestDataRestService.class, IceObservationRestService.class, MsiRestService.class,
-                MetocRestService.class, ArcticWebVesselRestService.class, ScheduleRestService.class, LogEntryRestService.class,
-                UserRestService.class, RequestAccessRestService.class, ForgotPasswordRestService.class, WeatherRestService.class));
+                MetocRestService.class, ArcticWebVesselRestService.class, ScheduleRestService.class,
+                LogEntryRestService.class, UserRestService.class, RequestAccessRestService.class,
+                ForgotPasswordRestService.class, WeatherRestService.class, InshoreIceReportJsonService.class));
 
         return set;
     }

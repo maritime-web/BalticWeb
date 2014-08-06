@@ -12,15 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.service;
+package dk.dma.embryo.dataformats.inshore;
 
 import java.io.IOException;
 
-import dk.dma.embryo.dataformats.model.InshoreIceReport;
 
 public interface InshoreIceReportService {
 
-    InshoreIceReport getInshoreIceReport(String provider);
+    InshoreIceReportMerged getInshoreIceReportsMerged(String provider);
     
     void update() throws IOException;
 }
