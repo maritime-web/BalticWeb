@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.job;
+package dk.dma.embryo.dataformats.inshore;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.mail.Mail;

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.notification;
+package dk.dma.embryo.dataformats.inshore;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,8 +23,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
-import dk.dma.embryo.dataformats.model.InshoreIceReport;
 
 /**
  * @author Jesper Tejlgaard
@@ -81,7 +82,10 @@ public class InshoreIceReportParser {
                     copy = line;
                     line = line.replace("  ", " ");
                 } while (!copy.equals(line));
-                notifications.addHeader(line);
+                
+                if(!line.startsWith("www.dmi")){
+                    notifications.addHeader(line);                    
+                }
             }
         } while ((line = reader.readLine()) != null && line.trim().length() > 0);
 
@@ -110,20 +114,45 @@ public class InshoreIceReportParser {
     private InshoreIceReport parseNotifications(InshoreIceReport notifications) throws IOException {
         String line = skipEmptyLines();
         
+        List<String> footer = new ArrayList<>();
+        Integer previous = null;
+        
+        
         do{
             if(line.trim().length() > 0){
                 int index = line.indexOf(".");
                 String number = line.substring(0, index);
-                
                 try{
                     Integer integer = Integer.valueOf(number);
                     String desc = line.substring(index + 1).trim();
                     notifications.addNotification(integer, desc);
+
+                    // if previous notification contained a line break, then this part will be registered as a footer
+                    if(previous != null && footer.size() > 0){
+                        String prevDesc = notifications.getNotifications().get(previous);
+                        for(String str : footer){
+                            if(!prevDesc.endsWith(".")){
+                                prevDesc = prevDesc + ".";
+                            }
+                            prevDesc += " " + str.trim();
+                        }
+                        notifications.addNotification(previous, prevDesc);
+                        footer.clear();
+                    }
+                    
+                    previous = integer;
                 }catch(NumberFormatException e){
-                    notifications.addFooter(line.trim());
+                    String value = line.trim();
+                    if(!value.startsWith("Iscentralen")){
+                        footer.add(line.trim());
+                    }
                 }                
             }
         }while((line = reader.readLine()) != null);
+        
+        for(String str : footer){
+            notifications.addFooter(str);
+        }
         
         return notifications;
     }

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.model;
+package dk.dma.embryo.dataformats.inshore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,5 +80,5 @@ public class InshoreIceReport {
 
     public void setOverview(String overview) {
         this.overview = overview;
-    }
+    }    
 }

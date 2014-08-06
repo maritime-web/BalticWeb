@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.job;
+package dk.dma.embryo.dataformats.inshore;
 
-import static dk.dma.embryo.dataformats.job.DmiInshoreIceReportPredicates.acceptedReports;
-import static dk.dma.embryo.dataformats.job.DmiInshoreIceReportPredicates.rejectedReports;
+import static dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportPredicates.acceptedReports;
+import static dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportPredicates.rejectedReports;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,7 +53,8 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.dataformats.service.InshoreIceReportService;
+import dk.dma.embryo.dataformats.job.EmbryoFTPFileFilters;
+import dk.dma.embryo.dataformats.job.NamedtimeStamps;
 
 /**
  * 

@@ -158,7 +158,7 @@
                             error(errorMsg, status);
                         }
 
-                        $http.get(embryo.baseUrl + "rest/ice/provider/" + provider.key + "/inshoreicereport", {
+                        $http.get(embryo.baseUrl + "rest/inshore-ice-report/provider/" + provider.key, {
                             timeout : embryo.defaultTimeout,
                         }).success(onSuccess).error(onError);
                     },
