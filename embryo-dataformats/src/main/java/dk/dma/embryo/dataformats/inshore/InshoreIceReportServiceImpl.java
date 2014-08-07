@@ -14,8 +14,6 @@
  */
 package dk.dma.embryo.dataformats.inshore;
 
-import static com.google.common.base.Predicates.not;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +24,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Lock;
@@ -36,17 +33,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.commons.net.ftp.FTPFile;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 
 import dk.dma.embryo.common.configuration.Property;
@@ -82,14 +75,15 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
     public void update() throws IOException {
         File[] readFiles = findInshoreIceReports();
 
-        InshoreIceReportMerged result = new InshoreIceReportMerged();
+        DateMidnight limit = DateMidnight.now(DateTimeZone.UTC).minusDays(maxAgeInDays);
+        logger.debug("Date must be > {}", limit);
 
-        
-        
+        InshoreIceReportMerged result = new InshoreIceReportMerged();
         List<File> rFiles = Arrays.asList(readFiles);
         Collection<FileInfo> fileInfos = Collections2.transform(rFiles, new FileInfoTransformer());
         Collection<FileInfo> filtered = Collections2.filter(fileInfos,
-                DmiInshoreIceReportPredicates.allPredicates(fileInfos, DateMidnight.now().minus(maxAgeInDays)));
+                DmiInshoreIceReportPredicates.allPredicates(fileInfos, limit));
+
         List<FileInfo> sorted = new ArrayList<>();
         sorted.addAll(filtered);
         Collections.sort(sorted, new FileInfoComparator());
@@ -147,6 +141,11 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
         File file;
         DateMidnight date;
         String version;
+
+        @Override
+        public String toString() {
+            return "FileInfo [file=" + file + ", date=" + date + ", version=" + version + "]";
+        }
     }
 
 }

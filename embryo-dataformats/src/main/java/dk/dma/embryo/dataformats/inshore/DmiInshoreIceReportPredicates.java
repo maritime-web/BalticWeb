@@ -137,8 +137,6 @@ public class DmiInshoreIceReportPredicates {
 
         @Override
         public boolean apply(FileInfo input) {
-            System.out.println(input.date);
-            System.out.println(limit);
             return !input.date.isBefore(limit);
         }
     }
