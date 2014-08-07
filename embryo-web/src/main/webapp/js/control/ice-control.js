@@ -106,11 +106,11 @@ $(function() {
         }
         report.sort(function(r1, r2) {
             return r1.number - r2.number;
-        })
+        });
 
         return report;
     }
-
+    
     function iceController($scope, IceService, $timeout, ShapeService) {
         $scope.selected = {};
 
@@ -241,7 +241,7 @@ $(function() {
 
         $scope.showInshore = function($event, location) {
             $event.preventDefault();
-            embryo.map.setCenter(location.longitude.replace(",", "."), location.latitude.replace(",", "."), 9);
+            embryo.map.setCenter(location.longitude.replace(",", "."), location.latitude.replace(",", "."), 11);
             inshoreLayer.select(location.number);
         }
 
