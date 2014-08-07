@@ -69,7 +69,6 @@ public class DmiInshoreIceReportPredicates {
 
         public ValidFormatPredicate() {
             dateFormat.setLenient(false);
-
         }
 
         @Override
@@ -80,7 +79,23 @@ public class DmiInshoreIceReportPredicates {
             } catch (ParseException e) {
                 return false;
             }
-            return ".txt".equals(fn.substring(10));
+            
+            int lastDotIndex = 10;
+            int versionIndex = fn.indexOf("_v");
+            if(versionIndex == 10){
+                lastDotIndex = fn.lastIndexOf(".");
+                if(lastDotIndex < 0){
+                    return false;
+                }
+                String vStr = fn.substring(12, lastDotIndex);
+                try{
+                    Integer.parseInt(vStr);
+                }catch(NumberFormatException e){
+                    return false;
+                }
+            }
+            
+            return ".txt".equals(fn.substring(lastDotIndex));
         }
 
     }

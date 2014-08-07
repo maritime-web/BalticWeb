@@ -145,7 +145,7 @@ public class DmiInshoreIceReportJob {
                 new File(localDmiDir).mkdirs();
             }
             
-            LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(45);
+            LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(1);
 
             FTPClient ftp = connect();
 
@@ -189,7 +189,7 @@ public class DmiInshoreIceReportJob {
                 embryoLogService.error("Error reading transfered file", e);
                 error.add(e.getMessage());
             }
-            
+
             String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + toString(transfered)
                     + ", Errors: " + toString(error);
             if (error.size() == 0) {

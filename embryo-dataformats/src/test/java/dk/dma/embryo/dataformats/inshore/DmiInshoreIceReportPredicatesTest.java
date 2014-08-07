@@ -53,14 +53,18 @@ public class DmiInshoreIceReportPredicatesTest {
         // Valid format
         file.setName("2014-01-30.txt");
         Assert.assertTrue(predicate.apply(file));
-    }
+
+        // Valid format with version
+        file.setName("2014-01-30_v2.txt");
+        Assert.assertTrue(predicate.apply(file));
+}
 
     @Test
-    public void testValidFormat_InvalidDateFormats() {
+    public void testValidFormat_InvalidFormats() {
         Predicate<FTPFile> predicate = DmiInshoreIceReportPredicates.validFormat();
         FTPFile file = new FTPFile();
 
-        file.setName("2014-01-30_v2.txt");
+        file.setName("2014-01-30_V2.txt");
         Assert.assertFalse(predicate.apply(file));
 
         file.setName("20140130_v2.txt");

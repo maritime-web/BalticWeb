@@ -35,11 +35,8 @@ import javax.inject.Inject;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
 import dk.dma.embryo.common.configuration.Property;
@@ -110,22 +107,6 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
     @Lock(LockType.WRITE)
     private void setInshoreIceReport(String provider, InshoreIceReportMerged notifications) {
         inshoreIceReportsMerged.put(provider, notifications);
-    }
-
-    public static class FileInfoTransformer implements Function<File, FileInfo> {
-        private DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd").withZoneUTC();
-
-        @Override
-        public FileInfo apply(File input) {
-            String value = input.getName();
-            FileInfo info = new FileInfo();
-            info.date = formatter.parseDateTime(value.substring(0, 10)).toDateTime(DateTimeZone.UTC).toDateMidnight();
-            info.file = input;
-            if (value.indexOf("_") > 0) {
-                info.version = value.substring(value.indexOf("_" + 1), value.lastIndexOf("."));
-            }
-            return info;
-        }
     }
 
     private class FileInfoComparator implements Comparator<FileInfo> {
