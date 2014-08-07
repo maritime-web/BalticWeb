@@ -15,8 +15,6 @@
  */
 package dk.dma.embryo.dataformats.inshore;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 
 import org.joda.time.format.DateTimeFormat;
