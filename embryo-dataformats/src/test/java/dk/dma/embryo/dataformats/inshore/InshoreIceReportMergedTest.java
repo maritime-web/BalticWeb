@@ -63,11 +63,12 @@ public class InshoreIceReportMergedTest {
 
         Date d3 = formatter.parseDateTime("2014-08-01").toDateMidnight().toDate();
         merged.mergeInReport(d3, "2014-08-01.txt", third);
-        
-        
+
+        Assert.assertEquals(d2, merged.getLatestReportDate());
         Assert.assertNotNull(merged.getHeader());
-        Assert.assertEquals(1, merged.getHeader().size());
-        Assert.assertEquals("This header is displayed", merged.getHeader().get(0));
+        Assert.assertEquals(2, merged.getHeader().size());
+        Assert.assertEquals("Danish Meteorological Institute", merged.getHeader().get(0));
+        Assert.assertEquals("Ice central, Narsarsuaq", merged.getHeader().get(1));
 
         Assert.assertEquals("ti", merged.getObservations().get(10).getText());
         Assert.assertEquals(d3, merged.getObservations().get(10).getFrom());

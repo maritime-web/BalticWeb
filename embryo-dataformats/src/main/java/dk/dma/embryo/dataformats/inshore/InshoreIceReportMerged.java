@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class InshoreIceReportMerged {
     
-    private Map<Date, Meta> meta = new HashMap<>();
+    private Date latestReportDate;
     
     private List<String> header = new ArrayList<>();
 
@@ -37,9 +37,10 @@ public class InshoreIceReportMerged {
     // Business Logic
     // //////////////////////////////////////////////////////////////////////
     public void mergeInReport(Date date, String source, InshoreIceReport report){
-        meta.put(date, new Meta(source));
+        if(latestReportDate == null || latestReportDate.getTime() < date.getTime()){
+            latestReportDate = date;
+        }
         
-        mergeInList(header, report.getHeader());
         mergeInList(footer, report.getFooters());
 
         for(Map.Entry<Integer, String> newObservation : report.getNotifications().entrySet()){
@@ -67,6 +68,9 @@ public class InshoreIceReportMerged {
     // //////////////////////////////////////////////////////////////////////
     public InshoreIceReportMerged() {
         super();
+        
+        header.add("Danish Meteorological Institute");
+        header.add("Ice central, Narsarsuaq");
     }
     
     // //////////////////////////////////////////////////////////////////////
@@ -74,13 +78,31 @@ public class InshoreIceReportMerged {
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "InshoreIceReport [meta=" + meta + " ,header=" + header + ", observations=" + observations
+        return "InshoreIceReport [latestReportDate=" + latestReportDate + " ,header=" + header + ", observations=" + observations
                 + ", footer=" + footer + "]";
     }
+
+    
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((footer == null) ? 0 : footer.hashCode());
+        result = prime * result + ((header == null) ? 0 : header.hashCode());
+        result = prime * result + ((latestReportDate == null) ? 0 : latestReportDate.hashCode());
+        result = prime * result + ((observations == null) ? 0 : observations.hashCode());
+        return result;
+    }
+
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
+    public Date getLatestReportDate() {
+        return latestReportDate;
+    }
+
     public List<String> getHeader() {
         return header;
     }
@@ -114,10 +136,26 @@ public class InshoreIceReportMerged {
             this.from = from;
             this.text = text;
         }
-
+        
+        ///////////////////////////////
+        // Object methods
+        ///////////////////////////////
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((from == null) ? 0 : from.hashCode());
+            result = prime * result + ((text == null) ? 0 : text.hashCode());
+            return result;
+        }
+        
+        ///////////////////////////////
+        // Property methods
+        ///////////////////////////////
         public Date getFrom() {
             return from;
         }
+
         public void setCreated(Date from) {
             this.from = from;
         }
@@ -129,22 +167,7 @@ public class InshoreIceReportMerged {
         }
         
         
-    }
-    
-    public static class Meta{
-        private String source;
         
-        public Meta(String source) {
-            super();
-            this.source = source;
-        }
-
-        public String getSource() {
-            return source;
-        }
-
-        public void setSource(String source) {
-            this.source = source;
-        }
-    }
+        
+    }    
 }

@@ -59,8 +59,6 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
     @Inject
     private Integer maxAgeInDays;
 
-    // private Map<String, InshoreIceReport> inshoreIceReports = new HashMap<>();
-
     private Map<String, InshoreIceReportMerged> inshoreIceReportsMerged = new HashMap<>();
 
     @PostConstruct

@@ -19,11 +19,16 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
-
 
 @Path("/inshore-ice-report")
 public class InshoreIceReportJsonService {
@@ -31,17 +36,44 @@ public class InshoreIceReportJsonService {
     @Inject
     private InshoreIceReportService iceInformationService;
 
-    
     @Inject
     private Logger logger;
-    
+
     @GET
     @Path("/provider/{provider}")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public InshoreIceReportMerged inshoreIceReport(@PathParam("provider") String providerKey) {
+    public Response inshoreIceReport(@PathParam("provider") String providerKey, @Context Request request) {
         logger.debug("iceInformations({})", providerKey);
-        return iceInformationService.getInshoreIceReportsMerged(providerKey);
+
+        CacheControl cc = getCacheControl();
+
+        InshoreIceReportMerged report = iceInformationService.getInshoreIceReportsMerged(providerKey);
+
+        EntityTag etag = new EntityTag(Integer.toString(report.hashCode()));
+        ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+        // cached resource did change -> serve updated content
+        if (builder == null) {
+            builder = Response.ok(report);
+        }
+        builder.cacheControl(cc);
+        builder.tag(etag);
+        
+        Response response = builder.build();
+        return response;
+
     }
+
+    private CacheControl getCacheControl() {
+        CacheControl cc = new CacheControl();
+        // If resource is younger than max age, then the browser will always use cache version. 
+        // IF resource is older than max age, then a request is sent to the server. 304 may then be returned in case the resource is unmodified.  
+        // 15 minutes chosen because vessels should be able to provoke a refresh, if they know a new report is available 
+        cc.setMaxAge(60 * 15);
+        cc.setPrivate(false);
+        cc.setNoTransform(false);
+        return cc;
+    }
+
 }
