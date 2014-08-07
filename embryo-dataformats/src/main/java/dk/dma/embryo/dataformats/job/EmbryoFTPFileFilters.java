@@ -27,8 +27,6 @@ public class EmbryoFTPFileFilters {
      */
     public static final FTPFileFilter FILES = new FTPFileFilter() {
         public boolean accept(FTPFile file) {
-            System.out.println(file);
-            
             return file != null && file.isFile();
         }
     };
