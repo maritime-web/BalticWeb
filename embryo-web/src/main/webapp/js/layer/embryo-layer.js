@@ -133,7 +133,8 @@ function EmbryoLayer() {
                 var layer = this.selectableLayers[l];
                 for ( var i in layer.features) {
                     var feature = layer.features[i];
-                    if (feature.attributes[this.selectableAttribute] == a) {
+                    // this.selectableAttribute may contain object property expression, e.g. vessel.mmsi
+                    if (eval("feature.attributes." + this.selectableAttribute) == a) {
                         this.map.select(feature);
                         didSelect = true;
                     }
