@@ -153,7 +153,8 @@ public class RouteUploadRestService {
     @Consumes("multipart/form-data")
     @Produces({ "application/json" })
     public ScheduleResponse uploadSchedule(@Context HttpServletRequest req) throws FileUploadException, IOException {
-        
+        logger.debug("uploadSchedule(...)");
+
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         InputStream inputStream = null;
@@ -169,6 +170,7 @@ public class RouteUploadRestService {
         }
         ScheduleResponse response = scheduleParserComponent.parseSchedule(inputStream, lastDeparture);
         
+        logger.debug("uploadSchedule(): {}", response);
         return response;
     }
 

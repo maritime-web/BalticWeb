@@ -29,7 +29,8 @@
             'ScheduleService',
             'RouteService',
             'VesselInformation',
-            function($scope, VesselService, ScheduleService, RouteService, VesselInformation) {
+            '$timeout',
+            function($scope, VesselService, ScheduleService, RouteService, VesselInformation, $timeout) {
                 function initUpload() {
                     if ($scope.mmsi && $scope.voyageId) {
                         ScheduleService.getVoyageInfo($scope.mmsi, $scope.voyageId, function(voyageInfo) {
@@ -166,8 +167,15 @@
                             ScheduleService.clearYourSchedule();
                         });
                     } else {
-                        embryo.controllers.schedule.updateSchedule(data.result);
-                        $scope.provider.doShow = false;
+                        $timeout(function(){
+                            embryo.controllers.schedule.updateSchedule(data.result);
+                            // $timeout solves the following problem:
+                            // 'Closing this provider without $timeout usage, will cause the DOM to disappear while the jquery-fileupload
+                            // plugin is still handling the response. It may consequently try to call a method on a fileupload object no 
+                            // longer being initialized causing
+                            // Error: cannot call methods on fileupload prior to initialization; attempted to call method 'option'
+                            $scope.provider.close();
+                        }, 10);
                     }
                 }
 

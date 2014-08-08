@@ -103,8 +103,11 @@
                     updateSchedule : function(data) {
                         loadSchedule(data.voyages);
                         $scope.alertMessages = data.errors;
+                        this.doShow = true;
                     }
                 };
+                
+                embryo.controllers.schedule = $scope.provider;
 
                 $scope.close = function($event) {
                     $event.preventDefault();
