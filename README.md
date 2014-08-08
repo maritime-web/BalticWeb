@@ -193,6 +193,7 @@ The application contains a number of scheduled jobs responsible for fetching dat
 * dk.dma.embryo.dataformats.job.DmiFtpReaderJob : This jobs transfers ice chart shape files from an FTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.iceChart.dmi.localDirectory. The job will only transfer files not already transfered. Ice charts are not available to users before measured by dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob.
 * dk.dma.embryo.dataformats.job.AariHttpReaderJob: This jobs transfers ice chart shape files from a HTTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.iceChart.aari.localDirectory. The job will only transfer files not already transfered. Ice charts are not available to users before measured by dk.dma.arcticweb.filetransfer.ShapeFileMeasurerJob.
 * dk.dma.embryo.dataformats.job.ShapeFileMeasurerJob : This job collects all shape files in the file system, measure their sizes and repopulates the database table ShapeFileMeasurements. The job will only measure new files.
+* dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportJob: This jobs transfers inshore ice report files from an FTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.inshoreIceReport.dmi.localDirectory. The job will only transfer latest files.
 * dk.dma.embryo.weather.service.DmiWeatherJob : This job transfers weather forecasts and warnings (XML files) from DMIs FTP server to the file system.
 
 
@@ -228,6 +229,7 @@ At the time of writing the current services are subject to surveillance
 * dk.dma.embryo.vessel.job.MaxSpeedJob
 * dk.dma.embryo.dataformats.job.ShapeFileMeasurerJob.dmi 
 * dk.dma.embryo.dataformats.job.DmiFtpReaderJob
+* dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportJob
 * dk.dma.embryo.weather.service.DmiWeatherJob
 * dk.dma.embryo.user.json.AuthenticationService
 * dk.dma.embryo.msi.MsiClientImpl
