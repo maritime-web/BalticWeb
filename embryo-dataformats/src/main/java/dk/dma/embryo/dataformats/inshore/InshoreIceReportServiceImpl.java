@@ -62,7 +62,7 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
     public void init() {
         try {
             update();
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Error initializing inshore ice report information", e);
         }
     }

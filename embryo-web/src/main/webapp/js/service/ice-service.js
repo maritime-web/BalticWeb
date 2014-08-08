@@ -142,8 +142,10 @@
                             text : "Requesting inshore ice report ..."
                         });
                         function onSuccess(data) {
+                            var count = data && data.observations ? Object.keys(data.observations).length : 0;
+                            
                             embryo.messagePanel.replace(messageId, {
-                                text : "Inshore ice report downloaded.",
+                                text : "Inshore ice report with " + count + " observations downloaded.",
                                 type : "success"
                             });
                             success(data);

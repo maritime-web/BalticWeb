@@ -41,9 +41,11 @@
 				<span x-ng-repeat="header in inshoreIceReport.header">{{header}}<br /></span> <span
 					x-ng-if="inshoreIceReport && inshoreIceReport.latestReportDate">Latest report:
 					{{formatDate(inshoreIceReport.latestReportDate)}} </span>
+					
+				<span x-ng-if="!inshoreIceReport">Inshore ice report is currently not available</span>
 			</p>
 
-			<table class="table table-condensed">
+			<table x-ng-if="inshoreIceReport" class="table table-condensed">
 				<tr x-ng-repeat="location in inshoreLocations">
 					<td>{{location.number}}</td>
 					<td>{{location.placename}}</td>

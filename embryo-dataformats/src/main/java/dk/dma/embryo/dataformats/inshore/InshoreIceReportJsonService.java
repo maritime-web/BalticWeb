@@ -49,6 +49,13 @@ public class InshoreIceReportJsonService {
 
         InshoreIceReportMerged report = iceInformationService.getInshoreIceReportsMerged(providerKey);
 
+        // sending status code 204
+        if(report == null){
+            ResponseBuilder builder = Response.noContent();
+            builder.cacheControl(cc);
+            return builder.build();
+        }
+        
         EntityTag etag = new EntityTag(Integer.toString(report.hashCode()));
         ResponseBuilder builder = request.evaluatePreconditions(etag);
 
