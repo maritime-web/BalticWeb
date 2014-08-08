@@ -108,11 +108,11 @@ function EmbryoLayer() {
                     if (e.feature.cluster) {
                         var result = [];
                         for ( var i in e.feature.cluster) {
-                            result.push(e.feature.cluster[i].attributes[that.selectableAttribute]);
+                            result.push(eval("e.feature.cluster[i].attributes." + that.selectableAttribute));
                         }
                         emit(result);
                     } else {
-                        emit(e.feature.attributes[that.selectableAttribute]);
+                        emit(eval("e.feature.attributes." + that.selectableAttribute));
                     }
                 },
                 featureunselected : function(e) {
