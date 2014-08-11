@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 
 import dk.dma.embryo.vessel.component.RouteParserComponent;
 import dk.dma.embryo.vessel.component.ScheduleParserComponent;
+import dk.dma.embryo.vessel.model.Voyage;
 import dk.dma.embryo.vessel.service.ScheduleService;
 
 /**
@@ -50,7 +51,7 @@ public class RouteUploadRestService {
 
     @Inject
     private ScheduleService scheduleService;
-    
+
     @Inject
     private ScheduleParserComponent scheduleParserComponent;
 
@@ -94,7 +95,7 @@ public class RouteUploadRestService {
                     active = "true".equals(item.getString()) || "TRUE".equals(item.getString());
                 } else if ("name".equals(item.getFieldName())) {
                     context.put("name", item.getString());
-                } 
+                }
             }
         }
 
@@ -108,8 +109,8 @@ public class RouteUploadRestService {
                 }
                 logger.debug("Handling uploaded route with file name: {}", item.getName());
 
-                dk.dma.embryo.vessel.model.Route route = new RouteParserComponent().parseRoute(item.getName(), item.getInputStream(),
-                        context);
+                dk.dma.embryo.vessel.model.Route route = new RouteParserComponent().parseRoute(item.getName(),
+                        item.getInputStream(), context);
 
                 String enavId = scheduleService.saveRoute(route, voyageId, active);
 
@@ -145,9 +146,7 @@ public class RouteUploadRestService {
             throw new RuntimeException(e);
         }
     }
-    
-    
-    
+
     @POST
     @Path("/schedule")
     @Consumes("multipart/form-data")
@@ -159,16 +158,25 @@ public class RouteUploadRestService {
         ServletFileUpload upload = new ServletFileUpload(factory);
         InputStream inputStream = null;
         String lastDeparture = null;
+        Long mmsi = null;
 
         List<FileItem> items = upload.parseRequest(req);
         for(FileItem item : items) {
             if("lastDeparture".equals(item.getFieldName())) {
                 lastDeparture = item.getString();
+            }else if("mmsi".equals(item.getFieldName())) {
+                    mmsi = Long.valueOf(item.getString());
             } else {
                 inputStream = item.getInputStream();
             }
         }
         ScheduleResponse response = scheduleParserComponent.parseSchedule(inputStream, lastDeparture);
+        
+        if(response.getErrors() == null || response.getErrors().length == 0){
+            List<Voyage> voyages = Voyage.fromJsonModel(response.getVoyages());
+            scheduleService.updateSchedule(mmsi, voyages, new String[0]);
+            response.setVoyages(null);
+        }
         
         logger.debug("uploadSchedule(): {}", response);
         return response;
@@ -206,5 +214,5 @@ public class RouteUploadRestService {
             return routeId;
         }
     }
-    
+
 }

@@ -50,11 +50,11 @@
                                 $scope.lastDeparture = context.departure;
                                 route = false;
                             } else {
-                                $scope.vesselDetails = context.vesselDetails;
                                 $scope.mmsi = context.vesselDetails.mmsi;
                                 $scope.voyageId = context.voyageId;
                                 route = true;
                             }
+                            $scope.vesselDetails = context.vesselDetails;
                         }
                         $scope.route = route;
                         $scope.options = {
@@ -167,13 +167,21 @@
                             ScheduleService.clearYourSchedule();
                         });
                     } else {
-                        $timeout(function(){
-                            embryo.controllers.schedule.updateSchedule(data.result);
+                        $timeout(function() {
+                            embryo.controllers.schedule.updateSchedule({
+                                scheduleResponse : data.result,
+                                vesselDetails : $scope.vesselDetails,
+                            });
                             // $timeout solves the following problem:
-                            // 'Closing this provider without $timeout usage, will cause the DOM to disappear while the jquery-fileupload
-                            // plugin is still handling the response. It may consequently try to call a method on a fileupload object no 
+                            // 'Closing this provider without $timeout usage,
+                            // will cause the DOM to disappear while the
+                            // jquery-fileupload
+                            // plugin is still handling the response. It may
+                            // consequently try to call a method on a fileupload
+                            // object no
                             // longer being initialized causing
-                            // Error: cannot call methods on fileupload prior to initialization; attempted to call method 'option'
+                            // Error: cannot call methods on fileupload prior to
+                            // initialization; attempted to call method 'option'
                             $scope.provider.close();
                         }, 10);
                     }
@@ -226,7 +234,8 @@
                         }
                     } else if ($scope.lastDeparture) {
                         data.formData = {
-                            lastDeparture : $scope.lastDeparture
+                            lastDeparture : $scope.lastDeparture,
+                            mmsi : $scope.vesselDetails.mmsi
                         };
                     }
                 });
