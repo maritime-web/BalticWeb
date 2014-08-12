@@ -70,7 +70,7 @@
 				</p>
 
 				<table class="table table-condensed">
-					<col style="width: 70px" />
+					<col style="width:75px" />
 					<col span="2" />
 					<tr>
 						<th>Observed</th>
@@ -78,7 +78,7 @@
 						<th>Description</th>
 					</tr>
 					<tr x-ng-repeat="(number, observation) in selected.observation" x-ng-class="{inshoreNotAvailable : !observation}">
-						<td>{{observation ? formatDate(observation.from) : "not available"}}</td>
+						<td>{{observation ? formatDate(observation.from) : "Not available"}}</td>
 						<td>{{number}}</td>
 						<td>{{observation ? observation.text : getLocationName(number)}}</td>
 					</tr>
