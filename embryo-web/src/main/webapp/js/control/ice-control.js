@@ -58,52 +58,33 @@ $(function() {
         return regions;
     }
 
-    function findFragments(number, shapes) {
-        var fragments = [];
-        for ( var i in shapes) {
-            for ( var j in shapes[i].fragments) {
-                var fragment = shapes[i].fragments[j];
-                if (fragment.description.Number == number) {
-                    fragments.push(fragment);
-                }
+    function hasReportLocation(number, report) {
+        for ( var i in report) {
+            if(report[i].number == number){
+                return true;
             }
         }
-        return fragments;
-    }
-
-    function buildIceReportShapes(inshoreIceReport, shapes) {
-        if (inshoreIceReport.observations) {
-            var keys = Object.keys(inshoreIceReport.observations);
-            for ( var i in keys) {
-                var key = keys[i];
-                var fragments = findFragments(key, shapes);
-                for ( var i in fragments) {
-                    fragments[i].description.hasReport = !!inshoreIceReport.observations[key];
-                }
-            }
-        }
-
-        return shapes;
+        return false;
     }
 
     function buildIceReport(inshoreIceReport, shapes) {
         var report = [];
 
-        if (inshoreIceReport.observations) {
-            var keys = Object.keys(inshoreIceReport.observations);
-            for ( var i in keys) {
-                var key = keys[i];
-                var fragments = findFragments(key, shapes);
-                if (fragments.length > 0) {
+        for ( var i in shapes) {
+            for ( var j in shapes[i].fragments) {
+                var fragment = shapes[i].fragments[j];
+                if (!hasReportLocation(fragment.description.Number, report)) {
                     report.push({
-                        number : fragments[0].description.Number,
-                        placename : fragments[0].description.Placename,
-                        latitude : fragments[0].description.Latitude,
-                        longitude : fragments[0].description.Longitude
+                        number : fragment.description.Number,
+                        placename : fragment.description.Placename,
+                        latitude : fragment.description.Latitude,
+                        longitude : fragment.description.Longitude,
+                        hasText : !!inshoreIceReport.observations[fragment.description.Number]
                     });
                 }
             }
         }
+
         report.sort(function(r1, r2) {
             return r1.number - r2.number;
         });
@@ -124,6 +105,8 @@ $(function() {
             $("#iceControlPanel .collapse").data("collapse", null);
             openCollapse("#iceControlPanel #icpIceMaps");
         }
+
+
 
         var subscriptionConfig = {
             name : "ice-control",
@@ -149,8 +132,7 @@ $(function() {
                         exponent : 1
                     }, function(shapes) {
                         $scope.inshoreLocations = buildIceReport($scope.inshoreIceReport, shapes);
-                        var shapesToDisplay = buildIceReportShapes($scope.inshoreIceReport, shapes);
-                        inshoreLayer.draw(shapesToDisplay);
+                        inshoreLayer.draw(shapes);
                     }, function(error) {
                     });
 
@@ -243,6 +225,15 @@ $(function() {
             $event.preventDefault();
             embryo.map.setCenter(location.longitude.replace(",", "."), location.latitude.replace(",", "."), 11);
             inshoreLayer.select(location.number);
+        }
+
+        $scope.getLocationName = function(number){
+            for(var i in $scope.inshoreLocations){
+                if($scope.inshoreLocations[i].number == number){
+                    return $scope.inshoreLocations[i].placename;
+                }
+            }
+            return null;
         }
 
         function requestShapefile(chart, onSuccess) {

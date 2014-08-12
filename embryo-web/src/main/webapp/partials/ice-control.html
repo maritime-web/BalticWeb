@@ -46,7 +46,7 @@
 			</p>
 
 			<table x-ng-if="inshoreIceReport" class="table table-condensed">
-				<tr x-ng-repeat="location in inshoreLocations">
+				<tr x-ng-repeat="location in inshoreLocations" x-ng-class="{inshoreNotAvailable : !location.hasText}">
 					<td>{{location.number}}</td>
 					<td>{{location.placename}}</td>
 					<td><a href="#" x-ng-click="showInshore($event, location)">view</a></td>
@@ -77,10 +77,10 @@
 						<th>No</th>
 						<th>Description</th>
 					</tr>
-					<tr x-ng-repeat="(number, observation) in selected.observation">
-						<td>{{formatDate(observation.from)}}</td>
+					<tr x-ng-repeat="(number, observation) in selected.observation" x-ng-class="{inshoreNotAvailable : !observation}">
+						<td>{{observation ? formatDate(observation.from) : "not available"}}</td>
 						<td>{{number}}</td>
-						<td>{{observation.text}}</td>
+						<td>{{observation ? observation.text : getLocationName(number)}}</td>
 					</tr>
 				</table>
 			</div>

@@ -119,7 +119,6 @@ $(function() {
                 });
 
                 scope.$watch('observed.value', function(newValue, oldValue) {
-                    console.log(newValue);
                     if (newValue) {
                         $timeout(function () {
                             $(element.get(0)).find(".collapsing").css("height", "auto");
