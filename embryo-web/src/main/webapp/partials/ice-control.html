@@ -57,7 +57,7 @@
 		</div>
 
 
-		<div accordion-group heading="Selected Ice Observation" is-open="selected.open">
+		<div accordion-group heading="Selected Ice Observation" is-open="selected.open" e-left-bar-content-change="{{selected.observation}}">
 			<div x-ng-if="!selected.observation">Nothing selected</div>
 			<div id="icpSelectedIce" x-ng-show="!selected.inshore">
 				<p></p>

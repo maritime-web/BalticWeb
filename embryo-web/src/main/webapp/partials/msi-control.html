@@ -25,7 +25,7 @@
 				</tr>
 			</table>
 		</div>
-		<div accordion-group heading="Selected Warning" is-open="selected.open">
+		<div accordion-group heading="Selected Warning" is-open="selected.open" e-left-bar-content-change="{{selected.msi}}">
 			<p>{{selected.msi.text}}</p>
 			<table class="table table-condensed" x-ng-if="selected.msi">
 				<tr>

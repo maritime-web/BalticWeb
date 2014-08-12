@@ -38,7 +38,7 @@
 		</div>
 
 		<div accordion-group heading="Selected Forecast {{selected.name ? ' - ' + selected.name : ''}}"
-			is-open="selected.open">
+			is-open="selected.open" e-left-bar-content-change="{{selected.forecast}}">
 			<div ng-if="!selected.forecast">Nothing selected</div>
 			<div x-ng-controller="SelectedMetocController">
 				<table class="table table-condensed" ng-if="selected.forecast && selected.type === 'msi'">
