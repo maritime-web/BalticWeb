@@ -14,17 +14,18 @@
  */
 package dk.dma.embryo.vessel.model;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
-import dk.dma.embryo.common.persistence.BaseEntity;
-
 
 @Entity
-@NamedQueries({@NamedQuery(name="Berth:findByQuery", query="SELECT b FROM Berth b WHERE b.name LIKE :query OR b.alias like :query")})
-public class Berth extends BaseEntity<Long>{
+@NamedQueries({@NamedQuery(name = "Berth:findByQuery", query = "SELECT b FROM Berth b WHERE b.name LIKE :query OR b.alias like :query"),
+        @NamedQuery(name = "Berth:lookup", query = "SELECT b FROM Berth b WHERE UPPER(b.name) = :name OR UPPER(b.alias) = :name")})
+public class Berth extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7720878907095105915L;
 
@@ -33,9 +34,9 @@ public class Berth extends BaseEntity<Long>{
     // //////////////////////////////////////////////////////////////////////
     @NotNull
     private String name;
-    
+
     private String alias;
-    
+
     private Position position;
 
     // //////////////////////////////////////////////////////////////////////
@@ -49,14 +50,15 @@ public class Berth extends BaseEntity<Long>{
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Berth(){}
-    
-    public Berth(String name, String lattitude, String longitude){
+    public Berth() {
+    }
+
+    public Berth(String name, String lattitude, String longitude) {
         this.name = name;
         this.position = new Position(lattitude, longitude);
     }
 
-    public Berth(String name, String alias, String lattitude, String longitude){
+    public Berth(String name, String alias, String lattitude, String longitude) {
         this.name = name;
         this.alias = alias;
         this.position = new Position(lattitude, longitude);
@@ -72,7 +74,7 @@ public class Berth extends BaseEntity<Long>{
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getAlias() {
         return alias;
     }
@@ -83,5 +85,5 @@ public class Berth extends BaseEntity<Long>{
 
     public Position getPosition() {
         return position;
-    }    
+    }
 }

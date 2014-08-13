@@ -25,4 +25,6 @@ import dk.dma.embryo.vessel.model.Berth;
 public interface GeographicDao extends Dao {
 
     List<Berth> findBerths(String query);
+
+    List<Berth> lookup(String name);
 }

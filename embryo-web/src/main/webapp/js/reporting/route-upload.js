@@ -232,12 +232,16 @@
                         if ($scope.nameFromFile) {
                             data.formData.name = $scope.nameFromFile;
                         }
-                    } else if ($scope.lastDeparture) {
+                    } else if (!route) {
                         data.formData = {
-                            lastDeparture : $scope.lastDeparture,
                             mmsi : $scope.vesselDetails.mmsi
                         };
+
+                        if($scope.lastDeparture){
+                            data.formData.lastDeparture  = $scope.lastDeparture;
+                        }
                     }
+
                 });
             } ]);
 

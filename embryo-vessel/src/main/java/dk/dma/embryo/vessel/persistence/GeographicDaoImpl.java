@@ -40,5 +40,13 @@ public class GeographicDaoImpl extends DaoImpl implements GeographicDao {
         query.setParameter("query", queryString + "%");
         List<Berth> result = query.getResultList();
         return result;
-    }    
+    }
+
+    @Override
+    public List<Berth> lookup(String name) {
+        TypedQuery<Berth> query = em.createNamedQuery("Berth:lookup", Berth.class);
+        query.setParameter("name", name != null ? name.toUpperCase() : name);
+        List<Berth> result = query.getResultList();
+        return result;
+    }
 }

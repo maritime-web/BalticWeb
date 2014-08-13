@@ -14,33 +14,29 @@
  */
 package dk.dma.embryo.vessel.component;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.Singleton;
-import javax.inject.Inject;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
 import dk.dma.embryo.vessel.json.ScheduleResponse;
 import dk.dma.embryo.vessel.json.Voyage;
 import dk.dma.embryo.vessel.model.Berth;
 import dk.dma.embryo.vessel.model.Position;
-import dk.dma.embryo.vessel.service.GeographicService;
+import dk.dma.embryo.vessel.persistence.GeographicDao;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
-@Singleton
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+
+@Named
 public class ScheduleParser {
 
     @Inject
-    private GeographicService geographicService;
+    private GeographicDao geographicService;
 
     public ScheduleResponse parse(InputStream stream, Date lastDeparture) throws IOException {
         if (stream == null) {
@@ -105,9 +101,13 @@ public class ScheduleParser {
 
                     HSSFCell departureCell = row.getCell(departureId);
                     Date departure = departureCell.getDateCellValue();
+                    int offset = new DateTime(departure).getZone().getOffset(departure.getTime());
+                    departure = new DateTime(departure.getTime() + offset, DateTimeZone.UTC).toDate();
 
                     HSSFCell arrivalCell = row.getCell(arrivalId);
                     Date arrival = arrivalCell.getDateCellValue();
+                    offset = new DateTime(arrival).getZone().getOffset(arrival.getTime());
+                    arrival = new DateTime(arrival.getTime() + offset, DateTimeZone.UTC).toDate();
 
                     String id = idId == -1 ? null : row.getCell(idId).getStringCellValue();
                     
@@ -128,7 +128,13 @@ public class ScheduleParser {
 
                     CachedPosition cp = berthCache.get(berthName);
                     if (cp == null) {
-                        List<Berth> berthList = geographicService.findBerths(berthName);
+                        List<Berth> berthList = geographicService.lookup(berthName);
+
+                        if(berthList.size() == 0){
+                            // exact name/alis match gave nothing. Trying more loose query
+                            berthList = geographicService.findBerths(berthName);
+                        }
+
                         cp = new CachedPosition();
                         if (berthList.size() != 1) {
                             cp.notFound = true;
