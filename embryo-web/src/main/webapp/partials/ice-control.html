@@ -77,10 +77,10 @@
 						<th>No</th>
 						<th>Description</th>
 					</tr>
-					<tr x-ng-repeat="(number, observation) in selected.observation" x-ng-class="{inshoreNotAvailable : !observation}">
-						<td>{{observation ? formatDate(observation.from) : "Not available"}}</td>
-						<td>{{number}}</td>
-						<td>{{observation ? observation.text : getLocationName(number)}}</td>
+					<tr x-ng-repeat="observation in selected.observation" x-ng-class="{inshoreNotAvailable : !observation.from}">
+						<td>{{observation.from ? formatDate(observation.from) : "Not available"}}</td>
+						<td>{{observation.number}}</td>
+						<td>{{observation.text ? observation.text : getLocationName(observation.number)}}</td>
 					</tr>
 				</table>
 			</div>

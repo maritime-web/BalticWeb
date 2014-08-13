@@ -171,16 +171,38 @@ $(function() {
                 $scope.selected.observation = null;
             } else if (Array.isArray(reports)) {
                 // expect inshore cluster value
-                var observation = {};
+                var tmp = {};
                 for ( var i in reports) {
-                    observation[reports[i]] = $scope.inshoreIceReport.observations[reports[i]];
+                        tmp[reports[i]] = $scope.inshoreIceReport.observations[reports[i]];
                 }
-                $scope.selected.observation = observation;
+                var observations = [];
+                var keys = Object.keys(tmp);
+                for(var i in keys){
+                    if(tmp[keys[i]]){
+                        observations.push({
+                            number : keys[i],
+                            text : tmp[keys[i]].text,
+                            from : tmp[keys[i]].from
+                        });
+                    }else{
+                        observations.push({number : keys[i]});
+                    }
+                }
+
+                $scope.selected.observation = observations;
                 $scope.selected.inshore = true;
                 $scope.selected.open = true;
             } else {
-                $scope.selected.observation = {};
-                $scope.selected.observation[reports] = $scope.inshoreIceReport.observations[reports];
+                $scope.selected.observation = [];
+                if($scope.inshoreIceReport.observations[reports]){
+                    $scope.selected.observation.push({
+                        number : reports,
+                        text : $scope.inshoreIceReport.observations[reports].text,
+                        from : $scope.inshoreIceReport.observations[reports].from
+                    });
+                }else{
+                    $scope.selected.observation.push({number : reports});
+                }
                 $scope.selected.inshore = true;
                 $scope.selected.open = true;
             }
@@ -245,7 +267,7 @@ $(function() {
                 parts : name.indexOf("aari.aari_arc") >= 0 ? 2 : 0
             }, function(data) {
                 messageId = embryo.messagePanel.replace(messageId, {
-                    text : "Drawing " + name,
+                    text : "Drawing " + name
                 });
 
                 function finishedDrawing() {
