@@ -111,7 +111,7 @@
 
                         if(!context.scheduleResponse.voyages || context.scheduleResponse.voyages.length == 0){
                             ScheduleService.clearYourSchedule();
-                            $scope.message = "Schedule data uploaded.";
+                            $scope.message = "Schedule data uploaded. Note that uploaded schedule data dated in the past may not be shown.";
                         }
                         loadSchedule(context.scheduleResponse.voyages);
                         $scope.alertMessages = context.scheduleResponse.errors;
