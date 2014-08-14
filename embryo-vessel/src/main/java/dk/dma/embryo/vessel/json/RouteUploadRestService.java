@@ -186,7 +186,7 @@ public class RouteUploadRestService {
             try {
                 List<Voyage> voyages = Voyage.fromJsonModel(response.getVoyages());
                 scheduleService.updateSchedule(mmsi, voyages, new String[0]);
-                response.setVoyages(null);
+                response.setVoyages(new dk.dma.embryo.vessel.json.Voyage[0]);
             } catch (Exception e) {
                 response.setErrors(new String[]{"Could not save uploaded schedule data due to internal error: " + e.getMessage() + ".", "Please correct invalid data if possible and try to Save."});
             }
