@@ -43,7 +43,6 @@ import dk.dma.embryo.vessel.model.Voyage;
 import dk.dma.embryo.vessel.service.ScheduleService;
 
 /**
- * 
  * @author Jesper Tejlgaard
  */
 @Path("/routeUpload")
@@ -63,11 +62,11 @@ public class RouteUploadRestService {
 
     /**
      * Handles upload of a single route file.
-     * 
+     * <p/>
      * Required request parameter : file - the one file, which contains the new route. Optional request parameter :
      * active - indicates whether the uploaded route is the new active or not. Optional request parameter : voyageId -
      * the enav id of the voyage, which the route belongs to (if any).
-     * 
+     *
      * @param req
      * @return
      * @throws FileUploadException
@@ -76,7 +75,7 @@ public class RouteUploadRestService {
     @POST
     @Path("/single")
     @Consumes("multipart/form-data")
-    @Produces({ "application/json" })
+    @Produces({"application/json"})
     public Files uploadFile(@Context HttpServletRequest req) throws FileUploadException, IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
@@ -127,7 +126,7 @@ public class RouteUploadRestService {
      * This is a workaround to the fact that Internet Explorer v <= 9 does not allow file submit using Ajax (See more
      * here https://github.com/blueimp/jQuery-File-Upload/issues/123). by setting content type to text/html but
      * returning JSON it works.
-     * 
+     *
      * @param req
      * @return
      * @throws FileUploadException
@@ -136,7 +135,7 @@ public class RouteUploadRestService {
     @POST
     @Path("/single")
     @Consumes("multipart/form-data")
-    @Produces({ "text/html" })
+    @Produces({"text/html"})
     public String uploadFileHtml(@Context HttpServletRequest req) throws FileUploadException, IOException {
         Files files = uploadFile(req);
         ObjectMapper mapper = new ObjectMapper();
@@ -150,7 +149,7 @@ public class RouteUploadRestService {
     @POST
     @Path("/schedule")
     @Consumes("multipart/form-data")
-    @Produces({ "application/json" })
+    @Produces({"application/json"})
     public ScheduleResponse uploadSchedule(@Context HttpServletRequest req) throws FileUploadException, IOException {
         logger.debug("uploadSchedule(...)");
 
@@ -161,23 +160,27 @@ public class RouteUploadRestService {
         Long mmsi = null;
 
         List<FileItem> items = upload.parseRequest(req);
-        for(FileItem item : items) {
-            if("lastDeparture".equals(item.getFieldName())) {
+        for (FileItem item : items) {
+            if ("lastDeparture".equals(item.getFieldName())) {
                 lastDeparture = item.getString();
-            }else if("mmsi".equals(item.getFieldName())) {
-                    mmsi = Long.valueOf(item.getString());
+            } else if ("mmsi".equals(item.getFieldName())) {
+                mmsi = Long.valueOf(item.getString());
             } else {
                 inputStream = item.getInputStream();
             }
         }
         ScheduleResponse response = scheduleParserComponent.parseSchedule(inputStream, lastDeparture);
-        
-        if(response.getErrors() == null || response.getErrors().length == 0){
-            List<Voyage> voyages = Voyage.fromJsonModel(response.getVoyages());
-            scheduleService.updateSchedule(mmsi, voyages, new String[0]);
-            response.setVoyages(null);
+
+        if (response.getErrors() == null || response.getErrors().length == 0) {
+            try {
+                List<Voyage> voyages = Voyage.fromJsonModel(response.getVoyages());
+                scheduleService.updateSchedule(mmsi, voyages, new String[0]);
+                response.setVoyages(null);
+            } catch (Exception e) {
+                response.setErrors(new String[]{"Could not save uploaded schedule data due to internal error: " + e.getMessage() + ".", "Please correct invalid data if possible and try to Save."});
+            }
         }
-        
+
         logger.debug("uploadSchedule(): {}", response);
         return response;
     }
