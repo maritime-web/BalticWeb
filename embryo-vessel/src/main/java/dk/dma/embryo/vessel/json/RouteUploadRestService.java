@@ -14,21 +14,12 @@
  */
 package dk.dma.embryo.vessel.json;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-
+import dk.dma.embryo.common.util.ParseUtils;
+import dk.dma.embryo.vessel.component.RouteParserComponent;
+import dk.dma.embryo.vessel.component.ScheduleParser;
+import dk.dma.embryo.vessel.component.ScheduleUploadPostProcessor;
+import dk.dma.embryo.vessel.model.Voyage;
+import dk.dma.embryo.vessel.service.ScheduleService;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -37,10 +28,20 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.vessel.component.RouteParserComponent;
-import dk.dma.embryo.vessel.component.ScheduleParserComponent;
-import dk.dma.embryo.vessel.model.Voyage;
-import dk.dma.embryo.vessel.service.ScheduleService;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jesper Tejlgaard
@@ -52,7 +53,10 @@ public class RouteUploadRestService {
     private ScheduleService scheduleService;
 
     @Inject
-    private ScheduleParserComponent scheduleParserComponent;
+    private ScheduleParser scheduleParser;
+
+    @Inject
+    private ScheduleUploadPostProcessor scheduleUploadPostProcessor;
 
     @Inject
     private Logger logger;
@@ -156,20 +160,27 @@ public class RouteUploadRestService {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         InputStream inputStream = null;
-        String lastDeparture = null;
+        Date lastDeparture = null;
         Long mmsi = null;
 
         List<FileItem> items = upload.parseRequest(req);
         for (FileItem item : items) {
             if ("lastDeparture".equals(item.getFieldName())) {
-                lastDeparture = item.getString();
+                String date = item.getString();
+                if(date == null || date.isEmpty()) {
+                    lastDeparture = new Date(0);
+                } else {
+                    Long lastDepartureLong = ParseUtils.parseLong(date);
+                    lastDeparture = new Date(lastDepartureLong);
+                }
             } else if ("mmsi".equals(item.getFieldName())) {
                 mmsi = Long.valueOf(item.getString());
             } else {
                 inputStream = item.getInputStream();
             }
         }
-        ScheduleResponse response = scheduleParserComponent.parseSchedule(inputStream, lastDeparture);
+        ScheduleResponse response = scheduleParser.parse(inputStream);
+        response = scheduleUploadPostProcessor.validate(response, mmsi, lastDeparture);
 
         if (response.getErrors() == null || response.getErrors().length == 0) {
             try {

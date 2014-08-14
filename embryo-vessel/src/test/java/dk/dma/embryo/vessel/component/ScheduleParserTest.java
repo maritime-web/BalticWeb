@@ -44,66 +44,22 @@ public class ScheduleParserTest {
 
     private DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy HH:mm").withZoneUTC();
 
-
-    @Produces
-    @Mock
-    private GeographicDao geographicDao;
-
     @Inject
     private ScheduleParser parser;
-
-    @Before
-    public void setup() {
-        List<Berth> nuukResult = new ArrayList<>();
-        nuukResult.add(new Berth("Nuuk", null, "64 10.400N", "051 43.500W"));
-        Mockito.when(geographicDao.lookup("Nuuk")).thenReturn(nuukResult);
-
-        List<Berth> upernavikResult = new ArrayList<>();
-        upernavikResult.add(new Berth("Upernavik", null, "72 47.500N", "056 09.400W"));
-//        upernavikResult.add(new Berth("Upernavik Kujallek", "Søndre Upernavik", "72 09.200N", "055 32.000W"));
-        Mockito.when(geographicDao.lookup("Upernavik")).thenReturn(upernavikResult);
-
-        List<Berth> ilulissatResult = new ArrayList<>();
-        ilulissatResult.add(new Berth("Ilulissat", "Jacobshavn", "69 13.500N", "051 06.000W"));
-        Mockito.when(geographicDao.lookup("Ilulissat")).thenReturn(ilulissatResult);
-    }
 
     @Test
     public void testUploadWithMandatoryColumns() throws IOException {
         DateTime lastDepartureDate = formatter.parseDateTime("12-9-2014 12:00");
 
         InputStream is = getClass().getResourceAsStream("/schedule-upload/scheduleUploadMandatoryColumns.xls");
-        ScheduleResponse response = parser.parse(is, lastDepartureDate.toDate());
+        ScheduleResponse response = parser.parse(is);
 
         ScheduleResponse expected = new ScheduleResponse();
         expected.setVoyages(new Voyage[3]);
-        expected.getVoyages()[0] = new Voyage(null, "Nuuk", 64.17333333333333, -51.725, formatter.parseDateTime("19-09-2014 13:00").toDate(), formatter.parseDateTime("19-09-2014 17:00").toDate(), null, null, null);
-        expected.getVoyages()[1] = new Voyage(null, "Upernavik", 72.79166666666667, -56.156666666666666, formatter.parseDateTime("20-09-2014 09:00").toDate(), formatter.parseDateTime("20-09-2014 13:00").toDate(), null, null, null);
-        expected.getVoyages()[2] = new Voyage(null, "Ilulissat", 69.225, -51.1, formatter.parseDateTime("20-09-2014 15:00").toDate(), formatter.parseDateTime("20-09-2014 18:00").toDate(), null, null, null);
+        expected.getVoyages()[0] = new Voyage(null, "Nuuk", null, null, formatter.parseDateTime("19-09-2014 13:00").toDate(), formatter.parseDateTime("19-09-2014 17:00").toDate(), null, null, null);
+        expected.getVoyages()[1] = new Voyage(null, "Upernavik", null, null, formatter.parseDateTime("20-09-2014 09:00").toDate(), formatter.parseDateTime("20-09-2014 13:00").toDate(), null, null, null);
+        expected.getVoyages()[2] = new Voyage(null, "Ilulissat", null, null, formatter.parseDateTime("20-09-2014 15:00").toDate(), formatter.parseDateTime("20-09-2014 18:00").toDate(), null, null, null);
         expected.setErrors(new String[0]);
-
-        ReflectionAssert.assertReflectionEquals(expected, response);
-    }
-
-    @Test
-    public void testUploadWithLocationMultiMatch() throws IOException {
-        List<Berth> ilulissatResult = new ArrayList<>();
-        ilulissatResult.add(new Berth("Aappilattoq", null, "72 53.000N", "055 36.600W"));
-        ilulissatResult.add(new Berth("Aappilattoq", null, "60 09.600N", "044 17.200W"));
-        Mockito.when(geographicDao.lookup("Aappilattoq")).thenReturn(ilulissatResult);
-
-        DateTime lastDepartureDate = formatter.parseDateTime("12-9-2014 12:00");
-
-        InputStream is = getClass().getResourceAsStream("/schedule-upload/scheduleUploadLocationMultiMatch.xls");
-        ScheduleResponse response = parser.parse(is, lastDepartureDate.toDate());
-
-        ScheduleResponse expected = new ScheduleResponse();
-        expected.setVoyages(new Voyage[4]);
-        expected.getVoyages()[0] = new Voyage(null, "Nuuk", 64.17333333333333, -51.725, formatter.parseDateTime("19-09-2014 13:00").toDate(), formatter.parseDateTime("19-09-2014 17:00").toDate(), null, null, null);
-        expected.getVoyages()[1] = new Voyage(null, "Upernavik", 72.79166666666667, -56.156666666666666, formatter.parseDateTime("20-09-2014 09:00").toDate(), formatter.parseDateTime("20-09-2014 13:00").toDate(), null, null, null);
-        expected.getVoyages()[2] = new Voyage(null, "Ilulissat", 69.225, -51.1, formatter.parseDateTime("20-09-2014 15:00").toDate(), formatter.parseDateTime("20-09-2014 18:00").toDate(), null, null, null);
-        expected.getVoyages()[3] = new Voyage(null, "Aappilattoq", null, null, formatter.parseDateTime("21-09-2014 09:00").toDate(), formatter.parseDateTime("21-09-2014 12:00").toDate(), null, null, null);
-        expected.setErrors(new String[]{"1 locations could not be found, please add them manually."});
 
         ReflectionAssert.assertReflectionEquals(expected, response);
     }
@@ -113,13 +69,13 @@ public class ScheduleParserTest {
         DateTime lastDepartureDate = formatter.parseDateTime("12-9-2014 12:00");
 
         InputStream is = getClass().getResourceAsStream("/schedule-upload/scheduleUploadAllColumns.xls");
-        ScheduleResponse response = parser.parse(is, lastDepartureDate.toDate());
+        ScheduleResponse response = parser.parse(is);
 
         ScheduleResponse expected = new ScheduleResponse();
         expected.setVoyages(new Voyage[3]);
-        expected.getVoyages()[0] = new Voyage("OWDD-2014-32-1", "Nuuk", 64.17333333333333, -51.725, formatter.parseDateTime("19-09-2014 13:00").toDate(), formatter.parseDateTime("19-09-2014 17:00").toDate(), 10 , 10, Boolean.TRUE);
-        expected.getVoyages()[1] = new Voyage("OWDD-2014-32-2", "Upernavik", 72.79166666666667, -56.156666666666666, formatter.parseDateTime("20-09-2014 09:00").toDate(), formatter.parseDateTime("20-09-2014 13:00").toDate(), 12, 15, Boolean.TRUE);
-        expected.getVoyages()[2] = new Voyage("OWDD-2014-32-3", "Ilulissat", 69.225, -51.1, formatter.parseDateTime("20-09-2014 15:00").toDate(), formatter.parseDateTime("20-09-2014 18:00").toDate(), 12, 12,  Boolean.FALSE);
+        expected.getVoyages()[0] = new Voyage("OWDD-2014-32-1", "Nuuk", null, null, formatter.parseDateTime("19-09-2014 13:00").toDate(), formatter.parseDateTime("19-09-2014 17:00").toDate(), 10 , 10, Boolean.TRUE);
+        expected.getVoyages()[1] = new Voyage("OWDD-2014-32-2", "Upernavik", null, null, formatter.parseDateTime("20-09-2014 09:00").toDate(), formatter.parseDateTime("20-09-2014 13:00").toDate(), 12, 15, Boolean.TRUE);
+        expected.getVoyages()[2] = new Voyage("OWDD-2014-32-3", "Ilulissat", null, null, formatter.parseDateTime("20-09-2014 15:00").toDate(), formatter.parseDateTime("20-09-2014 18:00").toDate(), 12, 12,  Boolean.FALSE);
         expected.setErrors(new String[0]);
 
         ReflectionAssert.assertReflectionEquals(expected, response);
