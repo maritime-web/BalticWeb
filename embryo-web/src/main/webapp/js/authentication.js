@@ -151,6 +151,15 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             };
 
             this.isLoggedIn = function() {
+                /* This is what should be done, but since it's asynchronous (and the directives aren't),
+                 * it requires a bit of thought.
+                $http.get(embryo.baseUrl + 'rest/authentication/isloggedin').error(function(response) {
+                    if(response.status === 401) {
+                        // This means false
+                    }
+                });
+                // Otherwise true
+                */
                 return this.roles().length > 0;
             };
 
@@ -193,7 +202,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
 
             this.getDetails = function() {
                 return embryo.authentication;
-            }
+            };
         }
 
         this.$get = function($http, $rootScope, $cookieStore) {
@@ -247,7 +256,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             });
             attr.$set('ng-if', value);
             return inner.outerHTML;
-        }
+        };
     }
 
     moduleDirectives.directive('requiresAuthenticated', [ 'Subject', function(Subject) {
@@ -258,7 +267,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             link : function(scope, element, attrs) {
                 scope.user = Subject;
             }
-        }
+        };
 
     } ]);
 
@@ -270,7 +279,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             link : function(scope, element, attrs) {
                 scope.user = Subject;
             }
-        }
+        };
     } ]);
 
     moduleDirectives.directive('requiresPermissions', [

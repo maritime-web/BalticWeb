@@ -347,8 +347,8 @@ $(function() {
         $.each([ "Blank", "World", "OSM" ], function(k, v) {
             $.each(map.getLayersByName(v), function(k, v) {
                 map.removeLayer(v);
-            })
-        })
+            });
+        });
     }
 
     function setupBaseMap() {
@@ -359,7 +359,7 @@ $(function() {
             setupOsmMap();
             break;
         default:
-            setupVectorMap(embryo.baseMap)
+            setupVectorMap(embryo.baseMap);
             break;
         }
     }

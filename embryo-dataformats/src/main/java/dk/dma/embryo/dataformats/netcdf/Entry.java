@@ -15,6 +15,8 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 
 /**
@@ -29,19 +31,19 @@ import org.joda.time.DateTime;
  *
  */
 class Entry {
-    public Entry(double lat, double lon, DateTime dateTime, float observation) {
+    public Entry(double lat, double lon, DateTime dateTime, List<Float> observations) {
         this.lat = lat;
         this.lon = lon;
         this.dateTime = dateTime;
-        this.observation = observation;
+        this.observations = observations;
     }
 
     double lat, lon;
     DateTime dateTime;
-    float observation;
+    List<Float> observations;
 
     @Override
     public String toString() {
-        return "Lat: " + lat + ", lon: " + lon + ", date/time: " + dateTime + ", observation: " + observation;
+        return "Lat: " + lat + ", lon: " + lon + ", date/time: " + dateTime + ", observations: " + observations;
     }
 }

@@ -234,6 +234,37 @@
                             }
 
                         }
+                    },
+                    listIcePrognoses : function(success, error) {
+                        var messageId = embryo.messagePanel.show({
+                            text : "Requesting ice prognoses..."
+                        });
+                        $http.get(embryo.baseUrl + 'rest/ice/prognoses', {
+                            timeout : embryo.defaultTimeout
+                        }).success(function(prognoses) {
+                            embryo.messagePanel.replace(messageId, {
+                                text : "Ice prognoses downloaded.",
+                                type : "success"
+                            });
+                            success(prognoses);
+                        }).error(function(data, status, headers, config) {
+                            var errorMsg = embryo.ErrorService.errorStatus(data, status,
+                                    "requesting ice prognoses");
+                            embryo.messagePanel.replace(messageId, {
+                                text : errorMsg,
+                                type : "error"
+                            });
+                            error(errorMsg, status);
+                        });
+                    },
+                    getIcePrognosis : function(id, success, error) {
+                        $http.get(embryo.baseUrl + 'rest/ice/prognoses/' + id, {
+                            timeout : embryo.defaultTimeout
+                        }).success(function(prognosis) {
+                            success(prognosis);
+                        }).error(function(data, status, headers, config) {
+                            
+                        });
                     }
                 };
 

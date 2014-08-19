@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Range;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
+import dk.dma.embryo.common.util.CollectionUtils;
 
 public class NetCDFParser {
     public static final double MIN_VAL = -9.0E32;
@@ -40,12 +42,17 @@ public class NetCDFParser {
     public static final String LON = "lon";
     public static final String LAT = "lat";
 
+    public static final String WAVE_HEIGHT = "var229";
+    public static final String ICE_CONCENTRATION = "var91";
+
     private List<Double> latList;
     private List<Double> lonList;
-    private List<DateTime> timeList;
+    private List<Date> timeList;
 
     public static final String FILE_NAME = "wam.grib.2014042900.NATLANT.nc";
     private Map<String, NetCDFVar> cdfVars;
+    private Map<String, SmallEntry> entries = new HashMap<>();
+    private Map<String, Integer> variables;
 
     public NetCDFParser() {
         // Setup
@@ -54,10 +61,15 @@ public class NetCDFParser {
         NetCDFVar.addToMap(cdfVars, LAT, "Latitude", false);
         NetCDFVar.addToMap(cdfVars, LON, "Longitude", false);
         NetCDFVar.addToMap(cdfVars, TIME, "Time", false);
-        NetCDFVar.addToMap(cdfVars, "var229", "Wave height", true);
+        NetCDFVar.addToMap(cdfVars, WAVE_HEIGHT, "Significant wave height", true);
         NetCDFVar.addToMap(cdfVars, "var230", "Wave direction", true);
-        NetCDFVar.addToMap(cdfVars, "var245", "Wind speed", true);
-        NetCDFVar.addToMap(cdfVars, "var249", "Wind direction", true);
+        NetCDFVar.addToMap(cdfVars, "var232", "Wave mean period", true);
+        NetCDFVar.addToMap(cdfVars, ICE_CONCENTRATION, "Ice concentration", true);
+        NetCDFVar.addToMap(cdfVars, "var92", "Ice thickness", true);
+        NetCDFVar.addToMap(cdfVars, "var95", "Ice speed east", true);
+        NetCDFVar.addToMap(cdfVars, "var96", "Ice speed north", true);
+        // NetCDFVar.addToMap(cdfVars, "var245", "Wind speed", true);
+        // NetCDFVar.addToMap(cdfVars, "var249", "Wind direction", true);
 
     }
 
@@ -69,7 +81,7 @@ public class NetCDFParser {
      * @throws InvalidRangeException
      * @throws IOException
      */
-    public NetCDFResult parse(String filename) throws InvalidRangeException, IOException {
+    public NetCDFResult parse(String filename) throws IOException {
         return parse(filename, createDefaultRestriction());
     }
 
@@ -83,7 +95,7 @@ public class NetCDFParser {
      * @throws InvalidRangeException
      * @throws IOException
      */
-    public NetCDFResult parse(String filename, NetCDFRestriction restriction) throws InvalidRangeException, IOException {
+    public NetCDFResult parse(String filename, NetCDFRestriction restriction) throws IOException {
         NetcdfFile netcdfFile = NetcdfFile.open(filename);
         List<Variable> variables = netcdfFile.getVariables();
 
@@ -117,19 +129,55 @@ public class NetCDFParser {
         Array times = cdfVars.get(TIME).getVariable().read();
         timeList = new ArrayList<>();
         for (int i = 0; i < times.getSize(); i++) {
-            DateTime dateTime = getDateTime(times.getDouble(i));
-            timeList.add(dateTime);
+            Date date = getDateTime(times.getDouble(i));
+            timeList.add(date);
         }
 
         // Retrieve data from the complex vars.
-        Map<String, List<SmallEntry>> entries = new HashMap<>();
-        for (NetCDFVar cdfVar : cdfVars.values()) {
-            if (cdfVar.isComplex()) {
-                entries.put(cdfVar.getDescription(), getData(cdfVar.getVariable(), restriction));
+
+        this.variables = new HashMap<>();
+        try {
+            int count = 0;
+            for (NetCDFVar cdfVar : cdfVars.values()) {
+                if (cdfVar.getVariable() != null && cdfVar.isComplex()) {
+                    this.variables.put(cdfVar.getVarname(), count++);
+                    parseData(cdfVar.getVariable(), restriction);
+                }
             }
+        } catch (InvalidRangeException e) {
+            throw new IOException(e);
         }
 
-        return new NetCDFResult(getSimpleVars(), entries);
+        // Change variables to their descriptions
+        HashMap<Integer, String> reversedVars = CollectionUtils.reverse(this.variables);
+        this.variables = new HashMap<>();
+        for(int i : reversedVars.keySet()) {
+            String value = reversedVars.get(i);
+            NetCDFVar netCDFVar = cdfVars.get(value);
+            this.variables.put(netCDFVar.getDescription(), i);
+        }
+        
+        return new NetCDFResult(this.variables, getSimpleVars(), entries);
+    }
+
+    /**
+     * Checks what type of NetCDF file (wave prognosis, ice prognosis etc.)
+     * we're working with.
+     * 
+     * @param filename
+     * @return
+     * @throws IOException
+     */
+    public NetCDFType getType(String filename) throws IOException {
+        NetcdfFile netcdfFile = NetcdfFile.open(filename);
+        List<Variable> variables = netcdfFile.getVariables();
+        for (Variable var : variables) {
+            NetCDFType netCDFType = NetCDFType.triggers(var.getName());
+            if (netCDFType != null) {
+                return netCDFType;
+            }
+        }
+        return null;
     }
 
     /**
@@ -152,20 +200,25 @@ public class NetCDFParser {
      * @param input
      * @return
      */
-    private DateTime getDateTime(double input) {
+    private Date getDateTime(double input) {
         BigDecimal[] values = BigDecimal.valueOf(input).divideAndRemainder(BigDecimal.ONE);
         String date = String.valueOf(values[0].intValue());
-        int year = Integer.valueOf(date.substring(0, 4));
-        int month = Integer.valueOf(date.substring(4, 6));
-        int day = Integer.valueOf(date.substring(6, 8));
+        if (date.startsWith("2014")) {
+            int year = Integer.valueOf(date.substring(0, 4));
+            int month = Integer.valueOf(date.substring(4, 6));
+            int day = Integer.valueOf(date.substring(6, 8));
 
-        long ms = (long) (values[1].doubleValue() * 3600 * 24 * 1000);
-        Period period = new Period(ms);
-        int hours = period.getHours();
-        if (period.getMinutes() == 59) {
-            hours++;
+            long ms = (long) (values[1].doubleValue() * 3600 * 24 * 1000);
+            Period period = new Period(ms);
+            int hours = period.getHours();
+            if (period.getMinutes() == 59) {
+                hours++;
+            }
+            return new DateTime(year, month, day, hours, 0, DateTimeZone.UTC).toDate();
+        } else {
+            DateTime dateTime = new DateTime(2014, 7, 31, 0, 0, DateTimeZone.UTC).plusHours((int) input);
+            return dateTime.toDate();
         }
-        return new DateTime(year, month, day, hours, 0, DateTimeZone.UTC);
     }
 
     /**
@@ -175,8 +228,8 @@ public class NetCDFParser {
      */
     private NetCDFRestriction createDefaultRestriction() {
         NetCDFRestriction restriction = new NetCDFRestriction();
-        restriction.setTimeStart(12);
-        restriction.setTimeInterval(24);
+        // restriction.setTimeStart(12);
+        // restriction.setTimeInterval(24);
         return restriction;
     }
 
@@ -188,17 +241,14 @@ public class NetCDFParser {
      * @throws InvalidRangeException
      * @throws IOException
      */
-    private List<SmallEntry> getData(Variable v, NetCDFRestriction restriction) throws InvalidRangeException, IOException {
+    private void parseData(Variable v, NetCDFRestriction restriction) throws InvalidRangeException, IOException {
 
         // TODO: This method should be updated to optionally shrink the lat and
         // lon ranges in order to support fetching subsets (i.e. restricting the
         // geographic areas used).
 
-        List<SmallEntry> entries = new ArrayList<>();
         List<Range> ranges = new ArrayList<>();
 
-        // The time range start on the first day at 12PM and is incremented with
-        // 24 hours for each iteration. The lat and lon ranges are used in full.
         ranges.add(new Range(restriction.getTimeStart(), timeList.size() - 1, restriction.getTimeInterval()));
         ranges.add(new Range(restriction.getMinLat(), restriction.getMaxLat() != 0 ? restriction.getMaxLat() : latList.size() - 1));
         ranges.add(new Range(restriction.getMinLat(), restriction.getMaxLon() != 0 ? restriction.getMaxLon() : lonList.size() - 1));
@@ -211,22 +261,29 @@ public class NetCDFParser {
                     float val = data.getFloat(index.set(i, j, k));
                     // We are not interested in default/empty values, so these
                     // are excluded.
-                    if (val > MIN_VAL) {
+                    String key = j + "_" + k + "_" + i;
+                    if (val > MIN_VAL && val != 0 && isWholeCoordinate(latList.get(j)) && isWholeCoordinate(lonList.get(k))) {
                         // The time dimension from the range needs to correspond
                         // to the range we're using, so we're converting the i
                         // variable back to the "original" index.
-                        SmallEntry entry = new SmallEntry(j, k, i * 24 + 12, val);
-                        entries.add(entry);
+                        // SmallEntry entry = new SmallEntry(j, k, i * 24 + 12,
+                        // val);
+                        int var = this.variables.get(v.getName());
+                        if (entries.containsKey(key)) {
+                            entries.get(key).getObs().put(var, val);
+                        } else {
+                            SmallEntry entry = new SmallEntry(j, k, i, var, val);
+                            entries.put(key, entry);
+                        }
                     }
                 }
 
             }
         }
-        return entries;
 
     }
-
-    public Entry toEntry(SmallEntry smallEntry) {
-        return new Entry(latList.get(smallEntry.getLat()), lonList.get(smallEntry.getLon()), timeList.get(smallEntry.getTime()), smallEntry.getObservation());
+    
+    private boolean isWholeCoordinate(double coord) {
+        return coord == Math.floor(coord);
     }
 }

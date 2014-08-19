@@ -1,0 +1,80 @@
+<div x-ng-controller="PrognosesController">
+	<div id="prognosesControlPanel" accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
+		<div accordion-group heading="Wave prognoses">
+			<div x-ng-controller="WavePrognosesCtrl">
+				<h4>Wave prognoses</h4>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="prognosis in wavePrognoses" x-ng-controller="WavePrognosisCtrl">
+						<td>
+							<div>
+								<a href="#" x-ng-click="getPrognosis(prognosis, $event)">{{prognosis.name}}</a>
+								<span x-ng-show="prognosisSelected">
+									<br /><input type="range" min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
+									<br />Selected time: {{currentDate}}
+								</span>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div accordion-group heading="Ice prognoses">
+			<div x-ng-controller="IcePrognosesCtrl">
+				<h4>Ice prognoses</h4>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="prognosis in icePrognoses" x-ng-controller="IcePrognosisCtrl">
+						<td>
+							<div>
+								<a href="#" x-ng-click="getPrognosis(prognosis, $event)">{{prognosis.name}}</a>
+								<span x-ng-show="prognosisSelected">
+									<br /><input type="radio" name="icePrognosisType" id="iceConcentration" value="iceConcentration" x-ng-model="selectedVariable" /> <label for="iceConcentration">Ice concentration</label> 
+									<br /><input type="radio" name="icePrognosisType" id="iceThickness" value="iceThickness" x-ng-model="selectedVariable" /> <label for="iceThickness">Ice thickness</label>
+									<br /><input type="radio" name="icePrognosisType" id="iceSpeed" value="iceSpeed" x-ng-model="selectedVariable" /> <label for="iceSpeed">Ice speed</label>
+									<br /><input type="range" min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
+									<br />Selected time: {{currentDate}}
+								</span>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div accordion-group heading="Legends">
+			<div x-ng-controller="LegendsController" class="legends">
+				<h5>Wave</h5>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="limit in waveLimits">
+						<td><img style="width: 15px; height: 15px;" x-ng-src="{{limit.first.img}}" /></td>
+						<td><span x-ng-if="limit.first.max">{{limit.first.min}} - {{limit.first.max}} meters</span><span
+							x-ng-if="!limit.second.max">&gt; {{limit.first.min}} meters</span></td>
+						<td><img x-ng-if="limit.second" style="width: 15px; height: 15px;" x-ng-src="{{limit.second.img}}" /></td>
+						<td><span x-ng-if="limit.second.max">{{limit.second.min}} - {{limit.second.max}} meters</span><span
+							x-ng-if="limit.second && !limit.second.max">&gt; {{limit.second.min}} meters</span></td>
+					</tr>
+				</table>
+				<h5>Current</h5>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="limit in currentLimits">
+						<td><img style="width: 10px; height: 20px;" x-ng-src="{{limit.first.img}}" /></td>
+						<td x-ng-repeat-end><span x-ng-if="limit.first.max">{{limit.first.min}} - {{limit.first.max}} knots</span><span
+							x-ng-if="!limit.first.max">&gt; {{limit.first.min}} knots</span></td>
+						<td><img x-ng-if="limit.second" style="width: 10px; height: 20px;" x-ng-src="{{limit.second.img}}" /></td>
+						<td><span x-ng-if="limit.second.max">{{limit.second.min}} - {{limit.second.max}} knots</span><span
+							x-ng-if="limit.second && !limit.second.max">&gt; {{limit.second.min}} knots</span></td>
+					</tr>
+				</table>
+				<h5>Wind</h5>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="limit in windLimits">
+						<td><img style="width: 15px; height: 30px;" x-ng-src="{{limit.first.img}}" /></td>
+						<td x-ng-repeat-end>{{limit.first.max}} knots ({{knots2Ms(limit.first.max)}} m/s)</td>
+						<td><img x-ng-if="limit.second" style="width: 15px; height: 30px;" x-ng-src="{{limit.second.img}}" /></td>
+						<td><span x-ng-if="limit.second">{{limit.second.max}} knots ({{knots2Ms(limit.second.max)}} m/s)</span></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

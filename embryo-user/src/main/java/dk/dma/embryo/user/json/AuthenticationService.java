@@ -162,6 +162,15 @@ public class AuthenticationService {
         }
     }
     
+    @GET
+    @Path("/isloggedin")
+    @Produces("application/json")
+    @GZIP
+    @NoCache
+    public void isLoggedIn() {
+        // All this method does is return 200 if user is logged in and 401 otherwise (through Shiro config).
+    }
+    
     public static class UserNotAuthenticated extends WebApplicationException {
         private static final long serialVersionUID = 7940360206022406100L;
 

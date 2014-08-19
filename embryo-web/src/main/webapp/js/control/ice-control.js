@@ -1,6 +1,6 @@
 $(function() {
 
-    var module = angular.module('embryo.ice.control', [ 'ui.bootstrap.accordion', 'embryo.control',
+    var module = angular.module('embryo.ice.control', [ 'ui.bootstrap.accordion', 'ui.slider', 'embryo.control',
             'embryo.ice.service', 'embryo.shape' ]);
 
     var iceLayer = new IceLayer();
@@ -8,7 +8,7 @@ $(function() {
 
     var inshoreLayer = new InshoreIceReportLayer();
     addLayerToMap("ice", inshoreLayer, embryo.map);
-
+    
     var chartsDisplayed = {};
 
     function displayChartList(divId, chartType, data) {
@@ -103,7 +103,7 @@ $(function() {
 
         report.sort(function(r1, r2) {
             return r1.number - r2.number;
-        })
+        });
 
         return report;
     }
@@ -120,7 +120,7 @@ $(function() {
             IceService.update();
             $("#iceControlPanel .collapse").data("collapse", null);
             openCollapse("#iceControlPanel #icpIceMaps");
-        }
+        };
 
         var subscriptionConfig = {
             name : "ice-control",
@@ -153,7 +153,7 @@ $(function() {
 
                 }
             }
-        }
+        };
 
         IceService.subscribe(subscriptionConfig);
 
@@ -168,7 +168,7 @@ $(function() {
                     lon = ice.Long;
                     lat = ice.Lat;
                 }
-                $scope.selected.open = true
+                $scope.selected.open = true;
                 $scope.selected.observation = ice;
                 showIceInformation(ice);
             }
@@ -208,7 +208,7 @@ $(function() {
 
         $scope.isDownloaded = function(chart) {
             return chartsDisplayed[chart.type] == chart.shape;
-        }
+        };
 
         $scope.download = function($event, chart, charts) {
             $event.preventDefault();
@@ -219,24 +219,24 @@ $(function() {
                     });
                 }
             });
-        }
+        };
 
         $scope.hideIce = function($event, chart) {
             $event.preventDefault();
             delete chartsDisplayed[chart.type];
             iceLayer.clear(chart.type);
-        }
+        };
 
         $scope.zoom = function($event, chart) {
             $event.preventDefault();
             embryo.map.zoomToExtent(iceLayer.layers);
-        }
+        };
 
         $scope.showInshore = function($event, location) {
             $event.preventDefault();
             embryo.map.setCenter(location.longitude.replace(",", "."), location.latitude.replace(",", "."), 9);
             inshoreLayer.select(location.number);
-        }
+        };
 
         function requestShapefile(chart, onSuccess) {
             var name = chart.shape;
@@ -560,4 +560,5 @@ $(function() {
         }
         $("#icpSelectedIce p").html(source);
     }
+
 });

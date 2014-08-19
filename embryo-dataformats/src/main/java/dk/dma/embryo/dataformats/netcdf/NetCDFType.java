@@ -15,30 +15,27 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
-public class NetCDFResult {
-    private Map<String, Integer> variables;
-    private Map<String, List<? extends Serializable>> metadata;
-    private Map<String, SmallEntry> data;
+public enum NetCDFType {
+    WAVE_PROGNOSIS(NetCDFParser.WAVE_HEIGHT, "Wave prognosis"), ICE_PROGNOSIS(NetCDFParser.ICE_CONCENTRATION, "Ice prognosis");
     
-    public NetCDFResult(Map<String, Integer> variables, Map<String, List<? extends Serializable>> metadata, Map<String, SmallEntry> data) {
-        this.variables = variables;
-        this.metadata = metadata;
-        this.data = data;
+    private String trigger;
+    private String description;
+    
+    private NetCDFType(String trigger, String description) {
+        this.trigger = trigger;
+        this.description = description;
     }
     
-    public Map<String, Integer> getVariables() {
-        return variables;
+    public static NetCDFType triggers(String test) {
+        for(NetCDFType val : values()) {
+            if(val.trigger.equals(test)) {
+                return val;
+            }
+        }
+        return null;
     }
     
-    public Map<String, List<? extends Serializable>> getMetadata() {
-        return metadata;
-    }
-    
-    public Map<String, SmallEntry> getData() {
-        return data;
+    public String getDescription() {
+        return description;
     }
 }
