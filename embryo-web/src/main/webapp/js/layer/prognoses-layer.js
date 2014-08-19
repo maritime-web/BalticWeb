@@ -1,4 +1,4 @@
-function IcePrognosesLayer() {
+function PrognosesLayer() {
 
     OpenLayers.Strategy.RuleCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
         /**
@@ -43,7 +43,7 @@ function IcePrognosesLayer() {
                 return that.context.description(feature);
             },
             description : function(feature) {
-                return feature.cluster ? feature.cluster.length + " Ice prognoses locations" : feature.attributes.iceDescription.Number + ": "
+                return feature.cluster ? feature.cluster.length + " Prognoses locations" : feature.attributes.iceDescription.Number + ": "
                         + feature.attributes.iceDescription.Placename;
             },
             display : function(feature) {
@@ -51,7 +51,7 @@ function IcePrognosesLayer() {
             }
         };
 
-        this.layers.iceprognoses = new OpenLayers.Layer.Vector("IcePrognoses", {
+        this.layers.prognoses = new OpenLayers.Layer.Vector("Prognoses", {
             styleMap : new OpenLayers.StyleMap({
                 "default" : new OpenLayers.Style({
                     // externalGraphic : "img/inshoreIceReport.png",
@@ -102,11 +102,11 @@ function IcePrognosesLayer() {
             })
         });
 
-        this.selectableLayers = [ this.layers.iceprognoses ];
+        this.selectableLayers = [ this.layers.prognoses ];
         this.selectableAttribute = "number";
     };
 
-    this.getConcentrationLevel = function(obs) {
+    this.getIceConcentrationLevel = function(obs) {
         if(obs < 0.0001) {
             return '#669999';
         } else if(obs < 0.001) {
@@ -127,7 +127,7 @@ function IcePrognosesLayer() {
         for(var data in prognosis.data) {
             var d = prognosis.data[data];
             if(time == d.time && d.obs[index]) {
-                var level = this.getConcentrationLevel(d.obs[index]);
+                var level = this.getIceConcentrationLevel(d.obs[index]);
                 var lat = lats[d.lat];
                 var lon = lons[d.lon];
                 //var location = embryo.map.createPoint(lons[d.lon], lats[d.lat]);
@@ -152,7 +152,7 @@ function IcePrognosesLayer() {
         for(var data in prognosis.data) {
             var d = prognosis.data[data];
             if(time == d.time && d.obs[index]) {
-                var level = this.getConcentrationLevel(d.obs[index]);
+                var level = this.getIceConcentrationLevel(d.obs[index]);
                 var lat = lats[d.lat];
                 var lon = lons[d.lon];
                 //var location = embryo.map.createPoint(lons[d.lon], lats[d.lat]);
@@ -180,7 +180,7 @@ function IcePrognosesLayer() {
             var east = d.obs[indexEast];
             var north = d.obs[indexNorth];
             if(time == d.time && (east || north)) {
-                var level = this.getConcentrationLevel(Math.sqrt(north * north + east * east));
+                var level = this.getIceConcentrationLevel(Math.sqrt(north * north + east * east));
                 
                 var lat = lats[d.lat];
                 var lon = lons[d.lon];
@@ -206,7 +206,7 @@ function IcePrognosesLayer() {
         return features;
     };
 
-    this.draw = function(prognosis, time, mapType) {
+    this.drawIcePrognosis = function(prognosis, time, mapType) {
         var that = this;
         that.clear();
 
@@ -224,29 +224,65 @@ function IcePrognosesLayer() {
             break;
         }
 
-        function drawFeature(lat, lon, time, obs) {
-            if (obs && obs[0]) {
-                var points = new Array(embryo.map.createPoint(lon - 0.25, lat - 0.2), embryo.map.createPoint(lon + 0.05, lat + 0.2), embryo.map.createPoint(
-                        lon, lat + 0.25), embryo.map.createPoint(lon + 0.25, lat + 0.25), embryo.map.createPoint(lon + 0.25, lat), embryo.map.createPoint(
-                        lon + 0.2, lat + 0.05), embryo.map.createPoint(lon - 0.2, lat - 0.25));
-                var linearRing = new OpenLayers.Geometry.LinearRing(points);
+        that.layers.prognoses.addFeatures(features);
+        that.layers.prognoses.refresh();
 
-                var feature = new OpenLayers.Feature.Vector(linearRing);
+    };
 
-                return feature;
-            }
-            return null;
+    this.getWaveConcentrationLevel = function(obs) {
+        if(obs < 0.7) {
+            return '#669999';
+        } else if(obs < 1.0) {
+            return '#996666';
+        } else if(obs < 1.3) {
+            return '#cc3333';
+        } else {
+            return '#ff0000';
         }
-
-        that.layers.iceprognoses.addFeatures(features);
-        that.layers.iceprognoses.refresh();
-
     };
     
-    this.wipe = function() {
-        this.clear();
-        this.layers.iceprognoses.refresh();
+    this.drawWavePrognosisFeature = function(lat, lon, obs, vars) {
+        var half = 0.2;
+        if (obs && obs[0]) {
+            var level = this.getWaveConcentrationLevel(obs[vars['Significant wave height']]);
+            var points = new Array(embryo.map.createPoint(lon, lat + half), embryo.map.createPoint(lon + half, lat + (half * 0.2)), embryo.map.createPoint(
+                    lon + (half * 0.2), lat + (half * 0.2)), embryo.map.createPoint(lon + (half * 0.2), lat - (half * 0.5)), embryo.map.createPoint(lon - (half * 0.2), lat - (half * 0.5)), embryo.map.createPoint(
+                    lon - (half * 0.2), lat + (half * 0.2)), embryo.map.createPoint(lon - half, lat + (half * 0.2)));
+            var linearRing = new OpenLayers.Geometry.LinearRing(points);
+            linearRing.rotate(obs[vars['Wave direction']], embryo.map.createPoint(lon, lat));
+            var feature = new OpenLayers.Feature.Vector(linearRing, {level: level});
+            console.log('Sign. wave height: ' + obs[vars['Significant wave height']]);
+            return feature;
+        }
+        return null;
     };
+
+
+    this.drawWavePrognosis = function(prognosis, time) {
+        var that = this;
+        that.clear();
+
+        var vars = prognosis.variables;
+        var lats = prognosis.metadata.lat;
+        var lons = prognosis.metadata.lon;
+        var features = [];
+
+      
+        for(var d in prognosis.data) {
+            var data = prognosis.data[d];
+            if(time == data.time) {
+                var feature = this.drawWavePrognosisFeature(lats[data.lat], lons[data.lon], data.obs, vars);
+                if(feature) {
+                    features.push(feature);
+                }
+            }
+        }
+
+        that.layers.prognoses.addFeatures(features);
+        that.layers.prognoses.refresh();
+
+    };
+
 }
 
-IcePrognosesLayer.prototype = new EmbryoLayer();
+PrognosesLayer.prototype = new EmbryoLayer();

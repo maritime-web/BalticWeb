@@ -1,4 +1,4 @@
-<div x-ng-controller="PrognosesController">
+<div x-ng-controller="PrognosesController as pc">
 	<div id="prognosesControlPanel" accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
 		<div accordion-group heading="Wave prognoses">
 			<div x-ng-controller="WavePrognosesCtrl">
@@ -8,7 +8,7 @@
 						<td>
 							<div>
 								<a href="#" x-ng-click="getPrognosis(prognosis, $event)">{{prognosis.name}}</a>
-								<span x-ng-show="prognosisSelected">
+								<span x-ng-show="pc.prognosisSelected == prognosis.name">
 									<br /><input type="range" min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
 									<br />Selected time: {{currentDate}}
 								</span>
@@ -27,7 +27,7 @@
 						<td>
 							<div>
 								<a href="#" x-ng-click="getPrognosis(prognosis, $event)">{{prognosis.name}}</a>
-								<span x-ng-show="prognosisSelected">
+								<span x-ng-show="pc.prognosisSelected == prognosis.name">
 									<br /><input type="radio" name="icePrognosisType" id="iceConcentration" value="iceConcentration" x-ng-model="selectedVariable" /> <label for="iceConcentration">Ice concentration</label> 
 									<br /><input type="radio" name="icePrognosisType" id="iceThickness" value="iceThickness" x-ng-model="selectedVariable" /> <label for="iceThickness">Ice thickness</label>
 									<br /><input type="radio" name="icePrognosisType" id="iceSpeed" value="iceSpeed" x-ng-model="selectedVariable" /> <label for="iceSpeed">Ice speed</label>
