@@ -84,7 +84,7 @@
 			</form>
 		</div>
 		<div accordion-group heading="Selected Vessel {{selected.vesselName ? ' - ' + selected.vesselName : ''}}"
-			is-open="selected.open">
+			is-open="selected.open" e-left-bar-content-change="{{selected}}">
 			<div x-ng-if="selected.vesselAis || selected.sections">
 				<h4>
 					AIS Information<small style="float: right"><a href="#" x-ng-click="viewAis($event)">view all</a></small>

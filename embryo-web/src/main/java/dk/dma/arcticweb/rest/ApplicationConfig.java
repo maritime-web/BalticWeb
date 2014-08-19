@@ -1,17 +1,16 @@
-/* Copyright (c) 2011 Danish Maritime Authority
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package dk.dma.arcticweb.rest;
 
@@ -25,6 +24,7 @@ import javax.ws.rs.core.Application;
 import dk.dma.arcticweb.reporting.json.GreenPosRestService;
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
+import dk.dma.embryo.dataformats.inshore.InshoreIceReportJsonService;
 import dk.dma.embryo.dataformats.json.IceObservationRestService;
 import dk.dma.embryo.dataformats.json.IcePrognosisRestService;
 import dk.dma.embryo.dataformats.json.ShapeFileRestService;
@@ -53,7 +53,8 @@ public class ApplicationConfig extends Application {
         set.addAll(Arrays.asList(RouteRestService.class, RouteUploadRestService.class, ShapeFileRestService.class, GreenPosRestService.class,
                 BerthRestService.class, AuthenticationService.class, TestDataRestService.class, IceObservationRestService.class, MsiRestService.class,
                 MetocRestService.class, ArcticWebVesselRestService.class, ScheduleRestService.class, LogEntryRestService.class, UserRestService.class,
-                RequestAccessRestService.class, ForgotPasswordRestService.class, WeatherRestService.class, WavePrognosisRestService.class, IcePrognosisRestService.class));
+                RequestAccessRestService.class, ForgotPasswordRestService.class, WeatherRestService.class, InshoreIceReportJsonService.class,
+                WavePrognosisRestService.class, IcePrognosisRestService.class));
 
         return set;
     }

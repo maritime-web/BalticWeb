@@ -56,7 +56,11 @@
                                 voyages = voyages.concat(vs);
                             }
                             voyages.push({});
-                            $scope.voyages = voyages.slice(0, pageSize);
+                            if(!vs || vs.length == 0){
+                                $scope.voyages = voyages.slice(0, pageSize);
+                            }else{
+                                $scope.voyages = voyages;
+                            }
                             $scope.allVoyages = voyages.length;
                         }, function(error) {
                             $scope.alertMessages = error;
@@ -100,11 +104,23 @@
                         this.doShow = false;
                         $scope.reset();
                     },
-                    updateSchedule : function(data) {
-                        loadSchedule(data.voyages);
-                        $scope.alertMessages = data.errors;
+                    updateSchedule : function(context) {
+                        $scope.mmsi = context.vesselDetails.mmsi;
+                        $scope.vesselDetails = context.vesselDetails;
+                        $scope.activeRouteId = context.vesselDetails.additionalInformation.routeId;
+
+                        if(context.scheduleResponse.voyages && context.scheduleResponse.voyages.length == 0){
+                            ScheduleService.clearYourSchedule();
+                            $scope.message = "Schedule data uploaded. Note that uploaded schedule data dated in the past may not be shown.";
+                        }
+                        loadSchedule(context.scheduleResponse.voyages);
+                        $scope.alertMessages = context.scheduleResponse.errors;
+
+                        this.doShow = true;
                     }
                 };
+
+                embryo.controllers.schedule = $scope.provider;
 
                 $scope.close = function($event) {
                     $event.preventDefault();
@@ -169,7 +185,8 @@
                     VesselInformation.hideAll();
                     embryo.controllers.uploadroute.show({
                         schedule : true,
-                        departure : biggestDate
+                        departure : biggestDate,
+                        vesselDetails : $scope.vesselDetails
                     });
                 };
                 $scope.resetMessages = function() {

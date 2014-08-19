@@ -108,11 +108,11 @@ function EmbryoLayer() {
                     if (e.feature.cluster) {
                         var result = [];
                         for ( var i in e.feature.cluster) {
-                            result.push(e.feature.cluster[i].attributes[that.selectableAttribute]);
+                            result.push(eval("e.feature.cluster[i].attributes." + that.selectableAttribute));
                         }
                         emit(result);
                     } else {
-                        emit(e.feature.attributes[that.selectableAttribute]);
+                        emit(eval("e.feature.attributes." + that.selectableAttribute));
                     }
                 },
                 featureunselected : function(e) {
@@ -133,7 +133,8 @@ function EmbryoLayer() {
                 var layer = this.selectableLayers[l];
                 for ( var i in layer.features) {
                     var feature = layer.features[i];
-                    if (feature.attributes[this.selectableAttribute] == a) {
+                    // this.selectableAttribute may contain object property expression, e.g. vessel.mmsi
+                    if (eval("feature.attributes." + this.selectableAttribute) == a) {
                         this.map.select(feature);
                         didSelect = true;
                     }

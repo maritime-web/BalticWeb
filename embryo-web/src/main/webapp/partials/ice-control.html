@@ -38,24 +38,25 @@
 
 		<div accordion-group heading="Inshore ice report">
 			<p>
-				Danish Meteorological Institute<br /> Ice central, Narsasuaq<br />
-			</p>
-			<p>
-				<span>{{inshoreIceReport.overview}}<br /></span>
+				<span x-ng-repeat="header in inshoreIceReport.header">{{header}}<br /></span> <span
+					x-ng-if="inshoreIceReport && inshoreIceReport.latestReportDate">Latest report:
+					{{formatDate(inshoreIceReport.latestReportDate)}} </span>
+					
+				<span x-ng-if="!inshoreIceReport">Inshore ice report is currently not available</span>
 			</p>
 
-
-			<table class="table table-condensed">
-				<tr x-ng-repeat="location in inshoreLocations">
+			<table x-ng-if="inshoreIceReport" class="table table-condensed">
+				<tr x-ng-repeat="location in inshoreLocations" x-ng-class="{inshoreNotAvailable : !location.hasText}">
 					<td>{{location.number}}</td>
 					<td>{{location.placename}}</td>
 					<td><a href="#" x-ng-click="showInshore($event, location)">view</a></td>
 				</tr>
 			</table>
-			<p x-ng-repeat="footer in inshoreIceReport.footers">{{footer}}</p>
+
+			<p x-ng-repeat="footer in inshoreIceReport.footer">{{footer}}</p>
 		</div>
 
-		<div accordion-group heading="Selected Ice Observation" is-open="selected.open">
+		<div accordion-group heading="Selected Ice Observation" is-open="selected.open" e-left-bar-content-change="{{selected.observation}}">
 			<div x-ng-if="!selected.observation">Nothing selected</div>
 			<div id="icpSelectedIce" x-ng-show="!selected.inshore">
 				<p></p>
@@ -64,12 +65,21 @@
 			</div>
 			<div x-ng-if="selected.inshore">
 				<p>
-					Danish Meteorological Institute<br /> Ice central, Narsasuaq<br />
+					<span x-ng-repeat="header in inshoreIceReport.header">{{header}}<br /></span>
 				</p>
+
 				<table class="table table-condensed">
-					<tr x-ng-repeat="(number, text) in selected.observation">
-						<td>{{number}}</td>
-						<td>{{text}}</td>
+					<col style="width:75px" />
+					<col span="2" />
+					<tr>
+						<th>Observed</th>
+						<th>No</th>
+						<th>Description</th>
+					</tr>
+					<tr x-ng-repeat="observation in selected.observation" x-ng-class="{inshoreNotAvailable : !observation.from}">
+						<td>{{observation.from ? formatDate(observation.from) : "Not available"}}</td>
+						<td>{{observation.number}}</td>
+						<td>{{observation.text ? observation.text : getLocationName(observation.number)}}</td>
 					</tr>
 				</table>
 			</div>

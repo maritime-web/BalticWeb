@@ -58,46 +58,30 @@ $(function() {
         return regions;
     }
 
-    function findFragments(number, shapes) {
-        var fragments = [];
-        for ( var i in shapes) {
-            for ( var j in shapes[i].fragments) {
-                var fragment = shapes[i].fragments[j];
-                if (fragment.description.Number == number) {
-                    fragments.push(fragment);
-                }
+    function hasReportLocation(number, report) {
+        for ( var i in report) {
+            if(report[i].number == number){
+                return true;
             }
         }
-        return fragments;
-    }
-
-    function buildIceReportShapes(inshoreIceReports, shapes) {
-        var keys = Object.keys(inshoreIceReports.notifications);
-        for ( var i in keys) {
-            var key = keys[i];
-            var fragments = findFragments(key, shapes);
-            for ( var i in fragments) {
-                fragments[i].description.hasReport = !!inshoreIceReports.notifications[key];
-            }
-        }
-
-        return shapes;
+        return false;
     }
 
     function buildIceReport(inshoreIceReport, shapes) {
         var report = [];
-        var keys = Object.keys(inshoreIceReport.notifications);
 
-        for ( var i in keys) {
-            var key = keys[i];
-            var fragments = findFragments(key, shapes);
-            if (fragments.length > 0) {
-                report.push({
-                    number : fragments[0].description.Number,
-                    placename : fragments[0].description.Placename,
-                    latitude : fragments[0].description.Latitude,
-                    longitude : fragments[0].description.Longitude
-                });
+        for ( var i in shapes) {
+            for ( var j in shapes[i].fragments) {
+                var fragment = shapes[i].fragments[j];
+                if (!hasReportLocation(fragment.description.Number, report)) {
+                    report.push({
+                        number : fragment.description.Number,
+                        placename : fragment.description.Placename,
+                        latitude : fragment.description.Latitude,
+                        longitude : fragment.description.Longitude,
+                        hasText : !!inshoreIceReport.observations[fragment.description.Number]
+                    });
+                }
             }
         }
 
@@ -107,7 +91,7 @@ $(function() {
 
         return report;
     }
-
+    
     function iceController($scope, IceService, $timeout, ShapeService) {
         $scope.selected = {};
 
@@ -121,6 +105,8 @@ $(function() {
             $("#iceControlPanel .collapse").data("collapse", null);
             openCollapse("#iceControlPanel #icpIceMaps");
         };
+
+
 
         var subscriptionConfig = {
             name : "ice-control",
@@ -146,8 +132,7 @@ $(function() {
                         exponent : 1
                     }, function(shapes) {
                         $scope.inshoreLocations = buildIceReport($scope.inshoreIceReport, shapes);
-                        var shapesToDisplay = buildIceReportShapes($scope.inshoreIceReport, shapes);
-                        inshoreLayer.draw(shapesToDisplay);
+                        inshoreLayer.draw(shapes);
                     }, function(error) {
                     });
 
@@ -186,16 +171,38 @@ $(function() {
                 $scope.selected.observation = null;
             } else if (Array.isArray(reports)) {
                 // expect inshore cluster value
-                var observation = {};
+                var tmp = {};
                 for ( var i in reports) {
-                    observation[reports[i]] = $scope.inshoreIceReport.notifications[reports[i]];
+                        tmp[reports[i]] = $scope.inshoreIceReport.observations[reports[i]];
                 }
-                $scope.selected.observation = observation;
+                var observations = [];
+                var keys = Object.keys(tmp);
+                for(var i in keys){
+                    if(tmp[keys[i]]){
+                        observations.push({
+                            number : keys[i],
+                            text : tmp[keys[i]].text,
+                            from : tmp[keys[i]].from
+                        });
+                    }else{
+                        observations.push({number : keys[i]});
+                    }
+                }
+
+                $scope.selected.observation = observations;
                 $scope.selected.inshore = true;
                 $scope.selected.open = true;
             } else {
-                $scope.selected.observation = {};
-                $scope.selected.observation[reports] =  $scope.inshoreIceReport.notifications[reports]; 
+                $scope.selected.observation = [];
+                if($scope.inshoreIceReport.observations[reports]){
+                    $scope.selected.observation.push({
+                        number : reports,
+                        text : $scope.inshoreIceReport.observations[reports].text,
+                        from : $scope.inshoreIceReport.observations[reports].from
+                    });
+                }else{
+                    $scope.selected.observation.push({number : reports});
+                }
                 $scope.selected.inshore = true;
                 $scope.selected.open = true;
             }
@@ -208,6 +215,10 @@ $(function() {
 
         $scope.isDownloaded = function(chart) {
             return chartsDisplayed[chart.type] == chart.shape;
+        };
+        
+        $scope.formatDate = function(millis){
+            return formatDate(millis);
         };
 
         $scope.download = function($event, chart, charts) {
@@ -234,8 +245,17 @@ $(function() {
 
         $scope.showInshore = function($event, location) {
             $event.preventDefault();
-            embryo.map.setCenter(location.longitude.replace(",", "."), location.latitude.replace(",", "."), 9);
+            embryo.map.setCenter(location.longitude.replace(",", "."), location.latitude.replace(",", "."), 11);
             inshoreLayer.select(location.number);
+        };
+
+        $scope.getLocationName = function(number){
+            for(var i in $scope.inshoreLocations){
+                if($scope.inshoreLocations[i].number == number){
+                    return $scope.inshoreLocations[i].placename;
+                }
+            }
+            return null;
         };
 
         function requestShapefile(chart, onSuccess) {
@@ -247,7 +267,7 @@ $(function() {
                 parts : name.indexOf("aari.aari_arc") >= 0 ? 2 : 0
             }, function(data) {
                 messageId = embryo.messagePanel.replace(messageId, {
-                    text : "Drawing " + name,
+                    text : "Drawing " + name
                 });
 
                 function finishedDrawing() {
@@ -291,6 +311,10 @@ $(function() {
                 IceService.update(chart.type + "s");
             });
         }
+
+        $scope.$on("$destroy", function() {
+            inshoreLayer.clear();
+        });
     }
 
     module.controller("IceController", [ '$scope', 'IceService', '$timeout', 'ShapeService', iceController ]);

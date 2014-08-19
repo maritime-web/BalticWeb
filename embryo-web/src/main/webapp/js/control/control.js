@@ -105,4 +105,28 @@ $(function() {
             }
         }
     } ]);
+
+
+    module.directive('eLeftBarContentChange', ['$timeout', function($timeout) {
+        return {
+            require : '^eLeftBar',
+            restrict : 'A',
+            link : function(scope, element, attrs) {
+                scope.observed = {};
+
+                attrs.$observe('eLeftBarContentChange', function(newValue) {
+                    scope.observed.value = !newValue ? null : angular.fromJson(newValue)
+                });
+
+                scope.$watch('observed.value', function(newValue, oldValue) {
+                    if (newValue) {
+                        $timeout(function () {
+                            $(element.get(0)).find(".collapsing").css("height", "auto");
+                            $(element.get(0)).find(".collapsing").addClass("collapse in").removeClass("collapsing");
+                        }, 500);
+                    }
+                }, true);
+            }
+        }
+    } ]);
 });

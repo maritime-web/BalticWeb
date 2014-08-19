@@ -1,22 +1,18 @@
-/* Copyright (c) 2011 Danish Maritime Authority
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package dk.dma.embryo.dataformats.job;
-
-import java.util.SortedSet;
-import java.util.TreeSet;
+package dk.dma.embryo.dataformats.inshore;
 
 import javax.inject.Inject;
 
@@ -50,11 +46,12 @@ public class InshoreIceReportNameNotAcceptedMailTest {
         String header = "ArcticWeb was not able to import inshore ice report with inconsistent name " + inshoreIceReport;
         String body = "ArcticWeb was not able to import the inshore ice report " + inshoreIceReport + ", because it does not follow the expected naming scheme.\n";
         body += "Please delete the inshore ice report " + inshoreIceReport + " from the FTP location ftp.test.dk/mydir.\n";
-        body += "Inshore ice reports must follow the naming scheme yyyy-MM-dd.txt. The format is described below.\n\n";
+        body += "Inshore ice report files must follow the naming scheme yyyy-MM-dd[_version].txt, where '_version' is optional. The format is described below.\n\n";
         body += "yyyy - The year\n";
         body += "MM - The month of year. Accepted values are 01 - 12\n";
         body += "dd - The day of month. Accepted values are 01 - 31\n";
-        body += "An example of a valid value is 2014-07-14.txt\n";
+        body += "version - The version of the inshore ice report. This attribute is optional. Valid values starts with a v and ends with a positive number, e.g. v1, v2, v3, v10, v15.\n\n";
+        body += "Examples of valid values are 2014-07-14.txt and 2014-07-14_v2.txt\n";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("noreply@dma.dk", mail.getFrom());

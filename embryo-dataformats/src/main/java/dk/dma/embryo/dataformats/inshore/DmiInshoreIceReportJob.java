@@ -1,22 +1,21 @@
-/* Copyright (c) 2011 Danish Maritime Authority
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package dk.dma.embryo.dataformats.job;
+package dk.dma.embryo.dataformats.inshore;
 
-import static dk.dma.embryo.dataformats.job.DmiInshoreIceReportPredicates.acceptedReports;
-import static dk.dma.embryo.dataformats.job.DmiInshoreIceReportPredicates.rejectedReports;
+import static dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportPredicates.acceptedReports;
+import static dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportPredicates.rejectedReports;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,7 +53,8 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.dataformats.service.InshoreIceReportService;
+import dk.dma.embryo.dataformats.job.EmbryoFTPFileFilters;
+import dk.dma.embryo.dataformats.job.NamedtimeStamps;
 
 /**
  * 
@@ -145,7 +145,7 @@ public class DmiInshoreIceReportJob {
                 new File(localDmiDir).mkdirs();
             }
             
-            LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(45);
+            LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(1);
 
             FTPClient ftp = connect();
 
@@ -189,7 +189,7 @@ public class DmiInshoreIceReportJob {
                 embryoLogService.error("Error reading transfered file", e);
                 error.add(e.getMessage());
             }
-            
+
             String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + toString(transfered)
                     + ", Errors: " + toString(error);
             if (error.size() == 0) {

@@ -142,8 +142,10 @@
                             text : "Requesting inshore ice report ..."
                         });
                         function onSuccess(data) {
+                            var count = data && data.observations ? Object.keys(data.observations).length : 0;
+                            
                             embryo.messagePanel.replace(messageId, {
-                                text : "Inshore ice report downloaded.",
+                                text : "Inshore ice report with " + count + " observations downloaded.",
                                 type : "success"
                             });
                             success(data);
@@ -158,7 +160,7 @@
                             error(errorMsg, status);
                         }
 
-                        $http.get(embryo.baseUrl + "rest/ice/provider/" + provider.key + "/inshoreicereport", {
+                        $http.get(embryo.baseUrl + "rest/inshore-ice-report/provider/" + provider.key, {
                             timeout : embryo.defaultTimeout,
                         }).success(onSuccess).error(onError);
                     },

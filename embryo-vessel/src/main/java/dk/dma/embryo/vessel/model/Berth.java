@@ -1,31 +1,31 @@
-/* Copyright (c) 2011 Danish Maritime Authority
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package dk.dma.embryo.vessel.model;
+
+import dk.dma.embryo.common.persistence.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
-import dk.dma.embryo.common.persistence.BaseEntity;
-
 
 @Entity
-@NamedQueries({@NamedQuery(name="Berth:findByQuery", query="SELECT b FROM Berth b WHERE b.name LIKE :query OR b.alias like :query")})
-public class Berth extends BaseEntity<Long>{
+@NamedQueries({@NamedQuery(name = "Berth:findByQuery", query = "SELECT b FROM Berth b WHERE b.name LIKE :query OR b.alias like :query"),
+        @NamedQuery(name = "Berth:lookup", query = "SELECT b FROM Berth b WHERE UPPER(b.name) = :name OR UPPER(b.alias) = :name")})
+public class Berth extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7720878907095105915L;
 
@@ -34,9 +34,9 @@ public class Berth extends BaseEntity<Long>{
     // //////////////////////////////////////////////////////////////////////
     @NotNull
     private String name;
-    
+
     private String alias;
-    
+
     private Position position;
 
     // //////////////////////////////////////////////////////////////////////
@@ -50,14 +50,15 @@ public class Berth extends BaseEntity<Long>{
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Berth(){}
-    
-    public Berth(String name, String lattitude, String longitude){
+    public Berth() {
+    }
+
+    public Berth(String name, String lattitude, String longitude) {
         this.name = name;
         this.position = new Position(lattitude, longitude);
     }
 
-    public Berth(String name, String alias, String lattitude, String longitude){
+    public Berth(String name, String alias, String lattitude, String longitude) {
         this.name = name;
         this.alias = alias;
         this.position = new Position(lattitude, longitude);
@@ -73,7 +74,7 @@ public class Berth extends BaseEntity<Long>{
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getAlias() {
         return alias;
     }
@@ -84,5 +85,5 @@ public class Berth extends BaseEntity<Long>{
 
     public Position getPosition() {
         return position;
-    }    
+    }
 }

@@ -1,27 +1,5 @@
 function InshoreIceReportLayer() {
 
-    OpenLayers.Strategy.RuleCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
-        /**
-         * the rule to use for comparison
-         */
-        rule : null,
-        /**
-         * Method: shouldCluster Determine whether to include a feature in a
-         * given cluster.
-         * 
-         * Parameters: cluster - {<OpenLayers.Feature.Vector>} A cluster.
-         * feature - {<OpenLayers.Feature.Vector>} A feature.
-         * 
-         * Returns: {Boolean} The feature should be included in the cluster.
-         */
-        shouldCluster : function(cluster, feature) {
-            var superProto = OpenLayers.Strategy.Cluster.prototype;
-            return this.rule.evaluate(cluster.cluster[0]) && this.rule.evaluate(feature)
-                    && superProto.shouldCluster.apply(this, arguments);
-        },
-        CLASS_NAME : "OpenLayers.Strategy.RuleCluster"
-    });
-
     this.init = function() {
         this.zoomLevels = [ 4, 6, 11 ];
 
@@ -46,12 +24,6 @@ function InshoreIceReportLayer() {
             description : function(feature) {
                 return feature.cluster ? feature.cluster.length + " Inshore report locations"
                         : feature.attributes.iceDescription.Number + ": " + feature.attributes.iceDescription.Placename;
-            },
-            display : function(feature) {
-                if (!feature.cluster) {
-                    return feature.attributes.iceDescription.hasReport ? "yes" : "none";
-                }
-                return "yes";
             }
         };
 
@@ -71,8 +43,7 @@ function InshoreIceReportLayer() {
                     fontOpacity : "${transparency}",
                     fontWeight : "bold",
                     labelOutlineWidth : 0,
-                    labelYOffset : -20,
-                    display : "${display}",
+                    labelYOffset : -20
 
                 }, {
                     context : this.context
@@ -96,22 +67,14 @@ function InshoreIceReportLayer() {
                     label : "${description}",
                     fontWeight : "bold",
                     labelOutlineWidth : 0,
-                    labelYOffset : -20,
-                    display : "${display}",
+                    labelYOffset : -20
                 }, {
                     context : this.context
                 })
             }),
-            strategies : [ new OpenLayers.Strategy.RuleCluster({
+            strategies : [ new OpenLayers.Strategy.Cluster({
                 distance : 25,
-                threshold : 2,
-                rule : new OpenLayers.Rule({
-                    filter : new OpenLayers.Filter.Comparison({
-                        type : OpenLayers.Filter.Comparison.EQUAL_TO,
-                        property : "hasReport",
-                        value : true
-                    })
-                })
+                threshold : 2
             }) ]
         });
 
