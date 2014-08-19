@@ -21,8 +21,9 @@ import java.util.Map;
 public class CollectionUtils {
     public static <K,V> HashMap<V,K> reverse(Map<K,V> map) {
         HashMap<V,K> rev = new HashMap<V, K>();
-        for(Map.Entry<K,V> entry : map.entrySet())
+        for(Map.Entry<K,V> entry : map.entrySet()) {
             rev.put(entry.getValue(), entry.getKey());
+        }
         return rev;
     }
 }
