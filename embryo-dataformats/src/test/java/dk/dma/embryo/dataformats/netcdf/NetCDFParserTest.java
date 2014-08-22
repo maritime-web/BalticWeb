@@ -21,25 +21,27 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NetCDFParserTest {
+
     @Test
     public void readNetCDFFile() throws Exception {
         NetCDFParser parser = new NetCDFParser();
-        URL resource = getClass().getResource("/netcdf/WAV_2014071400.hh00_test.nc");
+        URL resource = getClass().getResource("/netcdf/hycom-cice.nc");
         NetCDFResult result = parser.parse(resource.getPath());
         
         Map<String, List<? extends Serializable>> metadata = result.getMetadata();
         List<? extends Serializable> latList = metadata.get(NetCDFParser.LAT);
         List<? extends Serializable> lonList = metadata.get(NetCDFParser.LON);
         List<? extends Serializable> timeList = metadata.get(NetCDFParser.TIME);
-        assertEquals(21, latList.size());
-        assertEquals(41, lonList.size());
-        assertEquals(6, timeList.size());
+        assertEquals(101, latList.size());
+        assertEquals(101, lonList.size());
+        assertEquals(2, timeList.size());
         
         Map<String, SmallEntry> data = result.getData();
-        assertEquals(1056, data.size());
+        assertEquals(714, data.size());
     }
     
     @Test
@@ -57,6 +59,6 @@ public class NetCDFParserTest {
         NetCDFResult result = parser.parse(resource.getPath(), restriction);
         
         Map<String, SmallEntry> data = result.getData();
-        assertEquals(438, data.size());
+        assertEquals(1548, data.size());
     }
 }

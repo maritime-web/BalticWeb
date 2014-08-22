@@ -42,36 +42,43 @@
 		</div>
 
 		<div accordion-group heading="Legends">
-			<div x-ng-controller="LegendsController" class="legends">
+			<div class="legends">
 				<h5>Wave</h5>
 				<table class="table table-condensed">
-					<tr x-ng-repeat="limit in waveLimits">
-						<td><img style="width: 15px; height: 15px;" x-ng-src="{{limit.first.img}}" /></td>
-						<td><span x-ng-if="limit.first.max">{{limit.first.min}} - {{limit.first.max}} meters</span><span
-							x-ng-if="!limit.second.max">&gt; {{limit.first.min}} meters</span></td>
-						<td><img x-ng-if="limit.second" style="width: 15px; height: 15px;" x-ng-src="{{limit.second.img}}" /></td>
-						<td><span x-ng-if="limit.second.max">{{limit.second.min}} - {{limit.second.max}} meters</span><span
-							x-ng-if="limit.second && !limit.second.max">&gt; {{limit.second.min}} meters</span></td>
+					<tr>
+						<td><span style="background-color:#00DE00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt; 0.7</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#FFFF00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.7 - 1.0</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#FA4242; width: 30px; display: block;">&nbsp;</span></td>
+						<td>1.0 - 1.3</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#E8B332; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&gt; 1.3</td>
 					</tr>
 				</table>
-				<h5>Current</h5>
+				<h5>Ice</h5>
 				<table class="table table-condensed">
-					<tr x-ng-repeat="limit in currentLimits">
-						<td><img style="width: 10px; height: 20px;" x-ng-src="{{limit.first.img}}" /></td>
-						<td x-ng-repeat-end><span x-ng-if="limit.first.max">{{limit.first.min}} - {{limit.first.max}} knots</span><span
-							x-ng-if="!limit.first.max">&gt; {{limit.first.min}} knots</span></td>
-						<td><img x-ng-if="limit.second" style="width: 10px; height: 20px;" x-ng-src="{{limit.second.img}}" /></td>
-						<td><span x-ng-if="limit.second.max">{{limit.second.min}} - {{limit.second.max}} knots</span><span
-							x-ng-if="limit.second && !limit.second.max">&gt; {{limit.second.min}} knots</span></td>
+					<tr>
+						<td><span style="background-color:#00DE00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt; 0.0001</td>
 					</tr>
-				</table>
-				<h5>Wind</h5>
-				<table class="table table-condensed">
-					<tr x-ng-repeat="limit in windLimits">
-						<td><img style="width: 15px; height: 30px;" x-ng-src="{{limit.first.img}}" /></td>
-						<td x-ng-repeat-end>{{limit.first.max}} knots ({{knots2Ms(limit.first.max)}} m/s)</td>
-						<td><img x-ng-if="limit.second" style="width: 15px; height: 30px;" x-ng-src="{{limit.second.img}}" /></td>
-						<td><span x-ng-if="limit.second">{{limit.second.max}} knots ({{knots2Ms(limit.second.max)}} m/s)</span></td>
+					<tr>
+						<td><span style="background-color:#FFFF00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.0001 - 0.001</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#FA4242; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.001 - 0.01</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#E8B332; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&gt; 0.01</td>
 					</tr>
 				</table>
 			</div>

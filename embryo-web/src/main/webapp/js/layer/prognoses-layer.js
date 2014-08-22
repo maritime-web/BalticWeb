@@ -108,13 +108,13 @@ function PrognosesLayer() {
 
     this.getIceConcentrationLevel = function(obs) {
         if(obs < 0.0001) {
-            return '#669999';
+            return '#00DE00';
         } else if(obs < 0.001) {
-            return '#996666';
+            return '#FFFF00';
         } else if(obs < 0.01) {
-            return '#cc3333';
+            return '#FA4242';
         } else {
-            return '#ff0000';
+            return '#E8B332';
         }
     };
 
@@ -131,7 +131,7 @@ function PrognosesLayer() {
                 var lat = lats[d.lat];
                 var lon = lons[d.lon];
                 //var location = embryo.map.createPoint(lons[d.lon], lats[d.lat]);
-                var half = 0.5;
+                var half = 0.2;
                 var points = [embryo.map.createPoint(lon - half, lat - half), embryo.map.createPoint(lon + half, lat - half), embryo.map.createPoint(lon + half, lat + half), embryo.map.createPoint(lon - half, lat + half)];
                 //var square = OpenLayers.Geometry.Polygon.createRegularPolygon(location, 100, 4, 0);
                 var square = new OpenLayers.Geometry.LinearRing(points);
@@ -156,7 +156,8 @@ function PrognosesLayer() {
                 var lat = lats[d.lat];
                 var lon = lons[d.lon];
                 //var location = embryo.map.createPoint(lons[d.lon], lats[d.lat]);
-                var points = [embryo.map.createPoint(lon - 0.5, lat - 0.5), embryo.map.createPoint(lon + 0.5, lat - 0.5), embryo.map.createPoint(lon + 0.5, lat + 0.5), embryo.map.createPoint(lon - 0.5, lat + 0.5)];
+                var half = 0.2;
+                var points = [embryo.map.createPoint(lon - half, lat - half), embryo.map.createPoint(lon + half, lat - half), embryo.map.createPoint(lon + half, lat + half), embryo.map.createPoint(lon - half, lat + half)];
                 //var square = OpenLayers.Geometry.Polygon.createRegularPolygon(location, 100, 4, 0);
                 var square = new OpenLayers.Geometry.LinearRing(points);
                 var feature = new OpenLayers.Feature.Vector(square, {level : level, obs : d.obs[index]});
@@ -192,8 +193,7 @@ function PrognosesLayer() {
                         lon - (half * 0.2), lat + (half * 0.2)), embryo.map.createPoint(lon - half, lat + (half * 0.2)));
                 
                 var rad = Math.acos(north / Math.sqrt(north * north + east * east));
-                var factor = north > 0 ? 1 : -1;
-                var degrees = Math.round(factor * rad * 180 / Math.PI);
+                var degrees = Math.round(rad * 180 / Math.PI);
                 
                 var linearRing = new OpenLayers.Geometry.LinearRing(points);
                 linearRing.rotate(degrees, embryo.map.createPoint(lon, lat));
@@ -231,13 +231,13 @@ function PrognosesLayer() {
 
     this.getWaveConcentrationLevel = function(obs) {
         if(obs < 0.7) {
-            return '#669999';
+            return '#00DE00';
         } else if(obs < 1.0) {
-            return '#996666';
+            return '#FFFF00';
         } else if(obs < 1.3) {
-            return '#cc3333';
+            return '#FA4242';
         } else {
-            return '#ff0000';
+            return '#E8B332';
         }
     };
     

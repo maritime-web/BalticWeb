@@ -150,12 +150,12 @@ public class NetCDFParser {
         // Change variables to their descriptions
         HashMap<Integer, String> reversedVars = CollectionUtils.reverse(this.variables);
         this.variables = new HashMap<>();
-        for(int i : reversedVars.keySet()) {
+        for (int i : reversedVars.keySet()) {
             String value = reversedVars.get(i);
             NetCDFVar netCDFVar = cdfVars.get(value);
             this.variables.put(netCDFVar.getDescription(), i);
         }
-        
+
         return new NetCDFResult(this.variables, getSimpleVars(), entries);
     }
 
@@ -261,7 +261,7 @@ public class NetCDFParser {
                     // We are not interested in default/empty values, so these
                     // are excluded.
                     String key = j + "_" + k + "_" + i;
-                    if (val > MIN_VAL && val != 0 && isWholeCoordinate(latList.get(j)) && isWholeCoordinate(lonList.get(k))) {
+                    if (val > MIN_VAL && val != 0 && isHalfCoordinate(latList.get(j)) && isHalfCoordinate(lonList.get(k))) {
                         // The time dimension from the range needs to correspond
                         // to the range we're using, so we're converting the i
                         // variable back to the "original" index.
@@ -281,8 +281,12 @@ public class NetCDFParser {
         }
 
     }
-    
+
     private boolean isWholeCoordinate(double coord) {
         return coord == Math.floor(coord);
+    }
+
+    private boolean isHalfCoordinate(double coord) {
+        return ((int) (coord * 10.0)) % 5 == 0;
     }
 }

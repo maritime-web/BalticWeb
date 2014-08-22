@@ -11,7 +11,7 @@
                 var defaultWaveLow = 1.0;
                 var defaultWaveMedium = 2.0;
 
-                var cookieName = "dma-metoc-defaultWarnLimit-" + embryo.authentication.userName
+                var cookieName = "dma-metoc-defaultWarnLimit-" + embryo.authentication.userName;
 
                 var defaultWarnLimits = {
                     defaultCurrentWarnLimit : 4.0,
@@ -45,7 +45,7 @@
                         var limit = {
                             img : img,
                             min : limits[index],
-                        }
+                        };
                         if (index != limits.length - 1) {
                             limit.max = limits[index + 1];
                         }
@@ -115,7 +115,7 @@
                     },
                     getWaveLimits : function() {
                         var defaultWaveWarnLimit = this.getDefaultWarnLimits().defaultWaveWarnLimit;
-                        var waveLimits = buildLimits("img/wave_legend/mark", [ 0, defaultWaveLow, defaultWaveMedium ])
+                        var waveLimits = buildLimits("img/wave_legend/mark", [ 0, defaultWaveLow, defaultWaveMedium ]);
                         return applyWarnLimits(waveLimits, defaultWaveWarnLimit);
                     },
                     getCurrentLimits : function() {
@@ -152,5 +152,5 @@
 
     metocModule.run(function(MetocService) {
         embryo.metoc.service = MetocService;
-    })
+    });
 })();
