@@ -427,7 +427,7 @@ $(function() {
                 setupBaseMap(embryo.baseMap);
                 setCookie("dma-ais-map-" + embryo.authentication.userName, embryo.baseMap, 30);
             }
-        })
+        });
     }
 
     var mapModule = angular.module('embryo.zoom', [ 'embryo.authentication' ]);
@@ -436,7 +436,7 @@ $(function() {
         var control = new OpenLayers.Control.Zoom({
             zoomInId : 'dmaZoomIn',
             zoomOutId : 'dmaZoomOut'
-        })
+        });
         embryo.map.internalMap.addControl(control);
 
         $scope.zoomAll = function() {
@@ -455,16 +455,16 @@ $(function() {
             $("#switchBaseMapDialog").modal("show");
 
             registerEvents();
-        }
+        };
 
         $scope.zoomClasses = function() {
             var zoom2YourVessel = Subject.authorize('Sailor');
-            return zoom2YourVessel ? 'e-btn-tall' : 'e-btn-low'
-        }
+            return zoom2YourVessel ? 'e-btn-tall' : 'e-btn-low';
+        };
 
         $scope.$on('$destroy', function() {
             embryo.map.internalMap.removeControl(control);
         });
     } ]);
-
+    
 });
