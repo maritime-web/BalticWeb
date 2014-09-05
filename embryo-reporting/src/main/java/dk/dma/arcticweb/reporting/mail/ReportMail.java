@@ -44,6 +44,9 @@ public class ReportMail extends Mail<ReportMail> {
     public ReportMail build() {
         DateTimeConverter reportTsConverter = DateTimeConverter.getDateTimeConverter("MM");
 
+        String recipientName = propertyFileService.getProperty("embryo.notification.mail.name." + recipient);
+
+        environment.put("Recipient", recipientName);
         environment.put("VesselName", report.getVesselName());
         environment.put("VesselMmsi", "" + report.getVesselMmsi());
         environment.put("VesselCallSign", report.getVesselCallSign());
@@ -68,7 +71,7 @@ public class ReportMail extends Mail<ReportMail> {
             GreenPosSailingPlanReport spReport = (GreenPosSailingPlanReport) report;
             String eta = converter.toString(spReport.getEtaOfArrival());
             ReportedRoute route = spReport.getRoute();
-
+            
             environment.put("RouteDescription", spReport.getRouteDescription());
             environment.put("RouteWayPoints", route == null ? null : route.getWayPointsAsString());
             environment.put("Destination", spReport.getDestination());
