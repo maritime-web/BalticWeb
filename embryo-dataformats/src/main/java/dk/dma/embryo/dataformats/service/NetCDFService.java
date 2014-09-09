@@ -16,6 +16,7 @@
 package dk.dma.embryo.dataformats.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import dk.dma.embryo.dataformats.netcdf.NetCDFResult;
@@ -23,7 +24,7 @@ import dk.dma.embryo.dataformats.netcdf.NetCDFType;
 
 public interface NetCDFService {
 
-    void parseAllFiles() throws IOException;
+    void parseAllFiles(List<? extends NetCDFType> types) throws IOException;
 
     Map<String, NetCDFResult> getEntries(NetCDFType type);
 

@@ -41,34 +41,19 @@ public class NetCDFParser {
     public static final String LON = "lon";
     public static final String LAT = "lat";
 
-    public static final String WAVE_HEIGHT = "var229";
-    public static final String ICE_CONCENTRATION = "var91";
-
     private List<Double> latList;
     private List<Double> lonList;
     private List<Date> timeList;
 
     public static final String FILE_NAME = "wam.grib.2014042900.NATLANT.nc";
-    private Map<String, NetCDFVar> cdfVars;
     private Map<String, SmallEntry> entries = new HashMap<>();
-    private Map<String, Integer> variables;
+    private Map<String, NetCDFVar> basicVars = new HashMap<>();
 
     public NetCDFParser() {
-        // Setup
-        cdfVars = new HashMap<>();
 
-        NetCDFVar.addToMap(cdfVars, LAT, "Latitude", false);
-        NetCDFVar.addToMap(cdfVars, LON, "Longitude", false);
-        NetCDFVar.addToMap(cdfVars, TIME, "Time", false);
-        NetCDFVar.addToMap(cdfVars, WAVE_HEIGHT, "Significant wave height", true);
-        NetCDFVar.addToMap(cdfVars, "var230", "Wave direction", true);
-        NetCDFVar.addToMap(cdfVars, "var232", "Wave mean period", true);
-        NetCDFVar.addToMap(cdfVars, ICE_CONCENTRATION, "Ice concentration", true);
-        NetCDFVar.addToMap(cdfVars, "var92", "Ice thickness", true);
-        NetCDFVar.addToMap(cdfVars, "var95", "Ice speed east", true);
-        NetCDFVar.addToMap(cdfVars, "var96", "Ice speed north", true);
-        // NetCDFVar.addToMap(cdfVars, "var245", "Wind speed", true);
-        // NetCDFVar.addToMap(cdfVars, "var249", "Wind direction", true);
+        NetCDFVar.addToMap(basicVars, LAT, "Latitude");
+        NetCDFVar.addToMap(basicVars, LON, "Longitude");
+        NetCDFVar.addToMap(basicVars, TIME, "Time");
 
     }
 
@@ -80,8 +65,8 @@ public class NetCDFParser {
      * @throws InvalidRangeException
      * @throws IOException
      */
-    public NetCDFResult parse(String filename) throws IOException {
-        return parse(filename, createDefaultRestriction());
+    public Map<NetCDFType, NetCDFResult> parse(String filename, List<? extends NetCDFType> types) throws IOException {
+        return parse(filename, types, createDefaultRestriction());
     }
 
     /**
@@ -94,89 +79,73 @@ public class NetCDFParser {
      * @throws InvalidRangeException
      * @throws IOException
      */
-    public NetCDFResult parse(String filename, NetCDFRestriction restriction) throws IOException {
+    public Map<NetCDFType, NetCDFResult> parse(String filename, List<? extends NetCDFType> types, NetCDFRestriction restriction) throws IOException {
         NetcdfFile netcdfFile = NetcdfFile.open(filename);
         List<Variable> variables = netcdfFile.getVariables();
 
-        // Read vars from NetCDF file.
-        for (Variable v : variables) {
-            String varName = v.getName();
-            NetCDFVar cdfVar = cdfVars.get(varName);
-            if (cdfVar != null) {
-                cdfVar.setVariable(v);
-            }
-        }
+        Map<NetCDFType, NetCDFResult> results = new HashMap<>();
 
-        // Extract contents from lat and lon simple vars. As these data are
-        // unlikely to ever change, we only do this once.
-        if (latList == null || lonList == null) {
-            Array lats = cdfVars.get(LAT).getVariable().read();
+        // Read vars from NetCDF file.
+        for (NetCDFType type : types) {
+            Map<String, NetCDFVar> vars = type.getVars();
+            for (Variable variable : variables) {
+                String varName = variable.getName();
+                if (basicVars.containsKey(varName)) {
+                    basicVars.get(varName).setVariable(variable);
+                } else if (vars.containsKey(varName)) {
+                    vars.get(varName).setVariable(variable);
+                }
+            }
+
+            // Extract contents from lat and lon simple vars.
+            Array lats = basicVars.get(LAT).getVariable().read();
             latList = new ArrayList<>();
             for (int i = 0; i < lats.getSize(); i++) {
                 latList.add(lats.getDouble(i));
             }
 
-            Array lons = cdfVars.get(LON).getVariable().read();
+            Array lons = basicVars.get(LON).getVariable().read();
             lonList = new ArrayList<>();
             for (int i = 0; i < lons.getSize(); i++) {
                 lonList.add(lons.getDouble(i));
             }
-        }
 
-        // Extract contents from the time simple var. This data will change over
-        // time, so it's re-parsed from every file.
-        Array times = cdfVars.get(TIME).getVariable().read();
-        timeList = new ArrayList<>();
-        for (int i = 0; i < times.getSize(); i++) {
-            Date date = getDateTime(times.getDouble(i));
-            timeList.add(date);
-        }
+            // Extract contents from the time simple var.
+            Array times = basicVars.get(TIME).getVariable().read();
+            timeList = new ArrayList<>();
+            for (int i = 0; i < times.getSize(); i++) {
+                Date date = getDateTime(times.getDouble(i));
+                timeList.add(date);
+            }
 
-        // Retrieve data from the complex vars.
+            // Retrieve data from the complex vars.
 
-        this.variables = new HashMap<>();
-        try {
-            int count = 0;
-            for (NetCDFVar cdfVar : cdfVars.values()) {
-                if (cdfVar.getVariable() != null && cdfVar.isComplex()) {
-                    this.variables.put(cdfVar.getVarname(), count++);
-                    parseData(cdfVar.getVariable(), restriction);
+            Map<String, Integer> outputVars = new HashMap<>();
+
+            try {
+                int count = 0;
+                for (NetCDFVar cdfVar : vars.values()) {
+                    if (cdfVar.getVariable() != null) {
+                        outputVars.put(cdfVar.getVarname(), count);
+                        parseData(cdfVar.getVariable(), count++, restriction);
+                    }
                 }
+            } catch (InvalidRangeException e) {
+                throw new IOException("Illegal range when processing NetCDF file " + filename, e);
             }
-        } catch (InvalidRangeException e) {
-            throw new IOException(e);
-        }
 
-        // Change variables to their descriptions
-        HashMap<Integer, String> reversedVars = CollectionUtils.reverse(this.variables);
-        this.variables = new HashMap<>();
-        for (int i : reversedVars.keySet()) {
-            String value = reversedVars.get(i);
-            NetCDFVar netCDFVar = cdfVars.get(value);
-            this.variables.put(netCDFVar.getDescription(), i);
-        }
-
-        return new NetCDFResult(this.variables, getSimpleVars(), entries);
-    }
-
-    /**
-     * Checks what type of NetCDF file (wave prognosis, ice prognosis etc.)
-     * we're working with.
-     * 
-     * @param filename
-     * @return
-     * @throws IOException
-     */
-    public NetCDFType getType(String filename) throws IOException {
-        NetcdfFile netcdfFile = NetcdfFile.open(filename);
-        List<Variable> variables = netcdfFile.getVariables();
-        for (Variable var : variables) {
-            NetCDFType netCDFType = NetCDFType.triggers(var.getName());
-            if (netCDFType != null) {
-                return netCDFType;
+            // Change variables to their descriptions
+            HashMap<Integer, String> reversedVars = CollectionUtils.reverse(outputVars);
+            outputVars = new HashMap<>();
+            for (int i : reversedVars.keySet()) {
+                String value = reversedVars.get(i);
+                NetCDFVar netCDFVar = type.getVars().get(value);
+                outputVars.put(netCDFVar.getDescription(), i);
             }
+
+            results.put(type, new NetCDFResult(outputVars, getSimpleVars(), entries));
         }
-        return null;
+        return results;
     }
 
     /**
@@ -215,8 +184,9 @@ public class NetCDFParser {
             }
             return new DateTime(year, month, day, hours, 0, DateTimeZone.UTC).toDate();
         } else {
-            DateTime dateTime = new DateTime(2014, 7, 31, 0, 0, DateTimeZone.UTC).plusHours((int) input);
-            return dateTime.toDate();
+            //DateTime dateTime = new DateTime(2014, 7, 31, 0, 0, DateTimeZone.UTC).plusHours((int) input);
+            //return dateTime.toDate();
+            return new Date((long)input * 1000);
         }
     }
 
@@ -240,7 +210,7 @@ public class NetCDFParser {
      * @throws InvalidRangeException
      * @throws IOException
      */
-    private void parseData(Variable v, NetCDFRestriction restriction) throws InvalidRangeException, IOException {
+    private void parseData(Variable v, int order, NetCDFRestriction restriction) throws InvalidRangeException, IOException {
 
         // TODO: This method should be updated to optionally shrink the lat and
         // lon ranges in order to support fetching subsets (i.e. restricting the
@@ -267,11 +237,10 @@ public class NetCDFParser {
                         // variable back to the "original" index.
                         // SmallEntry entry = new SmallEntry(j, k, i * 24 + 12,
                         // val);
-                        int var = this.variables.get(v.getName());
                         if (entries.containsKey(key)) {
-                            entries.get(key).getObs().put(var, val);
+                            entries.get(key).getObs().put(order, val);
                         } else {
-                            SmallEntry entry = new SmallEntry(j, k, i, var, val);
+                            SmallEntry entry = new SmallEntry(j, k, i, order, val);
                             entries.put(key, entry);
                         }
                     }
@@ -282,6 +251,7 @@ public class NetCDFParser {
 
     }
 
+    @SuppressWarnings("unused")
     private boolean isWholeCoordinate(double coord) {
         return coord == Math.floor(coord);
     }

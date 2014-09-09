@@ -28,14 +28,14 @@ import javax.ejb.TimerService;
 import javax.inject.Inject;
 
 import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.dataformats.service.NetCDFService;
+import dk.dma.embryo.dataformats.service.PrognosisService;
 
 @Singleton
 @Startup
-public class NetCDFParserJob {
+public class PrognosisParserJob {
 
     @Inject
-    private NetCDFService netCDFService;
+    private PrognosisService prognosisService;
 
     @Inject
     @Property("embryo.netcdf.cron")
@@ -51,6 +51,6 @@ public class NetCDFParserJob {
 
     @Timeout
     public void parseFiles() throws IOException {
-        netCDFService.parseAllFiles();
+        prognosisService.reParse();
     }
 }

@@ -19,12 +19,12 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -35,7 +35,7 @@ import dk.dma.embryo.dataformats.netcdf.NetCDFParser;
 import dk.dma.embryo.dataformats.netcdf.NetCDFResult;
 import dk.dma.embryo.dataformats.netcdf.NetCDFType;
 
-@Stateless
+@Singleton
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class NetCDFServiceImpl implements NetCDFService {
 
@@ -44,45 +44,46 @@ public class NetCDFServiceImpl implements NetCDFService {
     private Map<String, String> netcdfTypes;
 
     @Inject
+    @Property(value = "embryo.netcdf.providers")
+    private String netcdfProviders;
+
+    @Inject
     private PropertyFileService propertyFileService;
 
     private Map<NetCDFType, Map<String, NetCDFResult>> entries = new HashMap<>();
 
-    @PostConstruct
-    public void init() throws IOException {
-        parseAllFiles();
-    }
 
     @Lock(LockType.WRITE)
     @Override
-    public void parseAllFiles() throws IOException {
-        for (String netcdfType : netcdfTypes.values()) {
-            String folderName = propertyFileService.getProperty("embryo." + netcdfType + ".dmi.localDirectory", true);
-            File folder = new File(folderName);
-            if (folder.exists()) {
-                NetCDFParser parser = new NetCDFParser();
-                File[] files = folder.listFiles(new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        return pathname.getName().endsWith(".nc");
+    public void parseAllFiles(List<? extends NetCDFType> types) throws IOException {
+        for (String netcdfProvider : netcdfProviders.split(";")) {
+            for (String netcdfType : netcdfTypes.values()) {
+                String folderName = propertyFileService.getProperty("embryo." + netcdfType + "." + netcdfProvider + ".localDirectory", true);
+                System.out.println("FOLDERNAME: " + folderName);
+                File folder = new File(folderName);
+                if (folder.exists()) {
+                    NetCDFParser parser = new NetCDFParser();
+                    File[] files = folder.listFiles(new FileFilter() {
+                        @Override
+                        public boolean accept(File pathname) {
+                            return pathname.getName().endsWith(".nc");
+                        }
+                    });
+                    for (File file : files) {
+                        Map<NetCDFType, NetCDFResult> result = parser.parse(file.getAbsolutePath(), types);
+                        for(NetCDFType type : result.keySet()) {
+                            Map<String, NetCDFResult> typeMap = entries.get(type);
+                            if (typeMap == null) {
+                                typeMap = new HashMap<String, NetCDFResult>();
+                                entries.put(type, typeMap);
+                            }
+                            String name = file.getName().substring(0, file.getName().length() - 3) + "_" + type.getCode();
+                            typeMap.put(name, result.get(type));
+                        }
                     }
-                });
-                for (File file : files) {
-                    NetCDFType type = parser.getType(file.getAbsolutePath());
-                    NetCDFResult result = parser.parse(file.getAbsolutePath());
-                    System.out.println("Received result: " + result.getMetadata().size());
-                    Map<String, NetCDFResult> typeMap = entries.get(type);
-                    if (typeMap == null) {
-                        typeMap = new HashMap<String, NetCDFResult>();
-                        entries.put(type, typeMap);
-                    }
-                    String name = file.getName().substring(0, file.getName().length() - 3);
-                    typeMap.put(name, result);
-
+                } else {
+                    throw new IOException("Folder " + folderName + " does not exist.");
                 }
-
-            } else {
-                throw new IOException("Folder " + folderName + " does not exist.");
             }
         }
     }

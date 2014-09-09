@@ -12,17 +12,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dk.dma.embryo.dataformats.service;
 
 import java.util.List;
 
+import dk.dma.embryo.dataformats.model.PrognosisType;
+import dk.dma.embryo.dataformats.model.PrognosisType.Type;
 import dk.dma.embryo.dataformats.netcdf.NetCDFResult;
 
-public interface WavePrognosisService {
+public interface PrognosisService {
+    public List<PrognosisType> getPrognosisTypes();
+
+    PrognosisType getPrognosisType(Type type);
+
+    void reParse();
+
+    NetCDFResult getPrognosis(String id, Type prognosisType);
+
+    List<String> getPrognosisList(Type type);
+
+    List<String> listAvailableIcePrognoses();
+
+    NetCDFResult getIcePrognosis(String id);
 
     List<String> listAvailableWavePrognoses();
 
-    NetCDFResult getPrognosis(String id);
+    NetCDFResult getWavePrognosis(String id);
+    
+    List<String> listAvailableCurrentPrognoses();
+    
+    NetCDFResult getCurrentPrognosis(String id);
 
 }

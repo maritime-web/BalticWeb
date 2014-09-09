@@ -26,9 +26,8 @@ import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
 import dk.dma.embryo.dataformats.inshore.InshoreIceReportJsonService;
 import dk.dma.embryo.dataformats.json.IceObservationRestService;
-import dk.dma.embryo.dataformats.json.IcePrognosisRestService;
+import dk.dma.embryo.dataformats.json.PrognosesRestService;
 import dk.dma.embryo.dataformats.json.ShapeFileRestService;
-import dk.dma.embryo.dataformats.json.WavePrognosisRestService;
 import dk.dma.embryo.metoc.json.MetocRestService;
 import dk.dma.embryo.msi.rs.MsiRestService;
 import dk.dma.embryo.user.json.AuthenticationService;
@@ -55,7 +54,7 @@ public class ApplicationConfig extends Application {
                 BerthRestService.class, AuthenticationService.class, TestDataRestService.class, IceObservationRestService.class, MsiRestService.class,
                 MetocRestService.class, ArcticWebVesselRestService.class, ScheduleRestService.class, LogEntryRestService.class, UserRestService.class,
                 RequestAccessRestService.class, ForgotPasswordRestService.class, WeatherRestService.class, InshoreIceReportJsonService.class,
-                WavePrognosisRestService.class, IcePrognosisRestService.class, FeedbackRestService.class));
+                PrognosesRestService.class, FeedbackRestService.class));
 
         return set;
     }

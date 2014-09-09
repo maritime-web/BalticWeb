@@ -40,4 +40,9 @@ public class NetCDFResult {
     public Map<String, SmallEntry> getData() {
         return data;
     }
+    
+    @Override
+    public String toString() {
+        return "NetCDFResult: Variables: " + variables.toString() + ", Metadata: " + metadata.toString(); 
+    }
 }

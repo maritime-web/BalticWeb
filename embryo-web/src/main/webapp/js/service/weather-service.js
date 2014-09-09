@@ -118,37 +118,6 @@
                             subscription.interval = $interval(getWeatherData, interval);
                         }
                         getWeatherData();
-                    },
-                    listWavePrognoses : function(success, error) {
-                        var messageId = embryo.messagePanel.show({
-                            text : "Requesting wave prognoses..."
-                        });
-                        $http.get(embryo.baseUrl + 'rest/waves/prognoses', {
-                            timeout : embryo.defaultTimeout
-                        }).success(function(prognoses) {
-                            embryo.messagePanel.replace(messageId, {
-                                text : "Wave prognoses downloaded.",
-                                type : "success"
-                            });
-                            success(prognoses);
-                        }).error(function(data, status, headers, config) {
-                            var errorMsg = embryo.ErrorService.errorStatus(data, status,
-                                    "requesting wave prognoses");
-                            embryo.messagePanel.replace(messageId, {
-                                text : errorMsg,
-                                type : "error"
-                            });
-                            error(errorMsg, status);
-                        });
-                    },
-                    getWavePrognosis : function(id, success, error) {
-                        $http.get(embryo.baseUrl + 'rest/waves/prognoses/' + id, {
-                            timeout : embryo.defaultTimeout
-                        }).success(function(prognosis) {
-                            success(prognosis);
-                        }).error(function(data, status, headers, config) {
-                            
-                        });
                     }
                 };
 

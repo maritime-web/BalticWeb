@@ -28,9 +28,28 @@
 							<div>
 								<a href="#" x-ng-click="getPrognosis(prognosis, $event)">{{prognosis.name}}</a>
 								<span x-ng-show="pc.prognosisSelected == prognosis.name">
-									<br /><input type="radio" name="icePrognosisType" id="iceConcentration" value="iceConcentration" x-ng-model="selectedVariable" /> <label for="iceConcentration">Ice concentration</label> 
-									<br /><input type="radio" name="icePrognosisType" id="iceThickness" value="iceThickness" x-ng-model="selectedVariable" /> <label for="iceThickness">Ice thickness</label>
-									<br /><input type="radio" name="icePrognosisType" id="iceSpeed" value="iceSpeed" x-ng-model="selectedVariable" /> <label for="iceSpeed">Ice speed</label>
+									<br /><input type="radio" name="icePrognosisType" id="iceConcentration_{{prognosis.name}}" value="iceConcentration" x-ng-model="selectedVariable" /> <label for="iceConcentration_{{prognosis.name}}">Ice concentration</label> 
+									<br /><input type="radio" name="icePrognosisType" id="iceThickness_{{prognosis.name}}" value="iceThickness" x-ng-model="selectedVariable" /> <label for="iceThickness_{{prognosis.name}}">Ice thickness</label>
+									<br /><input type="radio" name="icePrognosisType" id="iceSpeed_{{prognosis.name}}" value="iceSpeed" x-ng-model="selectedVariable" /> <label for="iceSpeed_{{prognosis.name}}">Ice speed</label>
+									<br /><input type="range" min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
+									<br />Selected time: {{currentDate}}
+								</span>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div accordion-group heading="Current prognoses">
+			<div x-ng-controller="CurrentPrognosesCtrl">
+				<h4>Current prognoses</h4>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="prognosis in currentPrognoses" x-ng-controller="CurrentPrognosisCtrl">
+						<td>
+							<div>
+								<a href="#" x-ng-click="getPrognosis(prognosis, $event)">{{prognosis.name}}</a>
+								<span x-ng-show="pc.prognosisSelected == prognosis.name">
 									<br /><input type="range" min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
 									<br />Selected time: {{currentDate}}
 								</span>
@@ -63,6 +82,25 @@
 					</tr>
 				</table>
 				<h5>Ice</h5>
+				<table class="table table-condensed">
+					<tr>
+						<td><span style="background-color:#00DE00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt; 0.0001</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#FFFF00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.0001 - 0.001</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#FA4242; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.001 - 0.01</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#E8B332; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&gt; 0.01</td>
+					</tr>
+				</table>
+				<h5>Current</h5>
 				<table class="table table-condensed">
 					<tr>
 						<td><span style="background-color:#00DE00; width: 30px; display: block;">&nbsp;</span></td>
