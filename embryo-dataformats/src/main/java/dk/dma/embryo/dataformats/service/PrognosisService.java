@@ -21,7 +21,7 @@ import dk.dma.embryo.dataformats.model.PrognosisType.Type;
 import dk.dma.embryo.dataformats.netcdf.NetCDFResult;
 
 public interface PrognosisService {
-    public List<PrognosisType> getPrognosisTypes();
+    List<PrognosisType> getPrognosisTypes();
 
     PrognosisType getPrognosisType(Type type);
 
