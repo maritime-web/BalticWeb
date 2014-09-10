@@ -57,7 +57,7 @@ public class NetCDFServiceImpl implements NetCDFService {
     public void parseAllFiles(List<? extends NetCDFType> types) throws IOException {
         if(entries.isEmpty()) {
             for(NetCDFType type : types) {
-                entries.put(type, null);
+                entries.put(type, new HashMap<String, NetCDFResult>());
             }
         }
         for (String netcdfProvider : netcdfProviders.split(";")) {
