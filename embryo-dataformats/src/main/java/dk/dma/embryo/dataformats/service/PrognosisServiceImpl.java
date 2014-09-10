@@ -64,10 +64,6 @@ public class PrognosisServiceImpl implements PrognosisService {
 
     public List<String> getPrognosisList(Type type) {
         Map<String, NetCDFResult> entries = netCDFService.getEntries(getPrognosisType(type));
-        if (entries == null) {
-            logger.info("No NetCDF entries for type " + type + ", re-parsing.");
-            reParse();
-        }
         return new ArrayList<String>(entries.keySet());
     }
 

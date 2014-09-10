@@ -51,11 +51,15 @@ public class NetCDFServiceImpl implements NetCDFService {
     private PropertyFileService propertyFileService;
 
     private Map<NetCDFType, Map<String, NetCDFResult>> entries = new HashMap<>();
-
-
+    
     @Lock(LockType.WRITE)
     @Override
     public void parseAllFiles(List<? extends NetCDFType> types) throws IOException {
+        if(entries.isEmpty()) {
+            for(NetCDFType type : types) {
+                entries.put(type, null);
+            }
+        }
         for (String netcdfProvider : netcdfProviders.split(";")) {
             for (String netcdfType : netcdfTypes.values()) {
                 String folderName = propertyFileService.getProperty("embryo." + netcdfType + "." + netcdfProvider + ".localDirectory", true);
