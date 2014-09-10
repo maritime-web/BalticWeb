@@ -290,6 +290,7 @@ public class DmiFtpReaderJob {
 
             List<FTPFile> typeDirs = Arrays.asList(ftp.listFiles(null, FTPFileFilters.DIRECTORIES));
             for (FTPFile typedir : typeDirs) {
+                logger.info("Reading from DMI dir " + typedir.getName());
                 Counts c = readFromDmiTypedir(typedir, ftp, subdirectoriesAtServer);
                 counts.addCounts(c);
             }
