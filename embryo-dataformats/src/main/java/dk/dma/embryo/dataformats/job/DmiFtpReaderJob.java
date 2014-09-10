@@ -215,7 +215,7 @@ public class DmiFtpReaderJob {
         logger.info("Reading files in: {}/{}", ftp.printWorkingDirectory(), typedir.getName());
 
         // Directories and single files should be handled differently.
-        if (dirtypes != null) {
+        if (dirType != null) {
             if (dirType.equals(Dirtype.DIR.type)) {
                 List<FTPFile> allDirs = Arrays.asList(ftp.listFiles(typedir.getName(), FTPFileFilters.DIRECTORIES));
                 logger.debug("{}/{} contains files: {}", ftp.printWorkingDirectory(), typedir.getName(), allDirs);
