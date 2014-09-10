@@ -267,6 +267,7 @@ public class DmiFtpReaderJob {
                         counts.transferCount++;
                     }
                 }
+                ftp.changeToParentDirectory();
             }
         } else {
             logger.info(typedir.getName() + " not found in config file, ignoring directory.");
