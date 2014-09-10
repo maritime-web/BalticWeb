@@ -62,7 +62,6 @@ public class NetCDFServiceImpl implements NetCDFService {
                 System.out.println("FOLDERNAME: " + folderName);
                 File folder = new File(folderName);
                 if (folder.exists()) {
-                    NetCDFParser parser = new NetCDFParser();
                     File[] files = folder.listFiles(new FileFilter() {
                         @Override
                         public boolean accept(File pathname) {
@@ -70,6 +69,7 @@ public class NetCDFServiceImpl implements NetCDFService {
                         }
                     });
                     for (File file : files) {
+                        NetCDFParser parser = new NetCDFParser();
                         Map<NetCDFType, NetCDFResult> result = parser.parse(file.getAbsolutePath(), types);
                         for(NetCDFType type : result.keySet()) {
                             Map<String, NetCDFResult> typeMap = entries.get(type);

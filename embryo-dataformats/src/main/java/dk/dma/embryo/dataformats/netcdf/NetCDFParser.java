@@ -45,16 +45,13 @@ public class NetCDFParser {
     private List<Double> lonList;
     private List<Date> timeList;
 
-    public static final String FILE_NAME = "wam.grib.2014042900.NATLANT.nc";
     private Map<String, SmallEntry> entries = new HashMap<>();
     private Map<String, NetCDFVar> basicVars = new HashMap<>();
 
     public NetCDFParser() {
-
         NetCDFVar.addToMap(basicVars, LAT, "Latitude");
         NetCDFVar.addToMap(basicVars, LON, "Longitude");
         NetCDFVar.addToMap(basicVars, TIME, "Time");
-
     }
 
     /**
@@ -97,25 +94,27 @@ public class NetCDFParser {
                 }
             }
 
-            // Extract contents from lat and lon simple vars.
-            Array lats = basicVars.get(LAT).getVariable().read();
-            latList = new ArrayList<>();
-            for (int i = 0; i < lats.getSize(); i++) {
-                latList.add(lats.getDouble(i));
-            }
+            if (latList == null && lonList == null && timeList == null) {
+                // Extract contents from lat and lon simple vars.
+                Array lats = basicVars.get(LAT).getVariable().read();
+                latList = new ArrayList<>();
+                for (int i = 0; i < lats.getSize(); i++) {
+                    latList.add(lats.getDouble(i));
+                }
 
-            Array lons = basicVars.get(LON).getVariable().read();
-            lonList = new ArrayList<>();
-            for (int i = 0; i < lons.getSize(); i++) {
-                lonList.add(lons.getDouble(i));
-            }
+                Array lons = basicVars.get(LON).getVariable().read();
+                lonList = new ArrayList<>();
+                for (int i = 0; i < lons.getSize(); i++) {
+                    lonList.add(lons.getDouble(i));
+                }
 
-            // Extract contents from the time simple var.
-            Array times = basicVars.get(TIME).getVariable().read();
-            timeList = new ArrayList<>();
-            for (int i = 0; i < times.getSize(); i++) {
-                Date date = getDateTime(times.getDouble(i));
-                timeList.add(date);
+                // Extract contents from the time simple var.
+                Array times = basicVars.get(TIME).getVariable().read();
+                timeList = new ArrayList<>();
+                for (int i = 0; i < times.getSize(); i++) {
+                    Date date = getDateTime(times.getDouble(i));
+                    timeList.add(date);
+                }
             }
 
             // Retrieve data from the complex vars.
@@ -184,9 +183,10 @@ public class NetCDFParser {
             }
             return new DateTime(year, month, day, hours, 0, DateTimeZone.UTC).toDate();
         } else {
-            //DateTime dateTime = new DateTime(2014, 7, 31, 0, 0, DateTimeZone.UTC).plusHours((int) input);
-            //return dateTime.toDate();
-            return new Date((long)input * 1000);
+            // DateTime dateTime = new DateTime(2014, 7, 31, 0, 0,
+            // DateTimeZone.UTC).plusHours((int) input);
+            // return dateTime.toDate();
+            return new Date((long) input * 1000);
         }
     }
 
@@ -231,7 +231,7 @@ public class NetCDFParser {
                     // We are not interested in default/empty values, so these
                     // are excluded.
                     String key = j + "_" + k + "_" + i;
-                    if (val > MIN_VAL && val != 0 && isHalfCoordinate(latList.get(j)) && isHalfCoordinate(lonList.get(k))) {
+                    if (val > MIN_VAL && val != 0 && isWholeCoordinate(latList.get(j)) && isWholeCoordinate(lonList.get(k))) {
                         // The time dimension from the range needs to correspond
                         // to the range we're using, so we're converting the i
                         // variable back to the "original" index.
@@ -251,11 +251,11 @@ public class NetCDFParser {
 
     }
 
-    @SuppressWarnings("unused")
     private boolean isWholeCoordinate(double coord) {
         return coord == Math.floor(coord);
     }
 
+    @SuppressWarnings("unused")
     private boolean isHalfCoordinate(double coord) {
         return ((int) (coord * 10.0)) % 5 == 0;
     }

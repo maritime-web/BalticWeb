@@ -107,7 +107,7 @@ function PrognosesLayer() {
     };
 
     this.getIceConcentrationLevel = function(obs) {
-        if (obs < 0.0001) {
+        /*if (obs < 0.0001) {
             return '#00DE00';
         } else if (obs < 0.001) {
             return '#FFFF00';
@@ -115,6 +115,19 @@ function PrognosesLayer() {
             return '#FA4242';
         } else {
             return '#E8B332';
+        }*/
+        if(obs < 0.1) {
+            return '#96c7ff';
+        } else if (obs < 0.3) {
+            return'#8effa0';
+        } else if (obs < 0.6) {
+            return '#ffff00';
+        } else if (obs < 0.8) {
+            return '#ff7c06';
+        } else if (obs < 1) {
+            return '#ff0000';
+        } else {
+            return '#979797';
         }
     };
 
