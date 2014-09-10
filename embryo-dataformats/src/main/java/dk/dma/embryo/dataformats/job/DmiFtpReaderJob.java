@@ -215,56 +215,61 @@ public class DmiFtpReaderJob {
         logger.info("Reading files in: {}/{}", ftp.printWorkingDirectory(), typedir.getName());
 
         // Directories and single files should be handled differently.
-        if (dirType.equals(Dirtype.DIR.type)) {
-            List<FTPFile> allDirs = Arrays.asList(ftp.listFiles(typedir.getName(), FTPFileFilters.DIRECTORIES));
-            logger.debug("{}/{} contains files: {}", ftp.printWorkingDirectory(), typedir.getName(), allDirs);
+        if (dirtypes != null) {
+            if (dirType.equals(Dirtype.DIR.type)) {
+                List<FTPFile> allDirs = Arrays.asList(ftp.listFiles(typedir.getName(), FTPFileFilters.DIRECTORIES));
+                logger.debug("{}/{} contains files: {}", ftp.printWorkingDirectory(), typedir.getName(), allDirs);
 
-            Collection<FTPFile> rejected = Collections2.filter(allDirs, not(validFormat(regions.keySet())));
-            Collection<FTPFile> accepted = Collections2.filter(allDirs, acceptedIceCharts(regions.keySet(), mapsYoungerThan, localDmiDir, iceChartExts));
+                Collection<FTPFile> rejected = Collections2.filter(allDirs, not(validFormat(regions.keySet())));
+                Collection<FTPFile> accepted = Collections2.filter(allDirs, acceptedIceCharts(regions.keySet(), mapsYoungerThan, localDmiDir, iceChartExts));
 
-            logger.debug("rejected: {}", allDirs);
-            logger.debug("accepted: {}", allDirs);
+                logger.debug("rejected: {}", allDirs);
+                logger.debug("accepted: {}", allDirs);
 
-            subdirectoriesAtServer.addAll(Collections2.transform(allDirs, new NameFunction()));
+                subdirectoriesAtServer.addAll(Collections2.transform(allDirs, new NameFunction()));
 
-            for (FTPFile file : rejected) {
-                sendEmail(file.getName(), chartType);
-            }
-
-            for (FTPFile subdirectory : accepted) {
-                Thread.sleep(10);
-
-                logger.info("Reading files from subdirectories: " + subdirectory.getName());
-
-                ftp.changeWorkingDirectory(typedir.getName() + "/" + subdirectory.getName());
-
-                List<String> filesInSubdirectory = new ArrayList<>();
-
-                for (FTPFile f : ftp.listFiles()) {
-                    filesInSubdirectory.add(f.getName());
+                for (FTPFile file : rejected) {
+                    sendEmail(file.getName(), chartType);
                 }
 
-                for (String fn : filesInSubdirectory) {
-                    for (String prefix : iceChartExts) {
-                        if (fn.endsWith(prefix)) {
-                            if (transferFile(ftp, fn, localDmiDir)) {
-                                counts.transferCount++;
+                for (FTPFile subdirectory : accepted) {
+                    Thread.sleep(10);
+
+                    logger.info("Reading files from subdirectories: " + subdirectory.getName());
+
+                    ftp.changeWorkingDirectory(typedir.getName() + "/" + subdirectory.getName());
+
+                    List<String> filesInSubdirectory = new ArrayList<>();
+
+                    for (FTPFile f : ftp.listFiles()) {
+                        filesInSubdirectory.add(f.getName());
+                    }
+
+                    for (String fn : filesInSubdirectory) {
+                        for (String prefix : iceChartExts) {
+                            if (fn.endsWith(prefix)) {
+                                if (transferFile(ftp, fn, localDmiDir)) {
+                                    counts.transferCount++;
+                                }
                             }
                         }
                     }
+                    ftp.changeToParentDirectory();
+                    ftp.changeToParentDirectory();
                 }
-                ftp.changeToParentDirectory();
-                ftp.changeToParentDirectory();
+            } else {
+                List<FTPFile> allFiles = Arrays.asList(ftp.listFiles(typedir.getName(), FTPFileFilters.NON_NULL));
+                ftp.changeWorkingDirectory(typedir.getName());
+                for (FTPFile f : allFiles) {
+                    // TODO: At this point, everything gets accepted. We might
+                    // want to do some file name validation.
+                    if (transferFile(ftp, f.getName(), localDmiDir)) {
+                        counts.transferCount++;
+                    }
+                }
             }
         } else {
-            List<FTPFile> allFiles = Arrays.asList(ftp.listFiles(typedir.getName(), FTPFileFilters.NON_NULL));
-            ftp.changeWorkingDirectory(typedir.getName());
-            for (FTPFile f : allFiles) {
-                //TODO: At this point, everything gets accepted. We might want to do some file name validation.
-                if(transferFile(ftp, f.getName(), localDmiDir)) {
-                    counts.transferCount++;
-                }
-            }
+            logger.info(typedir.getName() + " not found in config file, ignoring directory.");
         }
 
         return counts;
@@ -323,7 +328,8 @@ public class DmiFtpReaderJob {
                 @Override
                 public boolean accept(File dir, String name) {
                     String[] parts = name.split("\\.");
-                    // Note that only files in subdirectories (like ice charts and icebergs) are removed.
+                    // Note that only files in subdirectories (like ice charts
+                    // and icebergs) are removed.
                     return dirtype.equals(Dirtype.DIR.type) && !subdirectoriesAtServer.contains(parts[0]);
                 }
             });

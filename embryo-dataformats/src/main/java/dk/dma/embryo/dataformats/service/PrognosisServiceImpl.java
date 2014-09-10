@@ -105,6 +105,7 @@ public class PrognosisServiceImpl implements PrognosisService {
     @Override
     public void reParse() {
         try {
+            logger.info("Reparsing NetCDF files.");
             netCDFService.parseAllFiles(prognosisTypes);
         } catch (IOException e) {
             e.printStackTrace();
