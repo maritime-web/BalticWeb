@@ -1,6 +1,7 @@
 <div x-ng-controller="PrognosesController as pc">
 	<div id="prognosesControlPanel" accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
-		<div accordion-group heading="Wave prognoses">
+		<!--  Enable below once DMI starts delivering data. -->
+		<!-- div accordion-group heading="Wave forecasts">
 			<div x-ng-controller="WavePrognosesCtrl">
 				<h4>Wave prognoses</h4>
 				<table class="table table-condensed">
@@ -17,11 +18,11 @@
 					</tr>
 				</table>
 			</div>
-		</div>
+		</div -->
 
-		<div accordion-group heading="Ice prognoses">
+		<div accordion-group heading="Ice forecasts">
 			<div x-ng-controller="IcePrognosesCtrl">
-				<h4>Ice prognoses</h4>
+				<h4>Ice forecasts</h4>
 				<table class="table table-condensed">
 					<tr x-ng-repeat="prognosis in icePrognoses" x-ng-controller="IcePrognosisCtrl">
 						<td>
@@ -41,9 +42,9 @@
 			</div>
 		</div>
 
-		<div accordion-group heading="Current prognoses">
+		<div accordion-group heading="Current forecasts">
 			<div x-ng-controller="CurrentPrognosesCtrl">
-				<h4>Current prognoses</h4>
+				<h4>Current forecasts</h4>
 				<table class="table table-condensed">
 					<tr x-ng-repeat="prognosis in currentPrognoses" x-ng-controller="CurrentPrognosisCtrl">
 						<td>
@@ -62,7 +63,7 @@
 
 		<div accordion-group heading="Legends">
 			<div class="legends">
-				<h5>Wave</h5>
+				<!-- h5>Wave</h5>
 				<table class="table table-condensed">
 					<tr>
 						<td><span style="background-color:#00DE00; width: 30px; display: block;">&nbsp;</span></td>
@@ -80,7 +81,7 @@
 						<td><span style="background-color:#E8B332; width: 30px; display: block;">&nbsp;</span></td>
 						<td>&gt; 1.3</td>
 					</tr>
-				</table>
+				</table -->
 				<h5>Ice</h5>
 				<table class="table table-condensed">
 					<tr>
@@ -123,19 +124,19 @@
 				<table class="table table-condensed">
 					<tr>
 						<td><span style="background-color:#00DE00; width: 30px; display: block;">&nbsp;</span></td>
-						<td>&lt; 0.0001</td>
+						<td>&lt; 0.0001 m/s</td>
 					</tr>
 					<tr>
 						<td><span style="background-color:#FFFF00; width: 30px; display: block;">&nbsp;</span></td>
-						<td>0.0001 - 0.001</td>
+						<td>0.0001 - 0.001 m/s</td>
 					</tr>
 					<tr>
 						<td><span style="background-color:#FA4242; width: 30px; display: block;">&nbsp;</span></td>
-						<td>0.001 - 0.01</td>
+						<td>0.001 - 0.01 m/s</td>
 					</tr>
 					<tr>
 						<td><span style="background-color:#E8B332; width: 30px; display: block;">&nbsp;</span></td>
-						<td>&gt; 0.01</td>
+						<td>&gt; 0.01 m/s</td>
 					</tr>
 				</table>
 			</div>

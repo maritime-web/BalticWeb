@@ -5,18 +5,18 @@
         var service = {
             listWavePrognoses : function(success, error) {
                 var messageId = embryo.messagePanel.show({
-                    text : "Requesting wave prognoses..."
+                    text : "Requesting wave forecasts..."
                 });
                 $http.get(embryo.baseUrl + 'rest/prognoses/waves', {
                     timeout : embryo.defaultTimeout
                 }).success(function(prognoses) {
                     embryo.messagePanel.replace(messageId, {
-                        text : "Wave prognoses downloaded.",
+                        text : "Wave forecasts downloaded.",
                         type : "success"
                     });
                     success(prognoses);
                 }).error(function(data, status, headers, config) {
-                    var errorMsg = embryo.ErrorService.errorStatus(data, status, "requesting wave prognoses");
+                    var errorMsg = embryo.ErrorService.errorStatus(data, status, "requesting wave forecasts");
                     embryo.messagePanel.replace(messageId, {
                         text : errorMsg,
                         type : "error"
@@ -35,18 +35,18 @@
             },
             listIcePrognoses : function(success, error) {
                 var messageId = embryo.messagePanel.show({
-                    text : "Requesting ice prognoses..."
+                    text : "Requesting ice forecasts..."
                 });
                 $http.get(embryo.baseUrl + 'rest/prognoses/ice', {
                     timeout : embryo.defaultTimeout
                 }).success(function(prognoses) {
                     embryo.messagePanel.replace(messageId, {
-                        text : "Ice prognoses downloaded.",
+                        text : "Ice forecasts downloaded.",
                         type : "success"
                     });
                     success(prognoses);
                 }).error(function(data, status, headers, config) {
-                    var errorMsg = embryo.ErrorService.errorStatus(data, status, "requesting ice prognoses");
+                    var errorMsg = embryo.ErrorService.errorStatus(data, status, "requesting ice forecasts");
                     embryo.messagePanel.replace(messageId, {
                         text : errorMsg,
                         type : "error"
@@ -65,18 +65,18 @@
             },
             listCurrentPrognoses : function(success, error) {
                 var messageId = embryo.messagePanel.show({
-                    text : "Requesting current prognoses..."
+                    text : "Requesting current forecasts..."
                 });
                 $http.get(embryo.baseUrl + 'rest/prognoses/currents', {
                     timeout : embryo.defaultTimeout
                 }).success(function(prognoses) {
                     embryo.messagePanel.replace(messageId, {
-                        text : "Current prognoses downloaded.",
+                        text : "Current forecasts downloaded.",
                         type : "success"
                     });
                     success(prognoses);
                 }).error(function(data, status, headers, config) {
-                    var errorMsg = embryo.ErrorService.errorStatus(data, status, "requesting current prognoses");
+                    var errorMsg = embryo.ErrorService.errorStatus(data, status, "requesting current forecasts");
                     embryo.messagePanel.replace(messageId, {
                         text : errorMsg,
                         type : "error"

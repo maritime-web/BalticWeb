@@ -63,7 +63,9 @@ $(function() {
 
     module.controller('WavePrognosesCtrl', [ '$scope', 'PrognosesService', function($scope, PrognosesService) {
 
-        PrognosesService.listWavePrognoses(function(prognoses) {
+        // Enable below once DMI starts delivering data.
+        
+        /*PrognosesService.listWavePrognoses(function(prognoses) {
             $scope.errorMsg = null;
             $scope.wavePrognoses = [];
             for (var i = 0; i < prognoses.length; i++) {
@@ -74,7 +76,7 @@ $(function() {
             }
         }, function(error, status) {
             $scope.errorMsg = error;
-        });
+        });*/
     } ]);
     
     module.controller('CurrentPrognosisCtrl', [ '$scope', 'PrognosesService', function($scope, PrognosesService) {
