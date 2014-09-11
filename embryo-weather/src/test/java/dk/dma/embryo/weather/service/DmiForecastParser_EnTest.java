@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,7 @@ import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.weather.model.DistrictForecast;
 import dk.dma.embryo.weather.model.RegionForecast;
+import dk.dma.embryo.weather.model.Warnings;
 
 /**
  * @author Jesper Tejlgaard
@@ -42,7 +44,7 @@ public class DmiForecastParser_EnTest {
 
     @Inject
     DmiForecastParser_En parser;
-
+    
     @Test
     public void test() throws IOException {
 
@@ -131,6 +133,22 @@ public class DmiForecastParser_EnTest {
         Assert.assertNotNull(forecast.getTo());
         Assert.assertEquals(1407153600000L, forecast.getTo().getTime());
         Assert.assertEquals(14, forecast.getDistricts().size());
+    }
+    
+    @Test
+    public void testWeirdFormat() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/dmi/gronvar-2014-09-11.xml");
+        
+        DmiWarningParser warningParser = new DmiWarningParser(is);
+        Warnings warnings = new WarningTranslator().fromDanishToEnglish(warningParser.parse());
+        Map<String, String> gale = warnings.getGale();
+        Assert.assertEquals(6, gale.size());
+        String kangikajik = gale.get("Kangikajik");
+        Assert.assertNotNull(kangikajik);
+        Assert.assertEquals("South 15 m/s.", kangikajik);
+        String kulusuk = gale.get("Kulusuk");
+        Assert.assertNotNull(kulusuk);
+        Assert.assertEquals("Northernmost part  north east 13, southern part  south 18 m/s. Tonight  west south west 23 m/s.", kulusuk);
     }
 
 }
