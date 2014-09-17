@@ -15,8 +15,6 @@
 package dk.dma.embryo.weather.service;
 
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import dk.dma.embryo.weather.model.Warnings;
 

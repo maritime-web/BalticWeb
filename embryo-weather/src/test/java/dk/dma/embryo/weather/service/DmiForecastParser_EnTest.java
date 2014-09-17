@@ -150,5 +150,18 @@ public class DmiForecastParser_EnTest {
         Assert.assertNotNull(kulusuk);
         Assert.assertEquals("Northernmost part  north east 13, southern part  south 18 m/s. Tonight  west south west 23 m/s.", kulusuk);
     }
+    
+    @Test
+    public void testGrudseng() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/dmi/grudsengxml-14-09-2014--00-23-21.xml");
+        RegionForecast forecast = parser.parse(is);
+    }
+    
+    @Test
+    public void testGronvar() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/dmi/gronvarxml-14-09-2014--00-19-54.xml");
+        DmiWarningParser warningParser = new DmiWarningParser(is);
+        Warnings warnings = new WarningTranslator().fromDanishToEnglish(warningParser.parse());
+    }
 
 }
