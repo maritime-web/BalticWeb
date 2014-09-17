@@ -16,8 +16,6 @@ package dk.dma.embryo.dataformats.netcdf;
 
 import java.util.Map;
 
-import ucar.nc2.Variable;
-
 /**
  * This class maps a NetCDF variable to an ArcticWeb concept.
  * 
@@ -30,7 +28,6 @@ import ucar.nc2.Variable;
  */
 public class NetCDFVar {
     private String varname, description;
-    private Variable variable;
 
     public NetCDFVar(String varname, String description) {
         this.varname = varname;
@@ -43,14 +40,6 @@ public class NetCDFVar {
 
     public String getDescription() {
         return description;
-    }
-
-    public Variable getVariable() {
-        return variable;
-    }
-
-    public void setVariable(Variable variable) {
-        this.variable = variable;
     }
 
     /**

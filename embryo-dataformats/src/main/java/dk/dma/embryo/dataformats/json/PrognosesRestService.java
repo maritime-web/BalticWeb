@@ -26,7 +26,6 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.dataformats.netcdf.NetCDFResult;
 import dk.dma.embryo.dataformats.service.PrognosisService;
 
 @Path("/prognoses")
@@ -52,7 +51,7 @@ public class PrognosesRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public NetCDFResult getIcePrognosis(@PathParam(value = "id") String id) {
+    public String getIcePrognosis(@PathParam(value = "id") String id) {
         logger.debug("getIcePrognosis()");
 
         return prognosisService.getIcePrognosis(id);
@@ -73,7 +72,7 @@ public class PrognosesRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public NetCDFResult getWavePrognosis(@PathParam(value = "id") String id) {
+    public String getWavePrognosis(@PathParam(value = "id") String id) {
         logger.debug("getWavePrognosis()");
 
         return prognosisService.getWavePrognosis(id);
@@ -94,7 +93,7 @@ public class PrognosesRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public NetCDFResult getCurrentPrognosis(@PathParam(value = "id") String id) {
+    public String getCurrentPrognosis(@PathParam(value = "id") String id) {
         logger.debug("getWavePrognosis()");
 
         return prognosisService.getCurrentPrognosis(id);

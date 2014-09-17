@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import dk.dma.embryo.dataformats.model.PrognosisType;
 import dk.dma.embryo.dataformats.model.PrognosisType.Type;
-import dk.dma.embryo.dataformats.netcdf.NetCDFResult;
 import dk.dma.embryo.dataformats.netcdf.NetCDFVar;
 
 @Singleton
@@ -63,12 +62,12 @@ public class PrognosisServiceImpl implements PrognosisService {
     }
 
     public List<String> getPrognosisList(Type type) {
-        Map<String, NetCDFResult> entries = netCDFService.getEntries(getPrognosisType(type));
+        Map<String, String> entries = netCDFService.getEntries(getPrognosisType(type));
         return new ArrayList<String>(entries.keySet());
     }
 
     @Override
-    public NetCDFResult getPrognosis(String id, Type type) {
+    public String getPrognosis(String id, Type type) {
         return netCDFService.getEntries(getPrognosisType(type)).get(id);
     }
 
@@ -78,7 +77,7 @@ public class PrognosisServiceImpl implements PrognosisService {
     }
 
     @Override
-    public NetCDFResult getIcePrognosis(String id) {
+    public String getIcePrognosis(String id) {
         return getPrognosis(id, Type.ICE_PROGNOSIS);
     }
 
@@ -88,7 +87,7 @@ public class PrognosisServiceImpl implements PrognosisService {
     }
 
     @Override
-    public NetCDFResult getWavePrognosis(String id) {
+    public String getWavePrognosis(String id) {
         return getPrognosis(id, Type.WAVE_PROGNOSIS);
     }
 
@@ -98,7 +97,7 @@ public class PrognosisServiceImpl implements PrognosisService {
     }
 
     @Override
-    public NetCDFResult getCurrentPrognosis(String id) {
+    public String getCurrentPrognosis(String id) {
         return getPrognosis(id, Type.CURRENT_PROGNOSIS);
     }
 
@@ -154,7 +153,8 @@ public class PrognosisServiceImpl implements PrognosisService {
         NetCDFVar.addToMap(waveVars, "Hs", "Wave height");
         NetCDFVar.addToMap(waveVars, "TMN", "Mean wave period");
         NetCDFVar.addToMap(waveVars, "Tz", "Zero upcrossing period");
-        NetCDFVar.addToMap(waveVars, "DEPTH", "Water depth");
+        // Water depth does not account for time. We do not parse this at the moment.
+        //NetCDFVar.addToMap(waveVars, "DEPTH", "Water depth");
 
         types.add(wavePrognosisType);
 

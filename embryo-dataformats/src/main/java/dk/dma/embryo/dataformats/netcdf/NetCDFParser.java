@@ -44,15 +44,11 @@ public class NetCDFParser {
     private List<Double> latList;
     private List<Double> lonList;
     private List<Date> timeList;
+    
+    private Map<String, Variable> varMap = new HashMap<>();
 
     private Map<String, SmallEntry> entries = new HashMap<>();
-    private Map<String, NetCDFVar> basicVars = new HashMap<>();
 
-    public NetCDFParser() {
-        NetCDFVar.addToMap(basicVars, LAT, "Latitude");
-        NetCDFVar.addToMap(basicVars, LON, "Longitude");
-        NetCDFVar.addToMap(basicVars, TIME, "Time");
-    }
 
     /**
      * Convenience method for parsing with a default restriction set.
@@ -87,29 +83,25 @@ public class NetCDFParser {
             Map<String, NetCDFVar> vars = type.getVars();
             for (Variable variable : variables) {
                 String varName = variable.getName();
-                if (basicVars.containsKey(varName)) {
-                    basicVars.get(varName).setVariable(variable);
-                } else if (vars.containsKey(varName)) {
-                    vars.get(varName).setVariable(variable);
-                }
+                varMap.put(varName, variable);
             }
 
             if (latList == null && lonList == null && timeList == null) {
                 // Extract contents from lat and lon simple vars.
-                Array lats = basicVars.get(LAT).getVariable().read();
+                Array lats = varMap.get(LAT).read();
                 latList = new ArrayList<>();
                 for (int i = 0; i < lats.getSize(); i++) {
                     latList.add(lats.getDouble(i));
                 }
 
-                Array lons = basicVars.get(LON).getVariable().read();
+                Array lons = varMap.get(LON).read();
                 lonList = new ArrayList<>();
                 for (int i = 0; i < lons.getSize(); i++) {
                     lonList.add(lons.getDouble(i));
                 }
 
                 // Extract contents from the time simple var.
-                Array times = basicVars.get(TIME).getVariable().read();
+                Array times = varMap.get(TIME).read();
                 timeList = new ArrayList<>();
                 for (int i = 0; i < times.getSize(); i++) {
                     Date date = getDateTime(times.getDouble(i));
@@ -124,9 +116,9 @@ public class NetCDFParser {
             try {
                 int count = 0;
                 for (NetCDFVar cdfVar : vars.values()) {
-                    if (cdfVar.getVariable() != null) {
+                    if (varMap.containsKey(cdfVar.getVarname())) {
                         outputVars.put(cdfVar.getVarname(), count);
-                        parseData(cdfVar.getVariable(), count++, restriction);
+                        parseData(varMap.get(cdfVar.getVarname()), count++, restriction);
                     }
                 }
             } catch (InvalidRangeException e) {

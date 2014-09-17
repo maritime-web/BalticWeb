@@ -18,7 +18,6 @@ import java.util.List;
 
 import dk.dma.embryo.dataformats.model.PrognosisType;
 import dk.dma.embryo.dataformats.model.PrognosisType.Type;
-import dk.dma.embryo.dataformats.netcdf.NetCDFResult;
 
 public interface PrognosisService {
     List<PrognosisType> getPrognosisTypes();
@@ -27,20 +26,20 @@ public interface PrognosisService {
 
     void reParse();
 
-    NetCDFResult getPrognosis(String id, Type prognosisType);
+    String getPrognosis(String id, Type prognosisType);
 
     List<String> getPrognosisList(Type type);
 
     List<String> listAvailableIcePrognoses();
 
-    NetCDFResult getIcePrognosis(String id);
+    String getIcePrognosis(String id);
 
     List<String> listAvailableWavePrognoses();
 
-    NetCDFResult getWavePrognosis(String id);
+    String getWavePrognosis(String id);
     
     List<String> listAvailableCurrentPrognoses();
     
-    NetCDFResult getCurrentPrognosis(String id);
+    String getCurrentPrognosis(String id);
 
 }
