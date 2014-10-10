@@ -1,6 +1,6 @@
 $(function() {
 
-    var module = angular.module('embryo.ice.control', [ 'ui.bootstrap.accordion', 'ui.slider', 'embryo.control',
+    var module = angular.module('embryo.ice.control', [ 'ui.bootstrap.accordion', 'embryo.control',
             'embryo.ice.service', 'embryo.shape' ]);
 
     var iceLayer = new IceLayer();

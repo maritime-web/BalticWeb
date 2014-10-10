@@ -21,9 +21,9 @@ import java.util.Map;
 public class NetCDFResult {
     private Map<String, Integer> variables;
     private Map<String, List<? extends Serializable>> metadata;
-    private Map<String, SmallEntry> data;
+    private Map<Integer, NetCDFMoment> data;
     
-    public NetCDFResult(Map<String, Integer> variables, Map<String, List<? extends Serializable>> metadata, Map<String, SmallEntry> data) {
+    public NetCDFResult(Map<String, Integer> variables, Map<String, List<? extends Serializable>> metadata, Map<Integer, NetCDFMoment> data) {
         this.variables = variables;
         this.metadata = metadata;
         this.data = data;
@@ -37,7 +37,7 @@ public class NetCDFResult {
         return metadata;
     }
     
-    public Map<String, SmallEntry> getData() {
+    public Map<Integer, NetCDFMoment> getData() {
         return data;
     }
     

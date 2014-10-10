@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dk.dma.embryo.dataformats.netcdf;
 
 import java.util.HashMap;
@@ -46,4 +45,8 @@ public abstract class NetCDFType {
         return vars;
     }
 
+    @Override
+    public String toString() {
+        return name + " (" + code + "), vars: " + vars;
+    }
 }

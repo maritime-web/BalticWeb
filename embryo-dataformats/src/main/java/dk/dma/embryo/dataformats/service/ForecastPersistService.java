@@ -12,19 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dk.dma.embryo.dataformats.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import dk.dma.embryo.dataformats.model.Forecast;
 
-import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
-import dk.dma.embryo.dataformats.netcdf.NetCDFType;
-
-public interface NetCDFService {
-    Map<NetCDFType, String> parseFile(File file, List<? extends NetCDFType> types, NetCDFRestriction restriction) throws IOException;
-
-    Map<NetCDFType, String> parseFile(File file, NetCDFType type, NetCDFRestriction restriction) throws IOException;
+public interface ForecastPersistService {
+    void persist(Forecast forecast);
 }

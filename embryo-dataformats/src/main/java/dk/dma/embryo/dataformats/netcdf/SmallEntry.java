@@ -60,4 +60,9 @@ public class SmallEntry implements Serializable {
     public Map<Integer, Float> getObs() {
         return obs;
     }
+    
+    @Override
+    public String toString() {
+        return "Lat: " + lat + ", lon: " + lon + ", time: " + time + ", obs: " + obs;
+    }
 }

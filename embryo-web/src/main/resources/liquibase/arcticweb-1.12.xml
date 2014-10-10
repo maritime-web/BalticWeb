@@ -1,0 +1,59 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="1411717611000-1" author="jacob">
+		<validCheckSum>7:c23e0c88009e2b57e795f7615e3aa102</validCheckSum>
+		<createTable tableName="Forecast">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="ftype" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="provider" type="VARCHAR(10)" />
+			<column name="size" type="INT(10)" />
+			<column name="area" type="VARCHAR(100)" />
+			<column name="timestamp" type="BIGINT(19)" />
+			<column name="data_id" type="BIGINT(19)" />
+		</createTable>
+		<modifySql dbms="mysql">
+			<append value=" engine innodb" />
+		</modifySql>
+	</changeSet>
+	<changeSet id="1411717611000-2" author="jacob">
+	    <validCheckSum>7:2f95e8f54c252896267e9b6375a253fa</validCheckSum>
+		<addPrimaryKey tableName="Forecast" columnNames="id" />
+		<addUniqueConstraint tableName="Forecast" constraintName="forecast_provider_area_timestamp_ftype"
+			columnNames="provider, area, timestamp, ftype" />
+		<createIndex tableName="Forecast" indexName="forecast_name_ftype">
+			<column name="name" />
+			<column name="ftype" />
+		</createIndex>
+		<createIndex tableName="Forecast" indexName="forecast_ftype">
+			<column name="ftype" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="1411717611000-3" author="jacob">
+	    <validCheckSum>7:a0e12629e2bb8aef57719881f9357a79</validCheckSum>
+		<createTable tableName="ForecastData">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="json" type="MEDIUMTEXT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+			<append value=" engine innodb" />
+		</modifySql>
+	</changeSet>
+	<changeSet id="1411717611000-4" author="jacob">
+	    <validCheckSum>7:f84b99e09e6150db4c09aeee2635ac23</validCheckSum>
+		<addPrimaryKey tableName="ForecastData" columnNames="id" />
+	</changeSet>
+</databaseChangeLog>

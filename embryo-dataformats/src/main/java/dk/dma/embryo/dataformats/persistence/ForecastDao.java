@@ -12,19 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package dk.dma.embryo.dataformats.persistence;
 
-package dk.dma.embryo.dataformats.service;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
-import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
-import dk.dma.embryo.dataformats.netcdf.NetCDFType;
+import dk.dma.embryo.common.persistence.Dao;
+import dk.dma.embryo.dataformats.model.Forecast;
+import dk.dma.embryo.dataformats.model.Forecast.Provider;
+import dk.dma.embryo.dataformats.model.ForecastType.Type;
 
-public interface NetCDFService {
-    Map<NetCDFType, String> parseFile(File file, List<? extends NetCDFType> types, NetCDFRestriction restriction) throws IOException;
+public interface ForecastDao extends Dao {
+    Forecast findByNameAndType(String name, Type type);
+    
+    Forecast findById(long id);
 
-    Map<NetCDFType, String> parseFile(File file, NetCDFType type, NetCDFRestriction restriction) throws IOException;
+    List<Forecast> list(Type type);
+
+    void flush();
+
+    boolean exists(String name);
+
+    Forecast findByProviderAreaTimestampAndType(Provider provider, String area, long timestamp, Type type);
 }

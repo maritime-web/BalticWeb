@@ -16,11 +16,11 @@ package dk.dma.embryo.dataformats.model;
 
 import dk.dma.embryo.dataformats.netcdf.NetCDFType;
 
-public class PrognosisType extends NetCDFType {
+public class ForecastType extends NetCDFType {
 
     private Type type;
     
-    public PrognosisType(String name, String code, Type type) {
+    public ForecastType(String name, String code, Type type) {
         setName(name);
         setCode(code);
         this.type = type;
@@ -32,12 +32,12 @@ public class PrognosisType extends NetCDFType {
     
     
     public enum Type {
-        ICE_PROGNOSIS, CURRENT_PROGNOSIS, WAVE_PROGNOSIS, WIND_PROGNOSIS 
+        ICE_FORECAST, CURRENT_FORECAST, WAVE_FORECAST, WIND_FORECAST
     }
     
     @Override
     public String toString() {
-        return "Prognosis type: " + getName() + " (" + type + ")";
+        return "Forecast type: " + getName() + " (" + type + ")";
     }
     
     @Override
@@ -51,7 +51,7 @@ public class PrognosisType extends NetCDFType {
         if(obj.getClass() != getClass()) {
             return false;
         }
-        return ((PrognosisType)obj).getType() == getType();
+        return ((ForecastType)obj).getType() == getType();
     }
     
     @Override

@@ -52,4 +52,9 @@ public class NetCDFVar {
     public static void addToMap(Map<String, NetCDFVar> map, String varname, String description) {
         map.put(varname, new NetCDFVar(varname, description));
     }
+    
+    @Override
+    public String toString() {
+        return varname + " (" + description + ")";
+    }
 }

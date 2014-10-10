@@ -275,3 +275,7 @@ body {
 .e-alert-danger{
 	color : #a94442
 }
+
+input[type="range"].e-forecast {
+	width: 120px;
+}

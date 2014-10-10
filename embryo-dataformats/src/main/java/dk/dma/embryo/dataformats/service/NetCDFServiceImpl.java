@@ -16,101 +16,53 @@
 package dk.dma.embryo.dataformats.service;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
+import javax.ejb.Stateless;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.dataformats.netcdf.NetCDFParser;
+import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
 import dk.dma.embryo.dataformats.netcdf.NetCDFResult;
 import dk.dma.embryo.dataformats.netcdf.NetCDFType;
 
-@Singleton
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@Stateless
 public class NetCDFServiceImpl implements NetCDFService {
 
     private final Logger logger = LoggerFactory.getLogger(NetCDFServiceImpl.class);
+
+    @Override
+    public Map<NetCDFType, String> parseFile(File file, List<? extends NetCDFType> types, NetCDFRestriction restriction) throws IOException {
+        logger.info("Parsing NetCDF file " + file.getAbsolutePath());
+        NetCDFParser parser = new NetCDFParser();
+        Map<NetCDFType, NetCDFResult> parseResult = parser.parse(file.getAbsolutePath(), types, restriction);
+        Map<NetCDFType, String> endResult = new HashMap<NetCDFType, String>();
+        for (NetCDFType type : parseResult.keySet()) {
+            if (parseResult.get(type) != null) {
+                StringWriter sw = new StringWriter();
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.writeValue(sw, parseResult.get(type));
+                endResult.put(type, sw.toString());
+            } else {
+                endResult.put(type, null);
+            }
+        }
+        return endResult;
+    }
     
-    @Inject
-    @Property(value = "embryo.netcdf.types")
-    private Map<String, String> netcdfTypes;
-
-    @Inject
-    @Property(value = "embryo.netcdf.providers")
-    private String netcdfProviders;
-
-    @Inject
-    private PropertyFileService propertyFileService;
-
-    private Map<NetCDFType, Map<String, String>> entries = new HashMap<>();
-
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    @Lock(LockType.WRITE)
     @Override
-    public void parseAllFiles(List<? extends NetCDFType> types) throws IOException {
-        if (entries.isEmpty()) {
-            for (NetCDFType type : types) {
-                entries.put(type, new HashMap<String, String>());
-            }
-        }
-        for (String netcdfProvider : netcdfProviders.split(";")) {
-            for (String netcdfType : netcdfTypes.values()) {
-                String folderName = propertyFileService.getProperty("embryo." + netcdfType + "." + netcdfProvider + ".localDirectory", true);
-                System.out.println("FOLDERNAME: " + folderName);
-                File folder = new File(folderName);
-                if (folder.exists()) {
-                    File[] files = folder.listFiles(new FileFilter() {
-                        @Override
-                        public boolean accept(File pathname) {
-                            return pathname.getName().endsWith(".nc");
-                        }
-                    });
-                    if (files != null) {
-                        for (File file : files) {
-                            logger.info("Parsing NetCDF file " + file.getAbsolutePath());
-                            NetCDFParser parser = new NetCDFParser();
-                            Map<NetCDFType, NetCDFResult> result = parser.parse(file.getAbsolutePath(), types);
-                            for (NetCDFType type : result.keySet()) {
-                                Map<String, String> typeMap = entries.get(type);
-                                if (typeMap == null) {
-                                    typeMap = new HashMap<String, String>();
-                                    entries.put(type, typeMap);
-                                }
-                                String name = file.getName().substring(0, file.getName().length() - 3) + "_" + type.getCode();
-                                StringWriter sw = new StringWriter();
-                                objectMapper.writeValue(sw, result.get(type));
-                                typeMap.put(name, sw.toString());
-                            }
-                        }
-                    } else {
-                        logger.info("No files found in folder " +  folder.getPath());
-                    }
-                } else {
-                    throw new IOException("Folder " + folderName + " does not exist.");
-                }
-            }
-        }
+    public Map<NetCDFType, String> parseFile(File file, NetCDFType type, NetCDFRestriction restriction) throws IOException {
+        List<NetCDFType> wrapperList = new ArrayList<>();
+        wrapperList.add(type);
+        return parseFile(file, wrapperList, restriction);
     }
 
-    @Lock(LockType.READ)
-    @Override
-    public Map<String, String> getEntries(NetCDFType type) {
-        return entries.get(type);
-    }
 }

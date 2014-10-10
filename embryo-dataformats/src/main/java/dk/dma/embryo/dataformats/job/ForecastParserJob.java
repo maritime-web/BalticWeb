@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.AccessTimeout;
 import javax.ejb.ScheduleExpression;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -28,14 +29,15 @@ import javax.ejb.TimerService;
 import javax.inject.Inject;
 
 import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.dataformats.service.PrognosisService;
+import dk.dma.embryo.dataformats.service.ForecastService;
 
 @Singleton
+@AccessTimeout(value = 8000)
 @Startup
-public class PrognosisParserJob {
+public class ForecastParserJob {
 
     @Inject
-    private PrognosisService prognosisService;
+    private ForecastService forecastService;
 
     @Inject
     @Property("embryo.netcdf.cron")
@@ -51,6 +53,6 @@ public class PrognosisParserJob {
 
     @Timeout
     public void parseFiles() throws IOException {
-        prognosisService.reParse();
+        forecastService.reParse();
     }
 }

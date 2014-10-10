@@ -36,7 +36,7 @@ import ucar.nc2.Variable;
 import dk.dma.embryo.common.util.CollectionUtils;
 
 public class NetCDFParser {
-    public static final double MIN_VAL = -9.0E32;
+    public static final double MIN_VAL = -9998;
     public static final String TIME = "time";
     public static final String LON = "lon";
     public static final String LAT = "lat";
@@ -44,11 +44,8 @@ public class NetCDFParser {
     private List<Double> latList;
     private List<Double> lonList;
     private List<Date> timeList;
-    
+
     private Map<String, Variable> varMap = new HashMap<>();
-
-    private Map<String, SmallEntry> entries = new HashMap<>();
-
 
     /**
      * Convenience method for parsing with a default restriction set.
@@ -59,7 +56,7 @@ public class NetCDFParser {
      * @throws IOException
      */
     public Map<NetCDFType, NetCDFResult> parse(String filename, List<? extends NetCDFType> types) throws IOException {
-        return parse(filename, types, createDefaultRestriction());
+        return parse(filename, types, new NetCDFRestriction());
     }
 
     /**
@@ -82,7 +79,7 @@ public class NetCDFParser {
         for (NetCDFType type : types) {
             Map<String, NetCDFVar> vars = type.getVars();
             for (Variable variable : variables) {
-                String varName = variable.getName();
+                String varName = variable.getShortName();
                 varMap.put(varName, variable);
             }
 
@@ -113,29 +110,38 @@ public class NetCDFParser {
 
             Map<String, Integer> outputVars = new HashMap<>();
 
+            Map<Integer, NetCDFMoment> moments = new HashMap<>();
+            boolean empty = true;
             try {
                 int count = 0;
                 for (NetCDFVar cdfVar : vars.values()) {
                     if (varMap.containsKey(cdfVar.getVarname())) {
                         outputVars.put(cdfVar.getVarname(), count);
-                        parseData(varMap.get(cdfVar.getVarname()), count++, restriction);
+                        boolean hasContent = parseData(varMap.get(cdfVar.getVarname()), count++, restriction, moments);
+                        if (empty && hasContent) {
+                            empty = false;
+                        }
                     }
                 }
             } catch (InvalidRangeException e) {
                 throw new IOException("Illegal range when processing NetCDF file " + filename, e);
             }
 
-            // Change variables to their descriptions
-            HashMap<Integer, String> reversedVars = CollectionUtils.reverse(outputVars);
-            outputVars = new HashMap<>();
-            for (int i : reversedVars.keySet()) {
-                String value = reversedVars.get(i);
-                NetCDFVar netCDFVar = type.getVars().get(value);
-                outputVars.put(netCDFVar.getDescription(), i);
+            if (empty) {
+                results.put(type, null);
+            } else {
+                // Change variables to their descriptions
+                HashMap<Integer, String> reversedVars = CollectionUtils.reverse(outputVars);
+                outputVars = new HashMap<>();
+                for (int i : reversedVars.keySet()) {
+                    String value = reversedVars.get(i);
+                    NetCDFVar netCDFVar = type.getVars().get(value);
+                    outputVars.put(netCDFVar.getDescription(), i);
+                }
+                results.put(type, new NetCDFResult(outputVars, getSimpleVars(), moments));
             }
-
-            results.put(type, new NetCDFResult(outputVars, getSimpleVars(), entries));
         }
+        netcdfFile.close();
         return results;
     }
 
@@ -175,23 +181,8 @@ public class NetCDFParser {
             }
             return new DateTime(year, month, day, hours, 0, DateTimeZone.UTC).toDate();
         } else {
-            // DateTime dateTime = new DateTime(2014, 7, 31, 0, 0,
-            // DateTimeZone.UTC).plusHours((int) input);
-            // return dateTime.toDate();
-            return new Date((long) input * 1000);
+            return new DateTime((long) input * 1000, DateTimeZone.UTC).toDate();
         }
-    }
-
-    /**
-     * If a restriction has not been set, this method will create a default one.
-     * 
-     * @return
-     */
-    private NetCDFRestriction createDefaultRestriction() {
-        NetCDFRestriction restriction = new NetCDFRestriction();
-        // restriction.setTimeStart(12);
-        // restriction.setTimeInterval(24);
-        return restriction;
     }
 
     /**
@@ -202,49 +193,79 @@ public class NetCDFParser {
      * @throws InvalidRangeException
      * @throws IOException
      */
-    private void parseData(Variable v, int order, NetCDFRestriction restriction) throws InvalidRangeException, IOException {
-
-        // TODO: This method should be updated to optionally shrink the lat and
-        // lon ranges in order to support fetching subsets (i.e. restricting the
-        // geographic areas used).
-
+    private boolean parseData(Variable v, int order, NetCDFRestriction restriction, Map<Integer, NetCDFMoment> moments) throws InvalidRangeException,
+            IOException {
         List<Range> ranges = new ArrayList<>();
+        int minLat, minLon, maxLat, maxLon;
+        boolean hasContent = false;
 
+        if (restriction.isSubarea()) {
+            minLat = findClosestCoordIndex(restriction.getMinLat(), latList, true);
+            maxLat = findClosestCoordIndex(restriction.getMaxLat(), latList, false);
+            minLon = findClosestCoordIndex(restriction.getMinLon(), lonList, true);
+            maxLon = findClosestCoordIndex(restriction.getMaxLon(), lonList, false);
+        } else {
+            minLat = 0;
+            maxLat = latList.size() - 1;
+            minLon = 0;
+            maxLon = lonList.size() - 1;
+        }
         ranges.add(new Range(restriction.getTimeStart(), timeList.size() - 1, restriction.getTimeInterval()));
-        ranges.add(new Range(restriction.getMinLat(), restriction.getMaxLat() != 0 ? restriction.getMaxLat() : latList.size() - 1));
-        ranges.add(new Range(restriction.getMinLat(), restriction.getMaxLon() != 0 ? restriction.getMaxLon() : lonList.size() - 1));
+        ranges.add(new Range(minLat, maxLat));
+        ranges.add(new Range(minLon, maxLon));
+
         Array data = v.read(ranges);
         int[] shape = data.getShape();
         Index index = data.getIndex();
+        
         for (int i = 0; i < shape[0]; i++) {
+
+            NetCDFMoment moment = moments.get(i);
+            if (moment == null) {
+                moment = new NetCDFMoment(i);
+                moments.put(i, moment);
+            }
             for (int j = 0; j < shape[1]; j++) {
                 for (int k = 0; k < shape[2]; k++) {
-                    float val = data.getFloat(index.set(i, j, k));
+                    final float val = data.getFloat(index.set(i, j, k));
                     // We are not interested in default/empty values, so these
                     // are excluded.
-                    String key = j + "_" + k + "_" + i;
-                    if (val > MIN_VAL && val != 0 && isWholeCoordinate(latList.get(j)) && isWholeCoordinate(lonList.get(k))) {
-                        // The time dimension from the range needs to correspond
-                        // to the range we're using, so we're converting the i
-                        // variable back to the "original" index.
-                        // SmallEntry entry = new SmallEntry(j, k, i * 24 + 12,
-                        // val);
-                        if (entries.containsKey(key)) {
-                            entries.get(key).getObs().put(order, val);
-                        } else {
-                            SmallEntry entry = new SmallEntry(j, k, i, order, val);
-                            entries.put(key, entry);
-                        }
+                    if (val > MIN_VAL && val != 0 && isWholeCoordinate(latList.get(j + minLat)) && isWholeCoordinate(lonList.get(k + minLon))) {
+                        moment.addEntry(new NetCDFPoint(j + minLat, k + minLon), order, val);
                     }
                 }
 
             }
+            if (!hasContent && !moment.getEntries().isEmpty()) {
+                hasContent = true;
+            }
         }
+        return hasContent;
+    }
 
+    private int findClosestCoordIndex(double coord, List<Double> list, boolean isMinValue) {
+        for (int i = 0; i < list.size(); i++) {
+            double d = list.get(i);
+            if (d > coord) {
+                if (isMinValue) {
+                    return i;
+                } else {
+                    return i - 1;
+                }
+            }
+        }
+        if (isMinValue) {
+            return 0;
+        } else {
+            return list.size() - 1;
+        }
     }
 
     private boolean isWholeCoordinate(double coord) {
-        return coord == Math.floor(coord);
+        double adjustedCoord = Math.abs(coord) + 0.0001;
+        int timesTen = (int) (adjustedCoord * 10);
+        int remainder = timesTen % 10;
+        return remainder == 0;
     }
 
     @SuppressWarnings("unused")

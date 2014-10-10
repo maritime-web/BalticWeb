@@ -16,30 +16,25 @@ package dk.dma.embryo.dataformats.service;
 
 import java.util.List;
 
-import dk.dma.embryo.dataformats.model.PrognosisType;
-import dk.dma.embryo.dataformats.model.PrognosisType.Type;
+import dk.dma.embryo.dataformats.model.Forecast;
+import dk.dma.embryo.dataformats.model.ForecastType;
+import dk.dma.embryo.dataformats.model.ForecastType.Type;
 
-public interface PrognosisService {
-    List<PrognosisType> getPrognosisTypes();
+public interface ForecastService {
+    List<ForecastType> getPrognosisTypes();
 
-    PrognosisType getPrognosisType(Type type);
+    ForecastType getPrognosisType(Type type);
 
     void reParse();
 
-    String getPrognosis(String id, Type prognosisType);
+    Forecast getForecast(long id);
 
-    List<String> getPrognosisList(Type type);
+    List<Forecast> getForecastList(Type type);
 
-    List<String> listAvailableIcePrognoses();
+    List<Forecast> listAvailableIceForecasts();
 
-    String getIcePrognosis(String id);
+    List<Forecast> listAvailableWaveForecasts();
 
-    List<String> listAvailableWavePrognoses();
-
-    String getWavePrognosis(String id);
-    
-    List<String> listAvailableCurrentPrognoses();
-    
-    String getCurrentPrognosis(String id);
+    List<Forecast> listAvailableCurrentForecasts();
 
 }
