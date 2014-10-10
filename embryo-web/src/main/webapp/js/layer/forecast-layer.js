@@ -142,7 +142,7 @@ function ForecastLayer() {
 			var lat = lats[e.substr(0, e.indexOf('_'))];
 			var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 			
-			if (lon && lat) {
+			if (obs && lon && lat) {
 
 				var points = [ embryo.map.createPoint(lon - half, lat - half), embryo.map.createPoint(lon + half, lat - half),
 						embryo.map.createPoint(lon + half, lat + half), embryo.map.createPoint(lon - half, lat + half) ];
@@ -176,7 +176,7 @@ function ForecastLayer() {
 			var lat = lats[e.substr(0, e.indexOf('_'))];
 			var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 			
-			if (lon && lat) {
+			if (obs && lon && lat) {
 
 				var points = [ embryo.map.createPoint(lon - half, lat - half), embryo.map.createPoint(lon + half, lat - half),
 						embryo.map.createPoint(lon + half, lat + half), embryo.map.createPoint(lon - half, lat + half) ];
