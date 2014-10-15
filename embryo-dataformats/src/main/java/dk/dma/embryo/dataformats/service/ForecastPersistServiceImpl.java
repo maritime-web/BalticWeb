@@ -14,6 +14,8 @@
  */
 package dk.dma.embryo.dataformats.service;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -31,9 +33,23 @@ public class ForecastPersistServiceImpl implements ForecastPersistService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public void persist(Forecast forecast) {
-        Forecast found = forecastDao.findByProviderAreaTimestampAndType(forecast.getProvider(), forecast.getArea(), forecast.getTimestamp(), forecast.getType());
-        if (found == null) {
+        List<Forecast> found = forecastDao.findByProviderAreaAndType(forecast.getProvider(), forecast.getArea(), forecast.getType());
+        if (found == null || found.isEmpty()) {
             forecastDao.saveEntity(forecast);
+        } else {
+            Forecast latest = found.get(0);
+            if(latest.getTimestamp() < forecast.getTimestamp()) {
+                latest.invalidate();
+                forecastDao.saveEntity(forecast);
+                forecastDao.saveEntity(latest);
+            }
+            if(found.size() > 1) {
+                for(int i = 1; i < found.size(); i++) {
+                    found.get(i).invalidate();
+                    forecastDao.saveEntity(found.get(i));
+                }
+            }
+            
         }
     }
 

@@ -45,19 +45,25 @@
 								<span x-ng-show="pc.forecastSelected == forecast.id"> <br />
 									<input type="radio" name="iceForecastType"
 									id="iceConcentration_{{forecast.id}}" value="iceConcentration"
-									x-ng-model="selectedVariable" x-ng-disabled="noIceConcentration" /> <label
+									x-ng-model="selectedVariable"
+									x-ng-disabled="noIceConcentration" /> <label
 									for="iceConcentration_{{forecast.id}}">Ice
 										concentration</label> <br /> <input type="radio"
 									name="iceForecastType" id="iceThickness_{{forecast.id}}"
-									value="iceThickness" x-ng-model="selectedVariable" x-ng-disabled="noIceThickness" /> <label
+									value="iceThickness" x-ng-model="selectedVariable"
+									x-ng-disabled="noIceThickness" /> <label
 									for="iceThickness_{{forecast.id}}">Ice thickness</label> <br />
 									<input type="radio" name="iceForecastType"
 									id="iceSpeed_{{forecast.id}}" value="iceSpeed"
 									x-ng-model="selectedVariable" x-ng-disabled="noIceSpeed" /> <label
 									for="iceSpeed_{{forecast.id}}">Ice speed</label> <br /> <input
-									type="range" class="e-forecast" min="{{start}}" max="{{end}}"
-									step="1" x-ng-model="current" /> <br />Selected time:
-									{{currentDate}}
+									type="radio" name="iceForecastType"
+									id="iceAccretion_{{forecast.id}}" value="iceAccretion"
+									x-ng-model="selectedVariable" x-ng-disabled="noIceAccretion" />
+									<label for="iceAccretion_{{forecast.id}}">Ice accretion
+										risk</label><br /> <input type="range" class="e-forecast"
+									min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
+									<br /> Selected time: {{currentDate}}
 								</span>
 							</div>
 						</td>
@@ -126,11 +132,11 @@
 						<td>&gt; 1.3</td>
 					</tr>
 				</table -->
-				<h5>Ice</h5>
+				<h5>Ice concentration/thickness</h5>
 				<table class="table table-condensed">
 					<tr>
 						<th>Color</th>
-						<th>Ice Concentration</th>
+						<th>Ice Conc./Thickness</th>
 						<th>Definition</th>
 					</tr>
 					<tr>
@@ -168,6 +174,44 @@
 							style="background-color: #96C7FF; width: 30px; display: block;">&nbsp;</span></td>
 						<td>&lt;1/10</td>
 						<td>Open Water</td>
+					</tr>
+				</table>
+				<h5>Ice accretion risk</h5>
+				<table class="table table-condensed">
+					<tr>
+						<th>Color</th>
+						<th>cm/hour</th>
+						<th>Icing class</th>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #96C7FF; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0</td>
+						<td>None</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #8effa0; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt; 0.7</td>
+						<td>Light</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ffff00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.7-2.0</td>
+						<td>Moderate</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ff7c06; width: 30px; display: block;">&nbsp;</span></td>
+						<td>2.0-4.0</td>
+						<td>Heavy</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ff0000; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&gt; 4.0</td>
+						<td>Extreme</td>
 					</tr>
 				</table>
 				<h5>Current</h5>

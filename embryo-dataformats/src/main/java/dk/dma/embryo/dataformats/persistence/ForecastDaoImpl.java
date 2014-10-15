@@ -38,17 +38,13 @@ public class ForecastDaoImpl extends DaoImpl implements ForecastDao {
     }
     
     @Override
-    public Forecast findByProviderAreaTimestampAndType(Provider provider, String area, long timestamp, Type type) {
-        TypedQuery<Forecast> query = em.createNamedQuery("Forecast:findDuplicate", Forecast.class);
+    public List<Forecast> findByProviderAreaAndType(Provider provider, String area, Type type) {
+        TypedQuery<Forecast> query = em.createNamedQuery("Forecast:findDuplicates", Forecast.class);
         query.setParameter("provider", provider);
         query.setParameter("area", area);
-        query.setParameter("timestamp", timestamp);
         query.setParameter("type", type);
         List<Forecast> resultList = query.getResultList();
-        if(resultList != null && !resultList.isEmpty()) {
-            return resultList.get(0);
-        }
-        return null;
+        return resultList;
     }
     
     @Override

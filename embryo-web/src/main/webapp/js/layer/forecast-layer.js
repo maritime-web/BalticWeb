@@ -107,11 +107,6 @@ function ForecastLayer() {
 	};
 
 	this.getIceConcentrationLevel = function(obs) {
-		/*
-		 * if (obs < 0.0001) { return '#00DE00'; } else if (obs < 0.001) {
-		 * return '#FFFF00'; } else if (obs < 0.01) { return '#FA4242'; } else {
-		 * return '#E8B332'; }
-		 */
 		if (obs < 0.1) {
 			return '#96c7ff';
 		} else if (obs < 0.3) {
@@ -126,6 +121,20 @@ function ForecastLayer() {
 			return '#979797';
 		}
 	};
+	
+	this.getIceAccretionLevel = function(obs) {
+		if(obs < 0) {
+			return '#96c7ff';
+		} else if(obs < 22.5) {
+			return '#8effa0';
+		} else if(obs < 53.4) {
+			return '#ffff00';
+		} else if(obs < 83.1) {
+			return '#ff7c06';
+		} else {
+			return '#979797';
+		}
+	}
 
 	this.drawConcentration = function(forecast, time) {
 		var index = forecast.variables['Ice concentration'];
@@ -236,9 +245,42 @@ function ForecastLayer() {
 
 		}
 		return features;
-			
-
 	};
+	
+	this.drawAccretion = function(forecast, time) {
+		var index = forecast.variables['Ice accretion risk'];
+		var lats = forecast.metadata.lat;
+		var lons = forecast.metadata.lon;
+		var features = [];
+		var half = 0.5;
+		
+		var entries = forecast.data[time].entries;
+
+		for(var e in entries) {
+			var obs = entries[e][index];
+			var level = this.getIceAccretionLevel(obs);
+			var lat = lats[e.substr(0, e.indexOf('_'))];
+			var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
+			
+			if (obs && lon && lat) {
+
+				var points = [ embryo.map.createPoint(lon - half, lat - half), embryo.map.createPoint(lon + half, lat - half),
+						embryo.map.createPoint(lon + half, lat + half), embryo.map.createPoint(lon - half, lat + half) ];
+				var square = new OpenLayers.Geometry.LinearRing(points);
+				var feature = new OpenLayers.Feature.Vector(square, {
+					level : level,
+					obs : obs
+				});
+				features.push(feature);
+			} else {
+				console.error('Error in coordinates: lat = ' + lat + ', lon = ' + lon);
+			}
+			console.log('Ice accretion: ' + lat + ':' + lon + ' - ' + obs);
+			
+		}
+		return features;
+	};
+
 
 	this.drawIceForecast = function(forecast, time, mapType) {
 		var that = this;
@@ -254,6 +296,9 @@ function ForecastLayer() {
 			break;
 		case 'iceSpeed':
 			features = this.drawSpeed(forecast, time);
+			break;
+		case 'iceAccretion':
+			features = this.drawAccretion(forecast, time);
 			break;
 		}
 

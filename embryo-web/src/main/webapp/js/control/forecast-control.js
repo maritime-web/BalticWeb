@@ -175,6 +175,9 @@ $(function() {
                 if(!("Ice speed north" in forecast.variables) || !("Ice speed east" in forecast.variables)) {
                 	$scope.noIceSpeed = true;
                 }
+                if(!("Ice accretion risk" in forecast.variables)) {
+                	$scope.noIceAccretion = true;
+                }
 
                 $scope.updateCurrentDate = function() {
                     var t = time[$scope.current];
