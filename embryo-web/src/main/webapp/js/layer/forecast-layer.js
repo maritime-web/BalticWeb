@@ -134,7 +134,7 @@ function ForecastLayer() {
 		} else {
 			return '#979797';
 		}
-	}
+	};
 
 	this.drawConcentration = function(forecast, time) {
 		var index = forecast.variables['Ice concentration'];
@@ -161,8 +161,6 @@ function ForecastLayer() {
 					obs : obs
 				});
 				features.push(feature);
-			} else {
-				console.error('Error in coordinates: lat = ' + lat + ', lon = ' + lon);
 			}
 			console.log('Ice conc: ' + lat + ':' + lon + ' - ' + obs);
 			
@@ -195,8 +193,6 @@ function ForecastLayer() {
 					obs : obs
 				});
 				features.push(feature);
-			} else {
-				console.error('Error in coordinates: lat = ' + lat + ', lon = ' + lon);
 			}
 			console.log('Ice thickness: ' + lat + ':' + lon + ' - ' + obs);
 			
@@ -272,8 +268,6 @@ function ForecastLayer() {
 					obs : obs
 				});
 				features.push(feature);
-			} else {
-				console.error('Error in coordinates: lat = ' + lat + ', lon = ' + lon);
 			}
 			console.log('Ice accretion: ' + lat + ':' + lon + ' - ' + obs);
 			
