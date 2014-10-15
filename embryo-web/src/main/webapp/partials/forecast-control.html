@@ -43,21 +43,21 @@
 							<div>
 								<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
 								<span x-ng-show="pc.forecastSelected == forecast.id"> <br />
-									<input type="radio" name="iceForecastType"
+									<input type="radio" name="iceForecastType_{{forecast.id}}"
 									id="iceConcentration_{{forecast.id}}" value="iceConcentration"
 									x-ng-model="selectedVariable"
 									x-ng-disabled="noIceConcentration" /> <label
 									for="iceConcentration_{{forecast.id}}">Ice
 										concentration</label> <br /> <input type="radio"
-									name="iceForecastType" id="iceThickness_{{forecast.id}}"
+									name="iceForecastType_{{forecast.id}}" id="iceThickness_{{forecast.id}}"
 									value="iceThickness" x-ng-model="selectedVariable"
 									x-ng-disabled="noIceThickness" /> <label
 									for="iceThickness_{{forecast.id}}">Ice thickness</label> <br />
-									<input type="radio" name="iceForecastType"
+									<input type="radio" name="iceForecastType_{{forecast.id}}"
 									id="iceSpeed_{{forecast.id}}" value="iceSpeed"
 									x-ng-model="selectedVariable" x-ng-disabled="noIceSpeed" /> <label
 									for="iceSpeed_{{forecast.id}}">Ice speed</label> <br /> <input
-									type="radio" name="iceForecastType"
+									type="radio" name="iceForecastType_{{forecast.id}}"
 									id="iceAccretion_{{forecast.id}}" value="iceAccretion"
 									x-ng-model="selectedVariable" x-ng-disabled="noIceAccretion" />
 									<label for="iceAccretion_{{forecast.id}}">Ice accretion
