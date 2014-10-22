@@ -30,7 +30,7 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 
 /**
- * Testing various configurations in dataformats-default-configuration.properties as errors would otherwise first show
+ * Testing various configurations in satellite-default-configuration.properties as errors would otherwise first show
  * up in test and production environments.
  * 
  * @author Jesper Tejlgaard

@@ -68,7 +68,7 @@ public class InshoreIceReportMergedTest {
         Assert.assertNotNull(merged.getHeader());
         Assert.assertEquals(2, merged.getHeader().size());
         Assert.assertEquals("Danish Meteorological Institute", merged.getHeader().get(0));
-        Assert.assertEquals("Ice central, Narsarsuaq", merged.getHeader().get(1));
+        Assert.assertEquals("Ice patrol, Narsarsuaq", merged.getHeader().get(1));
 
         Assert.assertEquals("ti", merged.getObservations().get(10).getText());
         Assert.assertEquals(d3, merged.getObservations().get(10).getFrom());

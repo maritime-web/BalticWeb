@@ -70,7 +70,7 @@ public class InshoreIceReportMerged {
         super();
         
         header.add("Danish Meteorological Institute");
-        header.add("Ice central, Narsarsuaq");
+        header.add("Ice patrol, Narsarsuaq");
     }
     
     // //////////////////////////////////////////////////////////////////////

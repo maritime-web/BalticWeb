@@ -21,5 +21,5 @@ public interface InshoreIceReportService {
 
     InshoreIceReportMerged getInshoreIceReportsMerged(String provider);
     
-    void update() throws IOException;
+    void update() throws IOException, InshoreIceReportException;
 }

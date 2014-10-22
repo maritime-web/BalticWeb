@@ -35,7 +35,7 @@ public class InshoreIceReportParserTest {
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-//        expected.addHeader("www.dmi.dk");
+        expected.addHeader("www.dmi.dk");
         expected.setOverview("På indenskærs isrekognoscering onsdag den 02. juli 2014 mellem Skovfjord, Bredefjord, Julianehåbsfjord, Mågeløbene, Knækket og Narsarsuaq blev følgende observeret:");
 
         expected.addNotification(11, "I Torssukatak: Var der Tåge.");
@@ -63,7 +63,7 @@ public class InshoreIceReportParserTest {
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-//        expected.addHeader("www.dmi.dk");
+        expected.addHeader("www.dmi.dk");
 
         expected.setOverview("På indenskærs isrekognoscering torsdag den 10. juli 2014 mellem Prins Chr. Sund, Frederiksdal, Nanortalik, Julianehåbs Fjord, Hollænder Løbet, Mågeløbene, Knækket, Bredefjord, Narsaq Sund og Narsarsuaq blev følgende observeret:");
 
@@ -166,7 +166,7 @@ public class InshoreIceReportParserTest {
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-//        expected.addHeader("www.dmi.dk");
+        expected.addHeader("www.dmi.dk");
         expected.setOverview("På indenskærs isrekognoscering onsdag den 02. juli 2014 mellem Skovfjord, Bredefjord, Julianehåbsfjord, Mågeløbene, Knækket og Narsarsuaq blev følgende observeret:");
 
         expected.addNotification(11, "I Torssukatak: Var der Tåge.");
@@ -190,12 +190,8 @@ public class InshoreIceReportParserTest {
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-//        expected.addHeader("www.dmi.dk");
-        expected.setOverview("På indenskærs isrekognoscering onsdag den 02. juli 2014 mellem Skovfjord, Bredefjord, Julianehåbsfjord, Mågeløbene, Knækket og Narsarsuaq blev følgende observeret:");
-
-        expected.addFooter("Næste isrekognoscering forventes mandag den. 07. juli  2014");
-        expected.addFooter("For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk");
-//        expected.addFooter("Iscentralen Narsarsuaq, onsdag den 02. juli  2014");
+        expected.addHeader("www.dmi.dk");
+        expected.setOverview("På indenskærs isrekognoscering onsdag den 02. juli 2014 mellem Skovfjord, Bredefjord, Julianehåbsfjord, Mågeløbene, Knækket og Narsarsuaq blev følgende observeret: Næste isrekognoscering forventes mandag den. 07. juli 2014 For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk Iscentralen Narsarsuaq, onsdag den 02. juli 2014");
 
         InshoreIceReport notifications = parser.parse();
 
@@ -212,7 +208,8 @@ public class InshoreIceReportParserTest {
         expected.addHeader("DMI");
         expected.addHeader("Iscentralen Ismelding");
         expected.addHeader("Narsarsuaq");
-//        expected.addHeader("www.dmi.dk");
+        expected.addHeader("www.dmi.dk");
+
         expected.setOverview("På indenskærs isrekognoscering fredag den 1. august 2014 mellem Prins Christian Sund, Frederiksdal, Båkeruten, Nanortalik, Sydprøven, Sardloq, Julianehåbs Fjord, Skovfjord, Narsaq Sund, Bredefjord og Narsarsuaq blev følgende observeret:");
 
         expected.addNotification(87, "I Prins Christian Sund ved det smalle sted: Var der enkelte isfjelde og skosser. Der var et mindre bælte med spredte skosser der kunne passeres.");
@@ -227,5 +224,32 @@ public class InshoreIceReportParserTest {
 
         ReflectionAssert.assertReflectionEquals(expected, notifications);
     }
-    
+
+    @Test
+    public void testFooterWithoutDots() throws IOException {
+
+        InputStream is = getClass().getResourceAsStream("/inshore-ice-reports/2014-10-20.txt");
+        InshoreIceReportParser parser = new InshoreIceReportParser(is);
+
+        InshoreIceReport expected = new InshoreIceReport();
+        expected.addHeader("www.dmi.dk");
+        expected.addHeader("Iscentralen Ismelding");
+        expected.addHeader("Narsarsuaq");
+
+        expected.setOverview("Billeder fra Isrekognosceringer kan modtages i DropBox. Skriv venligst til Iscentralen icepatrol@dmi.dk for invitation. På indenskærs isrekognoscering mandag den 20. oktober 2014 mellem Prins Christian Sund, Nanortalik, Sydprøven, Qaqortoq, Narsaq og Narsarsuaq blev følgende observeret:");
+
+        expected.addNotification(23, "I Bredefjord: 2-3/10 bræis i den inderste del, aftagende mod mundingen.");
+        expected.addNotification(24, "I ruten Narssaq Sund - Tasiussaq: Spredte isfjelde og 6/10 bræis.");
+        expected.addNotification(31, "I Tunuaraq: Spredte isfjelde og 1-2/10 bræis.");
+        expected.addNotification(32, "I Narssaq Sund: Spredte isfjelde og 1-2/10 bræis samt områder med nyis.");
+
+        expected.addFooter("Næste isrekognoscering forventes onsdag den 22-10-2014");
+        expected.addFooter("For yderligere information kontakt Iscentralen på telefon +299 66 52 44 eller icepatrol@dmi.dk.");
+//        expected.addFooter("Iscentralen Narsarsuaq, torssdag den 10. juli 2014");
+
+        InshoreIceReport notifications = parser.parse();
+
+        ReflectionAssert.assertReflectionEquals(expected, notifications);
+    }
+
 }

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -39,6 +40,7 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
 
+import dk.dma.embryo.common.util.NamedtimeStamps;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -54,7 +56,6 @@ import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.dataformats.job.EmbryoFTPFileFilters;
-import dk.dma.embryo.dataformats.job.NamedtimeStamps;
 
 /**
  * 
@@ -158,7 +159,6 @@ public class DmiInshoreIceReportJob {
                     throw new IOException("Could not change to base directory:" + baseDir);
                 }
 
-                
                 List<FTPFile> files = Arrays.asList(ftp.listFiles(null, EmbryoFTPFileFilters.FILES));
                 
                 logger.debug("files: {}" , files);
@@ -185,8 +185,13 @@ public class DmiInshoreIceReportJob {
             
             try {
                 iceInformationService.update();
-            }catch(Exception e){
-                embryoLogService.error("Error reading transfered file", e);
+            } catch(InshoreIceReportException iire){
+                for(Map.Entry<String, Exception> entry : iire.getCauses().entrySet()){
+                    embryoLogService.error("Error reading transfered file " + entry.getKey(), entry.getValue());
+                    sendEmail(entry.getKey(), entry.getValue());
+                }
+            } catch(Exception e){
+                embryoLogService.error("Error reading transfered file(s)", e);
                 error.add(e.getMessage());
             }
 
@@ -252,7 +257,16 @@ public class DmiInshoreIceReportJob {
 
         return true;
     }
-    
+
+    private void sendEmail(String fileName, Exception cause) {
+        String key = fileName + cause.getMessage();
+        if (mailTo != null && mailTo.trim().length() > 0 && !notifications.contains(key)) {
+            new InshoreIceReportFileNotReadMail("dmi", fileName, cause, propertyFileService)
+                    .send(mailSender);
+            notifications.add(key, DateTime.now(DateTimeZone.UTC));
+        }
+    }
+
     private void sendEmails(Collection<FTPFile> rejected) {
         for (FTPFile file : rejected) {
             if (mailTo != null && mailTo.trim().length() > 0 && !notifications.contains(file.getName())) {

@@ -52,10 +52,7 @@ public class InshoreIceReportParser {
 
     public InshoreIceReport parse() throws IOException {
         InshoreIceReport notifications = new InshoreIceReport();
-
         try {
-            notifications = parseHeader(notifications);
-            notifications = parseOverview(notifications);
             notifications = parseNotifications(notifications);
         } catch (IOException e) {
             throw new IOException("Error parsing ice notifications", e);
@@ -71,82 +68,42 @@ public class InshoreIceReportParser {
         return line;
     }
 
-    private InshoreIceReport parseHeader(InshoreIceReport notifications) throws IOException {
-        String line = skipEmptyLines();
-        do {
-            if (line != null && line.trim().length() > 0) {
-                line = line.replaceAll("\\t", " ");
-                line = line.trim();
-                String copy = null;
-                do {
-                    copy = line;
-                    line = line.replace("  ", " ");
-                } while (!copy.equals(line));
-                
-                if(!line.startsWith("www.dmi")){
-                    notifications.addHeader(line);                    
-                }
-            }
-        } while ((line = reader.readLine()) != null && line.trim().length() > 0);
-
-        return notifications;
-    }
-
-    private InshoreIceReport parseOverview(InshoreIceReport notifications) throws IOException {
-        String overview = "";
-        String line = skipEmptyLines();
-        do {
-            if (line != null && line.trim().length() > 0) {
-                line = line.replaceAll("\\t", " ");
-                line = line.trim();
-                String copy = null;
-                do {
-                    copy = line;
-                    line = line.replace("  ", " ");
-                } while (!copy.equals(line));
-                overview += " " + line.trim();
-            }
-        } while ((line = reader.readLine()) != null && line.trim().length() > 0);
-        notifications.setOverview(overview.trim());
-        return notifications;
-    }
-
     private InshoreIceReport parseNotifications(InshoreIceReport notifications) throws IOException {
         String line = skipEmptyLines();
         
         List<String> footer = new ArrayList<>();
         Integer previous = null;
-        
-        
+
         do{
             if(line.trim().length() > 0){
                 int index = line.indexOf(".");
-                String number = line.substring(0, index);
-                try{
-                    Integer integer = Integer.valueOf(number);
-                    String desc = line.substring(index + 1).trim();
-                    notifications.addNotification(integer, desc);
+                if(index < 0){
+                    addInfoLine(line, notifications, footer);
+                } else{
+                    String number = line.substring(0, index);
+                    try{
+                        Integer integer = Integer.valueOf(number);
+                        String desc = line.substring(index + 1).trim();
+                        notifications.addNotification(integer, desc);
 
-                    // if previous notification contained a line break, then this part will be registered as a footer
-                    if(previous != null && footer.size() > 0){
-                        String prevDesc = notifications.getNotifications().get(previous);
-                        for(String str : footer){
-                            if(!prevDesc.endsWith(".")){
-                                prevDesc = prevDesc + ".";
+                        // if previous notification contained a line break, then this part will be registered as a footer
+                        if(previous != null && footer.size() > 0){
+                            String prevDesc = notifications.getNotifications().get(previous);
+                            for(String str : footer){
+                                if(!prevDesc.endsWith(".")){
+                                    prevDesc = prevDesc + ".";
+                                }
+                                prevDesc += " " + str.trim();
                             }
-                            prevDesc += " " + str.trim();
+                            notifications.addNotification(previous, prevDesc);
+                            footer.clear();
                         }
-                        notifications.addNotification(previous, prevDesc);
-                        footer.clear();
+
+                        previous = integer;
+                    }catch(NumberFormatException e){
+                        addInfoLine(line, notifications, footer);
                     }
-                    
-                    previous = integer;
-                }catch(NumberFormatException e){
-                    String value = line.trim();
-                    if(!value.startsWith("Iscentralen")){
-                        footer.add(line.trim());
-                    }
-                }                
+                }
             }
         }while((line = reader.readLine()) != null);
         
@@ -155,5 +112,47 @@ public class InshoreIceReportParser {
         }
         
         return notifications;
+    }
+
+    private void addInfoLine(String line, InshoreIceReport notifications, List<String> footer){
+        if(notifications.getNotifications().size() == 0) {
+            if (isHeader(line)) {
+                notifications.addHeader(trimLine(line));
+            } else if(isOverview(line)) {
+                addOverview(line, notifications);
+            }
+            return;
+        }
+
+        String value = line.trim();
+        if(!value.startsWith("Iscentralen")){
+            footer.add(line.trim());
+        }
+    }
+
+    private InshoreIceReport addOverview(String line, InshoreIceReport notifications){
+        String overview = notifications.getOverview() == null ? "" : notifications.getOverview();
+        overview += " " + trimLine(line);
+        notifications.setOverview(overview.trim());
+        return notifications;
+    }
+
+    private String trimLine(String line){
+        line = line.replaceAll("\\t", " ");
+        line = line.trim();
+        String copy = null;
+        do {
+            copy = line;
+            line = line.replace("  ", " ");
+        } while (!copy.equals(line));
+        return line.trim();
+    }
+
+    private static boolean isHeader(String line){
+        return line.startsWith("\t") || line.startsWith(" ");
+    }
+
+    private static boolean isOverview(String line){
+        return line.length() > 0 && line.matches("[a-zA-ZæøåÆØÅ].*");
     }
 }

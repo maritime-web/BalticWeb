@@ -58,6 +58,14 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
 
     private Map<String, InshoreIceReportMerged> inshoreIceReportsMerged = new HashMap<>();
 
+    public InshoreIceReportServiceImpl(){}
+
+    public InshoreIceReportServiceImpl(String localDirectory, Integer maxAgeInDays){
+        this.localDirectory = localDirectory;
+        this.maxAgeInDays = maxAgeInDays;
+        logger = org.slf4j.LoggerFactory.getLogger(getClass());
+    }
+
     @PostConstruct
     public void init() {
         try {
@@ -67,7 +75,8 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
         }
     }
 
-    public void update() throws IOException {
+
+    public void update() throws IOException, InshoreIceReportException {
         File[] readFiles = findInshoreIceReports();
 
         DateMidnight limit = DateMidnight.now(DateTimeZone.UTC).minusDays(maxAgeInDays);
@@ -83,13 +92,25 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
         sorted.addAll(filtered);
         Collections.sort(sorted, new FileInfoComparator());
 
-        for (FileInfo fileInfo : sorted) {
-            InshoreIceReportParser parser = new InshoreIceReportParser(fileInfo.file);
-            InshoreIceReport report = parser.parse();
-            result.mergeInReport(fileInfo.date.toDate(), fileInfo.file.getName(), report);
-        }
+        Map<String, Exception> problems = new HashMap<>();
 
+        for (FileInfo fileInfo : sorted) {
+            try{
+                InshoreIceReportParser parser = new InshoreIceReportParser(fileInfo.file);
+                InshoreIceReport report = parser.parse();
+                if(report.getNotifications().size() == 0){
+                    throw new IOException("No observations detected in inshore ice report " + fileInfo.file.getName());
+                }
+                result.mergeInReport(fileInfo.date.toDate(), fileInfo.file.getName(), report);
+            }catch(Exception e){
+                problems.put(fileInfo.file.getName(), e);
+            }
+        }
         setInshoreIceReport("dmi", result);
+
+        if(problems.size() > 0){
+            throw new InshoreIceReportException(problems);
+        }
     }
 
     private File[] findInshoreIceReports() throws IOException {
