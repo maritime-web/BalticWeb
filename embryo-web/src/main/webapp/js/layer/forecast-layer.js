@@ -141,7 +141,7 @@ function ForecastLayer() {
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
 		var features = [];
-		var half = 0.5;
+		var half = 0.2;
 		
 		var entries = forecast.data[time].entries;
 
@@ -173,7 +173,7 @@ function ForecastLayer() {
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
 		var features = [];
-		var half = 0.5;
+		var half = 0.2;
 		
 		var entries = forecast.data[time].entries;
 
@@ -248,7 +248,7 @@ function ForecastLayer() {
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
 		var features = [];
-		var half = 0.5;
+		var half = 0.2;
 		
 		var entries = forecast.data[time].entries;
 

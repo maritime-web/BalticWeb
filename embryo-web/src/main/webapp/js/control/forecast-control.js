@@ -69,11 +69,7 @@ $(function() {
             $scope.errorMsg = null;
             $scope.waveForecasts = [];
             for (var i = 0; i < forecasts.length; i++) {
-                $scope.waveForecasts.push({
-                    name : forecasts[i].name,
-                    id : forecasts[i].id,
-                    selected : false
-                });
+                $scope.waveForecasts.push(convertForecast(forecasts[i]));
             }
         }, function(error, status) {
             $scope.errorMsg = error;
@@ -129,9 +125,7 @@ $(function() {
             $scope.errorMsg = null;
             $scope.currentForecasts = [];
             for (var i = 0; i < forecasts.length; i++) {
-                $scope.currentForecasts.push(forecasts[i]);
-                $scope.currentForecasts[i].selected = false;
-                $scope.currentForecasts[i].timestamp = formatTime($scope.currentForecasts[i].timestamp);
+                $scope.currentForecasts.push(convertForecast(forecasts[i]));
             }
         }, function(error, status) {
             $scope.errorMsg = error;
@@ -204,13 +198,18 @@ $(function() {
             $scope.errorMsg = null;
             $scope.iceForecasts = [];
             for (var i = 0; i < forecasts.length; i++) {
-            	$scope.iceForecasts.push(forecasts[i]);
-                $scope.iceForecasts[i].selected = false;
-                $scope.iceForecasts[i].timestamp = formatTime($scope.iceForecasts[i].timestamp);
+            	$scope.iceForecasts.push(convertForecast(forecasts[i]));
             }
         }, function(error, status) {
             $scope.errorMsg = error;
         });
     } ]);
+    
+    var convertForecast = function(forecast) {
+    	forecast.selected = false;
+    	forecast.timestamp = formatTime(forecast.timestamp);
+    	forecast.size = parseFloat(forecast.size / 1000).toFixed(1) + 'K';
+    	return forecast;
+    };
 
 });

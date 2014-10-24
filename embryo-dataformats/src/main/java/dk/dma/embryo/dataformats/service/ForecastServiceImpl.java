@@ -14,6 +14,7 @@
  */
 package dk.dma.embryo.dataformats.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -21,11 +22,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -167,13 +170,16 @@ public class ForecastServiceImpl implements ForecastService {
                                                 Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
                                                 String json = parseResult.get(type);
                                                 if(json != null) {
-                                                    persistForecast(name, json, ((ForecastType) type).getType(), json.length(), provider, timestamp, area);
+                                                    persistForecast(name, json, ((ForecastType) type).getType(), getJsonSize(json), provider, timestamp, area);
                                                 } else {
                                                     persistForecast(name, "", ((ForecastType) type).getType(), -1, provider, timestamp, area);
                                                 }
                                             }
                                         }
                                     }
+                                    file.delete();
+                                    // Create a new, empty file so we don't download it again
+                                    file.createNewFile();
                                 }
                             } else {
                                 logger.info("No files found in folder " + folder.getPath());
@@ -191,6 +197,18 @@ public class ForecastServiceImpl implements ForecastService {
         } else {
             logger.info("Already parsing, will not re-parse at the moment.");
         }
+    }
+    
+    private int getJsonSize(String json) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gos = new GZIPOutputStream(out);
+        String result = mapper.writeValueAsString(json);
+        gos.write(result.getBytes());
+        gos.close();
+
+        return out.toByteArray().length;
     }
 
     private void persistForecast(String name, String json, Type type, int size, Provider provider, long timestamp, String area) {

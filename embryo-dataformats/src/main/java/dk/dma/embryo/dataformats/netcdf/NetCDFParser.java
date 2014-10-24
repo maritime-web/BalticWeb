@@ -230,7 +230,7 @@ public class NetCDFParser {
                     final float val = data.getFloat(index.set(i, j, k));
                     // We are not interested in default/empty values, so these
                     // are excluded.
-                    if (val > MIN_VAL && val != 0 && isWholeCoordinate(latList.get(j + minLat)) && isWholeCoordinate(lonList.get(k + minLon))) {
+                    if (val > MIN_VAL && val != 0 && isZeroPointFourCoordinate(latList.get(j + minLat)) && isZeroPointFourCoordinate(lonList.get(k + minLon))) {
                         moment.addEntry(new NetCDFPoint(j + minLat, k + minLon), order, val);
                     }
                 }
@@ -261,6 +261,7 @@ public class NetCDFParser {
         }
     }
 
+    @SuppressWarnings("unused")
     private boolean isWholeCoordinate(double coord) {
         double adjustedCoord = Math.abs(coord) + 0.0001;
         int timesTen = (int) (adjustedCoord * 10);
@@ -271,5 +272,12 @@ public class NetCDFParser {
     @SuppressWarnings("unused")
     private boolean isHalfCoordinate(double coord) {
         return ((int) (coord * 10.0)) % 5 == 0;
+    }
+    
+    private boolean isZeroPointFourCoordinate(double coord) {
+        double adjustedCoord = Math.abs(coord) + 0.0001;
+        int timesTen = (int) (adjustedCoord * 10);
+        int remainder = timesTen % 4;
+        return remainder == 0;
     }
 }
