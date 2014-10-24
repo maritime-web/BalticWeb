@@ -17,6 +17,7 @@ package dk.dma.embryo.user.model;
 public class Feedback {
     private String name;
     private String emailAddress;
+    private String userType;
     private String mmsiNumber;
     private String message;
 
@@ -34,6 +35,14 @@ public class Feedback {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+    
+    public String getUserType() {
+        return userType;
+    }
+    
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public String getMmsiNumber() {

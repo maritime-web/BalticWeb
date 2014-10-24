@@ -9,4 +9,9 @@ module.controller('embryo.FeedbackCtrl', ['$scope', '$http', function($scope, $h
             $scope.alertMessages = ['Something went wrong when sending feedback. The error was: ' + error];
         });
     };
+    
+    $scope.userTypes = ['Ship', 'Shore', 'Maritime Pilot', 'Coastal Control', 'Authority', 'Other'];
+    $scope.feedback = {
+    		userType: 'Ship'
+    };
 }]);

@@ -32,6 +32,7 @@ public class FeedbackMail extends Mail<FeedbackMail> {
     public FeedbackMail build() {
         environment.put("Name", feedback.getName());
         environment.put("Email", feedback.getEmailAddress());
+        environment.put("UserType", feedback.getUserType());
         environment.put("MMSI", feedback.getMmsiNumber());
         environment.put("Message", feedback.getMessage());
         
