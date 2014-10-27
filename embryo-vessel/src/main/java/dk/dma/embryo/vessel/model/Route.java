@@ -15,7 +15,6 @@
 package dk.dma.embryo.vessel.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,16 +28,11 @@ import javax.persistence.OrderColumn;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
 import dk.dma.embryo.common.persistence.BaseEntity;
 import dk.dma.enav.model.voyage.Waypoint;
 
 @Entity
-@NamedQueries({
-        @NamedQuery(name = "Route:getByEnavId", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.enavId = :enavId"),
+@NamedQueries({ @NamedQuery(name = "Route:getByEnavId", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.enavId = :enavId"),
         @NamedQuery(name = "Route:getId", query = "SELECT r.id FROM Route r WHERE r.enavId = :enavId"),
         @NamedQuery(name = "Route:mmsi", query = "SELECT ves.mmsi FROM Route r INNER JOIN r.voyage v INNER JOIN v.vessel ves WHERE r.enavId = :enavId") })
 public class Route extends BaseEntity<Long> {
@@ -57,12 +51,6 @@ public class Route extends BaseEntity<Long> {
     private String destination;
 
     private String origin;
-
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    private DateTime etaOfArrival;
-
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    private DateTime etaOfDeparture;
 
     @ElementCollection()
     @CollectionTable(name = "WayPoint")
@@ -86,11 +74,7 @@ public class Route extends BaseEntity<Long> {
 
     public static Route fromJsonModel(dk.dma.embryo.vessel.json.Route from) {
 
-        DateTime departure = from.getEtaDep() == null ? null : new DateTime(from.getEtaDep().getTime(),
-                DateTimeZone.UTC);
-
         Route route = new Route(from.getId(), from.getName(), from.getDep(), from.getDes());
-        route.setEtaOfDeparture(departure);
 
         for (dk.dma.embryo.vessel.json.Waypoint wayPoint : from.getWps()) {
             route.addWayPoint(WayPoint.fromJsonModel(wayPoint));
@@ -100,13 +84,10 @@ public class Route extends BaseEntity<Long> {
     }
 
     public dk.dma.embryo.vessel.json.Route toJsonModel() {
-        Date departure = this.getEtaOfDeparture() == null ? null : this.getEtaOfDeparture().toDate();
-
         dk.dma.embryo.vessel.json.Route toRoute = new dk.dma.embryo.vessel.json.Route(this.enavId);
         toRoute.setName(this.name);
         toRoute.setDep(this.origin);
         toRoute.setDes(this.destination);
-        toRoute.setEtaDep(departure);
         for (WayPoint wp : this.getWayPoints()) {
             toRoute.getWps().add(wp.toJsonModel());
         }
@@ -134,10 +115,6 @@ public class Route extends BaseEntity<Long> {
             toRoute.getWaypoints().add(wp.toEnavModel());
         }
 
-        if (toRoute.getWaypoints().size() > 0 && toRoute.getWaypoints().get(0).getEta() == null) {
-            toRoute.getWaypoints().get(0).setEta(getEtaOfDeparture() == null ? null : getEtaOfDeparture().toDate());
-        }
-
         return toRoute;
     }
 
@@ -161,8 +138,7 @@ public class Route extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "Route [name=" + name + ", destination=" + destination + ", origin=" + origin + ", etaOfArrival="
-                + etaOfArrival + ", etaOfDeparture=" + etaOfDeparture + ", wayPoints" + wayPoints + "]";
+        return "Route [name=" + name + ", destination=" + destination + ", origin=" + origin + ", wayPoints" + wayPoints + "]";
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -190,22 +166,6 @@ public class Route extends BaseEntity<Long> {
 
     public void setOrigin(String origin) {
         this.origin = origin;
-    }
-
-    public DateTime getEtaOfArrival() {
-        return etaOfArrival;
-    }
-
-    public void setEtaOfArrival(DateTime etaOfArrival) {
-        this.etaOfArrival = etaOfArrival;
-    }
-
-    public DateTime getEtaOfDeparture() {
-        return etaOfDeparture;
-    }
-
-    public void setEtaOfDeparture(DateTime etaOfDeparture) {
-        this.etaOfDeparture = etaOfDeparture;
     }
 
     public List<WayPoint> getWayPoints() {

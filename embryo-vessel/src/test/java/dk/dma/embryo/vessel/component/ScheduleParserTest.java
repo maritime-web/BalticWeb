@@ -14,27 +14,20 @@
  */
 package dk.dma.embryo.vessel.component;
 
-import dk.dma.embryo.vessel.json.ScheduleResponse;
-import dk.dma.embryo.vessel.json.Voyage;
-import dk.dma.embryo.vessel.model.Berth;
-import dk.dma.embryo.vessel.persistence.GeographicDao;
-import org.jglue.cdiunit.CdiRunner;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.unitils.reflectionassert.ReflectionAssert;
-
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+
+import javax.inject.Inject;
+
+import org.jglue.cdiunit.CdiRunner;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.unitils.reflectionassert.ReflectionAssert;
+
+import dk.dma.embryo.vessel.json.ScheduleResponse;
+import dk.dma.embryo.vessel.json.Voyage;
 
 /**
  * @author Jesper Tejlgaard
@@ -49,7 +42,7 @@ public class ScheduleParserTest {
 
     @Test
     public void testUploadWithMandatoryColumns() throws IOException {
-        DateTime lastDepartureDate = formatter.parseDateTime("12-9-2014 12:00");
+//        DateTime lastDepartureDate = formatter.parseDateTime("12-9-2014 12:00");
 
         InputStream is = getClass().getResourceAsStream("/schedule-upload/scheduleUploadMandatoryColumns.xls");
         ScheduleResponse response = parser.parse(is);
@@ -66,7 +59,7 @@ public class ScheduleParserTest {
 
     @Test
     public void testUploadWithAllColumns() throws IOException {
-        DateTime lastDepartureDate = formatter.parseDateTime("12-9-2014 12:00");
+//        DateTime lastDepartureDate = formatter.parseDateTime("12-9-2014 12:00");
 
         InputStream is = getClass().getResourceAsStream("/schedule-upload/scheduleUploadAllColumns.xls");
         ScheduleResponse response = parser.parse(is);

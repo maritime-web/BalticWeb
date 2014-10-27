@@ -58,4 +58,8 @@
 	    <validCheckSum>7:f84b99e09e6150db4c09aeee2635ac23</validCheckSum>
 		<addPrimaryKey tableName="ForecastData" columnNames="id" />
 	</changeSet>
+	<changeSet id="1414401864000-1" author="jacob">
+	    <dropColumn tableName="Route" columnName="etaOfArrival"/>
+	    <dropColumn tableName="Route" columnName="etaOfDeparture"/>
+	</changeSet>
 </databaseChangeLog>

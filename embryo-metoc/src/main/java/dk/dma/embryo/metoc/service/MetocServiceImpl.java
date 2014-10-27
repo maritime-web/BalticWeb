@@ -68,8 +68,12 @@ public class MetocServiceImpl implements MetocService {
         }
 
         Vessel vessel = route.getVoyage().getVessel();
+        
+        dk.dma.enav.model.voyage.Route enavRoute = route.toEnavModel();
+        enavRoute.getWaypoints().get(0).setEta(route.getVoyage().getDeparture().toDate());
+        
 
-        RouteDecorator r = new RouteDecorator(route.toEnavModel());
+        RouteDecorator r = new RouteDecorator(enavRoute);
 
         DmiSejlRuteService.SejlRuteRequest request = new DmiSejlRuteService.SejlRuteRequest();
         request.setMssi(vessel.getMmsi());

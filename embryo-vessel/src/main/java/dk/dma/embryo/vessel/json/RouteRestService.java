@@ -119,7 +119,7 @@ public class RouteRestService {
         
         if(route != null){
             RouteDecorator decorator = new RouteDecorator(route.toEnavModel());
-            Date departure = route.getEtaOfDeparture() == null ? null : route.getEtaOfDeparture().toDate();
+            Date departure = route.getVoyage().getDeparture() == null ? null : route.getVoyage().getDeparture().toDate();
             
             result = new Route(route.getEnavId());
             result.setDes(route.getDestination());
