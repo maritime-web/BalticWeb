@@ -53,7 +53,7 @@ public class Forecast extends BaseEntity<Long> {
 
     private String area;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
     @JoinColumn
     @Basic(fetch = FetchType.LAZY)
     private ForecastData data;

@@ -4,7 +4,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 	<changeSet id="1411717611000-1" author="jacob">
-		<validCheckSum>7:5db854b81ea50f9cf088b76042e97bca</validCheckSum>
+		<validCheckSum>7:c23e0c88009e2b57e795f7615e3aa102</validCheckSum>
 		<createTable tableName="Forecast">
 			<column name="id" type="BIGINT(19)">
 				<constraints nullable="false" />
@@ -19,9 +19,7 @@
 			<column name="size" type="INT(10)" />
 			<column name="area" type="VARCHAR(100)" />
 			<column name="timestamp" type="BIGINT(19)" />
-			<column name="data_id" type="BIGINT(19)">
-			    <constraints nullable="true" />
-			</column>
+			<column name="data_id" type="BIGINT(19)" />
 		</createTable>
 		<modifySql dbms="mysql">
 			<append value=" engine innodb" />
