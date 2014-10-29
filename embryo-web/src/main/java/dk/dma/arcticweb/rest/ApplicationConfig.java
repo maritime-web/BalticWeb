@@ -14,13 +14,6 @@
  */
 package dk.dma.arcticweb.rest;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
 import dk.dma.arcticweb.reporting.json.GreenPosRestService;
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
@@ -29,6 +22,7 @@ import dk.dma.embryo.dataformats.json.IceObservationRestService;
 import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 import dk.dma.embryo.metoc.json.MetocRestService;
 import dk.dma.embryo.msi.rs.MsiRestService;
+import dk.dma.embryo.tiles.json.TileSetJsonService;
 import dk.dma.embryo.user.json.AuthenticationService;
 import dk.dma.embryo.user.json.ForgotPasswordRestService;
 import dk.dma.embryo.user.json.RequestAccessRestService;
@@ -38,6 +32,12 @@ import dk.dma.embryo.vessel.json.RouteRestService;
 import dk.dma.embryo.vessel.json.RouteUploadRestService;
 import dk.dma.embryo.vessel.json.ScheduleRestService;
 import dk.dma.embryo.weather.json.WeatherRestService;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
@@ -53,7 +53,7 @@ public class ApplicationConfig extends Application {
                 TestDataRestService.class, IceObservationRestService.class, MsiRestService.class,
                 MetocRestService.class, ArcticWebVesselRestService.class, ScheduleRestService.class,
                 LogEntryRestService.class, UserRestService.class, RequestAccessRestService.class,
-                ForgotPasswordRestService.class, WeatherRestService.class, InshoreIceReportJsonService.class));
+                ForgotPasswordRestService.class, WeatherRestService.class, InshoreIceReportJsonService.class, TileSetJsonService.class));
 
         return set;
     }
