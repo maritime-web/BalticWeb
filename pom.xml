@@ -1,420 +1,466 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>dk.dma.arcticweb</groupId>
-  <artifactId>embryo-parent</artifactId>
-  <packaging>pom</packaging>
-  <version>1.14-SNAPSHOT</version>
-  <name>embryo parent</name>
-  <description></description>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dk.dma.arcticweb</groupId>
+    <artifactId>embryo-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.14-SNAPSHOT</version>
+    <name>embryo parent</name>
+    <description></description>
 
-  <organization>
-    <name>Danish Maritime Authority</name>
-    <url>http://dma.e-navigation.net</url>
-  </organization>
+    <organization>
+        <name>Danish Maritime Authority</name>
+        <url>http://dma.e-navigation.net</url>
+    </organization>
 
-  <parent>
-    <groupId>dk.dma</groupId>
-    <artifactId>dma-root-pom</artifactId>
-    <version>17</version>
-  </parent>
+    <parent>
+        <groupId>dk.dma</groupId>
+        <artifactId>dma-root-pom</artifactId>
+        <version>17</version>
+    </parent>
 
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <shiro.version>1.2.2</shiro.version>
-    <version.org.jboss.spec.javaee6>3.0.2.Final</version.org.jboss.spec.javaee6>
-    <hibernate.version>4.0.1.Final</hibernate.version>
-    <jodatime.version>4.0.1.Final</jodatime.version>
-  </properties>
+        <shiro.version>1.2.2</shiro.version>
+        <version.org.jboss.spec.javaee6>3.0.2.Final</version.org.jboss.spec.javaee6>
+        <hibernate.version>4.0.1.Final</hibernate.version>
+        <jodatime.version>4.0.1.Final</jodatime.version>
+    </properties>
 
-  <dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-6.0</artifactId>
+                <version>${version.org.jboss.spec.javaee6}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.arcticweb</groupId>
+                <artifactId>embryo-enav-io</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.arcticweb</groupId>
+                <artifactId>embryo-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.arcticweb</groupId>
+                <artifactId>embryo-vessel</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.arcticweb</groupId>
+                <artifactId>embryo-user</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.arcticweb</groupId>
+                <artifactId>embryo-metoc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.arcticweb</groupId>
+                <artifactId>embryo-dataformats</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.arcticweb</groupId>
+                <artifactId>embryo-msi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.arcticweb</groupId>
+                <artifactId>embryo-reporting</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.enav.embryo</groupId>
+                <artifactId>embryo-weather</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.enav.embryo</groupId>
+                <artifactId>embryo-map-tiles</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.enav</groupId>
+                <artifactId>enav-model</artifactId>
+                <version>0.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>3.0.8</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.mattbertolini</groupId>
+                <artifactId>liquibase-slf4j</artifactId>
+                <version>1.2.1</version>
+            </dependency>
+
+            <!-- JODA TIME - SUPPORT -->
+            <dependency>
+                <groupId>org.jadira.usertype</groupId>
+                <artifactId>usertype.core</artifactId>
+                <version>3.0.0.GA</version>
+            </dependency>
+
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate.javax.persistence</groupId>
+                <artifactId>hibernate-jpa-2.0-api</artifactId>
+                <version>1.0.1.Final</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxrs</artifactId>
+                <version>2.3.4.Final</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax.transaction</groupId>
+                <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                <version>1.0.1.Final</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Import the Servlet API. -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.0.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld.se</groupId>
+                <artifactId>weld-se</artifactId>
+                <version>1.1.10.Final</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jglue.cdi-unit</groupId>
+                <artifactId>cdi-unit</artifactId>
+                <version>2.1.0</version>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-      <dependency>
-        <groupId>org.jboss.spec</groupId>
-        <artifactId>jboss-javaee-6.0</artifactId>
-        <version>${version.org.jboss.spec.javaee6}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+        <!-- LOGGING DEPENDENCIES - LOG4J -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${dependencies.slf4j.version}</version>
+        </dependency>
 
-      <dependency>
-        <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-enav-io</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.13</version>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-        <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+        <!-- APACHE COMMONS -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
 
-      <dependency>
-        <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-vessel</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.unitils</groupId>
+            <artifactId>unitils-core</artifactId>
+            <version>3.3</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-      <dependency>
-        <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-user</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-        <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-metoc</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>2.2.5</version>
+        </dependency>
 
-      <dependency>
-        <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-dataformats</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-msi</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>dk.dma.arcticweb</groupId>
-        <artifactId>embryo-reporting</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>dk.dma.enav.embryo</groupId>
-        <artifactId>embryo-weather</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-
-      <dependency>
-        <groupId>dk.dma.enav</groupId>
-        <artifactId>enav-model</artifactId>
-        <version>0.1</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.liquibase</groupId>
-        <artifactId>liquibase-core</artifactId>
-        <version>3.0.8</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.mattbertolini</groupId>
-        <artifactId>liquibase-slf4j</artifactId>
-        <version>1.2.1</version>
-      </dependency>
-
-      <!-- JODA TIME - SUPPORT -->
-      <dependency>
-        <groupId>org.jadira.usertype</groupId>
-        <artifactId>usertype.core</artifactId>
-        <version>3.0.0.GA</version>
-      </dependency>
-
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>
-        <version>2.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>${hibernate.version}</version>
-        <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>${hibernate.version}</version>
-        <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-jaxrs</artifactId>
-        <version>2.3.4.Final</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.spec.javax.transaction</groupId>
-        <artifactId>jboss-transaction-api_1.1_spec</artifactId>
-        <version>1.0.1.Final</version>
-        <scope>provided</scope>
-      </dependency>
-
-      <!-- Import the Servlet API. -->
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>3.0.1</version>
-        <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.weld.se</groupId>
-        <artifactId>weld-se</artifactId>
-        <version>1.1.10.Final</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jglue.cdi-unit</groupId>
-        <artifactId>cdi-unit</artifactId>
-        <version>2.1.0</version>
-      </dependency>
-
-
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+        </dependency>
     </dependencies>
-  </dependencyManagement>
 
-  <dependencies>
-    <!-- LOGGING DEPENDENCIES - LOG4J -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${dependencies.slf4j.version}</version>
-    </dependency>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.googlecode.jslint4java</groupId>
+                                        <artifactId>jslint4java-maven-plugin</artifactId>
+                                        <versionRange>[2.0,)</versionRange>
+                                        <goals>
+                                            <goal>lint</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                        <!-- <execute /> -->
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>jaxws-maven-plugin</artifactId>
+                                        <versionRange>[1,)</versionRange>
+                                        <goals>
+                                            <goal>wsimport</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute/>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>exec-maven-plugin</artifactId>
+                                        <versionRange>[1.2,)</versionRange>
+                                        <goals>
+                                            <goal>exec</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
 
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.0.13</version>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- APACHE COMMONS -->
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
-    </dependency>
-
-    <!-- Test dependencies -->
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-core</artifactId>
-      <version>3.3</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>1.9.5</version>
-      <scope>test</scope>
-    </dependency>
-
-  </dependencies>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
+                <plugin>
+                    <!-- http://docs.jslint4java.googlecode.com/git-history/780e260b85a0a5a162eac5e94dc3dd104b433e81/2.0.2/maven.html -->
+                    <!-- Using jshint would have been preferable, but existing maven plugins seems unsuitable -->
+                    <!-- jshint-mojo : -->
+                    <!-- - https://github.com/cjdev/jshint-mojo. -->
+                    <!-- - Does not yet supply a checkstyle.xml or jslint.xml file with results. -->
+                    <!-- MavenPluginJSHint -->
+                    <!-- - http://code.google.com/p/wro4j/wiki/MavenPluginJsHint -->
+                    <!-- - Seems to be entangled in other web stuff, which makes it an unsuitable plugin -->
+                    <!-- mulesoft/jshint-maven-plugin: -->
+                    <!-- - https://github.com/mulesoft/jshint-maven-plugin -->
+                    <!-- - no configuration options and no work done on the plugin for many months -->
                     <groupId>com.googlecode.jslint4java</groupId>
                     <artifactId>jslint4java-maven-plugin</artifactId>
-                    <versionRange>[2.0,)</versionRange>
-                    <goals>
-                      <goal>lint</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                    <!-- <execute /> -->
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
+                    <version>2.0.2</version>
+                    <configuration>
+                        <failOnError>false</failOnError>
+                        <!-- https://code.google.com/p/jslint4java/issues/detail?id=91 -->
+                        <excludes>
+                            <exclude>**/ext/*.js</exclude>
+                        </excludes>
+                        <options>
+                            <devel>true</devel>
+                            <eqeq>true</eqeq>
+                            <es5>true</es5>
+                            <forin>true</forin>
+                            <indent>4</indent>
+                            <maxerr>1000</maxerr>
+                            <maxlen>120</maxlen>
+                            <node>false</node>
+                            <nomen>false</nomen>
+                            <passfail>false</passfail>
+                            <plusplus>true</plusplus>
+                            <predef>angular,$,jQuery,${jslint.predef},sessionStorage,localStorage</predef>
+                            <properties>false</properties>
+                            <sloppy>true</sloppy>
+                            <undef>true</undef>
+                            <white>true</white>
+                        </options>
+                    </configuration>
+                </plugin>
+
+                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>jaxws-maven-plugin</artifactId>
-                    <versionRange>[1,)</versionRange>
-                    <goals>
-                      <goal>wsimport</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute />
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <versionRange>[1.2,)</versionRange>
-                    <goals>
-                      <goal>exec</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>1.8</version>
+                    <executions>
+                        <execution>
+                            <id>add-source</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>${project.build.directory}/generated</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
 
-        <plugin>
-          <!-- http://docs.jslint4java.googlecode.com/git-history/780e260b85a0a5a162eac5e94dc3dd104b433e81/2.0.2/maven.html -->
-          <!-- Using jshint would have been preferable, but existing maven plugins seems unsuitable -->
-          <!-- jshint-mojo : -->
-          <!-- - https://github.com/cjdev/jshint-mojo. -->
-          <!-- - Does not yet supply a checkstyle.xml or jslint.xml file with results. -->
-          <!-- MavenPluginJSHint -->
-          <!-- - http://code.google.com/p/wro4j/wiki/MavenPluginJsHint -->
-          <!-- - Seems to be entangled in other web stuff, which makes it an unsuitable plugin -->
-          <!-- mulesoft/jshint-maven-plugin: -->
-          <!-- - https://github.com/mulesoft/jshint-maven-plugin -->
-          <!-- - no configuration options and no work done on the plugin for many months -->
-          <groupId>com.googlecode.jslint4java</groupId>
-          <artifactId>jslint4java-maven-plugin</artifactId>
-          <version>2.0.2</version>
-          <configuration>
-            <failOnError>false</failOnError>
-            <!-- https://code.google.com/p/jslint4java/issues/detail?id=91 -->
-            <excludes>
-              <exclude>**/ext/*.js</exclude>
-            </excludes>
-            <options>
-              <devel>true</devel>
-              <eqeq>true</eqeq>
-              <es5>true</es5>
-              <forin>true</forin>
-              <indent>4</indent>
-              <maxerr>1000</maxerr>
-              <maxlen>120</maxlen>
-              <node>false</node>
-              <nomen>false</nomen>
-              <passfail>false</passfail>
-              <plusplus>true</plusplus>
-              <predef>angular,$,jQuery,${jslint.predef},sessionStorage,localStorage</predef>
-              <properties>false</properties>
-              <sloppy>true</sloppy>
-              <undef>true</undef>
-              <white>true</white>
-            </options>
-          </configuration>
-        </plugin>
+            </plugins>
+        </pluginManagement>
 
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>1.8</version>
-          <executions>
-            <execution>
-              <id>add-source</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>add-source</goal>
-              </goals>
-              <configuration>
-                <sources>
-                  <source>${project.build.directory}/generated</source>
-                </sources>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
+        <plugins>
 
-      </plugins>
-    </pluginManagement>
-
-    <plugins>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/generated</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-          <optimize>true</optimize>
-          <debug>true</debug>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.9</version>
-        <configuration>
-          <wtpapplicationxml>true</wtpapplicationxml>
-          <wtpversion>2.0</wtpversion>
-          <downloadSources>true</downloadSources>
-        </configuration>
-      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <optimize>true</optimize>
+                    <debug>true</debug>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <wtpapplicationxml>true</wtpapplicationxml>
+                    <wtpversion>2.0</wtpversion>
+                    <downloadSources>true</downloadSources>
+                </configuration>
+            </plugin>
 
-    </plugins>
+        </plugins>
 
-  </build>
+    </build>
 
-  <repositories>
-    <repository>
-      <id>dma-releases</id>
-      <name>Dma Release Repository</name>
-      <url>http://repository-dma.forge.cloudbees.com/release/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+    <repositories>
+        <repository>
+            <id>maven-central</id>
+            <name>Maven Central</name>
+            <url>http://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>dma-releases</id>
+            <name>Dma Release Repository</name>
+            <url>http://repository-dma.forge.cloudbees.com/release/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>osgeo</id>
+            <name>Open Source Geospatial Foundation Repository</name>
+            <url>http://download.osgeo.org/webdav/geotools/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
-  <modules>
-    <module>embryo-enav-io</module>
-    <module>embryo-common</module>
-    <module>embryo-vessel</module>
-    <module>embryo-user</module>
-    <module>embryo-dataformats</module>
-    <module>embryo-msi</module>
-    <module>embryo-metoc</module>
-    <module>embryo-reporting</module>
-    <module>embryo-weather</module>
-    <module>embryo-web</module>
-  </modules>
+
+    <modules>
+        <module>embryo-enav-io</module>
+        <module>embryo-common</module>
+        <module>embryo-vessel</module>
+        <module>embryo-user</module>
+        <module>embryo-dataformats</module>
+        <module>embryo-map-tiles</module>
+        <module>embryo-msi</module>
+        <module>embryo-metoc</module>
+        <module>embryo-reporting</module>
+        <module>embryo-weather</module>
+        <module>embryo-web</module>
+    </modules>
 
 </project>
