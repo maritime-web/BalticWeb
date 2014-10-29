@@ -26,11 +26,14 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
+import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.weather.model.Warnings;
 import dk.dma.embryo.weather.model.RegionForecast;
+import dk.dma.embryo.weather.model.Warnings;
 
 /**
  * 
@@ -47,12 +50,15 @@ public class WeatherServiceImpl {
 
     private RegionForecast forecast;
     private Warnings warning;
-    
+
     @Inject
     private DmiForecastParser_En parser;
 
     @Inject
     private Logger logger;
+    
+    public static final String FORECAST_FILENAME = "grudseng";
+    public static final String GALE_WARNING_FILENAME = "gronvar";
 
     public WeatherServiceImpl() {
     }
@@ -66,22 +72,22 @@ public class WeatherServiceImpl {
     public Warnings getWarning() {
         return warning;
     }
-    
+
     @Lock(LockType.WRITE)
-    public void setValues(RegionForecast forecast, Warnings warning){
+    public void setValues(RegionForecast forecast, Warnings warning) {
         this.forecast = forecast;
         this.warning = warning;
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         try {
             refresh();
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error initializing {}", getClass().getSimpleName(), e);
         }
     }
-    
+
     public void refresh() throws IOException {
         RegionForecast fResult = readForecasts();
         Warnings wResult = readGaleWarnings();
@@ -89,14 +95,44 @@ public class WeatherServiceImpl {
     }
 
     private RegionForecast readForecasts() throws IOException {
-        String fn = localDmiDir + "/grudseng.xml";
-        return parser.parse(new File(fn));
+        File file = getXmlFileName(FORECAST_FILENAME);
+        try {
+            return parser.parse(file);
+        } catch (RuntimeException | IOException e) {
+            saveFaultyFile(FORECAST_FILENAME);
+            throw e;
+        }
     }
 
     private Warnings readGaleWarnings() throws IOException {
-        String fn = localDmiDir + "/gronvar.xml";
-        DmiWarningParser parser = new DmiWarningParser(new File(fn));
-        WarningTranslator translator = new WarningTranslator();
-        return translator.fromDanishToEnglish(parser.parse());
+        File file = getXmlFileName(GALE_WARNING_FILENAME);
+        try {
+            DmiWarningParser parser = new DmiWarningParser(file);
+            WarningTranslator translator = new WarningTranslator();
+            return translator.fromDanishToEnglish(parser.parse());
+        } catch (RuntimeException | IOException e) {
+            saveFaultyFile(GALE_WARNING_FILENAME);
+            throw e;
+        }
+    }
+
+    private void saveFaultyFile(String filename) {
+        File faultyDir = new File(localDmiDir + "/faulty");
+        if(!faultyDir.exists()) {
+            faultyDir.mkdir();
+        }
+        File sourceFile = getXmlFileName(filename);
+        DateTime now = DateTime.now(DateTimeZone.UTC);
+        String dateStr = now.toString("_yyyy_MM_dd-HH_mm_ss");
+        File destFile = new File(faultyDir.getPath() + "/" + filename + dateStr + ".xml");
+        try {
+            FileUtils.copyFile(sourceFile, destFile);
+        } catch (IOException e) {
+            logger.error("Could not copy faulty file {} to {}", sourceFile.getAbsolutePath(), destFile.getAbsolutePath(), e);
+        }
+    }
+    
+    private File getXmlFileName(String filename) {
+        return new File(localDmiDir + "/" + filename + ".xml");
     }
 }

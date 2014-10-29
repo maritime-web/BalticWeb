@@ -103,7 +103,7 @@ $(function() {
             ;
         });
         return result;
-    }
+    };
 
     embryo.vessel.createSorter = function(nameSequence) {
         var sorter = function(service1, service2) {
@@ -112,14 +112,14 @@ $(function() {
             return i1 - i2;
         };
         return sorter;
-    }
+    };
 
     embryo.vessel.createFilter = function(nameSequence, subFilter) {
         var filter = function(provider, index, array) {
             return nameSequence.indexOf(provider.title) >= 0 && subFilter(provider, index, array);
         };
         return filter;
-    }
+    };
 
     embryo.vessel.controllers = {};
     embryo.vessel.controllers.service = function(serv, scope) {
@@ -195,7 +195,7 @@ $(function() {
             }
 
         };
-    }
+    };
 
     function vesselAis(data) {
         if (!data.ais) {
@@ -331,7 +331,7 @@ $(function() {
                     for ( var index in selectedActions) {
                         if (typeof selectedActions[index] == 'object') {
                             if (selectedActions[index] && selectedActions[index].hideAll) {
-                                selectedActions[index].hideAll()
+                                selectedActions[index].hideAll();
                             }
                         }
                     }
@@ -379,7 +379,7 @@ $(function() {
             for ( var index in selectedActions) {
                 if (typeof selectedActions[index] == 'object') {
                     if (selectedActions[index] && selectedActions[index].hideAll) {
-                        selectedActions[index].hideAll()
+                        selectedActions[index].hideAll();
                     }
                 }
             }

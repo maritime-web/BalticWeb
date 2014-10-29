@@ -16,8 +16,6 @@ package dk.dma.embryo.dataformats.netcdf;
 
 import java.util.Map;
 
-import ucar.nc2.Variable;
-
 /**
  * This class maps a NetCDF variable to an ArcticWeb concept.
  * 
@@ -30,13 +28,10 @@ import ucar.nc2.Variable;
  */
 public class NetCDFVar {
     private String varname, description;
-    private Variable variable;
-    private boolean complex;
 
-    public NetCDFVar(String varname, String description, boolean complex) {
+    public NetCDFVar(String varname, String description) {
         this.varname = varname;
         this.description = description;
-        this.complex = complex;
     }
 
     public String getVarname() {
@@ -47,27 +42,19 @@ public class NetCDFVar {
         return description;
     }
 
-    public Variable getVariable() {
-        return variable;
-    }
-
-    public void setVariable(Variable variable) {
-        this.variable = variable;
-    }
-
-    public boolean isComplex() {
-        return complex;
-    }
-
     /**
      * Convenience method to add a CDF variable to a map using the varname as map key. 
      * 
      * @param map
      * @param varname
      * @param description
-     * @param complex
      */
-    public static void addToMap(Map<String, NetCDFVar> map, String varname, String description, boolean complex) {
-        map.put(varname, new NetCDFVar(varname, description, complex));
+    public static void addToMap(Map<String, NetCDFVar> map, String varname, String description) {
+        map.put(varname, new NetCDFVar(varname, description));
+    }
+    
+    @Override
+    public String toString() {
+        return varname + " (" + description + ")";
     }
 }

@@ -49,7 +49,7 @@ public class RequestAccessMailTest {
         String header = "Request Access for john@doe.com";
         String body = "Preferred Login: john\n";
         body += "Contact Person: John Doe\n";
-        body += "Email Address: john@doe.com\n";
+        body += "E-mail Address: john@doe.com\n";
         body += "Mmsi Number: 12";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());

@@ -12,7 +12,11 @@
 
     embryo.RouteEditCtrl = function($scope, RouteService, VesselService, ScheduleService, VesselInformation) {
         function initRouteMeta(route, meta) {
-            setDefault(route, "etaDep", meta.etdep);
+            //setDefault(route, "etaDep", $scope.scheduleData.etdep);
+            route.etaDep = $scope.scheduleData.etdep;
+            route.formatEtaDep = function() {
+                return formatTime(route.etaDep);
+            };
             setDefault($scope, "etaDes", meta.etdes);
             setDefault(route, "dep", meta.dep);
             setDefault(route, "des", meta.des);
@@ -66,7 +70,7 @@
         $scope.close = function($event) {
             $event.preventDefault();
             $scope.provider.close();
-        }
+        };
 
         $scope.getLastWaypoint = function() {
             if (!$scope.waypoints) {

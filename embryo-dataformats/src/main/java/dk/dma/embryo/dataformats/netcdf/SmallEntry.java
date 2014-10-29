@@ -15,6 +15,8 @@
 package dk.dma.embryo.dataformats.netcdf;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A SmallEntry is an entry that instead of complete information only contains
@@ -33,13 +35,14 @@ public class SmallEntry implements Serializable {
     private static final long serialVersionUID = 5778890617311697112L;
 
     private int lat, lon, time;
-    private float observation;
+    private Map<Integer, Float> obs;
 
-    public SmallEntry(int lat, int lon, int time, float observation) {
+    public SmallEntry(int lat, int lon, int time, int obsNo, float observation) {
         this.lat = lat;
         this.lon = lon;
         this.time = time;
-        this.observation = observation;
+        this.obs = new HashMap<>();
+        obs.put(obsNo, observation);
     }
 
     public int getLat() {
@@ -54,7 +57,12 @@ public class SmallEntry implements Serializable {
         return time;
     }
 
-    public float getObservation() {
-        return observation;
+    public Map<Integer, Float> getObs() {
+        return obs;
+    }
+    
+    @Override
+    public String toString() {
+        return "Lat: " + lat + ", lon: " + lon + ", time: " + time + ", obs: " + obs;
     }
 }

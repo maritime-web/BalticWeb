@@ -283,6 +283,10 @@ body {
     margin-bottom: 5px;
 }
 
-.e-alert-danger {
-    color: #a94442
+.e-alert-danger{
+	color : #a94442
+}
+
+input[type="range"].e-forecast {
+	width: 120px;
 }

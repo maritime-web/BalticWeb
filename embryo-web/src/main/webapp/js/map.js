@@ -350,8 +350,8 @@ $(function() {
         $.each([ "Blank", "World", "OSM" ], function(k, v) {
             $.each(map.getLayersByName(v), function(k, v) {
                 map.removeLayer(v);
-            })
-        })
+            });
+        });
     }
 
     function setupBaseMap() {
@@ -362,7 +362,7 @@ $(function() {
             setupOsmMap();
             break;
         default:
-            setupVectorMap(embryo.baseMap)
+            setupVectorMap(embryo.baseMap);
             break;
         }
     }
@@ -430,7 +430,7 @@ $(function() {
                 setupBaseMap(embryo.baseMap);
                 setCookie("dma-ais-map-" + embryo.authentication.userName, embryo.baseMap, 30);
             }
-        })
+        });
     }
 
     var mapModule = angular.module('embryo.zoom', [ 'embryo.authentication' ]);
@@ -439,7 +439,7 @@ $(function() {
         var control = new OpenLayers.Control.Zoom({
             zoomInId : 'dmaZoomIn',
             zoomOutId : 'dmaZoomOut'
-        })
+        });
         embryo.map.internalMap.addControl(control);
 
         $scope.zoomAll = function() {
@@ -458,16 +458,16 @@ $(function() {
             $("#switchBaseMapDialog").modal("show");
 
             registerEvents();
-        }
+        };
 
         $scope.zoomClasses = function() {
             var zoom2YourVessel = Subject.authorize('Sailor');
-            return zoom2YourVessel ? 'e-btn-tall' : 'e-btn-low'
-        }
+            return zoom2YourVessel ? 'e-btn-tall' : 'e-btn-low';
+        };
 
         $scope.$on('$destroy', function() {
             embryo.map.internalMap.removeControl(control);
         });
     } ]);
-
+    
 });

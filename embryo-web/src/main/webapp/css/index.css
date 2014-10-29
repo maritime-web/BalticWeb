@@ -88,3 +88,15 @@ h3 {
 .pagecontainer li {
 	line-height: inherit;
 }
+
+.ie8warning {
+	background-color: #ffffff;
+}
+
+.ie8warning .container {
+	border: 1px solid #ffcc33;
+	background-color: #ffff66;
+	padding: 10px;
+	margin: 20px auto;
+	width: 80%;
+}

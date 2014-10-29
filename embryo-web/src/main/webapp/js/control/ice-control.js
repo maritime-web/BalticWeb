@@ -8,7 +8,7 @@ $(function() {
 
     var inshoreLayer = new InshoreIceReportLayer();
     addLayerToMap("ice", inshoreLayer, embryo.map);
-
+    
     var chartsDisplayed = {};
 
     function displayChartList(divId, chartType, data) {
@@ -104,7 +104,7 @@ $(function() {
             IceService.update();
             $("#iceControlPanel .collapse").data("collapse", null);
             openCollapse("#iceControlPanel #icpIceMaps");
-        }
+        };
 
 
 
@@ -138,7 +138,7 @@ $(function() {
 
                 }
             }
-        }
+        };
 
         IceService.subscribe(subscriptionConfig);
 
@@ -153,7 +153,7 @@ $(function() {
                     lon = ice.Long;
                     lat = ice.Lat;
                 }
-                $scope.selected.open = true
+                $scope.selected.open = true;
                 $scope.selected.observation = ice;
                 showIceInformation(ice);
             }
@@ -215,11 +215,11 @@ $(function() {
 
         $scope.isDownloaded = function(chart) {
             return chartsDisplayed[chart.type] == chart.shape;
-        }
+        };
         
         $scope.formatDate = function(millis){
             return formatDate(millis);
-        }
+        };
 
         $scope.download = function($event, chart, charts) {
             $event.preventDefault();
@@ -230,24 +230,24 @@ $(function() {
                     });
                 }
             });
-        }
+        };
 
         $scope.hideIce = function($event, chart) {
             $event.preventDefault();
             delete chartsDisplayed[chart.type];
             iceLayer.clear(chart.type);
-        }
+        };
 
         $scope.zoom = function($event, chart) {
             $event.preventDefault();
             embryo.map.zoomToExtent(iceLayer.layers);
-        }
+        };
 
         $scope.showInshore = function($event, location) {
             $event.preventDefault();
             embryo.map.setCenter(location.longitude.replace(",", "."), location.latitude.replace(",", "."), 11);
             inshoreLayer.select(location.number);
-        }
+        };
 
         $scope.getLocationName = function(number){
             for(var i in $scope.inshoreLocations){
@@ -256,7 +256,7 @@ $(function() {
                 }
             }
             return null;
-        }
+        };
 
         function requestShapefile(chart, onSuccess) {
             var name = chart.shape;
@@ -584,4 +584,5 @@ $(function() {
         }
         $("#icpSelectedIce p").html(source);
     }
+
 });

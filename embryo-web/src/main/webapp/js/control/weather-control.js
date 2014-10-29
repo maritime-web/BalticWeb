@@ -6,8 +6,7 @@ $(function() {
     var metocLayer = new MetocLayer();
     addLayerToMap("weather", metocLayer, embryo.map);
 
-    var module = angular.module('embryo.weather.control', [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control',
-            'embryo.weather.service' ]);
+    var module = angular.module('embryo.weather.control', [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control', 'embryo.weather.service' ]);
 
     module.controller("WeatherController", [ '$scope', function($scope) {
         $scope.selected = {};
@@ -21,12 +20,12 @@ $(function() {
 
         $scope.ms2Knots = function(ms) {
             return Math.round(ms2Knots(ms) * 100) / 100;
-        }
+        };
 
         metocLayer.select("metocCtrl", function(forecast) {
             $scope.selected.open = !!forecast;
             $scope.selected.forecast = forecast;
-            $scope.selected.type = "msi"
+            $scope.selected.type = "msi";
             if (!$scope.$$phase) {
                 $scope.$apply(function() {
                 });
@@ -38,106 +37,105 @@ $(function() {
         };
     } ]);
 
-    module.controller("MetocController", [ '$scope', 'RouteService', 'MetocService', 'Subject',
-            function($scope, RouteService, MetocService, Subject) {
-                $scope.routes = [];
-                $scope.selectedOpen = false;
+    module.controller("MetocController", [ '$scope', 'RouteService', 'MetocService', 'Subject', function($scope, RouteService, MetocService, Subject) {
+        $scope.routes = [];
+        $scope.selectedOpen = false;
 
-                function available(route) {
-                    return (Math.abs(route.etaDep - Date.now()) < 1000 * 3600 * 55) || Date.now() < route.eta;
+        function available(route) {
+            return (Math.abs(route.etaDep - Date.now()) < 1000 * 3600 * 55) || Date.now() < route.eta;
+        }
+
+        if (Subject.getDetails().shipMmsi) {
+            $scope.routes.push({
+                name : 'Active route',
+                available : false,
+                ids : null
+            });
+
+            RouteService.getActiveMeta(embryo.authentication.shipMmsi, function(route) {
+                $scope.routes[0].available = available(route);
+                $scope.routes[0].ids = [ route.id ];
+            });
+        }
+
+        $scope.routes.push({
+            name : 'Selected routes',
+            available : false,
+            ids : []
+        });
+
+        $scope.$watch(RouteService.getSelectedRoutes, function(newValue, oldValue) {
+            var routes = RouteService.getSelectedRoutes();
+
+            for ( var index in routes) {
+                if (available(routes[index])) {
+                    $scope.routes[$scope.routes.length - 1].available = true;
+                    $scope.routes[$scope.routes.length - 1].ids.push(routes[index].id);
                 }
+            }
+        });
 
-                if (Subject.getDetails().shipMmsi) {
-                    $scope.routes.push({
-                        name : 'Active route',
-                        available : false,
-                        ids : null
-                    });
+        $scope.$watch(function() {
+            return MetocService.getDefaultWarnLimits();
+        }, function(defaultLimits) {
+            if ($scope.metocs) {
+                metocLayer.draw($scope.metocs);
+            }
+        }, true);
 
-                    RouteService.getActiveMeta(embryo.authentication.shipMmsi, function(route) {
-                        $scope.routes[0].available = available(route);
-                        $scope.routes[0].ids = [ route.id ];
-                    });
-                }
+        function clearScope() {
+            $scope.shown = null;
+            $scope.selectedForecast = null;
+            $scope.metocs = null;
+        }
 
-                $scope.routes.push({
-                    name : 'Selected routes',
-                    available : false,
-                    ids : []
-                });
-
-                $scope.$watch(RouteService.getSelectedRoutes, function(newValue, oldValue) {
-                    var routes = RouteService.getSelectedRoutes();
-
-                    for ( var index in routes) {
-                        if (available(routes[index])) {
-                            $scope.routes[$scope.routes.length - 1].available = true;
-                            $scope.routes[$scope.routes.length - 1].ids.push(routes[index].id);
-                        }
-                    }
-                });
-
-                $scope.$watch(function() {
-                    return MetocService.getDefaultWarnLimits();
-                }, function(defaultLimits) {
-                    if ($scope.metocs) {
-                        metocLayer.draw($scope.metocs);
-                    }
-                }, true);
-
-                function clearScope() {
-                    $scope.shown = null;
-                    $scope.selectedForecast = null;
-                    $scope.metocs = null;
-                }
-
-                $scope.toggleShowMetoc = function($event, route) {
-                    $event.preventDefault();
-                    metocLayer.clear();
-                    if (!$scope.shown || $scope.shown.name !== route.name) {
-                        MetocService.listMetoc(route.ids, function(metocs) {
-                            if (MetocService.forecastCount(metocs) > 0) {
-                                $scope.shown = route;
-                                $scope.metocs = metocs;
-                                metocLayer.draw(metocs);
-                                metocLayer.zoomToExtent();
-                            } else {
-                                clearScope();
-                            }
-                        });
+        $scope.toggleShowMetoc = function($event, route) {
+            $event.preventDefault();
+            metocLayer.clear();
+            if (!$scope.shown || $scope.shown.name !== route.name) {
+                MetocService.listMetoc(route.ids, function(metocs) {
+                    if (MetocService.forecastCount(metocs) > 0) {
+                        $scope.shown = route;
+                        $scope.metocs = metocs;
+                        metocLayer.draw(metocs);
+                        metocLayer.zoomToExtent();
                     } else {
                         clearScope();
                     }
-                };
+                });
+            } else {
+                clearScope();
+            }
+        };
 
-            } ]);
+    } ]);
 
     module.controller("WeatherForecastLayerControl", [ '$scope', 'ShapeService', 'WeatherService', function($scope, ShapeService, WeatherService) {
-        function merge(shapes, weather){
-            for(var index in shapes){
+        function merge(shapes, weather) {
+            for ( var index in shapes) {
                 var shape = shapes[index];
-                for(var j in shape.fragments){
+                for ( var j in shape.fragments) {
                     var fragment = shape.fragments[j];
-                    for(var k in weather.forecast.districts){
-                        if(fragment.description.name == weather.forecast.districts[k].name){
+                    for ( var k in weather.forecast.districts) {
+                        if (fragment.description.name == weather.forecast.districts[k].name) {
                             fragment.district = weather.forecast.districts[k];
                         }
                     }
                 }
             }
-            
+
             return shapes;
         }
-        
+
         function drawAreas(weather) {
             ShapeService.staticShapes('static.Farvande_GRL', {
                 exponent : 4,
                 delta : true
             }, function(shapes) {
-                if(weather){
+                if (weather) {
                     shapes = merge(shapes, weather);
                 }
-                
+
                 seaForecastLayer.draw(shapes);
             }, function(errorMsg) {
             });
@@ -167,15 +165,15 @@ $(function() {
         $scope.viewForecast = function($event, district) {
             $event.preventDefault();
             seaForecastLayer.select(district);
-        }
+        };
 
         $scope.from = function() {
             return $scope.forecast && $scope.forecast.from ? formatTime($scope.forecast.from) : null;
-        }
+        };
 
         $scope.to = function() {
             return $scope.forecast && $scope.forecast.to ? formatTime($scope.forecast.to) : null;
-        }
+        };
 
         $scope.$on("$destroy", function() {
             WeatherService.unsubscribe(id);
@@ -196,8 +194,8 @@ $(function() {
 
         $scope.formatDateTime = function(validTo) {
             return validTo ? formatTime(validTo) : null;
-        }
-} ]);
+        };
+    } ]);
 
     module.controller("SettingsCtrl", [ '$scope', 'MetocService', function($scope, MetocService) {
         var warnLimits = MetocService.getDefaultWarnLimits();
@@ -226,7 +224,7 @@ $(function() {
                 defaultWindWarnLimit : $scope.settings[2].value
             });
 
-            $scope.message = "Weater forecast settings saved.";
+            $scope.message = "Weather forecast settings saved.";
         };
 
         $scope.provider = {
@@ -244,7 +242,7 @@ $(function() {
         $scope.close = function($event) {
             $event.preventDefault();
             $scope.provider.close();
-        }
+        };
 
         embryo.controllers.settings = $scope.provider;
 
@@ -262,10 +260,10 @@ $(function() {
     module.controller("LegendsController", [ '$scope', 'MetocService', function($scope, MetocService) {
         function buildLimits(limits) {
             var result = [];
-            for ( var index = 0; index < limits.length; index += 2) {
+            for (var index = 0; index < limits.length; index += 2) {
                 var object = {
                     "first" : limits[index],
-                }
+                };
                 if (index < limits.length - 2) {
                     object["second"] = limits[index + 1];
                 }
@@ -284,6 +282,6 @@ $(function() {
 
         $scope.knots2Ms = function(knots) {
             return Math.round(knots2Ms(knots) * 10) / 10;
-        }
+        };
     } ]);
 });

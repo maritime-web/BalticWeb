@@ -42,7 +42,8 @@ import org.xml.sax.SAXException;
 import dk.dma.embryo.weather.model.Warnings;
 
 /**
- * Parser for reading routes in RT3 format. RT3 format is among others used by Transas ECDIS.
+ * Parser for reading routes in RT3 format. RT3 format is among others used by
+ * Transas ECDIS.
  * 
  * @author Jesper Tejlgaard
  */
@@ -91,8 +92,7 @@ public class DmiWarningParser {
 
         String date = reader.readLine();
         date = prettifyDateText(date);
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("EEEE dd MMMM yyyy HH:mm").withZone(DateTimeZone.UTC)
-                .withLocale(DEFAULT_LOCALE);
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("EEEE dd MMMM yyyy HH:mm").withZone(DateTimeZone.UTC).withLocale(DEFAULT_LOCALE);
         DateTime ts = formatter.parseDateTime(date);
         result.setFrom(ts.toDate());
 
@@ -103,25 +103,30 @@ public class DmiWarningParser {
             if (line.trim().length() != 0) {
                 if (line.indexOf("Varsel nummer") == 0 && line.indexOf("ophører") < 0) {
                     result.setNumber(Integer.valueOf(line.substring(14)));
-                }else if (line.indexOf("Kulingvarsel") >= 0 || line.indexOf("kulingvarsel") >= 0){
+                } else if (line.indexOf("Kulingvarsel") >= 0 || line.indexOf("kulingvarsel") >= 0) {
                     warnings = result.getGale();
                     useMetersPerSecond = true;
-                }else if (line.indexOf("Stormvarsel") >= 0 || line.indexOf("stormvarsel") >= 0){
+                } else if (line.indexOf("Stormvarsel") >= 0 || line.indexOf("stormvarsel") >= 0) {
                     warnings = result.getStorm();
                     useMetersPerSecond = false;
-                }else if (line.indexOf("Overisningsvarsel") >= 0 || line.indexOf("overisningsvarsel") >= 0){
+                } else if (line.indexOf("Overisningsvarsel") >= 0 || line.indexOf("overisningsvarsel") >= 0) {
                     warnings = result.getIcing();
                     useMetersPerSecond = false;
-                } else if(warnings != null){
-                    String value = reader.readLine();
-                    if(useMetersPerSecond){
-                        value = value.replace(" m/s.", ".");
-                        value = value.replace("m/s.", ".");
-                        value = value.replace(".", " m/s.");
+                } else if (warnings != null) {
+                    String value = null;
+                    StringBuilder sb = new StringBuilder();
+                    while (((value = reader.readLine()) != null) && !value.trim().equals("")) {
+                        // String value = reader.readLine();
+                        if (useMetersPerSecond) {
+                            value = value.replace(" m/s.", ".");
+                            value = value.replace("m/s.", ".");
+                            value = value.replace(".", " m/s.");
+                        }
+                        sb.append(value + " ");
                     }
                     String name = line.replace(":", "");
-                    warnings.put(name, value);
-                } 
+                    warnings.put(name, sb.toString().trim());
+                }
             }
         }
         return result;
@@ -140,8 +145,7 @@ public class DmiWarningParser {
     public String extractElementText(Element root, String elementName) throws IOException {
         NodeList uniqueList = root.getElementsByTagName(elementName);
         if (uniqueList.getLength() != 1) {
-            throw new IOException("Expected exactly one <" + elementName + "> element within <" + root.getNodeName()
-                    + "> element");
+            throw new IOException("Expected exactly one <" + elementName + "> element within <" + root.getNodeName() + "> element");
         }
 
         return extractElementText((Element) uniqueList.item(0));

@@ -1,0 +1,243 @@
+<div x-ng-controller="ForecastController as pc">
+	<div id="forecastControlPanel" accordion close-others="true" e-left-bar
+		open-first="true" class="controlPanel2">
+		<!--  Enable below once DMI starts delivering data. -->
+		<!-- div accordion-group heading="Wave forecasts">
+			<div x-ng-controller="WaveForecastsCtrl">
+				<h4>Wave forecasts</h4>
+				<table class="table table-condensed">
+					<tr x-ng-repeat="forecast in waveForecasts" x-ng-controller="WaveForecastCtrl">
+						<td>
+							<div>
+								<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.name}}</a>
+								<span x-ng-show="pc.forecastSelected == forecast.id">
+									<br /><input type="range" class="e-forecast" min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
+									<br />Selected time: {{currentDate}}
+								</span>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div -->
+
+		<div accordion-group heading="Ice forecasts">
+			<div x-ng-controller="IceForecastsCtrl">
+				<h4>Ice forecasts</h4>
+				<table class="table table-condensed">
+					<colgroup>
+						<col />
+						<col />
+						<col />
+						<col />
+					</colgroup>
+					<tr>
+						<th>Name</th>
+						<th>Date</th>
+						<th>Size</th>
+						<th>Provider</th>
+					</tr>
+					<tr x-ng-repeat="forecast in iceForecasts"
+						x-ng-controller="IceForecastCtrl">
+						<td>
+							<div>
+								<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
+								<span x-ng-show="pc.forecastSelected == forecast.id"> <br />
+									<input type="radio" name="iceForecastType_{{forecast.id}}"
+									id="iceConcentration_{{forecast.id}}" value="iceConcentration"
+									x-ng-model="selectedVariable"
+									x-ng-disabled="noIceConcentration" /> <label
+									for="iceConcentration_{{forecast.id}}">Ice
+										concentration</label> <br /> <input type="radio"
+									name="iceForecastType_{{forecast.id}}" id="iceThickness_{{forecast.id}}"
+									value="iceThickness" x-ng-model="selectedVariable"
+									x-ng-disabled="noIceThickness" /> <label
+									for="iceThickness_{{forecast.id}}">Ice thickness</label> <br />
+									<input type="radio" name="iceForecastType_{{forecast.id}}"
+									id="iceSpeed_{{forecast.id}}" value="iceSpeed"
+									x-ng-model="selectedVariable" x-ng-disabled="noIceSpeed" /> <label
+									for="iceSpeed_{{forecast.id}}">Ice speed</label> <br /> <input
+									type="radio" name="iceForecastType_{{forecast.id}}"
+									id="iceAccretion_{{forecast.id}}" value="iceAccretion"
+									x-ng-model="selectedVariable" x-ng-disabled="noIceAccretion" />
+									<label for="iceAccretion_{{forecast.id}}">Ice accretion
+										risk</label><br /> <input type="range" class="e-forecast"
+									min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
+									<br /> Selected time: {{currentDate}}
+								</span>
+							</div>
+						</td>
+						<td>{{forecast.timestamp}}</td>
+						<td>{{forecast.size}}</td>
+						<td>{{forecast.provider}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div accordion-group heading="Current forecasts">
+			<div x-ng-controller="CurrentForecastsCtrl">
+				<h4>Current forecasts</h4>
+				<table class="table table-condensed">
+					<colgroup>
+						<col />
+						<col />
+						<col />
+						<col />
+					</colgroup>
+					<tr>
+						<th>Name</th>
+						<th>Date</th>
+						<th>Size</th>
+						<th>Provider</th>
+					</tr>
+					<tr x-ng-repeat="forecast in currentForecasts"
+						x-ng-controller="CurrentForecastCtrl">
+						<td>
+							<div>
+								<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
+								<span x-ng-show="pc.forecastSelected == forecast.id"> <br />
+									<input type="range" class="e-forecast" min="{{start}}"
+									max="{{end}}" step="1" x-ng-model="current" /> <br />Selected
+									time: {{currentDate}}
+								</span>
+							</div>
+						</td>
+						<td>{{forecast.timestamp}}</td>
+						<td>{{forecast.size}}</td>
+						<td>{{forecast.provider}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div accordion-group heading="Legends">
+			<div class="legends">
+				<!-- h5>Wave</h5>
+				<table class="table table-condensed">
+					<tr>
+						<td><span style="background-color:#00DE00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt; 0.7</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#FFFF00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.7 - 1.0</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#FA4242; width: 30px; display: block;">&nbsp;</span></td>
+						<td>1.0 - 1.3</td>
+					</tr>
+					<tr>
+						<td><span style="background-color:#E8B332; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&gt; 1.3</td>
+					</tr>
+				</table -->
+				<h5>Ice concentration/thickness</h5>
+				<table class="table table-condensed">
+					<tr>
+						<th>Color</th>
+						<th>Ice Conc./Thickness</th>
+						<th>Definition</th>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #979797; width: 30px; display: block;">&nbsp;</span></td>
+						<td>10/10</td>
+						<td>Fast Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ff0000; width: 30px; display: block;">&nbsp;</span></td>
+						<td>9/10-10/10</td>
+						<td>Very Close Drift Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ff7c06; width: 30px; display: block;">&nbsp;</span></td>
+						<td>7/10-8/10</td>
+						<td>Close Drift Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ffff00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>4/10-6/10</td>
+						<td>Open Drift Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #8effa0; width: 30px; display: block;">&nbsp;</span></td>
+						<td>1/10-3/10</td>
+						<td>Very Open Drift Ice</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #96C7FF; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt;1/10</td>
+						<td>Open Water</td>
+					</tr>
+				</table>
+				<h5>Ice accretion risk</h5>
+				<table class="table table-condensed">
+					<tr>
+						<th>Color</th>
+						<th>cm/hour</th>
+						<th>Icing class</th>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #96C7FF; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0</td>
+						<td>None</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #8effa0; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt; 0.7</td>
+						<td>Light</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ffff00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.7-2.0</td>
+						<td>Moderate</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ff7c06; width: 30px; display: block;">&nbsp;</span></td>
+						<td>2.0-4.0</td>
+						<td>Heavy</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #ff0000; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&gt; 4.0</td>
+						<td>Extreme</td>
+					</tr>
+				</table>
+				<h5>Current</h5>
+				<table class="table table-condensed">
+					<tr>
+						<td><span
+							style="background-color: #00DE00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt; 0.0001 m/s</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #FFFF00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.0001 - 0.001 m/s</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #FA4242; width: 30px; display: block;">&nbsp;</span></td>
+						<td>0.001 - 0.01 m/s</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #E8B332; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&gt; 0.01 m/s</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

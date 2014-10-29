@@ -24,8 +24,8 @@
 						</div>
 						<div class="control-group form-group">
 							<label class="e-control-label">Estimated time of Departure (UTC)</label>
-							<div class="col-xs-5">
-								<datetimepicker x-ng-model="route.etaDep"></datetimepicker>
+							<div class="col-xs-5 txt">
+								{{route.formatEtaDep()}}
 							</div>
 						</div>
 					</div>

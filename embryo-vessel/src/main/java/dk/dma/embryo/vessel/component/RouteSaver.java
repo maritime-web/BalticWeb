@@ -59,9 +59,6 @@ public class RouteSaver {
         if(route.getOrigin() == null){
             route.setOrigin(voyage.getLocation());
         }
-        if(route.getEtaOfDeparture() == null){
-            route.setEtaOfDeparture(voyage.getDeparture());
-        }
 
         List<Voyage> voyages = scheduleRepository.getSchedule(voyage.getVessel().getMmsi());
         

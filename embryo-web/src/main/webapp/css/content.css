@@ -29,7 +29,7 @@ h3 {
 	margin-bottom:7.5px;
 }
 
-#accessForm, #changePasswordForm {
+#accessForm, #changePasswordForm, #feedbackForm {
 	max-width:400px;
 	margin-top:30px;
 	margin-left:auto;

@@ -14,23 +14,14 @@
  */
 package dk.dma.embryo.user.shiro;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.shiro.web.filter.AccessControlFilter;
-import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.dma.embryo.common.configuration.Configuration;
 import dk.dma.embryo.user.security.Subject;
-import dk.dma.embryo.user.shiro.Error.AuthCode;
 
 /**
  * @author Jesper Tejlgaard

@@ -1,0 +1,316 @@
+/* Copyright (c) 2011 Danish Maritime Authority.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package dk.dma.embryo.dataformats.service;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.dataformats.model.Forecast;
+import dk.dma.embryo.dataformats.model.Forecast.Provider;
+import dk.dma.embryo.dataformats.model.ForecastType;
+import dk.dma.embryo.dataformats.model.ForecastType.Type;
+import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
+import dk.dma.embryo.dataformats.netcdf.NetCDFType;
+import dk.dma.embryo.dataformats.netcdf.NetCDFVar;
+import dk.dma.embryo.dataformats.persistence.ForecastDao;
+
+@Stateless
+public class ForecastServiceImpl implements ForecastService {
+
+    private static boolean parsing;
+
+    private final Logger logger = LoggerFactory.getLogger(ForecastServiceImpl.class);
+
+    private List<ForecastType> forecastTypes = new ArrayList<>();
+
+    private final Map<Provider, Map<String, NetCDFRestriction>> restrictions = new HashMap<>();
+
+    public static final double MIN_LAT = 55;
+    public static final double MID_LAT = 70;
+    public static final double MAX_LAT = 80;
+    public static final double MIN_LON = -75;
+    public static final double MID_LON = -40;
+    public static final double MAX_LON = -5;
+    
+    public static final String NULL_VALUE = "Greenland";
+
+    @Inject
+    @Property(value = "embryo.netcdf.types")
+    private Map<String, String> netcdfTypes;
+
+    @Inject
+    @Property(value = "embryo.netcdf.providers")
+    private String netcdfProviders;
+
+    @Inject
+    private PropertyFileService propertyFileService;
+
+    @Inject
+    private NetCDFService netCDFService;
+
+    @Inject
+    private ForecastDao forecastDao;
+
+    @Inject
+    private ForecastPersistService forecastPersistService;
+
+    @PostConstruct
+    public void init() {
+        forecastTypes = createData();
+        initRestrictions();
+        reParse();
+    }
+
+    @Override
+    public List<ForecastType> getPrognosisTypes() {
+        return forecastTypes;
+    }
+
+    @Override
+    public ForecastType getPrognosisType(Type type) {
+        for (ForecastType t : forecastTypes) {
+            if (t.getType() == type) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public List<Forecast> getForecastList(Type type) {
+        List<Forecast> list = forecastDao.list(type);
+        return list;
+    }
+
+    @Override
+    public Forecast getForecast(long id) {
+        Forecast forecast = forecastDao.findById(id);
+        return forecast;
+    }
+
+    @Override
+    public List<Forecast> listAvailableIceForecasts() {
+        return getForecastList(Type.ICE_FORECAST);
+    }
+
+    @Override
+    public List<Forecast> listAvailableWaveForecasts() {
+        return getForecastList(Type.WAVE_FORECAST);
+    }
+
+    @Override
+    public List<Forecast> listAvailableCurrentForecasts() {
+        return getForecastList(Type.CURRENT_FORECAST);
+    }
+
+    @Override
+    public void reParse() {
+        if (!parsing) {
+            logger.info("Re-parsing NetCDF files.");
+            parsing = true;
+            try {
+                for (String netcdfProvider : netcdfProviders.split(";")) {
+                    for (String netcdfType : netcdfTypes.values()) {
+                        String folderName = propertyFileService.getProperty("embryo." + netcdfType + "." + netcdfProvider + ".localDirectory", true);
+                        logger.info("NetCDF folder: " + folderName);
+                        File folder = new File(folderName);
+                        if (folder.exists()) {
+                            File[] files = folder.listFiles(new FileFilter() {
+                                @Override
+                                public boolean accept(File pathname) {
+                                    return pathname.getName().endsWith(".nc");
+                                }
+                            });
+                            if (files != null) {
+                                for (File file : files) {
+                                    String name = file.getName();
+                                    if (!forecastDao.exists(name)) {
+                                        Provider provider = name.contains("fcoo") ? Provider.FCOO : Provider.DMI;
+                                        String timestampStr = name.substring(name.length() - 13, name.length() - 3);
+                                        long timestamp = getTimestamp(timestampStr);
+                                        for (Map.Entry<String, NetCDFRestriction> entry : restrictions.get(provider).entrySet()) {
+                                            String area;
+                                            if(entry.getKey().equals(NULL_VALUE)) {
+                                                area = getArea(name);
+                                            } else {
+                                                area = entry.getKey();
+                                            }
+                                            for (NetCDFType type : getPrognosisTypes()) {
+                                                Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
+                                                String json = parseResult.get(type);
+                                                if(json != null) {
+                                                    persistForecast(name, json, ((ForecastType) type).getType(), getJsonSize(json), provider, timestamp, area);
+                                                } else {
+                                                    persistForecast(name, "", ((ForecastType) type).getType(), -1, provider, timestamp, area);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    file.delete();
+                                    // Create a new, empty file so we don't download it again
+                                    file.createNewFile();
+                                }
+                            } else {
+                                logger.info("No files found in folder " + folder.getPath());
+                            }
+                        } else {
+                            throw new IOException("Folder " + folderName + " does not exist.");
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                parsing = false;
+            }
+        } else {
+            logger.info("Already parsing, will not re-parse at the moment.");
+        }
+    }
+    
+    private int getJsonSize(String json) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gos = new GZIPOutputStream(out);
+        String result = mapper.writeValueAsString(json);
+        gos.write(result.getBytes());
+        gos.close();
+
+        return out.toByteArray().length;
+    }
+
+    private void persistForecast(String name, String json, Type type, int size, Provider provider, long timestamp, String area) {
+        Forecast forecast = new Forecast(name, json, type, size, provider, timestamp, area);
+        forecastPersistService.persist(forecast);
+    }
+
+    private long getTimestamp(String timestampStr) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHH");
+        DateTime dateTime = formatter.withZoneUTC().parseDateTime(timestampStr);
+        return dateTime.getMillis();
+    }
+
+    private String getArea(String filename) {
+        if (filename.startsWith("hycom-cice")) {
+            return filename.substring(11, filename.length() - 14);
+        } else if (filename.startsWith("arcticweb_fcoo")) {
+            return filename.substring(19, filename.length() - 30);
+        }
+        return filename;
+    }
+
+    public List<ForecastType> createData() {
+
+        List<ForecastType> types = new ArrayList<>();
+
+        // Set up forecast types
+        ForecastType iceForecastType = new ForecastType("Ice forecast", "ice", Type.ICE_FORECAST);
+        Map<String, NetCDFVar> iceVars = iceForecastType.getVars();
+
+        // DMI
+        NetCDFVar.addToMap(iceVars, "ice-concentration", "Ice concentration");
+        NetCDFVar.addToMap(iceVars, "ice-thickness", "Ice thickness");
+        NetCDFVar.addToMap(iceVars, "u-ice", "Ice speed east");
+        NetCDFVar.addToMap(iceVars, "v-ice", "Ice speed north");
+        NetCDFVar.addToMap(iceVars, "Icing", "Ice accretion risk");
+
+        // FCOO
+        NetCDFVar.addToMap(iceVars, "ICE", "Ice concentration");
+
+        types.add(iceForecastType);
+
+        ForecastType currentForecastType = new ForecastType("Current forecast", "current", Type.CURRENT_FORECAST);
+        Map<String, NetCDFVar> currentVars = currentForecastType.getVars();
+
+        // DMI
+        NetCDFVar.addToMap(currentVars, "u-current", "Current east");
+        NetCDFVar.addToMap(currentVars, "v-current", "Current north");
+
+        types.add(currentForecastType);
+
+        ForecastType waveForecastType = new ForecastType("Wave forecast", "wave", Type.WAVE_FORECAST);
+        Map<String, NetCDFVar> waveVars = waveForecastType.getVars();
+
+        // DMI
+        NetCDFVar.addToMap(waveVars, "var229", "Significant wave height");
+        NetCDFVar.addToMap(waveVars, "var230", "Wave direction");
+        NetCDFVar.addToMap(waveVars, "var232", "Wave mean period");
+
+        // FCOO
+        NetCDFVar.addToMap(waveVars, "DIRMN", "Mean wave direction");
+        NetCDFVar.addToMap(waveVars, "Hs", "Wave height");
+        NetCDFVar.addToMap(waveVars, "TMN", "Mean wave period");
+        NetCDFVar.addToMap(waveVars, "Tz", "Zero upcrossing period");
+        // Water depth does not account for time. We do not parse this at the
+        // moment.
+        // NetCDFVar.addToMap(waveVars, "DEPTH", "Water depth");
+
+        types.add(waveForecastType);
+
+        ForecastType windForecastType = new ForecastType("Wind forecast", "wind", Type.WIND_FORECAST);
+        Map<String, NetCDFVar> windVars = windForecastType.getVars();
+
+        // DMI
+        NetCDFVar.addToMap(windVars, "var245", "Wind speed");
+        NetCDFVar.addToMap(windVars, "var249", "Wind direction");
+
+        // FCOO
+        NetCDFVar.addToMap(windVars, "WU", "Wind speed east");
+        NetCDFVar.addToMap(windVars, "WV", "Wind speed north");
+
+        types.add(windForecastType);
+
+        return types;
+    }
+
+    private void initRestrictions() {
+        NetCDFRestriction emptyRestriction = new NetCDFRestriction();
+        Map<String, NetCDFRestriction> dmiRestrictions = new HashMap<>();
+        dmiRestrictions.put(NULL_VALUE, emptyRestriction);
+        restrictions.put(Provider.DMI, dmiRestrictions);
+
+        NetCDFRestriction bottomLeftRestriction = new NetCDFRestriction(MIN_LAT, MID_LAT, MIN_LON, MID_LON);
+        NetCDFRestriction bottomRightRestriction = new NetCDFRestriction(MIN_LAT, MID_LAT, MID_LON, MAX_LON);
+        NetCDFRestriction topLeftRestriction = new NetCDFRestriction(MID_LAT, MAX_LAT, MIN_LON, MID_LON);
+        NetCDFRestriction topRightRestriction = new NetCDFRestriction(MID_LAT, MAX_LAT, MID_LON, MAX_LON);
+        Map<String, NetCDFRestriction> fcooRestrictions = new HashMap<>();
+        fcooRestrictions.put("Greenland SW", bottomLeftRestriction);
+        fcooRestrictions.put("Greenland SE", bottomRightRestriction);
+        fcooRestrictions.put("Greenland NW", topLeftRestriction);
+        fcooRestrictions.put("Greenland NE", topRightRestriction);
+        restrictions.put(Provider.FCOO, fcooRestrictions);
+    }
+
+}

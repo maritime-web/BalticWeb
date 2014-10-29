@@ -14,8 +14,6 @@
  */
 package dk.dma.embryo.metoc.service;
 
-import java.util.Arrays;
-
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -73,10 +71,10 @@ public class MetocServiceImplTest {
         Voyage voyage = new Voyage("voyageId");
         vessel.addVoyageEntry(voyage);
 
-        DateTime departureDate = DateTime.parse("2014-07-11T10:00:00.000+0000"); 
+        DateTime departureDate = DateTime.parse("2014-07-11T10:00:00.000+0000");
+        voyage.setDeparture(departureDate);
         String routeId = "routeId";
         Route route = new Route(routeId, "route", "start", "end");
-        route.setEtaOfDeparture(departureDate);
         route.addWayPoint(new WayPoint("001", 0.1, 0.1, 1.0, 0.5));
         route.getWayPoints().get(0).setLeg(new RouteLeg(10.0, 1.0, 1.0, Heading.RL));
         route.addWayPoint(new WayPoint("002", 0.1, 0.1, 1.0, 0.5));

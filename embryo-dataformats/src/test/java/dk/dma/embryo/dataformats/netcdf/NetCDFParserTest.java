@@ -14,6 +14,8 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
@@ -22,46 +24,56 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import dk.dma.embryo.dataformats.model.ForecastType;
+import dk.dma.embryo.dataformats.model.ForecastType.Type;
+import dk.dma.embryo.dataformats.service.ForecastServiceImpl;
 
 public class NetCDFParserTest {
+
     @Test
     @Ignore
     public void readNetCDFFile() throws Exception {
         NetCDFParser parser = new NetCDFParser();
-        URL resource = getClass().getResource("/netcdf/wam.grib.2014042900.NATLANT.nc");
-        NetCDFResult result = parser.parse(resource.getPath());
         
-        Map<String, List<? extends Serializable>> metadata = result.getMetadata();
+        ForecastServiceImpl service = new ForecastServiceImpl();
+        service.init();
+        List<ForecastType> prognosisTypes = service.createData();
+        
+        URL resource = getClass().getResource("/netcdf/hycom-cice.nc");
+        Map<NetCDFType, NetCDFResult> results = parser.parse(resource.getPath(), prognosisTypes);
+        
+        Map<String, List<? extends Serializable>> metadata = results.get(service.getPrognosisType(Type.ICE_FORECAST)).getMetadata();
         List<? extends Serializable> latList = metadata.get(NetCDFParser.LAT);
         List<? extends Serializable> lonList = metadata.get(NetCDFParser.LON);
         List<? extends Serializable> timeList = metadata.get(NetCDFParser.TIME);
-        assertEquals(97, latList.size());
-        assertEquals(199, lonList.size());
-        assertEquals(133, timeList.size());
+        assertEquals(101, latList.size());
+        assertEquals(101, lonList.size());
+        assertEquals(2, timeList.size());
         
-        Map<String, List<SmallEntry>> data = result.getData();
-        List<SmallEntry> windSpeed = data.get("Wind speed");
-        assertEquals(63576, windSpeed.size());
+        Map<Integer, NetCDFMoment> data = results.get(service.getPrognosisType(Type.ICE_FORECAST)).getData();
+        assertEquals(714, data.size());
     }
     
     @Test
     @Ignore
     public void readNetCDFFileWithRestrictions() throws Exception {
         NetCDFParser parser = new NetCDFParser();
-        URL resource = getClass().getResource("/netcdf/wam.grib.2014042900.NATLANT.nc");
+        URL resource = getClass().getResource("/netcdf/WAV_2014071400.hh00_test.nc");
+        
+        ForecastServiceImpl service = new ForecastServiceImpl();
+        service.init();
+        List<ForecastType> prognosisTypes = service.createData();
         
         NetCDFRestriction restriction = new NetCDFRestriction();
-        restriction.setTimeStart(12);
-        restriction.setTimeInterval(24);
-        restriction.setMinLat(30);
-        restriction.setMaxLat(70);
-        restriction.setMinLon(30);
-        restriction.setMaxLon(70);
-        NetCDFResult result = parser.parse(resource.getPath(), restriction);
+//        restriction.setTimeStart(12);
+//        restriction.setTimeInterval(24);
+        restriction.setMinLat(5);
+        restriction.setMaxLat(15);
+        restriction.setMinLon(5);
+        restriction.setMaxLon(35);
+        Map<NetCDFType, NetCDFResult> results = parser.parse(resource.getPath(), prognosisTypes, restriction);
         
-        Map<String, List<SmallEntry>> data = result.getData();
-        List<SmallEntry> windSpeed = data.get("Wind speed");
-        assertEquals(9534, windSpeed.size());
+        Map<Integer, NetCDFMoment> data = results.get(service.getPrognosisType(Type.ICE_FORECAST)).getData();
+        assertEquals(1548, data.size());
     }
 }
