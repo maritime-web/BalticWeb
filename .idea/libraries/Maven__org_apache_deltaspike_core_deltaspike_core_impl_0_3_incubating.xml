@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.deltaspike.core:deltaspike-core-impl:0.3-incubating">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/deltaspike/core/deltaspike-core-impl/0.3-incubating/deltaspike-core-impl-0.3-incubating.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/deltaspike/core/deltaspike-core-impl/0.3-incubating/deltaspike-core-impl-0.3-incubating-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/deltaspike/core/deltaspike-core-impl/0.3-incubating/deltaspike-core-impl-0.3-incubating-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
