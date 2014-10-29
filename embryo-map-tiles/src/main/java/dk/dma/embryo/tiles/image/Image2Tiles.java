@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2011 Danish Maritime Authority.
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,5 +21,5 @@ import java.io.IOException;
  * Created by Jesper Tejlgaard on 10/28/14.
  */
 public interface Image2Tiles {
-    public void execute(File srcFile, File destinationFile, String... staticArgs) throws IOException;
+    void execute(File srcFile, File destinationFile, String... staticArgs) throws IOException;
 }

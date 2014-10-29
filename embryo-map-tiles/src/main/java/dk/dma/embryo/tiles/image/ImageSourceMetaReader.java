@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2011 Danish Maritime Authority.
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,5 +20,5 @@ import java.io.File;
  * Created by Jesper Tejlgaard on 10/20/14.
  */
 public interface ImageSourceMetaReader {
-    public ImageSourceMeta read(File imageSource);
+    ImageSourceMeta read(File imageSource);
 }

@@ -64,7 +64,6 @@ public class ProjectMillConfigBuilder {
      */
     public ProjectMillConfigBuilder setProjectLayerDataSource(String datasource) {
         HashMap<String, Object> project = getProject();
-        ;
 
         HashMap<String, Object>[] layers = (HashMap<String, Object>[]) project.get("Layer");
         if (layers == null || layers.length == 0) {

@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2011 Danish Maritime Authority.
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +25,14 @@ import java.util.List;
  */
 public interface TileSetDao extends Dao {
 
-    public List<TileSet> listByStatus(TileSet.Status status);
+    List<TileSet> listByStatus(TileSet.Status status);
 
-    public List<TileSet> listByProviderAndType(String provider, String type);
+    List<TileSet> listByProviderAndType(String provider, String type);
 
-    public List<TileSet> listByTypeAndStatus(String provider, TileSet.Status status);
+    List<TileSet> listByTypeAndStatus(String provider, TileSet.Status status);
 
-    public List<TileSet> listByProviderAndTypeAndStatus(String provider, String type, TileSet.Status status);
+    List<TileSet> listByProviderAndTypeAndStatus(String provider, String type, TileSet.Status status);
 
-    public TileSet getByNameAndProvider(String name, String provider);
+    TileSet getByNameAndProvider(String name, String provider);
 
 }

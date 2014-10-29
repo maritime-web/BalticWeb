@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2011 Danish Maritime Authority.
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,9 +44,8 @@ public class GeoTiff2TilesUsingMaptilerIT {
 
         File geotiff = new File("/home/jesper/arcticweb/dmi-satellite-ice/201408051525.rgb_MODIS_Dundee.tif");
         geoTiff2Tiles.execute(geotiff, destinationFile);
-        ;
-        Assert.assertTrue(destinationFile.exists());
 
+        Assert.assertTrue(destinationFile.exists());
         try {
             geoTiff2Tiles.execute(geotiff, destinationFile);
             Assert.fail("Exception not thrown as expected. Expected mbtiles destination file to exist already.");
@@ -75,9 +73,8 @@ public class GeoTiff2TilesUsingMaptilerIT {
 
         File jpgFile = new File("/home/jesper/arcticweb/dmi-satellite-ice/NASA_Modis_20141001_aqua.r01c01.250m.jpg");
         geoTiff2Tiles.execute(jpgFile, destinationFile);
-        ;
-        Assert.assertTrue(destinationFile.exists());
 
+        Assert.assertTrue(destinationFile.exists());
         try {
             geoTiff2Tiles.execute(jpgFile, destinationFile);
             Assert.fail("Exception not thrown as expected. Expected mbtiles destination file to exist already.");
