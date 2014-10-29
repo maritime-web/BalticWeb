@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2011 Danish Maritime Authority.
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +36,7 @@ public class NamedTimeStampsTest {
         ts.add("third", now.minusDays(1).minusMinutes(1));
         ts.add("fourth", now.minusDays(2));
 
-        ts.clearOldThanMinutes(60*24);
+        ts.clearOldThanMinutes(60 * 24);
 
         Assert.assertTrue(ts.contains("first"));
         Assert.assertTrue(ts.contains("second"));
