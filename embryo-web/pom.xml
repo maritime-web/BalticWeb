@@ -1,481 +1,487 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>embryo-web</artifactId>
-  <packaging>war</packaging>
-  <name>Embryo Web Application</name>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>embryo-web</artifactId>
+    <packaging>war</packaging>
+    <name>Embryo Web Application</name>
 
-  <parent>
-    <groupId>dk.dma.arcticweb</groupId>
-    <artifactId>embryo-parent</artifactId>
-    <version>1.14-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+    <parent>
+        <groupId>dk.dma.arcticweb</groupId>
+        <artifactId>embryo-parent</artifactId>
+        <version>1.14-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-  <properties>
-    <jslint.predef>embryo</jslint.predef>
+    <properties>
+        <jslint.predef>embryo</jslint.predef>
 
-    <!-- developer setting -->
-    <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
+        <!-- developer setting -->
+        <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
 
-    <!-- persistence.xml properties -->
-    <embryo-common.jar>embryo-common-${project.version}.jar</embryo-common.jar>
-    <embryo-dataformats.jar>embryo-dataformats-${project.version}.jar</embryo-dataformats.jar>
-    <embryo-vessel.jar>embryo-vessel-${project.version}.jar</embryo-vessel.jar>
-    <embryo-user.jar>embryo-user-${project.version}.jar</embryo-user.jar>
-    <embryo-reporting.jar>embryo-reporting-${project.version}.jar</embryo-reporting.jar>
+        <!-- persistence.xml properties -->
+        <embryo-common.jar>embryo-common-${project.version}.jar</embryo-common.jar>
+        <embryo-dataformats.jar>embryo-dataformats-${project.version}.jar</embryo-dataformats.jar>
+        <embryo-vessel.jar>embryo-vessel-${project.version}.jar</embryo-vessel.jar>
+        <embryo-user.jar>embryo-user-${project.version}.jar</embryo-user.jar>
+        <embryo-reporting.jar>embryo-reporting-${project.version}.jar</embryo-reporting.jar>
+        <embryo-tiles.jar>embryo-map-tiles-${project.version}.jar</embryo-tiles.jar>
 
-  </properties>
+    </properties>
 
-  <dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-6.0</artifactId>
+                <version>${version.org.jboss.spec.javaee6}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-      <dependency>
-        <groupId>org.jboss.spec</groupId>
-        <artifactId>jboss-javaee-6.0</artifactId>
-        <version>${version.org.jboss.spec.javaee6}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+        <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse
+          to work -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${dependencies.slf4j.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>dk.dma.arcticweb</groupId>
+            <artifactId>embryo-enav-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.arcticweb</groupId>
+            <artifactId>embryo-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.arcticweb</groupId>
+            <artifactId>embryo-vessel</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.arcticweb</groupId>
+            <artifactId>embryo-dataformats</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.arcticweb</groupId>
+            <artifactId>embryo-user</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.arcticweb</groupId>
+            <artifactId>embryo-msi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.arcticweb</groupId>
+            <artifactId>embryo-metoc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.arcticweb</groupId>
+            <artifactId>embryo-reporting</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.enav.embryo</groupId>
+            <artifactId>embryo-weather</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.enav.embryo</groupId>
+            <artifactId>embryo-map-tiles</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dma.enav</groupId>
+            <artifactId>enav-model</artifactId>
+        </dependency>
+
+        <!-- Import the Servlet API. -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
+        <!-- Import the CDI API. -->
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the Common Annotations API (JSR-250). -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the EJB API. -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
     </dependencies>
-  </dependencyManagement>
 
-  <dependencies>
-    <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse 
-      to work -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${dependencies.slf4j.version}</version>
-    </dependency>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/persistence.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/persistence.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
 
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-enav-io</artifactId>
-    </dependency>
+        <pluginManagement>
+            <plugins>
 
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-common</artifactId>
-    </dependency>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.googlecode.jslint4java</groupId>
+                                        <artifactId>jslint4java-maven-plugin</artifactId>
+                                        <versionRange>[2.0,)</versionRange>
+                                        <goals>
+                                            <goal>lint</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                        <!-- <execute /> -->
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>jaxws-maven-plugin</artifactId>
+                                        <versionRange>[1,)</versionRange>
+                                        <goals>
+                                            <goal>wsimport</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute/>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>exec-maven-plugin</artifactId>
+                                        <versionRange>[1.2,)</versionRange>
+                                        <goals>
+                                            <goal>exec</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
 
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-vessel</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-dataformats</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-user</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-msi</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-metoc</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.arcticweb</groupId>
-      <artifactId>embryo-reporting</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.enav.embryo</groupId>
-      <artifactId>embryo-weather</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dk.dma.enav</groupId>
-      <artifactId>enav-model</artifactId>
-    </dependency>
-
-    <!-- Import the Servlet API. -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-    </dependency>
-
-    <!-- Import the CDI API. -->
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Import the Common Annotations API (JSR-250). -->
-    <dependency>
-      <groupId>org.jboss.spec.javax.annotation</groupId>
-      <artifactId>jboss-annotations-api_1.1_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Import the EJB API. -->
-    <dependency>
-      <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/persistence.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>false</filtering>
-        <excludes>
-          <exclude>**/persistence.xml</exclude>
-        </excludes>
-      </resource>
-    </resources>
-
-    <pluginManagement>
-      <plugins>
-
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
+                <plugin>
+                    <!-- http://docs.jslint4java.googlecode.com/git-history/780e260b85a0a5a162eac5e94dc3dd104b433e81/2.0.2/maven.html -->
+                    <!-- Using jshint would have been preferable, but existing maven plugins seems unsuitable -->
+                    <!-- jshint-mojo : -->
+                    <!-- - https://github.com/cjdev/jshint-mojo. -->
+                    <!-- - Does not yet supply a checkstyle.xml or jslint.xml file with results. -->
+                    <!-- MavenPluginJSHint -->
+                    <!-- - http://code.google.com/p/wro4j/wiki/MavenPluginJsHint -->
+                    <!-- - Seems to be entangled in other web stuff, which makes it an unsuitable plugin -->
+                    <!-- mulesoft/jshint-maven-plugin: -->
+                    <!-- - https://github.com/mulesoft/jshint-maven-plugin -->
+                    <!-- - no configuration options and no work done on the plugin for many months -->
                     <groupId>com.googlecode.jslint4java</groupId>
                     <artifactId>jslint4java-maven-plugin</artifactId>
-                    <versionRange>[2.0,)</versionRange>
-                    <goals>
-                      <goal>lint</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                    <!-- <execute /> -->
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>jaxws-maven-plugin</artifactId>
-                    <versionRange>[1,)</versionRange>
-                    <goals>
-                      <goal>wsimport</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute />
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <versionRange>[1.2,)</versionRange>
-                    <goals>
-                      <goal>exec</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
+                    <version>2.0.2</version>
+                    <configuration>
+                        <failOnError>false</failOnError>
+                        <!-- https://code.google.com/p/jslint4java/issues/detail?id=91 -->
+                        <excludes>
+                            <exclude>**/ext/*.js</exclude>
+                        </excludes>
+                        <options>
+                            <devel>true</devel>
+                            <eqeq>true</eqeq>
+                            <es5>true</es5>
+                            <forin>true</forin>
+                            <indent>4</indent>
+                            <maxerr>1000</maxerr>
+                            <maxlen>120</maxlen>
+                            <node>false</node>
+                            <nomen>false</nomen>
+                            <passfail>false</passfail>
+                            <plusplus>true</plusplus>
+                            <predef>angular,$,jQuery,${jslint.predef},sessionStorage,localStorage</predef>
+                            <properties>false</properties>
+                            <sloppy>true</sloppy>
+                            <undef>true</undef>
+                            <white>true</white>
+                        </options>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.jboss.as.plugins</groupId>
+                    <artifactId>jboss-as-maven-plugin</artifactId>
+                    <version>7.5.Final</version>
+                    <configuration>
+                        <name>arcticweb.war</name>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.kelveden</groupId>
+                    <artifactId>maven-karma-plugin</artifactId>
+                    <version>1.3</version>
+                    <configuration>
+                        <browsers>PhantomJS</browsers>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>karma</id>
+                            <goals>
+                                <goal>start</goal>
+                            </goals>
+                            <!-- execute karma before test phase to let Jenkins collet the target/surefire-reports/karmaUnit.xml -->
+                            <phase>process-test-classes</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
-        <plugin>
-          <!-- http://docs.jslint4java.googlecode.com/git-history/780e260b85a0a5a162eac5e94dc3dd104b433e81/2.0.2/maven.html -->
-          <!-- Using jshint would have been preferable, but existing maven plugins seems unsuitable -->
-          <!-- jshint-mojo : -->
-          <!-- - https://github.com/cjdev/jshint-mojo. -->
-          <!-- - Does not yet supply a checkstyle.xml or jslint.xml file with results. -->
-          <!-- MavenPluginJSHint -->
-          <!-- - http://code.google.com/p/wro4j/wiki/MavenPluginJsHint -->
-          <!-- - Seems to be entangled in other web stuff, which makes it an unsuitable plugin -->
-          <!-- mulesoft/jshint-maven-plugin: -->
-          <!-- - https://github.com/mulesoft/jshint-maven-plugin -->
-          <!-- - no configuration options and no work done on the plugin for many months -->
-          <groupId>com.googlecode.jslint4java</groupId>
-          <artifactId>jslint4java-maven-plugin</artifactId>
-          <version>2.0.2</version>
-          <configuration>
-            <failOnError>false</failOnError>
-            <!-- https://code.google.com/p/jslint4java/issues/detail?id=91 -->
-            <excludes>
-              <exclude>**/ext/*.js</exclude>
-            </excludes>
-            <options>
-              <devel>true</devel>
-              <eqeq>true</eqeq>
-              <es5>true</es5>
-              <forin>true</forin>
-              <indent>4</indent>
-              <maxerr>1000</maxerr>
-              <maxlen>120</maxlen>
-              <node>false</node>
-              <nomen>false</nomen>
-              <passfail>false</passfail>
-              <plusplus>true</plusplus>
-              <predef>angular,$,jQuery,${jslint.predef},sessionStorage,localStorage</predef>
-              <properties>false</properties>
-              <sloppy>true</sloppy>
-              <undef>true</undef>
-              <white>true</white>
-            </options>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.jboss.as.plugins</groupId>
-          <artifactId>jboss-as-maven-plugin</artifactId>
-          <version>7.5.Final</version>
-          <configuration>
-            <name>arcticweb.war</name>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>com.kelveden</groupId>
-          <artifactId>maven-karma-plugin</artifactId>
-          <version>1.3</version>
-          <configuration>
-            <browsers>PhantomJS</browsers>
-          </configuration>
-          <executions>
-            <execution>
-              <id>karma</id>
-              <goals>
-                <goal>start</goal>
-              </goals>
-              <!-- execute karma before test phase to let Jenkins collet the target/surefire-reports/karmaUnit.xml -->
-              <phase>process-test-classes</phase>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.9</version>
-        <configuration>
-          <wtpapplicationxml>true</wtpapplicationxml>
-          <wtpversion>2.0</wtpversion>
-          <downloadSources>true</downloadSources>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jboss.as.plugins</groupId>
-        <artifactId>jboss-as-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>com.googlecode.jslint4java</groupId>
-        <artifactId>jslint4java-maven-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
-        <executions>
-          <execution>
-            <id>initialize</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>npm</executable>
-              <arguments>
-                <argument>install</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>d</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>grunt</executable>
-            </configuration>
-          </execution>
-          <execution>
-            <id>jsunit</id>
-            <phase>test</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>grunt</executable>
-              <arguments>
-                <argument>test</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <warSourceExcludes>js/*.js,css/*.css,**.*.html</warSourceExcludes>
-          <webResources>
-            <resource>
-              <!-- this is relative to the pom.xml directory -->
-              <directory>src/main/webapp</directory>
-              <!-- the list has a default value of ** -->
-              <includes>
-                <include>img/**/*</include>
-              </includes>
-              <!-- there's no default value for this -->
-              <excludes>
-                <exclude>**/*.css</exclude>
-                <exclude>**/*.js</exclude>
-                <exclude>**/*.html</exclude>
-              </excludes>
-            </resource>
-            <resource>
-              <!-- this is relative to the pom.xml directory -->
-              <directory>target/webapp</directory>
-              <!-- the list has a default value of ** -->
-              <includes>
-                <include>**/*</include>
-              </includes>
-              <excludes>
-                <exclude>**/*min.js</exclude>
-              </excludes>
-            </resource>
-          </webResources>
-        </configuration>
-      </plugin>
-    </plugins>
-
-  </build>
-
-  <profiles>
-    <profile>
-      <id>deploy</id>
-      <build>
         <plugins>
-          <plugin>
-            <groupId>org.jboss.as.plugins</groupId>
-            <artifactId>jboss-as-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>deploy-only</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>deploy-only</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>fulldeploy</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.jboss.as.plugins</groupId>
-            <artifactId>jboss-as-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>install-undeploy</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>undeploy</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>add-datasource</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>add-resource</goal>
-                </goals>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
                 <configuration>
-                  <address>subsystem=datasources,data-source=java:jboss/datasources/embryoDS</address>
-                  <resource>
-                    <enable-resource>true</enable-resource>
-                    <properties>
-                      <jndi-name>java:jboss/datasources/embryoDS</jndi-name>
-                      <connection-url>jdbc:mysql://localhost:3306/embryo</connection-url>
-                      <driver-name>mysql</driver-name>
-                      <user-name>embryo</user-name>
-                      <password>embryo</password>
-                      <pool-name>mypool</pool-name>
-                      <enabled>true</enabled>
-                      <enable>true</enable>
-                    </properties>
-                  </resource>
+                    <wtpapplicationxml>true</wtpapplicationxml>
+                    <wtpversion>2.0</wtpversion>
+                    <downloadSources>true</downloadSources>
                 </configuration>
-              </execution>
-              <execution>
-                <id>deploy</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-                <configuration>
-                  <skipTests>true</skipTests>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+            </plugin>
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.googlecode.jslint4java</groupId>
+                <artifactId>jslint4java-maven-plugin</artifactId>
+            </plugin>
 
-  <repositories>
-    <repository>
-      <id>dma-releases</id>
-      <name>Dma Release Repository</name>
-      <url>http://repository-dma.forge.cloudbees.com/release/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <id>initialize</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>d</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>grunt</executable>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>jsunit</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>grunt</executable>
+                            <arguments>
+                                <argument>test</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <warSourceExcludes>js/*.js,css/*.css,**.*.html</warSourceExcludes>
+                    <webResources>
+                        <resource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>src/main/webapp</directory>
+                            <!-- the list has a default value of ** -->
+                            <includes>
+                                <include>img/**/*</include>
+                            </includes>
+                            <!-- there's no default value for this -->
+                            <excludes>
+                                <exclude>**/*.css</exclude>
+                                <exclude>**/*.js</exclude>
+                                <exclude>**/*.html</exclude>
+                            </excludes>
+                        </resource>
+                        <resource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>target/webapp</directory>
+                            <!-- the list has a default value of ** -->
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*min.js</exclude>
+                            </excludes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jboss.as.plugins</groupId>
+                        <artifactId>jboss-as-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>deploy-only</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>deploy-only</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>fulldeploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jboss.as.plugins</groupId>
+                        <artifactId>jboss-as-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-undeploy</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>undeploy</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>add-datasource</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <address>subsystem=datasources,data-source=java:jboss/datasources/embryoDS</address>
+                                    <resource>
+                                        <enable-resource>true</enable-resource>
+                                        <properties>
+                                            <jndi-name>java:jboss/datasources/embryoDS</jndi-name>
+                                            <connection-url>jdbc:mysql://localhost:3306/embryo</connection-url>
+                                            <driver-name>mysql</driver-name>
+                                            <user-name>embryo</user-name>
+                                            <password>embryo</password>
+                                            <pool-name>mypool</pool-name>
+                                            <enabled>true</enabled>
+                                            <enable>true</enable>
+                                        </properties>
+                                    </resource>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>deploy</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                                <configuration>
+                                    <skipTests>true</skipTests>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <id>dma-releases</id>
+            <name>Dma Release Repository</name>
+            <url>http://repository-dma.forge.cloudbees.com/release/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
