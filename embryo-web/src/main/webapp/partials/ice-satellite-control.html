@@ -1,0 +1,46 @@
+<!--
+  ~ Copyright (c) 2011 Danish Maritime Authority.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div x-ng-controller="SatelliteIceController">
+    <p>
+        Satellite images may reveal details about the ice not available when viewing ice charts and iceberg charts.
+        Examples of such are X, Y and Z.
+    </p>
+
+    <p>
+        NB. Satellite images are served as image tiles. A new set of image tiles may be fetched for each zoom level.
+        The downloaded amount of image tiles therefore depends on the number of zoom levels used, while the satellite
+        image data is displayed.
+    </p>
+    <table class="table table-condensed">
+        <tbody x-ng-repeat="tileSet in tileSets">
+        <tr x-ng-if="!tileSet.ts">
+            <td colspan=4><h4>{{tileSet}}</h4></td>
+        </tr>
+        <tr x-ng-if="tileSet.ts" x-ng-class="isSelectedClasses(tileSet)">
+            <td>{{formatDate(tileSet.ts)}}</td>
+            <td>{{tileSet.qualifier}}</td>
+            <td>{{tileSet.sourceType}}</td>
+            <!--<td>{{tileSet.center.x}}, {{tileSet.center.y}}</td>-->
+
+            <td x-ng-if="!isDisplayed(tileSet)"><a href=# x-ng-click="displayTileSet($event, tileSet)">view</a></td>
+            <td x-ng-if="isDisplayed(tileSet)"><a href=# x-ng-click="zoom($event, tileSet)">zoom</a> /
+                <a href=# x-ng-click='hideTileSet($event, tileSet)'>hide</a></td>
+        </tr>
+
+        </tbody>
+    </table>
+
+</div>

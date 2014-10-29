@@ -84,6 +84,11 @@ $(function() {
                     controlsByGroup[d.group].push(d.control);
             }
         },
+        remove: function (d) {
+            if (d.layer) {
+                map.removeLayer(d.layer);
+            }
+        },
         createPoint : function(longitude, latitude) {
             return new OpenLayers.Geometry.Point(longitude, latitude).transform(new OpenLayers.Projection("EPSG:4326"),
                     map.getProjectionObject());
@@ -237,10 +242,8 @@ $(function() {
         pixel = new OpenLayers.Pixel(position.x, position.y);
         var lonLat = map.getLonLatFromPixel(pixel);
         if (lonLat) {
-            lonLat.transform(map.getProjectionObject(), // from Spherical
-            // Mercator Projection
-            new OpenLayers.Projection("EPSG:4326") // to WGS 1984
-            );
+            // from Spherical Mercator Projection to WGS 1984
+            lonLat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
             $('#coords').html(formatLatitude(lonLat.lat) + ', ' + formatLongitude(lonLat.lon));
         }
     });

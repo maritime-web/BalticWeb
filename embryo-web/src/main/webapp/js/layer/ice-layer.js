@@ -1,116 +1,116 @@
 function IceLayer() {
 
-    this.init = function() {
+    this.init = function () {
         var that = this;
 
         this.context = {
-            sizes : {
-                'S' : 0.8,
-                'M' : 1,
-                'L' : 1.2,
-                'VL' : 1.4
+            sizes: {
+                'S': 0.8,
+                'M': 1,
+                'L': 1.2,
+                'VL': 1.4
             },
-            transparency : function() {
+            transparency: function () {
                 return that.active ? 0.5 : 0.25;
             },
-            icebergSize : function(size) {
+            icebergSize: function (size) {
                 return this.sizes[size];
             },
-            imageWidth : function(feature) {
+            imageWidth: function (feature) {
                 if (feature.attributes.iceDescription.type === 'iceberg') {
                     return that.context.icebergSize(feature.attributes.iceDescription.Size_Catg) * 5;
                 }
                 return 0;
             },
-            imageHeight : function(feature) {
+            imageHeight: function (feature) {
                 if (feature.attributes.iceDescription.type === 'iceberg') {
                     return that.context.icebergSize(feature.attributes.iceDescription.Size_Catg) * 6;
                 }
                 return 0;
             },
-            description : function(feature) {
+            description: function (feature) {
                 return feature.attributes.description;
             }
         };
 
         this.layers.ice = new OpenLayers.Layer.Vector("IceChart", {
-            styleMap : new OpenLayers.StyleMap({
-                "default" : new OpenLayers.Style({
-                    fillColor : "${fillColor}",
-                    fillOpacity : "${transparency}",
-                    strokeWidth : "1",
-                    strokeColor : "#000000",
-                    strokeOpacity : "0.2",
-                    fontColor : "#000000",
-                    fontSize : "12px",
-                    fontFamily : "Courier New, monospace",
-                    label : "${description}",
-                    fontOpacity : "${transparency}",
-                    fontWeight : "bold"
+            styleMap: new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style({
+                    fillColor: "${fillColor}",
+                    fillOpacity: "${transparency}",
+                    strokeWidth: "1",
+                    strokeColor: "#000000",
+                    strokeOpacity: "0.2",
+                    fontColor: "#000000",
+                    fontSize: "12px",
+                    fontFamily: "Courier New, monospace",
+                    label: "${description}",
+                    fontOpacity: "${transparency}",
+                    fontWeight: "bold"
                 }, {
-                    context : this.context
+                    context: this.context
                 }),
-                "select" : new OpenLayers.Style({
-                    fillColor : "${fillColor}",
-                    fillOpacity : "${transparency}",
-                    strokeWidth : "1",
-                    strokeColor : "#000",
-                    strokeOpacity : "1",
+                "select": new OpenLayers.Style({
+                    fillColor: "${fillColor}",
+                    fillOpacity: "${transparency}",
+                    strokeWidth: "1",
+                    strokeColor: "#000",
+                    strokeOpacity: "1",
 
-                    externalGraphic : '${graphic}',
-                    graphicWidth : '${imageWidth}',
-                    graphicHeight : '${imageHeight}',
-                    graphicOpacity : "${transparency}",
+                    externalGraphic: '${graphic}',
+                    graphicWidth: '${imageWidth}',
+                    graphicHeight: '${imageHeight}',
+                    graphicOpacity: "${transparency}",
                 }, {
-                    context : this.context
+                    context: this.context
                 })
             })
         });
 
         this.layers.iceberg = new OpenLayers.Layer.Vector("Iceberg", {
-            styleMap : new OpenLayers.StyleMap({
-                "default" : new OpenLayers.Style({
-                    externalGraphic : 'img/iceberg.png',
-                    graphicWidth : '${imageWidth}',
-                    graphicHeight : '${imageHeight}',
-                    graphicOpacity : "${transparency}",
-                    strokeWidth : "1",
-                    strokeColor : "#000000",
-                    strokeOpacity : "0.2"
+            styleMap: new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style({
+                    externalGraphic: 'img/iceberg.png',
+                    graphicWidth: '${imageWidth}',
+                    graphicHeight: '${imageHeight}',
+                    graphicOpacity: "${transparency}",
+                    strokeWidth: "1",
+                    strokeColor: "#000000",
+                    strokeOpacity: "0.2"
                 }, {
-                    context : this.context
+                    context: this.context
                 }),
-                "select" : new OpenLayers.Style({
-                    externalGraphic : 'img/iceberg.png',
-                    graphicWidth : '${imageWidth}',
-                    graphicHeight : '${imageHeight}',
-                    graphicOpacity : "${transparency}",
-                    strokeWidth : "1",
-                    strokeColor : "#000",
-                    strokeOpacity : "1",
-                    opacity : 1,
-                    cursor : "crosshair",
-                    backgroundGraphic : "img/selection.png",
-                    backgroundXOffset : -16,
-                    backgroundYOffset : -16,
-                    backgroundHeight : 32,
-                    backgroundWidth : 32,
-                    backgroundRotation : 0,                    
+                "select": new OpenLayers.Style({
+                    externalGraphic: 'img/iceberg.png',
+                    graphicWidth: '${imageWidth}',
+                    graphicHeight: '${imageHeight}',
+                    graphicOpacity: "${transparency}",
+                    strokeWidth: "1",
+                    strokeColor: "#000",
+                    strokeOpacity: "1",
+                    opacity: 1,
+                    cursor: "crosshair",
+                    backgroundGraphic: "img/selection.png",
+                    backgroundXOffset: -16,
+                    backgroundYOffset: -16,
+                    backgroundHeight: 32,
+                    backgroundWidth: 32,
+                    backgroundRotation: 0,
                 }, {
-                    context : this.context
+                    context: this.context
                 })
             })
-        /*
-         * , strategies: [ new OpenLayers.Strategy.Cluster({ distance: 10,
-         * threshold: 3 }) ]
-         */
+            /*
+             * , strategies: [ new OpenLayers.Strategy.Cluster({ distance: 10,
+             * threshold: 3 }) ]
+             */
         });
 
         this.selectableLayers = [ this.layers.ice, this.layers.iceberg ];
         this.selectableAttribute = "iceDescription";
     };
 
-    this.draw = function(chartType, shapes, callback) {
+    this.draw = function (chartType, shapes, callback) {
         function colorByDescription(description) {
 
             if (description.CT == 92 && parseInt(description.FA) == 8) {
@@ -129,15 +129,16 @@ function IceLayer() {
         var waterCount = 0;
 
         var that = this;
+
         function drawFragment(shape, fragment) {
             var rings = [];
             var polygons = fragment.polygons;
 
-            for ( var k in polygons) {
+            for (var k in polygons) {
                 var polygon = polygons[k];
 
                 var points = [];
-                for ( var j in polygon) {
+                for (var j in polygon) {
                     var p = polygon[j];
 
                     if (j >= 1) {
@@ -159,15 +160,15 @@ function IceLayer() {
             }
 
             var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon(rings), {
-                fillOpacity : function() {
+                fillOpacity: function () {
                     return 0.4 * groupOpacity;
                 },
-                fillColor : colorByDescription(fragment.description),
-                iceDescription : $.extend(fragment.description, {
-                    information : shape.information,
-                    type : 'iceChart'
+                fillColor: colorByDescription(fragment.description),
+                iceDescription: $.extend(fragment.description, {
+                    information: shape.information,
+                    type: 'iceChart'
                 }),
-                description : ""
+                description: ""
             });
             if (fragment.description.POLY_TYPE == 'I') {
                 feature.attributes.description = "";
@@ -189,7 +190,7 @@ function IceLayer() {
 
                 drawFragment(shape, fragment);
 
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                     drawFragments(shape, fragments);
                 }, 20);
             } else {
@@ -200,13 +201,13 @@ function IceLayer() {
         }
 
         function drawPoints() {
-            for ( var f in fragments) {
+            for (var f in fragments) {
                 var desc = fragments[f].description;
                 var feature = new OpenLayers.Feature.Vector(embryo.map.createPoint(desc.Long, desc.Lat), {
-                    iceDescription : $.extend(desc, {
-                        information : shape.information,
-                        type : 'iceberg'
-                    }),
+                    iceDescription: $.extend(desc, {
+                        information: shape.information,
+                        type: 'iceberg'
+                    })
                 });
                 that.layers.iceberg.addFeatures([ feature ]);
             }
@@ -221,7 +222,7 @@ function IceLayer() {
             that.layers.ice.removeAllFeatures();
         }
 
-        for ( var l in shapes) {
+        for (var l in shapes) {
             var shape = shapes[l];
             var ice = shape.fragments;
 
@@ -234,7 +235,7 @@ function IceLayer() {
         }
     };
 
-    this.clear = function(chartType) {
+    this.clear = function (chartType) {
         if (chartType) {
             if (chartType == 'iceberg') {
                 this.layers.iceberg.removeAllFeatures();
