@@ -14,22 +14,23 @@
  */
 package dk.dma.embryo.common.configuration;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.regex.Matcher;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.ScheduleExpression;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Singleton;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.regex.Matcher;
 
 @Singleton
 public class PropertyFileService {
@@ -83,6 +84,23 @@ public class PropertyFileService {
 
         return result;
 
+    }
+
+
+    public List<String> toList(String propValue) {
+        String[] value = propValue.split(",");
+        List<String> result = Arrays.asList(value);
+        return result;
+    }
+
+    public List<String> getListProperty(String name) {
+        String prop = getProperty(name);
+        return toList(prop);
+    }
+
+    public List<Provider> getProvidersProperty(String name) {
+        ProviderReader reader = new ProviderReader(this);
+        return reader.readProviderProperties(name);
     }
 
     @Produces
@@ -145,7 +163,7 @@ public class PropertyFileService {
 
     @Produces
     @Property
-    public Set<String> getSetPropertyByKey(InjectionPoint ip) {
+    public Set<String> getProvider(InjectionPoint ip) {
         String prop = getStringPropertyByKey(ip);
         Set<String> result = new HashSet<>();
         String[] value = prop.split(",");
@@ -154,7 +172,6 @@ public class PropertyFileService {
         return result;
     }
 
-    
     @Produces
     @Property
     public ScheduleExpression getScheduleExpressionPropertyByKey(InjectionPoint ip) {

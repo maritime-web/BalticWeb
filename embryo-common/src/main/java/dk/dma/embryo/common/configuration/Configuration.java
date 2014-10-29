@@ -14,8 +14,6 @@
  */
 package dk.dma.embryo.common.configuration;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
@@ -26,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
+import java.io.Serializable;
 
 
 public class Configuration implements Serializable {
@@ -39,7 +38,6 @@ public class Configuration implements Serializable {
     @Produces
     @PersistenceUnit(name = "arcticweb")
     EntityManagerFactory entityManagerFactory;
-
 
 
     public static BeanManager getContainerBeanManager() {
