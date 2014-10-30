@@ -94,8 +94,6 @@ $(function () {
         $scope.displayTileSet = function ($event, tileSet) {
             $event.preventDefault();
 
-            console.log(tileSet);
-
             satellite.showTiles(group, tileSet);
 //            delete chartsDisplayed[chart.type];
         }
@@ -119,7 +117,6 @@ $(function () {
 
 
         satellite.select("tileSet", function (tileSetName) {
-            console.log(tileSetName);
             if (tileSetName) {
                 $scope.selected = tileSetName;
             } else {
