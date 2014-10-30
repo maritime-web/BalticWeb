@@ -109,12 +109,12 @@ $(function () {
         }
 
         $scope.isDisplayed = function (tileSet) {
-            return false;
+            return satellite.isDisplayed(tileSet);
         }
 
         $scope.zoom = function ($event, chart) {
             $event.preventDefault();
-            embryo.map.zoomToExtent(satellite.layers);
+            satellite.zoomToExtent();
         }
 
 

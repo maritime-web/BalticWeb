@@ -92,8 +92,8 @@ function SatelliteLayer() {
     }
 
     this.showTiles = function (id, tileSet) {
-        if (this.layers && this.layers.satellite) {
-            this.removeTiles(tileSet);
+        if (that.layers && that.layers.satellite) {
+            that.removeTiles(tileSet);
         }
 
         var url = tileSet.url;
@@ -114,35 +114,33 @@ function SatelliteLayer() {
 //            value: OpenLayers.Bounds(extent)})
 //        var filterStrategy = new OpenLayers.Strategy.Filter({filter: myFilter});
 
-        this.layers.satellite = new OpenLayers.Layer.XYZ(
-            "Satellite",
-            [
-                url
-            ], {
-                attribution: "Jesper",
-                numZoomLevels: 22,
-                isBaseLayer: false
-            }
-        );
-
-
-        this.map.add({
-            group: id,
-            layer: this.layers.satellite,
-            select: false
+        that.layers.satellite = new OpenLayers.Layer.OSM("Satellite", url, {
+            'layers': 'basic',
+            'isBaseLayer': false
         });
 
-
-        console.log(this.layers.satellite.getMaxExtent());
+        that.map.add({
+            group: id,
+            layer: that.layers.satellite,
+            select: false
+        });
     }
 
     this.removeTiles = function (tileSet) {
-        if (this.layers && this.layers.satellite) {
-            this.map.remove({
-                layer: this.layers.satellite
+        if (that.layers && that.layers.satellite) {
+            that.map.remove({
+                layer: that.layers.satellite
             });
-
         }
+        delete that.layers.satellite;
+    }
+
+    this.isDisplayed = function (tileSet) {
+        if (!that.layers || !that.layers.satellite) {
+            return false;
+        }
+
+        return that.layers.satellite.url.indexOf(tileSet.url) >= 0;
     }
 
     this.clear = function () {
