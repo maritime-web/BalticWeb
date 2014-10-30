@@ -138,6 +138,9 @@ function SeaForecastLayer() {
             }
         }
 
+        that.layers.forecasts.removeAllFeatures();
+        that.layers.forecasts.refresh();
+
         for ( var l in shapes) {
             var shape = shapes[l];
             drawFragments(shape, shape.fragments.slice(0));
