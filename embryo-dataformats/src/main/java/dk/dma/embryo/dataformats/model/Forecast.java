@@ -85,6 +85,11 @@ public class Forecast extends BaseEntity<Long> {
         }
         return null;
     }
+    
+    public void updateData(String json, int size) {
+        data = new ForecastData(json);
+        this.size = size;
+    }
 
     public Type getType() {
         return ftype;
