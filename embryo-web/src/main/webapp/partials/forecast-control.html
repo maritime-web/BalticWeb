@@ -31,29 +31,41 @@
 						<col />
 						<col />
 					</colgroup>
-					<tr>
-						<th>Name</th>
-						<th>Date</th>
-						<th>Size</th>
-						<th>Provider</th>
-					</tr>
-					<tr x-ng-repeat="forecast in iceForecasts"
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Date</th>
+							<th>Size</th>
+							<th>Provider</th>
+						</tr>
+					</thead>
+					<tbody class="e-noborder" x-ng-repeat="forecast in iceForecasts"
 						x-ng-controller="IceForecastCtrl">
-						<td>
-							<div>
-								<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
-								<span x-ng-show="pc.forecastSelected == forecast.id"> <br />
-									<input type="radio" name="iceForecastType_{{forecast.id}}"
+						<tr>
+							<td>
+								<div>
+									<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
+								</div>
+							</td>
+							<td>{{forecast.timestamp}}</td>
+							<td>{{forecast.size}}</td>
+							<td>{{forecast.provider}}</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="e-bottomborder"><span
+								x-ng-show="pc.forecastSelected == forecast.id"> <br /> <input
+									type="radio" name="iceForecastType_{{forecast.id}}"
 									id="iceConcentration_{{forecast.id}}" value="iceConcentration"
 									x-ng-model="selectedVariable"
 									x-ng-disabled="noIceConcentration" /> <label
 									for="iceConcentration_{{forecast.id}}">Ice
 										concentration</label> <br /> <input type="radio"
-									name="iceForecastType_{{forecast.id}}" id="iceThickness_{{forecast.id}}"
-									value="iceThickness" x-ng-model="selectedVariable"
-									x-ng-disabled="noIceThickness" /> <label
-									for="iceThickness_{{forecast.id}}">Ice thickness</label> <br />
-									<input type="radio" name="iceForecastType_{{forecast.id}}"
+									name="iceForecastType_{{forecast.id}}"
+									id="iceThickness_{{forecast.id}}" value="iceThickness"
+									x-ng-model="selectedVariable" x-ng-disabled="noIceThickness" />
+									<label for="iceThickness_{{forecast.id}}">Ice thickness</label>
+									<br /> <input type="radio"
+									name="iceForecastType_{{forecast.id}}"
 									id="iceSpeed_{{forecast.id}}" value="iceSpeed"
 									x-ng-model="selectedVariable" x-ng-disabled="noIceSpeed" /> <label
 									for="iceSpeed_{{forecast.id}}">Ice speed</label> <br /> <input
@@ -64,13 +76,9 @@
 										risk</label><br /> <input type="range" class="e-forecast"
 									min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
 									<br /> Selected time: {{currentDate}}
-								</span>
-							</div>
-						</td>
-						<td>{{forecast.timestamp}}</td>
-						<td>{{forecast.size}}</td>
-						<td>{{forecast.provider}}</td>
-					</tr>
+							</span></td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		</div>
@@ -85,28 +93,36 @@
 						<col />
 						<col />
 					</colgroup>
-					<tr>
-						<th>Name</th>
-						<th>Date</th>
-						<th>Size</th>
-						<th>Provider</th>
-					</tr>
-					<tr x-ng-repeat="forecast in currentForecasts"
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Date</th>
+							<th>Size</th>
+							<th>Provider</th>
+						</tr>
+					</thead>
+					<tbody class="e-noborder"
+						x-ng-repeat="forecast in currentForecasts"
 						x-ng-controller="CurrentForecastCtrl">
-						<td>
-							<div>
-								<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
-								<span x-ng-show="pc.forecastSelected == forecast.id"> <br />
-									<input type="range" class="e-forecast" min="{{start}}"
-									max="{{end}}" step="1" x-ng-model="current" /> <br />Selected
-									time: {{currentDate}}
-								</span>
-							</div>
-						</td>
-						<td>{{forecast.timestamp}}</td>
-						<td>{{forecast.size}}</td>
-						<td>{{forecast.provider}}</td>
-					</tr>
+						<tr>
+							<td>
+								<div>
+									<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
+								</div>
+							</td>
+							<td>{{forecast.timestamp}}</td>
+							<td>{{forecast.size}}</td>
+							<td>{{forecast.provider}}</td>
+						</tr>
+						<tr>
+							<td class="e-bottomborder" colspan="4"><span
+								x-ng-show="pc.forecastSelected == forecast.id"> <br /> <input
+									type="range" class="e-forecast" min="{{start}}" max="{{end}}"
+									step="1" x-ng-model="current" /> <br />Selected time:
+									{{currentDate}}
+							</span></td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		</div>

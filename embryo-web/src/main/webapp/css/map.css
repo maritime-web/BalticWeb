@@ -288,5 +288,17 @@ body {
 }
 
 input[type="range"].e-forecast {
-	width: 120px;
+	width: 200px;
+}
+
+table.table > tbody.e-noborder {
+	border: 0 solid transparent;
+}
+
+table.table > tbody.e-noborder > tr > td {
+	border-top: 0 solid transparent;
+}
+
+table.table > tbody.e-noborder > tr > td.e-bottomborder {
+	border-bottom: 1px solid #ddd;
 }

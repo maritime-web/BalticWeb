@@ -26,8 +26,6 @@ import java.util.Map;
 import javax.ejb.Stateless;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import dk.dma.embryo.dataformats.netcdf.NetCDFParser;
 import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
@@ -37,11 +35,8 @@ import dk.dma.embryo.dataformats.netcdf.NetCDFType;
 @Stateless
 public class NetCDFServiceImpl implements NetCDFService {
 
-    private final Logger logger = LoggerFactory.getLogger(NetCDFServiceImpl.class);
-
     @Override
     public Map<NetCDFType, String> parseFile(File file, List<? extends NetCDFType> types, NetCDFRestriction restriction) throws IOException {
-        logger.info("Parsing NetCDF file " + file.getAbsolutePath());
         NetCDFParser parser = new NetCDFParser();
         Map<NetCDFType, NetCDFResult> parseResult = parser.parse(file.getAbsolutePath(), types, restriction);
         Map<NetCDFType, String> endResult = new HashMap<NetCDFType, String>();

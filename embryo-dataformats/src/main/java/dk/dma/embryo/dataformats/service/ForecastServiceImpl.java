@@ -63,7 +63,7 @@ public class ForecastServiceImpl implements ForecastService {
     public static final double MIN_LON = -75;
     public static final double MID_LON = -40;
     public static final double MAX_LON = -5;
-    
+
     public static final String NULL_VALUE = "Greenland";
 
     @Inject
@@ -156,30 +156,50 @@ public class ForecastServiceImpl implements ForecastService {
                                 for (File file : files) {
                                     String name = file.getName();
                                     if (!forecastDao.exists(name)) {
-                                        Provider provider = name.contains("fcoo") ? Provider.FCOO : Provider.DMI;
-                                        String timestampStr = name.substring(name.length() - 13, name.length() - 3);
-                                        long timestamp = getTimestamp(timestampStr);
-                                        for (Map.Entry<String, NetCDFRestriction> entry : restrictions.get(provider).entrySet()) {
-                                            String area;
-                                            if(entry.getKey().equals(NULL_VALUE)) {
-                                                area = getArea(name);
-                                            } else {
-                                                area = entry.getKey();
+                                        if (file.length() == 0) {
+                                            // File has been downloaded, but
+                                            // there's no entry in the database,
+                                            // probably because of a database
+                                            // wipe. We remove the empty file
+                                            // and it will be re-downloaded next
+                                            // time.
+                                            logger.info("Found empty file {} with no corresponding database entry - deleting.", name);
+                                            if (!file.delete()) {
+                                                logger.error("Could not delete file {}.", name);
                                             }
-                                            for (NetCDFType type : getPrognosisTypes()) {
-                                                Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
-                                                String json = parseResult.get(type);
-                                                if(json != null) {
-                                                    persistForecast(name, json, ((ForecastType) type).getType(), getJsonSize(json), provider, timestamp, area);
+                                        } else {
+                                            logger.info("Importing NetCDF data from file {}.", name);
+                                            Provider provider = name.contains("fcoo") ? Provider.FCOO : Provider.DMI;
+                                            String timestampStr = name.substring(name.length() - 13, name.length() - 3);
+                                            long timestamp = getTimestamp(timestampStr);
+                                            for (Map.Entry<String, NetCDFRestriction> entry : restrictions.get(provider).entrySet()) {
+                                                String area;
+                                                if (entry.getKey().equals(NULL_VALUE)) {
+                                                    area = getArea(name);
                                                 } else {
-                                                    persistForecast(name, "", ((ForecastType) type).getType(), -1, provider, timestamp, area);
+                                                    area = entry.getKey();
+                                                }
+                                                logger.info("Parsing NetCDF area {} for file {}.", area, name);
+                                                for (NetCDFType type : getPrognosisTypes()) {
+                                                    logger.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
+                                                    Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
+                                                    String json = parseResult.get(type);
+                                                    if (json != null) {
+                                                        logger.info("Got result of size {}, persisting.", json.length());
+                                                        persistForecast(name, json, ((ForecastType) type).getType(), getJsonSize(json), provider, timestamp,
+                                                                area);
+                                                    } else {
+                                                        logger.info("Got empty result, persisting.");
+                                                        persistForecast(name, "", ((ForecastType) type).getType(), -1, provider, timestamp, area);
+                                                    }
                                                 }
                                             }
+                                            file.delete();
+                                            // Create a new, empty file so we
+                                            // don't download it again
+                                            file.createNewFile();
                                         }
                                     }
-                                    file.delete();
-                                    // Create a new, empty file so we don't download it again
-                                    file.createNewFile();
                                 }
                             } else {
                                 logger.info("No files found in folder " + folder.getPath());
@@ -198,7 +218,7 @@ public class ForecastServiceImpl implements ForecastService {
             logger.info("Already parsing, will not re-parse at the moment.");
         }
     }
-    
+
     private int getJsonSize(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -296,21 +316,44 @@ public class ForecastServiceImpl implements ForecastService {
     }
 
     private void initRestrictions() {
-        NetCDFRestriction emptyRestriction = new NetCDFRestriction();
-        Map<String, NetCDFRestriction> dmiRestrictions = new HashMap<>();
-        dmiRestrictions.put(NULL_VALUE, emptyRestriction);
-        restrictions.put(Provider.DMI, dmiRestrictions);
-
+        // NetCDFRestriction emptyRestriction = new NetCDFRestriction();
         NetCDFRestriction bottomLeftRestriction = new NetCDFRestriction(MIN_LAT, MID_LAT, MIN_LON, MID_LON);
         NetCDFRestriction bottomRightRestriction = new NetCDFRestriction(MIN_LAT, MID_LAT, MID_LON, MAX_LON);
         NetCDFRestriction topLeftRestriction = new NetCDFRestriction(MID_LAT, MAX_LAT, MIN_LON, MID_LON);
         NetCDFRestriction topRightRestriction = new NetCDFRestriction(MID_LAT, MAX_LAT, MID_LON, MAX_LON);
+        NetCDFRestriction svalbardRestriction = new NetCDFRestriction(Svalbard.MIN_LAT, Svalbard.MAX_LAT, Svalbard.MIN_LON, Svalbard.MAX_LON);
+        NetCDFRestriction norwegianSeaRestriction = new NetCDFRestriction(NorwegianSea.MIN_LAT, NorwegianSea.MAX_LAT, NorwegianSea.MIN_LON,
+                NorwegianSea.MAX_LON);
+
+        Map<String, NetCDFRestriction> dmiRestrictions = new HashMap<>();
+        dmiRestrictions.put("Greenland SW", bottomLeftRestriction);
+        dmiRestrictions.put("Greenland SE", bottomRightRestriction);
+        dmiRestrictions.put("Greenland NW", topLeftRestriction);
+        dmiRestrictions.put("Greenland NE", topRightRestriction);
+        dmiRestrictions.put("Svalbard", svalbardRestriction);
+        dmiRestrictions.put("Norwegian Sea", norwegianSeaRestriction);
+        restrictions.put(Provider.DMI, dmiRestrictions);
+
         Map<String, NetCDFRestriction> fcooRestrictions = new HashMap<>();
         fcooRestrictions.put("Greenland SW", bottomLeftRestriction);
         fcooRestrictions.put("Greenland SE", bottomRightRestriction);
         fcooRestrictions.put("Greenland NW", topLeftRestriction);
         fcooRestrictions.put("Greenland NE", topRightRestriction);
         restrictions.put(Provider.FCOO, fcooRestrictions);
+    }
+
+    public static class Svalbard {
+        public static final double MIN_LAT = 75;
+        public static final double MAX_LAT = 82;
+        public static final double MIN_LON = 0;
+        public static final double MAX_LON = 35;
+    }
+
+    public static class NorwegianSea {
+        public static final double MIN_LAT = 58;
+        public static final double MAX_LAT = 73;
+        public static final double MIN_LON = -5;
+        public static final double MAX_LON = 25;
     }
 
 }
