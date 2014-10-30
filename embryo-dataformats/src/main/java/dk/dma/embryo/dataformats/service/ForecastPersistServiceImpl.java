@@ -38,18 +38,22 @@ public class ForecastPersistServiceImpl implements ForecastPersistService {
             forecastDao.saveEntity(forecast);
         } else {
             Forecast latest = found.get(0);
-            if(latest.getTimestamp() < forecast.getTimestamp()) {
+            if (latest.getTimestamp() < forecast.getTimestamp()) {
                 latest.invalidate();
                 forecastDao.saveEntity(forecast);
                 forecastDao.saveEntity(latest);
+            } else if (latest.getTimestamp() == forecast.getTimestamp() && forecast.getData().length() > latest.getData().length()) {
+                // If we have a forecast from two different files, we keep the bigger one.
+                latest.updateData(forecast.getData(), forecast.getSize());
+                forecastDao.saveEntity(latest);
             }
-            if(found.size() > 1) {
-                for(int i = 1; i < found.size(); i++) {
+            if (found.size() > 1) {
+                for (int i = 1; i < found.size(); i++) {
                     found.get(i).invalidate();
                     forecastDao.saveEntity(found.get(i));
                 }
             }
-            
+
         }
     }
 
