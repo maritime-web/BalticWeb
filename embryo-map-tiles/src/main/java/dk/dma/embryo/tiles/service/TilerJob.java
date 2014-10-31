@@ -26,6 +26,7 @@ import dk.dma.embryo.tiles.model.TileSet;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.ScheduleExpression;
 import javax.ejb.Singleton;
@@ -103,6 +104,11 @@ public class TilerJob {
         } else {
             logger.info("Cron job not scheduled.");
         }
+    }
+
+    @PreDestroy
+    public void shutdown() throws InterruptedException {
+        logger.info("Shutdown called.");
     }
 
     @Timeout

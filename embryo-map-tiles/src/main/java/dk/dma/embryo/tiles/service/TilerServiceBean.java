@@ -24,6 +24,7 @@ import dk.dma.embryo.tiles.image.Image2TilesUsingMaptiler;
 import dk.dma.embryo.tiles.image.ImageSourceMeta;
 import dk.dma.embryo.tiles.image.ImageSourceMetaReader;
 import dk.dma.embryo.tiles.model.TileSet;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 
 import javax.ejb.Asynchronous;
@@ -49,6 +50,10 @@ public class TilerServiceBean implements TilerService {
     @Inject
     @Property(value = "embryo.tiles.directory", substituteSystemProperties = true)
     private String destinationDir;
+
+    @Inject
+    @Property(value = "embryo.tiles.mbtiles")
+    private String mbtiles;
 
     @Inject
     private Logger logger;
@@ -90,21 +95,26 @@ public class TilerServiceBean implements TilerService {
             initDir(destinationDir);
             initDir(tmpDir);
 
-            File tmpFile = new File(tmpDir, name + ".mbtiles");
-            if (tmpFile.exists()) {
-                logger.debug("Deleting existing tmp file {} ", tmpFile.getAbsolutePath());
-                tmpFile.delete();
+            if ("true".equalsIgnoreCase(mbtiles)) {
+                name = name + ".mbtiles";
+            }
+
+            File tmpDestination = new File(tmpDir, name);
+            if (tmpDestination.exists()) {
+                logger.debug("Deleting existing tmp destination {} ", tmpDestination.getAbsolutePath());
+
+                FileUtils.deleteQuietly(tmpDestination);
                 // wait for delete to happen
                 Thread.sleep(10);
             }
 
-            logger.debug("Transforming {} to {}", geotifFile, tmpFile);
-            transformer.execute(geotifFile, tmpFile);
+            logger.debug("Transforming {} to {}", geotifFile, tmpDestination);
+            transformer.execute(geotifFile, tmpDestination);
 
-            File destinationFile = new File(destinationDir, name + ".mbtiles");
-            logger.debug("Moving {} to {}", tmpFile, destinationFile);
+            File destination = new File(destinationDir, tmpDestination.getName());
+            logger.debug("Moving {} to {}", tmpDestination, destination);
 
-            Files.move(Paths.get(tmpFile.getAbsolutePath()), Paths.get(destinationFile.getAbsolutePath()));
+            Files.move(Paths.get(tmpDestination.getAbsolutePath()), Paths.get(destination.getAbsolutePath()));
 
             tileSet = dao.getByNameAndProvider(name, provider);
             tileSet.setStatus(TileSet.Status.SUCCESS);
@@ -119,7 +129,7 @@ public class TilerServiceBean implements TilerService {
             long seconds = remainder / 1000;
 
             String time = hours + ":" + minutes + ":" + seconds;
-            String msg = "Transformed " + geotifFile.getAbsolutePath() + " to tiles " + destinationFile.getAbsolutePath() + " in " + time;
+            String msg = "Transformed " + geotifFile.getAbsolutePath() + " to tiles " + destination.getAbsolutePath() + " in " + time;
             logger.info(msg);
             logService.info(msg);
         } catch (Exception e) {
@@ -131,8 +141,6 @@ public class TilerServiceBean implements TilerService {
                 logger.error("Failed updating status", e2);
             }
 
-            logService.error("Failed transforming " + geotifFile.getAbsolutePath() + " to tiles", e);
-
             try {
                 sendEmail(name, provider, e);
             } catch (Exception e2) {
@@ -140,7 +148,7 @@ public class TilerServiceBean implements TilerService {
             }
 
             try {
-                String msg = "Failed converting " + geotifFile + " to tiles";
+                String msg = "Failed transforming " + geotifFile + " to tiles";
                 logger.error(msg, e);
                 logService.error(msg, e);
             } catch (Exception e2) {

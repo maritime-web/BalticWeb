@@ -15,6 +15,7 @@
 
 package dk.dma.embryo.tiles.image;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ import java.io.IOException;
  * Created by Jesper Tejlgaard on 8/20/14.
  */
 
-public class GeoTiff2TilesUsingMaptilerIT {
+public class Image2TilesUsingMaptilerIT {
 
     @Test
     public void testGeotiff() throws IOException, InterruptedException {
@@ -34,7 +35,7 @@ public class GeoTiff2TilesUsingMaptilerIT {
         File conf = new File(getClass().getResource("/default-configuration.properties").getFile());
         File logDir = new File(conf.getParentFile().getParentFile(), "test-tmp");
 
-        Image2TilesUsingMaptiler geoTiff2Tiles = new Image2TilesUsingMaptiler(executable, logDir.getAbsolutePath());
+        Image2TilesUsingMaptiler geoTiff2Tiles = new Image2TilesUsingMaptiler(executable, logDir.getAbsolutePath(), "");
 
         File destinationFile = new File("/home/jesper/Documents/201408051525.rgb_MODIS_Dundee.mbtiles");
         if (destinationFile.exists()) {
@@ -57,21 +58,40 @@ public class GeoTiff2TilesUsingMaptilerIT {
     }
 
     @Test
-    public void testJpg() throws IOException, InterruptedException {
+    public void testJpgToFolder() throws IOException, InterruptedException {
 
         String executable = "/home/jesper/Git/enav-appsrv/maptiler-cluster/maptiler";
         File conf = new File(getClass().getResource("/default-configuration.properties").getFile());
         File logDir = new File(conf.getParentFile().getParentFile(), "test-tmp");
 
-        Image2TilesUsingMaptiler geoTiff2Tiles = new Image2TilesUsingMaptiler(executable, logDir.getAbsolutePath());
+        Image2TilesUsingMaptiler geoTiff2Tiles = new Image2TilesUsingMaptiler(executable, logDir.getAbsolutePath(), "-zoom 3 5");
 
-        File destinationFile = new File("/home/jesper/Documents/NASA_Modis_20141001_aqua.r01c01.250m.mbtiles");
+        File destinationFile = new File("/home/jesper/Documents/NASA_Modis_20141001-aqua-r01c01-250m");
         if (destinationFile.exists()) {
-            destinationFile.delete();
+            FileUtils.deleteQuietly(destinationFile);
             Thread.sleep(100);
         }
 
-        File jpgFile = new File("/home/jesper/arcticweb/dmi-satellite-ice/NASA_Modis_20141001_aqua.r01c01.250m.jpg");
+        File jpgFile = new File("/home/jesper/arcticweb/dmi-satellite-ice/NASA_Modis_20141030.aqua.r01c01.250m.jpg");
+        geoTiff2Tiles.execute(jpgFile, destinationFile);
+    }
+
+    @Test
+    public void testJpgToMbfiles() throws IOException, InterruptedException {
+
+        String executable = "/home/jesper/Git/enav-appsrv/maptiler-cluster/maptiler";
+        File conf = new File(getClass().getResource("/default-configuration.properties").getFile());
+        File logDir = new File(conf.getParentFile().getParentFile(), "test-tmp");
+
+        Image2TilesUsingMaptiler geoTiff2Tiles = new Image2TilesUsingMaptiler(executable, logDir.getAbsolutePath(), "-nodata 0 0 0 -zoom 3 5");
+
+        File destinationFile = new File("/home/jesper/Documents/NASA_Modis_20141001-aqua-r01c01-250m.mbtiles");
+        if (destinationFile.exists()) {
+            FileUtils.deleteQuietly(destinationFile);
+            Thread.sleep(100);
+        }
+
+        File jpgFile = new File("/home/jesper/arcticweb/dmi-satellite-ice/NASA_Modis_20141030.aqua.r01c01.250m.jpg");
         geoTiff2Tiles.execute(jpgFile, destinationFile);
 
         Assert.assertTrue(destinationFile.exists());
@@ -80,7 +100,7 @@ public class GeoTiff2TilesUsingMaptilerIT {
             Assert.fail("Exception not thrown as expected. Expected mbtiles destination file to exist already.");
         } catch (IOException e) {
             String errorLog = new File(logDir, destinationFile.getName().replaceAll(".mbtiles", "") + "-error.log").getAbsolutePath();
-            String expected = "Exception reading file: " + destinationFile + ". See error log for more details: " + errorLog;
+            String expected = "Exception reading file: '" + destinationFile + "'. See error log for more details: " + errorLog;
             Assert.assertEquals(expected, e.getMessage());
         }
     }

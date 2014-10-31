@@ -107,10 +107,9 @@ public class TilerJobTest {
         TilerJob.Result result = job.startTileJobs("dmi", "type", files, 0, r2);
         Assert.assertNotNull(result);
         Assert.assertEquals(0, result.errorCount);
-        Assert.assertEquals(2, result.jobsStarted);
+        Assert.assertEquals(1, result.jobsStarted);
 
         Mockito.verify(tilerService).transformGeotiff2tiles(files[0].getAbsoluteFile(), "image1_sourceType_area", "dmi");
-        Mockito.verify(tilerService).transformGeotiff2tiles(files[1].getAbsoluteFile(), "image2_sourceType_area", "dmi");
     }
 
     @Test

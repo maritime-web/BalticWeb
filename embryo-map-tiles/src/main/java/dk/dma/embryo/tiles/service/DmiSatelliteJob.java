@@ -27,6 +27,7 @@ import org.apache.commons.net.ftp.FTPFileFilters;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.ScheduleExpression;
 import javax.ejb.Singleton;
@@ -124,6 +125,11 @@ public class DmiSatelliteJob {
         } else {
             logger.info("DMI FTP site is not configured - cron job not scheduled.");
         }
+    }
+
+    @PreDestroy
+    public void shutdown() throws InterruptedException {
+        logger.info("Shutdown called.");
     }
 
     @Timeout

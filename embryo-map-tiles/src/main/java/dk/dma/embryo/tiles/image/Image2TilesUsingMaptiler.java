@@ -17,7 +17,6 @@ package dk.dma.embryo.tiles.image;
 
 
 import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.tiles.service.ImageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,14 +45,19 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
     @Property(value = "embryo.tiler.maptiler.logDir", substituteSystemProperties = true)
     private String logDir;
 
+    @Inject
+    @Property(value = "embryo.tiler.maptiler.defaults")
+    private String defaults;
+
     private File logDirectory;
 
     public Image2TilesUsingMaptiler() {
     }
 
-    public Image2TilesUsingMaptiler(String executable, String logDir) {
+    public Image2TilesUsingMaptiler(String executable, String logDir, String defaults) {
         this.mapTilerExecutable = executable;
         this.logDir = logDir;
+        this.defaults = defaults;
     }
 
     private void init() {
@@ -75,22 +79,18 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
         commands.add("-o");
         commands.add(destinationFile.getAbsolutePath());
 
-        if (ImageType.getType(srcFile) == ImageType.JPG) {
-            File dir = srcFile.getParentFile();
-            String prjName = srcFile.getName().replace(".jpg", ".prj");
-            File prjFile = new File(dir, prjName);
-            String projection = readPrj(prjFile);
-            commands.add("-srs");
-            commands.add(projection);
+        if (defaults != null && defaults.trim().length() > 0) {
+            String[] args = defaults.trim().split(" ");
+            for (String arg : args) {
+                commands.add(arg.trim());
+            }
         }
 
         for (int i = 0; i < staticArgs.length; i++) {
             commands.add(staticArgs[i]);
         }
+
         commands.add(srcFile.getAbsolutePath());
-
-
-        System.out.println("Commands: " + commands);
 
         String[] cmds = commands.toArray(new String[0]);
 
@@ -114,7 +114,7 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
         }
 
         if (readLogContent(errorLog).lines() > 0) {
-            throw new IOException("Exception reading file: " + destinationFile.getAbsolutePath() + ". See error log for more details: " + errorLog);
+            throw new IOException("Exception reading file: '" + destinationFile.getAbsolutePath() + "'. See error log for more details: " + errorLog);
         }
 
         LogContent outLogContent = readLogContent(outputLog);
@@ -136,21 +136,6 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
 
         return new LogContent(content);
     }
-
-    private String readPrj(File prjFile) throws IOException {
-        BufferedReader input = new BufferedReader(new FileReader(prjFile));
-
-        StringBuffer content = new StringBuffer();
-        String line = null;
-        while ((line = input.readLine()) != null) {
-            if (line.trim().length() > 0) {
-                content.append(line);
-            }
-        }
-
-        return content.toString();
-    }
-
 
     private static class LogContent {
 
