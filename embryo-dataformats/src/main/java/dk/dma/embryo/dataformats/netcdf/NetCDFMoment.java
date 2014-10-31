@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -63,7 +62,7 @@ public class NetCDFMoment implements Serializable {
     
     public static class FloatSerializer extends JsonSerializer<Float>{
         @Override
-        public void serialize(Float val, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
+        public void serialize(Float val, JsonGenerator generator, SerializerProvider provider) throws IOException {
             if(val == 0f) {
                 generator.writeNumber(0);
             } else {
