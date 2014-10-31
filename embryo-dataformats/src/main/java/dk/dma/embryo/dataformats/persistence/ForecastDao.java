@@ -30,7 +30,7 @@ public interface ForecastDao extends Dao {
 
     void flush();
 
-    boolean exists(String name);
+    boolean exists(Provider provider, long timestamp);
 
     List<Forecast> findByProviderAreaAndType(Provider provider, String area, Type type);
 }

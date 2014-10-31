@@ -17,6 +17,7 @@ package dk.dma.embryo.dataformats.netcdf;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -117,7 +118,7 @@ public class NetCDFParser {
                 for (NetCDFVar cdfVar : vars.values()) {
                     if (varMap.containsKey(cdfVar.getVarname())) {
                         outputVars.put(cdfVar.getVarname(), count);
-                        boolean hasContent = parseData(varMap.get(cdfVar.getVarname()), count++, restriction, moments);
+                        boolean hasContent = parseData(varMap.get(cdfVar.getVarname()), count++, restriction, moments, cdfVar.getDigits());
                         if (empty && hasContent) {
                             empty = false;
                         }
@@ -193,7 +194,7 @@ public class NetCDFParser {
      * @throws InvalidRangeException
      * @throws IOException
      */
-    private boolean parseData(Variable v, int order, NetCDFRestriction restriction, Map<Integer, NetCDFMoment> moments) throws InvalidRangeException,
+    private boolean parseData(Variable v, int order, NetCDFRestriction restriction, Map<Integer, NetCDFMoment> moments, int digits) throws InvalidRangeException,
             IOException {
         List<Range> ranges = new ArrayList<>();
         int minLat, minLon, maxLat, maxLon;
@@ -231,7 +232,7 @@ public class NetCDFParser {
                     // We are not interested in default/empty values, so these
                     // are excluded.
                     if (val > MIN_VAL && val != 0 && isZeroPointFourCoordinate(latList.get(j + minLat)) && isZeroPointFourCoordinate(lonList.get(k + minLon))) {
-                        moment.addEntry(new NetCDFPoint(j + minLat, k + minLon), order, val);
+                        moment.addEntry(new NetCDFPoint(j + minLat, k + minLon), order, cutDigits(val, digits));
                     }
                 }
 
@@ -241,6 +242,12 @@ public class NetCDFParser {
             }
         }
         return hasContent;
+    }
+    
+    private float cutDigits(float value, int digits) {
+        int factor = (int) Math.pow(10, digits);
+        int result = (int)(value * factor);
+        return (float)result / factor;
     }
 
     private int findClosestCoordIndex(double coord, List<Double> list, boolean isMinValue) {

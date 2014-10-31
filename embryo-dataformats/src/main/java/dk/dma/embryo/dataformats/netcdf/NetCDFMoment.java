@@ -14,15 +14,23 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 public class NetCDFMoment implements Serializable {
     
     private static final long serialVersionUID = 3229249855444903196L;
 
     private int time;
+    
+    @JsonSerialize(using = FloatSerializer.class)
     private Map<NetCDFPoint, Map<Integer, Float>> entries = new HashMap<>();
     
     public NetCDFMoment(int time) {
@@ -50,5 +58,17 @@ public class NetCDFMoment implements Serializable {
     @Override
     public String toString() {
         return "Time: " + time + ", entries: " + entries;
+    }
+    
+    public static class FloatSerializer extends JsonSerializer<Float>{
+        @Override
+        public void serialize(Float val, JsonGenerator generator, SerializerProvider provider) throws IOException {
+            if(val == 0f) {
+                generator.writeNumber(0);
+            } else {
+                generator.writeNumber(val);
+            }
+        }
+        
     }
 }

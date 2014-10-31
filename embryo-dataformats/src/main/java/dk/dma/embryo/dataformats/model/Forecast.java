@@ -33,9 +33,9 @@ import dk.dma.embryo.dataformats.model.ForecastType.Type;
 @NamedQueries({
         @NamedQuery(name = "Forecast:lookup", query = "SELECT f FROM Forecast f WHERE f.name = :name AND f.ftype = :type"),
         @NamedQuery(name = "Forecast:find", query = "SELECT f FROM Forecast f JOIN FETCH f.data WHERE f.id = :id"),
-        @NamedQuery(name = "Forecast:list", query = "SELECT f FROM Forecast f WHERE f.ftype = :type AND f.size != -1 ORDER BY f.timestamp DESC"),
-        @NamedQuery(name = "Forecast:exists", query = "SELECT COUNT(*) FROM Forecast f WHERE f.name = :name"),
-        @NamedQuery(name = "Forecast:findDuplicates", query = "SELECT f FROM Forecast f WHERE f.area = :area AND f.provider = :provider AND f.ftype = :type AND f.size != -1 ORDER by f.timestamp DESC") })
+        @NamedQuery(name = "Forecast:list", query = "SELECT f FROM Forecast f WHERE f.ftype = :type AND f.size != -1 ORDER BY f.area, f.timestamp DESC"),
+        @NamedQuery(name = "Forecast:exists", query = "SELECT COUNT(*) FROM Forecast f WHERE f.provider = :provider AND f.timestamp = :timestamp"),
+        @NamedQuery(name = "Forecast:findDuplicates", query = "SELECT f FROM Forecast f WHERE f.area = :area AND f.provider = :provider AND f.ftype = :type ORDER by f.timestamp DESC, f.size DESC") })
 @Entity
 @JsonIgnoreProperties({ "data" })
 public class Forecast extends BaseEntity<Long> {
