@@ -94,8 +94,6 @@ $(function () {
         $scope.displayTileSet = function ($event, tileSet) {
             $event.preventDefault();
 
-            console.log(tileSet);
-
             satellite.showTiles(group, tileSet);
 //            delete chartsDisplayed[chart.type];
         }
@@ -109,17 +107,16 @@ $(function () {
         }
 
         $scope.isDisplayed = function (tileSet) {
-            return false;
+            return satellite.isDisplayed(tileSet);
         }
 
         $scope.zoom = function ($event, chart) {
             $event.preventDefault();
-            embryo.map.zoomToExtent(satellite.layers);
+            satellite.zoomToExtent();
         }
 
 
         satellite.select("tileSet", function (tileSetName) {
-            console.log(tileSetName);
             if (tileSetName) {
                 $scope.selected = tileSetName;
             } else {

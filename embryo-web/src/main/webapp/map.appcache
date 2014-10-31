@@ -37,6 +37,7 @@ partials/route-edit.html
 partials/greenpos-report.html
 partials/greenpos-list.html
 partials/forecast-control.html
+partials/ice-satellite-control.html
 rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2
 img/load.gif
 img/vessel_blue.png

@@ -150,6 +150,9 @@ $(function() {
             }
         });
 
+        $scope.$on("$destroy", function () {
+            seaForecastLayer.clear();
+        });
     } ]);
 
     module.controller("WeatherForecastController", [ '$scope', 'WeatherService', function($scope, WeatherService) {

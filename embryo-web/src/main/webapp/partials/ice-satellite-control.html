@@ -33,13 +33,11 @@
             <td>{{formatDate(tileSet.ts)}}</td>
             <td>{{tileSet.qualifier}}</td>
             <td>{{tileSet.sourceType}}</td>
-            <!--<td>{{tileSet.center.x}}, {{tileSet.center.y}}</td>-->
 
-            <td x-ng-if="!isDisplayed(tileSet)"><a href=# x-ng-click="displayTileSet($event, tileSet)">view</a></td>
-            <td x-ng-if="isDisplayed(tileSet)"><a href=# x-ng-click="zoom($event, tileSet)">zoom</a> /
+            <td x-ng-if="!isDisplayed(tileSet)"><a href=# x-ng-click="displayTileSet($event, tileSet)">display</a></td>
+            <td x-ng-if="isDisplayed(tileSet)"><!--a href=# x-ng-click="zoom($event, tileSet)">zoom</a> / -->
                 <a href=# x-ng-click='hideTileSet($event, tileSet)'>hide</a></td>
         </tr>
-
         </tbody>
     </table>
 
