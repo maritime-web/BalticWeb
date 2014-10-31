@@ -121,19 +121,68 @@ function ForecastLayer() {
 			return '#979797';
 		}
 	};
-	
-	this.getIceAccretionLevel = function(obs) {
-		if(obs < 0) {
+
+	this.getIceThicknessLevel = function(obs) {
+		if (obs < 0.1) {
 			return '#96c7ff';
-		} else if(obs < 22.5) {
+		} else if (obs < 0.3) {
 			return '#8effa0';
-		} else if(obs < 53.4) {
+		} else if (obs < 0.5) {
 			return '#ffff00';
-		} else if(obs < 83.1) {
+		} else if (obs < 1) {
+			return '#ff7c06';
+		} else if (obs < 2) {
+			return '#ff0000';
+		} else {
+			return '#979797';
+		}
+	};
+	
+	this.getSpeedLevel = function(obs) {
+		if (obs < 0.1) {
+			return '#96c7ff';
+		} else if (obs < 0.3) {
+			return '#8effa0';
+		} else if (obs < 0.5) {
+			return '#ffff00';
+		} else if (obs < 1) {
+			return '#ff7c06';
+		} else if (obs < 2) {
+			return '#ff0000';
+		} else {
+			return '#979797';
+		}
+	};
+
+	this.getIceAccretionLevel = function(obs) {
+		if (obs < 0) {
+			return '#96c7ff';
+		} else if (obs < 22.5) {
+			return '#8effa0';
+		} else if (obs < 53.4) {
+			return '#ffff00';
+		} else if (obs < 83.1) {
 			return '#ff7c06';
 		} else {
 			return '#979797';
 		}
+	};
+
+	this.drawFrame = function(forecast) {
+		var lats = forecast.metadata.lat;
+		var lons = forecast.metadata.lon;
+		var minLat = lats[0];
+		var maxLat = lats[lats.length - 1];
+		var minLon = lons[0];
+		var maxLon = lons[lons.length - 1];
+
+		var points = [ embryo.map.createPoint(minLon, minLat), embryo.map.createPoint(minLon, maxLat), embryo.map.createPoint(maxLon, maxLat),
+				embryo.map.createPoint(maxLon, minLat) ];
+		var square = new OpenLayers.Geometry.LinearRing(points);
+		var feature = new OpenLayers.Feature.Vector(square, {
+			level : 'transparent'
+		});
+		return feature;
 	};
 
 	this.drawConcentration = function(forecast, time) {
@@ -142,15 +191,15 @@ function ForecastLayer() {
 		var lons = forecast.metadata.lon;
 		var features = [];
 		var half = 0.2;
-		
+
 		var entries = forecast.data[time].entries;
 
-		for(var e in entries) {
+		for ( var e in entries) {
 			var obs = entries[e][index];
 			var level = this.getIceConcentrationLevel(obs);
 			var lat = lats[e.substr(0, e.indexOf('_'))];
 			var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
-			
+
 			if (obs && lon && lat) {
 
 				var points = [ embryo.map.createPoint(lon - half, lat - half), embryo.map.createPoint(lon + half, lat - half),
@@ -163,7 +212,7 @@ function ForecastLayer() {
 				features.push(feature);
 			}
 			console.log('Ice conc: ' + lat + ':' + lon + ' - ' + obs);
-			
+
 		}
 		return features;
 	};
@@ -174,15 +223,15 @@ function ForecastLayer() {
 		var lons = forecast.metadata.lon;
 		var features = [];
 		var half = 0.2;
-		
+
 		var entries = forecast.data[time].entries;
 
-		for(var e in entries) {
+		for ( var e in entries) {
 			var obs = entries[e][index];
-			var level = this.getIceConcentrationLevel(obs);
+			var level = this.getIceThicknessLevel(obs);
 			var lat = lats[e.substr(0, e.indexOf('_'))];
 			var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
-			
+
 			if (obs && lon && lat) {
 
 				var points = [ embryo.map.createPoint(lon - half, lat - half), embryo.map.createPoint(lon + half, lat - half),
@@ -195,7 +244,7 @@ function ForecastLayer() {
 				features.push(feature);
 			}
 			console.log('Ice thickness: ' + lat + ':' + lon + ' - ' + obs);
-			
+
 		}
 		return features;
 
@@ -207,15 +256,16 @@ function ForecastLayer() {
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
 		var features = [];
-		var half = 0.2;
+		var half = 0.1;
 
 		var entries = forecast.data[time].entries;
 
-		for(var e in entries) {
+		for ( var e in entries) {
 			var east = entries[e][indexEast];
 			var north = entries[e][indexNorth];
-			if(east || north) {
-				var level = this.getIceConcentrationLevel(Math.sqrt(north * north + east * east));
+			if (east || north) {
+				var speed = Math.sqrt(north * north + east * east);
+				var level = this.getSpeedLevel(speed);
 				var lat = lats[e.substr(0, e.indexOf('_'))];
 				var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 				var points = new Array(embryo.map.createPoint(lon, lat + half), embryo.map.createPoint(lon + half, lat + (half * 0.2)), embryo.map.createPoint(
@@ -223,7 +273,7 @@ function ForecastLayer() {
 						- (half * 0.2), lat - (half * 0.5)), embryo.map.createPoint(lon - (half * 0.2), lat + (half * 0.2)), embryo.map.createPoint(lon - half,
 						lat + (half * 0.2)));
 
-				var rad = Math.acos(north / Math.sqrt(north * north + east * east));
+				var rad = Math.acos(north / speed);
 				var degrees = Math.round(rad * 180 / Math.PI);
 
 				var linearRing = new OpenLayers.Geometry.LinearRing(points);
@@ -235,29 +285,29 @@ function ForecastLayer() {
 				features.push(feature);
 
 				console.log('Ice speed: ' + lat + ':' + lon + ' - ' + east + '/' + north + '; cos: '
-						+ Math.acos(north / Math.sqrt(north * north + east * east)));
-				
+						+ rad);
+
 			}
 
 		}
 		return features;
 	};
-	
+
 	this.drawAccretion = function(forecast, time) {
 		var index = forecast.variables['Ice accretion risk'];
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
 		var features = [];
 		var half = 0.2;
-		
+
 		var entries = forecast.data[time].entries;
 
-		for(var e in entries) {
+		for ( var e in entries) {
 			var obs = entries[e][index];
 			var level = this.getIceAccretionLevel(obs);
 			var lat = lats[e.substr(0, e.indexOf('_'))];
 			var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
-			
+
 			if (obs && lon && lat) {
 
 				var points = [ embryo.map.createPoint(lon - half, lat - half), embryo.map.createPoint(lon + half, lat - half),
@@ -270,15 +320,16 @@ function ForecastLayer() {
 				features.push(feature);
 			}
 			console.log('Ice accretion: ' + lat + ':' + lon + ' - ' + obs);
-			
+
 		}
 		return features;
 	};
 
-
 	this.drawIceForecast = function(forecast, time, mapType) {
 		var that = this;
 		that.clear();
+		
+		//that.layers.forecasts.addFeatures(this.drawFrame(forecast));
 
 		var features = [];
 		switch (mapType) {
@@ -364,15 +415,16 @@ function ForecastLayer() {
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
 		var features = [];
-		var half = 0.2;
+		var half = 0.1;
 
 		var entries = forecast.data[time].entries;
-		
-		for(var e in entries) {
+
+		for ( var e in entries) {
 			var east = entries[e][indexEast];
 			var north = entries[e][indexNorth];
-			if(east || north) {
-				var level = this.getIceConcentrationLevel(Math.sqrt(north * north + east * east));
+			if (east || north) {
+				var speed = Math.sqrt(north * north + east * east);
+				var level = this.getSpeedLevel(speed);
 				var lat = lats[e.substr(0, e.indexOf('_'))];
 				var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 
@@ -381,19 +433,19 @@ function ForecastLayer() {
 						- (half * 0.2), lat - (half * 0.5)), embryo.map.createPoint(lon - (half * 0.2), lat + (half * 0.2)), embryo.map.createPoint(lon - half,
 						lat + (half * 0.2)));
 
-				var rad = Math.acos(north / Math.sqrt(north * north + east * east));
+				var rad = Math.acos(north / speed);
 				var degrees = Math.round(rad * 180 / Math.PI);
 
 				var linearRing = new OpenLayers.Geometry.LinearRing(points);
 				linearRing.rotate(degrees, embryo.map.createPoint(lon, lat));
 				var feature = new OpenLayers.Feature.Vector(linearRing, {
 					level : level,
-					obs : east + '/' + north
+					obs : speed
 				});
 				features.push(feature);
 
 				console.log('Current speed: ' + lat + ':' + lon + ' - ' + east + '/' + north + '; cos: '
-						+ Math.acos(north / Math.sqrt(north * north + east * east)));
+						+ rad);
 
 			}
 		}

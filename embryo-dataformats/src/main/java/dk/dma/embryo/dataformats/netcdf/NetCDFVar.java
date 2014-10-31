@@ -28,6 +28,7 @@ import java.util.Map;
  */
 public class NetCDFVar {
     private String varname, description;
+    private int digits = 3;
 
     public NetCDFVar(String varname, String description) {
         this.varname = varname;
@@ -40,6 +41,14 @@ public class NetCDFVar {
 
     public String getDescription() {
         return description;
+    }
+    
+    public int getDigits() {
+        return digits;
+    }
+    
+    public void setDigits(int digits) {
+        this.digits = digits;
     }
 
     /**

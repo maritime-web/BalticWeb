@@ -155,8 +155,11 @@ public class ForecastServiceImpl implements ForecastService {
                             if (files != null) {
                                 for (File file : files) {
                                     String name = file.getName();
-                                    if (!forecastDao.exists(name)) {
-                                        if (file.length() == 0) {
+                                    Provider provider = name.contains("fcoo") ? Provider.FCOO : Provider.DMI;
+                                    String timestampStr = name.substring(name.length() - 13, name.length() - 3);
+                                    long timestamp = getTimestamp(timestampStr);
+                                    if (file.length() == 0) {
+                                        if (!forecastDao.exists(provider, timestamp)) {
                                             // File has been downloaded, but
                                             // there's no entry in the database,
                                             // probably because of a database
@@ -167,40 +170,37 @@ public class ForecastServiceImpl implements ForecastService {
                                             if (!file.delete()) {
                                                 logger.error("Could not delete file {}.", name);
                                             }
-                                        } else {
-                                            logger.info("Importing NetCDF data from file {}.", name);
-                                            Provider provider = name.contains("fcoo") ? Provider.FCOO : Provider.DMI;
-                                            String timestampStr = name.substring(name.length() - 13, name.length() - 3);
-                                            long timestamp = getTimestamp(timestampStr);
-                                            for (Map.Entry<String, NetCDFRestriction> entry : restrictions.get(provider).entrySet()) {
-                                                String area;
-                                                if (entry.getKey().equals(NULL_VALUE)) {
-                                                    area = getArea(name);
+                                        }
+                                    } else {
+                                        logger.info("Importing NetCDF data from file {}.", name);
+                                        for (Map.Entry<String, NetCDFRestriction> entry : restrictions.get(provider).entrySet()) {
+                                            String area;
+                                            if (entry.getKey().equals(NULL_VALUE)) {
+                                                area = getArea(name);
+                                            } else {
+                                                area = entry.getKey();
+                                            }
+                                            logger.info("Parsing NetCDF area {} for file {}.", area, name);
+                                            for (NetCDFType type : getPrognosisTypes()) {
+                                                logger.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
+                                                Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
+                                                String json = parseResult.get(type);
+                                                if (json != null) {
+                                                    logger.info("Got result of size {}, persisting.", json.length());
+                                                    persistForecast(name, json, ((ForecastType) type).getType(), getJsonSize(json), provider, timestamp, area);
                                                 } else {
-                                                    area = entry.getKey();
-                                                }
-                                                logger.info("Parsing NetCDF area {} for file {}.", area, name);
-                                                for (NetCDFType type : getPrognosisTypes()) {
-                                                    logger.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
-                                                    Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
-                                                    String json = parseResult.get(type);
-                                                    if (json != null) {
-                                                        logger.info("Got result of size {}, persisting.", json.length());
-                                                        persistForecast(name, json, ((ForecastType) type).getType(), getJsonSize(json), provider, timestamp,
-                                                                area);
-                                                    } else {
-                                                        logger.info("Got empty result, persisting.");
-                                                        persistForecast(name, "", ((ForecastType) type).getType(), -1, provider, timestamp, area);
-                                                    }
+                                                    logger.info("Got empty result, persisting.");
+                                                    persistForecast(name, "", ((ForecastType) type).getType(), -1, provider, timestamp, area);
                                                 }
                                             }
-                                            file.delete();
-                                            // Create a new, empty file so we
-                                            // don't download it again
-                                            file.createNewFile();
                                         }
+                                        file.delete();
+                                        // Create a new, empty file so we
+                                        // don't download it again
+                                        file.createNewFile();
                                     }
                                 }
+
                             } else {
                                 logger.info("No files found in folder " + folder.getPath());
                             }
