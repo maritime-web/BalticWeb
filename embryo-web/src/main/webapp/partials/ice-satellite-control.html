@@ -15,15 +15,11 @@
   -->
 <div x-ng-controller="SatelliteIceController">
     <p>
-        Satellite images may reveal details about the ice not available when viewing ice charts and iceberg charts.
-        Examples of such are X, Y and Z.
-    </p>
-
-    <p>
-        NB. Satellite images are served as image tiles. A new set of image tiles may be fetched for each zoom level.
+        Satellite images are served as image tiles. A new set of image tiles may be fetched for each zoom level.
         The downloaded amount of image tiles therefore depends on the number of zoom levels used, while the satellite
         image data is displayed.
     </p>
+
     <table class="table table-condensed">
         <tbody x-ng-repeat="tileSet in tileSets">
         <tr x-ng-if="!tileSet.ts">
