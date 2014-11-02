@@ -75,15 +75,25 @@
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.8.5" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-xc:1.8.5" level="project" />
     <orderEntry type="library" name="Maven: commons-fileupload:commons-fileupload:1.3" level="project" />
-    <orderEntry type="library" name="Maven: commons-io:commons-io:2.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: com.google.collections:google-collections:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi:3.10-FINAL" level="project" />
     <orderEntry type="module" module-name="embryo-dataformats" />
     <orderEntry type="library" name="Maven: commons-net:commons-net:2.2" level="project" />
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.7.3" level="project" />
-    <orderEntry type="library" name="Maven: edu.ucar:netcdf:4.2.20" level="project" />
-    <orderEntry type="library" name="Maven: edu.ucar:unidataCommon:4.2.20" level="project" />
+    <orderEntry type="library" name="Maven: edu.ucar:netcdf4:4.5.3" level="project" />
+    <orderEntry type="library" name="Maven: edu.ucar:cdm:4.5.3" level="project" />
+    <orderEntry type="library" name="Maven: edu.ucar:udunits:4.5.3" level="project" />
+    <orderEntry type="library" name="Maven: edu.ucar:httpservices:4.5.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpmime:4.2.6" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:jcl-over-slf4j:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: org.jdom:jdom2:2.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.quartz-scheduler:quartz:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: c3p0:c3p0:0.9.1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.5.0" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache-core:2.6.2" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:17.0" level="project" />
+    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:4.0.0" level="project" />
     <orderEntry type="module" module-name="embryo-user" />
     <orderEntry type="library" name="Maven: org.apache.shiro:shiro-core:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.3" level="project" />
@@ -113,6 +123,7 @@
     <orderEntry type="library" name="Maven: javax.media:jai_codec:1.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.jaitools:jt-zonalstats:1.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.jaitools:jt-utils:1.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.geotools:gt-image:11.2" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-epsg-hsql:11.2" level="project" />
     <orderEntry type="library" name="Maven: org.hsqldb:hsqldb:2.2.8" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.7" level="project" />

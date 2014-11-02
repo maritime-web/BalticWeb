@@ -34,7 +34,7 @@ $(function () {
 
         var sources = [];
         for (var i in data) {
-            var name = data[i].source + " - " + data[i].sourceType
+            var name = data[i].source;
             if (sources.indexOf(name) < 0)
                 sources.push(name);
         }
@@ -71,7 +71,7 @@ $(function () {
             tileSets = addQualifiers(tileSets);
             $scope.tileSets = sortTileSets(tileSets);
 
-            //satellite.draw($scope.tileSets);
+            // satellite.draw($scope.tileSets);
         }, function (error) {
 
         });
