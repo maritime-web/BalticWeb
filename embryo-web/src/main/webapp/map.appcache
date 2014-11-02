@@ -38,6 +38,8 @@ partials/greenpos-report.html
 partials/greenpos-list.html
 partials/forecast-control.html
 partials/ice-satellite-control.html
+partials/settings.html
+partials/weather-control.html
 rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2
 img/load.gif
 img/vessel_blue.png
@@ -62,6 +64,8 @@ img/msi.png
 img/ring.png
 img/green_marker.png
 img/aw-logo.png
+img/iceberg.png
+img/inshoreIceReport.png
 
 # METOC on Map
 img/current/mark01.png
