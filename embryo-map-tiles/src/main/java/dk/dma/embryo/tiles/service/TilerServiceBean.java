@@ -95,11 +95,9 @@ public class TilerServiceBean implements TilerService {
             initDir(destinationDir);
             initDir(tmpDir);
 
-            if ("true".equalsIgnoreCase(mbtiles)) {
-                name = name + ".mbtiles";
-            }
+            String destName = "true".equalsIgnoreCase(mbtiles) ? name + ".mbtiles" : name;
 
-            File tmpDestination = new File(tmpDir, name);
+            File tmpDestination = new File(tmpDir, destName);
             if (tmpDestination.exists()) {
                 logger.debug("Deleting existing tmp destination {} ", tmpDestination.getAbsolutePath());
 
