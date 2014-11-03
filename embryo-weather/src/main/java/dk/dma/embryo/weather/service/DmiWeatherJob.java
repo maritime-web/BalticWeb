@@ -14,16 +14,12 @@
  */
 package dk.dma.embryo.weather.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -34,14 +30,16 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
-
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.log.EmbryoLogService;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 
@@ -82,6 +80,10 @@ public class DmiWeatherJob {
     @Inject
     @Property(value = "embryo.weather.dmi.localDirectory", substituteSystemProperties = true)
     private String localDmiDir;
+
+    @Inject
+    @Property(value = "embryo.tmpDir", substituteSystemProperties = true)
+    private String tmpDir;
 
     public DmiWeatherJob() {
     }
@@ -178,12 +180,20 @@ public class DmiWeatherJob {
 
     private boolean transferFile(FTPClient ftp, FTPFile file, String localDmiDir) throws IOException,
             InterruptedException {
-        String fn = System.getProperty("java.io.tmpdir") + "/test" + Math.random();
-        FileOutputStream fos = new FileOutputStream(fn);
+
+        File tmpFile = new File(tmpDir, "dmiWeather" + Math.random());
+
+        FileOutputStream fos = new FileOutputStream(tmpFile);
 
         try {
-            logger.info("Transfering " + file.getName() + " to " + fn);
+            logger.info("Transfering " + file.getName() + " to " + tmpFile.getAbsolutePath());
             if (!ftp.retrieveFile(file.getName(), fos)) {
+                Thread.sleep(10);
+                if (tmpFile.exists()) {
+                    logger.info("Deleting temporary file " + tmpFile.getAbsolutePath());
+                    tmpFile.delete();
+                }
+
                 throw new RuntimeException("File transfer failed (" + file.getName() + ")");
             }
         } finally {
@@ -193,8 +203,8 @@ public class DmiWeatherJob {
         Thread.sleep(10);
 
         Path dest = Paths.get(localDmiDir).resolve(file.getName());
-        logger.info("Moving " + fn + " to " + dest.getFileName());
-        Files.move(Paths.get(fn), dest, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("Moving " + tmpFile + " to " + dest.getFileName());
+        Files.move(Paths.get(tmpFile.getAbsolutePath()), dest, StandardCopyOption.REPLACE_EXISTING);
 
         return true;
     }

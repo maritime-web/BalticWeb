@@ -14,11 +14,13 @@
  */
 package dk.dma.embryo.dataformats.job;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -30,15 +32,11 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogService;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @Singleton
 @Startup
@@ -76,6 +74,10 @@ public class AariHttpReaderJob {
     @Inject
     @Property(value = "embryo.iceChart.aari.localDirectory", substituteSystemProperties = true)
     private String localDirectory;
+
+    @Inject
+    @Property(value = "embryo.tmpDir", substituteSystemProperties = true)
+    private String tmpDir;
 
     @Resource
     private TimerService timerService;
@@ -204,17 +206,17 @@ public class AariHttpReaderJob {
 
     private File prepareTemporaryDirectory() {
         logger.info("Making temporary directory if necessary ...");
-        File tmpDir = new File(System.getProperty("user.home") + "/arcticweb/tmp");
-        if (!tmpDir.exists()) {
+        File tmpDirectory = new File(tmpDir);
+        if (!tmpDirectory.exists()) {
             logger.info("Making temporary directory " + tmpDir);
-            tmpDir.mkdirs();
+            tmpDirectory.mkdirs();
         }
-        return tmpDir;
+        return tmpDirectory;
     }
 
     private void transferFile(HttpReader httpReader, String path, String fileName, File tmpDir)
             throws InterruptedException, IOException {
-        File location = new File(tmpDir.getAbsoluteFile(), "" + Math.random());
+        File location = new File(tmpDir.getAbsoluteFile(), "AariHttpReader" + Math.random());
 
         logger.info("Transfering " + fileName + " to " + location.getAbsolutePath());
         httpReader.getFile(path, fileName, location);

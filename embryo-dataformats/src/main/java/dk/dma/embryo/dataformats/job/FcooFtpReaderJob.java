@@ -14,20 +14,24 @@
  */
 package dk.dma.embryo.dataformats.job;
 
-import static com.google.common.base.Predicates.not;
-import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.acceptedIceCharts;
-import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.validFormat;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.common.util.NamedtimeStamps;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPFileFilters;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -39,27 +43,20 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPFileFilters;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.common.util.NamedtimeStamps;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
-import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import static com.google.common.base.Predicates.not;
+import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.acceptedIceCharts;
+import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.validFormat;
 
 @Singleton
 @Startup
@@ -103,6 +100,10 @@ public class FcooFtpReaderJob {
     @Inject
     @Property("embryo.iceChart.fcoo.notification.silenceperiod")
     private Integer silencePeriod;
+
+    @Inject
+    @Property(value = "embryo.tmpDir", substituteSystemProperties = true)
+    private String tmpDir;
 
     @Resource
     private TimerService timerService;
@@ -350,13 +351,18 @@ public class FcooFtpReaderJob {
             return false;
         }
 
-        String fn = System.getProperty("java.io.tmpdir") + "/test" + Math.random();
+        File tmpFile = new File(tmpDir, "/fcooFtpReader" + Math.random());
 
-        FileOutputStream fos = new FileOutputStream(fn);
+        FileOutputStream fos = new FileOutputStream(tmpFile);
 
         try {
-            logger.info("Transfering " + name + " to " + fn);
+            logger.info("Transfering " + name + " to " + tmpFile.getAbsolutePath());
             if (!ftp.retrieveFile(name, fos)) {
+                Thread.sleep(10);
+                if (tmpFile.exists()) {
+                    logger.info("Deleting temporary file " + tmpFile.getAbsolutePath());
+                    tmpFile.delete();
+                }
                 throw new RuntimeException("File transfer failed (" + name + ")");
             }
         } finally {
@@ -365,8 +371,8 @@ public class FcooFtpReaderJob {
 
         Thread.sleep(10);
 
-        logger.info("Moving " + fn + " to " + localName);
-        new File(fn).renameTo(new File(localName));
+        logger.info("Moving " + tmpFile.getAbsolutePath() + " to " + localName);
+        tmpFile.renameTo(new File(localName));
 
         return true;
     }

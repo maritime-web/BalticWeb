@@ -112,6 +112,10 @@ public class DmiSatelliteJob {
     @Property(value = "embryo.tiles.providers.dmi.types.satellite-ice.localDirectory", substituteSystemProperties = true)
     private String localDmiDir;
 
+    @Inject
+    @Property(value = "embryo.tmpDir", substituteSystemProperties = true)
+    private String tmpDir;
+
     private NamedtimeStamps notifications = new NamedtimeStamps();
 
     public DmiSatelliteJob() {
@@ -246,12 +250,18 @@ public class DmiSatelliteJob {
 
     private boolean transferFile(FTPClient ftp, FTPFile file, String namePrefix, String localDmiDir) throws IOException,
             InterruptedException {
-        String fn = System.getProperty("java.io.tmpdir") + "/test" + Math.random();
-        FileOutputStream fos = new FileOutputStream(fn);
+        File tmpFile = new File(tmpDir, "dmiSatellite" + Math.random());
+        FileOutputStream fos = new FileOutputStream(tmpFile);
 
         try {
-            logger.info("Transfering " + file.getName() + " to " + fn);
+            logger.info("Transfering " + file.getName() + " to " + tmpFile.getAbsolutePath());
             if (!ftp.retrieveFile(file.getName(), fos)) {
+                Thread.sleep(10);
+                if (tmpFile.exists()) {
+                    logger.info("Deleting temporary file " + tmpFile.getAbsolutePath());
+                    tmpFile.delete();
+                }
+
                 return false;
             }
         } finally {
@@ -261,8 +271,8 @@ public class DmiSatelliteJob {
         Thread.sleep(10);
 
         Path dest = Paths.get(localDmiDir).resolve(namePrefix + file.getName());
-        logger.info("Moving " + fn + " to " + dest.getFileName());
-        Files.move(Paths.get(fn), dest, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("Moving " + tmpFile.getAbsolutePath() + " to " + dest.getFileName());
+        Files.move(Paths.get(tmpFile.getAbsolutePath()), dest, StandardCopyOption.REPLACE_EXISTING);
 
         return true;
     }
