@@ -363,6 +363,10 @@ public class FcooFtpReaderJob {
                 }
                 throw new RuntimeException("File transfer failed (" + name + ")");
             }
+        } catch(Exception e) {
+            logger.error("Exception occurred, deleting temporary file.");
+            tmpFile.delete();
+            throw e;
         }
 
         Thread.sleep(10);

@@ -16,6 +16,7 @@ package dk.dma.embryo.dataformats.job;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
@@ -23,6 +24,7 @@ import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.common.util.NamedtimeStamps;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -43,6 +45,7 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
@@ -381,6 +384,10 @@ public class DmiFtpReaderJob {
 
                 throw new RuntimeException("File transfer failed (" + name + ")");
             }
+        } catch(Exception e) {
+            logger.error("Exception occurred, deleting temporary file.");
+            tmpFile.delete();
+            throw e;
         }
 
         Thread.sleep(10);
