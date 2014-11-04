@@ -45,8 +45,7 @@ $(function () {
             var source = sources[j];
             tileSets.push(source);
             for (var i in data) {
-                var name = data[i].source + " - " + data[i].sourceType
-                if (name == source) {
+                if (data[i].source == source) {
                     tileSets.push(data[i]);
                 }
             }
