@@ -17,7 +17,6 @@ package dk.dma.embryo.dataformats.netcdf;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

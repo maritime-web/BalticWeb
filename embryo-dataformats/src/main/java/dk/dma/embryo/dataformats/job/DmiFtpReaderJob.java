@@ -370,9 +370,7 @@ public class DmiFtpReaderJob {
 
         File tmpFile = new File(tmpDir, "dmiFtpReader" + Math.random());
 
-        FileOutputStream fos = new FileOutputStream(tmpFile);
-
-        try {
+        try(FileOutputStream fos = new FileOutputStream(tmpFile)) {
             logger.info("Transfering " + name + " to " + tmpFile.getAbsolutePath());
             if (!ftp.retrieveFile(name, fos)) {
                 Thread.sleep(10);
@@ -383,14 +381,18 @@ public class DmiFtpReaderJob {
 
                 throw new RuntimeException("File transfer failed (" + name + ")");
             }
-        } finally {
-            fos.close();
         }
 
         Thread.sleep(10);
 
         logger.info("Moving " + tmpFile.getAbsolutePath() + " to " + localName);
-        tmpFile.renameTo(new File(localName));
+        if (tmpFile.getUsableSpace() < tmpFile.length()) {
+            logger.error("Not enough space on disk. Deleting temporary file.");
+            tmpFile.delete();
+        } else if (!tmpFile.renameTo(new File(localName))) {
+            logger.error("Could not move file. Deleting temporary file.");
+            tmpFile.delete();
+        }
 
         return true;
     }
