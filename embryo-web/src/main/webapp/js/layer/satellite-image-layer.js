@@ -117,7 +117,7 @@ function SatelliteLayer() {
         that.layers.satellite = new OpenLayers.Layer.OSM("Satellite", url, {
             layers: 'basic',
             isBaseLayer: false,
-            crossOrigin: null
+            tileOptions: {crossOriginKeyword: null}
         });
 
         that.map.add({
