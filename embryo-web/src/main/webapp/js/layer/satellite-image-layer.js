@@ -115,8 +115,9 @@ function SatelliteLayer() {
 //        var filterStrategy = new OpenLayers.Strategy.Filter({filter: myFilter});
 
         that.layers.satellite = new OpenLayers.Layer.OSM("Satellite", url, {
-            'layers': 'basic',
-            'isBaseLayer': false
+            layers: 'basic',
+            isBaseLayer: false,
+            crossOrigin: null
         });
 
         that.map.add({
