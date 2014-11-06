@@ -29,6 +29,11 @@ $(function () {
                 return s;
             }
 
+            var cp = ts2.timeOfDay.localeCompare(ts1.timeOfDay);
+            if (cp != 0) {
+                return cp;
+            }
+
             return ts1.qualifier.localeCompare(ts2.qualifier);
         });
 
@@ -58,14 +63,15 @@ $(function () {
             var parts = tileSets[index].name.split("_");
             if (parts[2].indexOf("terra") || parts[2].indexOf("aqua")) {
                 var moreParts = parts[2].split("-");
-                tileSets[index].qualifier = moreParts[1] + " " + moreParts[2];
+                tileSets[index].timeOfDay = moreParts[1].replace("aqua", "P.M.").replace("terra", "A.M.");
+                tileSets[index].qualifier = moreParts[2];
             }
         }
         return tileSets;
     }
 
 
-    function iceSatelliteController($scope, TileSetService, $timeout) {
+    function iceSatelliteController($scope, TileSetService) {
         TileSetService.listByType("satellite-ice", function (tileSets) {
             tileSets = addQualifiers(tileSets);
             $scope.tileSets = sortTileSets(tileSets);

@@ -15,9 +15,17 @@
   -->
 <div x-ng-controller="SatelliteIceController">
     <p>
+        All satellite images cover an area of the Arctic region. The area is revealed by their names (e.g. r01c01).
+        Satellites are not always able to obtain image data for the desired area and the satellite images may as a
+        consequence become smaller
+        than the area or show no image at all.
+    </p>
+
+    <p>
         Satellite images are served as image tiles. A new set of image tiles may be fetched for each zoom level.
-        The downloaded amount of image tiles therefore depends on the number of zoom levels used, while the satellite
-        image data is displayed.
+        The downloaded amount of image tiles and thus internet connection usage therefore depends on the map usage
+        (zooming and panning), while the satellite
+        image is displayed.
     </p>
 
     <table class="table table-condensed">
@@ -27,6 +35,7 @@
         </tr>
         <tr x-ng-if="tileSet.ts" x-ng-class="isSelectedClasses(tileSet)">
             <td>{{formatDate(tileSet.ts)}}</td>
+            <td x-ng-if="tileSet.timeOfDay">{{tileSet.timeOfDay}}</td>
             <td>{{tileSet.qualifier}}</td>
             <td>{{tileSet.sourceType}}</td>
 
