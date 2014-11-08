@@ -20,7 +20,7 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.tiles.image.Image2TilesUsingMaptiler;
+import dk.dma.embryo.tiles.image.Image2Tiles;
 import dk.dma.embryo.tiles.image.ImageSourceMeta;
 import dk.dma.embryo.tiles.image.ImageSourceMetaReader;
 import dk.dma.embryo.tiles.model.TileSet;
@@ -33,6 +33,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -68,13 +69,23 @@ public class TilerServiceBean implements TilerService {
     private MailSender mailSender;
 
     @Inject
-    private Image2TilesUsingMaptiler transformer;
+    private Image2Tiles transformer;
 
     @Inject
     private ImageSourceMetaReader sourceMetaReader;
 
     @Inject
     private PropertyFileService propertyFileService;
+
+    public Result cleanup() {
+        Result result = new Result();
+        try {
+            result.deleted = transformer.cleanup();
+        } catch (IOException e) {
+            result.errorCount++;
+        }
+        return result;
+    }
 
     @Asynchronous
     public void transformImage2tiles(File geotifFile, String name, String provider) {

@@ -31,7 +31,7 @@ import java.util.Map;
 public abstract class AbstractTileProviderVisitor implements ProviderVisitor {
     protected final DateTime limit;
     protected final EmbryoLogService embryoLogService;
-    protected final TilerJob.Result result = new TilerJob.Result();
+    protected final Result result = new Result();
     protected final TileSetDao tileSetDao;
     private final Map<String, Map<String, TileSet>> tileSets = new HashMap<>();
 
@@ -57,7 +57,7 @@ public abstract class AbstractTileProviderVisitor implements ProviderVisitor {
         return tileSets.get(type.getName());
     }
 
-    public TilerJob.Result getResult() {
+    public Result getResult() {
         return this.result;
     }
 }

@@ -99,12 +99,12 @@ public class TilerJobTest {
         tileSets.add(new TileSet("image1_sourceType_area", "dmi", "area", "sourceType", TileSet.Status.UNCONVERTED, now, "type"));
         tileSets.add(new TileSet("image2_sourceType_area", "dmi", "area", "sourceType", TileSet.Status.UNCONVERTED, now, "type"));
 
-        TilerJob.Result r2 = new TilerJob.Result();
+        Result r2 = new Result();
         File[] files = new File[]{new File("image1_sourceType_area.tif"), new File("image2_sourceType_area.tif")};
 
         Mockito.when(tileSetDao.listByProviderAndTypeAndStatus("dmi", "type", TileSet.Status.UNCONVERTED)).thenReturn(tileSets);
 
-        TilerJob.Result result = job.startTileJobs("dmi", "type", files, 0, r2);
+        Result result = job.startTileJobs("dmi", "type", files, 0, r2);
         Assert.assertNotNull(result);
         Assert.assertEquals(0, result.errorCount);
         Assert.assertEquals(1, result.jobsStarted);
@@ -118,10 +118,10 @@ public class TilerJobTest {
         tileSets.add(new TileSet("image1", "dmi", "area", "sourceType", TileSet.Status.UNCONVERTED, DateTime.now(), "type"));
         Mockito.when(tileSetDao.listByProviderAndTypeAndStatus("dmi", "type", TileSet.Status.UNCONVERTED)).thenReturn(tileSets);
 
-        TilerJob.Result r2 = new TilerJob.Result();
+        Result r2 = new Result();
         File[] files = new File[]{new File("image1.tif"), new File("image2.tif")};
 
-        TilerJob.Result result = job.startTileJobs("dmi", "type", files, 0, r2);
+        Result result = job.startTileJobs("dmi", "type", files, 0, r2);
         Assert.assertNotNull(result);
         Assert.assertEquals(0, result.errorCount);
         Assert.assertEquals(1, result.jobsStarted);

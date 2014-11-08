@@ -24,4 +24,6 @@ import java.io.File;
 @Local
 public interface TilerService {
     void transformImage2tiles(File geotifFile, String name, String provider);
+
+    Result cleanup();
 }

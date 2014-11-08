@@ -22,4 +22,6 @@ import java.io.IOException;
  */
 public interface Image2Tiles {
     void execute(File srcFile, File destinationFile, String... staticArgs) throws IOException;
+
+    int cleanup() throws IOException;
 }

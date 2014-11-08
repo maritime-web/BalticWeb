@@ -17,6 +17,9 @@ package dk.dma.embryo.tiles.image;
 
 
 import dk.dma.embryo.common.configuration.Property;
+import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +47,10 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
     @Inject
     @Property(value = "embryo.tiler.maptiler.logDir", substituteSystemProperties = true)
     private String logDir;
+
+    @Inject
+    @Property(value = "embryo.tiler.maptiler.daysToKeepLogs")
+    private Integer daysToKeepLogs;
 
     @Inject
     @Property(value = "embryo.tiler.maptiler.defaults")
@@ -156,6 +163,37 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
 
         public int lines() {
             return logLines.size();
+        }
+    }
+
+    public int cleanup() {
+        init();
+        DateTime youngerThan = DateTime.now(DateTimeZone.UTC).minusDays(daysToKeepLogs);
+        return new LogFileDeleter(youngerThan).deleteFiles(logDirectory);
+    }
+
+    static class LogFileDeleter {
+
+        DateTime youngerThan;
+
+        public LogFileDeleter(DateTime limit) {
+            youngerThan = limit;
+        }
+
+        public int deleteFiles(File logDirectory) {
+            int cleaned = 0;
+
+            File[] logFiles = logDirectory.listFiles();
+            for (File logFile : logFiles) {
+                DateTime ts = GeoImage.extractTs(logFile);
+                if (ts.isBefore(youngerThan)) {
+                    if (FileUtils.deleteQuietly(logFile)) {
+                        cleaned++;
+                    }
+                }
+            }
+            return cleaned;
+
         }
     }
 

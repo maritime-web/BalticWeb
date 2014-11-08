@@ -43,7 +43,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -135,6 +134,7 @@ public class TilerJob {
                 result.merge(deleteOldTiles(provider));
                 result.merge(saveNewTileSetEntries(provider, youngerThan));
                 result.merge(convertImagesToTiles(provider));
+                result.merge(tilerService.cleanup());
             }
 
             String msg = "Started new " + result.jobsStarted + " jobs. Deleted " + result.deleted + ". Detected " + result.errorCount + " errors.";
@@ -221,23 +221,6 @@ public class TilerJob {
         }
 
         return result;
-    }
-
-    static class Result {
-        int jobsStarted;
-        int errorCount;
-        int deleted;
-        List<String> failedDelete = new ArrayList<>();
-
-        public Result merge(Result res) {
-            Result newResult = new Result();
-            newResult.errorCount = this.errorCount + res.errorCount;
-            newResult.jobsStarted = this.jobsStarted + res.jobsStarted;
-            newResult.deleted = this.deleted + res.deleted;
-            newResult.failedDelete.addAll(this.failedDelete);
-            newResult.failedDelete.addAll(res.failedDelete);
-            return newResult;
-        }
     }
 
 }
