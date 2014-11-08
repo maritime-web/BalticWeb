@@ -78,6 +78,12 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
         }
     }
 
+    public int cleanup() {
+        init();
+        DateTime youngerThan = DateTime.now(DateTimeZone.UTC).minusDays(daysToKeepLogs);
+        return new LogFileDeleter(youngerThan).deleteFiles(logDirectory);
+    }
+
     public void execute(File srcFile, File destinationFile, String... staticArgs) throws IOException {
         init();
 
@@ -164,12 +170,6 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
         public int lines() {
             return logLines.size();
         }
-    }
-
-    public int cleanup() {
-        init();
-        DateTime youngerThan = DateTime.now(DateTimeZone.UTC).minusDays(daysToKeepLogs);
-        return new LogFileDeleter(youngerThan).deleteFiles(logDirectory);
     }
 
     static class LogFileDeleter {
