@@ -54,15 +54,27 @@ public class BoundingBox {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         BoundingBox that = (BoundingBox) o;
 
-        if (maxX != null ? !maxX.equals(that.maxX) : that.maxX != null) return false;
-        if (maxY != null ? !maxY.equals(that.maxY) : that.maxY != null) return false;
-        if (minX != null ? !minX.equals(that.minX) : that.minX != null) return false;
-        if (minY != null ? !minY.equals(that.minY) : that.minY != null) return false;
+        if (maxX != null ? !maxX.equals(that.maxX) : that.maxX != null) {
+            return false;
+        }
+        if (maxY != null ? !maxY.equals(that.maxY) : that.maxY != null) {
+            return false;
+        }
+        if (minX != null ? !minX.equals(that.minX) : that.minX != null) {
+            return false;
+        }
+        if (minY != null ? !minY.equals(that.minY) : that.minY != null) {
+            return false;
+        }
 
         return true;
     }

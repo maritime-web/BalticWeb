@@ -44,7 +44,7 @@ import java.nio.file.Paths;
 public class TilerServiceBean implements TilerService {
 
     @Inject
-    @Property(value = "embryo.tiles.tmpDir", substituteSystemProperties = true)
+    @Property(value = "embryo.tmpDir", substituteSystemProperties = true)
     private String tmpDir;
 
     @Inject
