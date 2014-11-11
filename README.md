@@ -195,6 +195,10 @@ The application contains a number of scheduled jobs responsible for fetching dat
 * dk.dma.embryo.dataformats.job.ShapeFileMeasurerJob : This job collects all shape files in the file system, measure their sizes and repopulates the database table ShapeFileMeasurements. The job will only measure new files.
 * dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportJob: This jobs transfers inshore ice report files from an FTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.inshoreIceReport.dmi.localDirectory. The job will only transfer latest files.
 * dk.dma.embryo.weather.service.DmiWeatherJob : This job transfers weather forecasts and warnings (XML files) from DMIs FTP server to the file system.
+* dk.dma.embryo.dataformats.job.FcooFtpReaderJob : This job transfers FCOO forecast data (NetCDF) from FTP server to local file system
+* dk.dma.embryo.tiles.service.TilerJob : This job deletes old tile set related files from the file system (georeference image file, log files, tiles) as well as deletes and creates TileSet entries in database.
+* dk.dma.embryo.tiles.service.TilerServiceBean : This is started by TilerJob to generate a tile set from a georeferenced image file
+* dk.dma.embryo.tiles.service.DmiSatelliteJob : This job transfers georeferenced images from FTP server to local file system
 
 
 ## Surveillance
@@ -235,6 +239,10 @@ At the time of writing the current services are subject to surveillance
 * dk.dma.embryo.msi.MsiClientImpl
 * dk.dma.embryo.common.mail.MailServiceImpl
 * dk.dma.embryo.metoc.service.MetocServiceImpl
+* dk.dma.embryo.dataformats.job.FcooFtpReaderJob
+* dk.dma.embryo.tiles.service.TilerJob
+* dk.dma.embryo.tiles.service.TilerServiceBean
+* dk.dma.embryo.tiles.service.DmiSatelliteJob
 
 ## Developer Logging
 
