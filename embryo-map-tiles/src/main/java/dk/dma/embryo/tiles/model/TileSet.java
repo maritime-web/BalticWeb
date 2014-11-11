@@ -28,7 +28,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jesper Tejlgaard on 8/26/14.
@@ -116,7 +118,15 @@ public class TileSet extends BaseEntity<Long> {
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
     public JsonTileSet toJsonModel() {
-        return new JsonTileSet(name, provider, source, sourceType, ts == null ? null : ts.toDate(), url, center, extend);
+        return new JsonTileSet(name, provider, source, sourceType, ts == null ? null : ts.toDate(), url, extend);
+    }
+
+    public static Map<String, TileSet> toMap(List<TileSet> images) {
+        Map<String, TileSet> result = new HashMap();
+        for (TileSet image : images) {
+            result.put(image.getName(), image);
+        }
+        return result;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -190,6 +200,7 @@ public class TileSet extends BaseEntity<Long> {
     // Inner types
     // //////////////////////////////////////////////////////////////////////
     public static enum Status {
-        UNCONVERTED, CONVERTING, SUCCESS, FAILED
+        UNCONVERTED, CONVERTING, SUCCESS, FAILED, DELETING
     }
+
 }

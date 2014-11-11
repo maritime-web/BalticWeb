@@ -83,15 +83,15 @@ public class Image2TilesUsingMaptilerIT {
         File conf = new File(getClass().getResource("/default-configuration.properties").getFile());
         File logDir = new File(conf.getParentFile().getParentFile(), "test-tmp");
 
-        Image2TilesUsingMaptiler geoTiff2Tiles = new Image2TilesUsingMaptiler(executable, logDir.getAbsolutePath(), "-nodata 0 0 0 -zoom 3 5");
+        Image2TilesUsingMaptiler geoTiff2Tiles = new Image2TilesUsingMaptiler(executable, logDir.getAbsolutePath(), "-nodata 0 0 0 -zoom 3 4");
 
-        File destinationFile = new File("/home/jesper/Documents/NASA_Modis_20141001-aqua-r01c01-250m.mbtiles");
+        File destinationFile = new File("/home/jesper/Documents/Source_Type_20141106-ZZ.mbtiles");
         if (destinationFile.exists()) {
             FileUtils.deleteQuietly(destinationFile);
             Thread.sleep(100);
         }
 
-        File jpgFile = new File("/home/jesper/arcticweb/dmi-satellite-ice/NASA_Modis_20141030.aqua.r01c01.250m.jpg");
+        File jpgFile = new File("/home/jesper/arcticweb/dmi-satellite-ice/NASA_Modis_20141119.terra.r03c01.250m.jpg");
         geoTiff2Tiles.execute(jpgFile, destinationFile);
 
         Assert.assertTrue(destinationFile.exists());

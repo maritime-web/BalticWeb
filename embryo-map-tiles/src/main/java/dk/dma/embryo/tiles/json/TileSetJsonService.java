@@ -20,6 +20,7 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -33,6 +34,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import java.util.List;
 
 @Path("/tileset")
+@Named
 public class TileSetJsonService {
 
     @Inject
@@ -41,15 +43,11 @@ public class TileSetJsonService {
     @Inject
     TileSetDao tileSetDao;
 
-    public TileSetJsonService() {
-        super();
-    }
-
     private CacheControl getCacheControl() {
         CacheControl cc = new CacheControl();
         // 15 minutes
-        //cc.setMaxAge(60*15);
-        cc.setMaxAge(1);
+        // cc.setMaxAge(60*15);
+        cc.setMaxAge(60);
         cc.setPrivate(false);
         cc.setNoTransform(false);
         return cc;
@@ -60,7 +58,7 @@ public class TileSetJsonService {
     @Produces("application/json")
     @GZIP
     public Response filter(@PathParam("type") String type, @Context Request request) {
-        logger.debug("list()");
+        logger.info("filter()");
 
         List<TileSet> tileSets = tileSetDao.listByTypeAndStatus(type, TileSet.Status.SUCCESS);
         List<JsonTileSet> result = TileSet.toJsonModel(tileSets);
@@ -75,7 +73,7 @@ public class TileSetJsonService {
         builder.tag(tag);
         CacheControl cc = getCacheControl();
         builder.cacheControl(cc);
-        logger.debug("list() : " + result);
+        logger.info("filter() : " + result);
         return builder.build();
     }
 

@@ -15,6 +15,7 @@
 
 package dk.dma.embryo.tiles.service;
 
+import dk.dma.embryo.tiles.image.ImageType;
 import org.junit.Assert;
 import org.junit.Test;
 

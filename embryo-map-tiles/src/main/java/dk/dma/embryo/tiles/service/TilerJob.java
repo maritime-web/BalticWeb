@@ -22,7 +22,11 @@ import dk.dma.embryo.common.configuration.Type;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.common.util.NamedtimeStamps;
+import dk.dma.embryo.tiles.image.ImageType;
+import dk.dma.embryo.tiles.image.ImageTypeFilter;
 import dk.dma.embryo.tiles.model.TileSet;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -38,9 +42,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -79,13 +82,18 @@ public class TilerJob {
     private TilerService tilerService;
 
     @Inject
-    private SourceFileNameParser fileNameParser;
-
-    @Inject
     private PropertyFileService propertyFileService;
 
     @Inject
     private MailSender mailSender;
+
+    @Inject
+    @Property("embryo.tiles.ageInDays")
+    private Integer ageInDays;
+
+    @Inject
+    @Property(value = "embryo.tiles.directory", substituteSystemProperties = true)
+    private String tilesDirectory;
 
 
     @PostConstruct
@@ -115,15 +123,21 @@ public class TilerJob {
     public void convertToTiles() {
         try {
             logger.debug("Max concurrent jobs: {}", maxConcurrentJobs);
+            DateTime youngerThan = DateTime.now(DateTimeZone.UTC).minusDays(ageInDays).minusDays(1);
 
             notifications.clearOldThanMinutes(60 * 24);
 
             Result result = new Result();
             for (Provider provider : providers) {
-                result.merge(convertToTilesForProvider(provider));
+                result.merge(deleteOldImages(provider, youngerThan));
+                result.merge(markOldTileSetsForDeletion(provider, youngerThan));
+                result.merge(deleteOldTileSets(provider, youngerThan.minusDays(2)));
+                result.merge(deleteOldTiles(provider));
+                result.merge(saveNewTileSetEntries(provider, youngerThan));
+                result.merge(convertImagesToTiles(provider));
             }
 
-            String msg = "Started new " + result.jobsStarted + " jobs. Detected " + result.errorCount + " errors";
+            String msg = "Started new " + result.jobsStarted + " jobs. Deleted " + result.deleted + ". Detected " + result.errorCount + " errors.";
             if (result.errorCount > 0) {
                 logger.error(msg);
                 embryoLogService.error(msg);
@@ -138,43 +152,39 @@ public class TilerJob {
         }
     }
 
-    private Result convertToTilesForProvider(Provider provider) throws Exception {
+    private Result deleteOldImages(Provider provider, DateTime limit) throws Exception {
+        DeleteGeoImageVisitor visitor = new DeleteGeoImageVisitor(limit, tileSetDao, embryoLogService);
+        provider.accept(visitor);
+        return visitor.getResult();
+    }
+
+    private Result markOldTileSetsForDeletion(Provider provider, DateTime limit) {
+        MarkTileSetsForDeletionVisitor visitor = new MarkTileSetsForDeletionVisitor(limit, tileSetDao, embryoLogService);
+        provider.accept(visitor);
+        return visitor.getResult();
+    }
+
+    private Result deleteOldTileSets(Provider provider, DateTime limit) {
+        DeleteTileSetVisitor visitor = new DeleteTileSetVisitor(limit, tileSetDao, embryoLogService);
+        provider.accept(visitor);
+        return visitor.getResult();
+    }
+
+    private Result deleteOldTiles(Provider provider) {
+        DeleteTilesVisitor visitor = new DeleteTilesVisitor(tileSetDao, embryoLogService, tilesDirectory);
+        provider.accept(visitor);
+        return visitor.getResult();
+    }
+
+    private Result saveNewTileSetEntries(Provider provider, DateTime limit) {
+        SaveNewImagesAsTileSetsVisitor visitor = new SaveNewImagesAsTileSetsVisitor(limit, tileSetDao, embryoLogService);
+        provider.accept(visitor);
+        return visitor.getResult();
+    }
+
+
+    private Result convertImagesToTiles(Provider provider) throws Exception {
         Result result = new Result();
-        for (Type type : provider.getTypes()) {
-            try {
-                List<TileSet> images = tileSetDao.listByProviderAndType(provider.getShortName(), type.getName());
-                Map<String, TileSet> imageMap = toMap(images);
-                logger.debug("imageMap: {}", imageMap);
-
-                File directory = new File(type.getLocalDirectory());
-                if (!directory.exists()) {
-                    if (!directory.mkdirs()) {
-                        // Do something else.
-                        throw new IOException("Failed creating directory " + directory);
-                    }
-                }
-                File[] files = directory.listFiles(new ImageTypeFilter());
-
-                // TODO validate download of jpg, prj and jtw?
-
-                logger.debug("Files: " + files);
-
-                for (File file : files) {
-                    TileSet tileSet = fileNameParser.parse(file);
-                    if (!imageMap.containsKey(tileSet.getName())) {
-                        tileSet.setProvider(provider.getShortName());
-                        tileSet.setType(type.getName());
-                        tileSetDao.saveEntity(tileSet);
-                    }
-                }
-            } catch (Exception e) {
-                String msg = "Fatal error tiling geo referenced images of type " + type.getName() + " for provider " + provider.getShortName();
-                logger.error(msg, e);
-                embryoLogService.error(msg, e);
-                result.errorCount++;
-            }
-        }
-
         for (Type type : provider.getTypes()) {
             try {
                 int concurrentJobs = tileSetDao.listByStatus(TileSet.Status.CONVERTING).size();
@@ -198,13 +208,13 @@ public class TilerJob {
 
     Result startTileJobs(String provider, String type, File[] files, int concurrentJobs, Result result) {
         List<TileSet> unconverted = tileSetDao.listByProviderAndTypeAndStatus(provider, type, TileSet.Status.UNCONVERTED);
-        Map<String, TileSet> tileSetMap = toMap(unconverted);
+        Map<String, TileSet> tileSetMap = TileSet.toMap(unconverted);
 
         for (int index = 0; index < files.length && concurrentJobs < maxConcurrentJobs; index++) {
             File file = files[index];
             String name = ImageType.getName(file);
             if (tileSetMap.containsKey(name)) {
-                tilerService.transformGeotiff2tiles(file.getAbsoluteFile(), name, provider);
+                tilerService.transformImage2tiles(file.getAbsoluteFile(), name, provider);
                 concurrentJobs++;
                 result.jobsStarted++;
             }
@@ -213,30 +223,21 @@ public class TilerJob {
         return result;
     }
 
-    private Map<String, TileSet> toMap(List<TileSet> images) {
-        Map<String, TileSet> result = new HashMap();
-        for (TileSet image : images) {
-            result.put(image.getName(), image);
-        }
-        return result;
-    }
-
     static class Result {
         int jobsStarted;
         int errorCount;
+        int deleted;
+        List<String> failedDelete = new ArrayList<>();
 
         public Result merge(Result res) {
             Result newResult = new Result();
             newResult.errorCount = this.errorCount + res.errorCount;
-            newResult.errorCount = this.jobsStarted + res.jobsStarted;
+            newResult.jobsStarted = this.jobsStarted + res.jobsStarted;
+            newResult.deleted = this.deleted + res.deleted;
+            newResult.failedDelete.addAll(this.failedDelete);
+            newResult.failedDelete.addAll(res.failedDelete);
             return newResult;
         }
     }
 
-    static class ImageTypeFilter implements FileFilter {
-        @Override
-        public boolean accept(File pathname) {
-            return ImageType.getType(pathname) != null;
-        }
-    }
 }

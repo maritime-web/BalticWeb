@@ -77,7 +77,7 @@ public class TilerServiceBean implements TilerService {
     private PropertyFileService propertyFileService;
 
     @Asynchronous
-    public void transformGeotiff2tiles(File geotifFile, String name, String provider) {
+    public void transformImage2tiles(File geotifFile, String name, String provider) {
         try {
             long start = System.currentTimeMillis();
 

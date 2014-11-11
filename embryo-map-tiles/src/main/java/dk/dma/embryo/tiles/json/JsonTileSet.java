@@ -16,7 +16,7 @@
 package dk.dma.embryo.tiles.json;
 
 import dk.dma.embryo.tiles.model.BoundingBox;
-import dk.dma.embryo.tiles.model.ImageCenter;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.util.Date;
 
@@ -32,12 +32,7 @@ public class JsonTileSet {
     private String sourceType;
     private String url;
     private Date ts;
-    private ImageCenter center;
     private BoundingBox extend;
-
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -54,10 +49,47 @@ public class JsonTileSet {
         this.url = url;
     }
 
-    public JsonTileSet(String name, String provider, String area, String sourceType, Date ts, String url, ImageCenter center, BoundingBox extend) {
+    public JsonTileSet(String name, String provider, String area, String sourceType, Date ts, String url, BoundingBox extend) {
         this(name, provider, area, sourceType, ts, url);
-        this.center = center;
         this.extend = extend;
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JsonTileSet that = (JsonTileSet) o;
+
+        if (extend != null ? !extend.equals(that.extend) : that.extend != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (provider != null ? !provider.equals(that.provider) : that.provider != null) return false;
+        if (source != null ? !source.equals(that.source) : that.source != null) return false;
+        if (sourceType != null ? !sourceType.equals(that.sourceType) : that.sourceType != null) return false;
+        if (ts != null ? !ts.equals(that.ts) : that.ts != null) return false;
+        if (url != null ? !url.equals(that.url) : that.url != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (provider != null ? provider.hashCode() : 0);
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + (sourceType != null ? sourceType.hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (ts != null ? ts.hashCode() : 0);
+        result = 31 * result + (extend != null ? extend.hashCode() : 0);
+        return result;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -85,10 +117,6 @@ public class JsonTileSet {
 
     public String getUrl() {
         return url;
-    }
-
-    public ImageCenter getCenter() {
-        return center;
     }
 
     public BoundingBox getExtend() {

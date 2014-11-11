@@ -1,4 +1,5 @@
-/* Copyright (c) 2011 Danish Maritime Authority.
+/*
+ * Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +14,17 @@
  * limitations under the License.
  */
 
-package dk.dma.embryo.tiles.service;
+package dk.dma.embryo.tiles.image;
 
-import javax.ejb.Local;
 import java.io.File;
+import java.io.FileFilter;
 
 /**
- * Created by Jesper Tejlgaard on 8/26/14.
+ * Created by Jesper Tejlgaard on 11/10/14.
  */
-@Local
-public interface TilerService {
-    void transformImage2tiles(File geotifFile, String name, String provider);
+public class ImageTypeFilter implements FileFilter {
+    @Override
+    public boolean accept(File pathname) {
+        return ImageType.getType(pathname) != null;
+    }
 }
