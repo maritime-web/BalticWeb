@@ -60,4 +60,11 @@ public class Provider {
     public void setTypes(List<Type> types) {
         this.types = types;
     }
+
+    public void accept(ProviderVisitor visitor) {
+        visitor.visit(this);
+        for (Type type : this.getTypes()) {
+            type.accept(visitor);
+        }
+    }
 }

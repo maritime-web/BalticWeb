@@ -1,4 +1,5 @@
-/* Copyright (c) 2011 Danish Maritime Authority.
+/*
+ * Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +14,14 @@
  * limitations under the License.
  */
 
-package dk.dma.embryo.tiles.service;
-
-import dk.dma.embryo.tiles.model.TileSet;
-
-import java.io.File;
+package dk.dma.embryo.common.configuration;
 
 /**
- * Created by Jesper Tejlgaard on 10/08/14.
+ * Created by Jesper Tejlgaard on 11/10/14.
  */
-public interface SourceFileNameParser {
-    TileSet parse(File file);
+public interface ProviderVisitor {
+
+    void visit(Provider provider);
+
+    void visit(Type type);
 }

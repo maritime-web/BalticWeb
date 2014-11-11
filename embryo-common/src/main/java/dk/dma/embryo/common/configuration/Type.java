@@ -49,4 +49,8 @@ public class Type {
     public void setLocalDirectory(String localDirectory) {
         this.localDirectory = localDirectory;
     }
+
+    public void accept(ProviderVisitor visitor) {
+        visitor.visit(this);
+    }
 }
