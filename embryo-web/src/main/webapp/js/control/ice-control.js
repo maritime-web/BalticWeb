@@ -94,6 +94,7 @@ $(function() {
     
     function iceController($scope, IceService, $timeout, ShapeService) {
         $scope.selected = {};
+        $scope.satellite = {};
 
         $scope.selectedProvider = {
             key : null

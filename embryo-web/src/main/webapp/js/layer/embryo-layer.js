@@ -104,6 +104,30 @@ function EmbryoLayer() {
 
         for (var l in this.selectableLayers) {
             this.selectableLayers[l].events.on({
+                featureclick: function (e) {
+                    // featureclick enables support for selection of overlapping polygons
+                    // SelectControl on map has to be disabled for this to work
+                    if (e.feature.layer.metadata && e.feature.layer.metadata.selectoverlapping) {
+                        emit(eval("e.feature.attributes." + that.selectableAttribute));
+                        e.feature.layer.drawFeature(
+                            e.feature,
+                            'select'
+                        );
+                    }
+                },
+                nofeatureclick: function (e) {
+                    // nofeatureclick enables support for selection of overlapping polygons
+                    // SelectControl on map has to be disabled for this to work
+                    emit(null);
+                    if (e.layer.metadata && e.layer.metadata.selectoverlapping) {
+                        for (var index in e.layer.features) {
+                            e.layer.drawFeature(
+                                e.layer.features[index],
+                                'default'
+                            );
+                        }
+                    }
+                },
                 featureselected: function (e) {
                     if (e.feature.cluster) {
                         var result = [];

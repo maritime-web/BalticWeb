@@ -29,6 +29,18 @@
     </p>
 
     <table class="table table-condensed">
+        <tr>
+            <td> A satellite image region may be displayed before choosing the satellite image to show. Click 'Filter',
+                then choose a region on the map and last click the display link in the list below.
+            </td>
+            <td>
+                <a x-ng-if="!filterEnabled()" style="float:right" href=# x-ng-click="filter($event)">Filter</a>
+                <a x-ng-if="filterEnabled()" style="float:right" href=# x-ng-click="hideFilter($event)">Hide</a>
+            </td>
+        </tr>
+
+
+        <table class="table table-condensed">
         <tbody x-ng-repeat="tileSet in tileSets">
         <tr x-ng-if="!tileSet.ts">
             <td colspan=4><h4>{{tileSet}}</h4></td>

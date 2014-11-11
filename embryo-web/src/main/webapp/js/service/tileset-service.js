@@ -47,7 +47,32 @@
                     $http.get(embryo.baseUrl + "rest/tileset/list/" + type, {
                         timeout: embryo.defaultTimeout
                     }).success(onSuccess).error(onError);
+                },
+                addQualifiers: function (tileSets) {
+                    for (var index in tileSets) {
+                        var parts = tileSets[index].name.split("_");
+                        if (parts[2].indexOf("terra") || parts[2].indexOf("aqua")) {
+                            var moreParts = parts[2].split("-");
+                            tileSets[index].timeOfDay = moreParts[1].replace("aqua", "P.M.").replace("terra", "A.M.");
+                            tileSets[index].qualifier = moreParts[2];
+                        }
+                    }
+                    return tileSets;
+                },
+                boundingBoxToPolygon: function (tileSets) {
+                    for (var index in tileSets) {
+                        var bb = tileSets[index].extend;
+                        var polygon = [];
+                        polygon.push({lat: bb.maxX, lon: bb.maxY});
+                        polygon.push({lat: bb.minX, lon: bb.maxY});
+                        polygon.push({lat: bb.minX, lon: bb.minY});
+                        polygon.push({lat: bb.maxX, lon: bb.minY});
+                        tileSets[index].area = polygon;
+                    }
+                    return tileSets;
                 }
+
+
             };
 
             return service;
