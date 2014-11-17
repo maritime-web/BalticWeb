@@ -57,9 +57,9 @@ public class DmiSatellitePredicates {
     }
 
     private static class DateIsAfterPredicate implements Predicate<FTPFile> {
-        private final static DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("yyyyMMdd").withZoneUTC();
-        private final static DateTimeFormatter tsFormatter = DateTimeFormat.forPattern("yyyyMMddHHmm").withZoneUTC();
         private final DateTime limit;
+        private final DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("yyyyMMdd").withZoneUTC();
+        private final DateTimeFormatter tsFormatter = DateTimeFormat.forPattern("yyyyMMddHHmm").withZoneUTC();
 
         public DateIsAfterPredicate(DateTime limit) {
             this.limit = limit;
