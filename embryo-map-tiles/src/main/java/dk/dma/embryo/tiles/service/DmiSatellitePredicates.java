@@ -16,6 +16,10 @@ package dk.dma.embryo.tiles.service;
 
 import com.google.common.base.Predicate;
 import org.apache.commons.net.ftp.FTPFile;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.util.Set;
@@ -25,6 +29,10 @@ import java.util.Set;
  */
 public class DmiSatellitePredicates {
 
+    public static Predicate<FTPFile> dateIsAfter(DateTime limit) {
+        return new DateIsAfterPredicate(limit);
+    }
+
     public static Predicate<FTPFile> downloaded(String fileNamePrefix, Set<String> existingFileNames) {
         return new DownloadedPredicate(fileNamePrefix, existingFileNames);
     }
@@ -32,7 +40,6 @@ public class DmiSatellitePredicates {
     public static Predicate<FTPFile> fullyDownloaded(String localChartDirectory, String... requiredFileTypes) {
         return new FullyDownloadedPredicate(localChartDirectory, requiredFileTypes);
     }
-
 
     private static class DownloadedPredicate implements Predicate<FTPFile> {
         private final Set<String> existingFiles;
@@ -46,6 +53,36 @@ public class DmiSatellitePredicates {
         @Override
         public boolean apply(FTPFile file) {
             return existingFiles.contains(fileNamePrefix + file.getName());
+        }
+    }
+
+    private static class DateIsAfterPredicate implements Predicate<FTPFile> {
+        private final static DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("yyyyMMdd").withZoneUTC();
+        private final static DateTimeFormatter tsFormatter = DateTimeFormat.forPattern("yyyyMMddHHmm").withZoneUTC();
+        private final DateTime limit;
+
+        public DateIsAfterPredicate(DateTime limit) {
+            this.limit = limit;
+        }
+
+        @Override
+        public boolean apply(FTPFile input) {
+            DateTime ts = null;
+            String name = input.getName();
+            if (name.length() < 12) {
+                // The file may only contain date information, e.g. yyyyMMdd
+                ts = dateFormatter.parseLocalDate(name.substring(0, 8)).toDateTimeAtStartOfDay(DateTimeZone.UTC);
+            } else {
+                try {
+                    // First try if the file contains date and time information, e.g. yyyyMMddHHmm
+                    ts = tsFormatter.parseDateTime(name.substring(0, 12));
+                } catch (IllegalArgumentException e) {
+                    // The file may only contain date information, e.g. yyyyMMdd
+                    ts = dateFormatter.parseLocalDate(name.substring(0, 8)).toDateTimeAtStartOfDay(DateTimeZone.UTC);
+                }
+            }
+
+            return ts.isAfter(limit);
         }
     }
 

@@ -24,6 +24,8 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPFileFilters;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -50,8 +52,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.base.Predicates.and;
 import static com.google.common.base.Predicates.not;
-
+import static dk.dma.embryo.tiles.service.DmiSatellitePredicates.dateIsAfter;
+import static dk.dma.embryo.tiles.service.DmiSatellitePredicates.downloaded;
 
 /**
  * @author Jesper Tejlgaard
@@ -95,10 +99,10 @@ public class DmiSatelliteJob {
     @Property("embryo.tiles.providers.dmi.ftp.baseDirectory")
     private String baseDir;
 
-    /*
     @Inject
-    @Property("embryo.inshoreIceReport.dmi.ftp.ageInDays")
+    @Property("embryo.tiles.ageInDays")
     private Integer ageInDays;
+/*
 
     @Inject
     @Property("embryo.inshoreIceReport.dmi.notification.silenceperiod")
@@ -108,6 +112,7 @@ public class DmiSatelliteJob {
     @Property("embryo.inshoreIceReport.dmi.notification.email")
     private String mailTo;
 */
+
     @Inject
     @Property(value = "embryo.tiles.providers.dmi.types.satellite-ice.localDirectory", substituteSystemProperties = true)
     private String localDmiDir;
@@ -148,7 +153,7 @@ public class DmiSatelliteJob {
                 new File(localDmiDir).mkdirs();
             }
 
-            //  LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(1);
+            DateTime mapsYoungerThan = DateTime.now(DateTimeZone.UTC).minusDays(ageInDays - 1).minusDays(1);
 
             Set<String> existingFiles = alreadyDownloadedFiles();
 
@@ -175,12 +180,11 @@ public class DmiSatelliteJob {
 
                     logger.debug("Files: {}", files);
 
-                    Collection<FTPFile> notDownloaded = Collections2.filter(files, not(DmiSatellitePredicates.downloaded(namePrefix, existingFiles)));
+                    Collection<FTPFile> notDownloaded = Collections2.filter(files, and(dateIsAfter(mapsYoungerThan), not(downloaded(namePrefix, existingFiles))));
                     logger.debug("Not downloaded files: {}", notDownloaded);
 
                     if (notDownloaded.size() > 0) {
                         String directory = dir.getName();
-                        System.out.println("Directory: " + dir.getName());
                         if (!ftp.changeWorkingDirectory(directory)) {
                             throw new IOException("Could not change to directory:" + directory);
                         }
