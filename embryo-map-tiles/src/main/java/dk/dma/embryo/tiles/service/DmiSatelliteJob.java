@@ -48,6 +48,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -102,6 +103,10 @@ public class DmiSatelliteJob {
     @Inject
     @Property("embryo.tiles.ageInDays")
     private Integer ageInDays;
+
+    @Inject
+    @Property("embryo.tiles.providers.dmi.ftp.daysToKeepFiles")
+    private Integer daysToKeepFiles;
 /*
 
     @Inject
@@ -154,6 +159,8 @@ public class DmiSatelliteJob {
             }
 
             DateTime mapsYoungerThan = DateTime.now(DateTimeZone.UTC).minusDays(ageInDays - 1).minusDays(1);
+            DateTime deleteOlderThan = daysToKeepFiles == -1 ? null : DateTime.now(DateTimeZone.UTC).minusDays(daysToKeepFiles);
+            Result result = new Result();
 
             Set<String> existingFiles = alreadyDownloadedFiles();
 
@@ -178,16 +185,30 @@ public class DmiSatelliteJob {
 
                     List<FTPFile> files = Arrays.asList(ftp.listFiles(dir.getName(), EmbryoFTPFileFilters.FILES));
 
-                    logger.debug("Files: {}", files);
-
-                    Collection<FTPFile> notDownloaded = Collections2.filter(files, and(dateIsAfter(mapsYoungerThan), not(downloaded(namePrefix, existingFiles))));
+                    Collection<FTPFile> toDelete;
+                    Collection<FTPFile> notDownloaded;
+                    if (deleteOlderThan != null) {
+                        toDelete = Collections2.filter(files, not(dateIsAfter(deleteOlderThan)));
+                        logger.debug("To delete: {}", toDelete);
+                        // Check both against days before delete and allowed age in days
+                        // Reasons is that one day someone will configure
+                        // embryo.tiles.providers.dmi.ftp.baseDirectory = 5
+                        // embryo.tiles.ageInDays = 10
+                        // which with the current code result in an attempt to download already deleted files
+                        notDownloaded = Collections2.filter(files, and(dateIsAfter(deleteOlderThan), dateIsAfter(mapsYoungerThan), not(downloaded(namePrefix, existingFiles))));
+                    } else {
+                        toDelete = Collections.emptyList();
+                        notDownloaded = Collections2.filter(files, and(dateIsAfter(mapsYoungerThan), not(downloaded(namePrefix, existingFiles))));
+                    }
                     logger.debug("Not downloaded files: {}", notDownloaded);
 
-                    if (notDownloaded.size() > 0) {
+                    if (notDownloaded.size() > 0 || toDelete.size() > 0) {
                         String directory = dir.getName();
                         if (!ftp.changeWorkingDirectory(directory)) {
                             throw new IOException("Could not change to directory:" + directory);
                         }
+
+                        result.merge(delete(ftp, toDelete));
 
                         for (FTPFile file : notDownloaded) {
                             try {
@@ -213,7 +234,7 @@ public class DmiSatelliteJob {
             }
 
             String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + toString(transfered)
-                    + ", Errors: " + toString(error);
+                    + ", Errors: " + toString(error) + ", Delete failed: " + toString(result.failedDelete) + ", Deleted: " + result.deleted;
             if (error.size() == 0) {
                 logger.info(msg);
                 embryoLogService.info(msg);
@@ -221,7 +242,7 @@ public class DmiSatelliteJob {
                 logger.error(msg);
                 embryoLogService.error(msg);
             }
-        } catch (Throwable t) {
+        } catch (Exception t) {
             logger.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
             embryoLogService.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
         }
@@ -251,6 +272,7 @@ public class DmiSatelliteJob {
         ftp.setFileType(FTP.BINARY_FILE_TYPE);
         return ftp;
     }
+
 
     private boolean transferFile(FTPClient ftp, FTPFile file, String namePrefix, String localDmiDir) throws IOException,
             InterruptedException {
@@ -310,5 +332,22 @@ public class DmiSatelliteJob {
             existingFiles.add(file.getName());
         }
         return existingFiles;
+    }
+
+    public Result delete(FTPClient ftp, Collection<FTPFile> toDelete) {
+        Result result = new Result();
+
+        for (FTPFile file : toDelete) {
+            try {
+                if (ftp.deleteFile(file.getName())) {
+                    result.deleted++;
+                } else {
+                    result.failedDelete.add(file.getName());
+                }
+            } catch (Exception e) {
+                result.failedDelete.add(file.getName());
+            }
+        }
+        return result;
     }
 }
