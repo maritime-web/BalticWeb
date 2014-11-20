@@ -46,8 +46,8 @@ public class TileSetJsonService {
     private CacheControl getCacheControl() {
         CacheControl cc = new CacheControl();
         // 15 minutes
-        // cc.setMaxAge(60*15);
-        cc.setMaxAge(60);
+        cc.setMaxAge(60 * 15);
+        //cc.setMaxAge(60);
         cc.setPrivate(false);
         cc.setNoTransform(false);
         return cc;
