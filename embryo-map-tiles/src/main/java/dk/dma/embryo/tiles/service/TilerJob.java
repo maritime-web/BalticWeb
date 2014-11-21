@@ -128,13 +128,13 @@ public class TilerJob {
 
             Result result = new Result();
             for (Provider provider : providers) {
-                result.merge(deleteOldImages(provider, youngerThan));
-                result.merge(markOldTileSetsForDeletion(provider, youngerThan));
-                result.merge(deleteOldTileSets(provider, youngerThan.minusDays(2)));
-                result.merge(deleteOldTiles(provider));
-                result.merge(saveNewTileSetEntries(provider, youngerThan));
-                result.merge(convertImagesToTiles(provider));
-                result.merge(tilerService.cleanup());
+                result = result.merge(deleteOldImages(provider, youngerThan));
+                result = result.merge(markOldTileSetsForDeletion(provider, youngerThan));
+                result = result.merge(deleteOldTileSets(provider, youngerThan.minusDays(2)));
+                result = result.merge(deleteOldTiles(provider));
+                result = result.merge(saveNewTileSetEntries(provider, youngerThan));
+                result = result.merge(convertImagesToTiles(provider));
+                result = result.merge(tilerService.cleanup());
             }
 
             String msg = "Started new " + result.jobsStarted + " jobs. Deleted " + result.deleted + ". Detected " + result.errorCount + " errors.";
