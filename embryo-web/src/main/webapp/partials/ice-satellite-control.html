@@ -50,7 +50,7 @@
             <td>{{tileSet.sourceType}}</td>
 
             <td x-ng-if="!isDisplayed(tileSet)"><a href=# x-ng-click="displayTileSet($event, tileSet)">display</a></td>
-            <td x-ng-if="isDisplayed(tileSet)"><!--a href=# x-ng-click="zoom($event, tileSet)">zoom</a> / -->
+            <td x-ng-if="isDisplayed(tileSet)"><a href=# x-ng-click="zoom($event)">zoom</a> /
                 <a href=# x-ng-click='hideTileSet($event, tileSet)'>hide</a></td>
         </tr>
         </tbody>

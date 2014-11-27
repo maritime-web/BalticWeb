@@ -16,7 +16,7 @@
 $(function () {
 
     var module = angular.module('embryo.satellite-ice.control', [ 'ui.bootstrap.accordion', 'embryo.control',
-        'embryo.tileSet.service']);
+        'embryo.tileSet.service', 'embryo.subscription.service']);
 
     var group = "ice";
     var satellite = new SatelliteLayer();
@@ -59,7 +59,7 @@ $(function () {
     }
 
 
-    function iceSatelliteController($scope, TileSetService) {
+    function iceSatelliteController($scope, TileSetService, SubscriptionService) {
         var unfiltered;
         $scope.selected = [];
         $scope.viewInformationProvider = embryo.controllers.satelliteImageInformation;
@@ -126,7 +126,7 @@ $(function () {
         }
 
 
-        $scope.zoom = function ($event, chart) {
+        $scope.zoom = function ($event) {
             $event.preventDefault();
             satellite.zoomToExtent();
         }
@@ -148,21 +148,23 @@ $(function () {
             // remove filter when
             // 1) selecting another top menu, e.g. Vessel
             satellite.draw([]);
-        });
-
-        TileSetService.listByType("satellite-ice", function (tileSets) {
-            tileSets = TileSetService.addQualifiers(tileSets);
-            tileSets = TileSetService.boundingBoxToPolygon(tileSets);
-            unfiltered = sortTileSets(tileSets);
-
-            $scope.tileSets = TileSetService.filterByNames(unfiltered, $scope.selected);
-        }, function (error) {
 
         });
 
+        SubscriptionService.subscribe({
+            name: "TileSetService.listByType",
+            fn: TileSetService.listByType,
+            params: ["satellite-ice"],
+            success: function (tileSets) {
+                tileSets = TileSetService.addQualifiers(tileSets);
+                tileSets = TileSetService.boundingBoxToPolygon(tileSets);
+                unfiltered = sortTileSets(tileSets);
+                $scope.tileSets = TileSetService.filterByNames(unfiltered, $scope.selected);
+            }
+        });
     }
 
-    module.controller("SatelliteIceController", [ '$scope', 'TileSetService', '$timeout', iceSatelliteController ]);
+    module.controller("SatelliteIceController", [ '$scope', 'TileSetService', 'SubscriptionService', iceSatelliteController ]);
 
 
     module.controller("SatelliteImageInformationCtrl", [ '$scope', function ($scope) {
