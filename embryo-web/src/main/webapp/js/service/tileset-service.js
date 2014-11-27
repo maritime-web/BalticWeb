@@ -70,9 +70,35 @@
                         tileSets[index].area = polygon;
                     }
                     return tileSets;
+                },
+                filterByNames: function (tileSets, names) {
+                    if (!names || names.length == 0) {
+                        return tileSets;
+                    }
+
+                    var tmp = [];
+                    var length = tileSets.length;
+                    for (var index = 0; index < length; index++) {
+                        if (!tileSets[index].name) {
+                            tmp.push(tileSets[index]);
+                        }
+                        else if (names.indexOf(tileSets[index].name) >= 0) {
+                            tmp.push(tileSets[index]);
+                        }
+                    }
+                    var result = [];
+                    length = tmp.length;
+                    for (var index = 0; index < length; index++) {
+                        if (tmp[index].name) {
+                            result.push(tmp[index]);
+                        }
+                        else if (!tmp[index].name && (index + 1) < length && tmp[index + 1].name) {
+                            result.push(tmp[index]);
+                        }
+                    }
+
+                    return result;
                 }
-
-
             };
 
             return service;

@@ -14,39 +14,37 @@
   ~ limitations under the License.
   -->
 <div x-ng-controller="SatelliteIceController">
-    <p>
-        All satellite images cover an area of the Arctic region. The area is revealed by their names (e.g. r01c01).
-        Satellites are not always able to obtain image data for the desired area and the satellite images may as a
-        consequence become smaller
-        than the area or show no image at all.
-    </p>
-
-    <p>
-        Satellite images are served as image tiles. A new set of image tiles may be fetched for each zoom level.
-        The downloaded amount of image tiles and thus internet connection usage therefore depends on the map usage
-        (zooming and panning), while the satellite
-        image is displayed.
-    </p>
-
     <table class="table table-condensed">
+        <tbody>
         <tr>
-            <td> A satellite image region may be displayed before choosing the satellite image to show. Click 'Filter',
-                then choose a region on the map and last click the display link in the list below.
-            </td>
-            <td>
-                <a x-ng-if="!filterEnabled()" style="float:right" href=# x-ng-click="filter($event)">Filter</a>
-                <a x-ng-if="filterEnabled()" style="float:right" href=# x-ng-click="hideFilter($event)">Hide</a>
+            <td colspan="4">General Information</td>
+            <td><a x-ng-if="!viewInformationProvider.doShow" style="float:right" href=#
+                   x-ng-click="viewInformation($event)">view</a>
+                <a x-ng-if="viewInformationProvider.doShow" style="float:right" href=#
+                   x-ng-click="hideInformation($event)">hide</a>
             </td>
         </tr>
-
-
-        <table class="table table-condensed">
+        <tr>
+            <td colspan="4">Select satellite image by area</td>
+            <td>
+                <a x-ng-if="!filterEnabled()" style="float:right" href=# x-ng-click="filter($event)">areas</a>
+                <a x-ng-if="filterEnabled()" style="float:right" href=# x-ng-click="hideFilter($event)">hide</a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">Clear area selection</td>
+            <td>
+                <a x-ng-if="selected && selected.length > 0" style="float:right" href=#
+                   x-ng-click="clearFilter($event)">clear</a>
+            </td>
+        </tr>
+        </tbody>
         <tbody x-ng-repeat="tileSet in tileSets">
         <tr x-ng-if="!tileSet.ts">
             <td colspan=4><h4>{{tileSet}}</h4></td>
         </tr>
-        <tr x-ng-if="tileSet.ts" x-ng-class="isSelectedClasses(tileSet)">
-            <td>{{formatDate(tileSet.ts)}}</td>
+        <tr x-ng-if="tileSet.ts" x-ng-class="isDisplayedClasses(tileSet)">
+        <td>{{formatDate(tileSet.ts)}}</td>
             <td x-ng-if="tileSet.timeOfDay">{{tileSet.timeOfDay}}</td>
             <td>{{tileSet.qualifier}}</td>
             <td>{{tileSet.sourceType}}</td>

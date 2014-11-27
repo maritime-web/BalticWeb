@@ -19,6 +19,12 @@ function SatelliteLayer() {
     this.context = {
         fillOpacity: function (feature) {
             return feature.attributes.borderOnly ? 0 : 0.1;
+        },
+        strokeColor: function (feature) {
+            return feature.attributes.borderOnly ? "green" : "purple";
+        },
+        strokeOpacity: function (feature) {
+            return feature.attributes.borderOnly ? 0.6 : 0.3;
         }
     }
 
@@ -26,30 +32,28 @@ function SatelliteLayer() {
         this.layers.boundingBoxes = new OpenLayers.Layer.Vector("SatelliteBoundingBoxes", {
             styleMap: new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style({
-                    fillColor: "green",
+                    fillColor: "purple",
                     fillOpacity: "${fillOpacity}",
                     strokeWidth: "1",
-                    strokeColor: "green",
-                    strokeOpacity: "0.3",
-                    fontColor: "#000000",
-                    fontSize: "12px",
-                    fontFamily: "Courier New, monospace",
-                    fontOpacity: "0.5",
-                    fontWeight: "bold"
+                    strokeColor: "${strokeColor}",
+                    strokeOpacity: "${strokeOpacity}"
                 }, {
                     context: this.context
                 }),
                 "select": new OpenLayers.Style({
                     fillColor: "green",
-                    fillOpacity: "0.3",
+                    fillOpacity: "0.1",
                     strokeWidth: "1",
-                    strokeColor: "#000",
-                    strokeOpacity: "1"
+                    strokeColor: "green",
+                    strokeOpacity: "0.3",
+                    zIndex: 10000,
+                    graphicZIndex: 10000
                 })
             }),
             metadata: {
                 selectoverlapping: true
-            }
+            },
+            rendererOptions: { zIndexing: true }
         });
 
         this.selectableLayers = [this.layers.boundingBoxes];

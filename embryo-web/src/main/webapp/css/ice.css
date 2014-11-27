@@ -11,3 +11,7 @@
 .inshoreNotAvailable{
     color: #A4A4A4;
 }
+
+#satelliteImageInformation {
+    max-width: 600px;
+}

@@ -76,16 +76,19 @@
         </div>
     </div>
 
+    <div e-location-enabled="ice">
+        <div class="controlContainer e-small-font">
+            <div x-ng-include="'partials/ice-control.html'"></div>
+        </div>
+        <div x-ng-include="'partials/satelliteImageInformation.html'"></div>
+    </div>
+
     <div class="controlContainer e-small-font">
         <div e-location-enabled="msi">
             <div x-ng-include="'partials/msi-control.html'"></div>
         </div>
-
         <div e-location-enabled="weather">
             <div x-ng-include="'partials/weather-control.html'"></div>
-        </div>
-        <div e-location-enabled="ice">
-            <div x-ng-include="'partials/ice-control.html'"></div>
         </div>
         <div e-location-enabled="forecasts">
             <div x-ng-include="'partials/forecast-control.html'"></div>
