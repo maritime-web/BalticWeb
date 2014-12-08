@@ -29,6 +29,10 @@ function SatelliteLayer() {
     }
 
     this.init = function () {
+        // z-index 1 used to place boundBoxes below all other vector layers.
+        // The effect is that it is only selectable, when selectableAttribute is having a value.
+        // By not giving selectableAttribute a value when drawing bounding box for a satellite image
+        // we thus ensure that the bounding box is not selectable even though placed in a selectable layer
         this.layers.boundingBoxes = new OpenLayers.Layer.Vector("SatelliteBoundingBoxes", {
             styleMap: new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style({
@@ -42,22 +46,23 @@ function SatelliteLayer() {
                 }),
                 "select": new OpenLayers.Style({
                     fillColor: "green",
-                    fillOpacity: "0.1",
+                    fillOpacity: "${fillOpacity}",
                     strokeWidth: "1",
                     strokeColor: "green",
-                    strokeOpacity: "0.3",
-                    zIndex: 10000,
-                    graphicZIndex: 10000
+                    strokeOpacity: "${strokeOpacity}"
+                }, {
+                    context: this.context
                 })
             }),
             metadata: {
+                zIndex: 1,
                 selectoverlapping: true
             },
             rendererOptions: { zIndexing: true }
         });
 
         this.selectableLayers = [this.layers.boundingBoxes];
-        this.selectableAttribute = "tileSet";
+        this.selectableAttribute = "tileSetName";
     };
 
     function createTileSetFeature(tileSet, borderOnly) {
@@ -67,7 +72,6 @@ function SatelliteLayer() {
         }
         var ring = new OpenLayers.Geometry.LinearRing(points);
         var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([ring]), {
-            tileSet: tileSet.name,
             borderOnly: borderOnly
         });
         return feature;
@@ -79,6 +83,7 @@ function SatelliteLayer() {
         if (that.layers && that.layers.satellite) {
             var tileSet = that.layers.satellite.metadata.tileSet;
             that.layers.boundingBoxes.addFeatures([createTileSetFeature(tileSet, true)]);
+            // By not adding a value to selectableAttribute we ensure the bounding box is not selectable.
         }
     }
 
@@ -87,7 +92,10 @@ function SatelliteLayer() {
         for (var index in tileSets) {
             var tileSet = tileSets[index];
             if (tileSet.area) {
-                features.push(createTileSetFeature(tileSet, false));
+                var feature = createTileSetFeature(tileSet, false);
+                // By adding a value to selectableAttribute we ensure the bounding box IS selectable.
+                feature.attributes.tileSetName = tileSet.name;
+                features.push(feature);
             }
         }
         that.layers.boundingBoxes.removeAllFeatures();
