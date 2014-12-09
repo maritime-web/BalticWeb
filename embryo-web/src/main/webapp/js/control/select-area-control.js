@@ -217,6 +217,11 @@ $(function() {
             				$scope.alertMessages.push(error);
             			});
             };
+
+            $scope.$on("$destroy", function () {
+                selectionLayer.clearFeatures();
+                selectionLayer.deactivateModify();
+            });
           
         } ]);
 });
