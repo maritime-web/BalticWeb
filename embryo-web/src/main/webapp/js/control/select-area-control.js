@@ -1,6 +1,6 @@
 $(function() {
-	
-	var module = angular.module('embryo.areaselect.control', [ 'embryo.selectarea.service' ]);
+
+    var module = angular.module('embryo.areaselect.control', [ 'embryo.selectarea.service' , 'embryo.subscription.service']);
 
 	var selectionLayer = new SelectAreaLayer();
 	addLayerToMap("area", selectionLayer, embryo.map);
@@ -11,7 +11,8 @@ $(function() {
 	module.controller("SelectAreaController", [
         '$scope',
         'SelectAreaService',
-        function($scope, SelectAreaService) {
+        'SubscriptionService',
+        function ($scope, SelectAreaService, SubscriptionService) {
             this.scope = $scope;
             $scope.selectionGroups = [];
             $scope.alertMessages = [];
@@ -207,8 +208,11 @@ $(function() {
             	}
 //            	console.log("json for service - > " + JSON.stringify(selectionGroupsForService));
             	SelectAreaService.updateSelectionGroups(
-            			selectionGroupsForService, 
-            			function() {}, 
+            			selectionGroupsForService,
+                    function () {
+                        //TODO: only update if modified
+                        SubscriptionService.update({name: 'VesselService.list'});
+                    },
             			function(error) {
             				$scope.alertMessages.push(error);
             			});

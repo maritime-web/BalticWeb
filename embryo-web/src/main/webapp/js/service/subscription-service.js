@@ -69,7 +69,9 @@
                         if (!subscriptions[key]) {
                             subscriptions[key] = {
                                 callbacks : [],
+                                loader: null,
                                 interval : null,
+                                $interval: null,
                                 value : null
                             };
                         }
@@ -82,9 +84,13 @@
                         }
                         if (!id && id != 0) {
                             id = subscriptions[key].callbacks.push(callbackConfig);
-                            if (subscriptions[key].interval == null) {
-                                subscriptions[key].interval = $interval(getLoader(callbackConfig), interval);
-                                getLoader(callbackConfig)();
+                            if (subscriptions[key].$interval == null) {
+                                // first subscriber for key with a callbackConfig.interval value will win
+                                // following subscribers for same key value will use interval of first subscriber
+                                subscriptions[key].interval = callbackConfig.interval ? callbackConfig.interval : interval;
+                                subscriptions[key].loader = getLoader(callbackConfig);
+                                subscriptions[key].$interval = $interval(subscriptions[key].loader, subscriptions[key].interval);
+                                subscriptions[key].loader();
                             }
                         }
                         if (subscriptions[key].value) {
@@ -99,16 +105,16 @@
                         subscriptions[key].callbacks.splice(unsubscription.id, 1);
                         var allDead = subscriptions[key].callbacks.length == 0;
                         if (allDead) {
-                            clearInterval(subscriptions[key].interval);
+                            clearInterval(subscriptions[key].$interval);
                             delete subscriptions[key];
                         }
                     },
                     update : function(subscriptionConfig) {
                         function reload(subscriptionConfig) {
                             var key = getKey(subscriptionConfig);
-                            $interval.cancel(subscriptions[key].interval);
-                            subscriptions[key].interval = $interval(getLoader(subscriptionConfig), interval);
-                            getLoader(subscriptionConfig)();
+                            $interval.cancel(subscriptions[key].$interval);
+                            subscriptions[key].$interval = $interval(getLoader(subscriptionConfig), subscriptions[key].interval);
+                            subscriptions[key].loader();
                         }
 
                         if (subscriptionConfig) {
@@ -117,7 +123,7 @@
                             var keys = Object.keys(subscriptions);
                             for ( var index in keys) {
                                 var key = keys[index];
-                                if (subscriptions[key].interval && subscriptions[key].callbacks && subscriptions[key].callbacks.length > 0) {
+                                if (subscriptions[key].$interval && subscriptions[key].callbacks && subscriptions[key].callbacks.length > 0) {
                                     reload(subscriptions[key].callbacks[0]);
                                 }
                             }
@@ -128,4 +134,10 @@
 
                 return service;
             } ]);
+
+    module.run(function (SubscriptionService) {
+        if (!embryo.subscription)
+            embryo.subscription = {};
+        embryo.subscription.service = SubscriptionService;
+    })
 })();

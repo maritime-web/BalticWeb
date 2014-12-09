@@ -8,10 +8,27 @@
             function($http) {
                 return {
                     list : function(success, error) {
+                        var messageId = embryo.messagePanel.show({
+                            text: "Loading vessels ..."
+                        });
+
                         $http.get(embryo.baseUrl + "rest/vessel/list", {
                             timeout : embryo.defaultTimeout
-                        }).success(success).error(function(data, status, headers, config) {
-                            error(embryo.ErrorService.errorStatus(data, status, "loading vessels"), status);
+                        }).success(function (vessels) {
+                            embryo.messagePanel.replace(messageId, {
+                                text: vessels.length + " vessels loaded.",
+                                type: "success"
+                            });
+                            success(vessels);
+                        }).error(function (data, status) {
+                            var errorMsg = embryo.ErrorService.errorStatus(data, status, "loading vessels")
+                            embryo.messagePanel.replace(messageId, {
+                                text: errorMsg,
+                                type: "error"
+                            });
+                            if (error) {
+                                error(errorMsg, status);
+                            }
                         });
                     },
                     details : function(mmsi, success, error) {

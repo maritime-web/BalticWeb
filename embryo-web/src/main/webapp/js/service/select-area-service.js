@@ -54,16 +54,20 @@
 						    error(errorMsg, status);
 						});
             		},
-            		
-            		updateSelectionGroups : function(selectionGroups, callback, error) {
-//            			console.log("inside SERVICE updateSelectionGroups...");
-            			
+
+                updateSelectionGroups: function (selectionGroups, success, error) {
+                    var messageId = embryo.messagePanel.show({
+                        text: "Updating selection groups ..."
+                    });
                         $http.post(embryo.baseUrl + selectionGroupPath + 'update', selectionGroups)
-                        	.success(function(success) {
-                        		embryo.messagePanel.show({text : "Selection areas updated."});
+                            .success(function () {
+                                embryo.messagePanel.replace(messageId, {text: "Selection areas updated.", type: 'success'});
+                                success()
                         	})
                         	.error(function(data, status, headers, config) {
-                        		error(embryo.ErrorService.extractError(data, status, config));
+                                var errorMsg = embryo.ErrorService.errorStatus(data, status, "updating selectio areas")
+                                embryo.messagePanel.replace(messageId, {text: errorMsg, type: 'error'});
+                                error(errorMsg);
 	                        }
 	                   );
                     },
