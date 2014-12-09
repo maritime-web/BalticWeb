@@ -122,6 +122,9 @@ public class UserSelectionGroupsFilterImpl implements UserSelectionGroupsFilter 
     }
 
     private void addBounds(List<LinkedHashMap<String, Double>> bounds) {
+        if (this.allBounds == null) {
+            this.allBounds = new ArrayList<LinkedHashMap<String, Double>>();
+        }
         this.allBounds.addAll(bounds);
     }
 
