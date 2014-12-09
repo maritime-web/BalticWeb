@@ -90,6 +90,31 @@ $(function() {
         }
     }
 
+    function hasZIndex(layer) {
+        return layer.metadata && layer.metadata.zIndex >= 0;
+    }
+
+    function sortLayers(olMap) {
+        var layers = olMap.layers.slice(0);
+
+        layers.sort(function (l1, l2) {
+            if (!hasZIndex(l1) && !hasZIndex(l2)) {
+                return 0;
+            }
+            if (hasZIndex(l1) && !hasZIndex(l2)) {
+                return -1;
+            }
+            if (!hasZIndex(l1) && hasZIndex(l2)) {
+                return 1;
+            }
+            return l1.metadata.zIndex - l2.metadata.zIndex;
+        });
+
+        for (var index = 0, len = layers.length; index < len && hasZIndex(layers[index]); index++) {
+            olMap.setLayerIndex(layers[index], index);
+        }
+    }
+
     embryo.map = {
         add : function(d) {
             if (d.group && selectLayerByGroup[d.group] == null) {
@@ -124,6 +149,14 @@ $(function() {
             selectControl.unselectAll();
             if (feature != null)
                 selectControl.select(feature);
+        },
+        selectMultiple: function (selectMultiple) {
+            if (selectMultiple) {
+                selectControl.unselectAll();
+                selectControl.deactivate();
+            } else {
+                selectControl.activate();
+            }
         },
         selectMultiple: function (selectMultiple) {
             if (selectMultiple) {
