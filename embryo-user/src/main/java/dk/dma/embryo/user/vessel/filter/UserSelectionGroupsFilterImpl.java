@@ -14,23 +14,21 @@
  */
 package dk.dma.embryo.user.vessel.filter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import javax.enterprise.inject.Default;
-import javax.inject.Inject;
-
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.SelectionGroup;
 import dk.dma.embryo.user.security.Subject;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
 import dk.dma.embryo.vessel.json.VesselOverview;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Default
 public class UserSelectionGroupsFilterImpl implements UserSelectionGroupsFilter {
@@ -74,15 +72,15 @@ public class UserSelectionGroupsFilterImpl implements UserSelectionGroupsFilter 
     }
 
     private boolean vesselPositionIsWithinSelectionGroups(VesselOverview vessel) {
+        if (this.allBounds != null) {
+            for (LinkedHashMap<String, Double> square : this.allBounds) {
+                if (vessel.getX() > square.get(LEFT) &&
+                        vessel.getX() < square.get(RIGHT) &&
+                        vessel.getY() > square.get(BOTTOM) &&
+                        vessel.getY() < square.get(TOP)) {
 
-        for (LinkedHashMap<String, Double> square : this.allBounds) {
-
-            if(vessel.getX() > square.get(LEFT) && 
-                    vessel.getX() < square.get(RIGHT) &&
-                    vessel.getY() > square.get(BOTTOM) &&
-                    vessel.getY() < square.get(TOP)) {
-
-                return MATCH;
+                    return MATCH;
+                }
             }
         }
 
@@ -124,11 +122,6 @@ public class UserSelectionGroupsFilterImpl implements UserSelectionGroupsFilter 
     }
 
     private void addBounds(List<LinkedHashMap<String, Double>> bounds) {
-
-        if(this.allBounds == null) {
-            this.allBounds = new ArrayList<LinkedHashMap<String, Double>>();
-        }
-
         this.allBounds.addAll(bounds);
     }
 
