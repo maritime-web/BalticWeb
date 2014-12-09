@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.vessel.component.MaxSpeedExtractor;
-import dk.dma.embryo.vessel.json.client.AisViewServiceNorwegianData;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
 import dk.dma.embryo.vessel.json.client.LimitedAisViewService;
 
 @Singleton
@@ -127,14 +127,14 @@ public class MaxSpeedJob {
             DateTime last = DateTime.now(DateTimeZone.UTC).minusDays(7);
             DateTime lastUpdatedLimit = DateTime.now(DateTimeZone.UTC).minusMinutes(updateFrequenceMinutes);
 
-            List<AisViewServiceNorwegianData.Vessel> vesselsInAisCircle = aisDataService.getVesselsInAisCircle();
+            List<AisViewServiceAllAisData.Vessel> vesselsInAisCircle = aisDataService.getVesselsInAisCircle();
             Set<Long> mmsiNumbers = new HashSet<Long>(1000);
 
             int errorCount = 0;
             int updateCount = 0;
             for (int i = 0; i < vesselsInAisCircle.size() && errorCount < 10; i++) {
 
-                AisViewServiceNorwegianData.Vessel vessel = vesselsInAisCircle.get(i);
+                AisViewServiceAllAisData.Vessel vessel = vesselsInAisCircle.get(i);
                 Long mmsi = vessel.getMmsi();
                 String vesselName = vessel.getName();
                 mmsiNumbers.add(mmsi);

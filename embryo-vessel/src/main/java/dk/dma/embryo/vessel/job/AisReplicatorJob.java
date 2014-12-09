@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.vessel.json.client.AisViewServiceNorwegianData;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 
@@ -52,7 +52,7 @@ public class AisReplicatorJob {
     private FullAisViewService aisView;
      */
     @Inject
-    private AisViewServiceNorwegianData aisViewWithNorwegianData;
+    private AisViewServiceAllAisData aisViewWithNorwegianData;
 
     @Resource
     private TimerService service;
@@ -109,19 +109,21 @@ public class AisReplicatorJob {
             logger.debug("UPDATE AIS VESSEL DATA INCLUDING NORWEGIAN DATA...");
 
             // Get all vessels from AIS server
-            List<AisViewServiceNorwegianData.Vessel> aisServerVessels = aisViewWithNorwegianData.vesselList();
+            List<AisViewServiceAllAisData.Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList();
 
             // Get all vessels from ArcticWeb database
             List<Vessel> articWebVesselsAsList = vesselRepository.getAll(Vessel.class);
 
-            logger.debug("aisView returns " + aisServerVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
+            logger.debug("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
+            //System.out.println("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
 
-            Map<Long, Vessel> awVesselsAsMap = this.updateArcticWebVesselInDatabase(aisServerVessels, articWebVesselsAsList);
+            Map<Long, Vessel> awVesselsAsMap = this.updateArcticWebVesselInDatabase(aisServerAllVessels, articWebVesselsAsList);
 
-            List<AisViewServiceNorwegianData.Vessel> vesselsInAisCircle = new ArrayList<AisViewServiceNorwegianData.Vessel>();
-            List<AisViewServiceNorwegianData.Vessel> vesselsOnMap = new ArrayList<AisViewServiceNorwegianData.Vessel>();
+            List<AisViewServiceAllAisData.Vessel> vesselsInAisCircle = new ArrayList<AisViewServiceAllAisData.Vessel>();
+            List<AisViewServiceAllAisData.Vessel> vesselsOnMap = new ArrayList<AisViewServiceAllAisData.Vessel>();
+            List<AisViewServiceAllAisData.Vessel> vesselsAllowed = new ArrayList<AisViewServiceAllAisData.Vessel>();
 
-            for (AisViewServiceNorwegianData.Vessel aisVessel : aisServerVessels) {
+            for (AisViewServiceAllAisData.Vessel aisVessel : aisServerAllVessels) {
 
                 // Ignore vessel if just one of these validations fail
                 if(aisVessel.getMmsi() == null || aisVessel.getLon() == null || aisVessel.getLat() == null) {
@@ -133,18 +135,42 @@ public class AisReplicatorJob {
 
                 Long mmsi = aisVessel.getMmsi();
 
+                boolean isAllowed = aisDataService.isAllowed(x);
                 boolean isWithInAisCircle = aisDataService.isWithinAisCircle(x, y);
-                if (isWithInAisCircle || awVesselsAsMap.containsKey(mmsi)) {
+                
+                /*
+                 * These vessels are used by the VesselRestService to match against selection groups.
+                 */
+                if (isAllowed || awVesselsAsMap.containsKey(mmsi)) {
+                    vesselsAllowed.add(aisVessel);
+                }
+                
+                /*
+                 * These vessels are shown on the map if logged on user has no selection groups and 
+                 * contains vessels within plus Arctic Web vessels even if they are outside the default circle and is allowed.
+                 */
+                if ( (isAllowed && isWithInAisCircle) || awVesselsAsMap.containsKey(mmsi)) {
                     vesselsOnMap.add(aisVessel);
                 }
-                if (aisDataService.isWithinAisCircle(x, y)) {
+                
+                /*
+                 * These vessels are used by MaxSpeadJob.java and 
+                 * do not contain Arctic Web vessels from the database if they are outside the default circle and is allowed.
+                 */
+                if (isAllowed && aisDataService.isWithinAisCircle(x, y)) {
                     vesselsInAisCircle.add(aisVessel);
                 }
             }
 
             logger.debug("Vessels in AIS circle: " + vesselsInAisCircle.size());
             logger.debug("Vessels on Map : " + vesselsOnMap.size());
-
+            logger.debug("Vessels allowed : " + vesselsAllowed.size());
+            
+            //System.out.println("Vessels in AIS circle: " + vesselsInAisCircle.size());
+            //System.out.println("Vessels on Map : " + vesselsOnMap.size());
+            //System.out.println("Vessels allowed : " + vesselsAllowed.size());
+            
+            aisDataService.setVesselsAllowed(vesselsAllowed);
             aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
             aisDataService.setVesselsOnMap(vesselsOnMap);
 
@@ -156,7 +182,7 @@ public class AisReplicatorJob {
     }
 
     private Map<Long, Vessel> updateArcticWebVesselInDatabase(
-            List<AisViewServiceNorwegianData.Vessel> result,
+            List<AisViewServiceAllAisData.Vessel> result,
             List<Vessel> articWebVesselsAsList) {
 
         Map<Long, Vessel> awVesselsAsMap = new HashMap<>();
@@ -165,7 +191,7 @@ public class AisReplicatorJob {
             awVesselsAsMap.put(v.getMmsi(), v);
         }
 
-        for (AisViewServiceNorwegianData.Vessel aisVessel : result) {
+        for (AisViewServiceAllAisData.Vessel aisVessel : result) {
             Long mmsi = aisVessel.getMmsi();
             String name = aisVessel.getName();
             String callSign = aisVessel.getCallsign();

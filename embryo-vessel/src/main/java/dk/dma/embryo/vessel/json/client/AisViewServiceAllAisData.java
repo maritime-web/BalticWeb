@@ -19,7 +19,7 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-public interface AisViewServiceNorwegianData {
+public interface AisViewServiceAllAisData {
     @GET
     @Path("/vessel/list")
     List<Vessel> vesselList();
