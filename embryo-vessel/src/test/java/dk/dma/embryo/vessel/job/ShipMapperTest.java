@@ -27,10 +27,10 @@ public class ShipMapperTest {
 
     @Test
     public void test() {
-    	Assert.assertEquals(ShipTypeMapper.getInstance().getColor(ShipType.TANKER), ShipTypeColor.RED);
-    	Assert.assertEquals(ShipTypeMapper.getInstance().getColor(ShipType.WIG), ShipTypeColor.YELLOW);
-    
-    	ShipType fishing = ShipType.getShipTypeFromSubType("Fishing");
-    	Assert.assertEquals(ShipTypeMapper.getInstance().getColor(fishing), ShipTypeColor.ORANGE);
+        Assert.assertEquals(ShipTypeMapper.getInstance().getColor(ShipType.TANKER), ShipTypeColor.RED);
+        Assert.assertEquals(ShipTypeMapper.getInstance().getColor(ShipType.WIG), ShipTypeColor.YELLOW);
+
+        ShipType fishing = ShipType.getShipTypeFromSubType("Fishing");
+        Assert.assertEquals(ShipTypeMapper.getInstance().getColor(fishing), ShipTypeColor.ORANGE);
     }
 }

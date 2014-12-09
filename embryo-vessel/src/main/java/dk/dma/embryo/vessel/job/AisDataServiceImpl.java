@@ -30,11 +30,11 @@ import dk.dma.enav.model.geometry.Position;
 
 @Singleton
 public class AisDataServiceImpl implements AisDataService {
-   
-	private List<AisViewServiceNorwegianData.Vessel> vesselsInAisCircle = new ArrayList<>();
+
+    private List<AisViewServiceNorwegianData.Vessel> vesselsInAisCircle = new ArrayList<>();
     private List<AisViewServiceNorwegianData.Vessel> vesselsOnMap = new ArrayList<>();
     private Map<Long, MaxSpeedRecording> maxSpeeds =  new HashMap<>();
-    
+
     @Inject
     @Property("embryo.aisCircle.default.latitude")
     private double aisCircleLatitude;
@@ -49,15 +49,15 @@ public class AisDataServiceImpl implements AisDataService {
 
     public boolean isWithinAisCircle(double x, double y) {
         return 
-    		Position.create(y, x).distanceTo(
-				Position.create(aisCircleLatitude, aisCircleLongitude), 
-				CoordinateSystem.GEODETIC) < aisCircleRadius;
+                Position.create(y, x).distanceTo(
+                        Position.create(aisCircleLatitude, aisCircleLongitude), 
+                        CoordinateSystem.GEODETIC) < aisCircleRadius;
     }
 
     public List<AisViewServiceNorwegianData.Vessel> getVesselsOnMap() {
         return new ArrayList<>(vesselsOnMap);
     }
-    
+
     public Map<Long, MaxSpeedRecording> getMaxSpeeds() {
         return new HashMap<>(maxSpeeds);
     }
@@ -69,7 +69,7 @@ public class AisDataServiceImpl implements AisDataService {
     public void setVesselsOnMap(List<AisViewServiceNorwegianData.Vessel> vessels) {
         this.vesselsOnMap = vessels;
     }
-    
+
     public void setMaxSpeeds(Map<Long, MaxSpeedRecording> maxSpeeds) {
         this.maxSpeeds = maxSpeeds;
     }

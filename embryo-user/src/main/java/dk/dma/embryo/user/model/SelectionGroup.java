@@ -34,17 +34,17 @@ public class SelectionGroup extends BaseEntity<Long> {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String polygonsAsJson;
-    
-    public SelectionGroup() { }
-    
-    public SelectionGroup(String name, String polygonsAsJson, Boolean active) {
-		super();
-		this.name = name;
-		this.polygonsAsJson = polygonsAsJson;
-		this.active = active;
-	}
 
-	// //////////////////////////////////////////////////////////////////////
+    public SelectionGroup() { }
+
+    public SelectionGroup(String name, String polygonsAsJson, Boolean active) {
+        super();
+        this.name = name;
+        this.polygonsAsJson = polygonsAsJson;
+        this.active = active;
+    }
+
+    // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
     @Override
@@ -55,24 +55,24 @@ public class SelectionGroup extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Boolean getActive() {
-		return active;
-	}
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
+    public Boolean getActive() {
+        return active;
+    }
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 
-	public String getPolygonsAsJson() {
-		return polygonsAsJson;
-	}
-	public void setPolygonsAsJson(String polygonsAsJson) {
-		this.polygonsAsJson = polygonsAsJson;
-	}
+    public String getPolygonsAsJson() {
+        return polygonsAsJson;
+    }
+    public void setPolygonsAsJson(String polygonsAsJson) {
+        this.polygonsAsJson = polygonsAsJson;
+    }
 }

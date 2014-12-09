@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
         user.setForgotUuid(uuid.toString());
         realmDao.saveEntity(user);
     }
-    
+
     @Override
     public void changePassword(String uuid, String password) throws FinderException {
         SecuredUser user = realmDao.findByUuid(uuid);
@@ -131,29 +131,29 @@ public class UserServiceImpl implements UserService {
             throw new FinderException("No user for given UUID.");
         }
         HashedPassword hashedPassword = SecurityUtil.hashPassword(password);
-        
+
         user.setHashedPassword(hashedPassword.getPassword());
         user.setSalt(hashedPassword.getSalt());
         user.setForgotUuid(null);
-        
+
         realmDao.saveEntity(user);
     }
 
-	@Override
-	public void updateSelectionGroups(List<SelectionGroup> selectionGroups, String userName) throws FinderException {
-		SecuredUser securedUserCurrent = this.realmDao.findByUsername(userName);
-		if(securedUserCurrent == null) {
+    @Override
+    public void updateSelectionGroups(List<SelectionGroup> selectionGroups, String userName) throws FinderException {
+        SecuredUser securedUserCurrent = this.realmDao.findByUsername(userName);
+        if(securedUserCurrent == null) {
             throw new FinderException("No user for given userName.");
         }
-		
-		// Important to clear() and NOT nullify <- hibernate do not understand it correctly!
-		securedUserCurrent.getSelectionGroups().clear();
-		SecuredUser userReadyForUpdate = this.realmDao.saveEntityWithFlush(securedUserCurrent);
-		
-		for (SelectionGroup selectionGroup : selectionGroups) {
-			userReadyForUpdate.addSelectionGroup(selectionGroup);
-		}
-		
-		SecuredUser savedUser = this.realmDao.saveEntityWithFlush(userReadyForUpdate);
-	}
+
+        // Important to clear() and NOT nullify <- hibernate do not understand it correctly!
+        securedUserCurrent.getSelectionGroups().clear();
+        SecuredUser userReadyForUpdate = this.realmDao.saveEntityWithFlush(securedUserCurrent);
+
+        for (SelectionGroup selectionGroup : selectionGroups) {
+            userReadyForUpdate.addSelectionGroup(selectionGroup);
+        }
+
+        SecuredUser savedUser = this.realmDao.saveEntityWithFlush(userReadyForUpdate);
+    }
 }

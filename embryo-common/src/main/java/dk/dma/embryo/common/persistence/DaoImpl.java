@@ -101,6 +101,6 @@ public abstract class DaoImpl implements Dao {
     }
     
     public void flush() {
-    	em.flush();
+      em.flush();
     }
 }

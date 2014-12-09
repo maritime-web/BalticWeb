@@ -45,7 +45,7 @@ public class SelectionGroupRestService {
 
     @Inject
     private Subject subject;
-    
+
     @Inject
     private UserService userService;
 
@@ -55,83 +55,83 @@ public class SelectionGroupRestService {
     @Produces("application/json")
     @NoCache
     public List<SelectionGroupDTO> list() {
-    	
-    	SecuredUser securedUser = this.subject.getUser();
+
+        SecuredUser securedUser = this.subject.getUser();
         List<SelectionGroupDTO> result = new ArrayList<SelectionGroupDTO>();
-        
-        
+
+
         for (SelectionGroup selectionGroup : securedUser.getSelectionGroups()) {
-			
-        	SelectionGroupDTO groupDTO = new SelectionGroupDTO();
-        	groupDTO.setId(selectionGroup.getId());
-        	groupDTO.setActive(selectionGroup.getActive());
-        	groupDTO.setName(selectionGroup.getName());
-        	groupDTO.setPolygonsAsJson(selectionGroup.getPolygonsAsJson());
-        	
-        	result.add(groupDTO);
-		}
-        
+
+            SelectionGroupDTO groupDTO = new SelectionGroupDTO();
+            groupDTO.setId(selectionGroup.getId());
+            groupDTO.setActive(selectionGroup.getActive());
+            groupDTO.setName(selectionGroup.getName());
+            groupDTO.setPolygonsAsJson(selectionGroup.getPolygonsAsJson());
+
+            result.add(groupDTO);
+        }
+
         return result;
     }
-    
+
     @POST
     @Path("/update")
     @Consumes("application/json")
     public void update(List<SelectionGroupDTO> selectionGroupDTOs) {
-        
-    	
-    	if(selectionGroupDTOs != null) {
-    		
-    		List<SelectionGroup> selectionGroups = new ArrayList<SelectionGroup>();
-    		for (SelectionGroupDTO selectionGroupDTO : selectionGroupDTOs) {
-				
-    			SelectionGroup selectionGroup = new SelectionGroup(
-    					selectionGroupDTO.name, selectionGroupDTO.polygonsAsJson, selectionGroupDTO.active);
-    			
-    			selectionGroups.add(selectionGroup);
-			}
-    		
-    		try {
-    			this.userService.updateSelectionGroups(selectionGroups, this.subject.getUser().getUserName());
-    		} catch (FinderException e) {
+
+
+        if(selectionGroupDTOs != null) {
+
+            List<SelectionGroup> selectionGroups = new ArrayList<SelectionGroup>();
+            for (SelectionGroupDTO selectionGroupDTO : selectionGroupDTOs) {
+
+                SelectionGroup selectionGroup = new SelectionGroup(
+                        selectionGroupDTO.name, selectionGroupDTO.polygonsAsJson, selectionGroupDTO.active);
+
+                selectionGroups.add(selectionGroup);
+            }
+
+            try {
+                this.userService.updateSelectionGroups(selectionGroups, this.subject.getUser().getUserName());
+            } catch (FinderException e) {
                 throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity(e.getMessage()).build());
             }
-    	}
+        }
     }
-    
-    public static class SelectionGroupDTO {
-    	
-    	private Long id;
-    	private String name;
-    	private Boolean active;
-    	private String polygonsAsJson;
-		
-    	public Long getId() {
-			return id;
-		}
-		public void setId(Long id) {
-			this.id = id;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		
-		public Boolean getActive() {
-			return active;
-		}
-		public void setActive(Boolean active) {
-			this.active = active;
-		}
 
-		public String getPolygonsAsJson() {
-			return polygonsAsJson;
-		}
-		public void setPolygonsAsJson(String polygonsAsJson) {
-			this.polygonsAsJson = polygonsAsJson;
-		}
+    public static class SelectionGroupDTO {
+
+        private Long id;
+        private String name;
+        private Boolean active;
+        private String polygonsAsJson;
+
+        public Long getId() {
+            return id;
+        }
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Boolean getActive() {
+            return active;
+        }
+        public void setActive(Boolean active) {
+            this.active = active;
+        }
+
+        public String getPolygonsAsJson() {
+            return polygonsAsJson;
+        }
+        public void setPolygonsAsJson(String polygonsAsJson) {
+            this.polygonsAsJson = polygonsAsJson;
+        }
     }
 }

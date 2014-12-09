@@ -275,18 +275,11 @@ function addLayerToMap(id, layer, map) {
             select: select
         });
     }
-/*
+
 	for (var i in layer.controls) {
         map.internalMap.addControl(layer.controls[i]);
     }
-  */  
-    for (var i in layer.controls) {
-        map.add({
-            group: id,
-            layer: layer.controls[i]
-        });
-    }
-
+ 
     layer.zoomListener = function () {
         layer.zoom(map.internalMap.zoom);
     }

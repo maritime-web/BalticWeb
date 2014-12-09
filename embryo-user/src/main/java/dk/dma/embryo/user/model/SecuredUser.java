@@ -35,12 +35,12 @@ import dk.dma.embryo.common.persistence.BaseEntity;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName"),
-        // LEFT JOIN FETCH u.roles [identification variable] is not supported by JPA but by Hibernate
-        @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role WHERE u.id=:id"),
-        @NamedQuery(name = "SecuredUser:list", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role AS r LEFT JOIN FETCH r.vessel"),
-        @NamedQuery(name="SecuredUser:findByEmail", query = "SELECT u FROM SecuredUser u WHERE u.email=:email"),
-        @NamedQuery(name="SecuredUser:findByUuid", query = "SELECT u FROM SecuredUser u WHERE u.forgotUuid=:uuid")})
+    @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName"),
+    // LEFT JOIN FETCH u.roles [identification variable] is not supported by JPA but by Hibernate
+    @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role WHERE u.id=:id"),
+    @NamedQuery(name = "SecuredUser:list", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role AS r LEFT JOIN FETCH r.vessel"),
+    @NamedQuery(name="SecuredUser:findByEmail", query = "SELECT u FROM SecuredUser u WHERE u.email=:email"),
+    @NamedQuery(name="SecuredUser:findByUuid", query = "SELECT u FROM SecuredUser u WHERE u.forgotUuid=:uuid")})
 public class SecuredUser extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;
@@ -57,15 +57,15 @@ public class SecuredUser extends BaseEntity<Long> {
     private String userName;
 
     private String email;
-    
+
     private String forgotUuid;
-    
+
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime created;
 
     @OneToOne(cascade=CascadeType.REMOVE)
     private Role role;
-    
+
     @OneToMany(orphanRemoval = true ,cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinColumn(name="SecuredUser_id", nullable = false)
     private List<SelectionGroup> selectionGroups = new ArrayList<SelectionGroup>();
@@ -85,12 +85,12 @@ public class SecuredUser extends BaseEntity<Long> {
     }
 
     public void addSelectionGroup(SelectionGroup group) {
-    	
-    	if(this.selectionGroups == null) {
-    		this.selectionGroups = new ArrayList<SelectionGroup>();
-    	}
-    	
-    	this.selectionGroups.add(group);
+
+        if(this.selectionGroups == null) {
+            this.selectionGroups = new ArrayList<SelectionGroup>();
+        }
+
+        this.selectionGroups.add(group);
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -101,16 +101,16 @@ public class SecuredUser extends BaseEntity<Long> {
         return "SecuredUser [userName=" + userName + ", id=" + id + ", email=" + email + " hashedpassword=*]";
     }
     public boolean hasActiveSelectionGroups() {
-    	
-    	if(this.selectionGroups != null && !this.selectionGroups.isEmpty()) {
-    		for (SelectionGroup group : this.selectionGroups) {
-				if(group.getActive()) {
-					return true;
-				}
-			}
-    	} 
-    	
-    	return false;
+
+        if(this.selectionGroups != null && !this.selectionGroups.isEmpty()) {
+            for (SelectionGroup group : this.selectionGroups) {
+                if(group.getActive()) {
+                    return true;
+                }
+            }
+        } 
+
+        return false;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -157,10 +157,10 @@ public class SecuredUser extends BaseEntity<Long> {
     }
     public void setRole(Role role) {
         this.role = role;
-//        roles.add(role);
-//        role.users.add(this);
+        //roles.add(role);
+        //role.users.add(this);
     }
-    
+
     public String getForgotUuid() {
         return forgotUuid;
     }
@@ -168,11 +168,11 @@ public class SecuredUser extends BaseEntity<Long> {
         this.forgotUuid = forgotUuid;
     }
 
-	public List<SelectionGroup> getSelectionGroups() {
-		return selectionGroups;
-	}
-	public void setSelectionGroups(List<SelectionGroup> selectionGroups) {
-		this.selectionGroups = selectionGroups;
-	}
+    public List<SelectionGroup> getSelectionGroups() {
+        return selectionGroups;
+    }
+    public void setSelectionGroups(List<SelectionGroup> selectionGroups) {
+        this.selectionGroups = selectionGroups;
+    }
 
 }

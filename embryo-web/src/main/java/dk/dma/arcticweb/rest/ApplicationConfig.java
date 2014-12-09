@@ -53,9 +53,9 @@ public class ApplicationConfig extends Application {
 
         // ADD RS ENDPOINTS
         set.addAll(Arrays.asList(
-        		RouteRestService.class, 
-        		RouteUploadRestService.class, 
-        		ShapeFileRestService.class,
+                RouteRestService.class, 
+                RouteUploadRestService.class, 
+                ShapeFileRestService.class,
                 GreenPosRestService.class, 
                 BerthRestService.class, 
                 AuthenticationService.class,

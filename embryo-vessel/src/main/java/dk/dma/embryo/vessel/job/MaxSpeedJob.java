@@ -68,8 +68,8 @@ public class MaxSpeedJob {
     @Inject
     @Property("embryo.vessel.maxspeedjob.lastrecordedlimit")
     private Integer lastRecordedLimit;
-    
-    
+
+
     @Inject
     @Property("embryo.vessel.maxspeedjob.initialExecution")
     private int initialExecution;
@@ -133,8 +133,8 @@ public class MaxSpeedJob {
             int errorCount = 0;
             int updateCount = 0;
             for (int i = 0; i < vesselsInAisCircle.size() && errorCount < 10; i++) {
-                
-            	AisViewServiceNorwegianData.Vessel vessel = vesselsInAisCircle.get(i);
+
+                AisViewServiceNorwegianData.Vessel vessel = vesselsInAisCircle.get(i);
                 Long mmsi = vessel.getMmsi();
                 String vesselName = vessel.getName();
                 mmsiNumbers.add(mmsi);

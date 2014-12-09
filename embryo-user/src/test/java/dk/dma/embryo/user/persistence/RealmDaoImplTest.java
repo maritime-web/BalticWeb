@@ -34,7 +34,6 @@ import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.SelectionGroup;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.model.VesselOwnerRole;
-import dk.dma.embryo.user.persistence.RealmDao;
 
 public class RealmDaoImplTest {
 
@@ -45,10 +44,10 @@ public class RealmDaoImplTest {
     @BeforeClass
     public static void setupForAll() {
         factory = Persistence.createEntityManagerFactory("componentTest");
-        
+
         EntityManager entityManager = factory.createEntityManager();
         entityManager.getTransaction().begin();
-        
+
         Role sailor = new SailorRole();
         Role shore = new ShoreRole();
         Role role3 = new VesselOwnerRole();
@@ -59,21 +58,21 @@ public class RealmDaoImplTest {
 
         SecuredUser user1 = new SecuredUser("user1", "pw1", null);
         SecuredUser user2 = new SecuredUser("user2", "pw2", null);
-        
-        
+
+
         SelectionGroup group1 = new SelectionGroup("Group 1", "", true);
         SelectionGroup group2 = new SelectionGroup("Group 1", "", true);
         user1.setRole(sailor);
         user1.addSelectionGroup(group1);
         user1.addSelectionGroup(group2);
-        
+
         entityManager.persist(user1);
         entityManager.persist(sailor);
-        
+
         user2.setRole(shore);
-        
+
         entityManager.persist(user2);
-        
+
         entityManager.getTransaction().commit();
         entityManager.close();
     }
@@ -93,7 +92,7 @@ public class RealmDaoImplTest {
     @Test
     public void testFindByUsername() {
         SecuredUser user = repository.findByUsername("user1");
-        
+
         entityManager.clear();
 
         assertEquals("user1", user.getUserName());
@@ -113,7 +112,7 @@ public class RealmDaoImplTest {
         assertEquals("Sailor", user1.getRole().getLogicalName());
 
         entityManager.clear();
-        
+
         // asserting on user 2
         SecuredUser user2 = repository.getByPrimaryKeyReturnAll(2L);
 
@@ -124,13 +123,13 @@ public class RealmDaoImplTest {
         assertEquals("pw2", user2.getHashedPassword());
         assertEquals("Shore", user2.getRole().getLogicalName());
     }
-    
+
     @Test
     public void testFindByUsernameWithSelectionArea() {
         SecuredUser user = repository.findByUsername("user1");
-        
+
         List<SelectionGroup> selectionGroups = user.getSelectionGroups();
-        
+
         entityManager.clear();
 
         assertEquals("user1", user.getUserName());
@@ -138,15 +137,15 @@ public class RealmDaoImplTest {
         Assert.assertTrue(selectionGroups != null && !selectionGroups.isEmpty());
         Assert.assertTrue(selectionGroups.size() == 2);
     }
-    
+
     @Test
     public void testFindByUsernameWithSelectionAreaToBeDeleted() {
         SecuredUser user = repository.findByUsername("user1");
-        
+
         List<SelectionGroup> selectionGroups = user.getSelectionGroups();
-        
+
         //entityManager.clear();
-        
+
         user.setSelectionGroups(null);
         SecuredUser updatedUser = repository.saveEntity(user);
 
