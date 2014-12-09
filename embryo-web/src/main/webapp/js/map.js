@@ -1,4 +1,4 @@
-embryo.eventbus.MapInitialized = function() {
+embryo.eventbus.MapInitialized = function() { 
     var event = jQuery.Event("MapInitializedEvent");
     return event;
 };

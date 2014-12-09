@@ -1,4 +1,4 @@
-$(function() {
+$(function() {    
 
     var module = angular.module('embryo.ice.control', [ 'ui.bootstrap.accordion', 'embryo.control',
             'embryo.ice.service', 'embryo.shape' ]);

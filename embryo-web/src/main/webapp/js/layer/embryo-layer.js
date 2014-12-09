@@ -275,7 +275,7 @@ function addLayerToMap(id, layer, map) {
             select: select
         });
     }
-
+ 
 	for (var i in layer.controls) {
         map.internalMap.addControl(layer.controls[i]);
     }

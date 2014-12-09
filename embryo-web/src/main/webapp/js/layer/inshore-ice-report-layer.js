@@ -1,4 +1,4 @@
-function InshoreIceReportLayer() {
+function InshoreIceReportLayer() {  
 
     this.init = function () {
         this.zoomLevels = [ 4, 6, 11 ];
