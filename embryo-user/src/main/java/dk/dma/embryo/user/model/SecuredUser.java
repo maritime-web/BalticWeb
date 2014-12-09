@@ -14,11 +14,17 @@
  */
 package dk.dma.embryo.user.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Type;
@@ -57,8 +63,14 @@ public class SecuredUser extends BaseEntity<Long> {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime created;
 
-    public SecuredUser() {
-    }
+    @OneToOne(cascade=CascadeType.REMOVE)
+    private Role role;
+    
+    @OneToMany(orphanRemoval = true ,cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @JoinColumn(name="SecuredUser_id", nullable = false)
+    private List<SelectionGroup> selectionGroups = new ArrayList<SelectionGroup>();
+
+    public SecuredUser() {}
 
     public SecuredUser(String userName, String hashedPassword, byte[] salt) {
         setUserName(userName);
@@ -72,8 +84,14 @@ public class SecuredUser extends BaseEntity<Long> {
         setEmail(email);
     }
 
-    @OneToOne(cascade=CascadeType.REMOVE)
-    private Role role;
+    public void addSelectionGroup(SelectionGroup group) {
+    	
+    	if(this.selectionGroups == null) {
+    		this.selectionGroups = new ArrayList<SelectionGroup>();
+    	}
+    	
+    	this.selectionGroups.add(group);
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // Object methods
@@ -82,6 +100,18 @@ public class SecuredUser extends BaseEntity<Long> {
     public String toString() {
         return "SecuredUser [userName=" + userName + ", id=" + id + ", email=" + email + " hashedpassword=*]";
     }
+    public boolean hasActiveSelectionGroups() {
+    	
+    	if(this.selectionGroups != null && !this.selectionGroups.isEmpty()) {
+    		for (SelectionGroup group : this.selectionGroups) {
+				if(group.getActive()) {
+					return true;
+				}
+			}
+    	} 
+    	
+    	return false;
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods
@@ -89,7 +119,6 @@ public class SecuredUser extends BaseEntity<Long> {
     public String getUserName() {
         return userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -97,7 +126,6 @@ public class SecuredUser extends BaseEntity<Long> {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -109,7 +137,6 @@ public class SecuredUser extends BaseEntity<Long> {
     public String getHashedPassword() {
         return hashedPassword;
     }
-
     public void setHashedPassword(String hashedPassword) {
         this.hashedPassword = hashedPassword;
     }
@@ -117,7 +144,6 @@ public class SecuredUser extends BaseEntity<Long> {
     public byte[] getSalt() {
         return salt;
     }
-
     public void setSalt(byte[] salt) {
         this.salt = salt;
     }
@@ -129,7 +155,6 @@ public class SecuredUser extends BaseEntity<Long> {
     public Role getRole() {
         return role;
     }
-
     public void setRole(Role role) {
         this.role = role;
 //        roles.add(role);
@@ -139,9 +164,15 @@ public class SecuredUser extends BaseEntity<Long> {
     public String getForgotUuid() {
         return forgotUuid;
     }
-    
     public void setForgotUuid(String forgotUuid) {
         this.forgotUuid = forgotUuid;
     }
+
+	public List<SelectionGroup> getSelectionGroups() {
+		return selectionGroups;
+	}
+	public void setSelectionGroups(List<SelectionGroup> selectionGroups) {
+		this.selectionGroups = selectionGroups;
+	}
 
 }

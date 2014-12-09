@@ -46,7 +46,7 @@ $(function() {
         toggle : true,
         id : 'ClickCtrl'
     });
-
+    
     var hoverControl = new OpenLayers.Control.SelectFeature([], {
         id : 'HoverCtrl',
         hover : true,
@@ -64,6 +64,31 @@ $(function() {
             }
         }
     });
+
+    function hasZIndex(layer) {
+        return layer.metadata && layer.metadata.zIndex >= 0;
+    }
+
+    function sortLayers(olMap) {
+        var layers = olMap.layers.slice(0);
+
+        layers.sort(function (l1, l2) {
+            if (!hasZIndex(l1) && !hasZIndex(l2)) {
+                return 0;
+            }
+            if (hasZIndex(l1) && !hasZIndex(l2)) {
+                return -1;
+            }
+            if (!hasZIndex(l1) && hasZIndex(l2)) {
+                return 1;
+            }
+            return l1.metadata.zIndex - l2.metadata.zIndex;
+        });
+
+        for (var index = 0, len = layers.length; index < len && hasZIndex(layers[index]); index++) {
+            olMap.setLayerIndex(layers[index], index);
+        }
+    }
 
     embryo.map = {
         add : function(d) {
@@ -83,6 +108,8 @@ $(function() {
                 if (d.group)
                     controlsByGroup[d.group].push(d.control);
             }
+
+            sortLayers(map);
         },
         remove: function (d) {
             if (d.layer) {
@@ -98,6 +125,26 @@ $(function() {
             if (feature != null)
                 selectControl.select(feature);
         },
+        selectMultiple: function (selectMultiple) {
+            if (selectMultiple) {
+                selectControl.unselectAll();
+                selectControl.deactivate();
+            } else {
+                selectControl.activate();
+            }
+        },
+        activateSelectable : function(){
+        	
+        	if(!selectControl.active) {
+        		selectControl.activate();
+        	}
+        },
+        deactivateSelectable : function(){
+        	
+        	if(selectControl.active) {
+        		selectControl.deactivate();
+        	}
+		},
         zoomToExtent : function(layers) {
             var extent = new OpenLayers.Bounds();
 
@@ -234,6 +281,9 @@ $(function() {
      * map.addControl(hoverControl); hoverControl.activate();
      */
 
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+    map.addControl(new OpenLayers.Control.MousePosition());
+    
     map.addControl(selectControl);
     selectControl.activate();
 
@@ -270,9 +320,7 @@ $(function() {
         var center = map.getCenter();
         setCookie("dma-ais-zoom-" + embryo.authentication.userName, map.zoom, 30);
         var lonlat = new OpenLayers.LonLat(map.center.lon, map.center.lat).transform(map.getProjectionObject(), // from
-        // Spherical
-        // Mercator
-        // Projection
+            // Spherical Mercator Projection
         new OpenLayers.Projection("EPSG:4326") // to WGS 1984
         );
         setCookie("dma-ais-lat-" + embryo.authentication.userName, lonlat.lat, 30);

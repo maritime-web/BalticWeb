@@ -24,34 +24,37 @@ import javax.inject.Inject;
 
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.vessel.job.MaxSpeedJob.MaxSpeedRecording;
+import dk.dma.embryo.vessel.json.client.AisViewServiceNorwegianData;
 import dk.dma.enav.model.geometry.CoordinateSystem;
 import dk.dma.enav.model.geometry.Position;
 
 @Singleton
 public class AisDataServiceImpl implements AisDataService {
-    private List<String[]> vesselsInAisCircle = new ArrayList<>();
-
-    private List<String[]> vesselsOnMap = new ArrayList<>();
-    
+   
+	private List<AisViewServiceNorwegianData.Vessel> vesselsInAisCircle = new ArrayList<>();
+    private List<AisViewServiceNorwegianData.Vessel> vesselsOnMap = new ArrayList<>();
     private Map<Long, MaxSpeedRecording> maxSpeeds =  new HashMap<>();
     
     @Inject
-    @Property("embryo.aisCircle.latitude")
+    @Property("embryo.aisCircle.default.latitude")
     private double aisCircleLatitude;
 
     @Inject
-    @Property("embryo.aisCircle.longitude")
+    @Property("embryo.aisCircle.default.longitude")
     private double aisCircleLongitude;
 
     @Inject
-    @Property("embryo.aisCircle.radius")
+    @Property("embryo.aisCircle.default.radius")
     private double aisCircleRadius;
 
     public boolean isWithinAisCircle(double x, double y) {
-        return Position.create(y, x).distanceTo(Position.create(aisCircleLatitude, aisCircleLongitude), CoordinateSystem.GEODETIC) < aisCircleRadius;
+        return 
+    		Position.create(y, x).distanceTo(
+				Position.create(aisCircleLatitude, aisCircleLongitude), 
+				CoordinateSystem.GEODETIC) < aisCircleRadius;
     }
 
-    public List<String[]> getVesselsOnMap() {
+    public List<AisViewServiceNorwegianData.Vessel> getVesselsOnMap() {
         return new ArrayList<>(vesselsOnMap);
     }
     
@@ -59,18 +62,18 @@ public class AisDataServiceImpl implements AisDataService {
         return new HashMap<>(maxSpeeds);
     }
 
-    public void setVesselsInAisCircle(List<String[]> vesselsInAisCircle) {
+    public void setVesselsInAisCircle(List<AisViewServiceNorwegianData.Vessel> vesselsInAisCircle) {
         this.vesselsInAisCircle = vesselsInAisCircle;
     }
 
-    public void setVesselsOnMap(List<String[]> vessels) {
+    public void setVesselsOnMap(List<AisViewServiceNorwegianData.Vessel> vessels) {
         this.vesselsOnMap = vessels;
     }
     
     public void setMaxSpeeds(Map<Long, MaxSpeedRecording> maxSpeeds) {
         this.maxSpeeds = maxSpeeds;
     }
-    public List<String[]> getVesselsInAisCircle() {
+    public List<AisViewServiceNorwegianData.Vessel> getVesselsInAisCircle() {
         return new ArrayList<>(vesselsInAisCircle);
     }
 

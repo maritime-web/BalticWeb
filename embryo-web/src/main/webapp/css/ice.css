@@ -1,6 +1,6 @@
 #icpIceChartProviders table td:first-child{
 	padding-left:0px;	
-	padding-right:0px;	
+	padding-right:0px;	 
 }
 
 .icebergLegend tr td:first-child{
@@ -10,4 +10,8 @@
 
 .inshoreNotAvailable{
     color: #A4A4A4;
+}
+
+#satelliteImageInformation {
+    max-width: 600px;
 }

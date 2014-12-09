@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-$(function () {
+$(function () { 
 
     var module = angular.module('embryo.satellite-ice.control', [ 'ui.bootstrap.accordion', 'embryo.control',
-        'embryo.tileSet.service']);
+        'embryo.tileSet.service', 'embryo.subscription.service']);
 
     var group = "ice";
     var satellite = new SatelliteLayer();
@@ -58,34 +58,20 @@ $(function () {
         return tileSets;
     }
 
-    function addQualifiers(tileSets) {
-        for (var index in tileSets) {
-            var parts = tileSets[index].name.split("_");
-            if (parts[2].indexOf("terra") || parts[2].indexOf("aqua")) {
-                var moreParts = parts[2].split("-");
-                tileSets[index].timeOfDay = moreParts[1].replace("aqua", "P.M.").replace("terra", "A.M.");
-                tileSets[index].qualifier = moreParts[2];
-            }
+
+    function iceSatelliteController($scope, TileSetService, SubscriptionService) {
+        var unfiltered;
+        $scope.selected = [];
+        $scope.viewInformationProvider = embryo.controllers.satelliteImageInformation;
+
+        $scope.viewInformation = function ($event) {
+            $event.preventDefault();
+            $scope.viewInformationProvider.show();
         }
-        return tileSets;
-    }
 
-
-    function iceSatelliteController($scope, TileSetService) {
-        TileSetService.listByType("satellite-ice", function (tileSets) {
-            tileSets = addQualifiers(tileSets);
-            $scope.tileSets = sortTileSets(tileSets);
-
-            // satellite.draw($scope.tileSets);
-        }, function (error) {
-
-        });
-
-        $scope.isSelectedClasses = function (tileSet) {
-            if ($scope.selected == tileSet.name) {
-                return "alert alert-success";
-            }
-            return "";
+        $scope.hideInformation = function ($event) {
+            $event.preventDefault();
+            $scope.viewInformationProvider.close();
         }
 
         $scope.formatDate = function (millis) {
@@ -96,18 +82,35 @@ $(function () {
             return formatTime(millis);
         }
 
+        $scope.filterEnabled = function () {
+            return satellite.containsFilter();
+        }
+
+        $scope.filter = function ($event) {
+            $event.preventDefault();
+            satellite.draw(unfiltered);
+        }
+
+        $scope.hideFilter = function ($event) {
+            $event.preventDefault();
+            satellite.draw([]);
+        }
+
+        $scope.clearFilter = function ($event) {
+            $event.preventDefault();
+            $scope.selected = [];
+            $scope.tileSets = TileSetService.filterByNames(unfiltered, $scope.selected);
+            satellite.draw(unfiltered);
+        }
+
         $scope.displayTileSet = function ($event, tileSet) {
             $event.preventDefault();
-
             satellite.showTiles(group, tileSet);
-//            delete chartsDisplayed[chart.type];
         }
+
 
         $scope.hideTileSet = function ($event, tileSet) {
             $event.preventDefault();
-
-            //delete chartsDisplayed[chart.type];
-
             satellite.removeTiles(tileSet);
         }
 
@@ -115,26 +118,72 @@ $(function () {
             return satellite.isDisplayed(tileSet);
         }
 
-        $scope.zoom = function ($event, chart) {
+        $scope.isDisplayedClasses = function (tileSet) {
+            if ($scope.isDisplayed(tileSet)) {
+                return "alert alert-success";
+            }
+            return "";
+        }
+
+
+        $scope.zoom = function ($event) {
             $event.preventDefault();
             satellite.zoomToExtent();
         }
 
-
         satellite.select("tileSet", function (tileSetName) {
             if (tileSetName) {
-                $scope.selected = tileSetName;
+                $scope.selected.push(tileSetName);
             } else {
-                $scope.selected = null;
+                $scope.selected = [];
             }
-
+            $scope.tileSets = TileSetService.filterByNames(unfiltered, $scope.selected);
             if (!$scope.$$phase) {
                 $scope.$apply(function () {
                 });
             }
         });
+
+        $scope.$on("$destroy", function () {
+            // remove filter when
+            // 1) selecting another top menu, e.g. Vessel
+            satellite.draw([]);
+
+        });
+
+        SubscriptionService.subscribe({
+            name: "TileSetService.listByType",
+            fn: TileSetService.listByType,
+            params: ["satellite-ice"],
+            success: function (tileSets) {
+                tileSets = TileSetService.addQualifiers(tileSets);
+                tileSets = TileSetService.boundingBoxToPolygon(tileSets);
+                unfiltered = sortTileSets(tileSets);
+                $scope.tileSets = TileSetService.filterByNames(unfiltered, $scope.selected);
+            }
+        });
     }
 
-    module.controller("SatelliteIceController", [ '$scope', 'TileSetService', '$timeout', iceSatelliteController ]);
+    module.controller("SatelliteIceController", [ '$scope', 'TileSetService', 'SubscriptionService', iceSatelliteController ]);
+
+
+    module.controller("SatelliteImageInformationCtrl", [ '$scope', function ($scope) {
+        $scope.provider = {
+            doShow: false,
+            show: function (context) {
+                this.doShow = true;
+            },
+            close: function () {
+                this.doShow = false;
+            }
+        };
+
+        $scope.close = function ($event) {
+            $event.preventDefault();
+            $scope.provider.close();
+        };
+
+        embryo.controllers.satelliteImageInformation = $scope.provider;
+    } ]);
 
 });

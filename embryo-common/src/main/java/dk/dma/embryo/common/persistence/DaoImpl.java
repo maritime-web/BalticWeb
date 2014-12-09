@@ -58,8 +58,24 @@ public abstract class DaoImpl implements Dao {
             // Save new
             em.persist(entity);
         }
+        
         return entity;
     }
+    
+    @Override
+    public <E extends IEntity<?>> E saveEntityWithFlush(E entity) {
+        if (entity.isPersisted()) {
+            // Update existing
+            entity = em.merge(entity);
+        } else {
+            // Save new
+            em.persist(entity);
+        }
+        
+        em.flush();
+        return entity;
+    }
+
 
     public static <T> T getSingleOrNull(List<T> list) {
         return (list == null || list.size() == 0) ? null : list.get(0);
@@ -82,5 +98,9 @@ public abstract class DaoImpl implements Dao {
         Root<E> root = cq.from(entityType);
         cq.select(cb.countDistinct(root));
         return em.createQuery(cq).getSingleResult();
+    }
+    
+    public void flush() {
+    	em.flush();
     }
 }

@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.vessel.component.MaxSpeedExtractor;
+import dk.dma.embryo.vessel.json.client.AisViewServiceNorwegianData;
 import dk.dma.embryo.vessel.json.client.LimitedAisViewService;
 
 @Singleton
@@ -126,14 +127,16 @@ public class MaxSpeedJob {
             DateTime last = DateTime.now(DateTimeZone.UTC).minusDays(7);
             DateTime lastUpdatedLimit = DateTime.now(DateTimeZone.UTC).minusMinutes(updateFrequenceMinutes);
 
-            List<String[]> vesselsInAisCircle = aisDataService.getVesselsInAisCircle();
+            List<AisViewServiceNorwegianData.Vessel> vesselsInAisCircle = aisDataService.getVesselsInAisCircle();
             Set<Long> mmsiNumbers = new HashSet<Long>(1000);
 
             int errorCount = 0;
             int updateCount = 0;
             for (int i = 0; i < vesselsInAisCircle.size() && errorCount < 10; i++) {
-                String[] vessel = vesselsInAisCircle.get(i);
-                Long mmsi = asLong(vessel[6]);
+                
+            	AisViewServiceNorwegianData.Vessel vessel = vesselsInAisCircle.get(i);
+                Long mmsi = vessel.getMmsi();
+                String vesselName = vessel.getName();
                 mmsiNumbers.add(mmsi);
 
                 MaxSpeedRecording rec = oldRecordings.get(mmsi);
@@ -143,19 +146,19 @@ public class MaxSpeedJob {
                         MaxSpeedRecording newRec = new MaxSpeedExtractor().extractMaxSpeed(result);
                         newRecordings.put(mmsi, newRec);
                         updateCount++;
-                        logger.debug("Updated max speed for vessel {}/{}: {}", mmsi, vessel[7], newRec);
+                        logger.debug("Updated max speed for vessel {}/{}: {}", mmsi, vesselName, newRec);
                     } catch (ClientResponseFailure e) {
                         if (e.getResponse() != null && e.getResponse().getStatus() == 400) {
                             newRecordings.put(mmsi, new MaxSpeedRecording(0.0));
                             updateCount++;
                             logger.debug("Failed fetching track for vessel {}/{}: {}. It may be out of AIS circle",
-                                    mmsi, vessel[7], e.getMessage());
+                                    mmsi, vesselName, e.getMessage());
                         } else {
-                            logException(mmsi, vessel[7], e);
+                            logException(mmsi, vesselName, e);
                             errorCount++;
                         }
                     } catch (Exception e) {
-                        logException(mmsi, vessel[7], e);
+                        logException(mmsi, vesselName, e);
                         errorCount++;
                     }
                 } else {
@@ -192,11 +195,6 @@ public class MaxSpeedJob {
             logger.error("MaxSpeedJob failed", e);
             embryoLogService.error("" + e, e);
         }
-    }
-
-    private Long asLong(String value) {
-        return value == null || value.trim().length() == 0 || value.trim().toUpperCase().equals("N/A") ? null : Long
-                .valueOf(value);
     }
 
     public static class MaxSpeedRecording {

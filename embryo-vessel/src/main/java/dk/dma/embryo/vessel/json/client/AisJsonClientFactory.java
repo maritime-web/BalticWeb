@@ -39,7 +39,11 @@ public class AisJsonClientFactory {
     @Property("dk.dma.embryo.restclients.fullAisViewServiceUrl")
     private String fullAisViewServiceUrl;
 
-     @Produces
+    @Inject
+    @Property("dk.dma.embryo.restclients.fullAisViewServiceInclNorwegianDataUrl")
+    private String fullAisViewServiceInclNorwegianDataUrl;
+    
+    @Produces
     public LimitedAisViewService createLimitedAisViewService() {
         return ProxyFactory.create(LimitedAisViewService.class, limitedAisViewServiceUrl);
     }
@@ -47,6 +51,11 @@ public class AisJsonClientFactory {
     @Produces
     public FullAisViewService createFullAisViewService() {
         return ProxyFactory.create(FullAisViewService.class, fullAisViewServiceUrl);
+    }
+    
+    @Produces
+    public AisViewServiceNorwegianData createFullAisViewInclNorwegianDataService() {
+        return ProxyFactory.create(AisViewServiceNorwegianData.class, fullAisViewServiceInclNorwegianDataUrl);
     }
 
     public static String asJson(Object object) {

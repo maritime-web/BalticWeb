@@ -10,6 +10,7 @@
     <class>dk.dma.embryo.user.model.ShoreRole</class>
     <class>dk.dma.embryo.user.model.VesselOwnerRole</class>
     <class>dk.dma.embryo.user.model.AuthorityRole</class>
+    <class>dk.dma.embryo.user.model.SelectionGroup</class>
     <class>dk.dma.embryo.vessel.model.Vessel</class>
     <class>dk.dma.embryo.vessel.model.Voyage</class>
     <class>dk.dma.embryo.vessel.model.Berth</class>

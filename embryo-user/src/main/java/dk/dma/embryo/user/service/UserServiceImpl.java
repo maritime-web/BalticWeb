@@ -28,6 +28,7 @@ import dk.dma.embryo.user.model.ReportingAuthorityRole;
 import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.SelectionGroup;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.persistence.RealmDao;
 import dk.dma.embryo.user.security.SecurityUtil;
@@ -138,4 +139,21 @@ public class UserServiceImpl implements UserService {
         realmDao.saveEntity(user);
     }
 
+	@Override
+	public void updateSelectionGroups(List<SelectionGroup> selectionGroups, String userName) throws FinderException {
+		SecuredUser securedUserCurrent = this.realmDao.findByUsername(userName);
+		if(securedUserCurrent == null) {
+            throw new FinderException("No user for given userName.");
+        }
+		
+		// Important to clear() and NOT nullify <- hibernate do not understand it correctly!
+		securedUserCurrent.getSelectionGroups().clear();
+		SecuredUser userReadyForUpdate = this.realmDao.saveEntityWithFlush(securedUserCurrent);
+		
+		for (SelectionGroup selectionGroup : selectionGroups) {
+			userReadyForUpdate.addSelectionGroup(selectionGroup);
+		}
+		
+		SecuredUser savedUser = this.realmDao.saveEntityWithFlush(userReadyForUpdate);
+	}
 }

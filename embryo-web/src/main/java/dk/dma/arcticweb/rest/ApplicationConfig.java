@@ -28,6 +28,7 @@ import dk.dma.embryo.user.json.AuthenticationService;
 import dk.dma.embryo.user.json.FeedbackRestService;
 import dk.dma.embryo.user.json.ForgotPasswordRestService;
 import dk.dma.embryo.user.json.RequestAccessRestService;
+import dk.dma.embryo.user.json.SelectionGroupRestService;
 import dk.dma.embryo.user.json.UserRestService;
 import dk.dma.embryo.vessel.json.BerthRestService;
 import dk.dma.embryo.vessel.json.RouteRestService;
@@ -37,6 +38,7 @@ import dk.dma.embryo.weather.json.WeatherRestService;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,13 +52,29 @@ public class ApplicationConfig extends Application {
         set.addAll(Arrays.asList(CommonExceptionMappers.getMappers()));
 
         // ADD RS ENDPOINTS
-        set.addAll(Arrays.asList(RouteRestService.class, RouteUploadRestService.class, ShapeFileRestService.class,
-                GreenPosRestService.class, BerthRestService.class, AuthenticationService.class,
-                TestDataRestService.class, IceObservationRestService.class, MsiRestService.class,
-                MetocRestService.class, ArcticWebVesselRestService.class, ScheduleRestService.class,
-                LogEntryRestService.class, UserRestService.class, RequestAccessRestService.class,
-                ForgotPasswordRestService.class, WeatherRestService.class, InshoreIceReportJsonService.class, ForecastRestService.class,
-                FeedbackRestService.class, TileSetJsonService.class));
+        set.addAll(Arrays.asList(
+        		RouteRestService.class, 
+        		RouteUploadRestService.class, 
+        		ShapeFileRestService.class,
+                GreenPosRestService.class, 
+                BerthRestService.class, 
+                AuthenticationService.class,
+                TestDataRestService.class, 
+                IceObservationRestService.class, 
+                MsiRestService.class,
+                MetocRestService.class, 
+                ArcticWebVesselRestService.class, 
+                ScheduleRestService.class,
+                LogEntryRestService.class, 
+                UserRestService.class, 
+                RequestAccessRestService.class,
+                ForgotPasswordRestService.class, 
+                WeatherRestService.class, 
+                InshoreIceReportJsonService.class, 
+                ForecastRestService.class,
+                FeedbackRestService.class, 
+                TileSetJsonService.class,
+                SelectionGroupRestService.class));
 
         return set;
     }

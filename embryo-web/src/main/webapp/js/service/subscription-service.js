@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,21 +19,18 @@
     module.service('SubscriptionService', [
             '$http',
             '$interval',
-            'CookieService',
-            function($http, $interval, CookieService) {
+        function ($http, $interval) {
                 var subscriptions = {};
                 var interval = 2 * 60 * 1000 * 60;
 
                 function notifySubscribers(key, error) {
                     if (subscriptions[key]) {
                         for ( var i in subscriptions[key].callbacks) {
-                            if (subscriptions[key].callbacks[i] && subscriptions[key].callbacks[i].callback) {
-                                if (error) {
-                                    subscriptions[key].callbacks[i].callback(error);
-                                } else {
-                                    if (subscriptions[key].value != null) {
-                                        subscriptions[key].callbacks[i].callback(null, subscriptions[key].value);
-                                    }
+                            if (subscriptions[key].callbacks[i]) {
+                                if (error && subscriptions[key].callbacks[i].error) {
+                                    subscriptions[key].callbacks[i].error(error);
+                                } else if (!error && subscriptions[key].value != null && subscriptions[key].callbacks[i].success) {
+                                    subscriptions[key].callbacks[i].success(subscriptions[key].value);
                                 }
                             }
                         }
@@ -44,9 +41,9 @@
                     var f = function() {
                         var arguments = [];
                         var key = getKey(callbackConfig);
-                        if(callbackConfig.args){
-                            for(var index in callbackConfig.args){
-                                arguments.push(callbackConfig.args[index]);
+                        if (callbackConfig.params) {
+                            for (var index in callbackConfig.params) {
+                                arguments.push(callbackConfig.params[index]);
                             }
                         }
                         arguments.push(function(value){
@@ -56,13 +53,13 @@
                         arguments.push(function(error) {
                             notifySubscribers(key, error);
                         });
-                        callbackConfig.fn.apply(callbackConfig.obj, arguments);
+                        callbackConfig.fn.apply(callbackConfig.fn, arguments);
                     };
                     return f;
                 }
 
                 function getKey(callbackConfig){
-                    return callbackConfig.obj.name + callbackConfig.fn.name;
+                    return callbackConfig.name;
                 }
 
                 service = {
@@ -77,12 +74,13 @@
                             };
                         }
 
-                        for ( var index in subscriptions[key].callbacks) {
+                        var length = subscriptions[key].callbacks.length;
+                        for (var index = 0; index < length; index++) {
                             if (callbackConfig.name === subscriptions[key].callbacks[index].name) {
                                 id = index;
                             }
                         }
-                        if (!id) {
+                        if (!id && id != 0) {
                             id = subscriptions[key].callbacks.push(callbackConfig);
                             if (subscriptions[key].interval == null) {
                                 subscriptions[key].interval = $interval(getLoader(callbackConfig), interval);
@@ -90,10 +88,10 @@
                             }
                         }
                         if (subscriptions[key].value) {
-                            callbackConfig.fn(null, subscriptions[key].value);
+                            callbackConfig.success(subscriptions[key].value);
                         }
 
-                        var subscription = { obj : callbackConfig.obj, fn : callbackConfig.fn, id : id};
+                        var subscription = { name: callbackConfig.name, id: id};
                         return subscription;
                     },
                     unsubscribe : function(unsubscription) {

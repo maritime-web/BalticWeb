@@ -379,5 +379,6 @@
   <include file="liquibase/arcticweb-1.8.xml" />
   <include file="liquibase/arcticweb-1.12.xml" />
   <include file="liquibase/embryo-tiles-1.14.xml"/>
+  <include file="liquibase/arcticweb-2.3.xml"/>
 
 </databaseChangeLog>

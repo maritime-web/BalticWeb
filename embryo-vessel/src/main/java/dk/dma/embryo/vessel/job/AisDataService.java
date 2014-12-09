@@ -18,15 +18,16 @@ import java.util.List;
 import java.util.Map;
 
 import dk.dma.embryo.vessel.job.MaxSpeedJob.MaxSpeedRecording;
+import dk.dma.embryo.vessel.json.client.AisViewServiceNorwegianData;
 
 public interface AisDataService {
-    List<String[]> getVesselsInAisCircle();
+    List<AisViewServiceNorwegianData.Vessel> getVesselsInAisCircle();
 
-    void setVesselsInAisCircle(List<String[]> vesselsInArcticCircle);
+    void setVesselsInAisCircle(List<AisViewServiceNorwegianData.Vessel> vesselsInArcticCircle);
 
-    List<String[]> getVesselsOnMap();
+    List<AisViewServiceNorwegianData.Vessel> getVesselsOnMap();
 
-    void setVesselsOnMap(List<String[]> vesselsInArcticCircle);
+    void setVesselsOnMap(List<AisViewServiceNorwegianData.Vessel> vesselsInArcticCircle);
 
     boolean isWithinAisCircle(double x, double y);
 

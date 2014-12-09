@@ -16,84 +16,114 @@
 function SatelliteLayer() {
     var that = this;
 
+    this.context = {
+        fillOpacity: function (feature) {
+            return feature.attributes.borderOnly ? 0 : 0.1;
+        },
+        strokeColor: function (feature) {
+            return feature.attributes.borderOnly ? "green" : "purple";
+        },
+        strokeOpacity: function (feature) {
+            return feature.attributes.borderOnly ? 0.6 : 0.3;
+        }
+    }
+
     this.init = function () {
+        // z-index 1 used to place boundBoxes below all other vector layers.
+        // The effect is that it is only selectable, when selectableAttribute is having a value.
+        // By not giving selectableAttribute a value when drawing bounding box for a satellite image
+        // we thus ensure that the bounding box is not selectable even though placed in a selectable layer
         this.layers.boundingBoxes = new OpenLayers.Layer.Vector("SatelliteBoundingBoxes", {
-            styleMap: new OpenLayers.StyleMap({
+            styleMap: new OpenLayers.StyleMap({ 
                 "default": new OpenLayers.Style({
-                    fillColor: "green",
-                    fillOpacity: "0.1",
+                    fillColor: "purple",
+                    fillOpacity: "${fillOpacity}",
                     strokeWidth: "1",
-                    strokeColor: "#000000",
-                    strokeOpacity: "0.2",
-                    fontColor: "#000000",
-                    fontSize: "12px",
-                    fontFamily: "Courier New, monospace",
-                    label: "${description}",
-                    fontOpacity: "0.5",
-                    fontWeight: "bold"
+                    strokeColor: "${strokeColor}",
+                    strokeOpacity: "${strokeOpacity}"
                 }, {
                     context: this.context
                 }),
                 "select": new OpenLayers.Style({
                     fillColor: "green",
-                    fillOpacity: "0.5",
+                    fillOpacity: "${fillOpacity}",
                     strokeWidth: "1",
-                    strokeColor: "#000",
-                    strokeOpacity: "1"
+                    strokeColor: "green",
+                    strokeOpacity: "${strokeOpacity}"
                 }, {
                     context: this.context
                 })
-            })
+            }),
+            metadata: {
+                zIndex: 1,
+                selectoverlapping: true
+            },
+            rendererOptions: { zIndexing: true }
         });
 
         this.selectableLayers = [this.layers.boundingBoxes];
-        this.selectableAttribute = "tileSet";
+        this.selectableAttribute = "tileSetName";
     };
 
+    function createTileSetFeature(tileSet, borderOnly) {
+        var points = [];
+        for (var j in tileSet.area) {
+            points.push(embryo.map.createPoint(tileSet.area[j].lon, tileSet.area[j].lat));
+        }
+        var ring = new OpenLayers.Geometry.LinearRing(points);
+        var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([ring]), {
+            borderOnly: borderOnly
+        });
+        return feature;
+    }
 
-    this.draw = function (tileSets) {
+    function drawSatelliteImageBoundingBox() {
+        that.layers.boundingBoxes.removeAllFeatures();
+        that.select(null);
+        if (that.layers && that.layers.satellite) {
+            var tileSet = that.layers.satellite.metadata.tileSet;
+            that.layers.boundingBoxes.addFeatures([createTileSetFeature(tileSet, true)]);
+            // By not adding a value to selectableAttribute we ensure the bounding box is not selectable.
+        }
+    }
+
+    function drawTileSetBoundingBoxes(tileSets) {
         var features = [];
-
         for (var index in tileSets) {
             var tileSet = tileSets[index];
-
-            if (tileSet.extend) {
-
-                var points = [];
-                points.push(embryo.map.createPoint(tileSet.extend.minY, tileSet.extend.minX));
-                points.push(embryo.map.createPoint(tileSet.extend.minY, tileSet.extend.maxX));
-                points.push(embryo.map.createPoint(tileSet.extend.maxY, tileSet.extend.maxX));
-                points.push(embryo.map.createPoint(tileSet.extend.maxY, tileSet.extend.minX));
-//                points.push(embryo.map.createPoint(tileSet.extend.minX, tileSet.extend.minY));
-//                points.push(embryo.map.createPoint(tileSet.extend.minX, tileSet.extend.maxY));
-//                points.push(embryo.map.createPoint(tileSet.extend.maxX, tileSet.extend.maxY));
-//                points.push(embryo.map.createPoint(tileSet.extend.maxX, tileSet.extend.minY));
-                var ring = new OpenLayers.Geometry.LinearRing(points);
-                features.push(new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([ring]), {
-                    tileSet: tileSet.name
-                }));
+            if (tileSet.area) {
+                var feature = createTileSetFeature(tileSet, false);
+                // By adding a value to selectableAttribute we ensure the bounding box IS selectable.
+                feature.attributes.tileSetName = tileSet.name;
+                features.push(feature);
             }
-
         }
-
         that.layers.boundingBoxes.removeAllFeatures();
         that.layers.boundingBoxes.addFeatures(features);
+    }
+
+
+    this.containsFilter = function () {
+        return this.containsFeatures() && this.containsFeature(function (feature) {
+            return !feature.attributes.borderOnly;
+        }, this.layers.boundingBoxes);
+    }
+
+    this.draw = function (tileSets) {
+        // enable multi select if tile set bounding boxes are drawn.
+        // Disable otherwise, because other features must thus be selectable
+        that.map.selectMultiple(tileSets && tileSets.length > 0);
+
+        if (!tileSets || tileSets.length <= 0) {
+            drawSatelliteImageBoundingBox();
+            return;
+        }
+        drawTileSetBoundingBoxes(tileSets);
     };
-
-
-    function transformLongitude(longitude) {
-        var point = that.map.createPoint(longitude, 0);
-        return point.x;
-    }
-
-    function transformLatitude(latitude) {
-        var point = that.map.createPoint(0, latitude);
-        return point.y;
-    }
 
     this.showTiles = function (id, tileSet) {
         if (that.layers && that.layers.satellite) {
-            that.removeTiles(tileSet);
+            that.removeTiles();
         }
 
         var url = tileSet.url;
@@ -103,21 +133,14 @@ function SatelliteLayer() {
             }
             url += "${z}/${x}/${y}.png";
         }
-
-//        var extent = []
-//        extent.push(transformLongitude(tileSet.extend.minX));
-//        extent.push(transformLatitude(tileSet.extend.minY));
-//        extent.push(transformLongitude(tileSet.extend.maxX));
-//        extent.push(transformLatitude(tileSet.extend.maxY));
-//        var myFilter = new OpenLayers.Filter.Spatial({
-//            type: OpenLayers.Filter.Spatial.BBOX,
-//            value: OpenLayers.Bounds(extent)})
-//        var filterStrategy = new OpenLayers.Strategy.Filter({filter: myFilter});
-
         that.layers.satellite = new OpenLayers.Layer.OSM("Satellite", url, {
             layers: 'basic',
             isBaseLayer: false,
-            tileOptions: {crossOriginKeyword: null}
+            tileOptions: {crossOriginKeyword: null},
+            metadata: {
+                zIndex: 0,
+                tileSet: tileSet
+            }
         });
 
         that.map.add({
@@ -125,15 +148,18 @@ function SatelliteLayer() {
             layer: that.layers.satellite,
             select: false
         });
+        drawSatelliteImageBoundingBox();
     }
 
-    this.removeTiles = function (tileSet) {
+    this.removeTiles = function () {
         if (that.layers && that.layers.satellite) {
             that.map.remove({
                 layer: that.layers.satellite
             });
         }
         delete that.layers.satellite;
+
+        drawSatelliteImageBoundingBox();
     }
 
     this.isDisplayed = function (tileSet) {

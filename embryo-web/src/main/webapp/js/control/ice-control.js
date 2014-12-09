@@ -1,4 +1,4 @@
-$(function() {
+$(function() { 
 
     var module = angular.module('embryo.ice.control', [ 'ui.bootstrap.accordion', 'embryo.control',
             'embryo.ice.service', 'embryo.shape' ]);
@@ -94,6 +94,7 @@ $(function() {
     
     function iceController($scope, IceService, $timeout, ShapeService) {
         $scope.selected = {};
+        $scope.satellite = {};
 
         $scope.selectedProvider = {
             key : null

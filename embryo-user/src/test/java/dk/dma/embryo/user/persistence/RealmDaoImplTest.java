@@ -16,11 +16,14 @@ package dk.dma.embryo.user.persistence;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,8 +31,10 @@ import org.junit.Test;
 import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.SelectionGroup;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.model.VesselOwnerRole;
+import dk.dma.embryo.user.persistence.RealmDao;
 
 public class RealmDaoImplTest {
 
@@ -55,7 +60,13 @@ public class RealmDaoImplTest {
         SecuredUser user1 = new SecuredUser("user1", "pw1", null);
         SecuredUser user2 = new SecuredUser("user2", "pw2", null);
         
+        
+        SelectionGroup group1 = new SelectionGroup("Group 1", "", true);
+        SelectionGroup group2 = new SelectionGroup("Group 1", "", true);
         user1.setRole(sailor);
+        user1.addSelectionGroup(group1);
+        user1.addSelectionGroup(group2);
+        
         entityManager.persist(user1);
         entityManager.persist(sailor);
         
@@ -113,5 +124,34 @@ public class RealmDaoImplTest {
         assertEquals("pw2", user2.getHashedPassword());
         assertEquals("Shore", user2.getRole().getLogicalName());
     }
+    
+    @Test
+    public void testFindByUsernameWithSelectionArea() {
+        SecuredUser user = repository.findByUsername("user1");
+        
+        List<SelectionGroup> selectionGroups = user.getSelectionGroups();
+        
+        entityManager.clear();
 
+        assertEquals("user1", user.getUserName());
+        assertEquals("pw1", user.getHashedPassword());
+        Assert.assertTrue(selectionGroups != null && !selectionGroups.isEmpty());
+        Assert.assertTrue(selectionGroups.size() == 2);
+    }
+    
+    @Test
+    public void testFindByUsernameWithSelectionAreaToBeDeleted() {
+        SecuredUser user = repository.findByUsername("user1");
+        
+        List<SelectionGroup> selectionGroups = user.getSelectionGroups();
+        
+        //entityManager.clear();
+        
+        user.setSelectionGroups(null);
+        SecuredUser updatedUser = repository.saveEntity(user);
+
+        assertEquals("user1", updatedUser.getUserName());
+        assertEquals("pw1", updatedUser.getHashedPassword());
+        Assert.assertTrue(updatedUser.getSelectionGroups() == null || updatedUser.getSelectionGroups().isEmpty());
+    }
 }

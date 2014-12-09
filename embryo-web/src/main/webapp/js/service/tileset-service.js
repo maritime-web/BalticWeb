@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,57 @@
                     $http.get(embryo.baseUrl + "rest/tileset/list/" + type, {
                         timeout: embryo.defaultTimeout
                     }).success(onSuccess).error(onError);
+                },
+                addQualifiers: function (tileSets) {
+                    for (var index in tileSets) {
+                        var parts = tileSets[index].name.split("_");
+                        if (parts[2].indexOf("terra") || parts[2].indexOf("aqua")) {
+                            var moreParts = parts[2].split("-");
+                            tileSets[index].timeOfDay = moreParts[1].replace("aqua", "P.M.").replace("terra", "A.M.");
+                            tileSets[index].qualifier = moreParts[2];
+                        }
+                    }
+                    return tileSets;
+                },
+                boundingBoxToPolygon: function (tileSets) {
+                    for (var index in tileSets) {
+                        var bb = tileSets[index].extend;
+                        var polygon = [];
+                        polygon.push({lat: bb.maxX, lon: bb.maxY});
+                        polygon.push({lat: bb.minX, lon: bb.maxY});
+                        polygon.push({lat: bb.minX, lon: bb.minY});
+                        polygon.push({lat: bb.maxX, lon: bb.minY});
+                        tileSets[index].area = polygon;
+                    }
+                    return tileSets;
+                },
+                filterByNames: function (tileSets, names) {
+                    if (!names || names.length == 0) {
+                        return tileSets;
+                    }
+
+                    var tmp = [];
+                    var length = tileSets.length;
+                    for (var index = 0; index < length; index++) {
+                        if (!tileSets[index].name) {
+                            tmp.push(tileSets[index]);
+                        }
+                        else if (names.indexOf(tileSets[index].name) >= 0) {
+                            tmp.push(tileSets[index]);
+                        }
+                    }
+                    var result = [];
+                    length = tmp.length;
+                    for (var index = 0; index < length; index++) {
+                        if (tmp[index].name) {
+                            result.push(tmp[index]);
+                        }
+                        else if (!tmp[index].name && (index + 1) < length && tmp[index + 1].name) {
+                            result.push(tmp[index]);
+                        }
+                    }
+
+                    return result;
                 }
             };
 

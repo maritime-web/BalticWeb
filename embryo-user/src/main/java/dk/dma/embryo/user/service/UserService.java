@@ -19,6 +19,7 @@ import java.util.List;
 import javax.ejb.FinderException;
 
 import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.SelectionGroup;
 
 
 
@@ -36,4 +37,5 @@ public interface UserService {
     
     void changePassword(String uuid, String password) throws FinderException;
     
+    void updateSelectionGroups(List<SelectionGroup> selectionGroups, String userName) throws FinderException;
 }

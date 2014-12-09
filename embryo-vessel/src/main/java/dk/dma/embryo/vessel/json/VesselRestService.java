@@ -38,6 +38,10 @@ import dk.dma.embryo.vessel.job.AisDataService;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
 import dk.dma.embryo.vessel.job.MaxSpeedJob;
 import dk.dma.embryo.vessel.job.MaxSpeedJob.MaxSpeedRecording;
+import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
+import dk.dma.embryo.vessel.job.ShipTypeMapper;
+import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
+import dk.dma.embryo.vessel.json.client.AisViewServiceNorwegianData;
 import dk.dma.embryo.vessel.json.client.FullAisViewService;
 import dk.dma.embryo.vessel.json.client.LimitedAisViewService;
 import dk.dma.embryo.vessel.model.Route;
@@ -76,6 +80,9 @@ public class VesselRestService {
 
     @Inject
     private AisReplicatorJob aisReplicatorJob;
+    
+    @Inject
+    private UserSelectionGroupsFilter userSelectionGroupsFilter;
 
     @GET
     @Path("/historical-track")
@@ -93,60 +100,102 @@ public class VesselRestService {
     @GZIP
     @NoCache
     public List<VesselOverview> list() {
-        List<VesselOverview> result = new ArrayList<>();
+                               
+        List<VesselOverview> aisVessels = this.getAisVessels();
+        Map<Long, VesselOverview> resultAsMap = mapifyResult(aisVessels);
 
-        List<String[]> vessels = aisDataService.getVesselsOnMap();
+        List<VesselOverview> result = new ArrayList<VesselOverview>();
+        if(this.userSelectionGroupsFilter.loggedOnUserHasSelectionGroups()) {
+        	this.filterAisVesselsAgainstSelectionGroups(aisVessels, result);
+        } else {
+        	// Go default
+        	result = aisVessels;
+        }
+        
+        // ArcticWeb vessels from the database are always shown on the map
+        List<Vessel> allArcticWebVessels = vesselDao.getAll(Vessel.class);
+        for (Vessel vesselFromDatabase : allArcticWebVessels) {
+            VesselOverview aisVesselOverview = resultAsMap.get(vesselFromDatabase.getMmsi());
 
-        Map<Long, MaxSpeedRecording> speeds = aisDataService.getMaxSpeeds();
+            if (alsoArcticWebVessel(aisVesselOverview)) {
+                aisVesselOverview.setInAW(true);
+                result.add(aisVesselOverview);
+            } else {
+                VesselOverview arcticWebVesselOnly = createVesselOverview(vesselFromDatabase);
+                result.add(arcticWebVesselOnly);
+            }
+        }
+        
+        return result;
+    }
 
-        for (String[] vessel : vessels) {
+	private void filterAisVesselsAgainstSelectionGroups(List<VesselOverview> aisVessels, List<VesselOverview> result) {
+		
+		for (VesselOverview aisVessel : aisVessels) {
+			if(this.userSelectionGroupsFilter.isVesselInActiveUserSelectionGroups(aisVessel)) {
+				result.add(aisVessel);
+			}
+		}
+	}
 
-            VesselOverview vo = new VesselOverview();
-            Long mmsi = Long.valueOf(vessel[6]);
+	private VesselOverview createVesselOverview(Vessel vesselFromDatabase) {
+		VesselOverview arcticWebVesselOnly = new VesselOverview();
+		arcticWebVesselOnly.setInAW(true);
+		arcticWebVesselOnly.setCallSign(vesselFromDatabase.getAisData().getCallsign());
+		arcticWebVesselOnly.setName(vesselFromDatabase.getAisData().getName());
+		arcticWebVesselOnly.setMmsi(vesselFromDatabase.getMmsi());
+		return arcticWebVesselOnly;
+	}
 
-            vo.setX(Double.parseDouble(vessel[2]));
-            vo.setY(Double.parseDouble(vessel[1]));
-            vo.setAngle(Double.parseDouble(vessel[0]));
-            vo.setMmsi(mmsi);
-            vo.setName(vessel[7]);
-            vo.setCallSign(vessel[8]);
-            vo.setMoored("1".equals(vessel[5]));
-            vo.setType(vessel[4]);
-            vo.setInAW(false);
+	private boolean alsoArcticWebVessel(VesselOverview vesselOverview) {
+		return vesselOverview != null;
+	}
+
+	private Map<Long, VesselOverview> mapifyResult(List<VesselOverview> result) {
+		Map<Long, VesselOverview> resultAsMap = new HashMap<>();
+        for (VesselOverview vo : result) {
+            resultAsMap.put(vo.getMmsi(), vo);
+        }
+		return resultAsMap;
+	}
+
+	private List<VesselOverview> getAisVessels() {
+		
+		List<AisViewServiceNorwegianData.Vessel> vessels = aisDataService.getVesselsOnMap(); 
+		Map<Long, MaxSpeedRecording> speeds = aisDataService.getMaxSpeeds();
+		
+		List<VesselOverview> vesselOverviewsResponse = new ArrayList<VesselOverview>();
+
+//		int antalGrey = 0;
+		for (AisViewServiceNorwegianData.Vessel vessel : vessels) {
+
+            VesselOverview vesselOverview = new VesselOverview();
+            Long mmsi = vessel.getMmsi();
+
+            vesselOverview.setX(vessel.getLon());
+            vesselOverview.setY(vessel.getLat());
+            vesselOverview.setAngle(vessel.getCog() != null ? vessel.getCog() : 0);
+            vesselOverview.setMmsi(mmsi);
+            vesselOverview.setName(vessel.getName());
+            vesselOverview.setCallSign(vessel.getCallsign());
+            vesselOverview.setMoored(vessel.getMoored() != null ? vessel.getMoored() : false);
+            
+            ShipType shipTypeFromSubType = ShipType.getShipTypeFromSubType(vessel.getVesselType());
+            String type = ShipTypeMapper.getInstance().getColor(shipTypeFromSubType).ordinal() + "";
+            vesselOverview.setType(type);
+            
+            vesselOverview.setInAW(false);
 
             // What is vessel[3] seems to be either A or B ?
 
             MaxSpeedRecording speed = speeds.get(mmsi);
-            vo.setMsog(speed != null ? speed.getMaxSpeed() : 0.0);
+            vesselOverview.setMsog(speed != null ? speed.getMaxSpeed() : 0.0);
 
-            result.add(vo);
+            vesselOverviewsResponse.add(vesselOverview);
         }
-
-        Map<Long, VesselOverview> resultAsMap = new HashMap<>();
-
-        for (VesselOverview vo : result) {
-            resultAsMap.put(vo.getMmsi(), vo);
-        }
-
-        List<Vessel> allArcticWebVessels = vesselDao.getAll(Vessel.class);
-
-        for (Vessel v : allArcticWebVessels) {
-            VesselOverview vesselOverview = resultAsMap.get(v.getMmsi());
-
-            if (vesselOverview != null) {
-                vesselOverview.setInAW(true);
-            } else {
-                VesselOverview vo = new VesselOverview();
-                vo.setInAW(true);
-                vo.setCallSign(v.getAisData().getCallsign());
-                vo.setName(v.getAisData().getName());
-                vo.setMmsi(v.getMmsi());
-                result.add(vo);
-            }
-        }
-
-        return result;
-    }
+		
+		return vesselOverviewsResponse;
+	}
 
     @GET
     @Path("/details")

@@ -41,6 +41,8 @@ public interface Dao {
      * @return entity
      */
     <E extends IEntity<?>> E saveEntity(E bean);
+    <E extends IEntity<?>> E saveEntityWithFlush(E bean);
+    
     
     /**
      * General purpose method to retrieve all instance of a entityType
@@ -51,5 +53,7 @@ public interface Dao {
 
 
     <E extends IEntity<?>> Long count(Class<E> entityType);
+    
+    void flush();
 
 }

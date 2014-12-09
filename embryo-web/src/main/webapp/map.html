@@ -76,19 +76,26 @@
         </div>
     </div>
 
+    <div e-location-enabled="ice">
+        <div class="controlContainer e-small-font">
+            <div x-ng-include="'partials/ice-control.html'"></div>
+        </div>
+        <div x-ng-include="'partials/satelliteImageInformation.html'"></div>
+    </div>
+
     <div class="controlContainer e-small-font">
         <div e-location-enabled="msi">
             <div x-ng-include="'partials/msi-control.html'"></div>
         </div>
-
         <div e-location-enabled="weather">
             <div x-ng-include="'partials/weather-control.html'"></div>
         </div>
-        <div e-location-enabled="ice">
-            <div x-ng-include="'partials/ice-control.html'"></div>
-        </div>
         <div e-location-enabled="forecasts">
             <div x-ng-include="'partials/forecast-control.html'"></div>
+        </div>
+
+        <div e-location-enabled="area">
+            <div x-ng-include="'partials/area-control.html'"></div>
         </div>
 
         <div x-ng-include="'partials/switch-base-map.html'"></div>
@@ -152,6 +159,7 @@
 <script src="js/menu.js" type="text/javascript"></script>
 
 <script src="js/service/storage-services.js"></script>
+<script src="js/service/subscription-service.js" type="text/javascript"></script>
 <script src="js/service/route-service.js"></script>
 <script src="js/service/schedule-service.js"></script>
 <script src="js/service/greenpos-service.js"></script>
@@ -161,11 +169,10 @@
 <script src="js/service/msi-service.js" type="text/javascript"></script>
 <script src="js/service/metoc-service.js" type="text/javascript"></script>
 <script src="js/service/weather-service.js" type="text/javascript"></script>
-<<<<<<< HEAD
 <script src="js/service/tileset-service.js" type="text/javascript"></script>
-=======
 <script src="js/service/forecast-service.js" type="text/javascript"></script>
->>>>>>> b2f700898981b571022667fcdf0f599d77cee908
+<script src="js/service/select-area-service.js" type="text/javascript"></script>
+
 
 <script src="js/map.js"></script>
 
@@ -179,6 +186,7 @@
 <script src="js/control/forecast-control.js" type="text/javascript"></script>
 <script src="js/control/ais-information.js"></script>
 <script src="js/control/ice-satellite-control.js"></script>
+<script src="js/control/select-area-control.js"></script>
 
 <script src="js/ext/arc.js"></script>
 <script src="js/layer/vessel-layer.js"></script>
@@ -195,6 +203,7 @@
 <script src="js/layer/metoc-layer.js" type="text/javascript"></script>
 <script src="js/layer/sea-forecast-layer.js" type="text/javascript"></script>
 <script src="js/layer/satellite-image-layer.js" type="text/javascript"></script>
+<script src="js/layer/select-area-layer.js" type="text/javascript"></script>
 
 <script src="js/control/additional-information.js" type="text/javascript"></script>
 

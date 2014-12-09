@@ -104,6 +104,30 @@ function EmbryoLayer() {
 
         for (var l in this.selectableLayers) {
             this.selectableLayers[l].events.on({
+                featureclick: function (e) {
+                    // featureclick enables support for selection of overlapping polygons
+                    // SelectControl on map has to be disabled for this to work
+                    if (e.feature.layer.metadata && e.feature.layer.metadata.selectoverlapping) {
+                        emit(eval("e.feature.attributes." + that.selectableAttribute));
+                        e.feature.layer.drawFeature(
+                            e.feature,
+                            'select'
+                        );
+                    }
+                },
+                nofeatureclick: function (e) {
+                    // nofeatureclick enables support for selection of overlapping polygons
+                    // SelectControl on map has to be disabled for this to work
+                    emit(null);
+                    if (e.layer.metadata && e.layer.metadata.selectoverlapping) {
+                        for (var index in e.layer.features) {
+                            e.layer.drawFeature(
+                                e.layer.features[index],
+                                'default'
+                            );
+                        }
+                    }
+                },
                 featureselected: function (e) {
                     if (e.feature.cluster) {
                         var result = [];
@@ -151,7 +175,33 @@ function EmbryoLayer() {
         for (var i in this.layers)
             this.layers[i].refresh();
     };
-
+    
+    this.activateSelectable = function(){
+    	this.map.activateSelectable();
+    };
+    
+    this.deactivateSelectable = function(){
+    	this.map.deactivateSelectable();
+    };
+    
+    this.activateControls = function(){
+        for(key in this.controls) {
+            var control = this.controls[key];
+            if(!control.active) {
+            	control.activate();
+            }
+        }    	
+    };
+    
+    this.deactivateControls = function(){
+        for(key in this.controls) {
+            var control = this.controls[key];
+            if(control.active) {
+            	control.deactivate();
+            }
+        }    	
+    };
+    
     this.zoomToExtent = function () {
         this.map.zoomToExtent(this.layers);
     };
@@ -225,7 +275,11 @@ function addLayerToMap(id, layer, map) {
             select: select
         });
     }
-
+/*
+	for (var i in layer.controls) {
+        map.internalMap.addControl(layer.controls[i]);
+    }
+  */  
     for (var i in layer.controls) {
         map.add({
             group: id,
