@@ -22,8 +22,8 @@ import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
 
 public interface AisDataService {
    
-    boolean isWithinAisCircle(double x, double y);
-    boolean isAllowed(double x);
+    boolean isWithinAisCircle(double longitude, double latitude);
+    boolean isAllowed(double latitude);
 
     List<AisViewServiceAllAisData.Vessel> getVesselsAllowed();
     void setVesselsAllowed(List<AisViewServiceAllAisData.Vessel> vesselsAllowed);
