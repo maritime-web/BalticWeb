@@ -14,15 +14,14 @@
  */
 package dk.dma.arcticweb.reporting.model;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import dk.dma.arcticweb.reporting.json.model.GreenPos;
 import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
 import dk.dma.embryo.vessel.model.Position;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 /**
  * 
@@ -48,10 +47,9 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     // //////////////////////////////////////////////////////////////////////
     public static GreenPosPositionReport fromJsonModel(GreenPos from) {
         Position pos = new Position(from.getLat(), from.getLon());
-
         GreenPosPositionReport report = new GreenPosPositionReport(from.getVesselName(), from.getMmsi(),
                 from.getCallSign(), pos, from.getWeather(), from.getIce(),
-                from.getSpeed(), from.getCourse());
+                from.getSpeed(), from.getCourse(), from.getMalFunctions());
 
         return report;
     }
@@ -90,7 +88,8 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setCourse(getCourse());
         result.setTs(getTs().toDate());
         result.setRecipient(getRecipient());
-        
+        result.setMalFunctions(getVesselMalFunctions());
+
         return result;
     }
 
@@ -103,16 +102,16 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     }
 
     public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-            String latitude, String longitude, String weather, String iceInformation, Double speed, Integer course) {
-        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude, weather, iceInformation);
+                                  String latitude, String longitude, String weather, String iceInformation, Double speed, Integer course, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude, weather, iceInformation, vesselMalFunctions);
         
         this.speed = speed;
         this.course = course;
     }
 
     public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-            Position position, String weather, String iceInformation, Double speed, Integer course) {
-        super(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation);
+                                  Position position, String weather, String iceInformation, Double speed, Integer course, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation, vesselMalFunctions);
         
         this.speed = speed;
         this.course = course;

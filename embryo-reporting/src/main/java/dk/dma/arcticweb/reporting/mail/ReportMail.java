@@ -53,6 +53,7 @@ public class ReportMail extends Mail<ReportMail> {
         environment.put("ReportTS", reportTsConverter.toString(report.getTs()));
         environment.put("Latitude", report.getPosition().getLatitudeAsString());
         environment.put("Longitude", report.getPosition().getLongitudeAsString());
+        environment.put("MalFunctions", report.getVesselMalFunctions());
 
         template("greenposReport");
 
@@ -71,7 +72,7 @@ public class ReportMail extends Mail<ReportMail> {
             GreenPosSailingPlanReport spReport = (GreenPosSailingPlanReport) report;
             String eta = converter.toString(spReport.getEtaOfArrival());
             ReportedRoute route = spReport.getRoute();
-            
+
             environment.put("RouteDescription", spReport.getRouteDescription());
             environment.put("RouteWayPoints", route == null ? null : route.getWayPointsAsString());
             environment.put("Destination", spReport.getDestination());

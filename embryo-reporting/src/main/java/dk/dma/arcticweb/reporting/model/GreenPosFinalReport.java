@@ -14,14 +14,13 @@
  */
 package dk.dma.arcticweb.reporting.model;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import dk.dma.arcticweb.reporting.json.model.GreenPos;
 import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
 import dk.dma.embryo.vessel.model.Position;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 /**
  * 
@@ -40,7 +39,7 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosFinalReport report = new GreenPosFinalReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), pos, from.getWeather(), from.getIce());
+                from.getCallSign(), pos, from.getWeather(), from.getIce(), from.getMalFunctions());
 
         return report;
     }
@@ -75,7 +74,8 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         result.setIce(getIceInformation());
         result.setTs(getTs().toDate());
         result.setRecipient(getRecipient());
-        
+        result.setMalFunctions(getVesselMalFunctions());
+
         return result;
     }
 
@@ -87,8 +87,8 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
     }
 
     public GreenPosFinalReport(String Name, Long Mmsi, String CallSign,
-            Position position, String weather, String iceInformation) {
-        super(Name, Mmsi, CallSign, position, weather, iceInformation);
+                               Position position, String weather, String iceInformation, String vesselMalFunctions) {
+        super(Name, Mmsi, CallSign, position, weather, iceInformation, vesselMalFunctions);
     }
 
     // //////////////////////////////////////////////////////////////////////

@@ -14,16 +14,15 @@
  */
 package dk.dma.arcticweb.reporting.model;
 
+import dk.dma.arcticweb.reporting.json.model.GreenPos;
+import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
+import dk.dma.embryo.vessel.model.Position;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
-import dk.dma.arcticweb.reporting.json.model.GreenPos;
-import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
-import dk.dma.embryo.vessel.model.Position;
 
 /**
  * Deviation may be reported as either a free form textual description {@link #deviation} or a modified voyage plan
@@ -52,7 +51,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosDeviationReport report = new GreenPosDeviationReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), pos, from.getDescription());
+                from.getCallSign(), pos, from.getDescription(), from.getMalFunctions());
 
         return report;
     }
@@ -85,6 +84,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setDeviation(getDeviation());
         result.setTs(getTs().toDate());
         result.setRecipient(getRecipient());
+        result.setMalFunctions(getVesselMalFunctions());
         return result;
     }
     
@@ -96,8 +96,8 @@ public class GreenPosDeviationReport extends GreenPosReport {
     }
 
     public GreenPosDeviationReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-            Position pos, String deviation) {
-        super(vesselName, vesselMmsi, vesselCallSign, pos);
+                                   Position pos, String deviation, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, pos, vesselMalFunctions);
 
         this.deviation = deviation;
         // this.modifiedPlan = deviatedPlan;

@@ -14,12 +14,11 @@
  */
 package dk.dma.arcticweb.reporting.json.model;
 
-import java.util.Date;
-import java.util.List;
-
+import dk.dma.embryo.vessel.json.Voyage;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import dk.dma.embryo.vessel.json.Voyage;
+import java.util.Date;
+import java.util.List;
 
 public class GreenPos {
 
@@ -47,6 +46,8 @@ public class GreenPos {
 
     private String destination;
 
+    private String malFunctions;
+
     private Integer personsOnBoard;
 
     private Date eta;
@@ -58,7 +59,7 @@ public class GreenPos {
     private String reporter;
 
     private Date ts;
-    
+
     private String[] recipients;
 
     // //////////////////////////////////////////////////////////////////////
@@ -225,8 +226,16 @@ public class GreenPos {
     public String[] getRecipients() {
         return recipients;
     }
-    
+
     public void setRecipients(String[] receipients) {
         this.recipients = receipients;
+    }
+
+    public String getMalFunctions() {
+        return malFunctions;
+    }
+
+    public void setMalFunctions(String malFunctions) {
+        this.malFunctions = malFunctions;
     }
 }

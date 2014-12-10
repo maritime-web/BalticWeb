@@ -14,9 +14,9 @@
  */
 package dk.dma.arcticweb.reporting.json.model;
 
-import java.util.Date;
-
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import java.util.Date;
 
 public class GreenPosShort {
 
@@ -47,6 +47,8 @@ public class GreenPosShort {
     private Date ts;
     
     private String recipient;
+
+    private String malFunctions;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -176,5 +178,13 @@ public class GreenPosShort {
     
     public void setRecipient(String recipient) {
         this.recipient = recipient;
+    }
+
+    public String getMalFunctions() {
+        return malFunctions;
+    }
+
+    public void setMalFunctions(String malFunctions) {
+        this.malFunctions = malFunctions;
     }
 }
