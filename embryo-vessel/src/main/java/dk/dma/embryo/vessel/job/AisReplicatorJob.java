@@ -14,10 +14,13 @@
  */
 package dk.dma.embryo.vessel.job;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
+import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.persistence.VesselDao;
+import org.apache.commons.lang.ObjectUtils;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -28,15 +31,10 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
-
-import org.apache.commons.lang.ObjectUtils;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
-import dk.dma.embryo.vessel.model.Vessel;
-import dk.dma.embryo.vessel.persistence.VesselDao;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 @Startup
@@ -91,7 +89,7 @@ public class AisReplicatorJob {
                 logger.info("no value for embryo.vessel.aisjob.initialExecution, skipping initial execution");
             }
 
-            // Replite AIS data on confired interval
+            // Replicate AIS data on confired interval
             TimerConfig config = new TimerConfig(null, false);
             service.createCalendarTimer(cron, config);
         } else {
@@ -115,7 +113,6 @@ public class AisReplicatorJob {
             List<Vessel> articWebVesselsAsList = vesselRepository.getAll(Vessel.class);
 
             logger.debug("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
-            //System.out.println("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
 
             Map<Long, Vessel> awVesselsAsMap = this.updateArcticWebVesselInDatabase(aisServerAllVessels, articWebVesselsAsList);
 
@@ -165,10 +162,6 @@ public class AisReplicatorJob {
             logger.debug("Vessels in AIS circle: " + vesselsInAisCircle.size());
             logger.debug("Vessels on Map : " + vesselsOnMap.size());
             logger.debug("Vessels allowed : " + vesselsAllowed.size());
-            
-            //System.out.println("Vessels in AIS circle: " + vesselsInAisCircle.size());
-            //System.out.println("Vessels on Map : " + vesselsOnMap.size());
-            //System.out.println("Vessels allowed : " + vesselsAllowed.size());
             
             aisDataService.setVesselsAllowed(vesselsAllowed);
             aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
