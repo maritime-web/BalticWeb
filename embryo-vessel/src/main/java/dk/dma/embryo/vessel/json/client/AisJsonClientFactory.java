@@ -54,8 +54,8 @@ public class AisJsonClientFactory {
     }
     
     @Produces
-    public AisViewServiceNorwegianData createFullAisViewInclNorwegianDataService() {
-        return ProxyFactory.create(AisViewServiceNorwegianData.class, fullAisViewServiceInclNorwegianDataUrl);
+    public AisViewServiceAllAisData createFullAisViewInclNorwegianDataService() {
+        return ProxyFactory.create(AisViewServiceAllAisData.class, fullAisViewServiceInclNorwegianDataUrl);
     }
 
     public static String asJson(Object object) {
