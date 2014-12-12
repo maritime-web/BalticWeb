@@ -1,0 +1,35 @@
+<!--
+  ~ Copyright (c) 2011 Danish Maritime Authority.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div x-ng-controller="SatelliteImageInformationCtrl">
+    <div e-reporting-panel x-ng-if="provider.doShow" id="satelliteImageInformation">
+        <h2>
+            <a class="close" href="#" style="float: right" x-ng-click="close($event)">&times;</a> Satellite images
+        </h2>
+
+        <p>
+            All satellite images cover an area of the Arctic region. The area is revealed by their names (e.g. r01c01).
+            Satellites are not always able to obtain image data for the desired area and the satellite images may as a
+            consequence become smaller than the area or show no image at all.
+        </p>
+
+        <p>
+            Satellite images are served as image tiles. A new set of image tiles may be fetched for each zoom level.
+            The downloaded amount of image tiles and thus internet connection usage therefore depends on the map usage
+            (zooming and panning), while the satellite
+            image is displayed.
+        </p>
+    </div>
+</div>
