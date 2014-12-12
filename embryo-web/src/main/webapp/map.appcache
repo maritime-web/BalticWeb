@@ -40,6 +40,7 @@ partials/forecast-control.html
 partials/ice-satellite-control.html
 partials/settings.html
 partials/weather-control.html
+partials/satelliteImageInformation.html
 rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2
 img/load.gif
 img/vessel_blue.png
