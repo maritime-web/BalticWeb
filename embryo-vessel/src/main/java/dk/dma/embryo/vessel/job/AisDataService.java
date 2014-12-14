@@ -24,7 +24,8 @@ public interface AisDataService {
    
     boolean isWithinAisCircle(double longitude, double latitude);
     boolean isAllowed(double latitude);
-
+    AisViewServiceAllAisData.Vessel getAisVesselByMmsi(Long mmsi);
+    
     List<AisViewServiceAllAisData.Vessel> getVesselsAllowed();
     void setVesselsAllowed(List<AisViewServiceAllAisData.Vessel> vesselsAllowed);
     

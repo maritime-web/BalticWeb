@@ -18,6 +18,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
+
 /**
  * 
  * @author Jesper Tejlgaard
@@ -47,6 +49,8 @@ public class VesselDetails {
     
 //    private Map<String, Object> reporting;
     
+    private AisViewServiceAllAisData.Vessel aisVessel;
+    
     private Map<String, Object> ais;
 
     // //////////////////////////////////////////////////////////////////////
@@ -71,7 +75,6 @@ public class VesselDetails {
     public Long getMmsi() {
         return mmsi;
     }
-
     public void setMmsi(Long vesselMmsi) {
         this.mmsi = vesselMmsi;
     }
@@ -79,7 +82,6 @@ public class VesselDetails {
     public String getMaritimeId() {
         return maritimeId;
     }
-
     public void setMaritimeId(String vesselMaritimeId) {
         this.maritimeId = vesselMaritimeId;
     }
@@ -88,30 +90,20 @@ public class VesselDetails {
     public String getCommCapabilities() {
         return commCapabilities;
     }
-
     public void setCommCapabilities(String commCapabilities) {
         this.commCapabilities = commCapabilities;
     }
 
-
     public Float getMaxSpeed() {
         return maxSpeed;
     }
-
     public void setMaxSpeed(Float maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
-    /**
-     * @return gross tonnage
-     */
     public Integer getGrossTon() {
         return grossTon;
     }
-
-    /**
-     * Set gross tonnage
-     */
     public void setGrossTon(Integer tonnage) {
         this.grossTon = tonnage;
     }
@@ -119,7 +111,6 @@ public class VesselDetails {
     public String getIceClass() {
         return iceClass;
     }
-
     public void setIceClass(String iceClass) {
         this.iceClass = iceClass;
     }
@@ -127,7 +118,6 @@ public class VesselDetails {
     public Boolean getHelipad() {
         return helipad;
     }
-
     public void setHelipad(Boolean helipad) {
         this.helipad = helipad;
     }
@@ -135,7 +125,6 @@ public class VesselDetails {
     public Integer getMaxPersons() {
         return maxPersons;
     }
-
     public void setMaxPersons(Integer maxPersons) {
         this.maxPersons = maxPersons;
     }
@@ -143,7 +132,6 @@ public class VesselDetails {
     public Map<String, Object> getAdditionalInformation() {
         return additionalInformation;
     }
-
     public void setAdditionalInformation(Map<String, Object> additionalInformation) {
         this.additionalInformation = additionalInformation;
     }
@@ -151,9 +139,15 @@ public class VesselDetails {
     public Map<String, Object> getAis() {
         return ais;
     }
-
     public void setAis(Map<String, Object> ais) {
         this.ais = ais;
+    }
+
+    public AisViewServiceAllAisData.Vessel getAisVessel() {
+        return aisVessel;
+    }
+    public void setAisVessel(AisViewServiceAllAisData.Vessel aisVessel) {
+        this.aisVessel = aisVessel;
     }
 
 //    public Map<String, Object> getReporting() {

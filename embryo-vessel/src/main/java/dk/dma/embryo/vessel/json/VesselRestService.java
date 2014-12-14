@@ -33,7 +33,8 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.common.util.ParseUtils;
+import com.google.common.collect.Collections2;
+
 import dk.dma.embryo.vessel.job.AisDataService;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
 import dk.dma.embryo.vessel.job.MaxSpeedJob;
@@ -42,7 +43,6 @@ import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
 import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
-import dk.dma.embryo.vessel.json.client.FullAisViewService;
 import dk.dma.embryo.vessel.json.client.LimitedAisViewService;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
@@ -57,9 +57,10 @@ public class VesselRestService {
     @Inject
     private LimitedAisViewService limitedAisViewService;
 
+    /*
     @Inject
     private FullAisViewService fullAisViewService;
-
+*/
     @Inject
     private AisDataService aisDataService;
 
@@ -106,7 +107,7 @@ public class VesselRestService {
 
         List<VesselOverview> result = new ArrayList<VesselOverview>();
         if(this.userSelectionGroupsFilter.loggedOnUserHasSelectionGroups()) {
-            this.filterAisVesselsAgainstSelectionGroups(allAllowedAisVesselsAsDTO, result);
+            result.addAll(Collections2.filter(allAllowedAisVesselsAsDTO, userSelectionGroupsFilter));
         } else {
             // Go default
             result = this.mapAisVessels(aisDataService.getVesselsOnMap());
@@ -125,15 +126,6 @@ public class VesselRestService {
             }
         }
         return result;
-    }
-
-    private void filterAisVesselsAgainstSelectionGroups(List<VesselOverview> allAllowedAisVessels, List<VesselOverview> result) {
-
-        for (VesselOverview aisVessel : allAllowedAisVessels) {
-            if(this.userSelectionGroupsFilter.isVesselInActiveUserSelectionGroups(aisVessel)) {
-                result.add(aisVessel);
-            }
-        }
     }
 
     private VesselOverview createVesselOverview(Vessel vesselFromDatabase) {
@@ -194,45 +186,6 @@ public class VesselRestService {
 
         return vesselOverviewsResponse;
     }
-    /*
-    private List<VesselOverview> getAisVessels() {
-
-        List<AisViewServiceAllAisData.Vessel> vessels = aisDataService.getVesselsOnMap(); 
-        Map<Long, MaxSpeedRecording> speeds = aisDataService.getMaxSpeeds();
-
-        List<VesselOverview> vesselOverviewsResponse = new ArrayList<VesselOverview>();
-
-        //int antalGrey = 0;
-        for (AisViewServiceAllAisData.Vessel vessel : vessels) {
-
-            VesselOverview vesselOverview = new VesselOverview();
-            Long mmsi = vessel.getMmsi();
-
-            vesselOverview.setX(vessel.getLon());
-            vesselOverview.setY(vessel.getLat());
-            vesselOverview.setAngle(vessel.getCog() != null ? vessel.getCog() : 0);
-            vesselOverview.setMmsi(mmsi);
-            vesselOverview.setName(vessel.getName());
-            vesselOverview.setCallSign(vessel.getCallsign());
-            vesselOverview.setMoored(vessel.getMoored() != null ? vessel.getMoored() : false);
-
-            ShipType shipTypeFromSubType = ShipType.getShipTypeFromSubType(vessel.getVesselType());
-            String type = ShipTypeMapper.getInstance().getColor(shipTypeFromSubType).ordinal() + "";
-            vesselOverview.setType(type);
-
-            vesselOverview.setInAW(false);
-
-            // What is vessel[3] seems to be either A or B ?
-
-            MaxSpeedRecording speed = speeds.get(mmsi);
-            vesselOverview.setMsog(speed != null ? speed.getMaxSpeed() : 0.0);
-
-            vesselOverviewsResponse.add(vesselOverview);
-        }
-
-        return vesselOverviewsResponse;
-    }
-    */
     
     @GET
     @Path("/details")
@@ -244,12 +197,113 @@ public class VesselRestService {
         logger.debug("details({})", mmsi);
 
         try {
+            dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel aisVessel = this.aisDataService.getAisVesselByMmsi(mmsi);
+//            Map<String, Object> result = fullAisViewService.vesselTargetDetails(mmsi, 0);
+
+            boolean historicalTrack = false;
+            Double lat = aisVessel.getLat();
+            Double lon = aisVessel.getLon();
+            // EMBRYO-135: avoid NullPointer when lat/lon not present in AIS data
+            
+            if (lat != null && lon != null) {
+//                historicalTrack = aisDataService.isWithinAisCircle(lon, lat);
+                historicalTrack = aisDataService.isAllowed(lat);
+            }
+
+            VesselDetails details;
+            Vessel vessel = vesselService.getVessel(mmsi);
+            List<Voyage> schedule = null;
+            Route route = null;
+
+            if (vessel != null) {
+                route = scheduleService.getActiveRoute(mmsi);
+                details = vessel.toJsonModel();
+                schedule = scheduleService.getSchedule(mmsi);
+                details.setAisVessel(aisVessel);
+                //details.getAis().putAll(result);
+            } else {
+                details = new VesselDetails();
+                details.setAisVessel(aisVessel);
+                //details.setAis(result);
+            }
+
+            // Map<String, Object> reporting = new HashMap<>();
+            // details.setReporting(reporting);
+
+            Map<String, Object> additionalInformation = new HashMap<>();
+            additionalInformation.put("historicalTrack", historicalTrack);
+            additionalInformation.put("routeId", route != null ? route.getEnavId() : null);
+            additionalInformation.put("schedule", schedule != null && schedule.size() > 0);
+
+            details.setAdditionalInformation(additionalInformation);
+
+            return details;
+
+        } catch (Throwable t) {
+            logger.info("Ignoring exception " + t, t);
+
+            // fallback on database only
+
+            Vessel vessel = vesselService.getVessel(mmsi);
+
+            if (vessel != null) {
+                VesselDetails details;
+                Route route = scheduleService.getActiveRoute(mmsi);
+                List<Voyage> schedule = scheduleService.getSchedule(mmsi);
+
+                details = vessel.toJsonModel();
+
+                AisViewServiceAllAisData.Vessel aisVessel = new AisViewServiceAllAisData.Vessel();
+                aisVessel.setCallsign(vessel.getAisData().getCallsign());
+                aisVessel.setImoNo(vessel.getAisData().getImoNo());
+                aisVessel.setMmsi(vessel.getMmsi());
+                aisVessel.setName(vessel.getAisData().getName());
+                
+//                details.getAis().put("callsign", vessel.getAisData().getCallsign());
+//                details.getAis().put("imoNo", "" + vessel.getAisData().getImoNo());
+//                details.getAis().put("mmsi", "" + vessel.getMmsi());
+//                details.getAis().put("name", "" + vessel.getAisData().getName());
+
+                Map<String, Object> additionalInformation = new HashMap<>();
+                additionalInformation.put("routeId", route != null ? route.getEnavId() : null);
+                additionalInformation.put("historicalTrack", false);
+                additionalInformation.put("schedule", schedule != null && schedule.size() > 0);
+                details.setAdditionalInformation(additionalInformation);
+
+                return details;
+            } else {
+                throw new RuntimeException("No vessel details available for " + mmsi + " caused by " + t);
+            }
+        }
+    }
+    /*
+    @GET
+    @Path("/details")
+    @Produces("application/json")
+    @GZIP
+    @NoCache
+    @Details
+    public VesselDetails details(@QueryParam("mmsi") long mmsi) {
+        logger.debug("details({})", mmsi);
+
+        // New service
+        dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel aisVessel = this.aisDataService.getAisVesselByMmsi(mmsi);
+        
+        boolean historicalTrack2 = false;
+        Double lat2 = aisVessel.getLat();
+        Double lon2 = aisVessel.getLon();
+        
+        
+        try {
             Map<String, Object> result = fullAisViewService.vesselTargetDetails(mmsi, 0);
 
             boolean historicalTrack = false;
             String lat = (String) result.get("lat");
             String lon = (String) result.get("lon");
             // EMBRYO-135: avoid NullPointer when lat/lon not present in AIS data
+            
+            logger.info("details latitude -> " + lat);
+            logger.info("details longitude -> " + lon);
             if (lat != null && lon != null) {
                 historicalTrack = aisDataService.isWithinAisCircle(ParseUtils.parseLongitude(lon),
                         ParseUtils.parseLatitude(lat));
@@ -313,7 +367,7 @@ public class VesselRestService {
             }
         }
     }
-
+*/
     @POST
     @Path("/save-details")
     @Consumes("application/json")

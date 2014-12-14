@@ -16,12 +16,14 @@ package dk.dma.embryo.vessel.job.filter;
 
 import java.io.Serializable;
 
+import com.google.common.base.Predicate;
+
 import dk.dma.embryo.vessel.json.VesselOverview;
 
 
-public interface UserSelectionGroupsFilter extends Serializable {
+public interface UserSelectionGroupsFilter extends Serializable, Predicate<VesselOverview> {
 
-    boolean isVesselInActiveUserSelectionGroups(VesselOverview vessel);
+    boolean apply(VesselOverview vessel);
 
     boolean loggedOnUserHasSelectionGroups();
 }

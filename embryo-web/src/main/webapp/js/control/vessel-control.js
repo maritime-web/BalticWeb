@@ -185,9 +185,23 @@ $(function() {
     };
 
     function vesselAis(data) {
-        if (!data.ais) {
+        if (!data.aisVessel) {
             return null;
         }
+        return embryo.vessel.aisToArray({
+            "MMSI" : data.aisVessel.mmsi,
+            "Class" : data.aisVessel["class"],
+            "Call Sign" : data.aisVessel.callsign,
+            "Vessel Type" : data.aisVessel.vesselType,
+            "Cargo" : data.aisVessel.cargo != "N/A" && data.aisVessel.cargo != "Undefined" ? data.aisVessel.cargo : null,
+            "Country" : data.aisVessel.country,
+            "SOG" : data.aisVessel.sog,
+            "COG" : data.aisVessel.cog,
+            "Destination" : data.aisVessel.destination,
+            "Nav Status" : data.aisVessel.navStatus,
+            "ETA" : data.aisVessel.eta
+        });
+        /*
         return embryo.vessel.aisToArray({
             "MMSI" : data.ais.mmsi,
             "Class" : data.ais["class"],
@@ -201,6 +215,7 @@ $(function() {
             "Nav Status" : data.ais.navStatus,
             "ETA" : data.ais.eta
         });
+        */
     }
 
     var awNameSequence = [ "Vessel Information", "Schedule", "Route", "Reports" ];

@@ -63,6 +63,19 @@ public class AisDataServiceImpl implements AisDataService {
         return latitude > aisDataLimitLatitude;
     }
     
+    public AisViewServiceAllAisData.Vessel getAisVesselByMmsi(Long mmsi) {
+        
+        if(this.vesselsAllowed != null && !this.vesselsAllowed.isEmpty()) {
+            for (AisViewServiceAllAisData.Vessel aisVessel : this.vesselsAllowed) {
+                if(aisVessel.getMmsi().longValue() == mmsi.longValue()) {
+                    return aisVessel;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
     public List<AisViewServiceAllAisData.Vessel> getVesselsAllowed() {
         return new ArrayList<>(vesselsAllowed);
     }
