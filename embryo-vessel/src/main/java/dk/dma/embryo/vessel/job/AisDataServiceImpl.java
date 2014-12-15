@@ -37,8 +37,8 @@ public class AisDataServiceImpl implements AisDataService {
     private Map<Long, MaxSpeedRecording> maxSpeeds =  new HashMap<>();
 
     @Inject
-    @Property("embryo.aisDataLimit.longitude")
-    private double aisDataLimitLongitude;
+    @Property("embryo.aisDataLimit.latitude")
+    private double aisDataLimitLatitude;
     
     @Inject
     @Property("embryo.aisCircle.default.latitude")
@@ -52,15 +52,28 @@ public class AisDataServiceImpl implements AisDataService {
     @Property("embryo.aisCircle.default.radius")
     private double aisCircleRadius;
 
-    public boolean isWithinAisCircle(double x, double y) {
+    public boolean isWithinAisCircle(double longitude, double latitude) {
         return 
-                Position.create(y, x).distanceTo(
+                Position.create(latitude, longitude).distanceTo(
                         Position.create(aisCircleLatitude, aisCircleLongitude), 
                         CoordinateSystem.GEODETIC) < aisCircleRadius;
     }
     
-    public boolean isAllowed(double x) {
-        return x < aisDataLimitLongitude;
+    public boolean isAllowed(double latitude) {
+        return latitude > aisDataLimitLatitude;
+    }
+    
+    public AisViewServiceAllAisData.Vessel getAisVesselByMmsi(Long mmsi) {
+        
+        if(this.vesselsAllowed != null && !this.vesselsAllowed.isEmpty()) {
+            for (AisViewServiceAllAisData.Vessel aisVessel : this.vesselsAllowed) {
+                if(aisVessel.getMmsi().longValue() == mmsi.longValue()) {
+                    return aisVessel;
+                }
+            }
+        }
+        
+        return null;
     }
     
     public List<AisViewServiceAllAisData.Vessel> getVesselsAllowed() {
