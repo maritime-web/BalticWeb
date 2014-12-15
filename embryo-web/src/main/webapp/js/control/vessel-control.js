@@ -188,6 +188,7 @@ $(function() {
         if (!data.aisVessel) {
             return null;
         }
+
         return embryo.vessel.aisToArray({
             "MMSI" : data.aisVessel.mmsi,
             "Class" : data.aisVessel["class"],
@@ -201,21 +202,6 @@ $(function() {
             "Nav Status" : data.aisVessel.navStatus,
             "ETA" : data.aisVessel.eta
         });
-        /*
-        return embryo.vessel.aisToArray({
-            "MMSI" : data.ais.mmsi,
-            "Class" : data.ais["class"],
-            "Call Sign" : data.ais.callsign,
-            "Vessel Type" : data.ais.vesselType,
-            "Cargo" : data.ais.cargo != "N/A" && data.ais.cargo != "Undefined" ? data.ais.cargo : null,
-            "Country" : data.ais.country,
-            "SOG" : data.ais.sog,
-            "COG" : data.ais.cog,
-            "Destination" : data.ais.destination,
-            "Nav Status" : data.ais.navStatus,
-            "ETA" : data.ais.eta
-        });
-        */
     }
 
     var awNameSequence = [ "Vessel Information", "Schedule", "Route", "Reports" ];
@@ -302,7 +288,7 @@ $(function() {
                 $scope.viewAis = function($event) {
                     $event.preventDefault();
                     VesselInformation.hideAll();
-                    embryo.controllers.ais.show($scope.selected.vesselDetails.ais);
+                    embryo.controllers.ais.show($scope.selected.vesselDetails.aisVessel);
                 };
 
                 $scope.$watch('selected.vesselOverview', function(newValue, oldValue) {
