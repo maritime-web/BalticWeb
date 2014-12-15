@@ -28,6 +28,8 @@ public class GreenPosShort {
 
     private String lon;
 
+    private Integer number;
+
     private String weather;
 
     private String ice;
@@ -45,7 +47,7 @@ public class GreenPosShort {
     private String deviation;
 
     private Date ts;
-    
+
     private String recipient;
 
     private String malFunctions;
@@ -82,6 +84,14 @@ public class GreenPosShort {
 
     public void setLon(String longitude) {
         this.lon = longitude;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public String getType() {
@@ -171,11 +181,11 @@ public class GreenPosShort {
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public String getRecipient() {
         return recipient;
     }
-    
+
     public void setRecipient(String recipient) {
         this.recipient = recipient;
     }

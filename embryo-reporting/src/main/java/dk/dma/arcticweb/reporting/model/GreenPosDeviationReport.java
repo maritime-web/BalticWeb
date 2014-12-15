@@ -27,10 +27,10 @@ import javax.persistence.OneToOne;
 /**
  * Deviation may be reported as either a free form textual description {@link #deviation} or a modified voyage plan
  * or a combination of both.
- * 
+ * <p/>
  * The system is expected to insert a modified voyage plan if it exists. The textual description is filled in by either
  * vessel or authorities (Arctic Command).
- * 
+ *
  * @author Jesper Tejlgaard
  */
 @Entity
@@ -41,9 +41,9 @@ public class GreenPosDeviationReport extends GreenPosReport {
 
     private String deviation;
 
-    @OneToOne(cascade=CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private ReportedRoute route;
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosDeviationReport report = new GreenPosDeviationReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), pos, from.getDescription(), from.getMalFunctions());
+                from.getCallSign(), pos, from.getNumber(), from.getDescription(), from.getMalFunctions());
 
         return report;
     }
@@ -66,11 +66,12 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitude());
         result.setLat(getPosition().getLatitude());
+        result.setNumber(getNumber());
         result.setDescription(getDeviation());
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
         result.setRecipients(new String[]{getRecipient()});
-        
+
         return result;
     }
 
@@ -81,13 +82,14 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setType(getReportType());
         result.setLon(getPosition().getLongitudeAsString());
         result.setLat(getPosition().getLatitudeAsString());
+        result.setNumber(getNumber());
         result.setDeviation(getDeviation());
         result.setTs(getTs().toDate());
         result.setRecipient(getRecipient());
         result.setMalFunctions(getVesselMalFunctions());
         return result;
     }
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
@@ -96,8 +98,8 @@ public class GreenPosDeviationReport extends GreenPosReport {
     }
 
     public GreenPosDeviationReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-                                   Position pos, String deviation, String vesselMalFunctions) {
-        super(vesselName, vesselMmsi, vesselCallSign, pos, vesselMalFunctions);
+                                   Position pos, Integer number, String deviation, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, pos, number, vesselMalFunctions);
 
         this.deviation = deviation;
         // this.modifiedPlan = deviatedPlan;
@@ -121,5 +123,5 @@ public class GreenPosDeviationReport extends GreenPosReport {
 
     public void setRoute(ReportedRoute route) {
         this.route = route;
-    }    
+    }
 }

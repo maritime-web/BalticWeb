@@ -1,7 +1,7 @@
 <div class="row-fluid" x-ng-controller="embryo.GreenPosCtrl">
 <div e-reporting-panel id="greenposReportPanel" x-ng-if="provider.doShow">
 <h2>
-    <a class="close" href="#" style="float: right" x-ng-click="close($event)">&times;</a> Ship Report
+    <a class="close" href="#" style="float: right" x-ng-click="close($event, greenPosForm)">&times;</a> Ship Report
 </h2>
 
 <form id="greenPosForm" name="greenPosForm" class="form-horizontal" novalidate>
@@ -80,6 +80,16 @@
 
 -->
 
+    <div class="control-group form-group row">
+        <label class="e-control-label" for="gpNumber">Number</label>
+
+        <div class="controls col-xs-4">
+            <input id="gpNumber" name="gpNumber" type="number" class="input-sm form-control"
+                   x-ng-model="report.number"/> <span
+                x-ng-show="!!nextNumber && !!nextNumber.number && !!nextNumber.uncertainty && !greenPosForm.gpNumber.$dirty"
+                class="msg-invalid">Please verify that value is correct</span>
+        </div>
+    </div>
     <div class="control-group form-group row" x-ng-show="isVisible('destination')">
         <label class="e-control-label" for="gpDestination">Destination</label>
 
@@ -232,7 +242,7 @@
 
 <div class="row">
 				<span class="pull-right">
-					<button type="button" class="btn btn-sm" x-ng-click="reset()">Reset</button> &nbsp;
+					<button type="button" class="btn btn-sm" x-ng-click="reset(greenPosForm)">Reset</button> &nbsp;
 					<button type="button" x-ng-click="sendReport()"
                             x-ng-disabled="greenPosForm.$invalid || !(report.coastalcontrol || report.greenpos)"
                             class="btn btn-primary btn-sm">Send

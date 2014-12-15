@@ -70,6 +70,8 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     @NotNull
     private String recipient;
 
+    private Integer number;
+
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @NotNull
     private DateTime ts;
@@ -151,17 +153,18 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         this.enavId = UUID.randomUUID().toString();
     }
 
-    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String latitude, String longitude, String vesselMalFunctions) {
-        this(vesselName, vesselMmsi, vesselCallSign, new Position(latitude, longitude), vesselMalFunctions);
+    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String latitude, String longitude, Integer number, String vesselMalFunctions) {
+        this(vesselName, vesselMmsi, vesselCallSign, new Position(latitude, longitude), number, vesselMalFunctions);
     }
 
-    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, Position position, String vesselMalFunctions) {
+    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, Position position, Integer number, String vesselMalFunctions) {
         this();
         this.vesselName = vesselName;
         this.vesselMmsi = vesselMmsi;
         this.vesselCallSign = vesselCallSign;
         this.position = position;
         this.vesselMalFunctions = vesselMalFunctions;
+        this.number = number;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -225,5 +228,13 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
 
     public void setVesselMalFunctions(String vesselMalFunctions) {
         this.vesselMalFunctions = vesselMalFunctions;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 }

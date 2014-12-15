@@ -125,7 +125,7 @@ public class GreenPosServiceImplTest {
         DateTime datetime = DateTime.now(DateTimeZone.UTC);
 
         GreenPosSailingPlanReport spReport = new GreenPosSailingPlanReport("MyShip", 0L, "AA", new Position(
-                "64 10.400N", "051 43.500W"), "Weather", "Ice", 12.0, 343, "Nuuk", datetime, 12,
+                "64 10.400N", "051 43.500W"), 1, "Weather", "Ice", 12.0, 343, "Nuuk", datetime, 12,
                 "Route with no particular good description", null);
 
         entityManager.getTransaction().begin();

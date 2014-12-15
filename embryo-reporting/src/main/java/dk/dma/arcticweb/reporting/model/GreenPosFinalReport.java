@@ -23,7 +23,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 /**
- * 
  * @author Jesper Tejlgaard
  */
 @Entity
@@ -39,11 +38,11 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosFinalReport report = new GreenPosFinalReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), pos, from.getWeather(), from.getIce(), from.getMalFunctions());
+                from.getCallSign(), pos, from.getNumber(), from.getWeather(), from.getIce(), from.getMalFunctions());
 
         return report;
     }
-    
+
     @Override
     public GreenPos toJsonModel() {
         GreenPos result = new GreenPos();
@@ -54,12 +53,13 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitude());
         result.setLat(getPosition().getLatitude());
+        result.setNumber(getNumber());
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
         result.setRecipients(new String[]{getRecipient()});
-        
+
         return result;
     }
 
@@ -70,6 +70,7 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         result.setType(getReportType());
         result.setLon(getPosition().getLongitudeAsString());
         result.setLat(getPosition().getLatitudeAsString());
+        result.setNumber(getNumber());
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
         result.setTs(getTs().toDate());
@@ -87,8 +88,8 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
     }
 
     public GreenPosFinalReport(String Name, Long Mmsi, String CallSign,
-                               Position position, String weather, String iceInformation, String vesselMalFunctions) {
-        super(Name, Mmsi, CallSign, position, weather, iceInformation, vesselMalFunctions);
+                               Position position, Integer number, String weather, String iceInformation, String vesselMalFunctions) {
+        super(Name, Mmsi, CallSign, position, number, weather, iceInformation, vesselMalFunctions);
     }
 
     // //////////////////////////////////////////////////////////////////////

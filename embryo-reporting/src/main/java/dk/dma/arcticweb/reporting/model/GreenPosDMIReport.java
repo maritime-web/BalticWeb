@@ -21,7 +21,6 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 /**
- * 
  * @author Jesper Tejlgaard
  */
 @Entity
@@ -46,15 +45,15 @@ public abstract class GreenPosDMIReport extends GreenPosReport {
     }
 
     public GreenPosDMIReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-                             String latitude, String longitude, String weather, String iceInformation, String vesselMalFunctions) {
-        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude, vesselMalFunctions);
+                             String latitude, String longitude, Integer number, String weather, String iceInformation, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude, number, vesselMalFunctions);
         this.weather = weather;
         this.iceInformation = iceInformation;
     }
 
     public GreenPosDMIReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-                             Position position, String weather, String iceInformation, String vesselMalFunctions) {
-        super(vesselName, vesselMmsi, vesselCallSign, position, vesselMalFunctions);
+                             Position position, Integer number, String weather, String iceInformation, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, position, number, vesselMalFunctions);
         this.weather = weather;
         this.iceInformation = iceInformation;
     }

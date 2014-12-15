@@ -45,11 +45,14 @@ public class ReportMail extends Mail<ReportMail> {
         DateTimeConverter reportTsConverter = DateTimeConverter.getDateTimeConverter("MM");
 
         String recipientName = propertyFileService.getProperty("embryo.notification.mail.name." + recipient);
+        String reportType = propertyFileService.getProperty("embryo.notification.mail.mailName." + recipient);
 
+        environment.put("ReportType", reportType);
         environment.put("Recipient", recipientName);
         environment.put("VesselName", report.getVesselName());
         environment.put("VesselMmsi", "" + report.getVesselMmsi());
         environment.put("VesselCallSign", report.getVesselCallSign());
+        environment.put("Number", report.getNumber().toString());
         environment.put("ReportTS", reportTsConverter.toString(report.getTs()));
         environment.put("Latitude", report.getPosition().getLatitudeAsString());
         environment.put("Longitude", report.getPosition().getLongitudeAsString());

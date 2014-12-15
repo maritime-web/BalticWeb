@@ -47,6 +47,10 @@ var greenposScope;
     embryo.GreenPosCtrl = function($scope, ScheduleService, GreenposService, VesselService, $timeout, RouteService,
             VesselInformation) {
 
+        $scope.report = {
+            type: "PR"
+        }
+
         $scope.reportTypes = [ {
             id : "SP",
             name : "Sailing Plan Report"
@@ -69,10 +73,6 @@ var greenposScope;
 
         // Beautiful thing that makes angular update form validity.
 
-        $scope.report = {
-            type : "PR"
-        };
-
         $.each($scope.reportTypes, function(k, v) {
             setTimeout(function() {
                 $scope.report.type = v.id;
@@ -80,40 +80,12 @@ var greenposScope;
             }, v * 10);
         });
 
-        function evalGreenpos(greenpos) {
-            if (!greenpos || !greenpos.ts) {
-                $scope.report.type = "SP";
-                return;
-            }
-
-            if (greenpos.type === 'FR') {
-                $scope.report.type = "SP";
-                return;
-            }
-
-            var now = Date.now();
-            var period = GreenposService.getPeriod(now);
-
-            // Allow for reports to be performed 15 minutes before reporting
-            // hour.
-            // if last report performed more than 15 minutes before reporting
-            // period then perform new report
-            if (greenpos.ts < (period.from - 900000) && now < (period.from + 1800000)) {
-                $scope.report.type = "PR";
-                return;
-            }
-
-            // if last report not performed more than ½ later than reporting
-            // hour, then highlight.
-            if (greenpos.ts < (period.from - 900000) && now >= (period.from + 1800000)) {
-                $scope.report.type = "PR";
-                return;
-            }
-
-            if (greenpos.type === 'PR' || greenpos.type === 'DR') {
-                $scope.report.type = "PR";
-            } else {
-                $scope.report.type = "SP";
+        function setNumber() {
+            if ($scope.report && $scope.report.mmsi) {
+                GreenposService.nextReportNumber($scope.report.mmsi, $scope.report.type, function (nextNumber) {
+                    $scope.report.number = nextNumber.number;
+                    $scope.nextNumber = nextNumber;
+                });
             }
         }
 
@@ -124,7 +96,7 @@ var greenposScope;
             "DR" : [ "route" ]
         };
 
-        $scope.$watch("report.type", function(newValue, oldValue) {
+        $scope.$watch("report.type", function () {
             if($scope.position){
                 $scope.position.location = null;
             }
@@ -139,6 +111,7 @@ var greenposScope;
                     $scope.position.lon = $scope.voyageInfo.desLon;
                 }
             }
+            setNumber();
         }, true);
 
         $scope.$watch("position.location", function(newValue, oldValue) {
@@ -204,18 +177,20 @@ var greenposScope;
 
         };
 
-        $scope.reset = function() {
+        $scope.reset = function (greenPosForm) {
             $scope.warningMessages = null;
             $scope.alertMessages = null;
             $scope.reportAcknowledgement = null;
-            $scope.greenPosForm.$setPristine();
-
             initData();
+            greenPosForm.$setPristine();
         };
 
         function getReportPanelUpperRight() {
             var $reportPanel = $("#greenposReportPanel");
             var $pos = $reportPanel.position();
+            if (!$pos) {
+                return null;
+            }
             return {
                 right : $pos.left + $reportPanel.width(),
                 top : $pos.top
@@ -232,7 +207,7 @@ var greenposScope;
                 var pixel = embryo.map.getPxFromPosition(longitude, latitude);
                 var reportPanelUpperRight = getReportPanelUpperRight();
 
-                if (!embryo.map.isWithinBorders(longitude, latitude) || reportPanelUpperRight.right > pixel.x) {
+                if (!!reportPanelUpperRight && (!embryo.map.isWithinBorders(longitude, latitude) || reportPanelUpperRight.right > pixel.x)) {
                     var lonLat = embryo.map.transformPosition(longitude, latitude);
                     var rPanelUpRight = embryo.map.getLonLatFromPixel(reportPanelUpperRight.right, reportPanelUpperRight.top);
                     var iMap = embryo.map.internalMap;
@@ -284,15 +259,15 @@ var greenposScope;
                 $scope.warningMessages = null;
                 $scope.alertMessages = null;
                 $scope.reportAcknowledgement = null;
-                if ($scope.greenposForm) {
-                    $scope.greenPosForm.$setPristine();
-                }
             }
         }
 
-        $scope.close = function($event) {
+        $scope.close = function ($event, greenPosForm) {
             $event.preventDefault();
             $scope.provider.close();
+            if (greenPosForm) {
+                greenPosForm.$setPristine();
+            }
         }
 
         VesselInformation.addInformationProvider($scope.provider);
@@ -305,7 +280,8 @@ var greenposScope;
             $scope.report = {
                 mmsi : vesselOverview.mmsi,
                 callSign : vesselOverview.callSign,
-                vesselName : vesselOverview.name
+                vesselName: vesselOverview.name,
+                type: "PR"
             };
             $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId && vesselDetails.additionalInformation.routeId.length > 0);
             $scope.inclWps = $scope.hasActiveRoute;
@@ -328,18 +304,16 @@ var greenposScope;
                         $scope.report.personsOnBoard = voyageInfo.passengers;
                     }
                 }
-
                 $scope.voyageInfo = voyageInfo;
-
                 $scope.report.description = !voyageInfo.dep ? "" : "From " + voyageInfo.dep + " ";
                 $scope.report.description += (!voyageInfo.des ? "" : "to " + voyageInfo.des);
-
+                setNumber();
             }, function(errorMsgs) {
                 $scope.warningMessages = errorMsgs;
             });
 
             GreenposService.getLatestReport(vesselOverview.mmsi, function(latestReport) {
-                evalGreenpos(latestReport);
+                $scope.report.type = GreenposService.defaultReportType(latestReport);
             });
 
         }

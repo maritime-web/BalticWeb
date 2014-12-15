@@ -22,4 +22,10 @@
             <column name="vesselMalFunctions" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1418301493000" author="jesper">
+        <addColumn tableName="GreenPosReport">
+            <column name="number" type="INT(10)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

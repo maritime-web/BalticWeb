@@ -24,7 +24,6 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 /**
- * 
  * @author Jesper Tejlgaard
  */
 @Entity
@@ -41,14 +40,14 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
 
     @NotNull
     private Integer course;
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
     public static GreenPosPositionReport fromJsonModel(GreenPos from) {
         Position pos = new Position(from.getLat(), from.getLon());
         GreenPosPositionReport report = new GreenPosPositionReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), pos, from.getWeather(), from.getIce(),
+                from.getCallSign(), pos, from.getNumber(), from.getWeather(), from.getIce(),
                 from.getSpeed(), from.getCourse(), from.getMalFunctions());
 
         return report;
@@ -64,6 +63,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitude());
         result.setLat(getPosition().getLatitude());
+        result.setNumber(getNumber());
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
         result.setSpeed(getSpeed());
@@ -71,7 +71,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
         result.setRecipients(new String[]{getRecipient()});
-        
+
         return result;
     }
 
@@ -82,6 +82,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setType(getReportType());
         result.setLon(getPosition().getLongitudeAsString());
         result.setLat(getPosition().getLatitudeAsString());
+        result.setNumber(getNumber());
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
         result.setSpeed(getSpeed());
@@ -93,7 +94,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         return result;
     }
 
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
@@ -102,22 +103,21 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     }
 
     public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-                                  String latitude, String longitude, String weather, String iceInformation, Double speed, Integer course, String vesselMalFunctions) {
-        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude, weather, iceInformation, vesselMalFunctions);
-        
+                                  String latitude, String longitude, Integer number, String weather, String iceInformation, Double speed, Integer course, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude, number, weather, iceInformation, vesselMalFunctions);
+
         this.speed = speed;
         this.course = course;
     }
 
     public GreenPosPositionReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-                                  Position position, String weather, String iceInformation, Double speed, Integer course, String vesselMalFunctions) {
-        super(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation, vesselMalFunctions);
-        
+                                  Position position, Integer number, String weather, String iceInformation, Double speed, Integer course, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, position, number, weather, iceInformation, vesselMalFunctions);
         this.speed = speed;
         this.course = course;
     }
 
-    
+
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
@@ -136,7 +136,4 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
     public Integer getCourse() {
         return course;
     }
-
-
-
 }

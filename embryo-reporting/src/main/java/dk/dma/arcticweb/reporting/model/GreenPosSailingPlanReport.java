@@ -31,7 +31,6 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
- * 
  * @author Jesper Tejlgaard
  */
 @Entity
@@ -56,7 +55,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     @Size(max = 1000)
     private String routeDescription;
 
-    @OneToOne(cascade=CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private ReportedRoute route;
 
 
@@ -73,7 +72,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         Position pos = new Position(from.getLat(), from.getLon());
 
         GreenPosSailingPlanReport report = new GreenPosSailingPlanReport(from.getVesselName(), from.getMmsi(),
-                from.getCallSign(), pos, from.getWeather(), from.getIce(), from.getSpeed(), from.getCourse(),
+                from.getCallSign(), pos, from.getNumber(), from.getWeather(), from.getIce(), from.getSpeed(), from.getCourse(),
                 from.getDestination(), eta, from.getPersonsOnBoard(), from.getDescription(), from.getMalFunctions());
         return report;
     }
@@ -90,6 +89,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setCallSign(getVesselCallSign());
         result.setLon(getPosition().getLongitude());
         result.setLat(getPosition().getLatitude());
+        result.setNumber(getNumber());
         result.setWeather(getWeather());
         result.setMalFunctions(getVesselMalFunctions());
         result.setIce(getIceInformation());
@@ -113,6 +113,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         result.setType(getReportType());
         result.setLon(getPosition().getLongitudeAsString());
         result.setLat(getPosition().getLatitudeAsString());
+        result.setNumber(getNumber());
         result.setWeather(getWeather());
         result.setIce(getIceInformation());
         result.setSpeed(getSpeed());
@@ -134,9 +135,9 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     }
 
     public GreenPosSailingPlanReport(String vesselName, Long vesselMmsi, String vesselCallSign, Position position,
-            String weather, String iceInformation, Double speed, Integer course, String destination, DateTime eta,
-            Integer personsOnBoard, String routeDescription, String vesselMalFunctions) {
-        super(vesselName, vesselMmsi, vesselCallSign, position, weather, iceInformation, speed, course, vesselMalFunctions);
+                                     Integer number, String weather, String iceInformation, Double speed, Integer course, String destination, DateTime eta,
+                                     Integer personsOnBoard, String routeDescription, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, position, number, weather, iceInformation, speed, course, vesselMalFunctions);
 
         this.destination = destination;
         this.personsOnBoard = personsOnBoard;
@@ -177,5 +178,5 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
 
     public void setRoute(ReportedRoute route) {
         this.route = route;
-    }    
+    }
 }

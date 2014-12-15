@@ -36,6 +36,8 @@ public class GreenPos {
 
     private Double lon;
 
+    private Integer number;
+
     private String weather;
 
     private String ice;
@@ -117,6 +119,14 @@ public class GreenPos {
 
     public void setLon(Double longitude) {
         this.lon = longitude;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public String getType() {
