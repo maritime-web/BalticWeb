@@ -47,11 +47,8 @@ public class VesselDetails {
 
     private Map<String, Object> additionalInformation;
     
-//    private Map<String, Object> reporting;
-    
     private AisViewServiceAllAisData.Vessel aisVessel;
     
-    private Map<String, Object> ais;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -136,25 +133,10 @@ public class VesselDetails {
         this.additionalInformation = additionalInformation;
     }
 
-    public Map<String, Object> getAis() {
-        return ais;
-    }
-    public void setAis(Map<String, Object> ais) {
-        this.ais = ais;
-    }
-
     public AisViewServiceAllAisData.Vessel getAisVessel() {
         return aisVessel;
     }
     public void setAisVessel(AisViewServiceAllAisData.Vessel aisVessel) {
         this.aisVessel = aisVessel;
     }
-
-//    public Map<String, Object> getReporting() {
-//        return reporting;
-//    }
-//
-//    public void setReporting(Map<String, Object> reporting) {
-//        this.reporting = reporting;
-//    }
 }

@@ -84,7 +84,6 @@ public class Vessel extends BaseEntity<Long> {
 
     public dk.dma.embryo.vessel.json.VesselDetails toJsonModel() {
         dk.dma.embryo.vessel.json.VesselDetails vessel = new dk.dma.embryo.vessel.json.VesselDetails();
-        vessel.setAis(getAisData().toJsonModel());
 
         vessel.setMmsi(getMmsi());
         vessel.setCommCapabilities(getCommCapabilities());
