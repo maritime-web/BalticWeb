@@ -159,7 +159,7 @@ public class GreenPosServiceImpl implements GreenPosService {
 
         // Validation skipped if his vessel name is still not registered in the system.
         if (vessel.getAisData().getName() != null && !vessel.getAisData().getName().equals(report.getVesselName())) {
-            throw new IllegalArgumentException("Reported vessel name must match the call sign of the users vessel");
+            throw new IllegalArgumentException("Reported vessel name must match the vessel name of the users vessel");
         }
     }
 

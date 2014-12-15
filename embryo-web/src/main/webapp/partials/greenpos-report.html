@@ -26,8 +26,8 @@
 </div>
 
 <div>
-    <div class="control-group form-group row">
-        <label class="e-control-label">Report recipient</label>
+<div class="control-group form-group">
+<label class="e-control-label">Report recipient</label>
 
         <div class="controls col-xs-6">
             <select id="gpRecipient" name="gpRecipient" x-ng-options="key as value for (key , value) in recipients"
@@ -37,8 +37,8 @@
         </div>
     </div>
 
-    <div class="control-group form-group row">
-        <label class="e-control-label" for="gReportType">Report Type</label>
+<div class="control-group form-group">
+<label class="e-control-label" for="gReportType">Report Type</label>
 
         <div class="controls col-xs-6">
             <select id="gReportType" name="gpReportType" x-ng-options="i.id as i.name for i in reportTypes"
@@ -79,8 +79,8 @@
 
 -->
 
-    <div class="control-group form-group row">
-        <label class="e-control-label" for="gpNumber">Number</label>
+<div class="control-group form-group">
+<label class="e-control-label" for="gpNumber">Number</label>
 
         <div class="controls col-xs-4">
             <input id="gpNumber" name="gpNumber" type="number" class="input-sm form-control"
@@ -89,8 +89,40 @@
                 class="msg-invalid">Please verify that value is correct</span>
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-show="isVisible('destination')">
-        <label class="e-control-label" for="gpDestination">Destination</label>
+<div class="control-group form-group" x-ng-show="!editVesselInformation">
+    <label class="e-control-label">Vessel</label>
+
+    <div class="controls col-xs-8 txt">
+        <span x-ng-click="editVesselInformation = !editVesselInformation">{{report.vesselName}} / {{report.callSign}} MMSI {{report.mmsi}}</span>
+        <span x-ng-click="editVesselInformation = !editVesselInformation" class="fa fa-pencil"
+              aria-hidden="true"></span>
+    </div>
+</div>
+<div class="control-group form-group" x-ng-show="editVesselInformation">
+    <label class="e-control-label">Vessel</label>
+
+    <div class="controls col-xs-7">
+        <input id="gpVesselName" name="gpVesselName" type="text" class="input-sm form-control"
+               x-ng-model="report.vesselName" required placeholder="Vessel name"/> <span
+            x-ng-show="greenPosForm.gpVesselName.$error.required && greenPosForm.gpVesselName.$dirty"
+            class="msg-invalid">Value required</span>
+        <input id="gpCallSign" name="gpCallSign" type="text" class="input-sm form-control"
+               x-ng-model="report.callSign" required placeholder="call sign"/> <span
+            x-ng-show="greenPosForm.gpCallSign.$error.required && greenPosForm.gpCallSign.$dirty"
+            class="msg-invalid">Value required</span>
+        <input id="gpMmsi" name="gpMmsi" type="text" class="input-sm form-control"
+               x-ng-model="report.mmsi" required placeholder="MMSI"/> <span
+            x-ng-show="greenPosForm.gpMmsi.$error.required && greenPosForm.gpMmsi.$dirty"
+            class="msg-invalid">Value required</span>
+
+        <button style="float:right" x-ng-click="editVesselInformation = !editVesselInformation" class="btn btn-sm"
+                aria-label="Stop editing">
+            <span class="fa fa-check" aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
+<div class="control-group form-group" x-ng-show="isVisible('destination')">
+<label class="e-control-label" for="gpDestination">Destination</label>
 
         <div class="controls col-xs-4">
             <input id="gpDestination" name="gpDestination" type="text" class="input-sm form-control"
@@ -100,8 +132,8 @@
 							required</span>
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-show="isVisible('eta')">
-        <label class="e-control-label" for="gpEta">Estimated Time of Arrival (UTC)</label>
+<div class="control-group form-group" x-ng-show="isVisible('eta')">
+<label class="e-control-label" for="gpEta">Estimated Time of Arrival (UTC)</label>
 
         <div class="controls col-xs-6">
             <datetimepicker id="gpEta" name="gpEta" type="text" x-ng-model="report.eta"
@@ -111,8 +143,8 @@
 							required</span>
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-show="isVisible('personsOnBoard')">
-        <label class="e-control-label" for="gpPersons">Persons on Board</label>
+<div class="control-group form-group" x-ng-show="isVisible('personsOnBoard')">
+<label class="e-control-label" for="gpPersons">Persons on Board</label>
 
         <div class="controls col-xs-4">
             <input id="gpPersons" name="gpPersons" type="text" class="input-sm form-control"
@@ -122,8 +154,8 @@
             <!-- <span x-msg-required="greenPosForm.gpPersons"></span> -->
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-show="isVisible('course')">
-        <label class="e-control-label" for="gpCourse">Course</label>
+<div class="control-group form-group" x-ng-show="isVisible('course')">
+<label class="e-control-label" for="gpCourse">Course</label>
 
         <div class="controls col-xs-4">
             <input embryo-course name="gpCourse" id="gpCourse" type="number" class="input-sm form-control"
@@ -132,8 +164,8 @@
 							required</span>
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-show="isVisible('speed')">
-        <label class="e-control-label" for="gpSpeed">Speed</label>
+<div class="control-group form-group" x-ng-show="isVisible('speed')">
+<label class="e-control-label" for="gpSpeed">Speed</label>
 
         <div class="controls col-xs-4">
             <input id="gpSpeed" name="gpSpeed" type="text" class="input-sm form-control" x-ng-model="report.speed"
@@ -142,8 +174,8 @@
 							required</span>
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-if="position.location">
-        <label x-ng-if="report.type == 'SP'" class="e-control-label" for="gpPos">Departure position</label> <label
+<div class="control-group form-group" x-ng-if="position.location">
+<label x-ng-if="report.type == 'SP'" class="e-control-label" for="gpPos">Departure position</label> <label
             x-ng-if="report.type == 'FR'" class="e-control-label" for="gpPos">Destination position</label>
 
         <div class="controls txt col-xs-4">
@@ -151,8 +183,8 @@
             <span>{{position.location}}</span>
         </div>
     </div>
-    <div class="control-group form-group row">
-        <label class="e-control-label" for="gpLat">Latitude</label>
+<div class="control-group form-group">
+<label class="e-control-label" for="gpLat">Latitude</label>
 
         <div class="controls col-xs-5">
             <input x-ng-disabled="position.location && position.use" latitude id="gpLat" name="gpLat" type="text"
@@ -162,8 +194,8 @@
 							required</span>
         </div>
     </div>
-    <div class="control-group form-group row">
-        <label class="e-control-label" for="gpLon">Longitude</label>
+<div class="control-group form-group">
+<label class="e-control-label" for="gpLon">Longitude</label>
 
         <div class="controls col-xs-5">
             <input x-ng-disabled="position.location && position.use" longitude id="gpLon" name="gpLon" type="text"
@@ -173,16 +205,16 @@
 							required</span>
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-show="isVisible('route')">
-        <label class="e-control-label" for="gpInclWps">Include Active Route WayPoints</label>
+<div class="control-group form-group " x-ng-show="isVisible('route')">
+<label class="e-control-label" for="gpInclWps">Include Active Route WayPoints</label>
 
         <div class="controls txt col-xs-4">
             <input id="gpInclWps" name="inclWps" type="checkbox" x-ng-model="inclWps" x-ng-show="hasActiveRoute"/> <span
                 style="margin-top: 5px;" x-ng-show="!hasActiveRoute"><i>No Active Route</i></span>
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-show="isVisible('route')">
-        <label class="e-control-label" for="gpDescription">Route Description</label>
+<div class="control-group form-group " x-ng-show="isVisible('route')">
+<label class="e-control-label" for="gpDescription">Route Description</label>
 
         <div class="controls col-xs-8">
             <textarea id="gpDescription" name="gpDescription" rows="3" x-ng-required="isVisible('route') && !inclWps"
@@ -191,8 +223,8 @@
                               class="msg-invalid">Value required</span>
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-show="isVisible('weather')">
-        <label class="e-control-label" for="gpWeather">Weather</label>
+<div class="control-group form-group " x-ng-show="isVisible('weather')">
+<label class="e-control-label" for="gpWeather">Weather</label>
 
         <div class="controls col-xs-8">
             <textarea id="gpWeather" name="gpWeather" rows="3" x-ng-model="report.weather" class="form-control input-sm"
@@ -202,11 +234,11 @@
 							required</span>
         </div>
     </div>
-    <div class="control-group form-group row" x-ng-show="isVisible('ice')">
-        <label class="e-control-label" for="gpIce">Ice Observations</label>
+<div class="control-group form-group " x-ng-show="isVisible('ice')">
+    <label class="e-control-label" for="gpIce">Ice Observations</label>
 
         <div class="controls col-xs-8">
-            <textarea id="gpIce" name="gpIce" rows="3" x-ng-model="report.ice" class="form-control input-sm"
+            <textarea id="gpIce" name="gpIce" s="3" x-ng-model="report.ice" class="form-control input-sm"
                       x-ng-required="isVisible('ice')"></textarea>
 						<span x-ng-show="greenPosForm.gpIce.$error.required && greenPosForm.gpIce.$dirty"
                               class="msg-invalid">Value
@@ -214,8 +246,8 @@
         </div>
     </div>
 
-    <div class="control-group form-group row">
-        <label class="e-control-label" for="gpMalFunctions">Mal functions</label>
+<div class="control-group form-group ">
+<label class="e-control-label" for="gpMalFunctions">Mal functions</label>
 
         <div class="controls col-xs-8">
             <textarea id="gpMalFunctions" name="gpMalFunctions" rows="3" x-ng-model="report.malFunctions"
@@ -229,8 +261,8 @@
     <h3>Active Route</h3>
 
     <div class="row">
-        <div class="control-group form-group row">
-            <label class="e-control-label" for="deactivate">Deactive</label>
+        <div class="control-group form-group ">
+        <label class="e-control-label" for="deactivate">Deactive</label>
 
             <div class="controls txt col-xs-4">
                 <input id="deactivate" name="deactivate" type="checkbox" x-ng-model="deactivate"/>
