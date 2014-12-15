@@ -70,7 +70,7 @@ public class GreenPosPositionReport extends GreenPosDMIReport {
         result.setCourse(getCourse());
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
-        result.setRecipients(new String[]{getRecipient()});
+        result.setRecipient(getRecipient());
 
         return result;
     }

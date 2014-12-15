@@ -27,14 +27,13 @@
 
 <div>
     <div class="control-group form-group row">
-        <label class="e-control-label">Report recipient(s)</label>
+        <label class="e-control-label">Report recipient</label>
 
         <div class="controls col-xs-6">
-            <input type="checkbox" name="gpCoastalControl" id="chkCoastalControl" x-ng-model="report.coastalcontrol"/>
-            <label
-                    for="chkCoastalControl" style="padding-right: 10px;">Coastal Control</label>
-            <input type="checkbox" name="gpGreenpos" id="chkGreenpos" x-ng-model="report.greenpos"/> <label
-                for="chkGreenpos">Greenpos</label>
+            <select id="gpRecipient" name="gpRecipient" x-ng-options="key as value for (key , value) in recipients"
+                    x-ng-model="report.recipient" class="input-sm form-control" required>
+            </select> <span x-ng-show="greenPosForm.gpRecipient.$error.required && greenPosForm.gpRecipient.$dirty"
+                            class="msg-invalid">Value required</span>
         </div>
     </div>
 
@@ -244,7 +243,7 @@
 				<span class="pull-right">
 					<button type="button" class="btn btn-sm" x-ng-click="reset(greenPosForm)">Reset</button> &nbsp;
 					<button type="button" x-ng-click="sendReport()"
-                            x-ng-disabled="greenPosForm.$invalid || !(report.coastalcontrol || report.greenpos)"
+                            x-ng-disabled="greenPosForm.$invalid"
                             class="btn btn-primary btn-sm">Send
                     </button>
 

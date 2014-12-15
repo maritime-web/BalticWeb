@@ -17,14 +17,14 @@ var greenposScope;
                 var elemToMatch = $('#' + attrs.resize);
                 scope.getElementDimensions = function() {
                     return {
-                        'h' : elemToMatch.height(),
+                        'h': elemToMatch.height()
                     };
                 };
                 scope.$watch(scope.getElementDimensions, function(newValue, oldValue) {
 
                     scope.style = function() {
                         return {
-                            'height' : (newValue.h) + 'px',
+                            'height': (newValue.h) + 'px'
                         };
                     };
                 }, true);
@@ -50,6 +50,11 @@ var greenposScope;
         $scope.report = {
             type: "PR"
         }
+
+        $scope.recipients = {
+            coastalcontrol: 'Coastal Control',
+            greenpos: 'Greenpos'
+        };
 
         $scope.reportTypes = [ {
             id : "SP",
@@ -148,26 +153,14 @@ var greenposScope;
 
             var inclWps = $scope.inclWps && ($scope.report.type == "SP" || $scope.report.type == "DR");
 
-            $scope.report.recipients = [];
-            var possibleRecipients;
-            possibleRecipients = [ 'coastalcontrol', 'greenpos' ];
-            for ( var x in possibleRecipients) {
-                if ($scope.report[possibleRecipients[x]]) {
-                    $scope.report.recipients.push(possibleRecipients[x]);
-                }
-                delete $scope.report[possibleRecipients[x]];
-            }
-
             GreenposService.save($scope.report, deactivateRoute, inclWps, function(email) {
-                for ( var x in $scope.report.recipients) {
-                    $scope.report[$scope.report.recipients[x]] = true;
-                }
                 $scope.reportAcknowledgement = reportNames[$scope.report.type];
                 $scope.userEmail = email;
+                console.log($scope.report.recipient);
                 $scope.recipientName = '';
-                $scope.recipientName += $scope.report.coastalcontrol ? 'Coastal Control' : '';
-                $scope.recipientName += $scope.report.coastalcontrol && $scope.report.greenpos ? '/' : '';
-                $scope.recipientName += $scope.report.greenpos ? 'ArcticCommand' : '';
+                if ($scope.report.recipient) {
+                    $scope.recipientName = $scope.report.recipient === 'greenpos' ? 'Arctic Command' : $scope.recipients[$scope.report.recipient];
+                }
                 if ($scope.deactivate && $scope.report.type == "FR") {
                     VesselService.updateVesselDetailParameter($scope.report.mmsi, "additionalInformation.routeId", "");
                 }

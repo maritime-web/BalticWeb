@@ -62,7 +62,7 @@ public class GreenPos {
 
     private Date ts;
 
-    private String[] recipients;
+    private String recipient;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -233,12 +233,12 @@ public class GreenPos {
         this.id = id;
     }
 
-    public String[] getRecipients() {
-        return recipients;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setRecipients(String[] receipients) {
-        this.recipients = receipients;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getMalFunctions() {

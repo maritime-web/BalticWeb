@@ -58,7 +58,7 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         result.setIce(getIceInformation());
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
-        result.setRecipients(new String[]{getRecipient()});
+        result.setRecipient(getRecipient());
 
         return result;
     }

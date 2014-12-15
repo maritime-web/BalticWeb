@@ -70,7 +70,7 @@ public class GreenPosDeviationReport extends GreenPosReport {
         result.setDescription(getDeviation());
         result.setReporter(getReportedBy());
         result.setTs(getTs().toDate());
-        result.setRecipients(new String[]{getRecipient()});
+        result.setRecipient(getRecipient());
 
         return result;
     }
