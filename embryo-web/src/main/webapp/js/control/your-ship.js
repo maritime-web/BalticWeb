@@ -7,16 +7,16 @@ $(function() {
     var module = angular.module('embryo.yourvessel.control', [ 'embryo.scheduleService', 'embryo.vessel.service' ]);
 
     function yourAis(data) {
-        if (!data.ais) {
+        if (!data.aisVessel) {
             return null;
         }
         return embryo.vessel.aisToArray({
-            "MMSI" : data.ais.mmsi,
-            "Call Sign" : data.ais.callsign,
-            "Country" : data.ais.country,
-            "Destination" : data.ais.destination,
-            "Nav Status" : data.ais.navStatus,
-            "ETA" : data.ais.eta
+            "MMSI" : data.aisVessel.mmsi,
+            "Call Sign" : data.aisVessel.callsign,
+            "Country" : data.aisVessel.country,
+            "Destination" : data.aisVessel.destination,
+            "Nav Status" : data.aisVessel.navStatus,
+            "ETA" : data.aisVessel.eta
         });
     }
 

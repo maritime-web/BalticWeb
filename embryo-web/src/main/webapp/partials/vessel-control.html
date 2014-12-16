@@ -25,8 +25,7 @@
 			</div>
 		</div>
 		
-		<div accordion-group heading="Your Vessel {{vesselScope.yourVesselName ? ' - ' + vesselScope.yourVesselName : ''}}"
-			requires-permissions="Sailor">
+		<div accordion-group heading="Your Vessel {{vesselScope.yourVesselName ? ' - ' + vesselScope.yourVesselName : ''}}" requires-permissions="Sailor">
 			<div x-ng-controller="YourVesselControl">
 				<h4>
 					AIS Information<small style="float: right"><a href="#" x-ng-click="viewAis($event)">view all</a></small>
