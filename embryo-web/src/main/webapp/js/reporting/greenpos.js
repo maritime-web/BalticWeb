@@ -90,8 +90,8 @@ var greenposScope;
         });
 
         function setNumber() {
-            if ($scope.report && $scope.report.mmsi) {
-                GreenposService.nextReportNumber($scope.report.mmsi, $scope.report.type, function (nextNumber) {
+            if ($scope.report && $scope.report.mmsi && $scope.report.recipient) {
+                GreenposService.nextReportNumber($scope.report.mmsi, $scope.report.recipient, $scope.report.type, function (nextNumber) {
                     $scope.report.number = nextNumber.number;
                     $scope.nextNumber = nextNumber;
                 });
@@ -120,6 +120,10 @@ var greenposScope;
                     $scope.position.lon = $scope.voyageInfo.desLon;
                 }
             }
+            setNumber();
+        }, true);
+
+        $scope.$watch("report.recipient", function () {
             setNumber();
         }, true);
 

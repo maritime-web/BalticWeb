@@ -7,8 +7,8 @@
         var latestGreenposKey = function(maritimeId) {
             return 'latestgreenpos_' + maritimeId;
         };
-        var nextNumberKey = function (maritimeId) {
-            return 'nextnumber_' + maritimeId;
+        var nextNumberKey = function (maritimeId, recipient) {
+            return 'embryo_nextnumber_' + maritimeId + "_" + recipient;
         };
 
 
@@ -19,7 +19,7 @@
             getLatestReport : function(mmsi, callback) {
                 var remoteCall = function(onSuccess) {
                     var url = embryo.baseUrl + 'rest/greenpos/latest/' + mmsi;
-                    $http.get(url).success(onSuccess).error(function (data) {
+                    $http.get(url).success(onSuccess).error(function () {
                         callback(null);
                     });
                 };
@@ -61,7 +61,7 @@
                 $http.post(embryo.baseUrl + 'rest/greenpos/save', request).success(function(email) {
                     SessionStorageService.removeItem(latestGreenposKey(greenpos.mmsi));
 
-                    LocalStorageService.setItem(nextNumberKey(greenpos.mmsi), {
+                    LocalStorageService.setItem(nextNumberKey(greenpos.mmsi, greenpos.recipient), {
                         number: greenpos.number,
                         ts: new Date().getTime()
                     });
@@ -118,14 +118,14 @@
                 //}
                 return (greenpos.type === 'SP' || greenpos.type === 'PR' || greenpos.type === 'DR') ? "PR" : "SP";
             },
-            nextReportNumber: function (mmsi, reportType, callback) {
+            nextReportNumber: function (mmsi, recipient, reportType, callback) {
                 if (reportType == "SP") {
                     callback({
                         number: 1,
                         uncertainty: false
                     });
                 } else {
-                    LocalStorageService.getItem(nextNumberKey(mmsi), function (reportNumber) {
+                    LocalStorageService.getItem(nextNumberKey(mmsi, recipient), function (reportNumber) {
                         if (!reportNumber) {
                             callback({
                                 number: 1,
