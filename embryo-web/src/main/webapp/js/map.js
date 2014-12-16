@@ -314,9 +314,6 @@ $(function() {
      * map.addControl(hoverControl); hoverControl.activate();
      */
 
-    map.addControl(new OpenLayers.Control.LayerSwitcher());
-    map.addControl(new OpenLayers.Control.MousePosition());
-    
     map.addControl(selectControl);
     selectControl.activate();
 
