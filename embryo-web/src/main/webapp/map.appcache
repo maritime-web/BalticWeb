@@ -41,6 +41,7 @@ partials/ice-satellite-control.html
 partials/settings.html
 partials/weather-control.html
 partials/satelliteImageInformation.html
+partials/select-area-control.html
 rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2
 img/load.gif
 img/vessel_blue.png
@@ -181,4 +182,4 @@ img/wind_legend/mark095red.png
 img/wind_legend/mark100red.png
 img/wind_legend/mark105red.png
 
-# Version: 93
+# Version: 94
