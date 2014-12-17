@@ -5,8 +5,8 @@ CACHE:
 map.html
 css/ext/cdn.netdna/bootstrap/3.1.1/css/bootstrap.min.css
 css/ext/cdn.netdna/bootstrap/3.1.1/fonts/glyphicons-halflings-regular.woff
-css/ext/cdn.netdna/font-awesome/4.0.3/css/font-awesome.min.css
-css/ext/cdn.netdna/font-awesome/4.0.3/fonts/fontawesome-webfont.woff?v=4.0.3
+css/ext/cdn.netdna/font-awesome/4.2.0/css/font-awesome.min.css
+css/ext/cdn.netdna/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.0.3
 
 css/arcticweb-map.css
 js/ext/cdn.cloudflare/openlayers/2.13.1/theme/default/style.css
