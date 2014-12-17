@@ -15,17 +15,6 @@
 
 package dk.dma.embryo.vessel.component;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import dk.dma.embryo.vessel.json.ScheduleResponse;
-import dk.dma.embryo.vessel.json.Voyage;
-import dk.dma.embryo.vessel.model.Berth;
-import dk.dma.embryo.vessel.model.Position;
-import dk.dma.embryo.vessel.persistence.GeographicDao;
-import dk.dma.embryo.vessel.persistence.ScheduleDao;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +22,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+
+import dk.dma.embryo.vessel.json.ScheduleResponse;
+import dk.dma.embryo.vessel.json.Voyage;
+import dk.dma.embryo.vessel.model.Berth;
+import dk.dma.embryo.vessel.model.Position;
+import dk.dma.embryo.vessel.persistence.GeographicDao;
+import dk.dma.embryo.vessel.persistence.ScheduleDao;
 
 /**
  * Created by jesper on 8/14/14.

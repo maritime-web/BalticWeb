@@ -95,4 +95,9 @@ public class NetCDFRestriction {
     public boolean isSubarea() {
         return subarea;
     }
+
+    @Override
+    public String toString() {
+        return "Restriction: min lat: " + minLat + ", max lat: " + maxLat + ", min lon: " + minLon + ", max lon: " + maxLon + ", sub area: " + subarea;
+    }
 }

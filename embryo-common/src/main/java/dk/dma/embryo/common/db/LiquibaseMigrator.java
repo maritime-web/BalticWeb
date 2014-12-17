@@ -22,6 +22,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -37,7 +41,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.metamodel.source.MetadataImplementor;
-import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +51,6 @@ import org.slf4j.LoggerFactory;
 public class LiquibaseMigrator implements Integrator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LiquibaseMigrator.class);
-
-    private ConnectionProvider connectionProvider;
 
     private LiquibaseConfig config;
 
@@ -85,20 +86,22 @@ public class LiquibaseMigrator implements Integrator {
         }
 
         LOGGER.info("Booting Liquibase " + LiquibaseUtil.getBuildVersion());
-        connectionProvider = sessionFactoryImplementor.getJdbcServices().getConnectionProvider();
         try {
             performUpdate();
-        } catch (LiquibaseException e) {
+        } catch (LiquibaseException | NamingException e) {
             throw new UnexpectedLiquibaseException(e);
         }
     }
 
-    private void performUpdate() throws LiquibaseException {
+    private void performUpdate() throws LiquibaseException, NamingException {
         Connection c = null;
         Liquibase liquibase = null;
         try {
-            // c = dataSource.getConnection();
-            c = connectionProvider.getConnection();
+            InitialContext initialContext = new InitialContext();
+            DataSource dataSource = (DataSource) initialContext.lookup("java:jboss/datasources/embryoDS");
+            
+            c = dataSource.getConnection();
+            // c = connectionProvider.getConnection();
             liquibase = createLiquibase(c);
             liquibase.update(config.getContexts());
         } catch (SQLException e) {

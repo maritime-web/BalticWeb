@@ -14,8 +14,14 @@
  */
 package dk.dma.embryo.vessel.component;
 
-import dk.dma.embryo.vessel.json.ScheduleResponse;
-import dk.dma.embryo.vessel.json.Voyage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Named;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -23,12 +29,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import javax.inject.Named;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import dk.dma.embryo.vessel.json.ScheduleResponse;
+import dk.dma.embryo.vessel.json.Voyage;
 
 @Named
 public class ScheduleParser {

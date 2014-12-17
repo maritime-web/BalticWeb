@@ -15,19 +15,10 @@
 
 package dk.dma.embryo.tiles.service;
 
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.configuration.Provider;
-import dk.dma.embryo.common.configuration.Type;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.common.util.NamedtimeStamps;
-import dk.dma.embryo.tiles.image.ImageType;
-import dk.dma.embryo.tiles.image.ImageTypeFilter;
-import dk.dma.embryo.tiles.model.TileSet;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -41,10 +32,21 @@ import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.configuration.Provider;
+import dk.dma.embryo.common.configuration.Type;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.common.util.NamedtimeStamps;
+import dk.dma.embryo.tiles.image.ImageType;
+import dk.dma.embryo.tiles.image.ImageTypeFilter;
+import dk.dma.embryo.tiles.model.TileSet;
 
 /**
  * Created by Jesper Tejlgaard on 8/26/14.

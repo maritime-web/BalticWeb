@@ -1,25 +1,49 @@
 <div x-ng-controller="ForecastController as pc">
 	<div id="forecastControlPanel" accordion close-others="true" e-left-bar
 		open-first="true" class="controlPanel2">
-		<!--  Enable below once DMI starts delivering data. -->
-		<!-- div accordion-group heading="Wave forecasts">
+		<div accordion-group heading="Wave forecasts">
 			<div x-ng-controller="WaveForecastsCtrl">
 				<h4>Wave forecasts</h4>
 				<table class="table table-condensed">
-					<tr x-ng-repeat="forecast in waveForecasts" x-ng-controller="WaveForecastCtrl">
-						<td>
-							<div>
-								<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.name}}</a>
-								<span x-ng-show="pc.forecastSelected == forecast.id">
-									<br /><input type="range" class="e-forecast" min="{{start}}" max="{{end}}" step="1" x-ng-model="current" />
-									<br />Selected time: {{currentDate}}
-								</span>
-							</div>
-						</td>
-					</tr>
+					<colgroup>
+						<col />
+						<col />
+						<col />
+						<col />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Date</th>
+							<th>Size</th>
+							<th>Provider</th>
+						</tr>
+					</thead>
+					<tbody class="e-noborder"
+						x-ng-repeat="forecast in waveForecasts"
+						x-ng-controller="WaveForecastCtrl">
+						<tr>
+							<td>
+								<div>
+									<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
+								</div>
+							</td>
+							<td>{{forecast.timestamp}}</td>
+							<td>{{forecast.size}}</td>
+							<td>{{forecast.provider}}</td>
+						</tr>
+						<tr>
+							<td class="e-bottomborder" colspan="4"><span
+								x-ng-show="pc.forecastSelected == forecast.id"> <br /> <input
+									type="range" class="e-forecast" min="{{start}}" max="{{end}}"
+									step="1" x-ng-model="current" /> <br />Selected time:
+									{{currentDate}}
+							</span></td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
-		</div -->
+		</div>
 
 		<div accordion-group heading="Ice forecasts">
 			<div x-ng-controller="IceForecastsCtrl">
@@ -130,25 +154,43 @@
 
 		<div accordion-group heading="Legends">
 			<div class="legends">
-				<!-- h5>Wave</h5>
+				<h5>Wave height</h5>
 				<table class="table table-condensed">
 					<tr>
-						<td><span style="background-color:#00DE00; width: 30px; display: block;">&nbsp;</span></td>
-						<td>&lt; 0.7</td>
+						<th>Color</th>
+						<th>Height</th>
 					</tr>
 					<tr>
-						<td><span style="background-color:#FFFF00; width: 30px; display: block;">&nbsp;</span></td>
-						<td>0.7 - 1.0</td>
+						<td><span
+							style="background-color: #979797; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&gt; 5 m</td>
 					</tr>
 					<tr>
-						<td><span style="background-color:#FA4242; width: 30px; display: block;">&nbsp;</span></td>
-						<td>1.0 - 1.3</td>
+						<td><span
+							style="background-color: #ff0000; width: 30px; display: block;">&nbsp;</span></td>
+						<td>4-5 m</td>
 					</tr>
 					<tr>
-						<td><span style="background-color:#E8B332; width: 30px; display: block;">&nbsp;</span></td>
-						<td>&gt; 1.3</td>
+						<td><span
+							style="background-color: #ff7c06; width: 30px; display: block;">&nbsp;</span></td>
+						<td>3-4 m</td>
 					</tr>
-				</table -->
+					<tr>
+						<td><span
+							style="background-color: #ffff00; width: 30px; display: block;">&nbsp;</span></td>
+						<td>2-3 m</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #8effa0; width: 30px; display: block;">&nbsp;</span></td>
+						<td>1-2 m</td>
+					</tr>
+					<tr>
+						<td><span
+							style="background-color: #96C7FF; width: 30px; display: block;">&nbsp;</span></td>
+						<td>&lt; 1 m</td>
+					</tr>
+				</table>
 				<h5>Ice concentration</h5>
 				<table class="table table-condensed">
 					<tr>

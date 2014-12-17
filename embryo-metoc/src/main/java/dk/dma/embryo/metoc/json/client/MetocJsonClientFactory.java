@@ -31,10 +31,19 @@ public class MetocJsonClientFactory {
     @Property("dk.dma.embryo.restclients.dmiSejlRuteServiceUrl")
     private String dmiSejlRuteServiceUrl;
 
+    /*@Produces
+    public DmiSejlRuteService createSejlRuteService() {
+        ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target(dmiSejlRuteServiceUrl);
+        return target.proxy(DmiSejlRuteService.class);
+    }*/
+    
     @Produces
     public DmiSejlRuteService createSejlRuteService() {
         return ProxyFactory.create(DmiSejlRuteService.class, dmiSejlRuteServiceUrl);
     }
+
+
     public static String asJson(Object object) {
         ObjectMapper mapper = new ObjectMapper();
         try {

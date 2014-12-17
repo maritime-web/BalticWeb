@@ -25,20 +25,20 @@ import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 public class NetCDFMoment implements Serializable {
-    
+
     private static final long serialVersionUID = 3229249855444903196L;
 
     private int time;
-    
-    @JsonSerialize(using = FloatSerializer.class)
+
+    @JsonSerialize(contentUsing = FloatSerializer.class)
     private Map<NetCDFPoint, Map<Integer, Float>> entries = new HashMap<>();
-    
+
     public NetCDFMoment(int time) {
         this.time = time;
     }
-    
+
     public void addEntry(NetCDFPoint point, int order, Float obs) {
-        if(entries.containsKey(point)) {
+        if (entries.containsKey(point)) {
             entries.get(point).put(order, obs);
         } else {
             Map<Integer, Float> observations = new HashMap<>();
@@ -46,29 +46,35 @@ public class NetCDFMoment implements Serializable {
             entries.put(point, observations);
         }
     }
-    
+
     public Map<NetCDFPoint, Map<Integer, Float>> getEntries() {
         return entries;
     }
-    
+
     public int getTime() {
         return time;
     }
-    
+
     @Override
     public String toString() {
         return "Time: " + time + ", entries: " + entries;
     }
-    
-    public static class FloatSerializer extends JsonSerializer<Float>{
+
+    public static class FloatSerializer extends JsonSerializer<Map<Integer, Float>> {
         @Override
-        public void serialize(Float val, JsonGenerator generator, SerializerProvider provider) throws IOException {
-            if(val == 0f) {
-                generator.writeNumber(0);
-            } else {
-                generator.writeNumber(val);
+        public void serialize(Map<Integer, Float> map, JsonGenerator generator, SerializerProvider provider) throws IOException {
+            generator.writeStartObject();
+            for (Integer key : map.keySet()) {
+                generator.writeFieldName(key.toString());
+                float val = map.get(key);
+                if (val == 0f) {
+                    generator.writeNumber(0);
+                } else {
+                    generator.writeNumber(val);
+                }
             }
+            generator.writeEndObject();
         }
-        
+
     }
 }

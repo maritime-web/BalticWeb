@@ -15,9 +15,9 @@
 
 package dk.dma.embryo.tiles.model;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import javax.persistence.Embeddable;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Created by Jesper Tejlgaard on 10/20/14.

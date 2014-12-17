@@ -55,7 +55,7 @@ public class ForecastServiceImpl implements ForecastService {
 
     private List<ForecastType> forecastTypes = new ArrayList<>();
 
-    private final Map<Provider, Map<String, NetCDFRestriction>> restrictions = new HashMap<>();
+    private Map<Provider, Map<String, NetCDFRestriction>> restrictions = new HashMap<>();
 
     public static final double MIN_LAT = 55;
     public static final double MID_LAT = 70;
@@ -89,17 +89,17 @@ public class ForecastServiceImpl implements ForecastService {
     @PostConstruct
     public void init() {
         forecastTypes = createData();
-        initRestrictions();
+        restrictions = initRestrictions();
         reParse();
     }
 
     @Override
-    public List<ForecastType> getPrognosisTypes() {
+    public List<ForecastType> getForecastTypes() {
         return forecastTypes;
     }
 
     @Override
-    public ForecastType getPrognosisType(Type type) {
+    public ForecastType getForecastType(Type type) {
         for (ForecastType t : forecastTypes) {
             if (t.getType() == type) {
                 return t;
@@ -159,7 +159,7 @@ public class ForecastServiceImpl implements ForecastService {
                                     String timestampStr = name.substring(name.length() - 13, name.length() - 3);
                                     long timestamp = getTimestamp(timestampStr);
                                     if (file.length() == 0) {
-                                        if (!forecastDao.exists(provider, timestamp)) {
+                                        if (!forecastDao.exists(name, timestamp)) {
                                             // File has been downloaded, but
                                             // there's no entry in the database,
                                             // probably because of a database
@@ -181,7 +181,7 @@ public class ForecastServiceImpl implements ForecastService {
                                                 area = entry.getKey();
                                             }
                                             logger.info("Parsing NetCDF area {} for file {}.", area, name);
-                                            for (NetCDFType type : getPrognosisTypes()) {
+                                            for (NetCDFType type : getForecastTypes()) {
                                                 logger.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
                                                 Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
                                                 String json = parseResult.get(type);
@@ -260,11 +260,20 @@ public class ForecastServiceImpl implements ForecastService {
         Map<String, NetCDFVar> iceVars = iceForecastType.getVars();
 
         // DMI
+        
+        // Old vars
         NetCDFVar.addToMap(iceVars, "ice-concentration", "Ice concentration");
         NetCDFVar.addToMap(iceVars, "ice-thickness", "Ice thickness");
         NetCDFVar.addToMap(iceVars, "u-ice", "Ice speed east");
         NetCDFVar.addToMap(iceVars, "v-ice", "Ice speed north");
         NetCDFVar.addToMap(iceVars, "Icing", "Ice accretion risk");
+        
+        // New vars
+        NetCDFVar.addToMap(iceVars, "Ice_con", "Ice concentration");
+        NetCDFVar.addToMap(iceVars, "Ice_thk", "Ice thickness");
+        NetCDFVar.addToMap(iceVars, "Uice", "Ice speed east");
+        NetCDFVar.addToMap(iceVars, "Vice", "Ice speed north");
+        
 
         // FCOO
         NetCDFVar.addToMap(iceVars, "ICE", "Ice concentration");
@@ -287,10 +296,16 @@ public class ForecastServiceImpl implements ForecastService {
         NetCDFVar.addToMap(waveVars, "var229", "Significant wave height");
         NetCDFVar.addToMap(waveVars, "var230", "Wave direction");
         NetCDFVar.addToMap(waveVars, "var232", "Wave mean period");
+        
+        // New var
+        
+        NetCDFVar.addToMap(waveVars, "SWH", "Significant wave height");
+        NetCDFVar.addToMap(waveVars, "MWD", "Mean wave direction");
+        NetCDFVar.addToMap(waveVars, "MWP", "Mean wave period");
 
         // FCOO
         NetCDFVar.addToMap(waveVars, "DIRMN", "Mean wave direction");
-        NetCDFVar.addToMap(waveVars, "Hs", "Wave height");
+        NetCDFVar.addToMap(waveVars, "Hs", "Significant wave height");
         NetCDFVar.addToMap(waveVars, "TMN", "Mean wave period");
         NetCDFVar.addToMap(waveVars, "Tz", "Zero upcrossing period");
         // Water depth does not account for time. We do not parse this at the
@@ -305,6 +320,11 @@ public class ForecastServiceImpl implements ForecastService {
         // DMI
         NetCDFVar.addToMap(windVars, "var245", "Wind speed");
         NetCDFVar.addToMap(windVars, "var249", "Wind direction");
+        
+        // New vars
+        
+        NetCDFVar.addToMap(windVars, "Uatm", "Wind speed east");
+        NetCDFVar.addToMap(windVars, "Vatm", "Wind speed north");
 
         // FCOO
         NetCDFVar.addToMap(windVars, "WU", "Wind speed east");
@@ -315,7 +335,9 @@ public class ForecastServiceImpl implements ForecastService {
         return types;
     }
 
-    private void initRestrictions() {
+    public Map<Provider, Map<String, NetCDFRestriction>> initRestrictions() {
+        Map<Provider, Map<String, NetCDFRestriction>> restrictions = new HashMap<>();
+        
         // NetCDFRestriction emptyRestriction = new NetCDFRestriction();
         NetCDFRestriction bottomLeftRestriction = new NetCDFRestriction(MIN_LAT, MID_LAT, MIN_LON, MID_LON);
         NetCDFRestriction bottomRightRestriction = new NetCDFRestriction(MIN_LAT, MID_LAT, MID_LON, MAX_LON);
@@ -340,6 +362,8 @@ public class ForecastServiceImpl implements ForecastService {
         fcooRestrictions.put("Greenland NW", topLeftRestriction);
         fcooRestrictions.put("Greenland NE", topRightRestriction);
         restrictions.put(Provider.FCOO, fcooRestrictions);
+        
+        return restrictions;
     }
 
     public static class Svalbard {

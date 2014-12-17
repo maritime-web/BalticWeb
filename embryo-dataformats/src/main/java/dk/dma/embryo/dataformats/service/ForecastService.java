@@ -21,9 +21,9 @@ import dk.dma.embryo.dataformats.model.ForecastType;
 import dk.dma.embryo.dataformats.model.ForecastType.Type;
 
 public interface ForecastService {
-    List<ForecastType> getPrognosisTypes();
+    List<ForecastType> getForecastTypes();
 
-    ForecastType getPrognosisType(Type type);
+    ForecastType getForecastType(Type type);
 
     void reParse();
 

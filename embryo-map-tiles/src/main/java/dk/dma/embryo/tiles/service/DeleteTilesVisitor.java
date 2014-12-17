@@ -15,15 +15,16 @@
 
 package dk.dma.embryo.tiles.service;
 
-import dk.dma.embryo.common.configuration.Type;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.tiles.model.TileSet;
+import java.io.File;
+import java.util.Map;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.util.Map;
+import dk.dma.embryo.common.configuration.Type;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.tiles.model.TileSet;
 
 /**
  * Created by Jesper Tejlgaard on 11/10/14.

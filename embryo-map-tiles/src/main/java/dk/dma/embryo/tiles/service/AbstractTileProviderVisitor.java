@@ -14,16 +14,17 @@
  */
 package dk.dma.embryo.tiles.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.joda.time.DateTime;
+
 import dk.dma.embryo.common.configuration.Provider;
 import dk.dma.embryo.common.configuration.ProviderVisitor;
 import dk.dma.embryo.common.configuration.Type;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.tiles.model.TileSet;
-import org.joda.time.DateTime;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Jesper Tejlgaard on 11/10/14.

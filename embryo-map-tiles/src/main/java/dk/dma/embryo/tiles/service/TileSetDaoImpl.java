@@ -15,9 +15,7 @@
 
 package dk.dma.embryo.tiles.service;
 
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.persistence.DaoImpl;
-import dk.dma.embryo.tiles.model.TileSet;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -25,7 +23,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import java.util.List;
+
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.persistence.DaoImpl;
+import dk.dma.embryo.tiles.model.TileSet;
 
 /**
  * Created by Jesper Tejlgaard on 8/26/14.

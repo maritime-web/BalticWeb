@@ -15,11 +15,11 @@
 
 package dk.dma.embryo.tiles.config;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Created by Jesper Tejlgaard on 8/21/14.

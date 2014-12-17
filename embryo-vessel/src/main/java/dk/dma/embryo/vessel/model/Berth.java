@@ -14,12 +14,12 @@
  */
 package dk.dma.embryo.vessel.model;
 
-import dk.dma.embryo.common.persistence.BaseEntity;
-
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
+
+import dk.dma.embryo.common.persistence.BaseEntity;
 
 
 @Entity

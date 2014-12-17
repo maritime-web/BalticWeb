@@ -38,7 +38,6 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
 
-import dk.dma.embryo.common.util.NamedtimeStamps;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -50,6 +49,7 @@ import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogFactory;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.common.util.NamedtimeStamps;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParser;
 import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParserFactory;

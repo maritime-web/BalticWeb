@@ -15,7 +15,8 @@
 
 package dk.dma.embryo.tiles.image;
 
-import dk.dma.embryo.tiles.model.TileSet;
+import java.io.File;
+
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -24,7 +25,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import dk.dma.embryo.tiles.model.TileSet;
 
 /**
  * Created by Jesper Tejlgaard on 11/10/14.

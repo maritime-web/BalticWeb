@@ -15,8 +15,9 @@
 
 package dk.dma.embryo.tiles.service;
 
-import javax.ejb.Local;
 import java.io.File;
+
+import javax.ejb.Local;
 
 /**
  * Created by Jesper Tejlgaard on 8/26/14.
