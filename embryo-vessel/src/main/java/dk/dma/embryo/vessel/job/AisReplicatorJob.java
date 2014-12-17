@@ -112,8 +112,8 @@ public class AisReplicatorJob {
             logger.info("UPDATE AIS VESSEL DATA INCLUDING NORWEGIAN DATA...");
 
             // Get all vessels from AIS server
-            List<AisViewServiceAllAisData.Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList();
-
+            List<AisViewServiceAllAisData.Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList(AisViewServiceAllAisData.FILTER_VALUE_PT24H, AisViewServiceAllAisData.FILTER_VALUE_PT24H);
+            
             // Get all vessels from ArcticWeb database
             List<Vessel> articWebVesselsAsList = vesselRepository.getAll(Vessel.class);
 
