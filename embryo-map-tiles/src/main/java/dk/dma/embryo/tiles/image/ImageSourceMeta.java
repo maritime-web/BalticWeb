@@ -15,9 +15,10 @@
 
 package dk.dma.embryo.tiles.image;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 import dk.dma.embryo.tiles.model.BoundingBox;
 import dk.dma.embryo.tiles.model.ImageCenter;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 
 /**

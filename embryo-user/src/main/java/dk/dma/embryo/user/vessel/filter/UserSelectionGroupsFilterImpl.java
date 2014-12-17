@@ -14,21 +14,23 @@
  */
 package dk.dma.embryo.user.vessel.filter;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.SelectionGroup;
 import dk.dma.embryo.user.security.Subject;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
 import dk.dma.embryo.vessel.json.VesselOverview;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
-import javax.enterprise.inject.Default;
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 @Default
 public class UserSelectionGroupsFilterImpl implements UserSelectionGroupsFilter {

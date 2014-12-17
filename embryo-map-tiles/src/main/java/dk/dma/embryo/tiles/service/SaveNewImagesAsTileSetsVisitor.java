@@ -15,17 +15,18 @@
 
 package dk.dma.embryo.tiles.service;
 
+import java.io.File;
+import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dk.dma.embryo.common.configuration.Type;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.tiles.image.GeoImage;
 import dk.dma.embryo.tiles.image.ImageTypeFilter;
 import dk.dma.embryo.tiles.model.TileSet;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.Map;
 
 /**
  * Created by Jesper Tejlgaard on 11/10/14.

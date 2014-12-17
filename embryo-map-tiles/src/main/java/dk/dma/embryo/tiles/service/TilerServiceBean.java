@@ -16,6 +16,20 @@
 package dk.dma.embryo.tiles.service;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
@@ -24,18 +38,6 @@ import dk.dma.embryo.tiles.image.Image2Tiles;
 import dk.dma.embryo.tiles.image.ImageSourceMeta;
 import dk.dma.embryo.tiles.image.ImageSourceMetaReader;
 import dk.dma.embryo.tiles.model.TileSet;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * Created by Jesper Tejlgaard on 8/26/14.

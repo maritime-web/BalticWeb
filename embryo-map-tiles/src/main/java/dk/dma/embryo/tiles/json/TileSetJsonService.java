@@ -14,10 +14,7 @@
  */
 package dk.dma.embryo.tiles.json;
 
-import dk.dma.embryo.tiles.model.TileSet;
-import dk.dma.embryo.tiles.service.TileSetDao;
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,7 +28,12 @@ import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import java.util.List;
+
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
+
+import dk.dma.embryo.tiles.model.TileSet;
+import dk.dma.embryo.tiles.service.TileSetDao;
 
 @Path("/tileset")
 @Named

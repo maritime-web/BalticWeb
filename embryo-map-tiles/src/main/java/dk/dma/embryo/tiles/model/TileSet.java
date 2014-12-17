@@ -15,10 +15,10 @@
 
 package dk.dma.embryo.tiles.model;
 
-import dk.dma.embryo.common.persistence.BaseEntity;
-import dk.dma.embryo.tiles.json.JsonTileSet;
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -27,10 +27,12 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+
+import dk.dma.embryo.common.persistence.BaseEntity;
+import dk.dma.embryo.tiles.json.JsonTileSet;
 
 /**
  * Created by Jesper Tejlgaard on 8/26/14.

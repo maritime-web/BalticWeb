@@ -15,8 +15,11 @@
 
 package dk.dma.embryo.tiles.image;
 
-import dk.dma.embryo.tiles.model.BoundingBox;
-import dk.dma.embryo.tiles.model.ImageCenter;
+import java.io.File;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridCoverage2DReader;
 import org.geotools.coverage.grid.io.GridFormatFinder;
@@ -26,9 +29,8 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.File;
+import dk.dma.embryo.tiles.model.BoundingBox;
+import dk.dma.embryo.tiles.model.ImageCenter;
 
 /**
  * Created by Jesper Tejlgaard on 8/20/14.

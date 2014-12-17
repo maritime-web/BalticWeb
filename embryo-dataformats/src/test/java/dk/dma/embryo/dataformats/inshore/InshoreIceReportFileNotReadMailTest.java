@@ -15,14 +15,15 @@
 
 package dk.dma.embryo.dataformats.inshore;
 
-import dk.dma.embryo.common.configuration.PropertyFileService;
+import javax.inject.Inject;
+
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
+import dk.dma.embryo.common.configuration.PropertyFileService;
 
 /**
  * Created by Jesper Tejlgaard on 10/22/14.

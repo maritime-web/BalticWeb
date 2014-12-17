@@ -43,6 +43,27 @@ public class AisJsonClientFactory {
     @Property("dk.dma.embryo.restclients.fullAisViewServiceInclNorwegianDataUrl")
     private String fullAisViewServiceInclNorwegianDataUrl;
     
+    /*@Produces
+    public LimitedAisViewService createLimitedAisViewService() {
+        ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target(limitedAisViewServiceUrl);
+        return target.proxy(LimitedAisViewService.class);
+    }
+
+    @Produces
+    public FullAisViewService createFullAisViewService() {
+        ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target(fullAisViewServiceUrl);
+        return target.proxy(FullAisViewService.class);
+    }
+    
+    @Produces
+    public AisViewServiceAllAisData createFullAisViewInclNorwegianDataService() {
+        ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target(fullAisViewServiceInclNorwegianDataUrl);
+        return target.proxy(AisViewServiceAllAisData.class);
+    }*/
+    
     @Produces
     public LimitedAisViewService createLimitedAisViewService() {
         return ProxyFactory.create(LimitedAisViewService.class, limitedAisViewServiceUrl);

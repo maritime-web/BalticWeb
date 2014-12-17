@@ -15,10 +15,11 @@
 
 package dk.dma.embryo.tiles.json;
 
-import dk.dma.embryo.tiles.model.BoundingBox;
+import java.util.Date;
+
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import java.util.Date;
+import dk.dma.embryo.tiles.model.BoundingBox;
 
 /**
  * Created by Jesper Tejlgaard on 10/02/14.

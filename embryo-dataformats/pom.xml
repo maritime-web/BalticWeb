@@ -62,11 +62,19 @@
             <artifactId>resteasy-jaxrs</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson-provider</artifactId>
-            <version>2.3.4.Final</version>
-        </dependency>
+            <!-- WILDFLY
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
+    </dependency>
+    -->
+    
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson-provider</artifactId>
+      <version>2.3.4.Final</version>
+    </dependency>
+
 
         <!-- APACHE COMMONS -->
         <dependency>

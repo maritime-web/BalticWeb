@@ -14,6 +14,13 @@
  */
 package dk.dma.arcticweb.rest;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
 import dk.dma.arcticweb.reporting.json.GreenPosRestService;
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
@@ -35,13 +42,6 @@ import dk.dma.embryo.vessel.json.RouteRestService;
 import dk.dma.embryo.vessel.json.RouteUploadRestService;
 import dk.dma.embryo.vessel.json.ScheduleRestService;
 import dk.dma.embryo.weather.json.WeatherRestService;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {

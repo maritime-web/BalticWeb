@@ -14,10 +14,10 @@
  */
 package dk.dma.embryo.dataformats.inshore;
 
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.IOException;
 
 public class InshoreIceReportServiceImplTest {
 

@@ -26,7 +26,7 @@
 
         <shiro.version>1.2.2</shiro.version>
         <version.org.jboss.spec.javaee6>3.0.2.Final</version.org.jboss.spec.javaee6>
-        <hibernate.version>4.0.1.Final</hibernate.version>
+        <hibernate.version>4.2.0.Final</hibernate.version>
         <jodatime.version>4.0.1.Final</jodatime.version>
     </properties>
 
@@ -128,7 +128,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.0</version>
+                <version>2.2</version>
             </dependency>
 
             <dependency>
@@ -156,6 +156,29 @@
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
                 <version>2.3.4.Final</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jackson2-provider</artifactId>
+                <version>2.3.4.Final</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!--dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-client</artifactId>
+                <version>2.3.4.Final</version>
+                <scope>provided</scope>
+            </dependency-->
+
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-multipart-provider</artifactId>
+                <version>2.3.4.Final</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -176,13 +199,13 @@
             <dependency>
                 <groupId>org.jboss.weld.se</groupId>
                 <artifactId>weld-se</artifactId>
-                <version>1.1.10.Final</version>
+                <version>2.1.2.Final</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jglue.cdi-unit</groupId>
                 <artifactId>cdi-unit</artifactId>
-                <version>2.1.0</version>
+                <version>3.0.1</version>
             </dependency>
 
             <dependency>
@@ -214,6 +237,12 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.2.6</version>
         </dependency>
 
         <!-- Test dependencies -->
