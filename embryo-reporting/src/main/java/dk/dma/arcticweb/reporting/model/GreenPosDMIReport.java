@@ -14,15 +14,13 @@
  */
 package dk.dma.arcticweb.reporting.model;
 
+import dk.dma.embryo.vessel.model.Position;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
-import dk.dma.embryo.vessel.model.Position;
-
 /**
- * 
  * @author Jesper Tejlgaard
  */
 @Entity
@@ -47,15 +45,15 @@ public abstract class GreenPosDMIReport extends GreenPosReport {
     }
 
     public GreenPosDMIReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-            String latitude, String longitude, String weather, String iceInformation) {
-        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude);
+                             String latitude, String longitude, Integer number, String weather, String iceInformation, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, latitude, longitude, number, vesselMalFunctions);
         this.weather = weather;
         this.iceInformation = iceInformation;
     }
 
     public GreenPosDMIReport(String vesselName, Long vesselMmsi, String vesselCallSign,
-            Position position, String weather, String iceInformation) {
-        super(vesselName, vesselMmsi, vesselCallSign, position);
+                             Position position, Integer number, String weather, String iceInformation, String vesselMalFunctions) {
+        super(vesselName, vesselMmsi, vesselCallSign, position, number, vesselMalFunctions);
         this.weather = weather;
         this.iceInformation = iceInformation;
     }

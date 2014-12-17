@@ -14,8 +14,13 @@
  */
 package dk.dma.arcticweb.reporting.model;
 
-import java.util.List;
-import java.util.UUID;
+import dk.dma.arcticweb.reporting.json.model.GreenPos;
+import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
+import dk.dma.embryo.common.persistence.BaseEntity;
+import dk.dma.embryo.vessel.model.Position;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -24,25 +29,17 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
-
-import dk.dma.arcticweb.reporting.json.model.GreenPos;
-import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
-import dk.dma.embryo.common.persistence.BaseEntity;
-import dk.dma.embryo.vessel.model.Position;
+import java.util.List;
+import java.util.UUID;
 
 /**
- * 
  * @author Jesper Tejlgaard
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQueries({
         @NamedQuery(name = "GreenPosReport:findLatest", query = "SELECT DISTINCT g FROM GreenPosReport g where g.vesselMmsi = :vesselMmsi ORDER By g.ts DESC"),
-        @NamedQuery(name = "GreenPosReport:findById", query = "SELECT g FROM GreenPosReport g where g.enavId = :id") })
+        @NamedQuery(name = "GreenPosReport:findById", query = "SELECT g FROM GreenPosReport g where g.enavId = :id")})
 public abstract class GreenPosReport extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -65,11 +62,15 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     @Valid
     private Position position;
 
+    private String vesselMalFunctions;
+
     @NotNull
     private String reportedBy;
-    
+
     @NotNull
     private String recipient;
+
+    private Integer number;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @NotNull
@@ -81,16 +82,16 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
 
     public static GreenPosReport from(GreenPos from) {
         switch (from.getType()) {
-        case "SP":
-            return GreenPosSailingPlanReport.fromJsonModel(from);
-        case "PR":
-            return GreenPosPositionReport.fromJsonModel(from);
-        case "FR":
-            return GreenPosFinalReport.fromJsonModel(from);
-        case "DR":
-            return GreenPosDeviationReport.fromJsonModel(from);
-        default:
-            throw new IllegalArgumentException("Unknown value '" + from.getType() + "' for reportType");
+            case "SP":
+                return GreenPosSailingPlanReport.fromJsonModel(from);
+            case "PR":
+                return GreenPosPositionReport.fromJsonModel(from);
+            case "FR":
+                return GreenPosFinalReport.fromJsonModel(from);
+            case "DR":
+                return GreenPosDeviationReport.fromJsonModel(from);
+            default:
+                throw new IllegalArgumentException("Unknown value '" + from.getType() + "' for reportType");
         }
     }
 
@@ -152,20 +153,18 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         this.enavId = UUID.randomUUID().toString();
     }
 
-    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String latitude, String longitude) {
-        this();
-        this.vesselName = vesselName;
-        this.vesselMmsi = vesselMmsi;
-        this.vesselCallSign = vesselCallSign;
-        this.position = new Position(latitude, longitude);
+    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, String latitude, String longitude, Integer number, String vesselMalFunctions) {
+        this(vesselName, vesselMmsi, vesselCallSign, new Position(latitude, longitude), number, vesselMalFunctions);
     }
 
-    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, Position position) {
+    public GreenPosReport(String vesselName, Long vesselMmsi, String vesselCallSign, Position position, Integer number, String vesselMalFunctions) {
         this();
         this.vesselName = vesselName;
         this.vesselMmsi = vesselMmsi;
         this.vesselCallSign = vesselCallSign;
         this.position = position;
+        this.vesselMalFunctions = vesselMalFunctions;
+        this.number = number;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -214,12 +213,28 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     public void setTs(DateTime ts) {
         this.ts = ts;
     }
-    
+
     public String getRecipient() {
         return recipient;
     }
-    
+
     public void setRecipient(String recipient) {
         this.recipient = recipient;
+    }
+
+    public String getVesselMalFunctions() {
+        return vesselMalFunctions;
+    }
+
+    public void setVesselMalFunctions(String vesselMalFunctions) {
+        this.vesselMalFunctions = vesselMalFunctions;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 }

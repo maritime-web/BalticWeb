@@ -26,6 +26,8 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.google.common.base.Predicate;
+
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.SelectionGroup;
 import dk.dma.embryo.user.security.Subject;
@@ -33,7 +35,7 @@ import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
 import dk.dma.embryo.vessel.json.VesselOverview;
 
 @Default
-public class UserSelectionGroupsFilterImpl implements UserSelectionGroupsFilter {
+public class UserSelectionGroupsFilterImpl implements UserSelectionGroupsFilter, Predicate<VesselOverview> {
 
     private static final long serialVersionUID = -7771436245663646148L;
     final boolean MATCH = true;
@@ -51,7 +53,7 @@ public class UserSelectionGroupsFilterImpl implements UserSelectionGroupsFilter 
     private SecuredUser user;
 
     @Override
-    public boolean isVesselInActiveUserSelectionGroups(VesselOverview vessel) {
+    public boolean apply(VesselOverview vessel) {
 
         if(this.user == null) {
             this.user = subject.getUser();

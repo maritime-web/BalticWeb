@@ -14,12 +14,11 @@
  */
 package dk.dma.arcticweb.reporting.json.model;
 
-import java.util.Date;
-import java.util.List;
-
+import dk.dma.embryo.vessel.json.Voyage;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import dk.dma.embryo.vessel.json.Voyage;
+import java.util.Date;
+import java.util.List;
 
 public class GreenPos {
 
@@ -37,6 +36,8 @@ public class GreenPos {
 
     private Double lon;
 
+    private Integer number;
+
     private String weather;
 
     private String ice;
@@ -46,6 +47,8 @@ public class GreenPos {
     private Integer course;
 
     private String destination;
+
+    private String malFunctions;
 
     private Integer personsOnBoard;
 
@@ -58,8 +61,8 @@ public class GreenPos {
     private String reporter;
 
     private Date ts;
-    
-    private String[] recipients;
+
+    private String recipient;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -116,6 +119,14 @@ public class GreenPos {
 
     public void setLon(Double longitude) {
         this.lon = longitude;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public String getType() {
@@ -222,11 +233,19 @@ public class GreenPos {
         this.id = id;
     }
 
-    public String[] getRecipients() {
-        return recipients;
+    public String getRecipient() {
+        return recipient;
     }
-    
-    public void setRecipients(String[] receipients) {
-        this.recipients = receipients;
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getMalFunctions() {
+        return malFunctions;
+    }
+
+    public void setMalFunctions(String malFunctions) {
+        this.malFunctions = malFunctions;
     }
 }

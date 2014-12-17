@@ -121,7 +121,7 @@ $(function() {
             		}
             	}
             	
-            	$scope.printSelectionGroupsToConsole();
+//            	$scope.printSelectionGroupsToConsole();
 
             	selectionLayer.draw(selectionGroup);
             };
@@ -141,33 +141,7 @@ $(function() {
             	
                 return true; 
             };
-            /*
-            var mapPolygonsToSelectionSquares = function(selectionGroup) {
-            	
-            	// Get the updated polygons from the layer
-            	var polygons = selectionLayer.getPolygonsBySelectionGroup();
-            	for(key in polygons) {
-            		
-            		var square = polygons[key];
-
-            		var squareBounds = square.geometry.getBounds();
-        			
-        			console.log("mapping of all -> " + JSON.stringify(selectionGroup.squares));
-        			console.log("mapping of LEFT -> " + selectionGroup.squares.left);
-        			console.log("mapping of RIGHT -> " + selectionGroup.squares.right);
-        			console.log("mapping of BOTTOM -> " + selectionGroup.squares.bottom);
-        			console.log("mapping of TOP -> " + selectionGroup.squares.top);
-        			
-        			var boundsTransformed = squareBounds.transform(projectionFrontend, projectionBackend);
-        	        console.log("transformation of all -> " + JSON.stringify(boundsTransformed));
-        	        
-        	        selectionGroup.squares = boundsTransformed;
-            	}
-            	
-            	//$scope.printSelectionGroupsToConsole();
-            	
-            };*/
-            
+                       
             $scope.selectionGroupDone = function(selectionGroup) {
 //            	console.log("inside saveSelectionGroup...");
 //            	console.log("name -> " + selectionGroup.name);
@@ -217,6 +191,11 @@ $(function() {
             				$scope.alertMessages.push(error);
             			});
             };
+
+            $scope.$on("$destroy", function () {
+                selectionLayer.clearFeatures();
+                selectionLayer.deactivateModify();
+            });
           
         } ]);
 });

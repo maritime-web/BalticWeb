@@ -1,0 +1,51 @@
+<div accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
+	<div accordion-group heading="Setup Data Areas"> 
+	<!-- style="height: 300px;" -->
+
+		<div x-ng-controller="SelectAreaController">
+			<h5 id="title">Setup Selection Groups</h5>
+		    <div id="shortdesc">
+		    	<div x-ng-if="alertMessages" class="alert alert-danger">
+					<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+				</div>
+		
+		    	<div class="row">
+					<div class="col-xs-12">
+						<table class="table table-condensed">
+							<tr x-ng-repeat="selectionGroup in getSelectionGroups()">
+								<td>
+									<span x-ng-if="selectionGroup.editMode == false">
+										{{selectionGroup.name}}
+									</span>
+									<input 	x-ng-if="selectionGroup.editMode == true" 
+											type="text" 
+											value="{{selectionGroup.name}}" 
+											x-ng-model="selectionGroup.name" 
+											class="form-control input-sm" />
+									<br>
+									<div>
+										<span class="pull-left">
+											<input type="checkbox" x-ng-model="selectionGroup.active"> &nbsp; <span>{{selectionGroup.getStatusLabel()}}</span></input>
+										</span>
+										<span class="pull-right">
+											<button id="buttonEdit" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == false" x-ng-click="editSelectionGroup(selectionGroup)">show</button>
+											<button id="buttonDone" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupDone(selectionGroup)">done</button>
+											<button id="buttonClear" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupClear(selectionGroup)">clear</button>
+											<button id="buttonDelete" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupDelete(selectionGroup)">delete</button>
+										</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				
+				<span class="pull-right">
+					<button type="button" x-ng-click="createGroup()" x-ng-disabled="alreadyInEditMode()" class="btn btn-sm">New Group</button>
+					<button type="button" x-ng-click="updateSelectionGroups()" x-ng-disabled="alreadyInEditMode()" class="btn btn-primary btn-sm">Save Groups</button>
+				</span>
+		    </div>
+		</div>	         		
+	</div>
+</div>

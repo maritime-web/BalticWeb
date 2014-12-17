@@ -21,14 +21,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
 public interface AisViewService {
+    
+    /*
     @GET
     @Path("/vessel_list")
     VesselListResult vesselList(@QueryParam("requestId") long requestId);
-
+*/
     @GET
     @Path("vessel_target_details")
     Map<String, Object> vesselTargetDetails(@QueryParam("mmsi") long vesselId, @QueryParam("past_track") int pastTrack);
 
+    /*
     public static class VesselListResult {
         private long requestId;
         private long vesselsInWorld;
@@ -101,4 +104,5 @@ public interface AisViewService {
             this.vesselCount = vesselCount;
         }
     }
+    */
 }

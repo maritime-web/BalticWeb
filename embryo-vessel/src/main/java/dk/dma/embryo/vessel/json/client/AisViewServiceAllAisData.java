@@ -18,43 +18,16 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
 public interface AisViewServiceAllAisData {
+    
+    String FILTER_VALUE_PT24H ="PT24H";
+    
+    // example -> ttlLive=PT24H&ttlSat=PT24H
     @GET
     @Path("/vessel/list")
-    List<Vessel> vesselList();
-
-    /*
-    @GET
-    @Path("vessel_target_details")
-    Map<String, Object> vesselTargetDetails(@QueryParam("mmsi") long vesselId, @QueryParam("past_track") int pastTrack);
-     */
-    public static class VesselListResult {
-        private List<String[]> vessels;
-
-        public String toString() {
-            return AisJsonClientFactory.asJson(this);
-        }
-
-        public List<String[]> getVessels() {
-            return vessels;
-        }
-        public void setVessels(List<String[]> vessels) {
-            this.vessels = vessels;
-        }
-    }
-    /*
-    public static class VesselList {
-        private List<String[]> vessels;
-
-        public List<String[]> getVessels() {
-            return vessels;
-        }
-        public void setVessels(List<String[]> vessels) {
-            this.vessels = vessels;
-        }
-    }
-     */
+    List<Vessel> vesselList(@QueryParam("ttlLive") String ttlLive, @QueryParam("ttlSat") String ttlSat);
 
     public static class Vessel {
 
@@ -313,7 +286,5 @@ public interface AisViewServiceAllAisData {
         "width": 4
     },
          */
-
-
-}
+    }
 }

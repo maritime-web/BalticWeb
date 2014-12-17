@@ -91,7 +91,7 @@ public class AisReplicatorJob {
                 logger.info("no value for embryo.vessel.aisjob.initialExecution, skipping initial execution");
             }
 
-            // Replite AIS data on confired interval
+            // Replicate AIS data on confired interval
             TimerConfig config = new TimerConfig(null, false);
             service.createCalendarTimer(cron, config);
         } else {
@@ -103,19 +103,21 @@ public class AisReplicatorJob {
         updateAis();
     }
 
+    /**
+     * Executes on startup
+     */
     @Timeout
     void updateAis() {
         try {
-            logger.debug("UPDATE AIS VESSEL DATA INCLUDING NORWEGIAN DATA...");
+            logger.info("UPDATE AIS VESSEL DATA INCLUDING NORWEGIAN DATA...");
 
             // Get all vessels from AIS server
-            List<AisViewServiceAllAisData.Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList();
-
+            List<AisViewServiceAllAisData.Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList(AisViewServiceAllAisData.FILTER_VALUE_PT24H, AisViewServiceAllAisData.FILTER_VALUE_PT24H);
+            
             // Get all vessels from ArcticWeb database
             List<Vessel> articWebVesselsAsList = vesselRepository.getAll(Vessel.class);
 
-            logger.debug("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
-            //System.out.println("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
+            logger.info("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
 
             Map<Long, Vessel> awVesselsAsMap = this.updateArcticWebVesselInDatabase(aisServerAllVessels, articWebVesselsAsList);
 
@@ -130,13 +132,13 @@ public class AisReplicatorJob {
                     continue;
                 }
 
-                double x = aisVessel.getLon();
-                double y = aisVessel.getLat();
+                double longitude = aisVessel.getLon();
+                double latitude = aisVessel.getLat();
 
                 Long mmsi = aisVessel.getMmsi();
 
-                boolean isAllowed = aisDataService.isAllowed(x);
-                boolean isWithInAisCircle = aisDataService.isWithinAisCircle(x, y);
+                boolean isAllowed = aisDataService.isAllowed(latitude);
+                boolean isWithInAisCircle = aisDataService.isWithinAisCircle(longitude, latitude);
                 
                 /*
                  * These vessels are used by the VesselRestService to match against selection groups.
@@ -157,18 +159,14 @@ public class AisReplicatorJob {
                  * These vessels are used by MaxSpeadJob.java and 
                  * do not contain Arctic Web vessels from the database if they are outside the default circle and is allowed.
                  */
-                if (isAllowed && aisDataService.isWithinAisCircle(x, y)) {
+                if (isAllowed && aisDataService.isWithinAisCircle(longitude, latitude)) {
                     vesselsInAisCircle.add(aisVessel);
                 }
             }
 
-            logger.debug("Vessels in AIS circle: " + vesselsInAisCircle.size());
-            logger.debug("Vessels on Map : " + vesselsOnMap.size());
-            logger.debug("Vessels allowed : " + vesselsAllowed.size());
-            
-            //System.out.println("Vessels in AIS circle: " + vesselsInAisCircle.size());
-            //System.out.println("Vessels on Map : " + vesselsOnMap.size());
-            //System.out.println("Vessels allowed : " + vesselsAllowed.size());
+            logger.info("Vessels in AIS circle: " + vesselsInAisCircle.size());
+            logger.info("Vessels on Map : " + vesselsOnMap.size());
+            logger.info("Vessels allowed : " + vesselsAllowed.size());
             
             aisDataService.setVesselsAllowed(vesselsAllowed);
             aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
@@ -216,96 +214,9 @@ public class AisReplicatorJob {
 
         return awVesselsAsMap;
     }
-
-
-    /**
-     * Executes on startup
-     */
-    /*
-    @Timeout
-    void updateAis() {
-        try {
-            logger.debug("UPDATE AIS VESSEL DATA");
-
-            VesselListResult result = aisView.vesselList(0);
-
-            List<Vessel> awVesselsAsList = vesselRepository.getAll(Vessel.class);
-
-            logger.debug("aisView returns " + result.getVesselList().getVessels().size() + " items - "
-                    + "repository returns " + awVesselsAsList.size() + " items.");
-
-            Map<Long, Vessel> awVesselsAsMap = new HashMap<>();
-
-            for (Vessel v : awVesselsAsList) {
-                awVesselsAsMap.put(v.getMmsi(), v);
-            }
-
-            for (Entry<String, String[]> aisVessel : result.getVesselList().getVessels().entrySet()) {
-                Long mmsi = asLong(aisVessel.getValue()[6]);
-                String name = asString(aisVessel.getValue()[7]);
-                String callSign = asString(aisVessel.getValue()[8]);
-                Long imo = asLong(aisVessel.getValue()[9]);
-
-                if (mmsi != null) {
-                    Vessel vessel = awVesselsAsMap.get(mmsi);
-
-                    if (vessel != null && name != null && callSign != null) {
-                        if (!isUpToDate(vessel.getAisData(), name, callSign, imo)) {
-                            vessel.getAisData().setCallsign(callSign);
-                            vessel.getAisData().setImoNo(imo);
-                            vessel.getAisData().setName(name);
-                            logger.debug("Updating vessel {}/{}", mmsi, name);
-                            vesselRepository.saveEntity(vessel);
-                        } else {
-                            logger.debug("Vessel {}/{} is up to date", mmsi, name);
-                        }
-                    }
-                }
-            }
-
-            List<String[]> vesselsInAisCircle = new ArrayList<>();
-            List<String[]> vesselsOnMap = new ArrayList<>();
-
-            for (String[] aisVessel : result.getVesselList().getVessels().values()) {
-                double x = Double.parseDouble(aisVessel[2]);
-                double y = Double.parseDouble(aisVessel[1]);
-
-                Long mmsi = asLong(aisVessel[6]);
-
-                boolean isWithInAisCircle = aisDataService.isWithinAisCircle(x, y);
-                if (isWithInAisCircle || awVesselsAsMap.containsKey(mmsi)) {
-                    vesselsOnMap.add(aisVessel);
-                }
-                if (aisDataService.isWithinAisCircle(x, y)) {
-                    vesselsInAisCircle.add(aisVessel);
-                }
-            }
-
-            logger.debug("Vessels in AIS circle: " + vesselsInAisCircle.size());
-            logger.debug("Vessels on Map : " + vesselsOnMap.size());
-
-            aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
-            aisDataService.setVesselsOnMap(vesselsOnMap);
-
-            embryoLogService.info("AIS data replicated. Vessel count: " + vesselsInAisCircle.size());
-        } catch (Throwable t) {
-            logger.error("AIS Replication Error", t);
-            embryoLogService.error("" + t, t);
-        }
-    }
-     */
+    
     private boolean isUpToDate(dk.dma.embryo.vessel.model.AisData aisData, String name, String callSign, Long imo) {
         return ObjectUtils.equals(aisData.getName(), name) && ObjectUtils.equals(aisData.getCallsign(), callSign)
                 && ObjectUtils.equals(aisData.getImoNo(), imo);
     }
-    /*
-    private Long asLong(String value) {
-        return value == null || value.trim().length() == 0 || value.trim().toUpperCase().equals("N/A") ? null : Long
-                .valueOf(value);
-    }
-
-    private String asString(String value) {
-        return value == null || value.trim().length() == 0 || value.trim().toUpperCase().equals("N/A") ? null : value;
-    }
-     */
 }

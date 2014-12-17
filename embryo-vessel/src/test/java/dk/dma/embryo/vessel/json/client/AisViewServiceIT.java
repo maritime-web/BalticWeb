@@ -14,6 +14,7 @@
  */
 package dk.dma.embryo.vessel.json.client;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -24,10 +25,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = { AisJsonClientFactory.class, PropertyFileService.class })
 public class AisViewServiceIT {
+    
+    @Inject
+    AisViewServiceAllAisData aisViewServiceAllAisData;
+    
     @Inject
     FullAisViewService fullAisViewService;
 
@@ -36,11 +42,9 @@ public class AisViewServiceIT {
 
     @Test
     public void test() {
-        AisViewService.VesselListResult fullList = fullAisViewService.vesselList(0);
-        System.out.println("Full list: " + fullList.getVesselsInWorld());
-
-        AisViewService.VesselListResult limitedList = limitedAisViewService.vesselList(0);
-        System.out.println("Limited list: " + limitedList.getVesselsInWorld());
+        
+        List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.FILTER_VALUE_PT24H, AisViewServiceAllAisData.FILTER_VALUE_PT24H);
+        System.out.println("Full list: " + vesselList.toString());
     }
 
     @Test

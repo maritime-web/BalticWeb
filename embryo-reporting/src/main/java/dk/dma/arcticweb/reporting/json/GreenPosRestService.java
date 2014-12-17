@@ -14,23 +14,6 @@
  */
 package dk.dma.arcticweb.reporting.json;
 
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-
 import dk.dma.arcticweb.reporting.json.model.GreenPos;
 import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
 import dk.dma.arcticweb.reporting.json.model.GreenposRequest;
@@ -40,9 +23,23 @@ import dk.dma.arcticweb.reporting.model.GreenposSearch;
 import dk.dma.arcticweb.reporting.service.GreenPosService;
 import dk.dma.embryo.common.util.DateTimeConverter;
 import dk.dma.embryo.user.security.Subject;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import java.util.List;
 
 /**
- * 
  * @author Jesper Tejlgaard
  */
 @Path("/greenpos")
@@ -54,7 +51,7 @@ public class GreenPosRestService {
     @Inject
     private Subject subject;
 
-    
+
     @Inject
     private Logger logger;
 
@@ -69,11 +66,11 @@ public class GreenPosRestService {
         logger.debug("save({})", request);
 
         GreenPosReport toBeSaved = GreenPosReport.from(request.getReport());
-        reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive(), request.getIncludeActiveRoute(), request.getReport().getRecipients());
-        
+        reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive(), request.getIncludeActiveRoute(), request.getReport().getRecipient());
+
         String email = subject.getUser().getEmail();
-        
-        logger.debug("save() : {}" , email);
+
+        logger.debug("save() : {}", email);
         return email;
     }
 
@@ -113,7 +110,7 @@ public class GreenPosRestService {
         return reports;
     }
 
-    
+
     @GET
     @Path("/{id}")
     @Produces("application/json")
@@ -136,9 +133,9 @@ public class GreenPosRestService {
     @GZIP
     @NoCache
     public GreenPosShort[] list(@QueryParam("type") String type, @QueryParam("mmsi") Long mmsi,
-            @QueryParam("ts") String ts, @QueryParam("sortBy") String sortBy,
-            @QueryParam("sortOrder") String sortOrder, @QueryParam("start") Integer start,
-            @QueryParam("max") Integer max) {
+                                @QueryParam("ts") String ts, @QueryParam("sortBy") String sortBy,
+                                @QueryParam("sortOrder") String sortOrder, @QueryParam("start") Integer start,
+                                @QueryParam("max") Integer max) {
         logger.debug("list({})");
 
         DateTime dateTime = null;

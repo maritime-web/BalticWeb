@@ -5,7 +5,7 @@
 
     var module = angular.module('embryo.routeService', [ 'embryo.storageServices' ]).service('RouteService',
 
-    function($rootScope, $http, SessionStorageService, LocalStorageService) {
+        function ($rootScope, $http, SessionStorageService) {
         var routeKey = function(routeId) {
             return 'route_' + routeId;
         };

@@ -14,6 +14,12 @@
 	border-top: none;
 }
 
+#greenposList .table tr.extra-center td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border-top: none;
+}
+
 #greenposList .table tbody {
 	border-top: 2px solid #dddddd;
 }

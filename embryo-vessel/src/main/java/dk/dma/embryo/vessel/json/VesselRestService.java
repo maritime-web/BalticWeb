@@ -33,7 +33,8 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
-import dk.dma.embryo.common.util.ParseUtils;
+import com.google.common.collect.Collections2;
+
 import dk.dma.embryo.vessel.job.AisDataService;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
 import dk.dma.embryo.vessel.job.MaxSpeedJob;
@@ -42,7 +43,6 @@ import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
 import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
-import dk.dma.embryo.vessel.json.client.FullAisViewService;
 import dk.dma.embryo.vessel.json.client.LimitedAisViewService;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
@@ -56,9 +56,6 @@ import dk.dma.embryo.vessel.service.VesselService;
 public class VesselRestService {
     @Inject
     private LimitedAisViewService limitedAisViewService;
-
-    @Inject
-    private FullAisViewService fullAisViewService;
 
     @Inject
     private AisDataService aisDataService;
@@ -105,8 +102,8 @@ public class VesselRestService {
         Map<Long, VesselOverview> allAllowedAisVesselsAsMap = mapifyResult(allAllowedAisVesselsAsDTO);
 
         List<VesselOverview> result = new ArrayList<VesselOverview>();
-        if(this.userSelectionGroupsFilter.loggedOnUserHasSelectionGroups()) {
-            this.filterAisVesselsAgainstSelectionGroups(allAllowedAisVesselsAsDTO, result);
+        if (this.userSelectionGroupsFilter.loggedOnUserHasSelectionGroups()) {
+            result.addAll(Collections2.filter(allAllowedAisVesselsAsDTO, userSelectionGroupsFilter));
         } else {
             // Go default
             result = this.mapAisVessels(aisDataService.getVesselsOnMap());
@@ -125,15 +122,6 @@ public class VesselRestService {
             }
         }
         return result;
-    }
-
-    private void filterAisVesselsAgainstSelectionGroups(List<VesselOverview> allAllowedAisVessels, List<VesselOverview> result) {
-
-        for (VesselOverview aisVessel : allAllowedAisVessels) {
-            if(this.userSelectionGroupsFilter.isVesselInActiveUserSelectionGroups(aisVessel)) {
-                result.add(aisVessel);
-            }
-        }
     }
 
     private VesselOverview createVesselOverview(Vessel vesselFromDatabase) {
@@ -159,8 +147,7 @@ public class VesselRestService {
 
     private List<VesselOverview> mapAisVessels(List<AisViewServiceAllAisData.Vessel> vessels) {
 
-//        List<AisViewServiceAllAisData.Vessel> allowedVessels = aisDataService.getVesselsAllowed(); 
-        List<AisViewServiceAllAisData.Vessel> allowedVessels = vessels; 
+        List<AisViewServiceAllAisData.Vessel> allowedVessels = vessels;
         Map<Long, MaxSpeedRecording> speeds = aisDataService.getMaxSpeeds();
 
         List<VesselOverview> vesselOverviewsResponse = new ArrayList<VesselOverview>();
@@ -194,46 +181,7 @@ public class VesselRestService {
 
         return vesselOverviewsResponse;
     }
-    /*
-    private List<VesselOverview> getAisVessels() {
 
-        List<AisViewServiceAllAisData.Vessel> vessels = aisDataService.getVesselsOnMap(); 
-        Map<Long, MaxSpeedRecording> speeds = aisDataService.getMaxSpeeds();
-
-        List<VesselOverview> vesselOverviewsResponse = new ArrayList<VesselOverview>();
-
-        //int antalGrey = 0;
-        for (AisViewServiceAllAisData.Vessel vessel : vessels) {
-
-            VesselOverview vesselOverview = new VesselOverview();
-            Long mmsi = vessel.getMmsi();
-
-            vesselOverview.setX(vessel.getLon());
-            vesselOverview.setY(vessel.getLat());
-            vesselOverview.setAngle(vessel.getCog() != null ? vessel.getCog() : 0);
-            vesselOverview.setMmsi(mmsi);
-            vesselOverview.setName(vessel.getName());
-            vesselOverview.setCallSign(vessel.getCallsign());
-            vesselOverview.setMoored(vessel.getMoored() != null ? vessel.getMoored() : false);
-
-            ShipType shipTypeFromSubType = ShipType.getShipTypeFromSubType(vessel.getVesselType());
-            String type = ShipTypeMapper.getInstance().getColor(shipTypeFromSubType).ordinal() + "";
-            vesselOverview.setType(type);
-
-            vesselOverview.setInAW(false);
-
-            // What is vessel[3] seems to be either A or B ?
-
-            MaxSpeedRecording speed = speeds.get(mmsi);
-            vesselOverview.setMsog(speed != null ? speed.getMaxSpeed() : 0.0);
-
-            vesselOverviewsResponse.add(vesselOverview);
-        }
-
-        return vesselOverviewsResponse;
-    }
-    */
-    
     @GET
     @Path("/details")
     @Produces("application/json")
@@ -244,15 +192,21 @@ public class VesselRestService {
         logger.debug("details({})", mmsi);
 
         try {
-            Map<String, Object> result = fullAisViewService.vesselTargetDetails(mmsi, 0);
+
+            logger.info("MMSI -> " + mmsi);
+            dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel aisVessel = this.aisDataService.getAisVesselByMmsi(mmsi);
 
             boolean historicalTrack = false;
-            String lat = (String) result.get("lat");
-            String lon = (String) result.get("lon");
-            // EMBRYO-135: avoid NullPointer when lat/lon not present in AIS data
+            Double lat = null;
+            Double lon = null;
+
+            if (aisVessel != null) {
+                lat = aisVessel.getLat();
+                lon = aisVessel.getLon();
+            }
+
             if (lat != null && lon != null) {
-                historicalTrack = aisDataService.isWithinAisCircle(ParseUtils.parseLongitude(lon),
-                        ParseUtils.parseLatitude(lat));
+                historicalTrack = aisDataService.isAllowed(lat);
             }
 
             VesselDetails details;
@@ -264,14 +218,11 @@ public class VesselRestService {
                 route = scheduleService.getActiveRoute(mmsi);
                 details = vessel.toJsonModel();
                 schedule = scheduleService.getSchedule(mmsi);
-                details.getAis().putAll(result);
+                details.setAisVessel(aisVessel);
             } else {
                 details = new VesselDetails();
-                details.setAis(result);
+                details.setAisVessel(aisVessel);
             }
-
-            // Map<String, Object> reporting = new HashMap<>();
-            // details.setReporting(reporting);
 
             Map<String, Object> additionalInformation = new HashMap<>();
             additionalInformation.put("historicalTrack", historicalTrack);
@@ -283,6 +234,7 @@ public class VesselRestService {
             return details;
 
         } catch (Throwable t) {
+
             logger.info("Ignoring exception " + t, t);
 
             // fallback on database only
@@ -296,10 +248,11 @@ public class VesselRestService {
 
                 details = vessel.toJsonModel();
 
-                details.getAis().put("callsign", vessel.getAisData().getCallsign());
-                details.getAis().put("imoNo", "" + vessel.getAisData().getImoNo());
-                details.getAis().put("mmsi", "" + vessel.getMmsi());
-                details.getAis().put("name", "" + vessel.getAisData().getName());
+                AisViewServiceAllAisData.Vessel aisVessel = new AisViewServiceAllAisData.Vessel();
+                aisVessel.setCallsign(vessel.getAisData().getCallsign());
+                aisVessel.setImoNo(vessel.getAisData().getImoNo());
+                aisVessel.setMmsi(vessel.getMmsi());
+                aisVessel.setName(vessel.getAisData().getName());
 
                 Map<String, Object> additionalInformation = new HashMap<>();
                 additionalInformation.put("routeId", route != null ? route.getEnavId() : null);
@@ -338,5 +291,4 @@ public class VesselRestService {
         logger.debug("updateMaxSpeeds()");
         maxSpeedJob.update();
     }
-
 }

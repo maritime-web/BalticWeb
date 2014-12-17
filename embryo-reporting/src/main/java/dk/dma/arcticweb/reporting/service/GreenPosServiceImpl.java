@@ -14,20 +14,6 @@
  */
 package dk.dma.arcticweb.reporting.service;
 
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptors;
-import javax.interceptor.InvocationContext;
-
-import org.apache.shiro.authz.AuthorizationException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
 import dk.dma.arcticweb.reporting.mail.ReportMail;
 import dk.dma.arcticweb.reporting.model.GreenPosDeviationReport;
 import dk.dma.arcticweb.reporting.model.GreenPosReport;
@@ -46,6 +32,18 @@ import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
 import dk.dma.embryo.vessel.persistence.VesselDao;
+import org.apache.shiro.authz.AuthorizationException;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptors;
+import javax.interceptor.InvocationContext;
+import java.util.List;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -65,8 +63,8 @@ public class GreenPosServiceImpl implements GreenPosService {
 
     @Inject
     private ScheduleDao scheduleDao;
-    
-    @Inject 
+
+    @Inject
     private PropertyFileService propertyFileService;
 
     @Inject
@@ -76,7 +74,7 @@ public class GreenPosServiceImpl implements GreenPosService {
     }
 
     public GreenPosServiceImpl(GreenPosDao reportingDao, VesselDao vesselDao, Subject subject,
-            RealmDao realmDao, MailSender mailSender, ScheduleDao scheduleDao) {
+                               RealmDao realmDao, MailSender mailSender, ScheduleDao scheduleDao) {
         this.greenPosDao = reportingDao;
         this.vesselDao = vesselDao;
         this.subject = subject;
@@ -96,8 +94,8 @@ public class GreenPosServiceImpl implements GreenPosService {
      */
     @Override
     @Interceptors(SaveReportInterceptor.class)
-    public String saveReport(GreenPosReport report, String routeEnavId, Boolean activate, Boolean includeActiveWaypoints, String[] recipients) {
-        
+    public String saveReport(GreenPosReport report, String routeEnavId, Boolean activate, Boolean includeActiveWaypoints, String recipient) {
+
         checkIfAlreadySaved(report);
 
         Vessel vessel = null;
@@ -112,34 +110,30 @@ public class GreenPosServiceImpl implements GreenPosService {
         report.setReportedBy(subject.getUser().getUserName());
         report.setTs(DateTime.now(DateTimeZone.UTC));
 
-        if(includeActiveWaypoints != null && includeActiveWaypoints.booleanValue()){
+        if (includeActiveWaypoints != null && includeActiveWaypoints.booleanValue()) {
             Route route = scheduleDao.getActiveRoute(report.getVesselMmsi());
-            
-            if(route == null){
+
+            if (route == null) {
                 throw new IllegalArgumentException("Active route with enavId " + routeEnavId + " not found.");
             }
-            
+
             ReportedRoute reported = ReportedRoute.fromModel(route);
-            
-            if(report instanceof GreenPosSailingPlanReport){
-                ((GreenPosSailingPlanReport)report).setRoute(reported);
+
+            if (report instanceof GreenPosSailingPlanReport) {
+                ((GreenPosSailingPlanReport) report).setRoute(reported);
             }
-            if(report instanceof GreenPosDeviationReport){
-                ((GreenPosDeviationReport)report).setRoute(reported);
+            if (report instanceof GreenPosDeviationReport) {
+                ((GreenPosDeviationReport) report).setRoute(reported);
             }
         }
-        
-        for(String rec : recipients) {
-            report.setRecipient(rec);
-            report = greenPosDao.saveEntity(report);
-            
-            if(routeEnavId != null && activate != null){
-                new RouteActivator(scheduleDao).activateRoute(routeEnavId, activate);
-            }
-            
-            mailSender.sendEmail(new ReportMail(report, subject.getUser().getEmail(), rec, propertyFileService));
+
+        report.setRecipient(recipient);
+        report = greenPosDao.saveEntity(report);
+
+        if (routeEnavId != null && activate != null) {
+            new RouteActivator(scheduleDao).activateRoute(routeEnavId, activate);
         }
-        
+        mailSender.sendEmail(new ReportMail(report, subject.getUser().getEmail(), recipient, propertyFileService));
 
         return report.getEnavId();
     }
@@ -165,7 +159,7 @@ public class GreenPosServiceImpl implements GreenPosService {
 
         // Validation skipped if his vessel name is still not registered in the system.
         if (vessel.getAisData().getName() != null && !vessel.getAisData().getName().equals(report.getVesselName())) {
-            throw new IllegalArgumentException("Reported vessel name must match the call sign of the users vessel");
+            throw new IllegalArgumentException("Reported vessel name must match the vessel name of the users vessel");
         }
     }
 
@@ -199,18 +193,18 @@ public class GreenPosServiceImpl implements GreenPosService {
         return greenPosDao.findById(id);
     }
 
-    public static class SaveReportInterceptor{
-        
+    public static class SaveReportInterceptor {
+
         @Inject
         private Subject subject;
-        
+
         @AroundInvoke
-        Object onlyForOwnVessel(InvocationContext ctx) throws Exception{
-            GreenPosReport report = (GreenPosReport)ctx.getParameters()[0];
-            if(report.getVesselMmsi() == null || !subject.authorizedToModifyVessel(report.getVesselMmsi())){
+        Object onlyForOwnVessel(InvocationContext ctx) throws Exception {
+            GreenPosReport report = (GreenPosReport) ctx.getParameters()[0];
+            if (report.getVesselMmsi() == null || !subject.authorizedToModifyVessel(report.getVesselMmsi())) {
                 throw new AuthorizationException("Not authorized to submit GreenposReports for vessel");
             }
-            
+
             return ctx.proceed();
         }
     }

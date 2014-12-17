@@ -14,16 +14,15 @@
  */
 package dk.dma.arcticweb.reporting.service;
 
-import java.util.List;
-
-import javax.ejb.Local;
-
 import dk.dma.arcticweb.reporting.model.GreenPosReport;
 import dk.dma.arcticweb.reporting.model.GreenposMinimal;
 import dk.dma.arcticweb.reporting.model.GreenposSearch;
 
+import javax.ejb.Local;
+import java.util.List;
+
 @Local
-public interface GreenPosService{
+public interface GreenPosService {
 
     List<GreenPosReport> listReports();
 
@@ -31,8 +30,8 @@ public interface GreenPosService{
 
     List<GreenposMinimal> getLatest();
 
-    String saveReport(GreenPosReport report, String routeEnavId, Boolean activate, Boolean includeActiveWayPoints, String[] recipients);
-    
+    String saveReport(GreenPosReport report, String routeEnavId, Boolean activate, Boolean includeActiveWayPoints, String recipient);
+
     List<GreenPosReport> findReports(GreenposSearch search);
 
     GreenPosReport get(String id);
