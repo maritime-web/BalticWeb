@@ -16,6 +16,7 @@ package dk.dma.embryo.dataformats.netcdf;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import dk.dma.embryo.dataformats.model.Forecast.Provider;
 import dk.dma.embryo.dataformats.model.ForecastType;
 import dk.dma.embryo.dataformats.model.ForecastType.Type;
 import dk.dma.embryo.dataformats.service.ForecastServiceImpl;
@@ -31,49 +33,64 @@ import dk.dma.embryo.dataformats.service.ForecastServiceImpl;
 public class NetCDFParserTest {
 
     @Test
+    public void testParser() throws IOException {
+        NetCDFParser parser = new NetCDFParser();
+        ForecastServiceImpl service = new ForecastServiceImpl();
+        List<ForecastType> types = service.createData();
+        Map<Provider, Map<String, NetCDFRestriction>> restrictions = service.initRestrictions();
+        //URL resource = getClass().getResource("/netcdf/hycom-cice_NORTH_2014121512.nc");
+        URL resource = getClass().getResource("/netcdf/wam_ATL_2014121606.nc");
+        
+        for (NetCDFRestriction restriction : restrictions.get(Provider.DMI).values()) {
+            System.out.println("Parsing restriction: " + restriction.toString());
+            parser.parse(resource.getPath(), types, restriction);
+        }
+    }
+
+    @Test
     @Ignore
     public void readNetCDFFile() throws Exception {
         NetCDFParser parser = new NetCDFParser();
-        
+
         ForecastServiceImpl service = new ForecastServiceImpl();
         service.init();
         List<ForecastType> prognosisTypes = service.createData();
-        
-        URL resource = getClass().getResource("/netcdf/hycom-cice.nc");
+
+        URL resource = getClass().getResource("/netcdf/wam_ATL_2014121606.nc");
         Map<NetCDFType, NetCDFResult> results = parser.parse(resource.getPath(), prognosisTypes);
-        
-        Map<String, List<? extends Serializable>> metadata = results.get(service.getPrognosisType(Type.ICE_FORECAST)).getMetadata();
+
+        Map<String, List<? extends Serializable>> metadata = results.get(service.getForecastType(Type.ICE_FORECAST)).getMetadata();
         List<? extends Serializable> latList = metadata.get(NetCDFParser.LAT);
         List<? extends Serializable> lonList = metadata.get(NetCDFParser.LON);
         List<? extends Serializable> timeList = metadata.get(NetCDFParser.TIME);
         assertEquals(101, latList.size());
         assertEquals(101, lonList.size());
         assertEquals(2, timeList.size());
-        
-        Map<Integer, NetCDFMoment> data = results.get(service.getPrognosisType(Type.ICE_FORECAST)).getData();
+
+        Map<Integer, NetCDFMoment> data = results.get(service.getForecastType(Type.ICE_FORECAST)).getData();
         assertEquals(714, data.size());
     }
-    
+
     @Test
     @Ignore
     public void readNetCDFFileWithRestrictions() throws Exception {
         NetCDFParser parser = new NetCDFParser();
-        URL resource = getClass().getResource("/netcdf/WAV_2014071400.hh00_test.nc");
-        
+        URL resource = getClass().getResource("/netcdf/wam_ATL_2014121606.nc");
+
         ForecastServiceImpl service = new ForecastServiceImpl();
         service.init();
         List<ForecastType> prognosisTypes = service.createData();
-        
+
         NetCDFRestriction restriction = new NetCDFRestriction();
-//        restriction.setTimeStart(12);
-//        restriction.setTimeInterval(24);
+        // restriction.setTimeStart(12);
+        // restriction.setTimeInterval(24);
         restriction.setMinLat(5);
         restriction.setMaxLat(15);
         restriction.setMinLon(5);
         restriction.setMaxLon(35);
         Map<NetCDFType, NetCDFResult> results = parser.parse(resource.getPath(), prognosisTypes, restriction);
-        
-        Map<Integer, NetCDFMoment> data = results.get(service.getPrognosisType(Type.ICE_FORECAST)).getData();
+
+        Map<Integer, NetCDFMoment> data = results.get(service.getForecastType(Type.ICE_FORECAST)).getData();
         assertEquals(1548, data.size());
     }
 }

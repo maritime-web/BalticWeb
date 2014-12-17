@@ -32,7 +32,7 @@ $(function() {
                 $scope.reloadMap(true);
                 return;
             }
-            ForecastService.getWaveForecast(p.name, function(forecast) {
+            ForecastService.getWaveForecast(p.id, function(forecast) {
                 $scope.errorMsg = null;
                 $scope.data = forecast;
                 var time = forecast.metadata.time;
@@ -63,9 +63,7 @@ $(function() {
 
     module.controller('WaveForecastsCtrl', [ '$scope', 'ForecastService', function($scope, ForecastService) {
 
-        // Enable below once DMI starts delivering data.
-        
-        /*ForecastService.listWaveForecasts(function(forecasts) {
+        ForecastService.listWaveForecasts(function(forecasts) {
             $scope.errorMsg = null;
             $scope.waveForecasts = [];
             for (var i = 0; i < forecasts.length; i++) {
@@ -73,7 +71,7 @@ $(function() {
             }
         }, function(error, status) {
             $scope.errorMsg = error;
-        });*/
+        });
     } ]);
     
     module.controller('CurrentForecastCtrl', [ '$scope', 'ForecastService', function($scope, ForecastService) {

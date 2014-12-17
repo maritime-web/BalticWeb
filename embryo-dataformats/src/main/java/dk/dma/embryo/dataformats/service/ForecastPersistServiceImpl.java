@@ -37,26 +37,74 @@ public class ForecastPersistServiceImpl implements ForecastPersistService {
         if (found == null || found.isEmpty()) {
             forecastDao.saveEntity(forecast);
         } else {
-            Forecast latest = found.get(0);
+            if (forecast.getSize() == -1) {
+                Forecast same = forecastDao.exactlySameExists(forecast.getName(), forecast.getArea(), forecast.getType());
+                if (same != null) {
+                    same.invalidate();
+                    forecastDao.saveEntity(same);
+                } else {
+                    forecast.invalidate();
+                    forecastDao.saveEntity(forecast);
+                }
+            } else {
+                Forecast latest = found.get(0);
+                if (latest.getTimestamp() < forecast.getTimestamp()) {
+                    if (forecast.getSize() > 0) {
+                        latest.invalidate();
+                        forecastDao.saveEntity(latest);
+                    }
+                    forecastDao.saveEntity(forecast);
+                } else if (latest.getTimestamp() == forecast.getTimestamp() && forecast.getSize() > latest.getSize()) {
+                    if (latest.getName().equals(forecast.getName())) {
+                        latest.updateData(forecast.getData(), forecast.getSize());
+                        forecast.invalidate();
+                    } else {
+                        latest.invalidate();
+                    }
+                    forecastDao.saveEntity(latest);
+                    forecastDao.saveEntity(forecast);
+                }
+                if (found.size() > 1) {
+                    for (int i = 1; i < found.size(); i++) {
+                        Forecast current = found.get(i);
+                        if (current.getSize() != -1) {
+                            current.invalidate();
+                            forecastDao.saveEntity(current);
+                        }
+                    }
+                }
+            }
+
+            /*Forecast latest = found.get(0);
             if (latest.getTimestamp() < forecast.getTimestamp()) {
-                latest.invalidate();
+                if (forecast.getSize() > 0) {
+                    latest.invalidate();
+                    forecastDao.saveEntity(latest);
+                }
                 forecastDao.saveEntity(forecast);
-                forecastDao.saveEntity(latest);
             } else if (latest.getTimestamp() == forecast.getTimestamp() && forecast.getData().length() > latest.getData().length()) {
-                // If we have a forecast from two different files, we keep
-                // the
+                // If we have a forecast from two different files, we keep the
                 // bigger one.
                 latest.updateData(forecast.getData(), forecast.getSize());
                 forecastDao.saveEntity(latest);
             }
-            if (found.size() > 1) {
+            if (found.size() > 1 && forecast.getSize() > 0) {
+                boolean inDb = false;
                 for (int i = 1; i < found.size(); i++) {
-                    if (found.get(i).getSize() != -1) {
-                        found.get(i).invalidate();
-                        forecastDao.saveEntity(found.get(i));
+                    Forecast current = found.get(i);
+                    if (current.getSize() != -1) {
+                        current.invalidate();
+                        forecastDao.saveEntity(current);
                     }
+                    inDb = inDb || current.getTimestamp() == forecast.getTimestamp();
                 }
-            }
+                if (!(inDb || latest.getTimestamp() == forecast.getTimestamp())) {
+                    if (latest.getTimestamp() > forecast.getTimestamp()) {
+                        forecast.invalidate();
+                    }
+                    forecastDao.saveEntity(forecast);
+                }
+            }*/
 
         }
     }

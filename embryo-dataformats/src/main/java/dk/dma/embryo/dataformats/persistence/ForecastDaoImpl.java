@@ -66,12 +66,25 @@ public class ForecastDaoImpl extends DaoImpl implements ForecastDao {
     }
 
     @Override
-    public boolean exists(Provider provider, long timestamp) {
+    public boolean exists(String name, long timestamp) {
         TypedQuery<Long> query = em.createNamedQuery("Forecast:exists", Long.class);
-        query.setParameter("provider", provider);
+        query.setParameter("name", name);
         query.setParameter("timestamp", timestamp);
         Long count = query.getSingleResult();
         return count > 0;
+    }
+    
+    @Override
+    public Forecast exactlySameExists(String name, String area, Type type) {
+        TypedQuery<Forecast> query = em.createNamedQuery("Forecast:exactlySame", Forecast.class);
+        query.setParameter("name", name);
+        query.setParameter("area", area);
+        query.setParameter("type", type);
+        List<Forecast> resultList = query.getResultList();
+        if (resultList != null && !resultList.isEmpty()) {
+            return resultList.get(0);
+        }
+        return null;
     }
 
     @Override
