@@ -13,7 +13,7 @@
 					<div class="col-xs-12">
 						<table class="table table-condensed">
 							<tr x-ng-repeat="selectionGroup in getSelectionGroups()">
-								<td style="width: 150px;">
+								<td>
 									<span x-ng-if="selectionGroup.editMode == false">
 										{{selectionGroup.name}}
 									</span>
@@ -23,15 +23,16 @@
 											x-ng-model="selectionGroup.name" 
 											class="form-control input-sm" />
 									<br>
-									<div style="float: left;">
-										<div style="width: 70px; float: left;">
+									<div>
+										<span class="pull-left">
 											<input type="checkbox" x-ng-model="selectionGroup.active"> &nbsp; <span>{{selectionGroup.getStatusLabel()}}</span></input>
-										</div>
-										<div style="width: 180px; float: left;">
-											<input id="buttonEdit" type="button" x-ng-show="selectionGroup.editMode == false" x-ng-click="editSelectionGroup(selectionGroup)" value="show"/>
-											<input id="buttonDone" type="button" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupDone(selectionGroup)" value="done"/>
-											<input id="buttonClear" type="button" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupClear(selectionGroup)" value="clear"/>
-											<input id="buttonDelete" type="button" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupDelete(selectionGroup)" value="delete"/>
+										</span>
+										<span class="pull-right">
+											<button id="buttonEdit" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == false" x-ng-click="editSelectionGroup(selectionGroup)">show</button>
+											<button id="buttonDone" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupDone(selectionGroup)">done</button>
+											<button id="buttonClear" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupClear(selectionGroup)">clear</button>
+											<button id="buttonDelete" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupDelete(selectionGroup)">delete</button>
+										</span>
 										</div>
 									</div>
 								</td>
@@ -40,20 +41,11 @@
 					</div>
 				</div>
 				
-				<input id="buttonCreateGroup" type="button" x-ng-disabled="alreadyInEditMode()" x-ng-click="createGroup()" value="New Group"/>
-		    	<input id="buttonUpdate" type="button" x-ng-click="updateSelectionGroups()" value="Save Groups"/>
-		        
-		        <!-- 
-		    	<input id="buttonShow" type="button" x-ng-click="printSelectionGroupsToConsole()" value="Show"/>
-		        <input id="buttonDelete" type="button" onclick="deleteSelections()" value="Delete"/>
-		         -->
+				<span class="pull-right">
+					<button type="button" x-ng-click="createGroup()" x-ng-disabled="alreadyInEditMode()" class="btn btn-sm">New Group</button>
+					<button type="button" x-ng-click="updateSelectionGroups()" x-ng-disabled="alreadyInEditMode()" class="btn btn-primary btn-sm">Save Groups</button>
+				</span>
 		    </div>
 		</div>	         		
 	</div>
 </div>
-<!-- 
-
-		<div accordion-group heading="Area Selection" e-left-bar-open-on-init>
-			<div x-ng-include="'partials/area-control.html'"></div>
-		</div>
- -->
