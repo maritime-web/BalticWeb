@@ -286,7 +286,11 @@ public class ForecastServiceImpl implements ForecastService {
         // DMI
         NetCDFVar.addToMap(currentVars, "u-current", "Current east");
         NetCDFVar.addToMap(currentVars, "v-current", "Current north");
-
+        
+        // New vars
+        NetCDFVar.addToMap(currentVars, "Uocean", "Current east");
+        NetCDFVar.addToMap(currentVars, "Vocean", "Current north");
+        
         types.add(currentForecastType);
 
         ForecastType waveForecastType = new ForecastType("Wave forecast", "wave", Type.WAVE_FORECAST);

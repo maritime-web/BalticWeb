@@ -98,31 +98,83 @@ public class VesselRestService {
     @NoCache
     public List<VesselOverview> list() {
 
-        List<VesselOverview> allAllowedAisVesselsAsDTO = this.mapAisVessels(aisDataService.getVesselsAllowed());
-        Map<Long, VesselOverview> allAllowedAisVesselsAsMap = mapifyResult(allAllowedAisVesselsAsDTO);
+        List<Vessel> allArcticWebVessels = vesselDao.getAll(Vessel.class);
 
         List<VesselOverview> result = new ArrayList<VesselOverview>();
-        if (this.userSelectionGroupsFilter.loggedOnUserHasSelectionGroups()) {
-            result.addAll(Collections2.filter(allAllowedAisVesselsAsDTO, userSelectionGroupsFilter));
-        } else {
-            // Go default
+        
+        if (userHasAnyActiveSelectionGroups()) {
+            
+            List<VesselOverview> allAllowedAisVessels = this.mapAisVessels(aisDataService.getVesselsAllowed());
+            
+            // OBS: this filter removes the ArcticWeb vessels if they got a position outside the Selection Groups.
+            result.addAll(Collections2.filter(allAllowedAisVessels, userSelectionGroupsFilter));
+            
+            for (Vessel vesselFromDatabase : allArcticWebVessels) {
+                
+                VesselOverview vesselToAdd = findVesselByMmsi(allAllowedAisVessels, vesselFromDatabase.getMmsi());
+                
+                setIsArcticWebFlagAndAddToResult(result, vesselFromDatabase, vesselToAdd);
+            }
+            
+        } else /* Go default */ {
+            
             result = this.mapAisVessels(aisDataService.getVesselsOnMap());
-        }
-        // ArcticWeb vessels from the database are always shown on the map
-        List<Vessel> allArcticWebVessels = vesselDao.getAll(Vessel.class);
-        for (Vessel vesselFromDatabase : allArcticWebVessels) {
-            VesselOverview aisVesselOverview = allAllowedAisVesselsAsMap.get(vesselFromDatabase.getMmsi());
-
-            if (alsoArcticWebVessel(aisVesselOverview)) {
-                aisVesselOverview.setInAW(true);
-                result.add(aisVesselOverview);
-            } else {
-                VesselOverview arcticWebVesselOnly = createVesselOverview(vesselFromDatabase);
-                result.add(arcticWebVesselOnly);
+            
+            for (Vessel vesselFromDatabase : allArcticWebVessels) {
+                
+                VesselOverview vesselToAdd = findVesselByMmsi(result, vesselFromDatabase.getMmsi());
+                
+                setIsArcticWebFlagAndAddToResult(result, vesselFromDatabase, vesselToAdd);
             }
         }
+        
         return result;
     }
+
+    private void setIsArcticWebFlagAndAddToResult(List<VesselOverview> result, Vessel vesselFromDatabase, VesselOverview aisVesselOverview) {
+       
+        if (bothArcticWebAndAisVessel(aisVesselOverview)) {
+            
+            aisVesselOverview.setInAW(true);
+            
+            // Important check otherwise the result will either contain duplicates or miss some vessels.
+            if(userHasAnyActiveSelectionGroups()) {
+                result.add(aisVesselOverview);
+            }
+        } else /* only database vessel then create new DTO and add to list */ {
+            
+            result.add(createVesselOverview(vesselFromDatabase));
+        }
+    }
+
+    private boolean userHasAnyActiveSelectionGroups() {
+        return this.userSelectionGroupsFilter.loggedOnUserHasSelectionGroups();
+    }
+
+    private VesselOverview findVesselByMmsi(List<VesselOverview> allAllowedAisVesselsAsDTO, Long mmsi) {
+       
+        for (VesselOverview vesselOverview : allAllowedAisVesselsAsDTO) {
+            if(vesselOverview.getMmsi().longValue() == mmsi.longValue()) {
+                return vesselOverview;
+            }
+        }
+        
+        return null;
+    }
+
+//    private void printNumberOfOratank(List<VesselOverview> allAllowedAisVesselsAsDTO, String id) {
+//       
+//        int numberOfOratank = 0;
+//        for (VesselOverview vesselOverview : allAllowedAisVesselsAsDTO) {
+//            if(vesselOverview.getName() != null && vesselOverview.getName().trim().equals("ORATANK")) {
+//                numberOfOratank++;
+//                logger.info("ORATANK #" + id + " -> isInAW -> " + vesselOverview.isInAW() + " MMSI -> " + vesselOverview.getMmsi());
+//            }
+//        }
+//        
+//        logger.info("NUMBER OF ORATANK #" + id + " -> " + numberOfOratank);
+//        
+//    }
 
     private VesselOverview createVesselOverview(Vessel vesselFromDatabase) {
         VesselOverview arcticWebVesselOnly = new VesselOverview();
@@ -133,7 +185,7 @@ public class VesselRestService {
         return arcticWebVesselOnly;
     }
 
-    private boolean alsoArcticWebVessel(VesselOverview vesselOverview) {
+    private boolean bothArcticWebAndAisVessel(VesselOverview vesselOverview) {
         return vesselOverview != null;
     }
 
@@ -147,12 +199,12 @@ public class VesselRestService {
 
     private List<VesselOverview> mapAisVessels(List<AisViewServiceAllAisData.Vessel> vessels) {
 
-        List<AisViewServiceAllAisData.Vessel> allowedVessels = vessels;
+        //List<AisViewServiceAllAisData.Vessel> allowedVessels = vessels;
         Map<Long, MaxSpeedRecording> speeds = aisDataService.getMaxSpeeds();
 
         List<VesselOverview> vesselOverviewsResponse = new ArrayList<VesselOverview>();
 
-        for (AisViewServiceAllAisData.Vessel vessel : allowedVessels) {
+        for (AisViewServiceAllAisData.Vessel vessel : vessels) {
 
             VesselOverview vesselOverview = new VesselOverview();
             Long mmsi = vessel.getMmsi();
@@ -193,7 +245,7 @@ public class VesselRestService {
 
         try {
 
-            logger.info("MMSI -> " + mmsi);
+            logger.info("details method called with MMSI -> " + mmsi);
             dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel aisVessel = this.aisDataService.getAisVesselByMmsi(mmsi);
 
             boolean historicalTrack = false;

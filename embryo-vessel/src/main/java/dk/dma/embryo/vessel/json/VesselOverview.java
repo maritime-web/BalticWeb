@@ -14,6 +14,7 @@
  */
 package dk.dma.embryo.vessel.json;
 
+
 public class VesselOverview {
     private double angle;
     private double x;
@@ -33,7 +34,6 @@ public class VesselOverview {
     public double getX() {
         return x;
     }
-
     public void setX(double x) {
         this.x = x;
     }
@@ -41,7 +41,6 @@ public class VesselOverview {
     public double getY() {
         return y;
     }
-
     public void setY(double y) {
         this.y = y;
     }
@@ -49,7 +48,6 @@ public class VesselOverview {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -57,7 +55,6 @@ public class VesselOverview {
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }
@@ -65,7 +62,6 @@ public class VesselOverview {
     public Long getMmsi() {
         return mmsi;
     }
-
     public void setMmsi(Long mmsi) {
         this.mmsi = mmsi;
     }
@@ -73,7 +69,6 @@ public class VesselOverview {
     public String getCallSign() {
         return callSign;
     }
-
     public void setCallSign(String callSign) {
         this.callSign = callSign;
     }
@@ -81,7 +76,6 @@ public class VesselOverview {
     public boolean isMoored() {
         return moored;
     }
-
     public void setMoored(boolean moored) {
         this.moored = moored;
     }
@@ -89,7 +83,6 @@ public class VesselOverview {
     public boolean isInAW() {
         return inAW;
     }
-
     public void setInAW(boolean inArcticWeb) {
         this.inAW = inArcticWeb;
     }
@@ -97,7 +90,6 @@ public class VesselOverview {
     public double getAngle() {
         return angle;
     }
-
     public void setAngle(double angle) {
         this.angle = angle;
     }
@@ -105,9 +97,7 @@ public class VesselOverview {
     public Double getMsog() {
         return msog;
     }
-
     public void setMsog(Double msog) {
         this.msog = msog;
     }
-    
 }

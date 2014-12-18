@@ -47,10 +47,6 @@ public class AisReplicatorJob {
     @Inject
     private AisDataService aisDataService;
 
-    /*  
-    @Inject
-    private FullAisViewService aisView;
-     */
     @Inject
     private AisViewServiceAllAisData aisViewWithNorwegianData;
 
@@ -151,7 +147,7 @@ public class AisReplicatorJob {
                  * These vessels are shown on the map if logged on user has no selection groups and 
                  * contains vessels within plus Arctic Web vessels even if they are outside the default circle and is allowed.
                  */
-                if ( (isAllowed && isWithInAisCircle) || awVesselsAsMap.containsKey(mmsi)) {
+                if ( awVesselsAsMap.containsKey(mmsi) || (isAllowed && isWithInAisCircle) ) {
                     vesselsOnMap.add(aisVessel);
                 }
                 
