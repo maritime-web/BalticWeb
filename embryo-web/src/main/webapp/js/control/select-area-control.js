@@ -195,6 +195,7 @@ $(function() {
             $scope.$on("$destroy", function () {
                 selectionLayer.clearFeatures();
                 selectionLayer.deactivateModify();
+                selectionLayer.activateSelectable();
             });
           
         } ]);

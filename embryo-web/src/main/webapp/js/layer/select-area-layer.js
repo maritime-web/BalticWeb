@@ -6,7 +6,7 @@ function SelectAreaLayer() {
 	this.init = function() {    	
     	
 //    	console.log("SelectAreaLayer.........");
-    	this.zoomLevels = [4, 6];
+    	this.zoomLevels = [8, 10];
 
         var that = this;
 
