@@ -381,5 +381,6 @@
     <include file="liquibase/embryo-tiles-1.14.xml"/>
     <include file="liquibase/embryo-user-2.2.xml"/>
     <include file="liquibase/embryo-reporting-2.2.xml"/>
+    <include file="liquibase/embryo-dataformats-2.2.xml"/>
 
 </databaseChangeLog>

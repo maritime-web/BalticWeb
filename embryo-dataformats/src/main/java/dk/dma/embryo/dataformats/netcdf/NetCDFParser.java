@@ -234,8 +234,8 @@ public class NetCDFParser {
         Array lons = varMap.get(LON).read();
         if (restriction.isSubarea()) {
 
-            System.out.println("File edges: min lat: " + lats.getDouble(0) + ", max lat: " + lats.getDouble((int)lats.getSize() - 1));
-            System.out.println("File edges: min lon: " + lons.getDouble(0) + ", max lon: " + lons.getDouble((int)lons.getSize() - 1));
+//            System.out.println("File edges: min lat: " + lats.getDouble(0) + ", max lat: " + lats.getDouble((int)lats.getSize() - 1));
+//            System.out.println("File edges: min lon: " + lons.getDouble(0) + ", max lon: " + lons.getDouble((int)lons.getSize() - 1));
             
             int cnt = -1;
             double val = -999;
@@ -263,13 +263,13 @@ public class NetCDFParser {
             }
             int maxLon = cnt - 1;
 
-            System.out.println("Min lat: " + lats.getDouble(minLat));
-            System.out.println("Max lat: " + lats.getDouble(maxLat));
-            System.out.println("Min lon: " + lons.getDouble(minLon));
-            System.out.println("Max lon: " + lons.getDouble(maxLon));
-            System.out.println("List edges: min lat: " + latList.get(0) + ", max lat: " + latList.get(latList.size() - 1));
-            System.out.println("List edges: min lon: " + lonList.get(0) + ", max lon: " + lonList.get(lonList.size() - 1));
-            System.out.println();
+//            System.out.println("Min lat: " + lats.getDouble(minLat));
+//            System.out.println("Max lat: " + lats.getDouble(maxLat));
+//            System.out.println("Min lon: " + lons.getDouble(minLon));
+//            System.out.println("Max lon: " + lons.getDouble(maxLon));
+//            System.out.println("List edges: min lat: " + latList.get(0) + ", max lat: " + latList.get(latList.size() - 1));
+//            System.out.println("List edges: min lon: " + lonList.get(0) + ", max lon: " + lonList.get(lonList.size() - 1));
+//            System.out.println();
 
             latRange = new Range(minLat, maxLat);
             lonRange = new Range(minLon, maxLon);
