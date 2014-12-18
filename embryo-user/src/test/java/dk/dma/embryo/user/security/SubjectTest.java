@@ -19,8 +19,6 @@ import java.util.List;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -33,6 +31,8 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.ContextController;
+import org.jglue.cdiunit.DummyHttpRequest;
+import org.jglue.cdiunit.DummyHttpSession;
 import org.jglue.cdiunit.InSessionScope;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -50,7 +50,7 @@ import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
 
 // DummyHttpSession and DummyHttpRequest are necessary to test SessionScoped Subject
-@AdditionalClasses({ SubjectImpl.class })
+@AdditionalClasses({ SubjectImpl.class, DummyHttpSession.class, DummyHttpRequest.class })
 public class SubjectTest extends AbstractShiroTest {
 
     @Inject
@@ -80,7 +80,7 @@ public class SubjectTest extends AbstractShiroTest {
         String user = "ole";
         String pw = "pw";
         
-        contextController.openRequest().getSession();
+        //contextController.openRequest().getSession();
 
         Mockito.when(realmDao.findByUsername(user)).thenReturn(new SecuredUser(user, pw ,null));
 
@@ -116,7 +116,7 @@ public class SubjectTest extends AbstractShiroTest {
         String pw = "pw";
         Long mmsi = 2L;
         
-        contextController.openRequest().getSession();
+        //contextController.openRequest().getSession();
         
         SailorRole sailor = new SailorRole();
         sailor.setVessel(new Vessel(mmsi));

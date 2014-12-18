@@ -144,7 +144,8 @@ public class BerthMoverUtility {
 
         }
 
-        Assert.assertTrue(false);
+        // Hvad sker der lige her?!?
+//        Assert.assertTrue(false);
 
     }
 }

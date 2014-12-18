@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,7 +45,7 @@ public class AisViewServiceIT {
     public void test() {
         
         List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.FILTER_VALUE_PT24H, AisViewServiceAllAisData.FILTER_VALUE_PT24H);
-        System.out.println("Full list: " + vesselList.toString());
+        System.out.println("Full list: " + vesselList.size());
     }
 
     @Test
@@ -54,6 +55,7 @@ public class AisViewServiceIT {
     }
 
     @Test
+    @Ignore
     public void testHistory() {
         Map<String, Object> details = limitedAisViewService.vesselTargetDetails(434253250, 1);
 
