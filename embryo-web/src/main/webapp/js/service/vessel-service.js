@@ -78,7 +78,7 @@
                         }
                     },
                     fireVesselDetailsUpdate : function(vesselDetails) {
-                        var s = subscriptions[vesselDetails.ais.mmsi];
+                        var s = subscriptions[vesselDetails.aisVessel.mmsi];
                         if (s) {
                             s.vesselDetails = vesselDetails;
                             for ( var i in s.callbacks) {
