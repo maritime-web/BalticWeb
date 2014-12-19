@@ -60,7 +60,7 @@ public class ReportMailTest {
         body += "C (Position): 10 00.000N 010 00.000E\n";
         body += "L (Deviation): My Deviation Description\n";
         body += "L (Route WayPoints): -\n";
-        body += "Q (Mal functions): -\n";
+        body += "Q (Malfunctions): -\n";
         body += "\n";
         body += "Reported via ArcticWeb.";
 
@@ -93,7 +93,7 @@ public class ReportMailTest {
         body += "C (Position): 10 00.000N 010 00.000E\n";
         body += "L (Deviation): My Deviation Description\n";
         body += "L (Route WayPoints): [10 00.000N,010 00.000E],  [12 00.000N,012 00.000E]\n";
-        body += "Q (Mal functions): Starboard hole\n";
+        body += "Q (Malfunctions): Starboard hole\n";
         body += "\n";
         body += "Reported via ArcticWeb.";
 
@@ -130,7 +130,7 @@ public class ReportMailTest {
         body += "F (Speed): 1.0\n";
         body += "I (Destination & ETA): Nuuk, 02-02-2014 12:00 UTC\n";
         body += "X (Persons on Board): 12\n";
-        body += "Q (Mal functions): -\n";
+        body += "Q (Malfunctions): -\n";
         body += "S (Ice): My Ice\n";
         body += "S (Weather): My Weather\n";
         body += "L (Route Description): My Route Description\n";
@@ -166,7 +166,7 @@ public class ReportMailTest {
         body += "F (Speed): 1.0\n";
         body += "I (Destination & ETA): Nuuk, 02-02-2014 12:00 UTC\n";
         body += "X (Persons on Board): 12\n";
-        body += "Q (Mal functions): bad captain\n";
+        body += "Q (Malfunctions): bad captain\n";
         body += "S (Ice): My Ice\n";
         body += "S (Weather): My Weather\n";
         body += "L (Route Description): -\n";
@@ -198,7 +198,7 @@ public class ReportMailTest {
         body += "A (Vessel): MyVessel/callsign MMSI 12\n";
         body += "B (Report time): 01-02-2014 14:01:25 UTC\n";
         body += "C (Position): 10 00.000N 010 00.000E\n";
-        body += "Q (Mal functions): -\n";
+        body += "Q (Malfunctions): -\n";
         body += "S (Ice): My Ice\n";
         body += "S (Weather): My Weather\n";
         body += "\n";
@@ -229,7 +229,7 @@ public class ReportMailTest {
         body += "C (Position): 10 00.000N 010 00.000E\n";
         body += "E (Course): 134\n";
         body += "F (Speed): 2.0\n";
-        body += "Q (Mal functions): -\n";
+        body += "Q (Malfunctions): -\n";
         body += "S (Ice): My Ice\n";
         body += "S (Weather): My Weather\n";
         body += "\n";
