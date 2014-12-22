@@ -14,14 +14,10 @@
  */
 package dk.dma.embryo.weather.service;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
-
+import dk.dma.embryo.common.configuration.LogConfiguration;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
@@ -30,10 +26,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import dk.dma.embryo.common.configuration.LogConfiguration;
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogService;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Jesper Tejlgaard
@@ -57,11 +54,11 @@ public class DmiWeatherJobIT {
     public void testJob() {
         job.timeout();
 
-        Mockito.verify(logservice).info("Scanned DMI (ftpserver.dmi.dk) for files. Transfered: gronvar.xml, gruds.xml, Errors: ");
+        Mockito.verify(logservice).info("Scanned DMI (ftpserver.dmi.dk) for files. Transfered: gronvar-2014-12-09.xml, gruds.xml, Errors: ");
         
         Path localDir = Paths.get(localDmiDir);
-        
-        Assert.assertTrue(Files.exists(localDir.resolve("gronvar.xml")));
+
+        Assert.assertTrue(Files.exists(localDir.resolve("dmi/gronvar-2014-12-09.xml")));
         Assert.assertTrue(Files.exists(localDir.resolve("gruds.xml")));
     }
 

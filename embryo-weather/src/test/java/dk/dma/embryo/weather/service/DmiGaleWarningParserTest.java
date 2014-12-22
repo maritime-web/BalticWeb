@@ -14,15 +14,14 @@
  */
 package dk.dma.embryo.weather.service;
 
+import dk.dma.embryo.weather.model.Warnings;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import dk.dma.embryo.weather.model.Warnings;
 
 /**
  * @author Jesper Tejlgaard
@@ -96,5 +95,21 @@ public class DmiGaleWarningParserTest {
         Assert.assertEquals(expectedGaleWarnings, warning.getGale());
         Assert.assertEquals(expectedStormWarnings, warning.getStorm());
         Assert.assertEquals(expectedIceWarnings, warning.getIcing());
+    }
+
+    @Test
+    public void testWeirdFormat() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/dmi/gronvar-2014-09-11.xml");
+
+        DmiWarningParser warningParser = new DmiWarningParser(is);
+        Warnings warnings = new WarningTranslator().fromDanishToEnglish(warningParser.parse());
+        Map<String, String> gale = warnings.getGale();
+        Assert.assertEquals(6, gale.size());
+        String kangikajik = gale.get("Kangikajik");
+        Assert.assertNotNull(kangikajik);
+        Assert.assertEquals("South 15 m/s.", kangikajik);
+        String kulusuk = gale.get("Kulusuk");
+        Assert.assertNotNull(kulusuk);
+        Assert.assertEquals("Northernmost part  north east 13, southern part  south 18 m/s. Tonight  west south west 23 m/s.", kulusuk);
     }
 }

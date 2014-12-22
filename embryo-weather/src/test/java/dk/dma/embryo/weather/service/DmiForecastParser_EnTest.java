@@ -14,14 +14,11 @@
  */
 package dk.dma.embryo.weather.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
+import dk.dma.embryo.common.configuration.LogConfiguration;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.weather.model.DistrictForecast;
+import dk.dma.embryo.weather.model.RegionForecast;
+import dk.dma.embryo.weather.model.Warnings;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
@@ -29,11 +26,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.unitils.reflectionassert.ReflectionAssert;
 
-import dk.dma.embryo.common.configuration.LogConfiguration;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.weather.model.DistrictForecast;
-import dk.dma.embryo.weather.model.RegionForecast;
-import dk.dma.embryo.weather.model.Warnings;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jesper Tejlgaard
@@ -136,21 +133,28 @@ public class DmiForecastParser_EnTest {
     }
     
     @Test
-    public void testWeirdFormat() throws IOException {
-        InputStream is = getClass().getResourceAsStream("/dmi/gronvar-2014-09-11.xml");
-        
-        DmiWarningParser warningParser = new DmiWarningParser(is);
-        Warnings warnings = new WarningTranslator().fromDanishToEnglish(warningParser.parse());
-        Map<String, String> gale = warnings.getGale();
-        Assert.assertEquals(6, gale.size());
-        String kangikajik = gale.get("Kangikajik");
-        Assert.assertNotNull(kangikajik);
-        Assert.assertEquals("South 15 m/s.", kangikajik);
-        String kulusuk = gale.get("Kulusuk");
-        Assert.assertNotNull(kulusuk);
-        Assert.assertEquals("Northernmost part  north east 13, southern part  south 18 m/s. Tonight  west south west 23 m/s.", kulusuk);
+    public void test20141209FailedInProduction() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/dmi/grudseng-2014-12-09.xml");
+
+        RegionForecast forecast = parser.parse(is);
+
+        String expectedOverview = "An area with low pressure, 940 hPa, a little northeast of " +
+                "Timmiarmiut is moving towards east, and another low 960 hPa " +
+                "over it northwestern Iceland is moving towards northeast, and " +
+                "gives up to hurricane along østkysten. A minor low, 995 hPa, " +
+                "over Melvillebugten is filling. Smaller low developes this " +
+                "evening over Davis Strait is movung towards southsoutheast.";
+        Assert.assertEquals(expectedOverview, forecast.getDesc());
+        Assert.assertEquals("/0600 UTC.", forecast.getTime());
+        Assert.assertNotNull(forecast.getFrom());
+        Assert.assertEquals(1418113800000L, forecast.getFrom().getTime());
+        Assert.assertNotNull(forecast.getTo());
+        Assert.assertEquals(1418191200000L, forecast.getTo().getTime());
+        Assert.assertEquals(14, forecast.getDistricts().size());
+
     }
-    
+
+
     @Test
     public void testGrudseng() throws IOException {
         InputStream is = getClass().getResourceAsStream("/dmi/grudsengxml-14-09-2014--00-23-21.xml");
