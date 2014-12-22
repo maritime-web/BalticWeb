@@ -16,7 +16,8 @@ embryo.eventbus.registerShorthand(embryo.eventbus.VesselUnselectedEvent, "vessel
 
 $(function() {
     var vessels = null;
-    var vesselLayer = new VesselLayer();
+    var vesselLayer = new VesselLayer({clusteringEnabled: true});
+
     addLayerToMap("vessel", vesselLayer, embryo.map);
 
     embryo.vessel.lookupVessel = function(id) {
