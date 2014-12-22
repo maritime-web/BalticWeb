@@ -12,6 +12,7 @@ $(function() {
 
         $scope.$on("$destroy", function() {
             embryo.controllers.settings.close();
+            forecastLayer.clear();
         });
     } ]);
 
