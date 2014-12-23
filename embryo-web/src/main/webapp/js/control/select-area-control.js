@@ -19,20 +19,15 @@ $(function() {
             
             
             var getSelectionGroupsFromService = function() {
-            	
 	            SelectAreaService.getSelectionGroups(
 	            		// Callback success <- called by SelectAreaService
 	            		function(selectionGroupsFromService) {
 	            			$scope.errorMsg = null;
 	            			$scope.selectionGroups = [];
-	            			
 	            			$scope.selectionGroups = selectionGroupsFromService;
 	            			
 	            			for(key in $scope.selectionGroups) {
-	                            
 	                        	var selectionGroup = $scope.selectionGroups[key];
-//	                        	console.log("SG from service -> " + selectionGroup.active);
-//	                        	console.log("SG from service poly -> " + selectionGroup.squares);
 	                            selectionGroup.editMode = false;
 	                        }
 	            		}, 
@@ -64,23 +59,19 @@ $(function() {
             };
         	
             $scope.createGroup = function(){
-            	
             	var newSelectionGroup = SelectAreaService.addSelectionGroup();
             	$scope.editSelectionGroup(newSelectionGroup);
             };
             
             $scope.activate = function(){
-            	
             	selectionLayer.activateModify();
             };
             
             $scope.deactivate = function(){
-            	
             	selectionLayer.deactivateModify();
             };
             
             $scope.alreadyInEditMode = function(){
-            	
             	for(key in $scope.selectionGroups) {
             		if($scope.selectionGroups[key].editMode == true) {
             			return true;
@@ -99,8 +90,10 @@ $(function() {
             
             $scope.selectionGroupDelete = function(selectionGroup) {
             	selectionLayer.clearFeatures();
-            	
-            	for (var i = 0; i < $scope.selectionGroups.length; i++) {
+                selectionLayer.deactivateModify();
+
+
+                for (var i = 0; i < $scope.selectionGroups.length; i++) {
         		   if ($scope.selectionGroups[i].name === selectionGroup.name) {
         		      $scope.selectionGroups.splice(i,1);
         		      break;
@@ -109,8 +102,6 @@ $(function() {
             };
             
             $scope.editSelectionGroup = function(selectionGroup) {
-//            	console.log("inside editSelectionGroup...");
-//            	console.log("clicked edit on -> " + selectionGroup.name);
             	selectionGroup.editMode = true;
             	selectionLayer.activateModify();
             	
@@ -127,8 +118,6 @@ $(function() {
             };
             
             var isSelectionGroupUnique = function() {
-//            	console.log("inside isSelectionGroupUnique...");
-            	
             	for (var i = 0; i < $scope.selectionGroups.length; i++) {
                     for (var j = 0; j < $scope.selectionGroups.length; j++) {
                         if (i != j) {
@@ -138,15 +127,11 @@ $(function() {
                         }
                     }
                 }
-            	
                 return true; 
             };
                        
             $scope.selectionGroupDone = function(selectionGroup) {
-//            	console.log("inside saveSelectionGroup...");
-//            	console.log("name -> " + selectionGroup.name);
             	$scope.alertMessages = [];
-            	
             	if(isSelectionGroupUnique()) {
             	
             		//mapPolygonsToSelectionSquares(selectionGroup);
@@ -156,17 +141,12 @@ $(function() {
             		selectionGroup.editMode = false;
             		selectionLayer.clearFeatures();
             	} else {
-            		
             		$scope.alertMessages = ["The group name chosen is not unique."];
             	}
-            	
             };
             
             $scope.updateSelectionGroups = function() {
-            	
-//            	console.log("inside CONTROL updateSelectionGroups...");
-            	
-            	var selectionGroupsForService = []; 
+                var selectionGroupsForService = [];
             	
             	for(key in $scope.selectionGroups) {
             		var selectionGroup = $scope.selectionGroups[key];
@@ -180,7 +160,6 @@ $(function() {
             		
             		selectionGroupsForService.push(SelectionGroupForService);
             	}
-//            	console.log("json for service - > " + JSON.stringify(selectionGroupsForService));
             	SelectAreaService.updateSelectionGroups(
             			selectionGroupsForService,
                     function () {
