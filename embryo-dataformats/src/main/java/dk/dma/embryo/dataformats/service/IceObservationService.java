@@ -14,14 +14,14 @@
  */
 package dk.dma.embryo.dataformats.service;
 
-import java.util.List;
-
 import dk.dma.embryo.dataformats.model.IceObservation;
 import dk.dma.embryo.dataformats.model.Provider;
 
+import java.util.List;
+
 public interface IceObservationService {
-    
+
     List<Provider> listIceChartProviders();
-        
-    List<IceObservation> listAvailableIceObservations(String chartType, String provider);
+
+    List<IceObservation> listAvailableIceObservations(String chartType);
 }

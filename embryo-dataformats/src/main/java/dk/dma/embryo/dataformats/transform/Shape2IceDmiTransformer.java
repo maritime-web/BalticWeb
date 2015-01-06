@@ -14,22 +14,18 @@
  */
 package dk.dma.embryo.dataformats.transform;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.dataformats.model.IceObservation;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author Jesper Tejlgaard
@@ -46,6 +42,9 @@ public class Shape2IceDmiTransformer implements Shape2IceTransformer {
     @Inject
     private PropertyFileService propertyFileService;
 
+    private DateTimeFormatter longFormatter = DateTimeFormat.forPattern("yyyyMMddHHmm").withZone(DateTimeZone.UTC);
+    private DateTimeFormatter shortFormatter = DateTimeFormat.forPattern("yyyyMMdd").withZone(DateTimeZone.UTC);
+
     public Shape2IceDmiTransformer() {
         super();
     }
@@ -57,37 +56,26 @@ public class Shape2IceDmiTransformer implements Shape2IceTransformer {
     }
 
     @Override
-    public List<IceObservation> transform(String chartType, List<ShapeFileMeasurement> shapes) {
+    public IceObservation transform(ShapeFileMeasurement shape) {
         if (regions == null) {
-            regions = propertyFileService.getMapProperty("embryo." + chartType + ".dmi.regions");
-        }
-        List<IceObservation> iceObservations = new ArrayList<>();
-
-        DateTimeFormatter longFormatter = DateTimeFormat.forPattern("yyyyMMddHHmm").withZone(DateTimeZone.UTC);
-        DateTimeFormatter shortFormatter = DateTimeFormat.forPattern("yyyyMMdd").withZone(DateTimeZone.UTC);
-
-        for (ShapeFileMeasurement sfm : shapes) {
-            Date date = null;
-            String fileName = sfm.getFileName();
-            if (fileName.indexOf("_") == 8) {
-                date = shortFormatter.parseDateTime(fileName.substring(0, 8)).toDate();
-            } else {
-                date = longFormatter.parseDateTime(fileName.substring(0, 12)).toDate();
-            }
-
-            if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
-                String region = fileName.substring(13);
-
-                if (regions.containsKey(region)) {
-                    region = regions.get(region);
-                }
-
-                iceObservations.add(new IceObservation(providers.get(sfm.getProvider()), region, date, sfm.getFileSize(), sfm.getChartType() + "-"
-                        + sfm.getProvider() + "." + fileName));
-            }
+            regions = propertyFileService.getMapProperty("embryo." + shape.getChartType() + ".dmi.regions");
         }
 
-        return iceObservations;
+        Date date;
+        String fileName = shape.getFileName();
+        if (fileName.indexOf("_") == 8) {
+            date = shortFormatter.parseDateTime(fileName.substring(0, 8)).toDate();
+        } else {
+            date = longFormatter.parseDateTime(fileName.substring(0, 12)).toDate();
+        }
+
+        String region = fileName.substring(13);
+        if (regions.containsKey(region)) {
+            region = regions.get(region);
+        }
+
+        return new IceObservation(providers.get(shape.getProvider()), region, date, shape.getFileSize(), shape.getChartType() + "-"
+                + shape.getProvider() + "." + fileName);
     }
 
     @Override

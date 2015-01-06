@@ -14,21 +14,17 @@
  */
 package dk.dma.embryo.dataformats.transform;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.dataformats.model.IceObservation;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author Jesper Tejlgaard
@@ -44,6 +40,8 @@ public class Shape2IceAariTransformer implements Shape2IceTransformer {
     @Inject
     private Map<String, String> regions;
 
+    private DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd").withZone(DateTimeZone.UTC);
+
     public Shape2IceAariTransformer() {
     }
 
@@ -51,32 +49,20 @@ public class Shape2IceAariTransformer implements Shape2IceTransformer {
         this.providers = providers;
         this.regions = regions;
     }
-    
+
     @Override
-    public List<IceObservation> transform(String chartType, List<ShapeFileMeasurement> shapes) {
-        List<IceObservation> iceObservations = new ArrayList<>();
+    public IceObservation transform(ShapeFileMeasurement shape) {
+        String[] fileNameParts = shape.getFileName().split("_");
+        Date date = formatter.parseDateTime(fileNameParts[2]).toDate();
 
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd").withZone(DateTimeZone.UTC);
+        String region = fileNameParts[1];
 
-        for (ShapeFileMeasurement sfm : shapes) {
-            String[] fileNameParts = sfm.getFileName().split("_");
-
-            Date date = formatter.parseDateTime(fileNameParts[2]).toDate();
-
-            if (System.currentTimeMillis() - date.getTime() < 3600 * 1000L * 24 * 30) {
-                String region = fileNameParts[1];
-
-                if (regions.containsKey(region)) {
-                    region = regions.get(region);
-                }
-
-                iceObservations.add(new IceObservation(providers.get(sfm.getProvider()), region, date, sfm
-                        .getFileSize(), sfm.getChartType() + "-" + sfm.getProvider() + "." + sfm.getFileName()));
-            }
+        if (regions.containsKey(region)) {
+            region = regions.get(region);
         }
 
-        return iceObservations;
-
+        return new IceObservation(providers.get(shape.getProvider()), region, date, shape
+                .getFileSize(), shape.getChartType() + "-" + shape.getProvider() + "." + shape.getFileName());
     }
 
     @Override

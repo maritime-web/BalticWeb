@@ -23,7 +23,7 @@ import javax.inject.Named;
  */
 @Named
 public class Shape2IceTransformerFactory {
-    
+
     @Inject
     private Instance<Shape2IceTransformer> availableTransformers;
 
@@ -35,5 +35,10 @@ public class Shape2IceTransformerFactory {
         }
         return null;
     }
+
+    public Shape2IceListTransformer createListTransformer() {
+        return new Shape2IceListTransformer(this);
+    }
+
 
 }

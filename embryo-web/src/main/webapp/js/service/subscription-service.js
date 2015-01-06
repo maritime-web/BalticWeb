@@ -22,6 +22,7 @@
         function ($http, $interval) {
                 var subscriptions = {};
                 var interval = 2 * 60 * 1000 * 60;
+            //var interval = 1000 * 10;
 
                 function notifySubscribers(key, error) {
                     if (subscriptions[key]) {

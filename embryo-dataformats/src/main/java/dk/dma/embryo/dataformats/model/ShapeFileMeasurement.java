@@ -14,20 +14,20 @@
  */
 package dk.dma.embryo.dataformats.model;
 
+import dk.dma.embryo.common.persistence.BaseEntity;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
-
-import dk.dma.embryo.common.persistence.BaseEntity;
-
 @NamedQueries({
         @NamedQuery(name = "ShapeFileMeasurement:lookup", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.fileName = :fileName AND m.provider = :provider AND m.chartType = :chartType"),
         @NamedQuery(name = "ShapeFileMeasurement:deleteAll", query = "DELETE FROM ShapeFileMeasurement m WHERE m.provider = :provider AND m.chartType = :chartType"),
-        @NamedQuery(name = "ShapeFileMeasurement:list", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.provider = :provider AND m.chartType = :chartType") })
+        @NamedQuery(name = "ShapeFileMeasurement:list", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.chartType = :chartType"),
+        @NamedQuery(name = "ShapeFileMeasurement:listByProvider", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.provider = :provider AND m.chartType = :chartType")})
 @Entity
 public class ShapeFileMeasurement extends BaseEntity<Long> {
     private static final long serialVersionUID = -3131809653155886572L;
@@ -37,11 +37,11 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
     private String provider;
     private String chartType;
     private int version;
-    
+
     @NotNull
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime created;
-    
+
     public ShapeFileMeasurement() {
         super();
     }
@@ -82,15 +82,15 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
     public void setProvider(String provider) {
         this.provider = provider;
     }
-    
+
     public String getChartType() {
         return chartType;
     }
-    
+
     public void setChartType(String chartType) {
         this.chartType = chartType;
     }
-    
+
     public int getVersion() {
         return version;
     }

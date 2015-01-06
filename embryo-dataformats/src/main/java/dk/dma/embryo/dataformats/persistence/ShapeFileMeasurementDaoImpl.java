@@ -14,13 +14,12 @@
  */
 package dk.dma.embryo.dataformats.persistence;
 
-import java.util.List;
+import dk.dma.embryo.common.persistence.DaoImpl;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import dk.dma.embryo.common.persistence.DaoImpl;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import java.util.List;
 
 public class ShapeFileMeasurementDaoImpl extends DaoImpl implements ShapeFileMeasurementDao {
     public ShapeFileMeasurement lookup(String fn, String chartType, String provider) {
@@ -43,12 +42,20 @@ public class ShapeFileMeasurementDaoImpl extends DaoImpl implements ShapeFileMea
         query.executeUpdate();
     }
 
-    public List<ShapeFileMeasurement> list(String chartType, String provider) {
+    public List<ShapeFileMeasurement> list(String chartType) {
         TypedQuery<ShapeFileMeasurement> query = em.createNamedQuery("ShapeFileMeasurement:list", ShapeFileMeasurement.class);
 
         query.setParameter("chartType", chartType);
-        query.setParameter("provider", provider);
-        
         return query.getResultList();
     }
+
+    public List<ShapeFileMeasurement> list(String chartType, String provider) {
+        TypedQuery<ShapeFileMeasurement> query = em.createNamedQuery("ShapeFileMeasurement:listByProvider", ShapeFileMeasurement.class);
+
+        query.setParameter("chartType", chartType);
+        query.setParameter("provider", provider);
+
+        return query.getResultList();
+    }
+
 }
