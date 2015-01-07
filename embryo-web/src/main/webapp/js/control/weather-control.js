@@ -6,6 +6,8 @@ $(function() {
     var metocLayer = new MetocLayer();
     addLayerToMap("weather", metocLayer, embryo.map);
 
+    var interval = 1 * 60 * 1000 * 60;
+//    var interval = 1000 * 10;
     var module = angular.module('embryo.weather.control', [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control', 'embryo.weather.service' ]);
 
     module.controller("WeatherController", [ '$scope', function($scope) {
@@ -110,7 +112,7 @@ $(function() {
 
     } ]);
 
-    module.controller("WeatherForecastLayerControl", [ '$scope', 'ShapeService', 'WeatherService', function($scope, ShapeService, WeatherService) {
+    module.controller("WeatherForecastLayerControl", [ '$scope', 'ShapeService', 'WeatherService', 'SubscriptionService', function ($scope, ShapeService, WeatherService, SubscriptionService) {
         function merge(shapes, weather) {
             for ( var index in shapes) {
                 var shape = shapes[index];
@@ -141,29 +143,45 @@ $(function() {
             });
         }
 
-        WeatherService.subscribe(function(error, weather) {
-            if (!error) {
+        var subscriptionConfig = {
+            name: "WeatherService.weather",
+            fn: WeatherService.weather,
+            interval: interval,
+            success: function (weather) {
                 $scope.weather = weather;
                 drawAreas($scope.weather);
-            } else {
+            },
+            error: function (error) {
                 drawAreas(null);
             }
-        });
+        }
+        var subscription = SubscriptionService.subscribe(subscriptionConfig);
 
         $scope.$on("$destroy", function () {
             seaForecastLayer.clear();
+            SubscriptionService.unsubscribe(subscription);
         });
     } ]);
 
-    module.controller("WeatherForecastController", [ '$scope', 'WeatherService', function($scope, WeatherService) {
-        var id = WeatherService.subscribe(function(error, weather) {
-            if (error) {
-                $scope.errorMsg = error;
-            } else {
+    module.controller("WeatherForecastController", [ '$scope', 'WeatherService', 'SubscriptionService', function ($scope, WeatherService, SubscriptionService) {
+        var subscriptionConfig = {
+            subscriber: "weather-controller",
+            name: "WeatherService.weather",
+            fn: WeatherService.weather,
+            interval: interval,
+            success: function (weather) {
                 $scope.errorMsg = null;
                 $scope.forecast = weather.forecast;
+            },
+            error: function (error) {
+                $scope.errorMsg = error;
             }
-        });
+        }
+        // resubscribe
+        // This subscription will start polling every hour
+        // It will however not be disabled even though navigating to another menu, e.g. Ice
+        // the subscriber attribute ensure that callback configs are updated
+        SubscriptionService.subscribe(subscriptionConfig);
 
         $scope.viewForecast = function($event, district) {
             $event.preventDefault();
@@ -177,10 +195,6 @@ $(function() {
         $scope.to = function() {
             return $scope.forecast && $scope.forecast.to ? formatTime($scope.forecast.to) : null;
         };
-
-        $scope.$on("$destroy", function() {
-            WeatherService.unsubscribe(id);
-        });
     } ]);
 
     module.controller("SelectWeatherForecastCtrl", [ '$scope', function($scope) {
@@ -265,7 +279,7 @@ $(function() {
             var result = [];
             for (var index = 0; index < limits.length; index += 2) {
                 var object = {
-                    "first" : limits[index],
+                    "first": limits[index]
                 };
                 if (index < limits.length - 2) {
                     object["second"] = limits[index + 1];
