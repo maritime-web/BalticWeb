@@ -105,7 +105,7 @@
                             };
 
                         var s = subscriptions[mmsi];
-                        var id = s.callbacks.push(callback);
+                        var id = s.callbacks.push(callback) - 1;
                         var that = this;
 
                         function lookup() {
@@ -135,15 +135,13 @@
                             mmsi : mmsi
                         }
                     },
-                    unsubscribe : function(id) {
-                        var s = subscriptions[id.mmsi];
-                        s.callbacks[id.id] = null;
-                        var allDead = true;
-                        for ( var i in s.callbacks)
-                            allDead &= s.callbacks[i] == null;
+                    unsubscribe: function (unsubscription) {
+                        var s = subscriptions[unsubscription.mmsi];
+                        s.callbacks.splice(unsubscription.id, 1);
+                        var allDead = s.callbacks.length == 0;
                         if (allDead) {
                             clearInterval(s.interval);
-                            subscriptions[id.mmsi] = null
+                            subscriptions[unsubscription.mmsi] = null
                         }
                     },
                     clientSideMmsiSearch : function(mmsi, callback) {

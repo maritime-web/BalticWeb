@@ -100,7 +100,7 @@ $(function() {
                     }
                 });
 
-            SubscriptionService.subscribe({
+            var listSubscription = SubscriptionService.subscribe({
                 name: "VesselService.list",
                 fn: VesselService.list,
                 interval: embryo.loadFrequence,
@@ -114,7 +114,7 @@ $(function() {
                 }
             });
 
-            VesselService.subscribe(mmsi, function (error, vesselDetails) {
+            var detailsSubscription = VesselService.subscribe(mmsi, function (error, vesselDetails) {
                     if (!error) {
                         $scope.yourAis = yourAis(vesselDetails);
                         $scope.vesselDetails = vesselDetails;
@@ -126,7 +126,12 @@ $(function() {
                     VesselInformation.hideAll();
                     embryo.controllers.ais.show($scope.vesselDetails.aisVessel);
                 }
-            } ]);
+
+            $scope.$on("$destroy", function () {
+                SubscriptionService.unsubscribe(listSubscription);
+                VesselService.unsubscribe(detailsSubscription);
+            })
+        } ]);
 
     module.controller("ZoomYourVesselCtrl", [ '$scope', 'Subject', function($scope, Subject) {
         $scope.zoomToYourVessel = function() {
