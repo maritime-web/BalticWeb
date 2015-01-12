@@ -41,9 +41,6 @@ $(function() {
             type : "view"
         } ];
 
-        function editProvidersFilter(provider, index, array) {
-            return provider.type === 'edit'
-        }
         var vesselInformation = embryo.vessel.information.getVesselInformation().filter(awFilter);
         for ( var i in vesselInformation) {
             sections[0].services.push(embryo.vessel.controllers.service(vesselInformation[i], scope));
@@ -63,7 +60,7 @@ $(function() {
             function($scope, VesselService, Subject, RouteService) {
                 var mmsi = Subject.getDetails().shipMmsi;
 
-                VesselService.subscribe(mmsi, function(error, vesselOverview, vesselDetails) {
+                VesselService.subscribe(mmsi, function (error, vesselDetails) {
                     if (!error) {
                         embryo.vessel.setMarkedVessel(mmsi);
 
@@ -83,8 +80,8 @@ $(function() {
                 });
             } ]);
 
-    module.controller("YourVesselControl", [ '$scope', 'VesselService', 'Subject', 'VesselInformation',
-            function($scope, VesselService, Subject, VesselInformation) {
+    module.controller("YourVesselControl", [ '$scope', 'VesselService', 'Subject', 'VesselInformation', 'SubscriptionService',
+        function ($scope, VesselService, Subject, VesselInformation, SubscriptionService) {
                 var mmsi = Subject.getDetails().shipMmsi;
 
                 $scope.$watch('vesselOverview', function(newValue, oldValue) {
@@ -103,11 +100,23 @@ $(function() {
                     }
                 });
 
-                VesselService.subscribe(mmsi, function(error, vesselOverview, vesselDetails) {
-                    if (!error) {
-                        $scope.yourAis = yourAis(vesselDetails);
+            SubscriptionService.subscribe({
+                name: "VesselService.list",
+                fn: VesselService.list,
+                interval: embryo.loadFrequence,
+                success: function (vesselList) {
+                    // we don't need the vessel list, we just need to know, that a new version of vesselOverview
+                    // information for this particular vessel is available.
+                    VesselService.clientSideMmsiSearch(mmsi, function (vesselOverview) {
                         $scope.vesselOverview = vesselOverview;
                         $scope.vesselScope.yourVesselName = vesselOverview.name;
+                    })
+                }
+            });
+
+            VesselService.subscribe(mmsi, function (error, vesselDetails) {
+                    if (!error) {
+                        $scope.yourAis = yourAis(vesselDetails);
                         $scope.vesselDetails = vesselDetails;
                     }
                 });
