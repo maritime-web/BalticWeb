@@ -252,8 +252,9 @@ $(function () {
 
         function requestShapefile(chart, onSuccess) {
             var name = chart.shape;
+
             var messageId = embryo.messagePanel.show({
-                text: "Requesting " + chart.name + " data ..."
+                text: "Requesting " + name + " data ..."
             });
             ShapeService.shape(name, {
                 parts: name.indexOf("aari.aari_arc") >= 0 ? 2 : 0
@@ -291,7 +292,7 @@ $(function () {
                 // view and show above message
                 $timeout(function () {
                     iceLayer.draw(chart.type, [ data ], finishedDrawing);
-                }, 10);
+                }, 1000);
             }, function (errorMsg, status) {
                 if (status == 410) {
                     errorMsg = errorMsg + " Refreshing ice chart list ... ";
