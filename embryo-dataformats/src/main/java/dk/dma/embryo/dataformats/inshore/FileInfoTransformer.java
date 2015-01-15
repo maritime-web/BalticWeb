@@ -34,6 +34,7 @@ public class FileInfoTransformer implements Function<File, FileInfo> {
     public FileInfo apply(File input) {
         
         String fileName = input.getName();
+        System.out.println("->->->->->->-> fileName -> " + fileName);
         
         FileInfo info = null;
         if(filenameIsLegal(fileName)) {
