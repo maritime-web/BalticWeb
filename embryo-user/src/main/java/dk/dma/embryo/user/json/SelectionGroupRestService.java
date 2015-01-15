@@ -25,6 +25,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -38,7 +40,7 @@ import dk.dma.embryo.user.security.Subject;
 import dk.dma.embryo.user.service.UserService;
 
 @Path("/selectiongroup")
-public class SelectionGroupRestService {
+public class SelectionGroupRestService extends AbstractRestService {
 
     @Inject
     private Logger logger;
@@ -54,11 +56,12 @@ public class SelectionGroupRestService {
     @Path("/list")
     @Produces("application/json")
     @NoCache
-    public List<SelectionGroupDTO> list() {
-
+    public Response list(@Context Request request) {
+        
         SecuredUser securedUser = this.subject.getUser();
-        List<SelectionGroupDTO> result = new ArrayList<SelectionGroupDTO>();
+        logger.info("Calling list all Selection Groups for logged on user -> " + securedUser.getUserName());
 
+        List<SelectionGroupDTO> result = new ArrayList<SelectionGroupDTO>();
 
         for (SelectionGroup selectionGroup : securedUser.getSelectionGroups()) {
 
@@ -70,8 +73,8 @@ public class SelectionGroupRestService {
 
             result.add(groupDTO);
         }
-
-        return result;
+        
+        return super.getResponse(request, result, 1);
     }
 
     @POST
