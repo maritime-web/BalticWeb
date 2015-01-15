@@ -39,7 +39,7 @@ public class NetCDFParserTest {
         List<ForecastType> types = service.createData();
         Map<Provider, Map<String, NetCDFRestriction>> restrictions = service.initRestrictions();
         //URL resource = getClass().getResource("/netcdf/hycom-cice_NORTH_2014121512.nc");
-        URL resource = getClass().getResource("/netcdf/wam_ATL_2014121606.nc");
+        URL resource = getClass().getResource("/netcdf/wam_ATL_2015011506.nc");
         
         for (NetCDFRestriction restriction : restrictions.get(Provider.DMI).values()) {
             System.out.println("Parsing restriction: " + restriction.toString());
@@ -56,7 +56,7 @@ public class NetCDFParserTest {
         service.init();
         List<ForecastType> prognosisTypes = service.createData();
 
-        URL resource = getClass().getResource("/netcdf/wam_ATL_2014121606.nc");
+        URL resource = getClass().getResource("/netcdf/wam_ATL_2015011506.nc");
         Map<NetCDFType, NetCDFResult> results = parser.parse(resource.getPath(), prognosisTypes);
 
         Map<String, List<? extends Serializable>> metadata = results.get(service.getForecastType(Type.ICE_FORECAST)).getMetadata();
@@ -75,7 +75,7 @@ public class NetCDFParserTest {
     @Ignore
     public void readNetCDFFileWithRestrictions() throws Exception {
         NetCDFParser parser = new NetCDFParser();
-        URL resource = getClass().getResource("/netcdf/wam_ATL_2014121606.nc");
+        URL resource = getClass().getResource("/netcdf/wam_ATL_2015011506.nc");
 
         ForecastServiceImpl service = new ForecastServiceImpl();
         service.init();
