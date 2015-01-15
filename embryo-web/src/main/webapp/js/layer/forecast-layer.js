@@ -26,7 +26,7 @@ function ForecastLayer() {
 			});
 
 	this.init = function() {
-		this.zoomLevels = [ 4, 6, 11 ];
+		this.zoomLevels = [3, 4, 5, 6, 7, 8, 9, 10];
 
 		var that = this;
 
@@ -35,7 +35,7 @@ function ForecastLayer() {
 				return that.active ? 0.5 : 0.25;
 			},
 			size : function(feature) {
-				return [ 16, 20, 24, 24 ][that.zoomLevel];
+				return [ 4, 6, 8, 10, 16, 18, 20, 24 ][that.zoomLevel];
 			},
 			offset : function() {
 				return -that.context.size() / 2;
@@ -60,7 +60,8 @@ function ForecastLayer() {
 		this.layers.forecasts = new OpenLayers.Layer.Vector("Forecasts", {
 			styleMap : new OpenLayers.StyleMap({
 				"default" : new OpenLayers.Style({
-					// externalGraphic : "img/inshoreIceReport.png",
+					externalGraphic : "img/forecast/arrow_${col}.png",
+					rotation : "${angle}",
 					graphicOpacity : "${transparency}",
 					graphicWidth : '${size}',
 					graphicHeight : '${size}',
@@ -82,12 +83,14 @@ function ForecastLayer() {
 					context : this.context
 				}),
 				"select" : new OpenLayers.Style({
-					// externalGraphic : "img/inshoreIceReport.png",
+					externalGraphic : "img/forecast/arrow_${col}.png",
+					rotation : "${angle}",
+					fillOpacity : 1,
 					graphicOpacity : 1,
-					graphicWidth : 24,
-					graphicHeight : 24,
-					graphicXOffset : -12,
-					graphicYOffset : -12,
+					graphicWidth : '${size}',
+					graphicHeight : '${size}',
+					graphicYOffset : "${offset}",
+					graphicXOffset : "${offset}",
 					backgroundGraphic : "img/ring.png",
 					backgroundXOffset : -16,
 					backgroundYOffset : -16,
@@ -97,7 +100,7 @@ function ForecastLayer() {
 					fontColor : "#000",
 					fontSize : "10px",
 					fontFamily : "Courier New, monospace",
-					label : "${obs}",
+					label : "${obs} : ${angle}",
 					fontWeight : "bold",
 					labelOutlineWidth : 0,
 					labelYOffset : -20,
@@ -175,15 +178,15 @@ function ForecastLayer() {
 	};
 	
 	this.getWaveHeightLevel = function(obs) {
-		if (obs < 1) {
+		if (obs < 2) {
 			return '#96c7ff';
-		} else if (obs < 2) {
-			return '#8effa0';
-		} else if (obs < 3) {
-			return '#ffff00';
 		} else if (obs < 4) {
+			return '#8effa0';
+		} else if (obs < 6) {
+			return '#ffff00';
+		} else if (obs < 8) {
 			return '#ff7c06';
-		} else if (obs < 5) {
+		} else if (obs < 10) {
 			return '#ff0000';
 		} else {
 			return '#979797';
@@ -292,7 +295,9 @@ function ForecastLayer() {
 				var level = this.getSpeedLevel(speed);
 				var lat = lats[e.substr(0, e.indexOf('_'))];
 				var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
-				var points = new Array(embryo.map.createPoint(lon, lat + half),
+				
+				// Once we know the new code works, this (and the two similar blocks below) needs to go.
+				/*var points = new Array(embryo.map.createPoint(lon, lat + half),
 						embryo.map.createPoint(lon + half, lat + (half * 0.2)),
 						embryo.map.createPoint(lon + (half * 0.2), lat
 								+ (half * 0.2)), embryo.map.createPoint(lon
@@ -303,14 +308,22 @@ function ForecastLayer() {
 										+ (half * 0.2)), embryo.map
 								.createPoint(lon - half, lat + (half * 0.2)));
 
-				var rad = Math.acos(north / speed);
-				var degrees = Math.round(rad * 180 / Math.PI);
 
 				var linearRing = new OpenLayers.Geometry.LinearRing(points);
-				linearRing.rotate(degrees, embryo.map.createPoint(lon, lat));
-				var feature = new OpenLayers.Feature.Vector(linearRing, {
+				linearRing.rotate(degrees, embryo.map.createPoint(lon, lat));*/
+
+				var col = level.slice(1);
+				
+				var rad = Math.atan2(north, east);
+				var degrees = Math.round(rad * 180 / Math.PI);
+				
+				var point = embryo.map.createPoint(lon, lat);
+				
+				var feature = new OpenLayers.Feature.Vector(point, {
 					level : level,
-					obs : east + '/' + north
+					obs : east + '/' + north,
+					angle : degrees,
+					col : col
 				});
 				features.push(feature);
 
@@ -417,7 +430,10 @@ function ForecastLayer() {
 				var lat = lats[e.substr(0, e.indexOf('_'))];
 				var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 				var level = this.getWaveHeightLevel(height);
-				var pFactor = period / 8;
+				
+				var col = level.slice(1);
+				
+				/*var pFactor = period / 8;
 				var points = new Array(embryo.map.createPoint(lon, lat + (half * pFactor)),
 						embryo.map.createPoint(lon + half, lat + (half * 0.2)),
 						embryo.map.createPoint(lon + (half * 0.2), lat
@@ -431,11 +447,15 @@ function ForecastLayer() {
 				var linearRing = new OpenLayers.Geometry.LinearRing(points);
 				var degrees = Math.round(direction * 180 / Math.PI);
 				linearRing.rotate(degrees, embryo.map
-						.createPoint(lon, lat));
+						.createPoint(lon, lat));*/
 				
-				var feature = new OpenLayers.Feature.Vector(linearRing, {
+				var point = embryo.map.createPoint(lon, lat);
+				
+				var feature = new OpenLayers.Feature.Vector(point, {
 					level : level,
-					obs : height + '/' + period
+					obs : height + '/' + period,
+					col : col,
+					angle : direction + 180
 				});
 				features.push(feature);
 			}
@@ -469,7 +489,7 @@ function ForecastLayer() {
 				var lat = lats[e.substr(0, e.indexOf('_'))];
 				var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 
-				var points = new Array(embryo.map.createPoint(lon, lat + half),
+				/*var points = new Array(embryo.map.createPoint(lon, lat + half),
 						embryo.map.createPoint(lon + half, lat + (half * 0.2)),
 						embryo.map.createPoint(lon + (half * 0.2), lat
 								+ (half * 0.2)), embryo.map.createPoint(lon
@@ -480,14 +500,21 @@ function ForecastLayer() {
 										+ (half * 0.2)), embryo.map
 								.createPoint(lon - half, lat + (half * 0.2)));
 
-				var rad = Math.acos(north / speed);
-				var degrees = Math.round(rad * 180 / Math.PI);
-
 				var linearRing = new OpenLayers.Geometry.LinearRing(points);
-				linearRing.rotate(degrees, embryo.map.createPoint(lon, lat));
-				var feature = new OpenLayers.Feature.Vector(linearRing, {
+				linearRing.rotate(degrees, embryo.map.createPoint(lon, lat));*/
+				
+				var col = level.slice(1);
+
+				var rad = Math.atan2(north, east);
+				var degrees = Math.round(rad * 180 / Math.PI);
+				
+				var point = embryo.map.createPoint(lon, lat);
+				
+				var feature = new OpenLayers.Feature.Vector(point, {
 					level : level,
-					obs : speed
+					obs : speed,
+					angle : degrees,
+					col : col
 				});
 				features.push(feature);
 
