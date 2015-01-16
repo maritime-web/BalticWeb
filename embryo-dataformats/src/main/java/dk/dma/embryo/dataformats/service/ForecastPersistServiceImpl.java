@@ -33,7 +33,7 @@ public class ForecastPersistServiceImpl implements ForecastPersistService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public void persist(Forecast forecast) {
-        System.out.println("In ForecastPersistService, forecast size: " + forecast.getSize() + ", timestamp: " + forecast.getTimestamp() + ", area: " + forecast.getArea() + ", name: " + forecast.getName());
+//        System.out.println("In ForecastPersistService, forecast size: " + forecast.getSize() + ", timestamp: " + forecast.getTimestamp() + ", area: " + forecast.getArea() + ", name: " + forecast.getName());
         
         int size = forecast.getSize();
         List<Forecast> found = forecastDao.findByProviderAreaAndType(forecast.getProvider(), forecast.getArea(), forecast.getType());
