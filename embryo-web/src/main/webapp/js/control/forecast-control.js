@@ -3,8 +3,8 @@ $(function() {
     var forecastLayer = new ForecastLayer();
     addLayerToMap("forecasts", forecastLayer, embryo.map);
 
-    var forecastInterval = 20 * 1000;
-//    var forecastInterval = 60 * 60 * 1000;
+//    var forecastInterval = 20 * 1000;
+    var forecastInterval = 60 * 60 * 1000;
 
     var module = angular.module('embryo.forecast.control', [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control', 'embryo.forecast.service' ]);
 

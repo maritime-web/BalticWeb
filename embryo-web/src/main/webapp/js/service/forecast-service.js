@@ -6,10 +6,14 @@
     module.service('ForecastService', [ '$http', function($http) {
         var service = {
             forecastSelected: null,
-            replaceAllButSelected: function (existingForecasts, newForecasts, selected) {
+            replaceAllButSelected: function (existingForecasts, newForecasts) {
+                if (!service.forecastSelected) {
+                    return newForecasts;
+                }
+
                 var selectedIndex = -1;
                 $.each(existingForecasts, function (index, forecast) {
-                    if (forecast.id == selected) {
+                    if (forecast.id == service.forecastSelected) {
                         selectedIndex = index;
                     }
                 })
@@ -17,9 +21,8 @@
                     existingForecasts.splice(selectedIndex + 1, existingForecasts.length - 1 - selectedIndex);
                     existingForecasts.splice(0, selectedIndex);
                 }
-
                 $.each(newForecasts, function (index, forecast) {
-                    if (forecast.id != selected) {
+                    if (forecast.id != service.forecastSelected) {
                         existingForecasts.push(forecast);
                     }
                 })
@@ -27,6 +30,8 @@
                 existingForecasts.sort(function (f1, f2) {
                     return f1.area.localeCompare(f2.area);
                 });
+
+                return existingForecasts;
             },
             listWaveForecasts : function(success, error) {
                 var messageId = embryo.messagePanel.show({

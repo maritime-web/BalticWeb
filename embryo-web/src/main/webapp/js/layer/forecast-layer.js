@@ -297,8 +297,8 @@ function ForecastLayer() {
                 // Once we know the new code works, this (and the two similar blocks below) needs to go.
                 /*var points = new Array(embryo.map.createPoint(lon, lat + half),
                  embryo.map.createPoint(lon + half, lat + (half * 0.2)),
-						embryo.map.createPoint(lon + (half * 0.2), lat
-								+ (half * 0.2)), embryo.map.createPoint(lon
+                 embryo.map.createPoint(lon + (half * 0.2), lat
+                 + (half * 0.2)), embryo.map.createPoint(lon
 								+ (half * 0.2), lat - (half * 0.5)), embryo.map
 								.createPoint(lon - (half * 0.2), lat
 										- (half * 0.5)), embryo.map
@@ -431,8 +431,8 @@ function ForecastLayer() {
 
                 /*var pFactor = period / 8;
                  var points = new Array(embryo.map.createPoint(lon, lat + (half * pFactor)),
-						embryo.map.createPoint(lon + half, lat + (half * 0.2)),
-						embryo.map.createPoint(lon + (half * 0.2), lat
+                 embryo.map.createPoint(lon + half, lat + (half * 0.2)),
+                 embryo.map.createPoint(lon + (half * 0.2), lat
 								+ (half * 0.2)), embryo.map.createPoint(lon
 								+ (half * 0.2), lat - (half * 0.5 * pFactor)), embryo.map
 								.createPoint(lon - (half * 0.2), lat
@@ -491,8 +491,8 @@ function ForecastLayer() {
 
                 /*var points = new Array(embryo.map.createPoint(lon, lat + half),
                  embryo.map.createPoint(lon + half, lat + (half * 0.2)),
-						embryo.map.createPoint(lon + (half * 0.2), lat
-								+ (half * 0.2)), embryo.map.createPoint(lon
+                 embryo.map.createPoint(lon + (half * 0.2), lat
+                 + (half * 0.2)), embryo.map.createPoint(lon
 								+ (half * 0.2), lat - (half * 0.5)), embryo.map
 								.createPoint(lon - (half * 0.2), lat
 										- (half * 0.5)), embryo.map
