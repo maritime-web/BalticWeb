@@ -20,7 +20,7 @@ $(function() {
 
         $scope.reloadMap = function(wipe) {
             if ($scope.pc.forecastSelected) {
-                forecastLayer.drawWaveForecast($scope.data, $scope.current);
+                forecastLayer.drawWaveForecast($scope.data, $scope.current, $scope.provider);
             } else if (wipe === true) {
                 forecastLayer.clear();
             }
@@ -40,6 +40,7 @@ $(function() {
                 $scope.start = 0;
                 $scope.end = time.length - 1;
                 $scope.current = $scope.start;
+                $scope.provider = p.provider;
 
                 $scope.updateCurrentDate = function() {
                     var t = time[$scope.current];

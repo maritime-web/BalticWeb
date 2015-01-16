@@ -404,7 +404,7 @@ function ForecastLayer() {
 		}
 	};
 
-	this.drawWaveForecast = function(forecast, time) {
+	this.drawWaveForecast = function(forecast, time, provider) {
 		var that = this;
 		that.clear();
 		that.layers.forecasts.addFeatures(this.drawFrame(forecast));
@@ -449,13 +449,19 @@ function ForecastLayer() {
 				linearRing.rotate(degrees, embryo.map
 						.createPoint(lon, lat));*/
 				
+				if(provider == 'FCOO') {
+					direction = Math.round(direction * 180 / Math.PI);
+				} else {
+					direction += 180;
+				}
+				
 				var point = embryo.map.createPoint(lon, lat);
 				
 				var feature = new OpenLayers.Feature.Vector(point, {
 					level : level,
 					obs : height + '/' + period,
 					col : col,
-					angle : direction + 180
+					angle : direction
 				});
 				features.push(feature);
 			}
