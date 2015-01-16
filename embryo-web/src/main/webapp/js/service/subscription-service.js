@@ -13,138 +13,127 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-(function () {
+(function() {
     var module = angular.module('embryo.subscription.service', [ 'embryo.storageServices' ]);
 
     module.service('SubscriptionService', [
-        '$http',
-        '$interval',
+            '$http',
+            '$interval',
         function ($http, $interval) {
-            var subscriptions = {};
-            var interval = 2 * 60 * 1000 * 60;
-            //var interval = 1000 * 10;
+                var subscriptions = {};
+                var interval = 2 * 60 * 1000 * 60;
 
-            function notifySubscribers(key, error) {
-                if (subscriptions[key]) {
-                    for (var i in subscriptions[key].callbacks) {
-                        if (subscriptions[key].callbacks[i]) {
-                            if (error && subscriptions[key].callbacks[i].error) {
-                                subscriptions[key].callbacks[i].error(error);
-                            } else if (!error && subscriptions[key].value != null && subscriptions[key].callbacks[i].success) {
-                                subscriptions[key].callbacks[i].success(subscriptions[key].value);
+                function notifySubscribers(key, error) {
+                    if (subscriptions[key]) {
+                        for ( var i in subscriptions[key].callbacks) {
+                            if (subscriptions[key].callbacks[i]) {
+                                if (error && subscriptions[key].callbacks[i].error) {
+                                    subscriptions[key].callbacks[i].error(error);
+                                } else if (!error && subscriptions[key].value != null && subscriptions[key].callbacks[i].success) {
+                                    subscriptions[key].callbacks[i].success(subscriptions[key].value);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            function getLoader(callbackConfig) {
-                var f = function () {
-                    var arguments = [];
-                    var key = getKey(callbackConfig);
-                    if (callbackConfig.params) {
-                        for (var index in callbackConfig.params) {
-                            arguments.push(callbackConfig.params[index]);
+                function getLoader(callbackConfig) {
+                    var f = function() {
+                        var arguments = [];
+                        var key = getKey(callbackConfig);
+                        if (callbackConfig.params) {
+                            for (var index in callbackConfig.params) {
+                                arguments.push(callbackConfig.params[index]);
+                            }
                         }
-                    }
-                    arguments.push(function (value) {
-                        subscriptions[key].value = value;
-                        notifySubscribers(key);
-                    });
-                    arguments.push(function (error) {
-                        notifySubscribers(key, error);
-                    });
-                    callbackConfig.fn.apply(callbackConfig.fn, arguments);
-                };
-                return f;
-            }
+                        arguments.push(function(value){
+                            subscriptions[key].value = value;
+                            notifySubscribers(key);
+                        });
+                        arguments.push(function(error) {
+                            notifySubscribers(key, error);
+                        });
+                        callbackConfig.fn.apply(callbackConfig.fn, arguments);
+                    };
+                    return f;
+                }
 
-            function getKey(callbackConfig) {
-                return callbackConfig.name;
-            }
+                function getKey(callbackConfig){
+                    return callbackConfig.name;
+                }
 
-            service = {
-                subscribe: function (callbackConfig) {
-                    var id;
-                    var key = getKey(callbackConfig);
-                    if (!subscriptions[key]) {
-                        subscriptions[key] = {
-                            callbacks: [],
-                            loader: null,
-                            interval: null,
-                            $interval: null,
-                            value: null
-                        };
-                    }
+                service = {
+                    subscribe : function(callbackConfig) {
+                        var id;
+                        var key = getKey(callbackConfig);
+                        if (!subscriptions[key]) {
+                            subscriptions[key] = {
+                                callbacks : [],
+                                loader: null,
+                                interval : null,
+                                $interval: null,
+                                value : null
+                            };
+                        }
 
-                    // by providing a subscriber value a subscription can be resubscribed.
-                    // This is usable to start subscribing values, but never un subscribe even though controller is destroyed,
-                    // thus continuing the polling for values. When a new controller is instantiated it replaces the callbackConfig
-                    // to enable updation of the page
-                    if (callbackConfig.subscriber) {
                         var length = subscriptions[key].callbacks.length;
                         for (var index = 0; index < length; index++) {
-                            if (callbackConfig.subscriber === subscriptions[key].callbacks[index].subscriber) {
-                                subscriptions[key].callbacks[index] = callbackConfig;
+                            if (callbackConfig.name === subscriptions[key].callbacks[index].name) {
                                 id = index;
                             }
                         }
-                    }
-
-                    if (!id && id != 0) {
-                        var newLength = subscriptions[key].callbacks.push(callbackConfig);
-                        id = newLength - 1;
-                        if (subscriptions[key].$interval == null) {
-                            // first subscriber for key with a callbackConfig.interval value will win
-                            // following subscribers for same key value will use interval of first subscriber
-                            subscriptions[key].interval = callbackConfig.interval ? callbackConfig.interval : interval;
-                            subscriptions[key].loader = getLoader(callbackConfig);
-                            subscriptions[key].$interval = $interval(subscriptions[key].loader, subscriptions[key].interval);
-                            subscriptions[key].loader();
-                        }
-                    }
-
-                    if (subscriptions[key].value) {
-                        callbackConfig.success(subscriptions[key].value);
-                    }
-
-                    var subscription = { name: callbackConfig.name, id: id};
-                    return subscription;
-                },
-                unsubscribe: function (unsubscription) {
-                    var key = getKey(unsubscription);
-                    subscriptions[key].callbacks.splice(unsubscription.id, 1);
-                    var allDead = subscriptions[key].callbacks.length == 0;
-                    if (allDead) {
-                        clearInterval(subscriptions[key].$interval);
-                        delete subscriptions[key];
-                    }
-                },
-                update: function (subscriptionConfig) {
-                    function reload(subscriptionConfig) {
-                        var key = getKey(subscriptionConfig);
-                        $interval.cancel(subscriptions[key].$interval);
-                        subscriptions[key].$interval = $interval(getLoader(subscriptionConfig), subscriptions[key].interval);
-                        subscriptions[key].loader();
-                    }
-
-                    if (subscriptionConfig) {
-                        reload(subscriptionConfig);
-                    } else {
-                        var keys = Object.keys(subscriptions);
-                        for (var index in keys) {
-                            var key = keys[index];
-                            if (subscriptions[key].$interval && subscriptions[key].callbacks && subscriptions[key].callbacks.length > 0) {
-                                reload(subscriptions[key].callbacks[0]);
+                        if (!id && id != 0) {
+                            id = subscriptions[key].callbacks.push(callbackConfig);
+                            if (subscriptions[key].$interval == null) {
+                                // first subscriber for key with a callbackConfig.interval value will win
+                                // following subscribers for same key value will use interval of first subscriber
+                                subscriptions[key].interval = callbackConfig.interval ? callbackConfig.interval : interval;
+                                subscriptions[key].loader = getLoader(callbackConfig);
+                                subscriptions[key].$interval = $interval(subscriptions[key].loader, subscriptions[key].interval);
+                                subscriptions[key].loader();
                             }
                         }
+                        if (subscriptions[key].value) {
+                            callbackConfig.success(subscriptions[key].value);
+                        }
 
+                        var subscription = { name: callbackConfig.name, id: id};
+                        return subscription;
+                    },
+                    unsubscribe : function(unsubscription) {
+                        var key = getKey(unsubscription);
+                        subscriptions[key].callbacks.splice(unsubscription.id, 1);
+                        var allDead = subscriptions[key].callbacks.length == 0;
+                        if (allDead) {
+                            clearInterval(subscriptions[key].$interval);
+                            delete subscriptions[key];
+                        }
+                    },
+                    update : function(subscriptionConfig) {
+                        function reload(subscriptionConfig) {
+                            var key = getKey(subscriptionConfig);
+                            $interval.cancel(subscriptions[key].$interval);
+                            subscriptions[key].$interval = $interval(getLoader(subscriptionConfig), subscriptions[key].interval);
+                            subscriptions[key].loader();
+                        }
+
+                        if (subscriptionConfig) {
+                            reload(subscriptionConfig);
+                        } else {
+                            var keys = Object.keys(subscriptions);
+                            for ( var index in keys) {
+                                var key = keys[index];
+                                if (subscriptions[key].$interval && subscriptions[key].callbacks && subscriptions[key].callbacks.length > 0) {
+                                    reload(subscriptions[key].callbacks[0]);
+                                }
+                            }
+
+                        }
                     }
-                }
-            };
+                };
 
-            return service;
-        } ]);
+                return service;
+            } ]);
 
     module.run(function (SubscriptionService) {
         if (!embryo.subscription)

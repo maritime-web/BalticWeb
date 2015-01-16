@@ -21,7 +21,7 @@ $(function() {
 
         function reloadMap(ctrl) {
             if (ForecastService.forecastSelected) {
-                ctrl.drawForecast($scope.data, $scope.current);
+                ctrl.drawForecast($scope.data, $scope.current, $scope.provider);
             }
         };
 
@@ -33,6 +33,7 @@ $(function() {
                 $scope.start = 0;
                 $scope.end = time.length - 1;
                 $scope.current = $scope.start;
+                $scope.provider = selected.provider;
 
                 $scope.updateCurrentDate = function() {
                     var t = time[$scope.current];
@@ -77,7 +78,7 @@ $(function() {
                 for (var i = 0; i < forecasts.length; i++) {
                     waveForecasts.push(convertForecast(forecasts[i]));
                 }
-                ForecastService.replaceAllButSelected($scope.waveForecasts, waveForecasts, ForecastService.forecastSelected);
+                $scope.waveForecasts = ForecastService.replaceAllButSelected($scope.waveForecasts, waveForecasts);
             },
             error: function (error) {
                 $scope.errorMsg = error;
@@ -102,7 +103,7 @@ $(function() {
                 for (var i = 0; i < forecasts.length; i++) {
                     currentForecasts.push(convertForecast(forecasts[i]));
                 }
-                ForecastService.replaceAllButSelected($scope.currentForecasts, currentForecasts, ForecastService.forecastSelected);
+                $scope.currentForecasts = ForecastService.replaceAllButSelected($scope.currentForecasts, currentForecasts);
             },
             error: function (error) {
                 $scope.errorMsg = error;
@@ -159,11 +160,9 @@ $(function() {
                     $scope.reloadMap();
                 };
                 $scope.$watch('current', $scope.updateCurrentDate);
-                $scope.updateCurrentDate();
 
                 ForecastService.forecastSelected = p.id;
-
-                $scope.reloadMap();
+                $scope.updateCurrentDate();
             }, function (error) {
                 $scope.errorMsg = error;
             });
@@ -185,8 +184,7 @@ $(function() {
                 for (var i = 0; i < forecasts.length; i++) {
                     iceForecasts.push(convertForecast(forecasts[i]));
                 }
-                ForecastService.replaceAllButSelected($scope.iceForecasts, iceForecasts, ForecastService.forecastSelected);
-
+                $scope.iceForecasts = ForecastService.replaceAllButSelected($scope.iceForecasts, iceForecasts);
             },
             error: function (error) {
                 $scope.errorMsg = error;
