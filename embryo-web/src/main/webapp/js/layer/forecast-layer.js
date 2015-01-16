@@ -1,6 +1,7 @@
 function ForecastLayer() {
+    var that = this;
 
-	OpenLayers.Strategy.RuleCluster = OpenLayers.Class(
+    OpenLayers.Strategy.RuleCluster = OpenLayers.Class(
 			OpenLayers.Strategy.Cluster, {
 				/**
 				 * the rule to use for comparison
@@ -25,12 +26,10 @@ function ForecastLayer() {
 				CLASS_NAME : "OpenLayers.Strategy.RuleCluster"
 			});
 
-	this.init = function() {
-		this.zoomLevels = [ 4, 6, 11 ];
+    that.init = function () {
+        that.zoomLevels = [ 4, 6, 11 ];
 
-		var that = this;
-
-		this.context = {
+        that.context = {
 			transparency : function() {
 				return that.active ? 0.5 : 0.25;
 			},
@@ -57,7 +56,7 @@ function ForecastLayer() {
 			}
 		};
 
-		this.layers.forecasts = new OpenLayers.Layer.Vector("Forecasts", {
+        that.layers.forecasts = new OpenLayers.Layer.Vector("Forecasts", {
 			styleMap : new OpenLayers.StyleMap({
 				"default" : new OpenLayers.Style({
 					// externalGraphic : "img/inshoreIceReport.png",
@@ -79,7 +78,7 @@ function ForecastLayer() {
 					labelOutlineWidth : 0,
 					labelYOffset : -20
 				}, {
-					context : this.context
+                    context: that.context
 				}),
 				"select" : new OpenLayers.Style({
 					// externalGraphic : "img/inshoreIceReport.png",
@@ -103,16 +102,16 @@ function ForecastLayer() {
 					labelYOffset : -20,
 					display : "${display}",
 				}, {
-					context : this.context
+                    context: that.context
 				})
 			})
 		});
 
-		this.selectableLayers = [ this.layers.forecasts ];
-		this.selectableAttribute = "number";
+        that.selectableLayers = [ that.layers.forecasts ];
+        that.selectableAttribute = "number";
 	};
 
-	this.getIceConcentrationLevel = function(obs) {
+    that.getIceConcentrationLevel = function (obs) {
 		if (obs < 0.1) {
 			return '#96c7ff';
 		} else if (obs < 0.3) {
@@ -128,7 +127,7 @@ function ForecastLayer() {
 		}
 	};
 
-	this.getIceThicknessLevel = function(obs) {
+    that.getIceThicknessLevel = function (obs) {
 		if (obs < 0.1) {
 			return '#96c7ff';
 		} else if (obs < 0.3) {
@@ -144,7 +143,7 @@ function ForecastLayer() {
 		}
 	};
 
-	this.getSpeedLevel = function(obs) {
+    that.getSpeedLevel = function (obs) {
 		if (obs < 0.1) {
 			return '#96c7ff';
 		} else if (obs < 0.3) {
@@ -160,7 +159,7 @@ function ForecastLayer() {
 		}
 	};
 
-	this.getIceAccretionLevel = function(obs) {
+    that.getIceAccretionLevel = function (obs) {
 		if (obs < 0) {
 			return '#96c7ff';
 		} else if (obs < 22.5) {
@@ -173,8 +172,8 @@ function ForecastLayer() {
 			return '#979797';
 		}
 	};
-	
-	this.getWaveHeightLevel = function(obs) {
+
+    that.getWaveHeightLevel = function (obs) {
 		if (obs < 1) {
 			return '#96c7ff';
 		} else if (obs < 2) {
@@ -190,7 +189,7 @@ function ForecastLayer() {
 		}
 	};
 
-	this.drawFrame = function(forecast) {
+    that.drawFrame = function (forecast) {
 		var half = 0.2;
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
@@ -209,7 +208,7 @@ function ForecastLayer() {
 		return feature;
 	};
 
-	this.drawConcentration = function(forecast, time) {
+    that.drawConcentration = function (forecast, time) {
 		var index = forecast.variables['Ice concentration'];
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
@@ -220,7 +219,7 @@ function ForecastLayer() {
 
 		for ( var e in entries) {
 			var obs = entries[e][index];
-			var level = this.getIceConcentrationLevel(obs);
+            var level = that.getIceConcentrationLevel(obs);
 			var lat = lats[e.substr(0, e.indexOf('_'))];
 			var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 
@@ -241,7 +240,7 @@ function ForecastLayer() {
 		return features;
 	};
 
-	this.drawThickness = function(forecast, time) {
+    that.drawThickness = function (forecast, time) {
 		var index = forecast.variables['Ice thickness'];
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
@@ -252,7 +251,7 @@ function ForecastLayer() {
 
 		for ( var e in entries) {
 			var obs = entries[e][index];
-			var level = this.getIceThicknessLevel(obs);
+            var level = that.getIceThicknessLevel(obs);
 			var lat = lats[e.substr(0, e.indexOf('_'))];
 			var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 
@@ -274,7 +273,7 @@ function ForecastLayer() {
 
 	};
 
-	this.drawSpeed = function(forecast, time) {
+    that.drawSpeed = function (forecast, time) {
 		var indexEast = forecast.variables['Ice speed east'];
 		var indexNorth = forecast.variables['Ice speed north'];
 		var lats = forecast.metadata.lat;
@@ -289,7 +288,7 @@ function ForecastLayer() {
 			var north = entries[e][indexNorth];
 			if (east || north) {
 				var speed = Math.sqrt(north * north + east * east);
-				var level = this.getSpeedLevel(speed);
+                var level = that.getSpeedLevel(speed);
 				var lat = lats[e.substr(0, e.indexOf('_'))];
 				var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 				var points = new Array(embryo.map.createPoint(lon, lat + half),
@@ -320,7 +319,7 @@ function ForecastLayer() {
 		return features;
 	};
 
-	this.drawAccretion = function(forecast, time) {
+    that.drawAccretion = function (forecast, time) {
 		var index = forecast.variables['Ice accretion risk'];
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
@@ -331,7 +330,7 @@ function ForecastLayer() {
 
 		for ( var e in entries) {
 			var obs = entries[e][index];
-			var level = this.getIceAccretionLevel(obs);
+            var level = that.getIceAccretionLevel(obs);
 			var lat = lats[e.substr(0, e.indexOf('_'))];
 			var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 
@@ -352,25 +351,24 @@ function ForecastLayer() {
 		return features;
 	};
 
-	this.drawIceForecast = function(forecast, time, mapType) {
-		var that = this;
+    that.drawIceForecast = function (forecast, time, mapType) {
 		that.clear();
 
-		that.layers.forecasts.addFeatures(this.drawFrame(forecast));
+        that.layers.forecasts.addFeatures(that.drawFrame(forecast));
 
 		var features = [];
 		switch (mapType) {
 		case 'iceConcentration':
-			features = this.drawConcentration(forecast, time);
+            features = that.drawConcentration(forecast, time);
 			break;
 		case 'iceThickness':
-			features = this.drawThickness(forecast, time);
+            features = that.drawThickness(forecast, time);
 			break;
 		case 'iceSpeed':
-			features = this.drawSpeed(forecast, time);
+            features = that.drawSpeed(forecast, time);
 			break;
 		case 'iceAccretion':
-			features = this.drawAccretion(forecast, time);
+            features = that.drawAccretion(forecast, time);
 			break;
 		}
 
@@ -379,7 +377,7 @@ function ForecastLayer() {
 
 	};
 
-	this.getWaveConcentrationLevel = function(obs) {
+    that.getWaveConcentrationLevel = function (obs) {
 		if (obs < 0.7) {
 			return '#00DE00';
 		} else if (obs < 1.0) {
@@ -391,10 +389,9 @@ function ForecastLayer() {
 		}
 	};
 
-	this.drawWaveForecast = function(forecast, time) {
-		var that = this;
+    that.drawWaveForecast = function (forecast, time) {
 		that.clear();
-		that.layers.forecasts.addFeatures(this.drawFrame(forecast));
+        that.layers.forecasts.addFeatures(that.drawFrame(forecast));
 
 		var vars = forecast.variables;
 		var lats = forecast.metadata.lat;
@@ -416,7 +413,7 @@ function ForecastLayer() {
 			if (direction) {
 				var lat = lats[e.substr(0, e.indexOf('_'))];
 				var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
-				var level = this.getWaveHeightLevel(height);
+                var level = that.getWaveHeightLevel(height);
 				var pFactor = period / 8;
 				var points = new Array(embryo.map.createPoint(lon, lat + (half * pFactor)),
 						embryo.map.createPoint(lon + half, lat + (half * 0.2)),
@@ -445,11 +442,9 @@ function ForecastLayer() {
 		that.layers.forecasts.refresh();
 	};
 
-	this.drawCurrentForecast = function(forecast, time) {
-		
-		var that = this;
+    that.drawCurrentForecast = function (forecast, time) {
 		that.clear();
-		that.layers.forecasts.addFeatures(this.drawFrame(forecast));
+        that.layers.forecasts.addFeatures(that.drawFrame(forecast));
 
 		var indexEast = forecast.variables['Current east'];
 		var indexNorth = forecast.variables['Current north'];
@@ -465,7 +460,7 @@ function ForecastLayer() {
 			var north = entries[e][indexNorth];
 			if (east || north) {
 				var speed = Math.sqrt(north * north + east * east);
-				var level = this.getSpeedLevel(speed);
+                var level = that.getSpeedLevel(speed);
 				var lat = lats[e.substr(0, e.indexOf('_'))];
 				var lon = lons[e.substr(e.indexOf('_') + 1, e.length - 1)];
 

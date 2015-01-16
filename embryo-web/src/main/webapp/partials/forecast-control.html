@@ -1,9 +1,9 @@
-<div x-ng-controller="ForecastController as pc">
-	<div id="forecastControlPanel" accordion close-others="true" e-left-bar
+<div x-ng-controller="ForecastController">
+<div id="forecastControlPanel" accordion close-others="true" e-left-bar
 		open-first="true" class="controlPanel2">
 		<div accordion-group heading="Wave forecasts">
-			<div x-ng-controller="WaveForecastsCtrl">
-				<h4>Wave forecasts</h4>
+            <div x-ng-controller="WaveForecastsCtrl as wfc">
+                <h4>Wave forecasts</h4>
 				<table class="table table-condensed">
 					<colgroup>
 						<col />
@@ -21,12 +21,12 @@
 					</thead>
 					<tbody class="e-noborder"
 						x-ng-repeat="forecast in waveForecasts"
-						x-ng-controller="WaveForecastCtrl">
-						<tr>
+                        x-ng-controller="ForecastCtrl as fc">
+                    <tr>
 							<td>
 								<div>
-									<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
-								</div>
+                                    <a href="#" x-ng-click="getForecast(forecast, $event, wfc)">{{forecast.area}}</a>
+                                </div>
 							</td>
 							<td>{{forecast.timestamp}}</td>
 							<td>{{forecast.size}}</td>
@@ -34,7 +34,7 @@
 						</tr>
 						<tr>
 							<td class="e-bottomborder" colspan="4"><span
-								x-ng-show="pc.forecastSelected == forecast.id"> <br /> <input
+                                    x-ng-show="service.forecastSelected == forecast.id"> <br/> <input
 									type="range" class="e-forecast" min="{{start}}" max="{{end}}"
 									step="1" x-ng-model="current" /> <br />Selected time:
 									{{currentDate}}
@@ -77,7 +77,7 @@
 						</tr>
 						<tr>
 							<td colspan="4" class="e-bottomborder"><span
-								x-ng-show="pc.forecastSelected == forecast.id"> <br /> <span
+                                    x-ng-show="service.forecastSelected == forecast.id"> <br/> <span
 									x-ng-hide="noIceConcentration"><input type="radio"
 										name="iceForecastType_{{forecast.id}}"
 										id="iceConcentration_{{forecast.id}}" value="iceConcentration"
@@ -109,8 +109,8 @@
 		</div>
 
 		<div accordion-group heading="Ocean current forecasts">
-			<div x-ng-controller="CurrentForecastsCtrl">
-				<h4>Ocean current forecasts</h4>
+            <div x-ng-controller="CurrentForecastsCtrl as cfc">
+                <h4>Ocean current forecasts</h4>
 				<table class="table table-condensed">
 					<colgroup>
 						<col />
@@ -128,12 +128,12 @@
 					</thead>
 					<tbody class="e-noborder"
 						x-ng-repeat="forecast in currentForecasts"
-						x-ng-controller="CurrentForecastCtrl">
-						<tr>
+                        x-ng-controller="ForecastCtrl">
+                    <tr>
 							<td>
 								<div>
-									<a href="#" x-ng-click="getForecast(forecast, $event)">{{forecast.area}}</a>
-								</div>
+                                    <a href="#" x-ng-click="getForecast(forecast, $event, cfc)">{{forecast.area}}</a>
+                                </div>
 							</td>
 							<td>{{forecast.timestamp}}</td>
 							<td>{{forecast.size}}</td>
@@ -141,7 +141,7 @@
 						</tr>
 						<tr>
 							<td class="e-bottomborder" colspan="4"><span
-								x-ng-show="pc.forecastSelected == forecast.id"> <br /> <input
+                                    x-ng-show="service.forecastSelected == forecast.id"> <br/> <input
 									type="range" class="e-forecast" min="{{start}}" max="{{end}}"
 									step="1" x-ng-model="current" /> <br />Selected time:
 									{{currentDate}}

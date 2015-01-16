@@ -3,37 +3,30 @@ $(function() {
     var forecastLayer = new ForecastLayer();
     addLayerToMap("forecasts", forecastLayer, embryo.map);
 
+    var forecastInterval = 20 * 1000;
+//    var forecastInterval = 60 * 60 * 1000;
+
     var module = angular.module('embryo.forecast.control', [ 'embryo.metoc', 'ui.bootstrap.accordion', 'embryo.control', 'embryo.forecast.service' ]);
 
     module.controller("ForecastController", [ '$scope', function($scope) {
-        $scope.selected = {};
-
-        $scope.forecastSelected = '';
-
         $scope.$on("$destroy", function() {
             embryo.controllers.settings.close();
             forecastLayer.clear();
         });
+
     } ]);
 
-    module.controller('WaveForecastCtrl', [ '$scope', 'ForecastService', function($scope, ForecastService) {
+    module.controller('ForecastCtrl', [ '$scope', 'ForecastService', function ($scope, ForecastService) {
+        $scope.service = ForecastService;
 
-        $scope.reloadMap = function(wipe) {
-            if ($scope.pc.forecastSelected) {
-                forecastLayer.drawWaveForecast($scope.data, $scope.current);
-            } else if (wipe === true) {
-                forecastLayer.clear();
+        function reloadMap(ctrl) {
+            if (ForecastService.forecastSelected) {
+                ctrl.drawForecast($scope.data, $scope.current);
             }
         };
 
-        $scope.getForecast = function(p, $event) {
-            $event.preventDefault();
-            if (p.id == $scope.pc.forecastSelected) {
-                $scope.pc.forecastSelected = '';
-                $scope.reloadMap(true);
-                return;
-            }
-            ForecastService.getWaveForecast(p.id, function(forecast) {
+        function createSuccess(selected, ctrl) {
+            return function success(forecast) {
                 $scope.errorMsg = null;
                 $scope.data = forecast;
                 var time = forecast.metadata.time;
@@ -44,97 +37,85 @@ $(function() {
                 $scope.updateCurrentDate = function() {
                     var t = time[$scope.current];
                     $scope.currentDate = formatTime(t);
-                    $scope.reloadMap();
+                    reloadMap(ctrl);
                 };
                 $scope.$watch('current', $scope.updateCurrentDate);
+                ForecastService.forecastSelected = selected.id;
                 $scope.updateCurrentDate();
-
-                for (var i = 0; i < $scope.waveForecasts.length; i++) {
-                    $scope.waveForecasts[i].selected = false;
-                }
-                $scope.pc.forecastSelected = p.id;
-
-                $scope.reloadMap();
-            }, function(error, status) {
-                $scope.errorMsg = error;
-            });
-        };
-
-    } ]);
-
-    module.controller('WaveForecastsCtrl', [ '$scope', 'ForecastService', function($scope, ForecastService) {
-
-        ForecastService.listWaveForecasts(function(forecasts) {
-            $scope.errorMsg = null;
-            $scope.waveForecasts = [];
-            for (var i = 0; i < forecasts.length; i++) {
-                $scope.waveForecasts.push(convertForecast(forecasts[i]));
             }
-        }, function(error, status) {
+        }
+
+        function error() {
             $scope.errorMsg = error;
-        });
-    } ]);
-    
-    module.controller('CurrentForecastCtrl', [ '$scope', 'ForecastService', function($scope, ForecastService) {
-        
-        $scope.reloadMap = function(wipe) {
-            if ($scope.pc.forecastSelected) {
-                forecastLayer.drawCurrentForecast($scope.data, $scope.current);
-            } else if (wipe === true) {
-                forecastLayer.clear();
-            }
-        };
+        }
 
-        $scope.getForecast = function(p, $event) {
+        $scope.getForecast = function (selected, $event, ctrl) {
             $event.preventDefault();
-            if (p.id == $scope.pc.forecastSelected) {
-                $scope.pc.forecastSelected = '';
-                $scope.reloadMap(true);
+            if (selected.id == ForecastService.forecastSelected) {
+                ForecastService.forecastSelected = '';
+                forecastLayer.clear();
                 return;
             }
-            ForecastService.getCurrentForecast(p.id, function(forecast) {
+
+            ctrl.getForecast(selected.id, createSuccess(selected, ctrl), error);
+        };
+    } ]);
+
+    module.controller('WaveForecastsCtrl', [ '$scope', 'ForecastService', 'SubscriptionService', function ($scope, ForecastService, SubscriptionService) {
+        this.getForecast = ForecastService.getWaveForecast;
+        this.drawForecast = forecastLayer.drawWaveForecast;
+        $scope.waveForecasts = [];
+
+        var subscriptionConfig = {
+            subscriber: "WaveForecastsCtrl",
+            name: "ForecastService.listWaveForecasts",
+            fn: ForecastService.listWaveForecasts,
+            interval: forecastInterval,
+            success: function (forecasts) {
                 $scope.errorMsg = null;
-                $scope.data = forecast;
-                var time = forecast.metadata.time;
-                $scope.start = 0;
-                $scope.end = time.length - 1;
-                $scope.current = $scope.start;
-
-                $scope.updateCurrentDate = function() {
-                    var t = time[$scope.current];
-                    $scope.currentDate = formatTime(t);
-                    $scope.reloadMap();
-                };
-                $scope.$watch('current', $scope.updateCurrentDate);
-                $scope.updateCurrentDate();
-
-                for (var i = 0; i < $scope.currentForecasts.length; i++) {
-                    $scope.currentForecasts[i].selected = false;
+                var waveForecasts = [];
+                for (var i = 0; i < forecasts.length; i++) {
+                    waveForecasts.push(convertForecast(forecasts[i]));
                 }
-                $scope.pc.forecastSelected = p.id;
-
-                $scope.reloadMap();
-            }, function(error, status) {
+                ForecastService.replaceAllButSelected($scope.waveForecasts, waveForecasts, ForecastService.forecastSelected);
+            },
+            error: function (error) {
                 $scope.errorMsg = error;
-            });
-        };    }]);
-    
-    module.controller('CurrentForecastsCtrl', [ '$scope', 'ForecastService', function($scope, ForecastService) {
-    	ForecastService.listCurrentForecasts(function(forecasts) {
-            $scope.errorMsg = null;
-            $scope.currentForecasts = [];
-            for (var i = 0; i < forecasts.length; i++) {
-                $scope.currentForecasts.push(convertForecast(forecasts[i]));
             }
-        }, function(error, status) {
-            $scope.errorMsg = error;
-        });
+        }
+        SubscriptionService.subscribe(subscriptionConfig);
+    } ]);
+
+    module.controller('CurrentForecastsCtrl', [ '$scope', 'ForecastService', 'SubscriptionService', function ($scope, ForecastService, SubscriptionService) {
+        this.getForecast = ForecastService.getCurrentForecast;
+        this.drawForecast = forecastLayer.drawCurrentForecast;
+        $scope.currentForecasts = [];
+
+        var subscriptionConfig = {
+            subscriber: "CurrentForecastsCtrl",
+            name: "ForecastService.listCurrentForecasts",
+            fn: ForecastService.listCurrentForecasts,
+            interval: forecastInterval,
+            success: function (forecasts) {
+                $scope.errorMsg = null;
+                var currentForecasts = [];
+                for (var i = 0; i < forecasts.length; i++) {
+                    currentForecasts.push(convertForecast(forecasts[i]));
+                }
+                ForecastService.replaceAllButSelected($scope.currentForecasts, currentForecasts, ForecastService.forecastSelected);
+            },
+            error: function (error) {
+                $scope.errorMsg = error;
+            }
+        }
+        SubscriptionService.subscribe(subscriptionConfig);
     }]);
 
     module.controller('IceForecastCtrl', [ '$scope', 'ForecastService', function($scope, ForecastService) {
+        $scope.service = ForecastService;
 
         $scope.reloadMap = function(wipe) {
-            if ($scope.pc.forecastSelected) {
+            if (ForecastService.forecastSelected && $scope.selectedVariable) {
                 forecastLayer.drawIceForecast($scope.data, $scope.current, $scope.selectedVariable);
             } else if (wipe === true) {
                 forecastLayer.clear();
@@ -145,8 +126,8 @@ $(function() {
 
         $scope.getForecast = function(p, $event) {
             $event.preventDefault();
-            if (p.id == $scope.pc.forecastSelected) {
-                $scope.pc.forecastSelected = '';
+            if (p.id == ForecastService.forecastSelected) {
+                ForecastService.forecastSelected = '';
                 $scope.reloadMap(true);
                 return;
             }
@@ -180,28 +161,38 @@ $(function() {
                 $scope.$watch('current', $scope.updateCurrentDate);
                 $scope.updateCurrentDate();
 
-                for (var i = 0; i < $scope.iceForecasts.length; i++) {
-                    $scope.iceForecasts[i].selected = false;
-                }
-                $scope.pc.forecastSelected = p.id;
-            }, function(error, status) {
+                ForecastService.forecastSelected = p.id;
+
+                $scope.reloadMap();
+            }, function (error) {
                 $scope.errorMsg = error;
             });
 
         };
     } ]);
-    
-    module.controller('IceForecastsCtrl', [ '$scope', 'ForecastService', function($scope, ForecastService) {
 
-    	ForecastService.listIceForecasts(function(forecasts) {
-            $scope.errorMsg = null;
-            $scope.iceForecasts = [];
-            for (var i = 0; i < forecasts.length; i++) {
-            	$scope.iceForecasts.push(convertForecast(forecasts[i]));
+    module.controller('IceForecastsCtrl', [ '$scope', 'ForecastService', 'SubscriptionService', function ($scope, ForecastService, SubscriptionService) {
+        $scope.iceForecasts = [];
+
+        var subscriptionConfig = {
+            subscriber: "IceForecastsCtrl",
+            name: "ForecastService.listIceForecasts",
+            fn: ForecastService.listIceForecasts,
+            interval: forecastInterval,
+            success: function (forecasts) {
+                $scope.errorMsg = null;
+                var iceForecasts = [];
+                for (var i = 0; i < forecasts.length; i++) {
+                    iceForecasts.push(convertForecast(forecasts[i]));
+                }
+                ForecastService.replaceAllButSelected($scope.iceForecasts, iceForecasts, ForecastService.forecastSelected);
+
+            },
+            error: function (error) {
+                $scope.errorMsg = error;
             }
-        }, function(error, status) {
-            $scope.errorMsg = error;
-        });
+        }
+        SubscriptionService.subscribe(subscriptionConfig);
     } ]);
     
     var convertForecast = function(forecast) {
