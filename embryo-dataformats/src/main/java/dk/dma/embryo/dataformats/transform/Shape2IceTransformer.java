@@ -14,8 +14,6 @@
  */
 package dk.dma.embryo.dataformats.transform;
 
-import java.util.List;
-
 import dk.dma.embryo.dataformats.model.IceObservation;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
@@ -23,9 +21,9 @@ import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
  * @author Jesper Tejlgaard
  */
 public interface Shape2IceTransformer {
-    
-    List<IceObservation> transform(String chartType, List<ShapeFileMeasurement> shapes);
-    
+
+    IceObservation transform(ShapeFileMeasurement shape);
+
     String getProvider();
 
 }

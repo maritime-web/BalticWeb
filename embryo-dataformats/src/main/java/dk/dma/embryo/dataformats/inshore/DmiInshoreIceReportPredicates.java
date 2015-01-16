@@ -128,18 +128,31 @@ public class DmiInshoreIceReportPredicates {
 
         @Override
         public boolean apply(FileInfo input) {
+            
+            final boolean DO_APPLY = true;
+            final boolean DO_NOT_APPLY = false;
+            
+            if(input == null) {
+                return DO_NOT_APPLY;
+            }
+            
             for (FileInfo other : allFiles) {
+                
+                if(other == null) {
+                    return DO_NOT_APPLY;
+                }
+                
                 if (other.date.isEqual(input.date)) {
                     if (other.version != null && input.version == null) {
-                        return false;
+                        return DO_NOT_APPLY;
                     }
                     if (other.version != null && input.version.compareTo(other.version) < 0) {
-                        return false;
+                        return DO_NOT_APPLY;
                     }
                 }
             }
 
-            return true;
+            return DO_APPLY;
         }
     }
 
@@ -152,7 +165,16 @@ public class DmiInshoreIceReportPredicates {
 
         @Override
         public boolean apply(FileInfo input) {
-            return !input.date.isBefore(limit);
+            
+            final boolean INVALID = false;
+            
+            if(input == null) {
+                return INVALID;
+            }
+            
+            boolean valid = !input.date.isBefore(limit);
+
+            return valid;
         }
     }
 

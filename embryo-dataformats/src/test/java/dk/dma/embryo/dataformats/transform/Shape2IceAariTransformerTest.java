@@ -14,11 +14,8 @@
  */
 package dk.dma.embryo.dataformats.transform;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import dk.dma.embryo.dataformats.model.IceObservation;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -27,8 +24,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Jesper Tejlgaard
@@ -60,16 +57,12 @@ public class Shape2IceAariTransformerTest {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd").withZone(DateTimeZone.UTC);
         String dateStr = formatter.print(DateTime.now(DateTimeZone.UTC));
 
-        List<ShapeFileMeasurement> measurements = new ArrayList<>();
-        measurements.add(new ShapeFileMeasurement("iceChart", "aari", "aari_gre_" + dateStr + "_pl_a", 10000));
-        measurements.add(new ShapeFileMeasurement("iceChart", "aari", "aari_barr_" + dateStr + "_pl_a", 10000));
+        ShapeFileMeasurement shapeGreenland = new ShapeFileMeasurement("iceChart", "aari", "aari_gre_" + dateStr + "_pl_a", 10000);
+        ShapeFileMeasurement shapeBar = new ShapeFileMeasurement("iceChart", "aari", "aari_barr_" + dateStr + "_pl_a", 10000);
 
-        List<IceObservation> observations = transformer.transform("iceChart", measurements);
+        IceObservation ice = transformer.transform(shapeGreenland);
 
-        Assert.assertNotNull(observations);
-        Assert.assertEquals(2, observations.size());
-
-        IceObservation ice = observations.get(0);
+        Assert.assertNotNull(ice);
         Assert.assertEquals(10000, ice.getSize());
         Assert.assertEquals("Greenland Sea", ice.getRegion());
         Assert.assertEquals("iceChart-aari.aari_gre_" + dateStr + "_pl_a", ice.getShapeFileName());
@@ -78,7 +71,8 @@ public class Shape2IceAariTransformerTest {
         Assert.assertEquals(formatter.print(DateTime.now(DateTimeZone.UTC)), formatter.print(ice.getDate().getTime()));
 
         // Must work even though region not mapped
-        ice = observations.get(1);
+        ice = transformer.transform(shapeBar);
+        Assert.assertNotNull(ice);
         Assert.assertEquals(10000, ice.getSize());
         Assert.assertEquals("barr", ice.getRegion());
         Assert.assertEquals("iceChart-aari.aari_barr_" + dateStr + "_pl_a", ice.getShapeFileName());

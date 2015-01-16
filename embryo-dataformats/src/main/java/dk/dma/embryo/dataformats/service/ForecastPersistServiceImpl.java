@@ -53,16 +53,22 @@ public class ForecastPersistServiceImpl implements ForecastPersistService {
                     if(size > f.getSize()) {
                         // This forecast is bigger
                         if (f.getName().equals(forecast.getName())) {
-                            // Same name
+                            // Same name - we update data
                             f.updateData(forecast.getData(), size);
                             saved = true;
                         } else {
-                            // Different name
+                            // Different name - old goes out
                             f.invalidate();
                         }
                         forecastDao.saveEntity(f);
                     } else {
-                        forecast.invalidate();
+                        if(f.getName().equals(forecast.getName())) {
+                            // Same name - do not process this forecast further
+                            saved = true;
+                        } else {
+                            // Different name - old stays
+                            forecast.invalidate();
+                        }
                     }
                 } else {
                     // Current forecast is newer

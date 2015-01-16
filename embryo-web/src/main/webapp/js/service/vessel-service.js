@@ -90,7 +90,7 @@
 
                                 (function(callback) {
                                     setTimeout(function() {
-                                        callback(null, s.vesselOverview, s.vesselDetails)
+                                        callback(null, s.vesselDetails)
                                     }, 10);
                                 })(s.callbacks[i]);
                             }
@@ -100,40 +100,26 @@
                         if (subscriptions[mmsi] == null)
                             subscriptions[mmsi] = {
                                 callbacks : [],
-                                vesselOverview : null,
                                 vesselDetails : null,
                                 interval : null
                             };
 
                         var s = subscriptions[mmsi];
-
-                        var id = s.callbacks.push(callback);
-
+                        var id = s.callbacks.push(callback) - 1;
                         var that = this;
 
-                        function lookupStepTwo(vesselOverview) {
-                            if (vesselOverview) {
-                                that.details(vesselOverview.mmsi, function(vesselDetails) {
-                                    embryo.vesselDetails = vesselDetails;
-                                    s.vesselOverview = vesselOverview;
-                                    s.vesselDetails = vesselDetails;
-                                    for ( var i in s.callbacks)
-                                        if (s.callbacks[i])
-                                            s.callbacks[i](null, vesselOverview, vesselDetails);
-                                }, function(error, status) {
-                                    for ( var i in s.callbacks)
-                                        if (s.callbacks[i])
-                                            s.callbacks[i](error);
-                                })
-                            } else {
+                        function lookup() {
+                            that.details(mmsi, function (vesselDetails) {
+                                embryo.vesselDetails = vesselDetails;
+                                s.vesselDetails = vesselDetails;
                                 for ( var i in s.callbacks)
                                     if (s.callbacks[i])
-                                        s.callbacks[i]("unable to find " + mmsi);
-                            }
-                        }
-
-                        function lookup() {
-                            that.clientSideMmsiSearch(mmsi, lookupStepTwo);
+                                        s.callbacks[i](null, vesselDetails);
+                            }, function (error) {
+                                for (var i in s.callbacks)
+                                    if (s.callbacks[i])
+                                        s.callbacks[i](error);
+                            })
                         }
 
                         if (s.interval == null) {
@@ -142,22 +128,20 @@
                         }
 
                         if (s.vesselDetails) {
-                            callback(null, s.vesselOverview, s.vesselDetails)
+                            callback(null, s.vesselDetails)
                         }
                         return {
                             id : id,
                             mmsi : mmsi
                         }
                     },
-                    unsubscribe : function(id) {
-                        var s = subscriptions[id.mmsi];
-                        s.callbacks[id.id] = null;
-                        var allDead = true;
-                        for ( var i in s.callbacks)
-                            allDead &= s.callbacks[i] == null;
+                    unsubscribe: function (unsubscription) {
+                        var s = subscriptions[unsubscription.mmsi];
+                        s.callbacks.splice(unsubscription.id, 1);
+                        var allDead = s.callbacks.length == 0;
                         if (allDead) {
                             clearInterval(s.interval);
-                            subscriptions[id.mmsi] = null
+                            subscriptions[unsubscription.mmsi] = null
                         }
                     },
                     clientSideMmsiSearch : function(mmsi, callback) {

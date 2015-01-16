@@ -32,15 +32,36 @@ public class FileInfoTransformer implements Function<File, FileInfo> {
 
     @Override
     public FileInfo apply(File input) {
-        String value = input.getName();
-        FileInfo info = new FileInfo();
-        info.date = formatter.parseDateTime(value.substring(0, 10)).toDateTime(DateTimeZone.UTC).toDateMidnight();
-        info.file = input;
-        int versionIndex = value.indexOf("_");
-        if (versionIndex > 0) {
-            int extensionIndex = value.lastIndexOf(".");
-            info.version = value.substring(versionIndex + 1, extensionIndex);
+        
+        String fileName = input.getName();
+        
+        FileInfo info = null;
+        if(filenameIsLegal(fileName)) {
+            
+            info = new FileInfo();
+            info.date = formatter.parseDateTime(fileName.substring(0, 10)).toDateTime(DateTimeZone.UTC).toDateMidnight();
+            info.file = input;
+            int versionIndex = fileName.indexOf("_");
+            if (versionIndex > 0) {
+                int extensionIndex = fileName.lastIndexOf(".");
+                info.version = fileName.substring(versionIndex + 1, extensionIndex);
+            }
         }
+        
         return info;
+    }
+
+    private boolean filenameIsLegal(String fileName) {
+        
+        final boolean LEGAL = true;
+        final boolean ILLEGAL = false;
+        
+        // Some files starts with a . for example the .DS_Store file on a mac which should be ignored.
+        if(fileName != null && !fileName.isEmpty() && !fileName.startsWith(".")) {
+            return LEGAL;
+        } else {
+            
+            return ILLEGAL;
+        }
     }
 }

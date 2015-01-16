@@ -14,11 +14,8 @@
  */
 package dk.dma.embryo.dataformats.transform;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import dk.dma.embryo.dataformats.model.IceObservation;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -27,8 +24,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Jesper Tejlgaard
@@ -59,16 +56,12 @@ public class Shape2IceDmiTransformerTest {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmm").withZone(DateTimeZone.UTC);
         String dateStr = formatter.print(DateTime.now(DateTimeZone.UTC));
 
-        List<ShapeFileMeasurement> measurements = new ArrayList<>();
-        measurements.add(new ShapeFileMeasurement("iceChart", "dmi", dateStr + "_CapeFarewell_RIC", 20000));
-        measurements.add(new ShapeFileMeasurement("iceChart", "dmi", dateStr + "_Greenland_WA", 30000));
+        ShapeFileMeasurement shapeCapeFarewell = new ShapeFileMeasurement("iceChart", "dmi", dateStr + "_CapeFarewell_RIC", 20000);
+        ShapeFileMeasurement shapeGreenland = new ShapeFileMeasurement("iceChart", "dmi", dateStr + "_Greenland_WA", 30000);
 
-        List<IceObservation> observations = transformer.transform("iceChart", measurements);
+        IceObservation ice = transformer.transform(shapeCapeFarewell);
 
-        Assert.assertNotNull(observations);
-        Assert.assertEquals(2, observations.size());
-
-        IceObservation ice = observations.get(0);
+        Assert.assertNotNull(ice);
         Assert.assertEquals(20000, ice.getSize());
         Assert.assertEquals("Cape Farewell", ice.getRegion());
         Assert.assertEquals("iceChart-dmi." + dateStr + "_CapeFarewell_RIC", ice.getShapeFileName());
@@ -77,7 +70,8 @@ public class Shape2IceDmiTransformerTest {
         Assert.assertEquals(formatter.print(DateTime.now(DateTimeZone.UTC)), formatter.print(ice.getDate().getTime()));
 
         // Must work even though region not mapped
-        ice = observations.get(1);
+        ice = transformer.transform(shapeGreenland);
+        Assert.assertNotNull(ice);
         Assert.assertEquals(30000, ice.getSize());
         Assert.assertEquals("Greenland Overview", ice.getRegion());
         Assert.assertEquals("iceChart-dmi." + dateStr + "_Greenland_WA", ice.getShapeFileName());

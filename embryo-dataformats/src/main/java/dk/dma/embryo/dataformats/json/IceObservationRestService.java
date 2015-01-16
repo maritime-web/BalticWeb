@@ -14,21 +14,19 @@
  */
 package dk.dma.embryo.dataformats.json;
 
-import java.util.List;
+import dk.dma.embryo.dataformats.model.IceObservation;
+import dk.dma.embryo.dataformats.model.Provider;
+import dk.dma.embryo.dataformats.service.IceObservationService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.model.Provider;
-import dk.dma.embryo.dataformats.service.IceObservationService;
+import java.util.List;
 
 @Path("/ice")
 public class IceObservationRestService {
@@ -48,13 +46,16 @@ public class IceObservationRestService {
     }
 
     @GET
-    @Path("/provider/{charttype}/{provider}/observations")
+    @Path("/{charttype}/observations")
     @Produces("application/json")
     @GZIP
     @NoCache
-    public List<IceObservation> listIceObservations(@PathParam("charttype") String chartType, @PathParam("provider") String providerKey) {
-        logger.debug("listIceObservations({})", providerKey);
-        
-        return iceObservationService.listAvailableIceObservations(chartType, providerKey);
+    public List<IceObservation> listIceObservations(@PathParam("charttype") String chartType) {
+        logger.debug("listIceObservations({})", chartType);
+
+        List<IceObservation> result = iceObservationService.listAvailableIceObservations(chartType);
+        logger.debug("listIceObservations({}) : ", chartType, result);
+        return result;
     }
+
 }

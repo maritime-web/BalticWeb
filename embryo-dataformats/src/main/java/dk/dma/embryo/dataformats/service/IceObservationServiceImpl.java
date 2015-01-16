@@ -14,24 +14,23 @@
  */
 package dk.dma.embryo.dataformats.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.dataformats.model.IceObservation;
 import dk.dma.embryo.dataformats.model.Provider;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
-import dk.dma.embryo.dataformats.transform.Shape2IceTransformer;
+import dk.dma.embryo.dataformats.transform.Shape2IceListTransformer;
 import dk.dma.embryo.dataformats.transform.Shape2IceTransformerFactory;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -63,9 +62,9 @@ public class IceObservationServiceImpl implements IceObservationService {
         return result;
     }
 
-    public List<IceObservation> listAvailableIceObservations(String chartType, String provider) {
-        List<ShapeFileMeasurement> shapeMeasurements = shapeFileMeasurementDao.list(chartType, provider);
-        Shape2IceTransformer transformer = transformerFactory.createTransformer(provider);
-        return transformer.transform(chartType, shapeMeasurements);
+    public List<IceObservation> listAvailableIceObservations(String chartType) {
+        List<ShapeFileMeasurement> shapeMeasurements = shapeFileMeasurementDao.list(chartType);
+        Shape2IceListTransformer transformer = transformerFactory.createListTransformer();
+        return transformer.transform(shapeMeasurements);
     }
 }

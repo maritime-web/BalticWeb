@@ -85,8 +85,7 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
         InshoreIceReportMerged result = new InshoreIceReportMerged();
         List<File> rFiles = Arrays.asList(readFiles);
         Collection<FileInfo> fileInfos = Collections2.transform(rFiles, new FileInfoTransformer());
-        Collection<FileInfo> filtered = Collections2.filter(fileInfos,
-                DmiInshoreIceReportPredicates.allPredicates(fileInfos, limit));
+        Collection<FileInfo> filtered = Collections2.filter(fileInfos, DmiInshoreIceReportPredicates.allPredicates(fileInfos, limit));
 
         List<FileInfo> sorted = new ArrayList<>();
         sorted.addAll(filtered);
