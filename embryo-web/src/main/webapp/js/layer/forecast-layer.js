@@ -445,11 +445,11 @@ function ForecastLayer() {
 				linearRing.rotate(degrees, embryo.map
                  .createPoint(lon, lat));*/
 
-                if (provider == 'FCOO') {
+                /*if (provider == 'FCOO') {*/
                     direction = Math.round(direction * 180 / Math.PI);
-                } else {
+                /*} else {
                     direction += 180;
-                }
+                }*/
 
                 var point = embryo.map.createPoint(lon, lat);
 
