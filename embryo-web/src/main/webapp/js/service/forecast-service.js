@@ -12,20 +12,23 @@
                 }
 
                 var selectedIndex = -1;
-                $.each(existingForecasts, function (index, forecast) {
-                    if (forecast.id == service.forecastSelected) {
+                var length = existingForecasts.length;
+                for (var index = 0; index < length; index++) {
+                    if (existingForecasts[index].id == service.forecastSelected) {
                         selectedIndex = index;
                     }
-                })
+                }
                 if (selectedIndex >= 0) {
                     existingForecasts.splice(selectedIndex + 1, existingForecasts.length - 1 - selectedIndex);
                     existingForecasts.splice(0, selectedIndex);
                 }
-                $.each(newForecasts, function (index, forecast) {
+                length = newForecasts.length;
+                for (var index = 0; index < length; index++) {
+                    var forecast = newForecasts[index];
                     if (forecast.id != service.forecastSelected) {
                         existingForecasts.push(forecast);
                     }
-                })
+                }
 
                 existingForecasts.sort(function (f1, f2) {
                     return f1.area.localeCompare(f2.area);
