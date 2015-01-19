@@ -1,7 +1,7 @@
 $(function () {
 
     var module = angular.module('embryo.ice.control', [ 'ui.bootstrap.accordion', 'embryo.control',
-        'embryo.ice.service', 'embryo.shape' ]);
+        'embryo.ice.service', 'embryo.shape', 'embryo.subscription.service' ]);
 
     var iceLayer = new IceLayer();
     addLayerToMap("ice", iceLayer, embryo.map);
@@ -92,40 +92,32 @@ $(function () {
         return report;
     }
 
-    function iceController($scope, IceService, $timeout, ShapeService) {
+    function iceController($scope, IceService, $timeout, ShapeService, SubscriptionService) {
         $scope.selected = {};
         $scope.satellite = {};
 
-        $scope.selectedProvider = {
-            key: null
-        };
-
-        $scope.changeProvider = function () {
-            IceService.setSelectedProvider($scope.selectedProvider);
-            IceService.update();
-            $("#iceControlPanel .collapse").data("collapse", null);
-            openCollapse("#iceControlPanel #icpIceMaps");
-        };
-
-
-        var subscriptionConfig = {
-            name: "ice-control",
-            providers: function (error, providers) {
-                $scope.providers = providers;
-                $scope.selectedProvider = IceService.getSelectedProvider("");
-            },
-            iceCharts: function (error, iceCharts) {
-                if (!error) {
+        var subscriptionConfigs = {
+            iceChart: {
+                subscriber: "ice-control",
+                name: "IceService.iceCharts",
+                fn: IceService.iceCharts,
+                success: function (iceCharts) {
                     $scope.iceCharts = displayChartList("#icpIceMaps", "iceChart", iceCharts);
                 }
             },
-            icebergs: function (error, icebergs) {
-                if (!error) {
+            iceberg: {
+                subscriber: "ice-control",
+                name: "IceService.icebergs",
+                fn: IceService.icebergs,
+                success: function (icebergs) {
                     $scope.icebergs = displayChartList("#icpIcebergs", "iceberg", icebergs);
                 }
             },
-            inshoreIceReport: function (error, inshoreIceReport) {
-                if (!error) {
+            inshoreIceReport: {
+                subscriber: "ice-control",
+                name: "IceService.inshoreIceReport",
+                fn: IceService.inshoreIceReport,
+                success: function (inshoreIceReport) {
                     $scope.inshoreIceReport = inshoreIceReport;
                     ShapeService.staticShapes("static.gre-inshore-icereport", {
                         delta: false,
@@ -135,12 +127,12 @@ $(function () {
                         inshoreLayer.draw(shapes);
                     }, function (error) {
                     });
-
                 }
             }
-        };
-
-        IceService.subscribe(subscriptionConfig);
+        }
+        SubscriptionService.subscribe(subscriptionConfigs.iceChart);
+        SubscriptionService.subscribe(subscriptionConfigs.iceberg);
+        SubscriptionService.subscribe(subscriptionConfigs.inshoreIceReport);
 
         iceLayer.select(function (ice) {
             if (ice == null) {
@@ -221,7 +213,7 @@ $(function () {
             return formatDate(millis);
         };
 
-        $scope.download = function ($event, chart, charts) {
+        $scope.download = function ($event, chart) {
             $event.preventDefault();
             requestShapefile(chart, function () {
                 chartsDisplayed[chart.type] = chart.shape;
@@ -308,7 +300,7 @@ $(function () {
                     type: "error"
                 });
 
-                IceService.update(chart.type + "s");
+                SubscriptionService.update(subscriptionConfigs[chart.type]);
             });
         }
 
@@ -317,7 +309,7 @@ $(function () {
         });
     }
 
-    module.controller("IceController", [ '$scope', 'IceService', '$timeout', 'ShapeService', iceController ]);
+    module.controller("IceController", [ '$scope', 'IceService', '$timeout', 'ShapeService', 'SubscriptionService', iceController ]);
 
     function createTableHeaderRow(headline) {
         return '<tr><th colspan="2" style="background-color:#eee;">' + headline + '</th></tr>';
