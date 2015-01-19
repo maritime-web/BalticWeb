@@ -23,7 +23,22 @@ import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
 public final class JobContext {
+    
+    public enum Context{
 
+        DMI("dmi"), FCOO("fcoo");
+    
+        private final String name;
+        
+        private Context(String name) {
+            this.name = name;
+        }
+        
+        public String getName() {
+            return this.name;
+        }
+    }
+    
     private final Map<String, String> charttypes;
     private final Map<String, String> dirtypes;
     private final List<ShapeFileMeasurement> measurementsFromDatabase;
@@ -34,7 +49,7 @@ public final class JobContext {
     private final Integer ageInDays;
     private final String mailTo;
     private final String tmpDir;
-    private final String context;
+    private final Context context;
     
     private JobContext(
             Map<String, String> charttypes, 
@@ -47,7 +62,7 @@ public final class JobContext {
             Integer ageInDays, 
             String mailTo, 
             String tmpDir,
-            String context) {
+            Context context) {
         
         super();
         this.charttypes = charttypes;
@@ -75,8 +90,8 @@ public final class JobContext {
             Integer ageInDays, 
             String mailTo, 
             String tmpDir,
-            String context)
-    {
+            Context context) {
+        
         return new JobContext(charttypes, dirtypes, measurementsFromDatabase, propertyFileService, ftpClient, ftpBaseDirectory, ftpBaseFileName, ageInDays, mailTo, tmpDir, context);
     }
     
@@ -124,8 +139,8 @@ public final class JobContext {
     public String getTmpDir() {
         return tmpDir;
     }
-    
-    public String getContext() {
+
+    public Context getContext() {
         return context;
     }
 }

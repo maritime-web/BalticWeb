@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.dataformats.job.JobContext.Context;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
 @Singleton
@@ -123,7 +124,7 @@ public class DmiFtpReaderJob extends AbstractJob {
                     ageInDays, 
                     mailTo, 
                     tmpDir,
-                    "dmi");
+                    Context.DMI);
             
             this.futureTransfers = this.asyncProxy.transferFiles(jobContext);
             

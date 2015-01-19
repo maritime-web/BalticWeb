@@ -125,17 +125,22 @@ public class FtpAsyncProxy {
         String chartType = jobContext.getCharttypes().get(typedir.getName());
         String dirType = jobContext.getDirtypes().get(typedir.getName());
        
-        String localDir = jobContext.getLocalDir(chartType, jobContext.getContext());
-        Map<String, String> regions = jobContext.getRegions(chartType, jobContext.getContext());
+        String localDir = jobContext.getLocalDir(chartType, jobContext.getContext().getName());
+        Map<String, String> regions = jobContext.getRegions(chartType, jobContext.getContext().getName());
         
         FTPClient ftpClient = jobContext.getFtpClient();
 
         LocalDate mapsYoungerThan = LocalDate.now().minusDays(jobContext.getAgeInDays()).minusDays(15);
 
+        // Important only to transfer 1 file only when the files are large as is the case for 'prognoses'.
+        final boolean TRANSFER_ONE_FILE_ONLY = (localDir != null && localDir.contains("prognoses")) ? true : false;
+        
+        
         Thread.sleep(10);
-
+        
+        logger.info("localDir: {} - TRANSFER_ONE_FILE_ONLY = {}", localDir, TRANSFER_ONE_FILE_ONLY);
         logger.info("Reading files in: {}/{}", ftpClient.printWorkingDirectory(), typedir.getName());
-
+        
         // Directories and single files should be handled differently.
         if (dirType != null) {
             if (dirType.equals(Dirtype.DIR.type)) {
@@ -156,7 +161,6 @@ public class FtpAsyncProxy {
                         sendEmail(jobContext, file.getName(), chartType);
                     }
 
-                    outerloop: 
                     for (FTPFile subdirectory : accepted) {
                         Thread.sleep(10);
 
@@ -166,25 +170,31 @@ public class FtpAsyncProxy {
 
                         List<String> filesInSubdirectory = new ArrayList<>();
 
-                        for (FTPFile f : ftpClient.listFiles()) {
-                            filesInSubdirectory.add(f.getName());
+                        for (FTPFile ftpFile : ftpClient.listFiles()) {
+                            filesInSubdirectory.add(ftpFile.getName());
                         }
 
-                        for (String fn : filesInSubdirectory) {
+                        int numberOfFiles = 0;
+                        outerloop: 
+                        for (String fileName : filesInSubdirectory) {
+                            
                             for (String prefix : iceChartExts) {
-                                if (fn.endsWith(prefix)) {
-                                    if (counts.transferCount < 1) {
-                                        if (transferFile(jobContext, ftpClient, fn, localDir, jobContext.getFtpBaseFileName())) {
-                                            counts.transferCount++;
-                                        }
-                                    } else {
-                                        ftpClient.changeToParentDirectory();
-                                        ftpClient.changeToParentDirectory();
+                                if (fileName.endsWith(prefix)) {
+                             
+                                    if(TRANSFER_ONE_FILE_ONLY && numberOfFiles >= 1) {
                                         break outerloop;
+                                    } else {
+                                        
+                                        if (transferFile(jobContext, ftpClient, fileName, localDir, jobContext.getFtpBaseFileName())) {
+                                            counts.transferCount++;
+                                            numberOfFiles++;
+                                        }
                                     }
+                                    
                                 }
                             }
                         }
+                        
                         ftpClient.changeToParentDirectory();
                         ftpClient.changeToParentDirectory();
                     }
@@ -192,18 +202,26 @@ public class FtpAsyncProxy {
                     logger.info("No chart type for dir " + typedir.getName() + ", ignoring.");
                 }
             } else {
+                
                 List<FTPFile> allFiles = Arrays.asList(ftpClient.listFiles(typedir.getName(), FTPFileFilters.NON_NULL));
                 ftpClient.changeWorkingDirectory(typedir.getName());
-                for (FTPFile f : allFiles) {
+                
+                int numberOfFiles = 0;
+                for (FTPFile ftpFile : allFiles) {
+                    
                     // TODO: At this point, everything gets accepted. We might
                     // want to do some file name validation.
-                    if (counts.transferCount < 1) {
-                        if (transferFile(jobContext, ftpClient, f.getName(), localDir, jobContext.getFtpBaseFileName())) {
-                            counts.transferCount++;
-                        }
-                    } else {
+                    if(TRANSFER_ONE_FILE_ONLY && numberOfFiles >= 1) {
                         break;
-                    }
+                    } else {
+                    
+                        if (transferFile(jobContext, ftpClient, ftpFile.getName(), localDir, jobContext.getFtpBaseFileName())) {
+                            counts.transferCount++;
+                            numberOfFiles++;
+                        }
+                    }    
+                        
+                        
                 }
                 ftpClient.changeToParentDirectory();
             }
@@ -278,7 +296,7 @@ public class FtpAsyncProxy {
         for (Entry<String, String> entry : jobContext.getCharttypes().entrySet()) {
             String chartType = entry.getValue();
             final String dirtype = jobContext.getDirtypes().get(entry.getKey());
-            FileUtility fileService = new FileUtility(jobContext.getLocalDir(chartType, jobContext.getContext()));
+            FileUtility fileService = new FileUtility(jobContext.getLocalDir(chartType, jobContext.getContext().getName()));
             String[] filesToDelete = fileService.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
@@ -307,7 +325,13 @@ public class FtpAsyncProxy {
     private void sendEmail(JobContext jobContext, String chartName, String chartType) {
         
         if (jobContext.getMailTo() != null && jobContext.getMailTo().trim().length() > 0 && !notifications.contains(chartName)) {
-            new IceChartNameNotAcceptedMail(jobContext.getContext(), chartName, jobContext.getRegions(chartType, jobContext.getContext()).keySet(), propertyFileService).send(mailSender);
+            new IceChartNameNotAcceptedMail(
+                jobContext.getContext().getName(), 
+                chartName, 
+                jobContext.getRegions(chartType, jobContext.getContext().getName()).keySet(), 
+                propertyFileService
+            ).send(mailSender);
+            
             notifications.add(chartName, DateTime.now(DateTimeZone.UTC));
         }
     }
