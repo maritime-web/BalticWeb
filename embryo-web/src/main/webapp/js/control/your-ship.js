@@ -101,6 +101,7 @@ $(function() {
                 });
 
             var listSubscription = SubscriptionService.subscribe({
+                subscriber: "YourVesselControl",
                 name: "VesselService.list",
                 fn: VesselService.list,
                 interval: embryo.loadFrequence,

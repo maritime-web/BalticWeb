@@ -65,6 +65,7 @@ $(function() {
 
     embryo.mapInitialized(function() {
         embryo.subscription.service.subscribe({
+            subscriber: "vesselLayerController",
             name: "VesselService.list",
             fn: embryo.vessel.service.list,
             interval: embryo.loadFrequence,

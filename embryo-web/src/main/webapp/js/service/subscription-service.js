@@ -1,4 +1,4 @@
-/*  
+/*
  * Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -78,7 +78,7 @@
 
                         var length = subscriptions[key].callbacks.length;
                         for (var index = 0; index < length; index++) {
-                            if (callbackConfig.name === subscriptions[key].callbacks[index].name) {
+                            if (callbackConfig.subscriber === subscriptions[key].callbacks[index].subscriber) {
                                 id = index;
                             }
                         }
