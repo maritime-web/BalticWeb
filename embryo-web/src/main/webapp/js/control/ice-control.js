@@ -253,7 +253,7 @@ $(function () {
         function requestShapefile(chart, onSuccess) {
             var name = chart.shape;
             var messageId = embryo.messagePanel.show({
-                text: "Requesting " + chart.name + " data ..."
+                text: "Requesting " + name + " data ..."
             });
             ShapeService.shape(name, {
                 parts: name.indexOf("aari.aari_arc") >= 0 ? 2 : 0
