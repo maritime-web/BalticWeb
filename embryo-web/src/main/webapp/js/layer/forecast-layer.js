@@ -457,7 +457,7 @@ function ForecastLayer() {
 					level : level,
                     obs: height + '/' + period,
                     col: col,
-                    angle: direction
+                    angle: direction + (provider == 'FCOO' ? 0 : 180)
 				});
 				features.push(feature);
 			}
