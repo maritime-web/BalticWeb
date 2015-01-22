@@ -21,11 +21,11 @@ import javax.inject.Inject;
 
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.HistoricalTrack;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel;
 
 @RunWith(CdiRunner.class)
@@ -37,9 +37,6 @@ public class AisViewServiceIT {
     
     @Inject
     FullAisViewService fullAisViewService;
-
-    @Inject
-    LimitedAisViewService limitedAisViewService;
 
     @Test
     public void test() {
@@ -55,15 +52,9 @@ public class AisViewServiceIT {
     }
 
     @Test
-    @Ignore
     public void testHistory() {
-        Map<String, Object> details = limitedAisViewService.vesselTargetDetails(434253250, 1);
-
-        System.out.println("Details with History: " + details);
-//        System.out.println(((Map) details.get("pastTrack")).get("points").getClass());
-//        List list = (List) ((Map) details.get("pastTrack")).get("points");
-//        System.out.println(list.get(0).getClass());
-//        System.out.println(new ArrayList(((Map) list.get(0)).keySet()).get(0).getClass());
-//        System.out.println(new ArrayList(((Map) list.get(0)).values()).get(0).getClass());
+        
+        List<HistoricalTrack> historicalTrack = aisViewServiceAllAisData.historicalTrack(220443000, 500, AisViewServiceAllAisData.LOOK_BACK_PT12H);
+        System.out.println("Details with History: " + historicalTrack.size());
     }
 }
