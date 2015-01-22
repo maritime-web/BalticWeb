@@ -33,7 +33,6 @@ public interface AisViewServiceAllAisData {
     String LOOK_BACK_PT24H = "PT24H";
     String LOOK_BACK_PT12H = "PT12H";
     
-    
     /**
      * example url: http://ais.e-navigation.net/aw8080/target/vessel/track/219000217?minDist=500&age=PT12H
      * @param mmsi
