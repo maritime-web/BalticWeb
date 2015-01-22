@@ -1,72 +1,74 @@
 var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
-var mountFolder = function(connect, dir) {
+var mountFolder = function (connect, dir) {
     return connect.static(require('path').resolve(dir));
 };
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
-        proj : {
-            name : grunt.file.readJSON('package.json').name,
-            src : 'src/main/webapp',
-            test : 'src/test/jsUnit',
-            build : '.tmp/webapp',
-            livereload : '.tmp/livereload',
-            dist : 'target/webapp'
+        proj: {
+            name: grunt.file.readJSON('package.json').name,
+            src: 'src/main/webapp',
+            test: 'src/test/jsUnit',
+            build: '.tmp/webapp',
+            livereload: '.tmp/livereload',
+            dist: 'target/webapp'
         },
-        watch : {
-            webapp : {
-                files : [ '<%= proj.src %>/{,**/}*.*' ],
-                tasks : [ 'copy:all2Livereload' ]
+        watch: {
+            webapp: {
+                files: [ '<%= proj.src %>/{,**/}*.*' ],
+                tasks: [ 'copy:all2Livereload' ]
             },
-            livereload : {
-                options : {
-                    livereload : '<%= connect.options.livereload %>'
+            livereload: {
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
                 },
-                files : [ '<%= proj.livereload %>/{,*/}*.html', '<%= proj.livereload %>/css/{,*/}*.css',
-                        '<%= proj.livereload %>/js/{,*/}*.js',
-                        '<%= proj.livereload %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}' ]
+                files: [ '<%= proj.livereload %>/{,*/}*.html', '<%= proj.livereload %>/css/{,*/}*.css',
+                    '<%= proj.livereload %>/js/{,*/}*.js',
+                    '<%= proj.livereload %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}' ]
             }
         },
 
-        connect : {
-            options : {
-                port : 9000,
+        connect: {
+            options: {
+                port: 9000,
                 // Change this to '0.0.0.0' to access the server from outside.
-                hostname : '0.0.0.0',
-                livereload : 35729,
+                hostname: '0.0.0.0',
+                livereload: 35729
             },
-            proxies : [ {
-                context : [ '/rest' ],
-                host : 'localhost',
-                port : '8080',
-                https : false,
-                changeOrigin : true,
-                xforward : false
-            } ],
-            livereload : {
-                options : {
-                    open : true,
-                    base : [ '<%= proj.livereload %>' ],
-                    middleware : function(connect, options) {
+            proxies: [
+                {
+                    context: [ '/rest' ],
+                    host: 'localhost',
+                    port: '8080',
+                    https: false,
+                    changeOrigin: true,
+                    xforward: false
+                }
+            ],
+            livereload: {
+                options: {
+                    open: true,
+                    base: [ '<%= proj.livereload %>' ],
+                    middleware: function (connect, options) {
                         return [ proxySnippet, mountFolder(connect, '.tmp/livereload') ];
                         // return [ connect.static('<%= proj.src %>'),
                         // proxySnippet ];
                     }
                 }
             },
-        // test : {
-        // options : {
-        // port : 9001,
-        // base : [ '.tmp', 'test', '<%= yeoman.app %>' ]
-        // }
-        // },
-        // dist : {
-        // options : {
-        // base : '<%= yeoman.dist %>'
-        // }
-        // }
+            // test : {
+            // options : {
+            // port : 9001,
+            // base : [ '.tmp', 'test', '<%= yeoman.app %>' ]
+            // }
+            // },
+            // dist : {
+            // options : {
+            // base : '<%= yeoman.dist %>'
+            // }
+            // }
         },
 
         // concat : {
@@ -92,73 +94,83 @@ module.exports = function(grunt) {
         // dest : '<%= proj.build %>/js/<%= proj.name %>.min.js'
         // }
         // },
-        useminPrepare : {
-            html : [ '<%= proj.src %>/index.html', '<%= proj.src %>/content.html', '<%= proj.src %>/map.html',
-                    '<%= proj.src %>/admin.html', '<%= proj.src %>/testdata.html' ],
-            options : {
-                dest : '<%= proj.build %>'
-            // flow : {
-            // html : {
-            // steps : {
-            // 'js' : [ 'concat' ]
-            // },
-            // post : {}
-            // }
-            // }
+        useminPrepare: {
+            html: [ '<%= proj.src %>/index.html', '<%= proj.src %>/content.html', '<%= proj.src %>/map.html',
+                '<%= proj.src %>/admin.html', '<%= proj.src %>/testdata.html' ],
+            options: {
+                dest: '<%= proj.build %>'
+                // flow : {
+                // html : {
+                // steps : {
+                // 'js' : [ 'concat' ]
+                // },
+                // post : {}
+                // }
+                // }
             }
         },
-        usemin : {
-            html : [ '<%= proj.build %>/{,*/}*.html' ],
-            options : {
-                dirs : [ '<%= proj.build %>' ]
+        usemin: {
+            html: [ '<%= proj.build %>/{,*/}*.html' ],
+            options: {
+                dirs: [ '<%= proj.build %>' ]
             }
         },
         // Put files not handled in other tasks here
-        copy : {
-            toTarget : {
-                files : [ {
-                    expand : true,
-                    cwd : '<%= proj.build %>',
-                    src : '{,*/}*',
-                    dest : '<%= proj.dist %>'
-                } ]
+        copy: {
+            toTarget: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= proj.build %>',
+                        src: '{,*/}*',
+                        dest: '<%= proj.dist %>'
+                    }
+                ]
             },
-            unMod2Build : {
-                files : [ {
-                    expand : true,
-                    cwd : '<%= proj.src %>',
-                    src : 'css/ext/{,*/}*.css',
-                    dest : '<%= proj.build %>'
-                }, {
-                    expand : true,
-                    cwd : '<%= proj.src %>',
-                    src : 'partials/*.html',
-                    dest : '<%= proj.build %>'
-                } ]
+            unMod2Build: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= proj.src %>',
+                        src: 'css/ext/{,*/}*.css',
+                        dest: '<%= proj.build %>'
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= proj.src %>',
+                        src: 'partials/*.html',
+                        dest: '<%= proj.build %>'
+                    }
+                ]
             },
-            gen2Build : {
-                files : [ {
-                    expand : true,
-                    cwd : '.tmp/concat',
-                    src : '{,*/}*.js',
-                    dest : '<%= proj.build %>'
-                }, {
-                    expand : true,
-                    cwd : '.tmp/concat',
-                    src : '{,*/}*.css',
-                    dest : '<%= proj.build %>'
-                } ]
+            gen2Build: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '.tmp/concat',
+                        src: '{,*/}*.js',
+                        dest: '<%= proj.build %>'
+                    },
+                    {
+                        expand: true,
+                        cwd: '.tmp/concat',
+                        src: '{,*/}*.css',
+                        dest: '<%= proj.build %>'
+                    }
+                ]
             },
-            all2Livereload : {
-                files : [ {
-                    expand : true,
-                    cwd : '<%= proj.src %>',
-                    src : '{,**/}*.*',
-                    dest : '<%= proj.livereload %>/'
-                } ]
+            all2Livereload: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= proj.src %>',
+                        src: '{,**/}*.*',
+                        dest: '<%= proj.livereload %>/'
+                    }
+                ]
             }
         },
-        clean : {
+        clean: {
             // dist: {
             // files: [{
             // dot: true,
@@ -169,31 +181,36 @@ module.exports = function(grunt) {
             // ]
             // }]
             // },
-            server : '<%= proj.build %>'
+            server: '<%= proj.build %>'
         },
-        replace : {
-            run : {
-                src : [ '<%= proj.src %>/*.{html,appcache}' ],
-                dest : '<%= proj.build %>/', // destination directory or file
-                replacements : [ {
-                    from : 'js/ext/cdn.cloudflare', // string replacement
-                    to : '//cdnjs.cloudflare.com/ajax/libs'
-                }, {
-                    from : 'js/ext/cdn.googleapis', // string replacement
-                    to : '//ajax.googleapis.com/ajax/libs'
-                }, {
-                    from : 'js/ext/cdn.netdna', // string replacement
-                    to : '//netdna.bootstrapcdn.com'
-                }, {
-                    from : 'css/ext/cdn.netdna', // string replacement
-                    to : '//netdna.bootstrapcdn.com'
-                }, ]
+        replace: {
+            run: {
+                src: [ '<%= proj.src %>/*.{html,appcache}' ],
+                dest: '<%= proj.build %>/', // destination directory or file
+                replacements: [
+                    {
+                        from: 'js/ext/cdn.cloudflare', // string replacement
+                        to: '//cdnjs.cloudflare.com/ajax/libs'
+                    },
+                    {
+                        from: 'js/ext/cdn.googleapis', // string replacement
+                        to: '//ajax.googleapis.com/ajax/libs'
+                    },
+                    {
+                        from: 'js/ext/cdn.netdna', // string replacement
+                        to: '//netdna.bootstrapcdn.com'
+                    },
+                    {
+                        from: 'css/ext/cdn.netdna', // string replacement
+                        to: '//netdna.bootstrapcdn.com'
+                    },
+                ]
             }
         },
-        cdnify : {
-            cdn : {
-                options : {
-                    rewriter : function(url) {
+        cdnify: {
+            cdn: {
+                options: {
+                    rewriter: function (url) {
                         url = url.replace("js/ext/cdn.cloudflare", "//cdnjs.cloudflare.com/ajax/libs");
                         url = url.replace("js/ext/cdn.googleapis", "//ajax.googleapis.com/ajax/libs");
                         url = url.replace("js/ext/cdn.netdna", "//netdna.bootstrapcdn.com");
@@ -201,33 +218,63 @@ module.exports = function(grunt) {
                         return url;
                     }
                 },
-                files : [ {
-                    expand : true,
-                    cwd : '<%= proj.build %>/webapp',
-                    src : '*.{html}',
-                    dest : '<%= proj.build %>'
-                } ]
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= proj.build %>/webapp',
+                        src: '*.{html}',
+                        dest: '<%= proj.build %>'
+                    }
+                ]
             }
         },
-        concurrent : {
-            server : [ 'concat:dist' ],
-            // test : [ 'coffee', 'copy:styles' ],
-            build : [ 'copy:styles2Build', 'copy:html2Build' ]
+        appcache: {
+            options: {
+                basePath: 'src/main/webapp'
+            },
+            map: {
+                dest: 'target/webapp/map2.appcache',
+                cache: {
+                    literals: [//as is in the "CACHE:" section
+                        'map.html',
+                        'arcticweb-map.css',
+                        'arcticweb-map.js',
+
+                    ],
+                    patterns: [
+                        'src/main/webapp/partials/*',
+                        'src/main/webapp/img/**/*.png',
+                        'src/main/webapp/img/**/*.jpg',
+                        'src/main/webapp/img/**/*.gif',
+                        '!src/main/webapp/img/front/**/*', // except the 'img/front/' subtree
+                        '!src/main/webapp/img/ext/**/*', // except the 'img/front/' subtree
+                        '!src/main/webapp/img/old/**/*', // except the 'img/front/' subtree
+                        '!src/main/webapp/img/dma/**/*', // except the 'img/front/' subtree
+                        '!src/main/webapp/img/dmi/**/*' // except the 'img/front/' subtree
+                    ]
+                },
+                network: "*"
+            }
         },
-        karma : {
-            options : {
-                configFile : 'src/test/resources/karma.conf.js',
-                browsers : [ 'Chrome', 'Firefox', 'PhantomJS' ],
+        concurrent: {
+            server: [ 'concat:dist' ],
+            // test : [ 'coffee', 'copy:styles' ],
+            build: [ 'copy:styles2Build', 'copy:html2Build' ]
+        },
+        karma: {
+            options: {
+                configFile: 'src/test/resources/karma.conf.js',
+                browsers: [ 'Chrome', 'Firefox', 'PhantomJS' ],
             },
-            continuous : {
-                port : 5678,
-                singleRun : true,
-                browsers : [ 'PhantomJS' ],
+            continuous: {
+                port: 5678,
+                singleRun: true,
+                browsers: [ 'PhantomJS' ],
             },
-            unit : {
-                singleRun : false,
-                autoWatch : true,
-                keepalive : true
+            unit: {
+                singleRun: false,
+                autoWatch: true,
+                keepalive: true
             }
 
         },
@@ -246,16 +293,17 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-cdnify');
     grunt.loadNpmTasks('grunt-text-replace');
+    grunt.loadNpmTasks('grunt-appcache');
 
     grunt.registerTask('server',
-            function(target) {
-                if (target === 'dist') {
-                    return grunt.task.run([ 'build', 'connect:dist:keepalive' ]);
-                }
+        function (target) {
+            if (target === 'dist') {
+                return grunt.task.run([ 'build', 'connect:dist:keepalive' ]);
+            }
 
-                grunt.task.run([ 'copy:all2Livereload', /* 'autoprefixer', */'configureProxies', 'connect:livereload',
-                        'watch' ]);
-            });
+            grunt.task.run([ 'copy:all2Livereload', /* 'autoprefixer', */'configureProxies', 'connect:livereload',
+                'watch' ]);
+        });
 
     // grunt.registerTask('test', [ 'clean:server', 'concurrent:test',
     // 'autoprefixer', 'connect:test', 'karma' ]);
@@ -263,7 +311,7 @@ module.exports = function(grunt) {
     grunt.registerTask('test', [ 'karma:continuous' ]);
 
     grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'replace:run', 'concat', 'usemin',
-            'copy:gen2Build', 'copy:toTarget' ]);
+        'copy:gen2Build', 'copy:toTarget', 'appcache:map']);
 
     // 'clean:dist',
     // 'useminPrepare',

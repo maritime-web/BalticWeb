@@ -21,11 +21,12 @@ js/arcticweb-content.js
 img/dmi/dmi-logo.png
 img/dma/dma-logo-h50.png
 
-partials/menu.html
-partials/authentication.html
-partials/footer.html
-partials/disclaimer.html
-partials/cookies.html
-partials/security/access.html
+partials/common/menu.html
+partials/common/authentication.html
+partials/common/footer.html
+partials/content/disclaimer.html
+partials/content/cookies.html
+partials/content/feedback.html
+partials/common/access.html
 
 # Version: 22

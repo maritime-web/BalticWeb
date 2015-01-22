@@ -2,111 +2,113 @@
 <html lang="en" x-ng-app="embryo.testdata">
 
 <head>
-<meta charset="utf-8" />
-<title>ArcticWeb - Test Data</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <title>ArcticWeb - Test Data</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="css/ext/cdn.netdna/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/ext/cdn.netdna/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/ext/cdn.netdna/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
+    <!-- build:css css/arcticweb-testdata.css -->
     <link href="css/style.css" rel="stylesheet">
+    <!-- endbuild -->
 
-<script src="js/ext/cdn.cloudflare/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
+    <script src="js/ext/cdn.cloudflare/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
 
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-cookies.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
 
-<!-- build:js js/arcticweb-testdata.js -->
-<script src="js/utils.js" defer="defer"></script>
-<script src="js/embryo.js" defer="defer"></script>
-<script src="js/authentication.js" defer="defer" type="text/javascript"></script>
-<script src="js/menu.js" defer="defer"></script>
-<!-- endbuild -->
+    <!-- build:js js/arcticweb-testdata.js -->
+    <script src="js/utils.js" defer="defer"></script>
+    <script src="js/embryo.js" defer="defer"></script>
+    <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
+    <script src="js/menu.js" defer="defer"></script>
+    <!-- endbuild -->
 
-<script type="text/javascript">
-    var app = angular.module('embryo.testdata', [ 'embryo.menu' ]);
+    <script type="text/javascript">
+        var app = angular.module('embryo.testdata', [ 'embryo.menu' ]);
 
-    app.controller('TestDataController', function($scope, $http) {
-        $scope.message = null;
-        $scope.alertMessage = null;
-
-        $scope.reInitialize = function() {
+        app.controller('TestDataController', function ($scope, $http) {
             $scope.message = null;
             $scope.alertMessage = null;
-            $http.put('rest/testData', {
-                responseType : 'json'
-            }).success(function(response) {
-                $scope.message = response;
-                sessionStorage.clear();
-            }).error(function(data, status, headers, config) {
-                $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
-                sessionStorage.clear();
-            });
-        }
 
-        $scope.replicateAis = function() {
-            $scope.message = null;
-            $scope.alertMessage = null;
-            $http.put('rest/vessel/update/ais', {
-                responseType : 'json'
-            }).success(function(response) {
-                $scope.message = "AIS replicated. " + response;
-            }).error(function(data, status, headers, config) {
-                $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
-            });
-        }
+            $scope.reInitialize = function () {
+                $scope.message = null;
+                $scope.alertMessage = null;
+                $http.put('rest/testData', {
+                    responseType: 'json'
+                }).success(function (response) {
+                    $scope.message = response;
+                    sessionStorage.clear();
+                }).error(function (data, status, headers, config) {
+                    $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
+                    sessionStorage.clear();
+                });
+            }
 
-        $scope.updateSpeeds = function() {
-            $scope.message = null;
-            $scope.alertMessage = null;
-            $http.put('rest/vessel/update/maxspeeds', {
-                responseType : 'json'
-            }).success(function(response) {
-                $scope.message = "Max Speeds updated. " + response;
-            }).error(function(data, status, headers, config) {
-                $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
-            });
-        }
+            $scope.replicateAis = function () {
+                $scope.message = null;
+                $scope.alertMessage = null;
+                $http.put('rest/vessel/update/ais', {
+                    responseType: 'json'
+                }).success(function (response) {
+                    $scope.message = "AIS replicated. " + response;
+                }).error(function (data, status, headers, config) {
+                    $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
+                });
+            }
 
-    });
-</script>
+            $scope.updateSpeeds = function () {
+                $scope.message = null;
+                $scope.alertMessage = null;
+                $http.put('rest/vessel/update/maxspeeds', {
+                    responseType: 'json'
+                }).success(function (response) {
+                    $scope.message = "Max Speeds updated. " + response;
+                }).error(function (data, status, headers, config) {
+                    $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
+                });
+            }
+
+        });
+    </script>
 
 </head>
 
 <body>
-	<div x-ng-include="'partials/authentication.html'"></div>
-	<div x-ng-include="'partials/menu.html'"></div>
-	<div class="menuDivider"></div>
-	<!-- ============================================= -->
+<div x-ng-include="'partials/common/authentication.html'"></div>
+<div x-ng-include="'partials/common/menu.html'"></div>
+<div class="menuDivider"></div>
+<!-- ============================================= -->
 
-	<div class="container" x-ng-controller="TestDataController" style="padding-top: 50px;">
-		<div>
-			<h1>ArcticWeb - Test Data</h1>
-		</div>
+<div class="container" x-ng-controller="TestDataController" style="padding-top: 50px;">
+    <div>
+        <h1>ArcticWeb - Test Data</h1>
+    </div>
 
-		<div x-ng-show="alertMessage" class="alert alert-danger">{{alertMessage}}</div>
-		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
+    <div x-ng-show="alertMessage" class="alert alert-danger">{{alertMessage}}</div>
+    <div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-		<div x-requires-permissions="Administration">
-			<form class="form-horizontal">
-				<div style="margin: 10px">
-					<button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize Test Data</button>
-				</div>
-				<div style="margin: 10px">
-					<button class="btn btn-danger" x-ng-click="replicateAis()">Replicate AIS data</button>
-				</div>
-				<div style="margin: 10px">
-					<button class="btn btn-danger" x-ng-click="updateSpeeds()">Update Max Speeds</button>
-				</div>
+    <div x-requires-permissions="Administration">
+        <form class="form-horizontal">
+            <div style="margin: 10px">
+                <button class="btn btn-danger" x-ng-click="reInitialize()">Reinitialize Test Data</button>
+            </div>
+            <div style="margin: 10px">
+                <button class="btn btn-danger" x-ng-click="replicateAis()">Replicate AIS data</button>
+            </div>
+            <div style="margin: 10px">
+                <button class="btn btn-danger" x-ng-click="updateSpeeds()">Update Max Speeds</button>
+            </div>
 
-			</form>
-		</div>
+        </form>
+    </div>
 
-	</div>
+</div>
 
-	<div x-ng-include="'partials/footer.html'"></div>
+<div x-ng-include="'partials/common/footer.html'"></div>
 
 </body>
 </html>

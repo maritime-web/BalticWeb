@@ -1,5 +1,5 @@
-<!DOCTYPE html> 
-<html lang="en" manifest="map.appcache" type="text/cache-manifest">
+<!DOCTYPE html>
+<html lang="en" manifest="map2.appcache" type="text/cache-manifest">
 <head>
     <meta charset="utf-8"/>
     <title>ArcticWeb - Map</title>
@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<script>window['adrum-start-time'] = new Date().getTime();</script><script src="js/ext/appdynamics/adrum.js"></script>
+
     <link href="css/ext/cdn.netdna/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/ext/cdn.netdna/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
@@ -43,8 +44,8 @@
 
 <body>
 
-<div x-ng-include="'partials/authentication.html'"></div>
-<div x-ng-include="'partials/menu.html'"></div>
+<div x-ng-include="'partials/common/authentication.html'"></div>
+<div x-ng-include="'partials/common/menu.html'"></div>
 
 <div id="map"></div>
 

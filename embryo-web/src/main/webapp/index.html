@@ -26,7 +26,7 @@
 
     <!--[if lt IE 9]>
     <script type="text/javascript">
-        window.location = 'partials/ie8.html';
+        window.location = 'partials/front/ie8.html';
     </script>
     <![endif]-->
 
@@ -41,8 +41,8 @@
 </head>
 
 <body>
-<div x-ng-include="'partials/authentication.html'"></div>
-<div x-ng-include="'partials/menu.html'"></div>
+<div x-ng-include="'partials/common/authentication.html'"></div>
+<div x-ng-include="'partials/common/menu.html'"></div>
 <div class="menuDivider"></div>
 
 <!-- ============================================= -->
@@ -75,7 +75,7 @@
             </div>
         </div>
         <div x-slide>
-            <img x-ng-src="img/img6.jpg" alt="Live AIS-data">
+            <img x-ng-src="img/front/img6.jpg" alt="Live AIS-data">
 
             <div class="carousel-caption">
                 <h2>Live AIS-data and Streamlined Reporting</h2>
@@ -188,7 +188,7 @@
     <div id="push"></div>
 
 </div>
-<div x-ng-include="'partials/footer.html'"></div>
+<div x-ng-include="'partials/common/footer.html'"></div>
 <!-- ============================================= -->
 </body>
 </html>

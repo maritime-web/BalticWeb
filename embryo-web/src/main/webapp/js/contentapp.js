@@ -5,15 +5,15 @@
 
     indexApp.config([ '$routeProvider', function($routeProvider) {
         $routeProvider.when('/feedback', {
-            templateUrl : 'partials/feedback.html'
+            templateUrl: 'partials/content/feedback.html'
         }).when('/disclaimer', {
-            templateUrl : 'partials/disclaimer.html'
+            templateUrl: 'partials/content/disclaimer.html'
         }).when('/cookies', {
-            templateUrl : 'partials/cookies.html'
+            templateUrl: 'partials/content/cookies.html'
         }).when('/requestAccess', {
-            templateUrl : 'partials/security/access.html'
+            templateUrl: 'partials/common/access.html'
         }).when('/changePassword/:uuid', {
-			templateUrl : 'partials/security/changepassword.html'        	
+            templateUrl: 'partials/common/changepassword.html'
         }).otherwise({
 		    controller : function(){
 		        window.location.replace('/');

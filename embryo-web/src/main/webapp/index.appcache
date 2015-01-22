@@ -24,12 +24,12 @@ img/front/weather.png
 img/front/safety.jpg
 img/dmi/dmi-logo.png
 img/dma/dma-logo-h50.png
-img/img6.jpg
+img/front/img6.jpg
 img/front/Konsol-h350.jpg
 img/front/ice.jpg
 
-partials/menu.html
-partials/authentication.html
-partials/footer.html
+partials/common/menu.html
+partials/common/authentication.html
+partials/common/footer.html
 
-# Version: 34
+# Version: 37
