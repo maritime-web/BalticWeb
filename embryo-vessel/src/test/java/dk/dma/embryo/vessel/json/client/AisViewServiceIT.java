@@ -44,7 +44,7 @@ public class AisViewServiceIT {
     @Test
     public void test() {
         
-        List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.FILTER_VALUE_PT24H, AisViewServiceAllAisData.FILTER_VALUE_PT24H);
+        List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
         System.out.println("Full list: " + vesselList.size());
     }
 
