@@ -18,17 +18,92 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
+/**
+ * 
+ * @author ThomasBerg
+ *
+ * base URL: http://ais.e-navigation.net/aw8080/target
+ *
+ */
 public interface AisViewServiceAllAisData {
     
-    String FILTER_VALUE_PT24H ="PT24H";
+    String LOOK_BACK_PT24H = "PT24H";
+    String LOOK_BACK_PT12H = "PT12H";
     
-    // example -> ttlLive=PT24H&ttlSat=PT24H
+    
+    /**
+     * example url: http://ais.e-navigation.net/aw8080/target/vessel/track/219000217?minDist=500&age=PT12H
+     * @param mmsi
+     * @param pastTrack
+     * @return
+     */
+    @GET
+    @Path("/vessel/track/{mmsi}")
+    List<HistoricalTrack> historicalTrack(
+        @PathParam("mmsi") long mmsi, 
+        @QueryParam("minDist") int minimumDistanceBetweenPositions, 
+        @QueryParam("age") String age);
+    
+    /**
+     * example url: http://ais.e-navigation.net:8080/target/vessel/list?ttlLive=PT24H&ttlSat=PT24H
+     * 
+     * @param ttlLive
+     * @param ttlSat
+     * @return
+     */
     @GET
     @Path("/vessel/list")
-    List<Vessel> vesselList(@QueryParam("ttlLive") String ttlLive, @QueryParam("ttlSat") String ttlSat);
+    List<Vessel> vesselList(
+        @QueryParam("ttlLive") String ttlLive, 
+        @QueryParam("ttlSat") String ttlSat);
 
+    public static class HistoricalTrack {
+
+        private Double cog;
+        private Double lat;
+        private Double lon;
+        private Double sog;
+        private Long time;
+        
+        public Double getCog() {
+            return cog;
+        }
+        public void setCog(Double cog) {
+            this.cog = cog;
+        }
+        
+        public Double getLat() {
+            return lat;
+        }
+        public void setLat(Double lat) {
+            this.lat = lat;
+        }
+        
+        public Double getLon() {
+            return lon;
+        }
+        public void setLon(Double lon) {
+            this.lon = lon;
+        }
+
+        public Double getSog() {
+            return sog;
+        }
+        public void setSog(Double sog) {
+            this.sog = sog;
+        }
+
+        public Long getTime() {
+            return time;
+        }
+        public void setTime(Long time) {
+            this.time = time;
+        }
+    }
+    
     public static class Vessel {
 
         private String country;
@@ -255,36 +330,5 @@ public interface AisViewServiceAllAisData {
         public void setWidth(Double width) {
             this.width = width;
         }
-
-
-        /*
-        "type": "vesselTarget",
-        "lastReport": "2014-12-04T08:49:35.47",
-        "mmsi": 0,
-        "sourceCountry": "NO",
-        "sourceType": "LIVE",
-        "targetType": "A",
-        "callsign": "",
-        "cog": 31.3,
-        "destination": "CH 16",
-        "draught": 2,
-        "heading": 126,
-        "lastPosReport": "2014-12-04T08:49:35.47",
-        "lastStaticReport": "2014-12-03T23:34:40.125",
-        lat": 60.56769666666666,
-        "length": 12,
-        "lon": 4.955996666666667,
-
-
-        "moored": false,
-        "name": "",
-        "navStatus": "Under way using engine",
-        "rot": 0,
-        "sog": 0.5,
-        "vesselCargo": "Undefined",
-        "vesselType": "Unknown",
-        "width": 4
-    },
-         */
     }
 }

@@ -43,7 +43,7 @@ import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
 import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
-import dk.dma.embryo.vessel.json.client.LimitedAisViewService;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.HistoricalTrack;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
@@ -54,9 +54,10 @@ import dk.dma.embryo.vessel.service.VesselService;
 @Path("/vessel")
 @RequestScoped
 public class VesselRestService {
+    
     @Inject
-    private LimitedAisViewService limitedAisViewService;
-
+    private AisViewServiceAllAisData historicalTrackAisViewService;
+    
     @Inject
     private AisDataService aisDataService;
 
@@ -86,9 +87,9 @@ public class VesselRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public Object historicalTrack(@QueryParam("mmsi") long mmsi) {
-        Map<String, Object> result = limitedAisViewService.vesselTargetDetails(mmsi, 1);
-        return ((Map) result.get("pastTrack")).get("points");
+    public List<HistoricalTrack> historicalTrack(@QueryParam("mmsi") long mmsi) {
+        
+        return historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT12H);
     }
 
     @GET
@@ -187,14 +188,6 @@ public class VesselRestService {
 
     private boolean bothArcticWebAndAisVessel(VesselOverview vesselOverview) {
         return vesselOverview != null;
-    }
-
-    private Map<Long, VesselOverview> mapifyResult(List<VesselOverview> result) {
-        Map<Long, VesselOverview> resultAsMap = new HashMap<>();
-        for (VesselOverview vo : result) {
-            resultAsMap.put(vo.getMmsi(), vo);
-        }
-        return resultAsMap;
     }
 
     private List<VesselOverview> mapAisVessels(List<AisViewServiceAllAisData.Vessel> vessels) {
