@@ -60,18 +60,6 @@
                 });
             }
 
-            $scope.updateSpeeds = function () {
-                $scope.message = null;
-                $scope.alertMessage = null;
-                $http.put('rest/vessel/update/maxspeeds', {
-                    responseType: 'json'
-                }).success(function (response) {
-                    $scope.message = "Max Speeds updated. " + response;
-                }).error(function (data, status, headers, config) {
-                    $scope.alertMessage = embryo.ErrorService.extractError(data, status, config);
-                });
-            }
-
         });
     </script>
 
@@ -99,10 +87,6 @@
             <div style="margin: 10px">
                 <button class="btn btn-danger" x-ng-click="replicateAis()">Replicate AIS data</button>
             </div>
-            <div style="margin: 10px">
-                <button class="btn btn-danger" x-ng-click="updateSpeeds()">Update Max Speeds</button>
-            </div>
-
         </form>
     </div>
 

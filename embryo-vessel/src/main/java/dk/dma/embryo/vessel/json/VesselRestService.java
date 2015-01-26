@@ -37,8 +37,6 @@ import com.google.common.collect.Collections2;
 
 import dk.dma.embryo.vessel.job.AisDataService;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
-import dk.dma.embryo.vessel.job.MaxSpeedJob;
-import dk.dma.embryo.vessel.job.MaxSpeedJob.MaxSpeedRecording;
 import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
 import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
@@ -72,9 +70,6 @@ public class VesselRestService {
 
     @Inject
     private VesselDao vesselDao;
-
-    @Inject
-    private MaxSpeedJob maxSpeedJob;
 
     @Inject
     private AisReplicatorJob aisReplicatorJob;
@@ -163,20 +158,6 @@ public class VesselRestService {
         return null;
     }
 
-//    private void printNumberOfOratank(List<VesselOverview> allAllowedAisVesselsAsDTO, String id) {
-//       
-//        int numberOfOratank = 0;
-//        for (VesselOverview vesselOverview : allAllowedAisVesselsAsDTO) {
-//            if(vesselOverview.getName() != null && vesselOverview.getName().trim().equals("ORATANK")) {
-//                numberOfOratank++;
-//                logger.info("ORATANK #" + id + " -> isInAW -> " + vesselOverview.isInAW() + " MMSI -> " + vesselOverview.getMmsi());
-//            }
-//        }
-//        
-//        logger.info("NUMBER OF ORATANK #" + id + " -> " + numberOfOratank);
-//        
-//    }
-
     private VesselOverview createVesselOverview(Vessel vesselFromDatabase) {
         VesselOverview arcticWebVesselOnly = new VesselOverview();
         arcticWebVesselOnly.setInAW(true);
@@ -191,9 +172,6 @@ public class VesselRestService {
     }
 
     private List<VesselOverview> mapAisVessels(List<AisViewServiceAllAisData.Vessel> vessels) {
-
-        //List<AisViewServiceAllAisData.Vessel> allowedVessels = vessels;
-        Map<Long, MaxSpeedRecording> speeds = aisDataService.getMaxSpeeds();
 
         List<VesselOverview> vesselOverviewsResponse = new ArrayList<VesselOverview>();
 
@@ -215,12 +193,8 @@ public class VesselRestService {
             vesselOverview.setType(type);
 
             vesselOverview.setInAW(false);
-
-            // What is vessel[3] seems to be either A or B ?
-
-            MaxSpeedRecording speed = speeds.get(mmsi);
-            vesselOverview.setMsog(speed != null ? speed.getMaxSpeed() : 0.0);
-
+            vesselOverview.setMsog(vessel.getMaxSpeed());
+            
             vesselOverviewsResponse.add(vesselOverview);
         }
 
@@ -327,13 +301,5 @@ public class VesselRestService {
     public void updateAis() {
         logger.debug("updateAis()");
         aisReplicatorJob.replicate();
-    }
-
-    @PUT
-    @Path("/update/maxspeeds")
-    @Consumes("application/json")
-    public void updateMaxSpeeds() {
-        logger.debug("updateMaxSpeeds()");
-        maxSpeedJob.update();
     }
 }
