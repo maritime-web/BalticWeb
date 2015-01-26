@@ -24,9 +24,9 @@ img/dma/dma-logo-h50.png
 partials/common/menu.html
 partials/common/authentication.html
 partials/common/footer.html
-partials/content/disclaimer.html
-partials/content/cookies.html
-partials/content/feedback.html
+partials/front/disclaimer.html
+partials/front/cookies.html
+partials/front/feedback.html
 partials/common/access.html
 
-# Version: 22
+# Version: 23

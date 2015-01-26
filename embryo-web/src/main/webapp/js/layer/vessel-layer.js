@@ -15,7 +15,8 @@ function VesselLayer(conf) {
             case "5" : colorName = "red"; break;
             case "6" : colorName = "turquoise"; break;
             case "7" : colorName = "yellow"; break;
-            default : colorName = "unknown";
+            default :
+                colorName = "gray";
         }
 
         if (vo.moored){

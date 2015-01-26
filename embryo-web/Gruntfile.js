@@ -11,8 +11,9 @@ module.exports = function (grunt) {
             name: grunt.file.readJSON('package.json').name,
             src: 'src/main/webapp',
             test: 'src/test/jsUnit',
-            build: '.tmp/webapp',
+            build: 'target/build',
             livereload: '.tmp/livereload',
+            target: 'target',
             dist: 'target/webapp'
         },
         watch: {
@@ -95,10 +96,10 @@ module.exports = function (grunt) {
         // }
         // },
         useminPrepare: {
-            html: [ '<%= proj.src %>/index.html', '<%= proj.src %>/content.html', '<%= proj.src %>/map.html',
-                '<%= proj.src %>/admin.html', '<%= proj.src %>/testdata.html' ],
+            html: [ '<%= proj.src %>/*.html'],
             options: {
-                dest: '<%= proj.build %>'
+                dest: '<%= proj.build %>',
+                staging: '<%= proj.target %>'
                 // flow : {
                 // html : {
                 // steps : {
@@ -138,7 +139,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: '<%= proj.src %>',
-                        src: 'partials/*.html',
+                        src: 'partials/{,*/}*.html',
                         dest: '<%= proj.build %>'
                     }
                 ]
@@ -147,13 +148,13 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: '.tmp/concat',
+                        cwd: '<%= proj.target %>/concat',
                         src: '{,*/}*.js',
                         dest: '<%= proj.build %>'
                     },
                     {
                         expand: true,
-                        cwd: '.tmp/concat',
+                        cwd: '<%= proj.target %>/concat',
                         src: '{,*/}*.css',
                         dest: '<%= proj.build %>'
                     }
@@ -237,8 +238,8 @@ module.exports = function (grunt) {
                 cache: {
                     literals: [//as is in the "CACHE:" section
                         'map.html',
-                        'arcticweb-map.css',
-                        'arcticweb-map.js',
+                        'css/arcticweb-map.css',
+                        'js/arcticweb-map.js',
 
                     ],
                     patterns: [
@@ -248,9 +249,30 @@ module.exports = function (grunt) {
                         'src/main/webapp/img/**/*.gif',
                         '!src/main/webapp/img/front/**/*', // except the 'img/front/' subtree
                         '!src/main/webapp/img/ext/**/*', // except the 'img/front/' subtree
-                        '!src/main/webapp/img/old/**/*', // except the 'img/front/' subtree
-                        '!src/main/webapp/img/dma/**/*', // except the 'img/front/' subtree
-                        '!src/main/webapp/img/dmi/**/*' // except the 'img/front/' subtree
+                        '!src/main/webapp/img/unused/**/*' // except the 'img/front/' subtree
+                    ]
+                },
+                network: "*"
+            },
+            front: {
+                dest: 'target/webapp/front.appcache',
+                cache: {
+                    literals: [//as is in the "CACHE:" section
+                        'index.html',
+                        'content.html',
+                        'css/arcticweb-front.css',
+                        'css/arcticweb-content.css',
+                        'js/arcticweb-front.js',
+                        'js/arcticweb-content.js'
+
+                    ],
+                    patterns: [
+                        'src/main/webapp/partials/common/*',
+                        'src/main/webapp/partials/front/*',
+                        'src/main/webapp/img/front/*.png',
+                        'src/main/webapp/img/front/*.jpg',
+                        'src/main/webapp/img/front/*.gif',
+                        'src/main/webapp/img/common/*'
                     ]
                 },
                 network: "*"
@@ -264,12 +286,12 @@ module.exports = function (grunt) {
         karma: {
             options: {
                 configFile: 'src/test/resources/karma.conf.js',
-                browsers: [ 'Chrome', 'Firefox', 'PhantomJS' ],
+                browsers: [ 'Chrome', 'Firefox', 'PhantomJS' ]
             },
             continuous: {
                 port: 5678,
                 singleRun: true,
-                browsers: [ 'PhantomJS' ],
+                browsers: [ 'PhantomJS' ]
             },
             unit: {
                 singleRun: false,
@@ -311,7 +333,7 @@ module.exports = function (grunt) {
     grunt.registerTask('test', [ 'karma:continuous' ]);
 
     grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'replace:run', 'concat', 'usemin',
-        'copy:gen2Build', 'copy:toTarget', 'appcache:map']);
+        'copy:gen2Build', 'copy:toTarget', 'appcache:map', 'appcache:front']);
 
     // 'clean:dist',
     // 'useminPrepare',

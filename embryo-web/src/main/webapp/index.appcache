@@ -22,8 +22,8 @@ js/arcticweb-front.js
 img/front/iceChart.png
 img/front/weather.png
 img/front/safety.jpg
-img/dmi/dmi-logo.png
-img/dma/dma-logo-h50.png
+img/common/dmi-logo.png
+img/common/dma-logo-h50.png
 img/front/img6.jpg
 img/front/Konsol-h350.jpg
 img/front/ice.jpg
@@ -32,4 +32,4 @@ partials/common/menu.html
 partials/common/authentication.html
 partials/common/footer.html
 
-# Version: 37
+# Version: 38
