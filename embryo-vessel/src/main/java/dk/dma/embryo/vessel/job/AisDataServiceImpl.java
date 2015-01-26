@@ -23,7 +23,6 @@ import javax.ejb.Singleton;
 import javax.inject.Inject;
 
 import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.vessel.job.MaxSpeedJob.MaxSpeedRecording;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
 import dk.dma.enav.model.geometry.CoordinateSystem;
 import dk.dma.enav.model.geometry.Position;
@@ -34,7 +33,7 @@ public class AisDataServiceImpl implements AisDataService {
     private List<AisViewServiceAllAisData.Vessel> vesselsAllowed = new ArrayList<>();
     private List<AisViewServiceAllAisData.Vessel> vesselsInAisCircle = new ArrayList<>();
     private List<AisViewServiceAllAisData.Vessel> vesselsOnMap = new ArrayList<>();
-    private Map<Long, MaxSpeedRecording> maxSpeeds =  new HashMap<>();
+    private Map<Long, Double> maxSpeeds =  new HashMap<Long, Double>();
 
     @Inject
     @Property("embryo.aisDataLimit.latitude")
@@ -97,10 +96,10 @@ public class AisDataServiceImpl implements AisDataService {
         return new ArrayList<>(vesselsInAisCircle);
     }
 
-    public Map<Long, MaxSpeedRecording> getMaxSpeeds() {
+    public Map<Long, Double> getMaxSpeeds() {
         return new HashMap<>(maxSpeeds);
     }
-    public void setMaxSpeeds(Map<Long, MaxSpeedRecording> maxSpeeds) {
+    public void setMaxSpeeds(Map<Long, Double> maxSpeeds) {
         this.maxSpeeds = maxSpeeds;
     }
 }

@@ -34,7 +34,8 @@ public interface AisViewServiceAllAisData {
     String LOOK_BACK_PT12H = "PT12H";
     
     /**
-     * example url: http://ais.e-navigation.net/aw8080/target/vessel/track/219000217?minDist=500&age=PT12H
+     * example URL: http://ais.e-navigation.net/aw8080/target/vessel/track/219000217?minDist=500&age=PT12H
+     * 
      * @param mmsi
      * @param pastTrack
      * @return
@@ -47,7 +48,7 @@ public interface AisViewServiceAllAisData {
         @QueryParam("age") String age);
     
     /**
-     * example url: http://ais.e-navigation.net:8080/target/vessel/list?ttlLive=PT24H&ttlSat=PT24H
+     * example URL: http://ais.e-navigation.net:8080/target/vessel/list?ttlLive=PT24H&ttlSat=PT24H
      * 
      * @param ttlLive
      * @param ttlSat
@@ -58,6 +59,15 @@ public interface AisViewServiceAllAisData {
     List<Vessel> vesselList(
         @QueryParam("ttlLive") String ttlLive, 
         @QueryParam("ttlSat") String ttlSat);
+    
+    /**
+     * example URL: http://ais.e-navigation.net/aw8080/target/vessel/maxspeed
+     * 
+     * @return
+     */
+    @GET
+    @Path("/vessel/maxspeed")
+    List<MaxSpeed> allMaxSpeeds();
 
     public static class HistoricalTrack {
 
@@ -103,6 +113,26 @@ public interface AisViewServiceAllAisData {
         }
     }
     
+    public static class MaxSpeed {
+        
+        private Long mmsi;
+        private Double maxSpeed;
+        
+        public Long getMmsi() {
+            return mmsi;
+        }
+        public void setMmsi(Long mmsi) {
+            this.mmsi = mmsi;
+        }
+
+        public Double getMaxSpeed() {
+            return maxSpeed;
+        }
+        public void setMaxSpeed(Double maxSpeed) {
+            this.maxSpeed = maxSpeed;
+        }
+    }
+    
     public static class Vessel {
 
         private String country;
@@ -133,6 +163,7 @@ public interface AisViewServiceAllAisData {
         private String vesselCargo;
         private String vesselType;
         private Double width;
+        private Double maxSpeed;
 
         public String getCountry() {
             return country;
@@ -328,6 +359,13 @@ public interface AisViewServiceAllAisData {
         }
         public void setWidth(Double width) {
             this.width = width;
+        }
+        
+        public Double getMaxSpeed() {
+            return maxSpeed;
+        }
+        public void setMaxSpeed(Double maxSpeed) {
+            this.maxSpeed = maxSpeed;
         }
     }
 }

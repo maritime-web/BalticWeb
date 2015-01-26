@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -35,12 +36,14 @@ import org.slf4j.Logger;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.MaxSpeed;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 
 @Singleton
 @Startup
 public class AisReplicatorJob {
+    
     @Inject
     private VesselDao vesselRepository;
 
@@ -56,7 +59,11 @@ public class AisReplicatorJob {
     @Property(value = "embryo.vessel.aisjob.enabled")
     @Inject
     private String enabled;
-
+    
+    @Property(value = "embryo.vessel.maxspeedjob.enabled")
+    @Inject
+    private String maxSpeedEnabled;
+    
     @Inject
     @Property("embryo.vessel.aisjob.cron")
     private ScheduleExpression cron;
@@ -114,7 +121,9 @@ public class AisReplicatorJob {
             List<Vessel> articWebVesselsAsList = vesselRepository.getAll(Vessel.class);
 
             logger.info("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
-
+            
+            Map<Long, Double> allMaxSpeedsByMmsi = mapifyMaxSpeeds(getAllMaxSpeedsFromAisServerIfEnabled());
+            
             Map<Long, Vessel> awVesselsAsMap = this.updateArcticWebVesselInDatabase(aisServerAllVessels, articWebVesselsAsList);
 
             List<AisViewServiceAllAisData.Vessel> vesselsInAisCircle = new ArrayList<AisViewServiceAllAisData.Vessel>();
@@ -126,6 +135,13 @@ public class AisReplicatorJob {
                 // Ignore vessel if just one of these validations fail
                 if(aisVessel.getMmsi() == null || aisVessel.getLon() == null || aisVessel.getLat() == null) {
                     continue;
+                }
+
+                if(allMaxSpeedsByMmsi != null) {
+                    
+                    Double maxSpeed = allMaxSpeedsByMmsi.get(aisVessel.getMmsi());
+                    
+                    aisVessel.setMaxSpeed(maxSpeed != null ? maxSpeed : 0.0);
                 }
 
                 double longitude = aisVessel.getLon();
@@ -175,6 +191,47 @@ public class AisReplicatorJob {
         }
     }
 
+    private List<MaxSpeed> getAllMaxSpeedsFromAisServerIfEnabled() {
+        
+        List<MaxSpeed> allMaxSpeeds = null;
+        if (maxSpeedEnabled != null && "true".equals(maxSpeedEnabled.trim().toLowerCase()) ) {
+            
+            allMaxSpeeds = this.aisViewWithNorwegianData.allMaxSpeeds();
+            
+            final String maxSpeedEnabledText = "Max Speed is enabled and {} is recieved from AIS server.";
+            logger.info(maxSpeedEnabledText, allMaxSpeeds.size());
+            
+            System.out.println(String.format(maxSpeedEnabledText, allMaxSpeeds.size()));
+            embryoLogService.info(String.format(maxSpeedEnabledText, allMaxSpeeds.size()));
+        } else {
+            
+            final String maxSpeedNotEnabledText = "Max Speed is NOT enabled.";
+            
+            logger.info("{}", maxSpeedNotEnabledText);
+            embryoLogService.info("{}");
+        }
+        
+        return allMaxSpeeds;
+    }
+
+    private Map<Long, Double> mapifyMaxSpeeds(List<MaxSpeed> allMaxSpeeds) {
+        
+        Map<Long, Double> maxSpeedsAsMap = null;
+        
+        if(allMaxSpeeds != null) {
+            
+            maxSpeedsAsMap = new ConcurrentHashMap<Long, Double>();
+            
+            for (MaxSpeed maxSpeed : allMaxSpeeds) {
+                
+                maxSpeedsAsMap.put(maxSpeed.getMmsi(), maxSpeed.getMaxSpeed());
+            }
+        }
+        
+        return maxSpeedsAsMap;
+        
+    }
+    
     private Map<Long, Vessel> updateArcticWebVesselInDatabase(
             List<AisViewServiceAllAisData.Vessel> result,
             List<Vessel> articWebVesselsAsList) {

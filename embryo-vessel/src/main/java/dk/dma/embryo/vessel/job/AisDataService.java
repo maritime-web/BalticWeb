@@ -15,9 +15,7 @@
 package dk.dma.embryo.vessel.job;
 
 import java.util.List;
-import java.util.Map;
 
-import dk.dma.embryo.vessel.job.MaxSpeedJob.MaxSpeedRecording;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
 
 public interface AisDataService {
@@ -34,7 +32,4 @@ public interface AisDataService {
 
     List<AisViewServiceAllAisData.Vessel> getVesselsOnMap();
     void setVesselsOnMap(List<AisViewServiceAllAisData.Vessel> vesselsInArcticCircle);
-
-    Map<Long, MaxSpeedRecording> getMaxSpeeds();
-    void setMaxSpeeds(Map<Long, MaxSpeedRecording> maxSpeeds);
 }
