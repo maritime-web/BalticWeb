@@ -113,7 +113,7 @@
                     function reload(subscriptionConfig) {
                         var key = getKey(subscriptionConfig);
                         $interval.cancel(subscriptions[key].$interval);
-                        subscriptions[key].$interval = $interval(getLoader(subscriptionConfig), subscriptions[key].interval);
+                        subscriptions[key].$interval = $interval(subscriptions[key].loader, subscriptions[key].interval);
                         subscriptions[key].loader();
                     }
 
