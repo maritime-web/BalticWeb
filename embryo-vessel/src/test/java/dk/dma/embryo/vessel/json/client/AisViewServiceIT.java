@@ -15,7 +15,6 @@
 package dk.dma.embryo.vessel.json.client;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -26,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.HistoricalTrack;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.MaxSpeed;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel;
 
 @RunWith(CdiRunner.class)
@@ -35,9 +35,6 @@ public class AisViewServiceIT {
     @Inject
     AisViewServiceAllAisData aisViewServiceAllAisData;
     
-    @Inject
-    FullAisViewService fullAisViewService;
-
     @Test
     public void test() {
         
@@ -46,15 +43,16 @@ public class AisViewServiceIT {
     }
 
     @Test
-    public void testDetails() {
-        Map<String, Object> details = fullAisViewService.vesselTargetDetails(220443000, 0);
-        System.out.println("Details: " + details);
-    }
-
-    @Test
-    public void testHistory() {
+    public void testHistoricalTracks() {
         
         List<HistoricalTrack> historicalTrack = aisViewServiceAllAisData.historicalTrack(220443000, 500, AisViewServiceAllAisData.LOOK_BACK_PT12H);
-        System.out.println("Details with History: " + historicalTrack.size());
+        System.out.println("Number of tracks: " + historicalTrack.size());
+    }
+    
+    @Test
+    public void testMaxSpeeds() {
+        
+        List<MaxSpeed> allMaxSpeeds = aisViewServiceAllAisData.allMaxSpeeds();
+        System.out.println("Number of maxSpeeds: " + allMaxSpeeds.size());
     }
 }

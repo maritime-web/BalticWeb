@@ -32,26 +32,8 @@ public class AisJsonClientFactory {
     private String dmiSejlRuteServiceUrl;
 
     @Inject
-    @Property("dk.dma.embryo.restclients.limitedAisViewServiceUrl")
-    private String limitedAisViewServiceUrl;
-
-    @Inject
-    @Property("dk.dma.embryo.restclients.fullAisViewServiceUrl")
-    private String fullAisViewServiceUrl;
-
-    @Inject
     @Property("dk.dma.embryo.restclients.fullAisViewServiceInclNorwegianDataUrl")
     private String fullAisViewServiceInclNorwegianDataUrl;
-    
-    @Produces
-    public LimitedAisViewService createLimitedAisViewService() {
-        return ProxyFactory.create(LimitedAisViewService.class, limitedAisViewServiceUrl);
-    }
-
-    @Produces
-    public FullAisViewService createFullAisViewService() {
-        return ProxyFactory.create(FullAisViewService.class, fullAisViewServiceUrl);
-    }
     
     @Produces
     public AisViewServiceAllAisData createFullAisViewInclNorwegianDataService() {
