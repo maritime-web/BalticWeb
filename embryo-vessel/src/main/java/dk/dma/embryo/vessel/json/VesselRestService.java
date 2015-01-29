@@ -14,8 +14,10 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,19 +31,32 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import com.google.common.collect.Collections2;
 
+import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.vessel.job.AisDataService;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
 import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
 import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.HistoricalTrack;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.TrackSingleLocation;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
@@ -76,15 +91,75 @@ public class VesselRestService {
 
     @Inject
     private UserSelectionGroupsFilter userSelectionGroupsFilter;
+    
+    @Inject
+    @Property("dk.dma.embryo.restclients.fullAisViewServiceInclNorwegianDataUrl")
+    private String fullAisViewServiceInclNorwegianDataUrl;
 
     @GET
     @Path("/historical-track")
     @Produces("application/json")
     @GZIP
     @NoCache
-    public List<HistoricalTrack> historicalTrack(@QueryParam("mmsi") long mmsi) {
+    public List<TrackSingleLocation> historicalTrack(@QueryParam("mmsi") long mmsi) {
         
-        return historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT12H);
+        List<TrackSingleLocation> historicalTrack = new ArrayList<>();
+        
+        // Call long track if this call times out or get any kind of error call the regular track.
+        try {
+            
+            historicalTrack = historicalLongTrackWithTimeout(mmsi);
+            logger.info("Historical LONG track called with success.");
+        } catch (Exception e) {
+
+            historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
+            logger.info("Historical LONG track timeout or failed but SHORT track called instead with success.");
+        } 
+        
+        return historicalTrack;
+    }
+
+    private List<TrackSingleLocation> historicalLongTrackWithTimeout(long mmsi) throws IOException, ClientProtocolException, JsonParseException, JsonMappingException {
+        
+        HttpParams httpParams = new BasicHttpParams();
+        HttpClient httpClient = new DefaultHttpClient();
+
+        // Determines the timeout until a connection is etablished.
+        HttpConnectionParams.setConnectionTimeout(httpParams, 3000);
+        // Defines the default socket timeout (SO_TIMEOUT) in milliseconds which is the timeout for waiting for data.
+        HttpConnectionParams.setSoTimeout(httpParams, 10000);
+
+        
+        String url = this.fullAisViewServiceInclNorwegianDataUrl;
+
+        HttpGet getRequest = new HttpGet(url + "/vessel/longtrack/" + mmsi);
+        getRequest.addHeader("accept", "application/json");
+
+        httpParams.setIntParameter("minDist", 500);
+        httpParams.setParameter("age", AisViewServiceAllAisData.LOOK_BACK_PT120H);
+        getRequest.setParams(httpParams);
+
+        HttpResponse response = httpClient.execute(getRequest);
+
+        String json = EntityUtils.toString(response.getEntity());
+
+        List<LinkedHashMap<String, Object>> ob = new ObjectMapper().readValue(json, ArrayList.class);
+
+        List<TrackSingleLocation> historicalTrack = new ArrayList<>();
+        for (LinkedHashMap<String, Object> linkedHashMap : ob) {
+            Double cog = (Double) linkedHashMap.get("cog");
+            Double lat = (Double) linkedHashMap.get("lat");
+            Double lon = (Double) linkedHashMap.get("lon");
+            Double sog = (Double) linkedHashMap.get("sog");
+            Long time = (Long) linkedHashMap.get("time");
+
+            TrackSingleLocation point = new TrackSingleLocation(cog, lat, lon, sog, time);
+            historicalTrack.add(point);
+        }
+
+        httpClient.getConnectionManager().shutdown();
+
+        return historicalTrack;
     }
 
     @GET

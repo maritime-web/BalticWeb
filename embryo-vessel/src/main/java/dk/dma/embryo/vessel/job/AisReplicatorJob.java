@@ -180,6 +180,16 @@ public class AisReplicatorJob {
             logger.info("Vessels on Map : " + vesselsOnMap.size());
             logger.info("Vessels allowed : " + vesselsAllowed.size());
             
+            int numberOfVesselsWithMaxSpeed = 0;
+            for (AisViewServiceAllAisData.Vessel vessel : vesselsAllowed) {
+                
+                if(vessel.getMaxSpeed() != null && vessel.getMaxSpeed() > 0) {
+                    numberOfVesselsWithMaxSpeed++;
+                }
+            }
+            
+            logger.info("Number of allowed vessels with positive max speed:  " + numberOfVesselsWithMaxSpeed);
+            
             aisDataService.setVesselsAllowed(vesselsAllowed);
             aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
             aisDataService.setVesselsOnMap(vesselsOnMap);

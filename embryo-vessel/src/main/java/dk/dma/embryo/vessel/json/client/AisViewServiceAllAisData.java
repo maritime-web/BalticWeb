@@ -21,6 +21,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 /**
  * 
  * @author ThomasBerg
@@ -30,8 +32,9 @@ import javax.ws.rs.QueryParam;
  */
 public interface AisViewServiceAllAisData {
     
-    String LOOK_BACK_PT24H = "PT24H";
-    String LOOK_BACK_PT12H = "PT12H";
+    String LOOK_BACK_PT24H      = "PT24H";
+    String LOOK_BACK_PT12H      = "PT12H";
+    String LOOK_BACK_PT120H     = "PT120H";
     
     /**
      * example URL: http://ais.e-navigation.net/aw8080/target/vessel/track/219000217?minDist=500&age=PT12H
@@ -42,7 +45,21 @@ public interface AisViewServiceAllAisData {
      */
     @GET
     @Path("/vessel/track/{mmsi}")
-    List<HistoricalTrack> historicalTrack(
+    List<TrackSingleLocation> historicalTrack(
+        @PathParam("mmsi") long mmsi, 
+        @QueryParam("minDist") int minimumDistanceBetweenPositions, 
+        @QueryParam("age") String age);
+    
+    /**
+     * example URL: http://ais.e-navigation.net/aw8080/target/vessel/longtrack/219000217?minDist=500&age=PT12H
+     * 
+     * @param mmsi
+     * @param pastTrack
+     * @return
+     */
+    @GET
+    @Path("/vessel/longtrack/{mmsi}")
+    List<TrackSingleLocation> historicalTrackLong(
         @PathParam("mmsi") long mmsi, 
         @QueryParam("minDist") int minimumDistanceBetweenPositions, 
         @QueryParam("age") String age);
@@ -69,13 +86,28 @@ public interface AisViewServiceAllAisData {
     @Path("/vessel/maxspeed")
     List<MaxSpeed> allMaxSpeeds();
 
-    public static class HistoricalTrack {
+    public static class TrackSingleLocation {
 
         private Double cog;
         private Double lat;
         private Double lon;
         private Double sog;
         private Long time;
+        
+        public TrackSingleLocation() {}
+        
+        public TrackSingleLocation(Double cog, Double lat, Double lon, Double sog, Long time) {
+            super();
+            this.cog = cog;
+            this.lat = lat;
+            this.lon = lon;
+            this.sog = sog;
+            this.time = time;
+        }
+
+        public String toString() {
+            return ReflectionToStringBuilder.toString(this);
+        }
         
         public Double getCog() {
             return cog;
