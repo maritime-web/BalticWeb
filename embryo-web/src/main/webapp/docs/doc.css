@@ -1,0 +1,21 @@
+@page { 
+	margin-left: 0.79in; margin-right: 0.79in; margin-top: 1.18in; margin-bottom: 0.49in
+}
+body { font-family: "Arial"}
+p { margin-bottom: 0.08in; direction: ltr; font-size: 12pt; widows: 2; orphans: 2 }
+h1 { margin-top: 0.33in; margin-bottom: 0.08in; direction: ltr; color: #365f91; page-break-inside: avoid; widows: 2; orphans: 2; text-decoration: none }
+h1.western { font-family: "Arial", sans-serif; font-size: 14pt; so-language: da-DK }
+h1.cjk { font-family: "Arial"; font-size: 14pt }
+h1.ctl { font-family: "Arial"; font-size: 14pt }
+h2 { margin-top: 0.14in; margin-bottom: 0.08in; direction: ltr; color: #4f81bd; page-break-inside: avoid; widows: 2; orphans: 2; text-decoration: none }
+h2.western { font-family: "Arial", sans-serif; font-size: 13pt; so-language: da-DK }
+h2.cjk { font-family: "Arial"; font-size: 13pt }
+h2.ctl { font-family: "Arial"; font-size: 13pt }
+h3 { margin-top: 0.14in; margin-bottom: 0.08in; direction: ltr; color: #4f81bd; page-break-inside: avoid; widows: 2; orphans: 2; text-decoration: none }
+h3.western { font-family: "Arial", sans-serif; font-size: 12pt; so-language: da-DK }
+h3.cjk { font-family: "Arial"; font-size: 12pt }
+h3.ctl { font-family: "Arial"; font-size: 12pt }
+a:link { so-language: zxx }
+.menu {width:20%; height:100%; border-right:1px solid #eeeeee; position: fixed; float: left;}
+.menu > ul li {margin:0; list-style: none; padding: 0;}
+.menu > ul li > a {padding: 0;}

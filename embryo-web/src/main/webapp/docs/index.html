@@ -1,0 +1,982 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta HTTP-EQUIV="CONTENT-TYPE" content="text/html; charset="utf-8"">
+	<title>ArcticWeb User Manual</title>
+	<meta name="GENERATOR" content="LibreOffice 4.0.5.2 (Linux)">
+	<meta name="AUTHOR" content="Jesper Tejlgaard">
+	<meta name="CREATED" content="20150106;9080000">
+	<meta name="CHANGEDBY" content="Jesper">
+	<meta name="CHANGED" content="20150106;9290000">
+	<meta name="AppVersion" content="14.0000">
+	<meta name="DocSecurity" content="0">
+	<meta name="HyperlinksChanged" content="false">
+	<meta name="LinksUpToDate" content="false">
+	<meta name="ScaleCrop" content="false">
+	<meta name="ShareDoc" content="false">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/drawer/2.2.3/css/drawer.min.css"/>
+	<link rel="stylesheet" href="doc.css"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.js"></script></head>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.collapse').collapse({toggle: false});
+			$('.collapser').click(function() {
+				$('.collapse').collapse('hide');
+				$(this).next().collapse('show');
+			});
+		});
+	</script>
+<body>
+	<div class="container-fluid">
+		<div class="menu" role="complementary">
+			<ul class="nav nav-stacked">
+				<li>
+					<a href="#Top">Top</a>
+				</li>
+				<li>
+					<a href="#Contact">Contact</a>
+				</li>
+				<li>
+					<a href="#Background">Background</a>
+				</li>
+				<li class="collapser">
+					<a href="#System Requirements">System Requirements</a>
+				</li>
+				<ul class="sub-menu collapse">
+					<li>
+						<a href="#Operating system ">Operating system</a>
+					</li>
+					<li>
+						<a href="#Browsers">Browsers</a>
+					</li>
+					<li>
+						<a href="#Firewalls">Firewalls</a>
+					</li>
+					<li>
+						<a href="#JavaScript">JavaScript</a>
+					</li>
+					<li>
+						<a href="#Cookies">Cookies</a>
+					</li>
+				</ul>
+				<li>
+					<a href="#Internet usage">Internet usage</a>
+				</li>
+				<li>
+					<a href="#Description of functionalities">Description of functionalities</a>
+				</li>
+				<li class="collapser">
+					<a href="#Front page ">Front page</a>
+				</li>
+				<ul class="sub-menu collapse">
+					<li>
+						<a href="#Log In dialog">Log In dialog</a>
+					</li>
+				</ul>
+				<li class="collapser">
+					<a href="#Vessels page">Vessels page</a>
+				</li>
+				<ul class="sub-menu collapse">
+					<li>
+						<a href="#Main chart page">Main chart page</a>
+					</li>
+					<li>
+						<a href="#Own vessel functionalities">Own vessel functionalities</a>
+					</li>
+					<li>
+						<a href="#Historical Track – own vessel">Historical Track – own vessel</a>
+					</li>
+					<li>
+						<a href="#Nearest Vessels">Nearest Vessels</a>
+					</li>
+					<li>
+						<a href="#Hour distance circle based on SOG">Hour distance circle based on SOG</a>
+					</li>
+					<li>
+						<a href="#Selected Vessel">Selected Vessel</a>
+					</li>
+					<li>
+						<a href="#AIS Information – view all information">AIS Information – view all information</a>
+					</li>
+					<li>
+						<a href="#Integration with MarineTraffic.com">Integration with MarineTraffic.com</a>
+					</li>
+					<li>
+						<a href="#Historical Track – other vessels">Historical Track – other vessels</a>
+					</li>
+					<li>
+						<a href="#Extra Information on Map – Clear All">Extra Information on Map – Clear All</a>
+					</li>
+				</ul>
+				<li class="collapser">
+					<a href="#Ice">Ice</a>
+				</li>
+				<ul class="sub-menu collapse">
+					<li>
+						<a href="#Ice charts and Icebergs">Ice charts and Icebergs</a>
+					</li>
+					<li>
+						<a href="#Ice charts and Icebergs – display">Ice charts and Icebergs – display</a>
+					</li>
+					<li>
+						<a href="#Ice charts – details">Ice charts – details</a>
+					</li>
+					<li>
+						<a href="#Icebergs – details">Icebergs – details</a>
+					</li>
+					<li>
+						<a href="#Inshore Ice Report">Inshore Ice Report</a>
+					</li>
+					<li>
+						<a href="#Inshore ice report - observations">Inshore ice report - observations</a>
+					</li>
+					<li>
+						<a href="#Satellite images">Satellite images</a>
+					</li>
+					<li>
+						<a href="#Satellite images – General Information">Satellite images – General Information</a>
+					</li>
+					<li>
+						<a href="#Satellite images – Select image by area">Satellite images – Select image by area</a>
+					</li>
+					<li>
+						<a href="#Satellite images – Display image">Satellite images – Display image</a>
+					</li>
+				</ul>
+				<li class="collapser">
+					<a href="#Maritime Safety Information">Maritime Safety Information</a>
+				</li>
+				<ul class="sub-menu collapse">
+					<li>
+						<a href="#Maritime Safety Information – main page">Maritime Safety Information – main page</a>
+					</li>
+					<li>
+						<a href="#Maritime Safety Information - details">Maritime Safety Information - details</a>
+					</li>
+				</ul>
+				<li class="collapser">
+					<a href="#Reporting">Reporting</a>
+				</li>
+				<ul class="sub-menu collapse">
+					<li>
+						<a href="#Reporting">Reporting</a>
+					</li>
+					<li>
+						<a href="#Schedule">Schedule</a>
+					</li>
+					<li>
+						<a href="#Upload Schedule">Upload Schedule</a>
+					</li>
+					<li>
+						<a href="#Upload Route">Upload Route</a>
+					</li>
+					<li>
+						<a href="#Route (edit or create)">Route (edit or create)</a>
+					</li>
+					<li>
+						<a href="#Own and other vessels routes">Own and other vessels routes</a>
+					</li>
+				</ul>
+				<li class="collapser">
+					<a href="#Weather">Weather</a>
+				</li>
+				<ul class="sub-menu collapse">
+					<li>
+						<a href="#Weather – main page">Weather – main page</a>
+					</li>
+					<li>
+						<a href="#Selected weather forecast – details">Selected weather forecast – details</a>
+					</li>
+					<li>
+						<a href="#Forecast on route – main page">Forecast on route – main page</a>
+					</li>
+					<li>
+						<a href="#Forecast on route - details">Forecast on route - details</a>
+					</li>
+				</ul>
+				<li class="collapser">
+					<a href="#Forecasts">Forecasts</a>
+				</li>
+				<ul class="sub-menu collapse">
+					<li>
+						<a href="#Wave forecasts">Wave forecasts</a>
+					</li>
+					<li>
+						<a href="#Ice forecasts">Ice forecasts</a>
+					</li>
+					<li>
+						<a href="#Ocean current forecasts">Ocean current forecasts</a>
+					</li>
+				</ul>
+				<li class="collapser">
+					<a href="#Setup">Setup</a>
+				</li>
+				<ul class="sub-menu collapse">
+					<li>
+						<a href="#Setup Selection Groups – create">Setup Selection Groups – create</a>
+					</li>
+					<li>
+						<a href="#Setup Selection Groups – edit">Setup Selection Groups – edit</a>
+					</li>
+				</ul>
+			</ul>
+		</div>
+		<div style="width:75%; float: right;" role="main">
+			<p align="right" style="margin-bottom: 0in; text-decoration: none" id="Top">V2.3</p>
+			<p align="center" style="margin-bottom: 0in; text-decoration: none">
+				<h1 class="text-center">ArcticWeb</h1>
+			</p>
+			<p align="center" style="margin-bottom: 0in; text-decoration: none">
+				<br />
+				<img src="img/arcticfront.png" width="600" />
+			</p>
+			<p align="center" style="margin-bottom: 0in; text-decoration: none">User Manual</p>
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<br />
+				<br />
+			</p>
+			<div id="Table of Contents1" dir="LTR">
+				<p style="margin-bottom: 0.07in; text-decoration: none">
+					<br />
+					<br />
+				</p>
+			</div>
+			<br />
+			<p>
+				<a name="_GoBack"></a>
+				<br />
+			</p>
+			<h1>
+				<span id="Contact">Contact</span>
+			</h1>
+			<br />
+			<table width="250" cellpadding="5" cellspacing="0">
+				<col width="40">
+				<col width="190">
+				<tr>
+					<td colspan="2" width="240" height="3" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">Mads Bentzen Billesø</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" width="240" height="3" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p>Danish Maritime Authority</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" width="240" height="17" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p>Maritime Analysis, Technology and business development, e-navigation</p>
+					</td>
+				</tr>
+				<tr>
+					<td width="80" height="3" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">Tele:</p>
+					</td>
+					<td width="190" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p>+45 9137 6329</p>
+					</td>
+				</tr>
+				<tr>
+					<td width="80" height="3" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p>E-mail:</p>
+					</td>
+					<td width="190" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p><u><a href="mailto:MCB@dma.dk">MCB@dma.dk</a></u> </p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" width="240" height="31" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">
+							<img src="i_b49dccc808cb4430_html_5223b779.jpg" name="officeArt object" align="bottom" width="172" height="38" border="0" /></p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" width="240" height="3" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">Carl Jacobsens Vej 31</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" width="240" height="3" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">2500 Valby</p>
+					</td>
+				</tr>
+				<tr>
+					<td width="80" height="3" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">Tele:</p>
+					</td>
+					<td width="190" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">91 37 60 00</p>
+					</td>
+				</tr>
+				<tr>
+					<td width="80" height="3" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">Fax:</p>
+					</td>
+					<td width="190" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">91 37 60 01</p>
+					</td>
+				</tr>
+				<tr>
+					<td width="80" height="3" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">Web:</p>
+					</td>
+					<td width="190" bgcolor="#ffffff" style="border: none; padding: 0in">
+						<p style="text-decoration: none">
+							<span style="text-decoration: none"> <u><a href="http://www.sofartsstyrelsen.dk/">www.sofartsstyrelsen.dk</a></u> 
+							</span>
+						</p>
+					</td>
+				</tr>
+			</table>
+			<p style="margin-left: 0.02in; text-indent: -0.02in; margin-bottom: 0in; text-decoration: none">
+				<br />
+			</p>
+			<h1 id="Background">Background</h1>
+			<br />
+			<p>ArcticWeb - an effort to improve safety of navigation in the Arctic.</p>
+			<br />
+			<p>ArcticWeb is combining:</p>
+			<ul>
+				<li>
+					<p>AIS data collected by national and commercial satellites and base stations in the Arctic region.</p>
+				</li>
+				<li>
+					<p>GREENPOS and COASTAL CONTROL reporting.</p>
+				</li>
+				<li>
+					<p>Coordinated Voyage through the sharing of routes and schedules.</p>
+				</li>
+				<li>
+					<p>Sharing of routes and schedules with Arctic Command.</p>
+				</li>
+				<li>
+					<p>Ice charts from Danish Meteorological Institute (DMI).</p>
+				</li>
+				<li>
+					<p>Inshore ice reports from Danish Meteorological Institute.</p>
+				</li>
+				<li>
+					<p>Satellite images from NASA provided by Danish Meteorological Institute.</p>
+				</li>
+				<li>
+					<p>Navigational warnings from Arctic Command and Danish Maritime Authority.</p>
+				</li>
+				<li>
+					<p>Weather forecasts from Danish Meteorological Institute including weather forecasts for a planned route.</p>
+				</li>
+				<li>
+					<p>Forecasts for ice, current and waves provided by DMI and Defence Centre for Operational	Oceanography (FCOO).</p>
+				</li>
+			</ul>
+			<br />
+			<p>The platform is intended for use by:</p>
+			<ul>
+				<li>
+					<p>Ships</p>
+				</li>
+				<li>
+					<p>Shipping companies operating vessels in the area.</p>
+				</li>
+				<li>
+					<p>Arctic Command</p>
+				</li>
+				<li>
+					<p>Other shore authorities</p>
+				</li>
+			</ul>
+			<br />
+			<h1 id="System Requirements">System Requirements</h1>
+			<br />
+			<h2 id="Operating system">Operating system</h2>
+			<p>Any</p>
+			<h2 id="Browsers">Browsers</h2>
+			<p>Recommended browsers are Firefox (latest), Safari (latest) or Internet Explorer 10 (or 11). Google Chrome may be used, but some users have encountered some chart problems when using Chrome.</p>
+			<br />
+			<p>Other working browsers: Internet Explorer 9. The amount of data transferred over the internet connection will however be higher than with recommended browsers.</p>
+			<h2 id="Firewalls">Firewalls</h2>
+			<p>All communication between the ArcticWeb web application and the DMA e-Navigation servers are performed using HTTPS protocol on port 443.</p>
+			<h2 id="JavaScript">JavaScript</h2>
+			<p>JavaScript must be enabled in the used browser. See if you have JavaScript enabled and how to enable it at this internet site: <u><a href="http://enable-javascript.com/">http://enable-javascript.com/</a></u></p>
+			<h2 id="Cookies">Cookies</h2>
+			<p>Cookies must be allowed, at least for the domain arcticweb.e-navigation.net, core ArcticWeb functionality will otherwise not work.</p>
+			<br />
+			<p>See more at:</p>
+			<p>Internet Explorer: <u><a href="http://windows.microsoft.com/en-us/windows-vista/block-or-allow-cookies">http://windows.microsoft.com/en-us/windows-vista/block-or-allow-cookies</a></u></p>
+			<p>Firefox: <u><a href="http://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences">http://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences</a></u></p>
+			<p>Chrome: <u><a href="https://support.google.com/accounts/answer/61416?hl=en">https://support.google.com/accounts/answer/61416?hl=en</a></u></p>
+			<p>Safari: <u><a href="http://support.apple.com/kb/ph5042">http://support.apple.com/kb/ph5042</a></u></p>
+			<h1 id="Internet usage">Internet usage</h1>
+			<br />
+			<p>The browser cache is utilized for caching web resources (HTML, CSS and JS files) as well as all ice chart data and other data fetched from DMA e-Navigation servers. This will lower the amount of data transferred over the internet connection. To make best use of the browser cache it is therefore recommended to:</p>
+			<ul>
+				<li>
+					<p>Always use the same	computer and browser for ArcticWeb.</p>
+				</li>
+				<li>
+					<p>Not to clear the browser cache.</p>
+				</li>
+				<li>
+					<p>Not to clear hosted	application data/offline web application data in the browser.</p>
+				</li>
+			</ul>
+			<br />
+			<p>At first login an initial download of approximately 1 MB is made (basic chart and other data). A low cost connection may be preferred for this.</p>
+			<br />
+			<p>After first login and provided the cache is not cleared, ArcticWeb data volumes will be approximately 100 KB per hour when logged in (primarily from the regular update of AIS targets).</p>
+			<br />
+			<p>Ice chart, iceberg and forecast download sizes are given in theirrespective windows. They will typically be between 20 and 250 KB each. Please note that an ice chart, iceberg or forecast is cached once downloaded by the browser and thus not fetched from the server again on next download click, unless the browser cache has been cleared.</p>
+			<br />
+			<p>Satellite images are downloaded as image tiles depending on the zoom level - the higher the level the more detailed are the downloaded image tiles. The data volume used is thus dependent on the map usage while viewing the satellite image. Already downloaded images are cached in the browser until no longer needed.</p>
+			<br />
+			<br />
+			<h1 id="Description of functionalities">Description of functionalities</h1>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_6a72552d.png" name="graphics1" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Front page">Front page</h3>
+			<p>On the front page Ice Charts in pdf format, weather information and information on Safety of Navigation is available. In the future more information will be added.</p>
+			<br />
+			<p>Click on <i>Vessels</i> or <i>Log in</i> as user.</p>
+			<br />
+			<p>If you are not a registered user, you may request access by clicking <i>Request Access</i> (only first visit on page). You will be prompted for required information to create an ArcticWeb user. When a user has been created, you will receive an email with your new user credentials.</p>
+			<br />
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_m459ab233.png" name="graphics2" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Log In dialog">Log In dialog</h3>
+			<p>Log in with user name and password.</p>
+			<p>If you have been registered as user in ArcticWeb but forgotten your password, click <i>Forgot password</i> and enter the e-mail address you have registered. Password will then be forwarded.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_56b94240.png" name="graphics3" align="bottom" border="0" /></p>
+			<p>
+				<br />
+				<br />
+			</p>
+			<h2 id="Vessels page">Vessels page</h2>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_m117292eb.png" name="graphics4" align="bottom" border="0" /></p>
+			<h3 id="Main chart page">Main chart page</h3>
+			<ol>
+				<li>
+					<p>When logging in, user is linked to own vessels AIS target (marked by green ring). Vessel positions are updated every 15 minutes. Vessel positions obtained from satellite may however be older due to the time between satellite passings (recent analysis have shown that in 95% of the time, positions are updated at intervals less than 2 hours, in 99% of the time less than 6 hours.</p>
+				</li>
+				<li>
+					<p>It is possible to see positions of all other vessels in the Arctic Region equipped with an AIS transponder.</p>
+				</li>
+				<li>
+					<p>Click <i>Zoom all Arctic</i> to return to overview</p>
+				</li>
+				<li>
+					<p>Click <i>Zoom to Your Vessel</i> to zoom to own vessel</p>
+				</li>
+			</ol>
+			<br />
+			<p>
+				<br />
+			</p>
+			<p>
+				<br />
+			</p>
+			<p><img src="img/i_b49dccc808cb4430_html_58c82c6e.png" name="graphics5" align="bottom" border="0" /></p>
+			<p>
+				<br />
+			</p>
+			<ol start="5">
+				<li>
+					<p>
+						Click <i>Switch Base Map</i> to change from basic chart (Single Vector Map) to full OpenStreetMap. Data volumes are increased quite a bit from basic chart to the full OpenStreetMap and it may be slower to use the OpenStreetMap.</p>
+				</li>
+			</ol>
+			<p>If using Chrome as your browser you may turn on <i>Hardware acceleration</i> to improve performance.</p>
+			<p>
+				<br />
+			</p>
+			<p style="margin-bottom: 0in; line-height: 115%; text-decoration: none">
+				<img src="img/i_b49dccc808cb4430_html_m786149fb.png" name="graphics6" align="bottom" border="0" /></p>
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<i>Example of OpenStreetMap</i>
+			</p>
+			<p>
+				<br />
+				<br />
+			</p>
+			<p><img src="img/i_b49dccc808cb4430_html_7eeb34ae.png" name="graphics7" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Own vessel functionalities">Own vessel functionalities</h3>
+			<br />
+			<p>Own vessel is marked by green ring when logged in.</p>
+			<br />
+			<p>The vessels page shows primarily AIS data, i.e. other vessels in the area. On the left are a number of possibilities:</p>
+			<br />
+			<p>Your Vessel:</p>
+			<p>- AIS Information: Basic information obtained from AIS.</p>
+			<p>- ArcticWeb Reporting:</p>
+			<ul>
+				<li>
+					<p>Vessel Information: additional information expanding AIS information.</p>
+				</li>
+				<li>
+					<p>Schedule: sharing of schedule and routes with other vessels and authorities.</p>
+				</li>
+				<li>
+					<p>Reporting: send Greenpos reports to Arctic Command and Coastal Control to Aasiaat Radio</p>
+				</li>
+			</ul>
+			<p>- Additional information:</p>
+			<ul>
+				<li>
+					<p>Historical Track.</p>
+				</li>
+				<li>
+					<p>Nearest Vessels – the distance in nm and time from the 5 vessels nearest to own vessel. “Nearest” is based on the time to reach your vessel and is calculated by using the maximum recorded SOGs from other vessels in the area.</p>
+				</li>
+				<li>
+					<p>3-6-9 hour distance circle based on SOG – portrayal of the distance own vessel can reach in 	3-6-9 hours based on present SOG.</p>
+				</li>
+			</ul>
+			<br />
+			<p>Search Vessels: search other vessels by name or MMSI.</p>
+			<p>Selected Vessel: Information on selected vessel.</p>
+			<br />
+			<p>Legends: Explanation of symbols and coloring (vessels, ice, etc.).</p>
+			<br />
+			<p align="center" style="margin-bottom: 0in; text-decoration: none">
+				<img src="img/i_b49dccc808cb4430_html_9e1a5d6.png" name="graphics8" align="bottom" border="0" /></p>
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<img src="img/i_b49dccc808cb4430_html_6e486e3f.png" name="graphics9" align="bottom" border="0" /></p>
+			<p style="margin-bottom: 0in; text-decoration: none; page-break-before: always">
+				<br />
+			</p>
+			<h3 id="Historical Track – own vessel">Historical Track – own vessel</h3>
+			<p>By clicking the <i>view</i> button on <i>Historical Track</i> the past track of the vessel is displayed. Positions are obtained from satellite and are updated every 1-6 hours, so the track may look a little bumpy and may cross over land.</p>
+			<p>Click the <i>Hide</i> button on <i>Historical Track</i> to hide past track.</p>
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<br />
+				<br />
+			</p>
+			<p style="margin-bottom: 0in; text-decoration: none; page-break-before: always">
+				<img src="img/i_b49dccc808cb4430_html_2015bce0.png" name="graphics10" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Nearest Vessels">Nearest Vessels</h3>
+			<p>
+				By clicking <i>Nearest Vessels view</i> the distance in nm and time from the 5 vessels nearest to your own vessel are displayed.
+																			“Nearest” is based on the time to reach your vessel and calculated by using the maximum recorded SOGs from other vessels in the area.
+			</p>
+			<p>Click <i>Hide</i> button on <i>Nearest Vessels</i> to hide lines.</p>
+			<br />
+			<p>In later versions it will be possible to search and see distance to nearest vessel with medical personnel on board, distance to hospitals, helicopters, etc.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_51a34fe7.png" name="graphics11" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Hour distance circle based on SOG">Hour distance circle based on SOG</h3>
+			<p>By clicking <i>3-6-9 hour distance circle based on SOG view</i> the distances own vessel can reach in 3-6-9 hours based on the maximum recorded SOG are displayed.</p>
+			<p>Click the <i>Hide</i> button on <i>3-6-9 hour distance circle</i> s to hide circles.</p>
+			<br />
+			<br />
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<br />
+				<br />
+			</p>
+			<p style="margin-bottom: 0in; text-decoration: none; page-break-before: always">
+				<img src="img/i_b49dccc808cb4430_html_98df4d7.png" name="graphics12" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Selected Vessel">Selected Vessel</h3>
+			<p>
+				By clicking
+				<i>Selected Vessel</i>
+				, information on selected vessel is shown.
+			</p>
+			<p>Vessel is selected by click on target in chart area or searching vessel by name or MMSI in Search Vessels menu.</p>
+			<p>Selected vessel is marked on chart by red brackets.</p>
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<br />
+				<br />
+			</p>
+			<p style="margin-bottom: 0in; text-decoration: none; page-break-before: always">
+				<img src="img/i_b49dccc808cb4430_html_16e81299.png" name="graphics13" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="AIS Information – view all information">AIS Information – view all information</h3>
+			<p>By clicking <i>view all</i> in Your Vessel or Selected Vessel menu it is possible to see all available information on your/selected vessel.</p>
+			<br />
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<br />
+				<br />
+			</p>
+			<p style="margin-bottom: 0in; text-decoration: none; page-break-before: always">
+				<img src="img/i_b49dccc808cb4430_html_9eeac07.png" name="graphics14" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Integration with MarineTraffic.com">Integration with MarineTraffic.com</h3>
+			<p>In the bottom of the View All window it is possible to search vessel at MarineTraffic.com, see pictures and other available data.</p>
+			<br />
+			<br />
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<br />
+				<br />
+			</p>
+			<p style="margin-bottom: 0in; text-decoration: none; page-break-before: always">
+				<img src="img/i_b49dccc808cb4430_html_2b884cb.png" name="graphics15" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Historical Track – other vessels">Historical Track – other vessels</h3>
+			<p>By clicking <i>view</i> button on <i>Historical Track</i> in Selected Vessel menu it is possible to see other vessels past track.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_271428dd.png" name="graphics16" align="bottom" border="0" /></p>
+			<h3 id="Extra Information on Map – Clear All">Extra Information on Map – Clear All</h3>
+			<p>Extra information on the map such as nearest vessels, distance circles, historical track and other routes than your active route can be removed from the map again in one click. Both the Your Vessel and Selected Vessel views contain an <i>Extra Information on Map</i> section in which the <i>clear</i> link can be clicked.</p>
+			<p>
+				<br />
+				<br />
+			</p>
+			<h2 id="Ice">Ice</h2>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_5e8b4296.png" name="Billede 2" align="bottom" width="598" height="361" border="0" /></p>
+			<br />
+			<p>
+				<br />
+				<br />
+			</p>
+			<h3 id="Ice charts and Icebergs">Ice charts and Icebergs</h3>
+			<p>
+				The list of <i>Ice Charts</i> is by default shown.
+				<img src="img/i_b49dccc808cb4430_html_m2bbc1a09.png" name="Billede 3" align="bottom" width="598" height="367" border="0" /></p>
+			<p>All available Ice Charts are listed, sorted by area; most recent Ice Chart first.</p>
+			<br />
+			<p>It is also possible to choose <i>Icebergs</i></p>
+			<p><img src="img/i_b49dccc808cb4430_html_43ea8a2a.png" name="graphics17" align="bottom" border="0" /></p>
+			<br />
+			<p>All available Iceberg charts are listed, sorted by area; most recent Iceberg first.</p>
+			<br />
+			<br />
+			<p>Ice chart legends are shown in the legends menu.</p>
+			<br />
+			<p align="center" style="margin-bottom: 0in; text-decoration: none">
+				<img src="img/i_b49dccc808cb4430_html_m46dbee06.png" name="graphics18" align="bottom" border="0" /></p>
+			<br />
+			<br />
+			<br />
+			<h3 id="Ice charts and Icebergs – display">Ice charts and Icebergs – display</h3>
+			<p>Ice Charts and Iceberg charts are downloaded by clicking <i>download</i>. File sizes are indicated to make it possible for the user to choose whether or not to download the chart and thereby minimize vessels data usage. Once downloaded an Ice Chart / Iceberg chart is cached by the browser and thus not fetched from the server again on next download click, unless the browser cache has been cleared. When an Ice Chart or Iceberg chart has been downloaded, the <i>download</i> button changes to <i>zoom</i>. Click <i>zoom</i> to zoom to chart area. Click <i>hide</i> to hide chart.</p>
+			<p style="margin-bottom: 0in; text-decoration: none; page-break-before: always">
+				<img src="img/i_b49dccc808cb4430_html_304c4dca.png" name="Billede 4" align="bottom" width="642" height="396" border="0" /></p>
+			<br />
+			<h3 id="Ice charts – details">Ice charts – details</h3>
+			<p>Details for Ice areas are shown in the left menu by clicking colored Ice areas on chart.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_39355609.png" name="graphics19" align="bottom" border="0" /></p>
+			<h3 id="Icebergs – details">Icebergs – details</h3>
+			<p>Details for an Iceberg are shown in the left menu by clicking on the Iceberg on chart.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_m6ecd64aa.png" name="graphics20" align="bottom" border="0" /></p>
+			<h3 class="western">
+				<br />
+				<br />
+			</h3>
+			<h3 id="Inshore Ice Report">Inshore Ice Report</h3>
+			<p>After having chosen the <i>Ice</i> tab in the top menu, it is possible to choose the Inshore ice report window on the left. The Inshore ice report window contains information on the data provider, a list of locations for which observations are available and in the bottom some extra information from the data provider. To see one or more observations you may click <i>view</i> or choose an inshore ice report icon on chart.</p>
+			<p><i>Reports are currently only provided by the Danish Meteorological Institute in Danish.</i> </p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_5173637c.png" name="graphics21" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Inshore ice report - observations">Inshore ice report - observations</h3>
+			<p>One or more inshore ice report observations are shown when you click an inshore ice report icon on chart.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_60790dd.png" name="graphics22" align="bottom" border="0" /></p>
+			<h3 id="Satellite images">Satellite images</h3>
+			<p>After having chosen the <i>Ice</i> tab in the top menu, it is possible to view satellite images positioned on the map on their actual geographical location. Each satellite image covers an area of the Arctic region. The satellite is often not able to obtain a full image for the intended region, and images may as a consequence become smaller than the desired area. Several images may be available for each region but on different days and time of day.</p>
+			<br />
+			<p>NB. Images are supplied in ArcticWeb in a fully automated fashion, which does not allow for any manual removal of images that are distorted or that contain little image data.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_m4139327c.png" name="graphics23" align="bottom" border="0" /></p>
+			<h3 id="Satellite images – General Information">Satellite images – General Information</h3>
+			<p>General information about satellite images is shown when you click the <i>General Information</i> link in the Satellite Images window.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_2b97e2a2.png" name="graphics24" align="bottom" border="0" /></p>
+			<h3 id="Satellite images – Select image by area">Satellite images – Select image by area</h3>
+			<p>The list of available satellite images may be long and therefore hard to choose from. You may filter this list to only contain satellite image entries for your desired region. The Satellite images windows contains the <i>Select satellite image by area</i> link - click this link and then choose the desired region on the map.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_2bb5ec0c.png" name="graphics25" align="bottom" border="0" /></p>
+			<h3 id="Satellite images – Display image">Satellite images – Display image</h3>
+			<p>You may display a satellite image by clicking the <i>display</i> link in the Satellite images window. You may remove the satellite image from the map by choosing <i>hide</i>. Zoom to the displayed image by choosing <i>zoom</i>.</p>
+			<br />
+			<br />
+			<h2 class="western" style="page-break-before: always">Maritime Safety Information</h2>
+			<p><img src="img/i_b49dccc808cb4430_html_m28f1bdc.png" name="graphics26" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Maritime Safety Information – main page">Maritime Safety Information – main page</h3>
+			<p>By clicking the <i>Maritime Safety</i> tab in the top menu, the Maritime Safety Information window is opened on the left.</p>
+			<p>Here all active Navigational Warnings are listed, sorted by number.</p>
+			<br />
+			<p>All Maritime Safety Information for the area is displayed by purple MSI symbols.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_m7729c148.png" name="graphics27" align="bottom" border="0" /></p>
+			<h3 id="Maritime Safety Information - details">Maritime Safety Information - details</h3>
+			<p>By clicking MSI symbol in the chart area or under the Active Warnings in left menu, details are shown.</p>
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<br />
+				<br />
+			</p>
+			<h2 class="western" style="page-break-before: always">Reporting</h2>
+			<br />
+			<p>The GREENPOS system applies to all ships on voyages to and from Greenlandic Waters and inside the Greenlandic Continental Shelf or EEZ. The ships are to report weather information and their position, course and speed every 6 hours.</p>
+			<p>
+				The COASTAL CONTROL system applies to all ships greater than 20 BT on voyage to and from Greenland ports and places of call. The ships are to report their position, course, speed and persons on board at least every 24 <sup>th</sup>
+				hour.
+			</p>
+			<br />
+			<p>Additional information may be required depending on the report type send. See ‘Mandatory Ship Reporting Systems’ document found on front page for report types and when to send them.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_4b910608.png" name="graphics28" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Reporting">Reporting</h3>
+			<p>Click <i>edit</i> button under <i>Reporting</i> in the left menu. Here it is possible to enter and send reports to Arctic Command (Greenpos) and/or Aasiaat Radio (Coastal Control) by a few clicks.</p>
+			<p>First choose where to send the report; Greenpos and/or Coastal Control, then which report to send; Sailing Plan, Position Report, Final Report or Deviation Report. Fill in the blank fields. Other required information is filled in automatically based on information from AIS (Remember to keep AIS data up to date) and on reported Schedule (see Schedule). Click <i>Send</i>.</p>
+			<br />
+			<p>Acknowledgement of successful transmission is indicated and a copy of report is send to your ArcticWeb e-mail address. An acknowledgement mail is also sent from ArcticCommand mail server to your ArcticWeb e-mail address upon report reception.</p>
+			<br />
+			<p> <b>Note: In the event a transmission acknowledgement e-mail is <i>not</i> received from ArcticCommand you must use other means of communication in accordance with the relevant rules.</b> 
+			</p>
+			<p>&nbsp;</p>
+			<p><img src="img/i_b49dccc808cb4430_html_28a173f6.png" name="graphics29" align="bottom" border="0" /></p>
+			<br />
+			<p><b>Vessel Information</b></p>
+			<p>All information available via AIS is collected automatically in the AIS Information window. Additional information relevant in the Arctic area, for Search and Rescue and assistance is given and shared in the Vessel Information window, e.g. Ice class, maximum speed, Maximum Rescue capacity, vessel equipped with Helipad, communication capabilities, etc.
+			</p>
+			<br />
+			<p>
+				<br />
+				<br />
+			</p>
+			<p><img src="img/i_b49dccc808cb4430_html_719c24be.png" name="graphics30" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Schedule">Schedule</h3>
+			<p>Vessels schedule is entered, uploaded and kept up to date in the Schedule menu.</p>
+			<p>Enter location, position (filled in automatically for ports in Greenland), arrival and departure times, crew and passengers on board at departure and if doctor or medical personnel is onboard.</p>
+			<p>Positions are entered in following format: DD MM.MMMN ; DDD MM.MMMW</p>
+			<br />
+			<p>Detailed routes between a location and the following location may be either uploaded by clicking <i>Upload route</i> or created manually in the system by clicking <i>Create route</i>.</p>
+			<br />
+			<p>Schedules and routes are shared with other vessels and authorities enabling coordinated passage and for resource planning, e.g. rescue resources.</p>
+			<br />
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_m6d33780b.png" name="graphics31" align="bottom" border="0" /></p>
+			<h3 id="Upload Schedule">Upload Schedule</h3>
+			<br />
+			<p>
+				It is possible to upload schedule from an Excel sheet in following format:
+				<span style="width: 642px">
+					<img src="img/i_b49dccc808cb4430_html_722bacf6.png" name="graphics32" border="0" /></span>
+			</p>
+			<p>Certain restrictions and comments regarding this format:</p>
+			<ul>
+				<li>
+					<p>As of now, only the “old” Excel format (.xls) is supported. The “new” format (.xlsx) may be supported in a future version.</p>
+				</li>
+				<li>
+					<p>The columns “Site”, “Arrival” and “Departure” (and their corresponding headers) are mandatory. The columns “Crew”, “Passengers”, “Doctor” and “Id” may be omitted. The case (upper, lower) is irrelevant, and so is the order of the columns.</p>
+				</li>
+				<li>
+					<p>The system will try to locate the coordinates of the sites automatically. If this is not possible, you are required to enter them manually or choose another site.</p>
+				</li>
+				<li>
+					<p>All times are in UTC, in the format shown above (dd-mm-yyyy hh:mm).</p>
+				</li>
+				<li>
+					<p>If an Id value is not present, the system will automatically generate one. The advantage of using your own Ids is that if you upload a new schedule containing lines with the same Ids, those lines will replace the existing ones in the system. This is convenient for making batch schedule adjustments.</p>
+				</li>
+				<li>
+					<p>“New” lines (i.e. without Ids) will be required to have an arrival (and departure) date no earlier than the latest departure date in the current schedule.</p>
+				</li>
+				<li>
+					<p>When uploading a schedule, the data from the Excel sheet is not saved until you explicitly press the “Save” button, so you will be able to review it and make adjustments.</p>
+				</li>
+			</ul>
+			<p><img src="img/i_b49dccc808cb4430_html_29601956.png" name="graphics33" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Upload Route">Upload Route</h3>
+			<p>Routes may be uploaded to ArcticWeb and used by own vessel, e.g. when assessing Maritime Safety Information and when navigating in ice. At the same time routes in ArcticWeb are shared with other ships and authorities for planning and improved situation awareness.</p>
+			<p>Routes may be exported from ships ECDIS systems on a USB-stick.</p>
+			<br />
+			<p>The following ECDIS systems are currently known to be supported:</p>
+			<ul>
+				<li>
+					<p>Transas Navi-Sailor 4000</p>
+				</li>
+				<li>
+					<p>Transas Navi-Sailor 4000 MDF</p>
+				</li>
+				<li>
+					<p>Sperry Marine “VisionMaster FT”</p>
+				</li>
+				<li>
+					<p>SAM ChartPilot 1100</p>
+				</li>
+			</ul>
+			<br />
+			<p>Support for the following ECDIS systems are to be added in the near future:</p>
+			<ul>
+				<li>
+					<p>FURUNO FEA 2107</p>
+				</li>
+			</ul>
+			<br />
+			<p>
+				Note: If ECDIS system on board is not supported by ArcticWeb, then please let us know (Mads Bentzen Billesø, Danish Maritime Authority,
+				<u>
+					<a href="mailto:mcb@dma.dk">mcb@dma.dk</a>
+				</u>
+				).
+			</p>
+			<p><img src="img/i_b49dccc808cb4430_html_5075624f.png" name="graphics34" align="bottom" border="0" /></p>
+			<h3 id="Route (edit or create)">Route (edit or create)</h3>
+			<p>When route is uploaded it is possible to edit Waypoints and other route details by clicking <i>Edit route</i>.</p>
+			<br />
+			<p>By clicking <i>Create route</i> it is possible to create and save a route in ArcticWeb. This functionality may be used if it is not possible to export route from ECDIS system and import into ArcticWeb.</p>
+			<br />
+			<h3 id="Own and other vessels routes">Own and other vessels routes</h3>
+			<p>The active route of own vessel is shown at all times on chart page (red route).</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_7bf3955a.png" name="graphics35" align="bottom" border="0" /></p>
+			<br />
+			<p>Other vessels active route can be seen by selecting the vessel and click the Route view link in the Selected Vessel view. The active route of other vessels is dark green.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_67c6949b.png" name="graphics36" align="bottom" border="0" /></p>
+			<br />
+			<p>Own and other vessels planned routes can be viewed on chart by selecting the vessel and click on the Schedule <i>view</i> link in the Selected Vessel view. Select the routes to view and choose <i>View on Map</i>.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_m1b2eae97.png" name="graphics37" align="bottom" border="0" /></p>
+			<br />
+			<p>Own vessels planned route are orange. Other vessels planned routes are light green. If a detailed route is not available then a line is drawn connecting the departure and arrival locations from the Schedule. The line is black for own vessels and gray for other vessels.</p>
+			<br />
+			<p>Routes are only available from vessels participating in ArcticWeb. This is indicated by the letters AW below the target symbol.</p>
+			<p style="margin-bottom: 0.14in; line-height: 115%; text-decoration: none">
+				<br />
+				<br />
+			</p>
+			<h2 class="western" style="page-break-before: always">Weather</h2>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_3914ee1e.png" name="graphics38" align="bottom" border="0" /></p>
+			<h3 id="Weather – main page">Weather – main page</h3>
+			<p>By clicking the <i>Weather</i> tab in the top menu, the Weather window is opened on the left.</p>
+			<p>Weather forecasts and warnings will be available here.</p>
+			<br />
+			<p>The forecast districts will also be outlines on the map. Districts with one or more warnings are highlighted with red.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_m7b21877d.png" name="graphics39" align="bottom" border="0" /></p>
+			<h3 id="Selected weather forecast – details">Selected weather forecast – details</h3>
+			<p>Click a <i>view</i> link in the Weather window or click on a district on the map to see a detailed weather forecast and warnings for that district.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_1c939d45.png" name="graphics40" align="bottom" border="0" /></p>
+			<h3 id="Forecast on route – main page">Forecast on route – main page</h3>
+			<p>After creation/uploading and activation of a route it is possible to get a weather forecast (METOC information) on the route. The forecast consists of wind, waves, current and tidal level values and these values can be expected up to 45 hours from current time.</p>
+			<br />
+			<p>Click on the <i>Forecast on route</i> window and thereafter on the Active route <i>view</i> link.</p>
+			<br />
+			<p>It is also possible to view forecast on routes of other vessels. Select the routes using the functionality in the <i>Vessel</i> tab and thereafter navigate back to the <i>Weather</i> tab, choose <i>Forecast on route</i> and thereafter the Selected routes <i>view</i> link.</p>
+			<br />
+			<p>The <i>view</i> link will only be <i>AVAILABLE</i> if you have an active route / have selected routes and route(s) in question are scheduled within current time to 45 hours ahead.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_6d094855.png" name="graphics41" align="bottom" border="0" /></p>
+			<h3 id="Forecast on route - details">Forecast on route - details</h3>
+			<p>Details for specific forecast points are shown when click the symbols on the map. They are also displayed on the map when zooming in.</p>
+			<br />
+			<br />
+			<h2 id="Forecasts">Forecasts</h2>
+			<p>ArcticWeb provides forecast data for several metrics such as ice concentration, ocean currents, ice accretion risk etc. The <i>Forecasts</i> tab in the top menu opens the window for serving these data.</p>
+			<br />
+			<p>The Forecasts page contains four windows; one for wave related forecasts, one for ice related forecasts, one for ocean current related forecasts and a legend window explaining how data is visualized. All forecast windows show the most recent forecasts available from the various forecast providers, sorted by the name of the area. When a forecast is selected, a slider appears to conveniently move forward and backwards in time in order to see how the forecast predicts the weather over time. The forecasts themselves are represented as squares or arrows on the map, typically with an interval of 0.4 degrees whenever data in the area is available, encased in a frame to show the area the forecast covers.</p>
+			<br />
+			<p>Note that some forecasts might contain lots of information, resulting in an increased amount of data to download (and thus bandwidth usage) and slower graphical updates in browsers on older systems.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_502f169e.png" name="graphics42" align="bottom" border="0" /></p>
+			<h3>
+				<br />
+				<br />
+			</h3>
+			<p>
+				<br />
+			</p>
+			<p>
+				<br />
+			</p>
+			<p>
+				<br />
+			</p>
+			<h3 id="Wave forecasts">Wave forecasts</h3>
+			<p>Wave forecasts provides three metrics: significant wave height, mean wave period and mean wave direction. Forecast locations are shown as arrows, and the directions of these arrows indicate the mean wave direction. The color of the arrow indicates the significant wave height (see the legend window for more information) and the length of the arrows will increase with the mean wave period.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_ma2fd4fa.png" name="graphics43" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Ice forecasts">Ice forecasts</h3>
+			<p>Ice forecasts are split up into different relevant metrics: ice concentration, ice thickness, ice speed and ice accretion risk. Some providers may not provide all of these data.</p>
+			<br />
+			<p>Ice concentration, thickness and accretion risk are shown as squares on the map, with the color representing the level of concentration/thickness/risk (again, see the legend window). Ice speed is shown as arrows, the direction indicated by the arrow rotation and the speed indicated by the color.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_1bbfe7b8.png" name="graphics44" align="bottom" border="0" /></p>
+			<br />
+			<h3 id="Ocean current forecasts">Ocean current forecasts</h3>
+			<p>Ocean current forecasts are shown using arrows, just like ice speed. The direction of the arrow shows the current direction and the color of the arrow shows the current speed.</p>
+			<br />
+			<h2 id="Setup">Setup</h2>
+			<p>ArcticWeb provides AIS data from vessels in the whole Arctic region - vessels being above latitude 57 degrees. Displaying data from the whole Arctic region however results in a high data usage. The ArcticWeb platform therefore provides functionality to the users, which can be used select the geographical areas from which to receive data. This is done by configuring one or more geographical areas, called Selection Groups.</p>
+			<p>
+				<br />
+			</p>
+			<p>You have no Selection Groups by default, in which case vessels are instead shown within a circle around Greenland.</p>
+			<p>
+				<br />
+			</p>
+			<p>Configuration of Selection Groups allows you to see data in a fine-grained matter, hence exactly the vessels you have interest in.</p>
+			<p><br /></p>
+			<p><img src="img/i_b49dccc808cb4430_html_2793e21c.png" name="Billede 1" align="bottom" width="642" height="366" border="0" /></p>
+			<br />
+			<p>NB. Configurations to Selection Groups made beneath latitude 57 degrees will not be applied.</p>
+			<br />
+			<h3 id="Setup Selection Groups – create">Setup Selection Groups – create</h3>
+			<p>Create a new selection group by clicking the <i>New Group</i> button. Draw on or more areas on the map, from where to fetch data. Each area is drawn by pushing the left mouse button dragging and releasing the button again. When finished drawing, then click the <i>done</i> button.</p>
+			<br />
+			<p>Below is shown a Selection Group for Norwegian data consisting of several drawn areas.</p>
+			<br />
+			<p><img src="img/i_b49dccc808cb4430_html_2b11c798.png" name="Billede 5" align="bottom" width="585" height="347" border="0" /></p>
+			<br />
+			<p>If you want to retrieve data from the new selection group, then activate then put a checkmark to activate the selection group and click <i>Save Groups</i>.</p>
+			<p><img src="img/i_b49dccc808cb4430_html_m6225116b.png" name="Billede 6" align="bottom" width="591" height="338" border="0" /></p>
+			<h3 id="Setup Selection Groups – edit">Setup Selection Groups – edit</h3>
+			<br />
+			<p>You may edit any existing selection group by clicking the <i>show</i> button. You will then have the options to:</p>
+			<ul>
+				<li>
+					<p style="margin-bottom: 0in; background: #ffffff; border: none; padding: 0in; text-decoration: none">Change the logical name of the Selection Group, e.g. Norway</p>
+				</li>
+				<li>
+					<p style="margin-bottom: 0in; background: #ffffff; border: none; padding: 0in; text-decoration: none">Delete – deletes the entire Selection Group.</p>
+				</li>
+				<li>
+					<p style="margin-bottom: 0in; background: #ffffff; border: none; padding: 0in; text-decoration: none">Clear – clears the areas/squares of the Selection Group.</p>
+				</li>
+				<li>
+					<p style="margin-bottom: 0in; background: #ffffff; border: none; padding: 0in; text-decoration: none">Done – exit edit-mode.</p>
+				</li>
+			</ul>
+			<p>
+				<br />
+			</p>
+			<p>Activate/Inactivate – activates or inactivates the Selection Group. This will have effect on the geographical areas from where to load data and thereby also on your data usage.</p>
+			<p>
+				<br />
+			</p>
+			<p>Before any changes made in edit-mode are applied, you have to save your work by clicking the “Save Groups” button.</p>
+			<p>
+				<br />
+			</p>
+			<p><img src="img/i_b49dccc808cb4430_html_774da4c4.png" name="Billede 9" align="bottom" width="615" height="342" border="0" /></p>
+			<br />
+			<div type="footer">
+				<p align="center" style="margin-top: 0.65in; margin-bottom: 0in; text-decoration: none">
+					<sdfield type="page" subtype="random" format="page">33</sdfield>
+				</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
