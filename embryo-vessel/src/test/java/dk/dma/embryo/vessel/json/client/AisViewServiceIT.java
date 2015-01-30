@@ -24,7 +24,6 @@ import javax.ejb.TimerService;
 import javax.inject.Inject;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -88,7 +87,7 @@ public class AisViewServiceIT {
     }
 
     @Test
-    public void testHistoricalTrackLongWithTimeout() throws ClientProtocolException, IOException {
+    public void testHistoricalTrackLongWithTimeout() throws IOException {
 
         HttpParams httpParams = new BasicHttpParams();
         HttpClient httpClient = new DefaultHttpClient();

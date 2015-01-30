@@ -32,7 +32,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -40,8 +39,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
@@ -119,7 +116,7 @@ public class VesselRestService {
         return historicalTrack;
     }
 
-    private List<TrackSingleLocation> historicalLongTrackWithTimeout(long mmsi) throws IOException, ClientProtocolException, JsonParseException, JsonMappingException {
+    private List<TrackSingleLocation> historicalLongTrackWithTimeout(long mmsi) throws IOException {
         
         HttpParams httpParams = new BasicHttpParams();
         HttpClient httpClient = new DefaultHttpClient();
