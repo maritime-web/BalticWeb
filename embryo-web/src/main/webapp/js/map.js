@@ -216,6 +216,9 @@ $(function() {
 
             map.zoomToExtent(extent);
         },
+        zoomToCoords : function(bounds) {
+        	map.zoomToExtent(bounds);
+        },
         setCenter : function(longitude, latitude, zoom) {
             var pos = transformPosition(longitude, latitude);
 

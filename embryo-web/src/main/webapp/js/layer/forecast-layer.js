@@ -190,21 +190,37 @@ function ForecastLayer() {
 			return '#979797';
 		}
 	};
-
-    that.drawFrame = function (forecast) {
-		var half = 0.2;
+	
+	that.getBounds = function (forecast) {
 		var lats = forecast.metadata.lat;
 		var lons = forecast.metadata.lon;
 		var minLat = lats[0];
 		var maxLat = lats[lats.length - 1];
 		var minLon = lons[0];
 		var maxLon = lons[lons.length - 1];
+		
+		return {
+			minLat : minLat,
+			maxLat : maxLat,
+			minLon : minLon,
+			maxLon : maxLon
+		};
+	};
+	
+	that.zoomToForecast = function (bounds) {
+		var minPoint = embryo.map.createPoint(bounds.minLon, bounds.minLat);
+		var maxPoint = embryo.map.createPoint(bounds.maxLon, bounds.maxLat);
+		that.zoomToCoords(minPoint, maxPoint);
+	};
 
-		var points = [ embryo.map.createPoint(minLon, minLat - half),
-				embryo.map.createPoint(minLon, maxLat + half),
-				embryo.map.createPoint(maxLon, maxLat + half),
-				embryo.map.createPoint(maxLon, minLat - half),
-				embryo.map.createPoint(minLon, minLat - half) ];
+    that.drawFrame = function (bounds) {
+		var half = 0.2;
+
+		var points = [ embryo.map.createPoint(bounds.minLon, bounds.minLat - half),
+				embryo.map.createPoint(bounds.minLon, bounds.maxLat + half),
+				embryo.map.createPoint(bounds.maxLon, bounds.maxLat + half),
+				embryo.map.createPoint(bounds.maxLon, bounds.minLat - half),
+				embryo.map.createPoint(bounds.minLon, bounds.minLat - half) ];
 		var square = new OpenLayers.Geometry.LineString(points);
 		var feature = new OpenLayers.Feature.Vector(square);
 		return feature;
@@ -366,7 +382,8 @@ function ForecastLayer() {
     that.drawIceForecast = function (forecast, time, mapType) {
 		that.clear();
 
-        that.layers.forecasts.addFeatures(that.drawFrame(forecast));
+		var bounds = that.getBounds(forecast);
+        that.layers.forecasts.addFeatures(that.drawFrame(bounds));
 
 		var features = [];
 		switch (mapType) {
@@ -386,7 +403,7 @@ function ForecastLayer() {
 
 		that.layers.forecasts.addFeatures(features);
 		that.layers.forecasts.refresh();
-
+		that.zoomToForecast(bounds);
 	};
 
     that.getWaveConcentrationLevel = function (obs) {
@@ -403,7 +420,8 @@ function ForecastLayer() {
 
     that.drawWaveForecast = function (forecast, time, provider) {
 		that.clear();
-        that.layers.forecasts.addFeatures(that.drawFrame(forecast));
+		var bounds = that.getBounds(forecast);
+        that.layers.forecasts.addFeatures(that.drawFrame(bounds));
 
 		var vars = forecast.variables;
 		var lats = forecast.metadata.lat;
@@ -465,11 +483,13 @@ function ForecastLayer() {
 
 		that.layers.forecasts.addFeatures(features);
 		that.layers.forecasts.refresh();
+		that.zoomToForecast(bounds);
 	};
 
     that.drawCurrentForecast = function (forecast, time) {
 		that.clear();
-        that.layers.forecasts.addFeatures(that.drawFrame(forecast));
+		var bounds = that.getBounds(forecast);
+        that.layers.forecasts.addFeatures(that.drawFrame(bounds));
 
 		var indexEast = forecast.variables['Current east'];
 		var indexNorth = forecast.variables['Current north'];
@@ -522,6 +542,7 @@ function ForecastLayer() {
 		}
 		that.layers.forecasts.addFeatures(features);
 		that.layers.forecasts.refresh();
+		that.zoomToForecast(bounds);
 	};
 
 }
