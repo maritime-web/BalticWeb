@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.dataformats.job.JobContext.Context;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
@@ -86,6 +87,9 @@ public class DmiFtpReaderJob extends AbstractJob {
     @Property(value = "embryo.tmpDir", substituteSystemProperties = true)
     private String tmpDir;
 
+    @Inject
+    protected EmbryoLogService embryoLogService; 
+    
     @EJB
     private FtpAsyncProxy asyncProxy;
     
@@ -124,6 +128,7 @@ public class DmiFtpReaderJob extends AbstractJob {
                     ageInDays, 
                     mailTo, 
                     tmpDir,
+                    this.embryoLogService,
                     Context.DMI);
             
             this.futureTransfers = this.asyncProxy.transferFiles(jobContext);

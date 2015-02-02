@@ -48,7 +48,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.common.util.NamedtimeStamps;
 import dk.dma.embryo.dataformats.job.AbstractJob.Dirtype;
@@ -62,9 +61,6 @@ public class FtpAsyncProxy {
 
     @Inject
     protected ShapeFileMeasurementDao shapeFileMeasurementDao;
-    
-    @Inject
-    protected EmbryoLogService embryoLogService;
     
     @Inject
     protected PropertyFileService propertyFileService;
@@ -103,10 +99,10 @@ public class FtpAsyncProxy {
                 + counts.shapeDeleteCount + ". Files deleted: " + counts.fileDeleteCount + ", Errors: " + counts.errorCount;
         if (counts.errorCount == 0) {
             logger.info(msg);
-            embryoLogService.info(msg);
+            jobContext.getEmbryoLogService().info(msg);
         } else {
             logger.error(msg);
-            embryoLogService.error(msg);
+            jobContext.getEmbryoLogService().error(msg);
         }
 
         logger.info("Deleting Shape entries no longer existing on FTP.");
@@ -284,7 +280,7 @@ public class FtpAsyncProxy {
                 } catch (Exception e) {
                     String msg = "Error deleting shape entry " + measurement.getFileName() + " from ArcticWeb server";
                     logger.error(msg, e);
-                    embryoLogService.error(msg, e);
+                    jobContext.getEmbryoLogService().error(msg, e);
                     counts.errorCount++;
                 }
             }
@@ -315,7 +311,7 @@ public class FtpAsyncProxy {
                 } catch (Exception e) {
                     String msg = "Error deleting chart file " + file + " from ArcticWeb server";
                     logger.error(msg, e);
-                    embryoLogService.error(msg, e);
+                    jobContext.getEmbryoLogService().error(msg, e);
                     counts.errorCount++;
                 }
             }

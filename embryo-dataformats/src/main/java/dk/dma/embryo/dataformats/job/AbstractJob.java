@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.util.NamedtimeStamps;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
@@ -47,9 +46,6 @@ public abstract class AbstractJob {
     @Inject
     protected PropertyFileService propertyFileService;
     
-    @Inject
-    protected EmbryoLogService embryoLogService;
-
     @Inject
     protected ShapeFileMeasurementDao shapeFileMeasurementDao;
     

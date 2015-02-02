@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.commons.net.ftp.FTPClient;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
 public final class JobContext {
@@ -49,6 +50,7 @@ public final class JobContext {
     private final Integer ageInDays;
     private final String mailTo;
     private final String tmpDir;
+    private final EmbryoLogService embryoLogService;
     private final Context context;
     
     private JobContext(
@@ -62,6 +64,7 @@ public final class JobContext {
             Integer ageInDays, 
             String mailTo, 
             String tmpDir,
+            EmbryoLogService embryoLogService,
             Context context) {
         
         super();
@@ -75,6 +78,7 @@ public final class JobContext {
         this.ageInDays = ageInDays;
         this.mailTo = mailTo;
         this.tmpDir = tmpDir;
+        this.embryoLogService = embryoLogService;
         this.context = context;
     }
     
@@ -90,9 +94,10 @@ public final class JobContext {
             Integer ageInDays, 
             String mailTo, 
             String tmpDir,
+            EmbryoLogService embryoLogService,
             Context context) {
         
-        return new JobContext(charttypes, dirtypes, measurementsFromDatabase, propertyFileService, ftpClient, ftpBaseDirectory, ftpBaseFileName, ageInDays, mailTo, tmpDir, context);
+        return new JobContext(charttypes, dirtypes, measurementsFromDatabase, propertyFileService, ftpClient, ftpBaseDirectory, ftpBaseFileName, ageInDays, mailTo, tmpDir, embryoLogService, context);
     }
     
     protected String getLocalDir(String chartType, String context) {
@@ -140,7 +145,12 @@ public final class JobContext {
         return tmpDir;
     }
 
+    public EmbryoLogService getEmbryoLogService() {
+        return embryoLogService;
+    }
+
     public Context getContext() {
         return context;
     }
+    
 }
