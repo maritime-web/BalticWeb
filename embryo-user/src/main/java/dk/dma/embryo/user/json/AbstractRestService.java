@@ -34,11 +34,15 @@ public abstract class AbstractRestService {
     }
     
     protected Response getResponse(Request request, Object data, int cacheMaxAgeInSeconds) {
+        System.out.println("##### 1");
         EntityTag entityTag = new EntityTag(Integer.toString(data.hashCode()));
         ResponseBuilder builder = request.evaluatePreconditions(entityTag);
+        System.out.println("##### 2");
         if(builder == null) {
             builder = Response.ok(data);
+            System.out.println("##### 3");
         }
+        System.out.println("##### 4");
         
         CacheControlSettings settings;
         if(cacheMaxAgeInSeconds < 1) {
