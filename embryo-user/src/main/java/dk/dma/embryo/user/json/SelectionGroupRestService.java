@@ -31,7 +31,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.user.model.SecuredUser;
@@ -55,7 +54,6 @@ public class SelectionGroupRestService extends AbstractRestService {
     @GZIP
     @Path("/list")
     @Produces("application/json")
-    @NoCache
     public Response list(@Context Request request) {
         
         SecuredUser securedUser = this.subject.getUser();
@@ -118,6 +116,8 @@ public class SelectionGroupRestService extends AbstractRestService {
             result = prime * result + ((name == null) ? 0 : name.hashCode());
             result = prime * result + ((active == null) ? 0 : active.hashCode());
             result = prime * result + ((polygonsAsJson == null) ? 0 : polygonsAsJson.hashCode());
+            
+//            System.out.println("->HASHCODE<- " + result);
             return result;
         }
         
