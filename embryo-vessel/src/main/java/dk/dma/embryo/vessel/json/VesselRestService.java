@@ -103,6 +103,7 @@ public class VesselRestService {
         List<TrackSingleLocation> historicalTrack = new ArrayList<>();
         
         // Call long track if this call times out or get any kind of error call the regular track.
+        /*
         try {
             
             historicalTrack = historicalLongTrackWithTimeout(mmsi);
@@ -112,10 +113,14 @@ public class VesselRestService {
             historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
             logger.info("Historical LONG track timeout or failed but SHORT track called instead with success.");
         } 
+        */
+        
+        // The above statments are kept as comments because LONG tracks are disable because of instability.
+        historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
         
         return historicalTrack;
     }
-
+    /*
     private List<TrackSingleLocation> historicalLongTrackWithTimeout(long mmsi) throws IOException {
         
         HttpParams httpParams = new BasicHttpParams();
@@ -157,7 +162,7 @@ public class VesselRestService {
         httpClient.getConnectionManager().shutdown();
 
         return historicalTrack;
-    }
+    }*/
 
     @GET
     @Path("/list")
