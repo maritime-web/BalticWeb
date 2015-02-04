@@ -52,6 +52,9 @@ public abstract class AbstractRestService {
         builder.cacheControl(cacheControl);
         builder.tag(entityTag);
         Response response = builder.build();
+        
+        logger.info("HTTP STATUS CODE: " + response.getStatus() + " - HASHCODE: " + Integer.toString(data.hashCode()));
+        
         return response;
     }
 
