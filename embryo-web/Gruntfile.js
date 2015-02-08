@@ -271,7 +271,8 @@ module.exports = function (grunt) {
                         'src/main/webapp/img/**/*.gif',
                         '!src/main/webapp/img/front/**/*', // except the 'img/front/' subtree
                         '!src/main/webapp/img/ext/**/*', // except the 'img/front/' subtree
-                        '!src/main/webapp/img/unused/**/*' // except the 'img/front/' subtree
+                        '!src/main/webapp/img/unused/**/*', // except the 'img/front/' subtree
+                        '!**/README.MD'
                     ]
                 },
                 network: "*"
@@ -298,7 +299,8 @@ module.exports = function (grunt) {
                         'src/main/webapp/img/front/*.png',
                         'src/main/webapp/img/front/*.jpg',
                         'src/main/webapp/img/front/*.gif',
-                        'src/main/webapp/img/common/*'
+                        'src/main/webapp/img/common/*',
+                        '!**/README.MD'
                     ]
                 },
                 network: "*"
