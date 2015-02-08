@@ -30,6 +30,7 @@
         </init-param>
     </filter>
 
+    <!--
     <filter>
         <filter-name>ExpiresFilter</filter-name>
         <filter-class>dk.dma.embryo.common.servlet.ExpiresFilter</filter-class>
@@ -39,7 +40,7 @@
         <filter-name>ExpiresFilter</filter-name>
         <url-pattern>/js/ext/*</url-pattern>
     </filter-mapping>
-
+-->
 
     <filter-mapping>
         <filter-name>SetCacheManifestContentTypeFilter</filter-name>
