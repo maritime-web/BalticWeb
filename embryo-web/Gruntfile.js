@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2011 Danish Maritime Authority.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
 var mountFolder = function (connect, dir) {
@@ -133,13 +148,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: '<%= proj.src %>',
-                        src: 'css/ext/{,*/}*.css',
-                        dest: '<%= proj.build %>'
-                    },
-                    {
-                        expand: true,
-                        cwd: '<%= proj.src %>',
-                        src: 'partials/{,*/}*.html',
+                        src: ['{,*/}*.html', 'css/ext/{,*/}*.css'],
                         dest: '<%= proj.build %>'
                     }
                 ]
@@ -186,23 +195,31 @@ module.exports = function (grunt) {
         },
         replace: {
             run: {
-                src: [ '<%= proj.src %>/*.{html,appcache}' ],
+                src: [ '<%= proj.build %>/*.{html,appcache}' ],
                 dest: '<%= proj.build %>/', // destination directory or file
                 replacements: [
                     {
-                        from: 'js/ext/cdn.cloudflare', // string replacement
+                        from: 'js/cached/common/cdn.cloudflare', // string replacement
                         to: '//cdnjs.cloudflare.com/ajax/libs'
                     },
                     {
-                        from: 'js/ext/cdn.googleapis', // string replacement
+                        from: 'js/cached/common/cdn.googleapis', // string replacement
                         to: '//ajax.googleapis.com/ajax/libs'
                     },
                     {
-                        from: 'js/ext/cdn.netdna', // string replacement
+                        from: 'js/cached/front/cdn.googleapis', // string replacement
+                        to: '//ajax.googleapis.com/ajax/libs'
+                    },
+                    {
+                        from: 'js/cached/map/cdn.cloudflare', // string replacement
+                        to: '//cdnjs.cloudflare.com/ajax/libs'
+                    },
+                    {
+                        from: 'js/cached/map/cdn.netdna', // string replacement
                         to: '//netdna.bootstrapcdn.com'
                     },
                     {
-                        from: 'css/ext/cdn.netdna', // string replacement
+                        from: 'css/cached/cdn.netdna', // string replacement
                         to: '//netdna.bootstrapcdn.com'
                     },
                 ]
@@ -234,16 +251,21 @@ module.exports = function (grunt) {
                 basePath: 'src/main/webapp'
             },
             map: {
-                dest: 'target/webapp/map2.appcache',
+                dest: 'target/build/map2.appcache',
                 cache: {
                     literals: [//as is in the "CACHE:" section
                         'map.html',
                         'css/arcticweb-map.css',
+                        'css/arcticweb-map-ext-lib.css',
                         'js/arcticweb-map.js',
-
+                        'css/cached/cdn.netdna/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.2.0'
                     ],
                     patterns: [
-                        'src/main/webapp/partials/*',
+                        'src/main/webapp/css/cached/**',
+                        'src/main/webapp/js/cached/common/**',
+                        'src/main/webapp/js/cached/map/**',
+                        'src/main/webapp/partials/common/*.html',
+                        'src/main/webapp/partials/*.html',
                         'src/main/webapp/img/**/*.png',
                         'src/main/webapp/img/**/*.jpg',
                         'src/main/webapp/img/**/*.gif',
@@ -255,7 +277,7 @@ module.exports = function (grunt) {
                 network: "*"
             },
             front: {
-                dest: 'target/webapp/front.appcache',
+                dest: 'target/build/front.appcache',
                 cache: {
                     literals: [//as is in the "CACHE:" section
                         'index.html',
@@ -263,10 +285,14 @@ module.exports = function (grunt) {
                         'css/arcticweb-front.css',
                         'css/arcticweb-content.css',
                         'js/arcticweb-front.js',
-                        'js/arcticweb-content.js'
+                        'js/arcticweb-content.js',
+                        'css/cached/cdn.netdna/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.2.0'
 
                     ],
                     patterns: [
+                        'src/main/webapp/css/cached/**',
+                        'src/main/webapp/js/cached/common/**',
+                        'src/main/webapp/js/cached/front/**',
                         'src/main/webapp/partials/common/*',
                         'src/main/webapp/partials/front/*',
                         'src/main/webapp/img/front/*.png',
@@ -299,7 +325,7 @@ module.exports = function (grunt) {
                 keepalive: true
             }
 
-        },
+        }
     });
 
     // Load the plugin that provides the "uglify" task.
@@ -332,8 +358,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [ 'karma:continuous' ]);
 
+    //grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'concat', 'usemin',
+    //   'copy:gen2Build', 'copy:toTarget', 'appcache:map', 'appcache:front']);
+
     grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'replace:run', 'concat', 'usemin',
-        'copy:gen2Build', 'copy:toTarget', 'appcache:map', 'appcache:front']);
+        'copy:gen2Build', 'appcache:map', 'appcache:front', 'replace:run', 'copy:toTarget']);
 
     // 'clean:dist',
     // 'useminPrepare',
