@@ -3,33 +3,7 @@ NETWORK:
 *
 CACHE:
 index.html
-css/ext/cdn.netdna/bootstrap/3.1.1/css/bootstrap.min.css
-css/ext/cdn.netdna/bootstrap/3.1.1/fonts/glyphicons-halflings-regular.woff
-css/ext/cdn.netdna/font-awesome/4.2.0/css/font-awesome.min.css
-css/ext/cdn.netdna/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.0.3
 
 
-css/arcticweb-front.css
-
-js/ext/cdn.cloudflare/jquery/1.11.0/jquery.min.js
-js/ext/cdn.netdna/bootstrap/3.1.1/js/bootstrap.min.js
-js/ext/cdn.googleapis/angularjs/1.2.14/angular.js
-js/ext/cdn.googleapis/angularjs/1.2.14/angular-cookies.js
-js/ext/cdn.cloudflare/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js
-
-js/arcticweb-front.js
-
-img/front/iceChart.png
-img/front/weather.png
-img/front/safety.jpg
-img/common/dmi-logo.png
-img/common/dma-logo-h50.png
-img/front/img6.jpg
-img/front/Konsol-h350.jpg
-img/front/ice.jpg
-
-partials/common/menu.html
-partials/common/authentication.html
-partials/common/footer.html
-
-# Version: 39
+# This file has been replaced by front.appcache.
+# Is has only been left to ensure an update of the application no matter when the user used the application for the last time.

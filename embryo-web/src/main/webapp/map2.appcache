@@ -2,7 +2,7 @@ CACHE MANIFEST
 NETWORK:
 *
 CACHE:
-map.html
 
 
-# PROVOKE UPDATE
+# This file has been replaced by map.appcache.
+# Is has only been left to ensure an update of the application no matter when the user used the application for the last time.
