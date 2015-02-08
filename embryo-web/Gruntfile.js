@@ -251,7 +251,7 @@ module.exports = function (grunt) {
                 basePath: 'src/main/webapp'
             },
             map: {
-                dest: 'target/build/map2.appcache',
+                dest: 'target/build/map.appcache',
                 cache: {
                     literals: [//as is in the "CACHE:" section
                         'map.html',
