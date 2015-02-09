@@ -1,9 +1,9 @@
 <div accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
-	<div accordion-group heading="Setup Data Areas"> 
+	<div accordion-group heading="Setup Areas of Interest"> 
 	<!-- style="height: 300px;" -->
-
+		<p>Areas of Interest are user-defined sections where you are interested in seeing AIS data (and, eventually, other data as well). By using predefined areas, you only download what is absolutely necessary, providing a faster and less pricey experience.</p>
+		<p>Have in mind that most of ArcticWeb's AIS data is from Norwegian satellites and may not provide a complete overview.</p> 
 		<div x-ng-controller="SelectAreaController">
-			<h5 id="title">Setup Selection Groups</h5>
 		    <div id="shortdesc">
 		    	<div x-ng-if="alertMessages" class="alert alert-danger">
 					<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
@@ -25,13 +25,15 @@
 									<br>
 									<div>
 										<span class="pull-left">
-											<input type="checkbox" x-ng-model="selectionGroup.active"> &nbsp; <span>{{selectionGroup.getStatusLabel()}}</span></input>
+											<input type="checkbox" x-ng-model="selectionGroup.active" id="sgActive_{{$index}}"> &nbsp; <label for="sgActive_{{$index}}">{{selectionGroup.getStatusLabel()}}</label></input>
 										</span>
 										<span class="pull-right">
-											<button id="buttonEdit" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == false" x-ng-click="editSelectionGroup(selectionGroup)">show</button>
-											<button id="buttonDone" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupDone(selectionGroup)">done</button>
-											<button id="buttonClear" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupClear(selectionGroup)">clear</button>
-											<button id="buttonDelete" type="button" class="btn btn-sm" x-ng-show="selectionGroup.editMode == true" x-ng-click="selectionGroupDelete(selectionGroup)">delete</button>
+											<a id="buttonEdit" href="#" x-ng-show="selectionGroup.editMode == false" x-ng-click="editSelectionGroup($event, selectionGroup)">show</a>
+											<span x-ng-show="selectionGroup.editMode == true">
+												<a id="buttonDone"href="#" x-ng-click="selectionGroupDone($event, selectionGroup)">done</a> /
+												<a id="buttonClear" href="#" x-ng-click="selectionGroupClear($event, selectionGroup)">clear</a> /
+												<a id="buttonDelete" href="#" x-ng-click="selectionGroupDelete($event, selectionGroup)">delete</a>
+											</span>
 										</span>
 										</div>
 									</div>
@@ -42,8 +44,8 @@
 				</div>
 				
 				<span class="pull-right">
-					<button type="button" x-ng-click="createGroup()" x-ng-disabled="alreadyInEditMode()" class="btn btn-sm">New Group</button>
-					<button type="button" x-ng-click="updateSelectionGroups()" x-ng-disabled="alreadyInEditMode()" class="btn btn-primary btn-sm">Save Groups</button>
+					<button type="button" x-ng-click="createGroup()" x-ng-disabled="alreadyInEditMode()" class="btn btn-sm">New Area</button>
+					<button type="button" x-ng-click="updateSelectionGroups()" x-ng-disabled="alreadyInEditMode()" class="btn btn-primary btn-sm">Save Areas</button>
 				</span>
 		    </div>
 		</div>	         		

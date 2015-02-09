@@ -73,7 +73,7 @@
                     },
                     
             		addSelectionGroup : function() {
-            			var newSelectionGroup = new SelectionGroup("New Group");
+            			var newSelectionGroup = new SelectionGroup("New Area");
             			selectionGroups.push(newSelectionGroup);
             			return newSelectionGroup;
             		}

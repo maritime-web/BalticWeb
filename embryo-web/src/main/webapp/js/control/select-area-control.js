@@ -60,7 +60,7 @@ $(function() {
         	
             $scope.createGroup = function(){
             	var newSelectionGroup = SelectAreaService.addSelectionGroup();
-            	$scope.editSelectionGroup(newSelectionGroup);
+            	$scope.editSelectionGroup(null, newSelectionGroup);
             };
             
             $scope.activate = function(){
@@ -83,12 +83,15 @@ $(function() {
             	selectionLayer.printFeaturesToConsole();
             };
             
-            $scope.selectionGroupClear = function(selectionGroup) {
+            $scope.selectionGroupClear = function($event, selectionGroup) {
+            	$event.preventDefault();
             	selectionLayer.clearFeatures();
             	selectionGroup.squares = [];
+            	
             };
             
-            $scope.selectionGroupDelete = function(selectionGroup) {
+            $scope.selectionGroupDelete = function($event, selectionGroup) {
+            	$event.preventDefault();
             	selectionLayer.clearFeatures();
                 selectionLayer.deactivateModify();
 
@@ -101,7 +104,10 @@ $(function() {
             	}
             };
             
-            $scope.editSelectionGroup = function(selectionGroup) {
+            $scope.editSelectionGroup = function($event, selectionGroup) {
+            	if($event) {
+            		$event.preventDefault();
+            	}
             	selectionGroup.editMode = true;
             	selectionLayer.activateModify();
             	
@@ -130,7 +136,8 @@ $(function() {
                 return true; 
             };
                        
-            $scope.selectionGroupDone = function(selectionGroup) {
+            $scope.selectionGroupDone = function($event, selectionGroup) {
+            	$event.preventDefault();
             	$scope.alertMessages = [];
             	if(isSelectionGroupUnique()) {
             	
@@ -141,7 +148,7 @@ $(function() {
             		selectionGroup.editMode = false;
             		selectionLayer.clearFeatures();
             	} else {
-            		$scope.alertMessages = ["The group name chosen is not unique."];
+            		$scope.alertMessages = ["The chosen area name is not unique."];
             	}
             };
             
