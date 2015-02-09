@@ -29,16 +29,32 @@
 
 		</div>
 		<div accordion-group heading="Forecast on route">
-			<table class="table table-condensed" ng-controller="MetocController">
-				<tr x-ng-repeat="route in routes">
-					<td>{{route.name}}</td>
-					<td><span x-ng-if="route.available" class="label label-success">AVAILABLE</span><span
-						x-ng-if="!route.available" class="label label-default">NOT AVAILABLE</span></td>
-					<td><a x-ng-if="route.available" href="#" x-ng-click="toggleShowMetoc($event, route)"><span
-							x-ng-if="shown.name !== route.name">view</span><span x-ng-if="shown.name === route.name">hide</span></a></td>
-				</tr>
-			</table>
-		</div>
+            <div ng-controller="MetocController">
+                <p>
+                    Delivered by <br/> Danish Meteorological Institute (DMI)<br/>
+                </p>
+                <hr/>
+                <p>
+                    Forecasts for wave, wind, current and tidal level values may be obtained and displayed
+                    <span x-ng-if="routes.length > 1">for  your vessels active route  or</span> for routes
+                    from selected vessels.
+                </p>
+
+                <p>See <a href="/docs/#Forecast%20on%20route%20–%20main%20page" target="_blank">manual</a> for usage.
+                </p>
+
+                <table class="table table-condensed">
+                    <tr x-ng-repeat="route in routes">
+                        <td>{{route.name}}</td>
+                        <td><span x-ng-if="route.available" class="label label-success">AVAILABLE</span><span
+                                x-ng-if="!route.available" class="label label-default">NOT AVAILABLE</span></td>
+                        <td><a x-ng-if="route.available" href="#" x-ng-click="toggleShowMetoc($event, route)"><span
+                                x-ng-if="shown.name !== route.name">view</span><span
+                                x-ng-if="shown.name === route.name">hide</span></a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
 		<div accordion-group heading="Selected Forecast {{selected.name ? ' - ' + selected.name : ''}}"
 			is-open="selected.open" e-left-bar-content-change="{{selected.forecast}}">
