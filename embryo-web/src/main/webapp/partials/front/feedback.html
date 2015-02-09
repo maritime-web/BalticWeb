@@ -37,12 +37,12 @@
                                                                      x-ng-pattern="/^([0-9]{8})?$/" max="99999999"/>
             </div>
             <div class="form-group">
-                <label for="rMessage">Message:</label> <textarea class="form-control"
+                <label for="rMessage">Message:</label> <textarea rows="10" class="form-control"
                                                                  placeholder="Message" id="rMessage"
                                                                  x-ng-model="feedback.message" required></textarea>
             </div>
-            <div id="feedbackFormBtns">
-                <button class="btn btn-primary pull-right" x-ng-disabled="!feedbackForm.$valid"
+            <div id="feedbackFormBtns" class="clearfix">
+            <button class="btn btn-primary pull-right" x-ng-disabled="!feedbackForm.$valid"
                         x-ng-click="sendFeedback($event)">Send Feedback
                 </button>
             </div>
