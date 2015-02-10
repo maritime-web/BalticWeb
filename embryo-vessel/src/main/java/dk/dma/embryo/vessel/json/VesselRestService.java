@@ -14,10 +14,8 @@
  */
 package dk.dma.embryo.vessel.json;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,16 +28,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
@@ -47,6 +39,7 @@ import org.slf4j.Logger;
 import com.google.common.collect.Collections2;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.vessel.job.AisDataService;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
 import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
@@ -63,7 +56,7 @@ import dk.dma.embryo.vessel.service.VesselService;
 
 @Path("/vessel")
 @RequestScoped
-public class VesselRestService {
+public class VesselRestService extends AbstractRestService {
     
     @Inject
     private AisViewServiceAllAisData historicalTrackAisViewService;
@@ -98,7 +91,7 @@ public class VesselRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public List<TrackSingleLocation> historicalTrack(@QueryParam("mmsi") long mmsi) {
+    public Response historicalTrack(@Context Request request, @QueryParam("mmsi") long mmsi) {
         
         List<TrackSingleLocation> historicalTrack = new ArrayList<>();
         
@@ -118,7 +111,7 @@ public class VesselRestService {
         // The above statments are kept as comments because LONG tracks are disable because of instability.
         historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
         
-        return historicalTrack;
+        return super.getResponse(request, historicalTrack, NO_MAX_AGE);
     }
     /*
     private List<TrackSingleLocation> historicalLongTrackWithTimeout(long mmsi) throws IOException {
@@ -168,8 +161,7 @@ public class VesselRestService {
     @Path("/list")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<VesselOverview> list() {
+    public Response list(@Context Request request) {
 
         List<Vessel> allArcticWebVessels = vesselDao.getAll(Vessel.class);
 
@@ -201,7 +193,10 @@ public class VesselRestService {
             }
         }
         
-        return result;
+        
+        return super.getResponse(request, result, NO_MAX_AGE);
+        
+//        return result;
     }
 
     private void setIsArcticWebFlagAndAddToResult(List<VesselOverview> result, Vessel vesselFromDatabase, VesselOverview aisVesselOverview) {

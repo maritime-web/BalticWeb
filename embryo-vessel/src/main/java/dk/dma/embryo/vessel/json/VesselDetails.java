@@ -25,6 +25,7 @@ import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
  * @author Jesper Tejlgaard
  */
 public class VesselDetails {
+    
     /** Ship name */
     private Long mmsi;
 
@@ -65,6 +66,25 @@ public class VesselDetails {
         return ReflectionToStringBuilder.toString(this);
     }
 
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((mmsi == null)                   ? 0 : mmsi.hashCode());
+        result = prime * result + ((maritimeId == null)             ? 0 : maritimeId.hashCode());
+        result = prime * result + ((commCapabilities == null)       ? 0 : commCapabilities.hashCode());
+        result = prime * result + ((maxSpeed == null)               ? 0 : maxSpeed.hashCode());
+        result = prime * result + ((grossTon == null)               ? 0 : grossTon.hashCode());
+        result = prime * result + ((maxPersons == null)             ? 0 : maxPersons.hashCode());
+        result = prime * result + ((iceClass == null)               ? 0 : iceClass.hashCode());
+        result = prime * result + ((helipad == null)                ? 0 : helipad.hashCode());
+        result = prime * result + ((additionalInformation == null)  ? 0 : additionalInformation.hashCode());
+        result = prime * result + ((aisVessel == null)              ? 0 : aisVessel.hashCode());
+        
+        return result;
+    }
+    
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////

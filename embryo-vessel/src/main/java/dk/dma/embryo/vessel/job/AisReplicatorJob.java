@@ -136,7 +136,7 @@ public class AisReplicatorJob {
                 if(aisVessel.getMmsi() == null || aisVessel.getLon() == null || aisVessel.getLat() == null) {
                     continue;
                 }
-
+                
                 if(allMaxSpeedsByMmsi != null) {
                     
                     Double maxSpeed = allMaxSpeedsByMmsi.get(aisVessel.getMmsi());
@@ -177,45 +177,7 @@ public class AisReplicatorJob {
                     vesselsInAisCircle.add(aisVessel);
                 }
             }
-
-    /*        
-            int numberOfVesselsWithMaxSpeedZeroOrNull = 0;
-            int numberOfVesselsValid = 0;
-            int numberOfVesselsWithNoSog = 0;
-            int numberOfVesselsWithNoSogAndNotMaxSpeed = 0;
             
-//            for (AisViewServiceAllAisData.Vessel vessel : aisServerAllVessels) {
-            for (AisViewServiceAllAisData.Vessel vessel : vesselsAllowed) {
-                
-                if(vessel.getMmsi() == null || vessel.getLon() == null || vessel.getLat() == null) {
-                    continue;
-                }
-                
-                numberOfVesselsValid++;
-                
-                if(vessel.getMaxSpeed() == null || !(vessel.getMaxSpeed() > 0) ) {
-                    numberOfVesselsWithMaxSpeedZeroOrNull++;
-                }
-                
-                if(vessel.getSog() == null || !(vessel.getSog() > 0)) {
-                    numberOfVesselsWithNoSog++;
-                }
-                
-                if(
-                        (vessel.getSog() == null || !(vessel.getSog() > 0))
-                        &&
-                        (vessel.getMaxSpeed() == null || !(vessel.getMaxSpeed() > 0))
-                   ) {
-                    numberOfVesselsWithNoSogAndNotMaxSpeed++;
-                }
-                
-            }
-            System.out.println("Collection size: " + aisServerAllVessels.size());
-            System.out.println("Number of aisServerAllVessels: " + numberOfVesselsValid);
-            System.out.println("Number of aisServerAllVessels with no Max Speed: " + numberOfVesselsWithMaxSpeedZeroOrNull);
-            System.out.println("Number of aisServerAllVessels with no sog: " + numberOfVesselsWithNoSog);
-            System.out.println("Number of aisServerAllVessels with no Max Speed and no sog: " + numberOfVesselsWithNoSogAndNotMaxSpeed);
-   */         
             logger.info("Vessels in AIS circle: " + vesselsInAisCircle.size());
             logger.info("Vessels on Map : " + vesselsOnMap.size());
             logger.info("Vessels allowed : " + vesselsAllowed.size());

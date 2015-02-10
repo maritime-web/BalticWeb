@@ -105,6 +105,21 @@ public interface AisViewServiceAllAisData {
             this.time = time;
         }
 
+        @Override
+        public int hashCode() {
+
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((cog == null)  ? 0 : cog.hashCode());
+            result = prime * result + ((lat == null)  ? 0 : lat.hashCode());
+            result = prime * result + ((lon == null)  ? 0 : lon.hashCode());
+            result = prime * result + ((sog == null)  ? 0 : sog.hashCode());
+            result = prime * result + ((time == null) ? 0 : time.hashCode());
+
+            return result;
+        }
+
+        @Override
         public String toString() {
             return ReflectionToStringBuilder.toString(this);
         }

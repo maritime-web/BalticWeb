@@ -16,15 +16,34 @@ package dk.dma.embryo.vessel.json;
 
 
 public class VesselOverview {
-    private double angle;
-    private double x;
-    private double y;
+    
+    private Double angle;
+    private Double x;
+    private Double y;
     private String name;
     private String type;
-    private long mmsi;
+    private Long mmsi;
     private String callSign;
-    private boolean moored;
-    private boolean inAW;
+    private Boolean moored;
+    private Boolean inAW;
+    
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((angle == null)      ? 0 : angle.hashCode());
+        result = prime * result + ((x == null)          ? 0 : x.hashCode());
+        result = prime * result + ((y == null)          ? 0 : y.hashCode());
+        result = prime * result + ((name == null)       ? 0 : name.hashCode());
+        result = prime * result + ((type == null)       ? 0 : type.hashCode());
+        result = prime * result + ((mmsi == null)       ? 0 : mmsi.hashCode());
+        result = prime * result + ((callSign == null)   ? 0 : callSign.hashCode());
+        result = prime * result + ((moored == null)     ? 0 : moored.hashCode());
+        result = prime * result + ((inAW == null)       ? 0 : inAW.hashCode());
+        
+        return result;
+    }
     
     /**
      * The maximum speed over ground recorded from Historical track of the vessel

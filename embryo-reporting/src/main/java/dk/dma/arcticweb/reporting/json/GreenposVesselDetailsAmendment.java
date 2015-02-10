@@ -43,7 +43,7 @@ public class GreenposVesselDetailsAmendment implements Serializable {
     @AroundInvoke
     public Object amendDetails(InvocationContext invocationContext) throws Exception {
         
-        logger.debug("amendDetails");
+        logger.info("amendDetails");
         
         VesselDetails result = (VesselDetails) invocationContext.proceed();
         GreenposSearch s = new GreenposSearch(null, result.getMmsi(), null, null, null, 0, 1);

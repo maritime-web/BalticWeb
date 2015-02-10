@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.user.json;
+package dk.dma.embryo.common.json;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.CacheControl;
@@ -23,16 +23,55 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.slf4j.Logger;
 
+/* Copyright (c) 2011 Danish Maritime Authority.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+/**
+ * The Class AbstractRestService.
+ *
+ * @author ThomasBerg
+ */
 public abstract class AbstractRestService {
+    
+    
+    protected final int NO_MAX_AGE = 0;
 
+    /** The logger. */
     @Inject
     private Logger logger;
     
+    /**
+     * The Enum CacheControlSettings.
+     */
     protected enum CacheControlSettings {
+        
+        /** The maxage include. */
         MAXAGE_INCLUDE,
+        
+        /** The maxage default. */
         MAXAGE_DEFAULT
     }
     
+    
+    /**
+     * Gets the response.
+     *
+     * @param request the request
+     * @param data the data
+     * @param cacheMaxAgeInSeconds the cache max age in seconds
+     * @return the response
+     */
     protected Response getResponse(Request request, Object data, int cacheMaxAgeInSeconds) {
         CacheControlSettings settings;
         if(cacheMaxAgeInSeconds < 1) {
@@ -58,6 +97,13 @@ public abstract class AbstractRestService {
         return response;
     }
 
+    /**
+     * Gets the cache control.
+     *
+     * @param settings the settings
+     * @param ageInSeconds the age in seconds
+     * @return the cache control
+     */
     protected CacheControl getCacheControl(CacheControlSettings settings, int ageInSeconds) {
         CacheControl cc = new CacheControl();
         // If resource is younger than max age, then the browser will always use cache version. 

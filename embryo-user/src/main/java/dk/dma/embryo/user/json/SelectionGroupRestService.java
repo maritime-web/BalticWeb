@@ -33,6 +33,7 @@ import javax.ws.rs.core.Response.Status;
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.SelectionGroup;
 import dk.dma.embryo.user.security.Subject;
@@ -72,7 +73,7 @@ public class SelectionGroupRestService extends AbstractRestService {
             result.add(groupDTO);
         }
         
-        return super.getResponse(request, result, 1);
+        return super.getResponse(request, result, NO_MAX_AGE);
     }
 
     @POST
