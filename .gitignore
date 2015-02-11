@@ -7,5 +7,7 @@
 /.project
 /target
 /.metadata
+.idea
+*.iml
 
 embryo-web/.buildpath
