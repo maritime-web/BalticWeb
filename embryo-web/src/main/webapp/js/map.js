@@ -216,8 +216,13 @@ $(function() {
 
             map.zoomToExtent(extent);
         },
-        zoomToCoords : function(bounds) {
-        	map.zoomToExtent(bounds);
+        zoomToCoords : function(minPoint, maxPoint) {
+        	if(!(map.getExtent().contains(minPoint) && map.getExtent().contains(maxPoint))) {
+        		var b = new OpenLayers.Bounds();
+        		b.extend(minPoint);
+        		b.extend(maxPoint);
+        		map.zoomToExtent(b);
+        	}
         },
         setCenter : function(longitude, latitude, zoom) {
             var pos = transformPosition(longitude, latitude);
