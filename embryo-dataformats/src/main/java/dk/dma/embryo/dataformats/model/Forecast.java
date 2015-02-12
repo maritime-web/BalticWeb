@@ -113,7 +113,9 @@ public class Forecast extends BaseEntity<Long> {
     }
     
     public void invalidate() {
-        data = null;
+        if(data != null) {
+            data.clear();
+        }
         size = -1;
     }
 
