@@ -14,10 +14,10 @@
  */
 package dk.dma.embryo.dataformats.persistence;
 
+import java.util.List;
+
 import dk.dma.embryo.common.persistence.Dao;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
-
-import java.util.List;
 
 public interface ShapeFileMeasurementDao extends Dao {
     ShapeFileMeasurement lookup(String fn, String chartType, String provider);

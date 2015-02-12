@@ -14,6 +14,16 @@
  */
 package dk.dma.embryo.dataformats.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.dataformats.model.IceObservation;
@@ -22,15 +32,6 @@ import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
 import dk.dma.embryo.dataformats.transform.Shape2IceListTransformer;
 import dk.dma.embryo.dataformats.transform.Shape2IceTransformerFactory;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

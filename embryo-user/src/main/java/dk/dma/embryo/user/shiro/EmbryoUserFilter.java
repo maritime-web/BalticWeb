@@ -23,9 +23,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.web.filter.authc.UserFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.dma.embryo.user.shiro.Error.AuthCode;
 

@@ -36,19 +36,11 @@ public class ForecastData extends BaseEntity<Long> {
     }
 
     ForecastData(String json) {
-        if(json == null) {
-            this.json = "";
-        } else {
-            this.json = json;
-        }
+        this.json = json;
     }
 
     public String getJson() {
         return json;
-    }
-    
-    public void clear() {
-        json = "";
     }
 
 }

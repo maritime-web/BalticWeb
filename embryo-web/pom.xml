@@ -138,12 +138,12 @@
 			<artifactId>resteasy-jaxrs</artifactId>
 		</dependency>
 
-		<!-- WILDFLY
+		<!-- WILDFLY -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson2-provider</artifactId>
 		</dependency>
-		WILDFLY -->
+		
 		
 		<dependency>
 			<groupId>joda-time</groupId>

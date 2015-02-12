@@ -20,8 +20,9 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.client.ProxyFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.dma.embryo.common.configuration.Property;
 

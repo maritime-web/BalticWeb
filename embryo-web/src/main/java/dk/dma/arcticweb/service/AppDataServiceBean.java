@@ -14,6 +14,34 @@
  */
 package dk.dma.arcticweb.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+
 import dk.dma.arcticweb.reporting.model.GreenPosDeviationReport;
 import dk.dma.arcticweb.reporting.model.GreenPosFinalReport;
 import dk.dma.arcticweb.reporting.model.GreenPosPositionReport;
@@ -39,31 +67,6 @@ import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
 import dk.dma.embryo.vessel.persistence.VesselDao;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.slf4j.Logger;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 @Startup
@@ -237,7 +240,7 @@ public class AppDataServiceBean {
         }
         InputStream berthStream = getClass().getResourceAsStream("/berths/berths_no.json");
         try {
-            JsonParser jsonParser = new JsonFactory().createJsonParser(berthStream);
+            JsonParser jsonParser = new JsonFactory().createParser(berthStream);
             String currentName = null;
             double currentLat = 0;
             double currentLon = 0;

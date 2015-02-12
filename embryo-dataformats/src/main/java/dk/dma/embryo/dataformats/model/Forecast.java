@@ -25,7 +25,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import dk.dma.embryo.common.persistence.BaseEntity;
 import dk.dma.embryo.dataformats.model.ForecastType.Type;
@@ -113,9 +113,7 @@ public class Forecast extends BaseEntity<Long> {
     }
     
     public void invalidate() {
-        if(data != null) {
-            data.clear();
-        }
+        data = null;
         size = -1;
     }
 

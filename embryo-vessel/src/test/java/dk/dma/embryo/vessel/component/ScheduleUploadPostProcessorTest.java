@@ -14,12 +14,14 @@
  */
 package dk.dma.embryo.vessel.component;
 
-import dk.dma.embryo.vessel.json.ScheduleResponse;
-import dk.dma.embryo.vessel.json.Voyage;
-import dk.dma.embryo.vessel.model.Berth;
-import dk.dma.embryo.vessel.model.Vessel;
-import dk.dma.embryo.vessel.persistence.GeographicDao;
-import dk.dma.embryo.vessel.persistence.ScheduleDao;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import org.jglue.cdiunit.CdiRunner;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -32,12 +34,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.unitils.reflectionassert.ReflectionAssert;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import dk.dma.embryo.vessel.json.ScheduleResponse;
+import dk.dma.embryo.vessel.json.Voyage;
+import dk.dma.embryo.vessel.model.Berth;
+import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.persistence.GeographicDao;
+import dk.dma.embryo.vessel.persistence.ScheduleDao;
 
 /**
  * @author Jesper Tejlgaard
