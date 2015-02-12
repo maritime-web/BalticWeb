@@ -9,5 +9,6 @@
 /.metadata
 .idea
 *.iml
+arcticweb.properties
 
 embryo-web/.buildpath
