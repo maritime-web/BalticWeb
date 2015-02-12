@@ -24,26 +24,65 @@ import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
 
+/**
+ * The Interface VesselDao.
+ */
 @Local
 public interface VesselDao extends Dao {
 
     /**
-     * 
-     * @param sailor
-     * @return
+     * Gets the vessel by callsign.
+     *
+     * @param vessel callsign
+     * @return the vessel by callsign
      */
-
     Vessel getVesselByCallsign(String callsign);
 
+    /**
+     * Gets the vessel.
+     *
+     * @param vessel mmsi
+     * @return the vessel
+     */
     Vessel getVessel(Long mmsi);
     
+    /**
+     * Gets the vessels by a list of MMSI numbers.
+     *
+     * @param List of MMSI numbers
+     * @return all matching vessels
+     */
     Map<Long, Vessel> getVessels(List<Long> mmsiNumbers);
     
+    /**
+     * Gets the active route by MMSI number.
+     *
+     * @param vessel MMSI
+     * @return the active route
+     */
     Route getActiveRoute(Long mmsi);
 
+    /**
+     * Gets the route id by enav id.
+     *
+     * @param enavId
+     * @return the route id
+     */
     Long getRouteId(String enavId);
 
+    /**
+     * Gets the route by enav id.
+     *
+     * @param enav id
+     * @return the route by enav id
+     */
     Route getRouteByEnavId(String enavId);
 
+    /**
+     * Gets the voyage by enav id.
+     *
+     * @param enav id
+     * @return the voyage by enav id
+     */
     Voyage getVoyageByEnavId(String enavId);
 }

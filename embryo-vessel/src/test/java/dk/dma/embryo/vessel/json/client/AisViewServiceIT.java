@@ -51,7 +51,7 @@ public class AisViewServiceIT {
     private TimerService service;
 
     @Inject
-    AisViewServiceAllAisData aisViewServiceAllAisData;
+    private AisViewServiceAllAisData aisViewServiceAllAisData;
 
     @Inject
     @Property("dk.dma.embryo.restclients.fullAisViewServiceInclNorwegianDataUrl")
@@ -60,8 +60,40 @@ public class AisViewServiceIT {
     @Test
     public void test() {
 
-        List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H,
-                AisViewServiceAllAisData.LOOK_BACK_PT24H);
+        List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
+        
+        System.out.println("Full list: " + vesselList.size());
+    }
+    
+    @Test
+    public void testVesselTypes() {
+
+        List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
+        
+        List<String> shipTypes = new ArrayList<String>();
+        for (AisViewServiceAllAisData.Vessel vessel : vesselList) {
+            
+            String shipType = vessel.getVesselType();
+            
+            boolean exists = false;
+            for (String shipTypeInList : shipTypes) {
+                if(shipType != null && shipTypeInList.equals(shipType)) {
+                    exists = true;
+                    break;
+                }
+            }
+            if(shipType != null && !exists) {
+                
+                shipTypes.add(shipType);
+            }
+        }
+        
+        System.out.println("Sker der noget her?");
+        
+        for (String shipType : shipTypes) {
+            System.out.println("Type: " + shipType);
+        }
+        
         System.out.println("Full list: " + vesselList.size());
     }
 
