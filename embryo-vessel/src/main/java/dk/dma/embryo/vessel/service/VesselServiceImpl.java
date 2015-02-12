@@ -21,31 +21,40 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 
+/**
+ * The Class VesselServiceImpl.
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class VesselServiceImpl implements VesselService {
 
+    /** The vessel repository. */
     @Inject
     private VesselDao vesselRepository;
 
-    @Inject
-    private Logger logger;
-
+    /**
+     * Instantiates a new vessel service impl.
+     */
     public VesselServiceImpl() {
     }
 
+    /**
+     * Instantiates a new vessel service impl.
+     *
+     * @param vesselRepository the vessel repository
+     */
     public VesselServiceImpl(VesselDao vesselRepository) {
         this.vesselRepository = vesselRepository;
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.service.VesselService#save(dk.dma.embryo.vessel.model.Vessel)
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-//    @Interceptors(VesselModifierInterceptor.class)
     public void save(Vessel vessel) {
         Vessel managed = vesselRepository.getVessel(vessel.getMmsi());
 
@@ -65,11 +74,17 @@ public class VesselServiceImpl implements VesselService {
         }
     }
     
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.service.VesselService#getVessel(java.lang.Long)
+     */
     @Override
     public Vessel getVessel(Long mmsi) {
         return vesselRepository.getVessel(mmsi);
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.service.VesselService#getAll()
+     */
     @Override
     public List<Vessel> getAll() {
         return vesselRepository.getAll(Vessel.class);

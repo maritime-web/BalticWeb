@@ -23,18 +23,33 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+/**
+ * The Class DaoImpl.
+ */
 public abstract class DaoImpl implements Dao {
 
+    /** The Entity Manager. */
     @Inject
     protected EntityManager em;
 
+    /**
+     * Instantiates a new dao impl.
+     */
     protected DaoImpl() {
     }
 
+    /**
+     * Instantiates a new dao impl.
+     *
+     * @param entityManager the entity manager
+     */
     protected DaoImpl(EntityManager entityManager) {
         this.em = entityManager;
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.common.persistence.Dao#getByPrimaryKey(java.lang.Class, java.lang.Object)
+     */
     @Override
     public <E extends IEntity<?>> E getByPrimaryKey(Class<E> clazz, Object id) {
         try {
@@ -44,11 +59,17 @@ public abstract class DaoImpl implements Dao {
         }
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.common.persistence.Dao#remove(dk.dma.embryo.common.persistence.IEntity)
+     */
     @Override
     public void remove(IEntity<?> entity) {
         em.remove(em.merge(entity));
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.common.persistence.Dao#saveEntity(dk.dma.embryo.common.persistence.IEntity)
+     */
     @Override
     public <E extends IEntity<?>> E saveEntity(E entity) {
         if (entity.isPersisted()) {
@@ -62,6 +83,9 @@ public abstract class DaoImpl implements Dao {
         return entity;
     }
     
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.common.persistence.Dao#saveEntityWithFlush(dk.dma.embryo.common.persistence.IEntity)
+     */
     @Override
     public <E extends IEntity<?>> E saveEntityWithFlush(E entity) {
         if (entity.isPersisted()) {
@@ -77,10 +101,20 @@ public abstract class DaoImpl implements Dao {
     }
 
 
+    /**
+     * Gets the single or null.
+     *
+     * @param <T> the generic type
+     * @param list the list
+     * @return the single or null
+     */
     public static <T> T getSingleOrNull(List<T> list) {
         return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.common.persistence.Dao#getAll(java.lang.Class)
+     */
     public <E extends IEntity<?>> List<E> getAll(Class<E> entityType) {
         em.clear();
 
@@ -90,6 +124,9 @@ public abstract class DaoImpl implements Dao {
         return em.createQuery(cq).getResultList();
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.common.persistence.Dao#count(java.lang.Class)
+     */
     public <E extends IEntity<?>> Long count(Class<E> entityType) {
         em.clear();
 
@@ -100,6 +137,9 @@ public abstract class DaoImpl implements Dao {
         return em.createQuery(cq).getSingleResult();
     }
     
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.common.persistence.Dao#flush()
+     */
     public void flush() {
       em.flush();
     }

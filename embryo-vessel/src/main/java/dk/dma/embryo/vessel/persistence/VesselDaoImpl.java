@@ -27,17 +27,31 @@ import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
 
+/**
+ * The Class VesselDaoImpl.
+ */
 @Stateless
 public class VesselDaoImpl extends DaoImpl implements VesselDao {
 
+    /**
+     * Instantiates a new vessel dao impl.
+     */
     public VesselDaoImpl() {
         super();
     }
 
+    /**
+     * Instantiates a new vessel dao impl.
+     *
+     * @param entity manager
+     */
     public VesselDaoImpl(EntityManager entityManager) {
         super(entityManager);
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.persistence.VesselDao#getVessel(java.lang.Long)
+     */
     @Override
     public Vessel getVessel(Long mmsi) {
         TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getByMmsi", Vessel.class);
@@ -48,6 +62,9 @@ public class VesselDaoImpl extends DaoImpl implements VesselDao {
         return getSingleOrNull(result);
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.persistence.VesselDao#getVessels(java.util.List)
+     */
     @Override
     public Map<Long, Vessel> getVessels(List<Long> mmsiNumbers) {
         TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getMmsiList", Vessel.class);
@@ -62,6 +79,9 @@ public class VesselDaoImpl extends DaoImpl implements VesselDao {
         return mapResult;
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.persistence.VesselDao#getVesselByCallsign(java.lang.String)
+     */
     @Override
     public Vessel getVesselByCallsign(String callsign) {
         TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getByCallsign", Vessel.class);
@@ -72,6 +92,9 @@ public class VesselDaoImpl extends DaoImpl implements VesselDao {
         return getSingleOrNull(result);
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.persistence.VesselDao#getActiveRoute(java.lang.Long)
+     */
     @Override
     public Route getActiveRoute(Long mmsi) {
         TypedQuery<Vessel> query = em.createNamedQuery("Vessel:getByMmsi", Vessel.class);
@@ -88,6 +111,9 @@ public class VesselDaoImpl extends DaoImpl implements VesselDao {
         return vessel.getActiveVoyage().getRoute();
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.persistence.VesselDao#getRouteId(java.lang.String)
+     */
     @Override
     public Long getRouteId(String enavId) {
         TypedQuery<Long> query = em.createNamedQuery("Route:getId", Long.class);
@@ -98,6 +124,9 @@ public class VesselDaoImpl extends DaoImpl implements VesselDao {
         return getSingleOrNull(result);
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.persistence.VesselDao#getRouteByEnavId(java.lang.String)
+     */
     @Override
     public Route getRouteByEnavId(String enavId) {
         TypedQuery<Route> query = em.createNamedQuery("Route:getByEnavId", Route.class);
@@ -108,6 +137,9 @@ public class VesselDaoImpl extends DaoImpl implements VesselDao {
         return getSingleOrNull(result);
     }
 
+    /* (non-Javadoc)
+     * @see dk.dma.embryo.vessel.persistence.VesselDao#getVoyageByEnavId(java.lang.String)
+     */
     @Override
     public Voyage getVoyageByEnavId(String enavId) {
         TypedQuery<Voyage> query = em.createNamedQuery("Voyage:getByEnavId", Voyage.class);

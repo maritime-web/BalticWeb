@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -36,7 +35,6 @@ import org.slf4j.Logger;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.MaxSpeed;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 
@@ -59,10 +57,6 @@ public class AisReplicatorJob {
     @Property(value = "embryo.vessel.aisjob.enabled")
     @Inject
     private String enabled;
-    
-    @Property(value = "embryo.vessel.maxspeedjob.enabled")
-    @Inject
-    private String maxSpeedEnabled;
     
     @Inject
     @Property("embryo.vessel.aisjob.cron")
@@ -119,10 +113,8 @@ public class AisReplicatorJob {
             
             // Get all vessels from ArcticWeb database
             List<Vessel> articWebVesselsAsList = vesselRepository.getAll(Vessel.class);
-
-            logger.info("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
             
-            Map<Long, Double> allMaxSpeedsByMmsi = mapifyMaxSpeeds(getAllMaxSpeedsFromAisServerIfEnabled());
+            logger.info("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
             
             Map<Long, Vessel> awVesselsAsMap = this.updateArcticWebVesselInDatabase(aisServerAllVessels, articWebVesselsAsList);
 
@@ -137,15 +129,8 @@ public class AisReplicatorJob {
                     continue;
                 }
                 
-                if(allMaxSpeedsByMmsi != null) {
-                    
-                    Double maxSpeed = allMaxSpeedsByMmsi.get(aisVessel.getMmsi());
-                    
-                    Double maxSpeedCalculated = AisReplicatorJobDataUtil.getMaxSpeed(maxSpeed, aisVessel.getSog());
-
-                    aisVessel.setMaxSpeed(maxSpeedCalculated);
-                }
-
+                this.setMaxSpeedOnAisVessel(aisVessel, awVesselsAsMap);
+                
                 double longitude = aisVessel.getLon();
                 double latitude = aisVessel.getLat();
 
@@ -197,50 +182,50 @@ public class AisReplicatorJob {
             aisDataService.setVesselsOnMap(vesselsOnMap);
 
             embryoLogService.info("AIS data replicated. Vessel count: " + vesselsInAisCircle.size());
+        
         } catch (Throwable t) {
             logger.error("AIS Replication Error", t);
             embryoLogService.error("" + t, t);
         }
     }
 
-    private List<MaxSpeed> getAllMaxSpeedsFromAisServerIfEnabled() {
+    private void setMaxSpeedOnAisVessel(AisViewServiceAllAisData.Vessel aisVessel, Map<Long, Vessel> awVesselsAsMap) {
         
-        List<MaxSpeed> allMaxSpeeds = null;
-        if (maxSpeedEnabled != null && "true".equals(maxSpeedEnabled.trim().toLowerCase()) ) {
+        boolean isMaxSpeedSetOnAisVessel = false;
+        
+        // If exists set Max Speed from ArcticWeb vessel in the database
+        Vessel awVesselFromDatabase = awVesselsAsMap.get(aisVessel.getMmsi());
+        if(awVesselFromDatabase != null && awVesselFromDatabase.getMaxSpeed() != null && awVesselFromDatabase.getMaxSpeed().doubleValue() > 0) {
+            aisVessel.setMaxSpeed(awVesselFromDatabase.getMaxSpeed().doubleValue());
+            isMaxSpeedSetOnAisVessel = true;
             
-            allMaxSpeeds = this.aisViewWithNorwegianData.allMaxSpeeds();
-            
-            final String maxSpeedEnabledText = String.format("Max Speed is enabled and %s is recieved from AIS server.", allMaxSpeeds.size());
-            logger.info(maxSpeedEnabledText);
-            embryoLogService.info(maxSpeedEnabledText);
-        } else {
-            
-            final String maxSpeedNotEnabledText = "Max Speed is NOT enabled.";
-            logger.info(maxSpeedNotEnabledText);
-            embryoLogService.info(maxSpeedNotEnabledText);
+//            System.out.println(" Her 1");
         }
         
-        return allMaxSpeeds;
-    }
-
-    private Map<Long, Double> mapifyMaxSpeeds(List<MaxSpeed> allMaxSpeeds) {
-        
-        Map<Long, Double> maxSpeedsAsMap = null;
-        
-        if(allMaxSpeeds != null) {
-            
-            maxSpeedsAsMap = new ConcurrentHashMap<Long, Double>();
-            
-            for (MaxSpeed maxSpeed : allMaxSpeeds) {
-                
-                maxSpeedsAsMap.put(maxSpeed.getMmsi(), maxSpeed.getMaxSpeed());
+        // If not already set from ArcticWeb vessel in database -> set it vessel type
+        if(!isMaxSpeedSetOnAisVessel && aisVessel.getVesselType() != null) {
+            Double maxSpeedByVesselType = MaxSpeedByShipTypeMapper.mapAisShipTypeToMaxSpeed(aisVessel.getVesselType());
+            if(maxSpeedByVesselType > 0.0) {
+                aisVessel.setMaxSpeed(maxSpeedByVesselType);
+                isMaxSpeedSetOnAisVessel = true;
+//                System.out.println(" Her 2");
             }
         }
         
-        return maxSpeedsAsMap;
+        // If not already set from ArcticWeb vessel in database or from vessel type -> set sog 
+        if(!isMaxSpeedSetOnAisVessel && aisVessel.getSog() != null) {
+            aisVessel.setMaxSpeed(aisVessel.getSog());
+            isMaxSpeedSetOnAisVessel = true;
+//            System.out.println(" Her 3");
+        }
         
+        // Fallback - set 0.0
+        if(!isMaxSpeedSetOnAisVessel) {
+            aisVessel.setMaxSpeed(0.0);
+//            System.out.println(" Her 4");
+        }
     }
-    
+
     private Map<Long, Vessel> updateArcticWebVesselInDatabase(
             List<AisViewServiceAllAisData.Vessel> result,
             List<Vessel> articWebVesselsAsList) {

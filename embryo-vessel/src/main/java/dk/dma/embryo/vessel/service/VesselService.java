@@ -20,12 +20,31 @@ import javax.ejb.Local;
 
 import dk.dma.embryo.vessel.model.Vessel;
 
+/**
+ * The Interface VesselService.
+ */
 @Local
 public interface VesselService {
 
+    /**
+     * Saves the vessel in the database.
+     *
+     * @param vessel the vessel
+     */
     void save(Vessel vessel);
 
+    /**
+     * Gets the vessel by MMSI number.
+     *
+     * @param mmsi the mmsi
+     * @return the vessel
+     */
     Vessel getVessel(Long mmsi);
 
+    /** 
+     * Gets all vessels from the database.
+     *
+     * @return all vessels
+     */
     List<Vessel> getAll();
 }

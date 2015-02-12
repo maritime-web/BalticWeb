@@ -17,30 +17,35 @@ package dk.dma.embryo.vessel.json;
 
 public class VesselOverview {
     
-    private Double angle;
-    private Double x;
-    private Double y;
+    private double angle;
+    private double x;
+    private double y;
     private String name;
     private String type;
-    private Long mmsi;
+    private long mmsi;
     private String callSign;
-    private Boolean moored;
-    private Boolean inAW;
-    
+    private boolean moored;
+    private boolean inAW;
+  
     @Override
     public int hashCode() {
-
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((angle == null)      ? 0 : angle.hashCode());
-        result = prime * result + ((x == null)          ? 0 : x.hashCode());
-        result = prime * result + ((y == null)          ? 0 : y.hashCode());
-        result = prime * result + ((name == null)       ? 0 : name.hashCode());
-        result = prime * result + ((type == null)       ? 0 : type.hashCode());
-        result = prime * result + ((mmsi == null)       ? 0 : mmsi.hashCode());
-        result = prime * result + ((callSign == null)   ? 0 : callSign.hashCode());
-        result = prime * result + ((moored == null)     ? 0 : moored.hashCode());
-        result = prime * result + ((inAW == null)       ? 0 : inAW.hashCode());
+        
+        long temp;
+        temp = Double.doubleToLongBits(angle);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + ((callSign == null) ? 0 : callSign.hashCode());
+        result = prime * result + (inAW ? 1231 : 1237);
+        result = prime * result + (int) (mmsi ^ (mmsi >>> 32));
+        result = prime * result + (moored ? 1231 : 1237);
+        result = prime * result + ((msog == null) ? 0 : msog.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        temp = Double.doubleToLongBits(x);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(y);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
         
         return result;
     }
