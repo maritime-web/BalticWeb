@@ -258,7 +258,8 @@ module.exports = function (grunt) {
                         'css/arcticweb-map.css',
                         'css/arcticweb-map-ext-lib.css',
                         'js/arcticweb-map.js',
-                        'css/cached/cdn.netdna/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.2.0'
+                        'css/cached/cdn.netdna/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0',
+                        'rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2'
                     ],
                     patterns: [
                         'src/main/webapp/css/cached/**',
@@ -287,7 +288,8 @@ module.exports = function (grunt) {
                         'css/arcticweb-content.css',
                         'js/arcticweb-front.js',
                         'js/arcticweb-content.js',
-                        'css/cached/cdn.netdna/font-awesome/4.2.0/fonts/fontawesome-webfont.woff?v=4.2.0'
+                        'css/cached/cdn.netdna/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0',
+                        'rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2'
 
                     ],
                     patterns: [
