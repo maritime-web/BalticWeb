@@ -38,7 +38,7 @@ public class GeoRefImageImportErrorMail extends Mail<GeoRefImageImportErrorMail>
         //environment.put("Message", builder.toString());
         environment.put("Error", exception.getMessage());
 
-        setTo(propertyFileService.getProperty("embryo.tiles." + provider + ".notification.email"));
+        setTo(propertyFileService.getProperty("embryo.tiles.providers." + provider + ".notification.email"));
         setFrom(propertyFileService.getProperty("embryo.notification.mail.from"));
 
         return this;
