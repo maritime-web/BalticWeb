@@ -14,14 +14,15 @@
  */
 package dk.dma.embryo.dataformats.model;
 
-import dk.dma.embryo.common.persistence.BaseEntity;
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
-
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+
+import dk.dma.embryo.common.persistence.BaseEntity;
 
 @NamedQueries({
         @NamedQuery(name = "ShapeFileMeasurement:lookup", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.fileName = :fileName AND m.provider = :provider AND m.chartType = :chartType"),

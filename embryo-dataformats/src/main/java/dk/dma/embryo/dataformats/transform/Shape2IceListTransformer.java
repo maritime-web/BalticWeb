@@ -14,11 +14,11 @@
  */
 package dk.dma.embryo.dataformats.transform;
 
-import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import dk.dma.embryo.dataformats.model.IceObservation;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
 /**
  * @author Jesper Tejlgaard

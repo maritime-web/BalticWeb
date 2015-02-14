@@ -14,19 +14,21 @@
  */
 package dk.dma.embryo.dataformats.json;
 
-import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.model.Provider;
-import dk.dma.embryo.dataformats.service.IceObservationService;
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import java.util.List;
+
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.slf4j.Logger;
+
+import dk.dma.embryo.dataformats.model.IceObservation;
+import dk.dma.embryo.dataformats.model.Provider;
+import dk.dma.embryo.dataformats.service.IceObservationService;
 
 @Path("/ice")
 public class IceObservationRestService {

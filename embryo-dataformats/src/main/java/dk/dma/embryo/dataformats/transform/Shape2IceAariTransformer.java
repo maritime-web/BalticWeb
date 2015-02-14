@@ -14,17 +14,19 @@
  */
 package dk.dma.embryo.dataformats.transform;
 
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import java.util.Date;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
-import java.util.Map;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.dataformats.model.IceObservation;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
 /**
  * @author Jesper Tejlgaard

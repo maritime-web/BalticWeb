@@ -88,10 +88,7 @@ function EmbryoLayer() {
     };
     
     this.zoomToCoords = function(minPoint, maxPoint) {
-    	var b = new OpenLayers.Bounds();
-		b.extend(minPoint);
-		b.extend(maxPoint);
-		this.map.zoomToCoords(b);
+		this.map.zoomToCoords(minPoint, maxPoint);
     };
 
     this.selectListeners = [];

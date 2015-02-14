@@ -25,7 +25,7 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.dma.embryo.dataformats.netcdf.NetCDFParser;
 import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;

@@ -27,11 +27,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.dma.embryo.common.configuration.PropertiesReader;
 import dk.dma.embryo.common.configuration.PropertyFileService;
