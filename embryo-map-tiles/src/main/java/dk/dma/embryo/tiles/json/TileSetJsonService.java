@@ -22,61 +22,37 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.tiles.model.TileSet;
 import dk.dma.embryo.tiles.service.TileSetDao;
 
 @Path("/tileset")
 @Named
-public class TileSetJsonService {
+public class TileSetJsonService extends AbstractRestService {
 
     @Inject
-    Logger logger;
+    private Logger logger;
 
     @Inject
-    TileSetDao tileSetDao;
-
-    private CacheControl getCacheControl() {
-        CacheControl cc = new CacheControl();
-        // 15 minutes
-        cc.setMaxAge(60 * 15);
-        //cc.setMaxAge(60);
-        cc.setPrivate(false);
-        cc.setNoTransform(false);
-        return cc;
-    }
+    private TileSetDao tileSetDao;
 
     @GET
     @Path("/list/{type}")
     @Produces("application/json")
     @GZIP
     public Response filter(@PathParam("type") String type, @Context Request request) {
-        logger.info("filter()");
+        logger.info("filter({})", type);
 
         List<TileSet> tileSets = tileSetDao.listByTypeAndStatus(type, TileSet.Status.SUCCESS);
         List<JsonTileSet> result = TileSet.toJsonModel(tileSets);
 
-        EntityTag tag = EntityTag.valueOf(Integer.toString(result.hashCode()));
-        ResponseBuilder builder = request.evaluatePreconditions(tag);
-
-        // cached resource did change -> serve updated content
-        if (builder == null) {
-            builder = Response.ok(result);
-        }
-        builder.tag(tag);
-        CacheControl cc = getCacheControl();
-        builder.cacheControl(cc);
-        logger.info("filter() : " + result);
-        return builder.build();
+        return super.getResponse(request, result, MAX_AGE_15_MINUTES);
     }
-
 }
