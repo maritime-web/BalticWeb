@@ -49,9 +49,13 @@ public class GreenposVesselDetailsAmendment implements Serializable {
         Response serverReponse = (Response)invocationContext.proceed();
         VesselDetails result = (VesselDetails) serverReponse.getEntity();
         
-        GreenposSearch s = new GreenposSearch(null, result.getMmsi(), null, null, null, 0, 1);
-        boolean greenpos = greenposService.findReports(s).size() > 0;
-        result.getAdditionalInformation().put("greenpos", greenpos);
+        if(result != null) {
+            
+            Long mmsi = result.getMmsi() != null ? result.getMmsi() : result.getAisVessel().getMmsi();
+            GreenposSearch s = new GreenposSearch(null, mmsi, null, null, null, 0, 1);
+            boolean greenpos = greenposService.findReports(s).size() > 0;
+            result.getAdditionalInformation().put("greenpos", greenpos);
+        }
 
         return serverReponse;
     }
