@@ -21,17 +21,19 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.model.Provider;
 import dk.dma.embryo.dataformats.service.IceObservationService;
 
 @Path("/ice")
-public class IceObservationRestService {
+public class IceObservationRestService extends AbstractRestService {
     @Inject
     private IceObservationService iceObservationService;
 
@@ -42,22 +44,21 @@ public class IceObservationRestService {
     @Path("/provider/list")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<Provider> listIceChartProviders() {
-        return iceObservationService.listIceChartProviders();
+    public Response listIceChartProviders(@Context Request request) {
+        logger.info("listIceChartProviders()");
+        return super.getResponse(request, iceObservationService.listIceChartProviders(), NO_MAX_AGE);
     }
 
     @GET
     @Path("/{charttype}/observations")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<IceObservation> listIceObservations(@PathParam("charttype") String chartType) {
-        logger.debug("listIceObservations({})", chartType);
+    public Response listIceObservations(@Context Request request, @PathParam("charttype") String chartType) {
+        logger.info("listIceObservations({})", chartType);
 
         List<IceObservation> result = iceObservationService.listAvailableIceObservations(chartType);
-        logger.debug("listIceObservations({}) : ", chartType, result);
-        return result;
+        logger.info("listIceObservations({}) : ", chartType, result);
+        return super.getResponse(request, result, NO_MAX_AGE);
     }
 
 }

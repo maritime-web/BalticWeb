@@ -15,6 +15,8 @@
 package dk.dma.embryo.dataformats.model;
 
 /**
+ * The Class Provider.
+ *
  * @author Jesper Tejlgaard
  */
 public class Provider {
@@ -29,10 +31,21 @@ public class Provider {
         this.shortName = shortName;
     }
 
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((key == null)        ? 0 : key.hashCode());
+        result = prime * result + ((name == null)       ? 0 : name.hashCode());
+        result = prime * result + ((shortName == null)  ? 0 : shortName.hashCode());
+        
+        return result;
+    }
+    
     public String getKey() {
         return key;
     }
-
     public void setKey(String key) {
         this.key = key;
     }
@@ -40,7 +53,6 @@ public class Provider {
     public String getShortName() {
         return shortName;
     }
-
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
@@ -48,9 +60,7 @@ public class Provider {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
 }
