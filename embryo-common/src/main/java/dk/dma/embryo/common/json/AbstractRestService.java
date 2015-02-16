@@ -45,7 +45,8 @@ import org.slf4j.Logger;
 public abstract class AbstractRestService {
     
     
-    protected final int NO_MAX_AGE = 0;
+    protected static final int NO_MAX_AGE = 0;
+    protected static final int MAX_AGE_15_MINUTES = 60 * 15;
 
     /** The logger. */
     @Inject

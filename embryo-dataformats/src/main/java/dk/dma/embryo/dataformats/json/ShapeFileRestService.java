@@ -76,11 +76,15 @@ public class ShapeFileRestService {
     @Produces("application/json")
     @GZIP
     @Cache(maxAge = 31556926, isPrivate = false)
-    public Shape getSingleFile(@PathParam("id") String id, @DefaultValue("0") @QueryParam("resolution") int resolution,
+    public Shape getSingleFile(
+            @PathParam("id") String id, 
+            @DefaultValue("0") @QueryParam("resolution") int resolution,
             @DefaultValue("") @QueryParam("filter") String filter,
             @DefaultValue("false") @QueryParam("delta") boolean delta,
-            @DefaultValue("2") @QueryParam("exponent") int exponent, @DefaultValue("0") @QueryParam("parts") int parts)
+            @DefaultValue("2") @QueryParam("exponent") int exponent, 
+            @DefaultValue("0") @QueryParam("parts") int parts)
             throws IOException {
+        
         logger.info("Request for single file: {}", id);
         try {
             return shapeFileService.readSingleFile(id, resolution, filter, delta, exponent, parts);
