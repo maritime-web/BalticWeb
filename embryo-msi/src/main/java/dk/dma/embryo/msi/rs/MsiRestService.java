@@ -21,14 +21,23 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
+import org.slf4j.Logger;
 
+import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.msi.MsiClient;
 
 @Path("/msi")
-public class MsiRestService {
+public class MsiRestService extends AbstractRestService {
+    
+    @Inject
+    private Logger logger;
+    
     @Inject
     private MsiClient msiClient;
 
@@ -37,6 +46,13 @@ public class MsiRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
+    /**
+     * OBS: Be careful to activate caching because to do so a hashCode() implementation
+     * is necessary, but MsiItem has a reference to MsiDto which is a generated java class.
+     * 
+     * @param regions
+     * @return List of MSI warnings
+     */
     public List<MsiClient.MsiItem> listActiveWarnings(@QueryParam("regions") List<String> regions) {
         return msiClient.getActiveWarnings(regions);
     }
@@ -45,8 +61,8 @@ public class MsiRestService {
     @Path("/regions")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<MsiClient.Region> getRegions() {
-        return msiClient.getRegions();
+    public Response getRegions(@Context Request request) {
+        logger.info("getRegions called from MsiRestService.");
+        return super.getResponse(request, msiClient.getRegions(), NO_MAX_AGE);
     }
 }

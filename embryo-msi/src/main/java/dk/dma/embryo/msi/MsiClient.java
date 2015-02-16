@@ -14,12 +14,12 @@
  */
 package dk.dma.embryo.msi;
 
-import dk.frv.msiedit.core.webservice.message.MsiDto;
-import dk.frv.msiedit.core.webservice.message.PointDto;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import dk.frv.msiedit.core.webservice.message.MsiDto;
+import dk.frv.msiedit.core.webservice.message.PointDto;
 
 public interface MsiClient {
     List<MsiItem> getActiveWarnings(List<String> regions);
@@ -50,6 +50,17 @@ public interface MsiClient {
     class Region {
         private String name;
         private String description;
+        
+        @Override
+        public int hashCode() {
+
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((name == null)           ? 0 : name.hashCode());
+            result = prime * result + ((description == null)    ? 0 : description.hashCode());
+            
+            return result;
+        }
         
         public String getName() {
             return name;
