@@ -33,7 +33,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import com.google.common.collect.Collections2;
@@ -90,7 +89,6 @@ public class VesselRestService extends AbstractRestService {
     @Path("/historical-track")
     @Produces("application/json")
     @GZIP
-    @NoCache
     public Response historicalTrack(@Context Request request, @QueryParam("mmsi") long mmsi) {
         
         List<TrackSingleLocation> historicalTrack = new ArrayList<>();
@@ -277,9 +275,8 @@ public class VesselRestService extends AbstractRestService {
     @Path("/details")
     @Produces("application/json")
     @GZIP
-    @NoCache
     @Details
-    public VesselDetails details(@QueryParam("mmsi") long mmsi) {
+    public Response details(@Context Request request, @QueryParam("mmsi") long mmsi) {
         logger.debug("details({})", mmsi);
 
         try {
@@ -322,7 +319,8 @@ public class VesselRestService extends AbstractRestService {
 
             details.setAdditionalInformation(additionalInformation);
 
-            return details;
+            Response response = super.getResponse(request, details, NO_MAX_AGE);
+            return response;
 
         } catch (Throwable t) {
 
@@ -350,8 +348,9 @@ public class VesselRestService extends AbstractRestService {
                 additionalInformation.put("historicalTrack", false);
                 additionalInformation.put("schedule", schedule != null && schedule.size() > 0);
                 details.setAdditionalInformation(additionalInformation);
-
-                return details;
+                
+                Response response = super.getResponse(request, details, NO_MAX_AGE);
+                return response;
             } else {
                 throw new RuntimeException("No vessel details available for " + mmsi + " caused by " + t);
             }

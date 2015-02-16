@@ -21,6 +21,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import org.jboss.resteasy.core.ServerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +46,13 @@ public class GreenposVesselDetailsAmendment implements Serializable {
         
         logger.info("amendDetails");
         
-        VesselDetails result = (VesselDetails) invocationContext.proceed();
+        ServerResponse serverReponse = (ServerResponse)invocationContext.proceed();
+        VesselDetails result = (VesselDetails) serverReponse.getEntity();
+        
         GreenposSearch s = new GreenposSearch(null, result.getMmsi(), null, null, null, 0, 1);
         boolean greenpos = greenposService.findReports(s).size() > 0;
         result.getAdditionalInformation().put("greenpos", greenpos);
-        return result;
+
+        return serverReponse;
     }
 }
