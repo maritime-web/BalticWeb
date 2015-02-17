@@ -37,13 +37,24 @@ public class JsonLogEntry {
         return ReflectionToStringBuilder.toString(this);
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((service == null) ? 0 : service.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + ((message == null) ? 0 : message.hashCode());
+        result = prime * result + ((stackTrace == null) ? 0 : stackTrace.hashCode());
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        return result;
+    }
+    
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
     public String getService() {
         return service;
     }
-
     public void setService(String service) {
         this.service = service;
     }
@@ -51,7 +62,6 @@ public class JsonLogEntry {
     public Status getStatus() {
         return status;
     }
-
     public void setStatus(Status status) {
         this.status = status;
     }
@@ -59,7 +69,6 @@ public class JsonLogEntry {
     public String getMessage() {
         return message;
     }
-
     public void setMessage(String message) {
         this.message = message;
     }
@@ -67,7 +76,6 @@ public class JsonLogEntry {
     public Date getDate() {
         return date;
     }
-
     public void setDate(Date date) {
         this.date = date;
     }
@@ -75,7 +83,6 @@ public class JsonLogEntry {
     public String getStackTrace() {
         return stackTrace;
     }
-
     public void setStackTrace(String stackTrace) {
         this.stackTrace = stackTrace;
     }
