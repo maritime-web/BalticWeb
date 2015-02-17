@@ -217,7 +217,7 @@ $(function() {
             map.zoomToExtent(extent);
         },
         zoomToCoords : function(minPoint, maxPoint) {
-        	if(!(map.getExtent().contains(minPoint) && map.getExtent().contains(maxPoint))) {
+        	if(!(map.getExtent().containsPixel(minPoint) && map.getExtent().containsPixel(maxPoint))) {
         		var b = new OpenLayers.Bounds();
         		b.extend(minPoint);
         		b.extend(maxPoint);
