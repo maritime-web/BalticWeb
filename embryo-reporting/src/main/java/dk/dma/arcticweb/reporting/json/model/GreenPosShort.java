@@ -21,35 +21,20 @@ import java.util.Date;
 public class GreenPosShort {
 
     private String id;
-
     private String type;
-
     private String lat;
-
     private String lon;
-
     private Integer number;
-
     private String weather;
-
     private String ice;
-
     private Double speed;
-
     private Integer course;
-
     private String destination;
-
     private Integer personsOnBoard;
-
     private Date eta;
-
     private String deviation;
-
     private Date ts;
-
     private String recipient;
-
     private String malFunctions;
 
     // //////////////////////////////////////////////////////////////////////
@@ -62,6 +47,29 @@ public class GreenPosShort {
     // Object methods
     // //////////////////////////////////////////////////////////////////////
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((course == null) ? 0 : course.hashCode());
+        result = prime * result + ((destination == null) ? 0 : destination.hashCode());
+        result = prime * result + ((deviation == null) ? 0 : deviation.hashCode());
+        result = prime * result + ((eta == null) ? 0 : eta.hashCode());
+        result = prime * result + ((ice == null) ? 0 : ice.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((lat == null) ? 0 : lat.hashCode());
+        result = prime * result + ((lon == null) ? 0 : lon.hashCode());
+        result = prime * result + ((malFunctions == null) ? 0 : malFunctions.hashCode());
+        result = prime * result + ((number == null) ? 0 : number.hashCode());
+        result = prime * result + ((personsOnBoard == null) ? 0 : personsOnBoard.hashCode());
+        result = prime * result + ((recipient == null) ? 0 : recipient.hashCode());
+        result = prime * result + ((speed == null) ? 0 : speed.hashCode());
+        result = prime * result + ((ts == null) ? 0 : ts.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((weather == null) ? 0 : weather.hashCode());
+        return result;
+    }
+
+    @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }
@@ -69,11 +77,9 @@ public class GreenPosShort {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
-
     public String getLat() {
         return lat;
     }
-
     public void setLat(String latitude) {
         this.lat = latitude;
     }
@@ -81,7 +87,6 @@ public class GreenPosShort {
     public String getLon() {
         return lon;
     }
-
     public void setLon(String longitude) {
         this.lon = longitude;
     }
@@ -89,7 +94,6 @@ public class GreenPosShort {
     public Integer getNumber() {
         return number;
     }
-
     public void setNumber(Integer number) {
         this.number = number;
     }
@@ -97,7 +101,6 @@ public class GreenPosShort {
     public String getType() {
         return type;
     }
-
     public void setType(String reportType) {
         this.type = reportType;
     }
@@ -105,7 +108,6 @@ public class GreenPosShort {
     public String getWeather() {
         return weather;
     }
-
     public void setWeather(String weather) {
         this.weather = weather;
     }
@@ -113,7 +115,6 @@ public class GreenPosShort {
     public String getIce() {
         return ice;
     }
-
     public void setIce(String iceInformation) {
         this.ice = iceInformation;
     }
@@ -121,7 +122,6 @@ public class GreenPosShort {
     public Double getSpeed() {
         return speed;
     }
-
     public void setSpeed(Double speed) {
         this.speed = speed;
     }
@@ -129,7 +129,6 @@ public class GreenPosShort {
     public Integer getCourse() {
         return course;
     }
-
     public void setCourse(Integer course) {
         this.course = course;
     }
@@ -137,7 +136,6 @@ public class GreenPosShort {
     public String getDestination() {
         return destination;
     }
-
     public void setDestination(String destination) {
         this.destination = destination;
     }
@@ -145,7 +143,6 @@ public class GreenPosShort {
     public Integer getPersonsOnBoard() {
         return personsOnBoard;
     }
-
     public void setPersonsOnBoard(Integer personsOnBoard) {
         this.personsOnBoard = personsOnBoard;
     }
@@ -153,7 +150,6 @@ public class GreenPosShort {
     public Date getEta() {
         return eta;
     }
-
     public void setEta(Date eta) {
         this.eta = eta;
     }
@@ -161,7 +157,6 @@ public class GreenPosShort {
     public String getDeviation() {
         return deviation;
     }
-
     public void setDeviation(String deviation) {
         this.deviation = deviation;
     }
@@ -169,7 +164,6 @@ public class GreenPosShort {
     public Date getTs() {
         return ts;
     }
-
     public void setTs(Date reportedTs) {
         this.ts = reportedTs;
     }
@@ -177,7 +171,6 @@ public class GreenPosShort {
     public String getId() {
         return id;
     }
-
     public void setId(String id) {
         this.id = id;
     }
@@ -185,7 +178,6 @@ public class GreenPosShort {
     public String getRecipient() {
         return recipient;
     }
-
     public void setRecipient(String recipient) {
         this.recipient = recipient;
     }
@@ -193,7 +185,6 @@ public class GreenPosShort {
     public String getMalFunctions() {
         return malFunctions;
     }
-
     public void setMalFunctions(String malFunctions) {
         this.malFunctions = malFunctions;
     }

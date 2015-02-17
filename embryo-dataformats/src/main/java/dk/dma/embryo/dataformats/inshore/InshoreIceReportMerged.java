@@ -82,8 +82,6 @@ public class InshoreIceReportMerged {
                 + ", footer=" + footer + "]";
     }
 
-    
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -94,7 +92,6 @@ public class InshoreIceReportMerged {
         result = prime * result + ((observations == null) ? 0 : observations.hashCode());
         return result;
     }
-
 
     // //////////////////////////////////////////////////////////////////////
     // Property methods

@@ -31,12 +31,10 @@ public class GreenposMinimal implements Serializable{
     // Class fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
     private String name;
-
     private Long mmsi;
-
     private String type;
-
     private Date ts;
+    
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
@@ -53,6 +51,19 @@ public class GreenposMinimal implements Serializable{
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+
+        result = prime * result + ((mmsi == null) ? 0 : mmsi.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((ts == null) ? 0 : ts.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        
+        return result;
     }
 
     // //////////////////////////////////////////////////////////////////////

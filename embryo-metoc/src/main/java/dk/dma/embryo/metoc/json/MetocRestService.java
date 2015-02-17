@@ -22,11 +22,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.SejlRuteResponse;
 import dk.dma.embryo.metoc.service.MetocService;
 
@@ -35,7 +38,8 @@ import dk.dma.embryo.metoc.service.MetocService;
  * @author Jesper Tejlgaard
  */
 @Path("/metoc")
-public class MetocRestService {
+public class MetocRestService extends AbstractRestService {
+    
     @Inject
     private MetocService metocService;
 
@@ -49,9 +53,11 @@ public class MetocRestService {
     @Path("/list/{routeIds}")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<Metoc> getMetocs(@PathParam("routeIds") String routeIds) {
-        logger.debug("getMetoc({})", routeIds);
+    public Response getMetocs(
+        @Context Request request,
+        @PathParam("routeIds") String routeIds) {
+        
+        logger.info("getMetocs({})", routeIds);
 
         String[] ids = routeIds.split(":");
 
@@ -64,7 +70,8 @@ public class MetocRestService {
             }
         }
 
-        logger.debug("getMetoc({}) : {}", ids, metocs);
-        return metocs;
+        logger.info("getMetocs({}) : {}", ids, metocs);
+        
+        return super.getResponse(request, metocs, NO_MAX_AGE);
     }
 }

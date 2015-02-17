@@ -14,20 +14,7 @@
  */
 package dk.dma.arcticweb.reporting.json;
 
-import dk.dma.arcticweb.reporting.json.model.GreenPos;
-import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
-import dk.dma.arcticweb.reporting.json.model.GreenposRequest;
-import dk.dma.arcticweb.reporting.model.GreenPosReport;
-import dk.dma.arcticweb.reporting.model.GreenposMinimal;
-import dk.dma.arcticweb.reporting.model.GreenposSearch;
-import dk.dma.arcticweb.reporting.service.GreenPosService;
-import dk.dma.embryo.common.util.DateTimeConverter;
-import dk.dma.embryo.user.security.Subject;
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -37,20 +24,38 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.List;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+
+import dk.dma.arcticweb.reporting.json.model.GreenPos;
+import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
+import dk.dma.arcticweb.reporting.json.model.GreenposRequest;
+import dk.dma.arcticweb.reporting.model.GreenPosReport;
+import dk.dma.arcticweb.reporting.model.GreenposMinimal;
+import dk.dma.arcticweb.reporting.model.GreenposSearch;
+import dk.dma.arcticweb.reporting.service.GreenPosService;
+import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.common.util.DateTimeConverter;
+import dk.dma.embryo.user.security.Subject;
 
 /**
  * @author Jesper Tejlgaard
  */
 @Path("/greenpos")
-public class GreenPosRestService {
+public class GreenPosRestService extends AbstractRestService {
 
     @Inject
     private GreenPosService reportingService;
 
     @Inject
     private Subject subject;
-
 
     @Inject
     private Logger logger;
@@ -63,14 +68,14 @@ public class GreenPosRestService {
     @Consumes("application/json")
     @Produces("application/json")
     public String save(GreenposRequest request) {
-        logger.debug("save({})", request);
+        logger.info("save({})", request);
 
         GreenPosReport toBeSaved = GreenPosReport.from(request.getReport());
         reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive(), request.getIncludeActiveRoute(), request.getReport().getRecipient());
 
         String email = subject.getUser().getEmail();
 
-        logger.debug("save() : {}", email);
+        logger.info("save() : {}", email);
         return email;
     }
 
@@ -78,9 +83,9 @@ public class GreenPosRestService {
     @Path("/latest/{mmsi}")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public GreenPos latest(@PathParam("mmsi") Long mmsi) {
-        logger.debug("latest({})", mmsi);
+    public Response latest(@Context Request request, @PathParam("mmsi") Long mmsi) {
+        
+        logger.info("latest({})", mmsi);
 
         GreenPos result = null;
 
@@ -90,24 +95,23 @@ public class GreenPosRestService {
             result = report.toJsonModel();
         }
 
-        logger.debug("latest({}) - {}", mmsi, result);
+        logger.info("latest({}) - {}", mmsi, result);
 
-        return result;
+        return super.getResponse(request, result, NO_MAX_AGE);
     }
 
     @GET
     @Path("/latest")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<GreenposMinimal> listLatest() {
-        logger.debug("listLatest()");
+    public Response listLatest(@Context Request request) {
+        logger.info("listLatest()");
 
         List<GreenposMinimal> reports = reportingService.getLatest();
 
-        logger.debug("listLatest() - {}", reports);
+        logger.info("listLatest() - {}", reports);
 
-        return reports;
+        return super.getResponse(request, reports, NO_MAX_AGE);
     }
 
 
@@ -115,16 +119,19 @@ public class GreenPosRestService {
     @Path("/{id}")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public GreenPos get(@PathParam("id") String id) {
-        logger.debug("get({})", id);
+    public Response get(
+            @Context Request request,
+            @PathParam("id") String id) {
+        
+        logger.info("get({})", id);
 
         GreenPosReport report = reportingService.get(id);
 
         GreenPos result = report.toJsonModel();
 
-        logger.debug("get() - {}", result);
-        return result;
+        logger.info("get() - {}", result);
+        
+        return super.getResponse(request, result, NO_MAX_AGE);
     }
 
     @GET
@@ -132,11 +139,17 @@ public class GreenPosRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public GreenPosShort[] list(@QueryParam("type") String type, @QueryParam("mmsi") Long mmsi,
-                                @QueryParam("ts") String ts, @QueryParam("sortBy") String sortBy,
-                                @QueryParam("sortOrder") String sortOrder, @QueryParam("start") Integer start,
-                                @QueryParam("max") Integer max) {
-        logger.debug("list({})");
+    public Response list(
+            @Context Request request,
+            @QueryParam("type") String type, 
+            @QueryParam("mmsi") Long mmsi,
+            @QueryParam("ts") String ts, 
+            @QueryParam("sortBy") String sortBy,
+            @QueryParam("sortOrder") String sortOrder, 
+            @QueryParam("start") Integer start,
+            @QueryParam("max") Integer max) {
+        
+        logger.info("list({})");
 
         DateTime dateTime = null;
         if (ts != null && ts.trim().length() > 0) {
@@ -150,13 +163,14 @@ public class GreenPosRestService {
 
         GreenposSearch search = new GreenposSearch(type, mmsi, dateTime, sortBy, sortOrder, start, max);
 
-        logger.debug("Searching with {}", search);
+        logger.info("Searching with {}", search);
 
         List<GreenPosReport> reports = reportingService.findReports(search);
 
         GreenPosShort[] result = GreenPosReport.toJsonModelShort(reports);
 
-        logger.debug("list() - {}", (Object[]) result);
-        return result;
+        logger.info("list() - {}", (Object[]) result);
+     
+        return super.getResponse(request, result, NO_MAX_AGE);
     }
 }

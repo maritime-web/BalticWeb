@@ -29,6 +29,17 @@ public class Metoc {
     private String created;
     private List<Forecast> forecasts;
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+
+        result = prime * result + ((created == null) ? 0 : created.hashCode());
+        result = prime * result + ((forecasts == null) ? 0 : forecasts.hashCode());
+
+        return result;
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
@@ -55,7 +66,7 @@ public class Metoc {
         try {
             List<Forecast> forecasts = new ArrayList<Forecast>(metocForecast.getForecasts().length);
             for (DmiSejlRuteService.Forecast dmiForecast : metocForecast.getForecasts()) {
-                if(predicate.apply(dmiForecast)){
+                if (predicate.apply(dmiForecast)) {
                     forecasts.add(Forecast.from(dmiForecast));
                 }
             }
@@ -68,14 +79,12 @@ public class Metoc {
         return result;
     }
 
-    
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
     public String getCreated() {
         return created;
     }
-
     public void setCreated(String created) {
         this.created = created;
     }
@@ -83,7 +92,6 @@ public class Metoc {
     public List<Forecast> getForecasts() {
         return forecasts;
     }
-
     public void setForecasts(List<Forecast> forecasts) {
         this.forecasts = forecasts;
     }
@@ -104,29 +112,41 @@ public class Metoc {
         private Double wavePeriod;
         private Double seaLevel;
 
-        public static Forecast from(DmiSejlRuteService.Forecast dmiForecast)
-                throws ParseException {
+        public static Forecast from(DmiSejlRuteService.Forecast dmiForecast) throws ParseException {
             Forecast forecast = new Forecast();
             forecast.setLat(dmiForecast.getLat());
             forecast.setLon(dmiForecast.getLon());
             forecast.setTime(DmiSejlRuteService.DATE_FORMAT.parse(dmiForecast.getTime()));
-            forecast.setWindDir(dmiForecast.getWindDir() == null ? null : ceil(dmiForecast.getWindDir().getForecast(),
-                    0));
-            forecast.setWindSpeed(dmiForecast.getWindSpeed() == null ? null : ceil(dmiForecast.getWindSpeed()
-                    .getForecast(), 1));
-            forecast.setCurDir(dmiForecast.getCurrentDir() == null ? null : ceil(dmiForecast.getCurrentDir()
-                    .getForecast(), 0));
-            forecast.setCurSpeed(dmiForecast.getCurrentSpeed() == null ? null : ceil(dmiForecast.getCurrentSpeed()
-                    .getForecast(), 1));
-            forecast.setWaveDir(dmiForecast.getWaveDir() == null ? null : ceil(dmiForecast.getWaveDir().getForecast(),
-                    0));
-            forecast.setWaveHeight(dmiForecast.getWaveHeight() == null ? null : ceil(dmiForecast.getWaveHeight()
-                    .getForecast(), 1));
-            forecast.setWavePeriod(dmiForecast.getWavePeriod() == null ? null : ceil(dmiForecast.getWavePeriod()
-                    .getForecast(), 2));
-            forecast.setSeaLevel(dmiForecast.getSealevel() == null ? null : ceil(dmiForecast.getSealevel()
-                    .getForecast(), 1));
+            forecast.setWindDir(dmiForecast.getWindDir() == null ? null : ceil(dmiForecast.getWindDir().getForecast(), 0));
+            forecast.setWindSpeed(dmiForecast.getWindSpeed() == null ? null : ceil(dmiForecast.getWindSpeed().getForecast(), 1));
+            forecast.setCurDir(dmiForecast.getCurrentDir() == null ? null : ceil(dmiForecast.getCurrentDir().getForecast(), 0));
+            forecast.setCurSpeed(dmiForecast.getCurrentSpeed() == null ? null : ceil(dmiForecast.getCurrentSpeed().getForecast(), 1));
+            forecast.setWaveDir(dmiForecast.getWaveDir() == null ? null : ceil(dmiForecast.getWaveDir().getForecast(), 0));
+            forecast.setWaveHeight(dmiForecast.getWaveHeight() == null ? null : ceil(dmiForecast.getWaveHeight().getForecast(), 1));
+            forecast.setWavePeriod(dmiForecast.getWavePeriod() == null ? null : ceil(dmiForecast.getWavePeriod().getForecast(), 2));
+            forecast.setSeaLevel(dmiForecast.getSealevel() == null ? null : ceil(dmiForecast.getSealevel().getForecast(), 1));
             return forecast;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((curDir == null) ? 0 : curDir.hashCode());
+            result = prime * result + ((curSpeed == null) ? 0 : curSpeed.hashCode());
+            long temp;
+            temp = Double.doubleToLongBits(lat);
+            result = prime * result + (int) (temp ^ (temp >>> 32));
+            temp = Double.doubleToLongBits(lon);
+            result = prime * result + (int) (temp ^ (temp >>> 32));
+            result = prime * result + ((seaLevel == null) ? 0 : seaLevel.hashCode());
+            result = prime * result + ((time == null) ? 0 : time.hashCode());
+            result = prime * result + ((waveDir == null) ? 0 : waveDir.hashCode());
+            result = prime * result + ((waveHeight == null) ? 0 : waveHeight.hashCode());
+            result = prime * result + ((wavePeriod == null) ? 0 : wavePeriod.hashCode());
+            result = prime * result + ((windDir == null) ? 0 : windDir.hashCode());
+            result = prime * result + ((windSpeed == null) ? 0 : windSpeed.hashCode());
+            return result;
         }
 
         private static double ceil(double number, int decimals) {
@@ -137,7 +157,6 @@ public class Metoc {
         public double getLat() {
             return lat;
         }
-
         public void setLat(double lat) {
             this.lat = lat;
         }
@@ -145,7 +164,6 @@ public class Metoc {
         public double getLon() {
             return lon;
         }
-
         public void setLon(double lon) {
             this.lon = lon;
         }
@@ -153,7 +171,6 @@ public class Metoc {
         public Date getTime() {
             return time;
         }
-
         public void setTime(Date time) {
             this.time = time;
         }
@@ -161,7 +178,6 @@ public class Metoc {
         public Double getWindDir() {
             return windDir;
         }
-
         public void setWindDir(Double windDir) {
             this.windDir = windDir;
         }
@@ -169,7 +185,6 @@ public class Metoc {
         public Double getWindSpeed() {
             return windSpeed;
         }
-
         public void setWindSpeed(Double windSpeed) {
             this.windSpeed = windSpeed;
         }
@@ -177,7 +192,6 @@ public class Metoc {
         public Double getCurDir() {
             return curDir;
         }
-
         public void setCurDir(Double curDir) {
             this.curDir = curDir;
         }
@@ -185,7 +199,6 @@ public class Metoc {
         public Double getCurSpeed() {
             return curSpeed;
         }
-
         public void setCurSpeed(Double curSpeed) {
             this.curSpeed = curSpeed;
         }
@@ -193,7 +206,6 @@ public class Metoc {
         public Double getWaveDir() {
             return waveDir;
         }
-
         public void setWaveDir(Double waveDir) {
             this.waveDir = waveDir;
         }
@@ -201,7 +213,6 @@ public class Metoc {
         public Double getWaveHeight() {
             return waveHeight;
         }
-
         public void setWaveHeight(Double waveHeight) {
             this.waveHeight = waveHeight;
         }
@@ -209,7 +220,6 @@ public class Metoc {
         public Double getWavePeriod() {
             return wavePeriod;
         }
-
         public void setWavePeriod(Double wavePeriod) {
             this.wavePeriod = wavePeriod;
         }
@@ -217,7 +227,6 @@ public class Metoc {
         public Double getSeaLevel() {
             return seaLevel;
         }
-
         public void setSeaLevel(Double seaLevel) {
             this.seaLevel = seaLevel;
         }
