@@ -1,14 +1,13 @@
 /.tmp/
-/target/
 /node_modules/
 /.settings
 /target
 /.classpath
 /.project
-/target
 /.metadata
 .idea
 *.iml
 arcticweb.properties
+wildfly-8.*
 
 embryo-web/.buildpath
