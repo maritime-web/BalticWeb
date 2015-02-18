@@ -25,18 +25,21 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.service.UserService;
 
 @Path("/user")
-public class UserRestService {
+public class UserRestService extends AbstractRestService {
 
     @Inject
     private Logger logger;
@@ -73,8 +76,10 @@ public class UserRestService {
     @GZIP
     @Path("/list")
     @Produces("application/json")
-    @NoCache
-    public List<User> list() {
+    public Response list(@Context Request request) {
+        
+        logger.info("/user/list called.");
+        
         List<User> result = new ArrayList<>();
 
         for (SecuredUser su : userService.list()) {
@@ -93,20 +98,34 @@ public class UserRestService {
             result.add(user);
         }
 
-        return result;
+        return super.getResponse(request, result, NO_MAX_AGE);
     }
 
     public static class User {
+        
         private String login;
         private String password;
         private String role;
         private Long shipMmsi;
         private String email;
 
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            
+            result = prime * result + ((email == null) ? 0 : email.hashCode());
+            result = prime * result + ((login == null) ? 0 : login.hashCode());
+            result = prime * result + ((password == null) ? 0 : password.hashCode());
+            result = prime * result + ((role == null) ? 0 : role.hashCode());
+            result = prime * result + ((shipMmsi == null) ? 0 : shipMmsi.hashCode());
+            
+            return result;
+        }
+
         public String getLogin() {
             return login;
         }
-
         public void setLogin(String login) {
             this.login = login;
         }
@@ -114,7 +133,6 @@ public class UserRestService {
         public String getPassword() {
             return password;
         }
-
         public void setPassword(String password) {
             this.password = password;
         }
@@ -122,7 +140,6 @@ public class UserRestService {
         public String getRole() {
             return role;
         }
-
         public void setRole(String role) {
             this.role = role;
         }
@@ -130,7 +147,6 @@ public class UserRestService {
         public Long getShipMmsi() {
             return shipMmsi;
         }
-
         public void setShipMmsi(Long shipMmsi) {
             this.shipMmsi = shipMmsi;
         }
@@ -138,7 +154,6 @@ public class UserRestService {
         public String getEmail() {
             return email;
         }
-
         public void setEmail(String email) {
             this.email = email;
         }
