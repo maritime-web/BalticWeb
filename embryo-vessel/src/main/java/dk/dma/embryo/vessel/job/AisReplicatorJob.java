@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 
+import dk.dma.embryo.common.Java8StreamTestCode;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
@@ -107,7 +108,13 @@ public class AisReplicatorJob {
     void updateAis() {
         try {
             logger.info("UPDATE AIS VESSEL DATA INCLUDING NORWEGIAN DATA...");
-
+            
+            
+            System.out.println("-----> executing Java 8 code TEST <-----");
+            Java8StreamTestCode.testing();
+            System.out.println("-----> executing Java 8 code TEST - DONE<-----");
+            
+            
             // Get all vessels from AIS server
             List<AisViewServiceAllAisData.Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
             
