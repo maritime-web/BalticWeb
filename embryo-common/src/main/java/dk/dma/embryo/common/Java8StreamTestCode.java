@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 public class Java8StreamTestCode {
 
     public static void testing() {
-        
+       /* 
         List<TestOrderTest> orderBook = new ArrayList<>();
         TestOrderTest buyGoogle = new TestOrderTest("GOOG.NS", 300, 900.30, TestOrderTest.Side.BUY);
         TestOrderTest sellGoogle = new TestOrderTest("GOOG.NS", 600, 890.30, TestOrderTest.Side.SELL);
@@ -33,6 +33,7 @@ public class Java8StreamTestCode {
 
         long quantity = orderBook.stream().mapToLong((TestOrderTest o) -> o.quantity()).sum();
         System.out.println("Total quantity of all orders : " + quantity);
+        */
     }
     
     public static class TestOrderTest {
