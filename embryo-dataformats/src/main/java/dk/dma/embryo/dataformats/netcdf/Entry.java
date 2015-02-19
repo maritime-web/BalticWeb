@@ -26,6 +26,9 @@ import org.joda.time.DateTime;
  * variables, the SmallEntry class can be used to provide a slimmer version that
  * only contains integer references to the beforementioned variables.
  * 
+ * At the moment, we are only using the SmallEntry class, and this class is only
+ * available for possible future use.
+ * 
  * @author avlund
  *
  */
