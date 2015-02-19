@@ -69,6 +69,8 @@ public class SecuredUser extends BaseEntity<Long> {
     @OneToMany(orphanRemoval = true ,cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinColumn(name="SecuredUser_id", nullable = false)
     private List<SelectionGroup> selectionGroups = new ArrayList<SelectionGroup>();
+    
+    private Boolean accessToAisData;
 
     public SecuredUser() {}
 
@@ -130,10 +132,6 @@ public class SecuredUser extends BaseEntity<Long> {
         this.email = email;
     }
 
-    // public Set<Permission> getPermissions() {
-    // return permissions;
-    // }
-
     public String getHashedPassword() {
         return hashedPassword;
     }
@@ -157,8 +155,6 @@ public class SecuredUser extends BaseEntity<Long> {
     }
     public void setRole(Role role) {
         this.role = role;
-        //roles.add(role);
-        //role.users.add(this);
     }
 
     public String getForgotUuid() {
@@ -175,4 +171,10 @@ public class SecuredUser extends BaseEntity<Long> {
         this.selectionGroups = selectionGroups;
     }
 
+    public Boolean getAccessToAisData() {
+        return accessToAisData;
+    }
+    public void setAccessToAisData(Boolean accessToAisData) {
+        this.accessToAisData = accessToAisData;
+    }
 }

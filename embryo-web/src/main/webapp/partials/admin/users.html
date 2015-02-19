@@ -9,7 +9,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6 ">
+		<div class="col-md-7">
 			<form class="form-search">
 				<div class="row">
 					<div class="col-xs-12 col-md-6 ">
@@ -34,6 +34,7 @@
 							<th>Email</th>
 							<th>Ship (MMSI)</th>
 							<th>Role</th>
+							<th>Må se AIS data</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -43,6 +44,7 @@
 							<td>{{user.email}}</td>
 							<td>{{user.shipMmsi ? user.shipMmsi : "-"}}</td>
 							<td>{{roleText(user.role)}}</td>
+							<td>{{user.accessToAisData ? "Ja" : "Nej"}}</td>
 							<td><a href="#" x-ng-click="del($event, user)">delete</a></td>
 						</tr>
 					</tbody>

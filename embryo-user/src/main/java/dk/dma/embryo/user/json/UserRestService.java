@@ -83,22 +83,29 @@ public class UserRestService extends AbstractRestService {
         List<User> result = new ArrayList<>();
 
         for (SecuredUser su : userService.list()) {
-            User user = new User();
 
-            user.setLogin(su.getUserName());
-            user.setEmail(su.getEmail());
-            Role role = su.getRole();
-
-            user.setRole(role == null ? null : role.getLogicalName());
-            if (role instanceof SailorRole) {
-                SailorRole sailor = (SailorRole)role;
-                user.setShipMmsi(sailor.getVessel().getMmsi());
-            }
-
-            result.add(user);
+            result.add(mapDatabaseUserToDtoUser(su));
         }
 
         return super.getResponse(request, result, NO_MAX_AGE);
+    }
+
+    private User mapDatabaseUserToDtoUser(SecuredUser su) {
+        
+        User user = new User();
+
+        user.setAccessToAisData(su.getAccessToAisData());
+        user.setLogin(su.getUserName());
+        user.setEmail(su.getEmail());
+        Role role = su.getRole();
+
+        user.setRole(role == null ? null : role.getLogicalName());
+        if (role instanceof SailorRole) {
+            SailorRole sailor = (SailorRole)role;
+            user.setShipMmsi(sailor.getVessel().getMmsi());
+        }
+        
+        return user;
     }
 
     public static class User {
@@ -108,6 +115,7 @@ public class UserRestService extends AbstractRestService {
         private String role;
         private Long shipMmsi;
         private String email;
+        private Boolean accessToAisData;
 
         @Override
         public int hashCode() {
@@ -119,6 +127,7 @@ public class UserRestService extends AbstractRestService {
             result = prime * result + ((password == null) ? 0 : password.hashCode());
             result = prime * result + ((role == null) ? 0 : role.hashCode());
             result = prime * result + ((shipMmsi == null) ? 0 : shipMmsi.hashCode());
+            result = prime * result + ((accessToAisData == null) ? 0 : accessToAisData.hashCode());
             
             return result;
         }
@@ -156,6 +165,13 @@ public class UserRestService extends AbstractRestService {
         }
         public void setEmail(String email) {
             this.email = email;
+        }
+
+        public Boolean getAccessToAisData() {
+            return accessToAisData;
+        }
+        public void setAccessToAisData(Boolean accessToAisData) {
+            this.accessToAisData = accessToAisData;
         }
     }
 }
