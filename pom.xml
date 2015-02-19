@@ -20,6 +20,12 @@
         <version>23</version>
     </parent>
 
+    <scm>
+        <connection>scm:git:git@github.com:dma-dk/Embryo.git</connection>
+        <developerConnection>scm:git:git@github.com:dma-dk/Embryo.git</developerConnection>
+        <url>git@github.com:dma-enav/Embryo.git</url>
+    </scm>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
