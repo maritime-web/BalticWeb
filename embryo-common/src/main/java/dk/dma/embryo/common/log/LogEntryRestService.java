@@ -14,7 +14,11 @@
  */
 package dk.dma.embryo.common.log;
 
-import java.util.List;
+import dk.dma.embryo.common.json.AbstractRestService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -24,13 +28,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
+import java.util.List;
 
 @Path("/log")
 public class LogEntryRestService extends AbstractRestService {
@@ -61,6 +59,9 @@ public class LogEntryRestService extends AbstractRestService {
         return super.getResponse(request, transformed, NO_MAX_AGE);
     }
 
+    /*
+     * Used for Zabbix surveillance.
+     */
     @GET
     @Path("/latest")
     @Produces("application/json")
