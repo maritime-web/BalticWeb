@@ -14,6 +14,8 @@
  */
 package dk.dma.embryo.user.json;
 
+import java.util.Arrays;
+
 import javax.ejb.FinderException;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -23,6 +25,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -32,6 +36,7 @@ import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
@@ -40,7 +45,7 @@ import dk.dma.embryo.user.security.Subject;
 import dk.dma.embryo.user.service.UserService;
 
 @Path("/authentication")
-public class AuthenticationService {
+public class AuthenticationService extends AbstractRestService {
     @Inject
     private Subject subject;
 
@@ -64,8 +69,7 @@ public class AuthenticationService {
     @Path("/details")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public Details details() {
+    public Response details(@Context Request request) {
         SecuredUser user = subject.getUser();
         if (user == null) {
             throw new UserNotAuthenticated("details");
@@ -84,8 +88,9 @@ public class AuthenticationService {
         details.setPermissions(rolesJson);
         details.setOsm(osm);
 
-        logger.debug("details() : {}", details);
-        return details;
+        logger.info("details() : {}", details);
+        
+        return super.getResponse(request, details, NO_MAX_AGE);
     }
 
     @GET
@@ -95,7 +100,7 @@ public class AuthenticationService {
     @NoCache
     public void logout() {
         if (subject != null && subject.getUser() != null) {
-            logger.debug("User {} logged out", subject.getUser().getUserName());
+            logger.info("User {} logged out", subject.getUser().getUserName());
             embryoLogService.info("User " + subject.getUser().getUserName() + " logged out");
         } else {
             logger.error("Attempt to logout all though not logged in");
@@ -109,22 +114,26 @@ public class AuthenticationService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public Details login(@QueryParam("userName") String userName, @QueryParam("password") String password) {
+    public Details login(
+            @Context Request request,
+            @QueryParam("userName") String userName, 
+            @QueryParam("password") String password) {
+        
         try {
             SecuredUser user = subject.login(userName, password);
 
             if (user != null) {
-                logger.debug("User {} logged in", userName);
+                logger.info("User {} logged in", userName);
                 embryoLogService.info("User " + userName + " logged in");
-                return details();
+                return (Details)details(request).getEntity();
             } else {
                 // We should probably never end in this block.
-                logger.debug("User {} not logged in (wrong username / password)", userName);
+                logger.info("User {} not logged in (wrong username / password)", userName);
                 embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
                 throw new UserNotAuthenticated("not shiro");
             }
         } catch (org.apache.shiro.authc.IncorrectCredentialsException e) {
-            logger.debug("User {} not logged in (wrong username / password)", userName);
+            logger.info("User {} not logged in (wrong username / password)", userName);
             embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
             throw new UserNotAuthenticated("login failed");
         }
@@ -134,13 +143,15 @@ public class AuthenticationService {
     @GET
     @Path("/change-password")
     @GZIP
-    @NoCache
-    public String getUserForUuid(@QueryParam("uuid") String uuid) {
+    public Response getUserForUuid(@Context Request request, @QueryParam("uuid") String uuid) {
         SecuredUser user = subject.findUserWithUuid(uuid);
+        
+        String userName = null;
         if (user != null) {
-            return user.getUserName();
+            userName = user.getUserName();
         }
-        return null;
+        
+        return super.getResponse(request, userName, NO_MAX_AGE);
     }
 
     @POST
@@ -193,7 +204,6 @@ public class AuthenticationService {
         public String getUuid() {
             return uuid;
         }
-
         public void setUuid(String uuid) {
             this.uuid = uuid;
         }
@@ -201,7 +211,6 @@ public class AuthenticationService {
         public String getPassword() {
             return password;
         }
-
         public void setPassword(String password) {
             this.password = password;
         }
@@ -214,10 +223,26 @@ public class AuthenticationService {
         private String[] permissions;
         private String osm;
 
+        @Override
+        public String toString() {
+            return ReflectionToStringBuilder.toString(this);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((osm == null) ? 0 : osm.hashCode());
+            result = prime * result + Arrays.hashCode(permissions);
+            result = prime * result + ((projection == null) ? 0 : projection.hashCode());
+            result = prime * result + ((shipMmsi == null) ? 0 : shipMmsi.hashCode());
+            result = prime * result + ((userName == null) ? 0 : userName.hashCode());
+            return result;
+        }
+
         public String getShipMmsi() {
             return shipMmsi;
         }
-
         public void setShipMmsi(String shipMmsi) {
             this.shipMmsi = shipMmsi;
         }
@@ -225,7 +250,6 @@ public class AuthenticationService {
         public String getProjection() {
             return projection;
         }
-
         public void setProjection(String projection) {
             this.projection = projection;
         }
@@ -233,7 +257,6 @@ public class AuthenticationService {
         public String getUserName() {
             return userName;
         }
-
         public void setUserName(String userName) {
             this.userName = userName;
         }
@@ -241,7 +264,6 @@ public class AuthenticationService {
         public String[] getPermissions() {
             return permissions;
         }
-
         public void setPermissions(String[] permissions) {
             this.permissions = permissions;
         }
@@ -249,14 +271,8 @@ public class AuthenticationService {
         public String getOsm() {
             return osm;
         }
-
         public void setOsm(String osm) {
             this.osm = osm;
-        }
-
-        @Override
-        public String toString() {
-            return ReflectionToStringBuilder.toString(this);
         }
     }
 }

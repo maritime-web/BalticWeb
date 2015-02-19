@@ -118,7 +118,6 @@ public class SelectionGroupRestService extends AbstractRestService {
             result = prime * result + ((active == null) ? 0 : active.hashCode());
             result = prime * result + ((polygonsAsJson == null) ? 0 : polygonsAsJson.hashCode());
             
-//            System.out.println("->HASHCODE<- " + result);
             return result;
         }
         

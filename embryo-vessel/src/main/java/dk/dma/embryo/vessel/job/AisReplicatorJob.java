@@ -107,7 +107,7 @@ public class AisReplicatorJob {
     void updateAis() {
         try {
             logger.info("UPDATE AIS VESSEL DATA INCLUDING NORWEGIAN DATA...");
-
+            
             // Get all vessels from AIS server
             List<AisViewServiceAllAisData.Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
             
