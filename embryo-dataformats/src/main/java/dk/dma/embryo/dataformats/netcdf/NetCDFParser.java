@@ -35,6 +35,12 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import dk.dma.embryo.common.util.CollectionUtils;
 
+/**
+ * Class responsible for converting data in a NetCDF file to objects.
+ * 
+ * @author avlund
+ *
+ */
 public class NetCDFParser {
     public static final double MIN_VAL = -9998;
     public static final String TIME = "time";
@@ -53,7 +59,8 @@ public class NetCDFParser {
     /**
      * Convenience method for parsing with a default restriction set.
      * 
-     * @param filename
+     * @param filename Name of file to parse.
+     * @param types Types of forecasts (ice, current etc.) to parse.
      * @return
      * @throws InvalidRangeException
      * @throws IOException
@@ -66,8 +73,9 @@ public class NetCDFParser {
      * Parses a NetCDF file and returns a result containing the data as well as
      * metadata to map this data to.
      * 
-     * @param filename
-     * @param restriction
+     * @param filename Name of file to parse.
+     * @param types Types of forecasts (ice, current etc.) to parse.
+     * @param restriction Coordinate restrictions for the parsed area.
      * @return
      * @throws InvalidRangeException
      * @throws IOException
@@ -185,6 +193,11 @@ public class NetCDFParser {
      * Retrieve data from a NetCDF complex variable.
      * 
      * @param v
+     * @param order
+     * @param restriction
+     * @param moments
+     * @param digits
+     * 
      * @return
      * @throws InvalidRangeException
      * @throws IOException
@@ -227,6 +240,13 @@ public class NetCDFParser {
         return hasContent;
     }
 
+    /**
+     * 
+     * 
+     * @param restriction
+     * @throws IOException
+     * @throws InvalidRangeException
+     */
     private void createLatAndLonLists(NetCDFRestriction restriction) throws IOException, InvalidRangeException {
         latList = new ArrayList<>();
         lonList = new ArrayList<>();
@@ -285,31 +305,25 @@ public class NetCDFParser {
         }
     }
 
+    /**
+     * x
+     * 
+     * @param value
+     * @param digits
+     * @return
+     */
     private float cutDigits(float value, int digits) {
         int factor = (int) Math.pow(10, digits);
         int result = (int) (value * factor);
         return (float) result / factor;
     }
 
-    @SuppressWarnings("unused")
-    private int findClosestCoordIndex(double coord, List<Double> list, boolean isMinValue) {
-        for (int i = 0; i < list.size(); i++) {
-            double d = list.get(i);
-            if (d > coord) {
-                if (isMinValue) {
-                    return i;
-                } else {
-                    return i - 1;
-                }
-            }
-        }
-        if (isMinValue) {
-            return 0;
-        } else {
-            return list.size() - 1;
-        }
-    }
-
+    /**
+     * Retrieves a rounded version of a coordinate.
+     * 
+     * @param coord
+     * @return
+     */
     private double getRoundedCoordinate(double coord) {
         double adjustedCoord = Math.abs(coord) + 0.0001;
         int timesTen = (int) (adjustedCoord * 10);
@@ -317,19 +331,12 @@ public class NetCDFParser {
         return adjustedCoord * (coord < 0 ? -1 : 1);
     }
 
-    @SuppressWarnings("unused")
-    private boolean isWholeCoordinate(double coord) {
-        double adjustedCoord = Math.abs(coord) + 0.0001;
-        int timesTen = (int) (adjustedCoord * 10);
-        int remainder = timesTen % 10;
-        return remainder == 0;
-    }
-
-    @SuppressWarnings("unused")
-    private boolean isHalfCoordinate(double coord) {
-        return ((int) (coord * 10.0)) % 5 == 0;
-    }
-
+    /**
+     * Checks if a coordinate is divisible by 0.4.
+     * 
+     * @param coord
+     * @return
+     */
     private boolean isZeroPointFourCoordinate(double coord) {
         double adjustedCoord = Math.abs(coord) + 0.0001;
         int timesTen = (int) (adjustedCoord * 10);

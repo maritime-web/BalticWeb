@@ -16,6 +16,12 @@ package dk.dma.embryo.dataformats.netcdf;
 
 import java.io.Serializable;
 
+/**
+ * Represents a coordinate's position in a NetCDF file.
+ * 
+ * @author avlund
+ *
+ */
 public class NetCDFPoint implements Serializable {
     private static final long serialVersionUID = 5935623275810717515L;
 
