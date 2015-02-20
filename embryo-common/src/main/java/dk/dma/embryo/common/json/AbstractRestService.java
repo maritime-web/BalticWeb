@@ -45,9 +45,12 @@ import org.slf4j.Logger;
 public abstract class AbstractRestService {
     
     
-    protected static final int NO_MAX_AGE = 0;
+    protected static final int NO_CACHE = -1;
     protected static final int MAX_AGE_15_MINUTES = 60 * 15;
-
+    protected static final int MAX_AGE_10_MINUTES = 60 * 10;
+    protected static final int MAX_AGE_5_MINUTES = 60 * 5;
+    protected static final int MAX_AGE_1_DAY = 60 * 60 * 24;
+    
     /** The logger. */
     @Inject
     private Logger logger;
@@ -75,7 +78,7 @@ public abstract class AbstractRestService {
      */
     protected Response getResponse(Request request, Object data, int cacheMaxAgeInSeconds) {
         CacheControlSettings settings;
-        if(cacheMaxAgeInSeconds < 1) {
+        if(cacheMaxAgeInSeconds < 0) {
             settings = CacheControlSettings.MAXAGE_DEFAULT;
         } else {
             settings = CacheControlSettings.MAXAGE_INCLUDE;
@@ -116,7 +119,7 @@ public abstract class AbstractRestService {
             logger.info("CacheControl is activated for this service and maxAge is -> " + ageInSeconds);
         }
         if(settings == CacheControlSettings.MAXAGE_DEFAULT) {
-            cc.setMaxAge(-1);
+            cc.setNoCache(true);
             logger.info("CacheControl is NOT activated for this service.");
         }
         cc.setPrivate(false);

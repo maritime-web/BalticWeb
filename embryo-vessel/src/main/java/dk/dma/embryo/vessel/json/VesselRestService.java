@@ -109,7 +109,7 @@ public class VesselRestService extends AbstractRestService {
         // The above statments are kept as comments because LONG tracks are disable because of instability.
         historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
         
-        return super.getResponse(request, historicalTrack, NO_MAX_AGE);
+        return super.getResponse(request, historicalTrack, MAX_AGE_10_MINUTES);
     }
     /*
     private List<TrackSingleLocation> historicalLongTrackWithTimeout(long mmsi) throws IOException {
@@ -192,7 +192,7 @@ public class VesselRestService extends AbstractRestService {
         }
         
         
-        return super.getResponse(request, result, NO_MAX_AGE);
+        return super.getResponse(request, result, NO_CACHE);
         
 //        return result;
     }
@@ -319,7 +319,7 @@ public class VesselRestService extends AbstractRestService {
 
             details.setAdditionalInformation(additionalInformation);
 
-            Response response = super.getResponse(request, details, NO_MAX_AGE);
+            Response response = super.getResponse(request, details, MAX_AGE_10_MINUTES);
             return response;
 
         } catch (Throwable t) {
@@ -349,7 +349,7 @@ public class VesselRestService extends AbstractRestService {
                 additionalInformation.put("schedule", schedule != null && schedule.size() > 0);
                 details.setAdditionalInformation(additionalInformation);
                 
-                Response response = super.getResponse(request, details, NO_MAX_AGE);
+                Response response = super.getResponse(request, details, MAX_AGE_10_MINUTES);
                 return response;
             } else {
                 throw new RuntimeException("No vessel details available for " + mmsi + " caused by " + t);

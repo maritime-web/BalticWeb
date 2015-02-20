@@ -90,7 +90,7 @@ public class AuthenticationService extends AbstractRestService {
 
         logger.info("details() : {}", details);
         
-        return super.getResponse(request, details, NO_MAX_AGE);
+        return super.getResponse(request, details, NO_CACHE);
     }
 
     @GET
@@ -151,7 +151,7 @@ public class AuthenticationService extends AbstractRestService {
             userName = user.getUserName();
         }
         
-        return super.getResponse(request, userName, NO_MAX_AGE);
+        return super.getResponse(request, userName, NO_CACHE);
     }
 
     @POST

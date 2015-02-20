@@ -87,7 +87,7 @@ public class UserRestService extends AbstractRestService {
             result.add(mapDatabaseUserToDtoUser(su));
         }
 
-        return super.getResponse(request, result, NO_MAX_AGE);
+        return super.getResponse(request, result, NO_CACHE);
     }
 
     private User mapDatabaseUserToDtoUser(SecuredUser su) {
