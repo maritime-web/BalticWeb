@@ -97,7 +97,7 @@ public class GreenPosRestService extends AbstractRestService {
 
         logger.info("latest({}) - {}", mmsi, result);
 
-        return super.getResponse(request, result, NO_MAX_AGE);
+        return super.getResponse(request, result, NO_CACHE);
     }
 
     @GET
@@ -111,7 +111,7 @@ public class GreenPosRestService extends AbstractRestService {
 
         logger.info("listLatest() - {}", reports);
 
-        return super.getResponse(request, reports, NO_MAX_AGE);
+        return super.getResponse(request, reports, NO_CACHE);
     }
 
 
@@ -131,7 +131,7 @@ public class GreenPosRestService extends AbstractRestService {
 
         logger.info("get() - {}", result);
         
-        return super.getResponse(request, result, NO_MAX_AGE);
+        return super.getResponse(request, result, NO_CACHE);
     }
 
     @GET
@@ -171,6 +171,6 @@ public class GreenPosRestService extends AbstractRestService {
 
         logger.info("list() - {}", (Object[]) result);
      
-        return super.getResponse(request, result, NO_MAX_AGE);
+        return super.getResponse(request, result, NO_CACHE);
     }
 }

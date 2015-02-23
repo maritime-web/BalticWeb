@@ -73,7 +73,7 @@ public class SelectionGroupRestService extends AbstractRestService {
             result.add(groupDTO);
         }
         
-        return super.getResponse(request, result, NO_MAX_AGE);
+        return super.getResponse(request, result, NO_CACHE);
     }
 
     @POST

@@ -28,18 +28,33 @@ public interface MsiClient {
     public enum Type {Point, Polygon, Polyline, Points, General}
 
     class Point {
-        private PointDto pd;
+        private double longitude;
+        private double latitude;
+        
+        public Point(PointDto pointDto) {
+            this.longitude = pointDto.getLongitude();
+            this.latitude = pointDto.getLatitude();
+        }
 
-        public Point(PointDto pd) {
-            this.pd = pd;
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+
+            long temp;
+            temp = Double.doubleToLongBits(latitude);
+            result = prime * result + (int) (temp ^ (temp >>> 32));
+            temp = Double.doubleToLongBits(longitude);
+            result = prime * result + (int) (temp ^ (temp >>> 32));
+            
+            return result;
         }
 
         public double getLongitude() {
-            return pd.getLongitude();
+            return longitude;
         }
-
         public double getLatitude() {
-            return pd.getLatitude();
+            return latitude;
         }
 
         public String toString() {
@@ -65,7 +80,6 @@ public interface MsiClient {
         public String getName() {
             return name;
         }
-        
         public void setName(String name) {
             this.name = name;
         }
@@ -73,60 +87,81 @@ public interface MsiClient {
         public String getDescription() {
             return description;
         }
-        
         public void setDescription(String description) {
             this.description = description;
         }
     }
 
     class MsiItem {
-        private MsiDto md;
+        //private MsiDto md;
+        
+        private Type type;
+        private Date created;
+        private String eNCText;
+        private String mainArea;
+        private String subArea;
+        private String navtexNo;
+        private String text;
+        private Date updated;
+        
+        private List<Point> points;
+        
+        public MsiItem(MsiDto msiDto) {
+            //this.md = md;
+            
+            this.type = getType(msiDto);
+            this.created = msiDto.getCreated().toGregorianCalendar().getTime();
+            this.eNCText = msiDto.getEncText();
+            this.mainArea = msiDto.getAreaEnglish();
+            this.subArea = msiDto.getSubarea();
+            this.navtexNo = msiDto.getNavtexNo();
+            this.text = msiDto.getNavWarning();
+            this.updated = msiDto.getUpdated().toGregorianCalendar().getTime();
+            
+            this.points = getPoints(msiDto);
+        }
 
-        public Type getType() {
-            if (md.getPoints() == null || md.getPoints().getPoint().size() == 0) {
+        private Type getType(MsiDto msiDto) {
+            if (msiDto.getPoints() == null || msiDto.getPoints().getPoint().size() == 0) {
                 return Type.General;
             }
-            return Type.valueOf(md.getLocationType());
+            return Type.valueOf(msiDto.getLocationType());
         }
-
-        public Date getCreated() {
-            return md.getCreated().toGregorianCalendar().getTime();
-        }
-
-        public String getENCtext() {
-            return md.getEncText();
-        }
-
-        public List<Point> getPoints() {
+        
+        private List<Point> getPoints(MsiDto msiDto) {
             List<Point> result = new ArrayList<>();
-            for (PointDto pd : md.getPoints().getPoint()) {
+            for (PointDto pd : msiDto.getPoints().getPoint()) {
                 result.add(new Point(pd));
             }
             return result;
         }
 
+        public Type getType() {
+            return type;
+        }
+        public Date getCreated() {
+            return created;
+        }
+        public String getENCtext() {
+            return eNCText;
+        }
         public String getMainArea() {
-            return md.getAreaEnglish();
+            return mainArea;
         }
-
         public String getSubArea() {
-            return md.getSubarea();
+            return subArea;
         }
-
         public String getNavtexNo() {
-            return md.getNavtexNo();
+            return navtexNo;
         }
-
         public String getText() {
-            return md.getNavWarning();
+            return text;
         }
-
         public Date getUpdated() {
-            return md.getUpdated().toGregorianCalendar().getTime();
+            return updated;
         }
-
-        public MsiItem(MsiDto md) {
-            this.md = md;
+        public List<Point> getPoints() {
+            return points;
         }
 
         public String toString() {
@@ -139,6 +174,24 @@ public interface MsiClient {
                     "\n- SubArea: " + getSubArea() +
                     "\n- Text: " + getText() +
                     "\n- Updated: " + getUpdated();
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            
+            result = prime * result + ((created == null) ? 0 : created.hashCode());
+            result = prime * result + ((eNCText == null) ? 0 : eNCText.hashCode());
+            result = prime * result + ((mainArea == null) ? 0 : mainArea.hashCode());
+            result = prime * result + ((navtexNo == null) ? 0 : navtexNo.hashCode());
+            result = prime * result + ((points == null) ? 0 : points.hashCode());
+            result = prime * result + ((subArea == null) ? 0 : subArea.hashCode());
+            result = prime * result + ((text == null) ? 0 : text.hashCode());
+            result = prime * result + ((type == null) ? 0 : type.hashCode());
+            result = prime * result + ((updated == null) ? 0 : updated.hashCode());
+            
+            return result;
         }
     }
 }

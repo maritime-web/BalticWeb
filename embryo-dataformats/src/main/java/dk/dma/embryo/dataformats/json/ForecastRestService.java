@@ -59,7 +59,7 @@ public class ForecastRestService extends AbstractRestService {
     public Response getIcePrognosis(@PathParam(value = "id") long id, @Context Request request) {
         logger.info("getIcePrognosis({})", id);
         String data = forecastService.getForecast(id).getData();
-        return super.getResponse(request, data, MAX_AGE_15_MINUTES);
+        return super.getResponse(request, data, MAX_AGE_1_DAY);
     }
 
     @GET
@@ -79,7 +79,7 @@ public class ForecastRestService extends AbstractRestService {
     public Response getWavePrognosis(@PathParam(value = "id") long id, @Context Request request) {
         logger.info("getWavePrognosis({})", id);
         String data = forecastService.getForecast(id).getData();
-        return getResponse(request, data, MAX_AGE_15_MINUTES);
+        return getResponse(request, data, MAX_AGE_1_DAY);
     }
 
     @GET
@@ -97,9 +97,9 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response getCurrentPrognosis(@PathParam(value = "id") long id, @Context Request request) {
-        logger.info("getWavePrognosis({})", id);
+        logger.info("getCurrentPrognosis({})", id);
         
         String data = forecastService.getForecast(id).getData();
-        return getResponse(request, data, MAX_AGE_15_MINUTES);
+        return getResponse(request, data, MAX_AGE_1_DAY);
     }
 }

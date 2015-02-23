@@ -14,11 +14,7 @@
  */
 package dk.dma.embryo.common.log;
 
-import dk.dma.embryo.common.json.AbstractRestService;
-import org.jboss.resteasy.annotations.GZIP;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -28,7 +24,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import java.util.List;
+
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+
+import dk.dma.embryo.common.json.AbstractRestService;
 
 @Path("/log")
 public class LogEntryRestService extends AbstractRestService {
@@ -56,7 +59,7 @@ public class LogEntryRestService extends AbstractRestService {
         
         logger.info("search() {}: ", transformed);
         
-        return super.getResponse(request, transformed, NO_MAX_AGE);
+        return super.getResponse(request, transformed, NO_CACHE);
     }
 
     /*
@@ -65,6 +68,7 @@ public class LogEntryRestService extends AbstractRestService {
     @GET
     @Path("/latest")
     @Produces("application/json")
+    @NoCache
     public Response latest(
         @Context Request request,
         @QueryParam("service") String service) {
@@ -76,7 +80,7 @@ public class LogEntryRestService extends AbstractRestService {
         
         logger.info("latest({}) : {}", service, result);
         
-        return super.getResponse(request, result, NO_MAX_AGE);
+        return Response.ok(result).build();
     }
 
     @GET
@@ -99,6 +103,6 @@ public class LogEntryRestService extends AbstractRestService {
         
         logger.info("services():{}", services);
         
-        return super.getResponse(request, services, NO_MAX_AGE);
+        return super.getResponse(request, services, NO_CACHE);
     }
 }

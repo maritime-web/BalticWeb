@@ -46,7 +46,7 @@ public class IceObservationRestService extends AbstractRestService {
     @GZIP
     public Response listIceChartProviders(@Context Request request) {
         logger.info("listIceChartProviders()");
-        return super.getResponse(request, iceObservationService.listIceChartProviders(), NO_MAX_AGE);
+        return super.getResponse(request, iceObservationService.listIceChartProviders(), NO_CACHE);
     }
 
     @GET
@@ -58,7 +58,7 @@ public class IceObservationRestService extends AbstractRestService {
 
         List<IceObservation> result = iceObservationService.listAvailableIceObservations(chartType);
         logger.info("listIceObservations({}) : ", chartType, result);
-        return super.getResponse(request, result, NO_MAX_AGE);
+        return super.getResponse(request, result, NO_CACHE);
     }
 
 }

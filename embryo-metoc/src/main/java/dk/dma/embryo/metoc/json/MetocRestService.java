@@ -72,6 +72,6 @@ public class MetocRestService extends AbstractRestService {
 
         logger.info("getMetocs({}) : {}", ids, metocs);
         
-        return super.getResponse(request, metocs, NO_MAX_AGE);
+        return super.getResponse(request, metocs, NO_CACHE);
     }
 }
