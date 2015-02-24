@@ -62,10 +62,11 @@ $(function() {
             $scope.message = null;
             $scope.alertMessages = null;
             $scope.editUser = {
-                login : user.login,
-                email : user.email,
-                role : user.role,
-                shipMmsi : user.shipMmsi
+            	login 			: user.login,
+                email 			: user.email,
+                role 			: user.role,
+                shipMmsi 		: user.shipMmsi,
+                accessToAisData : user.accessToAisData 
             };
             $scope.action = "Edit";
             $("#cLogin").focus();
@@ -82,6 +83,11 @@ $(function() {
         $scope.submitCreate = function() {
             $scope.message = "Saving " + $scope.editUser.login + " ...";
             $scope.alertMessages = null;
+            
+            if(typeof $scope.editUser.accessToAisData === 'undefined') {
+            	$scope.editUser.accessToAisData = false;
+            } 
+            
             UserService.create($scope.editUser, function() {
                 $scope.message = "User " + $scope.editUser.login + " created.";
                 $scope.action = "Edit";
