@@ -72,7 +72,7 @@ import dk.dma.embryo.vessel.persistence.VesselDao;
 @Startup
 public class AppDataServiceBean {
     
-    private final static boolean ACCESS_TO_AIS_DATA = true;
+    private static final boolean ACCESS_TO_AIS_DATA = true;
 
     @Inject
     private RealmDao realmDao;
