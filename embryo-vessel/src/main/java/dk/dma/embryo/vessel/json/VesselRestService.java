@@ -33,6 +33,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.client.ClientResponseFailure;
 import org.slf4j.Logger;
 
 import com.google.common.collect.Collections2;
@@ -107,9 +108,20 @@ public class VesselRestService extends AbstractRestService {
         */
         
         // The above statments are kept as comments because LONG tracks are disable because of instability.
-        historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
         
+        try {
+            historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
+        } catch (ClientResponseFailure crf) {
+
+            if(crf.getResponse().getStatus() == 404) {
+                return Response.noContent().build();
+            } else {
+                throw crf;
+            }
+        }
+
         return super.getResponse(request, historicalTrack, MAX_AGE_10_MINUTES);
+        
     }
     /*
     private List<TrackSingleLocation> historicalLongTrackWithTimeout(long mmsi) throws IOException {
