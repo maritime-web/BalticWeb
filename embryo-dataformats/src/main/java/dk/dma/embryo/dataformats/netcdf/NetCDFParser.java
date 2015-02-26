@@ -152,7 +152,7 @@ public class NetCDFParser {
     /**
      * Retrieve the metadata for the dataset.
      * 
-     * @return
+     * @return A map with the list of latitudes, longitudes and time units for the current dataset.
      */
     public Map<String, List<? extends Serializable>> getSimpleVars() {
         Map<String, List<? extends Serializable>> result = new HashMap<>();
@@ -166,8 +166,8 @@ public class NetCDFParser {
      * The time variable received from a NetCDF file is stored as a double. This
      * method converts it to a DateTime object.
      * 
-     * @param input
-     * @return
+     * @param input The double value to be converted.
+     * @return A DateTime object representing the date and time.
      */
     private Date getDateTime(double input) {
         BigDecimal[] values = BigDecimal.valueOf(input).divideAndRemainder(BigDecimal.ONE);
@@ -241,9 +241,9 @@ public class NetCDFParser {
     }
 
     /**
+     * Populate the ranges and lat/lon lists based on the current restriction values.
      * 
-     * 
-     * @param restriction
+     * @param restriction Restriction for the current processing.
      * @throws IOException
      * @throws InvalidRangeException
      */
@@ -306,7 +306,7 @@ public class NetCDFParser {
     }
 
     /**
-     * x
+     * Retrieves a value rounded to the provided number of digits.
      * 
      * @param value
      * @param digits

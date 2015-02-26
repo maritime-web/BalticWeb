@@ -22,6 +22,13 @@ import javax.persistence.Lob;
 
 import dk.dma.embryo.common.persistence.BaseEntity;
 
+/**
+ * The actual forecast data. Will not be loaded until a specific forecast has
+ * been requested.
+ * 
+ * @author avlund
+ *
+ */
 @Entity
 public class ForecastData extends BaseEntity<Long> {
 

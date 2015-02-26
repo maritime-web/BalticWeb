@@ -33,6 +33,16 @@ import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.dataformats.model.Forecast;
 import dk.dma.embryo.dataformats.service.ForecastService;
 
+/**
+ * Every REST call regarding NetCDF based forecasts from the client will end up
+ * in here.
+ * 
+ * Note that "forecasts" were originally named "prognoses", which is still
+ * apparent in legacy code here and there.
+ * 
+ * @author avlund
+ *
+ */
 @Path("/forecasts")
 public class ForecastRestService extends AbstractRestService {
     
