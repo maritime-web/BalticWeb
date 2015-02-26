@@ -60,25 +60,37 @@ function DistanceLayer() {
     };
 
     this.drawDistanceCircles = function(vessel) {
-        this.layers.lines.addFeatures(embryo.adt.createRing(vessel.x, vessel.y, vessel.msog * 3 * 1.852, 3,
-                vessel.mmsi, 'circle'), {
+        this.layers.lines.addFeatures(embryo.adt.createRing(vessel.x, vessel.y, embryo.getMaxSpeed(vessel) * 3 * 1.852, 3, vessel.mmsi, 'circle'), {
             id : vessel.mmsi,
             type : 'circle'
         });
 
-        if (vessel.msog) {
+        if (embryo.getMaxSpeed(vessel)) {
             var labelFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(vessel.x, vessel.y));
             // (parseFloat(vessel.x) + parseFloat(v.vessel.x)) / 2,
             // (parseFloat(vessel.y) + parseFloat(v.vessel.y)) / 2
+            
+            var maxSpeedLabel;
+            if(vessel.awsog) {
+            	maxSpeedLabel = "Based on ArcticWeb Max Speed: " + embryo.getMaxSpeed(vessel) + " kn";
+            } else if (vessel.ssog) {
+            	maxSpeedLabel = "Based on Service Speed: " + embryo.getMaxSpeed(vessel) + " kn";
+            } else if (vessel.sog) {
+            	maxSpeedLabel = "Based on Service Speed: " + embryo.getMaxSpeed(vessel) + " kn";
+            } else {
+            	maxSpeedLabel = "No speed found."; 
+            }
+            	
             labelFeature.attributes = {
                 id : vessel.mmsi,
                 type : 'circle',
-                label : "Based on maximum recorded SOG: " + vessel.msog + " kn",
+                label : maxSpeedLabel,
                 labelXOffset : 140,
                 labelYOffset : -15
             }
             this.layers.labels.addFeatures([ labelFeature ]);
         }
+        
     };
 
     this.drawNearestVessels = function(vessel, allVessels) {
@@ -86,11 +98,11 @@ function DistanceLayer() {
 
         $.each(allVessels, function(k, v) {
             if (v.mmsi != vessel.mmsi) {
-                if (v.msog) {
+                if (embryo.getMaxSpeed(v) > 0.0) {
                     distance = embryo.adt.measureDistanceGc(vessel.x, vessel.y, v.x, v.y);
                     var o = {
                         distance : distance,
-                        timeInMinutes : (distance / (v.msog * 1.852) / 60),
+                        timeInMinutes : (distance / (embryo.getMaxSpeed(v) * 1.852) / 60),
                         vessel : v
                     }
                     if (o.distance > 0) {
@@ -161,8 +173,8 @@ function DistanceLayer() {
                 label : v.vessel.name
                         + ": "
                         + formatNauticalMile(v.distance)
-                        + (v.vessel.msog == Infinity ? "" : ", " + formatHour(v.distance / (v.vessel.msog * 1.852))
-                                + " hours, Max SOG " + v.vessel.msog + " kn")
+                        + (embryo.getMaxSpeed(v.vessel) == Infinity ? "" : ", " + formatHour(v.distance / (embryo.getMaxSpeed(v.vessel) * 1.852))
+                        + " hours, Max SOG " + embryo.getMaxSpeed(v.vessel) + " kn")
             };
             this.layers.labels.addFeatures([ labelFeature ]);
         }

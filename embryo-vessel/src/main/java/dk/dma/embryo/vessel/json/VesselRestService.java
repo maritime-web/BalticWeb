@@ -47,6 +47,7 @@ import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.TrackSingleLocation;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel.MaxSpeedOrigin;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
@@ -275,12 +276,24 @@ public class VesselRestService extends AbstractRestService {
             vesselOverview.setType(type);
 
             vesselOverview.setInAW(false);
-            vesselOverview.setMsog(vessel.getMaxSpeed());
+            
+            mapMaxSpeed(vessel.getMaxSpeed(), vessel.getMaxSpeedOrigin(), vesselOverview);
             
             vesselOverviewsResponse.add(vesselOverview);
         }
 
         return vesselOverviewsResponse;
+    }
+
+    private void mapMaxSpeed(Double maxSpeed, MaxSpeedOrigin maxSpeedOrigin, VesselOverview vesselOverview) {
+
+        if(maxSpeedOrigin == MaxSpeedOrigin.AW) {
+            vesselOverview.setAwsog(maxSpeed);
+        } else if (maxSpeedOrigin == MaxSpeedOrigin.TABLE) {
+            vesselOverview.setSsog(maxSpeed);
+        } else if (maxSpeedOrigin == MaxSpeedOrigin.SOG) {
+            vesselOverview.setSog(maxSpeed);
+        } 
     }
 
     @GET

@@ -2,7 +2,20 @@
     var module = angular.module('embryo.vessel.service', []);
 
     var subscriptions = {};
+    
+    embryo.getMaxSpeed = function(vessel) {
 
+    	if(vessel.awsog) {
+    		return vessel.awsog;
+    	} else if (vessel.ssog) {
+    		return vessel.ssog
+    	} else if (vessel.sog) {
+    		return vessel.sog;
+    	} else {
+    		return 0.0;
+    	}
+    };
+    
     module.service('VesselService', [
             '$http',
             function($http) {
