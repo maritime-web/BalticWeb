@@ -197,9 +197,8 @@ public class AisReplicatorJob {
         Vessel awVesselFromDatabase = awVesselsAsMap.get(aisVessel.getMmsi());
         if(awVesselFromDatabase != null && awVesselFromDatabase.getMaxSpeed() != null && awVesselFromDatabase.getMaxSpeed().doubleValue() > 0) {
             aisVessel.setMaxSpeed(awVesselFromDatabase.getMaxSpeed().doubleValue());
+            aisVessel.setMaxSpeedOrigin(AisViewServiceAllAisData.Vessel.MaxSpeedOrigin.AW);
             isMaxSpeedSetOnAisVessel = true;
-            
-//            System.out.println(" Her 1");
         }
         
         // If not already set from ArcticWeb vessel in database -> set it vessel type
@@ -207,22 +206,22 @@ public class AisReplicatorJob {
             Double maxSpeedByVesselType = MaxSpeedByShipTypeMapper.mapAisShipTypeToMaxSpeed(aisVessel.getVesselType());
             if(maxSpeedByVesselType > 0.0) {
                 aisVessel.setMaxSpeed(maxSpeedByVesselType);
+                aisVessel.setMaxSpeedOrigin(AisViewServiceAllAisData.Vessel.MaxSpeedOrigin.TABLE);
                 isMaxSpeedSetOnAisVessel = true;
-//                System.out.println(" Her 2");
             }
         }
         
         // If not already set from ArcticWeb vessel in database or from vessel type -> set sog 
         if(!isMaxSpeedSetOnAisVessel && aisVessel.getSog() != null) {
             aisVessel.setMaxSpeed(aisVessel.getSog());
+            aisVessel.setMaxSpeedOrigin(AisViewServiceAllAisData.Vessel.MaxSpeedOrigin.SOG);
             isMaxSpeedSetOnAisVessel = true;
-//            System.out.println(" Her 3");
         }
         
         // Fallback - set 0.0
         if(!isMaxSpeedSetOnAisVessel) {
             aisVessel.setMaxSpeed(0.0);
-//            System.out.println(" Her 4");
+            aisVessel.setMaxSpeedOrigin(AisViewServiceAllAisData.Vessel.MaxSpeedOrigin.DEFAULT);
         }
     }
 

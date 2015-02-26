@@ -59,16 +59,16 @@ public class UserRestService extends AbstractRestService {
     @Path("/create")
     @Consumes("application/json")
     public void create(User user) {
-        logger.info("Creating new user " + user.getLogin() + "  in role " + user.getRole());
-        userService.create(user.getLogin(), user.getPassword(), user.getShipMmsi(), user.getEmail(), user.getRole());
+        logger.info("Creating new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAccessToAisData() + "'");
+        userService.create(user.getLogin(), user.getPassword(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAccessToAisData());
     }
 
     @PUT
     @Path("/edit")
     @Consumes("application/json")
     public void edit(User user) {
-        logger.info("Editing new user " + user.getLogin() + "  in role " + user.getRole());
-        userService.edit(user.getLogin(), user.getShipMmsi(), user.getEmail(), user.getRole());
+        logger.info("Editing new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAccessToAisData() + "'");
+        userService.edit(user.getLogin(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAccessToAisData());
     }
 
     

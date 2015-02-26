@@ -31,11 +31,11 @@ import dk.dma.embryo.user.model.SecuredUser;
 public class SecurityUtil{
 
     
-    public static SecuredUser createUser(String userName, String password, String email){
+    public static SecuredUser createUser(String userName, String password, String email, boolean accessToAisData){
        
         HashedPassword hashedPassword = hashPassword(password);
         
-        SecuredUser user = new SecuredUser(userName, hashedPassword.getPassword(), hashedPassword.getSalt(), email);
+        SecuredUser user = new SecuredUser(userName, hashedPassword.getPassword(), hashedPassword.getSalt(), email, accessToAisData);
         
         return user;
     }

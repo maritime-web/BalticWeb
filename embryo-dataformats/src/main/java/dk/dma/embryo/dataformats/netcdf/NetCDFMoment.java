@@ -24,6 +24,14 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ * A NetCDFMoment represents a "frozen" overview of everything's position in a
+ * specific moment in time, and therefore has a reference to a Map of
+ * NetCDFPoints and their corresponding entries.
+ * 
+ * @author avlund
+ *
+ */
 public class NetCDFMoment implements Serializable {
 
     private static final long serialVersionUID = 3229249855444903196L;
@@ -60,6 +68,14 @@ public class NetCDFMoment implements Serializable {
         return "Time: " + time + ", entries: " + entries;
     }
 
+    /**
+     * We use a custom JSON serializer here in order to avoid zero-filled values
+     * from being JSON rendered with digits (i.e. as 0.00). This is mainly to
+     * save on the space and bandwidth.
+     * 
+     * @author avlund
+     *
+     */
     public static class FloatSerializer extends JsonSerializer<Map<Integer, Float>> {
         @Override
         public void serialize(Map<Integer, Float> map, JsonGenerator generator, SerializerProvider provider) throws IOException {

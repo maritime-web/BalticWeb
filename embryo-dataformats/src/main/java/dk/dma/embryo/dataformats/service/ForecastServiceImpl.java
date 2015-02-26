@@ -135,13 +135,19 @@ public class ForecastServiceImpl implements ForecastService {
         return getForecastList(Type.CURRENT_FORECAST);
     }
 
+    /**
+     * Initiates parsing of the files currently ready for processing.
+     */
     @Override
     public void reParse() {
         if (!parsing) {
             logger.info("Re-parsing NetCDF files.");
             parsing = true;
             try {
+                // Loop through providers (DMI and FCOO so far)
                 for (String netcdfProvider : netcdfProviders.split(";")) {
+                    // If we - in theory - have more types than just forecasts
+                    // (previously called prognoses)
                     for (String netcdfType : netcdfTypes.values()) {
                         String folderName = propertyFileService.getProperty("embryo." + netcdfType + "." + netcdfProvider + ".localDirectory", true);
                         logger.info("NetCDF folder: " + folderName);
@@ -220,6 +226,15 @@ public class ForecastServiceImpl implements ForecastService {
         }
     }
 
+    /**
+     * Finds the estimated zipped size of the provided JSON data. As the content
+     * is zipped when sent to the client, this gives a better idea of the actual
+     * bandwidth cost than just using the length of the uncompressed string.
+     * 
+     * @param json JSON string to be zipped.
+     * @return Size of the resulting zipped product.
+     * @throws IOException
+     */
     private int getJsonSize(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -232,17 +247,53 @@ public class ForecastServiceImpl implements ForecastService {
         return out.toByteArray().length;
     }
 
+    /**
+     * Sends forecast data to the ForecastPersistService to be persisted to
+     * database. This is necessarily in its own class as it requires to be in a
+     * separate transaction (if everything was in the same transaction, it would
+     * likely timeout).
+     * 
+     * @param name
+     *            Forecast file name.
+     * @param json
+     *            Forecast JSON data.
+     * @param type
+     *            Forecast type.
+     * @param size
+     *            Zipped size of forecast.
+     * @param provider
+     *            Forecast provider.
+     * @param timestamp
+     *            Timestamp for forecast start.
+     * @param area
+     *            Area name for forecast.
+     */
     private void persistForecast(String name, String json, Type type, int size, Provider provider, long timestamp, String area) {
         Forecast forecast = new Forecast(name, json, type, size, provider, timestamp, area);
         forecastPersistService.persist(forecast);
     }
 
+    /**
+     * Converts a time stamp string into a Unix Time long (UTC).
+     * 
+     * @param timestampStr
+     *            String to be converted, in the pattern yyyyMMddHH.
+     * @return Number representing number of milliseconds since the Unix Epoch,
+     *         UTC.
+     */
     private long getTimestamp(String timestampStr) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHH");
         DateTime dateTime = formatter.withZoneUTC().parseDateTime(timestampStr);
         return dateTime.getMillis();
     }
 
+    /**
+     * Retrieves the area code from a file name.
+     * 
+     * @param filename
+     *            File name to parse for the area code.
+     * @return Area code.
+     */
     private String getArea(String filename) {
         if (filename.startsWith("hycom-cice")) {
             return filename.substring(11, filename.length() - 14);
@@ -252,6 +303,13 @@ public class ForecastServiceImpl implements ForecastService {
         return filename;
     }
 
+    /**
+     * Sets up the NetCDF variables and links them to the relevant forecast
+     * types.
+     * 
+     * @return A list of forecast types, each with a set of relevant variables
+     *         to use.
+     */
     public List<ForecastType> createData() {
 
         List<ForecastType> types = new ArrayList<>();
@@ -261,20 +319,19 @@ public class ForecastServiceImpl implements ForecastService {
         Map<String, NetCDFVar> iceVars = iceForecastType.getVars();
 
         // DMI
-        
+
         // Old vars
         NetCDFVar.addToMap(iceVars, "ice-concentration", "Ice concentration");
         NetCDFVar.addToMap(iceVars, "ice-thickness", "Ice thickness");
         NetCDFVar.addToMap(iceVars, "u-ice", "Ice speed east");
         NetCDFVar.addToMap(iceVars, "v-ice", "Ice speed north");
         NetCDFVar.addToMap(iceVars, "Icing", "Ice accretion risk");
-        
+
         // New vars
         NetCDFVar.addToMap(iceVars, "Ice_con", "Ice concentration");
         NetCDFVar.addToMap(iceVars, "Ice_thk", "Ice thickness");
         NetCDFVar.addToMap(iceVars, "Uice", "Ice speed east");
         NetCDFVar.addToMap(iceVars, "Vice", "Ice speed north");
-        
 
         // FCOO
         NetCDFVar.addToMap(iceVars, "ICE", "Ice concentration");
@@ -287,11 +344,11 @@ public class ForecastServiceImpl implements ForecastService {
         // DMI
         NetCDFVar.addToMap(currentVars, "u-current", "Current east");
         NetCDFVar.addToMap(currentVars, "v-current", "Current north");
-        
+
         // New vars
         NetCDFVar.addToMap(currentVars, "Uocean", "Current east");
         NetCDFVar.addToMap(currentVars, "Vocean", "Current north");
-        
+
         types.add(currentForecastType);
 
         ForecastType waveForecastType = new ForecastType("Wave forecast", "wave", Type.WAVE_FORECAST);
@@ -301,9 +358,9 @@ public class ForecastServiceImpl implements ForecastService {
         NetCDFVar.addToMap(waveVars, "var229", "Significant wave height");
         NetCDFVar.addToMap(waveVars, "var230", "Wave direction");
         NetCDFVar.addToMap(waveVars, "var232", "Wave mean period");
-        
+
         // New var
-        
+
         NetCDFVar.addToMap(waveVars, "SWH", "Significant wave height");
         NetCDFVar.addToMap(waveVars, "MWD", "Mean wave direction");
         NetCDFVar.addToMap(waveVars, "MWP", "Mean wave period");
@@ -325,9 +382,9 @@ public class ForecastServiceImpl implements ForecastService {
         // DMI
         NetCDFVar.addToMap(windVars, "var245", "Wind speed");
         NetCDFVar.addToMap(windVars, "var249", "Wind direction");
-        
+
         // New vars
-        
+
         NetCDFVar.addToMap(windVars, "Uatm", "Wind speed east");
         NetCDFVar.addToMap(windVars, "Vatm", "Wind speed north");
 
@@ -340,9 +397,14 @@ public class ForecastServiceImpl implements ForecastService {
         return types;
     }
 
+    /**
+     * Create restriction objects to be used in the parsing procedure.
+     * 
+     * @return Areas and their restrictions sorted by providers.  
+     */
     public Map<Provider, Map<String, NetCDFRestriction>> initRestrictions() {
         Map<Provider, Map<String, NetCDFRestriction>> restrictions = new HashMap<>();
-        
+
         // NetCDFRestriction emptyRestriction = new NetCDFRestriction();
         NetCDFRestriction bottomLeftRestriction = new NetCDFRestriction(MIN_LAT, MID_LAT, MIN_LON, MID_LON);
         NetCDFRestriction bottomRightRestriction = new NetCDFRestriction(MIN_LAT, MID_LAT, MID_LON, MAX_LON);
@@ -367,7 +429,7 @@ public class ForecastServiceImpl implements ForecastService {
         fcooRestrictions.put("Greenland NW", topLeftRestriction);
         fcooRestrictions.put("Greenland NE", topRightRestriction);
         restrictions.put(Provider.FCOO, fcooRestrictions);
-        
+
         return restrictions;
     }
 

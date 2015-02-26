@@ -57,7 +57,8 @@ embryo.additionalInformation.nearestShips = {
     available : function(vessel, vesselDetails) {
         var vessels = embryo.vessel.allVessels();
         for (index in vessels) {
-            if (vessels[index].msog) {
+        	
+            if (embryo.getMaxSpeed(vessels[index])) {
                 return true;
             }
         }
@@ -88,7 +89,7 @@ embryo.additionalInformation.distanceCircles = {
         this.layer = DistanceLayerSingleton.getInstance();
     },
     available : function(vessel, vesselDetails) {
-        return vessel.msog > 0;
+        return embryo.getMaxSpeed(vessel) > 0;
     },
     show : function(vessel, vesselDetails) {
         this.layer.drawDistanceCircles(vessel);

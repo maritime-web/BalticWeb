@@ -18,31 +18,39 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The NetCDFResult is what ends up being serialized as JSON data. It consists
+ * of user friendly names for the variables, metadata (lat, lon and time) and
+ * the actual data points in relation to the variables and metadata.
+ * 
+ * @author avlund
+ *
+ */
 public class NetCDFResult {
     private Map<String, Integer> variables;
     private Map<String, List<? extends Serializable>> metadata;
     private Map<Integer, NetCDFMoment> data;
-    
+
     public NetCDFResult(Map<String, Integer> variables, Map<String, List<? extends Serializable>> metadata, Map<Integer, NetCDFMoment> data) {
         this.variables = variables;
         this.metadata = metadata;
         this.data = data;
     }
-    
+
     public Map<String, Integer> getVariables() {
         return variables;
     }
-    
+
     public Map<String, List<? extends Serializable>> getMetadata() {
         return metadata;
     }
-    
+
     public Map<Integer, NetCDFMoment> getData() {
         return data;
     }
-    
+
     @Override
     public String toString() {
-        return "NetCDFResult: Variables: " + variables.toString() + ", Metadata: " + metadata.toString(); 
+        return "NetCDFResult: Variables: " + variables.toString() + ", Metadata: " + metadata.toString();
     }
 }

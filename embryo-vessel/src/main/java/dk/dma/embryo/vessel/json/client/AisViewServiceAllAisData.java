@@ -211,6 +211,11 @@ public interface AisViewServiceAllAisData {
         private String vesselType;
         private Double width;
         private Double maxSpeed;
+        private MaxSpeedOrigin maxSpeedOrigin;
+        
+        public enum MaxSpeedOrigin {
+            AW, TABLE, SOG, DEFAULT
+        }
 
         public String getCountry() {
             return country;
@@ -413,6 +418,13 @@ public interface AisViewServiceAllAisData {
         }
         public void setMaxSpeed(Double maxSpeed) {
             this.maxSpeed = maxSpeed;
+        }
+        
+        public MaxSpeedOrigin getMaxSpeedOrigin() {
+            return maxSpeedOrigin;
+        }
+        public void setMaxSpeedOrigin(MaxSpeedOrigin maxSpeedOrigin) {
+            this.maxSpeedOrigin = maxSpeedOrigin;
         }
     }
 }

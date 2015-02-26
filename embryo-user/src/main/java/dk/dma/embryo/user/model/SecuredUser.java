@@ -81,9 +81,10 @@ public class SecuredUser extends BaseEntity<Long> {
         created = DateTime.now(DateTimeZone.UTC);
     }
 
-    public SecuredUser(String userName, String hashedPassword, byte[] salt, String email) {
+    public SecuredUser(String userName, String hashedPassword, byte[] salt, String email, boolean accessToAisData) {
         this(userName, hashedPassword, salt);
         setEmail(email);
+        setAccessToAisData(accessToAisData);
     }
 
     public void addSelectionGroup(SelectionGroup group) {
