@@ -14,14 +14,14 @@
  */
 package dk.dma.embryo.common.json;
 
+import org.slf4j.Logger;
+
 import javax.inject.Inject;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-
-import org.slf4j.Logger;
 
 /* Copyright (c) 2011 Danish Maritime Authority.
 *
@@ -95,8 +95,8 @@ public abstract class AbstractRestService {
         builder.cacheControl(cacheControl);
         builder.tag(entityTag);
         Response response = builder.build();
-        
-        logger.info("HTTP STATUS CODE: " + response.getStatus() + " - HASHCODE: " + Integer.toString(data.hashCode()));
+
+        logger.debug("HTTP STATUS CODE: " + response.getStatus() + " - HASHCODE: " + Integer.toString(data.hashCode()));
         
         return response;
     }
@@ -116,11 +116,11 @@ public abstract class AbstractRestService {
         
         if(settings == CacheControlSettings.MAXAGE_INCLUDE) {
             cc.setMaxAge(ageInSeconds);
-            logger.info("CacheControl is activated for this service and maxAge is -> " + ageInSeconds);
+            logger.debug("CacheControl is activated for this service and maxAge is -> " + ageInSeconds);
         }
         if(settings == CacheControlSettings.MAXAGE_DEFAULT) {
             cc.setNoCache(true);
-            logger.info("CacheControl is NOT activated for this service.");
+            logger.debug("CacheControl is NOT activated for this service.");
         }
         cc.setPrivate(false);
         cc.setNoTransform(false);
