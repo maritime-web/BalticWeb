@@ -1,0 +1,57 @@
+<div accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
+    <div accordion-group heading="Operations">
+        <!-- style="height: 300px;" -->
+        <div x-ng-controller="OperationsControl">
+            <div id="shortdesc">
+                <div x-ng-if="alertMessages" class="alert alert-danger">
+                    <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
+                </div>
+            </div>
+
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr x-ng-repeat="sar in sars">
+                    <td>{{sar.name}}</td>
+                    <td></td>
+                    <td><a href=# x-ng-click="view($event, sar)">view</a></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <hr/>
+
+            <input type="text" x-ng-model="newName"/>
+
+            <span class="pull-right">
+                <button type="button" x-ng-click="newSar()" class="btn btn-primary btn-sm">Add SAR</button>
+            </span>
+        </div>
+    </div>
+    <div accordion-group heading="Message log">
+        <!-- style="height: 300px;" -->
+
+        <div x-ng-controller="LogControl">
+            <p x-ng-repeat="log in logs" class="log">
+                <span class="user">{{log.user}}:</span>
+                <span class="stmt">{{log.stmt}}</span>
+            </p>
+
+            <hr/>
+            <div>
+                <textarea rows="4" type="text" x-ng-model="msg"/>
+            </div>
+
+            <span class="pull-right">
+                <button type="button" x-ng-click="send()" class="btn btn-primary btn-sm">Send</button>
+            </span>
+
+        </div>
+    </div>
+</div>
