@@ -76,7 +76,7 @@ function DistanceLayer() {
             } else if (vessel.ssog) {
             	maxSpeedLabel = "Based on Service Speed: " + embryo.getMaxSpeed(vessel) + " kn";
             } else if (vessel.sog) {
-            	maxSpeedLabel = "Based on Service Speed: " + embryo.getMaxSpeed(vessel) + " kn";
+                maxSpeedLabel = "Based on SOG: " + embryo.getMaxSpeed(vessel) + " kn";
             } else {
             	maxSpeedLabel = "No speed found."; 
             }
@@ -165,6 +165,15 @@ function DistanceLayer() {
             }) ]);
 
             var labelFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(v.vessel.x, v.vessel.y));
+            var maxSpeedLabel;
+            if (vessel.awsog) {
+                maxSpeedLabel = "AW Max Speed: " + embryo.getMaxSpeed(vessel) + " kn";
+            } else if (vessel.ssog) {
+                maxSpeedLabel = "Service Speed: " + embryo.getMaxSpeed(vessel) + " kn";
+            } else if (vessel.sog) {
+                maxSpeedLabel = "SOG: " + embryo.getMaxSpeed(vessel) + " kn";
+            }
+
             labelFeature.attributes = {
                 id : vessel.mmsi,
                 type : 'nearest',
@@ -174,7 +183,7 @@ function DistanceLayer() {
                         + ": "
                         + formatNauticalMile(v.distance)
                         + (embryo.getMaxSpeed(v.vessel) == Infinity ? "" : ", " + formatHour(v.distance / (embryo.getMaxSpeed(v.vessel) * 1.852))
-                        + " hours, Max SOG " + embryo.getMaxSpeed(v.vessel) + " kn")
+                + " hours, " + maxSpeedLabel)
             };
             this.layers.labels.addFeatures([ labelFeature ]);
         }
