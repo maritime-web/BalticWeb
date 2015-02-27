@@ -18,6 +18,8 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -30,8 +32,12 @@ import javax.ejb.Startup;
 @Startup
 public class FirebaseListener {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(FirebaseListener.class);
+    
     @PostConstruct
     public void startup() throws Exception {
+
+
         Firebase.setDefaultConfig(Firebase.getDefaultConfig());
 
         Firebase myFirebaseRef = new Firebase("http://incandescent-torch-4183.firebaseio.com/");
@@ -39,40 +45,40 @@ public class FirebaseListener {
 /*        myFirebaseRef.child("logs").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+                LOGGER.info(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
             }
             @Override public void onCancelled(FirebaseError error) {
-                System.out.println(error.getMessage());  //prints "Do you have data? You'll love Firebase."
+                LOGGER.info(error.getMessage());  //prints "Do you have data? You'll love Firebase."
             }
         });
 */
         myFirebaseRef.child("messages").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String s) {
-                System.out.println("added: " + s + " " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+                LOGGER.info("added: " + s + " " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
             }
 
             @Override
             public void onChildRemoved(DataSnapshot snapshot) {
-                System.out.println("removed: " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+                LOGGER.info("removed: " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
 
             }
 
             @Override
             public void onChildChanged(DataSnapshot snapshot, String s) {
-                System.out.println("changed: " + s + " " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+                LOGGER.info("changed: " + s + " " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
 
             }
 
             @Override
             public void onChildMoved(DataSnapshot snapshot, String s) {
-                System.out.println("moved: " + s + " " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+                LOGGER.info("moved: " + s + " " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
 
             }
 
             @Override
             public void onCancelled(FirebaseError var1) {
-                System.out.println("cancelled");
+                LOGGER.info("cancelled");
             }
         });
     }
