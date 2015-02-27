@@ -14,6 +14,11 @@
  */
 package dk.dma.embryo.dataformats.json;
 
+import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.dataformats.service.ForecastService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,12 +27,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.dataformats.service.ForecastService;
 
 /**
  * Every REST call regarding NetCDF based forecasts from the client will end up
@@ -53,7 +52,7 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response listIcePrognoses(@Context Request request) {
-        logger.info("listIcePrognoses()");
+        logger.debug("listIcePrognoses()");
         return super.getResponse(request, forecastService.listAvailableIceForecasts(), NO_CACHE);
     }
 
@@ -62,7 +61,7 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response getIcePrognosis(@PathParam(value = "id") long id, @Context Request request) {
-        logger.info("getIcePrognosis({})", id);
+        logger.debug("getIcePrognosis({})", id);
         String data = forecastService.getForecast(id).getData();
         return super.getResponse(request, data, MAX_AGE_1_DAY);
     }
@@ -72,7 +71,7 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response listWavePrognoses(@Context Request request) {
-        logger.info("listWavePrognoses()");
+        logger.debug("listWavePrognoses()");
         return super.getResponse(request, forecastService.listAvailableWaveForecasts(), NO_CACHE);
     }
 
@@ -81,7 +80,7 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response getWavePrognosis(@PathParam(value = "id") long id, @Context Request request) {
-        logger.info("getWavePrognosis({})", id);
+        logger.debug("getWavePrognosis({})", id);
         String data = forecastService.getForecast(id).getData();
         return getResponse(request, data, MAX_AGE_1_DAY);
     }
@@ -91,7 +90,7 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response listCurrentPrognoses(@Context Request request) {
-        logger.info("listCurrentPrognoses()");
+        logger.debug("listCurrentPrognoses()");
         return super.getResponse(request, forecastService.listAvailableCurrentForecasts(), NO_CACHE);
     }
 
@@ -100,7 +99,7 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response getCurrentPrognosis(@PathParam(value = "id") long id, @Context Request request) {
-        logger.info("getCurrentPrognosis({})", id);
+        logger.debug("getCurrentPrognosis({})", id);
         
         String data = forecastService.getForecast(id).getData();
         return getResponse(request, data, MAX_AGE_1_DAY);
