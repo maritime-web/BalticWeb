@@ -14,8 +14,6 @@
  */
 package dk.dma.embryo.dataformats.json;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,11 +24,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.dataformats.model.Forecast;
 import dk.dma.embryo.dataformats.service.ForecastService;
 
 /**
@@ -56,10 +52,9 @@ public class ForecastRestService extends AbstractRestService {
     @Path("/ice")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<Forecast> listIcePrognoses() {
+    public Response listIcePrognoses(@Context Request request) {
         logger.info("listIcePrognoses()");
-        return forecastService.listAvailableIceForecasts();
+        return super.getResponse(request, forecastService.listAvailableIceForecasts(), NO_CACHE);
     }
 
     @GET
@@ -76,10 +71,9 @@ public class ForecastRestService extends AbstractRestService {
     @Path("/waves")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<Forecast> listWavePrognoses() {
+    public Response listWavePrognoses(@Context Request request) {
         logger.info("listWavePrognoses()");
-        return forecastService.listAvailableWaveForecasts();
+        return super.getResponse(request, forecastService.listAvailableWaveForecasts(), NO_CACHE);
     }
 
     @GET
@@ -96,10 +90,9 @@ public class ForecastRestService extends AbstractRestService {
     @Path("/currents")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<Forecast> listCurrentPrognoses() {
+    public Response listCurrentPrognoses(@Context Request request) {
         logger.info("listCurrentPrognoses()");
-        return forecastService.listAvailableCurrentForecasts();
+        return super.getResponse(request, forecastService.listAvailableCurrentForecasts(), NO_CACHE);
     }
 
     @GET
