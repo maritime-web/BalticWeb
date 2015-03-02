@@ -33,6 +33,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.client.ClientResponseFailure;
 import org.slf4j.Logger;
 
 import com.google.common.collect.Collections2;
@@ -46,6 +47,7 @@ import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.TrackSingleLocation;
+import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel.MaxSpeedOrigin;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
@@ -107,9 +109,20 @@ public class VesselRestService extends AbstractRestService {
         */
         
         // The above statments are kept as comments because LONG tracks are disable because of instability.
-        historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
         
+        try {
+            historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
+        } catch (ClientResponseFailure crf) {
+
+            if(crf.getResponse().getStatus() == 404) {
+                return Response.noContent().build();
+            } else {
+                throw crf;
+            }
+        }
+
         return super.getResponse(request, historicalTrack, MAX_AGE_10_MINUTES);
+        
     }
     /*
     private List<TrackSingleLocation> historicalLongTrackWithTimeout(long mmsi) throws IOException {
@@ -263,12 +276,24 @@ public class VesselRestService extends AbstractRestService {
             vesselOverview.setType(type);
 
             vesselOverview.setInAW(false);
-            vesselOverview.setMsog(vessel.getMaxSpeed());
+            
+            mapMaxSpeed(vessel.getMaxSpeed(), vessel.getMaxSpeedOrigin(), vesselOverview);
             
             vesselOverviewsResponse.add(vesselOverview);
         }
 
         return vesselOverviewsResponse;
+    }
+
+    private void mapMaxSpeed(Double maxSpeed, MaxSpeedOrigin maxSpeedOrigin, VesselOverview vesselOverview) {
+
+        if(maxSpeedOrigin == MaxSpeedOrigin.AW) {
+            vesselOverview.setAwsog(maxSpeed);
+        } else if (maxSpeedOrigin == MaxSpeedOrigin.TABLE) {
+            vesselOverview.setSsog(maxSpeed);
+        } else if (maxSpeedOrigin == MaxSpeedOrigin.SOG) {
+            vesselOverview.setSog(maxSpeed);
+        } 
     }
 
     @GET

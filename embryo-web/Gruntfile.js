@@ -222,6 +222,12 @@ module.exports = function (grunt) {
                         from: 'css/cached/cdn.netdna', // string replacement
                         to: '//netdna.bootstrapcdn.com'
                     },
+                    {
+                        from: 'js/cached/map/cdn.firebase', // string replacement
+                        to: '//cdn.firebase.com/'
+                    },
+
+
                 ]
             }
         },
@@ -258,6 +264,34 @@ module.exports = function (grunt) {
                         'css/arcticweb-map.css',
                         'css/arcticweb-map-ext-lib.css',
                         'js/arcticweb-map.js',
+                        'css/cached/cdn.netdna/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0',
+                        'rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2'
+                    ],
+                    patterns: [
+                        'src/main/webapp/css/cached/**',
+                        'src/main/webapp/js/cached/common/**',
+                        'src/main/webapp/js/cached/map/**',
+                        'src/main/webapp/partials/common/*.html',
+                        'src/main/webapp/partials/*.html',
+                        'src/main/webapp/img/**/*.png',
+                        'src/main/webapp/img/**/*.jpg',
+                        'src/main/webapp/img/**/*.gif',
+                        '!src/main/webapp/img/front/**/*', // except the 'img/front/' subtree
+                        '!src/main/webapp/img/ext/**/*', // except the 'img/front/' subtree
+                        '!src/main/webapp/img/unused/**/*', // except the 'img/front/' subtree
+                        '!**/README.MD'
+                    ]
+                },
+                network: "*"
+            },
+            map2: {
+                dest: 'target/build/map2.appcache',
+                cache: {
+                    literals: [//as is in the "CACHE:" section
+                        'map.html',
+                        'css/arcticweb-map2.css',
+                        'css/arcticweb-map2-ext-lib.css',
+                        'js/arcticweb-map2.js',
                         'css/cached/cdn.netdna/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0',
                         'rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2'
                     ],
@@ -366,7 +400,7 @@ module.exports = function (grunt) {
     //   'copy:gen2Build', 'copy:toTarget', 'appcache:map', 'appcache:front']);
 
     grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'replace:run', 'concat', 'usemin',
-        'copy:gen2Build', 'appcache:map', 'appcache:front', 'replace:run', 'copy:toTarget']);
+        'copy:gen2Build', 'appcache:map', 'appcache:map2', 'appcache:front', 'replace:run', 'copy:toTarget']);
 
     // 'clean:dist',
     // 'useminPrepare',

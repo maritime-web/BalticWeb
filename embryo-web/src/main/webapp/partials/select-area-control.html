@@ -1,8 +1,12 @@
 <div accordion close-others="true" e-left-bar open-first="true" class="controlPanel2">
 	<div accordion-group heading="Setup Areas of Interest"> 
 	<!-- style="height: 300px;" -->
-		<p>Areas of Interest are user-defined sections where you are interested in seeing AIS data (and, eventually, other data as well). By using predefined areas, you only download what is absolutely necessary, providing a faster and less pricey experience.</p>
-		<p>Have in mind that most of ArcticWeb's AIS data is from Norwegian satellites and may not provide a complete overview.</p> 
+        <p>Areas of Interest are user-defined geographical areas from which you are interested in seeing AIS data. By
+            using predefined areas, you only download what is absolutely necessary, providing a faster and less pricey
+            experience.</p>
+
+        <p>Have in mind that most of ArcticWeb's AIS data is from Norwegian satellites and may not provide a complete
+            AIS overview.</p>
 		<div x-ng-controller="SelectAreaController">
 		    <div id="shortdesc">
 		    	<div x-ng-if="alertMessages" class="alert alert-danger">

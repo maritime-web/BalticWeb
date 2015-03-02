@@ -14,7 +14,10 @@
  */
 package dk.dma.embryo.dataformats.json;
 
-import java.util.List;
+import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.dataformats.service.ForecastService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -25,14 +28,16 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.dataformats.model.Forecast;
-import dk.dma.embryo.dataformats.service.ForecastService;
-
+/**
+ * Every REST call regarding NetCDF based forecasts from the client will end up
+ * in here.
+ * 
+ * Note that "forecasts" were originally named "prognoses", which is still
+ * apparent in legacy code here and there.
+ * 
+ * @author avlund
+ *
+ */
 @Path("/forecasts")
 public class ForecastRestService extends AbstractRestService {
     
@@ -46,10 +51,9 @@ public class ForecastRestService extends AbstractRestService {
     @Path("/ice")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<Forecast> listIcePrognoses() {
-        logger.info("listIcePrognoses()");
-        return forecastService.listAvailableIceForecasts();
+    public Response listIcePrognoses(@Context Request request) {
+        logger.debug("listIcePrognoses()");
+        return super.getResponse(request, forecastService.listAvailableIceForecasts(), NO_CACHE);
     }
 
     @GET
@@ -57,7 +61,7 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response getIcePrognosis(@PathParam(value = "id") long id, @Context Request request) {
-        logger.info("getIcePrognosis({})", id);
+        logger.debug("getIcePrognosis({})", id);
         String data = forecastService.getForecast(id).getData();
         return super.getResponse(request, data, MAX_AGE_1_DAY);
     }
@@ -66,10 +70,9 @@ public class ForecastRestService extends AbstractRestService {
     @Path("/waves")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<Forecast> listWavePrognoses() {
-        logger.info("listWavePrognoses()");
-        return forecastService.listAvailableWaveForecasts();
+    public Response listWavePrognoses(@Context Request request) {
+        logger.debug("listWavePrognoses()");
+        return super.getResponse(request, forecastService.listAvailableWaveForecasts(), NO_CACHE);
     }
 
     @GET
@@ -77,7 +80,7 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response getWavePrognosis(@PathParam(value = "id") long id, @Context Request request) {
-        logger.info("getWavePrognosis({})", id);
+        logger.debug("getWavePrognosis({})", id);
         String data = forecastService.getForecast(id).getData();
         return getResponse(request, data, MAX_AGE_1_DAY);
     }
@@ -86,10 +89,9 @@ public class ForecastRestService extends AbstractRestService {
     @Path("/currents")
     @Produces("application/json")
     @GZIP
-    @NoCache
-    public List<Forecast> listCurrentPrognoses() {
-        logger.info("listCurrentPrognoses()");
-        return forecastService.listAvailableCurrentForecasts();
+    public Response listCurrentPrognoses(@Context Request request) {
+        logger.debug("listCurrentPrognoses()");
+        return super.getResponse(request, forecastService.listAvailableCurrentForecasts(), NO_CACHE);
     }
 
     @GET
@@ -97,7 +99,7 @@ public class ForecastRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response getCurrentPrognosis(@PathParam(value = "id") long id, @Context Request request) {
-        logger.info("getCurrentPrognosis({})", id);
+        logger.debug("getCurrentPrognosis({})", id);
         
         String data = forecastService.getForecast(id).getData();
         return getResponse(request, data, MAX_AGE_1_DAY);

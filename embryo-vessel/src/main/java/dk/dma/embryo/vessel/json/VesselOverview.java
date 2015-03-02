@@ -26,7 +26,14 @@ public class VesselOverview {
     private String callSign;
     private boolean moored;
     private boolean inAW;
-  
+
+    /**
+     * Only one of "sog", "ssog" or "awsog" is set at a time.
+     */
+    private Double sog;
+    private Double ssog;
+    private Double awsog;
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -39,7 +46,9 @@ public class VesselOverview {
         result = prime * result + (inAW ? 1231 : 1237);
         result = prime * result + (int) (mmsi ^ (mmsi >>> 32));
         result = prime * result + (moored ? 1231 : 1237);
-        result = prime * result + ((msog == null) ? 0 : msog.hashCode());
+        result = prime * result + ((awsog == null) ? 0 : awsog.hashCode());
+        result = prime * result + ((ssog == null) ? 0 : ssog.hashCode());
+        result = prime * result + ((sog == null) ? 0 : sog.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         temp = Double.doubleToLongBits(x);
@@ -50,10 +59,6 @@ public class VesselOverview {
         return result;
     }
     
-    /**
-     * The maximum speed over ground recorded from Historical track of the vessel
-     */
-    private Double msog;
 
     public double getX() {
         return x;
@@ -118,10 +123,24 @@ public class VesselOverview {
         this.angle = angle;
     }
 
-    public Double getMsog() {
-        return msog;
+    public Double getSog() {
+        return sog;
     }
-    public void setMsog(Double msog) {
-        this.msog = msog;
+    public void setSog(Double sog) {
+        this.sog = sog;
+    }
+
+    public Double getSsog() {
+        return ssog;
+    }
+    public void setSsog(Double ssog) {
+        this.ssog = ssog;
+    }
+
+    public Double getAwsog() {
+        return awsog;
+    }
+    public void setAwsog(Double awsog) {
+        this.awsog = awsog;
     }
 }

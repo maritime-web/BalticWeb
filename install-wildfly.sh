@@ -5,9 +5,12 @@
 #
 
 WILDFLY=wildfly-8.2.0.Final
-BASE_DIR=$PWD
+# on Windows
+# BASE_DIR=$PWD
+# on Linux
+BASE_DIR=$(pwd)
 # Make it work on Windows
-BASE_DIR=${BASE_DIR/\/c\//\/c:\/}
+# BASE_DIR=${BASE_DIR/\/c\//\/c:\/}
 
 echo "Installing $WILDFLY"
 rm -rf $WILDFLY

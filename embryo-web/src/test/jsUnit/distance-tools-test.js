@@ -10,7 +10,7 @@ describe('Distance Tools', function() {
                     mmsi : 0987654
                 }, {
                     mmsi : 76859403,
-                    msog : 0
+                    ssog : 0
                 } ];
             };
 
@@ -23,7 +23,7 @@ describe('Distance Tools', function() {
             embryo.vessel.allVessels = function() {
                 return [ {
                     mmsi : 12345678,
-                    msog : 1
+                    ssog : 1
                 }, {
                     mmsi : 0987654
                 }, {

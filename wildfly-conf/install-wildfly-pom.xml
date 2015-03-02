@@ -55,7 +55,7 @@
                                             <version>${org.wildfly}</version>
                                             <type>zip</type>
                                             <overWrite>true</overWrite>
-                                            <outputDirectory>../${basedir}</outputDirectory>
+                                            <outputDirectory>${basedir}/..</outputDirectory>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>

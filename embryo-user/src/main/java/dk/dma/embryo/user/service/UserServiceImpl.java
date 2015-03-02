@@ -76,16 +76,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(String login, String password, Long mmsi, String email, String role) {
-        SecuredUser su = SecurityUtil.createUser(login, password, email);
+    public void create(String login, String password, Long mmsi, String email, String role, boolean accessToAisData) {
+        SecuredUser su = SecurityUtil.createUser(login, password, email, accessToAisData);
         su.setRole(createRole(role, mmsi));
         realmDao.saveEntity(su);
     }
 
-    public void edit(String login, Long mmsi, String email, String role) {
+    public void edit(String login, Long mmsi, String email, String role, boolean accessToAisData) {
         SecuredUser user = realmDao.findByUsername(login);
 
         user.setEmail(email);
+        user.setAccessToAisData(accessToAisData);
 
         if (user.getRole() != null && !user.getRole().getLogicalName().equalsIgnoreCase(role)) {
             if (user.getRole().getClass() == SailorRole.class) {

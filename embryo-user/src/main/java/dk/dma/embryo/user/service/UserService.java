@@ -27,9 +27,9 @@ public interface UserService {
 
     List<SecuredUser> list();
 
-    void create(String login, String password, Long mmsi, String email, String role);
+    void create(String login, String password, Long mmsi, String email, String role, boolean accessToAisData);
 
-    void edit(String login, Long mmsi, String email, String role);
+    void edit(String login, Long mmsi, String email, String role, boolean accessToAisData);
 
     void delete(String login);
 
