@@ -21,6 +21,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
@@ -37,11 +39,13 @@ public interface AisViewServiceAllAisData {
     String LOOK_BACK_PT120H     = "PT120H";
     
     /**
+     * Fetch the historical tracks from AisTrack for the given vessel
      * example URL: http://ais.e-navigation.net/aw8080/target/vessel/track/219000217?minDist=500&age=PT12H
      * 
-     * @param mmsi
-     * @param pastTrack
-     * @return
+     * @param mmsi the MMSI of the vessel
+     * @param minimumDistanceBetweenPositions minimum distance between positions
+     * @param age the duration in iso-8601 format
+     * @return the past track positions
      */
     @GET
     @Path("/vessel/track/{mmsi}")
@@ -51,11 +55,13 @@ public interface AisViewServiceAllAisData {
         @QueryParam("age") String age);
     
     /**
+     * Fetch the historical tracks from AisStore for the given vessel
      * example URL: http://ais.e-navigation.net/aw8080/target/vessel/longtrack/219000217?minDist=500&age=PT12H
-     * 
-     * @param mmsi
-     * @param pastTrack
-     * @return
+     *
+     * @param mmsi the MMSI of the vessel
+     * @param minimumDistanceBetweenPositions minimum distance between positions
+     * @param age the duration in iso-8601 format
+     * @return the past track positions
      */
     @GET
     @Path("/vessel/longtrack/{mmsi}")
@@ -179,7 +185,9 @@ public interface AisViewServiceAllAisData {
             this.maxSpeed = maxSpeed;
         }
     }
-    
+
+    @JsonIgnoreProperties(ignoreUnknown=true)
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Vessel {
 
         private String country;
