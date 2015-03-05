@@ -1,0 +1,108 @@
+<div x-ng-controller="SAROperationEditController">
+    <div e-reporting-panel x-ng-if="provider.doShow" id="sarOperationEditPanel">
+        <h2>
+            <a class="close" href="#" style="float: right" x-ng-click="close($event)">&times;</a>SAR Operation
+        </h2>
+
+        <div>
+            <form x-ng-if="page == 'typeSelection'" name="sarOperationForm" class="form-horizontal" novalidate>
+                <div x-ng-show="alertMessages" class="alert alert-danger">
+                    <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
+                </div>
+                <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+                <div class="control-group form-group row">
+                    <label class="e-control-label">Sar Operation Type</label>
+
+                    <div class="controls col-xs-5">
+                        <select ng-model="sar.selectedType" name="sar.selectedType" required
+                                class="input-sm form-control"
+                                x-ng-options="sarTypeData.text for sarTypeData in sarTypeDatas">
+                            <option value="rapidResponse">Rapid response</option>
+                            <option value="datumPoint">Datum Point</option>
+                            <option value="datumLine">Datum Line</option>
+                            <option value="backTrack">Back Track</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.RapidResponse">
+                        {{sar.selectedType.text}} should be used when the rescue vessel is within the designated
+                        search area in a relatively short time span, i.e. 1-2 hours after last known position (LKP).
+                    </p>
+
+                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumPoint">
+                        {{sar.selectedType.text}} is a calculation method used when the rescue vessel arrives to the
+                        designated search area two hours or more later than the last known position (LKP) was reported.
+                    </p>
+
+                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumLine">
+                        {{sar.selectedType.text}} is used when an object is missing and the last known position (LKP) is
+                        unknown, but an assumed route is known.
+                    </p>
+
+                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.BackTrack">
+                        {{sar.selectedType.text}} is used when an object connected to the missing vessel has
+                        been located. By reversing the objects movements a possible search area can be established.
+                    </p>
+                </div>
+
+                <div class="control-group form-group row">
+                    <img width="400px" ng-if="sar.selectedType" ng-src="{{sar.selectedType.img}}"/>
+                </div>
+
+                <div class="row">
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-sm" x-ng-click="back()">Back</button> &nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="next()">Next</button>
+                    </span>
+                </div>
+            </form>
+            <form x-ng-if="page == 'sarInputs'" name="sarOperationForm2" class="form-horizontal" novalidate>
+                <div x-ng-show="alertMessages" class="alert alert-danger">
+                    <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
+                </div>
+                <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+                <div class="control-group form-group row">
+                    <label class="e-control-label" for="sarNo">Sar No.</label>
+
+                    <div class="controls col-xs-3">
+                        <input x-ng-model="sar.no" id="sarNo" , name="sarNo" class="form-control input-sm" required/>
+                    </div>
+                </div>
+
+                <div class="control-group form-group row">
+                    <label class="e-control-label">Time of last known position</label>
+
+                    <div class="controls col-xs-3">
+                        <datetimepicker x-ng-model="voyage.departure"/>
+                    </div>
+                    <div class="control-group form-group row">
+                    </div>
+                    <label class="e-control-label">Longitude</label>
+
+                    <div class="controls col-xs-3">
+                        <input longitude x-ng-model="sar.longitude" type="text" class="form-control input-sm lon"/>
+                    </div>
+                    <label class="e-control-label">Latitude</label>
+
+                    <div class="controls col-xs-3">
+                        <input latitude x-ng-model="sar.latitude" type="text" class="form-control input-sm lat"/>
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-sm" x-ng-click="back()">Back</button> &nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="next()">Next</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
