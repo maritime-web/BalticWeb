@@ -3,6 +3,10 @@
 
     var module = angular.module('embryo.sar.service', []);
 
+    embryo.sar = {}
+    // A way to create an enumeration like construction in JavaScript
+    embryo.sar.types = Object.freeze({"RapidResponse": "rr", "DatumPoint": "dp", "DatumLine": "dl", "BackTrack": "bt"})
+
     module.service('SarService', function ($http) {
         var selectedSar;
         var listeners = {};
@@ -14,6 +18,9 @@
         }
 
         var service = {
+            sarTypes: function () {
+                return sarTypes;
+            },
             selectedSar: function (sar) {
                 selectedSar = sar;
                 notifyListeners();
@@ -25,8 +32,12 @@
                     fn(selectedSar);
                 }
             }
+
+
         };
 
         return service;
     });
+
+
 })();

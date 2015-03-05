@@ -8,6 +8,10 @@
                 </div>
             </div>
 
+            <span class="pull-right">
+                <button type="button" x-ng-click="newSar()" class="btn btn-primary btn-xs">New SAR Operation</button>
+            </span>
+
             <table class="table table-condensed">
                 <thead>
                 <tr>
@@ -27,11 +31,6 @@
 
             <hr/>
 
-            <input type="text" x-ng-model="newName"/>
-
-            <span class="pull-right">
-                <button type="button" x-ng-click="newSar()" class="btn btn-primary btn-sm">Add SAR</button>
-            </span>
         </div>
     </div>
     <div accordion-group heading="Message log">

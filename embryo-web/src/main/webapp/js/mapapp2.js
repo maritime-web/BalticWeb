@@ -5,7 +5,7 @@
         'embryo.msi.controllers', 'embryo.routeUpload', 'embryo.schedule', 'embryo.routeEdit', 'embryo.decimal',
         'embryo.authentication', 'embryo.shape', 'embryo.zoom', 'embryo.metoc', 'embryo.weather.control',
         'embryo.controller.reporting', 'embryo.aisinformation', 'embryo.forecast.control', 'embryo.satellite-ice.control',
-        'embryo.areaselect.control', 'embryo.sar.controllers']);
+        'embryo.areaselect.control', 'embryo.sar.controllers', 'embryo.sar.views']);
 
     angular.element(document).ready(function () {
         angular.bootstrap(document, ['embryo.map']);
