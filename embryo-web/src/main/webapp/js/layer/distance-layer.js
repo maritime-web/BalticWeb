@@ -93,13 +93,13 @@ function DistanceLayer() {
         
     };
 
-    this.drawNearestVessels = function(vessel, allVessels) {
+    this.drawNearestVessels = function(selectedVessel, allVessels) {
         var vessels = [];
 
         $.each(allVessels, function(k, v) {
-            if (v.mmsi != vessel.mmsi) {
+            if (v.mmsi != selectedVessel.mmsi) {
                 if (embryo.getMaxSpeed(v) > 0.0) {
-                    distance = embryo.adt.measureDistanceGc(vessel.x, vessel.y, v.x, v.y);
+                    distance = embryo.adt.measureDistanceGc(selectedVessel.x, selectedVessel.y, v.x, v.y);
                     var o = {
                         distance : distance,
                         timeInMinutes : (distance / (embryo.getMaxSpeed(v) * 1.852) / 60),
@@ -126,63 +126,35 @@ function DistanceLayer() {
             return a.timeInMinutes - b.timeInMinutes;
         });
 
-        // function getVesselsWithYOffsets() {
-        // var yCoords = [];
-        // for ( var i = 0; i < 5; i++) {
-        //                
-        // embryo.map.internalMap.getViewPortPxFromLonLat();
-        //                
-        // yCoords.push({
-        // y : vessels[i].vessel.y,
-        // vessel : vessels[i].vessel
-        // });
-        // }
-        // yCoords.sort(function(coord1, coord2){
-        // return coord1.y - coord2.y;
-        // });
-        //            
-        //
-        // for ( var i = 1; i < 5; i++) {
-        // var diff = yCoords[i-1].y - yCoords[i].y;
-        // if(diff <= 16){
-        // // for ( var j = i; j < 5; j++) {
-        // // yCoords[j].y += 15;
-        // // }
-        // }
-        // }
-        // }
-        //        
-        // var vesselsWithYOffsets = getVesselsWithYOffsets();
-
         for ( var i = 0; i < 5; i++) {
-            var v = vessels[i];
+            var toVessel = vessels[i];
 
             this.layers.lines.addFeatures([ new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([
-                    embryo.map.createPoint(vessel.x, vessel.y), embryo.map.createPoint(v.vessel.x, v.vessel.y) ]), {
-                id : vessel.mmsi,
+                    embryo.map.createPoint(selectedVessel.x, selectedVessel.y), embryo.map.createPoint(toVessel.vessel.x, toVessel.vessel.y) ]), {
+                id : selectedVessel.mmsi,
                 type : 'nearest'
 
             }) ]);
 
-            var labelFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(v.vessel.x, v.vessel.y));
+            var labelFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(toVessel.vessel.x, toVessel.vessel.y));
             var maxSpeedLabel;
-            if (vessel.awsog) {
-                maxSpeedLabel = "AW Max Speed: " + embryo.getMaxSpeed(vessel) + " kn";
-            } else if (vessel.ssog) {
-                maxSpeedLabel = "Service Speed: " + embryo.getMaxSpeed(vessel) + " kn";
-            } else if (vessel.sog) {
-                maxSpeedLabel = "SOG: " + embryo.getMaxSpeed(vessel) + " kn";
+            if (toVessel.vessel.awsog) {
+                maxSpeedLabel = "AW Max Speed: " + embryo.getMaxSpeed(toVessel.vessel) + " kn";
+            } else if (toVessel.vessel.ssog) {
+                maxSpeedLabel = "Service Speed: " + embryo.getMaxSpeed(toVessel.vessel) + " kn";
+            } else if (toVessel.vessel.sog) {
+            	maxSpeedLabel = "SOG: " + embryo.getMaxSpeed(toVessel.vessel) + " kn";
             }
 
             labelFeature.attributes = {
-                id : vessel.mmsi,
+                id : selectedVessel.mmsi,
                 type : 'nearest',
                 labelXOffset : 0,
                 labelYOffset : -15,
-                label : v.vessel.name
+                label : toVessel.vessel.name
                         + ": "
-                        + formatNauticalMile(v.distance)
-                        + (embryo.getMaxSpeed(v.vessel) == Infinity ? "" : ", " + formatHour(v.distance / (embryo.getMaxSpeed(v.vessel) * 1.852))
+                        + formatNauticalMile(toVessel.distance)
+                        + (embryo.getMaxSpeed(toVessel.vessel) == Infinity ? "" : ", " + formatHour(toVessel.distance / (embryo.getMaxSpeed(toVessel.vessel) * 1.852))
                 + " hours, " + maxSpeedLabel)
             };
             this.layers.labels.addFeatures([ labelFeature ]);

@@ -30,13 +30,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dk.dma.embryo.common.persistence.BaseEntity;
 import dk.dma.embryo.dataformats.model.ForecastType.Type;
 
+/**
+ * Model for a Forecast. The actual JSON data is found in the ForecastData
+ * class, as it needs to be lazy loaded - we don't want to load that data when
+ * we're just acquiring a list of forecasts.
+ * 
+ * @author avlund
+ *
+ */
 @NamedQueries({
         @NamedQuery(name = "Forecast:lookup", query = "SELECT f FROM Forecast f WHERE f.name = :name AND f.ftype = :type"),
         @NamedQuery(name = "Forecast:find", query = "SELECT f FROM Forecast f JOIN FETCH f.data WHERE f.id = :id"),
         @NamedQuery(name = "Forecast:list", query = "SELECT f FROM Forecast f WHERE f.ftype = :type AND f.size != -1 ORDER BY f.area, f.timestamp DESC"),
         @NamedQuery(name = "Forecast:exists", query = "SELECT COUNT(*) FROM Forecast f WHERE f.name = :name AND f.timestamp = :timestamp"),
         @NamedQuery(name = "Forecast:findDuplicates", query = "SELECT f FROM Forecast f WHERE f.area = :area AND f.provider = :provider AND f.ftype = :type ORDER by f.timestamp DESC, f.size DESC"),
-        @NamedQuery(name = "Forecast:exactlySame", query = "SELECT f FROM Forecast f WHERE f.name = :name AND f.ftype = :type AND f.area = :area")})
+        @NamedQuery(name = "Forecast:exactlySame", query = "SELECT f FROM Forecast f WHERE f.name = :name AND f.ftype = :type AND f.area = :area") })
 @Entity
 @JsonIgnoreProperties({ "data" })
 public class Forecast extends BaseEntity<Long> {
@@ -86,7 +94,7 @@ public class Forecast extends BaseEntity<Long> {
         }
         return null;
     }
-    
+
     public void updateData(String json, int size) {
         data = new ForecastData(json);
         this.size = size;
@@ -111,7 +119,7 @@ public class Forecast extends BaseEntity<Long> {
     public String getArea() {
         return area;
     }
-    
+
     public void invalidate() {
         data = null;
         size = -1;
@@ -120,9 +128,10 @@ public class Forecast extends BaseEntity<Long> {
     public static enum Provider {
         DMI, FCOO
     }
-    
+
     @Override
     public String toString() {
-        return "Forecast: provider: " + provider + ", type: " + ftype + ", area: " + area + ", size: " + size + ", time stamp: " + timestamp + ", name: " + name;
+        return "Forecast: provider: " + provider + ", type: " + ftype + ", area: " + area + ", size: " + size + ", time stamp: " + timestamp + ", name: "
+                + name;
     }
 }

@@ -340,6 +340,17 @@ module.exports = function (grunt) {
                     ]
                 },
                 network: "*"
+            },
+            usermanual: {
+                dest: 'target/build/usermanual.appcache',
+                cache: {
+                    literals: [//as is in the "CACHE:" section
+                        'docs/index.html'
+                    ],
+                    patterns: [
+                    ]
+                },
+                network: "*"
             }
         },
         concurrent: {
@@ -400,7 +411,7 @@ module.exports = function (grunt) {
     //   'copy:gen2Build', 'copy:toTarget', 'appcache:map', 'appcache:front']);
 
     grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'replace:run', 'concat', 'usemin',
-        'copy:gen2Build', 'appcache:map', 'appcache:map2', 'appcache:front', 'replace:run', 'copy:toTarget']);
+        'copy:gen2Build', 'appcache:map', 'appcache:map2', 'appcache:front', 'appcache:usermanual','replace:run', 'copy:toTarget']);
 
     // 'clean:dist',
     // 'useminPrepare',
