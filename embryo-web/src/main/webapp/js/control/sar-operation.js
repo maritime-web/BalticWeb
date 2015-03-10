@@ -33,11 +33,17 @@ $(function () {
         };
         ViewService.addViewProvider($scope.provider);
 
+        $scope.searchObjects = SarService.searchObjectTypes();
         $scope.sarTypes = sarTypes;
         $scope.sarTypeDatas = sarTypeDatas;
+
         $scope.sar = {
-            selectedType: $scope.sarTypeDatas[0]
+            selectedType: $scope.sarTypeDatas[0],
+            searchObject: $scope.searchObjects[0],
+            sruErr: 0.1,
+            safetyFactor: 1.0
         }
+
 
         $scope.back = function () {
             if ($scope.page === 'sar') {
@@ -48,15 +54,15 @@ $(function () {
         }
 
         $scope.next = function () {
-            if ($scope.page === 'typeSelection') {
-                $scope.page = 'sarInputs';
-            }
-            else if ($scope.page === 'sarInputs') {
-                //calculate
-                $scope.page = 'sar';
-            }
+            $scope.page = 'sarInputs';
         }
 
+        $scope.calculate = function () {
+            console.log($scope.sar);
+
+
+            $scope.page = 'sar';
+        }
 
     }]);
 

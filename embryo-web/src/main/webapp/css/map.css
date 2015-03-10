@@ -176,6 +176,11 @@ body {
     margin-left: 10px;
 }
 
+.form-group .col-xs-1, .form-group .col-xs-2, .form-group .col-xs-3, .form-group .col-xs-4, .form-group .col-xs-5, .form-group .col-xs-6, .form-group .col-xs-7, .form-group .col-xs-8, .form-group .col-xs-9, .form-group .col-xs-10, .form-group .col-xs-11, .form-group .col-xs-12 {
+    padding-right: 7px;
+    padding-left: 7px;
+}
+
 .reportingPanel, .reportingPanel2, .e-reporting-panel {
     background-color: white;
     position: absolute;
