@@ -261,6 +261,7 @@ module.exports = function (grunt) {
                 cache: {
                     literals: [//as is in the "CACHE:" section
                         'map.html',
+                        'docs/index.html',
                         'css/arcticweb-map.css',
                         'css/arcticweb-map-ext-lib.css',
                         'js/arcticweb-map.js',
@@ -318,6 +319,7 @@ module.exports = function (grunt) {
                     literals: [//as is in the "CACHE:" section
                         'index.html',
                         'content.html',
+                        'docs/index.html',
                         'css/arcticweb-front.css',
                         'css/arcticweb-content.css',
                         'js/arcticweb-front.js',
