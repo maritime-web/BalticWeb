@@ -145,3 +145,13 @@ input.ng-invalid {
     margin-top: 15px;
     margin-bottom: 15px;
 }
+
+.mini-logos img {
+    height: 33px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.mini-logos .title {
+    text-align: center;
+}
