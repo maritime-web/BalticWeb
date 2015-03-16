@@ -81,16 +81,6 @@ footer li {
     line-height: 10px;
 }
 
-footer img {
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-}
-
-footer .dmi img {
-    margin-top: 10px;
-}
-
 footer .copyright {
     text-align: left;
 }
@@ -136,20 +126,12 @@ input.ng-invalid {
     background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
 }
 
-.logo-title {
-    margin-bottom: 25px;
-    text-align: center;
-}
-
-.logo img {
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-
 .mini-logos img {
     height: 33px;
     margin-left: 10px;
     margin-right: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .mini-logos .title {
