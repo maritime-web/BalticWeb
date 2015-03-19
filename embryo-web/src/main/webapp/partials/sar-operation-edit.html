@@ -16,7 +16,7 @@
                     <label class="control-label col-xs-3">Sar Operation Type</label>
 
                     <div class="col-xs-5">
-                        <select ng-model="sar.selectedType" name="sar.selectedType" required
+                        <select ng-model="selectedType" name="selectedType" required
                                 class="input-sm form-control"
                                 x-ng-options="sarTypeData.text for sarTypeData in sarTypeDatas">
                         </select>
@@ -24,30 +24,30 @@
                 </div>
 
                 <div>
-                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.RapidResponse">
-                        {{sar.selectedType.text}} should be used when the rescue vessel is within the designated
+                    <p x-ng-if="selectedType && selectedType.id === sarTypes.RapidResponse">
+                        {{selectedType.text}} should be used when the rescue vessel is within the designated
                         search area in a relatively short time span, i.e. 1-2 hours after last known position (LKP).
                     </p>
 
-                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumPoint">
-                        {{sar.selectedType.text}} is a calculation method used when the rescue vessel arrives to the
+                    <p x-ng-if="selectedType && selectedType.id === sarTypes.DatumPoint">
+                        {{selectedType.text}} is a calculation method used when the rescue vessel arrives to the
                         designated search area two hours or more later than the last known position (LKP) was reported.
                     </p>
 
-                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumLine">
-                        {{sar.selectedType.text}} is used when an object is missing and the last known position (LKP) is
+                    <p x-ng-if="selectedType && selectedType.id === sarTypes.DatumLine">
+                        {{selectedType.text}} is used when an object is missing and the last known position (LKP) is
                         unknown, but an assumed route is known.
                     </p>
 
-                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.BackTrack">
-                        {{sar.selectedType.text}} is used when an object connected to the missing vessel has
+                    <p x-ng-if="selectedType && selectedType.id === sarTypes.BackTrack">
+                        {{selectedType.text}} is used when an object connected to the missing vessel has
                         been located. By reversing the objects movements a possible search area can be established.
                     </p>
                 </div>
 
                 <div>
-                    <img style="max-width:500px; max-height:250px" ng-if="sar.selectedType"
-                         ng-src="{{sar.selectedType.img}}"/>
+                    <img style="max-width:500px; max-height:250px" ng-if="selectedType"
+                         ng-src="{{selectedType.img}}"/>
                 </div>
 
                 <div class="col-xs-12">
@@ -72,7 +72,7 @@
                 </div>
                 <hr/>
 
-                <div x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumLine">
+                <div x-ng-if="selectedType && selectedType.id === sarTypes.DatumLine">
                     <h5>First Drift Search Position</h5>
 
                     <div class="form-group">
@@ -151,29 +151,29 @@
                     <hr/>
                 </div>
 
-                <div x-ng-if="!(sar.selectedType && sar.selectedType.id === sarTypes.DatumLine)">
+                <div x-ng-if="!(selectedType && selectedType.id === sarTypes.DatumLine)">
                     <h5>Last known position</h5>
 
                     <div class="form-group">
                         <label class="control-label col-xs-3">Time</label>
 
                         <div class="col-xs-4">
-                            <datetimepicker x-ng-model="sar.lastKnownPosition.time"/>
+                            <datetimepicker x-ng-model="sar.lastKnownPosition.ts"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-xs-3">Longitude</label>
-
-                        <div class="col-xs-3">
-                            <input longitude x-ng-model="sar.lastKnownPosition.lon" type="text"
-                                   class="form-control input-sm lon" placeholder="049 53 844W" required/>
-                        </div>
-
                         <label class="control-label col-xs-3">Latitude</label>
 
                         <div class="col-xs-3">
                             <input latitude x-ng-model="sar.lastKnownPosition.lat" type="text"
                                    class="form-control input-sm lat" placeholder="61 15.856N" required/>
+                        </div>
+
+                        <label class="control-label col-xs-3">Longitude</label>
+
+                        <div class="col-xs-3">
+                            <input longitude x-ng-model="sar.lastKnownPosition.lon" type="text"
+                                   class="form-control input-sm lon" placeholder="049 53 844W" required/>
                         </div>
                     </div>
                     <hr/>
@@ -182,10 +182,10 @@
                 <h5>Commence search start</h5>
 
                 <div class="form-group">
-                    <label class="control-label col-xs-3" for="sarNo">Time of Search Start</label>
+                    <label class="control-label col-xs-3">Time of Search Start</label>
 
                     <div class="col-xs-4">
-                        <datetimepicker x-ng-model="voyage.startTime" required/>
+                        <datetimepicker name="searchStartTs" x-ng-model="sar.startTs" required/>
                     </div>
                 </div>
 
@@ -199,42 +199,50 @@
                         </div>
                         <div class="col-xs-offset-2 col-xs-5">
                             <span class="pull-right">
-                                <button type="button" class="btn btn-sm">Add point</button>
-                                <button type="button" class="btn btn-sm">Remove last</button>
+                                <button type="button" class="btn btn-sm" x-ng-click="addPoint()">Add point</button>
+                                <button type="button" class="btn btn-sm" x-ng-click="removePoint()"
+                                        x-ng-disabled="sar.surfaceDriftPoints.length <= 1">Remove last
+                                </button>
                             </span>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-xs-3">Date & Time of Surface Drift</label>
+                    <div x-ng-repeat="surfaceDriftPoint in sar.surfaceDriftPoints">
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Time</label>
 
-                        <div class="col-xs-4">
-                            <datetimepicker x-ng-model="sar.surfaceDriftTs" required/>
+                            <div class="col-xs-4">
+                                <datetimepicker x-ng-model="surfaceDriftPoint.ts" required/>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-xs-3">Total water current (knots)</label>
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Total water current</label>
 
-                        <div class="col-xs-3">
-                            <input x-ng-model="sar.twc" type="text" class="form-control input-sm" required/>
+                            <div class="col-xs-3">
+                                <input x-ng-model="surfaceDriftPoint.twcSpeed" type="text" class="form-control input-sm"
+                                       required/>
+                            </div>
+                            <label class="control-label col-xs-3">Direction</label>
+
+                            <div class="col-xs-3">
+                                <input x-ng-model="surfaceDriftPoint.twcDirection" type="text"
+                                       class="form-control input-sm" required/>
+                            </div>
                         </div>
-                        <label class="control-label col-xs-3">TWC Vector</label>
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Wind speed</label>
 
-                        <div class="col-xs-3">
-                            <input x-ng-model="sar.twcVector" type="text" class="form-control input-sm" required/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-xs-3">Leeway (knots)</label>
+                            <div class="col-xs-3">
+                                <input x-ng-model="surfaceDriftPoint.windSpeed" type="text"
+                                       class="form-control input-sm" required/>
+                            </div>
+                            <label class="control-label col-xs-3">Direction</label>
 
-                        <div class="col-xs-3">
-                            <input x-ng-model="sar.leeway" type="text" class="form-control input-sm" required/>
-                        </div>
-                        <label class="control-label col-xs-3">Leeway Vector</label>
-
-                        <div class="col-xs-3">
-                            <input x-ng-model="sar.leewayVector" type="text" class="form-control input-sm" required/>
+                            <div class="col-xs-3">
+                                <input x-ng-model="surfaceDriftPoint.windDirection" type="text"
+                                       class="form-control input-sm" required/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -282,15 +290,56 @@
                 </div>
 
 
-                <div class="row">
+                <div class="col-xs-12">
                     <span class="pull-right">
                         <button type="button" class="btn btn-sm" x-ng-click="back()">Back</button> &nbsp;
-                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="calculate()"
-                                ng-disabled="sarOperationForm.$invalid">Next
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="createSarOperation()">Next
                         </button>
                     </span>
                 </div>
             </form>
+            <div x-ng-if="page == 'sarResult'">
+                <h3>Resulting operation of type</h3>
+                <hr/>
+                Time of last known position: {{formatTs(sarOperation.data.lastKnownPosition.ts)}} UTC<br/>
+                Last known position: {{formatPos(sarOperation.data.lastKnownPosition)}}<br/>
+                Commence Search Start Time: {{formatTs(sarOperation.data.startTs)}} UTC<br/>
+                <hr/>
+                <span x-ng-repeat="surfaceDrift in sarOperation.data.surfaceDriftPoints">
+                Total Water Current {{surfaceDrift.twcSpeed}} knots with heading {{surfaceDrift.twcDirection}}<br/>
+                Wind {{surfaceDrift.windSpeed}} knots with heading {{surfaceDrift.windDirection}}<br/>
+                <hr/>
+                </span>
+                Search Object: {{sarOperation.data.searchObject.text}}<br/>
+                With value: {{sarOperation.data.searchObject.x}}x U
+                <span x-ng-if="sarOperation.data.searchObject.y < 0">- {{sarOperation.data.searchObject.y}}</span>
+                <span x-ng-if="sarOperation.data.searchObject.y > 0">+ {{sarOperation.data.searchObject.y}}</span>,
+                Divergence: {{sarOperation.data.searchObject.divergence}}<br/>
+                <hr/>
+                Time elapsed: {{sarOperation.hoursElapsed}} hour<span x-ng-if="sarOperation.hoursElapsed != 1">s</span>,
+                {{sarOperation.minutesElapsed}} minute<span x-ng-if="sarOperation.minutesElapsed != 1">s</span>.<br/>
+                Datum calculated from applying wind and total water current: {{formatPos(sarOperation.datum)}}<br/>
+                With the following Residual Drift Vector<br/>
+                RDV Direction: {{sarOperation.rdvDirection}}°<br/>
+                RDV Distance: {{sarOperation.rdvDistance}} nm<br/>
+                RDV Speed: {{sarOperation.rdvSpeed}} kn/h<br/>
+                With radius: {{sarOperation.radius}} nm<br/>
+                <hr/>
+                Search Area:<br/>
+                A: {{formatPos(sarOperation.searchArea.A)}}<br/>
+                B: {{formatPos(sarOperation.searchArea.B)}}<br/>
+                C: {{formatPos(sarOperation.searchArea.C)}}<br/>
+                D: {{formatPos(sarOperation.searchArea.D)}}<br/>
+                Total size: {{sarOperation.searchArea.totalSize}} nm2<br/>
+
+                <div class="col-xs-12">
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-sm" x-ng-click="back()">Back</button> &nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="use()">Use
+                        </button>
+                    </span>
+                </div>
+            </div>
         </div>
 
     </div>

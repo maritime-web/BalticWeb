@@ -11,14 +11,17 @@ $(function () {
         this.img = img;
     }
 
-    var sarTypes = embryo.sar.types;
+    //var sarTypes = embryo.sar.types;
     var sarTypeDatas = [];
-    sarTypeDatas.push(new SarTypeData(sarTypes.RapidResponse, "Rapid response", "/img/sar/generic.png"));
-    sarTypeDatas.push(new SarTypeData(sarTypes.DatumPoint, "Datum point", "/img/sar/datumpoint.png"));
-    sarTypeDatas.push(new SarTypeData(sarTypes.DatumLine, "Datum line", "/img/sar/datumline.png"));
-    sarTypeDatas.push(new SarTypeData(sarTypes.BackTrack, "Back track", "/img/sar/generic.png"));
+    sarTypeDatas.push(new SarTypeData(embryo.sar.types.RapidResponse, "Rapid response", "/img/sar/generic.png"));
+    sarTypeDatas.push(new SarTypeData(embryo.sar.types.DatumPoint, "Datum point", "/img/sar/datumpoint.png"));
+    sarTypeDatas.push(new SarTypeData(embryo.sar.types.DatumLine, "Datum line", "/img/sar/datumline.png"));
+    sarTypeDatas.push(new SarTypeData(embryo.sar.types.BackTrack, "Back track", "/img/sar/generic.png"));
+
 
     module.controller("SAROperationEditController", ['$scope', 'ViewService', 'SarService', function ($scope, ViewService, SarService) {
+        var now = Date.now();
+
         $scope.provider = {
             doShow: false,
             title: "Create SAR",
@@ -34,22 +37,49 @@ $(function () {
         ViewService.addViewProvider($scope.provider);
 
         $scope.searchObjects = SarService.searchObjectTypes();
-        $scope.sarTypes = sarTypes;
+        $scope.sarTypes = SarService.sarTypes();
         $scope.sarTypeDatas = sarTypeDatas;
 
+        $scope.selectedType = $scope.sarTypeDatas[0];
         $scope.sar = {
-            selectedType: $scope.sarTypeDatas[0],
             searchObject: $scope.searchObjects[0],
             sruErr: 0.1,
-            safetyFactor: 1.0
+            safetyFactor: 1.0,
+            startTs: now + 1000 * 60 * 60
+
         }
 
+        if ($scope.selectedType.id != embryo.sar.types.DatumLine) {
+            if (!$scope.sar.lastKnownPosition) {
+                $scope.sar.lastKnownPosition = {};
+            }
+            if (!$scope.sar.lastKnownPosition.ts) {
+                $scope.sar.lastKnownPosition.ts = now;
+            }
+        } else {
+
+
+        }
+
+        if (!$scope.sar.surfaceDriftPoints) {
+            $scope.sar.surfaceDriftPoints = [{}];
+        }
+        if (!$scope.sar.surfaceDriftPoints[0].ts) {
+            $scope.sar.surfaceDriftPoints[0].ts = now;
+        }
 
         $scope.back = function () {
-            if ($scope.page === 'sar') {
-                $scope.page = 'sarInputs';
-            } else if ($scope.page === 'sarInputs') {
-                $scope.page = 'typeSelection';
+            switch ($scope.page) {
+                case ("sarResult") :
+                {
+                    $scope.page = 'sarInputs';
+                    break;
+                }
+                case ("sarInputs") :
+                {
+                    $scope.page = 'typeSelection';
+                    break;
+                }
             }
         }
 
@@ -57,11 +87,31 @@ $(function () {
             $scope.page = 'sarInputs';
         }
 
-        $scope.calculate = function () {
-            console.log($scope.sar);
+        function clone(object) {
+            return JSON.parse(JSON.stringify(object));
+        }
 
+        $scope.createSarOperation = function () {
+            //var sar = clone($scope.sar);
+            var sar = $scope.sar;
+            sar.type = $scope.selectedType.id;
+            $scope.sarOperation = SarService.createSarOperation(sar);
+            $scope.page = 'sarResult';
+        }
 
-            $scope.page = 'sar';
+        $scope.formatTs = formatTime;
+        $scope.formatPos = function (position) {
+            return "(" + formatLatitude(position.lat) + ", " + formatLongitude(position.lon) + ")";
+        }
+
+        $scope.addPoint = function () {
+            $scope.sar.surfaceDriftPoints.push({});
+        }
+
+        $scope.removePoint = function () {
+            if ($scope.sar.surfaceDriftPoints.length > 1) {
+                $scope.sar.surfaceDriftPoints.splice($scope.sar.surfaceDriftPoints.length - 1, 1);
+            }
         }
 
     }]);
