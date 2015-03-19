@@ -14,8 +14,8 @@
         this.text = text;
     }
 
-    Leeway.prototype.leewaySpeed = function (windSpeed) {
-        var result = this.x * windSpeed;
+    Leeway.prototype.leewaySpeed = function (leewaySpeed) {
+        var result = this.x * leewaySpeed;
         if (this.y) {
             result += this.y;
         }
@@ -110,17 +110,17 @@
             var currentPos = startingLocation.transformPosition(this.data.surfaceDriftPoints[i].twcDirection, nmToMeters(currentTWC));
             currentPositions.push(currentPos)
 
-            var leewaySpeed = this.data.searchObject.leewaySpeed(this.data.surfaceDriftPoints[i].windSpeed);
+            var leewaySpeed = this.data.searchObject.leewaySpeed(this.data.surfaceDriftPoints[i].leewaySpeed);
             var leeway = leewaySpeed * validFor;
 
             var downWind = this.data.surfaceDriftPoints[i].downWind
             if (!downWind) {
-                downWind = this.data.surfaceDriftPoints[i].windDirection - 180;
+                downWind = this.data.surfaceDriftPoints[i].leewayDirection - 180;
             }
 
-            var windPos = currentPos.transformPosition(downWind, nmToMeters(leeway));
-            datumPositions.push(windPos);
-            lastDatumPosition = windPos;
+            var leewayPos = currentPos.transformPosition(downWind, nmToMeters(leeway));
+            datumPositions.push(leewayPos);
+            lastDatumPosition = leewayPos;
         }
 
         this.datum = lastDatumPosition;

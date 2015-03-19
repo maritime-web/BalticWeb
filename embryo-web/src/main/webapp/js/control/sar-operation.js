@@ -104,6 +104,8 @@ $(function () {
             return "(" + formatLatitude(position.lat) + ", " + formatLongitude(position.lon) + ")";
         }
 
+        $scope.formatDecimal = embryo.Math.round10;
+
         $scope.addPoint = function () {
             $scope.sar.surfaceDriftPoints.push({});
         }
@@ -112,6 +114,10 @@ $(function () {
             if ($scope.sar.surfaceDriftPoints.length > 1) {
                 $scope.sar.surfaceDriftPoints.splice($scope.sar.surfaceDriftPoints.length - 1, 1);
             }
+        }
+
+        $scope.finish = function () {
+            $scope.provider.doShow = false;
         }
 
     }]);

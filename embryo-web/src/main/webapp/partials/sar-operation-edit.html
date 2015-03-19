@@ -231,16 +231,16 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-3">Wind speed</label>
+                            <label class="control-label col-xs-3">Leeway speed</label>
 
                             <div class="col-xs-3">
-                                <input x-ng-model="surfaceDriftPoint.windSpeed" type="text"
+                                <input x-ng-model="surfaceDriftPoint.leewaySpeed" type="text"
                                        class="form-control input-sm" required/>
                             </div>
                             <label class="control-label col-xs-3">Direction</label>
 
                             <div class="col-xs-3">
-                                <input x-ng-model="surfaceDriftPoint.windDirection" type="text"
+                                <input x-ng-model="surfaceDriftPoint.leewayDirection" type="text"
                                        class="form-control input-sm" required/>
                             </div>
                         </div>
@@ -289,7 +289,6 @@
                     </span>
                 </div>
 
-
                 <div class="col-xs-12">
                     <span class="pull-right">
                         <button type="button" class="btn btn-sm" x-ng-click="back()">Back</button> &nbsp;
@@ -299,44 +298,44 @@
                 </div>
             </form>
             <div x-ng-if="page == 'sarResult'">
-                <h3>Resulting operation of type</h3>
+                <h3>Resulting {{selectedType.text}} operation</h3>
                 <hr/>
                 Time of last known position: {{formatTs(sarOperation.data.lastKnownPosition.ts)}} UTC<br/>
                 Last known position: {{formatPos(sarOperation.data.lastKnownPosition)}}<br/>
                 Commence Search Start Time: {{formatTs(sarOperation.data.startTs)}} UTC<br/>
                 <hr/>
                 <span x-ng-repeat="surfaceDrift in sarOperation.data.surfaceDriftPoints">
-                Total Water Current {{surfaceDrift.twcSpeed}} knots with heading {{surfaceDrift.twcDirection}}<br/>
-                Wind {{surfaceDrift.windSpeed}} knots with heading {{surfaceDrift.windDirection}}<br/>
+                Total Water Current {{surfaceDrift.twcSpeed}} knots with heading {{surfaceDrift.twcDirection}}°<br/>
+                Leeway {{surfaceDrift.leewaySpeed}} knots with heading {{surfaceDrift.leewayDirection}}°<br/>
                 <hr/>
                 </span>
-                Search Object: {{sarOperation.data.searchObject.text}}<br/>
-                With value: {{sarOperation.data.searchObject.x}}x U
+                Search Object: {{sarOperation.data.searchObject.text}}<br/>{{sarOperation.data.searchObject.x}}x U
                 <span x-ng-if="sarOperation.data.searchObject.y < 0">- {{sarOperation.data.searchObject.y}}</span>
                 <span x-ng-if="sarOperation.data.searchObject.y > 0">+ {{sarOperation.data.searchObject.y}}</span>,
                 Divergence: {{sarOperation.data.searchObject.divergence}}<br/>
                 <hr/>
                 Time elapsed: {{sarOperation.hoursElapsed}} hour<span x-ng-if="sarOperation.hoursElapsed != 1">s</span>,
                 {{sarOperation.minutesElapsed}} minute<span x-ng-if="sarOperation.minutesElapsed != 1">s</span>.<br/>
-                Datum calculated from applying wind and total water current: {{formatPos(sarOperation.datum)}}<br/>
+                Datum calculated from applying leeway and total water current: {{formatPos(sarOperation.datum)}}<br/>
                 With the following Residual Drift Vector<br/>
-                RDV Direction: {{sarOperation.rdvDirection}}°<br/>
-                RDV Distance: {{sarOperation.rdvDistance}} nm<br/>
-                RDV Speed: {{sarOperation.rdvSpeed}} kn/h<br/>
-                With radius: {{sarOperation.radius}} nm<br/>
+                RDV Direction: {{formatDecimal(sarOperation.rdvDirection, -2)}}°<br/>
+                RDV Distance: {{formatDecimal(sarOperation.rdvDistance, -2)}} nm<br/>
+                RDV Speed: {{formatDecimal(sarOperation.rdvSpeed, -2)}} kn/h<br/>
+                With radius: {{formatDecimal(sarOperation.radius, -2)}} nm<br/>
                 <hr/>
                 Search Area:<br/>
                 A: {{formatPos(sarOperation.searchArea.A)}}<br/>
                 B: {{formatPos(sarOperation.searchArea.B)}}<br/>
                 C: {{formatPos(sarOperation.searchArea.C)}}<br/>
                 D: {{formatPos(sarOperation.searchArea.D)}}<br/>
-                Total size: {{sarOperation.searchArea.totalSize}} nm2<br/>
+                Total size: {{formatDecimal(sarOperation.searchArea.totalSize, -2)}} nm2<br/>
 
                 <div class="col-xs-12">
                     <span class="pull-right">
-                        <button type="button" class="btn btn-sm" x-ng-click="back()">Back</button> &nbsp;
-                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="use()">Use
+                        <button type="button" class="btn btn-sm" x-ng-click="back()">Back</button>
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="finish()">Finish
                         </button>
+                        <button type="button" class="btn btn-sm" x-ng-click="cancel()">Cancel</button>
                     </span>
                 </div>
             </div>
