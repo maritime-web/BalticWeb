@@ -1,6 +1,11 @@
 
 #sarOperationEditPanel {
     width: 550px;
+
+}
+
+.sar-img-type-container {
+    min-height: 250px;
 }
 
 #sarOperationEditPanel .panel h5 {
