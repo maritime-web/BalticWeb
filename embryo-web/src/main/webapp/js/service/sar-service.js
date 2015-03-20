@@ -60,16 +60,21 @@
 
     RapidResponse.prototype = new Operation();
     RapidResponse.prototype.calculate = function () {
+        if (!this.data.xError && this.data.xError != 0) {
+            throw new Error("Missing xError value")
+        }
+        if (!this.data.yError && this.data.yError != 0) {
+            throw new Error("Missing yError value")
+        }
+
         var difference = (this.data.startTs - this.data.lastKnownPosition.ts) / 60 / 60 / 1000;
         this.timeElapsed = difference;
 
         this.hoursElapsed = Math.floor(difference);
         this.minutesElapsed = Math.round((difference - this.hoursElapsed) * 60);
 
-
         var startTs = this.data.lastKnownPosition.ts;
 
-        var weatherPointsValidFor = [];
         var datumPositions = [];
         var currentPositions = [];
 
@@ -148,6 +153,11 @@
     RapidResponse.prototype.calculateSearchArea = function (datum, radius, rdvDirection) {
         var nmToMeters = embryo.geo.Converter.nmToMeters;
         var reverseDirection = embryo.geo.reverseDirection;
+
+        assertValue(datum.lat, "datum.lat")
+        assertValue(datum.lon, "datum.lon")
+        assertValue(radius, "radius")
+        assertValue(rdvDirection, "rdvDirection")
 
         // Search box
         // The box is square around the circle, with center point at datum

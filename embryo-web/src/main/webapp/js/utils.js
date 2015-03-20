@@ -155,6 +155,12 @@ function ms2Knots(ms){
     return ms * 3.6 / 1.852;
 }
 
+function assertValue(value, msg) {
+    if (!value && value != 0) {
+        throw new Error(msg ? msg + " has invalid value " + value : value + " is not a valid value")
+    }
+}
+
 
 var browser = {
     isIE : function(){

@@ -63,6 +63,8 @@
                 </div>
                 <div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
+                <hr/>
+
                 <div class="form-group">
                     <label class="control-label col-xs-3" for="sarNo">Sar No.</label>
 
@@ -205,77 +207,36 @@
                         </div>
                     </div>
 
-                    <div x-ng-if="true">
-                        <table class="table surfaceDriftPoints">
-                            <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>TWC</th>
-                                <th>TWC direction</th>
-                                <th>Leeway</th>
-                                <th>Leeway direction</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr x-ng-repeat="surfaceDriftPoint in sar.surfaceDriftPoints">
-                                <td>
-                                    <datetimepicker x-ng-model="surfaceDriftPoint.ts" required/>
-                                </td>
-                                <td><input x-ng-model="surfaceDriftPoint.twcSpeed" type="text"
-                                           class="form-control input-sm" placeholder="5 knots"
-                                           required/></td>
-                                <td>
-                                    <input x-ng-model="surfaceDriftPoint.twcDirection" type="text"
-                                           class="form-control input-sm" placeholder="55°" required/>
-                                </td>
-                                <td><input x-ng-model="surfaceDriftPoint.leewaySpeed" type="text"
-                                           class="form-control input-sm" placeholder="15 knots" required/></td>
-                                <td><input x-ng-model="surfaceDriftPoint.leewayDirection" type="text"
-                                           class="form-control input-sm" placeholder="75°" required/></td>
-                            </tr>
-                            </tbody>
-
-                        </table>
-                    </div>
-
-                    <div x-ng-if="false" x-ng-repeat="surfaceDriftPoint in sar.surfaceDriftPoints">
-                        <div class="form-group">
-                            <label class="control-label col-xs-3">Time</label>
-
-                            <div class="col-xs-4">
+                    <table class="table surfaceDriftPoints">
+                        <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>TWC</th>
+                            <th>TWC direction</th>
+                            <th>Leeway</th>
+                            <th>Leeway direction</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr x-ng-repeat="surfaceDriftPoint in sar.surfaceDriftPoints">
+                            <td>
                                 <datetimepicker x-ng-model="surfaceDriftPoint.ts" required/>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-xs-3">Total water current</label>
-
-                            <div class="col-xs-3">
-                                <input x-ng-model="surfaceDriftPoint.twcSpeed" type="text" class="form-control input-sm"
-                                       required/>
-                            </div>
-                            <label class="control-label col-xs-3">Direction</label>
-
-                            <div class="col-xs-3">
+                            </td>
+                            <td><input x-ng-model="surfaceDriftPoint.twcSpeed" type="text"
+                                       class="form-control input-sm" placeholder="5 knots"
+                                       required/></td>
+                            <td>
                                 <input x-ng-model="surfaceDriftPoint.twcDirection" type="text"
-                                       class="form-control input-sm" required/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-3">Leeway speed</label>
+                                       class="form-control input-sm" placeholder="55°" required/>
+                            </td>
+                            <td><input x-ng-model="surfaceDriftPoint.leewaySpeed" type="text"
+                                       class="form-control input-sm" placeholder="15 knots" required/></td>
+                            <td><input x-ng-model="surfaceDriftPoint.leewayDirection" type="text"
+                                       class="form-control input-sm" placeholder="75°" required/></td>
+                        </tr>
+                        </tbody>
 
-                            <div class="col-xs-3">
-                                <input x-ng-model="surfaceDriftPoint.leewaySpeed" type="text"
-                                       class="form-control input-sm" required/>
-                            </div>
-                            <label class="control-label col-xs-3">Direction</label>
-
-                            <div class="col-xs-3">
-                                <input x-ng-model="surfaceDriftPoint.leewayDirection" type="text"
-                                       class="form-control input-sm" required/>
-                            </div>
-                        </div>
-                    </div>
+                    </table>
                 </div>
 
                 <hr/>
@@ -285,7 +246,7 @@
                     <label class="control-label col-xs-3">Initial Position Error (X), nm</label>
 
                     <div class="col-xs-4">
-                        <input x-ng-model="sar.xError" type="text" class="form-control input-sm" required/>
+                        <input x-ng-model="sar.xError" type="number" class="form-control input-sm" required/>
                     </div>
                 </div>
 
@@ -293,7 +254,7 @@
                     <label class="control-label col-xs-3">SRU Navigational Error (Y), nm</label>
 
                     <div class="col-xs-4">
-                        <input x-ng-model="sar.yError" type="text" class="form-control input-sm" required/>
+                        <input x-ng-model="sar.yError" type="number" class="form-control input-sm" required/>
                     </div>
                     <span class="help-block">Note: GPS = 0.1 nm</span>
                 </div>
@@ -301,7 +262,7 @@
                     <label class="control-label col-xs-3">Safety factor, Fs</label>
 
                     <div class="col-xs-4">
-                        <input x-ng-model="sar.safetyFactor" type="text" class="form-control input-sm" required/>
+                        <input x-ng-model="sar.safetyFactor" type="number" class="form-control input-sm" required/>
                     </div>
                 </div>
 
@@ -335,10 +296,35 @@
                 Last known position: {{formatPos(sarOperation.data.lastKnownPosition)}}<br/>
                 Commence Search Start Time: {{formatTs(sarOperation.data.startTs)}} UTC<br/>
                 <hr/>
-                <span x-ng-repeat="surfaceDrift in sarOperation.data.surfaceDriftPoints">
-                Total water current {{surfaceDrift.twcSpeed}} knots with heading {{surfaceDrift.twcDirection}}°,
-                Leeway {{surfaceDrift.leewaySpeed}} knots with heading {{surfaceDrift.leewayDirection}}°<br/>
-                </span>
+                <div x-ng-if="sarOperation.data.surfaceDriftPoints.length > 1">
+                    Surface drift points:
+                    <table class="table table-condensed surfaceDriftPointsPresented">
+                        <thead>
+                        <tr>
+                            <td>Time</td>
+                            <td>TWC</td>
+                            <td>TWC direction</td>
+                            <td>Leeway</td>
+                            <td>Leeway direction</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr x-ng-repeat="surfaceDrift in sarOperation.data.surfaceDriftPoints">
+                            <td>{{formatTs(surfaceDrift.ts)}}</td>
+                            <td>{{surfaceDrift.twcSpeed}}</td>
+                            <td>{{surfaceDrift.twcDirection}}</td>
+                            <td>{{surfaceDrift.leewaySpeed}}</td>
+                            <td>{{surfaceDrift.leewayDirection}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div x-ng-if="sarOperation.data.surfaceDriftPoints.length <= 1">
+                    <span x-ng-repeat="surfaceDrift in sarOperation.data.surfaceDriftPoints">
+                    Total water current {{surfaceDrift.twcSpeed}} knots with heading {{surfaceDrift.twcDirection}}°,
+                    Leeway {{surfaceDrift.leewaySpeed}} knots with heading {{surfaceDrift.leewayDirection}}°<br/>
+                    </span>
+                </div>
                 <hr/>
                 Search Object: {{sarOperation.data.searchObject.text}}<br/>{{sarOperation.data.searchObject.x}}x U
                 <span x-ng-if="sarOperation.data.searchObject.y < 0">- {{sarOperation.data.searchObject.y}}</span>

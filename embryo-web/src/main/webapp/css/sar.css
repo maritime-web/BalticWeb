@@ -18,3 +18,7 @@
 .surfaceDriftPoints td:first-child {
     width: 175px;
 }
+
+table.surfaceDriftPointsPresented {
+    width: 400px;
+}

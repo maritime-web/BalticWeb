@@ -43,7 +43,7 @@ $(function () {
         $scope.selectedType = $scope.sarTypeDatas[0];
         $scope.sar = {
             searchObject: $scope.searchObjects[0],
-            sruErr: 0.1,
+            yError: 0.1,
             safetyFactor: 1.0,
             startTs: now + 1000 * 60 * 60
 

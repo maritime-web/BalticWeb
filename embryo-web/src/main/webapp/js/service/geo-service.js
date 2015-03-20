@@ -333,6 +333,10 @@
                 // eq. 7
                 sigma = sOverbA + deltaSigma;
 
+                // break if undefined detected to avoid infinite loop
+                if (sigma === undefined || sigma === NaN) {
+                    break;
+                }
                 // break after converging to tolerance
                 if (Math.abs(sigma - prevSigma) < 0.0000000000001) {
                     break;
