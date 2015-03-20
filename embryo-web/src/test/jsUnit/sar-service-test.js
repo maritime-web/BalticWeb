@@ -41,8 +41,8 @@ describe('embryo.sar', function () {
                     leewaySpeed: 15,
                     leewayDirection: 30
                 }],
-                initPosErr: 1,
-                sruErr: 0.1,
+                xError: 1,
+                yError: 0.1,
                 safetyFactor: 1,
                 searchObject: searchObjectTypes[0]
             }
@@ -59,20 +59,20 @@ describe('embryo.sar', function () {
             expect(sarOperation.rdvDirection).toBeCloseTo(45.780030,6);
             expect(sarOperation.rdvDistance).toBeCloseTo(4.775445, 6);
             expect(sarOperation.rdvSpeed).toBeCloseTo(4.775445, 6);
-            expect(sarOperation.radius).toBeCloseTo(1.511634, 6);
+            expect(sarOperation.radius).toBeCloseTo(2.532634, 6);
 
-            expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("61 05.464N");
-            expect(formatLongitude(sarOperation.searchArea.A.lon)).toBe("050 52.880W");
+            expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("61 06.905N");
+            expect(formatLongitude(sarOperation.searchArea.A.lon)).toBe("050 52.842W");
 
-            expect(formatLatitude(sarOperation.searchArea.B.lat)).toBe("61 03.299N");
-            expect(formatLongitude(sarOperation.searchArea.B.lon)).toBe("050 48.524W");
+            expect(formatLatitude(sarOperation.searchArea.B.lat)).toBe("61 03.278N");
+            expect(formatLongitude(sarOperation.searchArea.B.lon)).toBe("050 45.541W");
 
-            expect(formatLatitude(sarOperation.searchArea.C.lat)).toBe("61 01.191N");
-            expect(formatLongitude(sarOperation.searchArea.C.lon)).toBe("050 53.001W");
+            expect(formatLatitude(sarOperation.searchArea.C.lat)).toBe("60 59.748N");
+            expect(formatLongitude(sarOperation.searchArea.C.lon)).toBe("050 53.043W");
 
-            expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 03.357N");
-            expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("050 57.352W");
-            expect(sarOperation.searchArea.totalSize).toBeCloseTo(1.5116335063948105 * 1.5116335063948105 * 4, 6);
+            expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 03.375N");
+            expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("051 00.331W");
+            expect(sarOperation.searchArea.totalSize).toBeCloseTo(2.5326335063948107 * 2.5326335063948107 * 4, 6);
         });
 
 
@@ -113,8 +113,8 @@ describe('embryo.sar', function () {
                     leewaySpeed: 10,
                     leewayDirection: 20
                 }],
-                initPosErr: 1,
-                sruErr: 0.1,
+                xError: 0.1,
+                yError: 0.1,
                 safetyFactor: 1,
                 searchObject: searchObjectTypes[0]
             }
@@ -131,20 +131,20 @@ describe('embryo.sar', function () {
             expect(sarOperation.rdvDirection).toBeCloseTo(35.372815, 6);
             expect(sarOperation.rdvDistance).toBeCloseTo(3.914134, 6);
             expect(sarOperation.rdvSpeed).toBeCloseTo(7.828269, 6);
-            expect(sarOperation.radius).toBeCloseTo(1.253240, 6);
+            expect(sarOperation.radius).toBeCloseTo(1.374240, 6);
 
-            expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("61 06.600N");
-            expect(formatLongitude(sarOperation.searchArea.A.lon)).toBe("050 52.408W");
+            expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("61 06.769N");
+            expect(formatLongitude(sarOperation.searchArea.A.lon)).toBe("050 52.467W");
 
-            expect(formatLatitude(sarOperation.searchArea.B.lat)).toBe("61 05.150N");
-            expect(formatLongitude(sarOperation.searchArea.B.lon)).toBe("050 48.182W");
+            expect(formatLatitude(sarOperation.searchArea.B.lat)).toBe("61 05.179N");
+            expect(formatLongitude(sarOperation.searchArea.B.lon)).toBe("050 47.833W");
 
-            expect(formatLatitude(sarOperation.searchArea.C.lat)).toBe("61 03.108N");
-            expect(formatLongitude(sarOperation.searchArea.C.lon)).toBe("050 51.183W");
+            expect(formatLatitude(sarOperation.searchArea.C.lat)).toBe("61 02.939N");
+            expect(formatLongitude(sarOperation.searchArea.C.lon)).toBe("050 51.124W");
 
-            expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 04.558N");
-            expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("050 55.404W");
-            expect(sarOperation.searchArea.totalSize).toBeCloseTo(1.2532403439070814 * 1.2532403439070814 * 4, 6);
+            expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 04.529N");
+            expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("050 55.753W");
+            expect(sarOperation.searchArea.totalSize).toBeCloseTo(1.3742403439070814 * 1.3742403439070814 * 4, 6);
         });
 
     });

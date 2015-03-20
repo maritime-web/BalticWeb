@@ -109,14 +109,14 @@
             currentPositions.push(currentPos)
 
             var leewaySpeed = this.data.searchObject.leewaySpeed(this.data.surfaceDriftPoints[i].leewaySpeed);
-            var leeway = leewaySpeed * validFor;
+            var leewayDriftDistance = leewaySpeed * validFor;
 
             var downWind = this.data.surfaceDriftPoints[i].downWind
             if (!downWind) {
                 downWind = this.data.surfaceDriftPoints[i].leewayDirection - 180;
             }
 
-            var leewayPos = currentPos.transformPosition(downWind, nmToMeters(leeway));
+            var leewayPos = currentPos.transformPosition(downWind, nmToMeters(leewayDriftDistance));
             datumPositions.push(leewayPos);
             lastDatumPosition = leewayPos;
         }
@@ -140,7 +140,7 @@
         }
 
 
-        this.radius = ((this.data.searchObject.x + this.data.searchObject.y) + 0.3 * this.rdvDistance) * this.data.safetyFactor;
+        this.radius = ((this.data.xError + this.data.yError) + 0.3 * this.rdvDistance) * this.data.safetyFactor;
 
         this.searchArea = this.calculateSearchArea(this.datum, this.radius, this.rdvDirection);
     }

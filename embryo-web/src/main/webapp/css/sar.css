@@ -1,0 +1,20 @@
+
+#sarOperationEditPanel {
+    width: 550px;
+}
+
+#sarOperationEditPanel .panel h5 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#sarOperationEditPanel .column2 {
+    width: 80px;
+}
+
+.surfaceDriftPoints tr:first-child th {
+}
+
+.surfaceDriftPoints td:first-child {
+    width: 175px;
+}
