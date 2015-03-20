@@ -19,6 +19,7 @@ describe('embryo.sar', function () {
          *
          * Produced SAR unit test: xx
          */
+        
         it('create rapid response SAR operation', function () {
             var searchObjectTypes = service.searchObjectTypes();
             var formatLatitude = embryo.geo.formatLatitude;
@@ -55,10 +56,10 @@ describe('embryo.sar', function () {
             expect(formatLongitude(sarOperation.datum.lon)).toBe("050 52.939W");
             expect(formatLatitude(sarOperation.datum.lat)).toBe("61 03.328N");
 
-            expect(sarOperation.rdvDirection).toBe(45.78003035557367);
-            expect(sarOperation.rdvDistance).toBe(4.7754450213160355);
-            expect(sarOperation.rdvSpeed).toBe(4.7754450213160355);
-            expect(sarOperation.radius).toBe(1.5116335063948105);
+            expect(sarOperation.rdvDirection).toBeCloseTo(45.780030,6);
+            expect(sarOperation.rdvDistance).toBeCloseTo(4.775445, 6);
+            expect(sarOperation.rdvSpeed).toBeCloseTo(4.775445, 6);
+            expect(sarOperation.radius).toBeCloseTo(1.511634, 6);
 
             expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("61 05.464N");
             expect(formatLongitude(sarOperation.searchArea.A.lon)).toBe("050 52.880W");
@@ -71,7 +72,7 @@ describe('embryo.sar', function () {
 
             expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 03.357N");
             expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("050 57.352W");
-            expect(sarOperation.searchArea.totalSize).toBe(1.5116335063948105 * 1.5116335063948105 * 4);
+            expect(sarOperation.searchArea.totalSize).toBeCloseTo(1.5116335063948105 * 1.5116335063948105 * 4, 6);
 
 
         });
