@@ -8,7 +8,8 @@ describe('geo', function () {
          * there after ported to JavaScript. This way it is ensured that the JavaScript SAR calculations at least behaves the same as the Java
          * version did at the time of the SAR operations was implemented.
          *
-         * Produced SAR unit test:
+         * Produced SAR unit test: https://github.com/dma-enav/EPD/blob/master/epd-common/src/test/java/dk/dma/epd/common/util/ConverterTest.java
+         * as testNmToMeters()
          */
         it('nmToMeters(5) should return 9260', function () {
             var result = embryo.geo.Converter.nmToMeters(5);
@@ -34,7 +35,7 @@ describe('geo', function () {
          * Produced SAR unit test: https://github.com/dma-enav/EPD/blob/master/epd-common/src/test/java/dk/dma/epd/common/util/CalculatorTest.java
          * as testFindPosition()
          */
-        it('transformPosition(RL, 9260)', function () {
+        it('(61 00.000N, 051 00.000W).transformPosition(RL, 9260meters) should return (61 03.530N, 050 52.699W)', function () {
             var startPos = new embryo.geo.Position(-51.0, 61.0);
             var distanceInMeters = embryo.geo.Converter.nmToMeters(5);
             var heading = 45;
@@ -55,7 +56,7 @@ describe('geo', function () {
          * Produced SAR unit test: https://github.com/dma-enav/EPD/blob/master/epd-common/src/test/java/dk/dma/epd/common/util/CalculatorTest.java
          * as testRange()
          */
-        it('(61 00.000N,050 52.699W).distanceTo((61 03.530N,050 52.699W),RL should return 5', function () {
+        it('(61 00.000N,050 52.699W).distanceTo((61 03.530N,050 52.699W),RL) should return 5', function () {
             var startPos = new embryo.geo.Position(-51.0, 61.0);
 
             var lat = embryo.position.parseLatitude("61 03.530N");
@@ -63,7 +64,7 @@ describe('geo', function () {
             var end = new embryo.geo.Position(lon, lat);
             var result = startPos.distanceTo(end, embryo.geo.Heading.RL);
 
-            expect(result).toBe(5.000017243489917);
+            expect(result).toBeCloseTo(5, 4);
         });
 
     });

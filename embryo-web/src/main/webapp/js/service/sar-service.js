@@ -67,8 +67,6 @@
         this.minutesElapsed = Math.round((difference - this.hoursElapsed) * 60);
 
 
-        var surfaceDriftPoints = this.data.surfaceDrift;
-
         var startTs = this.data.lastKnownPosition.ts;
 
         var weatherPointsValidFor = [];
@@ -93,8 +91,8 @@
                 if (currentTs < this.data.lastKnownPosition.ts) {
                     currentTs = this.data.lastKnownPosition.ts;
                 }
-                var startTime = this.data.surfaceDriftPoints[i + 1].ts;
-                validFor = (startTime - currentTs) / 60 / 60 / 1000;
+                startTs = this.data.surfaceDriftPoints[i + 1].ts;
+                validFor = (startTs - currentTs) / 60 / 60 / 1000;
             }
 
             var currentTWC = this.data.surfaceDriftPoints[i].twcSpeed * validFor;
