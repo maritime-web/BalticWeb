@@ -22,6 +22,8 @@ $(function () {
     module.controller("SAROperationEditController", ['$scope', 'ViewService', 'SarService', function ($scope, ViewService, SarService) {
         var now = Date.now();
 
+        $scope.alertMessages = [];
+
         $scope.provider = {
             doShow: false,
             title: "Create SAR",
@@ -72,11 +74,13 @@ $(function () {
             switch ($scope.page) {
                 case ("sarResult") :
                 {
+                    $scope.alertMessages = []
                     $scope.page = 'sarInputs';
                     break;
                 }
                 case ("sarInputs") :
                 {
+                    $scope.alertMessages = []
                     $scope.page = 'typeSelection';
                     break;
                 }
@@ -95,8 +99,17 @@ $(function () {
             //var sar = clone($scope.sar);
             var sar = $scope.sar;
             sar.type = $scope.selectedType.id;
-            $scope.sarOperation = SarService.createSarOperation(sar);
-            $scope.page = 'sarResult';
+            try {
+                $scope.alertMessages = [];
+                $scope.sarOperation = SarService.createSarOperation(sar);
+                $scope.page = 'sarResult';
+            } catch (error) {
+                if (typeof error === 'object' && error.message) {
+                    $scope.alertMessages.push("Internal error: " + error.message);
+                } else if (typeof error === 'string') {
+                    $scope.alertMessages.push("Internal error: " + error);
+                }
+            }
         }
 
         $scope.formatTs = formatTime;

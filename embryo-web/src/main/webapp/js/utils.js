@@ -155,6 +155,13 @@ function ms2Knots(ms){
     return ms * 3.6 / 1.852;
 }
 
+function assertObjectFieldValue(object, fieldName) {
+    var value = object[fieldName];
+    if (!value && value != 0) {
+        throw new Error(fieldName + " has invalid value " + value)
+    }
+}
+
 function assertValue(value, msg) {
     if (!value && value != 0) {
         throw new Error(msg ? msg + " has invalid value " + value : value + " is not a valid value")

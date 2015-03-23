@@ -60,12 +60,13 @@
 
     RapidResponse.prototype = new Operation();
     RapidResponse.prototype.calculate = function () {
-        if (!this.data.xError && this.data.xError != 0) {
-            throw new Error("Missing xError value")
-        }
-        if (!this.data.yError && this.data.yError != 0) {
-            throw new Error("Missing yError value")
-        }
+        assertObjectFieldValue(this.data, "startTs");
+        assertObjectFieldValue(this.data.lastKnownPosition, "ts");
+        assertObjectFieldValue(this.data.lastKnownPosition, "lon");
+        assertObjectFieldValue(this.data.lastKnownPosition, "lat");
+        assertObjectFieldValue(this.data, "xError");
+        assertObjectFieldValue(this.data, "yError");
+        assertObjectFieldValue(this.data, "safetyFactor");
 
         var difference = (this.data.startTs - this.data.lastKnownPosition.ts) / 60 / 60 / 1000;
         this.timeElapsed = difference;
@@ -85,6 +86,12 @@
 
         var i = 0;
         for (i = 0; i < this.data.surfaceDriftPoints.length; i++) {
+            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "ts");
+            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "twcSpeed");
+            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "twcDirection");
+            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "leewaySpeed");
+            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "leewayDirection");
+
             // Do we have a next?
             // How long is the data point valid for?
             // Is it the last one?

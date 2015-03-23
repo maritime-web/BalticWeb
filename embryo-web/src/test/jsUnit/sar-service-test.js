@@ -10,22 +10,9 @@ describe('embryo.sar', function () {
             service = SarService;
         }));
 
-
-        /**
-         * This unit test has been produced to ensure the same result as when calculating rapid response SAR operations in the EPD project.
-         * The unit test was first written in Java in the EPD project, just making assertion values fit what was actually calculated, and then
-         * there after ported to JavaScript. This way it is ensured that the JavaScript SAR calculations at least behaves the same as the Java
-         * version did at the time of the SAR operations was implemented.
-         *
-         * Produced SAR unit test: https://github.com/dma-enav/EPD/blob/master/epd-common/src/test/java/dk/dma/epd/common/prototype/model/voct/SarOperationTest.java
-         * as testRapidResponseWithOneSurfarceDriftPoint()
-         */
-        it('create rapid response SAR operation with one surface drift point', function () {
+        function createSarTestObject(service) {
             var searchObjectTypes = service.searchObjectTypes();
-            var formatLatitude = embryo.geo.formatLatitude;
-            var formatLongitude = embryo.geo.formatLongitude;
-
-            var data = {
+            return {
                 sarNo: 1,
                 type: embryo.sar.types.RapidResponse,
                 lastKnownPosition: {
@@ -46,6 +33,23 @@ describe('embryo.sar', function () {
                 safetyFactor: 1,
                 searchObject: searchObjectTypes[0]
             }
+        }
+
+
+        /**
+         * This unit test has been produced to ensure the same result as when calculating rapid response SAR operations in the EPD project.
+         * The unit test was first written in Java in the EPD project, just making assertion values fit what was actually calculated, and then
+         * there after ported to JavaScript. This way it is ensured that the JavaScript SAR calculations at least behaves the same as the Java
+         * version did at the time of the SAR operations was implemented.
+         *
+         * Produced SAR unit test: https://github.com/dma-enav/EPD/blob/master/epd-common/src/test/java/dk/dma/epd/common/prototype/model/voct/SarOperationTest.java
+         * as testRapidResponseWithOneSurfarceDriftPoint()
+         */
+        it('create rapid response SAR operation with one surface drift point', function () {
+            var formatLatitude = embryo.geo.formatLatitude;
+            var formatLongitude = embryo.geo.formatLongitude;
+
+            var data = createSarTestObject(service);
 
             //var sarOperation = null;
             var sarOperation = service.createSarOperation(data);
@@ -145,6 +149,117 @@ describe('embryo.sar', function () {
             expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 04.529N");
             expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("050 55.753W");
             expect(sarOperation.searchArea.totalSize).toBeCloseTo(1.3742403439070814 * 1.3742403439070814 * 4, 6);
+        });
+
+        function executeWithTryCatch(service, data) {
+            try {
+                service.createSarOperation(data);
+            } catch (Error) {
+                return Error;
+            }
+            return null;
+        }
+
+        function assertErrorContent(err, fieldName) {
+            expect(err).toBeDefined();
+            expect(err.message).toBeDefined();
+            expect(err.message.indexOf(fieldName) >= 0).toBe(true);
+        }
+
+        it('Error thrown if lastKnownPosition.ts has no value', function () {
+            var data = createSarTestObject(service);
+            data.lastKnownPosition.ts = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "ts");
+        });
+
+        it('Error thrown if lastKnownPosition.lon has no value', function () {
+            var data = createSarTestObject(service);
+            data.lastKnownPosition.lon = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "lon");
+        });
+
+        it('Error thrown if lastKnownPosition.lat has no value', function () {
+            var data = createSarTestObject(service);
+            data.lastKnownPosition.lat = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "lat");
+        });
+
+        it('Error thrown if startTs has no value ', function () {
+            var data = createSarTestObject(service);
+            data.startTs = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "startTs");
+        });
+
+        it('Error thrown if surfaceDriftPoint.ts has no value ', function () {
+            var data = createSarTestObject(service);
+            data.surfaceDriftPoints[0].ts = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "ts");
+        });
+
+        it('Error thrown if surfaceDriftPoint.twcSpeed has no value ', function () {
+            var data = createSarTestObject(service);
+            data.surfaceDriftPoints[0].twcSpeed = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "twcSpeed");
+        });
+
+        it('Error thrown if surfaceDriftPoint.twcDirection has no value ', function () {
+            var data = createSarTestObject(service);
+            data.surfaceDriftPoints[0].twcDirection = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "twcDirection");
+        });
+
+        it('Error thrown if surfaceDriftPoint.leewaySpeed has no value ', function () {
+            var data = createSarTestObject(service);
+            data.surfaceDriftPoints[0].leewaySpeed = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "leewaySpeed");
+        });
+
+        it('Error thrown if surfaceDriftPoint.leewayDirection has no value ', function () {
+            var data = createSarTestObject(service);
+            data.surfaceDriftPoints[0].leewayDirection = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "leewayDirection");
+        });
+
+        it('Error thrown if xError has no value ', function () {
+            var data = createSarTestObject(service);
+            data.xError = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "xError");
+        });
+
+        it('Error thrown if yError has no value ', function () {
+            var data = createSarTestObject(service);
+            data.yError = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "yError");
+        });
+
+        it('Error thrown if safetyFactor has no value ', function () {
+            var data = createSarTestObject(service);
+            data.safetyFactor = null;
+
+            var err = executeWithTryCatch(service, data)
+            assertErrorContent(err, "safetyFactor");
         });
 
     });
