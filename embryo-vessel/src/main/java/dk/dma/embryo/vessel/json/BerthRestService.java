@@ -14,23 +14,20 @@
  */
 package dk.dma.embryo.vessel.json;
 
-import java.util.List;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import dk.dma.embryo.vessel.model.Berth;
+import dk.dma.embryo.vessel.service.GeographicService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-
-import dk.dma.embryo.vessel.model.Berth;
-import dk.dma.embryo.vessel.service.GeographicService;
+import java.util.List;
 
 /**
  * 
@@ -50,7 +47,7 @@ public class BerthRestService {
     @Produces("application/json")
     @GZIP
     @NoCache
-    public List<BerthDatum> remote(@QueryParam("QUERY") String query) {
+    public List<BerthDatum> remote(@QueryParam("q") String query) {
         logger.debug("remoteFetch({})", query);
 
         List<Berth> berths = null;

@@ -15,10 +15,10 @@
         queryTokenizer : Bloodhound.tokenizers.whitespace,
         prefetch : {
             url : berthUrl,
-            // 1 time
-            ttl : 3600000
+            // 1 week
+            ttl: 7 * 24 * 60 * 60 * 1000
         },
-        remote : berthUrl
+        remote: berthUrl + "?q=%QUERY"
     });
 
     module.controller('ScheduleEditCtrl', [
@@ -238,7 +238,9 @@
                                 $scope.getBerths = function(query) {
                                     return function() {
                                         var deferred = $q.defer();
+                                        console.log(query);
                                         berths.get(query, function(suggestions) {
+                                            console.log(suggestions);
                                             deferred.resolve(suggestions);
                                         });
                                         return deferred.promise;
