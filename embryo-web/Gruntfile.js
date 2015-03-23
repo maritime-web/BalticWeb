@@ -195,72 +195,65 @@ module.exports = function (grunt) {
         },
         replace: {
             run: {
-                src: [ '<%= proj.build %>/*.{html,appcache}' ],
-                dest: '<%= proj.build %>/', // destination directory or file
+                src: ['<%= proj.build %>/*.{html,appcache}', '<%= proj.build %>/docs/index.html'],
+                overwrite: true,                 // overwrite matched source files
                 replacements: [
+                    {
+                        from: '/js/cached/common/cdn.cloudflare', // string replacement
+                        to: '//cdnjs.cloudflare.com/ajax/libs'
+                    },
                     {
                         from: 'js/cached/common/cdn.cloudflare', // string replacement
                         to: '//cdnjs.cloudflare.com/ajax/libs'
                     },
                     {
-                        from: '/js/cached/common/cdn.cloudflare', // string replacement
-                        to: '//cdnjs.cloudflare.com/ajax/libs'
-                    },
-                    
-                    {
-                        from: 'js/cached/common/cdn.googleapis', // string replacement
-                        to: '//ajax.googleapis.com/ajax/libs'
-                    },
-                    {
                         from: '/js/cached/common/cdn.googleapis', // string replacement
                         to: '//ajax.googleapis.com/ajax/libs'
                     },
-                    
                     {
-                        from: 'js/cached/front/cdn.googleapis', // string replacement
+                        from: 'js/cached/common/cdn.googleapis', // string replacement
                         to: '//ajax.googleapis.com/ajax/libs'
                     },
                     {
                         from: '/js/cached/front/cdn.googleapis', // string replacement
                         to: '//ajax.googleapis.com/ajax/libs'
                     },
-                    
                     {
-                        from: 'js/cached/map/cdn.cloudflare', // string replacement
-                        to: '//cdnjs.cloudflare.com/ajax/libs'
+                        from: 'js/cached/front/cdn.googleapis', // string replacement
+                        to: '//ajax.googleapis.com/ajax/libs'
                     },
                     {
                         from: '/js/cached/map/cdn.cloudflare', // string replacement
                         to: '//cdnjs.cloudflare.com/ajax/libs'
                     },
-                    
                     {
-                        from: 'js/cached/map/cdn.netdna', // string replacement
-                        to: '//netdna.bootstrapcdn.com'
+                        from: 'js/cached/map/cdn.cloudflare', // string replacement
+                        to: '//cdnjs.cloudflare.com/ajax/libs'
                     },
                     {
                         from: '/js/cached/map/cdn.netdna', // string replacement
                         to: '//netdna.bootstrapcdn.com'
                     },
-                    
                     {
-                        from: 'css/cached/cdn.netdna', // string replacement
+                        from: 'js/cached/map/cdn.netdna', // string replacement
                         to: '//netdna.bootstrapcdn.com'
                     },
                     {
                         from: '/css/cached/cdn.netdna', // string replacement
                         to: '//netdna.bootstrapcdn.com'
                     },
-                    
                     {
-                        from: 'js/cached/map/cdn.firebase', // string replacement
-                        to: '//cdn.firebase.com/'
+                        from: 'css/cached/cdn.netdna', // string replacement
+                        to: '//netdna.bootstrapcdn.com'
                     },
                     {
                         from: '/js/cached/map/cdn.firebase', // string replacement
                         to: '//cdn.firebase.com/'
                     },
-
+                    {
+                        from: 'js/cached/map/cdn.firebase', // string replacement
+                        to: '//cdn.firebase.com/'
+                    },
                 ]
             }
         },
