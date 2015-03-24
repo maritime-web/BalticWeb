@@ -22,6 +22,11 @@
         return result;
     }
 
+    function Direction(name, degrees) {
+        this.name = name;
+        this.degrees = degrees;
+    }
+
     var leewayObjectTypes = [];
     leewayObjectTypes.push(Object.freeze(new Leeway(0.011, 0.068, 30, "Person in water (PIW)")));
     leewayObjectTypes.push(Object.freeze(new Leeway(0.029, 0.039, 20, "Raft (4-6 person), unknown drift anker status")));
@@ -43,6 +48,38 @@
     leewayObjectTypes.push(Object.freeze(new Leeway(0.040, undefined, 33, "Trawler")));
     leewayObjectTypes.push(Object.freeze(new Leeway(0.028, undefined, 48, "Coaster")));
     leewayObjectTypes.push(Object.freeze(new Leeway(0.020, undefined, 10, "Wreckage")));
+
+    var directions = [];
+    directions.push(new Direction("N", 0));
+    directions.push(new Direction("NNE", 22.5));
+    directions.push(new Direction("NE", 45));
+    directions.push(new Direction("ENE", 67.5));
+    directions.push(new Direction("E", 90));
+    directions.push(new Direction("ESE", 112.50));
+    directions.push(new Direction("SE", 135.00));
+    directions.push(new Direction("SSE", 157.50));
+    directions.push(new Direction("S", 180.00));
+    directions.push(new Direction("SSW", 202.50));
+    directions.push(new Direction("SW", 225.00));
+    directions.push(new Direction("WSW", 247.50));
+    directions.push(new Direction("W", 270.00));
+    directions.push(new Direction("WNW", 292.50));
+    directions.push(new Direction("NW", 315.00));
+    directions.push(new Direction("NNW", 337.50));
+    directions = Object.freeze(directions);
+
+    function directionDegrees(value) {
+        if (typeof value !== 'string') {
+            return value;
+        }
+        for (var index in directions) {
+            if (directions[index].name === value) {
+                return directions[index].degrees;
+            }
+        }
+        return parseInt(value, 10);
+    }
+
 
     function Operation() {
     }
@@ -116,8 +153,8 @@
             } else {
                 startingLocation = lastDatumPosition;
             }
-
-            var currentPos = startingLocation.transformPosition(this.data.surfaceDriftPoints[i].twcDirection, nmToMeters(currentTWC));
+            var twcDirectionInDegrees = directionDegrees(this.data.surfaceDriftPoints[i].twcDirection);
+            var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, nmToMeters(currentTWC));
             currentPositions.push(currentPos)
 
             var leewaySpeed = this.data.searchObject.leewaySpeed(this.data.surfaceDriftPoints[i].leewaySpeed);
@@ -125,7 +162,7 @@
 
             var downWind = this.data.surfaceDriftPoints[i].downWind
             if (!downWind) {
-                downWind = this.data.surfaceDriftPoints[i].leewayDirection - 180;
+                downWind = directionDegrees(this.data.surfaceDriftPoints[i].leewayDirection) - 180;
             }
 
             var leewayPos = currentPos.transformPosition(downWind, nmToMeters(leewayDriftDistance));
@@ -233,6 +270,19 @@
         var service = {
             sarTypes: function () {
                 return embryo.sar.types;
+            },
+            directions: function () {
+                return directions;
+            },
+            queryDirections: function (query) {
+                var uppercased = query.toUpperCase();
+                var result = []
+                for (var index in directions) {
+                    if (directions[index].name.indexOf(uppercased) >= 0) {
+                        result.push(directions[index]);
+                    }
+                }
+                return result;
             },
             searchObjectTypes: function () {
                 return leewayObjectTypes;

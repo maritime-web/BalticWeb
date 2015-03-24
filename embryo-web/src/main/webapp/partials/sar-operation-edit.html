@@ -1,5 +1,12 @@
 <div x-ng-controller="SAROperationEditController">
 
+    <script type="text/ng-template" id="directionTemplate.html">
+        <span>
+            <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+            ({{match.model.degrees}}°)
+        </span>
+    </script>
+
     <div e-reporting-panel x-ng-if="provider.doShow" id="sarOperationEditPanel">
         <h2>
             <a class="close" href="#" style="float: right" x-ng-click="close($event)">&times;</a>SAR Operation
@@ -227,12 +234,18 @@
                                        required/></td>
                             <td>
                                 <input x-ng-model="surfaceDriftPoint.twcDirection" type="text"
-                                       class="form-control input-sm" placeholder="55°" required/>
+                                       class="form-control input-sm"
+                                       x-typeahead="direction.name for direction in getDirections($viewValue)"
+                                       typeahead-template-url="directionTemplate.html" placeholder="W/270°" required/>
                             </td>
                             <td><input x-ng-model="surfaceDriftPoint.leewaySpeed" type="text"
                                        class="form-control input-sm" placeholder="15 knots" required/></td>
                             <td><input x-ng-model="surfaceDriftPoint.leewayDirection" type="text"
-                                       class="form-control input-sm" placeholder="75°" required/></td>
+                                       class="form-control input-sm"
+                                       x-typeahead="direction.name for direction in getDirections($viewValue)"
+                                       typeahead-template-url="directionTemplate.html" placeholder="NE/45°" required/>
+                            </td>
+
                         </tr>
                         </tbody>
 
@@ -321,8 +334,10 @@
                 </div>
                 <div x-ng-if="sarOperation.data.surfaceDriftPoints.length <= 1">
                     <span x-ng-repeat="surfaceDrift in sarOperation.data.surfaceDriftPoints">
-                    Total water current {{surfaceDrift.twcSpeed}} knots with heading {{surfaceDrift.twcDirection}}°,
-                    Leeway {{surfaceDrift.leewaySpeed}} knots with heading {{surfaceDrift.leewayDirection}}°<br/>
+                    Total water current {{surfaceDrift.twcSpeed}} knots with direction {{surfaceDrift.twcDirection}}<span
+                            x-ng-if="0 <= surfaceDrift.twcDirection && surfaceDrift.twcDirection < 360">°</span>
+                    Leeway {{surfaceDrift.leewaySpeed}} knots with direction {{surfaceDrift.leewayDirection}}<span
+                            x-ng-if="0 <= surfaceDrift.leewayDirection && surfaceDrift.leewayDirection < 360">°</span><br/>
                     </span>
                 </div>
                 <hr/>
@@ -335,7 +350,7 @@
                 {{sarOperation.minutesElapsed}} minute<span x-ng-if="sarOperation.minutesElapsed != 1">s</span>.<br/>
                 Datum calculated from applying leeway and total water current: {{formatPos(sarOperation.datum)}}<br/>
                 With the following Residual Drift Vector<br/>
-                RDV Direction: {{formatDecimal(sarOperation.rdvDirection, -2)}}°<br/>
+                RDV Direction: {{formatDecimal(sarOperation.rdvDirection, -2)}}<br/>
                 RDV Distance: {{formatDecimal(sarOperation.rdvDistance, -2)}} nm<br/>
                 RDV Speed: {{formatDecimal(sarOperation.rdvSpeed, -2)}} kn/h<br/>
                 With radius: {{formatDecimal(sarOperation.radius, -2)}} nm<br/>

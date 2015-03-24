@@ -3,7 +3,7 @@ $(function () {
 //    var msiLayer = new MsiLayer();
 //    addLayerToMap("msi", msiLayer, embryo.map);
 
-    var module = angular.module('embryo.sar.views', ["firebase", 'embryo.sar.service', 'embryo.common.service']);
+    var module = angular.module('embryo.sar.views', ["firebase", 'embryo.sar.service', 'embryo.common.service', 'ui.bootstrap.typeahead']);
 
     function SarTypeData(id, text, img) {
         this.id = id;
@@ -19,7 +19,7 @@ $(function () {
     sarTypeDatas.push(new SarTypeData(embryo.sar.types.BackTrack, "Back track", "/img/sar/generic.png"));
 
 
-    module.controller("SAROperationEditController", ['$scope', 'ViewService', 'SarService', function ($scope, ViewService, SarService) {
+    module.controller("SAROperationEditController", ['$scope', 'ViewService', 'SarService', '$q', function ($scope, ViewService, SarService, $q) {
         var now = Date.now();
 
         $scope.alertMessages = [];
@@ -68,6 +68,18 @@ $(function () {
         }
         if (!$scope.sar.surfaceDriftPoints[0].ts) {
             $scope.sar.surfaceDriftPoints[0].ts = now;
+        }
+
+        $scope.getDirections = function (query) {
+            return function () {
+                var deferred = $q.defer();
+                var result = SarService.queryDirections(query);
+                deferred.resolve(result);
+                return deferred.promise;
+            }().then(function (res) {
+                return res;
+            });
+
         }
 
         $scope.back = function () {
