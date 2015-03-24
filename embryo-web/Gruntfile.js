@@ -371,8 +371,9 @@ module.exports = function (grunt) {
                 dest: 'target/build/usermanual.appcache',
                 cache: {
                     literals: [//as is in the "CACHE:" section
+                        'css/cached/cdn.netdna/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0',
                         'docs/index.html',
-                        'docs/arcticweb-docs.css'
+                        'docs/doc.css'
                     ],
                     patterns: [
                        	'src/main/webapp/docs/img/**',
