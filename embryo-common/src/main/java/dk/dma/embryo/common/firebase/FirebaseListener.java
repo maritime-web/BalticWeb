@@ -18,12 +18,14 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import dk.dma.embryo.common.configuration.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.inject.Inject;
 
 /**
  * Created by Jesper Tejlgaard on 2/20/15.
@@ -33,14 +35,23 @@ import javax.ejb.Startup;
 public class FirebaseListener {
 
     private final Logger LOGGER = LoggerFactory.getLogger(FirebaseListener.class);
-    
+
+    @Property("embryo.firebase.url")
+    @Inject
+    private String fireBaseURL;
+
     @PostConstruct
     public void startup() throws Exception {
 
+        LOGGER.info("Firebase URL: {}", fireBaseURL);
+
+        if (fireBaseURL == null || fireBaseURL.trim().length() == 0) {
+            return;
+        }
 
         Firebase.setDefaultConfig(Firebase.getDefaultConfig());
 
-        Firebase myFirebaseRef = new Firebase("http://incandescent-torch-4183.firebaseio.com/");
+        Firebase myFirebaseRef = new Firebase(fireBaseURL);
 
 /*        myFirebaseRef.child("logs").addValueEventListener(new ValueEventListener() {
             @Override
