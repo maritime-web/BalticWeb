@@ -238,9 +238,7 @@
                                 $scope.getBerths = function(query) {
                                     return function() {
                                         var deferred = $q.defer();
-                                        console.log(query);
                                         berths.get(query, function(suggestions) {
-                                            console.log(suggestions);
                                             deferred.resolve(suggestions);
                                         });
                                         return deferred.promise;
