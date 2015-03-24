@@ -372,7 +372,7 @@ module.exports = function (grunt) {
                 cache: {
                     literals: [//as is in the "CACHE:" section
                         'docs/index.html',
-                        'docs/doc.css'
+                        'docs/arcticweb-docs.css'
                     ],
                     patterns: [
                        	'src/main/webapp/docs/img/**',
