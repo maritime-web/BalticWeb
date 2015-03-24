@@ -88,7 +88,7 @@
                         <label class="control-label col-xs-3">Time</label>
 
                         <div class="col-xs-4">
-                            <datetimepicker x-ng-model="sar.driftSearchPosition.first.time" required/>
+                            <datetimepicker x-ng-model="sar.driftSearchPosition.first.time"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -114,7 +114,7 @@
                         <label class="control-label col-xs-3">Time</label>
 
                         <div class="col-xs-4">
-                            <datetimepicker x-ng-model="sar.driftSearchPosition.second.time" required/>
+                            <datetimepicker x-ng-model="sar.driftSearchPosition.second.time"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -194,7 +194,7 @@
                     <label class="control-label col-xs-3">Time of Search Start</label>
 
                     <div class="col-xs-4">
-                        <datetimepicker name="searchStartTs" x-ng-model="sar.startTs" required/>
+                        <datetimepicker name="searchStartTs" x-ng-model="sar.startTs"/>
                     </div>
                 </div>
 
@@ -227,7 +227,7 @@
                         <tbody>
                         <tr x-ng-repeat="surfaceDriftPoint in sar.surfaceDriftPoints">
                             <td>
-                                <datetimepicker x-ng-model="surfaceDriftPoint.ts" required/>
+                                <datetimepicker x-ng-model="surfaceDriftPoint.ts"/>
                             </td>
                             <td><input x-ng-model="surfaceDriftPoint.twcSpeed" type="text"
                                        class="form-control input-sm" placeholder="5 knots"
@@ -259,7 +259,8 @@
                     <label class="control-label col-xs-3">Initial Position Error (X), nm</label>
 
                     <div class="col-xs-4">
-                        <input x-ng-model="sar.xError" type="number" class="form-control input-sm" required/>
+                        <input x-ng-model="sar.xError" name="xError" type="number" class="form-control input-sm"
+                               required/>
                     </div>
                 </div>
 
@@ -267,7 +268,8 @@
                     <label class="control-label col-xs-3">SRU Navigational Error (Y), nm</label>
 
                     <div class="col-xs-4">
-                        <input x-ng-model="sar.yError" type="number" class="form-control input-sm" required/>
+                        <input x-ng-model="sar.yError" name="yError" type="number" class="form-control input-sm"
+                               required/>
                     </div>
                     <span class="help-block">Note: GPS = 0.1 nm</span>
                 </div>
@@ -275,7 +277,8 @@
                     <label class="control-label col-xs-3">Safety factor, Fs</label>
 
                     <div class="col-xs-4">
-                        <input x-ng-model="sar.safetyFactor" type="number" class="form-control input-sm" required/>
+                        <input x-ng-model="sar.safetyFactor" name="safetyFactor" type="number"
+                               class="form-control input-sm" required/>
                     </div>
                 </div>
 
@@ -297,7 +300,8 @@
                 <div class="col-xs-12">
                     <span class="pull-right">
                         <button type="button" class="btn btn-sm" x-ng-click="back()">Back</button> &nbsp;
-                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="createSarOperation()">Next
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="createSarOperation()"
+                                x-ng-disabled="sarOperationForm.$invalid">Next
                         </button>
                     </span>
                 </div>
