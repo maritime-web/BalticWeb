@@ -4,8 +4,7 @@
     var berthUrl = embryo.baseUrl + 'rest/berth/search';
 
     var module = angular.module('embryo.schedule', [ 'embryo.scheduleService', 'embryo.routeService',
-            'siyfion.sfTypeahead', 'embryo.position', 'embryo.vessel.service', 'ui.bootstrap',
-            'embryo.controller.reporting' ]);
+        'embryo.position', 'embryo.vessel.service', 'ui.bootstrap', 'embryo.controller.reporting']);
 
     var voyages = [];
     var pageSize = 5;
