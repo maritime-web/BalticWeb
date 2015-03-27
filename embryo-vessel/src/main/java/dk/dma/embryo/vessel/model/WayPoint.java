@@ -21,9 +21,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
-
 import dk.dma.enav.model.voyage.Waypoint;
 
 @Embeddable
@@ -47,9 +44,6 @@ public class WayPoint implements Serializable {
 
     /** Waypoint turn radius in nautical miles. */
     private Double turnRadius;
-    
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    private DateTime eta;
     
     @Valid
     private RouteLeg leg;
@@ -110,7 +104,6 @@ public class WayPoint implements Serializable {
         toWaypoint.setLongitude(this.getPosition().getLongitude());
         toWaypoint.setRot(this.getRot());
         toWaypoint.setTurnRad(this.getTurnRadius());
-        toWaypoint.setEta(getEta() == null ? null : getEta().toDate());
         
         if(this.getLeg() != null){
             toWaypoint.setRouteLeg(this.getLeg().toEnavModel());
@@ -184,13 +177,5 @@ public class WayPoint implements Serializable {
 
     public void setTurnRadius(Double turnRadius) {
         this.turnRadius = turnRadius;
-    }
-
-    public DateTime getEta() {
-        return eta;
-    }
-
-    public void setEta(DateTime eta) {
-        this.eta = eta;
     }
 }
