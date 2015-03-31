@@ -27,3 +27,8 @@
 table.surfaceDriftPointsPresented {
     width: 400px;
 }
+
+#sarOperationEditPanel hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

@@ -14,6 +14,7 @@
 
         <div>
             <form x-ng-if="page == 'typeSelection'" name="sarTypeForm" class="form-horizontal" novalidate>
+                <hr/>
                 <div x-ng-show="alertMessages" class="alert alert-danger">
                     <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
                 </div>
@@ -312,7 +313,8 @@
                 </div>
             </form>
             <div x-ng-if="page == 'sarResult'">
-                <h3>{{selectedType.text}} - {{sarOperation.data.no}}</h3>
+                <hr/>
+                {{selectedType.text}} with no {{sarOperation.data.no}}
                 <hr/>
                 Time of last known position: {{formatTs(sarOperation.data.lastKnownPosition.ts)}} UTC<br/>
                 Last known position: {{formatPos(sarOperation.data.lastKnownPosition)}}<br/>
