@@ -119,7 +119,7 @@ a.embryo-close-panel {
     cursor: pointer;
 }
 
-input.ng-invalid {
+div.date.ng-invalid input, input.ng-invalid {
     border: 1px solid rgb(127, 0, 0);
     border: 1px solid rgba(255, 0, 0, .5);
     -webkit-background-clip: padding-box; /* for Safari */
@@ -136,4 +136,11 @@ input.ng-invalid {
 
 .mini-logos .title {
     text-align: center;
+}
+
+.error-block {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #E53A36;
 }

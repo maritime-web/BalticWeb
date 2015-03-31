@@ -36,24 +36,33 @@
                 var picker = $(element).data('DateTimePicker');
 
                 ngModelController.$formatters.push(function(modelValue) {
+                    var adjustedDate
                     if (!modelValue) {
+                        adjustedDate = null;
                         picker.setDate(null);
                     } else {
-                        var adjustedDate = adjustDateForUTC(modelValue);
+                        adjustedDate = adjustDateForUTC(modelValue);
                         picker.setDate(moment(adjustedDate).format('YYYY-MM-DD HH:mm'));
                     }
+                    return adjustedDate
                 });
 
                 ngModelController.$parsers.push(function(valueFromInput) {
                     if (!picker.getDate()) {
                         return null;
                     }
-                    return adjustDateForLocal(picker.getDate().valueOf());
+                    var value = adjustDateForLocal(picker.getDate().valueOf());
+                    return value;
                 });
 
                 element.bind('changeDate', function(e) {
                     var val = $(element).find('input').val();
                     ngModelController.$setViewValue(val);
+
+                    if (!scope.$$phase) {
+                        scope.$apply(function () {
+                        });
+                    }
                 });
 
                 element.bind('blur change dp.change dp.hide', function() {
@@ -66,6 +75,12 @@
                     ngModelController.$setViewValue(millis);
                     ngModelController.$modelValue = millis;
                     ngModelController.$render();
+
+                    if (!scope.$$phase) {
+                        scope.$apply(function () {
+                        });
+                    }
+
                 });
             }
         };

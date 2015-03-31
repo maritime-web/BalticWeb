@@ -1,8 +1,6 @@
 describe('Decimal', function() {
 
     describe('decimal', function() {
-        var $compile, scope;
-
         it('decimal.parse handles null, undefined and empty string', function() {
             var course = embryo.decimal.parse(null);
             expect(course).toBe(null);

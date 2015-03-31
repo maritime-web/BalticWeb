@@ -65,12 +65,13 @@
                 </div>
             </form>
             <form x-ng-if="page == 'sarInputs'" name="sarOperationForm" class="form-horizontal" novalidate>
+                <hr/>
+                <h5>{{selectedType.text}}</h5>
                 <div x-ng-show="alertMessages" class="alert alert-danger">
                     <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
                 </div>
                 <div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-                <hr/>
 
                 <div class="form-group">
                     <label class="control-label col-xs-3" for="sarNo">Sar No.</label>
@@ -227,7 +228,11 @@
                         <tbody>
                         <tr x-ng-repeat="surfaceDriftPoint in sar.surfaceDriftPoints">
                             <td>
-                                <datetimepicker x-ng-model="surfaceDriftPoint.ts"/>
+                                <datetimepicker name="surfaceDriftPointTs" x-ng-model="surfaceDriftPoint.ts"
+                                                lteq="sar.lastKnownPosition.ts"/>
+                                <span x-ng-if="sarOperationForm.surfaceDriftPointTs.$error.lteq" class="error-block">
+                                    Surface drift point must be before last known position.
+                                </span>
                             </td>
                             <td><input x-ng-model="surfaceDriftPoint.twcSpeed" type="text"
                                        class="form-control input-sm" placeholder="5 knots"
@@ -344,6 +349,10 @@
                             x-ng-if="0 <= surfaceDrift.leewayDirection && surfaceDrift.leewayDirection < 360">°</span><br/>
                     </span>
                 </div>
+                <hr/>
+                Initial position error, X in nautical miles: {{sarOperation.data.xError}}<br/>
+                SRU navigational error, Y in nautical miles: {{sarOperation.data.yError}}<br/>
+                Safety factor, Fs: {{sarOperation.data.safetyFactor}}<br/>
                 <hr/>
                 Search Object: {{sarOperation.data.searchObject.text}}<br/>{{sarOperation.data.searchObject.x}}x U
                 <span x-ng-if="sarOperation.data.searchObject.y < 0">- {{sarOperation.data.searchObject.y}}</span>

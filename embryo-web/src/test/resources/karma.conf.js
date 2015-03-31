@@ -31,6 +31,7 @@ module.exports = function(config) {
                 'src/main/webapp/js/layer/embryo-layer.js',
                 'src/main/webapp/js/layer/metoc-layer.js',
                 'src/main/webapp/js/service/greenpos-service.js',
+            'src/main/webapp/js/reporting/validation.js',
                 'src/main/webapp/js/reporting/datetimepicker.js',
                 'src/main/webapp/js/reporting/reporting-panel.js',
                 'src/main/webapp/js/reporting/course.js',

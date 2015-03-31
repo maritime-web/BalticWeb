@@ -3,7 +3,44 @@ $(function () {
 //    var msiLayer = new MsiLayer();
 //    addLayerToMap("msi", msiLayer, embryo.map);
 
-    var module = angular.module('embryo.sar.views', ["firebase", 'embryo.sar.service', 'embryo.common.service', 'ui.bootstrap.typeahead']);
+    var module = angular.module('embryo.sar.views', ["firebase", 'embryo.sar.service', 'embryo.common.service', 'ui.bootstrap.typeahead', 'embryo.validation.compare', 'embryo.datepicker']);
+
+
+    module.directive('lteq', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, ngModelController) {
+                var path = attr.lteq.split('.');
+
+                function comparedTo() {
+                    var value = scope;
+                    for (var index in path) {
+                        var v = path[index];
+                        value = value[v];
+                    }
+                    return value
+                }
+
+                function valid(value1, value2) {
+                    return value1 <= value2;
+                }
+
+                //For DOM -> model validation
+                ngModelController.$parsers.unshift(function (value) {
+                    var otherValue = comparedTo();
+                    ngModelController.$setValidity('lteq', valid(value, otherValue));
+                    return value;
+                });
+
+                //For model -> DOM validation
+                ngModelController.$formatters.unshift(function (value) {
+                    var otherValue = comparedTo();
+                    ngModelController.$setValidity('lteq', valid(value, otherValue));
+                    return value;
+                });
+            }
+        };
+    });
 
     function SarTypeData(id, text, img) {
         this.id = id;
@@ -37,6 +74,11 @@ $(function () {
             }
         };
         ViewService.addViewProvider($scope.provider);
+
+        $scope.close = function ($event) {
+            $event.preventDefault();
+            $scope.provider.close();
+        };
 
         $scope.searchObjects = SarService.searchObjectTypes();
         $scope.sarTypes = SarService.sarTypes();
