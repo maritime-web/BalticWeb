@@ -355,7 +355,7 @@
                 Safety factor, Fs: {{sarOperation.data.safetyFactor}}<br/>
                 <hr/>
                 Search Object: {{sarOperation.data.searchObject.text}}<br/>{{sarOperation.data.searchObject.x}}x U
-                <span x-ng-if="sarOperation.data.searchObject.y < 0">- {{sarOperation.data.searchObject.y}}</span>
+                <span x-ng-if="sarOperation.data.searchObject.y < 0">- {{-sarOperation.data.searchObject.y}}</span>
                 <span x-ng-if="sarOperation.data.searchObject.y > 0">+ {{sarOperation.data.searchObject.y}}</span>,
                 Divergence: {{sarOperation.data.searchObject.divergence}}<br/>
                 <hr/>
