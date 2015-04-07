@@ -60,9 +60,9 @@ describe('embryo.sar', function () {
             expect(formatLongitude(sarOperation.datum.lon)).toBe("050 52.939W");
             expect(formatLatitude(sarOperation.datum.lat)).toBe("61 03.328N");
 
-            expect(sarOperation.rdvDirection).toBeCloseTo(45.780030, 4);
-            expect(sarOperation.rdvDistance).toBeCloseTo(4.775445, 4);
-            expect(sarOperation.rdvSpeed).toBeCloseTo(4.775445, 4);
+            expect(sarOperation.rdv.direction).toBeCloseTo(45.780030, 4);
+            expect(sarOperation.rdv.distance).toBeCloseTo(4.775445, 4);
+            expect(sarOperation.rdv.speed).toBeCloseTo(4.775445, 4);
             expect(sarOperation.radius).toBeCloseTo(2.532634, 4);
 
             expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("61 06.905N");
@@ -132,9 +132,9 @@ describe('embryo.sar', function () {
             expect(formatLatitude(sarOperation.datum.lat)).toBe("61 04.854N");
             expect(formatLongitude(sarOperation.datum.lon)).toBe("050 51.794W");
 
-            expect(sarOperation.rdvDirection).toBeCloseTo(35.372815, 4);
-            expect(sarOperation.rdvDistance).toBeCloseTo(3.914134, 4);
-            expect(sarOperation.rdvSpeed).toBeCloseTo(7.828269, 4);
+            expect(sarOperation.rdv.direction).toBeCloseTo(35.372815, 4);
+            expect(sarOperation.rdv.distance).toBeCloseTo(3.914134, 4);
+            expect(sarOperation.rdv.speed).toBeCloseTo(7.828269, 4);
             expect(sarOperation.radius).toBeCloseTo(1.374240, 4);
 
             expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("61 06.769N");

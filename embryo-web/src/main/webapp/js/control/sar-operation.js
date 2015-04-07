@@ -84,8 +84,8 @@ $(function () {
         $scope.sarTypes = SarService.sarTypes();
         $scope.sarTypeDatas = sarTypeDatas;
 
-        $scope.selectedType = $scope.sarTypeDatas[0];
         $scope.sar = {
+            selectedType: $scope.sarTypeDatas[0],
             searchObject: $scope.searchObjects[0],
             yError: 0.1,
             safetyFactor: 1.0,
@@ -93,7 +93,7 @@ $(function () {
 
         }
 
-        if ($scope.selectedType.id != embryo.sar.types.DatumLine) {
+        if ($scope.sar.selectedType.id != embryo.sar.types.DatumLine) {
             if (!$scope.sar.lastKnownPosition) {
                 $scope.sar.lastKnownPosition = {};
             }
@@ -152,7 +152,7 @@ $(function () {
         $scope.createSarOperation = function () {
             //var sar = clone($scope.sar);
             var sar = $scope.sar;
-            sar.type = $scope.selectedType.id;
+            sar.type = $scope.sar.selectedType.id;
             try {
                 $scope.alertMessages = [];
                 $scope.sarOperation = SarService.createSarOperation(sar);

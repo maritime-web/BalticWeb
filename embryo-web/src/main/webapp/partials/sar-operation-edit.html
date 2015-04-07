@@ -24,7 +24,7 @@
                     <label class="control-label col-xs-3">Sar Operation Type</label>
 
                     <div class="col-xs-5">
-                        <select ng-model="selectedType" name="selectedType" required
+                        <select ng-model="sar.selectedType" name="selectedType" required
                                 class="input-sm form-control"
                                 x-ng-options="sarTypeData.text for sarTypeData in sarTypeDatas">
                         </select>
@@ -32,30 +32,30 @@
                 </div>
 
                 <div>
-                    <p x-ng-if="selectedType && selectedType.id === sarTypes.RapidResponse">
+                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.RapidResponse">
                         {{selectedType.text}} should be used when the rescue vessel is within the designated
                         search area in a relatively short time span, i.e. 1-2 hours after last known position (LKP).
                     </p>
 
-                    <p x-ng-if="selectedType && selectedType.id === sarTypes.DatumPoint">
+                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumPoint">
                         {{selectedType.text}} is a calculation method used when the rescue vessel arrives to the
                         designated search area two hours or more later than the last known position (LKP) was reported.
                     </p>
 
-                    <p x-ng-if="selectedType && selectedType.id === sarTypes.DatumLine">
+                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumLine">
                         {{selectedType.text}} is used when an object is missing and the last known position (LKP) is
                         unknown, but an assumed route is known.
                     </p>
 
-                    <p x-ng-if="selectedType && selectedType.id === sarTypes.BackTrack">
+                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.BackTrack">
                         {{selectedType.text}} is used when an object connected to the missing vessel has
                         been located. By reversing the objects movements a possible search area can be established.
                     </p>
                 </div>
 
                 <div class="sar-img-type-container">
-                    <img style="max-width:500px; max-height:250px" ng-if="selectedType"
-                         ng-src="{{selectedType.img}}"/>
+                    <img style="max-width:500px; max-height:250px" ng-if="sar.selectedType"
+                         ng-src="{{sar.selectedType.img}}"/>
                 </div>
 
                 <div class="col-xs-12">
@@ -67,13 +67,12 @@
             </form>
             <form x-ng-if="page == 'sarInputs'" name="sarOperationForm" class="form-horizontal" novalidate>
                 <hr/>
-                <h5>{{selectedType.text}}</h5>
                 <div x-ng-show="alertMessages" class="alert alert-danger">
                     <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
                 </div>
                 <div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-
+                <h5>{{sar.selectedType.text}}</h5>
                 <div class="form-group">
                     <label class="control-label col-xs-3" for="sarNo">Sar No.</label>
 
@@ -83,7 +82,7 @@
                 </div>
                 <hr/>
 
-                <div x-ng-if="selectedType && selectedType.id === sarTypes.DatumLine">
+                <div x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumLine">
                     <h5>First Drift Search Position</h5>
 
                     <div class="form-group">
@@ -162,7 +161,7 @@
                     <hr/>
                 </div>
 
-                <div x-ng-if="!(selectedType && selectedType.id === sarTypes.DatumLine)">
+                <div x-ng-if="!(sar.selectedType && sar.selectedType.id === sarTypes.DatumLine)">
                     <h5>Last known position</h5>
 
                     <div class="form-group">
@@ -314,7 +313,7 @@
             </form>
             <div x-ng-if="page == 'sarResult'">
                 <hr/>
-                {{selectedType.text}} with no {{sarOperation.data.no}}
+                {{sar.selectedType.text}} with no {{sarOperation.data.no}}
                 <hr/>
                 Time of last known position: {{formatTs(sarOperation.data.lastKnownPosition.ts)}} UTC<br/>
                 Last known position: {{formatPos(sarOperation.data.lastKnownPosition)}}<br/>
@@ -363,12 +362,14 @@
                 <hr/>
                 Time elapsed: {{sarOperation.hoursElapsed}} hour<span x-ng-if="sarOperation.hoursElapsed != 1">s</span>,
                 {{sarOperation.minutesElapsed}} minute<span x-ng-if="sarOperation.minutesElapsed != 1">s</span>.<br/>
+                <span x-ng-if="sarOperation.rdv">
                 Datum calculated from applying leeway and total water current: {{formatPos(sarOperation.datum)}}<br/>
                 With the following Residual Drift Vector<br/>
-                RDV Direction: {{formatDecimal(sarOperation.rdvDirection, -2)}}<br/>
-                RDV Distance: {{formatDecimal(sarOperation.rdvDistance, -2)}} nm<br/>
-                RDV Speed: {{formatDecimal(sarOperation.rdvSpeed, -2)}} kn/h<br/>
+                RDV Direction: {{formatDecimal(sarOperation.rdv.direction, -2)}}<br/>
+                RDV Distance: {{formatDecimal(sarOperation.rdv.distance, -2)}} nm<br/>
+                RDV Speed: {{formatDecimal(sarOperation.rdv.speed, -2)}} kn/h<br/>
                 With radius: {{formatDecimal(sarOperation.radius, -2)}} nm<br/>
+                </span>
                 <hr/>
                 Search Area:<br/>
                 A: {{formatPos(sarOperation.searchArea.A)}}<br/>
