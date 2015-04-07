@@ -226,13 +226,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr x-ng-repeat="surfaceDriftPoint in sar.surfaceDriftPoints">
+                        <tr ng-form="surfaceDriftPointForm" x-ng-repeat="surfaceDriftPoint in sar.surfaceDriftPoints">
                             <td>
                                 <datetimepicker name="surfaceDriftPointTs" x-ng-model="surfaceDriftPoint.ts"
                                                 lteq="sar.lastKnownPosition.ts"/>
-                                <span x-ng-if="sarOperationForm.surfaceDriftPointTs.$error.lteq" class="error-block">
-                                    Surface drift point must be before last known position.
-                                </span>
+                            <span x-ng-if="surfaceDriftPointForm.surfaceDriftPointTs.$error.lteq" class="error-block">
+                                Surface drift point must be before last known position.
+                            </span>
                             </td>
                             <td><input x-ng-model="surfaceDriftPoint.twcSpeed" type="text"
                                        class="form-control input-sm" placeholder="5 knots"
@@ -250,7 +250,6 @@
                                        x-typeahead="direction.name for direction in getDirections($viewValue)"
                                        typeahead-template-url="directionTemplate.html" placeholder="NE/45°" required/>
                             </td>
-
                         </tr>
                         </tbody>
 
