@@ -236,6 +236,10 @@
         return rdv;
     }
 
+    function calculateRadius(xError, yError, rdvDistance, safetyFactor) {
+        return ((xError + yError) + 0.3 * rdvDistance) * safetyFactor;
+    }
+
 
     function DatumPoint(data) {
         this.setData(data);
@@ -259,11 +263,14 @@
 
         var startTs = this.data.lastKnownPosition.ts;
 
-        var datumPositions = [];
+
+        var datumDownwindPositions = [];
+        var datumMinPositions = [];
+        var datumMaxPositions = [];
         var currentPositions = [];
 
         var validFor = null;
-        var lastDatumPosition = null
+        var lastKnownPosition = new embryo.geo.Position(this.data.lastKnownPosition.lon, this.data.lastKnownPosition.lat);
 
         var nmToMeters = embryo.geo.Converter.nmToMeters;
 
@@ -295,50 +302,47 @@
             var startingLocation = null;
 
             if (i == 0) {
-                startingLocation = new embryo.geo.Position(this.data.lastKnownPosition.lon, this.data.lastKnownPosition.lat);
+                startingLocation = lastKnownPosition;
             } else {
-                startingLocation = lastDatumPosition;
+                startingLocation = datumDownwindPositions[i - 1];
             }
-            var twcDirectionInDegrees = directionDegrees(this.data.surfaceDriftPoints[i].twcDirection);
-            var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, nmToMeters(currentTWC));
-            currentPositions.push(currentPos)
+
+            var leewayDivergence = this.data.searchObject.divergence;
 
             var leewaySpeed = this.data.searchObject.leewaySpeed(this.data.surfaceDriftPoints[i].leewaySpeed);
             var leewayDriftDistance = leewaySpeed * validFor;
 
-            var downWind = this.data.surfaceDriftPoints[i].downWind
+            var twcDirectionInDegrees = directionDegrees(this.data.surfaceDriftPoints[i].twcDirection);
+            var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, nmToMeters(currentTWC));
+            currentPositions.push(currentPos)
+
+            // TODO move somewhere else
+            var downWind = this.data.surfaceDriftPoints[i].downWind;
             if (!downWind) {
                 downWind = directionDegrees(this.data.surfaceDriftPoints[i].leewayDirection) - 180;
             }
 
-            var leewayPos = currentPos.transformPosition(downWind, nmToMeters(leewayDriftDistance));
-            datumPositions.push(leewayPos);
-            lastDatumPosition = leewayPos;
+            // Are these calculations correct ?
+            // why are previous datumDownwindPosition/datumMinPosition, datumMaxPosition never used.
+            datumDownwindPositions.push(currentPos.transformPosition(downWind, nmToMeters(leewayDriftDistance)));
+            datumMinPositions.push(currentPos.transformPosition(downWind - leewayDivergence, nmToMeters(leewayDriftDistance)));
+            datumMaxPositions.push(currentPos.transformPosition(downWind + leewayDivergence, nmToMeters(leewayDriftDistance)));
         }
 
-        this.datum = lastDatumPosition;
-        this.windList = datumPositions;
-        this.currentList = currentPositions;
+        this.downWindDatum = datumDownwindPositions[datumDownwindPositions.length - 1];
+        this.minDatum = datumMinPositions[datumMinPositions.length - 1];
+        this.maxDatum = datumMaxPositions[datumMaxPositions.length - 1];
 
-        this.rdv = {}
+        this.rdvDownWind = calculateRdv(lastKnownPosition, this.downWindDatum, this.timeElapsed);
+        this.rdvMin = calculateRdv(lastKnownPosition, this.minDatum, this.timeElapsed);
+        this.rdvMax = calculateRdv(lastKnownPosition, this.maxDatum, this.timeElapsed);
 
-        if (datumPositions.length > 1) {
-            var pos = datumPositions[datumPositions.length - 2];
-            this.rdv.direction = pos.bearingTo(lastDatumPosition, embryo.geo.Heading.RL);
-            this.rdv.distance = pos.distanceTo(lastDatumPosition, embryo.geo.Heading.RL);
-            // RDV Speed
-            this.rdv.speed = this.rdv.distance / validFor;
-        } else {
-            var lastKnownPosition = new embryo.geo.Position(this.data.lastKnownPosition.lon, this.data.lastKnownPosition.lat);
-            this.rdv.direction = lastKnownPosition.bearingTo(lastDatumPosition, embryo.geo.Heading.RL);
-            this.rdv.distance = lastKnownPosition.distanceTo(lastDatumPosition, embryo.geo.Heading.RL);
-            // RDV Speed
-            this.rdv.speed = this.rdv.distance / this.timeElapsed;
-        }
+        this.downwindRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvDownWind.distance, this.data.safetyFactor);
+        this.minRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvMin.distance, this.data.safetyFactor);
+        this.maxRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvMax.distance, this.data.safetyFactor);
 
-        this.radius = ((this.data.xError + this.data.yError) + 0.3 * this.rdv.distance) * this.data.safetyFactor;
 
-        this.searchArea = this.calculateSearchArea(this.datum, this.radius, this.rdv.direction);
+//        this.searchArea = this.calculateSearchArea(this.datum, this.radius, this.rdv.direction);
     }
 
     function DatumLine(data) {
