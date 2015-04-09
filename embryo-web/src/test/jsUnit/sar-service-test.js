@@ -322,10 +322,11 @@ describe('embryo.sar', function () {
 
             expect(formatLatitude(sarOperation.minDatum.lat)).toBe("61 03.297N");
             expect(formatLongitude(sarOperation.minDatum.lon)).toBe("050 52.699W");
-            //expect(sarOperation.rdvMin.direction).toBeCloseTo(47.008245, 4);
-            //expect(sarOperation.rdvMin.distance).toBeCloseTo(4.8383743, 4);
-            //expect(sarOperation.rdvMin.speed).toBeCloseTo(4.8383743, 4);
-            //expect(sarOperation.minRadius).toBeCloseTo(2.5515123, 4);
+
+            expect(sarOperation.rdvMin.direction).toBeCloseTo(47.008245, 4);
+            expect(sarOperation.rdvMin.distance).toBeCloseTo(4.8383743, 4);
+            expect(sarOperation.rdvMin.speed).toBeCloseTo(4.8383743, 4);
+            expect(sarOperation.minRadius).toBeCloseTo(2.5515123, 4);
 
             /*
              expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("60 59.801N");
