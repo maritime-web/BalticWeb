@@ -88,6 +88,8 @@ public class Route extends BaseEntity<Long> {
         toRoute.setName(this.name);
         toRoute.setDep(this.origin);
         toRoute.setDes(this.destination);
+        toRoute.setEtaDep(this.getVoyage().getDeparture().toDate());
+        toRoute.setEta(this.getVoyage().getArrival().toDate());
         for (WayPoint wp : this.getWayPoints()) {
             toRoute.getWps().add(wp.toJsonModel());
         }
@@ -110,6 +112,7 @@ public class Route extends BaseEntity<Long> {
         toRoute.setName(this.name);
         toRoute.setDeparture(this.origin);
         toRoute.setDestination(this.destination);
+        this.getVoyage().getDeparture();
 
         for (WayPoint wp : this.getWayPoints()) {
             toRoute.getWaypoints().add(wp.toEnavModel());
