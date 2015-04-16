@@ -103,19 +103,26 @@ function formatCourse(course) {
 }
 
 
-function formatDate(dato) {
-    if (dato == null)
-        return "-";
-    var d = new Date(dato);
-    return d.getUTCFullYear() + "-" + ("" + (101 + d.getUTCMonth())).slice(1, 3) + "-"
-            + ("" + (100 + d.getUTCDate())).slice(1, 3);
+function formatDate(timeInMillis) {
+
+	if (timeInMillis == null){
+		return "-";
+	}
+    
+	var date = new Date(timeInMillis);
+    
+	return date.getUTCFullYear() + "-" + ("" + (101 + date.getUTCMonth())).slice(1, 3) + "-" + ("" + (100 + date.getUTCDate())).slice(1, 3);
 }
 
-function formatTime(dato) {
-    if (dato == null)
-        return "-";
-    var d = new Date(dato);
-    return formatDate(dato) + " " + d.getUTCHours() + ":" + ("" + (100 + d.getUTCMinutes())).slice(1, 3);
+function formatTime(timeInMillis) {
+    
+	if (timeInMillis == null) {
+		return "-";
+	}
+    
+    var date = new Date(timeInMillis);
+    
+    return formatDate(timeInMillis) + " " + date.getUTCHours() + ":" + ("" + (100 + date.getUTCMinutes())).slice(1, 3);
 }
 
 function formatHour(hour) {

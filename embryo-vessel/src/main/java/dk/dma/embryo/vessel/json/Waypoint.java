@@ -14,6 +14,8 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import java.util.Date;
+
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
@@ -39,6 +41,8 @@ public class Waypoint {
 
     /** Waypoint turn radius in nautical miles. */
     private Double turnRad;
+    
+    private Date eta;
 
     public Waypoint() {
 
@@ -56,6 +60,14 @@ public class Waypoint {
         this.turnRad = turnRad;
     }
     
+    
+    public Waypoint(String name, double latitude, double longitude, Double speed, Heading heading, Double rot, Double turnRad, Date eta) {
+        this(name, latitude, longitude, rot, turnRad);
+        this.speed = speed;
+        this.heading = heading;
+        this.eta = eta;
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
@@ -63,8 +75,7 @@ public class Waypoint {
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }
-
-
+    
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -123,8 +134,12 @@ public class Waypoint {
     public void setHeading(Heading heading) {
         this.heading = heading;
     }
-    
-    
 
+    public Date getEta() {
+        return eta;
+    }
 
+    public void setEta(Date eta) {
+        this.eta = eta;
+    }
 }

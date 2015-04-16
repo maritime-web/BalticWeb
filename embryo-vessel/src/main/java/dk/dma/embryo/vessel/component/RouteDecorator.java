@@ -35,10 +35,27 @@ public class RouteDecorator {
     // Constructors
     // //////////////////////////////////////////////////////////////////////
 
+    public RouteDecorator(Route route, Date departure) {
+        
+        super();
+        
+        if(departure != null && route.getWaypoints() != null && route.getWaypoints().size() > 0) {
+            route.getWaypoints().get(0).setEta(departure);
+        }
+
+        initData(route);
+    }
+    
     public RouteDecorator(Route route) {
         super();
-        this.route = route;
         
+        initData(route);
+    }
+    
+    private void initData(Route route){
+        
+        this.route = route;
+
         Waypoint lastWp = null;
         for(dk.dma.enav.model.voyage.Waypoint wp : route.getWaypoints()){
             Waypoint waypoint = new Waypoint(wp);
@@ -49,11 +66,8 @@ public class RouteDecorator {
             lastWp = waypoint;
         }
         
-        initData();
-    }
-    
-    private void initData(){
-        Waypoint lastWp = null;
+        // Reuse reference
+        lastWp = null;
         
         this.estimatedTotalTime = 0L;
         

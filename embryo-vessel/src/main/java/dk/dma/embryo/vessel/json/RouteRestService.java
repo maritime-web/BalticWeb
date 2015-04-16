@@ -31,6 +31,7 @@ import org.jboss.resteasy.annotations.cache.NoCache;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.vessel.component.RouteDecorator;
+import dk.dma.embryo.vessel.component.RouteDecorator.Waypoint;
 import dk.dma.embryo.vessel.service.ScheduleService;
 
 /**
@@ -56,9 +57,42 @@ public class RouteRestService {
     @NoCache
     public Route getRoute(@PathParam("id") String id) {
         logger.debug("getRoute({})", id);
+        
         dk.dma.embryo.vessel.model.Route route = scheduleService.getRouteByEnavId(id);
-
-        return route != null ? route.toJsonModel() : null;
+        
+        Route result = null;
+        if(route != null){
+            Date departure = route.getVoyage().getDeparture() == null ? null : route.getVoyage().getDeparture().toDate();
+            RouteDecorator decorator = new RouteDecorator(route.toEnavModel(), departure);
+            
+            result = new Route(route.getEnavId());
+            result.setDes(route.getDestination());
+            result.setEtaDep(departure);
+            result.setDep(route.getOrigin());
+            result.setEta(decorator.getEta());
+            
+            // Should be empty, however.
+            result.getWps().clear();
+            ArrayList<dk.dma.embryo.vessel.json.Waypoint> jsonWaypoints = new ArrayList<dk.dma.embryo.vessel.json.Waypoint>();
+            for (Waypoint decoratorWayPoint : decorator.getWaypoints()) {
+                dk.dma.embryo.vessel.json.Waypoint jsonWaypoint = new dk.dma.embryo.vessel.json.Waypoint(
+                            decoratorWayPoint.getName(),
+                            decoratorWayPoint.getLatitude(),
+                            decoratorWayPoint.getLongitude(),
+                            decoratorWayPoint.getRouteLeg().getSpeed(),
+                            decoratorWayPoint.getRouteLeg().getHeading(),
+                            decoratorWayPoint.getRot(),
+                            decoratorWayPoint.getTurnRad(),
+                            decoratorWayPoint.getEta()
+                        );
+                
+                jsonWaypoints.add(jsonWaypoint);
+            } 
+            
+            result.getWps().addAll(jsonWaypoints);
+        }
+        
+        return result;
     }
 
     
