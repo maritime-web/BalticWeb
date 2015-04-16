@@ -305,28 +305,30 @@ describe('embryo.sar', function () {
 
             expect(sarOperation).toBeDefined();
 
+            var result = sarOperation.result;
+
             // ASSERT DATUM
-            expect(formatLatitude(sarOperation.downWindDatum.lat)).toBe("61 03.328N");
-            expect(formatLongitude(sarOperation.downWindDatum.lon)).toBe("050 52.939W");
-            expect(sarOperation.rdvDownWind.direction).toBeCloseTo(45.780030, 4);
-            expect(sarOperation.rdvDownWind.distance).toBeCloseTo(4.7754450, 4);
-            expect(sarOperation.rdvDownWind.speed).toBeCloseTo(4.775445, 4);
-            expect(sarOperation.downwindRadius).toBeCloseTo(2.532633, 4);
+            expect(formatLatitude(result.downWindDatum.lat)).toBe("61 03.328N");
+            expect(formatLongitude(result.downWindDatum.lon)).toBe("050 52.939W");
+            expect(result.rdvDownWind.direction).toBeCloseTo(45.780030, 4);
+            expect(result.rdvDownWind.distance).toBeCloseTo(4.7754450, 4);
+            expect(result.rdvDownWind.speed).toBeCloseTo(4.775445, 4);
+            expect(result.downwindRadius).toBeCloseTo(2.532633, 4);
 
-            expect(formatLatitude(sarOperation.maxDatum.lat)).toBe("61 03.413N");
-            expect(formatLongitude(sarOperation.maxDatum.lon)).toBe("050 53.115W");
-            expect(sarOperation.rdvMax.direction).toBeCloseTo(44.331598, 4);
-            expect(sarOperation.rdvMax.distance).toBeCloseTo(4.7752103, 4);
-            expect(sarOperation.rdvMax.speed).toBeCloseTo(4.7752103, 4);
-            expect(sarOperation.maxRadius).toBeCloseTo(2.5325631, 4);
+            expect(formatLatitude(result.maxDatum.lat)).toBe("61 03.413N");
+            expect(formatLongitude(result.maxDatum.lon)).toBe("050 53.115W");
+            expect(result.rdvMax.direction).toBeCloseTo(44.331598, 4);
+            expect(result.rdvMax.distance).toBeCloseTo(4.7752103, 4);
+            expect(result.rdvMax.speed).toBeCloseTo(4.7752103, 4);
+            expect(result.maxRadius).toBeCloseTo(2.5325631, 4);
 
-            expect(formatLatitude(sarOperation.minDatum.lat)).toBe("61 03.297N");
-            expect(formatLongitude(sarOperation.minDatum.lon)).toBe("050 52.699W");
+            expect(formatLatitude(result.minDatum.lat)).toBe("61 03.297N");
+            expect(formatLongitude(result.minDatum.lon)).toBe("050 52.699W");
 
-            expect(sarOperation.rdvMin.direction).toBeCloseTo(47.008245, 4);
-            expect(sarOperation.rdvMin.distance).toBeCloseTo(4.8383743, 4);
-            expect(sarOperation.rdvMin.speed).toBeCloseTo(4.8383743, 4);
-            expect(sarOperation.minRadius).toBeCloseTo(2.5515123, 4);
+            expect(result.rdvMin.direction).toBeCloseTo(47.008245, 4);
+            expect(result.rdvMin.distance).toBeCloseTo(4.8383743, 4);
+            expect(result.rdvMin.speed).toBeCloseTo(4.8383743, 4);
+            expect(result.minRadius).toBeCloseTo(2.5515123, 4);
 
             /*
              expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("60 59.801N");

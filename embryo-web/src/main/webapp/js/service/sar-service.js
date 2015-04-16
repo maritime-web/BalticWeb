@@ -335,13 +335,14 @@
         result.minDatum = datumMinPositions[datumMinPositions.length - 1];
         result.maxDatum = datumMaxPositions[datumMaxPositions.length - 1];
 
-        result.rdvDownWind = calculateRdv(lastKnownPosition, this.downWindDatum, this.timeElapsed);
-        result.rdvMin = calculateRdv(lastKnownPosition, this.minDatum, this.timeElapsed);
-        result.rdvMax = calculateRdv(lastKnownPosition, this.maxDatum, this.timeElapsed);
 
-        result.downwindRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvDownWind.distance, this.data.safetyFactor);
-        result.minRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvMin.distance, this.data.safetyFactor);
-        result.maxRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvMax.distance, this.data.safetyFactor);
+        result.rdvDownWind = calculateRdv(lastKnownPosition, result.downWindDatum, this.timeElapsed);
+        result.rdvMin = calculateRdv(lastKnownPosition, result.minDatum, this.timeElapsed);
+        result.rdvMax = calculateRdv(lastKnownPosition, result.maxDatum, this.timeElapsed);
+
+        result.downwindRadius = calculateRadius(this.data.xError, this.data.yError, result.rdvDownWind.distance, this.data.safetyFactor);
+        result.minRadius = calculateRadius(this.data.xError, this.data.yError, result.rdvMin.distance, this.data.safetyFactor);
+        result.maxRadius = calculateRadius(this.data.xError, this.data.yError, result.rdvMax.distance, this.data.safetyFactor);
 
         this.searchArea = this.calculateSearchArea(result);
 
