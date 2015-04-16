@@ -98,7 +98,7 @@ OpenLayers.Renderer.prototype.removeArrows = function(geometry) {
         arrowsToRemove = [];
     for (i = 0; i < children.length; i++) {
         var child = children[i];
-        if (child.id.indexOf(geometry.components[0].id + "_arrow") != -1) {
+        if (child.id.indexOf(geometry.id + "_arrow") != -1) {
             arrowsToRemove.push(child);
         }
     }

@@ -171,8 +171,8 @@
         }
 
         this.datum = lastDatumPosition;
-        this.windList = datumPositions;
-        this.currentList = currentPositions;
+        this.windPositions = datumPositions;
+        this.currentPositions = currentPositions;
 
         if (datumPositions.length > 1) {
             var pos = datumPositions[datumPositions.length - 2];
@@ -329,21 +329,50 @@
             datumMaxPositions.push(currentPos.transformPosition(downWind + leewayDivergence, nmToMeters(leewayDriftDistance)));
         }
 
-        this.downWindDatum = datumDownwindPositions[datumDownwindPositions.length - 1];
-        this.minDatum = datumMinPositions[datumMinPositions.length - 1];
-        this.maxDatum = datumMaxPositions[datumMaxPositions.length - 1];
+        var result = {}
 
-        this.rdvDownWind = calculateRdv(lastKnownPosition, this.downWindDatum, this.timeElapsed);
-        this.rdvMin = calculateRdv(lastKnownPosition, this.minDatum, this.timeElapsed);
-        this.rdvMax = calculateRdv(lastKnownPosition, this.maxDatum, this.timeElapsed);
+        result.downWindDatum = datumDownwindPositions[datumDownwindPositions.length - 1];
+        result.minDatum = datumMinPositions[datumMinPositions.length - 1];
+        result.maxDatum = datumMaxPositions[datumMaxPositions.length - 1];
 
-        this.downwindRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvDownWind.distance, this.data.safetyFactor);
-        this.minRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvMin.distance, this.data.safetyFactor);
-        this.maxRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvMax.distance, this.data.safetyFactor);
+        result.rdvDownWind = calculateRdv(lastKnownPosition, this.downWindDatum, this.timeElapsed);
+        result.rdvMin = calculateRdv(lastKnownPosition, this.minDatum, this.timeElapsed);
+        result.rdvMax = calculateRdv(lastKnownPosition, this.maxDatum, this.timeElapsed);
 
+        result.downwindRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvDownWind.distance, this.data.safetyFactor);
+        result.minRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvMin.distance, this.data.safetyFactor);
+        result.maxRadius = calculateRadius(this.data.xError, this.data.yError, this.rdvMax.distance, this.data.safetyFactor);
 
-//        this.searchArea = this.calculateSearchArea(this.datum, this.radius, this.rdv.direction);
+        this.searchArea = this.calculateSearchArea(result);
+
+        this.result = result;
     }
+
+
+    DatumPoint.prototype.calculateSearchArea = function (result) {
+        var startPos, endPos, startRadius, endRadius;
+
+        if (result.minRadius > result.maxRadius) {
+            startPos = result.minDatum
+            startRadius = result.minRadius;
+            endPos = result.maxDatum;
+            endRadius = result.maxRadius;
+        } else {
+            startPos = result.maxDatum;
+            startRadius = result.maxRadius;
+            endPos = result.minDatum;
+            endRadius = result.minRadius;
+        }
+
+        //Position endDirectionPoint = startPos, lengthBearing, Converter.nmToMeters(endRadius));
+
+        // Bearing between the two points - this will be the direction of the
+        // box.
+        //double lengthBearing = Calculator.bearing(startPos, endPos, Heading.RL);
+
+
+    }
+
 
     function DatumLine(data) {
         this.setData(data);

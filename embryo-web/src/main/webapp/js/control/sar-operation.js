@@ -59,6 +59,8 @@ $(function () {
     module.controller("SAROperationEditController", ['$scope', 'ViewService', 'SarService', '$q', function ($scope, ViewService, SarService, $q) {
         var now = Date.now();
 
+        var sarLayer = SarLayerSingleton.getInstance();
+
         $scope.alertMessages = [];
 
         $scope.provider = {
@@ -184,6 +186,7 @@ $(function () {
         }
 
         $scope.finish = function () {
+            sarLayer.draw($scope.sarOperation);
             $scope.provider.doShow = false;
         }
 

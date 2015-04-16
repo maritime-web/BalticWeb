@@ -34,21 +34,21 @@ $(function () {
 
 
             $scope.sars = []
-            var sarsRef = new Firebase('//incandescent-torch-4183.firebaseio.com/sars2');
-            var sync = $firebase(sarsRef);
-            $scope.sars = sync.$asArray();
+            //var sarsRef = new Firebase('//incandescent-torch-4183.firebaseio.com/sars2');
+            //var sync = $firebase(sarsRef);
+            //$scope.sars = sync.$asArray();
 
 //        var logRef = new Firebase('//incandescent-torch-4183.firebaseio.com/logs2');
 //        $scope.logs = $firebase(logRef).$asArray();
 
 
-            var logRef = new Firebase('//incandescent-torch-4183.firebaseio.com').child("messages");
+            //var logRef = new Firebase('//incandescent-torch-4183.firebaseio.com').child("messages");
             //logRef.set({bb:"hep"});
-            $scope.logs = $firebase(logRef).$asObject();
+            //$scope.logs = $firebase(logRef).$asObject();
 
 
-            console.log(sarsRef);
-            console.log(sync);
+            //console.log(sarsRef);
+            //console.log(sync);
 
             $scope.view = function ($event, sar) {
                 $event.preventDefault();
