@@ -38,4 +38,11 @@ embryo.eventbus.MapInitialized = function() {
     return event;
 };
 
+embryo.eventbus.PostLayerInitialize = function () {
+    var event = jQuery.Event("PostLayerInitializeEvent");
+    return event;
+};
+
+
 embryo.eventbus.registerShorthand(embryo.eventbus.MapInitialized, "mapInitialized");
+embryo.eventbus.registerShorthand(embryo.eventbus.PostLayerInitialize, "postLayerInitialization");
