@@ -1,6 +1,6 @@
 function RouteLayer() {
 	
-	this.zoomLevels = [6];
+	this.zoomLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 	var that = this;
 	
     this.init = function() {
@@ -78,14 +78,16 @@ function RouteLayer() {
             labelYOffset : "${getLabelYOffset}",
             labelOutlineColor : "#fff",
             labelOutlineWidth : 2,
-            labelOutline : 1
+            labelOutline : 1,
+            fillColor : "${getColor}",
+            pointRadius : "${getPointRadius}"
         }, OpenLayers.Feature.Vector.style["default"]);
 
         var timeStampContext = {
             getLabel : function(feature) {
             	
             	var label = "";
-            	if(that.zoomLevel >= 1) {
+            	if(that.zoomLevel >= 6) {
             		label = feature.attributes.label;
             	} 
             	
@@ -96,6 +98,18 @@ function RouteLayer() {
             },
             getLabelYOffset : function(feature) {
                 return feature.attributes.labelYOffset;
+            },
+            getPointRadius : function(feature) {
+            	return feature.attributes.pointRadius * that.zoomLevel;
+            },
+            getColor : function(feature) {
+                if (feature.attributes.featureType === 'schedule') {
+                    return feature.attributes.data.own ? colors['ownschedule'] : colors['otherschedule'];
+                }
+                if (feature.attributes.data.active) {
+                    return feature.attributes.data.own ? colors['active'] : colors['otheractive'];
+                }
+                return feature.attributes.data.own ? colors['planned'] : colors['otherplanned'];
             }
         };
 
@@ -169,7 +183,9 @@ function RouteLayer() {
 					type : 'circle',
 					label : formatTime(route.wps[index].eta),
 					labelXOffset : 75,
-					labelYOffset : -1
+					labelYOffset : -1,
+					pointRadius : 3,
+					data : route
 			}
 			
 			routeFeatureLabels.push(labelFeature);
