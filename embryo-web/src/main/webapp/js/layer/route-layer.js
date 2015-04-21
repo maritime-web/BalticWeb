@@ -253,8 +253,6 @@ function RouteLayer() {
 
     this.draw = function(routes) {
         
-    	this.layers.routetimestamps.removeAllFeatures();
-    	
     	var features = [];
         
      	for ( var index in routes) {
