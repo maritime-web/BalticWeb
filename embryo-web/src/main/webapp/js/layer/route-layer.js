@@ -1,5 +1,5 @@
 function RouteLayer() {
-	
+
 	this.zoomLevels = [6];
 	var that = this;
 	
@@ -51,18 +51,10 @@ function RouteLayer() {
             context : context
         });
 
-        var select = OpenLayers.Util.applyDefaults({}, OpenLayers.Feature.Vector.style.select);
-        var selectStyle = new OpenLayers.Style(select);
-
-        var temporary = OpenLayers.Util.applyDefaults({}, OpenLayers.Feature.Vector.style.temporary);
-        var temporaryStyle = new OpenLayers.Style(temporary);
-
         this.layers.route = new OpenLayers.Layer.Vector("routeLayer", {
             renderers : [ 'SVGExtended', 'VMLExtended', 'CanvasExtended' ],
             styleMap : new OpenLayers.StyleMap({
-                'default' : defaultStyle,
-                'select' : selectStyle,
-                'temporary' : temporaryStyle
+                'default': defaultStyle
             })
         });
         
@@ -158,8 +150,7 @@ function RouteLayer() {
     };
     
     this.createRouteLabelFeature = function(route) {
-        
-    	var routeFeatureLabels = [];
+        var routeFeatureLabels = [];
     	
 		for ( var index in route.wps) {
 
@@ -231,12 +222,7 @@ function RouteLayer() {
         return this.hideFeatures(featureFilter);
     };
 
-    this.clear = function() {
-        this.layers.route.removeAllFeatures();
-    };
-
     this.draw = function(routes) {
-        
     	this.layers.routetimestamps.removeAllFeatures();
     	
     	var features = [];
@@ -253,11 +239,9 @@ function RouteLayer() {
             	this.layers.routetimestamps.addFeatures(routeLabelFeatures);
             }
         }
-     	
+        this.layers.routetimestamps.refresh();
         this.layers.route.addFeatures(features);
         this.layers.route.refresh();
-        this.layers.routetimestamps.refresh();
-        
     };
 }
 

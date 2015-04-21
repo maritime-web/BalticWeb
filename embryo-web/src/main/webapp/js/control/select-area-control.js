@@ -2,9 +2,12 @@ $(function() {
 
     var module = angular.module('embryo.areaselect.control', [ 'embryo.selectarea.service' , 'embryo.subscription.service']);
 
-	var selectionLayer = new SelectAreaLayer();
-	addLayerToMap("area", selectionLayer, embryo.map);
-	
+    var selectionLayer;
+    embryo.postLayerInitialization(function(){
+        selectionLayer = new SelectAreaLayer();
+        addLayerToMap("area", selectionLayer, embryo.map);
+    })
+
 //	var projectionFrontend = new OpenLayers.Projection("EPSG:4326");
 //	var projectionBackend = new OpenLayers.Projection("EPSG:900913");
 	
@@ -41,23 +44,9 @@ $(function() {
             getSelectionGroupsFromService();
             
             $scope.getSelectionGroups = function() {
-//            	console.log("inside method getSelectionGroups =D");
             	return $scope.selectionGroups;
             };
-            
-            $scope.printSelectionGroupsToConsole = function() {
-            	
-	        	for(key in $scope.selectionGroups) {
-	                
-	            	var selectionGroup = $scope.selectionGroups[key];
-	            	console.log("group -> " + selectionGroup.name + " has edit mode -> " + selectionGroup.editMode + ", active -> " + selectionGroup.active);
-	            	console.log("gruppen har -> " + selectionGroup.squares.length + " firkanter");
-	            	console.log("gruppens firkanter i JSON -> " + JSON.stringify(selectionGroup.squares));
-	        	}
-	        	
-	        	selectionLayer.printFeaturesToConsole();
-            };
-        	
+
             $scope.createGroup = function(){
             	var newSelectionGroup = SelectAreaService.addSelectionGroup();
             	$scope.editSelectionGroup(null, newSelectionGroup);
@@ -118,8 +107,6 @@ $(function() {
             		}
             	}
             	
-//            	$scope.printSelectionGroupsToConsole();
-
             	selectionLayer.draw(selectionGroup);
             };
             

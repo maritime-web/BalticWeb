@@ -3,11 +3,15 @@ $(function () {
     var module = angular.module('embryo.ice.control', [ 'ui.bootstrap.accordion', 'embryo.control',
         'embryo.ice.service', 'embryo.shape', 'embryo.subscription.service' ]);
 
-    var iceLayer = new IceLayer();
-    addLayerToMap("ice", iceLayer, embryo.map);
+    var iceLayer, inshoreLayer;
 
-    var inshoreLayer = new InshoreIceReportLayer();
-    addLayerToMap("ice", inshoreLayer, embryo.map);
+    embryo.postLayerInitialization(function() {
+        iceLayer = new IceLayer();
+        addLayerToMap("ice", iceLayer, embryo.map);
+
+        inshoreLayer = new InshoreIceReportLayer();
+        addLayerToMap("ice", inshoreLayer, embryo.map);
+    });
 
     var chartsDisplayed = {};
 

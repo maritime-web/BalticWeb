@@ -1,10 +1,13 @@
 $(function() {
 
-    var seaForecastLayer = new SeaForecastLayer();
-    addLayerToMap("weather", seaForecastLayer, embryo.map);
+    var seaForecastLayer, metocLayer;
+    embryo.postLayerInitialization(function(){
+        seaForecastLayer = new SeaForecastLayer();
+        addLayerToMap("weather", seaForecastLayer, embryo.map);
 
-    var metocLayer = new MetocLayer();
-    addLayerToMap("weather", metocLayer, embryo.map);
+        metocLayer = new MetocLayer();
+        addLayerToMap("weather", metocLayer, embryo.map);
+    });
 
     var interval = 1 * 60 * 1000 * 60;
 //    var interval = 1000 * 10;

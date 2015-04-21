@@ -3,7 +3,7 @@ function EmbryoLayer() {
     this.controls = [];
 
     this.redraw = function () {
-        for (var i in this.layers) {
+        for (var i in this.layers){
             this.layers[i].redraw();
         }
     };
@@ -25,7 +25,6 @@ function EmbryoLayer() {
     };
 
     this.containsFeature = function (input, layer) {
-
         function inLayer(input, layer) {
             for (var j in layer.features) {
                 if (typeof input == 'function' && input(layer.features[j]))

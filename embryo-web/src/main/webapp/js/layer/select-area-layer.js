@@ -2,10 +2,8 @@ function SelectAreaLayer() {
 
 	var PROJECTION_BACKEND = new OpenLayers.Projection("EPSG:4326");
 	var PROJECTION_FRONTEND = new OpenLayers.Projection("EPSG:900913");
-	
-	this.init = function() {    	
-    	
-//    	console.log("SelectAreaLayer.........");
+
+    this.init = function () {
     	this.zoomLevels = [8, 10];
 
         var that = this;
@@ -47,30 +45,9 @@ function SelectAreaLayer() {
     	this.layers.selection.removeAllFeatures();
     };
     
-    this.printFeaturesToConsole = function() {
-    	
-    	var squareBounds = [];
-    	console.log("-----------");
-    	for(key in this.layers.selection.features) {
-            var feature = this.layers.selection.features[key];
-            console.log("Selection Group Name -> " + feature.selectionGroupName);
-			console.log("feature -> " + feature.id);
-			console.log("vertices -> " + feature.geometry.getVertices());
-			var vertices = feature.geometry.getVertices();
-			for(key in vertices) {
-				var point = vertices[key];
-				console.log("point object -> " + point);
-				console.log("point -> x=" + point.x + ", y=" + point.y);
-			}
-			console.log("bounds -> " + feature.geometry.getBounds());
-			console.log("-----------");
-			squareBounds.push(feature.geometry.getBounds());
-    	}
-    };
-    
+
     this.getPolygonsBySelectionGroup = function() {
-    	//this.printFeaturesToConsole();
-    	return this.layers.selection.features;    	
+        return this.layers.selection.features;
     };
     
     this.getSquareBounds = function() {

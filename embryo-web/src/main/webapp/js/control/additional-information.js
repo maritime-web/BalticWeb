@@ -154,7 +154,7 @@ embryo.additionalInformation.route = {
     }
 };
 
-embryo.mapInitialized(function() {
+embryo.postLayerInitialization(function() {
     $.each(embryo.additionalInformation, function(k, v) {
         if (v.init)
             v.init(embryo.map, "vessel");

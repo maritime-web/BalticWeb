@@ -19,8 +19,12 @@ $(function () {
         'embryo.tileSet.service', 'embryo.subscription.service']);
 
     var group = "ice";
-    var satellite = new SatelliteLayer();
-    addLayerToMap(group, satellite, embryo.map);
+
+    var satellite;
+    embryo.postLayerInitialization(function() {
+        satellite = new SatelliteLayer();
+        addLayerToMap(group, satellite, embryo.map);
+    });
 
     function sortTileSets(data) {
         data.sort(function (ts1, ts2) {

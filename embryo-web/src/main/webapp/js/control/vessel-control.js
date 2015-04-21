@@ -15,10 +15,26 @@ embryo.eventbus.registerShorthand(embryo.eventbus.VesselSelectedEvent, "vesselSe
 embryo.eventbus.registerShorthand(embryo.eventbus.VesselUnselectedEvent, "vesselUnselected");
 
 $(function() {
-    var vessels = null;
-    var vesselLayer = new VesselLayer({clusteringEnabled: true});
 
-    addLayerToMap("vessel", vesselLayer, embryo.map);
+    var vessels = null;
+    var vesselLayer;
+    var selectedId = null;
+
+    embryo.postLayerInitialization(function(){
+        vesselLayer = new VesselLayer({clusteringEnabled: true});
+        addLayerToMap("vessel", vesselLayer, embryo.map);
+
+
+        vesselLayer.select(function(id) {
+            if (selectedId != id && selectedId != null)
+                embryo.eventbus.fireEvent(embryo.eventbus.VesselUnselectedEvent());
+            if (id)
+                embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(id));
+            else
+                embryo.eventbus.fireEvent(embryo.eventbus.VesselUnselectedEvent());
+            selectedId = id;
+        });
+    })
 
     embryo.vessel.lookupVessel = function(id) {
         for ( var i in vessels) {
@@ -51,17 +67,6 @@ $(function() {
         vesselLayer.draw(vessels);
     };
 
-    var selectedId = null;
-
-    vesselLayer.select(function(id) {
-        if (selectedId != id && selectedId != null)
-            embryo.eventbus.fireEvent(embryo.eventbus.VesselUnselectedEvent());
-        if (id)
-            embryo.eventbus.fireEvent(embryo.eventbus.VesselSelectedEvent(id));
-        else
-            embryo.eventbus.fireEvent(embryo.eventbus.VesselUnselectedEvent());
-        selectedId = id;
-    });
 
     embryo.mapInitialized(function() {
         embryo.subscription.service.subscribe({

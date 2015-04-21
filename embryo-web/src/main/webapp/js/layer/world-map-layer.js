@@ -9,7 +9,7 @@ function WorldMapLayer() {
                     fillOpacity: 0.5,
                     strokeWidth: 1,
                     strokeColor: "#000000",
-                    strokeOpacity: 0.2,
+                    strokeOpacity: 0.2
                 })
             })
         });

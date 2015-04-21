@@ -1,4 +1,9 @@
-embryo.eventbus.MapInitialized = function() { 
+embryo.eventbus.PostLayerInitialize = function () {
+    var event = jQuery.Event("PostLayerInitializeEvent");
+    return event;
+};
+
+embryo.eventbus.MapInitialized = function () {
     var event = jQuery.Event("MapInitializedEvent");
     return event;
 };
@@ -18,6 +23,7 @@ embryo.eventbus.UnHighLightEvent = function(feature) {
 embryo.eventbus.registerShorthand(embryo.eventbus.HighLightEvent, "highlight");
 embryo.eventbus.registerShorthand(embryo.eventbus.UnHighLightEvent, "unhighlight");
 embryo.eventbus.registerShorthand(embryo.eventbus.MapInitialized, "mapInitialized");
+embryo.eventbus.registerShorthand(embryo.eventbus.PostLayerInitialize, "postLayerInitialization");
 
 $(function() {
 
@@ -115,7 +121,10 @@ $(function() {
         }
     }
 
+    var initialized = false;
+
     embryo.map = {
+
         add : function(d) {
             if (d.group && selectLayerByGroup[d.group] == null) {
                 selectLayerByGroup[d.group] = [];
@@ -296,7 +305,11 @@ $(function() {
                 }
             });
             return new Control();
+        },
+        isInitialized: function () {
+            return initialized;
         }
+
     };
 
     // Create one select control for all layers. This the only way to enable
@@ -473,7 +486,16 @@ $(function() {
 
         loadViewCookie();
 
+        // Event sequence has been created, because it is important that all layers are added before drawing on the map.
+        // OpenLayers will otherwise draw e.g. routes incorrectly
+
+        // Firing this event should provoke adding of layers to the map
+        embryo.eventbus.fireEvent(embryo.eventbus.PostLayerInitialize());
+
+        // Firing this event should enable other components to start drawing on the map.
         embryo.eventbus.fireEvent(embryo.eventbus.MapInitialized());
+
+        initialized = true;
     });
 
     embryo.groupChanged(function(e) {
@@ -519,9 +541,22 @@ $(function() {
         });
     }
 
-    var mapModule = angular.module('embryo.zoom', [ 'embryo.authentication' ]);
+    var mapModule = angular.module('embryo.map', []);
+    mapModule.directive('eMapInitialized', [function () {
+        return {
+            restrict: 'A',
+            replace: true,
+            template: embryo.templateFn('isInitialized()'),
+            link: function (scope) {
+                scope.isInitialized = embryo.map.isInitialized;
+            }
+        };
 
-    mapModule.controller('ZoomController', [ '$scope', 'Subject', function($scope, Subject) {
+    }]);
+
+    var zoomModule = angular.module('embryo.zoom', ['embryo.authentication']);
+
+    zoomModule.controller('ZoomController', ['$scope', 'Subject', function ($scope, Subject) {
         var control = new OpenLayers.Control.Zoom({
             zoomInId : 'dmaZoomIn',
             zoomOutId : 'dmaZoomOut'

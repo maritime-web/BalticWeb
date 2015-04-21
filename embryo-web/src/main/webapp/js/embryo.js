@@ -22,9 +22,7 @@ embryo.baseMap = "world_merc";
 // embryo.baseMap = "osm";
 
 embryo.baseUrl = "";
-// embryo.baseUrl = "http://localhost:8080/arcticweb/";
 embryo.baseUrlForAngularResource = "";
-// embryo.baseUrlForAngularResource = "http://localhost\\:8080/arcticweb/";
 
 embryo.projection = "EPSG:900913";
 
@@ -198,6 +196,30 @@ $(function() {
 
 $(function() {
     "use strict";
+
+    embryo.templateFn = function (expr) {
+        return function (element, attr) {
+            var ngIf = attr.ngIf;
+            var value = typeof expr === 'function' ? expr(attr) : expr;
+
+            /**
+             * Make sure to combine with existing ngIf!
+             */
+            if (ngIf) {
+                value += ' && ' + ngIf;
+            }
+
+            var inner = element.get(0);
+            // we have to clear all the values because angular
+            // is going to merge the attrs collection
+            // back into the element after this function finishes
+            angular.forEach(inner.attributes, function (attr, key) {
+                attr.value = '';
+            });
+            attr.$set('ng-if', value);
+            return inner.outerHTML;
+        };
+    }
 
     var module = angular.module('embryo.base', []);
 

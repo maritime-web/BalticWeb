@@ -1,7 +1,10 @@
 $(function() {
 
-    var msiLayer = new MsiLayer();
-    addLayerToMap("msi", msiLayer, embryo.map);
+    var msiLayer;
+    embryo.postLayerInitialization(function() {
+        msiLayer = new MsiLayer();
+        addLayerToMap("msi", msiLayer, embryo.map);
+    });
 
     var module = angular.module('embryo.msi.controllers', [ 'embryo.msi.service' ]);
 

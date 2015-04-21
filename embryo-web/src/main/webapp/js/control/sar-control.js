@@ -5,9 +5,10 @@ $(function () {
 
     var module = angular.module('embryo.sar.controllers', ["firebase", 'embryo.sar.service', 'embryo.common.service']);
 
-    module.controller("SARLayerControl", ['$scope', function ($scope) {
-        MsiService.subscribe(function (error, warnings) {
-            msiLayer.draw(warnings);
+    module.controller("SARLayerControl", ['SarService', function (SarService) {
+        // TODO Rewrite this to make it work this.
+        SarService.subscribe(function (error, sarOperation) {
+            SarLayerSingleton.getInstance().draw(sarOperation);
         });
     }]);
 
@@ -47,9 +48,6 @@ $(function () {
             //$scope.logs = $firebase(logRef).$asObject();
 
 
-            //console.log(sarsRef);
-            //console.log(sync);
-
             $scope.view = function ($event, sar) {
                 $event.preventDefault();
                 console.log(sar)
@@ -62,13 +60,10 @@ $(function () {
                 //newLogs[$scope.newName] = "";
                 //$scope.sars.$add({"name": $scope.newName, active: false});
 
-                //console.log(newLogs);
-
                 //logRef.update(newLogs);
 
                 $scope.newSarProvider.show({});
 
-//            console.log($scope.logSync);
 //            $scope.logSync.child;
 
                 $scope.newName = null;

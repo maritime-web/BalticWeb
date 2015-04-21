@@ -39,10 +39,10 @@ var greenposScope;
 
     var layer = null;
 
-    $(function () {
+    embryo.postLayerInitialization(function(){
         layer = new GreenposMarkerLayer();
         addLayerToMap("vessel", layer, embryo.map);
-    });
+    })
 
     embryo.GreenPosCtrl = function ($scope, ScheduleService, GreenposService, VesselService, $timeout, RouteService, VesselInformation) {
 

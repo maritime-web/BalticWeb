@@ -200,10 +200,13 @@ SarLayer.prototype = new EmbryoLayer();
 var SarLayerSingleton = {
     instance: null,
     getInstance: function () {
-        if (this.instance == null) {
-            this.instance = new SarLayer();
-            addLayerToMap("sar", this.instance, embryo.map);
-        }
         return this.instance;
     }
 }
+
+embryo.postLayerInitialization(function () {
+    SarLayerSingleton.instance = new SarLayer();
+    addLayerToMap("sar", SarLayerSingleton.instance, embryo.map);
+})
+
+

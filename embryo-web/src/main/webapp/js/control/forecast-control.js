@@ -1,7 +1,10 @@
 $(function() {
 
-    var forecastLayer = new ForecastLayer();
-    addLayerToMap("forecasts", forecastLayer, embryo.map);
+    var forecastLayer = null;
+    embryo.postLayerInitialization(function(){
+        forecastLayer = new ForecastLayer();
+        addLayerToMap("forecasts", forecastLayer, embryo.map);
+    })
 
 //    var forecastInterval = 20 * 1000;
     var forecastInterval = 60 * 60 * 1000;
