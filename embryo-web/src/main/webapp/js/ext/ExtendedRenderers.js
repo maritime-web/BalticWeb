@@ -98,7 +98,7 @@ OpenLayers.Renderer.prototype.removeArrows = function(geometry) {
         arrowsToRemove = [];
     for (i = 0; i < children.length; i++) {
         var child = children[i];
-        if (child.id.indexOf(geometry.components[0].id + "_arrow") != -1 || child.id.indexOf(geometry.id + "_arrow") != -1) {
+        if ((geometry.components && child.id.indexOf(geometry.components[0].id + "_arrow") != -1) || child.id.indexOf(geometry.id + "_arrow") != -1) {
             arrowsToRemove.push(child);
         }
     }
@@ -108,7 +108,7 @@ OpenLayers.Renderer.prototype.removeArrows = function(geometry) {
 };
 OpenLayers.Renderer.prototype.drawArrows = function(geometry, style) {
     var i;
-    if (style.orientation) {
+    if (style.orientation != "false" && style.orientation) {
         var pts = geometry.components;
         var prevArrow = null,
             distance = null;

@@ -1,5 +1,5 @@
 function RouteLayer() {
-	this.zoomLevels = [6];
+    this.zoomLevels = [4, 5, 6, 7];
 	var that = this;
 	
     this.init = function() {
@@ -18,14 +18,28 @@ function RouteLayer() {
         
         // Create vector layer for routes
         var yourDefault = OpenLayers.Util.applyDefaults({
-            orientation : true,
+            orientation: "${addArrows}",
             strokeWidth : "${getStrokeWidth}",
             strokeDashstyle : "${getStrokeStyle}",
             strokeColor : "${getColor}",
-            strokeOpacity : "${getOpacity}"
+            strokeOpacity: "${getOpacity}",
+            fontColor: "black",
+            fontSize: "11px",
+            fontFamily: embryo.defaultFontFamily,
+            fontWeight: "normal",
+            label: "${getLabel}",
+            labelAlign: "cm",
+            labelXOffset: 45,
+            labelYOffset: -1,
+            labelOutlineColor: "#fff",
+            labelOutlineWidth: 2,
+            labelOutline: 1,
+            fillOpacity: 0,
+            pointRadius: "${getPointRadius}"
         }, OpenLayers.Feature.Vector.style["default"]);
 
-        var context = {
+
+        var defaultContext = {
             getOpacity : function() {
                 return that.active ? 1 : 0.3;
             },
@@ -33,6 +47,9 @@ function RouteLayer() {
                 return feature.attributes.featureType === 'route' ? 2 : 1;
             },
             getStrokeStyle : function(feature) {
+                if (feature.attributes.type === "circle") {
+                    return "solid"
+                }
                 return feature.attributes.featureType === 'route' ? 'dashdot' : 'solid';
             },
             getColor : function(feature) {
@@ -43,77 +60,54 @@ function RouteLayer() {
                     return feature.attributes.data.own ? colors['active'] : colors['otheractive'];
                 }
                 return feature.attributes.data.own ? colors['planned'] : colors['otherplanned'];
+            },
+            getLabel: function (feature) {
+                var label = "";
+                if (that.zoomLevel >= 3 && feature.attributes.label && feature.attributes.label !== "undefined") {
+                    label = feature.attributes.label;
+                }
+                return label;
+            },
+            getPointRadius: function (feature) {
+                return feature.attributes.type === "circle" ? 1 + that.zoomLevel : 0;
             }
         };
 
-        var defaultStyle = new OpenLayers.Style(yourDefault, {
-            context : context
-        });
+        var selectContext = OpenLayers.Util.applyDefaults({
+            getOpacity: defaultContext.getOpacity,
+            getStrokeWidth: defaultContext.getStrokeWidth,
+            getStrokeStyle: defaultContext.getStrokeStyle,
+            getColor: defaultContext.getColor,
+            getLabel: function (feature) {
+                var label = "";
+                if (that.zoomLevel >= 3 && feature.attributes.type === "circle") {
+                    label = feature.attributes.wp.name + "\n";
+                    label += (formatLatitude(feature.attributes.wp.latitude) + " - " + formatLongitude(feature.attributes.wp.longitude)) + "\n";
+                    label += ("ETA: " + formatTime(feature.attributes.wp.eta) + "\n");
+                    label += ("SPD: " + embryo.Math.round10(feature.attributes.wp.speed, -2))
+                }
+                return label;
+            },
+            getPointRadius: defaultContext.getPointRadius
+        }, yourDefault);
+
+        var select = OpenLayers.Util.applyDefaults({
+            labelXOffset: 35,
+            labelYOffset: -1,
+            labelAlign: "left"
+        }, yourDefault);
 
         this.layers.route = new OpenLayers.Layer.Vector("routeLayer", {
             renderers : [ 'SVGExtended', 'VMLExtended', 'CanvasExtended' ],
             styleMap : new OpenLayers.StyleMap({
-                'default': defaultStyle
+                'default': new OpenLayers.Style(yourDefault, {context: defaultContext}),
+                'select': new OpenLayers.Style(select, {context: selectContext})
             })
         });
-        
-        // Create vector layer for route timestamps
-        var timestampsDefault = OpenLayers.Util.applyDefaults({
-        	label : "${getLabel}",
-            fontColor : "black",
-            fontSize : "11px",
-            fontFamily : embryo.defaultFontFamily,
-            fontWeight : "normal",
-            labelAlign : "cm",
-            labelXOffset : "${getLabelXOffset}",
-            labelYOffset : "${getLabelYOffset}",
-            labelOutlineColor : "#fff",
-            labelOutlineWidth : 2,
-            labelOutline : 1,
-            fillColor : "${getColor}",
-            pointRadius : "${getPointRadius}"
-        }, OpenLayers.Feature.Vector.style["default"]);
 
-        var timeStampContext = {
-            getLabel : function(feature) {
-            	
-            	var label = "";
-            	if(that.zoomLevel >= 6) {
-            		label = feature.attributes.label;
-            	} 
-            	
-            	return label;
-            },
-            getLabelXOffset : function(feature) {
-                return feature.attributes.labelXOffset;
-            },
-            getLabelYOffset : function(feature) {
-                return feature.attributes.labelYOffset;
-            },
-            getPointRadius : function(feature) {
-            	return feature.attributes.pointRadius * that.zoomLevel;
-            },
-            getColor : function(feature) {
-                if (feature.attributes.featureType === 'schedule') {
-                    return feature.attributes.data.own ? colors['ownschedule'] : colors['otherschedule'];
-                }
-                if (feature.attributes.data.active) {
-                    return feature.attributes.data.own ? colors['active'] : colors['otheractive'];
-                }
-                return feature.attributes.data.own ? colors['planned'] : colors['otherplanned'];
-            }
-        };
-
-        var timestampsDefaultStyle = new OpenLayers.Style(timestampsDefault, {
-            context : timeStampContext
-        });
-        
-        this.layers.routetimestamps = new OpenLayers.Layer.Vector("routeTimestamps", {
-            //renderers : [ 'SVGExtended', 'VMLExtended', 'CanvasExtended' ],
-            styleMap : new OpenLayers.StyleMap({
-                'default' : timestampsDefaultStyle
-            })
-        });
+        this.selectableLayers = [this.layers.route];
+        this.selectableAttribute = "data";
+        this.selectedId = null;
         
     };
 
@@ -166,16 +160,15 @@ function RouteLayer() {
         var routeFeatureLabels = [];
     	
 		for ( var index in route.wps) {
-
 			var labelFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(route.wps[index].longitude, route.wps[index].latitude));
 			labelFeature.attributes = {
-					id : route.id,
-					type : 'circle',
-					label : formatTime(route.wps[index].eta),
-					labelXOffset : 75,
-					labelYOffset : -1,
-					pointRadius : 3,
-					data : route
+                id: route.id,
+                addArrows: false,
+                type: 'circle',
+                featureType: "route",
+                label: route && route.wps && route.wps[index].name ? route.wps[index].name : "",
+                data: route,
+                wp: route.wps[index]
 			}
 			
 			routeFeatureLabels.push(labelFeature);
@@ -207,6 +200,7 @@ function RouteLayer() {
             var multiLine = new OpenLayers.Geometry.MultiLineString([ new OpenLayers.Geometry.LineString(points) ]);
             feature = new OpenLayers.Feature.Vector(multiLine, {
                 renderers : [ 'SVGExtended', 'VMLExtended', 'CanvasExtended' ],
+                addArrows: true,
                 featureType : type,
                 data : data,
                 colorKey : colorKey,
@@ -249,10 +243,9 @@ function RouteLayer() {
             
             var routeLabelFeatures = this.createRouteLabelFeature(routes[index]);
             if(routeLabelFeatures != null) {
-            	this.layers.routetimestamps.addFeatures(routeLabelFeatures);
+                features = features.concat(routeLabelFeatures);
             }
         }
-        this.layers.routetimestamps.refresh();
         this.layers.route.addFeatures(features);
         this.layers.route.refresh();
     };
