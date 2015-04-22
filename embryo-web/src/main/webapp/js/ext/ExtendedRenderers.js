@@ -123,6 +123,7 @@ OpenLayers.Renderer.prototype.drawArrows = function(geometry, style) {
             style = OpenLayers.Util.extend({}, style);
             style.graphicName = "arrow";
             style.pointRadius = 4;
+            style.strokeDashstyle = "solid"
             style.rotation = this.getOrientation(prevVertex, nextVertex);
 
 
