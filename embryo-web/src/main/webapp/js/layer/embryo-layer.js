@@ -289,6 +289,9 @@ function addLayerToMap(id, layer, map) {
 
     map.internalMap.events.register("zoomend", map, layer.zoomListener);
 
+
+    layer.zoom(map.internalMap.zoom);
+
     embryo.groupChanged(function (e) {
         if (e.groupId == id) {
             layer.show();
