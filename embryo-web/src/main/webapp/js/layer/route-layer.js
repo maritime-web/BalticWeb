@@ -80,7 +80,7 @@ function RouteLayer() {
             getColor: defaultContext.getColor,
             getLabel: function (feature) {
                 var label = "";
-                if (that.zoomLevel >= 3 && feature.attributes.type === "circle") {
+                if (feature.attributes.type === "circle") {
                     label = feature.attributes.wp.name + "\n";
                     label += (formatLatitude(feature.attributes.wp.latitude) + " - " + formatLongitude(feature.attributes.wp.longitude)) + "\n";
                     label += ("ETA: " + formatTime(feature.attributes.wp.eta) + "\n");
