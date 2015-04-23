@@ -282,15 +282,14 @@ function addLayerToMap(id, layer, map) {
 	for (var i in layer.controls) {
         map.internalMap.addControl(layer.controls[i]);
     }
- 
+
+    // initialize layer zoomLevel value
+    layer.zoom(map.internalMap.zoom);
+    // register listener for future zoom level changes.
     layer.zoomListener = function () {
         layer.zoom(map.internalMap.zoom);
     }
-
     map.internalMap.events.register("zoomend", map, layer.zoomListener);
-
-
-    layer.zoom(map.internalMap.zoom);
 
     embryo.groupChanged(function (e) {
         if (e.groupId == id) {
