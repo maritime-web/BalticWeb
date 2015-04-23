@@ -63,7 +63,7 @@ function RouteLayer() {
             },
             getLabel: function (feature) {
                 var label = "";
-                if (that.zoomLevel >= 3 && feature.attributes.label && feature.attributes.label !== "undefined") {
+                if (that.active && that.zoomLevel >= 3 && feature.attributes.label && feature.attributes.label !== "undefined") {
                     label = feature.attributes.label;
                 }
                 return label;
