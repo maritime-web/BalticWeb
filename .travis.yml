@@ -1,0 +1,10 @@
+language: java
+jdk:
+  - oraclejdk8
+
+script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn clean install || mvn clean verify"
+
+# whitelist
+branches:
+  only:
+    - master
