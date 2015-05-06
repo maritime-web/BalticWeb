@@ -81,37 +81,52 @@
     }
 
 
-    function Operation() {
+    function SarOperationCalculator() {
+        this.output = {}
     }
 
-    Operation.prototype.setData = function (data) {
-        // TODO validate general purpose data
-        this.data = data;
+    SarOperationCalculator.prototype.setInput = function (input) {
+        this.input = input;
     }
 
-    function RapidResponse(data) {
-        //that.validate(data);
-        this.setData(data);
-        this.calculate();
+    SarOperationCalculator.prototype.validate = function (input) {
+        this.setInput(input)
+
+        assertObjectFieldValue(this.input, "startTs");
+        assertObjectFieldValue(this.input.lastKnownPosition, "ts");
+        assertObjectFieldValue(this.input.lastKnownPosition, "lon");
+        assertObjectFieldValue(this.input.lastKnownPosition, "lat");
+        assertObjectFieldValue(this.input, "xError");
+        assertObjectFieldValue(this.input, "yError");
+        assertObjectFieldValue(this.input, "safetyFactor");
+
+        for (var i = 0; i < this.input.surfaceDriftPoints.length; i++) {
+            assertObjectFieldValue(this.input.surfaceDriftPoints[i], "ts");
+            assertObjectFieldValue(this.input.surfaceDriftPoints[i], "twcSpeed");
+            assertObjectFieldValue(this.input.surfaceDriftPoints[i], "twcDirection");
+            assertObjectFieldValue(this.input.surfaceDriftPoints[i], "leewaySpeed");
+            assertObjectFieldValue(this.input.surfaceDriftPoints[i], "leewayDirection");
+        }
     }
 
-    RapidResponse.prototype = new Operation();
-    RapidResponse.prototype.calculate = function () {
-        assertObjectFieldValue(this.data, "startTs");
-        assertObjectFieldValue(this.data.lastKnownPosition, "ts");
-        assertObjectFieldValue(this.data.lastKnownPosition, "lon");
-        assertObjectFieldValue(this.data.lastKnownPosition, "lat");
-        assertObjectFieldValue(this.data, "xError");
-        assertObjectFieldValue(this.data, "yError");
-        assertObjectFieldValue(this.data, "safetyFactor");
+    SarOperationCalculator.prototype.timeElapsed = function () {
+        var difference = (this.input.startTs - this.input.lastKnownPosition.ts) / 60 / 60 / 1000;
+        this.output.timeElapsed = difference;
 
-        var difference = (this.data.startTs - this.data.lastKnownPosition.ts) / 60 / 60 / 1000;
-        this.timeElapsed = difference;
+        this.output.hoursElapsed = Math.floor(difference);
+        this.output.minutesElapsed = Math.round((difference - this.output.hoursElapsed) * 60);
+    }
 
-        this.hoursElapsed = Math.floor(difference);
-        this.minutesElapsed = Math.round((difference - this.hoursElapsed) * 60);
+    function RapidResponseCalculator() {
+    }
 
-        var startTs = this.data.lastKnownPosition.ts;
+    RapidResponseCalculator.prototype = new SarOperationCalculator();
+    RapidResponseCalculator.prototype.calculate = function (input) {
+        this.validate(input);
+
+        this.timeElapsed();
+
+        var startTs = this.input.lastKnownPosition.ts;
 
         var datumPositions = [];
         var currentPositions = [];
@@ -119,83 +134,77 @@
         var validFor = null;
         var lastDatumPosition = null
 
-        var nmToMeters = embryo.geo.Converter.nmToMeters;
-
-        var i = 0;
-        for (i = 0; i < this.data.surfaceDriftPoints.length; i++) {
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "ts");
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "twcSpeed");
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "twcDirection");
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "leewaySpeed");
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "leewayDirection");
-
+        for (var i = 0; i < this.input.surfaceDriftPoints.length; i++) {
             // Do we have a next?
             // How long is the data point valid for?
             // Is it the last one?
-            if (i == this.data.surfaceDriftPoints.length - 1) {
+            if (i == this.input.surfaceDriftPoints.length - 1) {
                 // It's the last one - let it last the remainder
-                validFor = (this.data.startTs - startTs) / 60 / 60 / 1000;
+                validFor = (this.input.startTs - startTs) / 60 / 60 / 1000;
             } else {
-                var currentTs = this.data.surfaceDriftPoints[i].ts;
-                if (currentTs < this.data.lastKnownPosition.ts) {
-                    currentTs = this.data.lastKnownPosition.ts;
+                var currentTs = this.input.surfaceDriftPoints[i].ts;
+                if (currentTs < this.input.lastKnownPosition.ts) {
+                    currentTs = this.input.lastKnownPosition.ts;
                 }
-                startTs = this.data.surfaceDriftPoints[i + 1].ts;
+                startTs = this.input.surfaceDriftPoints[i + 1].ts;
                 validFor = (startTs - currentTs) / 60 / 60 / 1000;
             }
 
-            var currentTWC = this.data.surfaceDriftPoints[i].twcSpeed * validFor;
+            var currentTWC = this.input.surfaceDriftPoints[i].twcSpeed * validFor;
 
             var startingLocation = null;
 
             if (i == 0) {
-                startingLocation = new embryo.geo.Position(this.data.lastKnownPosition.lon, this.data.lastKnownPosition.lat);
+                startingLocation = new embryo.geo.Position(this.input.lastKnownPosition.lon, this.input.lastKnownPosition.lat);
             } else {
                 startingLocation = lastDatumPosition;
             }
-            var twcDirectionInDegrees = directionDegrees(this.data.surfaceDriftPoints[i].twcDirection);
-            var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, nmToMeters(currentTWC));
+            var twcDirectionInDegrees = directionDegrees(this.input.surfaceDriftPoints[i].twcDirection);
+            var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, currentTWC);
             currentPositions.push(currentPos)
 
-            var leewaySpeed = this.data.searchObject.leewaySpeed(this.data.surfaceDriftPoints[i].leewaySpeed);
+            var leewaySpeed = this.input.searchObject.leewaySpeed(this.input.surfaceDriftPoints[i].leewaySpeed);
             var leewayDriftDistance = leewaySpeed * validFor;
 
-            var downWind = this.data.surfaceDriftPoints[i].downWind
+            var downWind = this.input.surfaceDriftPoints[i].downWind
             if (!downWind) {
-                downWind = directionDegrees(this.data.surfaceDriftPoints[i].leewayDirection) - 180;
+                downWind = directionDegrees(this.input.surfaceDriftPoints[i].leewayDirection) - 180;
             }
 
-            var leewayPos = currentPos.transformPosition(downWind, nmToMeters(leewayDriftDistance));
+            var leewayPos = currentPos.transformPosition(downWind, leewayDriftDistance);
             datumPositions.push(leewayPos);
             lastDatumPosition = leewayPos;
         }
 
-        this.datum = lastDatumPosition;
-        this.windPositions = datumPositions;
-        this.currentPositions = currentPositions;
+        this.output.datum = lastDatumPosition;
+        this.output.windPositions = datumPositions;
+        this.output.currentPositions = currentPositions;
 
         if (datumPositions.length > 1) {
             var pos = datumPositions[datumPositions.length - 2];
-            this.rdv = calculateRdv(pos, lastDatumPosition, validFor);
+            this.output.rdv = calculateRdv(pos, lastDatumPosition, validFor);
         } else {
-            var lastKnownPosition = new embryo.geo.Position(this.data.lastKnownPosition.lon, this.data.lastKnownPosition.lat);
-            this.rdv = calculateRdv(lastKnownPosition, lastDatumPosition, this.timeElapsed);
+            var lastKnownPosition = new embryo.geo.Position(this.input.lastKnownPosition.lon, this.input.lastKnownPosition.lat);
+            this.output.rdv = calculateRdv(lastKnownPosition, lastDatumPosition, this.output.timeElapsed);
         }
 
-        this.radius = ((this.data.xError + this.data.yError) + 0.3 * this.rdv.distance) * this.data.safetyFactor;
+        this.output.radius = ((this.input.xError + this.input.yError) + 0.3 * this.output.rdv.distance) * this.input.safetyFactor;
+        this.calculateSearchArea(this.output.datum, this.output.radius, this.output.rdv.direction);
 
-        this.searchArea = this.calculateSearchArea(this.datum, this.radius, this.rdv.direction);
+        return this.output;
     }
 
-    RapidResponse.prototype.calculateSearchArea = function (datum, radius, rdvDirection) {
-        var nmToMeters = embryo.geo.Converter.nmToMeters;
-        var reverseDirection = embryo.geo.reverseDirection;
-
+    RapidResponseCalculator.prototype.validateSearchAreaInput = function (datum, radius, rdvDirection) {
         assertValue(datum.lat, "datum.lat")
         assertValue(datum.lon, "datum.lon")
         assertValue(radius, "radius")
         assertValue(rdvDirection, "rdvDirection")
+    }
 
+    RapidResponseCalculator.prototype.calculateSearchArea = function (datum, radius, rdvDirection) {
+        this.validateSearchAreaInput(datum, radius, rdvDirection);
+
+        var reverseDirection = embryo.geo.reverseDirection;
         // Search box
         // The box is square around the circle, with center point at datum
         // Radius is the calculated Radius
@@ -208,18 +217,18 @@
         }
 
         // First top side of the box
-        var topCenter = datum.transformPosition(verticalDirection, nmToMeters(radius));
+        var topCenter = datum.transformPosition(verticalDirection, radius);
 
         // Bottom side of the box
-        var bottomCenter = datum.transformPosition(reverseDirection(verticalDirection), nmToMeters(radius));
+        var bottomCenter = datum.transformPosition(reverseDirection(verticalDirection), radius);
 
         // Go left radius length
-        var a = topCenter.transformPosition(reverseDirection(horizontalDirection), nmToMeters(radius));
-        var b = topCenter.transformPosition(horizontalDirection, nmToMeters(radius));
-        var c = bottomCenter.transformPosition(horizontalDirection, nmToMeters(radius));
-        var d = bottomCenter.transformPosition(reverseDirection(horizontalDirection), nmToMeters(radius));
+        var a = topCenter.transformPosition(reverseDirection(horizontalDirection), radius);
+        var b = topCenter.transformPosition(horizontalDirection, radius);
+        var c = bottomCenter.transformPosition(horizontalDirection, radius);
+        var d = bottomCenter.transformPosition(reverseDirection(horizontalDirection), radius);
 
-        return {
+        this.output.searchArea = {
             A: a,
             B: b,
             C: c,
@@ -241,63 +250,41 @@
     }
 
 
-    function DatumPoint(data) {
-        this.setData(data);
-        this.calculate();
+    function DatumPointCalculator() {
     }
-    DatumPoint.prototype = new Operation();
-    DatumPoint.prototype.calculate = function () {
-        assertObjectFieldValue(this.data, "startTs");
-        assertObjectFieldValue(this.data.lastKnownPosition, "ts");
-        assertObjectFieldValue(this.data.lastKnownPosition, "lon");
-        assertObjectFieldValue(this.data.lastKnownPosition, "lat");
-        assertObjectFieldValue(this.data, "xError");
-        assertObjectFieldValue(this.data, "yError");
-        assertObjectFieldValue(this.data, "safetyFactor");
 
-        var difference = (this.data.startTs - this.data.lastKnownPosition.ts) / 60 / 60 / 1000;
-        this.timeElapsed = difference;
+    DatumPointCalculator.prototype = new SarOperationCalculator();
+    DatumPointCalculator.prototype.calculate = function (input) {
+        this.validate(input)
 
-        this.hoursElapsed = Math.floor(difference);
-        this.minutesElapsed = Math.round((difference - this.hoursElapsed) * 60);
+        this.timeElapsed();
 
-        var startTs = this.data.lastKnownPosition.ts;
-
-
+        var startTs = this.input.lastKnownPosition.ts;
         var datumDownwindPositions = [];
         var datumMinPositions = [];
         var datumMaxPositions = [];
         var currentPositions = [];
 
         var validFor = null;
-        var lastKnownPosition = new embryo.geo.Position(this.data.lastKnownPosition.lon, this.data.lastKnownPosition.lat);
+        var lastKnownPosition = new embryo.geo.Position(this.input.lastKnownPosition.lon, this.input.lastKnownPosition.lat);
 
-        var nmToMeters = embryo.geo.Converter.nmToMeters;
-
-        var i;
-        for (i = 0; i < this.data.surfaceDriftPoints.length; i++) {
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "ts");
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "twcSpeed");
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "twcDirection");
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "leewaySpeed");
-            assertObjectFieldValue(this.data.surfaceDriftPoints[i], "leewayDirection");
-
+        for (var i = 0; i < this.input.surfaceDriftPoints.length; i++) {
             // Do we have a next?
             // How long is the data point valid for?
             // Is it the last one?
-            if (i == this.data.surfaceDriftPoints.length - 1) {
+            if (i == this.input.surfaceDriftPoints.length - 1) {
                 // It's the last one - let it last the remainder
-                validFor = (this.data.startTs - startTs) / 60 / 60 / 1000;
+                validFor = (this.input.startTs - startTs) / 60 / 60 / 1000;
             } else {
-                var currentTs = this.data.surfaceDriftPoints[i].ts;
-                if (currentTs < this.data.lastKnownPosition.ts) {
-                    currentTs = this.data.lastKnownPosition.ts;
+                var currentTs = this.input.surfaceDriftPoints[i].ts;
+                if (currentTs < this.input.lastKnownPosition.ts) {
+                    currentTs = this.input.lastKnownPosition.ts;
                 }
-                startTs = this.data.surfaceDriftPoints[i + 1].ts;
+                startTs = this.input.surfaceDriftPoints[i + 1].ts;
                 validFor = (startTs - currentTs) / 60 / 60 / 1000;
             }
 
-            var currentTWC = this.data.surfaceDriftPoints[i].twcSpeed * validFor;
+            var currentTWC = this.input.surfaceDriftPoints[i].twcSpeed * validFor;
 
             var startingLocation = null;
 
@@ -307,87 +294,147 @@
                 startingLocation = datumDownwindPositions[i - 1];
             }
 
-            var leewayDivergence = this.data.searchObject.divergence;
+            var leewayDivergence = this.input.searchObject.divergence;
 
-            var leewaySpeed = this.data.searchObject.leewaySpeed(this.data.surfaceDriftPoints[i].leewaySpeed);
+            var leewaySpeed = this.input.searchObject.leewaySpeed(this.input.surfaceDriftPoints[i].leewaySpeed);
             var leewayDriftDistance = leewaySpeed * validFor;
 
-            var twcDirectionInDegrees = directionDegrees(this.data.surfaceDriftPoints[i].twcDirection);
-            var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, nmToMeters(currentTWC));
+            var twcDirectionInDegrees = directionDegrees(this.input.surfaceDriftPoints[i].twcDirection);
+            var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, currentTWC);
             currentPositions.push(currentPos)
 
             // TODO move somewhere else
-            var downWind = this.data.surfaceDriftPoints[i].downWind;
+            var downWind = this.input.surfaceDriftPoints[i].downWind;
             if (!downWind) {
-                downWind = directionDegrees(this.data.surfaceDriftPoints[i].leewayDirection) - 180;
+                downWind = directionDegrees(this.input.surfaceDriftPoints[i].leewayDirection) - 180;
             }
 
             // Are these calculations correct ?
             // why are previous datumDownwindPosition/datumMinPosition, datumMaxPosition never used.
-            datumDownwindPositions.push(currentPos.transformPosition(downWind, nmToMeters(leewayDriftDistance)));
-            datumMinPositions.push(currentPos.transformPosition(downWind - leewayDivergence, nmToMeters(leewayDriftDistance)));
-            datumMaxPositions.push(currentPos.transformPosition(downWind + leewayDivergence, nmToMeters(leewayDriftDistance)));
+            datumDownwindPositions.push(currentPos.transformPosition(downWind, leewayDriftDistance));
+            datumMinPositions.push(currentPos.transformPosition(downWind - leewayDivergence, leewayDriftDistance));
+            datumMaxPositions.push(currentPos.transformPosition(downWind + leewayDivergence, leewayDriftDistance));
         }
 
-        var result = {}
+        function circleObjectValues(input, timeElapsed, positions) {
+            var datum = positions[positions.length - 1];
+            var rdv = calculateRdv(lastKnownPosition, datum, timeElapsed);
+            var radius = calculateRadius(input.xError, input.yError, rdv.distance, input.safetyFactor);
 
-        result.downWindDatum = datumDownwindPositions[datumDownwindPositions.length - 1];
-        result.minDatum = datumMinPositions[datumMinPositions.length - 1];
-        result.maxDatum = datumMaxPositions[datumMaxPositions.length - 1];
+            return {
+                datum: datum,
+                rdv: rdv,
+                radius: radius,
+                datumPositions: positions
+            };
+        }
 
+        this.output.currentPositions = currentPositions
+        this.output.downWind = circleObjectValues(this.input, this.output.timeElapsed, datumDownwindPositions);
+        this.output.min = circleObjectValues(this.input, this.output.timeElapsed, datumMinPositions);
+        this.output.max = circleObjectValues(this.input, this.output.timeElapsed, datumMaxPositions);
 
-        result.rdvDownWind = calculateRdv(lastKnownPosition, result.downWindDatum, this.timeElapsed);
-        result.rdvMin = calculateRdv(lastKnownPosition, result.minDatum, this.timeElapsed);
-        result.rdvMax = calculateRdv(lastKnownPosition, result.maxDatum, this.timeElapsed);
+        this.calculateSearchArea(this.output.min, this.output.max, this.output.downWind);
 
-        result.downwindRadius = calculateRadius(this.data.xError, this.data.yError, result.rdvDownWind.distance, this.data.safetyFactor);
-        result.minRadius = calculateRadius(this.data.xError, this.data.yError, result.rdvMin.distance, this.data.safetyFactor);
-        result.maxRadius = calculateRadius(this.data.xError, this.data.yError, result.rdvMax.distance, this.data.safetyFactor);
-
-        this.searchArea = this.calculateSearchArea(result);
-
-        this.result = result;
+        return this.output;
     }
 
+    function calculateSearchAreaPointsForMinAndMax(tangent, bigCircle, smallCircle) {
+        var bearing = tangent.point2.rhumbLineBearingTo(tangent.point1);
+        var A = smallCircle.center.transformPosition(bearing, smallCircle.radius).transformPosition(bearing - 90, smallCircle.radius);
+        var D = bigCircle.center.transformPosition(bearing + 180, bigCircle.radius).transformPosition(bearing - 90, bigCircle.radius)
+        var B = A.transformPosition(bearing + 90, bigCircle.radius * 2);
+        var C = D.transformPosition(bearing + 90, bigCircle.radius * 2);
+        return {
+            A: A,
+            B: B,
+            C: C,
+            D: D
+        }
+    }
 
-    DatumPoint.prototype.calculateSearchArea = function (result) {
-        var startPos, endPos, startRadius, endRadius;
+    function extendSearchAreaToIncludeDownWindCircle(tangent, area, downWind) {
+        var bearing = tangent.point2.rhumbLineBearingTo(tangent.point1);
+        var result = {
+            A: area.A,
+            B: area.B,
+            C: area.C,
+            D: area.D
+        }
 
-        if (result.minRadius > result.maxRadius) {
-            startPos = result.minDatum
-            startRadius = result.minRadius;
-            endPos = result.maxDatum;
-            endRadius = result.maxRadius;
+        var dwD = downWind.datum.rhumbLineDistanceTo(area.D);
+        var dwA = downWind.datum.rhumbLineDistanceTo(area.A);
+        var DA = area.D.rhumbLineDistanceTo(area.A);
+
+        var d = (Math.pow(dwD, 2) - Math.pow(dwA, 2) + Math.pow(DA, 2)) / (2 * DA);
+        var h = Math.sqrt(Math.pow(dwD, 2) - Math.pow(d, 2));
+
+        if (h < downWind.radius) {
+            result.D = result.D.transformPosition(bearing - 90, downWind.radius - h);
+            result.A = result.A.transformPosition(bearing - 90, downWind.radius - h);
         } else {
-            startPos = result.maxDatum;
-            startRadius = result.maxRadius;
-            endPos = result.minDatum;
-            endRadius = result.minRadius;
+            result.B = result.B.transformPosition(bearing + 90, h - downWind.radius);
+            result.C = result.C.transformPosition(bearing + 90, h - downWind.radius);
+        }
+        var AB = result.A.rhumbLineDistanceTo(result.B);
+        result.totalSize = DA * AB;
+        return result;
+    }
+
+    function calculateSearchAreaFromTangent(tangent, bigCircle, smallCircle, downWind) {
+        var area = calculateSearchAreaPointsForMinAndMax(tangent, bigCircle, smallCircle);
+        return extendSearchAreaToIncludeDownWindCircle(tangent, area, downWind);
+    }
+
+    DatumPointCalculator.prototype.calculateSearchArea = function (min, max, downWind) {
+        var startPos, endPos, startRadius, endRadius;
+        if (min.radius > max.radius) {
+            startPos = min.datum
+            startRadius = min.radius;
+            endPos = max.datum;
+            endRadius = max.radius;
+        } else {
+            startPos = max.datum;
+            startRadius = max.radius;
+            endPos = min.datum;
+            endRadius = min.radius;
         }
 
-        //Position endDirectionPoint = startPos, lengthBearing, Converter.nmToMeters(endRadius));
+        var bigCircle = new embryo.geo.Circle(startPos, startRadius);
+        var smallCircle = new embryo.geo.Circle(endPos, endRadius)
 
-        // Bearing between the two points - this will be the direction of the
-        // box.
-        //double lengthBearing = Calculator.bearing(startPos, endPos, Heading.RL);
+        var tangents = bigCircle.calculateExternalTangents(smallCircle);
 
+        var area0 = calculateSearchAreaFromTangent(tangents[0], bigCircle, smallCircle, downWind);
+        var area1 = calculateSearchAreaFromTangent(tangents[1], bigCircle, smallCircle, downWind);
 
+        this.output.searchArea = area0.totalSize < area1.totalSize ? area0 : area1;
     }
 
 
-    function DatumLine(data) {
-        this.setData(data);
-        this.calculate();
+    function DatumLineCalculator() {
     }
 
-    DatumLine.prototype = new Operation();
-
-    function BackTrack(data) {
-        this.setData(data);
-        this.calculate();
+    DatumLineCalculator.prototype = new SarOperationCalculator();
+    function BackTrackCalculator() {
     }
 
-    BackTrack.prototype = new Operation();
+    BackTrackCalculator.prototype = new SarOperationCalculator();
+
+    function getCalculator(sarType) {
+        switch (sarType) {
+            case (embryo.sar.types.RapidResponse) :
+                return new RapidResponseCalculator();
+            case (embryo.sar.types.DatumPoint) :
+                return new DatumPointCalculator();
+            case (embryo.sar.types.DatumLine) :
+                return new DatumLineCalculator();
+            case (embryo.sar.types.BackTrack) :
+                return new BackTrackCalculator();
+            default :
+                throw new Error("Unknown sar type " + input.type);
+        }
+    }
 
     module.service('SarService', function () {
         var selectedSar;
@@ -430,23 +477,20 @@
                     fn(selectedSar);
                 }
             },
-            createSarOperation: function (data) {
-                if (!data.type) {
-                    throw new Error("type must be specified");
-                }
 
-                switch (data.type) {
-                    case (embryo.sar.types.RapidResponse) :
-                        return new RapidResponse(data);
-                    case (embryo.sar.types.DatumPoint) :
-                        return new DatumPoint(data);
-                    case (embryo.sar.types.DatumLine) :
-                        return new DatumLine(data);
-                    case (embryo.sar.types.BackTrack) :
-                        return new BackTrack(data);
-                    default :
-                        throw new Error("Unknown sar type " + data.type);
+            validateSarInput: function (input) {
+                // this was written to prevent Chrome browser running in indefinite loops
+                getCalculator(input.type).validate(input);
+            },
+            createSarOperation: function (input) {
+                var result = {
+                    input: input,
+                    output: getCalculator(input.type).calculate(input)
                 }
+                return result;
+            },
+            save: function (sarOperation) {
+
             }
 
 

@@ -162,14 +162,20 @@ $(function () {
             } catch (error) {
                 if (typeof error === 'object' && error.message) {
                     $scope.alertMessages.push("Internal error: " + error.message);
+                    throw error;
                 } else if (typeof error === 'string') {
                     $scope.alertMessages.push("Internal error: " + error);
                 }
             }
+            // TODO remove
+            //sarLayer.draw($scope.sarOperation);
         }
 
         $scope.formatTs = formatTime;
         $scope.formatPos = function (position) {
+            if (!position) {
+                return ""
+            }
             return "(" + formatLatitude(position.lat) + ", " + formatLongitude(position.lon) + ")";
         }
 

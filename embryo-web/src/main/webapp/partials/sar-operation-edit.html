@@ -312,13 +312,13 @@
             </form>
             <div x-ng-if="page == 'sarResult'">
                 <hr/>
-                {{sar.selectedType.text}} with no {{sarOperation.data.no}}
+                {{sar.selectedType.text}} with no {{sarOperation.input.no}}
                 <hr/>
-                Time of last known position: {{formatTs(sarOperation.data.lastKnownPosition.ts)}} UTC<br/>
-                Last known position: {{formatPos(sarOperation.data.lastKnownPosition)}}<br/>
-                Commence Search Start Time: {{formatTs(sarOperation.data.startTs)}} UTC<br/>
+                Time of last known position: {{formatTs(sarOperation.input.lastKnownPosition.ts)}} UTC<br/>
+                Last known position: {{formatPos(sarOperation.input.lastKnownPosition)}}<br/>
+                Commence Search Start Time: {{formatTs(sarOperation.input.startTs)}} UTC<br/>
                 <hr/>
-                <div x-ng-if="sarOperation.data.surfaceDriftPoints.length > 1">
+                <div x-ng-if="sarOperation.input.surfaceDriftPoints.length > 1">
                     Surface drift points:
                     <table class="table table-condensed surfaceDriftPointsPresented">
                         <thead>
@@ -331,7 +331,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr x-ng-repeat="surfaceDrift in sarOperation.data.surfaceDriftPoints">
+                        <tr x-ng-repeat="surfaceDrift in sarOperation.input.surfaceDriftPoints">
                             <td>{{formatTs(surfaceDrift.ts)}}</td>
                             <td>{{surfaceDrift.twcSpeed}}</td>
                             <td>{{surfaceDrift.twcDirection}}</td>
@@ -341,8 +341,8 @@
                         </tbody>
                     </table>
                 </div>
-                <div x-ng-if="sarOperation.data.surfaceDriftPoints.length <= 1">
-                    <span x-ng-repeat="surfaceDrift in sarOperation.data.surfaceDriftPoints">
+                <div x-ng-if="sarOperation.input.surfaceDriftPoints.length <= 1">
+                    <span x-ng-repeat="surfaceDrift in sarOperation.input.surfaceDriftPoints">
                     Total water current {{surfaceDrift.twcSpeed}} knots with direction {{surfaceDrift.twcDirection}}<span
                             x-ng-if="0 <= surfaceDrift.twcDirection && surfaceDrift.twcDirection < 360">°</span>
                     Leeway {{surfaceDrift.leewaySpeed}} knots with direction {{surfaceDrift.leewayDirection}}<span
@@ -350,32 +350,42 @@
                     </span>
                 </div>
                 <hr/>
-                Initial position error, X in nautical miles: {{sarOperation.data.xError}}<br/>
-                SRU navigational error, Y in nautical miles: {{sarOperation.data.yError}}<br/>
-                Safety factor, Fs: {{sarOperation.data.safetyFactor}}<br/>
+
+                Initial position error, X in nautical miles: {{sarOperation.input.xError}}<br/>
+                SRU navigational error, Y in nautical miles: {{sarOperation.input.yError}}<br/>
+                Safety factor, Fs: {{sarOperation.input.safetyFactor}}<br/>
                 <hr/>
-                Search Object: {{sarOperation.data.searchObject.text}}<br/>{{sarOperation.data.searchObject.x}}x U
-                <span x-ng-if="sarOperation.data.searchObject.y < 0">- {{-sarOperation.data.searchObject.y}}</span>
-                <span x-ng-if="sarOperation.data.searchObject.y > 0">+ {{sarOperation.data.searchObject.y}}</span>,
-                Divergence: {{sarOperation.data.searchObject.divergence}}<br/>
+                Search Object: {{sarOperation.input.searchObject.text}}<br/>{{sarOperation.input.searchObject.x}}x U
+                <span x-ng-if="sarOperation.input.searchObject.y < 0">- {{-sarOperation.input.searchObject.y}}</span>
+                <span x-ng-if="sarOperation.input.searchObject.y > 0">+ {{sarOperation.input.searchObject.y}}</span>,
+                Divergence: {{sarOperation.input.searchObject.divergence}}<br/>
                 <hr/>
                 Time elapsed: {{sarOperation.hoursElapsed}} hour<span x-ng-if="sarOperation.hoursElapsed != 1">s</span>,
                 {{sarOperation.minutesElapsed}} minute<span x-ng-if="sarOperation.minutesElapsed != 1">s</span>.<br/>
-                <span x-ng-if="sarOperation.rdv">
-                Datum calculated from applying leeway and total water current: {{formatPos(sarOperation.datum)}}<br/>
+                <span x-ng-if="sarOperation.output && sarOperation.output.rdv">
+                Datum calculated from applying leeway and total water current: {{formatPos(sarOperation.output.datum)}}<br/>
                 With the following Residual Drift Vector<br/>
-                RDV Direction: {{formatDecimal(sarOperation.rdv.direction, -2)}}<br/>
-                RDV Distance: {{formatDecimal(sarOperation.rdv.distance, -2)}} nm<br/>
-                RDV Speed: {{formatDecimal(sarOperation.rdv.speed, -2)}} kn/h<br/>
-                With radius: {{formatDecimal(sarOperation.radius, -2)}} nm<br/>
+                RDV Direction: {{formatDecimal(sarOperation.output.rdv.direction, -2)}}<br/>
+                RDV Distance: {{formatDecimal(sarOperation.output.rdv.distance, -2)}} nm<br/>
+                RDV Speed: {{formatDecimal(sarOperation.output.rdv.speed, -2)}} kn/h<br/>
+                With radius: {{formatDecimal(sarOperation.output.radius, -2)}} nm<br/>
+                </span>
+                <span x-ng-if="sarOperation.output && sarOperation.output.downWind.rdv">
+                Datum calculated from applying leeway and total water current: {{formatPos(sarOperation.output.downWind.datum)}}<br/>
+                With the following Residual Drift Vector<br/>
+                RDV Direction: {{formatDecimal(sarOperation.output.downWind.rdv.direction, -2)}}<br/>
+                RDV Distance: {{formatDecimal(sarOperation.output.downWind.rdv.distance, -2)}} nm<br/>
+                RDV Speed: {{formatDecimal(sarOperation.output.downWind.rdv.speed, -2)}} kn/h<br/>
+                With radius: {{formatDecimal(sarOperation.output.downwind.radius, -2)}} nm<br/>
                 </span>
                 <hr/>
+
                 Search Area:<br/>
-                A: {{formatPos(sarOperation.searchArea.A)}}<br/>
-                B: {{formatPos(sarOperation.searchArea.B)}}<br/>
-                C: {{formatPos(sarOperation.searchArea.C)}}<br/>
-                D: {{formatPos(sarOperation.searchArea.D)}}<br/>
-                Total size: {{formatDecimal(sarOperation.searchArea.totalSize, -2)}} nm2<br/>
+                A: {{formatPos(sarOperation.output.searchArea.A)}}<br/>
+                B: {{formatPos(sarOperation.output.searchArea.B)}}<br/>
+                C: {{formatPos(sarOperation.output.searchArea.C)}}<br/>
+                D: {{formatPos(sarOperation.output.searchArea.D)}}<br/>
+                Total size: {{formatDecimal(sarOperation.output.searchArea.totalSize, -2)}} nm2<br/>
 
                 <div class="col-xs-12">
                     <span class="pull-right">
@@ -385,6 +395,7 @@
                         <button type="button" class="btn btn-sm" x-ng-click="cancel()">Cancel</button>
                     </span>
                 </div>
+                -->
             </div>
         </div>
 
