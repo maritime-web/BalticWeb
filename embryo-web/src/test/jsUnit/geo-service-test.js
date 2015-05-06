@@ -37,10 +37,9 @@ describe('geo', function () {
          */
         it('(61 00.000N, 051 00.000W).transformPosition(RL, 9260meters) should return (61 03.530N, 050 52.699W)', function () {
             var startPos = new embryo.geo.Position(-51.0, 61.0);
-            var distanceInMeters = embryo.geo.Converter.nmToMeters(5);
             var heading = 45;
 
-            var pos = startPos.transformPosition(heading, distanceInMeters);
+            var pos = startPos.transformPosition(heading, 5);
 
             expect(pos).toBeDefined();
             expect(embryo.geo.formatLongitude(pos.lon)).toBe("050 52.699W");

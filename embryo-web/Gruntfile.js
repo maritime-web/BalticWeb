@@ -314,7 +314,7 @@ module.exports = function (grunt) {
                 dest: 'target/build/map2.appcache',
                 cache: {
                     literals: [//as is in the "CACHE:" section
-                        'map.html',
+                        'map2.html',
                         'css/arcticweb-map2.css',
                         'css/arcticweb-map2-ext-lib.css',
                         'js/arcticweb-map2.js',

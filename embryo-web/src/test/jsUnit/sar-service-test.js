@@ -49,34 +49,36 @@ describe('embryo.sar', function () {
             var formatLatitude = embryo.geo.formatLatitude;
             var formatLongitude = embryo.geo.formatLongitude;
 
-            var data = createSarTestObject(service);
+            var input = createSarTestObject(service);
 
             //var sarOperation = null;
-            var sarOperation = service.createSarOperation(data);
+            var result = service.createSarOperation(input);
 
-            expect(sarOperation).toBeDefined();
+            expect(result).toBeDefined();
+            expect(result.output).toBeDefined();
+            var output = result.output;
 
             // ASSERT DATUM
-            expect(formatLongitude(sarOperation.datum.lon)).toBe("050 52.939W");
-            expect(formatLatitude(sarOperation.datum.lat)).toBe("61 03.328N");
+            expect(formatLongitude(output.datum.lon)).toBe("050 52.939W");
+            expect(formatLatitude(output.datum.lat)).toBe("61 03.328N");
 
-            expect(sarOperation.rdv.direction).toBeCloseTo(45.780030, 4);
-            expect(sarOperation.rdv.distance).toBeCloseTo(4.775445, 4);
-            expect(sarOperation.rdv.speed).toBeCloseTo(4.775445, 4);
-            expect(sarOperation.radius).toBeCloseTo(2.532634, 4);
+            expect(output.rdv.direction).toBeCloseTo(45.780030, 4);
+            expect(output.rdv.distance).toBeCloseTo(4.775445, 4);
+            expect(output.rdv.speed).toBeCloseTo(4.775445, 4);
+            expect(output.radius).toBeCloseTo(2.532634, 4);
 
-            expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("61 06.905N");
-            expect(formatLongitude(sarOperation.searchArea.A.lon)).toBe("050 52.842W");
+            expect(formatLatitude(output.searchArea.A.lat)).toBe("61 06.905N");
+            expect(formatLongitude(output.searchArea.A.lon)).toBe("050 52.842W");
 
-            expect(formatLatitude(sarOperation.searchArea.B.lat)).toBe("61 03.278N");
-            expect(formatLongitude(sarOperation.searchArea.B.lon)).toBe("050 45.541W");
+            expect(formatLatitude(output.searchArea.B.lat)).toBe("61 03.278N");
+            expect(formatLongitude(output.searchArea.B.lon)).toBe("050 45.541W");
 
-            expect(formatLatitude(sarOperation.searchArea.C.lat)).toBe("60 59.748N");
-            expect(formatLongitude(sarOperation.searchArea.C.lon)).toBe("050 53.043W");
+            expect(formatLatitude(output.searchArea.C.lat)).toBe("60 59.748N");
+            expect(formatLongitude(output.searchArea.C.lon)).toBe("050 53.043W");
 
-            expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 03.375N");
-            expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("051 00.331W");
-            expect(sarOperation.searchArea.totalSize).toBeCloseTo(2.5326335063948107 * 2.5326335063948107 * 4, 4);
+            expect(formatLatitude(output.searchArea.D.lat)).toBe("61 03.375N");
+            expect(formatLongitude(output.searchArea.D.lon)).toBe("051 00.331W");
+            expect(output.searchArea.totalSize).toBeCloseTo(2.5326335063948107 * 2.5326335063948107 * 4, 4);
         });
 
 
@@ -95,7 +97,7 @@ describe('embryo.sar', function () {
             var formatLatitude = embryo.geo.formatLatitude;
             var formatLongitude = embryo.geo.formatLongitude;
 
-            var data = {
+            var input = {
                 sarNo: 1,
                 type: embryo.sar.types.RapidResponse,
                 lastKnownPosition: {
@@ -124,36 +126,38 @@ describe('embryo.sar', function () {
             }
 
             //var sarOperation = null;
-            var sarOperation = service.createSarOperation(data);
+            var result = service.createSarOperation(input);
 
-            expect(sarOperation).toBeDefined();
+            expect(result).toBeDefined();
+            expect(result.output).toBeDefined();
+            var output = result.output;
 
             // ASSERT DATUM
-            expect(formatLatitude(sarOperation.datum.lat)).toBe("61 04.854N");
-            expect(formatLongitude(sarOperation.datum.lon)).toBe("050 51.794W");
+            expect(formatLatitude(output.datum.lat)).toBe("61 04.854N");
+            expect(formatLongitude(output.datum.lon)).toBe("050 51.794W");
 
-            expect(sarOperation.rdv.direction).toBeCloseTo(35.372815, 4);
-            expect(sarOperation.rdv.distance).toBeCloseTo(3.914134, 4);
-            expect(sarOperation.rdv.speed).toBeCloseTo(7.828269, 4);
-            expect(sarOperation.radius).toBeCloseTo(1.374240, 4);
+            expect(output.rdv.direction).toBeCloseTo(35.372815, 4);
+            expect(output.rdv.distance).toBeCloseTo(3.914134, 4);
+            expect(output.rdv.speed).toBeCloseTo(7.828269, 4);
+            expect(output.radius).toBeCloseTo(1.374240, 4);
 
-            expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("61 06.769N");
-            expect(formatLongitude(sarOperation.searchArea.A.lon)).toBe("050 52.467W");
+            expect(formatLatitude(output.searchArea.A.lat)).toBe("61 06.769N");
+            expect(formatLongitude(output.searchArea.A.lon)).toBe("050 52.467W");
 
-            expect(formatLatitude(sarOperation.searchArea.B.lat)).toBe("61 05.179N");
-            expect(formatLongitude(sarOperation.searchArea.B.lon)).toBe("050 47.833W");
+            expect(formatLatitude(output.searchArea.B.lat)).toBe("61 05.179N");
+            expect(formatLongitude(output.searchArea.B.lon)).toBe("050 47.833W");
 
-            expect(formatLatitude(sarOperation.searchArea.C.lat)).toBe("61 02.939N");
-            expect(formatLongitude(sarOperation.searchArea.C.lon)).toBe("050 51.124W");
+            expect(formatLatitude(output.searchArea.C.lat)).toBe("61 02.939N");
+            expect(formatLongitude(output.searchArea.C.lon)).toBe("050 51.124W");
 
-            expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 04.529N");
-            expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("050 55.753W");
-            expect(sarOperation.searchArea.totalSize).toBeCloseTo(1.3742403439070814 * 1.3742403439070814 * 4, 4);
+            expect(formatLatitude(output.searchArea.D.lat)).toBe("61 04.529N");
+            expect(formatLongitude(output.searchArea.D.lon)).toBe("050 55.753W");
+            expect(output.searchArea.totalSize).toBeCloseTo(1.3742403439070814 * 1.3742403439070814 * 4, 4);
         });
 
-        function executeWithTryCatch(service, data) {
+        function executeWithTryCatch(service, input) {
             try {
-                service.createSarOperation(data);
+                service.createSarOperation(input);
             } catch (Error) {
                 return Error;
             }
@@ -167,98 +171,98 @@ describe('embryo.sar', function () {
         }
 
         it('Error thrown if lastKnownPosition.ts has no value', function () {
-            var data = createSarTestObject(service);
-            data.lastKnownPosition.ts = null;
+            var input = createSarTestObject(service);
+            input.lastKnownPosition.ts = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "ts");
         });
 
         it('Error thrown if lastKnownPosition.lon has no value', function () {
-            var data = createSarTestObject(service);
-            data.lastKnownPosition.lon = null;
+            var input = createSarTestObject(service);
+            input.lastKnownPosition.lon = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "lon");
         });
 
         it('Error thrown if lastKnownPosition.lat has no value', function () {
-            var data = createSarTestObject(service);
-            data.lastKnownPosition.lat = null;
+            var input = createSarTestObject(service);
+            input.lastKnownPosition.lat = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "lat");
         });
 
         it('Error thrown if startTs has no value ', function () {
-            var data = createSarTestObject(service);
-            data.startTs = null;
+            var input = createSarTestObject(service);
+            input.startTs = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "startTs");
         });
 
         it('Error thrown if surfaceDriftPoint.ts has no value ', function () {
-            var data = createSarTestObject(service);
-            data.surfaceDriftPoints[0].ts = null;
+            var input = createSarTestObject(service);
+            input.surfaceDriftPoints[0].ts = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "ts");
         });
 
         it('Error thrown if surfaceDriftPoint.twcSpeed has no value ', function () {
-            var data = createSarTestObject(service);
-            data.surfaceDriftPoints[0].twcSpeed = null;
+            var input = createSarTestObject(service);
+            input.surfaceDriftPoints[0].twcSpeed = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "twcSpeed");
         });
 
         it('Error thrown if surfaceDriftPoint.twcDirection has no value ', function () {
-            var data = createSarTestObject(service);
-            data.surfaceDriftPoints[0].twcDirection = null;
+            var input = createSarTestObject(service);
+            input.surfaceDriftPoints[0].twcDirection = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "twcDirection");
         });
 
         it('Error thrown if surfaceDriftPoint.leewaySpeed has no value ', function () {
-            var data = createSarTestObject(service);
-            data.surfaceDriftPoints[0].leewaySpeed = null;
+            var input = createSarTestObject(service);
+            input.surfaceDriftPoints[0].leewaySpeed = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "leewaySpeed");
         });
 
         it('Error thrown if surfaceDriftPoint.leewayDirection has no value ', function () {
-            var data = createSarTestObject(service);
-            data.surfaceDriftPoints[0].leewayDirection = null;
+            var input = createSarTestObject(service);
+            input.surfaceDriftPoints[0].leewayDirection = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "leewayDirection");
         });
 
         it('Error thrown if xError has no value ', function () {
-            var data = createSarTestObject(service);
-            data.xError = null;
+            var input = createSarTestObject(service);
+            input.xError = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "xError");
         });
 
         it('Error thrown if yError has no value ', function () {
-            var data = createSarTestObject(service);
-            data.yError = null;
+            var input = createSarTestObject(service);
+            input.yError = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "yError");
         });
 
         it('Error thrown if safetyFactor has no value ', function () {
-            var data = createSarTestObject(service);
-            data.safetyFactor = null;
+            var input = createSarTestObject(service);
+            input.safetyFactor = null;
 
-            var err = executeWithTryCatch(service, data)
+            var err = executeWithTryCatch(service, input)
             assertErrorContent(err, "safetyFactor");
         });
 
@@ -273,12 +277,12 @@ describe('embryo.sar', function () {
          * as testRapidResponseWithTwoSurfarceDriftPoint()
          */
 
-        it('create datum point SAR operation with one surface drift points', function () {
+        it('create datum point SAR operation with one surface drift point', function () {
             var searchObjectTypes = service.searchObjectTypes();
             var formatLatitude = embryo.geo.formatLatitude;
             var formatLongitude = embryo.geo.formatLongitude;
 
-            var data = {
+            var input = {
                 sarNo: 1,
                 type: embryo.sar.types.DatumPoint,
                 lastKnownPosition: {
@@ -301,34 +305,33 @@ describe('embryo.sar', function () {
             }
 
             //var sarOperation = null;
-            var sarOperation = service.createSarOperation(data);
+            var result = service.createSarOperation(input);
 
-            expect(sarOperation).toBeDefined();
-
-            var result = sarOperation.result;
+            expect(result).toBeDefined();
+            expect(result.output).toBeDefined();
+            var output = result.output;
 
             // ASSERT DATUM
-            expect(formatLatitude(result.downWindDatum.lat)).toBe("61 03.328N");
-            expect(formatLongitude(result.downWindDatum.lon)).toBe("050 52.939W");
-            expect(result.rdvDownWind.direction).toBeCloseTo(45.780030, 4);
-            expect(result.rdvDownWind.distance).toBeCloseTo(4.7754450, 4);
-            expect(result.rdvDownWind.speed).toBeCloseTo(4.775445, 4);
-            expect(result.downwindRadius).toBeCloseTo(2.532633, 4);
+            expect(formatLatitude(output.downWind.datum.lat)).toBe("61 03.328N");
+            expect(formatLongitude(output.downWind.datum.lon)).toBe("050 52.939W");
+            expect(output.downWind.rdv.direction).toBeCloseTo(45.780030, 4);
+            expect(output.downWind.rdv.distance).toBeCloseTo(4.7754450, 4);
+            expect(output.downWind.rdv.speed).toBeCloseTo(4.775445, 4);
+            expect(output.downWind.radius).toBeCloseTo(2.532633, 4);
 
-            expect(formatLatitude(result.maxDatum.lat)).toBe("61 03.413N");
-            expect(formatLongitude(result.maxDatum.lon)).toBe("050 53.115W");
-            expect(result.rdvMax.direction).toBeCloseTo(44.331598, 4);
-            expect(result.rdvMax.distance).toBeCloseTo(4.7752103, 4);
-            expect(result.rdvMax.speed).toBeCloseTo(4.7752103, 4);
-            expect(result.maxRadius).toBeCloseTo(2.5325631, 4);
+            expect(formatLatitude(output.max.datum.lat)).toBe("61 03.413N");
+            expect(formatLongitude(output.max.datum.lon)).toBe("050 53.115W");
+            expect(output.max.rdv.direction).toBeCloseTo(44.331598, 4);
+            expect(output.max.rdv.distance).toBeCloseTo(4.7752103, 4);
+            expect(output.max.rdv.speed).toBeCloseTo(4.7752103, 4);
+            expect(output.max.radius).toBeCloseTo(2.5325631, 4);
 
-            expect(formatLatitude(result.minDatum.lat)).toBe("61 03.297N");
-            expect(formatLongitude(result.minDatum.lon)).toBe("050 52.699W");
-
-            expect(result.rdvMin.direction).toBeCloseTo(47.008245, 4);
-            expect(result.rdvMin.distance).toBeCloseTo(4.8383743, 4);
-            expect(result.rdvMin.speed).toBeCloseTo(4.8383743, 4);
-            expect(result.minRadius).toBeCloseTo(2.5515123, 4);
+            expect(formatLatitude(output.min.datum.lat)).toBe("61 03.297N");
+            expect(formatLongitude(output.min.datum.lon)).toBe("050 52.699W");
+            expect(output.min.rdv.direction).toBeCloseTo(47.008245, 4);
+            expect(output.min.rdv.distance).toBeCloseTo(4.8383743, 4);
+            expect(output.min.rdv.speed).toBeCloseTo(4.8383743, 4);
+            expect(output.min.radius).toBeCloseTo(2.5515123, 4);
 
             /*
              expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("60 59.801N");
