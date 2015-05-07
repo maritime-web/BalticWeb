@@ -50,8 +50,6 @@ $(function () {
 
             $scope.view = function ($event, sar) {
                 $event.preventDefault();
-                console.log(sar)
-                console.log("sar")
                 SarService.selectedSar(sar.name);
             }
 
@@ -72,7 +70,6 @@ $(function () {
         }]);
 
     module.controller("LogControl", ['$scope', 'Subject', '$firebase', 'SarService', function ($scope, Subject, $firebase, SarService) {
-        console.log(SarService);
         SarService.registerSelectedSarListener("LogCtrl", function (selectedSarId) {
             $scope.selectedSarId = selectedSarId;
             if (!$scope.selectedSarId) {

@@ -482,18 +482,9 @@
                 throw new Error("No intersection points, the circles coincide.");
             }
 
-            console.log("dist="+ dist)
-            console.log("circle0")
-            console.log(circle0)
-            console.log("circle1")
-            console.log(circle1)
-
-
         //Find a and h.
             // FIXME: This should not be ordinary 2D calculation if other calculations are based on calculations on the globe
             var a = (Math.pow(circle0.radius, 2) - Math.pow(circle1.radius, 2) + Math.pow(dist,2)) / (2 * dist);
-
-            console.log("a=" + a)
 
             var h = Math.sqrt(Math.pow(circle0.radius, 2) - Math.pow(a, 2));
 
@@ -539,14 +530,6 @@
 
         var L = Math.sqrt(Math.pow(dist,2) - Math.pow(circle.radius,2))
 
-        console.log("calculateTangents")
-        console.log("dist=" + dist)
-        console.log("circle")
-        console.log(circle)
-        console.log("L=" + L)
-
-
-
         // Find the points of intersection between the original circle and the circle with
         // center external_point and radius L.
         var intersectionPoints = circle.circleIntersectionPoints({
@@ -557,9 +540,6 @@
         if(intersectionPoints.p1 && !intersectionPoints.p2){
             throw new Error("Only one intersection point found. Can not calculate tangents");
         }
-
-        console.log("intersectionPoints");
-        console.log(intersectionPoints)
 
         return [{
             point1 : externalPoint,
@@ -589,8 +569,6 @@
         // ***************************
 
         var circle2a = new embryo.geo.Circle(c2.center, c2.radius - c1.radius)
-        console.log("circle2a")
-        console.log(circle2a)
         var tangents = circle2a.calculateTangents(c1.center);
 
         // Offset the tangent vector's points.
@@ -607,7 +585,6 @@
             point2 : tangents[1].point2.transformPosition(bearingToTangent2, c1.radius)
         }
 
-        //return [tangent1, tangent2].concat(tangents);
         return [tangent1, tangent2]
     }
 
