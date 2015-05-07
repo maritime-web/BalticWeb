@@ -593,15 +593,12 @@
         console.log(circle2a)
         var tangents = circle2a.calculateTangents(c1.center);
 
-        //return tangents
-
         // Offset the tangent vector's points.
         var bearingToTangent1 = circle2a.center.bearingTo(tangents[0].point2, embryo.geo.Heading.RL);
         var tangent1 = {
             point1 : c1.center.transformPosition(bearingToTangent1, c1.radius),
             point2 : tangents[0].point2.transformPosition(bearingToTangent1, c1.radius)
         }
-
 
         // Offset the tangent vector's points.
         var bearingToTangent2 = circle2a.center.bearingTo(tangents[1].point2, embryo.geo.Heading.RL);
@@ -610,7 +607,8 @@
             point2 : tangents[1].point2.transformPosition(bearingToTangent2, c1.radius)
         }
 
-        return [tangent1, tangent2].concat(tangents);
+        //return [tangent1, tangent2].concat(tangents);
+        return [tangent1, tangent2]
     }
 
 

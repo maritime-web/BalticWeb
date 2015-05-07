@@ -4,7 +4,7 @@ function SarLayer() {
 
     var that = this;
 
-    that.zoomLevels = [12];
+    that.zoomLevels = [8, 12];
 
     this.init = function () {
         var context = {
@@ -14,7 +14,7 @@ function SarLayer() {
                 }
                 return "green"
             },
-            strokeWidth: function (feature) {
+            strokeWidth: function () {
                 return that.zoomLevel >= 1 ? 2 : 1;
             },
             strokeOpacity: function (feature) {
@@ -24,6 +24,12 @@ function SarLayer() {
                 return 0.7;
             },
             label: function (feature) {
+                if (feature.attributes.type == "areaLabel") {
+                    return that.zoomLevel >= 1 ? feature.attributes.label : "";
+                }
+                if (feature.attributes.type == "circleLabel") {
+                    return that.zoomLevel >= 2 ? feature.attributes.label : "";
+                }
                 return feature.attributes.label ? feature.attributes.label : "";
             }
         };
@@ -58,15 +64,19 @@ function SarLayer() {
             type: "area"
         }));
         features.push(new OpenLayers.Feature.Vector(pointA, {
+            type: "areaLabel",
             label: "A"
         }));
         features.push(new OpenLayers.Feature.Vector(pointB, {
+            type: "areaLabel",
             label: "B"
         }));
         features.push(new OpenLayers.Feature.Vector(pointC, {
+            type: "areaLabel",
             label: "C"
         }));
         features.push(new OpenLayers.Feature.Vector(pointD, {
+            type: "areaLabel",
             label: "D"
         }));
 
@@ -119,13 +129,11 @@ function SarLayer() {
 
     function addSearchRing(features, circle, label) {
         var radiusInKm = nmToMeters(circle.radius) / 1000;
-        features.addFeatures(embryo.adt.createRing(circle.datum.lon, circle.datum.lat, radiusInKm, 1, undefined, 'circle'), {
-            type: 'circle',
-            label: label
-        });
+        features.addFeatures(embryo.adt.createRing(circle.datum.lon, circle.datum.lat, radiusInKm, 1, undefined, 'circle'));
 
         var center = embryo.map.createPoint(circle.datum.lon, circle.datum.lat);
         features.addFeatures(new OpenLayers.Feature.Vector(center, {
+            type: 'circleLabel',
             label: label
         }));
     }
@@ -165,6 +173,13 @@ function SarLayer() {
             this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea), {
                 type: 'area'
             });
+
+            /*
+             this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea2), {
+             type: 'area'
+             });
+             */
+
 
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.downWind.datum);
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.min.datum);

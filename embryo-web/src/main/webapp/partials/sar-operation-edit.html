@@ -350,9 +350,8 @@
                     </span>
                 </div>
                 <hr/>
-
-                Initial position error, X in nautical miles: {{sarOperation.input.xError}}<br/>
-                SRU navigational error, Y in nautical miles: {{sarOperation.input.yError}}<br/>
+                Initial position error, X: {{sarOperation.input.xError}} nm<br/>
+                SRU navigational error, Y: {{sarOperation.input.yError}} nm<br/>
                 Safety factor, Fs: {{sarOperation.input.safetyFactor}}<br/>
                 <hr/>
                 Search Object: {{sarOperation.input.searchObject.text}}<br/>{{sarOperation.input.searchObject.x}}x U
@@ -360,8 +359,10 @@
                 <span x-ng-if="sarOperation.input.searchObject.y > 0">+ {{sarOperation.input.searchObject.y}}</span>,
                 Divergence: {{sarOperation.input.searchObject.divergence}}<br/>
                 <hr/>
-                Time elapsed: {{sarOperation.hoursElapsed}} hour<span x-ng-if="sarOperation.hoursElapsed != 1">s</span>,
-                {{sarOperation.minutesElapsed}} minute<span x-ng-if="sarOperation.minutesElapsed != 1">s</span>.<br/>
+                Time elapsed: {{sarOperation.output.hoursElapsed}} hour<span
+                    x-ng-if="sarOperation.output.hoursElapsed != 1">s</span>,
+                {{sarOperation.output.minutesElapsed}} minute<span
+                    x-ng-if="sarOperation.output.minutesElapsed != 1">s</span>.<br/>
                 <span x-ng-if="sarOperation.output && sarOperation.output.rdv">
                 Datum calculated from applying leeway and total water current: {{formatPos(sarOperation.output.datum)}}<br/>
                 With the following Residual Drift Vector<br/>
@@ -372,11 +373,11 @@
                 </span>
                 <span x-ng-if="sarOperation.output && sarOperation.output.downWind.rdv">
                 Datum calculated from applying leeway and total water current: {{formatPos(sarOperation.output.downWind.datum)}}<br/>
-                With the following Residual Drift Vector<br/>
-                RDV Direction: {{formatDecimal(sarOperation.output.downWind.rdv.direction, -2)}}<br/>
-                RDV Distance: {{formatDecimal(sarOperation.output.downWind.rdv.distance, -2)}} nm<br/>
-                RDV Speed: {{formatDecimal(sarOperation.output.downWind.rdv.speed, -2)}} kn/h<br/>
-                With radius: {{formatDecimal(sarOperation.output.downwind.radius, -2)}} nm<br/>
+                With the following Residual Drift Vectors<br/>
+                Downwind RDV Direction: {{formatDecimal(sarOperation.output.downWind.rdv.direction, -2)}}<br/>
+                Downwind RDV Distance: {{formatDecimal(sarOperation.output.downWind.rdv.distance, -2)}} nm<br/>
+                Downwind RDV Speed: {{formatDecimal(sarOperation.output.downWind.rdv.speed, -2)}} kn/h<br/>
+                With downwind radius: {{formatDecimal(sarOperation.output.downWind.radius, -2)}} nm<br/>
                 </span>
                 <hr/>
 

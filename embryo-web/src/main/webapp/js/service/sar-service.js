@@ -339,12 +339,12 @@
         return this.output;
     }
 
-    function calculateSearchAreaPointsForMinAndMax(tangent, bigCircle, smallCircle) {
+    function calculateSearchAreaPointsForMinAndMax(tangent, bigCircle, smallCircle, direction) {
         var bearing = tangent.point2.rhumbLineBearingTo(tangent.point1);
-        var A = smallCircle.center.transformPosition(bearing, smallCircle.radius).transformPosition(bearing - 90, smallCircle.radius);
-        var D = bigCircle.center.transformPosition(bearing + 180, bigCircle.radius).transformPosition(bearing - 90, bigCircle.radius)
-        var B = A.transformPosition(bearing + 90, bigCircle.radius * 2);
-        var C = D.transformPosition(bearing + 90, bigCircle.radius * 2);
+        var A = smallCircle.center.transformPosition(bearing, smallCircle.radius).transformPosition(bearing - direction * 90, smallCircle.radius);
+        var D = bigCircle.center.transformPosition(bearing + direction * 180, bigCircle.radius).transformPosition(bearing - direction * 90, bigCircle.radius)
+        var B = A.transformPosition(bearing + direction * 90, bigCircle.radius * 2);
+        var C = D.transformPosition(bearing + direction * 90, bigCircle.radius * 2);
         return {
             A: A,
             B: B,
@@ -353,7 +353,7 @@
         }
     }
 
-    function extendSearchAreaToIncludeDownWindCircle(tangent, area, downWind) {
+    function extendSearchAreaToIncludeDownWindCircle(tangent, area, downWind, direction) {
         var bearing = tangent.point2.rhumbLineBearingTo(tangent.point1);
         var result = {
             A: area.A,
@@ -370,20 +370,20 @@
         var h = Math.sqrt(Math.pow(dwD, 2) - Math.pow(d, 2));
 
         if (h < downWind.radius) {
-            result.D = result.D.transformPosition(bearing - 90, downWind.radius - h);
-            result.A = result.A.transformPosition(bearing - 90, downWind.radius - h);
+            result.D = result.D.transformPosition(bearing - direction * 90, downWind.radius - h);
+            result.A = result.A.transformPosition(bearing - direction * 90, downWind.radius - h);
         } else {
-            result.B = result.B.transformPosition(bearing + 90, h - downWind.radius);
-            result.C = result.C.transformPosition(bearing + 90, h - downWind.radius);
+            result.B = result.B.transformPosition(bearing + direction * 90, h - downWind.radius);
+            result.C = result.C.transformPosition(bearing + direction * 90, h - downWind.radius);
         }
         var AB = result.A.rhumbLineDistanceTo(result.B);
         result.totalSize = DA * AB;
         return result;
     }
 
-    function calculateSearchAreaFromTangent(tangent, bigCircle, smallCircle, downWind) {
-        var area = calculateSearchAreaPointsForMinAndMax(tangent, bigCircle, smallCircle);
-        return extendSearchAreaToIncludeDownWindCircle(tangent, area, downWind);
+    function calculateSearchAreaFromTangent(tangent, bigCircle, smallCircle, downWind, direction) {
+        var area = calculateSearchAreaPointsForMinAndMax(tangent, bigCircle, smallCircle, direction);
+        return extendSearchAreaToIncludeDownWindCircle(tangent, area, downWind, direction);
     }
 
     DatumPointCalculator.prototype.calculateSearchArea = function (min, max, downWind) {
@@ -405,10 +405,18 @@
 
         var tangents = bigCircle.calculateExternalTangents(smallCircle);
 
-        var area0 = calculateSearchAreaFromTangent(tangents[0], bigCircle, smallCircle, downWind);
-        var area1 = calculateSearchAreaFromTangent(tangents[1], bigCircle, smallCircle, downWind);
+        var area0 = calculateSearchAreaFromTangent(tangents[0], bigCircle, smallCircle, downWind, 1);
+        var area1 = calculateSearchAreaFromTangent(tangents[1], bigCircle, smallCircle, downWind, -1);
 
         this.output.searchArea = area0.totalSize < area1.totalSize ? area0 : area1;
+        /*
+         this.output.searchArea2 = {
+         A : tangents[0].point1,
+         B : tangents[0].point2,
+         C : tangents[1].point2,
+         D : tangents[1].point1
+         }
+         */
     }
 
 
