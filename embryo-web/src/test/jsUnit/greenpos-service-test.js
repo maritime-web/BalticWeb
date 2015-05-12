@@ -88,79 +88,74 @@ describe('GreenposService', function () {
             service = GreenposService;
         }));
 
-        function executeAndVerify(mmsi, recipient, type, expected) {
-            runs(function () {
-                nextNumber = null;
-                service.nextReportNumber(mmsi, recipient, type, function (nn) {
-                    nextNumber = nn;
-                });
+
+        function executeAndVerify(done, mmsi, recipient, type, expected) {
+            nextNumber = null;
+            service.nextReportNumber(mmsi, recipient, type, function (nn) {
+                done();
+                nextNumber = nn;
             });
-            waitsFor(function () {
-                return nextNumber != null;
-            }, "The value should be returned", 100);
-            runs(function () {
-                expect(nextNumber).toBeDefined();
-                expect(nextNumber.number).toBe(expected.number);
-                expect(nextNumber.uncertainty).toBe(expected.uncertainty);
-            });
+            expect(nextNumber).toBeDefined();
+            expect(nextNumber.number).toBe(expected.number);
+            expect(nextNumber.uncertainty).toBe(expected.uncertainty);
         }
 
-        it('next number is always 1 with no uncertainty for reports of type SP', function () {
-            executeAndVerify(12345678, "greenpos", "SP", {number: 1, uncertainty: false});
+        it('next number is always 1 with no uncertainty for reports of type SP', function (done) {
+            executeAndVerify(done, 12345678, "greenpos", "SP", {number: 1, uncertainty: false});
         });
-        it('next number is always 1 but uncertain for reports of type PR if previous report number is unknown', function () {
+        it('next number is always 1 but uncertain for reports of type PR if previous report number is unknown', function (done) {
             localStorageReturnValue = null;
-            executeAndVerify(12345678, "greenpos", "PR", {number: 1, uncertainty: true});
+            executeAndVerify(done, 12345678, "greenpos", "PR", {number: 1, uncertainty: true});
         });
-        it('next number is always 1 but uncertain for reports of type DR if previous report number is unknown', function () {
+        it('next number is always 1 but uncertain for reports of type DR if previous report number is unknown', function (done) {
             localStorageReturnValue = null;
-            executeAndVerify(12345678, "greenpos", "DR", {number: 1, uncertainty: true});
+            executeAndVerify(done, 12345678, "greenpos", "DR", {number: 1, uncertainty: true});
         });
-        it('next number is always 1 but uncertain for reports of type FR if previous report number is unknown', function () {
+        it('next number is always 1 but uncertain for reports of type FR if previous report number is unknown', function (done) {
             localStorageReturnValue = null;
-            executeAndVerify(12345678, "greenpos", "FR", {number: 1, uncertainty: true});
+            executeAndVerify(done, 12345678, "greenpos", "FR", {number: 1, uncertainty: true});
         });
-        it('next number is incremented and certain for reports of type PR performed less than 7 hours since last report', function () {
+        it('next number is incremented and certain for reports of type PR performed less than 7 hours since last report', function (done) {
             localStorageReturnValue = {
                 number: 1,
                 ts: Date.now() - 6 * 60 * 60 * 1000
             };
-            executeAndVerify(12345678, "greenpos", "PR", {number: 2, uncertainty: false});
+            executeAndVerify(done, 12345678, "greenpos", "PR", {number: 2, uncertainty: false});
         });
-        it('next number is incremented and certain for reports of type DR performed less than 7 hours since last report', function () {
+        it('next number is incremented and certain for reports of type DR performed less than 7 hours since last report', function (done) {
             localStorageReturnValue = {
                 number: 2,
                 ts: Date.now() - 6 * 60 * 60 * 1000
             };
-            executeAndVerify(12345678, "greenpos", "DR", {number: 3, uncertainty: false});
+            executeAndVerify(done, 12345678, "greenpos", "DR", {number: 3, uncertainty: false});
         });
-        it('next number is incremented and certain for reports of type FR performed less than 7 hours since last report', function () {
+        it('next number is incremented and certain for reports of type FR performed less than 7 hours since last report', function (done) {
             localStorageReturnValue = {
                 number: 3,
                 ts: Date.now() - 4 * 60 * 60 * 1000
             };
-            executeAndVerify(12345678, "greenpos", "FR", {number: 4, uncertainty: false});
+            executeAndVerify(done, 12345678, "greenpos", "FR", {number: 4, uncertainty: false});
         });
-        it('next number is incremented and uncertain for reports of type PR performed more than 7 hours later than last report', function () {
+        it('next number is incremented and uncertain for reports of type PR performed more than 7 hours later than last report', function (done) {
             localStorageReturnValue = {
                 number: 1,
                 ts: Date.now() - 8 * 60 * 60 * 1000
             };
-            executeAndVerify(12345678, "greenpos", "PR", {number: 2, uncertainty: true});
+            executeAndVerify(done, 12345678, "greenpos", "PR", {number: 2, uncertainty: true});
         });
-        it('next number is incremented and uncertain for reports of type DR performed more than 7 hours later than last report', function () {
+        it('next number is incremented and uncertain for reports of type DR performed more than 7 hours later than last report', function (done) {
             localStorageReturnValue = {
                 number: 2,
                 ts: Date.now() - 7 * 60 * 60 * 1000 - 60 * 1000
             };
-            executeAndVerify(12345678, "greenpos", "DR", {number: 3, uncertainty: true});
+            executeAndVerify(done, 12345678, "greenpos", "DR", {number: 3, uncertainty: true});
         });
-        it('next number is incremented and uncertain for reports of type FR performed more than 7 hours later than last report', function () {
+        it('next number is incremented and uncertain for reports of type FR performed more than 7 hours later than last report', function (done) {
             localStorageReturnValue = {
                 number: 3,
                 ts: Date.now() - 12 * 60 * 60 * 1000
             };
-            executeAndVerify(12345678, "greenpos", "FR", {number: 4, uncertainty: true});
+            executeAndVerify(done, 12345678, "greenpos", "FR", {number: 4, uncertainty: true});
         });
 
     });
