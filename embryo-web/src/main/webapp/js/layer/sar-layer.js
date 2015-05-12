@@ -9,7 +9,7 @@ function SarLayer() {
     this.init = function () {
         var context = {
             color: function (feature) {
-                if (feature.attributes.type === 'rdv') {
+                if (feature.attributes.type === 'dv') {
                     return "black";
                 }
                 return "green"
@@ -18,7 +18,7 @@ function SarLayer() {
                 return that.zoomLevel >= 1 ? 2 : 1;
             },
             strokeOpacity: function (feature) {
-                if (feature.attributes.type === 'rdv') {
+                if (feature.attributes.type === 'dv') {
                     return 0.8;
                 }
                 return 0.7;
@@ -83,33 +83,31 @@ function SarLayer() {
         return features;
     }
 
-    function createTwcLeewayVectors(lastKnownPosition, twcPositions, leewayPositions) {
-        var features = [];
-        var points = [embryo.map.createPoint(lastKnownPosition.lon, lastKnownPosition.lat)];
+    function addDriftVector(layer, positions) {
+        var points = []
+        var length = positions.length;
+        for (var i = 0; i < length; i++) {
+            points.push(embryo.map.createPoint(positions[i].lon, positions[i].lat));
+        }
+        var features = [new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(points), {
+            renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
+            type: "dv"
+        })];
+        layer.addFeatures(features);
+    }
+
+    function prepareDriftVectors(lkp, twcPositions, leewayPositions) {
+        var points = []
+        if (lkp) {
+            points.push(lkp);
+        }
         var length = twcPositions ? twcPositions.length : 0;
         for (var i = 0; i < length; i++) {
-            points.push(embryo.map.createPoint(twcPositions[i].lon, twcPositions[i].lat));
-            points.push(embryo.map.createPoint(leewayPositions[i].lon, leewayPositions[i].lat));
+            points.push(twcPositions[i]);
+            points.push(leewayPositions[i])
         }
-        features.push(new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(points), {
-            renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
-            id: "rdv-temp",
-            type: "rdv"
-        }));
-        return features;
+        return points;
     }
-
-    function createRDV(lastKnownPosition, datum) {
-        var features = [];
-        var points = [embryo.map.createPoint(lastKnownPosition.lon, lastKnownPosition.lat), embryo.map.createPoint(datum.lon, datum.lat)];
-        features.push(new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(points), {
-            renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
-            id: "rdv",
-            type: "rdv"
-        }));
-        return features;
-    }
-
 
     this.containsDistanceCircle = function (vessel) {
         function featureFilter(feature) {
@@ -138,18 +136,9 @@ function SarLayer() {
         }));
     }
 
-    function addRdv(features, lkp, datum) {
-        features.addFeatures(createRDV(lkp, datum), {
-            type: 'rdv'
-        });
+    function addRdv(layer, lkp, datum) {
+        addDriftVector(layer, [lkp, datum]);
     }
-
-    function addTwcLeewayVectors(features, lkp, currentPositions, windPositions) {
-        features.addFeatures(createTwcLeewayVectors(lkp, currentPositions, windPositions), {
-            type: 'rdv'
-        });
-    }
-
 
     this.draw = function (sar) {
         this.layers.lines.removeAllFeatures();
@@ -160,35 +149,24 @@ function SarLayer() {
             this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea));
 
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.datum);
-
-            this.layers.lines.addFeatures(createTwcLeewayVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.windPositions), {
-                type: 'rdv'
-            });
+            addDriftVector(this.layers.lines, prepareDriftVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.windPositions))
         } else if (sar.output.downWind) {
             addSearchRing(this.layers.lines, sar.output.downWind, "Datum down wind");
             addSearchRing(this.layers.lines, sar.output.min, "Datum min");
             addSearchRing(this.layers.lines, sar.output.max, "Datum max");
 
-
-            this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea), {
-                type: 'area'
-            });
-
+            this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea));
             /*
              this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea2), {
              type: 'area'
              });
              */
-
-
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.downWind.datum);
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.min.datum);
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.max.datum);
-
-            addTwcLeewayVectors(this.layers.lines, sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.downWind.datumPositions)
-            addTwcLeewayVectors(this.layers.lines, sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.min.datumPositions)
-            addTwcLeewayVectors(this.layers.lines, sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.max.datumPositions)
-
+            addDriftVector(this.layers.lines, prepareDriftVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.downWind.datumPositions))
+            addDriftVector(this.layers.lines, prepareDriftVectors(null, sar.output.currentPositions, sar.output.min.datumPositions))
+            addDriftVector(this.layers.lines, prepareDriftVectors(null, sar.output.currentPositions, sar.output.max.datumPositions))
         }
 
         this.layers.lines.refresh();

@@ -588,10 +588,4 @@
         return [tangent1, tangent2]
     }
 
-
-
-
-
-
-
 })();
