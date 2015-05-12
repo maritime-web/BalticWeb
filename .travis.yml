@@ -2,6 +2,11 @@ language: java
 jdk:
   - oraclejdk8
 
+before_script:
+# install phantomjs, karma
+  - npm install -g grunt-cli
+  - npm install karma
+
 script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn clean install || mvn clean verify"
 
 # whitelist
