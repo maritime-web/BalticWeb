@@ -33,6 +33,247 @@
 
         </div>
     </div>
+    
+    
+     <div accordion-group heading="Search And Rescue">
+        <div x-ng-controller="SAROperationEditController">
+			
+			<!-- 
+            <div id="shortdesc">
+                <div x-ng-if="alertMessages" class="alert alert-danger">
+                    <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
+                </div>
+            </div>
+			 -->
+			<span>{{sar}}</span>
+	        <div x-ng-if="sar" class="container" style="width: 275px;">
+	        
+			    <div class="row">
+					<h4>Status</h4>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Type:</div>
+			        <div class="col-md-5 nopadding">{{sar.selectedType.text}}</div>
+			    </div>
+	        
+	        	<br/>
+			    
+			    <div class="row">
+					<h4>Date and Time</h4>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Time of Last Known Position (LKP):</div>
+			        <div class="col-md-5 nopadding">{{sar.selectedType.text}}</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Last known position:</div>
+			        <div class="col-md-5 nopadding">{{formatPos(sarOperation.data.lastKnownPosition)}}</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Time elapsed:</div>
+			        <div class="col-md-5 nopadding">-</div>
+			    </div>
+
+	        	<br/>
+
+			    <div class="row">
+					<h4>Last Surface Drifts dw continuation</h4>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Direction</div>
+			        <div class="col-md-5 nopadding">-</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Speed</div>
+			        <div class="col-md-5 nopadding">-</div>
+			    </div>
+
+				<br/>
+
+			    <div class="row">
+					<h4>Position of Datum to LKP</h4>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Latitude</div>
+			        <div class="col-md-5 nopadding">-</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Longitude</div>
+			        <div class="col-md-5 nopadding">-</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">RDV</div>
+			        <div class="col-md-5 nopadding">-</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Radius</div>
+			        <div class="col-md-5 nopadding">-</div>
+			    </div>
+
+				<br/>
+
+			    <div class="row">
+					<h4>Positions of the Search Area</h4>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Example A</div>
+			        <div class="col-md-5 nopadding">0000</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Example B</div>
+			        <div class="col-md-5 nopadding">0000</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">...</div>
+			        <div class="col-md-5 nopadding">...</div>
+			    </div>
+
+				<br/>
+
+			    <div class="row">
+					<h4>Search Area Progression in minutes after CSS</h4>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+		        
+			    <div class="row">
+			    	<div class="col-md-12 nopadding">
+			        	<input	type="range" 
+				        		class="e-forecast" 
+				        		min="0" 
+				        		max="100" 
+				        		step="5" 
+				        		style="width: 95%;" />
+			        </div>
+				</div>
+			    <br/>
+			    <div class="row">
+			        <div class="col-md-12 col-centered nopadding">
+		               <button type="button" class="btn btn-primary btn-xs">Reopen Calculations</button>
+		               <button type="button" class="btn btn-primary btn-xs">Effort Allocation</button>
+					</div>
+			    </div>
+			    <br/>
+			    <div class="row">
+			        <div class="col-md-12 col-centered nopadding">
+		               <button type="button" class="btn btn-primary btn-xs">Additional Info</button>
+					</div>
+			    </div>
+			    
+			    <div class="row">
+					<h4>Effort Allocation</h4>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+		         <div class="row">
+			        <div class="col-md-7 nopadding">Probability of Detection</div>
+			        <div class="col-md-5 nopadding">N/A</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Effective Search Area</div>
+			        <div class="col-md-5 nopadding">N/A</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Search Craft Ground Speed</div>
+			        <div class="col-md-5 nopadding">N/A</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">Track Spacing</div>
+			        <div class="col-md-5 nopadding">N/A</div>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			        <div class="col-md-7 nopadding">time Spent Searching</div>
+			        <div class="col-md-5 nopadding">DROPDOWN</div>
+			    </div>
+			    
+			    <div class="row">
+					<h4>Search Patterns</h4>
+			    </div>
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+			    	<div class="col-md-12 col-centered nopadding">
+		        		<button type="button" class="btn btn-primary btn-xs">Generate Search Pattern</button>
+					</div>
+				</div>
+			    <div class="row">
+			    	<div class="col-md-12 col-centered nopadding"> 
+		        		<div class="checkbox">
+							<label><input type="checkbox" value="Mig">Show Dynamic Pattern</label>
+						</div>
+					</div>
+				</div>
+				<br/>
+				
+			    <div class="row">
+		        	<hr class="smallpadding"/>
+		        </div>
+			    <div class="row">
+		        	<button type="button" class="btn btn-primary btn-xs col-centered">End SAR</button>
+				</div>
+						        
+			</div>
+        </div>
+        
+
+    </div>
+    
+    
+    
     <div accordion-group heading="Message log">
         <!-- style="height: 300px;" -->
 
