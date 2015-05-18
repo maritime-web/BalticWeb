@@ -27,7 +27,7 @@ function SarLayer() {
                 if (feature.attributes.type == "areaLabel") {
                     return that.zoomLevel >= 1 ? feature.attributes.label : "";
                 }
-                if (feature.attributes.type == "circleLabel") {
+                if (feature.attributes.type == "circleLabel" || feature.attributes.type == "lkpLabel") {
                     return that.zoomLevel >= 2 ? feature.attributes.label : "";
                 }
                 return feature.attributes.label ? feature.attributes.label : "";
@@ -96,6 +96,14 @@ function SarLayer() {
         layer.addFeatures(features);
     }
 
+    function addLKP(layer, lkp) {
+        var features = [new OpenLayers.Feature.Vector(embryo.map.createPoint(lkp.lon, lkp.lat), {
+            label: "LKP",
+            type: "lkpLabel"
+        })];
+        layer.addFeatures(features);
+    }
+
     function prepareDriftVectors(lkp, twcPositions, leewayPositions) {
         var points = []
         if (lkp) {
@@ -148,6 +156,7 @@ function SarLayer() {
 
             this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea));
 
+            addLKP(this.layers.lines, sar.input.lastKnownPosition);
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.datum);
             addDriftVector(this.layers.lines, prepareDriftVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.windPositions))
         } else if (sar.output.downWind) {
@@ -161,6 +170,7 @@ function SarLayer() {
              type: 'area'
              });
              */
+            addLKP(this.layers.lines, sar.input.lastKnownPosition);
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.downWind.datum);
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.min.datum);
             addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.max.datum);
