@@ -41,8 +41,10 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 @Stateless
@@ -92,7 +94,9 @@ public class ForecastServiceImpl implements ForecastService {
     public void init() {
         forecastTypes = createData();
         restrictions = initRestrictions();
+        logger.info("INIT");
         reParse();
+        logger.info("AFTER reparse INIT");
     }
 
     @Override
@@ -141,6 +145,8 @@ public class ForecastServiceImpl implements ForecastService {
      */
     @Override
     public void reParse() {
+        Set<String> failedFiles = new HashSet<>();
+        Set<String> addedFiles = new HashSet<>();
         if (!parsing) {
             logger.info("Re-parsing NetCDF files.");
             parsing = true;
@@ -181,6 +187,7 @@ public class ForecastServiceImpl implements ForecastService {
                                         }
                                     } else {
                                         logger.info("Importing NetCDF data from file {}.", name);
+                                        int errorSize = failedFiles.size();
                                         for (Map.Entry<String, NetCDFRestriction> entry : restrictions.get(provider).entrySet()) {
                                             String area;
                                             if (entry.getKey().equals(NULL_VALUE)) {
@@ -191,16 +198,28 @@ public class ForecastServiceImpl implements ForecastService {
                                             logger.info("Parsing NetCDF area {} for file {}.", area, name);
                                             for (NetCDFType type : getForecastTypes()) {
                                                 logger.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
-                                                Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
-                                                String json = parseResult.get(type);
-                                                if (json != null) {
-                                                    logger.info("Got result of size {}, persisting.", json.length());
-                                                    persistForecast(name, json, ((ForecastType) type).getType(), getJsonSize(json), provider, timestamp, area);
-                                                } else {
-                                                    logger.info("Got empty result, persisting.");
-                                                    persistForecast(name, "", ((ForecastType) type).getType(), -1, provider, timestamp, area);
+                                                try {
+                                                    Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
+                                                    String json = parseResult.get(type);
+                                                    if (json != null) {
+                                                        logger.info("Got result of size {}, persisting.", json.length());
+                                                        persistForecast(name, json, ((ForecastType) type).getType(), getJsonSize(json), provider, timestamp, area);
+                                                    } else {
+                                                        logger.info("Got empty result, persisting.");
+                                                        persistForecast(name, "", ((ForecastType) type).getType(), -1, provider, timestamp, area);
+                                                    }
+                                                } catch (IOException e) {
+                                                    // hack to prevent reparse of the file
+                                                    int size = -100;
+                                                    failedFiles.add(name);
+                                                    logger.error("Got error parsing result, persisting.", e);
+                                                    persistForecast(name, "", ((ForecastType) type).getType(), size, provider, timestamp, area);
+                                                    embryoLogService.error("Error parsing file " + name, e);
                                                 }
                                             }
+                                        }
+                                        if (errorSize == failedFiles.size()) {
+                                            addedFiles.add(name);
                                         }
                                         file.delete();
                                         // Create a new, empty file so we
@@ -217,7 +236,11 @@ public class ForecastServiceImpl implements ForecastService {
                         }
                     }
                 }
-                embryoLogService.info("Finished parsing forecast files");
+                if (failedFiles.size() > 0) {
+                    embryoLogService.error("Error parsing files " + failedFiles.toString());
+                } else if (addedFiles.size() > 0) {
+                    embryoLogService.info("Sucesssfully parsed files " + addedFiles);
+                }
             } catch (IOException e) {
                 logger.error("Unhandled error parsing file", e);
                 embryoLogService.error("Unhandled error parsing file", e);
