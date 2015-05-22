@@ -14,6 +14,17 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import dk.dma.embryo.common.util.CollectionUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Period;
+import ucar.ma2.Array;
+import ucar.ma2.Index;
+import ucar.ma2.InvalidRangeException;
+import ucar.ma2.Range;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -22,18 +33,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Period;
-
-import ucar.ma2.Array;
-import ucar.ma2.Index;
-import ucar.ma2.InvalidRangeException;
-import ucar.ma2.Range;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
-import dk.dma.embryo.common.util.CollectionUtils;
 
 /**
  * Class responsible for converting data in a NetCDF file to objects.
@@ -86,6 +85,7 @@ public class NetCDFParser {
 
         Map<NetCDFType, NetCDFResult> results = new HashMap<>();
 
+        try {
         // Read vars from NetCDF file.
         for (NetCDFType type : types) {
             Map<String, NetCDFVar> vars = type.getVars();
@@ -145,7 +145,10 @@ public class NetCDFParser {
                 results.put(type, new NetCDFResult(outputVars, getSimpleVars(), moments));
             }
         }
-        netcdfFile.close();
+        } finally {
+            netcdfFile.close();
+        }
+
         return results;
     }
 
