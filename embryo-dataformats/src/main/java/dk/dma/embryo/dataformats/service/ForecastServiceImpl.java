@@ -14,6 +14,27 @@
  */
 package dk.dma.embryo.dataformats.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.dataformats.model.Forecast;
+import dk.dma.embryo.dataformats.model.Forecast.Provider;
+import dk.dma.embryo.dataformats.model.ForecastType;
+import dk.dma.embryo.dataformats.model.ForecastType.Type;
+import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
+import dk.dma.embryo.dataformats.netcdf.NetCDFType;
+import dk.dma.embryo.dataformats.netcdf.NetCDFVar;
+import dk.dma.embryo.dataformats.persistence.ForecastDao;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -23,29 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.dataformats.model.Forecast;
-import dk.dma.embryo.dataformats.model.Forecast.Provider;
-import dk.dma.embryo.dataformats.model.ForecastType;
-import dk.dma.embryo.dataformats.model.ForecastType.Type;
-import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
-import dk.dma.embryo.dataformats.netcdf.NetCDFType;
-import dk.dma.embryo.dataformats.netcdf.NetCDFVar;
-import dk.dma.embryo.dataformats.persistence.ForecastDao;
 
 @Stateless
 public class ForecastServiceImpl implements ForecastService {
@@ -86,6 +84,9 @@ public class ForecastServiceImpl implements ForecastService {
 
     @Inject
     private ForecastPersistService forecastPersistService;
+
+    @Inject
+    private EmbryoLogService embryoLogService;
 
     @PostConstruct
     public void init() {
@@ -216,8 +217,10 @@ public class ForecastServiceImpl implements ForecastService {
                         }
                     }
                 }
+                embryoLogService.info("Finished parsing forecast files");
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Unhandled error parsing file", e);
+                embryoLogService.error("Unhandled error parsing file", e);
             } finally {
                 parsing = false;
             }

@@ -15,7 +15,8 @@
 
 package dk.dma.embryo.dataformats.job;
 
-import java.io.IOException;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.dataformats.service.ForecastService;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -27,9 +28,6 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.dataformats.service.ForecastService;
 
 @Singleton
 @AccessTimeout(value = 8000)
@@ -52,7 +50,7 @@ public class ForecastParserJob {
     }
 
     @Timeout
-    public void parseFiles() throws IOException {
+    public void parseFiles() {
         forecastService.reParse();
     }
 }
