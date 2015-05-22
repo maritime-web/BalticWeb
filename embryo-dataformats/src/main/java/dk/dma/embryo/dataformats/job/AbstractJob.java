@@ -14,27 +14,25 @@
  */
 package dk.dma.embryo.dataformats.job;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.util.NamedtimeStamps;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import org.apache.commons.net.ftp.FTPClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.ejb.ScheduleExpression;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
-
-import org.apache.commons.net.ftp.FTPClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.util.NamedtimeStamps;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
-import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 public abstract class AbstractJob {
 
@@ -87,18 +85,21 @@ public abstract class AbstractJob {
             logger.info("FTP site is not configured - cron job not scheduled.");
         }
     }
-    
-    protected void shutdown() throws InterruptedException, IOException {
-        
+
+    protected void shutdown() {
         logger.info("Shutdown called.");
         if(this.ftpClient != null) {
-            
-            boolean logout = this.ftpClient.logout();
+
+            boolean logout = false;
+            try {
+                logout = this.ftpClient.logout();
+            } catch (IOException e) {
+                logger.error("Could not close FTP Connection", e);
+            }
             logger.info("did the job manage to logout -> " + logout);
         }
         
         if(this.futureTransfers != null) {
-            
             boolean cancelSucceeded = this.futureTransfers.cancel(true);
             logger.info("did the job manage to cancel -> " + cancelSucceeded);
         }

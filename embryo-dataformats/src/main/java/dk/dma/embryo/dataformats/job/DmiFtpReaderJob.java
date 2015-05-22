@@ -14,9 +14,14 @@
  */
 package dk.dma.embryo.dataformats.job;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.dataformats.job.JobContext.Context;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -26,16 +31,9 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.inject.Inject;
-
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.dataformats.job.JobContext.Context;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 @Startup
@@ -141,7 +139,7 @@ public class DmiFtpReaderJob extends AbstractJob {
     }
 
     @PreDestroy
-    public void shutdown() throws InterruptedException, IOException {
+    public void shutdown() {
         super.shutdown();
     }
     
