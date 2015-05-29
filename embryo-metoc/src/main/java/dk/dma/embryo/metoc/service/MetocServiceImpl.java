@@ -14,12 +14,7 @@
  */
 package dk.dma.embryo.metoc.service;
 
-import java.util.ArrayList;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-
+import dk.dma.embryo.common.EmbryonicException;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
@@ -30,6 +25,10 @@ import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 import dk.dma.enav.model.geometry.Position;
+import org.slf4j.Logger;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
 
 public class MetocServiceImpl implements MetocService {
 
@@ -99,12 +98,15 @@ public class MetocServiceImpl implements MetocService {
 
             DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
 
-            logger.debug("Received METOC response: {}", sejlRuteResponse);
-            int number = sejlRuteResponse.getMetocForecast() != null
-                    && sejlRuteResponse.getMetocForecast().getForecasts() != null ? sejlRuteResponse.getMetocForecast()
-                    .getForecasts().length : 0;
-                    
-            logService.info("Received " + number + " forecasts from " + dmiSejlRuteServiceUrl);
+            if (sejlRuteResponse.getError() == 9) {
+                throw new EmbryonicException("METOC response contains error with code " + sejlRuteResponse.getError() + " and message '" + sejlRuteResponse.getErrorMsg() + "'");
+            } else {
+                logger.debug("Received METOC response: {}", sejlRuteResponse);
+                int number = sejlRuteResponse.getMetocForecast() != null
+                        && sejlRuteResponse.getMetocForecast().getForecasts() != null ? sejlRuteResponse.getMetocForecast()
+                        .getForecasts().length : 0;
+                logService.info("Received " + number + " forecasts from " + dmiSejlRuteServiceUrl);
+            }
 
             // Filtering result such that metoc points are at least minimumMetocDistance a part
             if (sejlRuteResponse.getMetocForecast() != null
@@ -126,7 +128,6 @@ public class MetocServiceImpl implements MetocService {
                         lastPosition = position;
                     }
                 }
-
                 Forecast[] filtered = new Forecast[result.size()];
                 filtered = result.toArray(filtered);
                 sejlRuteResponse.getMetocForecast().setForecasts(filtered);
@@ -134,6 +135,7 @@ public class MetocServiceImpl implements MetocService {
 
             return sejlRuteResponse;
         } catch (Exception e) {
+            logger.error("Error requesting METOC from {}", dmiSejlRuteServiceUrl, e);
             logService.error("Error requesting METOC from " + dmiSejlRuteServiceUrl, e);
             throw e;
         }
