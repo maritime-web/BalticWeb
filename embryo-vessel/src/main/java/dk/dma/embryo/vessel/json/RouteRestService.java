@@ -14,9 +14,12 @@
  */
 package dk.dma.embryo.vessel.json;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import dk.dma.embryo.vessel.component.RouteDecorator;
+import dk.dma.embryo.vessel.component.RouteDecorator.Waypoint;
+import dk.dma.embryo.vessel.service.ScheduleService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -25,14 +28,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.vessel.component.RouteDecorator;
-import dk.dma.embryo.vessel.component.RouteDecorator.Waypoint;
-import dk.dma.embryo.vessel.service.ScheduleService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -64,12 +62,13 @@ public class RouteRestService {
         if(route != null){
             Date departure = route.getVoyage().getDeparture() == null ? null : route.getVoyage().getDeparture().toDate();
             RouteDecorator decorator = new RouteDecorator(route.toEnavModel(), departure);
-            
+
             result = new Route(route.getEnavId());
             result.setDes(route.getDestination());
             result.setEtaDep(departure);
             result.setDep(route.getOrigin());
             result.setEta(decorator.getEta());
+            result.setName(route.getName());
             
             // Should be empty, however.
             result.getWps().clear();
