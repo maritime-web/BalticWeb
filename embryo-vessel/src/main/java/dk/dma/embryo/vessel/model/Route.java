@@ -14,9 +14,8 @@
  */
 package dk.dma.embryo.vessel.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import dk.dma.embryo.common.persistence.BaseEntity;
+import dk.dma.enav.model.voyage.Waypoint;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -27,9 +26,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import dk.dma.embryo.common.persistence.BaseEntity;
-import dk.dma.enav.model.voyage.Waypoint;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = "Route:getByEnavId", query = "SELECT DISTINCT r FROM Route r LEFT JOIN FETCH r.wayPoints where r.enavId = :enavId"),
@@ -112,7 +111,6 @@ public class Route extends BaseEntity<Long> {
         toRoute.setName(this.name);
         toRoute.setDeparture(this.origin);
         toRoute.setDestination(this.destination);
-        this.getVoyage().getDeparture();
 
         for (WayPoint wp : this.getWayPoints()) {
             toRoute.getWaypoints().add(wp.toEnavModel());

@@ -409,14 +409,6 @@
         var area1 = calculateSearchAreaFromTangent(tangents[1], bigCircle, smallCircle, downWind, -1);
 
         this.output.searchArea = area0.totalSize < area1.totalSize ? area0 : area1;
-        /*
-         this.output.searchArea2 = {
-         A : tangents[0].point1,
-         B : tangents[0].point2,
-         C : tangents[1].point2,
-         D : tangents[1].point1
-         }
-         */
     }
 
 
@@ -497,11 +489,24 @@
                 }
                 return result;
             },
+            sar: null,
+            subscribers: [],
             save: function (sarOperation) {
 
+                this.sar = sarOperation;
+
+                for (var index in this.subscribers) {
+                    this.subscribers[index](this.sar);
+                }
+            },
+
+            subscribe: function (callback) {
+                if (this.sar) {
+                    callback(this.sar);
+                }
+
+                this.subscribers.push(callback);
             }
-
-
         };
 
         return service;
