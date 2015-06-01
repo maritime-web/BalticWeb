@@ -47,7 +47,8 @@ $(function() {
         $scope.selectedOpen = false;
 
         function available(route) {
-            return (route.etaDep > (Date.now() - 1000 * 3600 * 55) || route.etaDep > Date.now() || Date.now() < route.eta);
+            return (Math.abs(route.etaDep - Date.now()) < 1000 * 3600 * 55) || Date.now() < route.eta;
+            //return (route.etaDep > (Date.now() - 1000 * 3600 * 55) || route.etaDep > Date.now() || Date.now() < route.eta);
         }
 
         if (Subject.getDetails().shipMmsi) {
