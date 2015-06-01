@@ -196,6 +196,7 @@ public class ForecastServiceImpl implements ForecastService {
                                                 area = entry.getKey();
                                             }
                                             logger.info("Parsing NetCDF area {} for file {}.", area, name);
+
                                             for (NetCDFType type : getForecastTypes()) {
                                                 logger.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
                                                 try {
@@ -210,11 +211,13 @@ public class ForecastServiceImpl implements ForecastService {
                                                     }
                                                 } catch (IOException e) {
                                                     // hack to prevent reparse of the file
-                                                    int size = -100;
+                                                    int size = -1;
                                                     failedFiles.add(name);
                                                     logger.error("Got error parsing result, persisting.", e);
                                                     persistForecast(name, "", ((ForecastType) type).getType(), size, provider, timestamp, area);
-                                                    embryoLogService.error("Error parsing file " + name, e);
+                                                    if (!failedFiles.contains(name)) {
+                                                        embryoLogService.error("Error parsing file " + name, e);
+                                                    }
                                                 }
                                             }
                                         }
