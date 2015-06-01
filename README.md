@@ -196,6 +196,7 @@ The application contains a number of scheduled jobs responsible for fetching dat
 * dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportJob: This jobs transfers inshore ice report files from an FTP server to a folder in the operating system, which ArcticWeb is installed on. See property embryo.inshoreIceReport.dmi.localDirectory. The job will only transfer latest files.
 * dk.dma.embryo.weather.service.DmiWeatherJob : This job transfers weather forecasts and warnings (XML files) from DMIs FTP server to the file system.
 * dk.dma.embryo.dataformats.job.FcooFtpReaderJob : This job transfers FCOO forecast data (NetCDF) from FTP server to local file system
+* dk.dma.embryo.dataformats.ForecastParserJob: This job parses forecast files received from different providers.
 * dk.dma.embryo.tiles.service.TilerJob : This job deletes old tile set related files from the file system (georeference image file, log files, tiles) as well as deletes and creates TileSet entries in database.
 * dk.dma.embryo.tiles.service.TilerServiceBean : This is started by TilerJob to generate a tile set from a georeferenced image file
 * dk.dma.embryo.tiles.service.DmiSatelliteJob : This job transfers georeferenced images from FTP server to local file system
@@ -234,6 +235,7 @@ At the time of writing the current services are subject to surveillance
 * dk.dma.embryo.dataformats.job.ShapeFileMeasurerJob.dmi 
 * dk.dma.embryo.dataformats.job.DmiFtpReaderJob
 * dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportJob
+* dk.dma.embryo.dataformats.service.ForecastServiceImpl
 * dk.dma.embryo.weather.service.DmiWeatherJob
 * dk.dma.embryo.user.json.AuthenticationService
 * dk.dma.embryo.msi.MsiClientImpl
