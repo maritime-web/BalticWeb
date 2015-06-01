@@ -45,6 +45,9 @@ var greenposScope;
     })
 
     embryo.GreenPosCtrl = function ($scope, ScheduleService, GreenposService, VesselService, $timeout, RouteService, VesselInformation) {
+        $scope.deactivate = {
+            value: false
+        }
 
         $scope.report = {
             type: "PR"
@@ -155,7 +158,7 @@ var greenposScope;
             $scope.reportAcknowledgement = null;
 
             var deactivateRoute = {
-                value: $scope.deactivate && $scope.report.type == "FR",
+                value: $scope.deactivate.value && $scope.report.type == "FR",
                 routeId: vesselDetails.additionalInformation.routeId
             };
 
