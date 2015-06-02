@@ -136,4 +136,9 @@ public class UserSelectionGroupsFilterImpl implements UserSelectionGroupsFilter,
 
         return subject.getUser().hasActiveSelectionGroups();
     }
+    
+    public boolean userAllowedToSeeExactEarthVessels() {
+        
+        return subject.getUser().getAccessToAisData().booleanValue();
+    }
 }

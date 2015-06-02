@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
+import dk.dma.embryo.vessel.json.client.Vessel;
 
 /**
  * 
@@ -48,7 +48,7 @@ public class VesselDetails {
 
     private Map<String, Object> additionalInformation;
     
-    private AisViewServiceAllAisData.Vessel aisVessel;
+    private Vessel aisVessel;
     
 
     // //////////////////////////////////////////////////////////////////////
@@ -153,10 +153,10 @@ public class VesselDetails {
         this.additionalInformation = additionalInformation;
     }
 
-    public AisViewServiceAllAisData.Vessel getAisVessel() {
+    public Vessel getAisVessel() {
         return aisVessel;
     }
-    public void setAisVessel(AisViewServiceAllAisData.Vessel aisVessel) {
+    public void setAisVessel(Vessel aisVessel) {
         this.aisVessel = aisVessel;
     }
 }

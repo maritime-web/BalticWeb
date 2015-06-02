@@ -42,7 +42,6 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.MaxSpeed;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.TrackSingleLocation;
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = { AisJsonClientFactory.class, PropertyFileService.class })
@@ -72,7 +71,7 @@ public class AisViewServiceIT {
         List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
         
         List<String> shipTypes = new ArrayList<String>();
-        for (AisViewServiceAllAisData.Vessel vessel : vesselList) {
+        for (Vessel vessel : vesselList) {
             
             String shipType = vessel.getVesselType();
             

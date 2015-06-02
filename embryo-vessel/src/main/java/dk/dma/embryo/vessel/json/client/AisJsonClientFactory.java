@@ -36,9 +36,18 @@ public class AisJsonClientFactory {
     @Property("dk.dma.embryo.restclients.fullAisViewServiceInclNorwegianDataUrl")
     private String fullAisViewServiceInclNorwegianDataUrl;
     
+    @Inject
+    @Property("dk.dma.embryo.restclients.aisRestBaseUrl")
+    private String aisRestBaseUrl;
+    
     @Produces
     public AisViewServiceAllAisData createFullAisViewInclNorwegianDataService() {
         return ProxyFactory.create(AisViewServiceAllAisData.class, fullAisViewServiceInclNorwegianDataUrl);
+    }
+    
+    @Produces
+    public AisRestDataService createAisRestBaseUrlDataService() {
+        return ProxyFactory.create(AisRestDataService.class, aisRestBaseUrl);
     }
 
     public static String asJson(Object object) {

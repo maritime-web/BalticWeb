@@ -42,14 +42,12 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.vessel.job.AisDataService;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
-import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
-import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.job.filter.UserSelectionGroupsFilter;
+import dk.dma.embryo.vessel.json.client.AisClientHelper;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.TrackSingleLocation;
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel.MaxSpeedOrigin;
+import dk.dma.embryo.vessel.json.client.Vessel;
 import dk.dma.embryo.vessel.model.Route;
-import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 import dk.dma.embryo.vessel.service.ScheduleService;
@@ -76,7 +74,7 @@ public class VesselRestService extends AbstractRestService {
 
     @Inject
     private VesselDao vesselDao;
-
+    
     @Inject
     private AisReplicatorJob aisReplicatorJob;
 
@@ -173,19 +171,29 @@ public class VesselRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response list(@Context Request request) {
+        
+        List<dk.dma.embryo.vessel.model.Vessel> articWebVesselsAsList = this.getArcticWebVesselsFromDatabase();
+        logger.info("Repository returns " + articWebVesselsAsList.size() + " vessels from the database.");
 
-        List<Vessel> allArcticWebVessels = vesselDao.getAll(Vessel.class);
+        List<Vessel> aisVessels = this.aisDataService.getAisVessels(userAllowedToSeeExactEarthVessels(), userHasAnyActiveSelectionGroups());
+        
+        
+        /*
+         * eksisterende kode
+         */
+        
+        List<dk.dma.embryo.vessel.model.Vessel> allArcticWebVessels = vesselDao.getAll(dk.dma.embryo.vessel.model.Vessel.class);
 
         List<VesselOverview> result = new ArrayList<VesselOverview>();
         
         if (userHasAnyActiveSelectionGroups()) {
             
-            List<VesselOverview> allAllowedAisVessels = this.mapAisVessels(aisDataService.getVesselsAllowed());
+            List<VesselOverview> allAllowedAisVessels = AisClientHelper.mapAisVessels(aisVessels);
             
             // OBS: this filter removes the ArcticWeb vessels if they got a position outside the Selection Groups.
             result.addAll(Collections2.filter(allAllowedAisVessels, userSelectionGroupsFilter));
             
-            for (Vessel vesselFromDatabase : allArcticWebVessels) {
+            for (dk.dma.embryo.vessel.model.Vessel vesselFromDatabase : allArcticWebVessels) {
                 
                 VesselOverview vesselToAdd = findVesselByMmsi(allAllowedAisVessels, vesselFromDatabase.getMmsi());
                 
@@ -194,9 +202,9 @@ public class VesselRestService extends AbstractRestService {
             
         } else /* Go default */ {
             
-            result = this.mapAisVessels(aisDataService.getVesselsOnMap());
+            result = AisClientHelper.mapAisVessels(aisVessels);
             
-            for (Vessel vesselFromDatabase : allArcticWebVessels) {
+            for (dk.dma.embryo.vessel.model.Vessel vesselFromDatabase : allArcticWebVessels) {
                 
                 VesselOverview vesselToAdd = findVesselByMmsi(result, vesselFromDatabase.getMmsi());
                 
@@ -204,13 +212,15 @@ public class VesselRestService extends AbstractRestService {
             }
         }
         
-        
         return super.getResponse(request, result, NO_CACHE);
         
-//        return result;
     }
-
-    private void setIsArcticWebFlagAndAddToResult(List<VesselOverview> result, Vessel vesselFromDatabase, VesselOverview aisVesselOverview) {
+    
+    private List<dk.dma.embryo.vessel.model.Vessel> getArcticWebVesselsFromDatabase() {
+        return this.vesselDao.getAll(dk.dma.embryo.vessel.model.Vessel.class);
+    }
+    
+    private void setIsArcticWebFlagAndAddToResult(List<VesselOverview> result, dk.dma.embryo.vessel.model.Vessel vesselFromDatabase, VesselOverview aisVesselOverview) {
        
         if (bothArcticWebAndAisVessel(aisVesselOverview)) {
             
@@ -229,6 +239,10 @@ public class VesselRestService extends AbstractRestService {
     private boolean userHasAnyActiveSelectionGroups() {
         return this.userSelectionGroupsFilter.loggedOnUserHasSelectionGroups();
     }
+    
+    private boolean userAllowedToSeeExactEarthVessels() {
+        return this.userSelectionGroupsFilter.userAllowedToSeeExactEarthVessels();
+    }
 
     private VesselOverview findVesselByMmsi(List<VesselOverview> allAllowedAisVesselsAsDTO, Long mmsi) {
        
@@ -241,7 +255,7 @@ public class VesselRestService extends AbstractRestService {
         return null;
     }
 
-    private VesselOverview createVesselOverview(Vessel vesselFromDatabase) {
+    private VesselOverview createVesselOverview(dk.dma.embryo.vessel.model.Vessel vesselFromDatabase) {
         VesselOverview arcticWebVesselOnly = new VesselOverview();
         arcticWebVesselOnly.setInAW(true);
         arcticWebVesselOnly.setCallSign(vesselFromDatabase.getAisData().getCallsign());
@@ -252,48 +266,6 @@ public class VesselRestService extends AbstractRestService {
 
     private boolean bothArcticWebAndAisVessel(VesselOverview vesselOverview) {
         return vesselOverview != null;
-    }
-
-    private List<VesselOverview> mapAisVessels(List<AisViewServiceAllAisData.Vessel> vessels) {
-
-        List<VesselOverview> vesselOverviewsResponse = new ArrayList<VesselOverview>();
-
-        for (AisViewServiceAllAisData.Vessel vessel : vessels) {
-
-            VesselOverview vesselOverview = new VesselOverview();
-            Long mmsi = vessel.getMmsi();
-
-            vesselOverview.setX(vessel.getLon());
-            vesselOverview.setY(vessel.getLat());
-            vesselOverview.setAngle(vessel.getCog() != null ? vessel.getCog() : 0);
-            vesselOverview.setMmsi(mmsi);
-            vesselOverview.setName(vessel.getName());
-            vesselOverview.setCallSign(vessel.getCallsign());
-            vesselOverview.setMoored(vessel.getMoored() != null ? vessel.getMoored() : false);
-
-            ShipType shipTypeFromSubType = ShipType.getShipTypeFromSubType(vessel.getVesselType());
-            String type = ShipTypeMapper.getInstance().getColor(shipTypeFromSubType).ordinal() + "";
-            vesselOverview.setType(type);
-
-            vesselOverview.setInAW(false);
-            
-            mapMaxSpeed(vessel.getMaxSpeed(), vessel.getMaxSpeedOrigin(), vesselOverview);
-            
-            vesselOverviewsResponse.add(vesselOverview);
-        }
-
-        return vesselOverviewsResponse;
-    }
-
-    private void mapMaxSpeed(Double maxSpeed, MaxSpeedOrigin maxSpeedOrigin, VesselOverview vesselOverview) {
-
-        if(maxSpeedOrigin == MaxSpeedOrigin.AW) {
-            vesselOverview.setAwsog(maxSpeed);
-        } else if (maxSpeedOrigin == MaxSpeedOrigin.TABLE) {
-            vesselOverview.setSsog(maxSpeed);
-        } else if (maxSpeedOrigin == MaxSpeedOrigin.SOG) {
-            vesselOverview.setSog(maxSpeed);
-        } 
     }
 
     @GET
@@ -307,7 +279,7 @@ public class VesselRestService extends AbstractRestService {
         try {
 
             logger.info("details method called with MMSI -> " + mmsi);
-            dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.Vessel aisVessel = this.aisDataService.getAisVesselByMmsi(mmsi);
+            Vessel aisVessel = this.aisDataService.getAisVesselByMmsi(mmsi);
 
             boolean historicalTrack = false;
             Double lat = null;
@@ -323,7 +295,7 @@ public class VesselRestService extends AbstractRestService {
             }
 
             VesselDetails details;
-            Vessel vessel = vesselService.getVessel(mmsi);
+            dk.dma.embryo.vessel.model.Vessel vessel = vesselService.getVessel(mmsi);
             List<Voyage> schedule = null;
             Route route = null;
 
@@ -353,7 +325,7 @@ public class VesselRestService extends AbstractRestService {
 
             // fallback on database only
 
-            Vessel vessel = vesselService.getVessel(mmsi);
+            dk.dma.embryo.vessel.model.Vessel vessel = vesselService.getVessel(mmsi);
 
             if (vessel != null) {
                 VesselDetails details;
@@ -362,7 +334,7 @@ public class VesselRestService extends AbstractRestService {
 
                 details = vessel.toJsonModel();
 
-                AisViewServiceAllAisData.Vessel aisVessel = new AisViewServiceAllAisData.Vessel();
+                Vessel aisVessel = new Vessel();
                 aisVessel.setCallsign(vessel.getAisData().getCallsign());
                 aisVessel.setImoNo(vessel.getAisData().getImoNo());
                 aisVessel.setMmsi(vessel.getMmsi());
@@ -388,7 +360,7 @@ public class VesselRestService extends AbstractRestService {
     @GZIP
     public void saveDetails(VesselDetails details) {
         logger.debug("save({})", details);
-        vesselService.save(Vessel.fromJsonModel(details));
+        vesselService.save(dk.dma.embryo.vessel.model.Vessel.fromJsonModel(details));
     }
 
     @PUT
