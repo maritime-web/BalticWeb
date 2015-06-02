@@ -14,17 +14,16 @@
  */
 package dk.dma.embryo.metoc.json.client;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 public interface DmiSejlRuteService {
     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.000Z");
@@ -178,6 +177,21 @@ public interface DmiSejlRuteService {
         }
     }
 
+    /**
+     * The following combinations of values have been reported from DMI to be possible:
+     * <ul>
+     * <li>OK(0, "All ok")</li>
+     * <li>WAYPOINTS(1, "Too few waypoints")</li>
+     * <li>PARAM(2, "Invalid parameter")</li>
+     * <li>DIRECTION(3, "Invalid direction")</li>
+     * <li>DATE(5, "Missing or invalid dates")</li>
+     * <li>PATH(6, "Invalid path")</li>
+     * <li>DATE_INVALID(7, "Invalid dates")</li>
+     * <li>DATATYPES(8, "Missing or invalid datatypes")</li>
+     * <li>UNKNOWN(9, "Unknown error - sorry!")</li>
+     * <li>DELTAT(10, "Problem with delta-T (dt)")</li>
+     * </ul>
+     */
     public static class SejlRuteResponse {
         private int error;
         private String errorMsg;

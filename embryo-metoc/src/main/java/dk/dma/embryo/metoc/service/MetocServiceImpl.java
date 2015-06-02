@@ -98,7 +98,7 @@ public class MetocServiceImpl implements MetocService {
 
             DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
 
-            if (sejlRuteResponse.getError() == 9) {
+            if (sejlRuteResponse.getError() != 0) {
                 throw new EmbryonicException("METOC response contains error with code " + sejlRuteResponse.getError() + " and message '" + sejlRuteResponse.getErrorMsg() + "'");
             } else {
                 logger.debug("Received METOC response: {}", sejlRuteResponse);
