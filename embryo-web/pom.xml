@@ -14,6 +14,8 @@
 	</parent>
 
 	<properties>
+        <!-- exec-maven-plugin is executed by default -->
+        <maven.node.skip>false</maven.node.skip>
 		<jslint.predef>embryo</jslint.predef>
 
 		<!-- developer setting -->
@@ -388,6 +390,9 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
                         <version>1.2.1</version>
+                        <configuration>
+                            <skip>${maven.node.skip}</skip>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>initialize</id>
@@ -452,6 +457,9 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
                         <version>1.2.1</version>
+                        <configuration>
+                            <skip>${maven.node.skip}</skip>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>initialize</id>
