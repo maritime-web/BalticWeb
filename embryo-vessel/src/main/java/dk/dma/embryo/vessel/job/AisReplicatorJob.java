@@ -15,7 +15,6 @@
 package dk.dma.embryo.vessel.job;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,13 +28,13 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.vessel.json.client.AisClientHelper;
 import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
-import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.json.client.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 
 @Singleton
@@ -109,27 +108,27 @@ public class AisReplicatorJob {
             logger.info("UPDATE AIS VESSEL DATA INCLUDING NORWEGIAN DATA...");
             
             // Get all vessels from AIS server
-            List<AisViewServiceAllAisData.Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
+            List<Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
             
             // Get all vessels from ArcticWeb database
-            List<Vessel> articWebVesselsAsList = vesselRepository.getAll(Vessel.class);
+            List<dk.dma.embryo.vessel.model.Vessel> articWebVesselsAsList = vesselRepository.getAll(dk.dma.embryo.vessel.model.Vessel.class);
             
             logger.info("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
             
-            Map<Long, Vessel> awVesselsAsMap = this.updateArcticWebVesselInDatabase(aisServerAllVessels, articWebVesselsAsList);
+            Map<Long, dk.dma.embryo.vessel.model.Vessel> awVesselsAsMap = aisDataService.updateArcticWebVesselInDatabase(aisServerAllVessels, articWebVesselsAsList);
 
-            List<AisViewServiceAllAisData.Vessel> vesselsInAisCircle = new ArrayList<AisViewServiceAllAisData.Vessel>();
-            List<AisViewServiceAllAisData.Vessel> vesselsOnMap = new ArrayList<AisViewServiceAllAisData.Vessel>();
-            List<AisViewServiceAllAisData.Vessel> vesselsAllowed = new ArrayList<AisViewServiceAllAisData.Vessel>();
+            List<Vessel> vesselsInAisCircle = new ArrayList<Vessel>();
+            List<Vessel> vesselsOnMap = new ArrayList<Vessel>();
+            List<Vessel> vesselsAllowed = new ArrayList<Vessel>();
 
-            for (AisViewServiceAllAisData.Vessel aisVessel : aisServerAllVessels) {
+            for (Vessel aisVessel : aisServerAllVessels) {
 
                 // Ignore vessel if just one of these validations fail
                 if(aisVessel.getMmsi() == null || aisVessel.getLon() == null || aisVessel.getLat() == null) {
                     continue;
                 }
                 
-                this.setMaxSpeedOnAisVessel(aisVessel, awVesselsAsMap);
+                AisClientHelper.setMaxSpeedOnAisVessel(aisVessel, awVesselsAsMap.get(aisVessel.getMmsi()));
                 
                 double longitude = aisVessel.getLon();
                 double latitude = aisVessel.getLat();
@@ -168,7 +167,7 @@ public class AisReplicatorJob {
             logger.info("Vessels allowed : " + vesselsAllowed.size());
             
             int numberOfVesselsWithMaxSpeed = 0;
-            for (AisViewServiceAllAisData.Vessel vessel : vesselsAllowed) {
+            for (Vessel vessel : vesselsAllowed) {
                 
                 if(vessel.getMaxSpeed() != null && vessel.getMaxSpeed() > 0) {
                     numberOfVesselsWithMaxSpeed++;
@@ -187,82 +186,5 @@ public class AisReplicatorJob {
             logger.error("AIS Replication Error", t);
             embryoLogService.error("" + t, t);
         }
-    }
-
-    private void setMaxSpeedOnAisVessel(AisViewServiceAllAisData.Vessel aisVessel, Map<Long, Vessel> awVesselsAsMap) {
-        
-        boolean isMaxSpeedSetOnAisVessel = false;
-        
-        // If exists set Max Speed from ArcticWeb vessel in the database
-        Vessel awVesselFromDatabase = awVesselsAsMap.get(aisVessel.getMmsi());
-        if(awVesselFromDatabase != null && awVesselFromDatabase.getMaxSpeed() != null && awVesselFromDatabase.getMaxSpeed().doubleValue() > 0) {
-            aisVessel.setMaxSpeed(awVesselFromDatabase.getMaxSpeed().doubleValue());
-            aisVessel.setMaxSpeedOrigin(AisViewServiceAllAisData.Vessel.MaxSpeedOrigin.AW);
-            isMaxSpeedSetOnAisVessel = true;
-        }
-        
-        // If not already set from ArcticWeb vessel in database -> set it vessel type
-        if(!isMaxSpeedSetOnAisVessel && aisVessel.getVesselType() != null) {
-            Double maxSpeedByVesselType = MaxSpeedByShipTypeMapper.mapAisShipTypeToMaxSpeed(aisVessel.getVesselType());
-            if(maxSpeedByVesselType > 0.0) {
-                aisVessel.setMaxSpeed(maxSpeedByVesselType);
-                aisVessel.setMaxSpeedOrigin(AisViewServiceAllAisData.Vessel.MaxSpeedOrigin.TABLE);
-                isMaxSpeedSetOnAisVessel = true;
-            }
-        }
-        
-        // If not already set from ArcticWeb vessel in database or from vessel type -> set sog 
-        if(!isMaxSpeedSetOnAisVessel && aisVessel.getSog() != null) {
-            aisVessel.setMaxSpeed(aisVessel.getSog());
-            aisVessel.setMaxSpeedOrigin(AisViewServiceAllAisData.Vessel.MaxSpeedOrigin.SOG);
-            isMaxSpeedSetOnAisVessel = true;
-        }
-        
-        // Fallback - set 0.0
-        if(!isMaxSpeedSetOnAisVessel) {
-            aisVessel.setMaxSpeed(0.0);
-            aisVessel.setMaxSpeedOrigin(AisViewServiceAllAisData.Vessel.MaxSpeedOrigin.DEFAULT);
-        }
-    }
-
-    private Map<Long, Vessel> updateArcticWebVesselInDatabase(
-            List<AisViewServiceAllAisData.Vessel> result,
-            List<Vessel> articWebVesselsAsList) {
-
-        Map<Long, Vessel> awVesselsAsMap = new HashMap<>();
-
-        for (Vessel v : articWebVesselsAsList) {
-            awVesselsAsMap.put(v.getMmsi(), v);
-        }
-
-        for (AisViewServiceAllAisData.Vessel aisVessel : result) {
-            Long mmsi = aisVessel.getMmsi();
-            String name = aisVessel.getName();
-            String callSign = aisVessel.getCallsign();
-            Long imo = aisVessel.getImoNo();
-
-            if (mmsi != null) {
-                Vessel vessel = awVesselsAsMap.get(mmsi);
-
-                if (vessel != null && name != null && callSign != null) {
-                    if (!isUpToDate(vessel.getAisData(), name, callSign, imo)) {
-                        vessel.getAisData().setCallsign(callSign);
-                        vessel.getAisData().setImoNo(imo);
-                        vessel.getAisData().setName(name);
-                        logger.debug("Updating vessel {}/{}", mmsi, name);
-                        vesselRepository.saveEntity(vessel);
-                    } else {
-                        logger.debug("Vessel {}/{} is up to date", mmsi, name);
-                    }
-                }
-            }
-        }
-
-        return awVesselsAsMap;
-    }
-    
-    private boolean isUpToDate(dk.dma.embryo.vessel.model.AisData aisData, String name, String callSign, Long imo) {
-        return ObjectUtils.equals(aisData.getName(), name) && ObjectUtils.equals(aisData.getCallsign(), callSign)
-                && ObjectUtils.equals(aisData.getImoNo(), imo);
     }
 }

@@ -15,21 +15,27 @@
 package dk.dma.embryo.vessel.job;
 
 import java.util.List;
+import java.util.Map;
 
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
+import dk.dma.embryo.vessel.json.client.Vessel;
 
 public interface AisDataService {
    
+    List<Vessel> getAisVessels(boolean withExactEarth, boolean userHasAnyActiveSelectionGroups);
+    Map<Long, dk.dma.embryo.vessel.model.Vessel> updateArcticWebVesselInDatabase(List<Vessel> aisVessels, List<dk.dma.embryo.vessel.model.Vessel> articWebVesselsAsList);
+    
     boolean isWithinAisCircle(double longitude, double latitude);
     boolean isAllowed(double latitude);
-    AisViewServiceAllAisData.Vessel getAisVesselByMmsi(Long mmsi);
-    
-    List<AisViewServiceAllAisData.Vessel> getVesselsAllowed();
-    void setVesselsAllowed(List<AisViewServiceAllAisData.Vessel> vesselsAllowed);
-    
-    List<AisViewServiceAllAisData.Vessel> getVesselsInAisCircle();
-    void setVesselsInAisCircle(List<AisViewServiceAllAisData.Vessel> vesselsInArcticCircle);
+    Vessel getAisVesselByMmsi(Long mmsi);
 
-    List<AisViewServiceAllAisData.Vessel> getVesselsOnMap();
-    void setVesselsOnMap(List<AisViewServiceAllAisData.Vessel> vesselsInArcticCircle);
+        
+    List<Vessel> getVesselsAllowed();
+    void setVesselsAllowed(List<Vessel> vesselsAllowed);
+    
+    List<Vessel> getVesselsInAisCircle();
+    void setVesselsInAisCircle(List<Vessel> vesselsInArcticCircle);
+
+    List<Vessel> getVesselsOnMap();
+    void setVesselsOnMap(List<Vessel> vesselsInArcticCircle);
+    
 }

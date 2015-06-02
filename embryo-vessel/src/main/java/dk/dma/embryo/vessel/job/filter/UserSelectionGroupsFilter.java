@@ -26,4 +26,6 @@ public interface UserSelectionGroupsFilter extends Serializable, Predicate<Vesse
     boolean apply(VesselOverview vessel);
 
     boolean loggedOnUserHasSelectionGroups();
+    
+    boolean userAllowedToSeeExactEarthVessels();
 }
