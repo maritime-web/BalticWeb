@@ -22,6 +22,11 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>dk.dma.embryo</groupId>
+            <artifactId>embryo-test-utilities</artifactId>
+        </dependency>
+
         <!-- Added here again because weld jar contains older version of slf4j.
             This must be first in the classpath for Eclipse to work -->
         <dependency>

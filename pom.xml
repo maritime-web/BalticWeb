@@ -47,6 +47,13 @@
             </dependency>
 
             <dependency>
+                <groupId>dk.dma.embryo</groupId>
+                <artifactId>embryo-test-utilities</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>dk.dma.arcticweb</groupId>
                 <artifactId>embryo-enav-io</artifactId>
                 <version>${project.version}</version>
@@ -452,6 +459,27 @@
 
     </build>
 
+    <profiles>
+        <profile>
+            <id>integrationTest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>dk/dma/**/*IT.java</include>
+                            </includes>
+                            <groups>dk.dma.embryo.test.DmiIntegration</groups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
     <repositories>
         <repository>
             <id>maven-central</id>
@@ -490,6 +518,7 @@
 
 
     <modules>
+        <module>embryo-test-utilities</module>
         <module>embryo-enav-io</module>
         <module>embryo-common</module>
         <module>embryo-vessel</module>

@@ -16,6 +16,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>dk.dma.embryo</groupId>
+            <artifactId>embryo-test-utilities</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>dk.dma.enav</groupId>
             <artifactId>enav-model</artifactId>
         </dependency>

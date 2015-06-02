@@ -15,6 +15,10 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>dk.dma.embryo</groupId>
+            <artifactId>embryo-test-utilities</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>

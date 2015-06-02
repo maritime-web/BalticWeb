@@ -15,10 +15,12 @@
 package dk.dma.embryo.metoc.json.client;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.test.DmiIntegration;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
@@ -26,6 +28,7 @@ import java.util.Date;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {MetocJsonClientFactory.class, PropertyFileService.class})
+@Category(DmiIntegration.class)
 public class DmiSejlRuteServiceIT {
     @Inject
     DmiSejlRuteService dmiSejlRuteService;

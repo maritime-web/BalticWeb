@@ -14,7 +14,12 @@
   </parent>
 
   <dependencies>
-    <dependency>
+      <dependency>
+          <groupId>dk.dma.embryo</groupId>
+          <artifactId>embryo-test-utilities</artifactId>
+      </dependency>
+
+      <dependency>
       <groupId>dk.dma.arcticweb</groupId>
       <artifactId>embryo-common</artifactId>
     </dependency>
