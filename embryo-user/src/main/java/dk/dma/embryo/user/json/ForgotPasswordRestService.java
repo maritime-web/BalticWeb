@@ -14,7 +14,12 @@
  */
 package dk.dma.embryo.user.json;
 
-import java.net.URI;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.user.mail.ForgotPasswordMail;
+import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.security.Subject;
+import dk.dma.embryo.user.service.UserService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -26,13 +31,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.user.mail.ForgotPasswordMail;
-import dk.dma.embryo.user.model.SecuredUser;
-import dk.dma.embryo.user.security.Subject;
-import dk.dma.embryo.user.service.UserService;
+import java.net.URI;
 
 @Path("/forgot-password")
 public class ForgotPasswordRestService {
@@ -60,7 +59,7 @@ public class ForgotPasswordRestService {
                 userService.createPasswordUuid(user);
                 request.setUsername(user.getUserName());
                 request.setUuid(user.getForgotUuid());
-                request.setHost(baseUri.getHost() + "/content.html#/changePassword/");
+                request.setHost(baseUri.getHost());
                 mailSender.sendEmail(new ForgotPasswordMail(request, propertyFileService));
                 return;
             }

@@ -32,10 +32,10 @@ public class ForgotPasswordMail extends Mail<ForgotPasswordMail> {
 
     public ForgotPasswordMail build() {
         environment.put("UserName", request.getUsername());
-        environment.put("Link", request.getHost() + request.getUuid());
+        environment.put("Link", request.getHost() + "/content.html#/changePassword/" + request.getUuid());
 
         setTo(request.getEmailAddress());
-        setFrom(propertyFileService.getProperty("embryo.notification.mail.from.forgotPassword"));
+        setFrom(propertyFileService.getProperty("embryo.notification.mail.from"));
 
         return this;
     }
