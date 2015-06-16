@@ -14,10 +14,27 @@
  */
 package dk.dma.embryo.dataformats.job;
 
-import static com.google.common.base.Predicates.not;
-import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.acceptedIceCharts;
-import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.validFormat;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.common.util.NamedtimeStamps;
+import dk.dma.embryo.dataformats.job.AbstractJob.Dirtype;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPFileFilters;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.ejb.AsyncResult;
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
@@ -30,29 +47,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPFileFilters;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.common.util.NamedtimeStamps;
-import dk.dma.embryo.dataformats.job.AbstractJob.Dirtype;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
-import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import static com.google.common.base.Predicates.not;
+import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.acceptedIceCharts;
+import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.validFormat;
 
 @Stateless
 public class FtpAsyncProxy {
@@ -133,8 +130,8 @@ public class FtpAsyncProxy {
         
         
         Thread.sleep(10);
-        
-        logger.info("localDir: {} - TRANSFER_ONE_FILE_ONLY = {}", localDir, TRANSFER_ONE_FILE_ONLY);
+
+        logger.debug("localDir: {} - TRANSFER_ONE_FILE_ONLY = {}", localDir, TRANSFER_ONE_FILE_ONLY);
         logger.info("Reading files in: {}/{}", ftpClient.printWorkingDirectory(), typedir.getName());
         
         // Directories and single files should be handled differently.
@@ -195,7 +192,7 @@ public class FtpAsyncProxy {
                         ftpClient.changeToParentDirectory();
                     }
                 } else {
-                    logger.info("No chart type for dir " + typedir.getName() + ", ignoring.");
+                    logger.debug("No chart type for dir " + typedir.getName() + ", ignoring.");
                 }
             } else {
                 
@@ -222,7 +219,7 @@ public class FtpAsyncProxy {
                 ftpClient.changeToParentDirectory();
             }
         } else {
-            logger.info(typedir.getName() + " not found in config file, ignoring directory.");
+            logger.debug(typedir.getName() + " not found in config file, ignoring directory.");
         }
 
         return counts;
