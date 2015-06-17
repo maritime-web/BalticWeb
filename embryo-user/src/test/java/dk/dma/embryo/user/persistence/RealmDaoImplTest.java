@@ -14,26 +14,24 @@
  */
 package dk.dma.embryo.user.persistence;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import dk.dma.embryo.user.model.AreasOfInterest;
+import dk.dma.embryo.user.model.Role;
+import dk.dma.embryo.user.model.SailorRole;
+import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.ShoreRole;
+import dk.dma.embryo.user.model.VesselOwnerRole;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dk.dma.embryo.user.model.Role;
-import dk.dma.embryo.user.model.SailorRole;
-import dk.dma.embryo.user.model.SecuredUser;
-import dk.dma.embryo.user.model.SelectionGroup;
-import dk.dma.embryo.user.model.ShoreRole;
-import dk.dma.embryo.user.model.VesselOwnerRole;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class RealmDaoImplTest {
 
@@ -60,8 +58,8 @@ public class RealmDaoImplTest {
         SecuredUser user2 = new SecuredUser("user2", "pw2", null);
 
 
-        SelectionGroup group1 = new SelectionGroup("Group 1", "", true);
-        SelectionGroup group2 = new SelectionGroup("Group 1", "", true);
+        AreasOfInterest group1 = new AreasOfInterest("Group 1", "", true);
+        AreasOfInterest group2 = new AreasOfInterest("Group 1", "", true);
         user1.setRole(sailor);
         user1.addSelectionGroup(group1);
         user1.addSelectionGroup(group2);
@@ -128,7 +126,7 @@ public class RealmDaoImplTest {
     public void testFindByUsernameWithSelectionArea() {
         SecuredUser user = repository.findByUsername("user1");
 
-        List<SelectionGroup> selectionGroups = user.getSelectionGroups();
+        List<AreasOfInterest> selectionGroups = user.getAreasOfInterest();
 
         entityManager.clear();
 
@@ -142,15 +140,15 @@ public class RealmDaoImplTest {
     public void testFindByUsernameWithSelectionAreaToBeDeleted() {
         SecuredUser user = repository.findByUsername("user1");
 
-        List<SelectionGroup> selectionGroups = user.getSelectionGroups();
+        List<AreasOfInterest> selectionGroups = user.getAreasOfInterest();
 
         //entityManager.clear();
 
-        user.setSelectionGroups(null);
+        user.setAreasOfInterest(null);
         SecuredUser updatedUser = repository.saveEntity(user);
 
         assertEquals("user1", updatedUser.getUserName());
         assertEquals("pw1", updatedUser.getHashedPassword());
-        Assert.assertTrue(updatedUser.getSelectionGroups() == null || updatedUser.getSelectionGroups().isEmpty());
+        Assert.assertTrue(updatedUser.getAreasOfInterest() == null || updatedUser.getAreasOfInterest().isEmpty());
     }
 }

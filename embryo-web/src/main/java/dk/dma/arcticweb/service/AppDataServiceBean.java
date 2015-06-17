@@ -14,34 +14,10 @@
  */
 package dk.dma.arcticweb.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.slf4j.Logger;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-
 import dk.dma.arcticweb.reporting.model.GreenPosDeviationReport;
 import dk.dma.arcticweb.reporting.model.GreenPosFinalReport;
 import dk.dma.arcticweb.reporting.model.GreenPosPositionReport;
@@ -67,13 +43,34 @@ import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.model.Voyage;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
 import dk.dma.embryo.vessel.persistence.VesselDao;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
+import org.slf4j.Logger;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 @Startup
 public class AppDataServiceBean {
     
-    private static final boolean ACCESS_TO_AIS_DATA = true;
-
+    private static final String EXCLUDE_EXACT_EARTH = "ExcludeExactEarth";
+    
     @Inject
     private RealmDao realmDao;
 
@@ -385,7 +382,7 @@ public class AppDataServiceBean {
         AdministratorRole auth = new AdministratorRole();
         realmDao.saveEntity(auth);
 
-        SecuredUser user = SecurityUtil.createUser("dma", dmaInitialPw, dmainitialEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("dma", dmaInitialPw, dmainitialEmail, null);
         user.setRole(auth);
         SecuredUser saved = realmDao.saveEntity(user);
 
@@ -427,7 +424,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("orasila", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("orasila", testPassword, testEmail, null);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -474,7 +471,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("oratank", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("oratank", testPassword, testEmail, null);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -511,7 +508,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("sarfaq", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("sarfaq", testPassword, testEmail, null);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -618,7 +615,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("naja", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("naja", testPassword, testEmail, null);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -637,7 +634,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("arina", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("arina", testPassword, testEmail, null);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -656,7 +653,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("silver", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("silver", testPassword, testEmail, null);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -675,7 +672,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("artania", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("artania", testPassword, testEmail, null);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -694,7 +691,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("princess", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("princess", testPassword, testEmail, null);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -717,7 +714,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(sailorRole);
 
-        SecuredUser user = SecurityUtil.createUser("carnivalLegend", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("carnivalLegend", testPassword, testEmail, null);
         user.setRole(sailorRole);
 
         vesselDao.saveEntity(user);
@@ -748,7 +745,7 @@ public class AppDataServiceBean {
 
         vesselDao.saveEntity(role);
 
-        SecuredUser user = SecurityUtil.createUser("arcticCommand", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("arcticCommand", testPassword, testEmail, EXCLUDE_EXACT_EARTH);
         user.setRole(role);
 
         vesselDao.saveEntity(user);
@@ -760,7 +757,7 @@ public class AppDataServiceBean {
         ReportingAuthorityRole role = new ReportingAuthorityRole();
         vesselDao.saveEntity(role);
 
-        SecuredUser user = SecurityUtil.createUser("aasiaat", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("aasiaat", testPassword, testEmail, EXCLUDE_EXACT_EARTH);
         user.setRole(role);
         vesselDao.saveEntity(user);
     }
@@ -771,7 +768,7 @@ public class AppDataServiceBean {
         ShoreRole role = new ShoreRole();
         vesselDao.saveEntity(role);
 
-        SecuredUser user = SecurityUtil.createUser("nanoq", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("nanoq", testPassword, testEmail, EXCLUDE_EXACT_EARTH);
         user.setRole(role);
         vesselDao.saveEntity(user);
     }
@@ -782,7 +779,7 @@ public class AppDataServiceBean {
         ShoreRole role = new ShoreRole();
         vesselDao.saveEntity(role);
 
-        SecuredUser user = SecurityUtil.createUser("dmi", testPassword, testEmail, ACCESS_TO_AIS_DATA);
+        SecuredUser user = SecurityUtil.createUser("dmi", testPassword, testEmail, EXCLUDE_EXACT_EARTH);
         user.setRole(role);
         vesselDao.saveEntity(user);
     }

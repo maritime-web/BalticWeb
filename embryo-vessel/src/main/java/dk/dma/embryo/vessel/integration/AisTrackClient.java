@@ -12,42 +12,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.vessel.json.client;
-
-import java.util.Date;
-import java.util.List;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+package dk.dma.embryo.vessel.integration;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import java.util.Date;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
- * 
- * @author ThomasBerg
  *
- * base URL: http://ais.e-navigation.net/aw8080/target
+ * @author Jesper Tejlgaard
+ *
+ * Client to AISTrack server. See https://github.com/dma-ais/AisTrack
  *
  */
-public interface AisRestDataService {
+public interface AisTrackClient {
     
-    Vessel NOT_VALID = null;
-    String REGION_EXACTEARTH = "802";
-    String REGION_ORBCOMM = "808";
-    String SOURCE_FILTER_EXCLUDE_FORMAT = "s.region != %s";
-    //String SOURCE_FILTER_WITHIN_CIRCLE = "m.pos within circle(%s, %s, %s)";
-    
-    String AREA_FILTER_ALLOWED = "57.0|-180.0|90.0|180.0";
-    String AREA_FILTER_CIRCLEBOX = "57.0|-100.0|90.0|60.0";
-    
-    /**
-     * example URL: http://ais.e-navigation.net:8080/target/vessel/list?ttlLive=PT24H&ttlSat=PT24H
-     */
-     
     /**
      *  Full JSON
      
@@ -112,80 +100,64 @@ public interface AisRestDataService {
             "targetType": "A"
         }
     }
-     
-     * 
-     * @param ttlLive
-     * @param ttlSat
-     * @return
+     *
      */
     @GET
     @Path("/tracks")
-    List<AisVessel> vesselListByMmsis(@QueryParam("mmsi") String commaSeparatedListOfMmsi, @QueryParam("sourceFilter") String commaSeparatedListOfRegions);
-    
-    @GET
-    @Path("/tracks")
-    List<AisVessel> vesselListAllAllowed(@QueryParam("area") String areaAsLonLatBox, @QueryParam("sourceFilter") String commaSeparatedListOfRegions);
+    List<AisTrack> vesselsByMmsis(@QueryParam("mmsi") List<Long> mmsi, @QueryParam("sourceFilter") String commaSeparatedListOfRegions);
 
-    /*
     @GET
     @Path("/tracks")
-    List<AisVessel> vesselListWithInCircle(@QueryParam("filter") String circleAsLatLonDiamaterInMeter, @QueryParam("sourceFilter") String commaSeparatedListOfRegions);
-    */
-    
+    List<AisTrack> vessels(@QueryParam("mmsi") List<Long> mmsi, @QueryParam("baseArea") String baseArea, @QueryParam("area") List<String> areas, @QueryParam("sourceFilter") String commaSeparatedListOfRegions);
+
+    @GET
+    @Path("/track/{mmsi}")
+    AisTrack vessel(@PathParam("mmsi") Long mmsi, @QueryParam("sourceFilter") String commaSeparatedListOfRegions);
+
+
+    /**
+     * @author ThomasBerg
+     */
     @JsonIgnoreProperties(ignoreUnknown=true)
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    public static class AisVessel {
+    public static class AisTrack {
 
         private Source source;
         private Target target;
 
-        public Vessel mapToRestVesselType() {
-            
-            
-            //            vesselType.setMaxSpeed(maxSpeed);
-            //            vesselType.setMaxSpeedOrigin(maxSpeedOrigin);
-            //            vesselType.setType(this.getTarget().getVesselStatic().getShipType());
-            //            vesselType.setVesselCargo(vesselCargo);
-            
-            Vessel vesselType = new Vessel();
+        public AisVessel toJsonVessel() {
+            AisVessel vesselType = new AisVessel();
             
             if(this.getSource() != null) {
-                
                 vesselType.setSourceCountry(this.getSource().getCountry());
                 vesselType.setSourceRegion(this.getSource().getRegion());
                 vesselType.setSourceType(this.getSource().getType());
             }
             
             if(this.getTarget() != null) {
-                
                 Target target = this.getTarget();
                 
                 vesselType.setCountry(target.getCountry());
-                vesselType.setLastReport(target.getLastReport().toString());
+                vesselType.setLastReport(target.getLastReport());
                 vesselType.setMmsi(target.getMmsi());
                 vesselType.setTargetType(target.getTargetType());
                 
                 if(target.getVesselStatic() != null) {
-                    
                     VesselStatic vesselStatic = target.getVesselStatic();
                     
                     vesselType.setCallsign(vesselStatic.getCallsign());
                     vesselType.setDestination(vesselStatic.getDestination());
                     vesselType.setDraught(vesselStatic.getDraught());
-                    vesselType.setEta(vesselStatic.getEta() == null ? null : vesselStatic.getEta().toString());
+                    vesselType.setEta(vesselStatic.getEta());
                     vesselType.setImoNo(vesselStatic.getImoNo());
                     vesselType.setName(vesselStatic.getName());
                     
-                    
                     if(vesselStatic.getShipTypeCargo() != null) {
-                        
                         ShipTypeCargo shipTypeCargo = vesselStatic.getShipTypeCargo();
                         vesselType.setVesselType(shipTypeCargo.getShipType());
                     }
-                    
-                    
+
                     if(vesselStatic.getDimensions() != null) {
-                        
                         Dimensions dimensions = vesselStatic.getDimensions();
                         vesselType.setLength(dimensions.getLength());
                         vesselType.setWidth(dimensions.getWidth());
@@ -193,7 +165,6 @@ public interface AisRestDataService {
                 }
                 
                 if(target.getVesselPosition() != null) {
-                    
                     VesselPosition vesselPosition = target.getVesselPosition();
                     
                     vesselType.setCog(vesselPosition.getCog());
@@ -204,9 +175,7 @@ public interface AisRestDataService {
                     vesselType.setRot(vesselPosition.getRot());
                     vesselType.setSog(vesselPosition.getSog());
                     
-                    
                     if(vesselPosition.getPos() != null) {
-                        
                         Pos pos = vesselPosition.getPos();
                         
                         vesselType.setLat(pos.getLat());
@@ -220,18 +189,32 @@ public interface AisRestDataService {
             if(minimumCriteriaFulfilled(vesselType)) {
                 return vesselType;
             } else {
-                return NOT_VALID;
+                return null;
             }
-            
         }
-        
-        private boolean minimumCriteriaFulfilled(Vessel vesselType) {
+
+        public static Function<AisTrack, AisVessel> toJsonVesselFn() {
+            return track -> track.toJsonVessel();
+        }
+
+        public boolean minimumCriteriaFulfilled(AisVessel vesselType) {
           return vesselType.getMmsi() != null && vesselType.getLat() != null && vesselType.getLon()  != null;
         }
-        
+
+        public static Predicate<AisTrack> valid() {
+            return track -> track.minimumCriteriaFulfilled();
+        }
+
+        public boolean minimumCriteriaFulfilled() {
+            if (target == null || target.getVesselPosition() == null || target.getVesselPosition().getPos() == null) {
+                return false;
+            }
+            return target.getMmsi() != null && target.getVesselPosition().getPos().getLat() != null && target.getVesselPosition().getPos().getLon() != null;
+        }
+
+
         @Override
         public String toString() {
-            
             return ReflectionToStringBuilder.toString(this);
         }
         
@@ -384,7 +367,6 @@ public interface AisRestDataService {
 
         @Override
         public String toString() {
-            
             return ReflectionToStringBuilder.toString(this);
         }
         
@@ -654,8 +636,8 @@ public interface AisRestDataService {
         private Integer raim;
         private Double rot;
         private Integer specialManIndicator;
-        
-        /*
+
+        /**
         0 = under way using engine, 
         1 = at anchor, 
         2 = not under command,

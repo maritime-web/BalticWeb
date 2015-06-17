@@ -14,10 +14,9 @@
  */
 package dk.dma.embryo.vessel.model;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import dk.dma.embryo.common.persistence.BaseEntity;
+import dk.dma.embryo.vessel.json.VesselDetails;
+import org.apache.commons.lang.ObjectUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,9 +28,13 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import dk.dma.embryo.common.persistence.BaseEntity;
-import dk.dma.embryo.vessel.json.VesselDetails;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Entity
 @NamedQueries({
@@ -81,9 +84,20 @@ public class Vessel extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
+    public Vessel mergeNonReferenceFields(Vessel vessel) {
+        setMmsi(vessel.getMmsi());
+        setCommCapabilities(vessel.getCommCapabilities());
+        setGrossTonnage(vessel.getGrossTonnage());
+        setPersons(vessel.getPersons());
+        setMaxSpeed(vessel.getMaxSpeed());
+        setIceClass(vessel.getIceClass());
+        setHelipad(vessel.getHelipad());
+        setAisData(vessel.getAisData());
+        return this;
+    }
 
-    public dk.dma.embryo.vessel.json.VesselDetails toJsonModel() {
-        dk.dma.embryo.vessel.json.VesselDetails vessel = new dk.dma.embryo.vessel.json.VesselDetails();
+    public VesselDetails toJsonModel() {
+        VesselDetails vessel = new VesselDetails();
 
         vessel.setMmsi(getMmsi());
         vessel.setCommCapabilities(getCommCapabilities());
@@ -110,6 +124,21 @@ public class Vessel extends BaseEntity<Long> {
         return result;
     }
 
+    public static List<Long> extractMmsiNumbers(List<Vessel> vessels){
+        return vessels.stream().map(vessel -> vessel.getMmsi()).collect(Collectors.toList());
+    }
+
+    public static Map<Long, Vessel> asMap(List<Vessel> vessels){
+        return vessels.stream().collect(Collectors.toMap(Vessel::getMmsi, Function.identity()));
+    }
+    // //////////////////////////////////////////////////////////////////////
+    // Business Logic
+    // //////////////////////////////////////////////////////////////////////
+    public boolean isUpToDate(String name, String callSign, Long imo) {
+        return ObjectUtils.equals(aisData.getName(), name) && ObjectUtils.equals(aisData.getCallsign(), callSign)
+                && ObjectUtils.equals(aisData.getImoNo(), imo);
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
@@ -133,20 +162,14 @@ public class Vessel extends BaseEntity<Long> {
                 + ", helipad=" + helipad + ", aisData=" + aisData + "]";
     }
 
-    
-
     // //////////////////////////////////////////////////////////////////////
-    // Utility
+    // Property methods
     // //////////////////////////////////////////////////////////////////////
-
     public void addVoyageEntry(Voyage entry) {
         schedule.add(entry);
         entry.vessel = this;
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
     public Long getMmsi() {
         return mmsi;
     }

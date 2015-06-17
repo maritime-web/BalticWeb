@@ -12,16 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.vessel.json.client;
+package dk.dma.embryo.vessel.integration;
 
-import java.util.List;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import java.util.List;
 
 /**
  * 
@@ -77,7 +76,7 @@ public interface AisViewServiceAllAisData {
      */
     @GET
     @Path("/vessel/list")
-    List<Vessel> vesselList(
+    List<AisVessel> vesselList(
         @QueryParam("ttlLive") String ttlLive, 
         @QueryParam("ttlSat") String ttlSat);
     

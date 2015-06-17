@@ -12,17 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.vessel.json.client;
+package dk.dma.embryo.vessel.integration;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.ejb.TimerService;
-import javax.inject.Inject;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.vessel.integration.AisViewServiceAllAisData.MaxSpeed;
+import dk.dma.embryo.vessel.integration.AisViewServiceAllAisData.TrackSingleLocation;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -36,19 +32,15 @@ import org.jglue.cdiunit.CdiRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.MaxSpeed;
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData.TrackSingleLocation;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses(value = { AisJsonClientFactory.class, PropertyFileService.class })
+@AdditionalClasses(value = { AisTrackClientFactory.class, PropertyFileService.class })
 public class AisViewServiceIT {
-
-    @Resource
-    private TimerService service;
 
     @Inject
     private AisViewServiceAllAisData aisViewServiceAllAisData;
@@ -60,7 +52,7 @@ public class AisViewServiceIT {
     @Test
     public void test() {
 
-        List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
+        List<AisVessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
         
         System.out.println("Full list: " + vesselList.size());
     }
@@ -68,10 +60,10 @@ public class AisViewServiceIT {
     @Test
     public void testVesselTypes() {
 
-        List<Vessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
+        List<AisVessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
         
         List<String> shipTypes = new ArrayList<String>();
-        for (Vessel vessel : vesselList) {
+        for (AisVessel vessel : vesselList) {
             
             String shipType = vessel.getVesselType();
             

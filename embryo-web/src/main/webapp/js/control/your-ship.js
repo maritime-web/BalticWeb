@@ -17,8 +17,8 @@ $(function() {
             "Call Sign" : data.aisVessel.callsign,
             "Country" : data.aisVessel.country,
             "Destination" : data.aisVessel.destination,
-            "Nav Status" : data.aisVessel.navStatus,
-            "ETA" : data.aisVessel.eta
+            "Nav Status": embryo.vessel.navStatusText(data.aisVessel.navStatus),
+            "ETA": data.aisVessel.eta ? formatTime(data.aisVessel.eta) + " UTC" : ""
         });
     }
 

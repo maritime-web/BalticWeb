@@ -14,15 +14,14 @@
  */
 package dk.dma.embryo.vessel.service;
 
-import java.util.List;
+import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.persistence.VesselDao;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import dk.dma.embryo.vessel.model.Vessel;
-import dk.dma.embryo.vessel.persistence.VesselDao;
+import java.util.List;
 
 /**
  * The Class VesselServiceImpl.
@@ -57,23 +56,15 @@ public class VesselServiceImpl implements VesselService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(Vessel vessel) {
         Vessel managed = vesselRepository.getVessel(vessel.getMmsi());
-
         if (managed != null) {
             // copying all values to managed entity to avoid resetting JPA association fields.
-
-            managed.setMmsi(vessel.getMmsi());
-            managed.setCommCapabilities(vessel.getCommCapabilities());
-            managed.setHelipad(vessel.getHelipad());
-            managed.setMaxSpeed(vessel.getMaxSpeed());
-            managed.setPersons(vessel.getPersons());
-            managed.setGrossTonnage(vessel.getGrossTonnage());
-
+            managed.mergeNonReferenceFields(vessel);
             managed = vesselRepository.saveEntity(managed);
         } else {
             vessel = vesselRepository.saveEntity(vessel);
         }
     }
-    
+
     /* (non-Javadoc)
      * @see dk.dma.embryo.vessel.service.VesselService#getVessel(java.lang.Long)
      */

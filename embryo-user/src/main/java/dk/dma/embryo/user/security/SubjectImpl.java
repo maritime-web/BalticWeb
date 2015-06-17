@@ -14,20 +14,18 @@
  */
 package dk.dma.embryo.user.security;
 
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.slf4j.Logger;
-
 import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.persistence.RealmDao;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.slf4j.Logger;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Subject class wrapping all access to shiro security and also decorating with extra syntactic sugar.

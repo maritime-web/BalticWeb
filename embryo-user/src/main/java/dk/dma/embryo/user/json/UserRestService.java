@@ -14,8 +14,11 @@
  */
 package dk.dma.embryo.user.json;
 
-import java.util.ArrayList;
-import java.util.List;
+import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.service.UserService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -28,15 +31,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.user.model.Role;
-import dk.dma.embryo.user.model.SailorRole;
-import dk.dma.embryo.user.model.SecuredUser;
-import dk.dma.embryo.user.service.UserService;
+import java.util.List;
 
 @Path("/user")
 public class UserRestService extends AbstractRestService {
@@ -59,16 +54,16 @@ public class UserRestService extends AbstractRestService {
     @Path("/create")
     @Consumes("application/json")
     public void create(User user) {
-        logger.info("Creating new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAccessToAisData() + "'");
-        userService.create(user.getLogin(), user.getPassword(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAccessToAisData());
+        logger.info("Creating new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAisFilterName() + "'");
+        userService.create(user.getLogin(), user.getPassword(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAisFilterName());
     }
 
     @PUT
     @Path("/edit")
     @Consumes("application/json")
     public void edit(User user) {
-        logger.info("Editing new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAccessToAisData() + "'");
-        userService.edit(user.getLogin(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAccessToAisData());
+        logger.info("Editing new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAisFilterName() + "'");
+        userService.edit(user.getLogin(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAisFilterName());
     }
 
     
@@ -77,35 +72,12 @@ public class UserRestService extends AbstractRestService {
     @Path("/list")
     @Produces("application/json")
     public Response list(@Context Request request) {
-        
         logger.info("/user/list called.");
-        
-        List<User> result = new ArrayList<>();
 
-        for (SecuredUser su : userService.list()) {
-
-            result.add(mapDatabaseUserToDtoUser(su));
-        }
+        List<SecuredUser> users = userService.list();
+        List<User> result = SecuredUser.toJsonModel(users);
 
         return super.getResponse(request, result, NO_CACHE);
-    }
-
-    private User mapDatabaseUserToDtoUser(SecuredUser su) {
-        
-        User user = new User();
-
-        user.setAccessToAisData(su.getAccessToAisData());
-        user.setLogin(su.getUserName());
-        user.setEmail(su.getEmail());
-        Role role = su.getRole();
-
-        user.setRole(role == null ? null : role.getLogicalName());
-        if (role instanceof SailorRole) {
-            SailorRole sailor = (SailorRole)role;
-            user.setShipMmsi(sailor.getVessel().getMmsi());
-        }
-        
-        return user;
     }
 
     public static class User {
@@ -115,7 +87,7 @@ public class UserRestService extends AbstractRestService {
         private String role;
         private Long shipMmsi;
         private String email;
-        private Boolean accessToAisData;
+        private String aisFilterName;
 
         @Override
         public int hashCode() {
@@ -127,7 +99,7 @@ public class UserRestService extends AbstractRestService {
             result = prime * result + ((password == null) ? 0 : password.hashCode());
             result = prime * result + ((role == null) ? 0 : role.hashCode());
             result = prime * result + ((shipMmsi == null) ? 0 : shipMmsi.hashCode());
-            result = prime * result + ((accessToAisData == null) ? 0 : accessToAisData.hashCode());
+            result = prime * result + ((aisFilterName == null) ? 0 : aisFilterName.hashCode());
             
             return result;
         }
@@ -167,11 +139,12 @@ public class UserRestService extends AbstractRestService {
             this.email = email;
         }
 
-        public Boolean getAccessToAisData() {
-            return accessToAisData;
+        public String getAisFilterName() {
+            return aisFilterName;
         }
-        public void setAccessToAisData(Boolean accessToAisData) {
-            this.accessToAisData = accessToAisData;
+
+        public void setAisFilterName(String aisFilterName) {
+            this.aisFilterName = aisFilterName;
         }
     }
 }

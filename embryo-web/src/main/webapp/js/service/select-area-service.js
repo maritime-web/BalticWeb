@@ -1,8 +1,8 @@
 (function () {
 	
     var module = angular.module('embryo.selectarea.service', []);
-    
-    var selectionGroupPath = 'rest/selectiongroup/';
+
+    var selectionGroupPath = 'rest/areasOfInterest/';
     
     module.service('SelectAreaService', ['$http', function ($http) {
         	

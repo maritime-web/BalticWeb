@@ -14,14 +14,21 @@
  */
 package dk.dma.embryo.user.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.embryo.common.EmbryonicException;
+import dk.dma.embryo.common.area.Area;
+import dk.dma.embryo.common.persistence.BaseEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
-
-import dk.dma.embryo.common.persistence.BaseEntity;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 
 @Entity
-public class SelectionGroup extends BaseEntity<Long> {
+public class AreasOfInterest extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;
 
@@ -35,9 +42,35 @@ public class SelectionGroup extends BaseEntity<Long> {
     @Column(columnDefinition = "TEXT")
     private String polygonsAsJson;
 
-    public SelectionGroup() { }
+    private static final String LEFT = "left";
+    private static final String RIGHT = "right";
+    private static final String BOTTOM = "bottom";
+    private static final String TOP = "top";
 
-    public SelectionGroup(String name, String polygonsAsJson, Boolean active) {
+    // //////////////////////////////////////////////////////////////////////
+    // Business Logic
+    // //////////////////////////////////////////////////////////////////////
+    public Stream<Area> extractBounds() {
+        if (getPolygonsAsJson() != null && !getPolygonsAsJson().trim().equalsIgnoreCase("[]")) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                ArrayList<LinkedHashMap<String, Double>> bounds = (ArrayList<LinkedHashMap<String, Double>>) mapper.readValue(getPolygonsAsJson(), ArrayList.class);
+                return bounds.stream().map(entry -> new Area(entry.get(LEFT), entry.get(TOP), entry.get(RIGHT), entry.get(BOTTOM)));
+            } catch (IOException e) {
+                throw new EmbryonicException("Error parsing json for InterestOfAreas", e);
+            }
+        }
+        return Stream.empty();
+    }
+
+
+    // //////////////////////////////////////////////////////////////////////
+    // Constructors
+    // //////////////////////////////////////////////////////////////////////
+    public AreasOfInterest() {
+    }
+
+    public AreasOfInterest(String name, String polygonsAsJson, Boolean active) {
         super();
         this.name = name;
         this.polygonsAsJson = polygonsAsJson;
@@ -49,7 +82,7 @@ public class SelectionGroup extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "SecuredUser [name=" + name + ", id=" + id + ", active=" + active + "]";
+        return this.getClass().getSimpleName() + " [name=" + name + ", id=" + id + ", active=" + active + "]";
     }
 
     // //////////////////////////////////////////////////////////////////////

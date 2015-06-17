@@ -93,7 +93,7 @@ public class DmiSejlRuteServiceIT {
         System.out.println("request : " + request);
 
         DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
-        System.out.println("" + sejlRuteResponse);
+        System.out.println(sejlRuteResponse.toString());
 
         Assert.assertEquals(0, sejlRuteResponse.getError());
         Assert.assertNull(sejlRuteResponse.getErrorMsg());
@@ -131,7 +131,7 @@ public class DmiSejlRuteServiceIT {
         System.out.println("request : " + request);
 
         DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
-        System.out.println("" + sejlRuteResponse);
+        System.out.println(sejlRuteResponse.toString());
 
         Assert.assertEquals(0, sejlRuteResponse.getError());
         Assert.assertNull(sejlRuteResponse.getErrorMsg());
@@ -169,7 +169,7 @@ public class DmiSejlRuteServiceIT {
         System.out.println("request : " + request);
 
         DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
-        System.out.println("" + sejlRuteResponse);
+        System.out.println(sejlRuteResponse.toString());
 
         Assert.assertEquals(0, sejlRuteResponse.getError());
         Assert.assertNull(sejlRuteResponse.getErrorMsg());

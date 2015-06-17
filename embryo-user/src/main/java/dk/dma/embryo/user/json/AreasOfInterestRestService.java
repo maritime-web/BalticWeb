@@ -14,8 +14,13 @@
  */
 package dk.dma.embryo.user.json;
 
-import java.util.ArrayList;
-import java.util.List;
+import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.user.model.AreasOfInterest;
+import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.security.Subject;
+import dk.dma.embryo.user.service.UserService;
+import org.jboss.resteasy.annotations.GZIP;
+import org.slf4j.Logger;
 
 import javax.ejb.FinderException;
 import javax.inject.Inject;
@@ -29,18 +34,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.user.model.SecuredUser;
-import dk.dma.embryo.user.model.SelectionGroup;
-import dk.dma.embryo.user.security.Subject;
-import dk.dma.embryo.user.service.UserService;
-
-@Path("/selectiongroup")
-public class SelectionGroupRestService extends AbstractRestService {
+@Path("/areasOfInterest")
+public class AreasOfInterestRestService extends AbstractRestService {
 
     @Inject
     private Logger logger;
@@ -60,17 +58,17 @@ public class SelectionGroupRestService extends AbstractRestService {
         SecuredUser securedUser = this.subject.getUser();
         logger.info("Calling list all Selection Groups for logged on user -> " + securedUser.getUserName());
 
-        List<SelectionGroupDTO> result = new ArrayList<SelectionGroupDTO>();
+        List<AreasOfInterestDTO> result = new ArrayList<AreasOfInterestDTO>();
 
-        for (SelectionGroup selectionGroup : securedUser.getSelectionGroups()) {
+        for (AreasOfInterest selectionGroup : securedUser.getAreasOfInterest()) {
 
-            SelectionGroupDTO groupDTO = new SelectionGroupDTO();
-            groupDTO.setId(selectionGroup.getId());
-            groupDTO.setActive(selectionGroup.getActive());
-            groupDTO.setName(selectionGroup.getName());
-            groupDTO.setPolygonsAsJson(selectionGroup.getPolygonsAsJson());
+            AreasOfInterestDTO areasOfInterestDTO = new AreasOfInterestDTO();
+            areasOfInterestDTO.setId(selectionGroup.getId());
+            areasOfInterestDTO.setActive(selectionGroup.getActive());
+            areasOfInterestDTO.setName(selectionGroup.getName());
+            areasOfInterestDTO.setPolygonsAsJson(selectionGroup.getPolygonsAsJson());
 
-            result.add(groupDTO);
+            result.add(areasOfInterestDTO);
         }
         
         return super.getResponse(request, result, NO_CACHE);
@@ -79,29 +77,29 @@ public class SelectionGroupRestService extends AbstractRestService {
     @POST
     @Path("/update")
     @Consumes("application/json")
-    public void update(List<SelectionGroupDTO> selectionGroupDTOs) {
+    public void update(List<AreasOfInterestDTO> areasOfInterestDTOs) {
 
 
-        if(selectionGroupDTOs != null) {
+        if (areasOfInterestDTOs != null) {
 
-            List<SelectionGroup> selectionGroups = new ArrayList<SelectionGroup>();
-            for (SelectionGroupDTO selectionGroupDTO : selectionGroupDTOs) {
+            List<AreasOfInterest> areasOfInterests = new ArrayList<AreasOfInterest>();
+            for (AreasOfInterestDTO selectionGroupDTO : areasOfInterestDTOs) {
 
-                SelectionGroup selectionGroup = new SelectionGroup(
+                AreasOfInterest selectionGroup = new AreasOfInterest(
                         selectionGroupDTO.name, selectionGroupDTO.polygonsAsJson, selectionGroupDTO.active);
 
-                selectionGroups.add(selectionGroup);
+                areasOfInterests.add(selectionGroup);
             }
 
             try {
-                this.userService.updateSelectionGroups(selectionGroups, this.subject.getUser().getUserName());
+                this.userService.updateAreasOfInterest(areasOfInterests, this.subject.getUser().getUserName());
             } catch (FinderException e) {
                 throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity(e.getMessage()).build());
             }
         }
     }
 
-    public static class SelectionGroupDTO {
+    public static class AreasOfInterestDTO {
 
         private Long id;
         private String name;

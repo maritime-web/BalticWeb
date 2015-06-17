@@ -99,6 +99,29 @@ $(function() {
         return result;
     };
 
+    var navStatusTexts = {
+        0: "Under way using engine",
+        1: "At anchor",
+        2: "Not under command",
+        3: "Restricted manoeuvrability",
+        4: "Constrained by her draught",
+        5: "Moored",
+        6: "Aground",
+        7: "Engaged in fishing",
+        8: "Under way",
+        12: "Power-driven vessel pushing ahead or towing alongside",
+        14: "Ais SART",
+        15: "Undefined"
+    }
+
+    embryo.vessel.navStatusText = function (navStatus) {
+        if (navStatus && navStatusTexts.hasOwnProperty(navStatus)) {
+            return navStatusTexts[navStatus]
+        }
+        return null;
+    };
+
+
     embryo.vessel.createSorter = function(nameSequence) {
         var sorter = function(service1, service2) {
             var i1 = "" + nameSequence.indexOf(service1.name);
@@ -206,8 +229,8 @@ $(function() {
             "SOG" : data.aisVessel.sog,
             "COG" : data.aisVessel.cog,
             "Destination" : data.aisVessel.destination,
-            "Nav Status" : data.aisVessel.navStatus,
-            "ETA" : data.aisVessel.eta
+            "Nav Status": embryo.vessel.navStatusText(data.aisVessel.navStatus),
+            "ETA": data.aisVessel.eta ? formatTime(data.aisVessel.eta) + " UTC" : ""
         });
     }
 

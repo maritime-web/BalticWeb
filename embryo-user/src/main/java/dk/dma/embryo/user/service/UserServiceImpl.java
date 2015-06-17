@@ -14,27 +14,25 @@
  */
 package dk.dma.embryo.user.service;
 
-import java.util.List;
-import java.util.UUID;
-
-import javax.ejb.FinderException;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-
 import dk.dma.embryo.user.model.AdministratorRole;
+import dk.dma.embryo.user.model.AreasOfInterest;
 import dk.dma.embryo.user.model.ReportingAuthorityRole;
 import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
-import dk.dma.embryo.user.model.SelectionGroup;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.persistence.RealmDao;
 import dk.dma.embryo.user.security.SecurityUtil;
 import dk.dma.embryo.user.security.SecurityUtil.HashedPassword;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
+import org.slf4j.Logger;
+
+import javax.ejb.FinderException;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.UUID;
 
 @Stateless
 public class UserServiceImpl implements UserService {
@@ -76,17 +74,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(String login, String password, Long mmsi, String email, String role, boolean accessToAisData) {
-        SecuredUser su = SecurityUtil.createUser(login, password, email, accessToAisData);
+    public void create(String login, String password, Long mmsi, String email, String role, String aisFilterName) {
+        SecuredUser su = SecurityUtil.createUser(login, password, email, aisFilterName);
         su.setRole(createRole(role, mmsi));
         realmDao.saveEntity(su);
     }
 
-    public void edit(String login, Long mmsi, String email, String role, boolean accessToAisData) {
+    public void edit(String login, Long mmsi, String email, String role, String aisFilterName) {
         SecuredUser user = realmDao.findByUsername(login);
 
         user.setEmail(email);
-        user.setAccessToAisData(accessToAisData);
+        user.setAisFilterName(aisFilterName);
 
         if (user.getRole() != null && !user.getRole().getLogicalName().equalsIgnoreCase(role)) {
             if (user.getRole().getClass() == SailorRole.class) {
@@ -141,18 +139,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateSelectionGroups(List<SelectionGroup> selectionGroups, String userName) throws FinderException {
+    public void updateAreasOfInterest(List<AreasOfInterest> areasOfInterests, String userName) throws FinderException {
         SecuredUser securedUserCurrent = this.realmDao.findByUsername(userName);
         if(securedUserCurrent == null) {
             throw new FinderException("No user for given userName.");
         }
 
         // Important to clear() and NOT nullify <- hibernate do not understand it correctly!
-        securedUserCurrent.getSelectionGroups().clear();
+        securedUserCurrent.getAreasOfInterest().clear();
         SecuredUser userReadyForUpdate = this.realmDao.saveEntityWithFlush(securedUserCurrent);
 
-        for (SelectionGroup selectionGroup : selectionGroups) {
-            userReadyForUpdate.addSelectionGroup(selectionGroup);
+        for (AreasOfInterest areasOfInt : areasOfInterests) {
+            userReadyForUpdate.addSelectionGroup(areasOfInt);
         }
 
         SecuredUser savedUser = this.realmDao.saveEntityWithFlush(userReadyForUpdate);

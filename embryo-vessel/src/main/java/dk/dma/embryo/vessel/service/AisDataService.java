@@ -12,20 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.vessel.job.filter;
+package dk.dma.embryo.vessel.service;
 
-import java.io.Serializable;
+import dk.dma.embryo.vessel.integration.AisVessel;
 
-import com.google.common.base.Predicate;
+import java.util.List;
 
-import dk.dma.embryo.vessel.json.VesselOverview;
+public interface AisDataService {
+   
+    List<AisVessel> getAisVessels();
+
+    AisVessel getAisVesselByMmsi(Long mmsi);
+
+    List<AisVessel> getAisVesselsByMmsi(List<Long> mmsiNumbers);
+
+    boolean isHistoricalTrackAllowed(AisVessel vessel);
 
 
-public interface UserSelectionGroupsFilter extends Serializable, Predicate<VesselOverview> {
 
-    boolean apply(VesselOverview vessel);
-
-    boolean loggedOnUserHasSelectionGroups();
-    
-    boolean userAllowedToSeeExactEarthVessels();
 }

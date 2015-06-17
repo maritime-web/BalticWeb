@@ -14,9 +14,14 @@
  */
 package dk.dma.embryo.vessel.job;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.vessel.integration.AisVessel;
+import dk.dma.embryo.vessel.model.AisData;
+import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.service.AisDataService;
+import dk.dma.embryo.vessel.service.VesselService;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -26,29 +31,27 @@ import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.vessel.json.client.AisClientHelper;
-import dk.dma.embryo.vessel.json.client.AisViewServiceAllAisData;
-import dk.dma.embryo.vessel.json.client.Vessel;
-import dk.dma.embryo.vessel.persistence.VesselDao;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Singleton
 @Startup
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AisReplicatorJob {
     
     @Inject
-    private VesselDao vesselRepository;
+    private VesselService vesselService;
 
     @Inject
     private AisDataService aisDataService;
 
     @Inject
-    private AisViewServiceAllAisData aisViewWithNorwegianData;
+    private EmbryoLogService embryoLogService;
 
     @Resource
     private TimerService service;
@@ -67,9 +70,6 @@ public class AisReplicatorJob {
 
     @Inject
     private Logger logger;
-
-    @Inject
-    private EmbryoLogService embryoLogService;
 
     public AisReplicatorJob() {
     }
@@ -96,95 +96,59 @@ public class AisReplicatorJob {
     }
 
     public void replicate() {
-        updateAis();
+        updateAisBaseData();
     }
 
     /**
      * Executes on startup
      */
     @Timeout
-    void updateAis() {
+    void updateAisBaseData() {
         try {
-            logger.info("UPDATE AIS VESSEL DATA INCLUDING NORWEGIAN DATA...");
-            
-            // Get all vessels from AIS server
-            List<Vessel> aisServerAllVessels = aisViewWithNorwegianData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
-            
-            // Get all vessels from ArcticWeb database
-            List<dk.dma.embryo.vessel.model.Vessel> articWebVesselsAsList = vesselRepository.getAll(dk.dma.embryo.vessel.model.Vessel.class);
-            
-            logger.info("aisView returns " + aisServerAllVessels.size() + " items - " + "repository returns " + articWebVesselsAsList.size() + " items.");
-            
-            Map<Long, dk.dma.embryo.vessel.model.Vessel> awVesselsAsMap = aisDataService.updateArcticWebVesselInDatabase(aisServerAllVessels, articWebVesselsAsList);
+            logger.info("UPDATING AIS BASE DATA ON VESSELS");
 
-            List<Vessel> vesselsInAisCircle = new ArrayList<Vessel>();
-            List<Vessel> vesselsOnMap = new ArrayList<Vessel>();
-            List<Vessel> vesselsAllowed = new ArrayList<Vessel>();
+            List<Vessel> arcticWebVessels = vesselService.getAll();
 
-            for (Vessel aisVessel : aisServerAllVessels) {
+            List<AisVessel> aisVessels = aisDataService.getAisVesselsByMmsi(Vessel.extractMmsiNumbers(arcticWebVessels));
 
-                // Ignore vessel if just one of these validations fail
-                if(aisVessel.getMmsi() == null || aisVessel.getLon() == null || aisVessel.getLat() == null) {
-                    continue;
-                }
-                
-                AisClientHelper.setMaxSpeedOnAisVessel(aisVessel, awVesselsAsMap.get(aisVessel.getMmsi()));
-                
-                double longitude = aisVessel.getLon();
-                double latitude = aisVessel.getLat();
+            final Map<Long, AisVessel> aisVesselsByMmsi = AisVessel.asMap(aisVessels);
 
-                Long mmsi = aisVessel.getMmsi();
+            List<Vessel> vesselsToUpdate = arcticWebVessels.stream().filter(vessel -> {
+                AisVessel ves = aisVesselsByMmsi.get(vessel.getMmsi());
+                return !vessel.isUpToDate(ves.getName(), ves.getCallsign(), ves.getImoNo());
+            }).map(vessel -> {
+                AisVessel ves = aisVesselsByMmsi.get(vessel.getMmsi());
+                vessel.setAisData(new AisData(ves.getName(), ves.getCallsign(), ves.getImoNo()));
+                return vessel;
+            }).collect(Collectors.toList());
 
-                boolean isAllowed = aisDataService.isAllowed(latitude);
-                boolean isWithInAisCircle = aisDataService.isWithinAisCircle(longitude, latitude);
-                
-                /*
-                 * These vessels are used by the VesselRestService to match against selection groups.
-                 */
-                if (isAllowed || awVesselsAsMap.containsKey(mmsi)) {
-                    vesselsAllowed.add(aisVessel);
-                }
-                
-                /*
-                 * These vessels are shown on the map if logged on user has no selection groups and 
-                 * contains vessels within plus Arctic Web vessels even if they are outside the default circle and is allowed.
-                 */
-                if ( awVesselsAsMap.containsKey(mmsi) || (isAllowed && isWithInAisCircle) ) {
-                    vesselsOnMap.add(aisVessel);
-                }
-                
-                /*
-                 * These vessels are used by MaxSpeadJob.java and 
-                 * do not contain Arctic Web vessels from the database if they are outside the default circle and is allowed.
-                 */
-                if (isAllowed && aisDataService.isWithinAisCircle(longitude, latitude)) {
-                    vesselsInAisCircle.add(aisVessel);
+            List<Vessel> failedVessels = new LinkedList<>();
+            for(Vessel vessel : vesselsToUpdate){
+                try{
+                    vesselService.save(vessel);
+
+                    logger.info("AIS base data updated, mmsi={}, name='{}', callSign='{}', imo='{}'",
+                            vessel.getMmsi(), vessel.getAisData().getName(), vessel.getAisData().getCallsign(), vessel.getAisData().getImoNo() );
+                }catch(Exception e){
+                    failedVessels.add(vessel);
+                    String msg = "Failed updating AIS base data on ArcticWeb vessel with mmsi=" + vessel.getMmsi();
+                    logger.error(msg, e);
+                    embryoLogService.error(msg, e);
                 }
             }
-            
-            logger.info("Vessels in AIS circle: " + vesselsInAisCircle.size());
-            logger.info("Vessels on Map : " + vesselsOnMap.size());
-            logger.info("Vessels allowed : " + vesselsAllowed.size());
-            
-            int numberOfVesselsWithMaxSpeed = 0;
-            for (Vessel vessel : vesselsAllowed) {
-                
-                if(vessel.getMaxSpeed() != null && vessel.getMaxSpeed() > 0) {
-                    numberOfVesselsWithMaxSpeed++;
-                }
-            }
-            
-            logger.info("Number of allowed vessels with positive max speed:  " + numberOfVesselsWithMaxSpeed);
-            
-            aisDataService.setVesselsAllowed(vesselsAllowed);
-            aisDataService.setVesselsInAisCircle(vesselsInAisCircle);
-            aisDataService.setVesselsOnMap(vesselsOnMap);
 
-            embryoLogService.info("AIS data replicated. Vessel count: " + vesselsInAisCircle.size());
-        
+            if(failedVessels.size() == 0){
+                String message = "Updated AIS data for " + vesselsToUpdate.size() + " of " + arcticWebVessels.size()+ " ArcticWeb vessels";
+                logger.info(message);
+                embryoLogService.info(message);
+            }else{
+                String msg = "AIS Replication Error. Failed saving data for " + failedVessels.size() + "vessels";
+                logger.error(msg);
+                embryoLogService.error(msg);
+            }
         } catch (Throwable t) {
             logger.error("AIS Replication Error", t);
-            embryoLogService.error("" + t, t);
+            embryoLogService.error("AIS Replication Error", t);
         }
     }
 }

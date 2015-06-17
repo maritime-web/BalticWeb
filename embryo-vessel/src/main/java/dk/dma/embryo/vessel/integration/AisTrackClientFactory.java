@@ -12,25 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.vessel.json.client;
+package dk.dma.embryo.vessel.integration;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.embryo.common.configuration.Property;
+import org.jboss.resteasy.client.ProxyFactory;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import org.jboss.resteasy.client.ProxyFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import dk.dma.embryo.common.configuration.Property;
+import java.io.IOException;
 
 @Singleton
-public class AisJsonClientFactory {
-    @Inject
-    @Property("dk.dma.embryo.restclients.dmiSejlRuteServiceUrl")
-    private String dmiSejlRuteServiceUrl;
+public class AisTrackClientFactory {
 
     @Inject
     @Property("dk.dma.embryo.restclients.fullAisViewServiceInclNorwegianDataUrl")
@@ -39,16 +33,22 @@ public class AisJsonClientFactory {
     @Inject
     @Property("dk.dma.embryo.restclients.aisRestBaseUrl")
     private String aisRestBaseUrl;
-    
+
+    @Inject
+    @Property("embryo.ais.server.url")
+    private String aisServerUrl;
+
+
     @Produces
     public AisViewServiceAllAisData createFullAisViewInclNorwegianDataService() {
         return ProxyFactory.create(AisViewServiceAllAisData.class, fullAisViewServiceInclNorwegianDataUrl);
     }
     
     @Produces
-    public AisRestDataService createAisRestBaseUrlDataService() {
-        return ProxyFactory.create(AisRestDataService.class, aisRestBaseUrl);
+    public AisTrackClient createAisRestDataService() {
+        return ProxyFactory.create(AisTrackClient.class, aisServerUrl);
     }
+
 
     public static String asJson(Object object) {
         ObjectMapper mapper = new ObjectMapper();

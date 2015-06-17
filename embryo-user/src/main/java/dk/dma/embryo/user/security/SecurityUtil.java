@@ -14,12 +14,11 @@
  */
 package dk.dma.embryo.user.security;
 
+import dk.dma.embryo.user.model.SecuredUser;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
-
-import dk.dma.embryo.user.model.SecuredUser;
 
 /**
  * Utility class with factory method. 
@@ -30,12 +29,12 @@ import dk.dma.embryo.user.model.SecuredUser;
  */
 public class SecurityUtil{
 
-    
-    public static SecuredUser createUser(String userName, String password, String email, boolean accessToAisData){
+
+    public static SecuredUser createUser(String userName, String password, String email, String aisFilterName) {
        
         HashedPassword hashedPassword = hashPassword(password);
-        
-        SecuredUser user = new SecuredUser(userName, hashedPassword.getPassword(), hashedPassword.getSalt(), email, accessToAisData);
+
+        SecuredUser user = new SecuredUser(userName, hashedPassword.getPassword(), hashedPassword.getSalt(), email, aisFilterName);
         
         return user;
     }

@@ -14,12 +14,9 @@
  */
 package dk.dma.embryo.vessel.model;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 /**
  * @author Jesper Tejlgaard
@@ -38,19 +35,19 @@ public class AisData implements Serializable{
     @Column(nullable = true)
     private Long imoNo;
 
+
     // //////////////////////////////////////////////////////////////////////
-    // Utility methods
+    // Constructors
     // //////////////////////////////////////////////////////////////////////
-    Map<String, Object> toJsonModel(){
-        Map<String, Object> map = new HashMap<>();
-        
-        map.put("name", name);
-        map.put("callsign", callsign);
-        map.put("imoNo", imoNo);
-        
-        return map;
+    public AisData() {
     }
-    
+
+    public AisData(String name, String callsign, Long imoNo) {
+        this.name = name;
+        this.callsign = callsign;
+        this.imoNo = imoNo;
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////

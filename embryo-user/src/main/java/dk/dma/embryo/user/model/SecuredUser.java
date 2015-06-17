@@ -14,8 +14,10 @@
  */
 package dk.dma.embryo.user.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import dk.dma.embryo.common.persistence.BaseEntity;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,12 +28,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
-import dk.dma.embryo.common.persistence.BaseEntity;
+import static dk.dma.embryo.user.json.UserRestService.User;
 
 @Entity
 @NamedQueries({
@@ -68,9 +69,9 @@ public class SecuredUser extends BaseEntity<Long> {
 
     @OneToMany(orphanRemoval = true ,cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinColumn(name="SecuredUser_id", nullable = false)
-    private List<SelectionGroup> selectionGroups = new ArrayList<SelectionGroup>();
-    
-    private Boolean accessToAisData;
+    private List<AreasOfInterest> areasOfInterest = new ArrayList<AreasOfInterest>();
+
+    private String aisFilterName;
 
     public SecuredUser() {}
 
@@ -81,19 +82,52 @@ public class SecuredUser extends BaseEntity<Long> {
         created = DateTime.now(DateTimeZone.UTC);
     }
 
-    public SecuredUser(String userName, String hashedPassword, byte[] salt, String email, boolean accessToAisData) {
+    public SecuredUser(String userName, String hashedPassword, byte[] salt, String email, String aisFilterName) {
         this(userName, hashedPassword, salt);
         setEmail(email);
-        setAccessToAisData(accessToAisData);
+        setAisFilterName(aisFilterName);
     }
 
-    public void addSelectionGroup(SelectionGroup group) {
+    // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
+    public void addSelectionGroup(AreasOfInterest group) {
 
-        if(this.selectionGroups == null) {
-            this.selectionGroups = new ArrayList<SelectionGroup>();
+        if (this.areasOfInterest == null) {
+            this.areasOfInterest = new ArrayList<AreasOfInterest>();
         }
 
-        this.selectionGroups.add(group);
+        this.areasOfInterest.add(group);
+    }
+
+    public User toJsonModel() {
+        User user = new User();
+        user.setAisFilterName(getAisFilterName());
+        user.setLogin(getUserName());
+        user.setEmail(getEmail());
+        Role role = getRole();
+        user.setRole(role == null ? null : role.getLogicalName());
+        if (role instanceof SailorRole) {
+            SailorRole sailor = (SailorRole) role;
+            user.setShipMmsi(sailor.getVessel().getMmsi());
+        }
+        return user;
+    }
+
+    public static List<User> toJsonModel(List<SecuredUser> users) {
+        return users.stream().map(user -> user.toJsonModel()).collect(Collectors.toList());
+    }
+
+    public boolean hasActiveAreasOfInterest() {
+        if (this.areasOfInterest != null && !this.areasOfInterest.isEmpty()) {
+            for (AreasOfInterest group : this.areasOfInterest) {
+                if(group.getActive()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -101,19 +135,7 @@ public class SecuredUser extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "SecuredUser [userName=" + userName + ", id=" + id + ", email=" + email + " hashedpassword=*]";
-    }
-    public boolean hasActiveSelectionGroups() {
-
-        if(this.selectionGroups != null && !this.selectionGroups.isEmpty()) {
-            for (SelectionGroup group : this.selectionGroups) {
-                if(group.getActive()) {
-                    return true;
-                }
-            }
-        } 
-
-        return false;
+        return this.getClass().getSimpleName() + " [userName=" + userName + ", id=" + id + ", email=" + email + " hashedpassword=*]";
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -165,17 +187,19 @@ public class SecuredUser extends BaseEntity<Long> {
         this.forgotUuid = forgotUuid;
     }
 
-    public List<SelectionGroup> getSelectionGroups() {
-        return selectionGroups;
-    }
-    public void setSelectionGroups(List<SelectionGroup> selectionGroups) {
-        this.selectionGroups = selectionGroups;
+    public List<AreasOfInterest> getAreasOfInterest() {
+        return areasOfInterest;
     }
 
-    public Boolean getAccessToAisData() {
-        return accessToAisData;
+    public void setAreasOfInterest(List<AreasOfInterest> areasOfInterest) {
+        this.areasOfInterest = areasOfInterest;
     }
-    public void setAccessToAisData(Boolean accessToAisData) {
-        this.accessToAisData = accessToAisData;
+
+    public String getAisFilterName() {
+        return aisFilterName;
+    }
+
+    public void setAisFilterName(String aisFilterName) {
+        this.aisFilterName = aisFilterName;
     }
 }

@@ -14,12 +14,11 @@
  */
 package dk.dma.embryo.user.service;
 
-import java.util.List;
+import dk.dma.embryo.user.model.AreasOfInterest;
+import dk.dma.embryo.user.model.SecuredUser;
 
 import javax.ejb.FinderException;
-
-import dk.dma.embryo.user.model.SecuredUser;
-import dk.dma.embryo.user.model.SelectionGroup;
+import java.util.List;
 
 
 
@@ -27,15 +26,15 @@ public interface UserService {
 
     List<SecuredUser> list();
 
-    void create(String login, String password, Long mmsi, String email, String role, boolean accessToAisData);
+    void create(String login, String password, Long mmsi, String email, String role, String aisFilterName);
 
-    void edit(String login, Long mmsi, String email, String role, boolean accessToAisData);
+    void edit(String login, Long mmsi, String email, String role, String aisFilterName);
 
     void delete(String login);
 
     void createPasswordUuid(SecuredUser user);
     
     void changePassword(String uuid, String password) throws FinderException;
-    
-    void updateSelectionGroups(List<SelectionGroup> selectionGroups, String userName) throws FinderException;
+
+    void updateAreasOfInterest(List<AreasOfInterest> areasOfInterests, String userName) throws FinderException;
 }

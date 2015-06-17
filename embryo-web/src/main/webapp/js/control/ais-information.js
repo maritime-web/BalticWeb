@@ -35,10 +35,21 @@
     
     module.controller("AISInformationCtrl", ['$scope','VesselService', 'VesselInformation', function($scope, VesselService, VesselInformation) {
        function updateInfo (data) {
+            console.log(data);
             $scope.vessel = [];
             for(var x in convertTable) {
                 if(data[x] && data[x] != 'N/A' && data[x] != 'Undefined') {
-                    $scope.vessel.push({'key' : convertTable[x], 'value' : data[x]});
+                    var value = data[x];
+                    if(x == "eta" || x == "lastReport"){
+                        value = formatTime(data[x]) + " UTC";
+                    } else if (x == "lat"){
+                        value = formatLatitude(data[x]);
+                    } else if (x == "lon"){
+                        value = formatLongitude(data[x]);
+                    } else if(x == 'navStatus'){
+                        value = embryo.vessel.navStatusText(data[x]);
+                    }
+                    $scope.vessel.push({'key' : convertTable[x], 'value' : value});
                 }
             }
             $scope.vname = data['name'];

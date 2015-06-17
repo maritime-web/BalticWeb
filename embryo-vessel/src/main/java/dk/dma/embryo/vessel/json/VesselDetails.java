@@ -14,11 +14,10 @@
  */
 package dk.dma.embryo.vessel.json;
 
-import java.util.Map;
-
+import dk.dma.embryo.vessel.integration.AisVessel;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import dk.dma.embryo.vessel.json.client.Vessel;
+import java.util.Map;
 
 /**
  * 
@@ -48,7 +47,7 @@ public class VesselDetails {
 
     private Map<String, Object> additionalInformation;
     
-    private Vessel aisVessel;
+    private AisVessel aisVessel;
     
 
     // //////////////////////////////////////////////////////////////////////
@@ -153,10 +152,10 @@ public class VesselDetails {
         this.additionalInformation = additionalInformation;
     }
 
-    public Vessel getAisVessel() {
+    public AisVessel getAisVessel() {
         return aisVessel;
     }
-    public void setAisVessel(Vessel aisVessel) {
+    public void setAisVessel(AisVessel aisVessel) {
         this.aisVessel = aisVessel;
     }
 }
