@@ -15,6 +15,7 @@
 package dk.dma.embryo.vessel.integration;
 
 
+import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.vessel.integration.AisTrackClient.AisTrack;
@@ -32,19 +33,24 @@ import java.util.List;
  * @author Jesper Tejlgaard
  */
 @RunWith(CdiRunner.class)
-@AdditionalClasses(value = { AisTrackClientFactory.class, PropertyFileService.class })
+@AdditionalClasses(value = {AisTrackClientFactory.class, PropertyFileService.class, LogConfiguration.class})
 public class AisTrackClientIT {
 
     @Inject
     private AisTrackClient aisTrackClient;
 
     @Inject
-    @Property("dk.dma.embryo.restclients.aisRestBaseUrl")
-    private String aisRestBaseUrl;
+    @Property("embryo.aistrack.server.url")
+    private String aisTrackUrl;
+
+    @Inject
+    @Property("embryo.aistrack.server.user")
+    private String aisTrackUser;
 
     @Test
     public void testVesselsByMmsis() {
-        System.out.println("URL: " + this.aisRestBaseUrl);
+        System.out.println(aisTrackUrl);
+        System.out.println(aisTrackUser);
 
         List<Long> mmsiNumbers = Arrays.asList(220443000L, 220516000L);
 

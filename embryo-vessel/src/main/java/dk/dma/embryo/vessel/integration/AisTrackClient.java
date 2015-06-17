@@ -34,6 +34,7 @@ import java.util.function.Predicate;
  * Client to AISTrack server. See https://github.com/dma-ais/AisTrack
  *
  */
+@Path("/ais-track")
 public interface AisTrackClient {
     
     /**
