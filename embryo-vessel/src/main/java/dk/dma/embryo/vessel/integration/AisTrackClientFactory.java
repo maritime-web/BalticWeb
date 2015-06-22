@@ -16,18 +16,21 @@ package dk.dma.embryo.vessel.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dma.embryo.common.configuration.Property;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ProxyFactory;
-import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.resteasy.specimpl.ResteasyUriBuilder;
 import org.slf4j.Logger;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 @Singleton
 public class AisTrackClientFactory {
@@ -63,16 +66,12 @@ public class AisTrackClientFactory {
     
     @Produces
     public AisTrackClient createAisTrackClient() {
+        ResteasyClientBuilder clientBuilder = new ResteasyClientBuilder();
         if (enableHttpBasic()) {
-            logger.debug("Creating {} with HTTP Basic authentication for user {}", AisTrackClient.class.getSimpleName(), aisTrackUser);
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            Credentials credentials = new UsernamePasswordCredentials(aisTrackUser, aisTrackPwd);
-            httpClient.getCredentialsProvider().setCredentials(org.apache.http.auth.AuthScope.ANY, credentials);
-            ClientExecutor clientExecutor = new ApacheHttpClient4Executor(httpClient);
-            return ProxyFactory.create(AisTrackClient.class, aisTrackUrl, clientExecutor);
+            clientBuilder.register(new Authenticator(aisTrackUser, aisTrackPwd));
         }
-
-        return ProxyFactory.create(AisTrackClient.class, aisTrackUrl);
+        ResteasyWebTarget target = clientBuilder.build().target(ResteasyUriBuilder.fromUri(aisTrackUrl));
+        return target.proxy(AisTrackClient.class);
     }
 
     boolean enableHttpBasic() {
@@ -86,6 +85,39 @@ public class AisTrackClientFactory {
             return mapper.writeValueAsString(object);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Authenticator support Basic Http Authentication
+     * <p/>
+     * Borrowed from Adam Bien: http://www.adam-bien.com/roller/abien/entry/client_side_http_basic_access
+     */
+
+    public class Authenticator implements ClientRequestFilter {
+
+        private final String user;
+        private final String password;
+
+        public Authenticator(String user, String password) {
+            this.user = user;
+            this.password = password;
+        }
+
+        public void filter(ClientRequestContext requestContext) throws IOException {
+            MultivaluedMap<String, Object> headers = requestContext.getHeaders();
+            final String basicAuthentication = getBasicAuthentication();
+            headers.add("Authorization", basicAuthentication);
+
+        }
+
+        private String getBasicAuthentication() {
+            String token = this.user + ":" + this.password;
+            try {
+                return "BASIC " + DatatypeConverter.printBase64Binary(token.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException ex) {
+                throw new IllegalStateException("Cannot encode with UTF-8", ex);
+            }
         }
     }
 }
