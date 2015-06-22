@@ -138,11 +138,11 @@ public class AisVessel {
         vesselOverview.setType(type);
 
         vesselOverview.setInAW(false);
-        mapMaxSpeed(getMaxSpeed(), getMaxSpeedOrigin(), vesselOverview);
+        mapMaxSpeed(vesselOverview, getMaxSpeed(), getMaxSpeedOrigin());
         return vesselOverview;
     }
 
-    private static void mapMaxSpeed(Double maxSpeed, MaxSpeedOrigin maxSpeedOrigin, VesselOverview vesselOverview) {
+    private static void mapMaxSpeed(VesselOverview vesselOverview, Double maxSpeed, MaxSpeedOrigin maxSpeedOrigin) {
         if(maxSpeedOrigin == MaxSpeedOrigin.AW) {
             vesselOverview.setAwsog(maxSpeed);
         } else if (maxSpeedOrigin == MaxSpeedOrigin.TABLE) {

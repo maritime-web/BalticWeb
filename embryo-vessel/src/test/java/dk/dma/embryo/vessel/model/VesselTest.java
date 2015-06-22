@@ -71,6 +71,15 @@ public class VesselTest {
     }
 
     @Test
+    public void testIsUpToDate_AisDataIsNull() {
+        Vessel vessel1 = new Vessel(1L);
+
+        Assert.assertFalse(vessel1.isUpToDate("ET", "ETC", 11L));
+        Assert.assertTrue(vessel1.isUpToDate(null, null, null));
+    }
+
+
+    @Test
     public void testMergeNonReferenceFields() {
         // TEST DATA
 

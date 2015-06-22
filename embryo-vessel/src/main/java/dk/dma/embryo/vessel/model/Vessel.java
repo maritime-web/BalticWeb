@@ -135,8 +135,8 @@ public class Vessel extends BaseEntity<Long> {
     // Business Logic
     // //////////////////////////////////////////////////////////////////////
     public boolean isUpToDate(String name, String callSign, Long imo) {
-        return ObjectUtils.equals(aisData.getName(), name) && ObjectUtils.equals(aisData.getCallsign(), callSign)
-                && ObjectUtils.equals(aisData.getImoNo(), imo);
+        return ObjectUtils.equals(getAisData().getName(), name) && ObjectUtils.equals(getAisData().getCallsign(), callSign)
+                && ObjectUtils.equals(getAisData().getImoNo(), imo);
     }
 
     // //////////////////////////////////////////////////////////////////////

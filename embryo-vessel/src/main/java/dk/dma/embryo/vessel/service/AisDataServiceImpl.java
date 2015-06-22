@@ -105,7 +105,7 @@ public class AisDataServiceImpl implements AisDataService {
     /**
      * Method to retrieve a AIS information for specific vessels from the AIS server based on a list of MMSI numbers.
      *
-     * This method is NOT subject to surveillance, as it is expected invoked by a job which is under surveillance.
+     * This method is NOT subject to surveillance, as it is expected invoked by the job AisReplicatorJob which is under surveillance.
      *
      * @param mmsiNumbers
      * @return
@@ -114,7 +114,7 @@ public class AisDataServiceImpl implements AisDataService {
         AisTrackRequestParamBuilder fb = null;
         try {
             fb = new AisTrackRequestParamBuilder();
-            fb.setSourceFilter(defaultSources, aisSourceFilter);
+            fb.setSourceFilter(defaultSources, null);
 
             logger.trace("AisTrackClient.vessels({}, {})", mmsiNumbers, fb.getSourceFilter());
             List<AisTrack> aisTracks = aisTraclClient.vesselsByMmsis(mmsiNumbers, fb.getSourceFilter());

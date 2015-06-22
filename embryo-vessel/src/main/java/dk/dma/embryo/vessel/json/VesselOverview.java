@@ -16,10 +16,10 @@ package dk.dma.embryo.vessel.json;
 
 
 public class VesselOverview {
-    
-    private double angle;
-    private double x;
-    private double y;
+
+    private Double angle;
+    private Double x;
+    private Double y;
     private String name;
     private String type;
     private long mmsi;
@@ -33,44 +33,38 @@ public class VesselOverview {
     private Double sog;
     private Double ssog;
     private Double awsog;
-    
+
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        
-        long temp;
-        temp = Double.doubleToLongBits(angle);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result + ((callSign == null) ? 0 : callSign.hashCode());
-        result = prime * result + (inAW ? 1231 : 1237);
-        result = prime * result + (int) (mmsi ^ (mmsi >>> 32));
-        result = prime * result + (moored ? 1231 : 1237);
-        result = prime * result + ((awsog == null) ? 0 : awsog.hashCode());
-        result = prime * result + ((ssog == null) ? 0 : ssog.hashCode());
-        result = prime * result + ((sog == null) ? 0 : sog.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        temp = Double.doubleToLongBits(x);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        
+        int result = angle != null ? angle.hashCode() : 0;
+        result = 31 * result + (x != null ? x.hashCode() : 0);
+        result = 31 * result + (y != null ? y.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (int) (mmsi ^ (mmsi >>> 32));
+        result = 31 * result + (callSign != null ? callSign.hashCode() : 0);
+        result = 31 * result + (moored ? 1 : 0);
+        result = 31 * result + (inAW ? 1 : 0);
+        result = 31 * result + (sog != null ? sog.hashCode() : 0);
+        result = 31 * result + (ssog != null ? ssog.hashCode() : 0);
+        result = 31 * result + (awsog != null ? awsog.hashCode() : 0);
         return result;
     }
-    
 
-    public double getX() {
+    public Double getX() {
         return x;
     }
-    public void setX(double x) {
+
+    public void setX(Double x) {
         this.x = x;
     }
 
-    public double getY() {
+    public Double getY() {
         return y;
     }
-    public void setY(double y) {
+
+    public void setY(Double y) {
         this.y = y;
     }
 
@@ -116,10 +110,11 @@ public class VesselOverview {
         this.inAW = inArcticWeb;
     }
 
-    public double getAngle() {
+    public Double getAngle() {
         return angle;
     }
-    public void setAngle(double angle) {
+
+    public void setAngle(Double angle) {
         this.angle = angle;
     }
 

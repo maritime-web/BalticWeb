@@ -63,7 +63,8 @@ public class AisTrackRequestParamBuilder {
         if (defaultSourceFilter != null && defaultSourceFilter.trim().length() == 0) {
             defaultSourceFilter = null;
         }
-        String sourceFilter = aisSourceFilter.getAisFilter();
+
+        String sourceFilter = aisSourceFilter == null ? null : aisSourceFilter.getAisFilter();
         this.sourceFilter = sourceFilter == null || sourceFilter.trim().length() == 0 ? defaultSourceFilter : sourceFilter;
         return this;
     }

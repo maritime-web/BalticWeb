@@ -14,6 +14,7 @@
  */
 package dk.dma.embryo.vessel.integration;
 
+import dk.dma.embryo.vessel.json.VesselOverview;
 import dk.dma.embryo.vessel.model.AisData;
 import dk.dma.embryo.vessel.model.Vessel;
 import org.junit.Test;
@@ -26,6 +27,32 @@ import java.util.Random;
 import java.util.UUID;
 
 public class AisVesselTest {
+
+    @Test
+    public void testToVesselOverview_LatLonIsNull() {
+        // SETUP INPUT DATA
+        AisVessel aisVessel = createAisVessel(1L, "ET", "ETC");
+        aisVessel.setLon(null);
+        aisVessel.setLat(null);
+
+        // EXECUTE
+        VesselOverview result = aisVessel.toVesselOverview();
+
+        // EXPECTED RESULT
+        VesselOverview expected = new VesselOverview();
+        expected.setMmsi(1L);
+        expected.setCallSign("ETC");
+        expected.setName("ET");
+        expected.setAngle(aisVessel.getCog());
+        expected.setX(null);
+        expected.setY(null);
+        expected.setMoored(false);
+        expected.setInAW(false);
+        expected.setType("1");
+
+        // ASSERT
+        ReflectionAssert.assertReflectionEquals(expected, result);
+    }
 
     @Test
     public void testAddMissingVessels() {
