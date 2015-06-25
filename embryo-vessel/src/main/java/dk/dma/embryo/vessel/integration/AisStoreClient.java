@@ -18,12 +18,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dk.dma.embryo.vessel.json.TrackPos;
+import dk.dma.enav.model.geometry.Position;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -75,6 +77,35 @@ public interface AisStoreClient {
             tp.setSog(getSog());
             tp.setTs(getSrcClk());
             return tp;
+        }
+
+        public static List<TrackPosition> downSample(List<TrackPosition> list, int minPastTrackDist) {
+            List<TrackPosition> downSampled = new ArrayList<>(list.size());
+            if (list.size() == 0) {
+                return downSampled;
+            }
+            downSampled.add(list.get(0));
+            int i = 0;
+            int n;
+            while (i < list.size()) {
+                TrackPosition pos = list.get(i);
+                n = i + 1;
+                while (n < list.size()) {
+                    TrackPosition next = list.get(n);
+                    if (pos.distance(next) > minPastTrackDist) {
+                        downSampled.add(next);
+                        break;
+                    }
+                    n++;
+                }
+                i = n;
+            }
+            return downSampled;
+        }
+
+        public double distance(TrackPosition pos2) {
+            TrackPosition pos1 = this;
+            return Position.create(pos1.getLat(), pos1.getLon()).rhumbLineDistanceTo(Position.create(pos2.getLat(), pos2.getLon()));
         }
 
         // //////////////////////////////////////////////////////////////////////

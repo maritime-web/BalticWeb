@@ -37,6 +37,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static dk.dma.embryo.vessel.integration.AisStoreClient.TrackPosition;
+
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AisDataServiceImpl implements AisDataService {
@@ -212,10 +214,12 @@ public class AisDataServiceImpl implements AisDataService {
 
             String duration = AisStoreClient.LOOK_BACK_PT24H;
             logger.trace("AisStoreClient.historicalTrack({}, {}, {})", mmsi, fb.getSourceFilter(), duration);
-            List<AisStoreClient.TrackPosition> historicalTrack = aisStoreClient.pastTrack(mmsi, fb.getSourceFilter(), duration);
+            List<TrackPosition> historicalTrack = aisStoreClient.pastTrack(mmsi, fb.getSourceFilter(), duration);
             logger.trace("AisStoreClient.historicalTrack({}, {}, {}) : {}", mmsi, fb.getSourceFilter(), duration, historicalTrack);
 
-            List<TrackPos> result = historicalTrack.stream().map(track -> track.toTrackPos()).collect(Collectors.toList());
+            List<TrackPosition> downSampled = TrackPosition.downSample(historicalTrack, 500);
+
+            List<TrackPos> result = downSampled.stream().map(track -> track.toTrackPos()).collect(Collectors.toList());
 
             String msg = "Fetched historical track for vessel with mmsi=" + mmsi;
             logger.info(msg);
