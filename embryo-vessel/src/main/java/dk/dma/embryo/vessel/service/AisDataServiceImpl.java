@@ -23,7 +23,7 @@ import dk.dma.embryo.vessel.integration.AisTrackClient;
 import dk.dma.embryo.vessel.integration.AisTrackClient.AisTrack;
 import dk.dma.embryo.vessel.integration.AisTrackRequestParamBuilder;
 import dk.dma.embryo.vessel.integration.AisVessel;
-import dk.dma.embryo.vessel.json.TrackPosition;
+import dk.dma.embryo.vessel.json.TrackPos;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 import org.slf4j.Logger;
@@ -201,7 +201,7 @@ public class AisDataServiceImpl implements AisDataService {
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public List<TrackPosition> historicalTrack(Long mmsi) {
+    public List<TrackPos> historicalTrack(Long mmsi) {
 
         // TODO prevent call outside base area
 
@@ -212,10 +212,10 @@ public class AisDataServiceImpl implements AisDataService {
 
             String duration = AisStoreClient.LOOK_BACK_PT24H;
             logger.trace("AisStoreClient.historicalTrack({}, {}, {})", mmsi, fb.getSourceFilter(), duration);
-            List<AisStoreClient.AisTrack> historicalTrack = aisStoreClient.pastTrack(mmsi, fb.getSourceFilter(), duration);
+            List<AisStoreClient.TrackPosition> historicalTrack = aisStoreClient.pastTrack(mmsi, fb.getSourceFilter(), duration);
             logger.trace("AisStoreClient.historicalTrack({}, {}, {}) : {}", mmsi, fb.getSourceFilter(), duration, historicalTrack);
 
-            List<TrackPosition> result = historicalTrack.stream().map(track -> track.toTrackPosition()).collect(Collectors.toList());
+            List<TrackPos> result = historicalTrack.stream().map(track -> track.toTrackPos()).collect(Collectors.toList());
 
             String msg = "Fetched historical track for vessel with mmsi=" + mmsi;
             logger.info(msg);

@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by Jesper Tejlgaard on 6/24/15.
  */
-public class TrackPosition {
+public class TrackPos {
 
     private Double cog;
     private Double lat;

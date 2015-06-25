@@ -70,7 +70,7 @@ public class VesselRestService extends AbstractRestService {
     @GZIP
     public Response historicalTrack(@Context Request request, @QueryParam("mmsi") long mmsi) {
 
-        List<TrackPosition> historicalTrack = null;
+        List<TrackPos> historicalTrack = null;
         
         // Call long track if this call times out or get any kind of error call the regular track.
         /*

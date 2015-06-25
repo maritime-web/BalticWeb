@@ -17,7 +17,7 @@ package dk.dma.embryo.vessel.integration;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import dk.dma.embryo.vessel.json.TrackPosition;
+import dk.dma.embryo.vessel.json.TrackPos;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import javax.ws.rs.GET;
@@ -42,11 +42,11 @@ public interface AisStoreClient {
 
     @GET
     @Path("/pastTrack/{mmsi}")
-    List<AisTrack> pastTrack(@PathParam("mmsi") Long mmsi, @QueryParam("sourceFilter") String sourceFilters, @QueryParam("duration") String duration);
+    List<TrackPosition> pastTrack(@PathParam("mmsi") Long mmsi, @QueryParam("sourceFilter") String sourceFilters, @QueryParam("duration") String duration);
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    public static class AisTrack {
+    public static class TrackPosition {
 
         @JsonProperty("src.id")
         private String srcId;
@@ -67,8 +67,8 @@ public interface AisStoreClient {
         // //////////////////////////////////////////////////////////////////////
         // Utility methods
         // //////////////////////////////////////////////////////////////////////
-        public TrackPosition toTrackPosition() {
-            TrackPosition tp = new TrackPosition();
+        public TrackPos toTrackPos() {
+            TrackPos tp = new TrackPos();
             tp.setLat(getLat());
             tp.setLon(getLon());
             tp.setCog(getCog());

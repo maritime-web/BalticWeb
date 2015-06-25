@@ -18,7 +18,7 @@ package dk.dma.embryo.vessel.integration;
 import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.vessel.integration.AisStoreClient.AisTrack;
+import dk.dma.embryo.vessel.integration.AisStoreClient.TrackPosition;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
@@ -51,9 +51,9 @@ public class AisStoreClientIT {
         System.out.println(aisTrackUrl);
         System.out.println(aisTrackUser);
 
-        List<AisTrack> aisTracks = this.aisTrackClient.pastTrack(220443000L, "s.region!=802,808", "PT1H");
+        List<TrackPosition> trackPositions = this.aisTrackClient.pastTrack(220443000L, "s.region!=802,808", "PT1H");
 
-        System.out.println(aisTracks);
-        Assert.assertEquals(2, aisTracks.size());
+        System.out.println(trackPositions);
+        Assert.assertEquals(2, trackPositions.size());
     }
 }
