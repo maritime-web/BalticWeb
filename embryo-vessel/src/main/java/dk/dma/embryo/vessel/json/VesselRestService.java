@@ -17,8 +17,6 @@ package dk.dma.embryo.vessel.json;
 import dk.dma.embryo.common.EmbryonicException;
 import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.vessel.integration.AisVessel;
-import dk.dma.embryo.vessel.integration.AisViewServiceAllAisData;
-import dk.dma.embryo.vessel.integration.AisViewServiceAllAisData.TrackSingleLocation;
 import dk.dma.embryo.vessel.job.AisReplicatorJob;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
@@ -42,7 +40,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +48,6 @@ import java.util.stream.Collectors;
 @Path("/vessel")
 @RequestScoped
 public class VesselRestService extends AbstractRestService {
-    
-    @Inject
-    private AisViewServiceAllAisData historicalTrackAisViewService;
 
     @Inject
     private AisDataService aisDataService;
@@ -75,8 +69,8 @@ public class VesselRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response historicalTrack(@Context Request request, @QueryParam("mmsi") long mmsi) {
-        
-        List<TrackSingleLocation> historicalTrack = new ArrayList<>();
+
+        List<TrackPosition> historicalTrack = null;
         
         // Call long track if this call times out or get any kind of error call the regular track.
         /*
@@ -94,7 +88,8 @@ public class VesselRestService extends AbstractRestService {
         // The above statments are kept as comments because LONG tracks are disable because of instability.
         
         try {
-            historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
+            //historicalTrack = aisDataService.historicalTrack(mmsi, 500, );
+            historicalTrack = aisDataService.historicalTrack(mmsi);
         } catch (ClientResponseFailure crf) {
 
             if(crf.getResponse().getStatus() == 404) {
@@ -264,4 +259,5 @@ public class VesselRestService extends AbstractRestService {
             return additionalInformation;
         }
     }
+
 }

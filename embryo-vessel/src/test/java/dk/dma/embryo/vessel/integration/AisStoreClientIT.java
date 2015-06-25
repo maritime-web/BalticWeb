@@ -18,7 +18,7 @@ package dk.dma.embryo.vessel.integration;
 import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.vessel.integration.AisTrackClient.AisTrack;
+import dk.dma.embryo.vessel.integration.AisStoreClient.AisTrack;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,27 +33,25 @@ import java.util.List;
  */
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {AisClientFactory.class, PropertyFileService.class, LogConfiguration.class})
-public class AisTrackClientIT {
+public class AisStoreClientIT {
 
     @Inject
-    private AisTrackClient aisTrackClient;
+    private AisStoreClient aisTrackClient;
 
     @Inject
-    @Property("embryo.aistrack.server.url")
+    @Property("embryo.aisstore.server.url")
     private String aisTrackUrl;
 
     @Inject
-    @Property("embryo.aistrack.server.user")
+    @Property("embryo.aisstore.server.user")
     private String aisTrackUser;
 
     @Test
-    public void testVesselsByMmsis() {
+    public void testPastTrack() {
         System.out.println(aisTrackUrl);
         System.out.println(aisTrackUser);
 
-        List<Long> mmsiNumbers = Arrays.asList(220443000L, 220516000L);
-
-        List<AisTrack> aisTracks = this.aisTrackClient.vesselsByMmsis(mmsiNumbers, "s.region!=802,808");
+        List<AisTrack> aisTracks = this.aisTrackClient.pastTrack(220443000L, "s.region!=802,808", "PT1H");
 
         System.out.println(aisTracks);
         Assert.assertEquals(2, aisTracks.size());

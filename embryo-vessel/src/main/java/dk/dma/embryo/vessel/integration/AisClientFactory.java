@@ -16,7 +16,6 @@ package dk.dma.embryo.vessel.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dma.embryo.common.configuration.Property;
-import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.specimpl.ResteasyUriBuilder;
@@ -33,18 +32,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @Singleton
-public class AisTrackClientFactory {
+public class AisClientFactory {
 
     @Inject
     Logger logger;
-
-    @Inject
-    @Property("dk.dma.embryo.restclients.fullAisViewServiceInclNorwegianDataUrl")
-    private String fullAisViewServiceInclNorwegianDataUrl;
-    
-    @Inject
-    @Property("dk.dma.embryo.restclients.aisRestBaseUrl")
-    private String aisRestBaseUrl;
 
     @Inject
     @Property("embryo.aistrack.server.url")
@@ -59,25 +50,41 @@ public class AisTrackClientFactory {
     private String aisTrackPwd;
 
 
-    @Produces
-    public AisViewServiceAllAisData createFullAisViewInclNorwegianDataService() {
-        return ProxyFactory.create(AisViewServiceAllAisData.class, fullAisViewServiceInclNorwegianDataUrl);
-    }
-    
+    @Inject
+    @Property("embryo.aisstore.server.url")
+    private String aisStoreUrl;
+
+    @Inject
+    @Property("embryo.aisstore.server.user")
+    private String aisStoreUser;
+
+    @Inject
+    @Property("embryo.aisstore.server.pwd")
+    private String aisStorePwd;
+
+
     @Produces
     public AisTrackClient createAisTrackClient() {
+        return createClient(AisTrackClient.class, aisTrackUrl, aisTrackUser, aisTrackPwd);
+    }
+
+    @Produces
+    public AisStoreClient createAisStoreClient() {
+        return createClient(AisStoreClient.class, aisStoreUrl, aisStoreUser, aisStorePwd);
+    }
+
+    private static <T> T createClient(Class<T> type, String url, String user, String pwd) {
         ResteasyClientBuilder clientBuilder = new ResteasyClientBuilder();
-        if (enableHttpBasic()) {
-            clientBuilder.register(new Authenticator(aisTrackUser, aisTrackPwd));
+        if (enableHttpBasic(user, pwd)) {
+            clientBuilder.register(new Authenticator(user, pwd));
         }
-        ResteasyWebTarget target = clientBuilder.build().target(ResteasyUriBuilder.fromUri(aisTrackUrl));
-        return target.proxy(AisTrackClient.class);
+        ResteasyWebTarget target = clientBuilder.build().target(ResteasyUriBuilder.fromUri(url));
+        return target.proxy(type);
     }
 
-    boolean enableHttpBasic() {
-        return aisTrackUser != null && aisTrackUser.trim().length() > 0 && aisTrackPwd != null && aisTrackPwd.trim().length() > 0;
+    private static boolean enableHttpBasic(String user, String pwd) {
+        return user != null && user.trim().length() > 0 && pwd != null && pwd.trim().length() > 0;
     }
-
 
     public static String asJson(Object object) {
         ObjectMapper mapper = new ObjectMapper();
@@ -94,7 +101,7 @@ public class AisTrackClientFactory {
      * Borrowed from Adam Bien: http://www.adam-bien.com/roller/abien/entry/client_side_http_basic_access
      */
 
-    public class Authenticator implements ClientRequestFilter {
+    public static class Authenticator implements ClientRequestFilter {
 
         private final String user;
         private final String password;

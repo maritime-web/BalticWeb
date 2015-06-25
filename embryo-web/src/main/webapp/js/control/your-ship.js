@@ -38,7 +38,7 @@ $(function() {
             services : [],
             type : "edit"
         }, {
-            name : "Additional Information",
+            name : "Additional Information ",
             services : [],
             type : "view"
         } ];

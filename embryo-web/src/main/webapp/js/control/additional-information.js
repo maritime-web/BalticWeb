@@ -41,6 +41,7 @@ embryo.additionalInformation.historicalTrack = {
         return this.layer && this.layer.containsFeatures();
     },
     hide : function(vessel, vesselDetails) {
+        console.log("hide")
         this.layer.hideFeatures(vessel.mmsi);
     },
     hideAll : function() {

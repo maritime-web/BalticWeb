@@ -1,4 +1,5 @@
 function HistoricalTrackLayer() {
+
     this.init = function() {
         this.layers.tracks = new OpenLayers.Layer.Vector("trackLayer", {
             styleMap : new OpenLayers.StyleMap({
@@ -56,25 +57,23 @@ function HistoricalTrackLayer() {
 
         var maxNoTimestampsToDraw = 5;
 
-        var delta = (maxNoTimestampsToDraw - 1) / (tracks[tracks.length - 1].time - tracks[0].time - 1);
+        var delta = (maxNoTimestampsToDraw - 1) / (tracks[tracks.length - 1].ts - tracks[0].ts - 1);
 
         var oldHatCounter = -1;
 
         for ( var i in tracks) {
             var track = tracks[i];
 
-            var hatCounter = Math.floor((track.time - tracks[0].time) * delta);
+            var hatCounter = Math.floor((track.ts - tracks[0].ts) * delta);
 
             if (oldHatCounter != hatCounter) {
                 oldHatCounter = hatCounter;
 
                 var timeStampFeature = new OpenLayers.Feature.Vector(embryo.map.createPoint(track.lon, track.lat));
 
-                time = formatTime(track.time);
-
                 timeStampFeature.attributes = {
                     id : id,
-                    timeStamp : time,
+                    timeStamp: formatTime(track.ts),
                     align : "lm",
                     xOffset : 10
                 };

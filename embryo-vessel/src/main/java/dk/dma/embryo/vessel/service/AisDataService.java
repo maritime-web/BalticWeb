@@ -15,6 +15,7 @@
 package dk.dma.embryo.vessel.service;
 
 import dk.dma.embryo.vessel.integration.AisVessel;
+import dk.dma.embryo.vessel.json.TrackPosition;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public interface AisDataService {
     List<AisVessel> getAisVesselsByMmsi(List<Long> mmsiNumbers);
 
     boolean isHistoricalTrackAllowed(AisVessel vessel);
+
+    List<TrackPosition> historicalTrack(Long mmsi);
 
 
 

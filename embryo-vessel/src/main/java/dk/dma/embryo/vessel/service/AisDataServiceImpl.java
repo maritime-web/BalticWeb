@@ -18,10 +18,12 @@ import dk.dma.embryo.common.area.AreaFilter;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.vessel.integration.AisSourceFilter;
+import dk.dma.embryo.vessel.integration.AisStoreClient;
 import dk.dma.embryo.vessel.integration.AisTrackClient;
 import dk.dma.embryo.vessel.integration.AisTrackClient.AisTrack;
 import dk.dma.embryo.vessel.integration.AisTrackRequestParamBuilder;
 import dk.dma.embryo.vessel.integration.AisVessel;
+import dk.dma.embryo.vessel.json.TrackPosition;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 import org.slf4j.Logger;
@@ -69,6 +71,10 @@ public class AisDataServiceImpl implements AisDataService {
 
     @Inject
     private AisTrackClient aisTraclClient;
+
+    @Inject
+    private AisStoreClient aisStoreClient;
+
 
     @Inject
     EmbryoLogService embryoLogService;
@@ -171,7 +177,7 @@ public class AisDataServiceImpl implements AisDataService {
      *
      * This method is NOT subject to surveillance.
      *
-     * @param mmsi
+     * @param aisVessel
      * @return
      */
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -183,5 +189,43 @@ public class AisDataServiceImpl implements AisDataService {
         }
 
         return historicalTrack;
+    }
+
+    /**
+     * Method to retrieve a AIS information for a specific vessels from the AIS server based on a MMSI number.
+     * <p/>
+     * This method IS subject to surveillance.
+     *
+     * @param mmsi
+     * @return
+     */
+    @Override
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public List<TrackPosition> historicalTrack(Long mmsi) {
+
+        // TODO prevent call outside base area
+
+        AisTrackRequestParamBuilder fb = null;
+        try {
+            fb = new AisTrackRequestParamBuilder();
+            fb.setSourceFilter(defaultSources, aisSourceFilter);
+
+            String duration = AisStoreClient.LOOK_BACK_PT24H;
+            logger.trace("AisStoreClient.historicalTrack({}, {}, {})", mmsi, fb.getSourceFilter(), duration);
+            List<AisStoreClient.AisTrack> historicalTrack = aisStoreClient.pastTrack(mmsi, fb.getSourceFilter(), duration);
+            logger.trace("AisStoreClient.historicalTrack({}, {}, {}) : {}", mmsi, fb.getSourceFilter(), duration, historicalTrack);
+
+            List<TrackPosition> result = historicalTrack.stream().map(track -> track.toTrackPosition()).collect(Collectors.toList());
+
+            String msg = "Fetched historical track for vessel with mmsi=" + mmsi;
+            logger.info(msg);
+            embryoLogService.info(msg);
+            return result;
+        } catch (Exception e) {
+            String msg = "Error fetching historical track for vessel with mmsi=" + mmsi + " using source filter " + (fb == null ? "null" : fb.getSourceFilter());
+            logger.error(msg, e);
+            embryoLogService.error(msg, e);
+            throw e;
+        }
     }
 }

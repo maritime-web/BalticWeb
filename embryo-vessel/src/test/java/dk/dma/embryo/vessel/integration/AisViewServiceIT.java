@@ -39,7 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses(value = { AisTrackClientFactory.class, PropertyFileService.class })
+@AdditionalClasses(value = {AisClientFactory.class, PropertyFileService.class})
 public class AisViewServiceIT {
 
     @Inject
@@ -53,10 +53,10 @@ public class AisViewServiceIT {
     public void test() {
 
         List<AisVessel> vesselList = aisViewServiceAllAisData.vesselList(AisViewServiceAllAisData.LOOK_BACK_PT24H, AisViewServiceAllAisData.LOOK_BACK_PT24H);
-        
+
         System.out.println("Full list: " + vesselList.size());
     }
-    
+
     @Test
     public void testVesselTypes() {
 
