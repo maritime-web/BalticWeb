@@ -35,9 +35,9 @@ import java.util.List;
 @Path("/ais-store-rest")
 public interface AisStoreClient {
 
-    static final String LOOK_BACK_PT24H = "PT24H";
-    static final String LOOK_BACK_PT12H = "PT12H";
-    static final String LOOK_BACK_PT120H = "PT120H";
+    String LOOK_BACK_PT24H = "PT24H";
+    String LOOK_BACK_PT12H = "PT12H";
+    String LOOK_BACK_PT120H = "PT120H";
 
 
     @GET
