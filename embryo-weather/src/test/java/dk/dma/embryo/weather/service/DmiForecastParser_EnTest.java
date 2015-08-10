@@ -154,6 +154,20 @@ public class DmiForecastParser_EnTest {
 
     }
 
+    @Test
+    public void test201508061600FailedInProduction() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/dmi/grudseng_2015_08_05-08_16_00.xml");
+        try {
+            RegionForecast forecast = parser.parse(is);
+            Assert.fail("Parser error expected");
+        } catch (Exception e) {
+            // Should fail because of bad date format
+            Assert.assertTrue(e.getClass() == IOException.class);
+            Assert.assertEquals("Error parsing weather forecast", e.getMessage());
+            Assert.assertTrue(e.getCause().getClass() == IllegalArgumentException.class);
+            Assert.assertEquals("Invalid format: \"thursday d 6 August 2015 06\" is malformed at \"d 6 August 2015 06\"", e.getCause().getMessage());
+        }
+    }
 
     @Test
     public void testGrudseng() throws IOException {
