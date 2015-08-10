@@ -14,6 +14,7 @@
  */
 package dk.dma.embryo.user.json;
 
+import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.service.UserService;
@@ -31,7 +32,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Path("/user")
 public class UserRestService extends AbstractRestService {
@@ -41,6 +44,10 @@ public class UserRestService extends AbstractRestService {
 
     @Inject
     private UserService userService;
+
+    @Inject
+    @Property("embryo.ais.filters.namedSourceFilters")
+    private Map<String, String> namedSourceFilters;
 
     @DELETE
     @Path("/delete/{login}")
@@ -79,6 +86,18 @@ public class UserRestService extends AbstractRestService {
 
         return super.getResponse(request, result, NO_CACHE);
     }
+
+    @GET
+    @Path("/available-source-filters")
+    @Produces("application/json")
+    @GZIP
+    public Response namedSourceFilters(@Context Request request) {
+        List sourceFilterNames = new ArrayList<>(namedSourceFilters.size());
+        sourceFilterNames.addAll(namedSourceFilters.keySet());
+        return super.getResponse(request, sourceFilterNames, MAX_AGE_15_MINUTES);
+    }
+
+
 
     public static class User {
         

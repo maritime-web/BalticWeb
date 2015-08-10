@@ -20,6 +20,24 @@ $(function() {
             });
         }
 
+        function loadSourceFilters() {
+            UserService.sourceFilters(function (filters) {
+                var sourceFilters = [];
+                for (var index in filters) {
+                    sourceFilters.push({
+                        name: filters[index],
+                        value: filters[index]
+                    });
+                }
+                console.log(filters)
+                $scope.sourceFilters = filters;
+            }, function (error) {
+                $scope.alertMessages = error;
+            });
+        }
+
+
+        loadSourceFilters();
         loadUsers();
 
         $scope.roleText = function(logicalName) {
@@ -66,7 +84,7 @@ $(function() {
                 email 			: user.email,
                 role 			: user.role,
                 shipMmsi 		: user.shipMmsi,
-                accessToAisData : user.accessToAisData 
+                aisFilterName: user.aisFilterName
             };
             $scope.action = "Edit";
             $("#cLogin").focus();

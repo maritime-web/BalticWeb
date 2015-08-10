@@ -30,6 +30,13 @@
                 }).success(callback).error(function(data, status, headers, config) {
                     error(embryo.ErrorService.extractError(data, status, config));
                 });
+            },
+            sourceFilters: function (success, error) {
+                $http.get(embryo.baseUrl + "rest/user/available-source-filters", {
+                    timeout: embryo.defaultTimeout
+                }).success(success).error(function (data, status) {
+                    error(embryo.ErrorService.errorStatus(data, status, "loading AIS source filters"), status);
+                });
             }
         };
     });

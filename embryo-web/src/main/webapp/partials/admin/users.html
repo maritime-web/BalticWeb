@@ -11,7 +11,7 @@
 	</div>
  			
 	<div class="row">
-		<div class="col-md-7">
+        <div class="col-md-8">
 			<form class="form-search">
 				<div class="row">
 					<div class="col-xs-12 col-md-6 ">
@@ -36,7 +36,7 @@
 							<th>Email</th>
 							<th>Ship (MMSI)</th>
 							<th>Role</th>
-							<th>Access to AIS data</th>
+                            <th>AIS source filter</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -46,7 +46,7 @@
 							<td>{{user.email}}</td>
 							<td>{{user.shipMmsi ? user.shipMmsi : "-"}}</td>
 							<td>{{roleText(user.role)}}</td>
-							<td>{{user.accessToAisData ? "Yes" : "No"}}</td>
+                            <td>{{user.aisFilterName ? user.aisFilterName : "default"}}</td>
 							<td><a href="#" x-ng-click="del($event, user)">delete</a></td>
 						</tr>
 					</tbody>
@@ -54,7 +54,7 @@
 			</div>
 		</div>
 		<div class="col-md-1"></div>
-		<div class="col-md-5">
+        <div class="col-md-4">
 			<button class="btn btn-default btn-sm " x-ng-click="create()">Create New User</button>
 
 			<form name="userForm" x-ng-show="action">
@@ -62,13 +62,15 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group" x-ng-class="{'has-error':userForm.userLogin.$error.required}">
-							<label class="control-label" for="userLogin">Login:</label> 
-							<input type="text" id="userLogin" name="userLogin" class="form-control input-sm" x-ng-model="editUser.login" x-ng-disabled="action=='Edit'" required>
+							<label class="control-label" for="userLogin">Login:</label>
+                            <input type="text" id="userLogin" name="userLogin" class="form-control input-sm"
+                                   x-ng-model="editUser.login" x-ng-disabled="action=='Edit'" required/>
 							<span class="help-block" x-ng-show="userForm.userLogin.$error.required">Login required</span>
 						</div>
 						<div class="form-group" x-ng-class="{'has-error':userForm.userEmail.$error.required}">
-							<label class="control-label" for="cLogin">Email:</label> 
-							<input type="text" name="userEmail" class="form-control  input-sm" x-ng-model="editUser.email" required>
+							<label class="control-label" for="cLogin">Email:</label>
+                            <input type="text" name="userEmail" class="form-control  input-sm"
+                                   x-ng-model="editUser.email" required/>
 							<span class="help-block" x-ng-show="userForm.userEmail.$error.required">Email required</span>
 						</div>
 						<div class="form-group" x-ng-class="{'has-error':userForm.userRole.$error.required}">
@@ -89,31 +91,39 @@
 										name="userMmsi" 
 										class="form-control input-sm" 
 										x-ng-model="editUser.shipMmsi"
-										x-ng-hide="editUser.role != 'Sailor'" 
-										x-ng-required="editUser.role == 'Sailor'"> 
-									
-									<span class="help-block" x-ng-show="editUser.role == 'Sailor' && userForm.userMmsi.$error.required">MMSI must be provided for Sailors</span> 
-									<input type="text" class="form-control input-sm" x-ng-hide="editUser.role == 'Sailor'" disabled='disabled'>
+										x-ng-hide="editUser.role != 'Sailor'"
+                                        x-ng-required="editUser.role == 'Sailor'"/>
+
+                                <span class="help-block"
+                                      x-ng-show="editUser.role == 'Sailor' && userForm.userMmsi.$error.required">MMSI must be provided for Sailors</span>
+                                <input type="text" class="form-control input-sm" x-ng-hide="editUser.role == 'Sailor'"
+                                       disabled='disabled'/>
 							</div>
 						</div>
 						<div class="form-group" x-ng-show="action=='Create'" x-ng-class="{'has-error':action=='Create' && userForm.userPwd.$error.required}">
 							<label class="control-label" for="cPassword">Password:</label>
 							<div>
-								<input type="password" name="userPwd" class="form-control input-sm" x-ng-model="editUser.password" required>
+                                <input type="password" name="userPwd" class="form-control input-sm"
+                                       x-ng-model="editUser.password" required/>
 								<span class="help-block" x-ng-show="action=='Create' && userForm.userPwd.$error.required">Password required</span>
 							</div>
 						</div>
 						<div class="form-group" x-ng-show="action=='Create'" x-ng-class="{'has-error': action=='Create' && userForm.userPwdAgain.$error.passwordMatch}">
 							<label class="control-label" for="cPasswordAgain">Password repeated:</label>
 							<div>
-								<input type="password" name="userPwdAgain" class="form-control input-sm" x-ng-model="passwordAgain" x-password-match="editUser.password">
+                                <input type="password" name="userPwdAgain" class="form-control input-sm"
+                                       x-ng-model="passwordAgain" x-password-match="editUser.password"/>
 								<span class="help-block" x-ng-show="action=='Create' && userForm.userPwdAgain.$error.passwordMatch">Passwords must match</span>
 							</div>
 						</div>
-						<div class="form-group">	
-							<label class="checkbox" for="cAccessToAisData">
-								<input type="checkbox" name="accessToAisData" x-ng-model="editUser.accessToAisData">Access to AIS data
-							</label>
+						<div class="form-group">
+                            <label class="control-label" for="cAisSourceFilter">AIS source filter</label>
+                            <select id="cAisSourceFilter" name="cAisSourceFilter"
+                                    x-ng-options="filter for filter in sourceFilters"
+                                    x-ng-model="editUser.aisFilterName" class="form-control input-sm"
+                                    placeholder="default">
+                                <option value="">default</option>
+                            </select>
 						</div>
 						
 						<div class="form-group" x-ng-class="{'has-error':userForm.userLogin.$error.required}">

@@ -70,20 +70,21 @@ public class PropertyFileService {
 
     public Map<String, String> getMapProperty(String property) {
         String prop = getProperty(property);
+        return toMap(prop);
+    }
 
+    private Map<String, String> toMap(String value) {
         Map<String, String> result = new HashMap<String, String>();
-
-        if (prop != null) {
-            String[] providers = prop.split(";");
+        if (value != null) {
+            String[] providers = value.split(";");
 
             for (String provider : providers) {
-                String[] keyValue = provider.split("=");
+                String[] keyValue = provider.split("\\b=");
                 result.put(keyValue[0], keyValue[1]);
             }
         }
 
         return result;
-
     }
 
 
@@ -149,16 +150,7 @@ public class PropertyFileService {
     @Property
     public Map<String, String> getMapPropertyByKey(InjectionPoint ip) {
         String prop = getStringPropertyByKey(ip);
-
-        String[] providers = prop.split(";");
-
-        Map<String, String> result = new HashMap<String, String>();
-        for (String provider : providers) {
-            String[] keyValue = provider.split("=");
-            result.put(keyValue[0], keyValue[1]);
-        }
-
-        return result;
+        return toMap(prop);
     }
 
     @Produces

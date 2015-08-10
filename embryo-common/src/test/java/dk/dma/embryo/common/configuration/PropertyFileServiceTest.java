@@ -44,7 +44,7 @@ public class PropertyFileServiceTest {
 
     @Test
     public void testGetMapProperty_Value() throws IOException, URISyntaxException {
-        properties.put("mapProperty", "key1=foo bar;key2=foo baz");
+        properties.put("mapProperty", "key1=foo bar;key2=foo baz;key3=foo.b!=3,2");
 
         PropertyFileService service = new PropertyFileService(properties);
 
@@ -56,10 +56,11 @@ public class PropertyFileServiceTest {
         // verify present map property
         map = service.getMapProperty("mapProperty");
         Assert.assertNotNull(map);
-        Assert.assertEquals(2, map.size());
+        Assert.assertEquals(3, map.size());
 
         Assert.assertEquals("foo bar", map.get("key1"));
         Assert.assertEquals("foo baz", map.get("key2"));
+        Assert.assertEquals("foo.b!=3,2", map.get("key3"));
 
     }
 
