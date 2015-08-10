@@ -385,5 +385,6 @@
     <include file="liquibase/embryo-user-2.3.xml"/>
     <include file="liquibase/embryo-vessel-2.4.xml"/>
     <include file="liquibase/embryo-user-2.5.xml"/>
+    <include file="liquibase/embryo-reporting-2.5.xml"/>
 
 </databaseChangeLog>
