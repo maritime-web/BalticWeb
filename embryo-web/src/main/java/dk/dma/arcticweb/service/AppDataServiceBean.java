@@ -236,7 +236,7 @@ public class AppDataServiceBean {
 
     private void addBerthsFromFiles(List<Berth> berthList) {
         if (berthList == null) {
-            berthList = new ArrayList<Berth>();
+            berthList = new ArrayList<>();
         }
         InputStream berthStream = getClass().getResourceAsStream("/berths/berths_no.json");
         try {
