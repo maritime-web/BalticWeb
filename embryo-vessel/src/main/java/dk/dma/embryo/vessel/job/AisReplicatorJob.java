@@ -112,16 +112,7 @@ public class AisReplicatorJob {
             List<AisVessel> aisVessels = aisDataService.getAisVesselsByMmsi(Vessel.extractMmsiNumbers(arcticWebVessels));
 
             final Map<Long, AisVessel> aisVesselsByMmsi = AisVessel.asMap(aisVessels);
-
-            List<Vessel> vesselsToUpdate = arcticWebVessels.stream().filter(vessel -> {
-                AisVessel ves = aisVesselsByMmsi.get(vessel.getMmsi());
-                return !vessel.isUpToDate(ves.getName(), ves.getCallsign(), ves.getImoNo());
-            }).map(vessel -> {
-                AisVessel ves = aisVesselsByMmsi.get(vessel.getMmsi());
-                vessel.setAisData(new AisData(ves.getName(), ves.getCallsign(), ves.getImoNo()));
-                return vessel;
-            }).collect(Collectors.toList());
-
+            List<Vessel> vesselsToUpdate = new VesselsToUpdateBuilder().setAWVessels(arcticWebVessels).setAisVessels(aisVesselsByMmsi).build();
             List<Vessel> failedVessels = new LinkedList<>();
             for(Vessel vessel : vesselsToUpdate){
                 try{
@@ -149,6 +140,33 @@ public class AisReplicatorJob {
         } catch (Throwable t) {
             logger.error("AIS Replication Error", t);
             embryoLogService.error("AIS Replication Error", t);
+        }
+    }
+
+    public static class VesselsToUpdateBuilder {
+        private Map<Long, AisVessel> aisVessels;
+        private List<Vessel> arcticWebVessels;
+
+        public VesselsToUpdateBuilder setAisVessels(Map<Long, AisVessel> aisVessels) {
+            this.aisVessels = aisVessels;
+            return this;
+        }
+
+        public VesselsToUpdateBuilder setAWVessels(List<Vessel> arcticWebVessels) {
+            this.arcticWebVessels = arcticWebVessels;
+            return this;
+        }
+
+        List<Vessel> build() {
+            List<Vessel> vesselsToUpdate = arcticWebVessels.stream().filter(vessel -> {
+                AisVessel ves = aisVessels.get(vessel.getMmsi());
+                return ves != null && !vessel.isUpToDate(ves.getName(), ves.getCallsign(), ves.getImoNo());
+            }).map(vessel -> {
+                AisVessel ves = aisVessels.get(vessel.getMmsi());
+                vessel.setAisData(new AisData(ves.getName(), ves.getCallsign(), ves.getImoNo()));
+                return vessel;
+            }).collect(Collectors.toList());
+            return vesselsToUpdate;
         }
     }
 }
