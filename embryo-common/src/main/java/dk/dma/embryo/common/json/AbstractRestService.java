@@ -84,8 +84,9 @@ public abstract class AbstractRestService {
             settings = CacheControlSettings.MAXAGE_INCLUDE;
         }
         CacheControl cacheControl = getCacheControl(settings, cacheMaxAgeInSeconds);
-        
-        EntityTag entityTag = new EntityTag(Integer.toString(data.hashCode()));
+
+        String hashCode = Integer.toString(data == null ? "".hashCode() : data.hashCode());
+        EntityTag entityTag = new EntityTag(hashCode);
         ResponseBuilder builder = request.evaluatePreconditions(entityTag);
 
         if(builder == null) {
@@ -96,7 +97,7 @@ public abstract class AbstractRestService {
         builder.tag(entityTag);
         Response response = builder.build();
 
-        logger.debug("HTTP STATUS CODE: " + response.getStatus() + " - HASHCODE: " + Integer.toString(data.hashCode()));
+        logger.debug("HTTP STATUS CODE: {} - DATA: {}, HASHCODE: {}", response.getStatus(), data, hashCode);
         
         return response;
     }
