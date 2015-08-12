@@ -43,8 +43,10 @@
 						<td><input x-ng-model="voyage.location" x-typeahead="berth.value for berth in getBerths($viewValue)"
 							x-typeahead-on-select="getCoords($item, $model, $value)" class="input-sm form-control e-location-typeahead"
 							type="text" x-ng-required="!$parent.$last" /></td>
-						<td><input latitude x-ng-model="voyage.latitude" type="text" class="form-control input-sm lat" /></td>
-						<td><input longitude x-ng-model="voyage.longitude" type="text" class="form-control input-sm lon" /></td>
+                        <td><input latitude x-ng-model="voyage.latitude" type="text" class="form-control input-sm lat"
+                                   x-ng-required="!$last"/></td>
+                        <td><input longitude x-ng-model="voyage.longitude" type="text" class="form-control input-sm lon"
+                                   x-ng-required="!$last"/></td>
 						<td><datetimepicker x-ng-model="voyage.arrival" x-ng-required="!$last" /></td>
 						<td><datetimepicker x-ng-model="voyage.departure" x-ng-required="!$last" /></td>
 						<td><input x-ng-model="voyage.crew" type="text" class="form-control input-sm" /></td>
