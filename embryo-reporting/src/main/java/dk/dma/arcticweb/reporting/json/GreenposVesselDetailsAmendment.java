@@ -14,21 +14,19 @@
  */
 package dk.dma.arcticweb.reporting.json;
 
-import java.io.Serializable;
+import dk.dma.arcticweb.reporting.model.GreenposSearch;
+import dk.dma.arcticweb.reporting.service.GreenPosService;
+import dk.dma.embryo.vessel.json.Details;
+import dk.dma.embryo.vessel.json.VesselDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dk.dma.arcticweb.reporting.model.GreenposSearch;
-import dk.dma.arcticweb.reporting.service.GreenPosService;
-import dk.dma.embryo.vessel.json.Details;
-import dk.dma.embryo.vessel.json.VesselDetails;
+import java.io.Serializable;
 
 @Details
 @Interceptor
@@ -43,20 +41,20 @@ public class GreenposVesselDetailsAmendment implements Serializable {
     
     @AroundInvoke
     public Object amendDetails(InvocationContext invocationContext) throws Exception {
-        
-        logger.info("amendDetails");
-        
-        Response serverReponse = (Response)invocationContext.proceed();
-        VesselDetails result = (VesselDetails) serverReponse.getEntity();
-        
-        if(result != null) {
-            
-            Long mmsi = result.getMmsi() != null ? result.getMmsi() : result.getAisVessel().getMmsi();
-            GreenposSearch s = new GreenposSearch(null, mmsi, null, null, null, 0, 1);
-            boolean greenpos = greenposService.findReports(s).size() > 0;
-            result.getAdditionalInformation().put("greenpos", greenpos);
-        }
+        logger.trace("amendDetails(x)");
 
-        return serverReponse;
+        Response serverResponse = (Response) invocationContext.proceed();
+        VesselDetails result = (VesselDetails) serverResponse.getEntity();
+
+        if(result != null) {
+            Long mmsi = result.getMmsiNumber();
+            if (mmsi != null) {
+                GreenposSearch s = new GreenposSearch(null, mmsi, null, null, null, 0, 1);
+                boolean greenpos = greenposService.findReports(s).size() > 0;
+                result.getAdditionalInformation().put("greenpos", greenpos);
+            }
+        }
+        return serverResponse;
     }
+
 }
