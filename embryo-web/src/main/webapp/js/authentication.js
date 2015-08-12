@@ -347,6 +347,11 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
     }
 
     embryo.LoginModalCtrl = function ($scope, $http, $modalInstance, $location, Subject, msg) {
+        function resetMsgs() {
+            $scope.infoMsg = null;
+            $scope.msg = null;
+        }
+
         $scope.msg = msg;
         $scope.focusMe = true;
 
@@ -361,6 +366,8 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
         $scope.forgot = false;
 
         $scope.login = function () {
+            resetMsgs();
+
             var messageId = embryo.messagePanel.show({
                 text: "Logging in ..."
             });
@@ -406,11 +413,12 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
         };
 
         $scope.sendPassword = function () {
+            resetMsgs();
             var data = {
                 emailAddress: $scope.user.email
             };
             $http.post(embryo.baseUrl + "rest/forgot-password/request", data).success(function (details) {
-                $scope.msg = 'E-mail sent!';
+                $scope.infoMsg = 'E-mail sent!';
                 $scope.user.email = '';
             }).error(function (data, status) {
                 $scope.msg = data;
@@ -422,11 +430,13 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
         };
 
         $scope.forgotPassword = function () {
+            resetMsgs();
             $scope.forgot = true;
 
         };
 
         $scope.back = function () {
+            resetMsgs();
             $scope.forgot = false;
         };
 
