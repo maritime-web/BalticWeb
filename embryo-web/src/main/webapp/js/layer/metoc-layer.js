@@ -180,7 +180,7 @@ function MetocLayer(service) {
             },
             backgroundOffset : function(feature) {
                 return -context.backgroundSize(feature) / 2;
-            },
+            }
         };
 
         this.layers.metoc = new OpenLayers.Layer.Vector("METOC", {
@@ -191,7 +191,7 @@ function MetocLayer(service) {
                     display : "${display}",
                     graphicWidth : "${width}",
                     graphicHeight : "${height}",
-                    rotation : "${rotation}",
+                    rotation: "${rotation}"
                 }, {
                     context : context
                 }),
@@ -201,7 +201,7 @@ function MetocLayer(service) {
                     backgroundXOffset : "${backgroundOffset}",
                     backgroundYOffset : "${backgroundOffset}",
                     backgroundHeight : "${backgroundSize}",
-                    backgroundWidth : "${backgroundSize}",
+                    backgroundWidth: "${backgroundSize}"
                 }, {
                     context : context
                 })
@@ -218,7 +218,7 @@ function MetocLayer(service) {
                     return "display";
                 }
                 return "none";
-            },
+            }
         };
 
         this.layers.labels = new OpenLayers.Layer.Vector(
