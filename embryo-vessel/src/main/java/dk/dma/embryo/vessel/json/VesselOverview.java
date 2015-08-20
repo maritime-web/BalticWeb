@@ -14,7 +14,6 @@
  */
 package dk.dma.embryo.vessel.json;
 
-
 public class VesselOverview {
 
     private Double angle;
@@ -34,7 +33,9 @@ public class VesselOverview {
     private Double ssog;
     private Double awsog;
 
-
+    // //////////////////////////////////////////////////////////////////////
+    // Object methods
+    // //////////////////////////////////////////////////////////////////////
     @Override
     public int hashCode() {
         int result = angle != null ? angle.hashCode() : 0;
@@ -52,6 +53,27 @@ public class VesselOverview {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "VesselOverview{" +
+                "angle=" + angle +
+                ", x=" + x +
+                ", y=" + y +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", mmsi=" + mmsi +
+                ", callSign='" + callSign + '\'' +
+                ", moored=" + moored +
+                ", inAW=" + inAW +
+                ", sog=" + sog +
+                ", ssog=" + ssog +
+                ", awsog=" + awsog +
+                '}';
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // Property methods
+    // //////////////////////////////////////////////////////////////////////
     public Double getX() {
         return x;
     }
