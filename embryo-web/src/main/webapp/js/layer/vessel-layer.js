@@ -60,6 +60,15 @@ function VesselLayer(conf) {
             },
             vesselSize: function() {
                 return [0.5, 0.5, 0.55, 0.60, 0.65, 0.70, 0.8, 0.90, 1.0][that.zoomLevel];
+            },
+            label: function (feature) {
+                return feature.attributes.label ? feature.attributes.label : '';
+            },
+            selectionSize: function (feature) {
+                return 32 * that.context.vesselSize();
+            },
+            selectionOffSet: function (feature) {
+                return -16 * that.context.vesselSize();
             }
         };
 
@@ -76,63 +85,31 @@ function VesselLayer(conf) {
                 }, { context: this.context }),
                 "select" : new OpenLayers.Style({
                     cursor : "crosshair",
-                    externalGraphic : "${image}"
-                }, { context: this.context })
-            }, { context: this.context })
-        });
-
-        this.layers.marker=   new OpenLayers.Layer.Vector("Markers", {
-            styleMap : new OpenLayers.StyleMap({
-                "default" : new OpenLayers.Style({
                     externalGraphic : "${image}",
                     graphicWidth : "${imageWidth}",
                     graphicHeight : "${imageHeight}",
-                    graphicYOffset : "${imageYOffset}",
                     graphicXOffset : "${imageXOffset}",
-                    rotation : "${angle}",
-                    graphicOpacity : "${transparency}"
-                }, { context: this.context }),
-                "select" : new OpenLayers.Style({
-                    cursor : "crosshair",
-                    externalGraphic : "${image}"
-                }, { context: this.context })
-            })
-        });
-
-        this.layers.selection = new OpenLayers.Layer.Vector("Selection", {
-            styleMap : new OpenLayers.StyleMap({
-                "default" : new OpenLayers.Style({
-                    externalGraphic : "${image}",
-                    graphicWidth : "${imageWidth}",
-                    graphicHeight : "${imageHeight}",
                     graphicYOffset : "${imageYOffset}",
-                    graphicXOffset : "${imageXOffset}",
                     graphicOpacity : "${transparency}",
+                    backgroundGraphic: "img/selection.png",
+                    backgroundWidth: "${selectionSize}",
+                    backgroundHeight: "${selectionSize}",
+                    backgroundXOffset: "${selectionOffSet}",
+                    backgroundYOffset: "${selectionOffSet}",
                     rotation : "${angle}"
-                }, { context: this.context }),
-                "select" : new OpenLayers.Style({
-                    cursor : "crosshair",
-                    externalGraphic : "${image}"
                 }, { context: this.context })
             }, { context: this.context })
-        });
-
-        this.layers.icon = new OpenLayers.Layer.Vector("Icons", {
-            styleMap : new OpenLayers.StyleMap({
-                "default" : new OpenLayers.Style({
-                    externalGraphic : "${image}",
-                    graphicWidth : "${imageWidth}",
-                    graphicHeight : "${imageHeight}",
-                    graphicYOffset : "${imageYOffset}",
-                    graphicXOffset : "${imageXOffset}",
-                    graphicOpacity: "${transparency}"
-                }, { context: this.context })
-            })
         });
 
         this.layers.unselectable = new OpenLayers.Layer.Vector("UnselectableFeatures", {
             styleMap: new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style({
+                    externalGraphic : "${image}",
+                    graphicWidth : "${imageWidth}",
+                    graphicHeight : "${imageHeight}",
+                    graphicYOffset : "${imageYOffset}",
+                    graphicXOffset : "${imageXOffset}",
+                    graphicOpacity: "${transparency}",
                     fillColor: "${fill}",
                     fillOpacity: "${transparency}",
                     strokeWidth: "1",
@@ -149,35 +126,12 @@ function VesselLayer(conf) {
             })
         });
 
-
         this.selectableLayers = [this.layers.vessel];
         this.selectableAttribute = "vessel.mmsi";
         this.selectedId = null;
 
         this.select(function(id) {
             that.selectedId = id;
-            that.layers.selection.removeAllFeatures();
-
-            $.each(that.layers.vessel.features, function (k,v) {
-                if (v.attributes.vessel.mmsi == id) {
-                    that.layers.selection.addFeatures([
-                        new OpenLayers.Feature.Vector(
-                             that.map.createPoint(v.attributes.vessel.x, v.attributes.vessel.y), {
-                                id : -1,
-                                angle : v.attributes.vessel.angle - 90,
-                                opacity : 1,
-                                image : "img/selection.png",
-                                imageWidth : function() { return 32 * that.context.vesselSize(); },
-                                imageHeight : function() { return 32 * that.context.vesselSize(); },
-                                imageYOffset : function() { return -16 * that.context.vesselSize(); },
-                                imageXOffset : function() { return -16 * that.context.vesselSize(); },
-                                type : "selection"
-                            })
-                    ]);
-                }
-            });
-
-            that.layers.selection.redraw();
         });
 
         if (this.config && this.config.clusteringEnabled) {
@@ -432,21 +386,15 @@ function VesselLayer(conf) {
         vesselLayer.destroyFeatures(arr);
         vesselLayer.redraw();
 
-        var markerLayer = this.layers.marker;
-        markerLayer.removeAllFeatures();
-        if (markedVessel != null) {
-            markerLayer.addFeatures([createMarkedFeature(markedVessel, context)]);
-        }
-        markerLayer.redraw();
-
-        var iconLayer = this.layers.icon;
-        iconLayer.removeAllFeatures();
-        iconLayer.addFeatures(features.awFeatures);
-        iconLayer.redraw();
-
         this.layers.unselectable.removeAllFeatures();
         this.layers.unselectable.addFeatures(features.unSelectable);
+        this.layers.unselectable.addFeatures(features.awFeatures);
+        if (markedVessel != null) {
+            this.layers.unselectable.addFeatures([createMarkedFeature(markedVessel, context)]);
+        }
+
         this.layers.unselectable.redraw();
+
     };
 
     this.draw = function (vessels) {
