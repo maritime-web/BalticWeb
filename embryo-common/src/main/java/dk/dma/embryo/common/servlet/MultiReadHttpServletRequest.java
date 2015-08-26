@@ -50,6 +50,14 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
         IOUtils.copy(super.getInputStream(), cachedBytes);
     }
 
+    public static MultiReadHttpServletRequest create(HttpServletRequest request) {
+        if (request instanceof MultiReadHttpServletRequest) {
+            return (MultiReadHttpServletRequest) request;
+        }
+
+        return new MultiReadHttpServletRequest(request);
+    }
+
     /* An inputstream which reads the cached request body */
     public class CachedServletInputStream extends ServletInputStream {
         private ByteArrayInputStream input;
@@ -63,13 +71,5 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
         public int read() throws IOException {
             return input.read();
         }
-    }
-
-    public static MultiReadHttpServletRequest create(HttpServletRequest request) {
-        if (request instanceof MultiReadHttpServletRequest) {
-            return (MultiReadHttpServletRequest) request;
-        }
-
-        return new MultiReadHttpServletRequest(request);
     }
 }
