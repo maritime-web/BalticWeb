@@ -97,7 +97,7 @@ public abstract class AbstractRestService {
         builder.tag(entityTag);
         Response response = builder.build();
 
-        logger.debug("HTTP STATUS CODE: {} - DATA: {}, HASHCODE: {}", response.getStatus(), data, hashCode);
+        logger.debug("HTTP STATUS CODE: {} - HASHCODE: {}", response.getStatus(), hashCode);
         
         return response;
     }
