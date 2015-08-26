@@ -12,17 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.user.shiro;
+package dk.dma.embryo.common.servlet;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-
-import org.apache.commons.io.IOUtils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * @author Jesper Tejlgaard
@@ -30,7 +29,7 @@ import org.apache.commons.io.IOUtils;
 public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
     private ByteArrayOutputStream cachedBytes;
 
-    public MultiReadHttpServletRequest(HttpServletRequest request) {
+    MultiReadHttpServletRequest(HttpServletRequest request) {
         super(request);
     }
 
@@ -64,5 +63,13 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
         public int read() throws IOException {
             return input.read();
         }
+    }
+
+    public static MultiReadHttpServletRequest create(HttpServletRequest request) {
+        if (request instanceof MultiReadHttpServletRequest) {
+            return (MultiReadHttpServletRequest) request;
+        }
+
+        return new MultiReadHttpServletRequest(request);
     }
 }

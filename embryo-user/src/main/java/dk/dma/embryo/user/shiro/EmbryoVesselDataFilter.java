@@ -14,7 +14,12 @@
  */
 package dk.dma.embryo.user.shiro;
 
-import java.io.IOException;
+import dk.dma.embryo.common.servlet.MultiReadHttpServletRequest;
+import dk.dma.embryo.user.shiro.Error.AuthCode;
+import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.util.WebUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,13 +27,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.shiro.web.filter.AccessControlFilter;
-import org.apache.shiro.web.util.WebUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dk.dma.embryo.user.shiro.Error.AuthCode;
+import java.io.IOException;
 
 /**
  * @author Jesper Tejlgaard
@@ -40,7 +39,7 @@ public abstract class EmbryoVesselDataFilter extends AccessControlFilter {
     @Override
     public void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        MultiReadHttpServletRequest multiReadRequest = new MultiReadHttpServletRequest((HttpServletRequest) request);
+        MultiReadHttpServletRequest multiReadRequest = MultiReadHttpServletRequest.create((HttpServletRequest) request);
         super.doFilterInternal(multiReadRequest, response, chain);
     }
 
