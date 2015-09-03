@@ -14,6 +14,7 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dk.dma.embryo.vessel.integration.AisVessel;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
@@ -23,6 +24,7 @@ import java.util.Map;
  * 
  * @author Jesper Tejlgaard
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class VesselDetails {
     
     /** Ship name */
@@ -60,6 +62,7 @@ public class VesselDetails {
     // //////////////////////////////////////////////////////////////////////
     // Business Logic
     // //////////////////////////////////////////////////////////////////////
+
     public Long getMmsiNumber() {
         if (getMmsi() != null) {
             return getMmsi();
