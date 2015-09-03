@@ -7,7 +7,4 @@
         $scope.user = UserService;
         
     };
-
-    
-    
 }());

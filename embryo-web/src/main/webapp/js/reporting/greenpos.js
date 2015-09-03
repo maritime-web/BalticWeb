@@ -287,7 +287,9 @@ var greenposScope;
                 type: "PR"
             };
             $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId && vesselDetails.additionalInformation.routeId.length > 0);
-            $scope.inclWps = $scope.hasActiveRoute;
+            $scope.inclWps = $scope.hasActiveRoute
+
+            $scope.editVesselInformation = !vesselOverview || !vesselOverview.name || !vesselOverview.callSign;
 
             ScheduleService.getActiveVoyage(vesselOverview.mmsi, vesselDetails.additionalInformation.routeId, function (voyageInfo) {
                 if (!voyageInfo) {
