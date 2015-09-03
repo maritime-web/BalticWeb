@@ -14,8 +14,7 @@
  */
 package dk.dma.embryo.common.rs;
 
-import java.util.LinkedList;
-import java.util.List;
+import dk.dma.embryo.common.util.FormatException;
 
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.validation.ConstraintViolation;
@@ -24,8 +23,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import dk.dma.embryo.common.util.FormatException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Jesper Tejlgaard
@@ -87,7 +86,7 @@ public class CommonExceptionMappers {
     public static class IllegalArgumentMapper implements ExceptionMapper<IllegalArgumentException> {
         @Override
         public Response toResponse(IllegalArgumentException exception) {
-            return Response.status(Status.BAD_REQUEST).entity(exception.getMessage()).build();
+            return Response.status(Status.BAD_REQUEST).entity(new String[]{exception.getMessage()}).build();
         }
     }
 
@@ -95,7 +94,7 @@ public class CommonExceptionMappers {
     public static class FormatMapper implements ExceptionMapper<FormatException> {
         @Override
         public Response toResponse(FormatException exception) {
-            return Response.status(Status.BAD_REQUEST).entity(exception.getMessage()).build();
+            return Response.status(Status.BAD_REQUEST).entity(new String[]{exception.getMessage()}).build();
         }
     }
 }

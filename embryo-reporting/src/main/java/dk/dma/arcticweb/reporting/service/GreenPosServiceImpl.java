@@ -148,9 +148,9 @@ public class GreenPosServiceImpl implements GreenPosService {
         // If report is send by sailor, then validate, that he is reporting on behalf of his own vessel
         // Validation if his vessel name is still not registered in the system.
         if (vessel.getAisData().getCallsign() != null
-                && !vessel.getAisData().getCallsign().equals(report.getVesselCallSign())) {
+                && !vessel.getAisData().getCallsign().equalsIgnoreCase(report.getVesselCallSign())) {
             throw new IllegalArgumentException(
-                    "Reported vessel call sign must match the call sign of the users vessel.");
+                    "Reported vessel call sign must match the expected call sign " + vessel.getAisData().getCallsign());
         }
 
         if (vessel.getMmsi() != null && !vessel.getMmsi().equals(report.getVesselMmsi())) {
@@ -158,8 +158,8 @@ public class GreenPosServiceImpl implements GreenPosService {
         }
 
         // Validation skipped if his vessel name is still not registered in the system.
-        if (vessel.getAisData().getName() != null && !vessel.getAisData().getName().equals(report.getVesselName())) {
-            throw new IllegalArgumentException("Reported vessel name must match the vessel name of the users vessel");
+        if (vessel.getAisData().getName() != null && !vessel.getAisData().getName().equalsIgnoreCase(report.getVesselName())) {
+            throw new IllegalArgumentException("Reported vessel name must match the expected vessel name " + vessel.getAisData().getName());
         }
     }
 
