@@ -436,9 +436,12 @@
         }
     }
 
-    module.service('SarService', function () {
+    module.service('SarService', [ '$log', '$timeout', function ($log, $timeout) {
+        var selectedSarById;
         var selectedSar;
         var listeners = {};
+
+        var db = new PouchDB('arcticweb');
 
         function notifyListeners() {
             for (var key in listeners) {
@@ -466,17 +469,27 @@
             searchObjectTypes: function () {
                 return leewayObjectTypes;
             },
-            selectedSar: function (sar) {
-                selectedSar = sar;
-                notifyListeners();
-            },
-            registerSelectedSarListener: function (name, fn) {
-                listeners[name] = fn;
+            selectSar: function (sarId) {
+                selectedSarById = sarId;
 
-                if (selectedSar) {
-                    fn(selectedSar);
+                db.get(sarId).catch(function(err){
+                    $log.error(err)
+                    throw err;
+                }).then(function(res){
+                    $timeout(function(){
+                        selectedSar = res;
+                        notifyListeners();
+                    })
+                })
+            },
+
+            sarSelected: function (name, fn) {
+                listeners[name] = fn;
+                if (selectedSarById) {
+                    fn(selectedSarById);
                 }
             },
+
 
             validateSarInput: function (input) {
                 // this was written to prevent Chrome browser running in indefinite loops
@@ -489,27 +502,12 @@
                 }
                 return result;
             },
-            sar: null,
-            subscribers: [],
             save: function (sarOperation) {
 
-                this.sar = sarOperation;
-
-                for (var index in this.subscribers) {
-                    this.subscribers[index](this.sar);
-                }
-            },
-
-            subscribe: function (callback) {
-                if (this.sar) {
-                    callback(this.sar);
-                }
-
-                this.subscribers.push(callback);
             }
         };
 
         return service;
-    });
+    }]);
 
 })();

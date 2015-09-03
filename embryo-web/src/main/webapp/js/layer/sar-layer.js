@@ -34,7 +34,7 @@ function SarLayer() {
             }
         };
 
-        this.layers.lines = new OpenLayers.Layer.Vector("SAR Layer", {
+        this.layers.sar = new OpenLayers.Layer.Vector("SAR Layer", {
             renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
             styleMap: new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style({
@@ -51,6 +51,10 @@ function SarLayer() {
 
             })
         });
+
+        this.selectableLayers = [this.layers.sar];
+        this.selectableAttribute = "sarId";
+
     };
 
     function createSearchArea(searchArea) {
@@ -122,7 +126,7 @@ function SarLayer() {
             return feature.attributes.id === vessel.mmsi && feature.attributes.type === 'circle';
         }
 
-        return this.containsFeature(featureFilter, this.layers.lines);
+        return this.containsFeature(featureFilter, this.layers.sar);
     };
 
     this.containsNearestVessel = function (vessel) {
@@ -130,7 +134,7 @@ function SarLayer() {
             return feature.attributes.id === vessel.mmsi && feature.attributes.type === 'nearest';
         }
 
-        return this.containsFeature(featureFilter, this.layers.lines);
+        return this.containsFeature(featureFilter, this.layers.sar);
     };
 
     function addSearchRing(features, circle, label) {
@@ -149,37 +153,37 @@ function SarLayer() {
     }
 
     this.draw = function (sar) {
-        this.layers.lines.removeAllFeatures();
+        this.layers.sar.removeAllFeatures();
 
         if (sar.output.datum) {
-            addSearchRing(this.layers.lines, sar.output, "Datum");
+            addSearchRing(this.layers.sar, sar.output, "Datum");
 
-            this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea));
+            this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea));
 
-            addLKP(this.layers.lines, sar.input.lastKnownPosition);
-            addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.datum);
-            addDriftVector(this.layers.lines, prepareDriftVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.windPositions))
+            addLKP(this.layers.sar, sar.input.lastKnownPosition);
+            addRdv(this.layers.sar, sar.input.lastKnownPosition, sar.output.datum);
+            addDriftVector(this.layers.sar, prepareDriftVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.windPositions))
         } else if (sar.output.downWind) {
-            addSearchRing(this.layers.lines, sar.output.downWind, "Datum down wind");
-            addSearchRing(this.layers.lines, sar.output.min, "Datum min");
-            addSearchRing(this.layers.lines, sar.output.max, "Datum max");
+            addSearchRing(this.layers.sar, sar.output.downWind, "Datum down wind");
+            addSearchRing(this.layers.sar, sar.output.min, "Datum min");
+            addSearchRing(this.layers.sar, sar.output.max, "Datum max");
 
-            this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea));
+            this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea));
             /*
-             this.layers.lines.addFeatures(createSearchArea(sar.output.searchArea2), {
+             this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea2), {
              type: 'area'
              });
              */
-            addLKP(this.layers.lines, sar.input.lastKnownPosition);
-            addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.downWind.datum);
-            addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.min.datum);
-            addRdv(this.layers.lines, sar.input.lastKnownPosition, sar.output.max.datum);
-            addDriftVector(this.layers.lines, prepareDriftVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.downWind.datumPositions))
-            addDriftVector(this.layers.lines, prepareDriftVectors(null, sar.output.currentPositions, sar.output.min.datumPositions))
-            addDriftVector(this.layers.lines, prepareDriftVectors(null, sar.output.currentPositions, sar.output.max.datumPositions))
+            addLKP(this.layers.sar, sar.input.lastKnownPosition);
+            addRdv(this.layers.sar, sar.input.lastKnownPosition, sar.output.downWind.datum);
+            addRdv(this.layers.sar, sar.input.lastKnownPosition, sar.output.min.datum);
+            addRdv(this.layers.sar, sar.input.lastKnownPosition, sar.output.max.datum);
+            addDriftVector(this.layers.sar, prepareDriftVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.downWind.datumPositions))
+            addDriftVector(this.layers.sar, prepareDriftVectors(null, sar.output.currentPositions, sar.output.min.datumPositions))
+            addDriftVector(this.layers.sar, prepareDriftVectors(null, sar.output.currentPositions, sar.output.max.datumPositions))
         }
 
-        this.layers.lines.refresh();
+        this.layers.sar.refresh();
 
     };
 }

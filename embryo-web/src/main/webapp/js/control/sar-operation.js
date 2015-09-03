@@ -3,7 +3,7 @@ $(function () {
 //    var msiLayer = new MsiLayer();
 //    addLayerToMap("msi", msiLayer, embryo.map);
 
-    var module = angular.module('embryo.sar.views', ["firebase", 'embryo.sar.service', 'embryo.common.service', 'ui.bootstrap.typeahead', 'embryo.validation.compare', 'embryo.datepicker']);
+    var module = angular.module('embryo.sar.views', ['embryo.sar.service', 'embryo.common.service', 'ui.bootstrap.typeahead', 'embryo.validation.compare', 'embryo.datepicker']);
 
 
     module.directive('lteq', function () {
@@ -59,6 +59,8 @@ $(function () {
     module.controller("SAROperationEditController", ['$scope', 'ViewService', 'SarService', '$q', function ($scope, ViewService, SarService, $q) {
         var now = Date.now();
 
+        var db = new PouchDB('arcticweb');
+
         var sarLayer = SarLayerSingleton.getInstance();
 
         $scope.alertMessages = [];
@@ -69,6 +71,18 @@ $(function () {
             type: "new",
             show: function (context) {
                 $scope.page = context && context.page ? context.page : 'typeSelection'
+
+                if (context.sarId) {
+                    console.log("show " + context.sarId)
+                    db.get(context.sarId).then(function (sarOperation) {
+                        console.log("found")
+                        console.log(sarOperation)
+                        $scope.sar = sarOperation.input;
+                        $scope.$apply(function () {
+                        });
+                    })
+                }
+
                 this.doShow = true;
             },
             close: function () {
@@ -192,6 +206,22 @@ $(function () {
         }
 
         $scope.finish = function () {
+
+            var id = "sar-operation" + Date.now();
+            db.get("sar-operations").then(function (sars) {
+                console.log(sars);
+                console.log($scope.sarOperation)
+                sars.operations.push({
+                    id: id,
+                    name: $scope.sarOperation.input.no
+                })
+                db.put(sars);
+            })
+
+            $scope.sarOperation._id = id;
+
+            db.put($scope.sarOperation);
+
             sarLayer.draw($scope.sarOperation);
             $scope.provider.doShow = false;
         }
