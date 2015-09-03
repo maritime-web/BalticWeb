@@ -44,7 +44,8 @@
 					<div class="control-group form-group row">
 						<label class="e-control-label" for="people">Estimated Rescue Capacity (Persons)</label>
 						<div class="controls col-xs-3">
-							<input type="text" id="people" class="input-sm form-control" x-ng-model="vessel.maxPersons" />
+                            <input type="number" id="people" class="input-sm form-control"
+                                   x-ng-model="vessel.maxPersons"/>
 						</div>
 					</div>
 					<div class="control-group form-group row">
@@ -64,7 +65,11 @@
 					<div class="control-group form-group row">
 						<label class="e-control-label" for="commCapabilities">Communication Capabilities</label>
 						<div class="controls col-xs-6">
-							<input type="text" id="commCapabilities" class="input-sm form-control" x-ng-model="vessel.commCapabilities" />
+                            <input type="text" id="commCapabilities" name="commCapabilities"
+                                   class="input-sm form-control" x-ng-model="vessel.commCapabilities"
+                                   x-ng-maxlength="128"/>
+                            <span x-ng-show="vesselForm.commCapabilities.$error.maxlength"
+                                  class="msg-invalid">No more than 255 characters and numbers allowed</span>
 						</div>
 					</div>
 				</div>
@@ -73,7 +78,9 @@
 			<div class="row">
 				<span class="pull-right">
 					<button type="button" class="btn btn-sm" x-ng-click="reset()">Reset</button> &nbsp;
-					<button type="button" class="btn btn-primary btn-sm" x-ng-click="save()">Save</button>
+					<button type="button" class="btn btn-primary btn-sm" x-ng-click="save()"
+                            x-ng-disabled="vesselForm.$invalid">Save
+                    </button>
 				</span>
 			</div>
 		</form>
