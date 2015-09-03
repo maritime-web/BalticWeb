@@ -49,6 +49,11 @@ var greenposScope;
             value: false
         }
 
+        $scope.inclWps = {
+            value: true
+        }
+
+
         $scope.report = {
             type: "PR"
         }
@@ -162,7 +167,7 @@ var greenposScope;
                 routeId: vesselDetails.additionalInformation.routeId
             };
 
-            var inclWps = $scope.inclWps && ($scope.report.type == "SP" || $scope.report.type == "DR");
+            var inclWps = $scope.inclWps.value && ($scope.report.type == "SP" || $scope.report.type == "DR");
 
             GreenposService.save($scope.report, deactivateRoute, inclWps, function (email) {
                 $scope.reportAcknowledgement = reportNames[$scope.report.type];
@@ -287,7 +292,7 @@ var greenposScope;
                 type: "PR"
             };
             $scope.hasActiveRoute = (vesselDetails.additionalInformation.routeId && vesselDetails.additionalInformation.routeId.length > 0);
-            $scope.inclWps = $scope.hasActiveRoute
+            $scope.inclWps.value = $scope.hasActiveRoute
 
             $scope.editVesselInformation = !vesselOverview || !vesselOverview.name || !vesselOverview.callSign;
 
