@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
 @Stateless
@@ -127,7 +128,8 @@ public class ForecastServiceImpl implements ForecastService {
 
     @Override
     public List<Forecast> listAvailableIceForecasts() {
-        return getForecastList(Type.ICE_FORECAST);
+        List<Forecast> forecasts = getForecastList(Type.ICE_FORECAST);
+        return forecasts.stream().filter(forecast -> !forecast.getProvider().equals(Provider.FCOO)).collect(Collectors.toList());
     }
 
     @Override
