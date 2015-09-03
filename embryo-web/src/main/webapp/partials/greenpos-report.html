@@ -210,7 +210,7 @@
 <label class="e-control-label" for="gpInclWps">Include Active Route WayPoints</label>
 
         <div class="controls txt col-xs-4">
-            <input id="gpInclWps" name="inclWps" type="checkbox" x-ng-model="inclWps" x-ng-show="hasActiveRoute"/> <span
+            <input id="gpInclWps" name="inclWps" type="checkbox" x-ng-model="inclWps.value" x-ng-show="hasActiveRoute"/> <span
                 style="margin-top: 5px;" x-ng-show="!hasActiveRoute"><i>No Active Route</i></span>
         </div>
     </div>
