@@ -138,7 +138,7 @@
 
         <div class="controls col-xs-6">
             <datetimepicker id="gpEta" name="gpEta" type="text" x-ng-model="report.eta"
-                            placeholder="e.g. 2014-07-08 16:53"/>
+                            placeholder="e.g. 2014-07-08 16:53" x-ng-required=isVisible('eta')/>
 						<span x-ng-show="greenPosForm.gpEta.$error.required && greenPosForm.gpEta.$dirty"
                               class="msg-invalid">Value
 							required</span>
