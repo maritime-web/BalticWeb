@@ -441,7 +441,7 @@
         var selectedSar;
         var listeners = {};
 
-        var db = new PouchDB('arcticweb');
+        //var db = new PouchDB('arcticweb');
 
         function notifyListeners() {
             for (var key in listeners) {
@@ -472,7 +472,7 @@
             selectSar: function (sarId) {
                 selectedSarById = sarId;
 
-                db.get(sarId).catch(function(err){
+                /*                db.get(sarId).catch(function(err){
                     $log.error(err)
                     throw err;
                 }).then(function(res){
@@ -480,7 +480,7 @@
                         selectedSar = res;
                         notifyListeners();
                     })
-                })
+                 })*/
             },
 
             sarSelected: function (name, fn) {
