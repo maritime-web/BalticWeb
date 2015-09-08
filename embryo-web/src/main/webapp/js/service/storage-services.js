@@ -95,4 +95,10 @@
         };
     } ]);
 
+    storageModule.factory('LivePouch', function () {
+        var liveDb = new PouchDB('arcticweb');
+        return liveDb;
+    });
+
+
 }());
