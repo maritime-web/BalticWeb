@@ -3,7 +3,7 @@ $(function () {
 //    var msiLayer = new MsiLayer();
 //    addLayerToMap("msi", msiLayer, embryo.map);
 
-    var module = angular.module('embryo.sar.controllers', ['embryo.sar.service', 'embryo.common.service']);
+    var module = angular.module('embryo.sar.controllers', ['embryo.sar.service', 'embryo.common.service', 'embryo.storageServices']);
 
     module.controller("SARControl", ['$scope', function ($scope) {
         $scope.selected = {
@@ -11,17 +11,28 @@ $(function () {
         }
     }]);
 
-    module.controller("SARLayerControl", ['SarService', function (SarService) {
+    module.controller("SARLayerControl", ['SarService', 'LivePouch', function (SarService, LivePouch) {
         // TODO Rewrite this to make it work this.
-        SarService.sarSelected(function (error, sarOperation) {
-            SarLayerSingleton.getInstance().draw(sarOperation);
+        SarService.sarSelected("SARLayerControl", function (sarId) {
+
+
+            LivePouch.get(sarId).then(function (sar) {
+                SarLayerSingleton.getInstance().draw(sar);
+
+                var center = null;
+                if (sar.output.datum) {
+                    center = sar.output.datum;
+                } else if (sar.output.downWind) {
+                    center = sar.output.downWind;
+                }
+                embryo.map.setCenter(center.lon, center.lat, 8);
+            });
         });
+
     }]);
 
-    module.controller("OperationsControl", ['$scope', 'SarService', 'ViewService', '$log',
-        function ($scope, SarService, ViewService, $log) {
-
-            var db = new PouchDB('arcticweb');
+    module.controller("OperationsControl", ['$scope', 'SarService', 'ViewService', '$log', 'LivePouch',
+        function ($scope, SarService, ViewService, $log, LivePouch) {
 
             var subscription = ViewService.subscribe({
                 name: "OperationsControl",
@@ -41,27 +52,22 @@ $(function () {
                 ViewService.unsubscribe(subscription);
             })
 
-            db.changes({
+            LivePouch.changes({
                 since: 'now',
                 live: true,
                 include_docs: true
             }).on('change', function (change) {
-                console.log("before changes")
-                console.log(change);
-                console.log("after changes")
-
                 $scope.sars = change.doc.operations;
                 $scope.$apply({})
             })
 
-            db.get("sar-operations").catch(function (err) {
-                db.put({
+            LivePouch.get("sar-operations").catch(function (err) {
+                LivePouch.put({
                     _id: "sar-operations",
                     operations: []
                 });
                 $scope.sars = [];
             }).then(function (res) {
-                console.log(res);
                 $scope.sars = res.operations;
                 $scope.$apply({})
             })
@@ -81,11 +87,10 @@ $(function () {
             $scope.newSar = function () {
                 $scope.newSarProvider.show({});
             }
-
         }]);
 
-    module.controller("OperationControl", ['$scope', 'SarService', 'ViewService', '$log',
-        function ($scope, SarService, ViewService, $log) {
+    module.controller("OperationControl", ['$scope', 'SarService', 'ViewService', '$log', 'LivePouch', '$timeout',
+        function ($scope, SarService, ViewService, $log, LivePouch, $timeout) {
 
             var subscription = ViewService.subscribe({
                 name: "OperationControl",
@@ -105,22 +110,30 @@ $(function () {
                 ViewService.unsubscribe(subscription);
             })
 
-            SarService.sarSelected("OperationControl", function (sar) {
+            SarService.sarSelected("OperationControl", function (sarId) {
                 $scope.selected.open = true;
-                console.log("SAR SELECTED")
-                console.log(sar)
+                if (!$scope.$$phase) {
+                    $scope.$apply(function () {
+                    });
+                }
 
-                $scope.selected.sar = sar;
-                $scope.sar = sar;
-
-                $scope.$apply(function () {
+                LivePouch.get(sarId).catch(function (err) {
+                    $log.error(err)
+                    throw err;
+                }).then(function (res) {
+                    $timeout(function () {
+                        $scope.selected.sar = res;
+                        $scope.sar = res;
+                    })
                 })
+
             })
 
-            $scope.edit = function ($event, sar) {
+            $scope.edit = function ($event) {
                 $event.preventDefault();
-                $scope.newSarProvider.show({sarId: sar.id});
+                $scope.newSarProvider.show({sarId: $scope.sar._id});
             }
+
             $scope.formatTs = formatTime;
             $scope.formatDecimal = embryo.Math.round10;
 
@@ -134,6 +147,9 @@ $(function () {
             $scope.formatLat = formatLatitude;
             $scope.formatLon = formatLongitude;
 
+            $scope.confirmEnd = function () {
+                $scope.newSarProvider.show({sarId: $scope.sar._id, page: "end"});
+            }
         }]);
 
     module.controller("LogControl", ['$scope', 'Subject', 'SarService', function ($scope, Subject, SarService) {

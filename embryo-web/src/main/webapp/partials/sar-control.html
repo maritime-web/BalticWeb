@@ -37,144 +37,116 @@
         </div>
 
 
-        <div accordion-group heading="Selected SAR{{sar.input && sar.input.no  ? ' - ' + sar.input.no : ''}}"
+        <div accordion-group heading="Search and Rescue{{sar.input && sar.input.no  ? ' - ' + sar.input.no : ''}}"
              is-open="selected.open">
-            <div x-ng-controller="OperationControl">
+            <div x-ng-controller="OperationControl" class="sar-operation-control">
 
-                <!--
-                <div id="shortdesc">
-                    <div x-ng-if="alertMessages" class="alert alert-danger">
-                        <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
-                    </div>
-                </div>
-                 -->
-                <div x-ng-if="sar" class="container" style="width: 275px;">
+                <div x-ng-if="sar">
                     <div class="row">
-                        <div class="col-md-7 nopadding">Status:</div>
-                        <div class="col-md-5 nopadding"></div>
+                        <div class="col-md-7">Status:</div>
+                        <div class="col-md-5 "></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 nopadding">Type:</div>
-                        <div class="col-md-5 nopadding">{{sar.input.selectedType.text}}</div>
+                        <div class="col-md-7">Type:</div>
+                        <div class="col-md-5">{{sar.input.selectedType.text}}</div>
                     </div>
+
+                    <h6>Date and Time</h6>
                     <div class="row">
-                        <h4>Date and Time</h4>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7 nopadding">Last Known Position (LKP):</div>
+                        <div class="col-md-7">Last Known Position (LKP):</div>
                         <div class="col-md-5 nopadding">{{formatTs(sar.input.lastKnownPosition.ts)}}</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 nopadding">Commence Search Start:</div>
+                        <div class="col-md-7">Commence Search Start:</div>
                         <div class="col-md-5 nopadding">{{formatTs(sar.input.startTs)}}</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 nopadding">Time elapsed:</div>
+                        <div class="col-md-7">Time elapsed:</div>
                         <div class="col-md-5 nopadding">{{sar.output.hoursElapsed}} hour<span
                                 x-ng-if="sar.output.hoursElapsed != 1">s</span>, {{sar.output.minutesElapsed}}
-                            minute<span x-ng-if="sar.output.minutesElapsed != 1">s</span>.<br/>
+                            minute<span x-ng-if="sar.output.minutesElapsed != 1">s</span>.
                         </div>
                     </div>
 
-                    <br/>
-
+                    <h6>Last Surface Drifts dw continuation</h6>
                     <div class="row">
-                        <h4>Last Surface Drifts dw continuation</h4>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7 nopadding">Direction</div>
+                        <div class="col-md-7">Direction</div>
                         <div class="col-md-5 nopadding">{{formatDecimal(sar.output.rdv.direction, -2)}}</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 nopadding">Speed</div>
+                        <div class="col-md-7">Speed</div>
                         <div class="col-md-5 nopadding">{{formatDecimal(sar.output.rdv.speed, -2)}} kn/h</div>
                     </div>
 
-                    <br/>
+                    <h6>Position of Datum to LKP</h6>
+                    <table class="table table-condensed">
+                        <tr>
+                            <td></td>
+                            <td>Latitude</td>
+                            <td>Longitude</td>
+                            <td>RDV</td>
+                            <td>Radius</td>
+                        </tr>
+                        <tr x-ng-if="sar.output.datum">
+                            <td>DW</td>
+                            <td>{{formatLat(sar.output.datum.lat)}}</td>
+                            <td>{{formatLon(sar.output.datum.lon)}}</td>
+                            <td>{{formatDecimal(sar.output.rdv.distance, -2)}} nm</td>
+                            <td>{{formatDecimal(sar.output.radius, -2)}} nm</td>
+                        </tr>
+                        <tr x-ng-if="sar.output.downWind">
+                            <td>DW</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr x-ng-if="sar.output.min">
+                            <td>Min</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr x-ng-if="sar.output.max">
+                            <td>Max</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
 
+                    <h6>Positions of the Search Area</h6>
                     <div class="row">
-                        <h4>Position of Datum to LKP</h4>
-                    </div>
-                    <div class="row">
-                        <table class="table table-condensed">
-                            <tr>
-                                <td></td>
-                                <td>Latitude</td>
-                                <td>Longitude</td>
-                                <td>RDV</td>
-                                <td>Radius</td>
-                            </tr>
-                            <tr x-ng-if="sar.output.datum">
-                                <td>DW</td>
-                                <td>{{formatLat(sar.output.datum.lat)}}</td>
-                                <td>{{formatLon(sar.output.datum.lon)}}</td>
-                                <td>{{formatDecimal(sar.output.rdv.distance, -2)}} nm</td>
-                                <td>{{formatDecimal(sar.output.radius, -2)}} nm</td>
-                            </tr>
-                            <tr x-ng-if="sar.output.downWind">
-                                <td>Min</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr x-ng-if="sar.output.downWind">
-                                <td>Min</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Max</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="row">
-                        <h4>Positions of the Search Area</h4>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 nopadding"></div>
+                        <div class="col-md-4"></div>
                         <div class="col-md-4 nopadding">Latitude</div>
                         <div class="col-md-4 nopadding">Longitude</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 nopadding">A</div>
+                        <div class="col-md-4">A</div>
                         <div class="col-md-4 nopadding">{{formatLat(sar.output.searchArea.A.lat)}}</div>
                         <div class="col-md-4 nopadding">{{formatLon(sar.output.searchArea.A.lon)}}</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 nopadding">B</div>
+                        <div class="col-md-4">B</div>
                         <div class="col-md-4 nopadding">{{formatLat(sar.output.searchArea.B.lat)}}</div>
                         <div class="col-md-4 nopadding">{{formatLon(sar.output.searchArea.B.lon)}}</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 nopadding">C</div>
+                        <div class="col-md-4">C</div>
                         <div class="col-md-4 nopadding">{{formatLat(sar.output.searchArea.C.lat)}}</div>
                         <div class="col-md-4 nopadding">{{formatLon(sar.output.searchArea.C.lon)}}</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 nopadding">D</div>
+                        <div class="col-md-4">D</div>
                         <div class="col-md-4 nopadding">{{formatLat(sar.output.searchArea.D.lat)}}</div>
                         <div class="col-md-4 nopadding">{{formatLon(sar.output.searchArea.D.lon)}}</div>
                     </div>
 
-                    <br/>
-
+                    <h6>Search Area Progression in minutes after CSS</h6>
                     <div class="row">
-                        <h4>Search Area Progression in minutes after CSS</h4>
-                    </div>
-                    <div class="row">
-                        <hr class="smallpadding"/>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12 nopadding">
+                        <div class="col-md-12">
                             <input type="range"
                                    class="e-forecast"
                                    min="0"
@@ -183,64 +155,60 @@
                                    style="width: 95%;"/>
                         </div>
                     </div>
-                    <br/>
 
                     <div class="row">
-                        <div class="col-md-12 col-centered nopadding">
-                            <button type="button" class="btn btn-primary btn-xs">Reopen Calculations</button>
+                        <hr class="smallpadding"/>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-primary btn-xs" x-ng-click="edit($event)">Reopen
+                                Calculations
+                            </button>
+                        </div>
+                        <div class="col-md-6">
                             <button type="button" class="btn btn-primary btn-xs">Effort Allocation</button>
                         </div>
                     </div>
-                    <br/>
 
-                    <div class="row">
-                        <div class="col-md-12 col-centered nopadding">
-                            <button type="button" class="btn btn-primary btn-xs">Additional Info</button>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <h4>Effort Allocation</h4>
-                    </div>
+                    <h6>Effort Allocation</h6>
                     <div class="row">
                         <hr class="smallpadding"/>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 nopadding">Probability of Detection</div>
+                        <div class="col-md-7">Probability of Detection</div>
                         <div class="col-md-5 nopadding">N/A</div>
                     </div>
                     <div class="row">
                         <hr class="smallpadding"/>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 nopadding">Effective Search Area</div>
+                        <div class="col-md-7">Effective Search Area</div>
                         <div class="col-md-5 nopadding">N/A</div>
                     </div>
                     <div class="row">
                         <hr class="smallpadding"/>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 nopadding">Search Craft Ground Speed</div>
+                        <div class="col-md-7">Search Craft Ground Speed</div>
                         <div class="col-md-5 nopadding">N/A</div>
                     </div>
                     <div class="row">
                         <hr class="smallpadding"/>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 nopadding">Track Spacing</div>
+                        <div class="col-md-7">Track Spacing</div>
                         <div class="col-md-5 nopadding">N/A</div>
                     </div>
                     <div class="row">
                         <hr class="smallpadding"/>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 nopadding">time Spent Searching</div>
+                        <div class="col-md-7">time Spent Searching</div>
                         <div class="col-md-5 nopadding">DROPDOWN</div>
                     </div>
 
-                    <div class="row">
-                        <h4>Search Patterns</h4>
-                    </div>
+                    <h6>Search Patterns</h6>
                     <div class="row">
                         <hr class="smallpadding"/>
                     </div>
@@ -256,13 +224,14 @@
                             </div>
                         </div>
                     </div>
-                    <br/>
 
                     <div class="row">
                         <hr class="smallpadding"/>
                     </div>
                     <div class="row">
-                        <button type="button" class="btn btn-primary btn-xs col-centered">End SAR</button>
+                        <button type="button" class="btn btn-primary btn-xs col-centered" x-ng-click="confirmEnd()">End
+                            SAR
+                        </button>
                     </div>
 
                 </div>

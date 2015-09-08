@@ -35,7 +35,6 @@
     
     module.controller("AISInformationCtrl", ['$scope','VesselService', 'VesselInformation', function($scope, VesselService, VesselInformation) {
        function updateInfo (data) {
-            console.log(data);
             $scope.vessel = [];
             for(var x in convertTable) {
                 if(data[x] && data[x] != 'N/A' && data[x] != 'Undefined') {

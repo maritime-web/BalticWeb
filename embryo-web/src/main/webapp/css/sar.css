@@ -1,7 +1,15 @@
 
+.sar-operation-control h6 {
+    margin-bottom: 5px;
+
+}
+
+.sar-operation-control .table {
+    margin-bottom: 5px;
+}
+
 #sarOperationEditPanel {
     width: 550px;
-
 }
 
 .sar-img-type-container {

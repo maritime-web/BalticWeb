@@ -24,38 +24,38 @@
                     <label class="control-label col-xs-3">Sar Operation Type</label>
 
                     <div class="col-xs-5">
-                        <select ng-model="sar.selectedType" name="selectedType" required
+                        <select ng-model="tmp.sarTypeData" name="type" required
                                 class="input-sm form-control"
-                                x-ng-options="sarTypeData.text for sarTypeData in sarTypeDatas">
+                                x-ng-options="sarTypeData as sarTypeData.text for sarTypeData in sarTypeDatas">
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.RapidResponse">
+                    <p x-ng-if="tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.RapidResponse">
                         {{selectedType.text}} should be used when the rescue vessel is within the designated
                         search area in a relatively short time span, i.e. 1-2 hours after last known position (LKP).
                     </p>
 
-                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumPoint">
+                    <p x-ng-if="tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.DatumPoint">
                         {{selectedType.text}} is a calculation method used when the rescue vessel arrives to the
                         designated search area two hours or more later than the last known position (LKP) was reported.
                     </p>
 
-                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumLine">
+                    <p x-ng-if="tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.DatumLine">
                         {{selectedType.text}} is used when an object is missing and the last known position (LKP) is
                         unknown, but an assumed route is known.
                     </p>
 
-                    <p x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.BackTrack">
+                    <p x-ng-if="tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.BackTrack">
                         {{selectedType.text}} is used when an object connected to the missing vessel has
                         been located. By reversing the objects movements a possible search area can be established.
                     </p>
                 </div>
 
                 <div class="sar-img-type-container">
-                    <img style="max-width:500px; max-height:250px" ng-if="sar.selectedType"
-                         ng-src="{{sar.selectedType.img}}"/>
+                    <img style="max-width:500px; max-height:250px" ng-if="tmp.sarTypeData"
+                         ng-src="{{tmp.sarTypeData.img}}"/>
                 </div>
 
                 <div class="col-xs-12">
@@ -72,7 +72,7 @@
                 </div>
                 <div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
-                <h5>{{sar.selectedType.text}}</h5>
+                <h5>{{tmp.sarTypeData.text}}</h5>
                 <div class="form-group">
                     <label class="control-label col-xs-3" for="sarNo">Sar No.</label>
 
@@ -82,7 +82,7 @@
                 </div>
                 <hr/>
 
-                <div x-ng-if="sar.selectedType && sar.selectedType.id === sarTypes.DatumLine">
+                <div x-ng-if="tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.DatumLine">
                     <h5>First Drift Search Position</h5>
 
                     <div class="form-group">
@@ -161,7 +161,7 @@
                     <hr/>
                 </div>
 
-                <div x-ng-if="!(sar.selectedType && sar.selectedType.id === sarTypes.DatumLine)">
+                <div x-ng-if="!(tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.DatumLine)">
                     <h5>Last known position</h5>
 
                     <div class="form-group">
@@ -293,7 +293,7 @@
                     <div class="col-xs-7" for="sar.searchObject">
                         <select ng-model="sar.searchObject" id="sar.searchObject" name="sar.searchObject" required
                                 class="input-sm form-control"
-                                x-ng-options="searchObject.text for searchObject in searchObjects">
+                                x-ng-options="searchObject.id as searchObject.text for searchObject in searchObjects">
                         </select>
                     </div>
                     <span class="help-block">{{sar.searchObject.x}} x U<span x-ng-if="sar.searchObject.y >= 0"> + {{sar.searchObject.y}}</span>
@@ -312,7 +312,7 @@
             </form>
             <div x-ng-if="page == 'sarResult'">
                 <hr/>
-                {{sar.selectedType.text}} with no {{sarOperation.input.no}}
+                {{tmp.sarTypeData.text}} with no {{sarOperation.input.no}}
                 <hr/>
                 Time of last known position: {{formatTs(sarOperation.input.lastKnownPosition.ts)}} UTC<br/>
                 Last known position: {{formatPos(sarOperation.input.lastKnownPosition)}}<br/>
@@ -354,10 +354,10 @@
                 SRU navigational error, Y: {{sarOperation.input.yError}} nm<br/>
                 Safety factor, Fs: {{sarOperation.input.safetyFactor}}<br/>
                 <hr/>
-                Search Object: {{sarOperation.input.searchObject.text}}<br/>{{sarOperation.input.searchObject.x}}x U
-                <span x-ng-if="sarOperation.input.searchObject.y < 0">- {{-sarOperation.input.searchObject.y}}</span>
-                <span x-ng-if="sarOperation.input.searchObject.y > 0">+ {{sarOperation.input.searchObject.y}}</span>,
-                Divergence: {{sarOperation.input.searchObject.divergence}}<br/>
+                Search Object: {{tmp.searchObject.text}}<br/>{{tmp.searchObject.x}}x U
+                <span x-ng-if="tmp.searchObject.y < 0">- {{-tmp.searchObject.y}}</span>
+                <span x-ng-if="tmp.searchObject.y > 0">+ {{tmp.searchObject.y}}</span>,
+                Divergence: {{tmp.searchObject.divergence}}<br/>
                 <hr/>
                 Time elapsed: {{sarOperation.output.hoursElapsed}} hour<span
                     x-ng-if="sarOperation.output.hoursElapsed != 1">s</span>,
@@ -391,9 +391,21 @@
                 <div class="col-xs-12">
                     <span class="pull-right">
                         <button type="button" class="btn btn-sm" x-ng-click="back()">Back</button>
-                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="finish()">Finish
-                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="finish()">Finish</button>
                         <button type="button" class="btn btn-sm" x-ng-click="cancel()">Cancel</button>
+                    </span>
+                </div>
+            </div>
+            <div x-ng-if="page == 'end'">
+                <hr/>
+                Are you sure you wish to end the search and rescue operation {{sar.input.no}}?
+                <hr/>
+                NB. The details of this search and rescue operation will remain available in ArcticWeb for some time
+                until removed by the system.
+                <div class="col-xs-12">
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="end()">Yes</button>
+                        <button type="button" class="btn btn-sm" x-ng-click="cancel()">No</button>
                     </span>
                 </div>
             </div>

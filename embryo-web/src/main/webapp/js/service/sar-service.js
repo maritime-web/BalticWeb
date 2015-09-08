@@ -1,20 +1,21 @@
 (function () {
     "use strict";
 
-    var module = angular.module('embryo.sar.service', []);
+    var module = angular.module('embryo.sar.service', ['embryo.storageServices']);
 
     embryo.sar = {}
     // A way to create an enumeration like construction in JavaScript
     embryo.sar.types = Object.freeze({"RapidResponse": "rr", "DatumPoint": "dp", "DatumLine": "dl", "BackTrack": "bt"})
 
-    function Leeway(x, y, divergence, text) {
+    function SearchObject(id, x, y, divergence, text) {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.divergence = divergence;
         this.text = text;
     }
 
-    Leeway.prototype.leewaySpeed = function (leewaySpeed) {
+    SearchObject.prototype.leewaySpeed = function (leewaySpeed) {
         var result = this.x * leewaySpeed;
         if (this.y) {
             result += this.y;
@@ -27,27 +28,47 @@
         this.degrees = degrees;
     }
 
-    var leewayObjectTypes = [];
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.011, 0.068, 30, "Person in water (PIW)")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.029, 0.039, 20, "Raft (4-6 person), unknown drift anker status")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.018, 0.027, 16, "Raft (4-6 person) with drift anker")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.038, -0.041, 20, "Raft (4-6 person) without drift anker")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.036, -0.086, 14, "Raft (15-25 person), unknown drift anker status")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.031, -0.070, 12, "Raft (15-25 person) with drift anker")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.039, -0.060, 12, "Raft (15-25 person) without drift anker")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.034, 0.040, 22, "Dinghy (Flat buttom)")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.030, 0.080, 15, "Dinghy (Keel)")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.017, undefined, 15, "Dinghy (Capsized)")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.011, 0.240, 15, "Kayak with Person")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.020, undefined, 15, "Surfboard with Person")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.023, 0.100, 12, "Windsurfer with Person. Mast and sail in water")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.030, undefined, 48, "Sailboat (Long keel)")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.040, undefined, 48, "Sailboat (Fin keel)")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.069, -0.080, 19, "Motorboat")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.042, undefined, 48, "Fishing Vessel")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.040, undefined, 33, "Trawler")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.028, undefined, 48, "Coaster")));
-    leewayObjectTypes.push(Object.freeze(new Leeway(0.020, undefined, 10, "Wreckage")));
+    function SarStatus(id, text) {
+        this.id = id;
+        this.text = text;
+    }
+
+    var sarStatuses = [];
+    sarStatuses.push(Object.freeze(new SarStatus("S", "Started")));
+    sarStatuses.push(Object.freeze(new SarStatus("S", "Started")));
+    sarStatuses.push(Object.freeze(new SarStatus("S", "Started")));
+
+
+    var searchObjectTypes = [];
+    searchObjectTypes.push(Object.freeze(new SearchObject(0, 0.011, 0.068, 30, "Person in water (PIW)")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(1, 0.029, 0.039, 20, "Raft (4-6 person), unknown drift anker status")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(2, 0.018, 0.027, 16, "Raft (4-6 person) with drift anker")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(3, 0.038, -0.041, 20, "Raft (4-6 person) without drift anker")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(4, 0.036, -0.086, 14, "Raft (15-25 person), unknown drift anker status")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(5, 0.031, -0.070, 12, "Raft (15-25 person) with drift anker")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(6, 0.039, -0.060, 12, "Raft (15-25 person) without drift anker")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(7, 0.034, 0.040, 22, "Dinghy (Flat buttom)")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(8, 0.030, 0.080, 15, "Dinghy (Keel)")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(9, 0.017, undefined, 15, "Dinghy (Capsized)")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(10, 0.011, 0.240, 15, "Kayak with Person")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(11, 0.020, undefined, 15, "Surfboard with Person")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(12, 0.023, 0.100, 12, "Windsurfer with Person. Mast and sail in water")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(13, 0.030, undefined, 48, "Sailboat (Long keel)")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(14, 0.040, undefined, 48, "Sailboat (Fin keel)")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(15, 0.069, -0.080, 19, "Motorboat")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(16, 0.042, undefined, 48, "Fishing Vessel")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(17, 0.040, undefined, 33, "Trawler")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(18, 0.028, undefined, 48, "Coaster")));
+    searchObjectTypes.push(Object.freeze(new SearchObject(19, 0.020, undefined, 10, "Wreckage")));
+
+    function findSearchObjectType(id) {
+        for (var index in searchObjectTypes) {
+            if (searchObjectTypes[index].id === id) {
+                return searchObjectTypes[index];
+            }
+        }
+        return null;
+    }
 
     var directions = [];
     directions.push(new Direction("N", 0));
@@ -133,6 +154,7 @@
 
         var validFor = null;
         var lastDatumPosition = null
+        var searchObject = findSearchObjectType(input.searchObject);
 
         for (var i = 0; i < this.input.surfaceDriftPoints.length; i++) {
             // Do we have a next?
@@ -163,7 +185,7 @@
             var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, currentTWC);
             currentPositions.push(currentPos)
 
-            var leewaySpeed = this.input.searchObject.leewaySpeed(this.input.surfaceDriftPoints[i].leewaySpeed);
+            var leewaySpeed = searchObject.leewaySpeed(this.input.surfaceDriftPoints[i].leewaySpeed);
             var leewayDriftDistance = leewaySpeed * validFor;
 
             var downWind = this.input.surfaceDriftPoints[i].downWind
@@ -263,10 +285,11 @@
         var datumDownwindPositions = [];
         var datumMinPositions = [];
         var datumMaxPositions = [];
-        var currentPositions = [];
+        var currentPositions = []
 
-        var validFor = null;
-        var lastKnownPosition = new embryo.geo.Position(this.input.lastKnownPosition.lon, this.input.lastKnownPosition.lat);
+        var validFor = null
+        var lastKnownPosition = new embryo.geo.Position(this.input.lastKnownPosition.lon, this.input.lastKnownPosition.lat)
+        var searchObject = findSearchObjectType(input.searchObject);
 
         for (var i = 0; i < this.input.surfaceDriftPoints.length; i++) {
             // Do we have a next?
@@ -294,9 +317,9 @@
                 startingLocation = datumDownwindPositions[i - 1];
             }
 
-            var leewayDivergence = this.input.searchObject.divergence;
+            var leewayDivergence = searchObject.divergence;
 
-            var leewaySpeed = this.input.searchObject.leewaySpeed(this.input.surfaceDriftPoints[i].leewaySpeed);
+            var leewaySpeed = searchObject.leewaySpeed(this.input.surfaceDriftPoints[i].leewaySpeed);
             var leewayDriftDistance = leewaySpeed * validFor;
 
             var twcDirectionInDegrees = directionDegrees(this.input.surfaceDriftPoints[i].twcDirection);
@@ -436,16 +459,18 @@
         }
     }
 
-    module.service('SarService', [ '$log', '$timeout', function ($log, $timeout) {
-        var selectedSarById;
-        var selectedSar;
-        var listeners = {};
+    function clone(object) {
+        return JSON.parse(JSON.stringify(object));
+    }
 
-        //var db = new PouchDB('arcticweb');
+
+    module.service('SarService', ['$log', '$timeout', 'LivePouch', function ($log, $timeout, LivePouch) {
+        var selectedSarById;
+        var listeners = {};
 
         function notifyListeners() {
             for (var key in listeners) {
-                listeners[key](selectedSar);
+                listeners[key](selectedSarById);
             }
         }
 
@@ -467,20 +492,12 @@
                 return result;
             },
             searchObjectTypes: function () {
-                return leewayObjectTypes;
+                return searchObjectTypes;
             },
+            findSearchObjectType: findSearchObjectType,
             selectSar: function (sarId) {
                 selectedSarById = sarId;
-
-                /*                db.get(sarId).catch(function(err){
-                    $log.error(err)
-                    throw err;
-                }).then(function(res){
-                    $timeout(function(){
-                        selectedSar = res;
-                        notifyListeners();
-                    })
-                 })*/
+                notifyListeners();
             },
 
             sarSelected: function (name, fn) {
@@ -495,10 +512,11 @@
                 // this was written to prevent Chrome browser running in indefinite loops
                 getCalculator(input.type).validate(input);
             },
-            createSarOperation: function (input) {
+            createSarOperation: function (sarInput) {
+                var clonedInput = clone(sarInput);
                 var result = {
-                    input: input,
-                    output: getCalculator(input.type).calculate(input)
+                    input: clonedInput,
+                    output: getCalculator(clonedInput.type).calculate(clonedInput)
                 }
                 return result;
             },

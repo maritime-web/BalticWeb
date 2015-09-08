@@ -29,7 +29,6 @@ $(function() {
                         value: filters[index]
                     });
                 }
-                console.log(filters)
                 $scope.sourceFilters = filters;
             }, function (error) {
                 $scope.alertMessages = error;
