@@ -31,7 +31,7 @@ describe('embryo.sar', function () {
                 xError: 1,
                 yError: 0.1,
                 safetyFactor: 1,
-                searchObject: searchObjectTypes[0]
+                searchObject: searchObjectTypes[0].id
             }
         }
 
@@ -122,7 +122,7 @@ describe('embryo.sar', function () {
                 xError: 0.1,
                 yError: 0.1,
                 safetyFactor: 1,
-                searchObject: searchObjectTypes[0]
+                searchObject: searchObjectTypes[0].id
             }
 
             //var sarOperation = null;
@@ -301,7 +301,7 @@ describe('embryo.sar', function () {
                 xError: 1.0,
                 yError: 0.1,
                 safetyFactor: 1.0,
-                searchObject: searchObjectTypes[0]
+                searchObject: searchObjectTypes[0].id
             }
 
             //var sarOperation = null;
