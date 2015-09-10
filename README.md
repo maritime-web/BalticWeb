@@ -231,6 +231,7 @@ where the important fields are
 At the time of writing the current services are subject to surveillance
 
 * dk.dma.embryo.vessel.job.AisReplicatorJob
+* dk.dma.embryo.vessel.service.AisDataServiceImpl
 * dk.dma.embryo.vessel.job.MaxSpeedJob
 * dk.dma.embryo.dataformats.job.ShapeFileMeasurerJob.dmi 
 * dk.dma.embryo.dataformats.job.DmiFtpReaderJob
