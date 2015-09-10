@@ -12,7 +12,7 @@ function SarLayer() {
                 if (feature.attributes.type === 'dv') {
                     return "black";
                 }
-                return "green"
+                return feature.attributes.active ? "green" : "#999";
             },
             strokeWidth: function () {
                 return that.zoomLevel >= 1 ? 2 : 1;
@@ -57,7 +57,7 @@ function SarLayer() {
 
     };
 
-    function createSearchArea(searchArea) {
+    function createSearchArea(searchArea, active) {
         var features = [];
         var pointA = embryo.map.createPoint(searchArea.A.lon, searchArea.A.lat);
         var pointB = embryo.map.createPoint(searchArea.B.lon, searchArea.B.lat);
@@ -65,7 +65,8 @@ function SarLayer() {
         var pointD = embryo.map.createPoint(searchArea.D.lon, searchArea.D.lat);
         var square = new OpenLayers.Geometry.LinearRing([pointA, pointB, pointC, pointD]);
         features.push(new OpenLayers.Feature.Vector(square, {
-            type: "area"
+            type: "area",
+            active: active
         }));
         features.push(new OpenLayers.Feature.Vector(pointA, {
             type: "areaLabel",
@@ -137,9 +138,13 @@ function SarLayer() {
         return this.containsFeature(featureFilter, this.layers.sar);
     };
 
-    function addSearchRing(features, circle, label) {
+    function addSearchRing(features, circle, label, active) {
         var radiusInKm = nmToMeters(circle.radius) / 1000;
-        features.addFeatures(embryo.adt.createRing(circle.datum.lon, circle.datum.lat, radiusInKm, 1, undefined, 'circle'));
+        var attributes = {
+            type: 'circle',
+            active: active
+        }
+        features.addFeatures(embryo.adt.createRing(circle.datum.lon, circle.datum.lat, radiusInKm, 1, attributes));
 
         var center = embryo.map.createPoint(circle.datum.lon, circle.datum.lat);
         features.addFeatures(new OpenLayers.Feature.Vector(center, {
@@ -152,23 +157,30 @@ function SarLayer() {
         addDriftVector(layer, [lkp, datum]);
     }
 
-    this.draw = function (sar) {
+    this.draw = function (sars) {
         this.layers.sar.removeAllFeatures();
+        for (var index in sars) {
+            this.drawSar(sars[index]);
+        }
+        this.layers.sar.refresh();
+    }
 
+    this.drawSar = function (sar) {
+        var active = sar.status != embryo.SARStatus.ENDED;
         if (sar.output.datum) {
-            addSearchRing(this.layers.sar, sar.output, "Datum");
+            addSearchRing(this.layers.sar, sar.output, "Datum", active);
 
-            this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea));
+            this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea, active));
 
             addLKP(this.layers.sar, sar.input.lastKnownPosition);
             addRdv(this.layers.sar, sar.input.lastKnownPosition, sar.output.datum);
             addDriftVector(this.layers.sar, prepareDriftVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.windPositions))
         } else if (sar.output.downWind) {
-            addSearchRing(this.layers.sar, sar.output.downWind, "Datum down wind");
-            addSearchRing(this.layers.sar, sar.output.min, "Datum min");
-            addSearchRing(this.layers.sar, sar.output.max, "Datum max");
+            addSearchRing(this.layers.sar, sar.output.downWind, "Datum down wind", active);
+            addSearchRing(this.layers.sar, sar.output.min, "Datum min", active);
+            addSearchRing(this.layers.sar, sar.output.max, "Datum max", active);
 
-            this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea));
+            this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea, active));
             /*
              this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea2), {
              type: 'area'
@@ -182,8 +194,6 @@ function SarLayer() {
             addDriftVector(this.layers.sar, prepareDriftVectors(null, sar.output.currentPositions, sar.output.min.datumPositions))
             addDriftVector(this.layers.sar, prepareDriftVectors(null, sar.output.currentPositions, sar.output.max.datumPositions))
         }
-
-        this.layers.sar.refresh();
 
     };
 }

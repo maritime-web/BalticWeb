@@ -28,16 +28,10 @@
         this.degrees = degrees;
     }
 
-    function SarStatus(id, text) {
-        this.id = id;
-        this.text = text;
-    }
-
-    var sarStatuses = [];
-    sarStatuses.push(Object.freeze(new SarStatus("S", "Started")));
-    sarStatuses.push(Object.freeze(new SarStatus("S", "Started")));
-    sarStatuses.push(Object.freeze(new SarStatus("S", "Started")));
-
+    embryo.SARStatus = Object.freeze({
+        STARTED: "S",
+        ENDED: "E"
+    });
 
     var searchObjectTypes = [];
     searchObjectTypes.push(Object.freeze(new SearchObject(0, 0.011, 0.068, 30, "Person in water (PIW)")));
@@ -154,7 +148,10 @@
 
         var validFor = null;
         var lastDatumPosition = null
-        var searchObject = findSearchObjectType(input.searchObject);
+
+        console.log(this.input)
+
+        var searchObject = findSearchObjectType(this.input.searchObject);
 
         for (var i = 0; i < this.input.surfaceDriftPoints.length; i++) {
             // Do we have a next?
@@ -184,6 +181,8 @@
             var twcDirectionInDegrees = directionDegrees(this.input.surfaceDriftPoints[i].twcDirection);
             var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, currentTWC);
             currentPositions.push(currentPos)
+
+            console.log(searchObject);
 
             var leewaySpeed = searchObject.leewaySpeed(this.input.surfaceDriftPoints[i].leewaySpeed);
             var leewayDriftDistance = leewaySpeed * validFor;
@@ -460,6 +459,11 @@
     }
 
     function clone(object) {
+        console.log(clone);
+        console.log(object)
+        console.log(JSON.parse(JSON.stringify(object)));
+
+
         return JSON.parse(JSON.stringify(object));
     }
 
@@ -519,6 +523,21 @@
                     output: getCalculator(clonedInput.type).calculate(clonedInput)
                 }
                 return result;
+            },
+            findSarIndex: function (sars, id) {
+                for (var index in sars) {
+                    if (sars[index].id == id) {
+                        return index;
+                    }
+                }
+                return null;
+            },
+            toSmallSarObject: function (sarDoc) {
+                return {
+                    id: sarDoc._id,
+                    name: sarDoc.input.no,
+                    status: sarDoc.status
+                }
             },
             save: function (sarOperation) {
 

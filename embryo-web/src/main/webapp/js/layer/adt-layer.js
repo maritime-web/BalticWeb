@@ -16,17 +16,14 @@ $(function() {
         return d;
     }
 
-    embryo.adt.createRing = function(longitude, latitude, radius, noRings, id, type) {
+    embryo.adt.createRing = function (longitude, latitude, radius, noRings, attributes) {
         var result = [];
         for ( var l = 1; l <= noRings; l++) {
             var points = calculateRing(longitude, latitude, l * radius, 200);
 
             var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon(
-                    [ new OpenLayers.Geometry.LinearRing(points) ]), {
-                id : id,
-                type : type
-            }
-
+                    [new OpenLayers.Geometry.LinearRing(points)]),
+                attributes
             );
 
             result.push(feature);

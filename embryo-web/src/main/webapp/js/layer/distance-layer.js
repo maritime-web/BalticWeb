@@ -60,7 +60,11 @@ function DistanceLayer() {
     };
 
     this.drawDistanceCircles = function(vessel) {
-        this.layers.lines.addFeatures(embryo.adt.createRing(vessel.x, vessel.y, embryo.getMaxSpeed(vessel) * 3 * 1.852, 3, vessel.mmsi, 'circle'), {
+        var attributes = {
+            id: vessel.mmsi,
+            type: 'circle'
+        }
+        this.layers.lines.addFeatures(embryo.adt.createRing(vessel.x, vessel.y, embryo.getMaxSpeed(vessel) * 3 * 1.852, 3, attributes), {
             id : vessel.mmsi,
             type : 'circle'
         });

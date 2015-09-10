@@ -64,23 +64,33 @@ $(function () {
 
             function initNewSar() {
                 $scope.sar = {
+                    no: "AW-" + Date.now(),
                     searchObject: $scope.searchObjects[0].id,
                     yError: 0.1,
                     safetyFactor: 1.0,
                     startTs: now + 1000 * 60 * 60
-
                 }
+
+                $scope.sarOperation = {}
+
+                if (!$scope.sar.surfaceDriftPoints) {
+                    $scope.sar.surfaceDriftPoints = [{}];
+                }
+                if (!$scope.sar.surfaceDriftPoints[0].ts) {
+                    $scope.sar.surfaceDriftPoints[0].ts = now;
+                }
+
                 if ($scope.tmp.sarTypeData.id != embryo.sar.types.DatumLine) {
                     if (!$scope.sar.lastKnownPosition) {
                         $scope.sar.lastKnownPosition = {};
-                    }
+                }
                     if (!$scope.sar.lastKnownPosition.ts) {
                         $scope.sar.lastKnownPosition.ts = now;
                     }
                 } else {
 
 
-                }
+            }
             }
 
         $scope.provider = {
@@ -88,18 +98,16 @@ $(function () {
             title: "Create SAR",
             type: "new",
             show: function (context) {
-                console.log(context);
-
                 $scope.page = context && context.page ? context.page : 'typeSelection'
-
                 if (context.sarId) {
-                    db.get(context.sarId).then(function (sarOperation) {
+                    LivePouch.get(context.sarId).then(function (sarOperation) {
+                        $scope.sarOperation = sarOperation;
                         $scope.sar = sarOperation.input;
                         $scope.$apply(function () {
                         });
                     })
                 } else {
-                    $scope.sar = {};
+                    initNewSar();
                 }
 
                 this.doShow = true;
@@ -121,15 +129,6 @@ $(function () {
 
             $scope.tmp = {
                 sarTypeData: $scope.sarTypeDatas[0]
-        }
-
-            initNewSar();
-
-        if (!$scope.sar.surfaceDriftPoints) {
-            $scope.sar.surfaceDriftPoints = [{}];
-        }
-        if (!$scope.sar.surfaceDriftPoints[0].ts) {
-            $scope.sar.surfaceDriftPoints[0].ts = now;
         }
 
         $scope.getDirections = function (query) {
@@ -171,7 +170,10 @@ $(function () {
             sarInput.type = $scope.tmp.sarTypeData.id;
             try {
                 $scope.alertMessages = [];
-                $scope.sarOperation = SarService.createSarOperation(sarInput);
+                // retain PouchDB fields like _id and _rev
+                var calculatedOperation = SarService.createSarOperation(sarInput);
+                $scope.sarOperation.input = calculatedOperation.input;
+                $scope.sarOperation.output = calculatedOperation.output;
                 $scope.tmp.searchObject = SarService.findSearchObjectType($scope.sarOperation.input.searchObject);
                 $scope.page = 'sarResult';
             } catch (error) {
@@ -205,36 +207,30 @@ $(function () {
         }
 
         $scope.finish = function () {
-            var updateList = false;
             if (!$scope.sarOperation._id) {
-                $scope.sarOperation._id = "sar-operation" + Date.now();
-                updateList = true;
+                $scope.sarOperation._id = "sar-" + Date.now();
+                $scope.sarOperation.status = embryo.SARStatus.STARTED;
             }
 
             LivePouch.put($scope.sarOperation).then(function () {
-                if (updateList) {
-                    LivePouch.get("sar-operations").then(function (sars) {
-                        sars.operations.push({
-                            id: $scope.sarOperation._id,
-                            name: $scope.sarOperation.input.no
-                        })
-                        LivePouch.put(sars).then(function () {
-                            SarService.selectSar(id);
-                            $scope.provider.doShow = false;
-                        });
-                    })
-                }
+                SarService.selectSar($scope.sarOperation._id);
+                $scope.provider.doShow = false;
+            }).catch(function (err) {
+
             });
         }
 
             $scope.end = function () {
-                var id = $scope.sar._id;
+                var id = $scope.sarOperation._id;
 
                 LivePouch.get(id).then(function (sar) {
-                    sar.output.status = 'ENDED';
+                    sar.status = embryo.SARStatus.ENDED;
                     LivePouch.put(sar).then(function () {
                         $scope.provider.doShow = false;
-                    });
+                        SarService.selectSar(null);
+                    }).catch(function (err) {
+                        console.log(err)
+                });
                 });
         }
     }]);
