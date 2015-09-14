@@ -101,10 +101,6 @@ $(function() {
             $scope.message = "Saving " + $scope.editUser.login + " ...";
             $scope.alertMessages = null;
             
-            if(typeof $scope.editUser.accessToAisData === 'undefined') {
-            	$scope.editUser.accessToAisData = false;
-            } 
-            
             UserService.create($scope.editUser, function() {
                 $scope.message = "User " + $scope.editUser.login + " created.";
                 $scope.action = "Edit";
