@@ -11,6 +11,22 @@ $(function () {
         }
     }]);
 
+    var SARTypeTxt = {};
+    SARTypeTxt[embryo.sar.types.RapidResponse] = "Rapid response";
+    SARTypeTxt[embryo.sar.types.DatumPoint] = "Datum point";
+    SARTypeTxt[embryo.sar.types.DatumLine] = "Datum line";
+    SARTypeTxt[embryo.sar.types.BackTrack] = "Back track";
+
+    var SARStatusTxt = {};
+    SARStatusTxt[embryo.SARStatus.STARTED] = "Active";
+    SARStatusTxt[embryo.SARStatus.ENDED] = "Ended";
+
+    var SARStatusLabel = {};
+    SARStatusLabel[embryo.SARStatus.STARTED] = "label-success";
+    SARStatusLabel[embryo.SARStatus.ENDED] = "label-default";
+
+
+
     module.controller("SARLayerControl", ['SarService', 'LivePouch', '$timeout', function (SarService, LivePouch, $timeout) {
         var sars = [];
         SarService.sarSelected("SARLayerControl", function (sarId) {
@@ -21,7 +37,7 @@ $(function () {
                         if (sar.output.datum) {
                             center = sar.output.datum;
                         } else if (sar.output.downWind) {
-                            center = sar.output.downWind;
+                            center = sar.output.downWind.datum;
                         }
                         embryo.map.setCenter(center.lon, center.lat, 8);
                     }, 100);
@@ -40,6 +56,8 @@ $(function () {
             sars.push(create.doc);
             SarLayerSingleton.getInstance().draw(sars);
         }).on('update', function (update) {
+            console.log("update")
+
             var index = SarService.findSarIndex(sars, update.doc._id);
             sars[index] = update.doc;
             SarLayerSingleton.getInstance().draw(sars);
@@ -71,13 +89,9 @@ $(function () {
         function ($scope, SarService, ViewService, $log, LivePouch) {
 
             $scope.sars = []
-            $scope.SARStatusTxt = {};
-            $scope.SARStatusTxt[embryo.SARStatus.STARTED] = "Active";
-            $scope.SARStatusTxt[embryo.SARStatus.ENDED] = "Ended";
 
-            $scope.SARStatusLabel = {};
-            $scope.SARStatusLabel[embryo.SARStatus.STARTED] = "label-success";
-            $scope.SARStatusLabel[embryo.SARStatus.ENDED] = "label-default";
+            $scope.SARStatusTxt = SARStatusTxt;
+            $scope.SARStatusLabel = SARStatusLabel;
 
             var subscription = ViewService.subscribe({
                 name: "OperationsControl",
@@ -159,18 +173,13 @@ $(function () {
     module.controller("OperationControl", ['$scope', 'SarService', 'ViewService', '$log', 'LivePouch', '$timeout',
         function ($scope, SarService, ViewService, $log, LivePouch, $timeout) {
 
-            $scope.SARStatusTxt = {};
-            $scope.SARStatusTxt[embryo.SARStatus.STARTED] = "Active";
-            $scope.SARStatusTxt[embryo.SARStatus.ENDED] = "Ended";
-
-            $scope.SARStatusLabel = {};
-            $scope.SARStatusLabel[embryo.SARStatus.STARTED] = "label-success";
-            $scope.SARStatusLabel[embryo.SARStatus.ENDED] = "label-default";
-
+            $scope.SARTypeTxt = SARTypeTxt;
+            $scope.SARStatusTxt = SARStatusTxt;
+            $scope.SARStatusLabel = SARStatusLabel;
             $scope.SARStatus = embryo.SARStatus;
 
             var subscription = ViewService.subscribe({
-                name: "OperationControl",
+                name: "OperationsControl",
                 onNewProvider: function () {
 
                     var viewProviders = ViewService.viewProviders();
@@ -178,6 +187,8 @@ $(function () {
                     for (var index in viewProviders) {
                         if (viewProviders[index].type() === 'new') {
                             $scope.newSarProvider = viewProviders[index];
+                        } else if (viewProviders[index].type() === 'effort') {
+                            $scope.effortAllocationProvider = viewProviders[index];
                         }
                     }
                 }
@@ -202,6 +213,8 @@ $(function () {
                         $timeout(function () {
                             $scope.selected.sar = res;
                             $scope.sar = res;
+                            console.log("operationcontrol")
+                            console.log(res);
                         })
                     })
                 } else {
@@ -210,9 +223,12 @@ $(function () {
                 }
             })
 
-            $scope.edit = function ($event) {
-                $event.preventDefault();
+            $scope.edit = function () {
                 $scope.newSarProvider.show({sarId: $scope.sar._id});
+            }
+
+            $scope.effort = function () {
+                $scope.effortAllocationProvider.show({sarId: $scope.sar._id});
             }
 
             $scope.formatTs = formatTime;
@@ -251,6 +267,8 @@ $(function () {
             }
         }
 
+        $scope.formatTs = formatTime;
+
         // TODO move to CouchDB server
         LivePouch.get('_design/sarlogview').then(function (existing) {
             ddoc._rev = existing._rev;
@@ -281,7 +299,11 @@ $(function () {
         }
 
         function registerListeners() {
-            LivePouch.changes({
+            if ($scope.changes) {
+                $scope.changes.cancel();
+            }
+
+            $scope.changes = LivePouch.changes({
                 since: 'now',
                 live: true,
                 include_docs: true,
@@ -302,7 +324,6 @@ $(function () {
                 }
             } else {
                 $scope.logs = null;
-
             }
         });
 
@@ -313,6 +334,7 @@ $(function () {
             var msgObject = {
                 sarId: $scope.selectedSarId,
                 user: Subject.getDetails().userName,
+                ts: Date.now(),
                 value: msg
             }
             LivePouch.post(msgObject).then(function (result) {

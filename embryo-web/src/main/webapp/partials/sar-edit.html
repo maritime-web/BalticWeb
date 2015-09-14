@@ -24,38 +24,40 @@
                     <label class="control-label col-xs-3">Sar Operation Type</label>
 
                     <div class="col-xs-5">
-                        <select ng-model="tmp.sarTypeData" name="type" required
+                        <select ng-model="sar.type" name="type" required
                                 class="input-sm form-control"
-                                x-ng-options="sarTypeData as sarTypeData.text for sarTypeData in sarTypeDatas">
+                                x-ng-options="sarTypeDatas[type].text for (key,type) in sarTypeValues">
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <p x-ng-if="tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.RapidResponse">
-                        {{selectedType.text}} should be used when the rescue vessel is within the designated
+                    <p x-ng-if="sar.type === sarTypes.RapidResponse">
+                        {{sarTypeDatas[sar.type].text}} should be used when the rescue vessel is within the designated
                         search area in a relatively short time span, i.e. 1-2 hours after last known position (LKP).
                     </p>
 
-                    <p x-ng-if="tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.DatumPoint">
-                        {{selectedType.text}} is a calculation method used when the rescue vessel arrives to the
+                    <p x-ng-if="sar.type === sarTypes.DatumPoint">
+                        {{sarTypeDatas[sar.type].text}} is a calculation method used when the rescue vessel arrives to
+                        the
                         designated search area two hours or more later than the last known position (LKP) was reported.
                     </p>
 
-                    <p x-ng-if="tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.DatumLine">
-                        {{selectedType.text}} is used when an object is missing and the last known position (LKP) is
+                    <p x-ng-if="sar.type === sarTypes.DatumLine">
+                        {{sarTypeDatas[sar.type].text}} is used when an object is missing and the last known position
+                        (LKP) is
                         unknown, but an assumed route is known.
                     </p>
 
-                    <p x-ng-if="tmp.sarTypeData && tmp.sarTypeData.id === sarTypes.BackTrack">
-                        {{selectedType.text}} is used when an object connected to the missing vessel has
+                    <p x-ng-if="sar.type === sarTypes.BackTrack">
+                        {{sarTypeDatas[sar.type].text}} is used when an object connected to the missing vessel has
                         been located. By reversing the objects movements a possible search area can be established.
                     </p>
                 </div>
 
                 <div class="sar-img-type-container">
-                    <img style="max-width:500px; max-height:250px" ng-if="tmp.sarTypeData"
-                         ng-src="{{tmp.sarTypeData.img}}"/>
+                    <img style="max-width:500px; max-height:250px" ng-if="sar.type"
+                         ng-src="{{sarTypeDatas[sar.type].img}}"/>
                 </div>
 
                 <div class="col-xs-12">

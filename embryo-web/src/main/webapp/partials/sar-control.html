@@ -44,13 +44,13 @@
 
                 <div x-ng-if="sar">
                     <div class="row">
-                        <div class="col-md-7">Status:</div>
-                        <div class="col-md-5 "><span class="label" x-ng-class="SARStatusLabel[sar.status]">{{SARStatusTxt[sar.status]}}</span>
-                        </div>
+                        <div class="col-md-7">Type:</div>
+                        <div class="col-md-5 nopadding">{{SARTypeTxt[sar.input.type]}}</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-7">Type:</div>
-                        <div class="col-md-5">{{sar.input.selectedType.text}}</div>
+                        <div class="col-md-7">Status:</div>
+                        <div class="col-md-5 nopadding"><span class="label" x-ng-class="SARStatusLabel[sar.status]">{{SARStatusTxt[sar.status]}}</span>
+                        </div>
                     </div>
 
                     <h6>Date and Time</h6>
@@ -73,15 +73,19 @@
                     <h6>Last Surface Drifts dw continuation</h6>
                     <div class="row">
                         <div class="col-md-7">Direction</div>
-                        <div class="col-md-5 nopadding">{{formatDecimal(sar.output.rdv.direction, -2)}}</div>
+                        <div class="col-md-5 nopadding">{{formatDecimal(sar.output.rdv ? sar.output.rdv.direction :
+                            sar.output.downWind.rdv.direction, -2)}}
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-7">Speed</div>
-                        <div class="col-md-5 nopadding">{{formatDecimal(sar.output.rdv.speed, -2)}} kn/h</div>
+                        <div class="col-md-5 nopadding">{{formatDecimal(sar.output.rdv.speed ? sar.output.rdv.speed :
+                            sar.output.downWind.rdv.speed, -2)}} kn/h
+                        </div>
                     </div>
 
                     <h6>Position of Datum to LKP</h6>
-                    <table class="table table-condensed">
+                    <table class="table table-condensed ctrl">
                         <tr>
                             <td></td>
                             <td>Latitude</td>
@@ -98,24 +102,24 @@
                         </tr>
                         <tr x-ng-if="sar.output.downWind">
                             <td>DW</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{formatLat(sar.output.downWind.datum.lat)}}</td>
+                            <td>{{formatLon(sar.output.downWind.datum.lon)}}</td>
+                            <td>{{formatDecimal(sar.output.downWind.rdv.distance, -2)}} nm</td>
+                            <td>{{formatDecimal(sar.output.downWind.radius, -2)}} nm</td>
                         </tr>
                         <tr x-ng-if="sar.output.min">
                             <td>Min</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{formatLat(sar.output.min.datum.lat)}}</td>
+                            <td>{{formatLon(sar.output.min.datum.lon)}}</td>
+                            <td>{{formatDecimal(sar.output.min.rdv.distance, -2)}} nm</td>
+                            <td>{{formatDecimal(sar.output.min.radius, -2)}} nm</td>
                         </tr>
                         <tr x-ng-if="sar.output.max">
                             <td>Max</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{formatLat(sar.output.max.datum.lat)}}</td>
+                            <td>{{formatLon(sar.output.max.datum.lon)}}</td>
+                            <td>{{formatDecimal(sar.output.max.rdv.distance, -2)}} nm</td>
+                            <td>{{formatDecimal(sar.output.max.radius, -2)}} nm</td>
                         </tr>
                     </table>
 
@@ -164,50 +168,37 @@
 
                     <div class="row" x-ng-if="sar.status != SARStatus.ENDED">
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-primary btn-xs" x-ng-click="edit($event)">Reopen
+                            <button type="button" class="btn btn-primary btn-xs" x-ng-click="edit()">Reopen
                                 Calculations
                             </button>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-primary btn-xs">Effort Allocation</button>
+                            <button type="button" class="btn btn-primary btn-xs" x-ng-click="effort()">Effort
+                                Allocation
+                            </button>
                         </div>
                     </div>
 
                     <h6>Effort Allocation</h6>
                     <div class="row">
-                        <hr class="smallpadding"/>
+                        <div class="col-md-8">Probability of Detection</div>
+                        <div class="col-md-4 nopadding">N/A</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-7">Probability of Detection</div>
-                        <div class="col-md-5 nopadding">N/A</div>
+                        <div class="col-md-8">Effective Search Area</div>
+                        <div class="col-md-4 nopadding">N/A</div>
                     </div>
                     <div class="row">
-                        <hr class="smallpadding"/>
+                        <div class="col-md-8">Search Craft Ground Speed</div>
+                        <div class="col-md-4 nopadding">N/A</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-7">Effective Search Area</div>
-                        <div class="col-md-5 nopadding">N/A</div>
+                        <div class="col-md-8">Track spacing</div>
+                        <div class="col-md-4 nopadding">N/A</div>
                     </div>
                     <div class="row">
-                        <hr class="smallpadding"/>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7">Search Craft Ground Speed</div>
-                        <div class="col-md-5 nopadding">N/A</div>
-                    </div>
-                    <div class="row">
-                        <hr class="smallpadding"/>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7">Track Spacing</div>
-                        <div class="col-md-5 nopadding">N/A</div>
-                    </div>
-                    <div class="row">
-                        <hr class="smallpadding"/>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7">time Spent Searching</div>
-                        <div class="col-md-5 nopadding">DROPDOWN</div>
+                        <div class="col-md-8">Time spent searching</div>
+                        <div class="col-md-4 nopadding">DROPDOWN</div>
                     </div>
 
                     <h6>Search Patterns</h6>
@@ -225,7 +216,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="row" x-ng-if="sar.status != SARStatus.ENDED">
@@ -236,20 +226,19 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
-
 
         <div accordion-group heading="Message log{{selected.sarIdentifier ? ' - ' + selected.sarIdentifier : ''}}">
             <!-- style="height: 300px;" -->
 
             <div x-ng-controller="LogControl">
-                <p x-ng-repeat="msg in messages" class="log">
-                    <span class="user">{{msg.user}}:</span>
+                <div x-ng-repeat="msg in messages" class="log">
+                    <div class="user">
+                        <small>{{formatTs(msg.ts)}} - {{msg.user}}:</small>
+                    </div>
                     <span class="stmt">{{msg.value}}</span>
-                <hr class="smallpadding"/>
-                </p>
+                    <hr class="smallpadding"/>
+                </div>
 
                 <div class="row">
                     <div class="col-md-10">

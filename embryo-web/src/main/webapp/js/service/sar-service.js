@@ -83,6 +83,42 @@
     directions.push(new Direction("NNW", 337.50));
     directions = Object.freeze(directions);
 
+    embryo.sar.effort = {};
+    embryo.sar.effort.VesselTypes = Object.freeze({
+        SmallerVessel: "SV",
+        Ship: "S"
+    });
+
+    embryo.sar.effort.TargetTypes = Object.freeze({
+        PersonInWater: "PIW",
+        Raft1Person: "R1",
+        Raft4Persons: "R4",
+        Raft6Persons: "R6",
+        Raft8Persons: "R8",
+        Raft10Persons: "R10",
+        Raft15Persons: "R15",
+        Raft20Persons: "R20",
+        Raft25Persons: "R25",
+        Motorboat15: "M15",
+        Motorboat20: "M20",
+        Motorboat33: "M33",
+        Motorboat53: "M53",
+        Motorboat78: "M78",
+        Sailboat15: "SB15",
+        Sailboat20: "SB20",
+        Sailboat25: "SB25",
+        Sailboat30: "SB30",
+        Sailboat40: "SB40",
+        Sailboat50: "SB50",
+        Sailboat70: "SB70",
+        Sailboat83: "SB83",
+        Ship120: "SH120",
+        Ship225: "SH225",
+        Ship330: "SH330"
+
+    });
+
+
     function directionDegrees(value) {
         if (typeof value !== 'string') {
             return value;
@@ -526,7 +562,7 @@
             },
             findSarIndex: function (sars, id) {
                 for (var index in sars) {
-                    if (sars[index].id == id) {
+                    if (sars[index]._id == id) {
                         return index;
                     }
                 }

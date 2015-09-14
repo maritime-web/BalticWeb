@@ -41,12 +41,12 @@ table.surfaceDriftPointsPresented {
     margin-bottom: 10px;
 }
 
-.nopadding {
+.nopadding, table.nopadding td {
    padding: 0 !important;
    margin: 0 !important;
 }
 
-.smallpadding {
+.smallpadding, table.smallpadding td {
    padding-right: 0 !important;
    padding-left: 0 !important;
    padding-top: 5px !important;
@@ -58,9 +58,27 @@ table.surfaceDriftPointsPresented {
    margin-bottom: 0 !important;
 }
 
+table.ctrl td {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
+    border-top:0!important;
+}
+
+
 .col-centered {
   display: block;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+}
+
+.stmt{
+    word-wrap: break-word;
 }
