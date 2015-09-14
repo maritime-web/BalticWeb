@@ -1,0 +1,125 @@
+<div x-ng-controller="SarEffortAllocationController">
+
+    <div e-reporting-panel x-ng-if="provider.doShow" id="sarEffortAllocationEditPanel">
+        <h2>
+            <a class="close" href="#" style="float: right" x-ng-click="close($event)">&times;</a>Effort Allocation
+        </h2>
+
+        <div>
+            <form x-ng-if="page == 'edit'" name="effortAlocationForm" class="form-horizontal" novalidate>
+                <hr/>
+                <div x-ng-show="alertMessages" class="alert alert-danger">
+                    <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
+                </div>
+                <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+                <h5>SRU Information</h5>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Vessel Name:</label>
+
+                    <div class="col-xs-4">
+                        <input x-ng-model="effort.vesselName" type="text"
+                               class="form-control input-sm" placeholder="Vessel name" required/>
+                    </div>
+                    <label class="control-label col-xs-2">Fatigue:</label>
+
+                    <div class="col-xs-2">
+                        <select ng-model="effort.fatigue" name="type"
+                                class="input-sm form-control"
+                                x-ng-options="fatigue for fatigue in fatigues">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Type:</label>
+
+                    <div class="col-xs-5">
+                        <select ng-model="effort.vesType" name="type" required
+                                class="input-sm form-control"
+                                x-ng-options="type.value as type.text for type in vesselTypes">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Search Velocity, knots:</label>
+
+                    <div class="col-xs-3">
+                        <input x-ng-model="effort.velocity" type="text"
+                               class="form-control input-sm" placeholder="5 knots" required/>
+                    </div>
+                </div>
+
+                <h5>SAR Information</h5>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Target type:</label>
+
+                    <div class="col-xs-5">
+                        <select ng-model="effort.target" name="type" required
+                                class="input-sm form-control"
+                                x-ng-options="type.value as type.text for type in targetTypes">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Time spent searching:</label>
+
+                    <div class="col-xs-2">
+                        <input x-ng-model="effort.time" type="number"
+                               class="form-control input-sm" required/>
+                    </div>
+                </div>
+
+                <h5>Weather information</h5>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Wind speed, knots:</label>
+
+                    <div class="col-xs-2">
+                        <input x-ng-model="effort.wind" type="text"
+                               class="form-control input-sm" required/>
+                    </div>
+                    <label class="control-label col-xs-3">Visibility, nm:</label>
+
+                    <div class="col-xs-2">
+                        <select ng-model="effort.visibility" name="visibility" required
+                                class="input-sm form-control"
+                                x-ng-options="visibility for visibility in visibilityValues">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Water elevation, feet:</label>
+
+                    <div class="col-xs-2">
+                        <input x-ng-model="effort.waterElevation" type="text"
+                               class="form-control input-sm" required/>
+                    </div>
+                </div>
+                <h5>Additional options</h5>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-6">Desired Probability of Detection:</label>
+
+                    <div class="col-xs-2">
+                        <input x-ng-model="effort.pod" type="number"
+                               class="form-control input-sm" required/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-6">TODO warning if POD below 60%:</label>
+                </div>
+                <div class="col-xs-12">
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-sm" x-ng-click="back()">Cancel</button> &nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="next()">Calculate Effective
+                            Area
+                        </button>
+                    </span>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
