@@ -63,7 +63,7 @@ $(function () {
                 var now = Date.now();
                 $scope.sar = {
                     type: embryo.sar.types.RapidResponse,
-                    no: "AW-" + Date.now(),
+                    no: SarService.createSarId(),
                     searchObject: $scope.searchObjects[0].id,
                     yError: 0.1,
                     safetyFactor: 1.0,
@@ -92,7 +92,7 @@ $(function () {
         $scope.provider = {
             doShow: false,
             title: "Create SAR",
-            type: "new",
+            type: "newSar",
             show: function (context) {
                 $scope.page = context && context.page ? context.page : 'typeSelection'
                 if (context.sarId) {
@@ -231,71 +231,131 @@ $(function () {
         }
     }]);
 
-    function SelectionType(value, text) {
-        this.value = value;
-        this.text = text;
+    var targetText = {};
+    targetText[embryo.sar.effort.TargetTypes.PersonInWater] = "Person in Water (PIW)";
+    targetText[embryo.sar.effort.TargetTypes.Raft1Person] = "Raft 1 person";
+    targetText[embryo.sar.effort.TargetTypes.Raft4Persons] = "Raft 4 persons";
+    targetText[embryo.sar.effort.TargetTypes.Raft6Persons] = "Raft 6 persons";
+    targetText[embryo.sar.effort.TargetTypes.Raft8Persons] = "Raft 8 persons";
+    targetText[embryo.sar.effort.TargetTypes.Raft10Persons] = "Raft 10 persons";
+    targetText[embryo.sar.effort.TargetTypes.Raft15Persons] = "Raft 15 persons";
+    targetText[embryo.sar.effort.TargetTypes.Raft20Persons] = "Raft 20 persons";
+    targetText[embryo.sar.effort.TargetTypes.Raft25Persons] = "Raft 25 persons";
+    targetText[embryo.sar.effort.TargetTypes.Motorboat15] = "Motorboat <= 15 feet";
+    targetText[embryo.sar.effort.TargetTypes.Motorboat20] = "Motorboat 20 feet";
+    targetText[embryo.sar.effort.TargetTypes.Motorboat33] = "Motorboat 33 feet";
+    targetText[embryo.sar.effort.TargetTypes.Motorboat53] = "Motorboat 53 feet";
+    targetText[embryo.sar.effort.TargetTypes.Motorboat78] = "Motorboat 78 feet";
+    targetText[embryo.sar.effort.TargetTypes.Sailboat15] = "Sailboat 15 feet";
+    targetText[embryo.sar.effort.TargetTypes.Sailboat20] = "Sailboat 20 feet";
+    targetText[embryo.sar.effort.TargetTypes.Sailboat25] = "Sailboat 25 feet";
+    targetText[embryo.sar.effort.TargetTypes.Sailboat30] = "Sailboat 30 feet";
+    targetText[embryo.sar.effort.TargetTypes.Sailboat40] = "Sailboat 40 feet";
+    targetText[embryo.sar.effort.TargetTypes.Sailboat50] = "Sailboat 50 feet";
+    targetText[embryo.sar.effort.TargetTypes.Sailboat70] = "Sailboat 70 feet";
+    targetText[embryo.sar.effort.TargetTypes.Sailboat83] = "Sailboat 83 feet";
+    targetText[embryo.sar.effort.TargetTypes.Ship120] = "Ship 120 feet";
+    targetText[embryo.sar.effort.TargetTypes.Ship225] = "Ship 225 feet";
+    targetText[embryo.sar.effort.TargetTypes.Ship330] = "Ship >= 300 feet";
+
+    function targetTypes() {
+        return [
+            embryo.sar.effort.TargetTypes.PersonInWater,
+            embryo.sar.effort.TargetTypes.Raft1Person,
+            embryo.sar.effort.TargetTypes.Raft4Persons,
+            embryo.sar.effort.TargetTypes.Raft6Persons,
+            embryo.sar.effort.TargetTypes.Raft8Persons,
+            embryo.sar.effort.TargetTypes.Raft10Persons,
+            embryo.sar.effort.TargetTypes.Raft15Persons,
+            embryo.sar.effort.TargetTypes.Raft20Persons,
+            embryo.sar.effort.TargetTypes.Raft25Persons,
+            embryo.sar.effort.TargetTypes.Motorboat15,
+            embryo.sar.effort.TargetTypes.Motorboat20,
+            embryo.sar.effort.TargetTypes.Motorboat33,
+            embryo.sar.effort.TargetTypes.Motorboat53,
+            embryo.sar.effort.TargetTypes.Motorboat78,
+            embryo.sar.effort.TargetTypes.Sailboat15,
+            embryo.sar.effort.TargetTypes.Sailboat20,
+            embryo.sar.effort.TargetTypes.Sailboat25,
+            embryo.sar.effort.TargetTypes.Sailboat30,
+            embryo.sar.effort.TargetTypes.Sailboat40,
+            embryo.sar.effort.TargetTypes.Sailboat50,
+            embryo.sar.effort.TargetTypes.Sailboat70,
+            embryo.sar.effort.TargetTypes.Sailboat83,
+            embryo.sar.effort.TargetTypes.Ship120,
+            embryo.sar.effort.TargetTypes.Ship225,
+            embryo.sar.effort.TargetTypes.Ship330
+        ];
     }
 
+    var typeText = {}
+    typeText[embryo.sar.effort.VesselTypes.SmallerVessel] = "Small vessel (40 feet)";
+    typeText[embryo.sar.effort.VesselTypes.Ship] = "Ship (50 feet)";
 
     module.controller("SarEffortAllocationController", ['$scope', 'ViewService', 'SarService', 'LivePouch',
-        function ($scope, ViewService, LivePouch) {
+        function ($scope, ViewService, SarService, LivePouch) {
             $scope.alertMessages = [];
+            $scope.srus = [];
 
             $scope.fatigues = [0.5, 1.0];
+            $scope.targetText = targetText;
+            $scope.targetTypes = targetTypes();
 
-            $scope.targetTypes = [new SelectionType(embryo.sar.effort.TargetTypes.PersonInWater, "Person in Water (PIW)"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Raft1Person, "Raft 1 person"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Raft4Persons, "Raft 4 persons"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Raft6Persons, "Raft 6 persons"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Raft8Persons, "Raft 8 persons"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Raft10Persons, "Raft 10 persons"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Raft15Persons, "Raft 15 persons"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Raft20Persons, "Raft 20 persons"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Raft25Persons, "Raft 25 persons"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Motorboat15, "Motorboat <= 15 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Motorboat20, "Motorboat 20 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Motorboat33, "Motorboat 33 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Motorboat53, "Motorboat 53 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Motorboat78, "Motorboat 78 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Sailboat15, "Sailboat 15 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Sailboat20, "Sailboat 20 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Sailboat25, "Sailboat 25 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Sailboat30, "Sailboat 30 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Sailboat40, "Sailboat 40 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Sailboat50, "Sailboat 50 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Sailboat70, "Sailboat 70 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Sailboat83, "Sailboat 83 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Ship120, "Ship 120 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Ship225, "Ship 225 feet"),
-                new SelectionType(embryo.sar.effort.TargetTypes.Ship330, "Ship >= 300 feet")
-            ]
-
+            $scope.typeText = typeText;
             $scope.vesselTypes = [
-                new SelectionType(embryo.sar.effort.VesselTypes.SmallerVessel, "Small vessel (40 feet)"),
-                new SelectionType(embryo.sar.effort.VesselTypes.Ship, "Ship (50 feet)")
+                embryo.sar.effort.VesselTypes.SmallerVessel,
+                embryo.sar.effort.VesselTypes.Ship
             ]
 
             $scope.visibilityValues = [1, 3, 5, 10, 15, 20];
 
+
+            function loadAllocation(allocationId) {
+                // find docs where sarId === selectedSarId
+                LivePouch.get(allocationId).then(function (allocation) {
+                    $scope.effort = allocation;
+                    $scope.toEffortAllocation();
+                    $scope.$apply(function () {
+                    })
+                }).catch(function (error) {
+                    console.log("loadAllocation error")
+                    console.log(error)
+                });
+            }
+
+            function loadSRUs() {
+                // find docs where sarId === selectedSarId
+                LivePouch.query('sareffortview', {
+                    key: $scope.sarId,
+                    include_docs: true
+                }).then(function (result) {
+                    var srus = [];
+                    for (var index in result.rows) {
+                        srus.push(result.rows[index].doc)
+                    }
+                    $scope.srus = srus
+                    $scope.$apply(function () {
+                    })
+                }).catch(function (error) {
+                    console.log("sareffortview error")
+                    console.log(error)
+                });
+            }
 
             $scope.provider = {
                 doShow: false,
                 title: "SarEffortAllocation",
                 type: "effort",
                 show: function (context) {
-                    $scope.page = 'edit';
+                    $scope.page = context && context.page ? context.page : 'SRU';
                     if (context && context.sarId) {
-
-                    }
-                    $scope.effort = {
-                        fatigue: 1.0,
-                        vesType: embryo.sar.effort.VesselTypes.SmallerVessel,
-                        target: embryo.sar.effort.TargetTypes.PersonInWater,
-                        time: 1,
-                        visibility: 1,
-                        pod: 78
+                        $scope.sarId = context.sarId
+                        $scope.toSrus();
+                    } else if (context && context.allocationId) {
+                        loadAllocation(context.allocationId)
                     }
 
+                    console.log("page=" + $scope.page)
 
                     this.doShow = true;
                 },
@@ -310,8 +370,138 @@ $(function () {
                 $scope.provider.close();
             };
 
-            $scope.calculate = function () {
+            $scope.newUnit = function () {
+                $scope.sru = {
+                    fatigue: 1.0,
+                    type: embryo.sar.effort.VesselTypes.SmallerVessel,
+                    time: 1,
+                    visibility: 1
+                }
+                $scope.page = 'editUnit';
+            };
 
+
+            function clone(object) {
+                return JSON.parse(JSON.stringify(object));
+            }
+
+            $scope.editSRU = function ($event, SRU) {
+                $event.preventDefault();
+                $scope.sru = SRU;
+                $scope.page = 'editUnit';
+            }
+
+            $scope.toConfirmDelSRU = function ($event, SRU) {
+                $event.preventDefault();
+                $scope.sru = SRU;
+                $scope.page = 'deleteSRU';
+            }
+
+            $scope.removeSRU = function (SRU) {
+                LivePouch.remove(SRU).then(function (result) {
+                    console.log("succes removing document")
+                    $scope.toSrus();
+                    $scope.$apply(function () {
+                    })
+                }).catch(function (error) {
+                    $scope.alertMessages = ["Internal eror removing SRU", error];
+                    console.log("error removing sru")
+                    console.log(error)
+                    $scope.$apply(function () {
+                    })
+
+                })
+            }
+
+            $scope.toSrus = function () {
+                loadSRUs();
+                $scope.page = "SRU";
+            }
+
+            $scope.saveUnit = function () {
+                if (!$scope.sru._id) {
+                    $scope.sru.effSarId = $scope.sarId;
+                    $scope.sru._id = "sareff-" + Date.now();
+                    $scope.sru.status = embryo.sar.effort.Status.DraftSRU;
+                }
+                var sru = $scope.sru;
+                $scope.sru = null;
+                LivePouch.put(sru).then(function (result) {
+                    $scope.toSrus();
+                }).catch(function (error) {
+                    console.log(error)
+                    $scope.sru = sru;
+                    $scope.alertMessages = ["internal error", error];
+                });
+
+            }
+
+            $scope.toEffortAllocation = function () {
+                if (!$scope.effort) {
+                    $scope.effort = {}
+                }
+
+                if (!$scope.effort.target) {
+                    $scope.effort.target = embryo.sar.effort.TargetTypes.PersonInWater;
+                }
+
+                if (!$scope.effort.visibility) {
+                    $scope.effort.visibility = $scope.visibilityValues[0];
+                }
+
+                if (!$scope.effort.pod) {
+                    $scope.effort.pod = 78;
+                }
+
+                // TODO find existing effort allocation
+                // if editing an existing allocation, then present previous data again
+                // if creating a new allocation then use allocation from other previous allocations for same SAR operation.
+                // if no previous allocation data then use defaults (above)
+
+                $scope.page = "effort";
+            }
+
+            $scope.calculate = function () {
+                console.log($scope.effort);
+                LivePouch.get($scope.effort.effSarId).then(function (sar) {
+                    var allocations = null;
+                    try {
+                        console.log("before calculation");
+                        allocations = SarService.calculateEffortAllocations([$scope.effort], sar);
+                        console.log("after calculation")
+                    } catch (error) {
+                        $scope.alertMessages = ["internal error", error];
+                    }
+
+                    if (allocations) {
+                        for (var index in allocations) {
+                            LivePouch.put(allocations[index]).then(function () {
+                                // TODO fix problem. View closing after first save
+                                $scope.provider.close();
+                                $scope.$apply(function () {
+                                });
+                            }).catch(function (error) {
+                                console.log(error)
+                                $scope.alertMessages = ["internal error", error];
+                                $scope.$apply(function () {
+                                });
+                            });
+                        }
+                    }
+
+                    $scope.$apply(function () {
+                    });
+                }).catch(function (error) {
+                    console.log(error)
+                    $scope.alertMessages = ["internal error", error];
+                    $scope.$apply(function () {
+                    });
+                });
+            }
+
+            $scope.confirm = function () {
+                // CONFIRM calculation and movement within circle before sending to other vessels
+                // this to minimize data traffic
             }
 
 

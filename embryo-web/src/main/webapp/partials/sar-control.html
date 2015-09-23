@@ -180,26 +180,26 @@
                     </div>
 
                     <h6>Effort Allocation</h6>
-                    <div class="row">
-                        <div class="col-md-8">Probability of Detection</div>
-                        <div class="col-md-4 nopadding">N/A</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8">Effective Search Area</div>
-                        <div class="col-md-4 nopadding">N/A</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8">Search Craft Ground Speed</div>
-                        <div class="col-md-4 nopadding">N/A</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8">Track spacing</div>
-                        <div class="col-md-4 nopadding">N/A</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8">Time spent searching</div>
-                        <div class="col-md-4 nopadding">DROPDOWN</div>
-                    </div>
+                    <table class="table table-condensed ctrl">
+                        <tr>
+                            <td>Name</td>
+                            <td>Track space</td>
+                            <td>Status</td>
+                            <td></td>
+                        </tr>
+                        <tr x-ng-repeat="allocation in allocations">
+                            <td>{{allocation.name}}</td>
+                            <td></td>
+                            <td><span class="label" x-ng-class="AllocationStatusLabel[allocation.status]">{{AllocationStatusTxt[allocation.status]}}</span>
+                            </td>
+                            <td>
+                                <a x-ng-if="allocation.status == AllocationStatus.DraftSRU" href="#"
+                                   x-ng-click="calculateAllocation($event, allocation)">Calculate</a>
+                                <a x-ng-if="allocation.status == AllocationStatus.DraftZone" href="#"
+                                   x-ng-click="activateAllocation($event, allocation)">Activate</a>
+                            </td>
+                        </tr>
+                    </table>
 
                     <h6>Search Patterns</h6>
 

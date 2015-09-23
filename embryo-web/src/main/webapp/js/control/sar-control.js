@@ -25,7 +25,15 @@ $(function () {
     SARStatusLabel[embryo.SARStatus.STARTED] = "label-success";
     SARStatusLabel[embryo.SARStatus.ENDED] = "label-default";
 
+    var AllocationStatusTxt = {};
+    AllocationStatusTxt[embryo.sar.effort.Status.Active] = "Active";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftSRU] = "Draft SRU";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftZone] = "Draft Zone";
 
+    var AllocationStatusLabel = {};
+    AllocationStatusLabel[embryo.sar.effort.Status.Active] = "label-success";
+    AllocationStatusLabel[embryo.sar.effort.Status.DraftSRU] = "label-danger";
+    AllocationStatusLabel[embryo.sar.effort.Status.DraftZone] = "label-danger";
 
     module.controller("SARLayerControl", ['SarService', 'LivePouch', '$timeout', function (SarService, LivePouch, $timeout) {
         var sars = [];
@@ -99,8 +107,12 @@ $(function () {
 
                     var viewProviders = ViewService.viewProviders();
                     $log.debug('onNewProvider, viewProvider=', viewProviders);
+
+                    console.log("viewProviders=")
+                    console.log(viewProviders)
+
                     for (var index in viewProviders) {
-                        if (viewProviders[index].type() === 'new') {
+                        if (viewProviders[index].type() === 'newSar') {
                             $scope.newSarProvider = viewProviders[index];
                         }
                     }
@@ -166,6 +178,7 @@ $(function () {
             }
 
             $scope.newSar = function () {
+                console.log($scope.newSarProvider)
                 $scope.newSarProvider.show({});
             }
         }]);
@@ -177,15 +190,19 @@ $(function () {
             $scope.SARStatusTxt = SARStatusTxt;
             $scope.SARStatusLabel = SARStatusLabel;
             $scope.SARStatus = embryo.SARStatus;
+            $scope.AllocationStatus = embryo.sar.effort.Status;
+
+            $scope.AllocationStatusTxt = AllocationStatusTxt;
+            $scope.AllocationStatusLabel = AllocationStatusLabel;
+
 
             var subscription = ViewService.subscribe({
-                name: "OperationsControl",
+                name: "OperationControl",
                 onNewProvider: function () {
-
                     var viewProviders = ViewService.viewProviders();
-                    $log.debug('onNewProvider, viewProvider=', viewProviders);
+                    $log.debug('OperationControl.onNewProvider, viewProvider=', viewProviders);
                     for (var index in viewProviders) {
-                        if (viewProviders[index].type() === 'new') {
+                        if (viewProviders[index].type() === 'newSar') {
                             $scope.newSarProvider = viewProviders[index];
                         } else if (viewProviders[index].type() === 'effort') {
                             $scope.effortAllocationProvider = viewProviders[index];
@@ -205,6 +222,7 @@ $(function () {
                     });
                 }
 
+                $scope.selected.sarId = sarId;
                 if (sarId) {
                     LivePouch.get(sarId).catch(function (err) {
                         $log.error(err)
@@ -217,6 +235,7 @@ $(function () {
                             console.log(res);
                         })
                     })
+                    loadEffortAllocations();
                 } else {
                     $scope.selected.sar = null;
                     $scope.sar = null;
@@ -247,6 +266,55 @@ $(function () {
             $scope.confirmEnd = function () {
                 $scope.newSarProvider.show({sarId: $scope.sar._id, page: "end"});
             }
+
+            $scope.calculateAllocation = function ($event, allocation) {
+                $event.preventDefault();
+                $scope.effortAllocationProvider.show({allocationId: allocation._id, page: "effort"})
+            }
+
+            function loadEffortAllocations() {
+                // find docs where sarId === selectedSarId
+                LivePouch.query('sareffortview', {
+                    key: $scope.selected.sarId,
+                    include_docs: true
+                }).then(function (result) {
+                    var allocations = [];
+                    for (var index in result.rows) {
+                        allocations.push(result.rows[index].doc)
+                    }
+                    $scope.allocations = allocations
+                    $scope.$apply(function () {
+                    })
+                    console.log("loadAllocations")
+                    console.log($scope.allocations);
+                }).catch(function (error) {
+                    console.log("sareffortview error in controller.js")
+                    console.log(error)
+                });
+
+                LivePouch.changes({
+                    since: 'now',
+                    live: true,
+                    include_docs: true,
+                    filter: "_view",
+                    view: "sareffortview",
+                    key: $scope.selected.sarId
+                }).on('create', function (create) {
+                    $scope.allocations.push(create.doc);
+                    $scope.$apply({})
+                }).on('update', function (update) {
+                    var index = SarService.findSarIndex($scope.sars, update.doc._id);
+                    $scope.sars[index] = SarService.toSmallSarObject(update.doc);
+                    $scope.$apply({})
+                }).on('delete', function (del) {
+                    var index = SarService.findSarIndex($scope.sars, del.doc._id);
+                    $scope.sars = $scope.sars.splice(index, 1);
+                    $scope.$apply({})
+                });
+            }
+
+
+
         }]);
 
     module.controller("LogControl", ['$scope', 'Subject', 'SarService', 'LivePouch', function ($scope, Subject, SarService, LivePouch) {
@@ -259,8 +327,8 @@ $(function () {
                 sarlogview: {
                     map: function (doc) {
                         console.log(doc)
-                        if (doc.sarId) {
-                            emit(doc.sarId);
+                        if (doc.msgSarId) {
+                            emit(doc.msgSarId);
                         }
                     }.toString()
                 }
@@ -281,6 +349,7 @@ $(function () {
             });
         })
 
+
         function displayMessages(selectedSarId) {
             // find docs where sarId === selectedSarId
             LivePouch.query('sarlogview', {
@@ -292,6 +361,8 @@ $(function () {
                     messages.push(result.rows[index].doc)
                 }
                 $scope.messages = messages
+                $scope.$apply(function () {
+                })
             }).catch(function (error) {
                 console.log("sarlogview error")
                 console.log(error)
@@ -311,7 +382,8 @@ $(function () {
                 view: "sarlogview"
             }).on('create', function (create) {
                 $scope.messages.push(create.doc);
-                $scope.$apply({})
+                $scope.$apply(function () {
+                })
             });
         }
 
@@ -332,7 +404,7 @@ $(function () {
             $scope.msg = null;
 
             var msgObject = {
-                sarId: $scope.selectedSarId,
+                msgSarId: $scope.selectedSarId,
                 user: Subject.getDetails().userName,
                 ts: Date.now(),
                 value: msg

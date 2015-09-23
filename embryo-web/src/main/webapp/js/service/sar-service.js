@@ -115,7 +115,12 @@
         Ship120: "SH120",
         Ship225: "SH225",
         Ship330: "SH330"
+    });
 
+    embryo.sar.effort.Status = Object.freeze({
+        DraftSRU: "DS",
+        DraftZone: "DZ",
+        Active: "A"
     });
 
 
@@ -479,6 +484,523 @@
 
     BackTrackCalculator.prototype = new SarOperationCalculator();
 
+    // TODO sweep widths values should be in own object?
+    function createSweepWidths() {
+        var smallShipSweepWidths = {};
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.PersonInWater] = {
+            1: 0.2,
+            3: 0.2,
+            5: 0.3,
+            10: 0.3,
+            15: 0.3,
+            20: 0.3
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Raft1Person] = {
+            1: 0.7,
+            3: 1.3,
+            5: 1.7,
+            10: 2.3,
+            15: 2.6,
+            20: 2.7
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Raft4Persons] = {
+            1: 0.7,
+            3: 1.7,
+            5: 2.2,
+            10: 3.1,
+            15: 3.5,
+            20: 3.9
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Raft6Persons] = {
+            1: 0.8,
+            3: 1.9,
+            5: 2.6,
+            10: 3.6,
+            15: 4.3,
+            20: 4.7
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Raft8Persons] = {
+            1: 0.8,
+            3: 2.0,
+            5: 2.7,
+            10: 3.8,
+            15: 4.4,
+            20: 4.9
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Raft10Persons] = {
+            1: 0.8,
+            3: 2.0,
+            5: 2.8,
+            10: 4.0,
+            15: 4.8,
+            20: 5.3
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Raft15Persons] = {
+            1: 0.9,
+            3: 2.2,
+            5: 3.0,
+            10: 4.3,
+            15: 5.1,
+            20: 5.7
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Raft20Persons] = {
+            1: 0.9,
+            3: 2.3,
+            5: 3.3,
+            10: 4.9,
+            15: 5.8,
+            20: 6.5
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Raft25Persons] = {
+            1: 0.9,
+            3: 2.4,
+            5: 3.9,
+            10: 5.2,
+            15: 6.3,
+            20: 7.0
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat15] = {
+            1: 0.4,
+            3: 0.8,
+            5: 1.1,
+            10: 1.5,
+            15: 1.6,
+            20: 1.8
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat20] = {
+            1: 0.8,
+            3: 1.5,
+            5: 2.2,
+            10: 3.3,
+            15: 4.0,
+            20: 4.5
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat33] = {
+            1: 0.8,
+            3: 1.9,
+            5: 2.9,
+            10: 4.7,
+            15: 5.9,
+            20: 6.8
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat53] = {
+            1: 0.9,
+            3: 2.4,
+            5: 3.9,
+            10: 7.0,
+            15: 9.3,
+            20: 11.1
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat78] = {
+            1: 0.9,
+            3: 2.5,
+            5: 4.3,
+            10: 8.3,
+            15: 11.4,
+            20: 14.0
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat15] = {
+            1: 0.8,
+            3: 1.5,
+            5: 2.1,
+            10: 3.0,
+            15: 3.6,
+            20: 4.0
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat20] = {
+            1: 0.8,
+            3: 1.7,
+            5: 2.5,
+            10: 3.7,
+            15: 4.6,
+            20: 5.1
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat25] = {
+            1: 0.9,
+            3: 1.9,
+            5: 2.8,
+            10: 4.4,
+            15: 5.4,
+            20: 6.3
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat30] = {
+            1: 0.9,
+            3: 2.1,
+            5: 3.2,
+            10: 5.3,
+            15: 6.6,
+            20: 7.7
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat40] = {
+            1: 0.9,
+            3: 2.3,
+            5: 3.8,
+            10: 6.6,
+            15: 8.6,
+            20: 10.3
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat50] = {
+            1: 0.9,
+            3: 2.4,
+            5: 4.0,
+            10: 7.3,
+            15: 9.7,
+            20: 11.6
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat70] = {
+            1: 0.9,
+            3: 2.5,
+            5: 4.2,
+            10: 7.9,
+            15: 10.7,
+            20: 13.1
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat83] = {
+            1: 0.9,
+            3: 2.5,
+            5: 4.4,
+            10: 8.3,
+            15: 11.6,
+            20: 14.2
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Ship120] = {
+            1: 1.4,
+            3: 2.5,
+            5: 4.6,
+            10: 9.3,
+            15: 13.2,
+            20: 16.6
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Ship225] = {
+            1: 1.4,
+            3: 2.6,
+            5: 4.9,
+            10: 10.3,
+            15: 15.5,
+            20: 20.2
+        };
+        smallShipSweepWidths[embryo.sar.effort.TargetTypes.Ship330] = {
+            1: 1.4,
+            3: 2.6,
+            5: 4.9,
+            10: 10.9,
+            15: 16.8,
+            20: 22.5
+        };
+
+        var largeShipSweepWidths = {};
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.PersonInWater] = {
+            1: 0.3,
+            3: 0.4,
+            5: 0.5,
+            10: 0.5,
+            15: 0.5,
+            20: 0.5
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Raft1Person] = {
+            1: 0.9,
+            3: 1.8,
+            5: 2.3,
+            10: 3.1,
+            15: 3.4,
+            20: 3.7
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Raft4Persons] = {
+            1: 1.0,
+            3: 2.2,
+            5: 3.0,
+            10: 4.0,
+            15: 4.6,
+            20: 5.0
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Raft6Persons] = {
+            1: 1.1,
+            3: 2.5,
+            5: 3.4,
+            10: 4.7,
+            15: 5.5,
+            20: 6.0
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Raft8Persons] = {
+            1: 1.1,
+            3: 2.5,
+            5: 3.5,
+            10: 4.8,
+            15: 5.7,
+            20: 6.2
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Raft10Persons] = {
+            1: 1.1,
+            3: 2.6,
+            5: 3.6,
+            10: 5.1,
+            15: 6.1,
+            20: 6.7
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Raft15Persons] = {
+            1: 1.1,
+            3: 2.8,
+            5: 3.8,
+            10: 5.5,
+            15: 6.5,
+            20: 7.2
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Raft20Persons] = {
+            1: 1.2,
+            3: 3.0,
+            5: 4.1,
+            10: 6.1,
+            15: 7.3,
+            20: 8.1
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Raft25Persons] = {
+            1: 1.2,
+            3: 3.1,
+            5: 4.3,
+            10: 6.4,
+            15: 7.8,
+            20: 8.7
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat15] = {
+            1: 0.5,
+            3: 1.1,
+            5: 1.4,
+            10: 1.9,
+            15: 2.1,
+            20: 2.3
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat20] = {
+            1: 1.0,
+            3: 2.0,
+            5: 2.9,
+            10: 4.3,
+            15: 5.2,
+            20: 5.8
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat33] = {
+            1: 1.1,
+            3: 2.5,
+            5: 3.8,
+            10: 6.1,
+            15: 7.7,
+            20: 8.8
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat53] = {
+            1: 1.2,
+            3: 3.1,
+            5: 5.1,
+            10: 9.1,
+            15: 12.1,
+            20: 14.4
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Motorboat78] = {
+            1: 1.2,
+            3: 3.2,
+            5: 5.6,
+            10: 10.7,
+            15: 14.7,
+            20: 18.1
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat15] = {
+            1: 1.0,
+            3: 1.9,
+            5: 2.7,
+            10: 3.9,
+            15: 4.7,
+            20: 5.2
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat20] = {
+            1: 1.0,
+            3: 2.2,
+            5: 3.2,
+            10: 4.8,
+            15: 5.9,
+            20: 6.6
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat25] = {
+            1: 1.1,
+            3: 2.4,
+            5: 3.6,
+            10: 5.7,
+            15: 7.0,
+            20: 8.1
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat30] = {
+            1: 1.1,
+            3: 2.7,
+            5: 4.1,
+            10: 6.8,
+            15: 8.6,
+            20: 10.0
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat40] = {
+            1: 1.2,
+            3: 3.0,
+            5: 4.9,
+            10: 8.5,
+            15: 11.2,
+            20: 13.3
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat50] = {
+            1: 1.2,
+            3: 3.1,
+            5: 5.2,
+            10: 9.4,
+            15: 12.5,
+            20: 15.0
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat70] = {
+            1: 1.2,
+            3: 3.2,
+            5: 5.5,
+            10: 10.2,
+            15: 13.9,
+            20: 16.9
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Sailboat83] = {
+            1: 1.2,
+            3: 3.3,
+            5: 5.7,
+            10: 10.8,
+            15: 15.0,
+            20: 18.4
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Ship120] = {
+            1: 1.8,
+            3: 3.3,
+            5: 6.0,
+            10: 12.0,
+            15: 17.1,
+            20: 21.5
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Ship225] = {
+            1: 1.8,
+            3: 3.4,
+            5: 6.3,
+            10: 13.4,
+            15: 20.1,
+            20: 26.0
+        };
+        largeShipSweepWidths[embryo.sar.effort.TargetTypes.Ship330] = {
+            1: 1.8,
+            3: 3.4,
+            5: 6.4,
+            10: 14.1,
+            15: 21.8,
+            20: 29.2
+        };
+
+        var sweepWidths = {};
+        sweepWidths[embryo.sar.effort.VesselTypes.SmallerVessel] = smallShipSweepWidths;
+        sweepWidths[embryo.sar.effort.VesselTypes.Ship] = largeShipSweepWidths;
+        return sweepWidths
+    }
+
+
+    function EffortAllocationCalculator() {
+    }
+
+    EffortAllocationCalculator.prototype.lookupUncorrectedSweepWidth = function (sruType, targetType, visibility) {
+        if (sruType === embryo.sar.effort.VesselTypes.SmallerVessel || sruType === embryo.sar.effort.VesselTypes.Ship) {
+            return createSweepWidths()[sruType][targetType][visibility];
+        }
+        return 0.0
+    }
+    EffortAllocationCalculator.prototype.lookupVelocityCorrection = function (sruType) {
+        // Velocity correction is only necessary for air born SRUs. Should it be used here?
+        return 1;
+    }
+    EffortAllocationCalculator.prototype.lookupWeatherCorrectionFactor = function (wind, sea, targetType) {
+        // TODO check i EPD om denne tolkning er korrekt
+        function otherVessel(targetType) {
+            return !(targetType === embryo.sar.effort.TargetTypes.PersonInWater
+            || targetType === embryo.sar.effort.TargetTypes.Sailboat15
+            || targetType === embryo.sar.effort.TargetTypes.Sailboat20
+            || targetType === embryo.sar.effort.TargetTypes.Sailboat25);
+        }
+
+        if (wind < 0 || sea < 0)
+            throw "Illegal value";
+
+        if (wind > 25 || sea > 5) {
+            return otherVessel(targetType) ? 0.9 : 0.25;
+        }
+        if ((15 < wind && wind <= 25) || (3 < sea && sea <= 5)) {
+            return otherVessel(targetType) ? 0.9 : 0.5;
+        }
+
+        return 1;
+    };
+    EffortAllocationCalculator.prototype.calculateCorrectedSweepWidth = function (wu, fw, fv, ff) {
+        return wu * fw * fv * ff;
+    };
+    EffortAllocationCalculator.prototype.calculateTrackSpacing = function (wc, PoD) {
+        // S = W*(-5/8*ln(1-x))^(-5/7)
+        var val1 = (-5.0 / 8.0) * Math.log(1 - PoD / 100);
+
+        var val2 = Math.pow(val1, -5.0 / 7.0);
+        return wc * val2;
+    }
+    EffortAllocationCalculator.prototype.calculateSearchEndurance = function (onSceneTime) {
+        return onSceneTime * 0.85;
+    };
+    EffortAllocationCalculator.prototype.calculateZoneAreaSize = function (V, S, T) {
+        return V * S * T;
+    };
+    EffortAllocationCalculator.prototype.getDatum = function (sar) {
+        if (sar.input.type == embryo.sar.types.RapidResponse) {
+            return sar.output.datum;
+        } else if (sar.input.type == embryo.sar.types.DatumPoint) {
+            return sar.output.downWind.datum;
+        }
+        return sar.output.datum;
+    };
+    EffortAllocationCalculator.prototype.calculateSearchArea = function (areaSize, datum, sarArea) {
+        //In NM?
+        var quadrantLength = Math.sqrt(areaSize);
+
+        var sarA = new embryo.geo.Position(sarArea.A.lon, sarArea.A.lat);
+        var sarB = new embryo.geo.Position(sarArea.B.lon, sarArea.B.lat);
+        var sarD = new embryo.geo.Position(sarArea.D.lon, sarArea.D.lat);
+        var center = new embryo.geo.Position(datum.lon, datum.lat);
+
+        var bearingAB = sarA.rhumbLineBearingTo(sarB);
+        var bearingDA = sarD.rhumbLineBearingTo(sarA);
+        var zonePosBetweenAandB = center.transformPosition(bearingAB, quadrantLength / 2);
+
+        var zoneArea = {};
+        zoneArea.B = zonePosBetweenAandB.transformPosition(bearingDA, quadrantLength / 2);
+        zoneArea.A = zoneArea.B.transformPosition(embryo.geo.reverseDirection(bearingAB), quadrantLength);
+        zoneArea.C = zoneArea.B.transformPosition(embryo.geo.reverseDirection(bearingDA), quadrantLength);
+        zoneArea.D = zoneArea.A.transformPosition(embryo.geo.reverseDirection(bearingDA), quadrantLength);
+
+        return zoneArea;
+    };
+
+    EffortAllocationCalculator.prototype.calculate = function (allocationInputs, sar) {
+        var allocations = [];
+        for (var index in allocationInputs) {
+            var input = allocationInputs[index];
+
+            var wu = this.lookupUncorrectedSweepWidth(input.type, input.target, input.visibility);
+            var fw = this.lookupWeatherCorrectionFactor();
+            var fv = this.lookupVelocityCorrection(input.type);
+            var wc = this.calculateCorrectedSweepWidth(wu, fw, fv, input.fatigue);
+            var S = this.calculateTrackSpacing(wc, input.pod);
+            var T = this.calculateSearchEndurance(input.time);
+            var zoneAreaSize = this.calculateZoneAreaSize(input.speed, S, T);
+            var datum = this.getDatum(sar);
+            var area = this.calculateSearchArea(zoneAreaSize, datum, sar.output.searchArea);
+
+            var allocation = clone(input);
+            allocation.area = area;
+            allocation.status = embryo.sar.effort.Status.DraftZone;
+            allocations.push(allocation);
+        }
+
+        return allocations;
+    }
+
     function getCalculator(sarType) {
         switch (sarType) {
             case (embryo.sar.types.RapidResponse) :
@@ -503,10 +1025,46 @@
         return JSON.parse(JSON.stringify(object));
     }
 
-
+    // USED IN sar-edit.js and sar-controller.js
     module.service('SarService', ['$log', '$timeout', 'LivePouch', function ($log, $timeout, LivePouch) {
         var selectedSarById;
         var listeners = {};
+
+        var ddoc = {
+            _id: '_design/sareffortview',
+            views: {
+                sareffortview: {
+                    map: function (doc) {
+                        if (doc.effSarId) {
+                            emit(doc.effSarId);
+                        }
+                    }.toString()
+                }
+            }
+        }
+
+        // TODO move to CouchDB server
+        LivePouch.get('_design/sareffortview').then(function (existing) {
+            ddoc._rev = existing._rev;
+            LivePouch.put(ddoc).then(function (result) {
+                console.log("sareffortview update")
+                console.log(result);
+            }).catch(function (error) {
+                console.log("sareffortview update error")
+                console.log(error)
+            });
+        }).catch(function (error) {
+            console.log("error fetching _design");
+            console.log(error);
+            LivePouch.put(ddoc).then(function (result) {
+                console.log("sareffortview update")
+                console.log(result);
+            }).catch(function (error) {
+                console.log("sareffortview update error")
+                console.log(error)
+            });
+        });
+
 
         function notifyListeners() {
             for (var key in listeners) {
@@ -515,6 +1073,10 @@
         }
 
         var service = {
+            createSarId: function () {
+                var now = new Date();
+                return "AW-" + now.getUTCFullYear() + now.getUTCMonth() + now.getUTCDay() + now.getUTCHours() + now.getUTCMinutes() + now.getUTCSeconds() + now.getUTCMilliseconds();
+            },
             sarTypes: function () {
                 return embryo.sar.types;
             },
@@ -559,6 +1121,9 @@
                     output: getCalculator(clonedInput.type).calculate(clonedInput)
                 }
                 return result;
+            },
+            calculateEffortAllocations: function (allocationInputs, sar) {
+                return new EffortAllocationCalculator().calculate(allocationInputs, sar)
             },
             findSarIndex: function (sars, id) {
                 for (var index in sars) {

@@ -82,3 +82,13 @@ table.ctrl td {
 .stmt{
     word-wrap: break-word;
 }
+
+.addNewSRU {
+    margin-bottom: 10px
+}
+
+.form-group .unit {
+    margin-left: 0px;
+    padding-left: 0px;
+    padding-top: 5px;
+}
