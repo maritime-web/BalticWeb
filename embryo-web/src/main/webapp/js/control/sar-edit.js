@@ -47,12 +47,12 @@ $(function () {
         this.img = img;
     }
 
-    //var sarTypes = embryo.sar.types;
+    //var sarTypes = embryo.sar.Operation;
     var sarTypeDatas = {}
-    sarTypeDatas[embryo.sar.types.RapidResponse] = new SarTypeData("Rapid response", "/img/sar/generic.png");
-    sarTypeDatas[embryo.sar.types.DatumPoint] = new SarTypeData("Datum point", "/img/sar/datumpoint.png");
-    sarTypeDatas[embryo.sar.types.DatumLine] = new SarTypeData("Datum line", "/img/sar/datumline.png");
-    sarTypeDatas[embryo.sar.types.BackTrack] = new SarTypeData("Back track", "/img/sar/generic.png")
+    sarTypeDatas[embryo.sar.Operation.RapidResponse] = new SarTypeData("Rapid response", "/img/sar/generic.png");
+    sarTypeDatas[embryo.sar.Operation.DatumPoint] = new SarTypeData("Datum point", "/img/sar/datumpoint.png");
+    sarTypeDatas[embryo.sar.Operation.DatumLine] = new SarTypeData("Datum line", "/img/sar/datumline.png");
+    sarTypeDatas[embryo.sar.Operation.BackTrack] = new SarTypeData("Back track", "/img/sar/generic.png")
 
     module.controller("SAROperationEditController", ['$scope', 'ViewService', 'SarService', '$q', 'LivePouch',
         function ($scope, ViewService, SarService, $q, LivePouch) {
@@ -62,7 +62,7 @@ $(function () {
             function initNewSar() {
                 var now = Date.now();
                 $scope.sar = {
-                    type: embryo.sar.types.RapidResponse,
+                    type: embryo.sar.Operation.RapidResponse,
                     no: SarService.createSarId(),
                     searchObject: $scope.searchObjects[0].id,
                     yError: 0.1,
@@ -79,7 +79,7 @@ $(function () {
                     $scope.sar.surfaceDriftPoints[0].ts = now;
                 }
 
-                if ($scope.sar.type != embryo.sar.types.DatumLine) {
+                if ($scope.sar.type != embryo.sar.Operation.DatumLine) {
                     if (!$scope.sar.lastKnownPosition) {
                         $scope.sar.lastKnownPosition = {};
                 }
@@ -120,8 +120,8 @@ $(function () {
         };
 
         $scope.searchObjects = SarService.searchObjectTypes();
-            $scope.sarTypes = embryo.sar.types;
-            $scope.sarTypeValues = [embryo.sar.types.RapidResponse, embryo.sar.types.DatumPoint, embryo.sar.types.DatumLine, embryo.sar.types.BackTrack];
+            $scope.sarTypes = embryo.sar.Operation;
+            $scope.sarTypeValues = [embryo.sar.Operation.RapidResponse, embryo.sar.Operation.DatumPoint, embryo.sar.Operation.DatumLine, embryo.sar.Operation.BackTrack];
         $scope.sarTypeDatas = sarTypeDatas;
 
             $scope.tmp = {
@@ -168,6 +168,7 @@ $(function () {
                 $scope.alertMessages = [];
                 // retain PouchDB fields like _id and _rev
                 var calculatedOperation = SarService.createSarOperation(sarInput);
+                $scope.sarOperation.docType = embryo.sar.Type.SearchArea;
                 $scope.sarOperation.input = calculatedOperation.input;
                 $scope.sarOperation.output = calculatedOperation.output;
                 $scope.tmp.searchObject = SarService.findSearchObjectType($scope.sarOperation.input.searchObject);
@@ -421,7 +422,8 @@ $(function () {
             $scope.saveUnit = function () {
                 if (!$scope.sru._id) {
                     $scope.sru.effSarId = $scope.sarId;
-                    $scope.sru._id = "sareff-" + Date.now();
+                    $scope.sru._id = "saref-" + Date.now();
+                    $scope.sru.docType = embryo.sar.Type.EffortAllocation;
                     $scope.sru.status = embryo.sar.effort.Status.DraftSRU;
                 }
                 var sru = $scope.sru;

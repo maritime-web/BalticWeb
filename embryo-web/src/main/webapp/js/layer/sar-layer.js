@@ -157,10 +157,16 @@ function SarLayer() {
         addDriftVector(layer, [lkp, datum]);
     }
 
-    this.draw = function (sars) {
+    this.draw = function (sarDocuments) {
         this.layers.sar.removeAllFeatures();
-        for (var index in sars) {
-            this.drawSar(sars[index]);
+        for (var index in sarDocuments) {
+            if (embryo.sar.Type.SearchArea === sarDocuments[index].docType) {
+                this.drawSar(sarDocuments[index]);
+            } else if (embryo.sar.Type.EffortAllocation === sarDocuments[index].docType) {
+                this.drawEffortAllocationZone(sarDocuments[index]);
+            } else if (embryo.sar.Type.SearchPattern === sarDocuments[index].docType) {
+                this.drawSearchPattern(sarDocuments[index]);
+            }
         }
         this.layers.sar.refresh();
     }
@@ -195,6 +201,14 @@ function SarLayer() {
             addDriftVector(this.layers.sar, prepareDriftVectors(null, sar.output.currentPositions, sar.output.max.datumPositions))
         }
 
+    };
+
+    this.drawEffortAllocationZone = function (effAll) {
+        console.log("drawEffort");
+        console.log(effAll);
+    };
+
+    this.drawSearchPattern = function (pattern) {
     };
 }
 
