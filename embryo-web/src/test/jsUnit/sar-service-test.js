@@ -14,7 +14,7 @@ describe('embryo.sar', function () {
             var searchObjectTypes = service.searchObjectTypes();
             return {
                 sarNo: 1,
-                type: embryo.sar.types.RapidResponse,
+                type: embryo.sar.Operation.RapidResponse,
                 lastKnownPosition: {
                     ts: Date.now() - 60 * 60 * 1000,
                     lon: -51,
@@ -99,7 +99,7 @@ describe('embryo.sar', function () {
 
             var input = {
                 sarNo: 1,
-                type: embryo.sar.types.RapidResponse,
+                type: embryo.sar.Operation.RapidResponse,
                 lastKnownPosition: {
                     ts: Date.now() - 60 * 60 * 1000,
                     lon: -51,
@@ -284,7 +284,7 @@ describe('embryo.sar', function () {
 
             var input = {
                 sarNo: 1,
-                type: embryo.sar.types.DatumPoint,
+                type: embryo.sar.Operation.DatumPoint,
                 lastKnownPosition: {
                     ts: Date.now() - 60 * 60 * 1000,
                     lat: 61,

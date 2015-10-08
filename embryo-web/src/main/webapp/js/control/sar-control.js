@@ -12,10 +12,10 @@ $(function () {
     }]);
 
     var SARTypeTxt = {};
-    SARTypeTxt[embryo.sar.types.RapidResponse] = "Rapid response";
-    SARTypeTxt[embryo.sar.types.DatumPoint] = "Datum point";
-    SARTypeTxt[embryo.sar.types.DatumLine] = "Datum line";
-    SARTypeTxt[embryo.sar.types.BackTrack] = "Back track";
+    SARTypeTxt[embryo.sar.Operation.RapidResponse] = "Rapid response";
+    SARTypeTxt[embryo.sar.Operation.DatumPoint] = "Datum point";
+    SARTypeTxt[embryo.sar.Operation.DatumLine] = "Datum line";
+    SARTypeTxt[embryo.sar.Operation.BackTrack] = "Back track";
 
     var SARStatusTxt = {};
     SARStatusTxt[embryo.SARStatus.STARTED] = "Active";
@@ -36,7 +36,8 @@ $(function () {
     AllocationStatusLabel[embryo.sar.effort.Status.DraftZone] = "label-danger";
 
     module.controller("SARLayerControl", ['SarService', 'LivePouch', '$timeout', function (SarService, LivePouch, $timeout) {
-        var sars = [];
+        var sarDocuments = [];
+
         SarService.sarSelected("SARLayerControl", function (sarId) {
             if (sarId) {
                 $timeout(function () {
@@ -53,44 +54,42 @@ $(function () {
             }
         });
 
+        function loadSarDocuments() {
+            LivePouch.allDocs({
+                include_docs: true,
+                startkey: 'sar',
+                endkey: 'sarx'
+            }).then(function (result) {
+                var documents = []
+                for (var index in result.rows) {
+                    documents.push(result.rows[index].doc);
+                }
+                sarDocuments = documents;
+                SarLayerSingleton.getInstance().draw(sarDocuments);
+            }).catch(function (err) {
+                // TODO ERROR MESSAGE
+                console.log("allDocs err")
+                console.log(err);
+            });
+        }
+
         LivePouch.changes({
             since: 'now',
             live: true,
             include_docs: true,
             filter: function (doc) {
-                return doc._id.startsWith("sar-")
+                return doc._id.startsWith("sar") &&
+                    (doc.docType != embryo.sar.Type.EffortAllocation || doc.status == embryo.sar.effort.Status.Active || doc.status == embryo.sar.effort.Status.DraftZone)
             }
-        }).on('create', function (create) {
-            sars.push(create.doc);
-            SarLayerSingleton.getInstance().draw(sars);
-        }).on('update', function (update) {
-            console.log("update")
-
-            var index = SarService.findSarIndex(sars, update.doc._id);
-            sars[index] = update.doc;
-            SarLayerSingleton.getInstance().draw(sars);
-        }).on('delete', function (del) {
-            var index = SarService.findSarIndex(sars, del.doc._id);
-            sars = sars.splice(index, 1);
-            SarLayerSingleton.getInstance().draw(sars);
+        }).on('change', function () {
+            // We don't expect many SAR documents / objects at the same time
+            // To achieve cleaner code, we therefore just load all SAR documents again
+            // and redraw them, when one document is updated, created or deleted.
+            loadSarDocuments();
         });
 
-        LivePouch.allDocs({
-            include_docs: true,
-            startkey: 'sar-',
-            endkey: 'sar-X'
-        }).then(function (result) {
-            var operations = []
-            for (var index in result.rows) {
-                operations.push(result.rows[index].doc);
-            }
-            sars = operations;
-            SarLayerSingleton.getInstance().draw(sars);
-        }).catch(function (err) {
-            // TODO ERROR MESSAGE
-            console.log("allDocs err")
-            console.log(err);
-        });
+        loadSarDocuments();
+
     }]);
 
     module.controller("OperationsControl", ['$scope', 'SarService', 'ViewService', '$log', 'LivePouch',

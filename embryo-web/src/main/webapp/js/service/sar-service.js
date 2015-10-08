@@ -5,7 +5,61 @@
 
     embryo.sar = {}
     // A way to create an enumeration like construction in JavaScript
-    embryo.sar.types = Object.freeze({"RapidResponse": "rr", "DatumPoint": "dp", "DatumLine": "dl", "BackTrack": "bt"})
+    embryo.sar.Operation = Object.freeze({
+        "RapidResponse": "rr",
+        "DatumPoint": "dp",
+        "DatumLine": "dl",
+        "BackTrack": "bt"
+    })
+
+    embryo.sar.Type = Object.freeze({"SearchArea": "SA", "EffortAllocation": "EA", "SearchPattern": "SP"})
+
+    embryo.SARStatus = Object.freeze({
+        STARTED: "S",
+        ENDED: "E"
+    });
+
+    embryo.sar.effort = {};
+    embryo.sar.effort.VesselTypes = Object.freeze({
+        SmallerVessel: "SV",
+        Ship: "S"
+    });
+
+    embryo.sar.effort.TargetTypes = Object.freeze({
+        PersonInWater: "PIW",
+        Raft1Person: "R1",
+        Raft4Persons: "R4",
+        Raft6Persons: "R6",
+        Raft8Persons: "R8",
+        Raft10Persons: "R10",
+        Raft15Persons: "R15",
+        Raft20Persons: "R20",
+        Raft25Persons: "R25",
+        Motorboat15: "M15",
+        Motorboat20: "M20",
+        Motorboat33: "M33",
+        Motorboat53: "M53",
+        Motorboat78: "M78",
+        Sailboat15: "SB15",
+        Sailboat20: "SB20",
+        Sailboat25: "SB25",
+        Sailboat30: "SB30",
+        Sailboat40: "SB40",
+        Sailboat50: "SB50",
+        Sailboat70: "SB70",
+        Sailboat83: "SB83",
+        Ship120: "SH120",
+        Ship225: "SH225",
+        Ship330: "SH330"
+    });
+
+    embryo.sar.effort.Status = Object.freeze({
+        DraftSRU: "DS",
+        DraftZone: "DZ",
+        Active: "A"
+    });
+
+
 
     function SearchObject(id, x, y, divergence, text) {
         this.id = id;
@@ -27,11 +81,6 @@
         this.name = name;
         this.degrees = degrees;
     }
-
-    embryo.SARStatus = Object.freeze({
-        STARTED: "S",
-        ENDED: "E"
-    });
 
     var searchObjectTypes = [];
     searchObjectTypes.push(Object.freeze(new SearchObject(0, 0.011, 0.068, 30, "Person in water (PIW)")));
@@ -82,47 +131,6 @@
     directions.push(new Direction("NW", 315.00));
     directions.push(new Direction("NNW", 337.50));
     directions = Object.freeze(directions);
-
-    embryo.sar.effort = {};
-    embryo.sar.effort.VesselTypes = Object.freeze({
-        SmallerVessel: "SV",
-        Ship: "S"
-    });
-
-    embryo.sar.effort.TargetTypes = Object.freeze({
-        PersonInWater: "PIW",
-        Raft1Person: "R1",
-        Raft4Persons: "R4",
-        Raft6Persons: "R6",
-        Raft8Persons: "R8",
-        Raft10Persons: "R10",
-        Raft15Persons: "R15",
-        Raft20Persons: "R20",
-        Raft25Persons: "R25",
-        Motorboat15: "M15",
-        Motorboat20: "M20",
-        Motorboat33: "M33",
-        Motorboat53: "M53",
-        Motorboat78: "M78",
-        Sailboat15: "SB15",
-        Sailboat20: "SB20",
-        Sailboat25: "SB25",
-        Sailboat30: "SB30",
-        Sailboat40: "SB40",
-        Sailboat50: "SB50",
-        Sailboat70: "SB70",
-        Sailboat83: "SB83",
-        Ship120: "SH120",
-        Ship225: "SH225",
-        Ship330: "SH330"
-    });
-
-    embryo.sar.effort.Status = Object.freeze({
-        DraftSRU: "DS",
-        DraftZone: "DZ",
-        Active: "A"
-    });
-
 
     function directionDegrees(value) {
         if (typeof value !== 'string') {
@@ -948,9 +956,9 @@
         return V * S * T;
     };
     EffortAllocationCalculator.prototype.getDatum = function (sar) {
-        if (sar.input.type == embryo.sar.types.RapidResponse) {
+        if (sar.input.type == embryo.sar.Operation.RapidResponse) {
             return sar.output.datum;
-        } else if (sar.input.type == embryo.sar.types.DatumPoint) {
+        } else if (sar.input.type == embryo.sar.Operation.DatumPoint) {
             return sar.output.downWind.datum;
         }
         return sar.output.datum;
@@ -1003,13 +1011,13 @@
 
     function getCalculator(sarType) {
         switch (sarType) {
-            case (embryo.sar.types.RapidResponse) :
+            case (embryo.sar.Operation.RapidResponse) :
                 return new RapidResponseCalculator();
-            case (embryo.sar.types.DatumPoint) :
+            case (embryo.sar.Operation.DatumPoint) :
                 return new DatumPointCalculator();
-            case (embryo.sar.types.DatumLine) :
+            case (embryo.sar.Operation.DatumLine) :
                 return new DatumLineCalculator();
-            case (embryo.sar.types.BackTrack) :
+            case (embryo.sar.Operation.BackTrack) :
                 return new BackTrackCalculator();
             default :
                 throw new Error("Unknown sar type " + input.type);
@@ -1035,7 +1043,7 @@
             views: {
                 sareffortview: {
                     map: function (doc) {
-                        if (doc.effSarId) {
+                        if (doc.docType === embryo.sar.Type.EffortAllocation) {
                             emit(doc.effSarId);
                         }
                     }.toString()
@@ -1078,7 +1086,7 @@
                 return "AW-" + now.getUTCFullYear() + now.getUTCMonth() + now.getUTCDay() + now.getUTCHours() + now.getUTCMinutes() + now.getUTCSeconds() + now.getUTCMilliseconds();
             },
             sarTypes: function () {
-                return embryo.sar.types;
+                return embryo.sar.Operation;
             },
             directions: function () {
                 return directions;
