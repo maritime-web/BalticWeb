@@ -8,6 +8,7 @@ $(function() {
         };
     } ]);
 
+    // comment
 
     module.directive('eLeftBar', [ '$timeout', '$window', function($timeout, $window) {
         return {
