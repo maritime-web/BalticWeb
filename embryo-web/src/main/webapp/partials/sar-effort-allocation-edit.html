@@ -85,7 +85,7 @@
                         <label class="control-label col-xs-3">Fatigue:</label>
 
                         <div class="col-xs-3">
-                            <select ng-model="sru.fatigue" name="type"
+                            <select ng-model="sru.fatigue" name="fatigue"
                                     class="input-sm form-control"
                                     x-ng-options="fatigue for fatigue in fatigues">
                             </select>
@@ -217,6 +217,40 @@
                     </span>
                 </div>
             </form>
+            <form x-ng-if="page == 'activate'" name="activateForm" class="form-horizontal" novalidate>
+                <hr/>
+                <div x-ng-show="alertMessages" class="alert alert-danger">
+                    <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
+                </div>
+                <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+
+                <div class="col-xs-12">
+                    <p>
+                        By activating the draft effort allocation for {{effort.name}} you choose to share this effort
+                        allocation with other
+                        SRUs participating in the SAR, as well as other relevant parties.
+                    </p>
+
+                    <p x-ng-if="effAllExists">
+                        The existing effort allocation for {{effort.name}} will be replaced by your new effort
+                        allocation.
+                    </p>
+
+                    <p>
+                        Please confirm activation of the effort allocation.
+                    </p>
+                </div>
+                <div class="col-xs-12">
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-sm" x-ng-click="provider.close()">Cancel</button> &nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="activate(effort)">Activate
+                        </button>
+                    </span>
+                </div>
+
+            </form>
+
         </div>
 
     </div>

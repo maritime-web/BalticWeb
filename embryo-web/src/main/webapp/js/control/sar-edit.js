@@ -293,8 +293,8 @@ $(function () {
     typeText[embryo.sar.effort.VesselTypes.SmallerVessel] = "Small vessel (40 feet)";
     typeText[embryo.sar.effort.VesselTypes.Ship] = "Ship (50 feet)";
 
-    module.controller("SarEffortAllocationController", ['$scope', 'ViewService', 'SarService', 'LivePouch',
-        function ($scope, ViewService, SarService, LivePouch) {
+    module.controller("SarEffortAllocationController", ['$scope', 'ViewService', 'SarService', 'LivePouch', '$timeout',
+        function ($scope, ViewService, SarService, LivePouch, $timeout) {
             $scope.alertMessages = [];
             $scope.srus = [];
 
@@ -315,7 +315,7 @@ $(function () {
                 // find docs where sarId === selectedSarId
                 LivePouch.get(allocationId).then(function (allocation) {
                     $scope.effort = allocation;
-                    $scope.toEffortAllocation();
+                    $scope.initEffortAllocation();
                     $scope.$apply(function () {
                     })
                 }).catch(function (error) {
@@ -325,18 +325,19 @@ $(function () {
             }
 
             function loadSRUs() {
+                $scope.srus = []
                 // find docs where sarId === selectedSarId
                 LivePouch.query('sareffortview', {
                     key: $scope.sarId,
                     include_docs: true
                 }).then(function (result) {
-                    var srus = [];
-                    for (var index in result.rows) {
-                        srus.push(result.rows[index].doc)
-                    }
-                    $scope.srus = srus
-                    $scope.$apply(function () {
-                    })
+                    $timeout(function () {
+                        var srus = [];
+                        for (var index in result.rows) {
+                            srus.push(result.rows[index].doc)
+                        }
+                        $scope.srus = srus
+                    }, 100)
                 }).catch(function (error) {
                     console.log("sareffortview error")
                     console.log(error)
@@ -348,6 +349,8 @@ $(function () {
                 title: "SarEffortAllocation",
                 type: "effort",
                 show: function (context) {
+                    $scope.alertMessages = null;
+                    $scope.message = null;
                     $scope.page = context && context.page ? context.page : 'SRU';
                     if (context && context.sarId) {
                         $scope.sarId = context.sarId
@@ -356,9 +359,8 @@ $(function () {
                         loadAllocation(context.allocationId)
                     }
 
-                    console.log("page=" + $scope.page)
-
                     this.doShow = true;
+
                 },
                 close: function () {
                     this.doShow = false;
@@ -438,7 +440,7 @@ $(function () {
 
             }
 
-            $scope.toEffortAllocation = function () {
+            $scope.initEffortAllocation = function () {
                 if (!$scope.effort) {
                     $scope.effort = {}
                 }
@@ -459,8 +461,6 @@ $(function () {
                 // if editing an existing allocation, then present previous data again
                 // if creating a new allocation then use allocation from other previous allocations for same SAR operation.
                 // if no previous allocation data then use defaults (above)
-
-                $scope.page = "effort";
             }
 
             $scope.calculate = function () {
@@ -501,9 +501,55 @@ $(function () {
                 });
             }
 
-            $scope.confirm = function () {
+            $scope.activate = function () {
                 // CONFIRM calculation and movement within circle before sending to other vessels
                 // this to minimize data traffic
+                function persist(eff) {
+                    var effort = clone(eff);
+                    effort.status = embryo.sar.effort.Status.Active;
+                    LivePouch.put(effort).then(function () {
+                        console.log("done with success")
+                    }).catch(function (error) {
+                        console.log("error saving effort allocation")
+                    })
+                }
+
+                function deleteEffortAllocationsForSameUser(effort) {
+                    LivePouch.query('sareffortview', {
+                        key: effort.sarId,
+                        include_docs: true
+                    }).then(function (result) {
+                        $timeout(function () {
+                            debugger;
+                            var efforts = [];
+                            for (var index in result.rows) {
+                                if (result.rows[index].doc.name == effort.name && result.rows[index].doc._id !== effort._id) {
+                                    efforts.push(result.rows[index].doc)
+                                    result.rows[index].doc._deleted = true;
+                                }
+                            }
+
+                            console.log("efforts to delete")
+
+                            console.log(efforts)
+
+                            //delete similar efforts
+                            LivePouch.bulkDocs(efforts).then(function (result) {
+                                console.log("deleted docs")
+                                console.log("persisting effort")
+
+                                persist(effort);
+                            }).catch(function (err) {
+                                console.log(err);
+                            });
+                        }, 1)
+                    }).catch(function (error) {
+                        console.log("sareffortview error")
+                        console.log(error)
+                    });
+                }
+
+                deleteEffortAllocationsForSameUser($scope.effort);
             }
 
 

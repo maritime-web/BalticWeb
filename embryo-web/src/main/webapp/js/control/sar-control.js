@@ -255,6 +255,7 @@ $(function () {
                         })
                     })
                     loadEffortAllocations();
+                    listen4EffortAllocationChanges();
                 } else {
                     $scope.selected.sar = null;
                     $scope.sar = null;
@@ -291,6 +292,11 @@ $(function () {
                 $scope.effortAllocationProvider.show({allocationId: allocation._id, page: "effort"})
             }
 
+            $scope.activateAllocation = function ($event, allocation) {
+                $event.preventDefault();
+                $scope.effortAllocationProvider.show({allocationId: allocation._id, page: "activate"})
+            }
+
             function loadEffortAllocations() {
                 // find docs where sarId === selectedSarId
                 LivePouch.query('sareffortview', {
@@ -310,7 +316,9 @@ $(function () {
                     console.log("sareffortview error in controller.js")
                     console.log(error)
                 });
+            }
 
+            function listen4EffortAllocationChanges() {
                 LivePouch.changes({
                     since: 'now',
                     live: true,
@@ -318,17 +326,8 @@ $(function () {
                     filter: "_view",
                     view: "sareffortview",
                     key: $scope.selected.sarId
-                }).on('create', function (create) {
-                    $scope.allocations.push(create.doc);
-                    $scope.$apply({})
-                }).on('update', function (update) {
-                    var index = SarService.findSarIndex($scope.sars, update.doc._id);
-                    $scope.sars[index] = SarService.toSmallSarObject(update.doc);
-                    $scope.$apply({})
-                }).on('delete', function (del) {
-                    var index = SarService.findSarIndex($scope.sars, del.doc._id);
-                    $scope.sars = $scope.sars.splice(index, 1);
-                    $scope.$apply({})
+                }).on('change', function (create) {
+                    loadEffortAllocations();
                 });
             }
 

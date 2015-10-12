@@ -332,25 +332,23 @@ function SarLayer() {
     this.drawEffortAllocationZone = function (effAll) {
         var area = effAll.area;
 
-        var features = [];
         var pointA = embryo.map.createPoint(area.A.lon, area.A.lat);
         var pointB = embryo.map.createPoint(area.B.lon, area.B.lat);
         var pointC = embryo.map.createPoint(area.C.lon, area.C.lat);
         var pointD = embryo.map.createPoint(area.D.lon, area.D.lat);
         var square = new OpenLayers.Geometry.LinearRing([pointA, pointB, pointC, pointD]);
-        features.push(new OpenLayers.Feature.Vector(square, {
+        var feature = new OpenLayers.Feature.Vector(square, {
             type: "zone",
             status: effAll.status,
             label: effAll.name,
             id: effAll._id
-        }));
+        });
 
-        //this.layers.sar.addFeatures(features);
-        this.layers.sarEdit.addFeatures(features);
-
-        console.log("drawEffort");
-        console.log(effAll);
-        //console.log(this.map.internalMap.
+        if (effAll.status === embryo.sar.effort.Status.Active) {
+            this.layers.sar.addFeatures([feature])
+        } else {
+            this.layers.sarEdit.addFeatures([feature]);
+        }
     };
 
     this.drawSearchPattern = function (pattern) {
