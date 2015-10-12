@@ -154,6 +154,13 @@ $(function() {
             return new OpenLayers.Geometry.Point(longitude, latitude).transform(new OpenLayers.Projection("EPSG:4326"),
                     map.getProjectionObject());
         },
+        transformToPosition: function (point) {
+            var pointRes = point.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+            return {
+                lon: pointRes.x,
+                lat: pointRes.y
+            };
+        },
         select : function(feature) {
             selectControl.unselectAll();
             if (feature != null)

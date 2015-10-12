@@ -38,6 +38,18 @@ $(function () {
     module.controller("SARLayerControl", ['SarService', 'LivePouch', '$timeout', function (SarService, LivePouch, $timeout) {
         var sarDocuments = [];
 
+        SarLayerSingleton.getInstance().modified = function (zoneUpdate) {
+            LivePouch.get(zoneUpdate._id).then(function (zone) {
+                zone.area = zoneUpdate.area;
+                LivePouch.put(zone).then(function () {
+                    console.log("success saving updated zone")
+                }).catch(function (error) {
+                    console.log("error saving updated zone")
+                    console.log(error);
+                })
+            })
+        }
+
         SarService.sarSelected("SARLayerControl", function (sarId) {
             if (sarId) {
                 $timeout(function () {
@@ -62,10 +74,16 @@ $(function () {
             }).then(function (result) {
                 var documents = []
                 for (var index in result.rows) {
-                    documents.push(result.rows[index].doc);
+                    if (result.rows[index].doc.docType != embryo.sar.Type.EffortAllocation ||
+                        result.rows[index].doc.status == embryo.sar.effort.Status.Active ||
+                        result.rows[index].doc.status == embryo.sar.effort.Status.DraftZone) {
+                        documents.push(result.rows[index].doc);
+                    }
                 }
                 sarDocuments = documents;
                 SarLayerSingleton.getInstance().draw(sarDocuments);
+                console.log("loadSarDocuments");
+                console.log(sarDocuments)
             }).catch(function (err) {
                 // TODO ERROR MESSAGE
                 console.log("allDocs err")
@@ -79,7 +97,9 @@ $(function () {
             include_docs: true,
             filter: function (doc) {
                 return doc._id.startsWith("sar") &&
-                    (doc.docType != embryo.sar.Type.EffortAllocation || doc.status == embryo.sar.effort.Status.Active || doc.status == embryo.sar.effort.Status.DraftZone)
+                    (doc.docType != embryo.sar.Type.EffortAllocation ||
+                    doc.status == embryo.sar.effort.Status.Active ||
+                    doc.status == embryo.sar.effort.Status.DraftZone)
             }
         }).on('change', function () {
             // We don't expect many SAR documents / objects at the same time
