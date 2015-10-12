@@ -188,7 +188,7 @@ function EmbryoLayer() {
     };
     
     this.activateControls = function(){
-        for(key in this.controls) {
+        for (var key in this.controls) {
             var control = this.controls[key];
             if(!control.active) {
             	control.activate();
@@ -197,7 +197,7 @@ function EmbryoLayer() {
     };
     
     this.deactivateControls = function(){
-        for(key in this.controls) {
+        for (var key in this.controls) {
             var control = this.controls[key];
             if(control.active) {
             	control.deactivate();
