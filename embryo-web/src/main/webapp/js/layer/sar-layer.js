@@ -10,7 +10,7 @@ function SarLayer() {
         var context = {
             color: function (feature) {
                 if (feature.attributes.type == "zone") {
-                    return feature.attributes.status == embryo.sar.effort.Status.Active ? "green" : "red"
+                    return feature.attributes.status == embryo.sar.effort.Status.Active ? "#7D877A" : "red"
                 }
                 if (feature.attributes.type == 'dv') {
                     return "black";
@@ -37,7 +37,7 @@ function SarLayer() {
                 if (feature.attributes.type == "zone") {
                     return that.zoomLevel >= 2 ? feature.attributes.label : "";
                 }
-                if (feature.attributes.type == "circleLabel" || feature.attributes.type == "lkpLabel" || feature.attributes.type == "zone") {
+                if (feature.attributes.type == "circleLabel" || feature.attributes.type == "lkpLabel") {
                     return that.zoomLevel >= 3 ? feature.attributes.label : "";
                 }
                 var value = feature.attributes.label ? feature.attributes.label : "";
@@ -65,10 +65,6 @@ function SarLayer() {
             })
         })
 
-        console.log("styleMap");
-        console.log(this.layers.sar.styleMap)
-
-
         var defaultEditStyle = {
             orientation: true,
             fillColor: "${color}",
@@ -93,16 +89,6 @@ function SarLayer() {
             label: "${label}"
         }
 
-        var extendedDefaultStyle = OpenLayers.Util.extend(OpenLayers.Feature.Vector.style['default'], {
-            orientation: true,
-            fillColor: "${color}",
-            fillOpacity: 0.2,
-            strokeWidth: "${strokeWidth}",
-            strokeColor: "${color}",
-            strokeOpacity: "${strokeOpacity}"
-        });
-        console.log(extendedDefaultStyle)
-
         this.layers.sarEdit = new OpenLayers.Layer.Vector("SAR Edit Layer", {
             //renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
             styleMap: new OpenLayers.StyleMap({
@@ -112,7 +98,6 @@ function SarLayer() {
             })
         });
 
-        var that = this;
         var dragHandlers = {
             onComplete: function (feature) {
                 // list of points (components) are always created as A, B, C, D in drawEffortAllocationZone
@@ -132,7 +117,6 @@ function SarLayer() {
                 }
                 //this.controls.modify.activate();
             }
-
         }
 
 

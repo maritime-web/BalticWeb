@@ -1001,6 +1001,7 @@
             var area = this.calculateSearchArea(zoneAreaSize, datum, sar.output.searchArea);
 
             var allocation = clone(input);
+            allocation.S = S;
             allocation.area = area;
             allocation.status = embryo.sar.effort.Status.DraftZone;
             allocations.push(allocation);

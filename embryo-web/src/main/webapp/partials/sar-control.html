@@ -183,13 +183,13 @@
                     <table class="table table-condensed ctrl">
                         <tr>
                             <td>Name</td>
-                            <td>Track space</td>
+                            <td>Track spacing</td>
                             <td>Status</td>
                             <td>Next</td>
                         </tr>
                         <tr x-ng-repeat="allocation in allocations">
                             <td>{{allocation.name}}</td>
-                            <td></td>
+                            <td>{{allocation.S ? formatDecimal(allocation.S, -2) + " nm" : ""}}</td>
                             <td><span class="label" x-ng-class="AllocationStatusLabel[allocation.status]">{{AllocationStatusTxt[allocation.status]}}</span>
                             </td>
                             <td>
