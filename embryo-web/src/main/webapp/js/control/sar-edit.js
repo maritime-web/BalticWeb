@@ -296,7 +296,10 @@ $(function () {
     module.controller("SarEffortAllocationController", ['$scope', 'ViewService', 'SarService', 'LivePouch', '$timeout',
         function ($scope, ViewService, SarService, LivePouch, $timeout) {
             $scope.alertMessages = [];
+            $scope.message = null;
             $scope.srus = [];
+
+            $scope.AllocationStatus = embryo.sar.effort.Status;
 
             $scope.fatigues = [0.5, 1.0];
             $scope.targetText = targetText;
@@ -441,6 +444,7 @@ $(function () {
             }
 
             $scope.initEffortAllocation = function () {
+                console.log($scope.effort);
                 if (!$scope.effort) {
                     $scope.effort = {}
                 }
@@ -461,6 +465,17 @@ $(function () {
                 // if editing an existing allocation, then present previous data again
                 // if creating a new allocation then use allocation from other previous allocations for same SAR operation.
                 // if no previous allocation data then use defaults (above)
+            }
+
+            $scope.toZoneCalculation = function (effort) {
+                $scope.effort = effort;
+                $scope.initEffortAllocation();
+                $scope.page = "effort";
+            }
+
+            $scope.confirmActivation = function (effort) {
+                $scope.effort = effort;
+                $scope.page = "activate";
             }
 
             $scope.calculate = function () {
@@ -509,8 +524,10 @@ $(function () {
                     effort.status = embryo.sar.effort.Status.Active;
                     LivePouch.put(effort).then(function () {
                         console.log("done with success")
+                        $scope.toSrus();
                     }).catch(function (error) {
                         console.log("error saving effort allocation")
+                        console.log(error)
                     })
                 }
 
@@ -520,7 +537,6 @@ $(function () {
                         include_docs: true
                     }).then(function (result) {
                         $timeout(function () {
-                            debugger;
                             var efforts = [];
                             for (var index in result.rows) {
                                 if (result.rows[index].doc.name == effort.name && result.rows[index].doc._id !== effort._id) {
@@ -528,11 +544,6 @@ $(function () {
                                     result.rows[index].doc._deleted = true;
                                 }
                             }
-
-                            console.log("efforts to delete")
-
-                            console.log(efforts)
-
                             //delete similar efforts
                             LivePouch.bulkDocs(efforts).then(function (result) {
                                 console.log("deleted docs")

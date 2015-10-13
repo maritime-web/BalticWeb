@@ -38,7 +38,7 @@
         </div>
 
 
-        <div accordion-group heading="Search and Rescue{{selected.sarIdentifier ? ' - ' + selected.sarIdentifier : ''}}"
+        <div accordion-group heading="SAR{{selected.sarIdentifier ? ' - ' + selected.sarIdentifier : ''}}"
              is-open="selected.open">
             <div x-ng-controller="OperationControl" class="sar-operation-control">
 
@@ -162,53 +162,41 @@
                         </div>
                     </div>
 
+                    <div class="row sarButtons" x-ng-if="sar.status != SARStatus.ENDED">
+                        <div class="col-md-12">
+                            <span class="pull-right">
+                                <button type="button" class="btn btn-xs" x-ng-click="confirmEnd()">End
+                                    SAR
+                                </button>
+                                <button type="button" class="btn btn-primary btn-xs" x-ng-click="edit()">Reopen
+                                    SAR calculations
+                                </button>
+
+                            </span>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <hr class="smallpadding"/>
                     </div>
 
-                    <div class="row" x-ng-if="sar.status != SARStatus.ENDED">
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-primary btn-xs" x-ng-click="edit()">Reopen
-                                Calculations
-                            </button>
-                        </div>
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-primary btn-xs" x-ng-click="effort()">Effort
-                                Allocation
-                            </button>
-                        </div>
-                    </div>
-
-                    <h6>Effort Allocation</h6>
+                    <h6>Effort allocation zones</h6>
                     <table class="table table-condensed ctrl">
                         <tr>
                             <td>Name</td>
                             <td>Track spacing</td>
-                            <td>Status</td>
-                            <td>Next</td>
+                            <td>Visible</td>
                         </tr>
                         <tr x-ng-repeat="allocation in allocations">
                             <td>{{allocation.name}}</td>
                             <td>{{allocation.S ? formatDecimal(allocation.S, -2) + " nm" : ""}}</td>
-                            <td><span class="label" x-ng-class="AllocationStatusLabel[allocation.status]">{{AllocationStatusTxt[allocation.status]}}</span>
-                            </td>
-                            <td>
-                                <a x-ng-if="allocation.status == AllocationStatus.DraftSRU" href="#"
-                                   x-ng-click="calculateAllocation($event, allocation)">Calculate</a>
-                                <a x-ng-if="allocation.status == AllocationStatus.DraftZone" href="#"
-                                   x-ng-click="activateAllocation($event, allocation)">Activate</a>
-                            </td>
+                            <td></td>
                         </tr>
                     </table>
 
-                    <h6>Search Patterns</h6>
+                    <h6>Search patterns</h6>
 
                     <div x-ng-if="sar.status != SARStatus.ENDED">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-primary btn-xs">Generate Search Pattern</button>
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="checkbox">
@@ -216,13 +204,14 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row" x-ng-if="sar.status != SARStatus.ENDED">
-                        <hr class="smallpadding"/>
-                        <button type="button" class="btn btn-primary btn-xs col-centered" x-ng-click="confirmEnd()">End
-                            SAR
-                        </button>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-primary btn-xs pull-right" x-ng-click="effort()">
+                                    Manage effort
+                                    allocations
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

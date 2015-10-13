@@ -120,7 +120,7 @@ function SarLayer() {
         }
 
 
-        this.controls.modify = new OpenLayers.Control.ModifyFeature(this.layers.sarEdit, {mode: OpenLayers.Control.ModifyFeature.RESHAPE});
+        //this.controls.modify = new OpenLayers.Control.CustomModifyFeature(this.layers.sarEdit, {mode: OpenLayers.Control.ModifyFeature.RESHAPE});
         this.controls.drag = new OpenLayers.Control.DragFeature(this.layers.sarEdit, dragHandlers);
 
 
@@ -145,7 +145,6 @@ function SarLayer() {
          onEnter	{Function} Define this function if you want to know when the mouse goes over a feature and thereby makes this feature a candidate for dragging.
          onLeave	{Function} Define this function if you want to know when the mouse goes out of the feature that was dragged.
          */
-        console.log("SAR INIT");
 
         //this.selectableLayers = [this.layers.sar];
         //this.selectableAttribute = "id";
@@ -253,7 +252,6 @@ function SarLayer() {
     }
 
     this.draw = function (sarDocuments) {
-
 
         this.deactivateSelectable();
         //this.deactivateControls();

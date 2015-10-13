@@ -287,16 +287,6 @@ $(function () {
                 $scope.newSarProvider.show({sarId: $scope.sar._id, page: "end"});
             }
 
-            $scope.calculateAllocation = function ($event, allocation) {
-                $event.preventDefault();
-                $scope.effortAllocationProvider.show({allocationId: allocation._id, page: "effort"})
-            }
-
-            $scope.activateAllocation = function ($event, allocation) {
-                $event.preventDefault();
-                $scope.effortAllocationProvider.show({allocationId: allocation._id, page: "activate"})
-            }
-
             function loadEffortAllocations() {
                 // find docs where sarId === selectedSarId
                 LivePouch.query('sareffortview', {
@@ -326,7 +316,7 @@ $(function () {
                     filter: "_view",
                     view: "sareffortview",
                     key: $scope.selected.sarId
-                }).on('change', function (create) {
+                }).on('change', function (change) {
                     loadEffortAllocations();
                 });
             }
