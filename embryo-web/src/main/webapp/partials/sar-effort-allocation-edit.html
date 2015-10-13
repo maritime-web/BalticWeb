@@ -19,7 +19,7 @@
                         <th>Search Pattern</th>
                         <th></th>
                     </tr>
-                    <tr x-ng-repeat="SRU in srus">
+                    <tr x-ng-repeat="SRU in srus track by $index">
                         <td><a href="#" x-ng-click="editSRU($event, SRU)">{{SRU.name}}</a></td>
                         <td>{{typeText[SRU.type]}}</td>
                         <td>{{SRU.speed}} knots</td>
@@ -113,7 +113,7 @@
                         <label class="control-label col-xs-3">On scene time:</label>
 
                         <div class="col-xs-3">
-                            <input x-ng-model="effort.time" type="text"
+                            <input x-ng-model="sru.time" type="text"
                                    class="form-control input-sm" placeholder="5" required/>
                         </div>
                         <div class="col-xs-3 unit">

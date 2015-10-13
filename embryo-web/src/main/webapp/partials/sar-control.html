@@ -187,7 +187,7 @@
                             <td>Track spacing</td>
                             <td>Visible</td>
                         </tr>
-                        <tr x-ng-repeat="allocation in allocations">
+                        <tr x-ng-repeat="allocation in allocations track by $index">
                             <td>{{allocation.name}}</td>
                             <td>{{allocation.S ? formatDecimal(allocation.S, -2) + " nm" : ""}}</td>
                             <td></td>

@@ -254,8 +254,8 @@ $(function () {
                             console.log(res);
                         })
                     })
-                    loadEffortAllocations();
-                    listen4EffortAllocationChanges();
+                    loadEffortAllocations($scope.selected.sarId);
+                    listen4EffortAllocationChanges($scope.selected.sarId);
                 } else {
                     $scope.selected.sar = null;
                     $scope.sar = null;
@@ -287,19 +287,28 @@ $(function () {
                 $scope.newSarProvider.show({sarId: $scope.sar._id, page: "end"});
             }
 
-            function loadEffortAllocations() {
+            function loadEffortAllocations(sarId) {
+
+                console.log("loadEffortAllocations, $scope.selected.sarId=" + sarId)
+
                 // find docs where sarId === selectedSarId
                 LivePouch.query('sareffortview', {
-                    key: $scope.selected.sarId,
+                    key: sarId,
                     include_docs: true
                 }).then(function (result) {
                     var allocations = [];
                     for (var index in result.rows) {
                         allocations.push(result.rows[index].doc)
                     }
+
+                    console.log("allocations")
+                    console.log(allocations)
+
                     $scope.allocations = allocations
-                    $scope.$apply(function () {
-                    })
+                    if (!$scope.$$phase) {
+                        $scope.$apply(function () {
+                        })
+                    }
                     console.log("loadAllocations")
                     console.log($scope.allocations);
                 }).catch(function (error) {
@@ -308,16 +317,26 @@ $(function () {
                 });
             }
 
-            function listen4EffortAllocationChanges() {
+            function listen4EffortAllocationChanges(sarId) {
                 LivePouch.changes({
                     since: 'now',
                     live: true,
                     include_docs: true,
+                    /*
+                     filter: function (doc) {
+                     return (doc.docType == embryo.sar.Type.EffortAllocation && doc.effSarId == $scope.selected.sarId);
+                     }*/
                     filter: "_view",
                     view: "sareffortview",
-                    key: $scope.selected.sarId
+                    key: sarId
                 }).on('change', function (change) {
-                    loadEffortAllocations();
+                    console.log("listen4EffortAllocationChanges, change=")
+                    console.log(change)
+                    loadEffortAllocations(sarId);
+                }).on('delete', function (deleted) {
+                    console.log("listen4EffortAllocationChanges, deleted=")
+                    console.log(deleted)
+                    loadEffortAllocations(sarId);
                 });
             }
 
@@ -334,7 +353,6 @@ $(function () {
             views: {
                 sarlogview: {
                     map: function (doc) {
-                        console.log(doc)
                         if (doc.msgSarId) {
                             emit(doc.msgSarId);
                         }

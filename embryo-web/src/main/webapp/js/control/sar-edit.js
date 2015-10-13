@@ -340,7 +340,7 @@ $(function () {
                             srus.push(result.rows[index].doc)
                         }
                         $scope.srus = srus
-                    }, 100)
+                    }, 10)
                 }).catch(function (error) {
                     console.log("sareffortview error")
                     console.log(error)
@@ -393,7 +393,7 @@ $(function () {
 
             $scope.editSRU = function ($event, SRU) {
                 $event.preventDefault();
-                $scope.sru = SRU;
+                $scope.sru = clone(SRU);
                 $scope.page = 'editUnit';
             }
 
@@ -404,18 +404,17 @@ $(function () {
             }
 
             $scope.removeSRU = function (SRU) {
+                console.log("remove SRU")
+                console.log(SRU)
+
                 LivePouch.remove(SRU).then(function (result) {
                     console.log("succes removing document")
+                    console.log(result);
                     $scope.toSrus();
-                    $scope.$apply(function () {
-                    })
                 }).catch(function (error) {
                     $scope.alertMessages = ["Internal eror removing SRU", error];
                     console.log("error removing sru")
                     console.log(error)
-                    $scope.$apply(function () {
-                    })
-
                 })
             }
 
@@ -425,19 +424,31 @@ $(function () {
             }
 
             $scope.saveUnit = function () {
-                if (!$scope.sru._id) {
-                    $scope.sru.effSarId = $scope.sarId;
-                    $scope.sru._id = "saref-" + Date.now();
-                    $scope.sru.docType = embryo.sar.Type.EffortAllocation;
-                    $scope.sru.status = embryo.sar.effort.Status.DraftSRU;
+                // If active, then make a new copy in status draft
+                // the copy will replace the active zone, when itself being activated
+                var sru = clone($scope.sru);
+                if (sru.status === embryo.sar.effort.Status.Active) {
+                    delete sru._id;
+                    delete sru._rev;
+                    delete sru.area;
                 }
-                var sru = $scope.sru;
+                if (sru.status === embryo.sar.effort.Status.DraftZone) {
+                    delete sru.area;
+                    sru.status = embryo.sar.effort.Status.DraftSRU;
+                }
+                if (!sru._id) {
+                    sru.effSarId = $scope.sarId;
+                    sru._id = "saref-" + Date.now();
+                    sru.docType = embryo.sar.Type.EffortAllocation;
+                    sru.status = embryo.sar.effort.Status.DraftSRU;
+                }
+                var sru2 = $scope.sru;
                 $scope.sru = null;
                 LivePouch.put(sru).then(function (result) {
                     $scope.toSrus();
                 }).catch(function (error) {
                     console.log(error)
-                    $scope.sru = sru;
+                    $scope.sru = sru2;
                     $scope.alertMessages = ["internal error", error];
                 });
 
