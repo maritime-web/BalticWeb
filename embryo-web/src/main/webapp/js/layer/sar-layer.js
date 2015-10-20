@@ -7,7 +7,13 @@ function SarLayer() {
     that.zoomLevels = [8, 10, 12];
 
     this.init = function () {
+        var opacityFactor = {
+            true: 1.0,
+            false: 0.5
+        }
+
         var context = {
+
             color: function (feature) {
                 if (feature.attributes.type == "zone") {
                     return feature.attributes.status == embryo.sar.effort.Status.Active ? "#7D877A" : "red"
@@ -26,9 +32,12 @@ function SarLayer() {
             },
             strokeOpacity: function (feature) {
                 if (feature.attributes.type === 'dv') {
-                    return 0.7;
+                    return 0.7 * opacityFactor[that.active];
                 }
-                return 0.6;
+                return 0.6 * opacityFactor[that.active];
+            },
+            fillOpacity: function () {
+                return 0.2 * opacityFactor[that.active];
             },
             label: function (feature) {
                 if (feature.attributes.type == "areaLabel") {
@@ -42,13 +51,17 @@ function SarLayer() {
                 }
                 var value = feature.attributes.label ? feature.attributes.label : "";
                 return value;
+            },
+            fontTransparency: function () {
+                return opacityFactor[that.active]
             }
         };
 
         var defaultStyle = {
             orientation: true,
+            fontOpacity: "${fontTransparency}",
             fillColor: "${color}",
-            fillOpacity: 0.2,
+            fillOpacity: "${fillOpacity}",
             strokeWidth: "${strokeWidth}",
             strokeColor: "${color}",
             strokeOpacity: "${strokeOpacity}",
@@ -66,21 +79,9 @@ function SarLayer() {
         })
 
         var defaultEditStyle = {
-            orientation: true,
+            fontOpacity: "${fontTransparency}",
             fillColor: "${color}",
-            fillOpacity: 0.2,
-            strokeWidth: "${strokeWidth}",
-            strokeColor: "${color}",
-            strokeOpacity: "${strokeOpacity}",
-            pointRadius: 10,
-            pointerEvents: "visible",
-            label: "${label}"
-        }
-
-        var selectStyle = {
-            orientation: true,
-            fillColor: "${color}",
-            fillOpacity: 0.2,
+            fillOpacity: "${fillOpacity}",
             strokeWidth: "${strokeWidth}",
             strokeColor: "${color}",
             strokeOpacity: "${strokeOpacity}",
@@ -264,7 +265,7 @@ function SarLayer() {
             that.controls.drag.activate();
         } else {
             that.activateSelectable();
-            that.controls.modify.deactivate();
+            //that.controls.modify.deactivate();
             that.controls.drag.deactivate();
         }
 
