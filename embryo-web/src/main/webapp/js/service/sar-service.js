@@ -198,8 +198,6 @@
         var validFor = null;
         var lastDatumPosition = null
 
-        console.log(this.input)
-
         var searchObject = findSearchObjectType(this.input.searchObject);
 
         for (var i = 0; i < this.input.surfaceDriftPoints.length; i++) {
@@ -230,8 +228,6 @@
             var twcDirectionInDegrees = directionDegrees(this.input.surfaceDriftPoints[i].twcDirection);
             var currentPos = startingLocation.transformPosition(twcDirectionInDegrees, currentTWC);
             currentPositions.push(currentPos)
-
-            console.log(searchObject);
 
             var leewaySpeed = searchObject.leewaySpeed(this.input.surfaceDriftPoints[i].leewaySpeed);
             var leewayDriftDistance = leewaySpeed * validFor;
@@ -1026,11 +1022,6 @@
     }
 
     function clone(object) {
-        console.log(clone);
-        console.log(object)
-        console.log(JSON.parse(JSON.stringify(object)));
-
-
         return JSON.parse(JSON.stringify(object));
     }
 
@@ -1056,21 +1047,21 @@
         LivePouch.get('_design/sareffortview').then(function (existing) {
             ddoc._rev = existing._rev;
             LivePouch.put(ddoc).then(function (result) {
-                console.log("sareffortview update")
-                console.log(result);
+                $log.debug("sareffortview update")
+                $log.debug(result);
             }).catch(function (error) {
-                console.log("sareffortview update error")
-                console.log(error)
+                $log.error("sareffortview update error")
+                $log.error(error)
             });
         }).catch(function (error) {
-            console.log("error fetching _design");
-            console.log(error);
+            $log.error("error fetching _design");
+            $log.error(error);
             LivePouch.put(ddoc).then(function (result) {
-                console.log("sareffortview update")
-                console.log(result);
+                $log.debug("sareffortview update")
+                $log.debug(result);
             }).catch(function (error) {
-                console.log("sareffortview update error")
-                console.log(error)
+                $log.error("sareffortview update error")
+                $log.error(error)
             });
         });
 

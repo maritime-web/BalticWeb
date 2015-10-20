@@ -35,17 +35,24 @@ $(function () {
     AllocationStatusLabel[embryo.sar.effort.Status.DraftSRU] = "label-danger";
     AllocationStatusLabel[embryo.sar.effort.Status.DraftZone] = "label-danger";
 
-    module.controller("SARLayerControl", ['SarService', 'LivePouch', '$timeout', function (SarService, LivePouch, $timeout) {
+    function clone(object) {
+        return JSON.parse(JSON.stringify(object));
+    }
+
+    module.controller("SARLayerControl", ['SarService', 'LivePouch', '$timeout', '$log',
+        function (SarService, LivePouch, $timeout, $log) {
         var sarDocuments = [];
 
         SarLayerSingleton.getInstance().modified = function (zoneUpdate) {
+            $log.debug("zone updated on map");
+            $log.debug(zoneUpdate)
             LivePouch.get(zoneUpdate._id).then(function (zone) {
-                zone.area = zoneUpdate.area;
+                zone.area = clone(zoneUpdate.area);
                 LivePouch.put(zone).then(function () {
-                    console.log("success saving updated zone")
+                    $log.debug("success saving updated zone")
                 }).catch(function (error) {
-                    console.log("error saving updated zone")
-                    console.log(error);
+                    $log.error("error saving updated zone")
+                    $log.error(error);
                 })
             })
         }
@@ -82,19 +89,18 @@ $(function () {
                 }
                 sarDocuments = documents;
                 SarLayerSingleton.getInstance().draw(sarDocuments);
-                console.log("loadSarDocuments");
-                console.log(sarDocuments)
+                $log.debug("loadSarDocuments");
+                $log.debug(sarDocuments)
             }).catch(function (err) {
                 // TODO ERROR MESSAGE
-                console.log("allDocs err")
-                console.log(err);
+                $log.error("allDocs err")
+                $log.error(err);
             });
         }
 
         LivePouch.changes({
             since: 'now',
             live: true,
-            include_docs: true,
             filter: function (doc) {
                 return doc._id.startsWith("sar") &&
                     (doc.docType != embryo.sar.Type.EffortAllocation ||
@@ -127,8 +133,8 @@ $(function () {
                     var viewProviders = ViewService.viewProviders();
                     $log.debug('onNewProvider, viewProvider=', viewProviders);
 
-                    console.log("viewProviders=")
-                    console.log(viewProviders)
+                    $log.debug("viewProviders=")
+                    $log.debug(viewProviders)
 
                     for (var index in viewProviders) {
                         if (viewProviders[index].type() === 'newSar') {
@@ -181,8 +187,8 @@ $(function () {
                 $scope.$apply(function () {
                 })
             }).catch(function (err) {
-                console.log("allDocs err")
-                console.log(err);
+                $log.error("allDocs err")
+                $log.error(err);
             });
 
             $scope.view = function ($event, sar) {
@@ -197,7 +203,7 @@ $(function () {
             }
 
             $scope.newSar = function () {
-                console.log($scope.newSarProvider)
+                $log.debug($scope.newSarProvider)
                 $scope.newSarProvider.show({});
             }
         }]);
@@ -250,8 +256,8 @@ $(function () {
                         $timeout(function () {
                             $scope.selected.sar = res;
                             $scope.sar = res;
-                            console.log("operationcontrol")
-                            console.log(res);
+                            $log.debug("operationcontrol")
+                            $log.debug(res);
                         })
                     })
                     loadEffortAllocations($scope.selected.sarId);
@@ -289,7 +295,7 @@ $(function () {
 
             function loadEffortAllocations(sarId) {
 
-                console.log("loadEffortAllocations, $scope.selected.sarId=" + sarId)
+                $log.debug("loadEffortAllocations, $scope.selected.sarId=" + sarId)
 
                 // find docs where sarId === selectedSarId
                 LivePouch.query('sareffortview', {
@@ -301,19 +307,19 @@ $(function () {
                         allocations.push(result.rows[index].doc)
                     }
 
-                    console.log("allocations")
-                    console.log(allocations)
+                    $log.debug("allocations")
+                    $log.debug(allocations)
 
                     $scope.allocations = allocations
                     if (!$scope.$$phase) {
                         $scope.$apply(function () {
                         })
                     }
-                    console.log("loadAllocations")
-                    console.log($scope.allocations);
+                    $log.debug("loadAllocations")
+                    $log.debug($scope.allocations);
                 }).catch(function (error) {
-                    console.log("sareffortview error in controller.js")
-                    console.log(error)
+                    $log.error("sareffortview error in controller.js")
+                    $log.error(error)
                 });
             }
 
@@ -330,12 +336,12 @@ $(function () {
                     view: "sareffortview",
                     key: sarId
                 }).on('change', function (change) {
-                    console.log("listen4EffortAllocationChanges, change=")
-                    console.log(change)
+                    $log.debug("listen4EffortAllocationChanges, change=")
+                    $log.debug(change)
                     loadEffortAllocations(sarId);
                 }).on('delete', function (deleted) {
-                    console.log("listen4EffortAllocationChanges, deleted=")
-                    console.log(deleted)
+                    $log.debug("listen4EffortAllocationChanges, deleted=")
+                    $log.debug(deleted)
                     loadEffortAllocations(sarId);
                 });
             }
@@ -344,7 +350,8 @@ $(function () {
 
         }]);
 
-    module.controller("LogControl", ['$scope', 'Subject', 'SarService', 'LivePouch', function ($scope, Subject, SarService, LivePouch) {
+    module.controller("LogControl", ['$scope', 'Subject', 'SarService', 'LivePouch', '$log',
+        function ($scope, Subject, SarService, LivePouch, $log) {
         $scope.messages = []
 
         // create a design doc
@@ -367,11 +374,11 @@ $(function () {
         LivePouch.get('_design/sarlogview').then(function (existing) {
             ddoc._rev = existing._rev;
             LivePouch.put(ddoc).then(function (result) {
-                console.log("ddoc update")
-                console.log(result);
+                $log.debug("ddoc update")
+                $log.debug(result);
             }).catch(function (error) {
-                console.log("ddoc update error")
-                console.log(error)
+                $log.error("ddoc update error")
+                $log.error(error)
             });
         })
 
@@ -390,8 +397,8 @@ $(function () {
                 $scope.$apply(function () {
                 })
             }).catch(function (error) {
-                console.log("sarlogview error")
-                console.log(error)
+                $log.error("sarlogview error")
+                $log.error(error)
             });
         }
 

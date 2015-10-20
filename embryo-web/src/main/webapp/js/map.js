@@ -124,6 +124,8 @@ $(function() {
     var initialized = false;
 
     embryo.map = {
+        selectControl: selectControl,
+        selectLayerByGroup: selectLayerByGroup,
 
         add : function(d) {
             if (d.group && selectLayerByGroup[d.group] == null) {

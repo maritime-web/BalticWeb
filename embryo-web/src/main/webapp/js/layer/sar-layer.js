@@ -120,7 +120,7 @@ function SarLayer() {
         }
 
 
-        //this.controls.modify = new OpenLayers.Control.CustomModifyFeature(this.layers.sarEdit, {mode: OpenLayers.Control.ModifyFeature.RESHAPE});
+        //this.controls.modify = new OpenLayers.Control.ModifyFeature(this.layers.sarEdit, {mode: OpenLayers.Control.ModifyFeature.RESHAPE});
         this.controls.drag = new OpenLayers.Control.DragFeature(this.layers.sarEdit, dragHandlers);
 
 
@@ -251,15 +251,58 @@ function SarLayer() {
         addDriftVector(layer, [lkp, datum]);
     }
 
-    this.draw = function (sarDocuments) {
 
-        this.deactivateSelectable();
-        //this.deactivateControls();
-        this.controls.drag.activate();
+    /*
+     TODO
+     Temporary solution
+     Should be moved into some general solution in map.js like it is for selectable layers
+     */
+    embryo.groupChanged(function (e) {
+        if (e.groupId == "sar") {
+            that.deactivateSelectable();
+            //that.controls.modify.activate();
+            that.controls.drag.activate();
+        } else {
+            that.activateSelectable();
+            that.controls.modify.deactivate();
+            that.controls.drag.deactivate();
+        }
+
+        //this.deactivateSelectable();
         //this.controls.modify.activate();
+        //this.activateControls()
+
+
+        /*
+         //Code like below can enable selection of both modifiable features and other features e.g. vessels
+
+         var selectableLayers = this.map.selectLayerByGroup["vessel"];
+         selectableLayers = selectableLayers.concat(this.layers.sarEdit);
+
+         this.controls.modify.standalone = true;
+         this.controls.modify.activate();
+         this.deactivateSelectable();
+         this.map.selectControl.setLayer(selectableLayers);
+
+         var that = this;
+
+         this.layers.sarEdit.events.on({
+         featureselected: function(evt) { that.controls.modify.selectFeature(evt.feature); },
+         featureunselected: function(evt) { that.controls.modify.unselectFeature(evt.feature); }
+         });
+
+         this.activateSelectable()
+         */
+        //this.deactivateControls();
+        //this.controls.drag.activate();
         //this.activateControls();
         //this.activateSelectable();
 
+    });
+
+
+
+    this.draw = function (sarDocuments) {
         this.layers.sar.removeAllFeatures();
         this.layers.sarEdit.removeAllFeatures();
         for (var index in sarDocuments) {
