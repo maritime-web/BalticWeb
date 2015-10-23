@@ -220,6 +220,15 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
             drag: new OpenLayers.Handler.Drag(this, dragCallbacks, dragOptions)
         };
 
+
+        this.layer.events.on({
+            "beforefeatureremoved": function (event) {
+                if (_self.feature.id === event.feature.id) {
+                    _self.unselectFeature(_self.feature);
+                }
+            }
+        });
+
     },
 
     /**
