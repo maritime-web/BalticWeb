@@ -10,17 +10,26 @@
  */
 
 /**
- * Class: OpenLayers.Control.ModifyFeature
- * Control to modify features.  When activated, a click renders the vertices
- *     of a feature - these vertices can then be dragged.  By default, the
- *     delete key will delete the vertex under the mouse.  New features are
- *     added by dragging "virtual vertices" between vertices.  Create a new
- *     control with the <OpenLayers.Control.ModifyFeature> constructor.
+ * Class: embryo.Control.ModifyRectangleFeature
+ * Control to modify rectangular features.  When dragged feature is moved on the map.
+ * When un clicked, either after dragging or after simple click, points
+ * are rendered in the center of each rectangle edge. These points can be used to drag
+ * each edge in perpendicular direction to the edge itself. While doing this
+ * the area of the rectangle is maintained by moving the two perpendicular edges
+ * in the rectangle
+ * By default, the
+ * delete key will delete the vertex under the mouse. Create a new
+ * control with the <embryo.Control.ModifyFeature> constructor.
  *
  * Inherits From:
  *  - <OpenLayers.Control>
  */
-OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
+
+if (!embryo.Control) {
+    embryo.Control = {};
+}
+
+embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
 
 
     /**
@@ -36,7 +45,7 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
      *     types, send a list of strings corresponding to the geometry class
      *     names.
      */
-    geometryTypes: null,
+    geometryTypes: ["OpenLayers.Geometry.LinearRing"],
 
     /**
      * APIProperty: clickout
@@ -82,13 +91,6 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
     vertex: null,
 
     /**
-     * Property: vertices
-     * {Array(<OpenLayers.Feature.Vector>)} Verticies currently available
-     *     for dragging.
-     */
-    vertices: null,
-
-    /**
      * Property: virtualVertices
      * {Array(<OpenLayers.Feature.Vector>)} Virtual vertices in the middle
      *     of each edge.
@@ -119,23 +121,16 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
     /**
      * APIProperty: mode
      * {Integer} Bitfields specifying the modification mode. Defaults to
-     *      OpenLayers.Control.CustomModifyFeature.RESHAPE. To set the mode to a
+     *      embryo.sar.ModifyRectangleFeature.RESHAPE. To set the mode to a
      *      combination of options, use the | operator. For example, to allow
      *      the control to both resize and rotate features, use the following
      *      syntax
      * (code)
-     * control.mode = OpenLayers.Control.CustomModifyFeature.RESIZE |
-     *                OpenLayers.Control.CustomModifyFeature.ROTATE;
+     * control.mode = embryo.sar.ModifyRectangleFeature.RESIZE |
+     *                embryo.sar.ModifyRectangleFeature.ROTATE;
      *  (end)
      */
     mode: null,
-
-    /**
-     * APIProperty: createVertices
-     * {Boolean} Create new vertices by dragging the virtual vertices
-     *     in the middle of each edge. Default is true.
-     */
-    createVertices: true,
 
     /**
      * Property: modified
@@ -150,13 +145,7 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
     radiusHandle: null,
 
     /**
-     * Property: dragHandle
-     * {<OpenLayers.Feature.Vector>} A handle for dragging a feature.
-     */
-    dragHandle: null,
-
-    /**
-     * Constructor: OpenLayers.Control.CustomModifyFeature
+     * Constructor: embryo.Control.ModifyRectangleFeature
      * Create a new modify feature control.
      *
      * Parameters:
@@ -168,7 +157,6 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
     initialize: function (layer, options) {
         options = options || {};
         this.layer = layer;
-        this.vertices = [];
         this.virtualVertices = [];
         this.virtualStyle = OpenLayers.Util.extend({},
             this.layer.style ||
@@ -176,35 +164,37 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
         );
         this.virtualStyle.fillOpacity = 0.3;
         this.virtualStyle.strokeOpacity = 0.3;
-        this.mode = OpenLayers.Control.CustomModifyFeature.RESHAPE;
+        this.mode = embryo.Control.ModifyRectangleFeature.RESHAPE;
         OpenLayers.Control.prototype.initialize.apply(this, [options]);
 
         // configure the drag handler
         var dragCallbacks = {
             down: function (pixel) {
                 this.vertex = null;
+
                 var feature = this.layer.getFeatureFromEvent(
                     this.handlers.drag.evt);
                 if (feature) {
                     this.dragStart(feature, pixel);
-                } else if (this.clickout) {
-                    this._unselect = this.feature;
+                } else if (this.clickout && this.feature) {
+                    this.unselectFeature(this.feature);
                 }
             },
             move: function (pixel) {
                 delete this._unselect;
                 if (this.vertex) {
                     this.dragVertex(this.vertex, pixel);
-                } else {
+                } else if (this.feature && (this.mode & embryo.Control.ModifyRectangleFeature.DRAG)) {
                     this.dragFeature(this.feature, pixel);
                 }
             },
             up: function () {
-                this.handlers.drag.stopDown = false;
-                if (this._unselect) {
+                var feature = this.layer.getFeatureFromEvent(this.handlers.drag.evt);
+                console.log("up")
+                if (this.toggle && this._unselect === feature) {
                     this.unselectFeature(this._unselect);
-                    delete this._unselect;
                 }
+                this.handlers.drag.stopDown = false;
                 this.resetVertices();
             },
             done: function (pixel) {
@@ -218,8 +208,6 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
             documentDrag: this.documentDrag,
             setEvent: function (evt) {
                 var feature = _self.feature;
-                _self._lastVertex = feature ?
-                    feature.layer.getFeatureFromEvent(evt) : null;
                 OpenLayers.Handler.Drag.prototype.setEvent.apply(
                     this, arguments);
             },
@@ -279,7 +267,6 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
      * {Boolean} Successfully activated the control.
      */
     activate: function () {
-
         if (OpenLayers.Control.prototype.activate.apply(this, arguments)) {
             this.moveLayerToTop();
             this.map.events.on({
@@ -287,7 +274,6 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
                 "changelayer": this.handleMapEvents,
                 scope: this
             });
-            this._lastVertex = null;
             return this.handlers.drag.activate();
         }
         return false;
@@ -310,9 +296,7 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
                 "changelayer": this.handleMapEvents,
                 scope: this
             });
-            this.layer.removeFeatures(this.vertices, {silent: true});
             this.layer.removeFeatures(this.virtualVertices, {silent: true});
-            this.vertices = [];
             this.handlers.drag.deactivate();
             var feature = this.feature;
             if (feature && feature.geometry && feature.layer) {
@@ -397,8 +381,7 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
      * feature - {<OpenLayers.Feature.Vector>} The unselected feature.
      */
     unselectFeature: function (feature) {
-        this.layer.removeFeatures(this.vertices, {silent: true});
-        this.vertices = [];
+        delete this._unselect;
         this.layer.destroyFeatures(this.virtualVertices, {silent: true});
         this.virtualVertices = [];
         if (this.dragHandle) {
@@ -431,8 +414,7 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
      *     dragged.
      */
     dragStart: function (feature, pixel) {
-        var isPoint = feature.geometry.CLASS_NAME ==
-            'OpenLayers.Geometry.Point';
+        var isPoint = feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.Point';
         if (!this.standalone &&
             ((!feature._sketch && isPoint) || !feature._sketch)) {
             if (this.toggle && this.feature === feature) {
@@ -442,7 +424,10 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
             this.selectFeature(feature);
             this.handlers.drag.stopDown = true;
             this.lastPixel = pixel;
-            this.removeVertices();
+
+            if (this.mode & embryo.Control.ModifyRectangleFeature.DRAG) {
+                this.removeVertices();
+            }
         }
         if (this.feature &&
             (feature._sketch || isPoint && feature === this.feature)) {
@@ -485,13 +470,12 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
                 pixel: pixel
             });
         } else {
-            if (vertex._index && (this.mode & OpenLayers.Control.CustomModifyFeature.RESHAPE_RECTANGLE)) {
+            if (vertex._index) {
                 if (vertex._index == -1) {
                     vertex._index = OpenLayers.Util.indexOf(vertex.geometry.parent.components, vertex._next);
                 }
-                // dragging a center point / virtual vertex in RESHAPE_RECTANGLE mode
+                // dragging a center point / virtual vertex in RESHAPE mode
                 var feature = this.feature;
-
 
                 function movePoint(newRect, index) {
                     var position = newRect.positions[index];
@@ -503,43 +487,15 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
                     point2.move(dx, dy);
                 }
 
-
                 try {
                     var geoPos = this.createGeoPosition(geom);
-
                     var newRect = this.zoneGeoRect.reshapeFixedArea(vertex._index - 1, geoPos)
-
-                    console.log("newPosition=" + newRect.positions);
-                    console.log("newArea=" + newRect.getArea());
-
                     movePoint(newRect, 0);
                     movePoint(newRect, 1);
                     movePoint(newRect, 2);
                     movePoint(newRect, 3);
-
                 } catch (error) {
                     console.log(error);
-                }
-
-
-            } else if (vertex._index) {
-                if (vertex._index == -1) {
-                    vertex._index = OpenLayers.Util.indexOf(vertex.geometry.parent.components, vertex._next);
-                }
-                // dragging a virtual vertex
-                vertex.geometry.parent.addComponent(vertex.geometry,
-                    vertex._index);
-                // move from virtual to real vertex
-                delete vertex._index;
-                OpenLayers.Util.removeItem(this.virtualVertices, vertex);
-                this.vertices.push(vertex);
-            } else if (vertex == this.dragHandle) {
-                // dragging a drag handle
-                this.layer.removeFeatures(this.vertices, {silent: true});
-                this.vertices = [];
-                if (this.radiusHandle) {
-                    this.layer.destroyFeatures([this.radiusHandle], {silent: true});
-                    this.radiusHandle = null;
                 }
             } else if (vertex !== this.radiusHandle) {
                 // dragging a real vertex
@@ -552,13 +508,12 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
             /*
 
              // dragging a radius handle - no special treatment
-             if (this.virtualVertices.length > 0 && !(this.mode & OpenLayers.Control.CustomModifyFeature.RESHAPE_RECTANGLE)) {
+             if (this.virtualVertices.length > 0 && !(this.mode & embryo.Control.ModifyRectangleFeature.RESHAPE)) {
                 this.layer.destroyFeatures(this.virtualVertices, {silent: true});
                 this.virtualVertices = [];
             }
              */
-            this.layer.drawFeature(this.feature, this.standalone ? undefined :
-                'select');
+            this.layer.drawFeature(this.feature, this.standalone ? undefined : 'select');
         }
         // keep the vertex on top so it gets the mouseout after dragging
         // this should be removed in favor of an option to draw under or
@@ -584,8 +539,7 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
     dragComplete: function (vertex) {
         this.resetVertices();
         this.setFeatureState();
-        this.layer.events.triggerEvent("featuremodified",
-            {feature: this.feature});
+        this.layer.events.triggerEvent("featuremodified", {feature: this.feature});
     },
 
     /**
@@ -608,7 +562,7 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
     },
 
     removeVertices: function (exceptVertice) {
-        function removeAllButException(vertices, exception) {
+        function removeAllButVertice(vertices, exception) {
             var temp = []
             if (exceptVertice) {
                 var index = OpenLayers.Util.indexOf(vertices, exception);
@@ -619,19 +573,10 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
             return temp;
         }
 
-        if (this.vertices.length > 0) {
-            var temp = removeAllButException(this.vertices, exceptVertice);
-            this.layer.removeFeatures(this.vertices, {silent: true});
-            this.vertices = temp;
-        }
         if (this.virtualVertices.length > 0) {
-            var temp = removeAllButException(this.virtualVertices, exceptVertice);
+            var temp = removeAllButVertice(this.virtualVertices, exceptVertice);
             this.layer.removeFeatures(this.virtualVertices, {silent: true});
             this.virtualVertices = temp;
-        }
-        if (this.dragHandle) {
-            this.layer.destroyFeatures([this.dragHandle], {silent: true});
-            this.dragHandle = null;
         }
         if (this.radiusHandle) {
             this.layer.destroyFeatures([this.radiusHandle], {silent: true});
@@ -646,88 +591,20 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
         this.removeVertices();
         if (this.feature &&
             this.feature.geometry.CLASS_NAME != "OpenLayers.Geometry.Point") {
-            if ((this.mode & OpenLayers.Control.CustomModifyFeature.DRAG)) {
-                this.collectDragHandle();
-            }
-            if ((this.mode & (OpenLayers.Control.CustomModifyFeature.ROTATE |
-                OpenLayers.Control.CustomModifyFeature.RESIZE))) {
+            if ((this.mode & (embryo.Control.ModifyRectangleFeature.ROTATE |
+                embryo.Control.ModifyRectangleFeature.RESIZE))) {
                 this.collectRadiusHandle();
             }
-            if (this.mode & OpenLayers.Control.CustomModifyFeature.RESHAPE) {
-                debugger
-
-                // Don't collect vertices when we're resizing
-                if (!(this.mode & OpenLayers.Control.CustomModifyFeature.RESIZE)) {
-                    this.collectVertices();
-                }
-            }
-            if (this.mode & OpenLayers.Control.CustomModifyFeature.RESHAPE_RECTANGLE) {
+            if (this.mode & embryo.Control.ModifyRectangleFeature.RESHAPE) {
                 this.collectLineCenterPoints();
             }
         }
     },
 
     /**
-     * Method: collectVertices
-     * Collect the vertices from the modifiable feature's geometry and push
-     *     them on to the control's vertices array.
-     */
-    collectVertices: function () {
-        this.vertices = [];
-        this.virtualVertices = [];
-        var control = this;
-
-        function collectComponentVertices(geometry) {
-            var i, vertex, component, len;
-            if (geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
-                vertex = new OpenLayers.Feature.Vector(geometry);
-                vertex._sketch = true;
-                vertex.renderIntent = control.vertexRenderIntent;
-                control.vertices.push(vertex);
-            } else {
-                var numVert = geometry.components.length;
-                if (geometry.CLASS_NAME == "OpenLayers.Geometry.LinearRing") {
-                    numVert -= 1;
-                }
-                for (i = 0; i < numVert; ++i) {
-                    component = geometry.components[i];
-                    if (component.CLASS_NAME == "OpenLayers.Geometry.Point") {
-                        vertex = new OpenLayers.Feature.Vector(component);
-                        vertex._sketch = true;
-                        vertex.renderIntent = control.vertexRenderIntent;
-                        control.vertices.push(vertex);
-                    } else {
-                        collectComponentVertices(component);
-                    }
-                }
-
-                // add virtual vertices in the middle of each edge
-                if (control.createVertices && geometry.CLASS_NAME != "OpenLayers.Geometry.MultiPoint") {
-                    for (i = 0, len = geometry.components.length; i < len - 1; ++i) {
-                        var prevVertex = geometry.components[i];
-                        var nextVertex = geometry.components[i + 1];
-                        if (prevVertex.CLASS_NAME == "OpenLayers.Geometry.Point" &&
-                            nextVertex.CLASS_NAME == "OpenLayers.Geometry.Point") {
-                            var point = control.createVirtualVertex.call(control, prevVertex, nextVertex);
-                            // set the virtual parent and intended index
-                            point.geometry.parent = geometry;
-                            point._index = i + 1;
-                            control.virtualVertices.push(point);
-                        }
-                    }
-                }
-            }
-        }
-
-        collectComponentVertices.call(this, this.feature.geometry);
-        this.layer.addFeatures(this.virtualVertices, {silent: true});
-        this.layer.addFeatures(this.vertices, {silent: true});
-    },
-
-    /**
-     * Method: collectReshapeRectanglePoints
-     * Collect the vertices from the modifiable feature's geometry and push
-     *     them on to the control's vertices array.
+     * Method: collectLineCenterPoints
+     * Collect the line center points from the modifiable feature's geometry and push
+     *     them on to the control's virtualVertices array.
      */
     collectLineCenterPoints: function () {
         this.virtualVertices = [];
@@ -749,7 +626,7 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
             }
 
             // add virtual vertices in the middle of each edge
-            if (control.createVertices && geometry.CLASS_NAME != "OpenLayers.Geometry.MultiPoint") {
+            if (geometry.CLASS_NAME != "OpenLayers.Geometry.MultiPoint") {
                 var geometry = this.feature.geometry;
 
                 for (i = 0, len = geometry.components.length; i < len - 1; ++i) {
@@ -771,26 +648,6 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
         this.layer.addFeatures(this.virtualVertices, {silent: true});
     },
 
-    /**
-     * Method: collectDragHandle
-     * Collect the drag handle for the selected geometry.
-     */
-    collectDragHandle: function () {
-        var geometry = this.feature.geometry;
-        var center = geometry.getBounds().getCenterLonLat();
-        var originGeometry = new OpenLayers.Geometry.Point(
-            center.lon, center.lat
-        );
-        var origin = new OpenLayers.Feature.Vector(originGeometry);
-        originGeometry.move = function (x, y) {
-            OpenLayers.Geometry.Point.prototype.move.call(this, x, y);
-            geometry.move(x, y);
-        };
-        origin._sketch = true;
-        this.dragHandle = origin;
-        this.dragHandle.renderIntent = this.vertexRenderIntent;
-        this.layer.addFeatures([this.dragHandle], {silent: true});
-    },
 
     /**
      * Method: collectRadiusHandle
@@ -807,9 +664,7 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
             bounds.right, bounds.bottom
         );
         var radius = new OpenLayers.Feature.Vector(radiusGeometry);
-        var resize = (this.mode & OpenLayers.Control.CustomModifyFeature.RESIZE);
-        var reshape = (this.mode & OpenLayers.Control.CustomModifyFeature.RESHAPE);
-        var rotate = (this.mode & OpenLayers.Control.CustomModifyFeature.ROTATE);
+        var rotate = (this.mode & OpenLayers.Control.ModifyRectangleFeature.ROTATE);
 
         radiusGeometry.move = function (x, y) {
             OpenLayers.Geometry.Point.prototype.move.call(this, x, y);
@@ -823,20 +678,6 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
                 var angle = a1 - a0;
                 angle *= 180 / Math.PI;
                 geometry.rotate(angle, originGeometry);
-            }
-            if (resize) {
-                var scale, ratio;
-                // 'resize' together with 'reshape' implies that the aspect
-                // ratio of the geometry will not be preserved whilst resizing
-                if (reshape) {
-                    scale = dy1 / dy0;
-                    ratio = (dx1 / dx0) / scale;
-                } else {
-                    var l0 = Math.sqrt((dx0 * dx0) + (dy0 * dy0));
-                    var l1 = Math.sqrt((dx1 * dx1) + (dy1 * dy1));
-                    scale = l1 / l0;
-                }
-                geometry.resize(scale, originGeometry, ratio);
             }
         };
         radius._sketch = true;
@@ -896,31 +737,22 @@ OpenLayers.Control.CustomModifyFeature = OpenLayers.Class(OpenLayers.Control, {
         }
     },
 
-    CLASS_NAME: "OpenLayers.Control.CustomModifyFeature"
+    CLASS_NAME: "embryo.Control.ModifyRectangleFeature"
 });
 
 /**
  * Constant: RESHAPE
  * {Integer} Constant used to make the control work in reshape mode
  */
-OpenLayers.Control.CustomModifyFeature.RESHAPE = 1;
-/**
- * Constant: RESIZE
- * {Integer} Constant used to make the control work in resize mode
- */
-OpenLayers.Control.CustomModifyFeature.RESIZE = 2;
+embryo.Control.ModifyRectangleFeature.RESHAPE = 1;
+
 /**
  * Constant: ROTATE
  * {Integer} Constant used to make the control work in rotate mode
  */
-OpenLayers.Control.CustomModifyFeature.ROTATE = 4;
+embryo.Control.ModifyRectangleFeature.ROTATE = 4;
 /**
  * Constant: DRAG
  * {Integer} Constant used to make the control work in drag mode
  */
-OpenLayers.Control.CustomModifyFeature.DRAG = 8;
-/**
- * Constant: RESHAPE_KEEP_AREA_SIZE
- * {Integer} Constant used to make the control work in "reshape keep area size" mode
- */
-OpenLayers.Control.CustomModifyFeature.RESHAPE_RECTANGLE = 16;
+embryo.Control.ModifyRectangleFeature.DRAG = 8;

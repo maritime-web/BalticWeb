@@ -144,8 +144,8 @@ function SarLayer() {
         });
 
 
-        this.controls.modify = new OpenLayers.Control.CustomModifyFeature(this.layers.sarEdit,
-            {mode: OpenLayers.Control.CustomModifyFeature.RESHAPE_RECTANGLE});
+        this.controls.modify = new embryo.Control.ModifyRectangleFeature(this.layers.sarEdit,
+            {mode: embryo.Control.ModifyRectangleFeature.DRAG | embryo.Control.ModifyRectangleFeature.RESHAPE});
 
         //this.controls.drag = new OpenLayers.Control.DragFeature(this.layers.sarEdit, dragHandlers);
 
