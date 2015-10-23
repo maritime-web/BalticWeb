@@ -575,8 +575,7 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
         this.removeVertices();
         if (this.feature &&
             this.feature.geometry.CLASS_NAME != "OpenLayers.Geometry.Point") {
-            if ((this.mode & (embryo.Control.ModifyRectangleFeature.ROTATE |
-                embryo.Control.ModifyRectangleFeature.RESIZE))) {
+            if (this.mode & embryo.Control.ModifyRectangleFeature.ROTATE) {
                 this.collectRadiusHandle();
             }
             if (this.mode & embryo.Control.ModifyRectangleFeature.RESHAPE) {
