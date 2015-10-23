@@ -385,10 +385,6 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
         delete this._unselect;
         this.layer.destroyFeatures(this.virtualVertices, {silent: true});
         this.virtualVertices = [];
-        if (this.dragHandle) {
-            this.layer.destroyFeatures([this.dragHandle], {silent: true});
-            delete this.dragHandle;
-        }
         if (this.radiusHandle) {
             this.layer.destroyFeatures([this.radiusHandle], {silent: true});
             delete this.radiusHandle;
