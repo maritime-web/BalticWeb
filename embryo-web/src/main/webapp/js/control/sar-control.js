@@ -29,11 +29,13 @@ $(function () {
     AllocationStatusTxt[embryo.sar.effort.Status.Active] = "Active";
     AllocationStatusTxt[embryo.sar.effort.Status.DraftSRU] = "Draft SRU";
     AllocationStatusTxt[embryo.sar.effort.Status.DraftZone] = "Draft Zone";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftModifiedZone] = "Draft Zone";
 
     var AllocationStatusLabel = {};
     AllocationStatusLabel[embryo.sar.effort.Status.Active] = "label-success";
     AllocationStatusLabel[embryo.sar.effort.Status.DraftSRU] = "label-danger";
     AllocationStatusLabel[embryo.sar.effort.Status.DraftZone] = "label-danger";
+    AllocationStatusLabel[embryo.sar.effort.Status.DraftModifiedZone] = "label-danger";
 
     function clone(object) {
         return JSON.parse(JSON.stringify(object));
@@ -48,6 +50,7 @@ $(function () {
             $log.debug(zoneUpdate)
             LivePouch.get(zoneUpdate._id).then(function (zone) {
                 zone.area = clone(zoneUpdate.area);
+                zone.status = embryo.sar.effort.Status.DraftModifiedZone;
                 LivePouch.put(zone).then(function () {
                     $log.debug("success saving updated zone")
                 }).catch(function (error) {
@@ -83,7 +86,8 @@ $(function () {
                 for (var index in result.rows) {
                     if (result.rows[index].doc.docType != embryo.sar.Type.EffortAllocation ||
                         result.rows[index].doc.status == embryo.sar.effort.Status.Active ||
-                        result.rows[index].doc.status == embryo.sar.effort.Status.DraftZone) {
+                        result.rows[index].doc.status == embryo.sar.effort.Status.DraftZone ||
+                        result.rows[index].doc.status == embryo.sar.effort.Status.DraftModifiedZone) {
                         documents.push(result.rows[index].doc);
                     }
                 }
@@ -107,7 +111,7 @@ $(function () {
                     doc.status == embryo.sar.effort.Status.Active ||
                     doc.status == embryo.sar.effort.Status.DraftZone)
             }
-        }).on('change', function () {
+        }).on('change', function (result) {
             // We don't expect many SAR documents / objects at the same time
             // To achieve cleaner code, we therefore just load all SAR documents again
             // and redraw them, when one document is updated, created or deleted.

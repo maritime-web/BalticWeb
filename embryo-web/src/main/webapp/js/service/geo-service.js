@@ -409,7 +409,6 @@
     }
 
     embryo.geo.Position.prototype.rhumbLineBearingTo = function (destination) {
-
         var lat1 = embryo.Math.toRadians(this.lat);
         var lat2 = embryo.Math.toRadians(destination.lat);
         var phi = Math.log(Math.tan(lat2 / 2.0 + 0.7853981633974483) / Math.tan(lat1 / 2.0 + 0.7853981633974483));
@@ -463,6 +462,97 @@
         this.center = centerPosition;
         this.radius = radius;
     }
+
+
+    embryo.geo.Rectangle = function (cornerPositions) {
+        this.positions = cornerPositions;
+    }
+
+    embryo.geo.Rectangle.prototype.calculateArea = function () {
+        //TODO verify these calculations with Erik
+        var cPosA = this.positions[0], cPosB = this.positions[1], cPosC = this.positions[2];
+        var lengthLineA2BInNm = cPosA.distanceTo(cPosB, embryo.geo.Heading.RL);
+        var lengthLineB2CInNm = cPosB.distanceTo(cPosC, embryo.geo.Heading.RL);
+        return lengthLineA2BInNm * lengthLineB2CInNm;
+    }
+
+    embryo.geo.Rectangle.prototype.getArea = function () {
+        if (!this.area) {
+            this.area = this.calculateArea();
+        }
+        return this.area;
+    }
+
+    embryo.geo.Rectangle.prototype.calculateDistanceToLine = function (lineIndex, position) {
+        var heading = embryo.geo.Heading.RL;
+        if (lineIndex < 0 || lineIndex > this.positions.length) {
+            throw new Error("lineIndex must be in the range 0-" + this.positions.length);
+        }
+        // These calculations are inspired byhttp://www.vb-helper.com/howto_net_circle_circle_intersection.html
+        var cCenter0 = this.positions[lineIndex];
+        var cCenter1 = this.positions[lineIndex == this.positions.length - 1 ? 0 : lineIndex + 1];
+        var d = cCenter0.distanceTo(cCenter1, heading);
+
+        var radius0 = cCenter0.distanceTo(position, heading);
+        var radius1 = cCenter1.distanceTo(position, heading);
+
+        var a = (Math.pow(radius0, 2) - Math.pow(radius1, 2) + Math.pow(d, 2)) / (d * 2);
+        var h = Math.sqrt(Math.pow(radius0, 2) - Math.pow(a, 2))
+
+        var p2 = cCenter0.transformPosition(cCenter0.bearingTo(cCenter1, heading), a);
+
+        return {
+            pointOnLine: p2,
+            distanceToLine: h
+        }
+    }
+
+    embryo.geo.Rectangle.prototype.reshapeFixedArea = function (lineIndex, position) {
+        if (lineIndex < 0 || lineIndex > this.positions.length) {
+            throw new Error("lineIndex must be in the range 0-" + this.positions.length);
+        }
+
+        var area = this.getArea();
+
+        var heading = embryo.geo.Heading.RL;
+        var lineInfo = this.calculateDistanceToLine(lineIndex, position);
+
+
+        var position0 = this.positions[lineIndex];
+        var position1 = this.positions[lineIndex + 1 == this.positions.length ? 0 : lineIndex + 1];
+        var position2 = this.positions[lineIndex + 2 >= this.positions.length ? lineIndex - 2 : lineIndex + 2];
+        var position3 = this.positions[lineIndex == 0 ? this.positions.length - 1 : lineIndex - 1];
+
+        var pos3ToPos0Dist = position3.distanceTo(position0, heading);
+        var pos0ToPos1Dist = position0.distanceTo(position1, heading);
+
+        var bearingToMoveLine = lineInfo.pointOnLine.bearingTo(position, heading);
+        var awayFromCenter = Math.abs(bearingToMoveLine - position3.bearingTo(position0, heading)) < 5;
+
+        position0 = position0.transformPosition(bearingToMoveLine, lineInfo.distanceToLine);
+        position1 = position1.transformPosition(bearingToMoveLine, lineInfo.distanceToLine);
+
+        var newPos3ToPos0Length = pos3ToPos0Dist + (awayFromCenter ? lineInfo.distanceToLine : -lineInfo.distanceToLine);
+        var newPos0ToPos1Length = area / newPos3ToPos0Length;
+        var delta = Math.abs(newPos0ToPos1Length - pos0ToPos1Dist) / 2;
+
+        var bearingPos0ToPos1 = position0.bearingTo(position1, heading);
+        var bearingPos1ToPos0 = embryo.geo.reverseDirection(bearingPos0ToPos1);
+
+        position0 = position0.transformPosition(awayFromCenter ? bearingPos0ToPos1 : bearingPos1ToPos0, delta);
+        position1 = position1.transformPosition(awayFromCenter ? bearingPos1ToPos0 : bearingPos0ToPos1, delta);
+        position2 = position2.transformPosition(awayFromCenter ? bearingPos1ToPos0 : bearingPos0ToPos1, delta);
+        position3 = position3.transformPosition(awayFromCenter ? bearingPos0ToPos1 : bearingPos1ToPos0, delta);
+
+        var newPositions = [];
+        newPositions[lineIndex] = position0;
+        newPositions[lineIndex + 1 == this.positions.length ? 0 : lineIndex + 1] = position1;
+        newPositions[lineIndex + 2 >= this.positions.length ? lineIndex - 2 : lineIndex + 2] = position2;
+        newPositions[lineIndex == 0 ? this.positions.length - 1 : lineIndex - 1] = position3;
+
+        return new embryo.geo.Rectangle(newPositions);
+    }
+
 
 
     // Find the points where this circle and the circle argument intersects

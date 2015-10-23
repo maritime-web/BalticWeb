@@ -28,7 +28,7 @@
                             <button class="btn btn-sm" x-ng-if="SRU.status == AllocationStatus.DraftSRU"
                                     x-ng-click="toZoneCalculation(SRU)">Calculate zone
                             </button>
-                            <button class="btn btn-sm btn-success" x-ng-if="SRU.status == AllocationStatus.DraftZone"
+                            <button class="btn btn-sm btn-success" x-ng-if="SRU.status == AllocationStatus.DraftZone || SRU.status == AllocationStatus.DraftModifiedZone"
                                     x-ng-click="confirmActivation(SRU)">Activate zone
                             </button>
                             <span x-ng-if="SRU.status == AllocationStatus.Active">Active</span>

@@ -99,30 +99,55 @@ function SarLayer() {
             })
         });
 
-        var dragHandlers = {
-            onComplete: function (feature) {
-                // list of points (components) are always created as A, B, C, D in drawEffortAllocationZone
-                // An extra point A is added to the list, because OpenLayers is closing the polygon.
-                // We are however just using the first 4 points (A, B, C and D)
-                if (that.modified) {
-                    var zoneUpdate = {
-                        _id: feature.attributes.id,
-                        area: {
-                            A: that.map.transformToPosition(feature.geometry.components[0]),
-                            B: that.map.transformToPosition(feature.geometry.components[1]),
-                            C: that.map.transformToPosition(feature.geometry.components[2]),
-                            D: that.map.transformToPosition(feature.geometry.components[3])
-                        }
+        function fireModified(feature) {
+            console.log(that.modified)
+            if (that.modified) {
+                // FIXME
+                // For some reason open layers will once in while report add positions.
+                // not sure what the problem is. If problem persist to exist once drag and modify feature
+                // enabled simultaniosly, then fix problem.
+                var zoneUpdate = {
+                    _id: feature.attributes.id,
+                    area: {
+                        // list of points (components) are always created as A, B, C, D in drawEffortAllocationZone
+                        // An extra point A is added to the list, because OpenLayers is closing the polygon.
+                        // We are however just using the first 4 points (A, B, C and D)
+                        A: that.map.transformToPosition(feature.geometry.components[0]),
+                        B: that.map.transformToPosition(feature.geometry.components[1]),
+                        C: that.map.transformToPosition(feature.geometry.components[2]),
+                        D: that.map.transformToPosition(feature.geometry.components[3])
                     }
-                    that.modified(zoneUpdate)
                 }
-                //this.controls.modify.activate();
+
+                that.modified(zoneUpdate)
             }
         }
 
+        var dragHandlers = {
+            onComplete: fireModified
+        }
 
-        //this.controls.modify = new OpenLayers.Control.ModifyFeature(this.layers.sarEdit, {mode: OpenLayers.Control.ModifyFeature.RESHAPE});
-        this.controls.drag = new OpenLayers.Control.DragFeature(this.layers.sarEdit, dragHandlers);
+        this.layers.sarEdit.events.on({
+            /*
+             "beforefeaturemodified": report,*/
+            "featuremodified": function (event) {
+                fireModified(event.feature);
+            },
+            "afterfeaturemodified": function (event) {
+                fireModified(event.feature);
+            }
+            /*
+             "vertexmodified": report,
+             "sketchmodified": report,
+             "sketchstarted": report,
+             "sketchcomplete": report*/
+        });
+
+
+        this.controls.modify = new OpenLayers.Control.CustomModifyFeature(this.layers.sarEdit,
+            {mode: OpenLayers.Control.CustomModifyFeature.RESHAPE_RECTANGLE});
+
+        //this.controls.drag = new OpenLayers.Control.DragFeature(this.layers.sarEdit, dragHandlers);
 
 
         /*
@@ -151,6 +176,54 @@ function SarLayer() {
         //this.selectableAttribute = "id";
 
     };
+
+    /*
+     TODO
+     Temporary solution
+     Should be moved into some general solution in map.js like it is for selectable layers
+     */
+    embryo.groupChanged(function (e) {
+        if (e.groupId == "sar") {
+            that.deactivateSelectable();
+            that.controls.modify.activate();
+            //that.controls.drag.activate();
+        } else {
+            that.activateSelectable();
+            that.controls.modify.deactivate();
+            //that.controls.drag.deactivate();
+        }
+
+        //this.deactivateSelectable();
+        //this.controls.modify.activate();
+        //this.activateControls()
+
+
+        /*
+         //Code like below can enable selection of both modifiable features and other features e.g. vessels
+
+         var selectableLayers = this.map.selectLayerByGroup["vessel"];
+         selectableLayers = selectableLayers.concat(this.layers.sarEdit);
+
+         this.controls.modify.standalone = true;
+         this.controls.modify.activate();
+         this.deactivateSelectable();
+         this.map.selectControl.setLayer(selectableLayers);
+
+         var that = this;
+
+         this.layers.sarEdit.events.on({
+         featureselected: function(evt) { that.controls.modify.selectFeature(evt.feature); },
+         featureunselected: function(evt) { that.controls.modify.unselectFeature(evt.feature); }
+         });
+
+         this.activateSelectable()
+         */
+        //this.deactivateControls();
+        //this.controls.drag.activate();
+        //this.activateControls();
+        //this.activateSelectable();
+
+    });
 
     function createSearchArea(searchArea, active) {
         var features = [];
@@ -251,56 +324,6 @@ function SarLayer() {
     function addRdv(layer, lkp, datum) {
         addDriftVector(layer, [lkp, datum]);
     }
-
-
-    /*
-     TODO
-     Temporary solution
-     Should be moved into some general solution in map.js like it is for selectable layers
-     */
-    embryo.groupChanged(function (e) {
-        if (e.groupId == "sar") {
-            that.deactivateSelectable();
-            //that.controls.modify.activate();
-            that.controls.drag.activate();
-        } else {
-            that.activateSelectable();
-            //that.controls.modify.deactivate();
-            that.controls.drag.deactivate();
-        }
-
-        //this.deactivateSelectable();
-        //this.controls.modify.activate();
-        //this.activateControls()
-
-
-        /*
-         //Code like below can enable selection of both modifiable features and other features e.g. vessels
-
-         var selectableLayers = this.map.selectLayerByGroup["vessel"];
-         selectableLayers = selectableLayers.concat(this.layers.sarEdit);
-
-         this.controls.modify.standalone = true;
-         this.controls.modify.activate();
-         this.deactivateSelectable();
-         this.map.selectControl.setLayer(selectableLayers);
-
-         var that = this;
-
-         this.layers.sarEdit.events.on({
-         featureselected: function(evt) { that.controls.modify.selectFeature(evt.feature); },
-         featureunselected: function(evt) { that.controls.modify.unselectFeature(evt.feature); }
-         });
-
-         this.activateSelectable()
-         */
-        //this.deactivateControls();
-        //this.controls.drag.activate();
-        //this.activateControls();
-        //this.activateSelectable();
-
-    });
-
 
 
     this.draw = function (sarDocuments) {

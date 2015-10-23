@@ -157,7 +157,7 @@ $(function() {
                     map.getProjectionObject());
         },
         transformToPosition: function (point) {
-            var pointRes = point.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+            var pointRes = point.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
             return {
                 lon: pointRes.x,
                 lat: pointRes.y
