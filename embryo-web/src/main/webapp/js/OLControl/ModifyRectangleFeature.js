@@ -199,6 +199,8 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
             done: function (pixel) {
                 if (this.vertex) {
                     this.dragComplete(this.vertex);
+                } else if (this.feature && (this.mode & embryo.Control.ModifyRectangleFeature.DRAG)) {
+                    this.dragFeatureComplete();
                 }
             }
         };
@@ -394,10 +396,12 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
         this.layer.drawFeature(this.feature, 'default');
         this.feature = null;
         OpenLayers.Util.removeItem(this.layer.selectedFeatures, feature);
-        this.layer.events.triggerEvent("afterfeaturemodified", {
-            feature: feature,
-            modified: this.modified
-        });
+
+        if (this.modified) {
+            this.layer.events.triggerEvent("afterfeaturemodified", {
+                feature: feature
+            });
+        }
         this.modified = false;
     },
 
@@ -505,12 +509,20 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
         this.layer.drawFeature(vertex);
     },
 
+    /**
+     * Method: dragFeature
+     * Called by the drag handler, when the rectangular feature itself is being dragged.
+     *
+     * Parameters:
+     * feature - {<OpenLayers.Feature.Vector>} The feature being dragged.
+     */
     dragFeature: function (feature, pixel) {
         var res = this.map.getResolution();
         this.feature.geometry.move(res * (pixel.x - this.lastPixel.x),
             res * (this.lastPixel.y - pixel.y));
         this.layer.drawFeature(this.feature);
         this.lastPixel = pixel;
+        this.modified = true;
     },
 
     /**
@@ -520,11 +532,32 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
      * Parameters:
      * vertex - {<OpenLayers.Feature.Vector>} The vertex being dragged.
      */
-    dragComplete: function (vertex) {
+    dragComplete: function (feature) {
         this.resetVertices();
         this.setFeatureState();
-        this.layer.events.triggerEvent("featuremodified", {feature: this.feature});
+        this.layer.events.triggerEvent("featuremodified",
+            {
+                feature: this.feature,
+                modified: this.modified
+            });
     },
+
+    /**
+     * Method: dragComplete
+     * Called by the drag handler when the feature dragging is complete.
+     *
+     * Parameters:
+     * vertex - {<OpenLayers.Feature.Vector>} The vertex being dragged.
+     */
+    dragFeatureComplete: function () {
+        if (this.modified) {
+            this.layer.events.triggerEvent("featuremodified",
+                {
+                    feature: this.feature
+                });
+        }
+    },
+
 
     /**
      * Method: setFeatureState

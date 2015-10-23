@@ -100,12 +100,7 @@ function SarLayer() {
         });
 
         function fireModified(feature) {
-            console.log(that.modified)
             if (that.modified) {
-                // FIXME
-                // For some reason open layers will once in while report add positions.
-                // not sure what the problem is. If problem persist to exist once drag and modify feature
-                // enabled simultaniosly, then fix problem.
                 var zoneUpdate = {
                     _id: feature.attributes.id,
                     area: {
@@ -118,63 +113,22 @@ function SarLayer() {
                         D: that.map.transformToPosition(feature.geometry.components[3])
                     }
                 }
-
                 that.modified(zoneUpdate)
             }
         }
 
-        var dragHandlers = {
-            onComplete: fireModified
-        }
-
         this.layers.sarEdit.events.on({
-            /*
-             "beforefeaturemodified": report,*/
             "featuremodified": function (event) {
                 fireModified(event.feature);
-            },
+            }/*,
             "afterfeaturemodified": function (event) {
+             console.log(event)
                 fireModified(event.feature);
-            }
-            /*
-             "vertexmodified": report,
-             "sketchmodified": report,
-             "sketchstarted": report,
-             "sketchcomplete": report*/
+             }*/
         });
-
 
         this.controls.modify = new embryo.Control.ModifyRectangleFeature(this.layers.sarEdit,
             {mode: embryo.Control.ModifyRectangleFeature.DRAG | embryo.Control.ModifyRectangleFeature.RESHAPE});
-
-        //this.controls.drag = new OpenLayers.Control.DragFeature(this.layers.sarEdit, dragHandlers);
-
-
-        /*
-
-         this.layers.sarEdit.events.on({
-         "beforefeaturemodified": report,
-         "featuremodified": report,
-         "afterfeaturemodified": report,
-         "vertexmodified": report,
-         "sketchmodified": report,
-         "sketchstarted": report,
-         "sketchcomplete": report
-         });
-         */
-
-        /*
-         *
-         * onStart	{Function} Define this function if you want to know when a drag starts.
-         onDrag	{Function} Define this function if you want to know about each move of a feature.
-         onComplete	{Function} Define this function if you want to know when a feature is done dragging.
-         onEnter	{Function} Define this function if you want to know when the mouse goes over a feature and thereby makes this feature a candidate for dragging.
-         onLeave	{Function} Define this function if you want to know when the mouse goes out of the feature that was dragged.
-         */
-
-        //this.selectableLayers = [this.layers.sar];
-        //this.selectableAttribute = "id";
-
     };
 
     /*
