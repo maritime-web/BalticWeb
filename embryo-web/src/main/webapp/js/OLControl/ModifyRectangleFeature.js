@@ -190,7 +190,6 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
             },
             up: function () {
                 var feature = this.layer.getFeatureFromEvent(this.handlers.drag.evt);
-                console.log("up")
                 if (this.toggle && this._unselect === feature) {
                     this.unselectFeature(this._unselect);
                 }
@@ -497,22 +496,7 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
                 } catch (error) {
                     console.log(error);
                 }
-            } else if (vertex !== this.radiusHandle) {
-                // dragging a real vertex
-                this.layer.events.triggerEvent("vertexmodified", {
-                    vertex: vertex.geometry,
-                    feature: this.feature,
-                    pixel: pixel
-                });
             }
-            /*
-
-             // dragging a radius handle - no special treatment
-             if (this.virtualVertices.length > 0 && !(this.mode & embryo.Control.ModifyRectangleFeature.RESHAPE)) {
-                this.layer.destroyFeatures(this.virtualVertices, {silent: true});
-                this.virtualVertices = [];
-            }
-             */
             this.layer.drawFeature(this.feature, this.standalone ? undefined : 'select');
         }
         // keep the vertex on top so it gets the mouseout after dragging
