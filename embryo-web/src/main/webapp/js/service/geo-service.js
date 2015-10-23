@@ -527,22 +527,29 @@
         var pos0ToPos1Dist = position0.distanceTo(position1, heading);
 
         var bearingToMoveLine = lineInfo.pointOnLine.bearingTo(position, heading);
-        var awayFromCenter = Math.abs(bearingToMoveLine - position3.bearingTo(position0, heading)) < 5;
+        var awayFromRectangle = Math.abs(bearingToMoveLine - position3.bearingTo(position0, heading)) < 5;
+
+        // workaround to avoid newPos3ToPos0Length values close to 0 and thereby newPos0ToPos1Length of almost infinite length
+        // and weird map behaviour as a result
+        var newPos3ToPos0Length = pos3ToPos0Dist + (awayFromRectangle ? lineInfo.distanceToLine : -lineInfo.distanceToLine);
+        if (newPos3ToPos0Length <= 0.5) {
+            newPos3ToPos0Length = 0.5
+            lineInfo.distanceToLine = Math.abs(pos3ToPos0Dist - newPos3ToPos0Length);
+        }
 
         position0 = position0.transformPosition(bearingToMoveLine, lineInfo.distanceToLine);
         position1 = position1.transformPosition(bearingToMoveLine, lineInfo.distanceToLine);
 
-        var newPos3ToPos0Length = pos3ToPos0Dist + (awayFromCenter ? lineInfo.distanceToLine : -lineInfo.distanceToLine);
         var newPos0ToPos1Length = area / newPos3ToPos0Length;
         var delta = Math.abs(newPos0ToPos1Length - pos0ToPos1Dist) / 2;
 
         var bearingPos0ToPos1 = position0.bearingTo(position1, heading);
         var bearingPos1ToPos0 = embryo.geo.reverseDirection(bearingPos0ToPos1);
 
-        position0 = position0.transformPosition(awayFromCenter ? bearingPos0ToPos1 : bearingPos1ToPos0, delta);
-        position1 = position1.transformPosition(awayFromCenter ? bearingPos1ToPos0 : bearingPos0ToPos1, delta);
-        position2 = position2.transformPosition(awayFromCenter ? bearingPos1ToPos0 : bearingPos0ToPos1, delta);
-        position3 = position3.transformPosition(awayFromCenter ? bearingPos0ToPos1 : bearingPos1ToPos0, delta);
+        position0 = position0.transformPosition(awayFromRectangle ? bearingPos0ToPos1 : bearingPos1ToPos0, delta);
+        position1 = position1.transformPosition(awayFromRectangle ? bearingPos1ToPos0 : bearingPos0ToPos1, delta);
+        position2 = position2.transformPosition(awayFromRectangle ? bearingPos1ToPos0 : bearingPos0ToPos1, delta);
+        position3 = position3.transformPosition(awayFromRectangle ? bearingPos0ToPos1 : bearingPos1ToPos0, delta);
 
         var newPositions = [];
         newPositions[lineIndex] = position0;
