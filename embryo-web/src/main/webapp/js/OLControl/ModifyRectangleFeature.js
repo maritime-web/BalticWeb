@@ -6,7 +6,6 @@
 /**
  * @requires OpenLayers/Control.js
  * @requires OpenLayers/Handler/Drag.js
- * @requires OpenLayers/Handler/Keyboard.js
  */
 
 /**
@@ -17,9 +16,7 @@
  * each edge in perpendicular direction to the edge itself. While doing this
  * the area of the rectangle is maintained by moving the two perpendicular edges
  * in the rectangle
- * By default, the
- * delete key will delete the vertex under the mouse. Create a new
- * control with the <embryo.Control.ModifyFeature> constructor.
+ * Create a new control with the <embryo.Control.ModifyFeature> constructor.
  *
  * Inherits From:
  *  - <OpenLayers.Control>
@@ -220,7 +217,6 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
             drag: new OpenLayers.Handler.Drag(this, dragCallbacks, dragOptions)
         };
 
-
         this.layer.events.on({
             "beforefeatureremoved": function (event) {
                 if (_self.feature.id === event.feature.id) {
@@ -228,7 +224,6 @@ embryo.Control.ModifyRectangleFeature = OpenLayers.Class(OpenLayers.Control, {
                 }
             }
         });
-
     },
 
     /**
