@@ -56,7 +56,7 @@
     embryo.sar.effort.Status = Object.freeze({
         DraftSRU: "DS",
         DraftZone: "DZ",
-        DraftModifiedZone : "DM",
+        DraftModifiedOnMap: "DM",
         Active: "A"
     });
 

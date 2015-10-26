@@ -29,13 +29,13 @@ $(function () {
     AllocationStatusTxt[embryo.sar.effort.Status.Active] = "Active";
     AllocationStatusTxt[embryo.sar.effort.Status.DraftSRU] = "Draft SRU";
     AllocationStatusTxt[embryo.sar.effort.Status.DraftZone] = "Draft Zone";
-    AllocationStatusTxt[embryo.sar.effort.Status.DraftModifiedZone] = "Draft Zone";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftModifiedOnMap] = "Draft Zone";
 
     var AllocationStatusLabel = {};
     AllocationStatusLabel[embryo.sar.effort.Status.Active] = "label-success";
     AllocationStatusLabel[embryo.sar.effort.Status.DraftSRU] = "label-danger";
     AllocationStatusLabel[embryo.sar.effort.Status.DraftZone] = "label-danger";
-    AllocationStatusLabel[embryo.sar.effort.Status.DraftModifiedZone] = "label-danger";
+    AllocationStatusLabel[embryo.sar.effort.Status.DraftModifiedOnMap] = "label-danger";
 
     function clone(object) {
         return JSON.parse(JSON.stringify(object));
@@ -50,7 +50,10 @@ $(function () {
             $log.debug(zoneUpdate)
             LivePouch.get(zoneUpdate._id).then(function (zone) {
                 zone.area = clone(zoneUpdate.area);
-                zone.status = embryo.sar.effort.Status.DraftModifiedZone;
+                // SAR features on map should not be redrawn, when one of the features
+                // have been modified by dragging/resizing it on the map.
+                // Special status therefore introduced for this scenario.
+                zone.status = embryo.sar.effort.Status.DraftModifiedOnMap;
                 LivePouch.put(zone).then(function () {
                     $log.debug("success saving updated zone")
                 }).catch(function (error) {
@@ -87,7 +90,7 @@ $(function () {
                     if (result.rows[index].doc.docType != embryo.sar.Type.EffortAllocation ||
                         result.rows[index].doc.status == embryo.sar.effort.Status.Active ||
                         result.rows[index].doc.status == embryo.sar.effort.Status.DraftZone ||
-                        result.rows[index].doc.status == embryo.sar.effort.Status.DraftModifiedZone) {
+                        result.rows[index].doc.status == embryo.sar.effort.Status.DraftModifiedOnMap) {
                         documents.push(result.rows[index].doc);
                     }
                 }
