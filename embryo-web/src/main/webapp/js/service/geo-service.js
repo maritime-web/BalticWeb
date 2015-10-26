@@ -465,6 +465,15 @@
 
 
     embryo.geo.Rectangle = function (cornerPositions) {
+        if (!cornerPositions || !Array.isArray(cornerPositions) || cornerPositions.length != 4) {
+            throw new Error("Rectangle must be initialized with array containing the 4 corner positions of a rectangle");
+        }
+
+        for (var i in cornerPositions) {
+            if (cornerPositions[i].constructor !== embryo.geo.Position)
+                throw new Error("Rectangle array must be populated with instances of embryo.geo.Position");
+        }
+
         this.positions = cornerPositions;
     }
 
@@ -525,7 +534,7 @@
 
         var position0 = this.positions[lineIndex];
         var position1 = this.positions[lineIndex + 1 == this.positions.length ? 0 : lineIndex + 1];
-        var position2 = this.positions[lineIndex + 2 >= this.positions.length ? lineIndex - 2 : lineIndex + 2];
+        var position2;
         var position3 = this.positions[lineIndex == 0 ? this.positions.length - 1 : lineIndex - 1];
 
         var pos3ToPos0Dist = position3.distanceTo(position0, heading);
@@ -533,9 +542,6 @@
         var bearingPoint0To1 = position0.bearingTo(position1, heading);
 
         var bearingToMoveLine = lineInfo.pointOnLine.bearingTo(position, heading);
-        console.log("bearingToMoveLine=" + bearingToMoveLine)
-        console.log("position3.bearingTo(position0, heading)=" + position3.bearingTo(position0, heading))
-
         var awayFromRectangle = Math.abs(bearingToMoveLine - position3.bearingTo(position0, heading)) < 50;
 
         // workaround to avoid newPos3ToPos0Length values close to 0 and thereby newPos0ToPos1Length of almost infinite length
@@ -550,7 +556,7 @@
         var delta = Math.abs(newPos0ToPos1Length - pos0ToPos1Dist) / 2;
 
         position0 = position0.transformPosition(bearingToMoveLine, lineInfo.distanceToLine);
-        var bearingToMovePoint0 = (bearingToMoveLine + (awayFromRectangle ? 90 : 270 ) + 360) % 360;
+        var bearingToMovePoint0 = (bearingToMoveLine + 90 + 360) % 360;
 
         position0 = position0.transformPosition(bearingToMovePoint0, delta);
         position1 = position0.transformPosition(bearingPoint0To1, newPos0ToPos1Length);
