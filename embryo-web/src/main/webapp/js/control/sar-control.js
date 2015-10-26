@@ -54,6 +54,8 @@ $(function () {
                 // have been modified by dragging/resizing it on the map.
                 // Special status therefore introduced for this scenario.
                 zone.status = embryo.sar.effort.Status.DraftModifiedOnMap;
+                // FIXME can not rely on local computer time
+                zone.modified = Date.now();
                 LivePouch.put(zone).then(function () {
                     $log.debug("success saving updated zone")
                 }).catch(function (error) {

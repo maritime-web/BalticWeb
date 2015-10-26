@@ -985,7 +985,7 @@
     EffortAllocationCalculator.prototype.calculate = function (allocationInputs, sar) {
         var allocations = [];
         for (var index in allocationInputs) {
-            var input = allocationInputs[index];
+            var input = clone(allocationInputs[index]);
 
             var wu = this.lookupUncorrectedSweepWidth(input.type, input.target, input.visibility);
             var fw = this.lookupWeatherCorrectionFactor();
@@ -997,10 +997,12 @@
             var datum = this.getDatum(sar);
             var area = this.calculateSearchArea(zoneAreaSize, datum, sar.output.searchArea);
 
-            var allocation = clone(input);
+            var allocation = clone(allocationInputs[index]);
             allocation.S = S;
             allocation.area = area;
             allocation.status = embryo.sar.effort.Status.DraftZone;
+            // FIXME can not rely on local computer time
+            allocation.modified = Date.now();
             allocations.push(allocation);
         }
 
@@ -1109,8 +1111,17 @@
                     fn(selectedSarById);
                 }
             },
-
-
+            latestEffortAllocationZone: function (zones) {
+                var latest = null;
+                for (var i in zones) {
+                    if (zones[i].status !== embryo.sar.effort.Status.DraftSRU) {
+                        if (!latest || latest.modified < zones[i].modified) {
+                            latest = zones[i];
+                        }
+                    }
+                }
+                return latest;
+            },
             validateSarInput: function (input) {
                 // this was written to prevent Chrome browser running in indefinite loops
                 getCalculator(input.type).validate(input);

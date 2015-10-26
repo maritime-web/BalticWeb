@@ -380,8 +380,7 @@ $(function () {
                 $scope.sru = {
                     fatigue: 1.0,
                     type: embryo.sar.effort.VesselTypes.SmallerVessel,
-                    time: 1,
-                    visibility: 1
+                    time: 1
                 }
                 $scope.page = 'editUnit';
             };
@@ -443,6 +442,8 @@ $(function () {
                     sru.status = embryo.sar.effort.Status.DraftSRU;
                 }
                 var sru2 = $scope.sru;
+                // FIXME can not rely on local computer time
+                sru.modified = Date.now();
                 $scope.sru = null;
                 LivePouch.put(sru).then(function (result) {
                     $scope.toSrus();
@@ -455,27 +456,27 @@ $(function () {
             }
 
             $scope.initEffortAllocation = function () {
-                console.log($scope.effort);
                 if (!$scope.effort) {
                     $scope.effort = {}
                 }
 
+                var latest = SarService.latestEffortAllocationZone($scope.srus);
+
                 if (!$scope.effort.target) {
-                    $scope.effort.target = embryo.sar.effort.TargetTypes.PersonInWater;
+                    $scope.effort.target = latest ? latest.target : embryo.sar.effort.TargetTypes.PersonInWater;
                 }
-
                 if (!$scope.effort.visibility) {
-                    $scope.effort.visibility = $scope.visibilityValues[0];
+                    $scope.effort.visibility = latest ? latest.visibility : $scope.visibilityValues[0];
                 }
-
                 if (!$scope.effort.pod) {
-                    $scope.effort.pod = 78;
+                    $scope.effort.pod = latest ? latest.pod : 78;
                 }
-
-                // TODO find existing effort allocation
-                // if editing an existing allocation, then present previous data again
-                // if creating a new allocation then use allocation from other previous allocations for same SAR operation.
-                // if no previous allocation data then use defaults (above)
+                if (!$scope.effort.waterElevation && latest) {
+                    $scope.effort.waterElevation = latest.waterElevation;
+                }
+                if (!$scope.effort.wind && latest) {
+                    $scope.effort.wind = latest.wind;
+                }
             }
 
             $scope.toZoneCalculation = function (effort) {
@@ -533,6 +534,8 @@ $(function () {
                 function persist(eff) {
                     var effort = clone(eff);
                     effort.status = embryo.sar.effort.Status.Active;
+                    // FIXME can not rely on local computer time
+                    effort.modified = Date.now();
                     LivePouch.put(effort).then(function () {
                         console.log("done with success")
                         $scope.toSrus();
