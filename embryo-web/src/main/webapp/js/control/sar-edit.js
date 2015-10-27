@@ -293,6 +293,19 @@ $(function () {
     typeText[embryo.sar.effort.VesselTypes.SmallerVessel] = "Small vessel (40 feet)";
     typeText[embryo.sar.effort.VesselTypes.Ship] = "Ship (50 feet)";
 
+    var AllocationStatusTxt = {};
+    AllocationStatusTxt[embryo.sar.effort.Status.Active] = "Shared";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftSRU] = "No zone";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftZone] = "Not shared";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftModifiedOnMap] = "Not shared";
+
+    var AllocationStatusLabel = {};
+    AllocationStatusLabel[embryo.sar.effort.Status.Active] = "label-success";
+    AllocationStatusLabel[embryo.sar.effort.Status.DraftSRU] = "label-danger";
+    AllocationStatusLabel[embryo.sar.effort.Status.DraftZone] = "label-danger";
+    AllocationStatusLabel[embryo.sar.effort.Status.DraftModifiedOnMap] = "label-danger";
+
+
     module.controller("SarEffortAllocationController", ['$scope', 'ViewService', 'SarService', 'LivePouch', '$timeout',
         function ($scope, ViewService, SarService, LivePouch, $timeout) {
             $scope.alertMessages = [];
@@ -300,6 +313,9 @@ $(function () {
             $scope.srus = [];
 
             $scope.AllocationStatus = embryo.sar.effort.Status;
+
+            $scope.AllocationStatusTxt = AllocationStatusTxt;
+            $scope.AllocationStatusLabel = AllocationStatusLabel;
 
             $scope.fatigues = [0.5, 1.0];
             $scope.targetText = targetText;
@@ -491,7 +507,6 @@ $(function () {
             }
 
             $scope.calculate = function () {
-                console.log($scope.effort);
                 LivePouch.get($scope.effort.effSarId).then(function (sar) {
                     var allocations = null;
                     try {

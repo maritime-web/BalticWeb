@@ -60,6 +60,15 @@
         Active: "A"
     });
 
+    embryo.sar.effort.SearchPattern = Object.freeze({
+        ParallelSweep: "PS",
+        CreepingLine: "CL",
+        TrackLineReturn: "TLR",
+        TrackLineNonReturn: "TLNR",
+        ExpandingSquare: "ES",
+        SectorPattern: "SP"
+    });
+
 
 
     function SearchObject(id, x, y, divergence, text) {
@@ -940,6 +949,7 @@
         return wu * fw * fv * ff;
     };
     EffortAllocationCalculator.prototype.calculateTrackSpacing = function (wc, PoD) {
+        // FIXME følger hvis ikke IAMSAR manual
         // S = W*(-5/8*ln(1-x))^(-5/7)
         var val1 = (-5.0 / 8.0) * Math.log(1 - PoD / 100);
 
@@ -978,6 +988,7 @@
         zoneArea.A = zoneArea.B.transformPosition(embryo.geo.reverseDirection(bearingAB), quadrantLength);
         zoneArea.C = zoneArea.B.transformPosition(embryo.geo.reverseDirection(bearingDA), quadrantLength);
         zoneArea.D = zoneArea.A.transformPosition(embryo.geo.reverseDirection(bearingDA), quadrantLength);
+        zoneArea.size = areaSize;
 
         return zoneArea;
     };
@@ -1008,6 +1019,63 @@
 
         return allocations;
     }
+
+    function SearchPatternCalculator() {
+
+    }
+
+    SearchPatternCalculator.prototype.determineLables = function (effort) {
+        function toTheNorth(corner1, corner2) {
+            return corner1.pos.lat < corner2.pos.lon;
+        }
+
+        var corners = [];
+        for (var key in effort.area) {
+            corners.push({
+                key: key,
+                pos: clone(effort.area[key])
+            });
+        }
+
+        corners.sort(toTheNorth);
+
+        function label(key, lable) {
+            return {
+                value: key,
+                label: lable + " (" + key + ")"
+            };
+        }
+
+        var result = [];
+        result.push(label(corners[corners[2].pos.lon < corners[3].pos.lon ? 2 : 3].key, "Top left"));
+        result.push(label(corners[corners[2].pos.lon < corners[3].pos.lon ? 3 : 2].key, "Top right"));
+        result.push(label(corners[corners[0].pos.lon < corners[1].pos.lon ? 0 : 1].key, "Bottom left"));
+        result.push(label(corners[corners[0].pos.lon < corners[1].pos.lon ? 1 : 0].key, "Bottom right"));
+    }
+
+    SearchPatternCalculator.prototype.calculateCSP = function (effort, spInput) {
+        var ascii = spInput.cornerKey.charCodeAt(0);
+        var before = ascii === 4 ? ascii : ascii - 1;
+        var after = ascii === 5 ? 5 : ascii + 1;
+
+        console.log(after);
+        console.log(before);
+
+        var keyBefore = String.fromCharCode(before);
+        var keyAfter = String.fromCharCode(after);
+
+
+    }
+
+    function ParallelSweepSearchCalculator() {
+
+    }
+
+    ParallelSweepSearchCalculator.prototype.calculate = function (effort, spInput) {
+
+    }
+
+
 
     function getCalculator(sarType) {
         switch (sarType) {
@@ -1067,6 +1135,45 @@
                 $log.error(error)
             });
         });
+
+
+        var ddoc2 = {
+            _id: '_design/sarsearchpattern',
+            views: {
+                sarsearchpattern: {
+                    map: function (doc) {
+                        if (doc.docType === embryo.sar.Type.SearchPattern) {
+                            emit(doc.sarId);
+                        }
+                    }.toString()
+                }
+            }
+        }
+
+
+        // TODO move to CouchDB server
+        LivePouch.get('_design/sarsearchpattern').then(function (existing) {
+            ddoc2._rev = existing._rev;
+            LivePouch.put(ddoc2).then(function (result) {
+                $log.debug("sarsearchpattern update")
+                $log.debug(result);
+            }).catch(function (error) {
+                $log.error("sarsearchpattern update error")
+                $log.error(error)
+            });
+        }).catch(function (error) {
+            $log.error("error fetching _design");
+            $log.error(error);
+            LivePouch.put(ddoc2).then(function (result) {
+                $log.debug("sarsearchpattern update")
+                $log.debug(result);
+            }).catch(function (error) {
+                console.log("catch error")
+                $log.error("sarsearchpattern update error")
+                $log.error(error)
+            });
+        });
+
 
 
         function notifyListeners() {

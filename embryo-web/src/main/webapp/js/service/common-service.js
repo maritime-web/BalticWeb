@@ -16,8 +16,8 @@
             var viewProviders = that.ViewService.viewProviders();
             for (var index in viewProviders) {
                 var vi = viewProviders[index];
-                if (vi.title !== provider.title || (vi.type && provider.type ? vi.type !== provider.type : true)) {
-                    that.hide(vi);
+                if (vi.title !== provider.title || (vi.type && provider.type ? vi.type() !== provider.type() : true)) {
+                    vi.hide(vi);
                 }
             }
             provider.show(context);

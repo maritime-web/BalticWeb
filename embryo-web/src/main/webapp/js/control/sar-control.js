@@ -26,10 +26,10 @@ $(function () {
     SARStatusLabel[embryo.SARStatus.ENDED] = "label-default";
 
     var AllocationStatusTxt = {};
-    AllocationStatusTxt[embryo.sar.effort.Status.Active] = "Active";
-    AllocationStatusTxt[embryo.sar.effort.Status.DraftSRU] = "Draft SRU";
-    AllocationStatusTxt[embryo.sar.effort.Status.DraftZone] = "Draft Zone";
-    AllocationStatusTxt[embryo.sar.effort.Status.DraftModifiedOnMap] = "Draft Zone";
+    AllocationStatusTxt[embryo.sar.effort.Status.Active] = "Shared";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftSRU] = "No zone";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftZone] = "Not shared";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftModifiedOnMap] = "Not shared";
 
     var AllocationStatusLabel = {};
     AllocationStatusLabel[embryo.sar.effort.Status.Active] = "label-success";
@@ -49,7 +49,7 @@ $(function () {
             $log.debug("zone updated on map");
             $log.debug(zoneUpdate)
             LivePouch.get(zoneUpdate._id).then(function (zone) {
-                zone.area = clone(zoneUpdate.area);
+                angular.extend(zone.area, clone(zoneUpdate.area))
                 // SAR features on map should not be redrawn, when one of the features
                 // have been modified by dragging/resizing it on the map.
                 // Special status therefore introduced for this scenario.
@@ -224,11 +224,6 @@ $(function () {
             $scope.SARStatusTxt = SARStatusTxt;
             $scope.SARStatusLabel = SARStatusLabel;
             $scope.SARStatus = embryo.SARStatus;
-            $scope.AllocationStatus = embryo.sar.effort.Status;
-
-            $scope.AllocationStatusTxt = AllocationStatusTxt;
-            $scope.AllocationStatusLabel = AllocationStatusLabel;
-
 
             var subscription = ViewService.subscribe({
                 name: "OperationControl",
@@ -238,8 +233,6 @@ $(function () {
                     for (var index in viewProviders) {
                         if (viewProviders[index].type() === 'newSar') {
                             $scope.newSarProvider = viewProviders[index];
-                        } else if (viewProviders[index].type() === 'effort') {
-                            $scope.effortAllocationProvider = viewProviders[index];
                         }
                     }
                 }
@@ -269,21 +262,11 @@ $(function () {
                             $log.debug(res);
                         })
                     })
-                    loadEffortAllocations($scope.selected.sarId);
-                    listen4EffortAllocationChanges($scope.selected.sarId);
                 } else {
                     $scope.selected.sar = null;
                     $scope.sar = null;
                 }
             })
-
-            $scope.edit = function () {
-                $scope.newSarProvider.show({sarId: $scope.sar._id});
-            }
-
-            $scope.effort = function () {
-                $scope.effortAllocationProvider.show({sarId: $scope.sar._id});
-            }
 
             $scope.formatTs = formatTime;
             $scope.formatDecimal = embryo.Math.round10;
@@ -298,13 +281,63 @@ $(function () {
             $scope.formatLat = formatLatitude;
             $scope.formatLon = formatLongitude;
 
+            $scope.edit = function () {
+                $scope.newSarProvider.show({sarId: $scope.sar._id});
+            }
+
             $scope.confirmEnd = function () {
                 $scope.newSarProvider.show({sarId: $scope.sar._id, page: "end"});
             }
+        }]);
+
+    module.controller("EffortAllocationControl", ['$scope', 'SarService', 'ViewService', '$log', 'LivePouch',
+        function ($scope, SarService, ViewService, $log, LivePouch) {
+
+            $scope.SARTypeTxt = SARTypeTxt;
+            $scope.SARStatusTxt = SARStatusTxt;
+            $scope.SARStatusLabel = SARStatusLabel;
+            $scope.SARStatus = embryo.SARStatus;
+            $scope.AllocationStatus = embryo.sar.effort.Status;
+
+            $scope.AllocationStatusTxt = AllocationStatusTxt;
+            $scope.AllocationStatusLabel = AllocationStatusLabel;
+
+
+            var subscription = ViewService.subscribe({
+                name: "EffortAllocationControl",
+                onNewProvider: function () {
+                    var viewProviders = ViewService.viewProviders();
+                    $log.debug('EffortAllocationControl.onNewProvider, viewProvider=', viewProviders);
+                    for (var index in viewProviders) {
+                        if (viewProviders[index].type() === 'effort') {
+                            $scope.effortAllocationProvider = viewProviders[index];
+                        }
+                    }
+                }
+            });
+
+            $scope.$on("$destroy", function () {
+                ViewService.unsubscribe(subscription);
+            })
+
+            SarService.sarSelected("EffortAllocationControl", function (sarId) {
+                console.log("sarSelected=" + sarId)
+                if (sarId) {
+                    loadEffortAllocations(sarId);
+                    listen4EffortAllocationChanges(sarId);
+                }
+            })
+
+            $scope.effort = function () {
+                $scope.effortAllocationProvider.show({sarId: $scope.selected.sar._id});
+            }
+
+            $scope.formatTs = formatTime;
+            $scope.formatDecimal = embryo.Math.round10;
 
             function loadEffortAllocations(sarId) {
 
-                $log.debug("loadEffortAllocations, $scope.selected.sarId=" + sarId)
+                $log.debug("loadEffortAllocations, sarId=" + sarId)
 
                 // find docs where sarId === selectedSarId
                 LivePouch.query('sareffortview', {
@@ -326,6 +359,11 @@ $(function () {
                     }
                     $log.debug("loadAllocations")
                     $log.debug($scope.allocations);
+                    if (!$scope.$$phase) {
+                        $scope.$apply(function () {
+                        });
+                    }
+
                 }).catch(function (error) {
                     $log.error("sareffortview error in controller.js")
                     $log.error(error)
@@ -354,9 +392,6 @@ $(function () {
                     loadEffortAllocations(sarId);
                 });
             }
-
-
-
         }]);
 
     module.controller("LogControl", ['$scope', 'Subject', 'SarService', 'LivePouch', '$log',
@@ -379,6 +414,7 @@ $(function () {
 
         $scope.formatTs = formatTime;
 
+
         // TODO move to CouchDB server
         LivePouch.get('_design/sarlogview').then(function (existing) {
             ddoc._rev = existing._rev;
@@ -389,10 +425,18 @@ $(function () {
                 $log.error("ddoc update error")
                 $log.error(error)
             });
+        }).catch(function (error) {
+            LivePouch.put(ddoc).then(function (result) {
+                $log.debug("ddoc update")
+                $log.debug(result);
+            }).catch(function (error) {
+                $log.error("ddoc update error")
+                $log.error(error)
+            });
         })
 
 
-        function displayMessages(selectedSarId) {
+            function displayMessages(selectedSarId) {
             // find docs where sarId === selectedSarId
             LivePouch.query('sarlogview', {
                 key: selectedSarId,
