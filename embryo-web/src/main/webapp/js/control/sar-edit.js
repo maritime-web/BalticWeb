@@ -431,9 +431,7 @@ $(function () {
 
                 },
                 close: function () {
-                    console.log("before remove")
                     SarLayerSingleton.getInstance().removeTemporarySearchPattern();
-                    console.log("after remove")
                     this.doShow = false;
                 }
             };
@@ -471,18 +469,29 @@ $(function () {
             }
 
             $scope.removeSRU = function (SRU) {
-                console.log("remove SRU")
-                console.log(SRU)
+                LivePouch.query('sareffortview', {
+                    key: SRU.sarId,
+                    include_docs: true
+                }).then(function (result) {
+                    var toRemove = [];
+                    for (var index in result.rows) {
+                        var doc = result.rows[index].doc;
+                        if (doc.docType === embryo.sar.Type.EffortAllocation && doc._id == SRU._id
+                            || doc.docType === embryo.sar.Type.SearchPattern && doc.effId === SRU._id) {
+                            toRemove.push(doc)
+                            doc._deleted = true;
+                        }
+                    }
 
-                LivePouch.remove(SRU).then(function (result) {
-                    console.log("succes removing document")
-                    console.log(result);
+                    //delete allocations and search patterns
+                    return LivePouch.bulkDocs(toRemove)
+                }).then(function () {
                     $scope.toSrus();
                 }).catch(function (error) {
                     $scope.alertMessages = ["Internal eror removing SRU", error];
                     console.log("error removing sru")
                     console.log(error)
-                })
+                });
             }
 
             $scope.toSrus = function () {
@@ -593,7 +602,6 @@ $(function () {
                     $scope.$apply(function () {
                     });
                 }).catch(function (error) {
-                    console.log(error)
                     $scope.alertMessages = ["internal error", error];
                     $scope.$apply(function () {
                     });
@@ -609,7 +617,6 @@ $(function () {
                     // FIXME can not rely on local computer time
                     effort.modified = Date.now();
                     LivePouch.put(effort).then(function () {
-                        console.log("done with success")
                         $scope.toSrus();
                     }).catch(function (error) {
                         console.log("error saving effort allocation")
@@ -618,44 +625,31 @@ $(function () {
                 }
 
                 function deleteEffortAllocationsForSameUser(effort) {
-
-                    console.log("deleteEffortAllocationsForSameUser")
-                    console.log(effort)
                     LivePouch.query('sareffortview', {
                         key: effort.sarId,
                         include_docs: true
                     }).then(function (result) {
-                        $timeout(function () {
-                            var efforts = [];
-                            for (var index in result.rows) {
-                                var doc = result.rows[index].doc;
+                        var efforts = [];
+                        for (var index in result.rows) {
+                            var doc = result.rows[index].doc;
 
-                                if (doc.docType === embryo.sar.Type.EffortAllocation && doc.name == effort.name
-                                    && doc._id !== effort._id) {
+                            if (doc.docType === embryo.sar.Type.EffortAllocation && doc.name == effort.name
+                                && doc._id !== effort._id) {
 
-                                    efforts.push(doc)
-                                    doc._deleted = true;
-                                } else if (doc.docType === embryo.sar.Type.SearchPattern && doc.name === effort.name) {
-                                    efforts.push(doc)
-                                    doc._deleted = true;
-                                }
+                                efforts.push(doc)
+                                doc._deleted = true;
+                            } else if (doc.docType === embryo.sar.Type.SearchPattern && doc.name === effort.name) {
+                                efforts.push(doc)
+                                doc._deleted = true;
                             }
+                        }
 
-                            console.log(efforts);
-
-                            //delete allocations and search patterns
-                            LivePouch.bulkDocs(efforts).then(function (result) {
-                                console.log("deleted docs")
-                                console.log("persisting effort")
-
-                                persist(effort);
-                            }).catch(function (err) {
-                                console.log(err);
-                            });
-                        }, 1)
-                    }).catch(function (error) {
-                        console.log("sareffortview error")
-                        console.log(error)
+                        //delete allocations and search patterns
+                        return LivePouch.bulkDocs(efforts)
+                    }).then(function () {
+                        persist(effort);
+                    }).catch(function (err) {
+                        console.log(err)
                     });
                 }
 
