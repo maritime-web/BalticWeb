@@ -38,11 +38,19 @@
                         <td><span class="label" x-ng-class="AllocationStatusLabel[SRU.status]">{{AllocationStatusTxt[SRU.status]}}</span>
                         </td>
                         <td>
-                            <button class="btn btn-sm" x-ng-if="SRU.status !== AllocationStatus.DraftSRU" x-ng-click="">
-                                Generate
+                            <button class="btn btn-sm"
+                                    x-ng-if="SRU.status === AllocationStatus.Active && !patterns[SRU._id] || patterns[SRU._id].status === AllocationStatus.Active"
+                                    x-ng-click="createSearchPattern(SRU)">
+                                New
+                            </button>
+                            <button class="btn btn-sm"
+                                    x-ng-if="patterns[SRU._id] && patterns[SRU._id].status !== AllocationStatus.Active"
+                                    x-ng-click="editSearchPattern(SRU, patterns[SRU._id].id)">
+                                Edit
                             </button>
                         </td>
-                        <td></td>
+                        <td><span class="label" x-ng-class="AllocationStatusLabel[patterns[SRU._id].status]">{{AllocationStatusTxt[patterns[SRU._id].status]}}</span>
+                        </td>
                         <td>
                             <button class="btn btn-sm btn-danger" x-ng-click="toConfirmDelSRU($event, SRU)">Remove
                             </button>
@@ -85,7 +93,7 @@
                         <div class="col-xs-8">
                             <select ng-model="sru.type" name="type" required
                                     class="input-sm form-control"
-                                    x-ng-options="type as typeText[type] for type in vesselTypes">
+                                    x-ng-options="type as typeText[type] for type in sruTypes">
                             </select>
                         </div>
                     </div>
@@ -268,39 +276,116 @@
                     </div>
                 </div>
             </form>
-            <form x-ng-if="page == 'searchPattern'" name="searchPatternForm" class="form-horizontal" novalidate>
+            <form x-ng-if="page == 'searchPattern'" name="spForm" class="form-horizontal spForm" novalidate>
                 <hr/>
+                <h5>Search Pattern</h5>
                 <div x-ng-show="alertMessages" class="alert alert-danger">
                     <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
                 </div>
                 <div x-ng-show="message" class="alert alert-info">{{message}}</div>
 
+                <div class="form-group">
+                    <label class="control-label col-xs-4">Search Pattern Type</label>
 
-                <div class="row">
-                    <div class="col-xs-12">
-                        <p>
-                            Do you want to activate effort allocation zone for <strong>{{effort.name}}</strong>? <br/>
-                            The effort allocation zone will hereby be shared with other SRUs as well as other relevant
-                            parties.
-                        </p>
-
-                        <p x-ng-if="effAllExists">
-                            The existing effort allocation for {{effort.name}} will be replaced by your new effort
-                            allocation.
-                        </p>
+                    <div class="col-xs-8">
+                        <select ng-model="sp.type" name="type" required class="input-sm form-control"
+                                x-ng-change="generateSearchPattern()"
+                                x-ng-options="pattern.type as pattern.label for pattern in patterns">
+                        </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-12">
+
+                <div>
+                    <p x-ng-if="sp.type === SearchPattern.ParallelSweep">
+                        Parallel sweep search is used when the search area is large, an even coverage is wanted and
+                        exact location of the object is unknown, e.g. datum has low confidence
+                    </p>
+
+                    <p x-ng-if="sp.type === SearchPattern.CreepingLine">
+                        Creeping line search is used when the search area is long and narrow, the most likely position
+                        of the search object is presumed to be between two points, it is desirable with a fast coverage
+                        of the most likely area first.
+                    </p>
+
+                    <p x-ng-if="sp.type === SearchPattern.ExpandingSquare">
+                        Expanding square search is used when the search object is presumed to be located within a
+                        relatively small area. The search begins in the most likely position (Datum). This method
+                        requires accurate navigation.
+                    </p>
+
+                    <p x-ng-if="sp.type === SearchPattern.SectorPattern">
+                        {{sarTypeDatas[sar.type].text}} is used when an object connected to the missing vessel has
+                        been located. By reversing the objects movements a possible search area can be established.
+                    </p>
+
+                    <p x-ng-if="sp.type === SearchPattern.TrackLineReturn">
+                        Track line search, return is used when a vessel (or person) is reported as missing and the
+                        only track is the presumed route. It gives a relative fast and thorough coverage of the
+                        missing objects presumed route and its adjacent areas. The search begins and ends in the
+                        same end of the route.
+                    </p>
+
+                    <p x-ng-if="sp.type === SearchPattern.TrackLine">
+                        Track line search, non-return is used when the vessel (or person) is reported missing and
+                        the only track is the presumed route. It gives a relative fast and thorough coverage of the
+                        missing objects presumed route and its adjacent areas. The search begins in one end and ends
+                        in the opposite end of the route.
+                    </p>
+
+
+                </div>
+
+                <div class="sar-img-type-container">
+                    <img style="max-width:500px; max-height:250px" ng-if="sp.type"
+                         ng-src="{{spImages[sp.type]}}"/>
+                </div>
+
+
+                <div x-ng-if="sp.type === SearchPattern.ParallelSweep || sp.type === SearchPattern.CreepingLine">
+                    <h5>Commence Search Position (CSP)</h5>
+
+                    <div class="form-group">
+                        <div class="col-xs-7">
+                        </div>
+                        <div class="col-xs-5">
+                            <select ng-model="sp.cornerKey" name="type" class="input-sm form-control"
+                                    x-ng-change="calculateCSP()"
+                                    x-ng-options="corner.key as corner.label for corner in other.corners">
+                                <option value="">Import from:</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2">Latitude:</label>
+
+                        <div class="col-xs-4">
+                            <input x-ng-model="sp.csp.lat" name="lat" type="text" class="form-control input-sm"
+                                   x-ng-required="sp.type === SearchPattern.ParallelSweep || sp.type === SearchPattern.CreepingLine"
+                                   latitude/>
+                        </div>
+                        <label class="control-label col-xs-2">Longitude:</label>
+
+                        <div class="col-xs-4">
+                            <input x-ng-model="sp.csp.lon" name="lon" type="text" class="form-control input-sm"
+                                   x-ng-required="sp.type === SearchPattern.ParallelSweep || sp.type === SearchPattern.CreepingLine"
+                                   longitude/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
                     <span class="pull-right">
-                        <button type="button" class="btn btn-sm" x-ng-click="">Cancel</button> &nbsp;
-                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="generateSearchPattern()">
-                            Generate
+                        <button type="button" class="btn btn-sm" x-ng-click="cancelPattern()">Cancel</button> &nbsp;
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-disabled="spForm.$invalid"
+                                x-ng-click="draftSearchPattern()">Save as draft
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm" x-ng-disabled="spForm.$invalid"
+                                x-ng-click="shareSearchPattern()">Share Search Pattern
                         </button>
                     </span>
-                    </div>
                 </div>
             </form>
+
         </div>
 
     </div>

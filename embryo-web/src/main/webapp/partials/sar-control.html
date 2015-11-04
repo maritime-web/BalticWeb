@@ -214,6 +214,17 @@
                     <h6>Search patterns</h6>
 
                     <div x-ng-if="selected.sar.status != SARStatus.ENDED">
+                        <table class="table table-condensed ctrl">
+                            <tr>
+                                <td>Name</td>
+                                <td>Status</td>
+                            </tr>
+                            <tr x-ng-repeat="pattern in patterns track by $index">
+                                <td>{{pattern.name}}</td>
+                                <td><span class="label" x-ng-class="AllocationStatusLabel[pattern.status]">{{AllocationStatusTxt[pattern.status]}}</span>
+                                </td>
+                            </tr>
+                        </table>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="checkbox">

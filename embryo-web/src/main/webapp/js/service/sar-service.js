@@ -20,7 +20,8 @@
     });
 
     embryo.sar.effort = {};
-    embryo.sar.effort.VesselTypes = Object.freeze({
+    embryo.sar.effort.SruTypes = Object.freeze({
+        MerchantVessel: "MV",
         SmallerVessel: "SV",
         Ship: "S"
     });
@@ -50,12 +51,17 @@
         Sailboat83: "SB83",
         Ship120: "SH120",
         Ship225: "SH225",
-        Ship330: "SH330"
+        Ship330: "SH330",
+        Boat17: "B17",
+        Boat23: "B23",
+        Boat40: "B40",
+        Boat79: "B79"
     });
 
     embryo.sar.effort.Status = Object.freeze({
         DraftSRU: "DS",
         DraftZone: "DZ",
+        DraftPattern: "DP",
         DraftModifiedOnMap: "DM",
         Active: "A"
     });
@@ -64,7 +70,7 @@
         ParallelSweep: "PS",
         CreepingLine: "CL",
         TrackLineReturn: "TLR",
-        TrackLineNonReturn: "TLNR",
+        TrackLine: "TL",
         ExpandingSquare: "ES",
         SectorPattern: "SP"
     });
@@ -498,6 +504,21 @@
 
     BackTrackCalculator.prototype = new SarOperationCalculator();
 
+    function createIamsarMerchantSweepWidths() {
+        var sweepWidths = {};
+        // Sweep values for visibilities 3, 5, 10, 15 and 20 are supplied in arrays indexed 0-4
+        sweepWidths[embryo.sar.effort.TargetTypes.PersonInWater] = [0.4, 0.5, 0.6, 0.7, 0.7];
+        sweepWidths[embryo.sar.effort.TargetTypes.Raft4Persons] = [2.3, 3.2, 4.2, 4.9, 5.5];
+        sweepWidths[embryo.sar.effort.TargetTypes.Raft6Persons] = [2.5, 3.6, 5.0, 6.2, 6.9];
+        sweepWidths[embryo.sar.effort.TargetTypes.Raft15Persons] = [2.6, 4.0, 5.1, 6.4, 7.3];
+        sweepWidths[embryo.sar.effort.TargetTypes.Raft25Persons] = [2.7, 4.2, 5.2, 6.5, 7.5];
+        sweepWidths[embryo.sar.effort.TargetTypes.Boat17] = [1.1, 1.4, 1.9, 2.1, 2.3];
+        sweepWidths[embryo.sar.effort.TargetTypes.Boat23] = [2.0, 2.9, 4.3, 5.2, 5.8];
+        sweepWidths[embryo.sar.effort.TargetTypes.Boat40] = [2.8, 4.5, 7.6, 9.4, 11.6];
+        sweepWidths[embryo.sar.effort.TargetTypes.Boat79] = [3.2, 5.6, 10.7, 14.7, 18.1];
+        return sweepWidths;
+    }
+
     // TODO sweep widths values should be in own object?
     function createSweepWidths() {
         var smallShipSweepWidths = {};
@@ -905,8 +926,8 @@
         };
 
         var sweepWidths = {};
-        sweepWidths[embryo.sar.effort.VesselTypes.SmallerVessel] = smallShipSweepWidths;
-        sweepWidths[embryo.sar.effort.VesselTypes.Ship] = largeShipSweepWidths;
+        sweepWidths[embryo.sar.effort.SruTypes.SmallerVessel] = smallShipSweepWidths;
+        sweepWidths[embryo.sar.effort.SruTypes.Ship] = largeShipSweepWidths;
         return sweepWidths
     }
 
@@ -915,7 +936,16 @@
     }
 
     EffortAllocationCalculator.prototype.lookupUncorrectedSweepWidth = function (sruType, targetType, visibility) {
-        if (sruType === embryo.sar.effort.VesselTypes.SmallerVessel || sruType === embryo.sar.effort.VesselTypes.Ship) {
+        if (sruType === embryo.sar.effort.SruTypes.MerchantVessel) {
+            console.log("index=" + Math.floor(visibility / 5))
+            console.log(targetType)
+            console.log(createIamsarMerchantSweepWidths())
+            console.log(createIamsarMerchantSweepWidths()[targetType])
+            console.log(createIamsarMerchantSweepWidths()[targetType][Math.floor(visibility / 5)]);
+            return createIamsarMerchantSweepWidths()[targetType][Math.floor(visibility / 5)];
+        }
+
+        if (sruType === embryo.sar.effort.SruTypes.SmallerVessel || sruType === embryo.sar.effort.SruTypes.Ship) {
             return createSweepWidths()[sruType][targetType][visibility];
         }
         return 0.0
@@ -948,13 +978,18 @@
     EffortAllocationCalculator.prototype.calculateCorrectedSweepWidth = function (wu, fw, fv, ff) {
         return wu * fw * fv * ff;
     };
-    EffortAllocationCalculator.prototype.calculateTrackSpacing = function (wc, PoD) {
-        // FIXME følger hvis ikke IAMSAR manual
+    EffortAllocationCalculator.prototype.calculateCoverageFactor = function (POD) {
+        // FIXME
+        // This is apparently implemented using the mathematical formular for graph in figure 4.3 Probability of Detection in the
+        // SAR Danmark manual.
+        // The IAMSAR manual however prescribes a different approach choosen between the ideal and normal search conditions
+        // and as a consequence a choice between two graphs (or formulars)
         // S = W*(-5/8*ln(1-x))^(-5/7)
-        var val1 = (-5.0 / 8.0) * Math.log(1 - PoD / 100);
-
-        var val2 = Math.pow(val1, -5.0 / 7.0);
-        return wc * val2;
+        var val1 = (-5.0 / 8.0) * Math.log(1 - POD / 100);
+        return Math.pow(val1, -5.0 / 7.0);
+    }
+    EffortAllocationCalculator.prototype.calculateTrackSpacing = function (wc, C) {
+        return wc * C;
     }
     EffortAllocationCalculator.prototype.calculateSearchEndurance = function (onSceneTime) {
         return onSceneTime * 0.85;
@@ -998,11 +1033,14 @@
         for (var index in allocationInputs) {
             var input = clone(allocationInputs[index]);
 
+            console.log(input)
             var wu = this.lookupUncorrectedSweepWidth(input.type, input.target, input.visibility);
+            console.log("wu=" + wu)
             var fw = this.lookupWeatherCorrectionFactor();
             var fv = this.lookupVelocityCorrection(input.type);
             var wc = this.calculateCorrectedSweepWidth(wu, fw, fv, input.fatigue);
-            var S = this.calculateTrackSpacing(wc, input.pod);
+            var C = this.calculateCoverageFactor(input.pod)
+            var S = this.calculateTrackSpacing(wc, C);
             var T = this.calculateSearchEndurance(input.time);
             var zoneAreaSize = this.calculateZoneAreaSize(input.speed, S, T);
             var datum = this.getDatum(sar);
@@ -1024,57 +1062,186 @@
 
     }
 
-    SearchPatternCalculator.prototype.determineLables = function (effort) {
+    SearchPatternCalculator.prototype.searchPatternCspLabels = function (effort) {
         function toTheNorth(corner1, corner2) {
             return corner1.pos.lat < corner2.pos.lon;
         }
 
         var corners = [];
         for (var key in effort.area) {
-            corners.push({
-                key: key,
-                pos: clone(effort.area[key])
-            });
+            if (key === "A" || key === "B" || key === "C" || key === "D") {
+                corners.push({
+                    key: key,
+                    pos: clone(effort.area[key])
+                });
+            }
         }
 
         corners.sort(toTheNorth);
 
-        function label(key, lable) {
+        function label(key, label) {
             return {
-                value: key,
-                label: lable + " (" + key + ")"
+                key: key,
+                label: label + " (" + key + ")"
             };
         }
 
         var result = [];
-        result.push(label(corners[corners[2].pos.lon < corners[3].pos.lon ? 2 : 3].key, "Top left"));
-        result.push(label(corners[corners[2].pos.lon < corners[3].pos.lon ? 3 : 2].key, "Top right"));
-        result.push(label(corners[corners[0].pos.lon < corners[1].pos.lon ? 0 : 1].key, "Bottom left"));
-        result.push(label(corners[corners[0].pos.lon < corners[1].pos.lon ? 1 : 0].key, "Bottom right"));
+        result.push(label(corners[corners[0].pos.lon < corners[1].pos.lon ? 0 : 1].key, "Top left"));
+        result.push(label(corners[corners[0].pos.lon < corners[1].pos.lon ? 1 : 0].key, "Top right"));
+        result.push(label(corners[corners[2].pos.lon < corners[3].pos.lon ? 2 : 3].key, "Bottom left"));
+        result.push(label(corners[corners[2].pos.lon < corners[3].pos.lon ? 3 : 2].key, "Bottom right"));
+        return result;
     }
 
-    SearchPatternCalculator.prototype.calculateCSP = function (effort, spInput) {
-        var ascii = spInput.cornerKey.charCodeAt(0);
-        var before = ascii === 4 ? ascii : ascii - 1;
-        var after = ascii === 5 ? 5 : ascii + 1;
-
-        console.log(after);
-        console.log(before);
-
-        var keyBefore = String.fromCharCode(before);
-        var keyAfter = String.fromCharCode(after);
-
-
+    SearchPatternCalculator.prototype.cornerKeyBefore = function (cornerKey) {
+        // moving clock wise round the rectangle
+        var ascii = cornerKey.charCodeAt(0);
+        return String.fromCharCode(ascii === 65 ? 68 : ascii - 1);
     }
+
+    SearchPatternCalculator.prototype.cornerKeyAfter = function (cornerKey) {
+        // moving clock wise round the rectangle
+        var ascii = cornerKey.charCodeAt(0);
+        return String.fromCharCode(ascii === 68 ? 65 : ascii + 1);
+    }
+
+    SearchPatternCalculator.prototype.cornerPosition = function (zone, cornerKey) {
+        return new embryo.geo.Position(zone.area[cornerKey].lon, zone.area[cornerKey].lat);
+    }
+
+    SearchPatternCalculator.prototype.calculateCSP = function (zone, cornerKey) {
+        var before = this.cornerPosition(zone, this.cornerKeyBefore(cornerKey));
+        var corner = this.cornerPosition(zone, cornerKey);
+        var after = this.cornerPosition(zone, this.cornerKeyAfter(cornerKey));
+
+        var dist = zone.S / 2;
+        var tmp = corner.transformPosition(embryo.geo.reverseDirection(before.rhumbLineBearingTo(corner)), dist);
+        var CSP = tmp.transformPosition(corner.rhumbLineBearingTo(after), dist);
+        return CSP;
+    }
+
+    SearchPatternCalculator.getCalculator = function (type) {
+        switch (type) {
+            case (embryo.sar.effort.SearchPattern.ParallelSweep) :
+                return new ParallelSweepSearchCalculator();
+            /*            case (embryo.sar.effort.SearchPattern.CreepingLine) :
+             return new Creeping();
+             case (embryo.sar.effort.SearchPattern.ExpandingSquare) :
+             return new DatumLineCalculator();
+             case (embryo.sar.effort.SearchPattern.SectorPattern) :
+             return new BackTrackCalculator();
+             case (embryo.sar.effort.SearchPattern.TrackLine) :
+             return new RapidResponseCalculator();
+             case (embryo.sar.effort.SearchPattern.TrackLineReturn) :
+             return new DatumPointCalculator();
+             */
+            default :
+                throw new Error("Unknown sar type " + type);
+        }
+    }
+
 
     function ParallelSweepSearchCalculator() {
-
     }
 
-    ParallelSweepSearchCalculator.prototype.calculate = function (effort, spInput) {
+    ParallelSweepSearchCalculator.prototype = new SearchPatternCalculator();
 
+
+    ParallelSweepSearchCalculator.prototype.calculate = function (zone, cornerKey, CSP) {
+        var before = this.cornerPosition(zone, this.cornerKeyBefore(cornerKey));
+        var corner = this.cornerPosition(zone, cornerKey);
+        var after = this.cornerPosition(zone, this.cornerKeyAfter(cornerKey));
+
+        var distB2C = before.rhumbLineDistanceTo(corner);
+        var distC2A = corner.rhumbLineDistanceTo(after);
+
+        var lastSearchLegBearing = after.rhumbLineBearingTo(corner);
+        var crossLegBearing;
+        var searchLegDistance;
+
+        if (distB2C <= distC2A) {
+            lastSearchLegBearing = after.rhumbLineBearingTo(corner);
+            crossLegBearing = corner.rhumbLineBearingTo(before);
+            searchLegDistance = distC2A - zone.S;
+        } else {
+            lastSearchLegBearing = before.rhumbLineBearingTo(corner);
+            crossLegBearing = corner.rhumbLineBearingTo(after);
+            searchLegDistance = distB2C - zone.S;
+        }
+
+        function wpName(index) {
+            var count;
+            if (index < 10) {
+                count = 3;
+            } else if (index < 100) {
+                count = 2;
+            } else if (index < 1000) {
+                count = 1;
+            } else {
+                count = 0;
+            }
+            var name = "WP-";
+            for (var i = 0; i <= count; i++) {
+                name += i;
+            }
+            name += index;
+            return name;
+        }
+
+        var totalDistance = 0;
+        var index = 0;
+
+        function waypoint(i, position, speed, heading, xtd) {
+            return {
+                name: wpName(i),
+                latitude: position.lat,
+                longitude: position.lon,
+                speed: speed,
+                heading: heading,
+                xtdPort: xtd,
+                xtdStarBoard: xtd
+            };
+        }
+
+        var wayPoints = [waypoint(index++, CSP, zone.speed, embryo.geo.Heading.RL, zone.S / 2)];
+
+        var onSceneDistance = zone.time * zone.speed;
+
+        console.log(onSceneDistance)
+
+        var lastPosition = CSP;
+        var nextIsSearchLeg = true;
+        while (totalDistance < onSceneDistance) {
+            var bearing = nextIsSearchLeg ? embryo.geo.reverseDirection(lastSearchLegBearing) : crossLegBearing;
+            var distance = nextIsSearchLeg ? searchLegDistance : zone.S;
+
+            if (totalDistance + distance > onSceneDistance) {
+                distance = onSceneDistance - totalDistance;
+            }
+            var lastPosition = lastPosition.transformPosition(bearing, distance);
+            wayPoints.push(waypoint(index++, lastPosition, zone.speed, embryo.geo.Heading.RL, zone.S / 2));
+
+            if (nextIsSearchLeg) {
+                lastSearchLegBearing = bearing;
+            }
+            totalDistance += distance;
+            nextIsSearchLeg = !nextIsSearchLeg;
+
+        }
+
+        var searchPattern = {
+            _id: "sarSp-" + Date.now(),
+            sarId: zone.sarId,
+            effId: zone._id,
+            type: embryo.sar.effort.SearchPattern.ParallelSweep,
+            docType: embryo.sar.Type.SearchPattern,
+            name: zone.name,
+            wps: wayPoints
+        }
+
+        return searchPattern;
     }
-
 
 
     function getCalculator(sarType) {
@@ -1106,8 +1273,8 @@
             views: {
                 sareffortview: {
                     map: function (doc) {
-                        if (doc.docType === embryo.sar.Type.EffortAllocation) {
-                            emit(doc.effSarId);
+                        if (doc.docType === embryo.sar.Type.EffortAllocation || doc.docType === embryo.sar.Type.SearchPattern) {
+                            emit(doc.sarId);
                         }
                     }.toString()
                 }
@@ -1218,16 +1385,31 @@
                     fn(selectedSarById);
                 }
             },
-            latestEffortAllocationZone: function (zones) {
+            findLatestModified: function (dataArray, predicate) {
+                // Method ssed for both effort allocation zones and search patterns
                 var latest = null;
-                for (var i in zones) {
-                    if (zones[i].status !== embryo.sar.effort.Status.DraftSRU) {
-                        if (!latest || latest.modified < zones[i].modified) {
-                            latest = zones[i];
-                        }
+
+                function updateLatestIfNewer(data) {
+                    if (!latest || latest.modified < data.modified) {
+                        latest = data;
+                    }
+                }
+
+                for (var i in dataArray) {
+                    if (predicate && predicate(dataArray[i].status)) {
+                        updateLatestIfNewer(dataArray[i]);
+                    } else {
+                        updateLatestIfNewer(dataArray[i]);
                     }
                 }
                 return latest;
+            },
+            latestEffortAllocationZone: function (zones, predicate) {
+                function isZone(zone) {
+                    return (!predicate || predicate(zone)) && zone.status !== embryo.sar.effort.Status.DraftSRU
+                }
+
+                return this.findLatestModified(zones, isZone);
             },
             validateSarInput: function (input) {
                 // this was written to prevent Chrome browser running in indefinite loops
@@ -1261,6 +1443,16 @@
             },
             save: function (sarOperation) {
 
+            },
+            searchPatternCspLabels: function (zone) {
+                return new SearchPatternCalculator().searchPatternCspLabels(zone);
+            },
+            calculateCSP: function (zone, cornerKey) {
+                return new SearchPatternCalculator().calculateCSP(zone, cornerKey);
+            },
+            generateSearchPattern: function (zone, sp) {
+                var calculator = SearchPatternCalculator.getCalculator(sp.type);
+                return calculator.calculate(zone, sp.cornerKey, sp.csp);
             }
         };
 

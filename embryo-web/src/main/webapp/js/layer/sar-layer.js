@@ -21,9 +21,13 @@ function SarLayer() {
                 if (feature.attributes.type == 'dv') {
                     return "black";
                 }
+                if (feature.attributes.type == 'searchPattern') {
+                    return "red";
+                }
                 if (feature.attributes.type) {
                     return feature.attributes.active ? "green" : "#999";
                 }
+
                 // extra feature (circle) added by ModifyFeature control
                 return "red";
             },
@@ -79,6 +83,7 @@ function SarLayer() {
         })
 
         var defaultEditStyle = {
+            orientation: "${temp}",
             fontOpacity: "${fontTransparency}",
             fillColor: "${color}",
             fillOpacity: "${fillOpacity}",
@@ -91,7 +96,7 @@ function SarLayer() {
         }
 
         this.layers.sarEdit = new OpenLayers.Layer.Vector("SAR Edit Layer", {
-            //renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
+            renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
             styleMap: new OpenLayers.StyleMap({
                 "default": new OpenLayers.Style(defaultEditStyle, {context: context}),
                 "select": new OpenLayers.Style(defaultEditStyle, {context: context}),
@@ -292,12 +297,12 @@ function SarLayer() {
                 this.drawSearchPattern(sarDocuments[index]);
             }
         }
+
+        if(this.tempSearchPatternFeature){
+            this.layers.sarEdit.addFeatures([this.tempSearchPatternFeature]);
+        }
         this.layers.sar.refresh();
         this.layers.sarEdit.refresh();
-
-
-
-
     }
 
     this.drawSar = function (sar) {
@@ -355,10 +360,33 @@ function SarLayer() {
     };
 
     this.drawSearchPattern = function (pattern) {
+        var points = this.createRoutePoints(pattern)
+        var multiLine = new OpenLayers.Geometry.MultiLineString([ new OpenLayers.Geometry.LineString(points) ]);
+        var feature = new OpenLayers.Feature.Vector(multiLine, {
+            renderers : [ 'SVGExtended', 'VMLExtended', 'CanvasExtended' ],
+            type : "searchPattern",
+            id : pattern._id
+        });
+        this.layers.sarEdit.addFeatures([feature]);
+        return feature;
     };
+
+
+    this.drawTemporarySearchPattern = function(searchPattern){
+        this.removeTemporarySearchPattern();
+        this.tempSearchPatternFeature = this.drawSearchPattern(searchPattern);
+        this.tempSearchPatternFeature.attributes.temp = true;
+    }
+
+    this.removeTemporarySearchPattern = function(){
+        delete this.tempSearchPatternFeature;
+        this.hideFeatures(function(feature){
+            return !!feature.attributes.temp;
+        })
+    }
 }
 
-SarLayer.prototype = new EmbryoLayer();
+SarLayer.prototype = new RouteLayer();
 
 /*
  * Can be used to create only one distance layer instance and reuse this as

@@ -345,25 +345,21 @@ $(function () {
                     include_docs: true
                 }).then(function (result) {
                     var allocations = [];
+                    var patterns = [];
                     for (var index in result.rows) {
-                        allocations.push(result.rows[index].doc)
+                        if (result.rows[index].doc.docType === embryo.sar.Type.SearchPattern) {
+                            patterns.push(result.rows[index].doc)
+                        } else {
+                            allocations.push(result.rows[index].doc)
+                        }
                     }
 
-                    $log.debug("allocations")
-                    $log.debug(allocations)
-
                     $scope.allocations = allocations
+                    $scope.patterns = patterns;
                     if (!$scope.$$phase) {
                         $scope.$apply(function () {
                         })
                     }
-                    $log.debug("loadAllocations")
-                    $log.debug($scope.allocations);
-                    if (!$scope.$$phase) {
-                        $scope.$apply(function () {
-                        });
-                    }
-
                 }).catch(function (error) {
                     $log.error("sareffortview error in controller.js")
                     $log.error(error)
@@ -377,7 +373,7 @@ $(function () {
                     include_docs: true,
                     /*
                      filter: function (doc) {
-                     return (doc.docType == embryo.sar.Type.EffortAllocation && doc.effSarId == $scope.selected.sarId);
+                     return (doc.docType == embryo.sar.Type.EffortAllocation && doc.sarId == $scope.selected.sarId);
                      }*/
                     filter: "_view",
                     view: "sareffortview",

@@ -3,8 +3,7 @@ $(function () {
 //    var msiLayer = new MsiLayer();
 //    addLayerToMap("msi", msiLayer, embryo.map);
 
-    var module = angular.module('embryo.sar.views', ['embryo.sar.service', 'embryo.common.service', 'ui.bootstrap.typeahead', 'embryo.validation.compare', 'embryo.datepicker']);
-
+    var module = angular.module('embryo.sar.views', ['embryo.sar.service', 'embryo.common.service', 'ui.bootstrap.typeahead', 'embryo.validation.compare', 'embryo.datepicker', 'embryo.position']);
 
     module.directive('lteq', function () {
         return {
@@ -258,8 +257,26 @@ $(function () {
     targetText[embryo.sar.effort.TargetTypes.Ship120] = "Ship 120 feet";
     targetText[embryo.sar.effort.TargetTypes.Ship225] = "Ship 225 feet";
     targetText[embryo.sar.effort.TargetTypes.Ship330] = "Ship >= 300 feet";
+    targetText[embryo.sar.effort.TargetTypes.Boat17] = "Boat <= 17 feet";
+    targetText[embryo.sar.effort.TargetTypes.Boat23] = "Boat 23 feet";
+    targetText[embryo.sar.effort.TargetTypes.Boat40] = "Boat 40 feet";
+    targetText[embryo.sar.effort.TargetTypes.Boat79] = "Boat 79 feet";
 
-    function targetTypes() {
+    function targetTypes(sruType) {
+        if (sruType === embryo.sar.effort.SruTypes.MerchantVessel) {
+            return [
+                embryo.sar.effort.TargetTypes.PersonInWater,
+                embryo.sar.effort.TargetTypes.Raft4Persons,
+                embryo.sar.effort.TargetTypes.Raft6Persons,
+                embryo.sar.effort.TargetTypes.Raft15Persons,
+                embryo.sar.effort.TargetTypes.Raft25Persons,
+                embryo.sar.effort.TargetTypes.Boat17,
+                embryo.sar.effort.TargetTypes.Boat23,
+                embryo.sar.effort.TargetTypes.Boat40,
+                embryo.sar.effort.TargetTypes.Boat79,
+            ];
+        }
+
         return [
             embryo.sar.effort.TargetTypes.PersonInWater,
             embryo.sar.effort.TargetTypes.Raft1Person,
@@ -290,19 +307,22 @@ $(function () {
     }
 
     var typeText = {}
-    typeText[embryo.sar.effort.VesselTypes.SmallerVessel] = "Small vessel (40 feet)";
-    typeText[embryo.sar.effort.VesselTypes.Ship] = "Ship (50 feet)";
+    typeText[embryo.sar.effort.SruTypes.MerchantVessel] = "Merchant vessel";
+    typeText[embryo.sar.effort.SruTypes.SmallerVessel] = "Small vessel (40 feet)";
+    typeText[embryo.sar.effort.SruTypes.Ship] = "Ship (50 feet)";
 
     var AllocationStatusTxt = {};
     AllocationStatusTxt[embryo.sar.effort.Status.Active] = "Shared";
     AllocationStatusTxt[embryo.sar.effort.Status.DraftSRU] = "No zone";
     AllocationStatusTxt[embryo.sar.effort.Status.DraftZone] = "Not shared";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftPattern] = "Not shared";
     AllocationStatusTxt[embryo.sar.effort.Status.DraftModifiedOnMap] = "Not shared";
 
     var AllocationStatusLabel = {};
     AllocationStatusLabel[embryo.sar.effort.Status.Active] = "label-success";
     AllocationStatusLabel[embryo.sar.effort.Status.DraftSRU] = "label-danger";
     AllocationStatusLabel[embryo.sar.effort.Status.DraftZone] = "label-danger";
+    AllocationStatusLabel[embryo.sar.effort.Status.DraftPattern] = "label-danger";
     AllocationStatusLabel[embryo.sar.effort.Status.DraftModifiedOnMap] = "label-danger";
 
 
@@ -319,12 +339,12 @@ $(function () {
 
             $scope.fatigues = [0.5, 1.0];
             $scope.targetText = targetText;
-            $scope.targetTypes = targetTypes();
 
             $scope.typeText = typeText;
-            $scope.vesselTypes = [
-                embryo.sar.effort.VesselTypes.SmallerVessel,
-                embryo.sar.effort.VesselTypes.Ship
+            $scope.sruTypes = [
+                embryo.sar.effort.SruTypes.MerchantVessel,
+                /*                embryo.sar.effort.SruTypes.SmallerVessel,
+                 embryo.sar.effort.SruTypes.Ship*/
             ]
 
             $scope.visibilityValues = [1, 3, 5, 10, 15, 20];
@@ -343,7 +363,27 @@ $(function () {
                 });
             }
 
+            function patternsMap(patterns) {
+                var result = {};
+                for (var index in patterns) {
+                    var pattern = patterns[index];
+                    if (!result[pattern.effId] || pattern.status != embryo.sar.effort.Status.Active) {
+                        result[pattern.effId] = {
+                            id: pattern._id,
+                            status: pattern.status
+                        };
+                    }
+                }
+                return result
+            }
+
             function loadSRUs() {
+                //TODO request both search pattern and zones
+                // build 2 structures
+                // one array of zones/srus
+                // one object/array of search patterns
+                // use the latter for determining the button to display and implementing the next action
+
                 $scope.srus = []
                 // find docs where sarId === selectedSarId
                 LivePouch.query('sareffortview', {
@@ -352,10 +392,18 @@ $(function () {
                 }).then(function (result) {
                     $timeout(function () {
                         var srus = [];
+                        var patterns = [];
                         for (var index in result.rows) {
-                            srus.push(result.rows[index].doc)
+                            if (result.rows[index].doc.docType === embryo.sar.Type.SearchPattern) {
+                                patterns.push(result.rows[index].doc)
+                            } else {
+                                srus.push(result.rows[index].doc)
+                            }
                         }
                         $scope.srus = srus
+                        $scope.patterns = patternsMap(patterns);
+
+
                     }, 10)
                 }).catch(function (error) {
                     console.log("sareffortview error")
@@ -368,6 +416,7 @@ $(function () {
                 title: "SarEffortAllocation",
                 type: "effort",
                 show: function (context) {
+                    console.log("show")
                     $scope.alertMessages = null;
                     $scope.message = null;
                     $scope.page = context && context.page ? context.page : 'SRU';
@@ -382,6 +431,9 @@ $(function () {
 
                 },
                 close: function () {
+                    console.log("before remove")
+                    SarLayerSingleton.getInstance().removeTemporarySearchPattern();
+                    console.log("after remove")
                     this.doShow = false;
                 }
             };
@@ -395,7 +447,7 @@ $(function () {
             $scope.newUnit = function () {
                 $scope.sru = {
                     fatigue: 1.0,
-                    type: embryo.sar.effort.VesselTypes.SmallerVessel,
+                    type: embryo.sar.effort.SruTypes.MerchantVessel,
                     time: 1
                 }
                 $scope.page = 'editUnit';
@@ -441,6 +493,7 @@ $(function () {
             $scope.saveUnit = function () {
                 // If active, then make a new copy in status draft
                 // the copy will replace the active zone, when itself being activated
+                // TODO move much of this code into SarService where easier to unit test.
                 var sru = clone($scope.sru);
                 if (sru.status === embryo.sar.effort.Status.Active) {
                     delete sru._id;
@@ -452,8 +505,8 @@ $(function () {
                     sru.status = embryo.sar.effort.Status.DraftSRU;
                 }
                 if (!sru._id) {
-                    sru.effSarId = $scope.sarId;
-                    sru._id = "saref-" + Date.now();
+                    sru.sarId = $scope.sarId;
+                    sru._id = "sarEf-" + Date.now();
                     sru.docType = embryo.sar.Type.EffortAllocation;
                     sru.status = embryo.sar.effort.Status.DraftSRU;
                 }
@@ -475,8 +528,12 @@ $(function () {
                 if (!$scope.effort) {
                     $scope.effort = {}
                 }
+                $scope.targetTypes = targetTypes();
 
-                var latest = SarService.latestEffortAllocationZone($scope.srus);
+                var type = $scope.effort.type;
+                var latest = SarService.latestEffortAllocationZone($scope.srus, function (zone) {
+                    return !type || zone.type === type;
+                });
 
                 if (!$scope.effort.target) {
                     $scope.effort.target = latest ? latest.target : embryo.sar.effort.TargetTypes.PersonInWater;
@@ -507,7 +564,7 @@ $(function () {
             }
 
             $scope.calculate = function () {
-                LivePouch.get($scope.effort.effSarId).then(function (sar) {
+                LivePouch.get($scope.effort.sarId).then(function (sar) {
                     var allocations = null;
                     try {
                         console.log("before calculation");
@@ -561,6 +618,9 @@ $(function () {
                 }
 
                 function deleteEffortAllocationsForSameUser(effort) {
+
+                    console.log("deleteEffortAllocationsForSameUser")
+                    console.log(effort)
                     LivePouch.query('sareffortview', {
                         key: effort.sarId,
                         include_docs: true
@@ -568,12 +628,22 @@ $(function () {
                         $timeout(function () {
                             var efforts = [];
                             for (var index in result.rows) {
-                                if (result.rows[index].doc.name == effort.name && result.rows[index].doc._id !== effort._id) {
-                                    efforts.push(result.rows[index].doc)
-                                    result.rows[index].doc._deleted = true;
+                                var doc = result.rows[index].doc;
+
+                                if (doc.docType === embryo.sar.Type.EffortAllocation && doc.name == effort.name
+                                    && doc._id !== effort._id) {
+
+                                    efforts.push(doc)
+                                    doc._deleted = true;
+                                } else if (doc.docType === embryo.sar.Type.SearchPattern && doc.name === effort.name) {
+                                    efforts.push(doc)
+                                    doc._deleted = true;
                                 }
                             }
-                            //delete similar efforts
+
+                            console.log(efforts);
+
+                            //delete allocations and search patterns
                             LivePouch.bulkDocs(efforts).then(function (result) {
                                 console.log("deleted docs")
                                 console.log("persisting effort")
@@ -592,7 +662,148 @@ $(function () {
                 deleteEffortAllocationsForSameUser($scope.effort);
             }
 
+            function pattern(type, text) {
+                return {
+                    type: type,
+                    label: text
+                }
+            }
 
+            function initSearchPattern(zone, latest) {
+                var SearchPattern = embryo.sar.effort.SearchPattern;
+
+                $scope.sp = {
+                    type: latest && latest.type ? latest.type : embryo.sar.effort.SearchPattern.ParallelSweep
+                };
+
+                $scope.SearchPattern = embryo.sar.effort.SearchPattern;
+                $scope.other = {
+                    corners: SarService.searchPatternCspLabels(zone)
+                };
+                $scope.patterns = [
+                    pattern(SearchPattern.ParallelSweep, "Parallel sweep search"),
+                    pattern(SearchPattern.CreepingLine, "Creeping line search"),
+                    pattern(SearchPattern.ExpandingSquare, "Expanding square search"),
+                    pattern(SearchPattern.SectorPattern, "Sector pattern search"),
+                    pattern(SearchPattern.TrackLineReturn, "Track line search, return"),
+                    pattern(SearchPattern.TrackLine, "Track line search, non-return"),
+                ]
+
+                $scope.spImages = {};
+                $scope.spImages[SearchPattern.ParallelSweep] = "img/sar/parallelsweepsearch.png";
+                $scope.spImages[SearchPattern.CreepingLine] = "img/sar/creepinglinesearch.png";
+                $scope.spImages[SearchPattern.ExpandingSquare] = "img/sar/expandingsquaresearch.png";
+                $scope.spImages[SearchPattern.SectorPattern] = "img/sar/.png";
+                $scope.spImages[SearchPattern.TrackLineReturn] = "img/sar/tracklinesearchreturn.png";
+                $scope.spImages[SearchPattern.TrackLine] = "img/sar/tracklinesearchnonreturn.png";
+
+            }
+
+            function findNewestSearchPattern(zone, init) {
+                LivePouch.query('sarsearchpattern', {
+                    key: zone.sarId,
+                    include_docs: true
+                }).then(function (result) {
+                    $timeout(function () {
+                        var patterns = [];
+                        for (var index in result.rows) {
+                            patterns.push(result.rows[index].doc);
+                        }
+                        init(zone, SarService.findLatestModified(patterns));
+                    }, 1)
+                }).catch(function (error) {
+                    console.log("sarsearchpattern error")
+                    console.log(error)
+                });
+
+            }
+
+            $scope.createSearchPattern = function (zone) {
+                $scope.page = "searchPattern";
+                $scope.sp = {};
+                $scope.zone = zone;
+                findNewestSearchPattern(zone, initSearchPattern);
+            }
+
+            $scope.editSearchPattern = function (zone, spId) {
+                $scope.sp = {};
+                LivePouch.get(spId).then(function (pattern) {
+                    $timeout(function () {
+                        $scope.page = "searchPattern";
+                        $scope.zone = zone;
+                        initSearchPattern(zone)
+                        $scope.origPattern = clone(pattern);
+                        $scope.sp = clone(pattern);
+                        $scope.searchPattern = pattern;
+
+                        if (pattern.wps && pattern.wps.length > 0) {
+                            $scope.sp.csp = {
+                                lon: pattern.wps[0].longitude,
+                                lat: pattern.wps[0].latitude
+                            };
+                        }
+                    })
+                }).catch(function (error) {
+                    $timeout(function () {
+                        // FIXME don't treat error as a string be default.
+                        $scope.errorMessages = [error];
+                    })
+                });
+            }
+
+            $scope.calculateCSP = function () {
+                if ($scope.sp && $scope.sp.cornerKey && $scope.sp.cornerKey !== "") {
+                    $scope.sp.csp = SarService.calculateCSP($scope.zone, $scope.sp.cornerKey)
+                } else {
+                    $scope.sp.csp = null;
+                }
+
+                this.generateSearchPattern();
+            }
+
+            $scope.generateSearchPattern = function () {
+                if ($scope.sp.type === embryo.sar.effort.SearchPattern.ParallelSweep && $scope.sp.csp
+                    && $scope.sp.csp.lon && $scope.sp.csp.lat) {
+                    $scope.searchPattern = SarService.generateSearchPattern($scope.zone, $scope.sp);
+                    SarLayerSingleton.getInstance().drawTemporarySearchPattern($scope.searchPattern);
+                } else {
+                    SarLayerSingleton.getInstance().removeTemporarySearchPattern();
+                }
+            }
+
+            $scope.cancelPattern = function () {
+                $scope.sp = {}
+                SarLayerSingleton.getInstance().removeTemporarySearchPattern();
+                $scope.toSrus();
+
+            }
+
+            function saveSearchPattern(pattern) {
+                LivePouch.put(pattern).then(function () {
+                    SarLayerSingleton.getInstance().removeTemporarySearchPattern();
+                    $scope.toSrus();
+                }).catch(function (err) {
+                    // FIXME, don't just assume error is a String
+                    console.log(err);
+                    $scope.errorMessages = [err];
+                });
+            }
+
+            $scope.draftSearchPattern = function () {
+                var pattern = clone($scope.searchPattern);
+                pattern.status = embryo.sar.effort.Status.DraftPattern;
+                saveSearchPattern(pattern);
+            }
+
+            $scope.shareSearchPattern = function () {
+                var pattern = clone($scope.searchPattern);
+                pattern.status = embryo.sar.effort.Status.Active;
+                saveSearchPattern(pattern);
+            }
+
+            $scope.$on("$destroy", function () {
+                SarLayerSingleton.getInstance().removeTemporarySearchPattern();
+            })
         }]);
 
 });
