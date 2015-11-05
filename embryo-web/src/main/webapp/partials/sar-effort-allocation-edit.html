@@ -41,7 +41,8 @@
                             <button class="btn btn-sm"
                                     x-ng-if="SRU.status === AllocationStatus.Active && !patterns[SRU._id] || patterns[SRU._id].status === AllocationStatus.Active"
                                     x-ng-click="createSearchPattern(SRU)">
-                                New
+                                <span x-ng-if="!patterns[SRU._id]">New</span><span
+                                    x-ng-if="patterns[SRU._id]">Replace</span>
                             </button>
                             <button class="btn btn-sm"
                                     x-ng-if="patterns[SRU._id] && patterns[SRU._id].status !== AllocationStatus.Active"

@@ -315,7 +315,7 @@
             B: b,
             C: c,
             D: d,
-            totalSize: radius * radius * 4
+            size: radius * radius * 4
         }
     };
 
@@ -460,7 +460,7 @@
             result.C = result.C.transformPosition(bearing + direction * 90, h - downWind.radius);
         }
         var AB = result.A.rhumbLineDistanceTo(result.B);
-        result.totalSize = DA * AB;
+        result.size = DA * AB;
         return result;
     }
 
@@ -491,7 +491,7 @@
         var area0 = calculateSearchAreaFromTangent(tangents[0], bigCircle, smallCircle, downWind, 1);
         var area1 = calculateSearchAreaFromTangent(tangents[1], bigCircle, smallCircle, downWind, -1);
 
-        this.output.searchArea = area0.totalSize < area1.totalSize ? area0 : area1;
+        this.output.searchArea = area0.size < area1.size ? area0 : area1;
     }
 
 
@@ -1028,34 +1028,26 @@
         return zoneArea;
     };
 
-    EffortAllocationCalculator.prototype.calculate = function (allocationInputs, sar) {
-        var allocations = [];
-        for (var index in allocationInputs) {
-            var input = clone(allocationInputs[index]);
+    EffortAllocationCalculator.prototype.calculate = function (input, sar) {
+        var wu = this.lookupUncorrectedSweepWidth(input.type, input.target, input.visibility);
+        var fw = this.lookupWeatherCorrectionFactor();
+        var fv = this.lookupVelocityCorrection(input.type);
+        var wc = this.calculateCorrectedSweepWidth(wu, fw, fv, input.fatigue);
+        var C = this.calculateCoverageFactor(input.pod)
+        var S = this.calculateTrackSpacing(wc, C);
+        var T = this.calculateSearchEndurance(input.time);
+        var zoneAreaSize = this.calculateZoneAreaSize(input.speed, S, T);
+        var datum = this.getDatum(sar);
+        var area = this.calculateSearchArea(zoneAreaSize, datum, sar.output.searchArea);
 
-            console.log(input)
-            var wu = this.lookupUncorrectedSweepWidth(input.type, input.target, input.visibility);
-            console.log("wu=" + wu)
-            var fw = this.lookupWeatherCorrectionFactor();
-            var fv = this.lookupVelocityCorrection(input.type);
-            var wc = this.calculateCorrectedSweepWidth(wu, fw, fv, input.fatigue);
-            var C = this.calculateCoverageFactor(input.pod)
-            var S = this.calculateTrackSpacing(wc, C);
-            var T = this.calculateSearchEndurance(input.time);
-            var zoneAreaSize = this.calculateZoneAreaSize(input.speed, S, T);
-            var datum = this.getDatum(sar);
-            var area = this.calculateSearchArea(zoneAreaSize, datum, sar.output.searchArea);
+        var allocation = clone(input);
+        allocation.S = S;
+        allocation.area = area;
+        allocation.status = embryo.sar.effort.Status.DraftZone;
+        // FIXME can not rely on local computer time
+        allocation.modified = Date.now();
 
-            var allocation = clone(allocationInputs[index]);
-            allocation.S = S;
-            allocation.area = area;
-            allocation.status = embryo.sar.effort.Status.DraftZone;
-            // FIXME can not rely on local computer time
-            allocation.modified = Date.now();
-            allocations.push(allocation);
-        }
-
-        return allocations;
+        return allocation;
     }
 
     function SearchPatternCalculator() {
@@ -1396,9 +1388,9 @@
                 }
 
                 for (var i in dataArray) {
-                    if (predicate && predicate(dataArray[i].status)) {
+                    if (!predicate) {
                         updateLatestIfNewer(dataArray[i]);
-                    } else {
+                    } else if (predicate(dataArray[i])) {
                         updateLatestIfNewer(dataArray[i]);
                     }
                 }

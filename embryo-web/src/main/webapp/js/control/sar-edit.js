@@ -263,6 +263,9 @@ $(function () {
     targetText[embryo.sar.effort.TargetTypes.Boat79] = "Boat 79 feet";
 
     function targetTypes(sruType) {
+
+        console.log("targetTypes(" + sruType + ")")
+
         if (sruType === embryo.sar.effort.SruTypes.MerchantVessel) {
             return [
                 embryo.sar.effort.TargetTypes.PersonInWater,
@@ -537,9 +540,10 @@ $(function () {
                 if (!$scope.effort) {
                     $scope.effort = {}
                 }
-                $scope.targetTypes = targetTypes();
+                $scope.targetTypes = targetTypes($scope.effort.type);
 
                 var type = $scope.effort.type;
+
                 var latest = SarService.latestEffortAllocationZone($scope.srus, function (zone) {
                     return !type || zone.type === type;
                 });
@@ -574,34 +578,32 @@ $(function () {
 
             $scope.calculate = function () {
                 LivePouch.get($scope.effort.sarId).then(function (sar) {
-                    var allocations = null;
+                    var allocation = null;
                     try {
-                        console.log("before calculation");
-                        allocations = SarService.calculateEffortAllocations([$scope.effort], sar);
-                        console.log("after calculation")
+                        allocation = SarService.calculateEffortAllocations($scope.effort, sar);
                     } catch (error) {
+                        console.log(error)
                         $scope.alertMessages = ["internal error", error];
                     }
 
-                    if (allocations) {
-                        for (var index in allocations) {
-                            LivePouch.put(allocations[index]).then(function () {
-                                // TODO fix problem. View closing after first save
-                                $scope.provider.close();
-                                $scope.$apply(function () {
-                                });
-                            }).catch(function (error) {
-                                console.log(error)
-                                $scope.alertMessages = ["internal error", error];
-                                $scope.$apply(function () {
-                                });
+                    if (allocation) {
+                        LivePouch.put(allocation).then(function () {
+                            // TODO fix problem. View closing after first save
+                            $scope.provider.close();
+                            $scope.$apply(function () {
                             });
-                        }
+                        }).catch(function (error) {
+                            console.log(error)
+                            $scope.alertMessages = ["internal error", error];
+                            $scope.$apply(function () {
+                            });
+                        });
                     }
 
                     $scope.$apply(function () {
                     });
                 }).catch(function (error) {
+                    console.log(error);
                     $scope.alertMessages = ["internal error", error];
                     $scope.$apply(function () {
                     });

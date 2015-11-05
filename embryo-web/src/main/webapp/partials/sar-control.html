@@ -123,7 +123,7 @@
                         </tr>
                     </table>
 
-                    <h6>Positions of the Search Area</h6>
+                    <h6>Search Area</h6>
                     <div class="row">
                         <div class="col-md-4"></div>
                         <div class="col-md-4 nopadding">Latitude</div>
@@ -148,6 +148,12 @@
                         <div class="col-md-4">D</div>
                         <div class="col-md-4 nopadding">{{formatLat(sar.output.searchArea.D.lat)}}</div>
                         <div class="col-md-4 nopadding">{{formatLon(sar.output.searchArea.D.lon)}}</div>
+                    </div>
+                    <div class="row" style="margin-top:5px">
+                        <div class="col-md-4">Size</div>
+                        <div class="col-md-4 nopadding"></div>
+                        <div class="col-md-4 nopadding">
+                            <span>{{formatDecimal(sar.output.searchArea.size, -2)}} nm<sup>2</sup></span></div>
                     </div>
 
                     <h6>Search Area Progression in minutes after CSS</h6>
