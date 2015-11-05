@@ -718,27 +718,33 @@ $(function () {
                 $scope.page = "searchPattern";
                 $scope.sp = {};
                 $scope.zone = zone;
-                findNewestSearchPattern(zone, initSearchPattern);
+                LivePouch.get(zone.sarId).then(function (sar) {
+                    $scope.sar = sar;
+                    findNewestSearchPattern(zone, initSearchPattern);
+                })
             }
 
             $scope.editSearchPattern = function (zone, spId) {
                 $scope.sp = {};
                 LivePouch.get(spId).then(function (pattern) {
-                    $timeout(function () {
-                        $scope.page = "searchPattern";
-                        $scope.zone = zone;
-                        initSearchPattern(zone)
-                        $scope.origPattern = clone(pattern);
-                        $scope.sp = clone(pattern);
-                        $scope.searchPattern = pattern;
+                    $scope.page = "searchPattern";
+                    $scope.zone = zone;
+                    initSearchPattern(zone)
+                    $scope.origPattern = clone(pattern);
+                    $scope.sp = clone(pattern);
+                    $scope.searchPattern = pattern;
 
-                        if (pattern.wps && pattern.wps.length > 0) {
-                            $scope.sp.csp = {
-                                lon: pattern.wps[0].longitude,
-                                lat: pattern.wps[0].latitude
-                            };
-                        }
-                    })
+                    if (pattern.wps && pattern.wps.length > 0) {
+                        $scope.sp.csp = {
+                            lon: pattern.wps[0].longitude,
+                            lat: pattern.wps[0].latitude
+                        };
+                    }
+                    return LivePouch.get(zone.sarId)
+                }).then(function (sar) {
+                    $timeout(function () {
+                        $scope.sar = sar;
+                    });
                 }).catch(function (error) {
                     $timeout(function () {
                         // FIXME don't treat error as a string be default.
@@ -761,6 +767,11 @@ $(function () {
                 if (($scope.sp.type === embryo.sar.effort.SearchPattern.ParallelSweep || $scope.sp.type === embryo.sar.effort.SearchPattern.CreepingLine)
                     && $scope.sp.csp && $scope.sp.csp.lon && $scope.sp.csp.lat) {
                     $scope.searchPattern = SarService.generateSearchPattern($scope.zone, $scope.sp);
+                    SarLayerSingleton.getInstance().drawTemporarySearchPattern($scope.searchPattern);
+                } else if ($scope.sp.type === embryo.sar.effort.SearchPattern.ExpandingSquare) {
+                    var spCopy = clone($scope.sp);
+                    spCopy.sar = $scope.sar;
+                    $scope.searchPattern = SarService.generateSearchPattern($scope.zone, spCopy);
                     SarLayerSingleton.getInstance().drawTemporarySearchPattern($scope.searchPattern);
                 } else {
                     SarLayerSingleton.getInstance().removeTemporarySearchPattern();

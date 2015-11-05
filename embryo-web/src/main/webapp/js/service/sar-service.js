@@ -1141,15 +1141,19 @@
         return CSP;
     }
 
+    SearchPatternCalculator.prototype.onSceneDistance = function (zone) {
+        return zone.time * zone.speed;
+    }
+
     SearchPatternCalculator.getCalculator = function (type) {
         switch (type) {
             case (embryo.sar.effort.SearchPattern.ParallelSweep) :
                 return new ParallelSweepSearchCalculator();
             case (embryo.sar.effort.SearchPattern.CreepingLine) :
                 return new CreepingLineCalculator();
-            /* case (embryo.sar.effort.SearchPattern.ExpandingSquare) :
-             return new DatumLineCalculator();
-             case (embryo.sar.effort.SearchPattern.SectorPattern) :
+            case (embryo.sar.effort.SearchPattern.ExpandingSquare) :
+                return new ExpandingSquareCalculator();
+            /*  case (embryo.sar.effort.SearchPattern.SectorPattern) :
              return new BackTrackCalculator();
              case (embryo.sar.effort.SearchPattern.TrackLine) :
              return new RapidResponseCalculator();
@@ -1173,7 +1177,7 @@
 
         var wayPoints = [this.createWaypoint(index++, CSP, zone.speed, embryo.geo.Heading.RL, zone.S / 2)];
 
-        var onSceneDistance = zone.time * zone.speed;
+        var onSceneDistance = this.onSceneDistance(zone);
         var lastSearchLegBearing = initialSearchLegBearing;
 
         var lastPosition = CSP;
@@ -1198,10 +1202,10 @@
     }
 
 
-    ParallelSweepSearchCalculator.prototype.calculate = function (zone, cornerKey, CSP) {
-        var before = this.cornerPosition(zone, this.cornerKeyBefore(cornerKey));
-        var corner = this.cornerPosition(zone, cornerKey);
-        var after = this.cornerPosition(zone, this.cornerKeyAfter(cornerKey));
+    ParallelSweepSearchCalculator.prototype.calculate = function (zone, sp) {
+        var before = this.cornerPosition(zone, this.cornerKeyBefore(sp.cornerKey));
+        var corner = this.cornerPosition(zone, sp.cornerKey);
+        var after = this.cornerPosition(zone, this.cornerKeyAfter(sp.cornerKey));
 
         var distB2C = before.rhumbLineDistanceTo(corner);
         var distC2A = corner.rhumbLineDistanceTo(after);
@@ -1220,7 +1224,7 @@
             searchLegDistance = distB2C - zone.S;
         }
 
-        var wayPoints = this.createWaypoints(zone, CSP, searchLegDistance, lastSearchLegBearing, crossLegBearing);
+        var wayPoints = this.createWaypoints(zone, sp.csp, searchLegDistance, lastSearchLegBearing, crossLegBearing);
 
         var searchPattern = {
             _id: "sarSp-" + Date.now(),
@@ -1240,10 +1244,10 @@
 
     CreepingLineCalculator.prototype = new ParallelSweepSearchCalculator();
 
-    CreepingLineCalculator.prototype.calculate = function (zone, cornerKey, CSP) {
-        var before = this.cornerPosition(zone, this.cornerKeyBefore(cornerKey));
-        var corner = this.cornerPosition(zone, cornerKey);
-        var after = this.cornerPosition(zone, this.cornerKeyAfter(cornerKey));
+    CreepingLineCalculator.prototype.calculate = function (zone, sp) {
+        var before = this.cornerPosition(zone, this.cornerKeyBefore(sp.cornerKey));
+        var corner = this.cornerPosition(zone, sp.cornerKey);
+        var after = this.cornerPosition(zone, this.cornerKeyAfter(sp.cornerKey));
 
         var distB2C = before.rhumbLineDistanceTo(corner);
         var distC2A = corner.rhumbLineDistanceTo(after);
@@ -1262,7 +1266,7 @@
             searchLegDistance = distB2C - zone.S;
         }
 
-        var wayPoints = this.createWaypoints(zone, CSP, searchLegDistance, lastSearchLegBearing, crossLegBearing);
+        var wayPoints = this.createWaypoints(zone, sp.csp, searchLegDistance, lastSearchLegBearing, crossLegBearing);
 
         var searchPattern = {
             _id: "sarSp-" + Date.now(),
@@ -1277,6 +1281,57 @@
         return searchPattern;
     }
 
+    function ExpandingSquareCalculator() {
+    }
+
+    ExpandingSquareCalculator.prototype = new ParallelSweepSearchCalculator();
+
+    ParallelSweepSearchCalculator.prototype.createWaypoints = function (zone, datum, initialBearing) {
+        var index = 0;
+        var totalDistance = 0;
+        var onSceneDistance = this.onSceneDistance(zone);
+
+        var wayPoints = [this.createWaypoint(index++, datum, zone.speed, embryo.geo.Heading.RL, zone.S / 2)];
+
+        var bearing = (initialBearing - 90 + 360) % 360;
+
+        var lastPosition = datum;
+        while (totalDistance < onSceneDistance) {
+            var distance = Math.ceil(index / 2) * zone.S;
+            var bearing = (bearing + 90 + 360) % 360;
+
+            if (totalDistance + distance > onSceneDistance) {
+                distance = onSceneDistance - totalDistance;
+            }
+            var lastPosition = lastPosition.transformPosition(bearing, distance);
+            wayPoints.push(this.createWaypoint(index++, lastPosition, zone.speed, embryo.geo.Heading.RL, zone.S / 2));
+            totalDistance += distance;
+        }
+        return wayPoints;
+    }
+
+
+    ExpandingSquareCalculator.prototype.calculate = function (zone, sp) {
+        var posA = this.cornerPosition(zone, "A");
+        var posB = this.cornerPosition(zone, "B");
+
+        var datum = sp.sar.output.datum ? sp.sar.output.datum : sp.sar.output.downWind.datum;
+        var initialBearing = posA.rhumbLineBearingTo(posB);
+
+        var wayPoints = this.createWaypoints(zone, new embryo.geo.Position(datum.lon, datum.lat), initialBearing);
+
+        var searchPattern = {
+            _id: "sarSp-" + Date.now(),
+            sarId: zone.sarId,
+            effId: zone._id,
+            type: embryo.sar.effort.SearchPattern.ExpandingSquare,
+            docType: embryo.sar.Type.SearchPattern,
+            name: zone.name,
+            wps: wayPoints
+        }
+
+        return searchPattern;
+    }
 
 
     function getCalculator(sarType) {
@@ -1487,7 +1542,7 @@
             },
             generateSearchPattern: function (zone, sp) {
                 var calculator = SearchPatternCalculator.getCalculator(sp.type);
-                return calculator.calculate(zone, sp.cornerKey, sp.csp);
+                return calculator.calculate(zone, sp);
             }
         };
 
