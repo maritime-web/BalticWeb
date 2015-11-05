@@ -758,8 +758,8 @@ $(function () {
             }
 
             $scope.generateSearchPattern = function () {
-                if ($scope.sp.type === embryo.sar.effort.SearchPattern.ParallelSweep && $scope.sp.csp
-                    && $scope.sp.csp.lon && $scope.sp.csp.lat) {
+                if (($scope.sp.type === embryo.sar.effort.SearchPattern.ParallelSweep || $scope.sp.type === embryo.sar.effort.SearchPattern.CreepingLine)
+                    && $scope.sp.csp && $scope.sp.csp.lon && $scope.sp.csp.lat) {
                     $scope.searchPattern = SarService.generateSearchPattern($scope.zone, $scope.sp);
                     SarLayerSingleton.getInstance().drawTemporarySearchPattern($scope.searchPattern);
                 } else {

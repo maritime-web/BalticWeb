@@ -937,11 +937,6 @@
 
     EffortAllocationCalculator.prototype.lookupUncorrectedSweepWidth = function (sruType, targetType, visibility) {
         if (sruType === embryo.sar.effort.SruTypes.MerchantVessel) {
-            console.log("index=" + Math.floor(visibility / 5))
-            console.log(targetType)
-            console.log(createIamsarMerchantSweepWidths())
-            console.log(createIamsarMerchantSweepWidths()[targetType])
-            console.log(createIamsarMerchantSweepWidths()[targetType][Math.floor(visibility / 5)]);
             return createIamsarMerchantSweepWidths()[targetType][Math.floor(visibility / 5)];
         }
 
@@ -1086,6 +1081,39 @@
         return result;
     }
 
+    SearchPatternCalculator.prototype.wpName = function (index) {
+        var count;
+        if (index < 10) {
+            count = 3;
+        } else if (index < 100) {
+            count = 2;
+        } else if (index < 1000) {
+            count = 1;
+        } else {
+            count = 0;
+        }
+        var name = "WP-";
+        for (var i = 0; i <= count; i++) {
+            name += i;
+        }
+        name += index;
+        return name;
+    }
+
+    SearchPatternCalculator.prototype.createWaypoint = function (i, position, speed, heading, xtd) {
+        // FIXME replace with waypoint constructor
+        return {
+            name: this.wpName(i),
+            latitude: position.lat,
+            longitude: position.lon,
+            speed: speed,
+            heading: heading,
+            xtdPort: xtd,
+            xtdStarBoard: xtd
+        };
+    }
+
+
     SearchPatternCalculator.prototype.cornerKeyBefore = function (cornerKey) {
         // moving clock wise round the rectangle
         var ascii = cornerKey.charCodeAt(0);
@@ -1117,9 +1145,9 @@
         switch (type) {
             case (embryo.sar.effort.SearchPattern.ParallelSweep) :
                 return new ParallelSweepSearchCalculator();
-            /*            case (embryo.sar.effort.SearchPattern.CreepingLine) :
-             return new Creeping();
-             case (embryo.sar.effort.SearchPattern.ExpandingSquare) :
+            case (embryo.sar.effort.SearchPattern.CreepingLine) :
+                return new CreepingLineCalculator();
+            /* case (embryo.sar.effort.SearchPattern.ExpandingSquare) :
              return new DatumLineCalculator();
              case (embryo.sar.effort.SearchPattern.SectorPattern) :
              return new BackTrackCalculator();
@@ -1139,6 +1167,36 @@
 
     ParallelSweepSearchCalculator.prototype = new SearchPatternCalculator();
 
+    ParallelSweepSearchCalculator.prototype.createWaypoints = function (zone, CSP, searchLegDistance, initialSearchLegBearing, crossLegBearing) {
+        var totalDistance = 0;
+        var index = 0;
+
+        var wayPoints = [this.createWaypoint(index++, CSP, zone.speed, embryo.geo.Heading.RL, zone.S / 2)];
+
+        var onSceneDistance = zone.time * zone.speed;
+        var lastSearchLegBearing = initialSearchLegBearing;
+
+        var lastPosition = CSP;
+        var nextIsSearchLeg = true;
+        while (totalDistance < onSceneDistance) {
+            var bearing = nextIsSearchLeg ? embryo.geo.reverseDirection(lastSearchLegBearing) : crossLegBearing;
+            var distance = nextIsSearchLeg ? searchLegDistance : zone.S;
+
+            if (totalDistance + distance > onSceneDistance) {
+                distance = onSceneDistance - totalDistance;
+            }
+            var lastPosition = lastPosition.transformPosition(bearing, distance);
+            wayPoints.push(this.createWaypoint(index++, lastPosition, zone.speed, embryo.geo.Heading.RL, zone.S / 2));
+
+            if (nextIsSearchLeg) {
+                lastSearchLegBearing = bearing;
+            }
+            totalDistance += distance;
+            nextIsSearchLeg = !nextIsSearchLeg;
+        }
+        return wayPoints;
+    }
+
 
     ParallelSweepSearchCalculator.prototype.calculate = function (zone, cornerKey, CSP) {
         var before = this.cornerPosition(zone, this.cornerKeyBefore(cornerKey));
@@ -1148,7 +1206,7 @@
         var distB2C = before.rhumbLineDistanceTo(corner);
         var distC2A = corner.rhumbLineDistanceTo(after);
 
-        var lastSearchLegBearing = after.rhumbLineBearingTo(corner);
+        var lastSearchLegBearing;
         var crossLegBearing;
         var searchLegDistance;
 
@@ -1162,65 +1220,7 @@
             searchLegDistance = distB2C - zone.S;
         }
 
-        function wpName(index) {
-            var count;
-            if (index < 10) {
-                count = 3;
-            } else if (index < 100) {
-                count = 2;
-            } else if (index < 1000) {
-                count = 1;
-            } else {
-                count = 0;
-            }
-            var name = "WP-";
-            for (var i = 0; i <= count; i++) {
-                name += i;
-            }
-            name += index;
-            return name;
-        }
-
-        var totalDistance = 0;
-        var index = 0;
-
-        function waypoint(i, position, speed, heading, xtd) {
-            return {
-                name: wpName(i),
-                latitude: position.lat,
-                longitude: position.lon,
-                speed: speed,
-                heading: heading,
-                xtdPort: xtd,
-                xtdStarBoard: xtd
-            };
-        }
-
-        var wayPoints = [waypoint(index++, CSP, zone.speed, embryo.geo.Heading.RL, zone.S / 2)];
-
-        var onSceneDistance = zone.time * zone.speed;
-
-        console.log(onSceneDistance)
-
-        var lastPosition = CSP;
-        var nextIsSearchLeg = true;
-        while (totalDistance < onSceneDistance) {
-            var bearing = nextIsSearchLeg ? embryo.geo.reverseDirection(lastSearchLegBearing) : crossLegBearing;
-            var distance = nextIsSearchLeg ? searchLegDistance : zone.S;
-
-            if (totalDistance + distance > onSceneDistance) {
-                distance = onSceneDistance - totalDistance;
-            }
-            var lastPosition = lastPosition.transformPosition(bearing, distance);
-            wayPoints.push(waypoint(index++, lastPosition, zone.speed, embryo.geo.Heading.RL, zone.S / 2));
-
-            if (nextIsSearchLeg) {
-                lastSearchLegBearing = bearing;
-            }
-            totalDistance += distance;
-            nextIsSearchLeg = !nextIsSearchLeg;
-
-        }
+        var wayPoints = this.createWaypoints(zone, CSP, searchLegDistance, lastSearchLegBearing, crossLegBearing);
 
         var searchPattern = {
             _id: "sarSp-" + Date.now(),
@@ -1234,6 +1234,49 @@
 
         return searchPattern;
     }
+
+    function CreepingLineCalculator() {
+    }
+
+    CreepingLineCalculator.prototype = new ParallelSweepSearchCalculator();
+
+    CreepingLineCalculator.prototype.calculate = function (zone, cornerKey, CSP) {
+        var before = this.cornerPosition(zone, this.cornerKeyBefore(cornerKey));
+        var corner = this.cornerPosition(zone, cornerKey);
+        var after = this.cornerPosition(zone, this.cornerKeyAfter(cornerKey));
+
+        var distB2C = before.rhumbLineDistanceTo(corner);
+        var distC2A = corner.rhumbLineDistanceTo(after);
+
+        var lastSearchLegBearing;
+        var crossLegBearing;
+        var searchLegDistance;
+
+        if (distC2A <= distB2C) {
+            lastSearchLegBearing = after.rhumbLineBearingTo(corner);
+            crossLegBearing = corner.rhumbLineBearingTo(before);
+            searchLegDistance = distC2A - zone.S;
+        } else {
+            lastSearchLegBearing = before.rhumbLineBearingTo(corner);
+            crossLegBearing = corner.rhumbLineBearingTo(after);
+            searchLegDistance = distB2C - zone.S;
+        }
+
+        var wayPoints = this.createWaypoints(zone, CSP, searchLegDistance, lastSearchLegBearing, crossLegBearing);
+
+        var searchPattern = {
+            _id: "sarSp-" + Date.now(),
+            sarId: zone.sarId,
+            effId: zone._id,
+            type: embryo.sar.effort.SearchPattern.CreepingLine,
+            docType: embryo.sar.Type.SearchPattern,
+            name: zone.name,
+            wps: wayPoints
+        }
+
+        return searchPattern;
+    }
+
 
 
     function getCalculator(sarType) {
