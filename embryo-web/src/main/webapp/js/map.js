@@ -242,6 +242,21 @@ $(function() {
         		map.zoomToExtent(b);
         	}
         },
+        zoomToBounds: function (bounds, force) {
+            if (!map.getExtent().containsBounds(bounds, false, true) || force) {
+                var b = new OpenLayers.Bounds();
+                b.extend(bounds);
+
+                var deltaV = b.top - b.bottom;
+                var deltaH = b.right - b.left;
+                b.bottom -= deltaV * 0.05;
+                b.left -= deltaH * 0.35;
+                b.right += deltaH * 0.05;
+                b.top += deltaV * 0.1;
+
+                map.zoomToExtent(b);
+            }
+        },
         setCenter : function(longitude, latitude, zoom) {
             var pos = transformPosition(longitude, latitude);
 

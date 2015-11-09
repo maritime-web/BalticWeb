@@ -69,14 +69,8 @@ $(function () {
             if (sarId) {
                 $timeout(function () {
                     LivePouch.get(sarId).then(function (sar) {
-                        var center = null;
-                        if (sar.output.datum) {
-                            center = sar.output.datum;
-                        } else if (sar.output.downWind) {
-                            center = sar.output.downWind.datum;
-                        }
-                        embryo.map.setCenter(center.lon, center.lat, 8);
-                    }, 100);
+                        SarLayerSingleton.getInstance().zoomToSarOperation(sar);
+                    }, 5);
                 })
             }
         });

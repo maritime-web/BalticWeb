@@ -184,7 +184,8 @@ function SarLayer() {
 
     });
 
-    function createSearchArea(searchArea, active) {
+    function createSearchArea(sar, active) {
+        var searchArea = sar.output.searchArea;
         var features = [];
         var pointA = embryo.map.createPoint(searchArea.A.lon, searchArea.A.lat);
         var pointB = embryo.map.createPoint(searchArea.B.lon, searchArea.B.lat);
@@ -193,23 +194,28 @@ function SarLayer() {
         var square = new OpenLayers.Geometry.LinearRing([pointA, pointB, pointC, pointD]);
         features.push(new OpenLayers.Feature.Vector(square, {
             type: "area",
-            active: active
+            active: active,
+            sarId: sar._id
         }));
         features.push(new OpenLayers.Feature.Vector(pointA, {
             type: "areaLabel",
-            label: "A"
+            label: "A",
+            sarId: sar._id
         }));
         features.push(new OpenLayers.Feature.Vector(pointB, {
             type: "areaLabel",
-            label: "B"
+            label: "B",
+            sarId: sar._id
         }));
         features.push(new OpenLayers.Feature.Vector(pointC, {
             type: "areaLabel",
-            label: "C"
+            label: "C",
+            sarId: sar._id
         }));
         features.push(new OpenLayers.Feature.Vector(pointD, {
             type: "areaLabel",
-            label: "D"
+            label: "D",
+            sarId: sar._id
         }));
 
         return features;
@@ -228,10 +234,11 @@ function SarLayer() {
         layer.addFeatures(features);
     }
 
-    function addLKP(layer, lkp) {
+    function addLKP(layer, lkp, sarId) {
         var features = [new OpenLayers.Feature.Vector(embryo.map.createPoint(lkp.lon, lkp.lat), {
             label: "LKP",
-            type: "lkpLabel"
+            type: "lkpLabel",
+            sarId: sarId
         })];
         layer.addFeatures(features);
     }
@@ -265,18 +272,20 @@ function SarLayer() {
         return this.containsFeature(featureFilter, this.layers.sar);
     };
 
-    function addSearchRing(features, circle, label, active) {
+    function addSearchRing(id, features, circle, label, active) {
         var radiusInKm = nmToMeters(circle.radius) / 1000;
         var attributes = {
             type: 'circle',
-            active: active
+            active: active,
+            sarId: id
         }
         features.addFeatures(embryo.adt.createRing(circle.datum.lon, circle.datum.lat, radiusInKm, 1, attributes));
 
         var center = embryo.map.createPoint(circle.datum.lon, circle.datum.lat);
         features.addFeatures(new OpenLayers.Feature.Vector(center, {
             type: 'circleLabel',
-            label: label
+            label: label,
+            sarId: id
         }));
     }
 
@@ -308,25 +317,21 @@ function SarLayer() {
     this.drawSar = function (sar) {
         var active = sar.status != embryo.SARStatus.ENDED;
         if (sar.output.datum) {
-            addSearchRing(this.layers.sar, sar.output, "Datum", active);
+            addSearchRing(sar._id, this.layers.sar, sar.output, "Datum", active);
 
-            this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea, active));
+            this.layers.sar.addFeatures(createSearchArea(sar, active));
 
-            addLKP(this.layers.sar, sar.input.lastKnownPosition);
+            addLKP(this.layers.sar, sar.input.lastKnownPosition, sar._id);
             addRdv(this.layers.sar, sar.input.lastKnownPosition, sar.output.datum);
             addDriftVector(this.layers.sar, prepareDriftVectors(sar.input.lastKnownPosition, sar.output.currentPositions, sar.output.windPositions))
         } else if (sar.output.downWind) {
-            addSearchRing(this.layers.sar, sar.output.downWind, "Datum down wind", active);
-            addSearchRing(this.layers.sar, sar.output.min, "Datum min", active);
-            addSearchRing(this.layers.sar, sar.output.max, "Datum max", active);
+            addSearchRing(sar._id, this.layers.sar, sar.output.downWind, "Datum down wind", active);
+            addSearchRing(sar._id, this.layers.sar, sar.output.min, "Datum min", active);
+            addSearchRing(sar._id, this.layers.sar, sar.output.max, "Datum max", active);
 
-            this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea, active));
-            /*
-             this.layers.sar.addFeatures(createSearchArea(sar.output.searchArea2), {
-             type: 'area'
-             });
-             */
-            addLKP(this.layers.sar, sar.input.lastKnownPosition);
+            this.layers.sar.addFeatures(createSearchArea(sar, active));
+
+            addLKP(this.layers.sar, sar.input.lastKnownPosition, sar._id);
             addRdv(this.layers.sar, sar.input.lastKnownPosition, sar.output.downWind.datum);
             addRdv(this.layers.sar, sar.input.lastKnownPosition, sar.output.min.datum);
             addRdv(this.layers.sar, sar.input.lastKnownPosition, sar.output.max.datum);
@@ -349,7 +354,8 @@ function SarLayer() {
             type: "zone",
             status: effAll.status,
             label: effAll.name,
-            id: effAll._id
+            id: effAll._id,
+            sarId: effAll.sarId
         });
 
         if (effAll.status === embryo.sar.effort.Status.Active) {
@@ -365,12 +371,18 @@ function SarLayer() {
         var feature = new OpenLayers.Feature.Vector(multiLine, {
             renderers : [ 'SVGExtended', 'VMLExtended', 'CanvasExtended' ],
             type : "searchPattern",
-            id : pattern._id
+            id: pattern._id,
+            sarId: pattern.sarId
         });
         this.layers.sarEdit.addFeatures([feature]);
         return feature;
     };
 
+    this.zoomToSarOperation = function (sar) {
+        this.zoomToFeatures(function (feature) {
+            return feature.attributes.sarId == sar._id;
+        }, this.zoomLevel == 0)
+    }
 
     this.drawTemporarySearchPattern = function(searchPattern){
         this.removeTemporarySearchPattern();

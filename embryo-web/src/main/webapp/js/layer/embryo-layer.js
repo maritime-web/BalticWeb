@@ -90,6 +90,29 @@ function EmbryoLayer() {
 		this.map.zoomToCoords(minPoint, maxPoint);
     };
 
+    this.zoomToFeatures = function (input, force) {
+
+        function extendBoundsFromFeaturesInLayer(bounds, input, layer) {
+            for (var j in layer.features) {
+                if (typeof input == 'function' && input(layer.features[j])) {
+                    bounds.extend(layer.features[j].geometry.getBounds());
+                } else if (layer.features[j].attributes.id === input) {
+                    bounds.extend(layer.features[j].geometry.getBounds());
+                }
+            }
+            return bounds;
+        }
+
+        var bounds = new OpenLayers.Bounds();
+        for (var index in this.layers) {
+            bounds = extendBoundsFromFeaturesInLayer(bounds, input, this.layers[index]);
+        }
+        if (bounds && bounds.left && bounds.right && bounds.bottom && bounds.top) {
+            this.map.zoomToBounds(bounds, force);
+        }
+    };
+
+
     this.selectListeners = [];
     this.selectableLayers = null;
     this.selectableAttribute = null;
