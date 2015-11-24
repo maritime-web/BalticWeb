@@ -182,4 +182,11 @@ public class DmiForecastParser_EnTest {
         Warnings warnings = new WarningTranslator().fromDanishToEnglish(warningParser.parse());
     }
 
+    @Test
+    public void testGrudseng20151124() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/dmi/grudseng_2015_11_24-10_28_00.xml");
+        RegionForecast forecast = parser.parse(is);
+    }
+
+
 }

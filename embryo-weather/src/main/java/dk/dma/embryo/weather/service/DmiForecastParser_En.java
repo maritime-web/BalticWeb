@@ -148,6 +148,7 @@ public class DmiForecastParser_En {
     public DateTime extractTo(Element gyldighed, DateTime from) throws IOException {
         String text = extractElementText(gyldighed);
         text = text.replace("Forecast, valid to ", "");
+        text = text.replace("Forecast valid to ", "");
         text = text.replace(",", " " + from.getYear());
         text = prettifyDateText(text);
 
