@@ -47,9 +47,9 @@ $(function () {
 
         SarLayerSingleton.getInstance().modified = function (zoneUpdate) {
             $log.debug("zone updated on map");
-            $log.debug(zoneUpdate)
+            $log.debug(zoneUpdate);
             LivePouch.get(zoneUpdate._id).then(function (zone) {
-                angular.extend(zone.area, clone(zoneUpdate.area))
+                angular.extend(zone.area, clone(zoneUpdate.area));
                 // SAR features on map should not be redrawn, when one of the features
                 // have been modified by dragging/resizing it on the map.
                 // Special status therefore introduced for this scenario.
@@ -59,11 +59,11 @@ $(function () {
                 LivePouch.put(zone).then(function () {
                     $log.debug("success saving updated zone")
                 }).catch(function (error) {
-                    $log.error("error saving updated zone")
+                    $log.error("error saving updated zone");
                     $log.error(error);
                 })
             })
-        }
+        };
 
         SarService.sarSelected("SARLayerControl", function (sarId) {
             if (sarId) {
@@ -81,7 +81,7 @@ $(function () {
                 startkey: 'sar',
                 endkey: 'sarx'
             }).then(function (result) {
-                var documents = []
+                var documents = [];
                 for (var index in result.rows) {
                     if (result.rows[index].doc.docType != embryo.sar.Type.EffortAllocation ||
                         result.rows[index].doc.status == embryo.sar.effort.Status.Active ||
@@ -96,7 +96,7 @@ $(function () {
                 $log.debug(sarDocuments)
             }).catch(function (err) {
                 // TODO ERROR MESSAGE
-                $log.error("allDocs err")
+                $log.error("allDocs err");
                 $log.error(err);
             });
         }
@@ -124,7 +124,7 @@ $(function () {
     module.controller("OperationsControl", ['$scope', 'SarService', 'ViewService', '$log', 'LivePouch',
         function ($scope, SarService, ViewService, $log, LivePouch) {
 
-            $scope.sars = []
+            $scope.sars = [];
 
             $scope.SARStatusTxt = SARStatusTxt;
             $scope.SARStatusLabel = SARStatusLabel;
@@ -132,24 +132,13 @@ $(function () {
             var subscription = ViewService.subscribe({
                 name: "OperationsControl",
                 onNewProvider: function () {
-
-                    var viewProviders = ViewService.viewProviders();
-                    $log.debug('onNewProvider, viewProvider=', viewProviders);
-
-                    $log.debug("viewProviders=")
-                    $log.debug(viewProviders)
-
-                    for (var index in viewProviders) {
-                        if (viewProviders[index].type() === 'newSar') {
-                            $scope.newSarProvider = viewProviders[index];
-                        }
-                    }
+                    $scope.newSarProvider = ViewService.viewProviders()['newSar'];
                 }
             });
 
             $scope.$on("$destroy", function () {
                 ViewService.unsubscribe(subscription);
-            })
+            });
 
             LivePouch.changes({
                 since: 'now',
@@ -177,7 +166,7 @@ $(function () {
                 startkey: 'sar-',
                 endkey: 'sar-X'
             }).then(function (result) {
-                var operations = []
+                var operations = [];
                 for (var index in result.rows) {
 
                     operations.push({
@@ -190,23 +179,23 @@ $(function () {
                 $scope.$apply(function () {
                 })
             }).catch(function (err) {
-                $log.error("allDocs err")
+                $log.error("allDocs err");
                 $log.error(err);
             });
 
             $scope.view = function ($event, sar) {
-                $event.preventDefault()
+                $event.preventDefault();
                 $scope.selected.sarIdentifier = sar.name;
                 SarService.selectSar(sar.id);
-            }
+            };
 
             $scope.edit = function ($event, sar) {
                 $event.preventDefault();
                 $scope.newSarProvider.show({sarId: sar.id});
-            }
+            };
 
             $scope.newSar = function () {
-                $log.debug($scope.newSarProvider)
+                $log.debug($scope.newSarProvider);
                 $scope.newSarProvider.show({});
             }
         }]);
@@ -222,19 +211,13 @@ $(function () {
             var subscription = ViewService.subscribe({
                 name: "OperationControl",
                 onNewProvider: function () {
-                    var viewProviders = ViewService.viewProviders();
-                    $log.debug('OperationControl.onNewProvider, viewProvider=', viewProviders);
-                    for (var index in viewProviders) {
-                        if (viewProviders[index].type() === 'newSar') {
-                            $scope.newSarProvider = viewProviders[index];
-                        }
-                    }
+                    $scope.newSarProvider = ViewService.viewProviders()['newSar'];
                 }
             });
 
             $scope.$on("$destroy", function () {
                 ViewService.unsubscribe(subscription);
-            })
+            });
 
             SarService.sarSelected("OperationControl", function (sarId) {
                 $scope.selected.open = !!sarId;
@@ -246,13 +229,13 @@ $(function () {
                 $scope.selected.sarId = sarId;
                 if (sarId) {
                     LivePouch.get(sarId).catch(function (err) {
-                        $log.error(err)
+                        $log.error(err);
                         throw err;
                     }).then(function (res) {
                         $timeout(function () {
                             $scope.selected.sar = res;
                             $scope.sar = res;
-                            $log.debug("operationcontrol")
+                            $log.debug("operationcontrol");
                             $log.debug(res);
                         })
                     })
@@ -260,7 +243,7 @@ $(function () {
                     $scope.selected.sar = null;
                     $scope.sar = null;
                 }
-            })
+            });
 
             $scope.formatTs = formatTime;
             $scope.formatDecimal = embryo.Math.round10;
@@ -270,14 +253,14 @@ $(function () {
                     return ""
                 }
                 return formatLatitude(position.lat) + ", " + formatLongitude(position.lon);
-            }
+            };
 
             $scope.formatLat = formatLatitude;
             $scope.formatLon = formatLongitude;
 
             $scope.edit = function () {
                 $scope.newSarProvider.show({sarId: $scope.sar._id});
-            }
+            };
 
             $scope.confirmEnd = function () {
                 $scope.newSarProvider.show({sarId: $scope.sar._id, page: "end"});
@@ -300,38 +283,32 @@ $(function () {
             var subscription = ViewService.subscribe({
                 name: "EffortAllocationControl",
                 onNewProvider: function () {
-                    var viewProviders = ViewService.viewProviders();
-                    $log.debug('EffortAllocationControl.onNewProvider, viewProvider=', viewProviders);
-                    for (var index in viewProviders) {
-                        if (viewProviders[index].type() === 'effort') {
-                            $scope.effortAllocationProvider = viewProviders[index];
-                        }
-                    }
+                    $scope.effortAllocationProvider = ViewService.viewProviders()['effort'];
                 }
             });
 
             $scope.$on("$destroy", function () {
                 ViewService.unsubscribe(subscription);
-            })
+            });
 
             SarService.sarSelected("EffortAllocationControl", function (sarId) {
-                console.log("sarSelected=" + sarId)
+                console.log("sarSelected=" + sarId);
                 if (sarId) {
                     loadEffortAllocations(sarId);
                     listen4EffortAllocationChanges(sarId);
                 }
-            })
+            });
 
             $scope.effort = function () {
                 $scope.effortAllocationProvider.show({sarId: $scope.selected.sar._id});
-            }
+            };
 
             $scope.formatTs = formatTime;
             $scope.formatDecimal = embryo.Math.round10;
 
             function loadEffortAllocations(sarId) {
 
-                $log.debug("loadEffortAllocations, sarId=" + sarId)
+                $log.debug("loadEffortAllocations, sarId=" + sarId);
 
                 // find docs where sarId === selectedSarId
                 LivePouch.query('sareffortview', {
@@ -348,14 +325,14 @@ $(function () {
                         }
                     }
 
-                    $scope.allocations = allocations
+                    $scope.allocations = allocations;
                     $scope.patterns = patterns;
                     if (!$scope.$$phase) {
                         $scope.$apply(function () {
                         })
                     }
                 }).catch(function (error) {
-                    $log.error("sareffortview error in controller.js")
+                    $log.error("sareffortview error in controller.js");
                     $log.error(error)
                 });
             }
@@ -373,12 +350,12 @@ $(function () {
                     view: "sareffortview",
                     key: sarId
                 }).on('change', function (change) {
-                    $log.debug("listen4EffortAllocationChanges, change=")
-                    $log.debug(change)
+                    $log.debug("listen4EffortAllocationChanges, change=");
+                    $log.debug(change);
                     loadEffortAllocations(sarId);
                 }).on('delete', function (deleted) {
-                    $log.debug("listen4EffortAllocationChanges, deleted=")
-                    $log.debug(deleted)
+                    $log.debug("listen4EffortAllocationChanges, deleted=");
+                    $log.debug(deleted);
                     loadEffortAllocations(sarId);
                 });
             }
@@ -386,7 +363,7 @@ $(function () {
 
     module.controller("LogControl", ['$scope', 'Subject', 'SarService', 'LivePouch', '$log',
         function ($scope, Subject, SarService, LivePouch, $log) {
-        $scope.messages = []
+        $scope.messages = [];
 
         // create a design doc
         var ddoc = {
@@ -400,7 +377,7 @@ $(function () {
                     }.toString()
                 }
             }
-        }
+        };
 
         $scope.formatTs = formatTime;
 
@@ -409,21 +386,21 @@ $(function () {
         LivePouch.get('_design/sarlogview').then(function (existing) {
             ddoc._rev = existing._rev;
             LivePouch.put(ddoc).then(function (result) {
-                $log.debug("ddoc update")
+                $log.debug("ddoc update");
                 $log.debug(result);
             }).catch(function (error) {
-                $log.error("ddoc update error")
+                $log.error("ddoc update error");
                 $log.error(error)
             });
         }).catch(function (error) {
             LivePouch.put(ddoc).then(function (result) {
-                $log.debug("ddoc update")
+                $log.debug("ddoc update");
                 $log.debug(result);
             }).catch(function (error) {
-                $log.error("ddoc update error")
+                $log.error("ddoc update error");
                 $log.error(error)
             });
-        })
+        });
 
 
             function displayMessages(selectedSarId) {
@@ -436,11 +413,11 @@ $(function () {
                 for (var index in result.rows) {
                     messages.push(result.rows[index].doc)
                 }
-                $scope.messages = messages
+                $scope.messages = messages;
                 $scope.$apply(function () {
                 })
             }).catch(function (error) {
-                $log.error("sarlogview error")
+                $log.error("sarlogview error");
                 $log.error(error)
             });
         }
@@ -466,7 +443,7 @@ $(function () {
         SarService.sarSelected("LogCtrl", function (selectedSarId) {
             if (selectedSarId) {
                 if ($scope.selectedSarId != selectedSarId) {
-                    $scope.selectedSarId = selectedSarId
+                    $scope.selectedSarId = selectedSarId;
                     registerListeners();
                     displayMessages(selectedSarId);
                 }
@@ -484,7 +461,7 @@ $(function () {
                 user: Subject.getDetails().userName,
                 ts: Date.now(),
                 value: msg
-            }
+            };
             LivePouch.post(msgObject).then(function (result) {
 
             }).catch(function (err) {
