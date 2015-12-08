@@ -114,7 +114,12 @@
 			<artifactId>enav-model</artifactId>
 		</dependency>
 
-		<!-- Import the Servlet API. -->
+        <dependency>
+            <groupId>dk.dma.embryo</groupId>
+            <artifactId>embryo-sar</artifactId>
+        </dependency>
+
+        <!-- Import the Servlet API. -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -301,7 +306,8 @@
 						<browsers>PhantomJS</browsers>
 					</configuration>
 					<executions>
-						<execution>
+
+                    <execution>
 							<id>karma</id>
 							<goals>
 								<goal>start</goal>
@@ -485,6 +491,7 @@
                                     <executable>grunt</executable>
                                 </configuration>
                             </execution>
+
                             <execution>
                                 <id>jsunit</id>
                                 <phase>test</phase>

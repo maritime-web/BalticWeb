@@ -108,6 +108,12 @@
             </dependency>
 
             <dependency>
+                <groupId>dk.dma.embryo</groupId>
+                <artifactId>embryo-sar</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>dk.dma.enav.embryo</groupId>
                 <artifactId>embryo-map-tiles</artifactId>
                 <version>${project.version}</version>
@@ -527,6 +533,7 @@
         <module>embryo-map-tiles</module>
         <module>embryo-msi</module>
         <module>embryo-metoc</module>
+        <module>embryo-sar</module>
         <module>embryo-reporting</module>
         <module>embryo-weather</module>
         <module>embryo-web</module>
