@@ -73,7 +73,6 @@ function SarLayer() {
                 return "";
             },
             pointRadius: function (feature) {
-                console.log(that.zoomLevel)
                 if (feature.attributes.type === embryo.sar.Type.Log) {
                     if (that.zoomLevel >= 3) {
                         return 15
@@ -99,16 +98,6 @@ function SarLayer() {
             graphicName: "${graphicName}",
             pointRadius: "${pointRadius}"
         }
-
-        /*
-         strokeWidth : 2,
-         strokeColor : "black",
-         fillColor : "yellow",
-         fillOpacity: 1,
-         graphicName : "x",
-         pointRadius : 15
-
-         */
 
         this.layers.sar = new OpenLayers.Layer.Vector("SAR Layer", {
             renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
@@ -413,8 +402,6 @@ function SarLayer() {
             sarId: log.sarId
         });
 
-        console.log("addding log")
-        console.log(feature)
         this.layers.sar.addFeatures([feature])
     };
 
