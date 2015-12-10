@@ -15,7 +15,7 @@
                         <th>Type</th>
                         <th>Search speed</th>
                         <th>Fatigue</th>
-                        <th>Effort Allocation</th>
+                        <th>Sub area</th>
                         <th>Status</th>
                         <th>Search Pattern</th>
                         <th>Status</th>
@@ -28,11 +28,15 @@
                         <td>{{SRU.fatigue}}</td>
                         <td>
                             <button class="btn btn-sm" x-ng-if="SRU.status == AllocationStatus.DraftSRU"
-                                    x-ng-click="toZoneCalculation(SRU)">Calculate zone
+                                    x-ng-click="toSubAreaCalculation(SRU)">Calculate
+                            </button>
+                            <button class="btn btn-sm"
+                                    x-ng-if="SRU.status == AllocationStatus.DraftZone || SRU.status == AllocationStatus.DraftModifiedOnMap || SRU.status == AllocationStatus.Active"
+                                    x-ng-click="toSubAreaCalculation(SRU)">Edit
                             </button>
                             <button class="btn btn-sm btn-success"
                                     x-ng-if="SRU.status == AllocationStatus.DraftZone || SRU.status == AllocationStatus.DraftModifiedOnMap"
-                                    x-ng-click="confirmActivation(SRU)">Share zone
+                                    x-ng-click="confirmActivation(SRU)">Share
                             </button>
                         </td>
                         <td><span class="label" x-ng-class="AllocationStatusLabel[SRU.status]">{{AllocationStatusTxt[SRU.status]}}</span>
@@ -165,7 +169,7 @@
                 </div>
 
             </form>
-            <form x-ng-if="page == 'effort'" name="effortAllocationForm" class="form-horizontal" novalidate>
+            <form x-ng-if="page == 'effort'" name="effortAllocationForm" class="form-horizontal subAreaForm" novalidate>
                 <hr/>
                 <div x-ng-show="alertMessages" class="alert alert-danger">
                     <span x-ng-repeat="msg in alertMessages">{{msg}}<br/></span>
@@ -239,8 +243,7 @@
                     <span class="pull-right">
                         <button type="button" class="btn btn-sm" x-ng-click="toSrus()">Back</button> &nbsp;
                         <button type="button" class="btn btn-primary btn-sm" x-ng-click="calculate()"
-                                x-ng-disabled="effortAllocationForm.$invalid">Calculate Effective
-                            Area
+                                x-ng-disabled="effortAllocationForm.$invalid">Calculate sub area
                         </button>
                     </span>
                 </div>

@@ -15,6 +15,9 @@ function SarLayer() {
         var context = {
 
             color: function (feature) {
+                if (feature.attributes.type == embryo.sar.Type.Log) {
+                    return "black";
+                }
                 if (feature.attributes.type == "zone") {
                     return feature.attributes.status == embryo.sar.effort.Status.Active ? "#7D877A" : "red"
                 }
@@ -53,11 +56,34 @@ function SarLayer() {
                 if (feature.attributes.type == "circleLabel" || feature.attributes.type == "lkpLabel") {
                     return that.zoomLevel >= 3 ? feature.attributes.label : "";
                 }
+                if (feature.attributes.type == embryo.sar.Type.Log) {
+                    return that.zoomLevel >= 2 ? feature.attributes.label : "";
+                }
+
                 var value = feature.attributes.label ? feature.attributes.label : "";
                 return value;
             },
             fontTransparency: function () {
                 return opacityFactor[that.active]
+            },
+            graphicName: function (feature) {
+                if (feature.attributes.type === embryo.sar.Type.Log) {
+                    return "x"
+                }
+                return "";
+            },
+            pointRadius: function (feature) {
+                console.log(that.zoomLevel)
+                if (feature.attributes.type === embryo.sar.Type.Log) {
+                    if (that.zoomLevel >= 3) {
+                        return 15
+                    }
+                    if (that.zoomLevel >= 2) {
+                        return 10
+                    }
+                    return 5
+                }
+                return 1;
             }
         };
 
@@ -69,9 +95,20 @@ function SarLayer() {
             strokeWidth: "${strokeWidth}",
             strokeColor: "${color}",
             strokeOpacity: "${strokeOpacity}",
-            label: "${label}"
+            label: "${label}",
+            graphicName: "${graphicName}",
+            pointRadius: "${pointRadius}"
         }
 
+        /*
+         strokeWidth : 2,
+         strokeColor : "black",
+         fillColor : "yellow",
+         fillOpacity: 1,
+         graphicName : "x",
+         pointRadius : 15
+
+         */
 
         this.layers.sar = new OpenLayers.Layer.Vector("SAR Layer", {
             renderers: ['SVGExtended', 'VMLExtended', 'CanvasExtended'],
@@ -298,12 +335,14 @@ function SarLayer() {
         this.layers.sar.removeAllFeatures();
         this.layers.sarEdit.removeAllFeatures();
         for (var index in sarDocuments) {
-            if (embryo.sar.Type.SearchArea === sarDocuments[index].docType) {
+            if (embryo.sar.Type.SearchArea === sarDocuments[index]['@type']) {
                 this.drawSar(sarDocuments[index]);
-            } else if (embryo.sar.Type.EffortAllocation === sarDocuments[index].docType) {
+            } else if (embryo.sar.Type.EffortAllocation === sarDocuments[index]['@type']) {
                 this.drawEffortAllocationZone(sarDocuments[index]);
-            } else if (embryo.sar.Type.SearchPattern === sarDocuments[index].docType) {
+            } else if (embryo.sar.Type.SearchPattern === sarDocuments[index]['@type']) {
                 this.drawSearchPattern(sarDocuments[index]);
+            } else if (embryo.sar.Type.Log === sarDocuments[index]['@type']) {
+                this.drawLogPosition(sarDocuments[index]);
             }
         }
 
@@ -364,6 +403,21 @@ function SarLayer() {
             this.layers.sarEdit.addFeatures([feature]);
         }
     };
+
+    this.drawLogPosition = function (log) {
+        var point = embryo.map.createPoint(log.lon, log.lat);
+        var feature = new OpenLayers.Feature.Vector(point, {
+            type: log["@type"],
+            label: log.value,
+            id: log._id,
+            sarId: log.sarId
+        });
+
+        console.log("addding log")
+        console.log(feature)
+        this.layers.sar.addFeatures([feature])
+    };
+
 
     this.drawSearchPattern = function (pattern) {
         var points = this.createRoutePoints(pattern)

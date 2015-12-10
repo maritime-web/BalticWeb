@@ -27,7 +27,7 @@ $(function () {
 
     var AllocationStatusTxt = {};
     AllocationStatusTxt[embryo.sar.effort.Status.Active] = "Shared";
-    AllocationStatusTxt[embryo.sar.effort.Status.DraftSRU] = "No zone";
+    AllocationStatusTxt[embryo.sar.effort.Status.DraftSRU] = "No sub area";
     AllocationStatusTxt[embryo.sar.effort.Status.DraftZone] = "Not shared";
     AllocationStatusTxt[embryo.sar.effort.Status.DraftModifiedOnMap] = "Not shared";
 
@@ -83,11 +83,13 @@ $(function () {
             }).then(function (result) {
                 var documents = []
                 for (var index in result.rows) {
-                    if (result.rows[index].doc.docType != embryo.sar.Type.EffortAllocation ||
-                        result.rows[index].doc.status == embryo.sar.effort.Status.Active ||
-                        result.rows[index].doc.status == embryo.sar.effort.Status.DraftZone ||
-                        result.rows[index].doc.status == embryo.sar.effort.Status.DraftModifiedOnMap) {
-                        documents.push(result.rows[index].doc);
+                    var doc = result.rows[index].doc;
+                    if ((doc['@type'] === embryo.sar.Type.Log && doc.lat && doc.lon) ||
+                        doc['@type'] != embryo.sar.Type.EffortAllocation ||
+                        doc.status == embryo.sar.effort.Status.Active ||
+                        doc.status == embryo.sar.effort.Status.DraftZone ||
+                        doc.status == embryo.sar.effort.Status.DraftModifiedOnMap) {
+                        documents.push(doc);
                     }
                 }
                 sarDocuments = documents;
@@ -106,7 +108,7 @@ $(function () {
             live: true,
             filter: function (doc) {
                 return doc._id.startsWith("sar") &&
-                    (doc.docType != embryo.sar.Type.EffortAllocation ||
+                    (doc['@type'] != embryo.sar.Type.EffortAllocation ||
                     doc.status == embryo.sar.effort.Status.Active ||
                     doc.status == embryo.sar.effort.Status.DraftZone)
             }
@@ -151,48 +153,38 @@ $(function () {
                 ViewService.unsubscribe(subscription);
             })
 
+            function loadSarOperations() {
+                LivePouch.allDocs({
+                    include_docs: true,
+                    startkey: 'sar-',
+                    endkey: 'sar-X'
+                }).then(function (result) {
+                    var operations = []
+                    for (var index in result.rows) {
+                        operations.push(SarService.toSmallSarObject(result.rows[index].doc));
+                    }
+                    $scope.sars = operations;
+                    $scope.$apply(function () {
+                    })
+                }).catch(function (err) {
+                    $log.error("allDocs err")
+                    $log.error(err);
+                });
+            }
+
+            loadSarOperations();
+
             LivePouch.changes({
                 since: 'now',
                 live: true,
                 include_docs: true,
                 filter: function (doc) {
-                    return doc._id.startsWith("sar-")
+                    return doc["@type"] && doc["@type"] == embryo.sar.Type.SearchArea;
                 }
-            }).on('create', function (create) {
-                $scope.sars.push(SarService.toSmallSarObject(create.doc));
-                $scope.$apply({})
-            }).on('update', function (update) {
-                var index = SarService.findSarIndex($scope.sars, update.doc._id);
-                $scope.sars[index] = SarService.toSmallSarObject(update.doc);
-                $scope.$apply({})
-            }).on('delete', function (del) {
-                var index = SarService.findSarIndex($scope.sars, del.doc._id);
-                $scope.sars = $scope.sars.splice(index, 1);
-                $scope.$apply({})
+            }).on('change', function () {
+                loadSarOperations();
             });
 
-
-            LivePouch.allDocs({
-                include_docs: true,
-                startkey: 'sar-',
-                endkey: 'sar-X'
-            }).then(function (result) {
-                var operations = []
-                for (var index in result.rows) {
-
-                    operations.push({
-                        id: result.rows[index].doc._id,
-                        name: result.rows[index].doc.input.no,
-                        status: result.rows[index].doc.status
-                    })
-                }
-                $scope.sars = operations;
-                $scope.$apply(function () {
-                })
-            }).catch(function (err) {
-                $log.error("allDocs err")
-                $log.error(err);
-            });
 
             $scope.view = function ($event, sar) {
                 $event.preventDefault()
@@ -279,6 +271,10 @@ $(function () {
                 $scope.newSarProvider.show({sarId: $scope.sar._id});
             }
 
+            $scope.newCoordinator = function () {
+                $scope.newSarProvider.show({sarId: $scope.sar._id, page: "coordinator"});
+            }
+
             $scope.confirmEnd = function () {
                 $scope.newSarProvider.show({sarId: $scope.sar._id, page: "end"});
             }
@@ -334,14 +330,14 @@ $(function () {
                 $log.debug("loadEffortAllocations, sarId=" + sarId)
 
                 // find docs where sarId === selectedSarId
-                LivePouch.query('sareffortview', {
+                LivePouch.query('sar/effortView', {
                     key: sarId,
                     include_docs: true
                 }).then(function (result) {
                     var allocations = [];
                     var patterns = [];
                     for (var index in result.rows) {
-                        if (result.rows[index].doc.docType === embryo.sar.Type.SearchPattern) {
+                        if (result.rows[index].doc['@type'] === embryo.sar.Type.SearchPattern) {
                             patterns.push(result.rows[index].doc)
                         } else {
                             allocations.push(result.rows[index].doc)
@@ -367,10 +363,10 @@ $(function () {
                     include_docs: true,
                     /*
                      filter: function (doc) {
-                     return (doc.docType == embryo.sar.Type.EffortAllocation && doc.sarId == $scope.selected.sarId);
+                     return (doc['@type'] == embryo.sar.Type.EffortAllocation && doc.sarId == $scope.selected.sarId);
                      }*/
                     filter: "_view",
-                    view: "sareffortview",
+                    view: "sar/effortView",
                     key: sarId
                 }).on('change', function (change) {
                     $log.debug("listen4EffortAllocationChanges, change=")
@@ -386,66 +382,42 @@ $(function () {
 
     module.controller("LogControl", ['$scope', 'Subject', 'SarService', 'LivePouch', '$log',
         function ($scope, Subject, SarService, LivePouch, $log) {
-        $scope.messages = []
+            $scope.messages = [];
 
-        // create a design doc
-        var ddoc = {
-            _id: '_design/sarlogview',
-            views: {
-                sarlogview: {
-                    map: function (doc) {
-                        if (doc.msgSarId) {
-                            emit(doc.msgSarId);
-                        }
-                    }.toString()
-                }
-            }
+            $scope.formatTs = formatTime;
+            $scope.position = {use: false}
+            $scope.noPosition = function () {
+                $scope.position.use = false;
+                delete $scope.msg.latitude;
+                delete $scope.msg.longitude;
         }
-
-        $scope.formatTs = formatTime;
-
-
-        // TODO move to CouchDB server
-        LivePouch.get('_design/sarlogview').then(function (existing) {
-            ddoc._rev = existing._rev;
-            LivePouch.put(ddoc).then(function (result) {
-                $log.debug("ddoc update")
-                $log.debug(result);
-            }).catch(function (error) {
-                $log.error("ddoc update error")
-                $log.error(error)
-            });
-        }).catch(function (error) {
-            LivePouch.put(ddoc).then(function (result) {
-                $log.debug("ddoc update")
-                $log.debug(result);
-            }).catch(function (error) {
-                $log.error("ddoc update error")
-                $log.error(error)
-            });
-        })
 
 
             function displayMessages(selectedSarId) {
-            // find docs where sarId === selectedSarId
-            LivePouch.query('sarlogview', {
-                key: selectedSarId,
-                include_docs: true
-            }).then(function (result) {
-                var messages = [];
-                for (var index in result.rows) {
-                    messages.push(result.rows[index].doc)
-                }
-                $scope.messages = messages
-                $scope.$apply(function () {
-                })
-            }).catch(function (error) {
-                $log.error("sarlogview error")
-                $log.error(error)
-            });
+                // find docs where sarId === selectedSarId
+                LivePouch.query('sar/logView', {
+                    key: selectedSarId,
+                    include_docs: true
+                }).then(function (result) {
+                    var messages = [];
+                    for (var index in result.rows) {
+                        messages.push(result.rows[index].doc)
+                    }
+
+                    messages.sort(function (msg1, msg2) {
+                        return msg2.ts - msg1.ts;
+                    })
+
+                    $scope.messages = messages
+                    $scope.$apply(function () {
+                    })
+                }).catch(function (error) {
+                    $log.error("sarlogview error")
+                    $log.error(error)
+                });
         }
 
-        function registerListeners() {
+            function registerListeners(sarId) {
             if ($scope.changes) {
                 $scope.changes.cancel();
             }
@@ -455,11 +427,15 @@ $(function () {
                 live: true,
                 include_docs: true,
                 filter: "_view",
-                view: "sarlogview"
-            }).on('create', function (create) {
+                view: "sar/logView",
+                key: sarId
+            }).on('change', function (create) {
+                displayMessages(sarId)
+                /*
                 $scope.messages.push(create.doc);
                 $scope.$apply(function () {
                 })
+                 */
             });
         }
 
@@ -467,7 +443,7 @@ $(function () {
             if (selectedSarId) {
                 if ($scope.selectedSarId != selectedSarId) {
                     $scope.selectedSarId = selectedSarId
-                    registerListeners();
+                    registerListeners(selectedSarId);
                     displayMessages(selectedSarId);
                 }
             } else {
@@ -477,16 +453,16 @@ $(function () {
 
         $scope.send = function () {
             var msg = $scope.msg;
-            $scope.msg = null;
+            $scope.msg = {};
 
-            var msgObject = {
-                msgSarId: $scope.selectedSarId,
-                user: Subject.getDetails().userName,
-                ts: Date.now(),
-                value: msg
-            }
-            LivePouch.post(msgObject).then(function (result) {
+            msg._id = "sarMsg-" + Date.now() + Math.random();
+            msg.sarId = $scope.selectedSarId;
+            msg.user = Subject.getDetails().userName;
+            msg.ts = Date.now();
+            msg["@type"] = embryo.sar.Type.Log
 
+            LivePouch.post(msg).then(function (result) {
+                $scope.noPosition();
             }).catch(function (err) {
 
             });

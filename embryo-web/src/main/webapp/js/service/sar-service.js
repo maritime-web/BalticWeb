@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var module = angular.module('embryo.sar.service', ['embryo.storageServices']);
+    var module = angular.module('embryo.sar.service', ['embryo.storageServices', 'embryo.authentication.service']);
 
     embryo.sar = {}
     // A way to create an enumeration like construction in JavaScript
@@ -12,7 +12,12 @@
         "BackTrack": "bt"
     })
 
-    embryo.sar.Type = Object.freeze({"SearchArea": "SA", "EffortAllocation": "EA", "SearchPattern": "SP"})
+    embryo.sar.Type = Object.freeze({
+        "SearchArea": "SearchArea",
+        "EffortAllocation": "Allocation",
+        "SearchPattern": "Pattern",
+        "Log": "SarLog"
+    })
 
     embryo.SARStatus = Object.freeze({
         STARTED: "S",
@@ -1041,7 +1046,6 @@
         allocation.status = embryo.sar.effort.Status.DraftZone;
         // FIXME can not rely on local computer time
         allocation.modified = Date.now();
-
         return allocation;
     }
 
@@ -1231,7 +1235,7 @@
             sarId: zone.sarId,
             effId: zone._id,
             type: embryo.sar.effort.SearchPattern.ParallelSweep,
-            docType: embryo.sar.Type.SearchPattern,
+            $type: embryo.sar.Type.SearchPattern,
             name: zone.name,
             wps: wayPoints
         }
@@ -1273,10 +1277,10 @@
             sarId: zone.sarId,
             effId: zone._id,
             type: embryo.sar.effort.SearchPattern.CreepingLine,
-            docType: embryo.sar.Type.SearchPattern,
             name: zone.name,
             wps: wayPoints
         }
+        searchPattern["@type"] = embryo.sar.Type.SearchPattern;
 
         return searchPattern;
     }
@@ -1286,7 +1290,7 @@
 
     ExpandingSquareCalculator.prototype = new ParallelSweepSearchCalculator();
 
-    ParallelSweepSearchCalculator.prototype.createWaypoints = function (zone, datum, initialBearing) {
+    ExpandingSquareCalculator.prototype.createWaypoints = function (zone, datum, initialBearing) {
         var index = 0;
         var totalDistance = 0;
         var onSceneDistance = this.onSceneDistance(zone);
@@ -1325,7 +1329,7 @@
             sarId: zone.sarId,
             effId: zone._id,
             type: embryo.sar.effort.SearchPattern.ExpandingSquare,
-            docType: embryo.sar.Type.SearchPattern,
+            $type: embryo.sar.Type.SearchPattern,
             name: zone.name,
             wps: wayPoints
         }
@@ -1354,84 +1358,9 @@
     }
 
     // USED IN sar-edit.js and sar-controller.js
-    module.service('SarService', ['$log', '$timeout', 'LivePouch', function ($log, $timeout, LivePouch) {
+    module.service('SarService', ['$log', '$timeout', 'Subject', function ($log, $timeout, Subject) {
         var selectedSarById;
         var listeners = {};
-
-        var ddoc = {
-            _id: '_design/sareffortview',
-            views: {
-                sareffortview: {
-                    map: function (doc) {
-                        if (doc.docType === embryo.sar.Type.EffortAllocation || doc.docType === embryo.sar.Type.SearchPattern) {
-                            emit(doc.sarId);
-                        }
-                    }.toString()
-                }
-            }
-        }
-
-        // TODO move to CouchDB server
-        LivePouch.get('_design/sareffortview').then(function (existing) {
-            ddoc._rev = existing._rev;
-            LivePouch.put(ddoc).then(function (result) {
-                $log.debug("sareffortview update")
-                $log.debug(result);
-            }).catch(function (error) {
-                $log.error("sareffortview update error")
-                $log.error(error)
-            });
-        }).catch(function (error) {
-            $log.error("error fetching _design");
-            $log.error(error);
-            LivePouch.put(ddoc).then(function (result) {
-                $log.debug("sareffortview update")
-                $log.debug(result);
-            }).catch(function (error) {
-                $log.error("sareffortview update error")
-                $log.error(error)
-            });
-        });
-
-
-        var ddoc2 = {
-            _id: '_design/sarsearchpattern',
-            views: {
-                sarsearchpattern: {
-                    map: function (doc) {
-                        if (doc.docType === embryo.sar.Type.SearchPattern) {
-                            emit(doc.sarId);
-                        }
-                    }.toString()
-                }
-            }
-        }
-
-
-        // TODO move to CouchDB server
-        LivePouch.get('_design/sarsearchpattern').then(function (existing) {
-            ddoc2._rev = existing._rev;
-            LivePouch.put(ddoc2).then(function (result) {
-                $log.debug("sarsearchpattern update")
-                $log.debug(result);
-            }).catch(function (error) {
-                $log.error("sarsearchpattern update error")
-                $log.error(error)
-            });
-        }).catch(function (error) {
-            $log.error("error fetching _design");
-            $log.error(error);
-            LivePouch.put(ddoc2).then(function (result) {
-                $log.debug("sarsearchpattern update")
-                $log.debug(result);
-            }).catch(function (error) {
-                console.log("catch error")
-                $log.error("sarsearchpattern update error")
-                $log.error(error)
-            });
-        });
-
-
 
         function notifyListeners() {
             for (var key in listeners) {
@@ -1508,9 +1437,11 @@
             createSarOperation: function (sarInput) {
                 var clonedInput = clone(sarInput);
                 var result = {
+                    coordinator: Subject.getDetails().userName,
                     input: clonedInput,
                     output: getCalculator(clonedInput.type).calculate(clonedInput)
                 }
+                result['@type'] = embryo.sar.Type.SearchArea;
                 return result;
             },
             calculateEffortAllocations: function (allocationInputs, sar) {

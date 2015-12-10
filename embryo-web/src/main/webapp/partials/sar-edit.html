@@ -409,6 +409,34 @@
                     </span>
                 </div>
             </div>
+            <form x-ng-if="page == 'coordinator'" name="sarCoordinatorForm" class="form-horizontal" novalidate>
+                <hr/>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        You are currently the coordinator of the search and rescue operation {{sar.no}}. If you wish you
+                        may
+                        assign the coordinator role to another ArcticWeb user.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-3">New coordinator</label>
+
+                    <div class="col-xs-4" x-ng-controller="SARUsersController">
+                        <input placeholder="user / mmsi" x-ng-model="user"
+                               x-typeahead="user.name for user in getUsers($viewValue)"
+                               class="input-sm form-control e-location-typeahead" type="text"/>
+                    </div>
+                </div>
+
+
+                <div class="col-xs-12">
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="assign()">Assign</button>
+                        <button type="button" class="btn btn-sm" x-ng-click="cancel()">Cancel</button>
+                    </span>
+                </div>
+            </form>
         </div>
 
     </div>
