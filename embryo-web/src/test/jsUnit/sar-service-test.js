@@ -3,6 +3,17 @@ describe('embryo.sar', function () {
     describe('SarService', function () {
         var service;
         beforeEach(function () {
+            var mockSubject = {
+                getDetails: function () {
+                    return {
+                        userName: "foo"
+                    };
+                }
+            };
+
+            module('embryo.authentication.service', function ($provide) {
+                $provide.value('Subject', mockSubject);
+            });
             module('embryo.sar.service');
         });
 
