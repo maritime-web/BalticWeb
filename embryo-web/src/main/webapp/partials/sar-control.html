@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <div class="row sarButtons"
-                         x-ng-if="sar.status != SARStatus.ENDED">
+                         x-ng-if="sar.status != SARStatus.ENDED && (selected.sar.coordinator.mmsi == authentication.shipMmsi || selected.sar.coordinator.name === authentication.userName)">
                         <div class="col-md-12">
                             <span class="pull-right">
                                 <button type="button" class="btn btn-primary btn-xs" x-ng-click="newCoordinator()">
@@ -98,7 +98,7 @@
                     <div class="row">
                         <div class="col-md-7">Speed</div>
                         <div class="col-md-5 nopadding">{{formatDecimal(sar.output.rdv.speed ? sar.output.rdv.speed :
-                            sar.output.downWind.rdv.speed, -2)}} kn/h
+                            sar.output.downWind.rdv.speed, -2)}} kn
                         </div>
                     </div>
 
@@ -187,7 +187,7 @@
                     </div>
 
                     <div class="row sarButtons"
-                         x-ng-if="sar.status != SARStatus.ENDED">
+                         x-ng-if="sar.status != SARStatus.ENDED && (selected.sar.coordinator.mmsi == authentication.shipMmsi || selected.sar.coordinator.name === authentication.userName)">
                         <div class="col-md-12">
                             <span class="pull-right">
                                 <button type="button" class="btn btn-xs" x-ng-click="confirmEnd()">End

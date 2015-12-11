@@ -371,11 +371,13 @@ $(function () {
         $scope.isParticipant = function () {
             var allocations = $scope.selected.allocations;
             for (var index in allocations) {
-                if (allocations[index].name === Subject.getDetails().userName) {
+                if (allocations[index].mmsi == Subject.getDetails().shipMmsi || allocations[index].name === Subject.getDetails().userName) {
                     return true;
                 }
             }
-            return $scope.selected.sar.coordinator === Subject.getDetails().userName;
+            var coordinator = $scope.selected.sar.coordinator;
+
+            return coordinator.mmsi == Subject.getDetails().shipMmsi || coordinator.name === Subject.getDetails().userName;
         }
 
         function displayMessages(selectedSarId) {
