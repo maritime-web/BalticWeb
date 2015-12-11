@@ -6,12 +6,11 @@ import com.n1global.acc.json.CouchDbDocument;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 /**
- * Class is used as @type attribute on JSON document.
+ * Simple Class name (i.e. 'User') is added as @type property on JSON document.
  *
  * @type name must be used in JavaScript code.
- * Class name and value of JavaScript variable embryo.sar.Type.SearchArea
  */
-@JsonTypeInfo(use = Id.NAME, property = "@type")
+@JsonTypeInfo(use = Id.NAME)
 public class User extends CouchDbDocument {
 
     private String name;
@@ -29,5 +28,13 @@ public class User extends CouchDbDocument {
 
     public Integer getMmsi() {
         return mmsi;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMmsi(Integer mmsi) {
+        this.mmsi = mmsi;
     }
 }

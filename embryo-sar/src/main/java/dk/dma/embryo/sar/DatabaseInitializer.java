@@ -6,6 +6,8 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.service.UserService;
+import dk.dma.embryo.vessel.model.Vessel;
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +134,25 @@ public class DatabaseInitializer {
 
     }
 
+    private static final String getUserName(SecuredUser user){
+        String name = user.getUserName();
+        if (user.getRole().getClass() == SailorRole.class) {
+            Vessel vessel = ((SailorRole) user.getRole()).getVessel();
+            if(vessel.getAisData() != null && vessel.getAisData().getName() != null){
+                name = vessel.getAisData().getName();
+            }
+        }
+        return name;
+    }
+
+    private static final Integer getMmsi(SecuredUser user){
+        Integer mmsi = null;
+        if (user.getRole().getClass() == SailorRole.class) {
+            mmsi = ((SailorRole) user.getRole()).getVessel().getMmsi().intValue();
+        }
+        return mmsi;
+    }
+
     @Timeout
     public void timeout() throws IOException {
 
@@ -143,19 +164,26 @@ public class DatabaseInitializer {
         //Stream<User> userStream = userDb.getBuiltInView().<User>createDocQuery().asDocs().stream();
         Map<String, User> couchUsers = userStream.filter(d -> d.getClass() == User.class).collect(Collectors.toMap(User::getDocId, user -> user));//filter design docs if exists
 
-        List<User> newUsers = new ArrayList<>();
+        List<User> newOrModifiedUsers = new ArrayList<>();
 
         // Add new users to couchdb
         for (SecuredUser user : users) {
             if (!couchUsers.containsKey(user.getId())) {
-                Integer mmsi = null;
-                if (user.getRole().getClass() == SailorRole.class) {
-                    mmsi = ((SailorRole) user.getRole()).getVessel().getMmsi().intValue();
+                Integer mmsi = getMmsi(user);
+                String name = getUserName(user);
+                newOrModifiedUsers.add(new User(user.getId(), name, mmsi));
+            }else{
+                User couchUser = couchUsers.get(user.getId());
+                Integer mmsi = getMmsi(user);
+                String name = getUserName(user);
+                if(!couchUser.getName().equals(name) || !ObjectUtils.equals(couchUser.getMmsi(), mmsi)){
+                    couchUser.setMmsi(mmsi);
+                    couchUser.setName(name);
+                    newOrModifiedUsers.add(couchUser);
                 }
-                newUsers.add(new User(user.getId(), user.getUserName(), mmsi));
             }
         }
-        userDb.bulk(newUsers);
+        userDb.bulk(newOrModifiedUsers);
 
         //remove deleted users from couchdb
         Map<Long, SecuredUser> securedUsers = users.stream().collect(Collectors.toMap(SecuredUser::getId, u -> u));

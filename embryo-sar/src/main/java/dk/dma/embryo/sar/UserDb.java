@@ -12,27 +12,20 @@ public class UserDb extends CouchDb {
     }
 
 
-    @JsView(map = "if (doc['@type'] === 'User') {" +
+    @JsView(map = "if (doc['@type'] && doc['@type'] === 'User') {" +
             "emit(doc.name.toLowerCase(), doc.mmsi);}", viewName = "userView", designName = "users")
     private CouchDbMapView<String, CouchDbDocument> userView;
+
+    @JsView(map = "if (doc['@type'] && doc['@type'] === 'User') {" +
+            "emit(doc.name.toLowerCase());}", viewName = "usersByNameView", designName = "users")
+    private CouchDbMapView<String, CouchDbDocument> usersByNameView;
+
+    @JsView(map = "if (doc['@type'] && doc['@type'] === 'User') {" +
+            "emit(doc.mmsi);}", viewName = "usersByMmsiView", designName = "users")
+    private CouchDbMapView<String, CouchDbDocument> usersByMmsiView;
+
 
     public CouchDbMapView<String, CouchDbDocument> getUserView() {
         return userView;
     }
-
-    /*
-        // create a design doc
-        var ddoc = {
-            _id: '_design/sarlogview',
-            views: {
-                sarlogview: {
-                    map: function (doc) {
-                        if (doc.msgSarId) {
-                            emit(doc.msgSarId);
-                        }
-                    }.toString()
-                }
-            }
-        }
-     */
 }
