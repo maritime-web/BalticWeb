@@ -1235,10 +1235,10 @@
             sarId: zone.sarId,
             effId: zone._id,
             type: embryo.sar.effort.SearchPattern.ParallelSweep,
-            $type: embryo.sar.Type.SearchPattern,
             name: zone.name,
             wps: wayPoints
         }
+        searchPattern['@type'] = embryo.sar.Type.SearchPattern;
 
         return searchPattern;
     }
@@ -1329,10 +1329,10 @@
             sarId: zone.sarId,
             effId: zone._id,
             type: embryo.sar.effort.SearchPattern.ExpandingSquare,
-            $type: embryo.sar.Type.SearchPattern,
             name: zone.name,
             wps: wayPoints
         }
+        searchPattern['@type'] = embryo.sar.Type.SearchPattern;
 
         return searchPattern;
     }
@@ -1474,6 +1474,34 @@
             generateSearchPattern: function (zone, sp) {
                 var calculator = SearchPatternCalculator.getCalculator(sp.type);
                 return calculator.calculate(zone, sp);
+            },
+            extractDbDocs: function (pouchDbResult) {
+                //TODO make reusable in whole code base
+                var result = []
+                for (var index in pouchDbResult.rows) {
+                    result.push(pouchDbResult.rows[index].doc);
+                }
+                return result;
+            },
+            mergeQueries: function (pouchDbResult, vessels) {
+                var users = []
+                var mmsis = []
+                for (var index in pouchDbResult.rows) {
+                    users.push(pouchDbResult.rows[index].doc);
+                    if (pouchDbResult.rows[index].doc.mmsi) {
+                        mmsis.push(pouchDbResult.rows[index].doc.mmsi)
+                    }
+                }
+
+                for (var index in vessels) {
+                    if (mmsis.indexOf(vessels[index].mmsi) < 0) {
+                        users.push({
+                            name: vessels[index].name,
+                            mmsi: vessels[index].mmsi
+                        })
+                    }
+                }
+                return users;
             }
         };
 

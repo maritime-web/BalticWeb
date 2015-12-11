@@ -235,13 +235,8 @@ $(function () {
             });
         }
 
-
-
-
         $scope.getUsers = function (query) {
-
-
-            UserPouch.get(id).then(function (sar) {
+            UserPouch.get(query).then(function (sar) {
                 sar.status = embryo.SARStatus.ENDED;
                 LivePouch.put(sar).then(function () {
                     $scope.provider.doShow = false;
@@ -251,13 +246,49 @@ $(function () {
                 });
             });
         }
+
     }]);
 
-    module.controller("SARUsersController", ['$scope', '$q', 'UserPouch',
-        function ($scope, $q, UserPouch) {
-            $scope.getUsers = function (query) {
+    module.controller("SARCoordinatorController", ['$scope', 'LivePouch', function ($scope, LivePouch) {
+        $scope.coordinator = {
+            user: {}
+        }
 
-                console.log("getUsers(" + query + ")")
+        $scope.assign = function () {
+            var sarOperation = clone($scope.sarOperation);
+            sarOperation.coordinator = $scope.coordinator.user;
+            LivePouch.put(sarOperation).then(function () {
+                $scope.provider.close();
+            }).catch(function (error) {
+                $scope.alertMessages = [error.toString()];
+            })
+        }
+    }]);
+
+    module.controller("SARUsersController", ['$scope', '$q', 'UserPouch', 'VesselService', 'SarService',
+        function ($scope, $q, UserPouch, VesselService, SarService) {
+
+            $scope.getUsers = function (query) {
+                return function () {
+                    var deferred = $q.defer();
+                    UserPouch.query("users/userView", {
+                        startkey: query.toLowerCase(),
+                        endkey: query.toLowerCase() + "\uffff",
+                        include_docs: true
+                    }).then(function (result) {
+                        var users = SarService.extractDbDocs(result);
+                        deferred.resolve(users);
+                    });
+                    return deferred.promise;
+                }().then(function(res) {
+                    return res;
+                });;
+            }
+            $scope.getUsersAndVessels = function (query) {
+                var vessels = []
+                VesselService.clientSideSearch(query, function (match) {
+                    vessels = match;
+                })
 
                 return function () {
                     var deferred = $q.defer();
@@ -266,22 +297,14 @@ $(function () {
                         endkey: query.toLowerCase() + "\uffff",
                         include_docs: true
                     }).then(function (result) {
-                        console.log(result.rows);
-                        var users  = []
-                        for(var index in result.rows){
-                            users.push(result.rows[index].doc);
-                        }
-
-                        console.log(users)
-
+                        var users = SarService.mergeQueries(result, vessels);
                         deferred.resolve(users);
                     });
                     return deferred.promise;
-                }().then(function(res) {
-                    console.log("res")
-                    console.log(res)
+                }().then(function (res) {
                     return res;
-                });;
+                });
+                ;
             }
         }]);
 
@@ -383,6 +406,9 @@ $(function () {
     AllocationStatusLabel[embryo.sar.effort.Status.DraftPattern] = "label-danger";
     AllocationStatusLabel[embryo.sar.effort.Status.DraftModifiedOnMap] = "label-danger";
 
+    function clone(object) {
+        return JSON.parse(JSON.stringify(object));
+    }
 
     module.controller("SarEffortAllocationController", ['$scope', 'ViewService', 'SarService', 'LivePouch', '$timeout',
         function ($scope, ViewService, SarService, LivePouch, $timeout) {
@@ -452,7 +478,7 @@ $(function () {
                         var srus = [];
                         var patterns = [];
                         for (var index in result.rows) {
-                            if (result.rows[index].dc['@type'] === embryo.sar.Type.SearchPattern) {
+                            if (result.rows[index].doc['@type'] === embryo.sar.Type.SearchPattern) {
                                 patterns.push(result.rows[index].doc)
                             } else {
                                 srus.push(result.rows[index].doc)
@@ -509,15 +535,9 @@ $(function () {
             };
 
 
-            function clone(object) {
-                return JSON.parse(JSON.stringify(object));
-            }
-
             $scope.editSRU = function ($event, SRU) {
                 $event.preventDefault();
                 $scope.sru = clone(SRU);
-                $scope.alertMessages = null;
-                $scope.message = null;
                 $scope.page = 'editUnit';
             }
 
@@ -549,9 +569,7 @@ $(function () {
                 }).then(function () {
                     $scope.toSrus();
                 }).catch(function (error) {
-                    $scope.alertMessages = ["Internal eror removing SRU", error];
-                    console.log("error removing sru")
-                    console.log(error)
+                    $scope.alertMessages = ["Internal error removing SRU", error];
                 });
             }
 
@@ -560,40 +578,6 @@ $(function () {
                 $scope.message = null;
                 loadSRUs();
                 $scope.page = "SRU";
-            }
-
-            $scope.saveUnit = function () {
-                // If active, then make a new copy in status draft
-                // the copy will replace the active zone, when itself being activated
-                // TODO move much of this code into SarService where easier to unit test.
-                var sru = clone($scope.sru);
-                if (sru.status === embryo.sar.effort.Status.Active) {
-                    delete sru._id;
-                    delete sru._rev;
-                    delete sru.area;
-                }
-                if (sru.status === embryo.sar.effort.Status.DraftZone) {
-                    delete sru.area;
-                    sru.status = embryo.sar.effort.Status.DraftSRU;
-                }
-                if (!sru._id) {
-                    sru.sarId = $scope.sarId;
-                    sru._id = "sarEf-" + Date.now();
-                    sru['@type'] = embryo.sar.Type.EffortAllocation;
-                    sru.status = embryo.sar.effort.Status.DraftSRU;
-                }
-                var sru2 = $scope.sru;
-                // FIXME can not rely on local computer time
-                sru.modified = Date.now();
-                $scope.sru = null;
-                LivePouch.put(sru).then(function (result) {
-                    $scope.toSrus();
-                }).catch(function (error) {
-                    console.log(error)
-                    $scope.sru = sru2;
-                    $scope.alertMessages = ["internal error", error];
-                });
-
             }
 
             $scope.initEffortAllocation = function () {
@@ -884,5 +868,56 @@ $(function () {
                 SarLayerSingleton.getInstance().removeTemporarySearchPattern();
             })
         }]);
+
+    module.controller("SarSruController", ['$scope', 'SarService', 'LivePouch', function ($scope, SarService, LivePouch) {
+        $scope.alertMessages = null;
+        $scope.message = null;
+
+        $scope.participant = {
+            user: {}
+        }
+        if ($scope.sru.name) {
+            $scope.participant.user.name = $scope.sru.name;
+        }
+        if ($scope.sru.mmsi) {
+            $scope.participant.user.mmsi = $scope.sru.mmsi;
+        }
+
+        $scope.saveUnit = function () {
+            // If active, then make a new copy in status draft
+            // the copy will replace the active zone, when itself being activated
+            // TODO move much of this code into SarService where easier to unit test.
+            var sru = clone($scope.sru);
+            sru.name = $scope.participant.user.name;
+            sru.mmsi = $scope.participant.user.mmsi;
+            if (sru.status === embryo.sar.effort.Status.Active) {
+                delete sru._id;
+                delete sru._rev;
+                delete sru.area;
+            }
+            if (sru.status === embryo.sar.effort.Status.DraftZone) {
+                delete sru.area;
+                sru.status = embryo.sar.effort.Status.DraftSRU;
+            }
+            if (!sru._id) {
+                sru.sarId = $scope.sarId;
+                sru._id = "sarEf-" + Date.now();
+                sru['@type'] = embryo.sar.Type.EffortAllocation;
+                sru.status = embryo.sar.effort.Status.DraftSRU;
+            }
+            var sru2 = $scope.sru;
+            // FIXME can not rely on local computer time
+            sru.modified = Date.now();
+            $scope.sru = null;
+            LivePouch.put(sru).then(function (result) {
+                $scope.toSrus();
+            }).catch(function (error) {
+                console.log(error)
+                $scope.sru = sru2;
+                $scope.alertMessages = ["internal error", error];
+            });
+
+        }
+    }]);
 
 });

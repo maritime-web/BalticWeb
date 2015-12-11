@@ -311,7 +311,6 @@ $(function () {
             })
 
             SarService.sarSelected("EffortAllocationControl", function (sarId) {
-                console.log("sarSelected=" + sarId)
                 if (sarId) {
                     loadEffortAllocations(sarId);
                     listen4EffortAllocationChanges(sarId);
@@ -344,7 +343,7 @@ $(function () {
                         }
                     }
 
-                    $scope.allocations = allocations
+                    $scope.selected.allocations = allocations
                     $scope.patterns = patterns;
                     if (!$scope.$$phase) {
                         $scope.$apply(function () {
@@ -380,44 +379,53 @@ $(function () {
             }
         }]);
 
-    module.controller("LogControl", ['$scope', 'Subject', 'SarService', 'LivePouch', '$log',
-        function ($scope, Subject, SarService, LivePouch, $log) {
-            $scope.messages = [];
+    module.controller("LogControl", ['$scope', 'Subject', 'SarService', 'LivePouch', '$log', function ($scope, Subject, SarService, LivePouch, $log) {
+        $scope.messages = [];
 
-            $scope.formatTs = formatTime;
-            $scope.position = {use: false}
-            $scope.noPosition = function () {
-                $scope.position.use = false;
-                delete $scope.msg.latitude;
-                delete $scope.msg.longitude;
+        $scope.formatTs = formatTime;
+        $scope.position = {use: false}
+        $scope.noPosition = function () {
+            $scope.position.use = false;
+            delete $scope.msg.latitude;
+            delete $scope.msg.longitude;
         }
 
 
-            function displayMessages(selectedSarId) {
-                // find docs where sarId === selectedSarId
-                LivePouch.query('sar/logView', {
-                    key: selectedSarId,
-                    include_docs: true
-                }).then(function (result) {
-                    var messages = [];
-                    for (var index in result.rows) {
-                        messages.push(result.rows[index].doc)
-                    }
-
-                    messages.sort(function (msg1, msg2) {
-                        return msg2.ts - msg1.ts;
-                    })
-
-                    $scope.messages = messages
-                    $scope.$apply(function () {
-                    })
-                }).catch(function (error) {
-                    $log.error("sarlogview error")
-                    $log.error(error)
-                });
+        $scope.isParticipant = function () {
+            var allocations = $scope.selected.allocations;
+            for (var index in allocations) {
+                if (allocations[index].name === Subject.getDetails().userName) {
+                    return true;
+                }
+            }
+            return $scope.selected.sar.coordinator === Subject.getDetails().userName;
         }
 
-            function registerListeners(sarId) {
+        function displayMessages(selectedSarId) {
+            // find docs where sarId === selectedSarId
+            LivePouch.query('sar/logView', {
+                key: selectedSarId,
+                include_docs: true
+            }).then(function (result) {
+                var messages = [];
+                for (var index in result.rows) {
+                    messages.push(result.rows[index].doc)
+                }
+
+                messages.sort(function (msg1, msg2) {
+                    return msg2.ts - msg1.ts;
+                })
+
+                $scope.messages = messages
+                $scope.$apply(function () {
+                })
+            }).catch(function (error) {
+                $log.error("sarlogview error")
+                $log.error(error)
+            });
+        }
+
+        function registerListeners(sarId) {
             if ($scope.changes) {
                 $scope.changes.cancel();
             }
@@ -431,11 +439,6 @@ $(function () {
                 key: sarId
             }).on('change', function (create) {
                 displayMessages(sarId)
-                /*
-                $scope.messages.push(create.doc);
-                $scope.$apply(function () {
-                })
-                 */
             });
         }
 

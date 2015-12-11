@@ -53,7 +53,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-5">Coordinator:</div>
-                        <div class="col-md-7 nopadding">{{sar.coordinator}}</div>
+                        <div class="col-md-7 nopadding">{{sar.coordinator.name}}</div>
                     </div>
                     <div class="row">
                         <div class="col-md-5">Status:</div>
@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <div class="row sarButtons"
-                         x-ng-if="sar.status != SARStatus.ENDED && sar.coordinator == authentication.userName">
+                         x-ng-if="sar.status != SARStatus.ENDED">
                         <div class="col-md-12">
                             <span class="pull-right">
                                 <button type="button" class="btn btn-primary btn-xs" x-ng-click="newCoordinator()">
@@ -187,7 +187,7 @@
                     </div>
 
                     <div class="row sarButtons"
-                         x-ng-if="sar.status != SARStatus.ENDED && sar.coordinator == authentication.userName">
+                         x-ng-if="sar.status != SARStatus.ENDED">
                         <div class="col-md-12">
                             <span class="pull-right">
                                 <button type="button" class="btn btn-xs" x-ng-click="confirmEnd()">End
@@ -226,7 +226,7 @@
                             <td>Sub area</td>
                             <td>Status</td>
                         </tr>
-                        <tr x-ng-repeat="allocation in allocations track by $index">
+                        <tr x-ng-repeat="allocation in selected.allocations track by $index">
                             <td>{{allocation.name}}</td>
                             <td>{{allocation.S ? formatDecimal(allocation.S, -2) + " nm" : ""}}</td>
                             <td><span x-ng-if="allocation.area.size">{{formatDecimal(allocation.area.size, -2) + " "}}nm<sup>2</sup></span>
@@ -287,9 +287,9 @@
                             <hr class="smallpadding"/>
                         </div>
                     </div>
-                    <hr/>
+                    <hr x-ng-show="isParticipant()"/>
 
-                    <form name="sarLogForm" novalidate>
+                    <form name="sarLogForm" novalidate x-ng-show="isParticipant()">
                         <div class="form-group">
                             <div class="col-xs-12">
                                 <label for="logInput">New message</label>
