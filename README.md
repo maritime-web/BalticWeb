@@ -94,7 +94,7 @@ Thereafter you can login with orasila/qwerty, oratank/qwerty, dmi/qwerty, etc.
 
 ## Instant reload of web resources
 
-Grunt has been setup to run a livereload server, which enables instant reload of static web resources (html, css, js, images) upon saving them. Go to the project folder and execute
+Grunt has been setup to run a livereload server, which enables instant reload of static web resources (html, css, js, images) upon saving them. Go to the embryo-web folder and execute
 
     grunt server
 
