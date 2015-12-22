@@ -13,12 +13,10 @@
  * limitations under the License.
  */
 package dk.dma.embryo.vessel.integration;
-         
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import dk.dma.embryo.vessel.job.MaxSpeedByShipTypeMapper;
-import dk.dma.embryo.vessel.job.ShipTypeCargo;
-import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.json.VesselOverview;
 import dk.dma.embryo.vessel.model.Vessel;
 
@@ -61,6 +59,8 @@ public class AisVessel {
     private Double rot;
     private Double sog;
 //    private String vesselCargo;
+@JsonIgnore
+private VesselType type;
     private String vesselType;
     private Double width;
     private Double maxSpeed;
@@ -93,7 +93,7 @@ public class AisVessel {
 
         // If not already set from ArcticWeb vessel in database -> set it vessel type
         if(!isMaxSpeedSetOnAisVessel && this.getVesselType() != null) {
-            Double maxSpeedByVesselType = MaxSpeedByShipTypeMapper.mapAisShipTypeToMaxSpeed(this.getVesselType());
+            Double maxSpeedByVesselType = ServiceSpeedByShipTypeMapper.lookupSpeed(this.getType());
             if(maxSpeedByVesselType > 0.0) {
                 this.setMaxSpeed(maxSpeedByVesselType);
                 this.setMaxSpeedOrigin(AisVessel.MaxSpeedOrigin.TABLE);
@@ -133,8 +133,8 @@ public class AisVessel {
         vesselOverview.setCallSign(getCallsign());
         vesselOverview.setMoored(getMoored() != null ? getMoored() : false);
 
-        ShipTypeCargo.ShipType shipTypeFromSubType = ShipTypeCargo.ShipType.getShipTypeFromSubType(getVesselType());
-        String type = ShipTypeMapper.getInstance().getColor(shipTypeFromSubType).ordinal() + "";
+        VesselType vesType = VesselType.getShipTypeFromTypeText(getVesselType());
+        String type = ShipTypeMapper.getInstance().getColor(vesType).ordinal() + "";
         vesselOverview.setType(type);
 
         vesselOverview.setInAW(false);
@@ -413,6 +413,14 @@ public class AisVessel {
 
     public void setVesselType(String vesselType) {
         this.vesselType = vesselType;
+    }
+
+    public VesselType getType() {
+        return type;
+    }
+
+    public void setType(VesselType type) {
+        this.type = type;
     }
 
     public Double getWidth() {

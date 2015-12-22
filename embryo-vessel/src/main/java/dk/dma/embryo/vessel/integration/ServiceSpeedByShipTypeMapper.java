@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.vessel.job;
+package dk.dma.embryo.vessel.integration;
 
-public class MaxSpeedByShipTypeMapper {
+public class ServiceSpeedByShipTypeMapper {
     
     /*
      * 
@@ -59,43 +59,66 @@ public class MaxSpeedByShipTypeMapper {
     public static final double TANKER                         = 13.6;
     public static final double SAILING_PLEASURE               = 15.0;
     public static final double CARGO                          = 15.1;
-    public static final double SAR_MILITARY_LAWENVORCEMENT    = 25.0;
+    public static final double SAR_MILITARY_LAW_ENFORCEMENT = 25.0;
     public static final double FISHING                        = 11.5;
     public static final double PASSENGER                      = 19.5;
     public static final double SAILING                        =  6.0;
     public static final double WIG                            = 40.0;
     public static final double NO_MATCH                       =  0.0;
-    
-    public static double mapAisShipTypeToMaxSpeed(String aisShipType) {
-        
-        if(aisShipType == null) {
+
+    public static double lookupSpeed(VesselType aisVesselType) {
+
+        if (aisVesselType == null) {
             return NO_MATCH;
         }
-        
-        switch (aisShipType) {
-            case "Tanker":                  return TANKER;
-            case "Pleasure":                return SAILING_PLEASURE;
-            case "Towing Long/Wide":        return OTHER;
-            case "Cargo":                   return CARGO;
-            case "Tug":                     return OTHER;
-            case "Sar":                     return SAR_MILITARY_LAWENVORCEMENT;
-            case "Pilot":                   return OTHER;
-            case "Military":                return SAR_MILITARY_LAWENVORCEMENT;
-            case "Fishing":                 return FISHING;
-            case "Passenger":               return PASSENGER;
-            case "Towing":                  return OTHER;
-            case "HSC":                     return OTHER;
-            case "Dredging":                return OTHER;
-            case "Sailing":                 return SAILING;
-            case "WIG":                     return WIG;
-            case "Diving":                  return OTHER;
-            case "Port tender":             return OTHER;
-            case "Law enforcement":         return SAR_MILITARY_LAWENVORCEMENT;
-            case "Anti pollution":          return OTHER;
-            case "Ships according to rr":   return OTHER;
-            case "Medical":                 return OTHER;
-            case "Unknown":                 return OTHER;
-            case "Undefined":               return OTHER;
+
+        switch (aisVesselType) {
+            case TANKER:
+                return TANKER;
+            case PLEASURE:
+                return SAILING_PLEASURE;
+            case TOWING_LONG_WIDE:
+                return OTHER;
+            case CARGO:
+                return CARGO;
+            case TUG:
+                return OTHER;
+            case SAR:
+                return SAR_MILITARY_LAW_ENFORCEMENT;
+            case PILOT:
+                return OTHER;
+            case MILITARY:
+                return SAR_MILITARY_LAW_ENFORCEMENT;
+            case FISHING:
+                return FISHING;
+            case PASSENGER:
+                return PASSENGER;
+            case TOWING:
+                return OTHER;
+            case HSC:
+                return OTHER;
+            case DREDGING:
+                return OTHER;
+            case SAILING:
+                return SAILING;
+            case WIG:
+                return WIG;
+            case DIVING:
+                return OTHER;
+            case PORT_TENDER:
+                return OTHER;
+            case LAW_ENFORCEMENT:
+                return SAR_MILITARY_LAW_ENFORCEMENT;
+            case ANTI_POLLUTION:
+                return OTHER;
+            case SHIPS_ACCORDING_TO_RR:
+                return OTHER;
+            case MEDICAL:
+                return OTHER;
+            case UNKNOWN:
+                return OTHER;
+            case UNDEFINED:
+                return OTHER;
             
             default:                        return NO_MATCH;
         }

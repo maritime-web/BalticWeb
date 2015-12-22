@@ -152,10 +152,12 @@ public interface AisTrackClient {
                     vesselType.setEta(vesselStatic.getEta());
                     vesselType.setImoNo(vesselStatic.getImoNo());
                     vesselType.setName(vesselStatic.getName());
-                    
+
                     if(vesselStatic.getShipTypeCargo() != null) {
                         ShipTypeCargo shipTypeCargo = vesselStatic.getShipTypeCargo();
                         vesselType.setVesselType(shipTypeCargo.getShipType());
+                        VesselType type = VesselType.getShipTypeFromTypeText(shipTypeCargo.getShipType());
+                        vesselType.setType(type);
                     }
 
                     if(vesselStatic.getDimensions() != null) {

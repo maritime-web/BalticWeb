@@ -14,6 +14,8 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class VesselOverview {
 
     private Double angle;
@@ -29,8 +31,11 @@ public class VesselOverview {
     /**
      * Only one of "sog", "ssog" or "awsog" is set at a time.
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double sog;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double ssog;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double awsog;
 
     // //////////////////////////////////////////////////////////////////////
