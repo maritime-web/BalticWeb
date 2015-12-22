@@ -14,7 +14,6 @@
  */
 package dk.dma.embryo.vessel.integration;
 
-import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import static dk.dma.embryo.vessel.integration.VesselType.ANTI_POLLUTION;
@@ -40,6 +39,7 @@ import static dk.dma.embryo.vessel.integration.VesselType.TUG;
 import static dk.dma.embryo.vessel.integration.VesselType.UNDEFINED;
 import static dk.dma.embryo.vessel.integration.VesselType.UNKNOWN;
 import static dk.dma.embryo.vessel.integration.VesselType.WIG;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -75,116 +75,116 @@ public class ServiceSpeedByShipTypeMapperTest {
 
     @Test
     public void testLookupSpeedForAisVesselTypeTanker() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TANKER), Is.is(13.6d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TANKER), is(13.6d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypePleasure() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PLEASURE), Is.is(15.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PLEASURE), is(15.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeTowingLongWide() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TOWING_LONG_WIDE), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TOWING_LONG_WIDE), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeCargo() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(CARGO), Is.is(15.1d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(CARGO), is(15.1d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeTug() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TUG), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TUG), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeSar() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(SAR), Is.is(25.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(SAR), is(25.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypePilot() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PILOT), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PILOT), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeMilitary() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(MILITARY), Is.is(25.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(MILITARY), is(25.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeFishing() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(FISHING), Is.is(11.5d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(FISHING), is(11.5d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypePassenger() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PASSENGER), Is.is(19.5d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PASSENGER), is(19.5d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeTowing() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TOWING), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TOWING), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeHsc() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(HSC), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(HSC), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeDredging() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(DREDGING), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(DREDGING), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeSailing() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(SAILING), Is.is(6.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(SAILING), is(6.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeWig() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(WIG), Is.is(40.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(WIG), is(40.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeDiving() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(DIVING), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(DIVING), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypePortTender() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PORT_TENDER), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PORT_TENDER), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeLawEnforcement() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(LAW_ENFORCEMENT), Is.is(25.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(LAW_ENFORCEMENT), is(25.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeAntiPollution() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(ANTI_POLLUTION), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(ANTI_POLLUTION), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeShipsAccordingToRr() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(SHIPS_ACCORDING_TO_RR), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(SHIPS_ACCORDING_TO_RR), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeMedical() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(MEDICAL), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(MEDICAL), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeUnknown() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(UNKNOWN), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(UNKNOWN), is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeUndefined() {
-        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(UNDEFINED), Is.is(12.0d));
+        assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(UNDEFINED), is(12.0d));
     }
 }
