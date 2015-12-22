@@ -75,139 +75,116 @@ public class ServiceSpeedByShipTypeMapperTest {
 
     @Test
     public void testLookupSpeedForAisVesselTypeTanker() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TANKER), Is.is(13.6d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypePleasure() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PLEASURE), Is.is(15.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeTowingLongWide() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TOWING_LONG_WIDE), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeCargo() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(CARGO), Is.is(15.1d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeTug() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TUG), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeSar() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(SAR), Is.is(25.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypePilot() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PILOT), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeMilitary() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(MILITARY), Is.is(25.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeFishing() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(FISHING), Is.is(11.5d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypePassenger() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PASSENGER), Is.is(19.5d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeTowing() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(TOWING), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeHsc() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(HSC), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeDredging() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(DREDGING), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeSailing() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(SAILING), Is.is(6.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeWig() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(WIG), Is.is(40.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeDiving() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(DIVING), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypePortTender() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(PORT_TENDER), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeLawEnforcement() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(LAW_ENFORCEMENT), Is.is(25.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeAntiPollution() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(ANTI_POLLUTION), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeShipsAccordingToRr() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(SHIPS_ACCORDING_TO_RR), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeMedical() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(MEDICAL), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeUnknown() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(UNKNOWN), Is.is(12.0d));
     }
 
     @Test
     public void testLookupSpeedForAisVesselTypeUndefined() {
-        // expect same result no matter if using upper og lower case letters
         assertThat(ServiceSpeedByShipTypeMapper.lookupSpeed(UNDEFINED), Is.is(12.0d));
     }
 }
