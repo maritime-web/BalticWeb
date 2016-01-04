@@ -70,6 +70,7 @@ public class DmiForecastParser_En {
     }
 
     public RegionForecast parse(File file) throws IOException {
+        closeReader = true;
         return parse(new FileInputStream(file));
     }
 
@@ -170,6 +171,7 @@ public class DmiForecastParser_En {
 
         String forecastElemName = "udsigtfor" + name;
         String wavesElemName = "waves" + name;
+        String iceElemName = "ice" + name;
 
         if ("nunapisuateakangia".equals(name)) {
             forecastElemName = "udsigtfornunapisuatakangia";
@@ -182,7 +184,15 @@ public class DmiForecastParser_En {
         forecast.setName(distrikt.getAttribute("name").replace(":", ""));
         forecast.setForecast(extractElementText(distrikt, forecastElemName));
         forecast.setWaves(extractElementText(distrikt, wavesElemName));
+        if (isElementAvailable(distrikt, iceElemName)) {
+            forecast.setIce(extractElementText(distrikt, iceElemName));
+        }
         return forecast;
+    }
+
+    public boolean isElementAvailable(Element root, String elementName) throws IOException {
+        NodeList uniqueList = root.getElementsByTagName(elementName);
+        return uniqueList.getLength() > 0;
     }
 
     public String extractElementText(Element root, String elementName) throws IOException {

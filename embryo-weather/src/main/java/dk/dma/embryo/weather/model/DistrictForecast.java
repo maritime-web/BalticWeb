@@ -25,6 +25,7 @@ public class DistrictForecast {
     private String name;
     private String forecast;
     private String waves;
+    private String ice;
     
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -39,6 +40,12 @@ public class DistrictForecast {
         this.forecast = forecast;
         this.waves = waves;
     }
+
+    public DistrictForecast(String name, String forecast, String waves, String ice) {
+        this(name, forecast, waves);
+        this.ice = ice;
+    }
+
 
     // //////////////////////////////////////////////////////////////////////
     // Object methods
@@ -55,6 +62,7 @@ public class DistrictForecast {
         result = prime * result + ((forecast == null) ? 0 : forecast.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((waves == null) ? 0 : waves.hashCode());
+        result = prime * result + ((ice == null) ? 0 : ice.hashCode());
         return result;
     }
 
@@ -91,6 +99,13 @@ public class DistrictForecast {
         } else if (!waves.equals(other.waves)){
             return false;
         }
+        if (ice == null) {
+            if (other.ice != null) {
+                return false;
+            }
+        } else if (!ice.equals(other.ice)) {
+            return false;
+        }
         return true;
     }
 
@@ -124,5 +139,13 @@ public class DistrictForecast {
 
     public void setWaves(String waves) {
         this.waves = waves;
-    }    
+    }
+
+    public String getIce() {
+        return ice;
+    }
+
+    public void setIce(String ice) {
+        this.ice = ice;
+    }
 }

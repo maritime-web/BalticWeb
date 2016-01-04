@@ -14,22 +14,8 @@
  */
 package dk.dma.embryo.weather.service;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import dk.dma.embryo.weather.model.DistrictForecast;
+import dk.dma.embryo.weather.model.RegionForecast;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -41,8 +27,20 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import dk.dma.embryo.weather.model.DistrictForecast;
-import dk.dma.embryo.weather.model.RegionForecast;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Parser for reading routes in RT3 format. RT3 format is among others used by Transas ECDIS.
@@ -66,6 +64,7 @@ public class DmiForecastParser {
 
     public DmiForecastParser(File file) throws FileNotFoundException {
         this(new FileInputStream(file));
+        closeReader = true;
     }
 
     public RegionForecast parse() throws IOException {

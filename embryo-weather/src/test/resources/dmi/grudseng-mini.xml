@@ -28,16 +28,19 @@
   <daneborg name='Daneborg:'>
     <text>Daneborg:</text>
     <udsigtfordaneborg name='Forecast for Daneborg'>
-      <text>North and northeast, 8 to 13 m/s, this night in western up to
-        gale, 15 m/s, Tuesday east and northeast, 8 to 13 m/s, becoming
-        southeast and decreasing to 5 to 10 m/s. Locally fog and
-        transiently rain from east, mainly moderate to poor visibility,
-        Tuesday gradually some improving visibility from southeast.
+        <text>North and northeast, 3 to 8 m/s, from this evening in western
+            part variable, below 6 m/s. Mainly good visibility.
       </text>
     </udsigtfordaneborg>
     <wavesdaneborg name='Waves Daneborg'>
-      <text>Significant wave height: 3 m. Swells: 2,5 m.</text>
+        <text>Significant wave height: 3 m. Swells: 3 m.</text>
     </wavesdaneborg>
+      <icedaneborg name='Ice_Daneborg'>
+          <text>Old ice and thin first-year ice in the western and central
+              part. Few icebergs and growlers.
+          </text>
+      </icedaneborg>
+
   </daneborg>
   <kangikajik name='Kangikajik:'>
     <text>Kangikajik:</text>
