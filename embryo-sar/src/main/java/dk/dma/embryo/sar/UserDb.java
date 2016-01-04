@@ -17,7 +17,6 @@ package dk.dma.embryo.sar;
 import com.n1global.acc.CouchDb;
 import com.n1global.acc.CouchDbConfig;
 import com.n1global.acc.annotation.JsView;
-import com.n1global.acc.json.CouchDbDocument;
 import com.n1global.acc.view.CouchDbMapView;
 
 public class UserDb extends CouchDb {
@@ -26,20 +25,28 @@ public class UserDb extends CouchDb {
     }
 
 
-    @JsView(map = "if (doc['@type'] && doc['@type'] === 'User') {" +
+    /**
+     * Used server side to update embryo-user Couch database.
+     * It is apparently necessary to emit doc._id for Jackson deserialization to work.
+     */
+    @JsView(map = "if (doc['@class'] && doc['@class'] == 'dk.dma.embryo.sar.User') {" +
+            "emit(doc._id);}", viewName = "usersView", designName = "users")
+    private CouchDbMapView<String, User> usersView;
+
+    @JsView(map = "if (doc['@class'] && doc['@class'] == 'dk.dma.embryo.sar.User') {" +
             "emit(doc.name.toLowerCase(), doc.mmsi);}", viewName = "userView", designName = "users")
-    private CouchDbMapView<String, CouchDbDocument> userView;
+    private CouchDbMapView<String, User> userView;
 
-    @JsView(map = "if (doc['@type'] && doc['@type'] === 'User') {" +
+    @JsView(map = "if (doc['@class'] && doc['@class'] == 'dk.dma.embryo.sar.User') {" +
             "emit(doc.name.toLowerCase());}", viewName = "usersByNameView", designName = "users")
-    private CouchDbMapView<String, CouchDbDocument> usersByNameView;
+    private CouchDbMapView<String, User> usersByNameView;
 
-    @JsView(map = "if (doc['@type'] && doc['@type'] === 'User') {" +
+    @JsView(map = "if (doc['@class'] && doc['@class'] == 'dk.dma.embryo.sar.User') {" +
             "emit(doc.mmsi);}", viewName = "usersByMmsiView", designName = "users")
-    private CouchDbMapView<String, CouchDbDocument> usersByMmsiView;
+    private CouchDbMapView<String, User> usersByMmsiView;
 
 
-    public CouchDbMapView<String, CouchDbDocument> getUserView() {
-        return userView;
+    public CouchDbMapView<String, User> getUsersView() {
+        return usersView;
     }
 }

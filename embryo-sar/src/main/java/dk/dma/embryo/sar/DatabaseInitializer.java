@@ -50,11 +50,11 @@ import java.util.stream.Stream;
 public class DatabaseInitializer {
 
     @Inject
-    @Property("embryo.couchDb.user")
+    @Property(value = "embryo.couchDb.user")
     private String dbUser;
 
     @Inject
-    @Property("embryo.couchDb.password")
+    @Property(value = "embryo.couchDb.password")
     private String dbPassword;
 
     @Inject
@@ -80,6 +80,35 @@ public class DatabaseInitializer {
     private UserService userService;
 
 
+    public void initializeUserDatabase() {
+        if (userDbUrl != null && userDbUrl.trim().length() != 0) {
+            logger.info("Initializing CouchDB with url {}", userDbUrl);
+
+            AsyncHttpClient httpClient = new AsyncHttpClient();
+
+            // automaticly creates database if not already
+
+            CouchDbConfig.Builder builder = new CouchDbConfig.Builder().setHttpClient(httpClient)
+                    .setServerUrl(userDbUrl).setDbName("embryo-user");
+
+            if (dbUser != null && dbUser.trim().length() > 0 && dbPassword != null && dbPassword.trim().length() > 0) {
+                builder.setUser(dbUser).setPassword(dbPassword);
+            }
+
+            userDb = new UserDb(builder.build());
+
+            userDb.cleanupViews();
+
+            if (userCron != null) {
+                timerService.createCalendarTimer(userCron, new TimerConfig(null, false));
+            }
+        } else {
+            logger.info("embryo.couchDb.user.url not set");
+        }
+
+    }
+
+
     @PostConstruct
     public void initialize() {
 
@@ -98,23 +127,8 @@ public class DatabaseInitializer {
             logger.info("embryo.couchDb.live.url not set");
         }
 
-        if (userDbUrl != null && userDbUrl.trim().length() != 0) {
-            logger.info("Initializing CouchDB with url {}", userDbUrl);
 
-            AsyncHttpClient httpClient = new AsyncHttpClient();
-
-            // automaticly creates database if not already existing
-            userDb = new UserDb(new CouchDbConfig.Builder().setHttpClient(httpClient)
-                    .setServerUrl(userDbUrl).setDbName("embryo-user")
-                    .setUser(dbUser).setPassword(dbPassword)
-                    .build());
-            userDb.cleanupViews();
-
-            timerService.createCalendarTimer(userCron, new TimerConfig(null, false));
-        } else {
-            logger.info("embryo.couchDb.user.url not set");
-        }
-
+        initializeUserDatabase();
 
 
         /*
@@ -171,11 +185,8 @@ public class DatabaseInitializer {
     public void timeout() throws IOException {
 
         logger.info("replicating users from MySQL to CouchDB");
-
         List<SecuredUser> users = userService.list();
-
-        Stream<User> userStream = userDb.getUserView().<User>createDocQuery().asDocs().stream();
-        //Stream<User> userStream = userDb.getBuiltInView().<User>createDocQuery().asDocs().stream();
+        Stream<User> userStream = userDb.getUsersView().<User>createDocQuery().asDocs().stream();
         Map<String, User> couchUsers = userStream.filter(d -> d.getClass() == User.class).collect(Collectors.toMap(User::getDocId, user -> user));//filter design docs if exists
 
         List<User> newOrModifiedUsers = new ArrayList<>();
@@ -186,13 +197,15 @@ public class DatabaseInitializer {
                 Integer mmsi = getMmsi(user);
                 String name = getUserName(user);
                 newOrModifiedUsers.add(new User(user.getId(), name, mmsi));
+                logger.info("Adding user with id={} and name={}", user.getId(), name);
             }else{
                 User couchUser = couchUsers.get(user.getId());
                 Integer mmsi = getMmsi(user);
                 String name = getUserName(user);
                 if(!couchUser.getName().equals(name) || !ObjectUtils.equals(couchUser.getMmsi(), mmsi)){
-                    couchUser.setMmsi(mmsi);
+                    couchUser.setMmsi(mmsi.toString());
                     couchUser.setName(name);
+                    logger.info("Updating user with id={} and name={}", user.getId());
                     newOrModifiedUsers.add(couchUser);
                 }
             }
