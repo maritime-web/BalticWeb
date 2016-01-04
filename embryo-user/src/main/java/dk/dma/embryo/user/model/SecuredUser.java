@@ -75,6 +75,13 @@ public class SecuredUser extends BaseEntity<Long> {
 
     public SecuredUser() {}
 
+    /*
+     * Used for unit test
+     */
+    public SecuredUser(Long id) {
+        this.id=id;
+    }
+
     public SecuredUser(String userName, String hashedPassword, byte[] salt) {
         setUserName(userName);
         setHashedPassword(hashedPassword);
