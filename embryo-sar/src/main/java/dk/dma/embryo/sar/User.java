@@ -34,16 +34,16 @@ public class User extends CouchDbDocument {
     }
 
     @JsonCreator
-    public User(@JsonProperty("name") String name, @JsonProperty("mmsi") Integer mmsi) {
+    public User(@JsonProperty("name") String name, @JsonProperty("mmsi") String mmsi) {
         this.name = name;
-        this.mmsi = mmsi == null ? null : mmsi.toString();
+        this.mmsi = mmsi;
     }
 
 
-    public User(Long id, String name, Integer mmsi) {
-        super(id.toString());
+    public User(String id, String name, String mmsi) {
+        super(id);
         this.name = name;
-        this.mmsi = mmsi == null ? null : mmsi.toString();
+        this.mmsi = mmsi;
     }
 
     public String getName() {
