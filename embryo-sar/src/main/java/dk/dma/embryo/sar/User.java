@@ -33,6 +33,9 @@ public class User extends CouchDbDocument {
     private String name;
     private String mmsi;
 
+    // //////////////////////////////////////////////////////////////////////
+    // Constructors
+    // //////////////////////////////////////////////////////////////////////
     public User() {
     }
 
@@ -56,6 +59,9 @@ public class User extends CouchDbDocument {
         return users.stream().filter(d -> d.getClass() == User.class).collect(Collectors.toMap(User::getDocId, user -> user));
     }
 
+    // //////////////////////////////////////////////////////////////////////
+    // Property methods
+    // //////////////////////////////////////////////////////////////////////
     public String getName() {
         return name;
     }
