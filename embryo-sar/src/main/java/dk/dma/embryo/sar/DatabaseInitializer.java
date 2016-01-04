@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by Jesper Tejlgaard on 11/12/15.
@@ -182,13 +181,13 @@ public class DatabaseInitializer {
     }
 
     @Timeout
-    public void timeout() throws IOException {
+    public void replicateUsers() throws IOException {
 
         logger.info("replicating users from MySQL to CouchDB");
         List<SecuredUser> users = userService.list();
 
-        Stream<User> userStream = userDb.getUsersView().<User>createDocQuery().asDocs().stream();
-        Map<String, User> couchUsers = userStream.filter(d -> d.getClass() == User.class).collect(Collectors.toMap(User::getDocId, user -> user));//filter design docs if exists
+        List<User> usersView = userDb.getUsersView().<User>createDocQuery().asDocs();
+        Map<String, User> couchUsers = User.toMap(usersView);
 
         List<User> newOrModifiedUsers = new ArrayList<>();
 

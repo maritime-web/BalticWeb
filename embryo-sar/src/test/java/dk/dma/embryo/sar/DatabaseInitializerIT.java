@@ -32,7 +32,6 @@ import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -43,7 +42,6 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -119,24 +117,7 @@ public class DatabaseInitializerIT {
 
 
     @Test
-    @Ignore
-    public void test() {
-        DatabaseInitializer initialiser = new DatabaseInitializer();
-
-        initialiser.initialize();
-    }
-
-    @Test
-    @Ignore
-    public void test_Timeout() throws IOException {
-        initializer.timeout();
-
-
-        System.out.println("first run finished");
-    }
-
-    @Test
-    public void test_Timeout_Sequentally() throws Exception {
+    public void test_ReplicateUsers_Sequentally() throws Exception {
         List<SecuredUser> mockedUsers = new ArrayList<>();
         mockedUsers.add(new SecuredUserBuilder("John").sailorWithVessel(123456789L).build());
         mockedUsers.add(new SecuredUserBuilder("Dea").sailorWithVessel(987654321L).build());
@@ -146,15 +127,15 @@ public class DatabaseInitializerIT {
 
 
         System.out.println("first run starting");
-        initializer.timeout();
+        initializer.replicateUsers();
         System.out.println("first run finished");
         Thread.sleep(500);
         System.out.println("second run starting");
-        initializer.timeout();
+        initializer.replicateUsers();
         System.out.println("second run finished");
         Thread.sleep(500);
         System.out.println("third run starting");
-        initializer.timeout();
+        initializer.replicateUsers();
         System.out.println("third run finished");
     }
 
