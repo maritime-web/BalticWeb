@@ -187,15 +187,10 @@ public class DatabaseInitializer {
         logger.info("replicating users from MySQL to CouchDB");
         List<SecuredUser> users = userService.list();
 
-        List<User> userList = userDb.getUsersView().<User>createDocQuery().asDocs();
-        System.out.println(userList);
-
         Stream<User> userStream = userDb.getUsersView().<User>createDocQuery().asDocs().stream();
         Map<String, User> couchUsers = userStream.filter(d -> d.getClass() == User.class).collect(Collectors.toMap(User::getDocId, user -> user));//filter design docs if exists
 
         List<User> newOrModifiedUsers = new ArrayList<>();
-
-        System.out.println(couchUsers);
 
         // Add new users to couchdb
         for (SecuredUser user : users) {
