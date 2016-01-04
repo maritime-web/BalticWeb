@@ -43,8 +43,8 @@ public class SarDb extends CouchDb {
 
      */
     // TODO modify async-couchdb-client such that javascript attribute is not added to design documents.
-    @JsView(map = "if (doc['@type'] === 'Allocation' || doc['@type'] === 'Pattern') {" +
-            "emit(doc.sarId);}", viewName = "effortView", designName = "sar")
+    @JsView(map = "if (doc['@type'] === 'Allocation' || doc['@type'] === 'Pattern') {emit(doc.sarId);}",
+            viewName = "effortView", designName = "sar")
     private CouchDbMapView<String, CouchDbDocument> effortView;
 
     /*
