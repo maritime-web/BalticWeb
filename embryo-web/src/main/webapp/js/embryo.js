@@ -27,7 +27,7 @@ embryo.baseUrlForAngularResource = "";
 embryo.projection = "EPSG:900913";
 
 embryo.loadFrequence = 15 * 60 * 1000;
-embryo.defaultTimeout = 30000;
+embryo.defaultTimeout = 60000;
 
 embryo.defaultFontFamily = "'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif";
 
