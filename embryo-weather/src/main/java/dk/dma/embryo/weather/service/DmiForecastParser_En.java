@@ -47,7 +47,7 @@ import java.util.Set;
 
 /**
  * Parser for reading routes in RT3 format. RT3 format is among others used by Transas ECDIS.
- * 
+ *
  * @author Jesper Tejlgaard
  */
 
@@ -70,6 +70,7 @@ public class DmiForecastParser_En {
     }
 
     public RegionForecast parse(File file) throws IOException {
+        closeReader = true;
         return parse(new FileInputStream(file));
     }
 
@@ -109,7 +110,7 @@ public class DmiForecastParser_En {
                         result.setDesc(text);
                     } else if (districts.contains(elem.getNodeName())) {
                         result.getDistricts().add(extractDistrikt(elem));
-                    } 
+                    }
                 }
             }
         } catch (RuntimeException | ParserConfigurationException | SAXException e) {
@@ -148,6 +149,7 @@ public class DmiForecastParser_En {
     public DateTime extractTo(Element gyldighed, DateTime from) throws IOException {
         String text = extractElementText(gyldighed);
         text = text.replace("Forecast, valid to ", "");
+        text = text.replace("Forecast valid to ", "");
         text = text.replace(",", " " + from.getYear());
         text = prettifyDateText(text);
 
@@ -169,6 +171,7 @@ public class DmiForecastParser_En {
 
         String forecastElemName = "udsigtfor" + name;
         String wavesElemName = "waves" + name;
+        String iceElemName = "ice" + name;
 
         if ("nunapisuateakangia".equals(name)) {
             forecastElemName = "udsigtfornunapisuatakangia";
@@ -181,7 +184,15 @@ public class DmiForecastParser_En {
         forecast.setName(distrikt.getAttribute("name").replace(":", ""));
         forecast.setForecast(extractElementText(distrikt, forecastElemName));
         forecast.setWaves(extractElementText(distrikt, wavesElemName));
+        if (isElementAvailable(distrikt, iceElemName)) {
+            forecast.setIce(extractElementText(distrikt, iceElemName));
+        }
         return forecast;
+    }
+
+    public boolean isElementAvailable(Element root, String elementName) throws IOException {
+        NodeList uniqueList = root.getElementsByTagName(elementName);
+        return uniqueList.getLength() > 0;
     }
 
     public String extractElementText(Element root, String elementName) throws IOException {

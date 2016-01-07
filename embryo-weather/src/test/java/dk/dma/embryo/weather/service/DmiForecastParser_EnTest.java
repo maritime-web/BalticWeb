@@ -41,15 +41,16 @@ public class DmiForecastParser_EnTest {
 
     @Inject
     DmiForecastParser_En parser;
-    
+
     @Test
     public void test() throws IOException {
 
         List<DistrictForecast> expected = new ArrayList<>();
         expected.add(new DistrictForecast(
                 "Daneborg",
-                "North and northeast, 8 to 13 m/s, this night in western up to gale, 15 m/s, Tuesday east and northeast, 8 to 13 m/s, becoming southeast and decreasing to 5 to 10 m/s. Locally fog and transiently rain from east, mainly moderate to poor visibility, Tuesday gradually some improving visibility from southeast.",
-                "Significant wave height: 3 m. Swells: 2,5 m."));
+                "North and northeast, 3 to 8 m/s, from this evening in western part variable, below 6 m/s. Mainly good visibility.",
+                "Significant wave height: 3 m. Swells: 3 m.",
+                "Old ice and thin first-year ice in the western and central part. Few icebergs and growlers."));
         expected.add(new DistrictForecast(
                 "Kangikajik",
                 "Gradually north and northwest, increasing up to gale 10 to 18 m/s, Tuesday gradually cyclonic variable, up to gale about 15 m/s, in southernmost part mainly southwest and south, 5 to 10 m/s. Rain and moderate to poor visibility.",
@@ -131,7 +132,7 @@ public class DmiForecastParser_EnTest {
         Assert.assertEquals(1407153600000L, forecast.getTo().getTime());
         Assert.assertEquals(14, forecast.getDistricts().size());
     }
-    
+
     @Test
     public void test20141209FailedInProduction() throws IOException {
         InputStream is = getClass().getResourceAsStream("/dmi/grudseng-2014-12-09.xml");
@@ -174,7 +175,7 @@ public class DmiForecastParser_EnTest {
         InputStream is = getClass().getResourceAsStream("/dmi/grudsengxml-14-09-2014--00-23-21.xml");
         RegionForecast forecast = parser.parse(is);
     }
-    
+
     @Test
     public void testGronvar() throws IOException {
         InputStream is = getClass().getResourceAsStream("/dmi/gronvarxml-14-09-2014--00-19-54.xml");

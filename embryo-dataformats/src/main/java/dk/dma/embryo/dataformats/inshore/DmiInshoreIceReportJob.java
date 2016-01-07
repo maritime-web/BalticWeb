@@ -14,9 +14,31 @@
  */
 package dk.dma.embryo.dataformats.inshore;
 
-import static dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportPredicates.acceptedReports;
-import static dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportPredicates.rejectedReports;
+import com.google.common.collect.Collections2;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.common.util.NamedtimeStamps;
+import dk.dma.embryo.dataformats.job.EmbryoFTPFileFilters;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import javax.ejb.ScheduleExpression;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,36 +52,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
-import javax.ejb.ScheduleExpression;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.Timeout;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
-import javax.inject.Inject;
-
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-
-import com.google.common.collect.Collections2;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.common.util.NamedtimeStamps;
-import dk.dma.embryo.dataformats.job.EmbryoFTPFileFilters;
+import static dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportPredicates.acceptedReports;
+import static dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportPredicates.rejectedReports;
 
 /**
- * 
+ *
  * @author Jesper Tejlgaard
  */
 @Singleton
@@ -74,13 +71,13 @@ public class DmiInshoreIceReportJob {
 
     @Inject
     private EmbryoLogService embryoLogService;
-    
+
     @Inject
     private InshoreIceReportService iceInformationService;
 
     @Inject
     private PropertyFileService propertyFileService;
-    
+
     @Inject
     private MailSender mailSender;
 
@@ -103,7 +100,7 @@ public class DmiInshoreIceReportJob {
     @Inject
     @Property("embryo.inshoreIceReport.dmi.ftp.baseDirectory")
     private String baseDir;
-    
+
     @Inject
     @Property("embryo.inshoreIceReport.dmi.ftp.ageInDays")
     private Integer ageInDays;
@@ -156,7 +153,13 @@ public class DmiInshoreIceReportJob {
                 logger.info("Making local directory for DMI files: " + localDmiDir);
                 new File(localDmiDir).mkdirs();
             }
-            
+
+            if (!new File(tmpDir).exists()) {
+                logger.info("Making local directory for temporary files: " + tmpDir);
+                new File(tmpDir).mkdirs();
+            }
+
+
             LocalDate mapsYoungerThan = LocalDate.now().minusDays(ageInDays).minusDays(1);
 
             FTPClient ftp = connect();
@@ -171,12 +174,12 @@ public class DmiInshoreIceReportJob {
                 }
 
                 List<FTPFile> files = Arrays.asList(ftp.listFiles(null, EmbryoFTPFileFilters.FILES));
-                
+
                 logger.debug("files: {}" , files);
-                
+
                 Collection<FTPFile> rejected = Collections2.filter(files, rejectedReports());
                 Collection<FTPFile> accepted = Collections2.filter(files, acceptedReports(mapsYoungerThan));
-                
+
                 logger.debug("rejected: {}", rejected);
 
                 for (FTPFile file : accepted) {
@@ -193,7 +196,7 @@ public class DmiInshoreIceReportJob {
             } finally {
                 ftp.logout();
             }
-            
+
             try {
                 iceInformationService.update();
             } catch(InshoreIceReportException iire){
@@ -286,7 +289,7 @@ public class DmiInshoreIceReportJob {
                         .send(mailSender);
                 notifications.add(file.getName(), DateTime.now(DateTimeZone.UTC));
             }
-        }      
+        }
     }
-    
+
 }
