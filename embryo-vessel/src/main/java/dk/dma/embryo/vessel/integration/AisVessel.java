@@ -13,12 +13,10 @@
  * limitations under the License.
  */
 package dk.dma.embryo.vessel.integration;
-         
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import dk.dma.embryo.vessel.job.MaxSpeedByShipTypeMapper;
-import dk.dma.embryo.vessel.job.ShipTypeCargo;
-import dk.dma.embryo.vessel.job.ShipTypeMapper;
 import dk.dma.embryo.vessel.json.VesselOverview;
 import dk.dma.embryo.vessel.model.Vessel;
 
@@ -37,7 +35,7 @@ public class AisVessel {
 
     private String country;
     private String sourceRegion;
-//    private String type;
+    //    private String type;
     private Date lastReport;
     private Long mmsi;
     private String sourceCountry;
@@ -50,7 +48,7 @@ public class AisVessel {
     private Date eta;
     private Double heading;
     private Long imoNo;
-//    private String lastPosReport;
+    //    private String lastPosReport;
 //    private String lastStaticReport;
     private Double lat;
     private Double length;
@@ -60,7 +58,9 @@ public class AisVessel {
     private String navStatus;
     private Double rot;
     private Double sog;
-//    private String vesselCargo;
+    //    private String vesselCargo;
+    @JsonIgnore
+    private VesselType type;
     private String vesselType;
     private Double width;
     private Double maxSpeed;
@@ -93,7 +93,7 @@ public class AisVessel {
 
         // If not already set from ArcticWeb vessel in database -> set it vessel type
         if(!isMaxSpeedSetOnAisVessel && this.getVesselType() != null) {
-            Double maxSpeedByVesselType = MaxSpeedByShipTypeMapper.mapAisShipTypeToMaxSpeed(this.getVesselType());
+            Double maxSpeedByVesselType = ServiceSpeedByShipTypeMapper.lookupSpeed(this.getType());
             if(maxSpeedByVesselType > 0.0) {
                 this.setMaxSpeed(maxSpeedByVesselType);
                 this.setMaxSpeedOrigin(AisVessel.MaxSpeedOrigin.TABLE);
@@ -133,8 +133,8 @@ public class AisVessel {
         vesselOverview.setCallSign(getCallsign());
         vesselOverview.setMoored(getMoored() != null ? getMoored() : false);
 
-        ShipTypeCargo.ShipType shipTypeFromSubType = ShipTypeCargo.ShipType.getShipTypeFromSubType(getVesselType());
-        String type = ShipTypeMapper.getInstance().getColor(shipTypeFromSubType).ordinal() + "";
+        VesselType vesType = VesselType.getShipTypeFromTypeText(getVesselType());
+        String type = ShipTypeMapper.getInstance().getColor(vesType).ordinal() + "";
         vesselOverview.setType(type);
 
         vesselOverview.setInAW(false);
@@ -203,7 +203,7 @@ public class AisVessel {
 
     @Override
     public boolean equals(Object otherObject) {
-        
+
         if (this == otherObject) {
             return true;
         }
@@ -221,12 +221,11 @@ public class AisVessel {
         } else if (!mmsi.equals(otherVessel.mmsi)){
             return false;
         }
-        
+
         return true;
     }
-    
-    
-    
+
+
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
@@ -413,6 +412,14 @@ public class AisVessel {
 
     public void setVesselType(String vesselType) {
         this.vesselType = vesselType;
+    }
+
+    public VesselType getType() {
+        return type;
+    }
+
+    public void setType(VesselType type) {
+        this.type = type;
     }
 
     public Double getWidth() {

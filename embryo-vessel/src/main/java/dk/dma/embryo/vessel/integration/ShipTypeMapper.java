@@ -12,14 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.vessel.job;
+package dk.dma.embryo.vessel.integration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
 
 public final class ShipTypeMapper {
 
@@ -33,35 +31,35 @@ public final class ShipTypeMapper {
     /**
      * Map from ship type to color
      */
-    private Map<ShipType, ShipTypeColor> shipTypeToColorMap = new HashMap<ShipTypeCargo.ShipType, ShipTypeMapper.ShipTypeColor>();
+    private Map<VesselType, ShipTypeColor> shipTypeToColorMap = new HashMap<>();
 
     /**
      * Map from color to list of ship types
      */
-    private Map<ShipTypeColor, List<ShipType>> colorToShipTypeMap = new HashMap<ShipTypeMapper.ShipTypeColor, List<ShipType>>();
+    private Map<ShipTypeColor, List<VesselType>> colorToShipTypeMap = new HashMap<>();
 
     private static ShipTypeMapper instance;
 
     private ShipTypeMapper() {
-        shipTypeToColorMap.put(ShipType.PASSENGER, ShipTypeColor.BLUE);
+        shipTypeToColorMap.put(VesselType.PASSENGER, ShipTypeColor.BLUE);
 
-        shipTypeToColorMap.put(ShipType.CARGO, ShipTypeColor.GREEN);
+        shipTypeToColorMap.put(VesselType.CARGO, ShipTypeColor.GREEN);
 
-        shipTypeToColorMap.put(ShipType.TANKER, ShipTypeColor.RED);
+        shipTypeToColorMap.put(VesselType.TANKER, ShipTypeColor.RED);
 
-        shipTypeToColorMap.put(ShipType.HSC, ShipTypeColor.YELLOW);
-        shipTypeToColorMap.put(ShipType.WIG, ShipTypeColor.YELLOW);
+        shipTypeToColorMap.put(VesselType.HSC, ShipTypeColor.YELLOW);
+        shipTypeToColorMap.put(VesselType.WIG, ShipTypeColor.YELLOW);
 
-        shipTypeToColorMap.put(ShipType.UNDEFINED, ShipTypeColor.GREY);
-        shipTypeToColorMap.put(ShipType.UNKNOWN, ShipTypeColor.GREY);
+        shipTypeToColorMap.put(VesselType.UNDEFINED, ShipTypeColor.GREY);
+        shipTypeToColorMap.put(VesselType.UNKNOWN, ShipTypeColor.GREY);
 
-        shipTypeToColorMap.put(ShipType.FISHING, ShipTypeColor.ORANGE);
+        shipTypeToColorMap.put(VesselType.FISHING, ShipTypeColor.ORANGE);
 
-        shipTypeToColorMap.put(ShipType.SAILING, ShipTypeColor.PURPLE);
-        shipTypeToColorMap.put(ShipType.PLEASURE, ShipTypeColor.PURPLE);
+        shipTypeToColorMap.put(VesselType.SAILING, ShipTypeColor.PURPLE);
+        shipTypeToColorMap.put(VesselType.PLEASURE, ShipTypeColor.PURPLE);
 
         // The rest is turquoise
-        for (ShipType shipType : ShipType.values()) {
+        for (VesselType shipType : VesselType.values()) {
             if (shipTypeToColorMap.containsKey(shipType)) {
                 continue;
             }
@@ -70,19 +68,19 @@ public final class ShipTypeMapper {
 
         // Initialize array
         for (ShipTypeColor color : ShipTypeColor.values()) {
-            List<ShipType> list = new ArrayList<ShipType>();
+            List<VesselType> list = new ArrayList<VesselType>();
             colorToShipTypeMap.put(color, list);
         }
 
         // Fill reverse map
-        for (ShipType shipType : shipTypeToColorMap.keySet()) {
+        for (VesselType shipType : shipTypeToColorMap.keySet()) {
             ShipTypeColor color = shipTypeToColorMap.get(shipType);
             colorToShipTypeMap.get(color).add(shipType);
         }
 
     }
 
-    public ShipTypeColor getColor(ShipType shipType) {
+    public ShipTypeColor getColor(VesselType shipType) {
         return shipTypeToColorMap.get(shipType);
     }
 

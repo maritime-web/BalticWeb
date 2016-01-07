@@ -12,13 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.vessel.job;
+package dk.dma.embryo.vessel.integration;
 
+import dk.dma.embryo.vessel.integration.ShipTypeMapper.ShipTypeColor;
 import org.junit.Assert;
 import org.junit.Test;
-
-import dk.dma.embryo.vessel.job.ShipTypeCargo.ShipType;
-import dk.dma.embryo.vessel.job.ShipTypeMapper.ShipTypeColor;
 
 /**
  * @author Jesper Tejlgaard
@@ -27,10 +25,10 @@ public class ShipMapperTest {
 
     @Test
     public void test() {
-        Assert.assertEquals(ShipTypeMapper.getInstance().getColor(ShipType.TANKER), ShipTypeColor.RED);
-        Assert.assertEquals(ShipTypeMapper.getInstance().getColor(ShipType.WIG), ShipTypeColor.YELLOW);
+        Assert.assertEquals(ShipTypeMapper.getInstance().getColor(VesselType.TANKER), ShipTypeColor.RED);
+        Assert.assertEquals(ShipTypeMapper.getInstance().getColor(VesselType.WIG), ShipTypeColor.YELLOW);
 
-        ShipType fishing = ShipType.getShipTypeFromSubType("Fishing");
+        VesselType fishing = VesselType.getShipTypeFromTypeText("Fishing");
         Assert.assertEquals(ShipTypeMapper.getInstance().getColor(fishing), ShipTypeColor.ORANGE);
     }
 }

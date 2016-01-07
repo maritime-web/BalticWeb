@@ -36,71 +36,71 @@ import java.util.function.Predicate;
  */
 @Path("/ais-track")
 public interface AisTrackClient {
-    
+
     /**
      *  Full JSON
-     
-    {
-        "source": {
-            "country": "DE",
-            "bs": "2190077",
-            "id": "AISW"
-        },
-        "target": {
-            "mmsi": 211211450,
-            "country": "DE",
-            "lastReport": "2015-05-28T09:05:19.869Z",
-            "created": "2015-05-28T09:06:56.578Z",
-            "vesselStatic": {
-                "mmsi": 211211450,
-                "received": "2015-05-28T09:06:56.579Z",
-                "sourceTimestamp": "2015-05-28T09:05:19.869Z",
-                "created": "2015-05-28T09:06:56.579Z",
-                "name": "ALSTER",
-                "callsign": "DRHF",
-                "shipType": 35,
-                "shipTypeCargo": {
-                    "shipType": "MILITARY",
-                    "code": 35,
-                    "shipCargo": "UNDEFINED"
-                },
-                "dimensions": {
-                    "dimBow": 21,
-                    "dimStern": 63,
-                    "dimPort": 10,
-                    "dimStarboard": 4
-                },
-                
-                "imoNo" : 50602062,
-                "destination" : "RIO DE JANEIRO",
-                "eta" : "2015-05-28T05:00:57.958Z",
-                "posType" : 6,
-                "draught" : 6.0,
-                "version": 1,
-                "dte": 0
-            },
-            "vesselPosition": {
-                "mmsi": 211211450,
-                "received": "2015-05-28T09:06:56.579Z",
-                "sourceTimestamp": "2015-05-28T09:06:10.677Z",
-                "created": "2015-05-28T09:06:56.578Z",
-                "sog": 0.1,
-                "cog": 353.2,
-                "heading" : 298.0,
-                "pos": {
-                    "lat": 54.42892,
-                    "lon": 13.697369
-                },
-                "posAcc": 1,
-                "utcSec": 9,
-                "raim": 0,
-                "rot": 128,
-                "navStatus": 1,
-                "specialManIndicator": 0
-            },
-            "targetType": "A"
-        }
-    }
+
+     {
+     "source": {
+     "country": "DE",
+     "bs": "2190077",
+     "id": "AISW"
+     },
+     "target": {
+     "mmsi": 211211450,
+     "country": "DE",
+     "lastReport": "2015-05-28T09:05:19.869Z",
+     "created": "2015-05-28T09:06:56.578Z",
+     "vesselStatic": {
+     "mmsi": 211211450,
+     "received": "2015-05-28T09:06:56.579Z",
+     "sourceTimestamp": "2015-05-28T09:05:19.869Z",
+     "created": "2015-05-28T09:06:56.579Z",
+     "name": "ALSTER",
+     "callsign": "DRHF",
+     "shipType": 35,
+     "shipTypeCargo": {
+     "shipType": "MILITARY",
+     "code": 35,
+     "shipCargo": "UNDEFINED"
+     },
+     "dimensions": {
+     "dimBow": 21,
+     "dimStern": 63,
+     "dimPort": 10,
+     "dimStarboard": 4
+     },
+
+     "imoNo" : 50602062,
+     "destination" : "RIO DE JANEIRO",
+     "eta" : "2015-05-28T05:00:57.958Z",
+     "posType" : 6,
+     "draught" : 6.0,
+     "version": 1,
+     "dte": 0
+     },
+     "vesselPosition": {
+     "mmsi": 211211450,
+     "received": "2015-05-28T09:06:56.579Z",
+     "sourceTimestamp": "2015-05-28T09:06:10.677Z",
+     "created": "2015-05-28T09:06:56.578Z",
+     "sog": 0.1,
+     "cog": 353.2,
+     "heading" : 298.0,
+     "pos": {
+     "lat": 54.42892,
+     "lon": 13.697369
+     },
+     "posAcc": 1,
+     "utcSec": 9,
+     "raim": 0,
+     "rot": 128,
+     "navStatus": 1,
+     "specialManIndicator": 0
+     },
+     "targetType": "A"
+     }
+     }
      *
      */
     @GET
@@ -128,34 +128,36 @@ public interface AisTrackClient {
 
         public AisVessel toJsonVessel() {
             AisVessel vesselType = new AisVessel();
-            
+
             if(this.getSource() != null) {
                 vesselType.setSourceCountry(this.getSource().getCountry());
                 vesselType.setSourceRegion(this.getSource().getRegion());
                 vesselType.setSourceType(this.getSource().getType());
             }
-            
+
             if(this.getTarget() != null) {
                 Target target = this.getTarget();
-                
+
                 vesselType.setCountry(target.getCountry());
                 vesselType.setLastReport(target.getLastReport());
                 vesselType.setMmsi(target.getMmsi());
                 vesselType.setTargetType(target.getTargetType());
-                
+
                 if(target.getVesselStatic() != null) {
                     VesselStatic vesselStatic = target.getVesselStatic();
-                    
+
                     vesselType.setCallsign(vesselStatic.getCallsign());
                     vesselType.setDestination(vesselStatic.getDestination());
                     vesselType.setDraught(vesselStatic.getDraught());
                     vesselType.setEta(vesselStatic.getEta());
                     vesselType.setImoNo(vesselStatic.getImoNo());
                     vesselType.setName(vesselStatic.getName());
-                    
+
                     if(vesselStatic.getShipTypeCargo() != null) {
                         ShipTypeCargo shipTypeCargo = vesselStatic.getShipTypeCargo();
                         vesselType.setVesselType(shipTypeCargo.getShipType());
+                        VesselType type = VesselType.getShipTypeFromTypeText(shipTypeCargo.getShipType());
+                        vesselType.setType(type);
                     }
 
                     if(vesselStatic.getDimensions() != null) {
@@ -164,28 +166,28 @@ public interface AisTrackClient {
                         vesselType.setWidth(dimensions.getWidth());
                     }
                 }
-                
+
                 if(target.getVesselPosition() != null) {
                     VesselPosition vesselPosition = target.getVesselPosition();
-                    
+
                     vesselType.setCog(vesselPosition.getCog());
                     vesselType.setHeading(vesselPosition.getHeading());
                     vesselType.setMoored(vesselPosition.getMoored());
-                    
+
                     vesselType.setNavStatus(vesselPosition.getNavStatus() == null ? null : vesselPosition.getNavStatus().toString());
                     vesselType.setRot(vesselPosition.getRot());
                     vesselType.setSog(vesselPosition.getSog());
-                    
+
                     if(vesselPosition.getPos() != null) {
                         Pos pos = vesselPosition.getPos();
-                        
+
                         vesselType.setLat(pos.getLat());
                         vesselType.setLon(pos.getLon());
                     }
                 }
-                
+
             }
-            
+
             // minimum
             if(minimumCriteriaFulfilled(vesselType)) {
                 return vesselType;
@@ -199,7 +201,7 @@ public interface AisTrackClient {
         }
 
         public boolean minimumCriteriaFulfilled(AisVessel vesselType) {
-          return vesselType.getMmsi() != null && vesselType.getLat() != null && vesselType.getLon()  != null;
+            return vesselType.getMmsi() != null && vesselType.getLat() != null && vesselType.getLon() != null;
         }
 
         public static Predicate<AisTrack> valid() {
@@ -218,7 +220,7 @@ public interface AisTrackClient {
         public String toString() {
             return ReflectionToStringBuilder.toString(this);
         }
-        
+
         public Target getTarget() {
             return target;
         }
@@ -233,17 +235,17 @@ public interface AisTrackClient {
             this.source = source;
         }
     }
-    
+
     /**
-     * 
+     *
      * @author ThomasBerg
      *
      * "source": {
-            "id": "AISW",
-            "bs": "2190077",
-            "country": "NO",
-            "region": "808"
-        }
+    "id": "AISW",
+    "bs": "2190077",
+    "country": "NO",
+    "region": "808"
+    }
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class Source {
@@ -253,13 +255,13 @@ public interface AisTrackClient {
         private String country;
         private String type;
         private String region;
-        
+
         @Override
         public String toString() {
-            
+
             return ReflectionToStringBuilder.toString(this);
         }
-        
+
         public String getId() {
             return id;
         }
@@ -295,65 +297,65 @@ public interface AisTrackClient {
             this.type = type;
         }
     }
-    
+
     /**
-     * 
+     *
      * @author ThomasBerg
      *
      * "target": {
-            "mmsi": 211211450,
-            "country": "DE",
-            "lastReport": "2015-05-28T09:05:19.869Z",
-            "created": "2015-05-28T09:06:56.578Z",
-            "vesselStatic": {
-                "mmsi": 211211450,
-                "received": "2015-05-28T09:06:56.579Z",
-                "sourceTimestamp": "2015-05-28T09:05:19.869Z",
-                "created": "2015-05-28T09:06:56.579Z",
-                "name": "ALSTER",
-                "callsign": "DRHF",
-                "shipType": 35,
-                "shipTypeCargo": {
-                    "shipType": "MILITARY",
-                    "code": 35,
-                    "shipCargo": "UNDEFINED"
-                },
-                "dimensions": {
-                    "dimBow": 21,
-                    "dimStern": 63,
-                    "dimPort": 10,
-                    "dimStarboard": 4
-                },
-                
-                "imoNo" : 50602062,
-                "destination" : "RIO DE JANEIRO",
-                "eta" : "2015-05-28T05:00:57.958Z",
-                "posType" : 6,
-                "draught" : 6.0,
-                "version": 1,
-                "dte": 0
-            },
-            "vesselPosition": {
-                "mmsi": 211211450,
-                "received": "2015-05-28T09:06:56.579Z",
-                "sourceTimestamp": "2015-05-28T09:06:10.677Z",
-                "created": "2015-05-28T09:06:56.578Z",
-                "sog": 0.1,
-                "cog": 353.2,
-                "heading" : 298.0,
-                "pos": {
-                    "lat": 54.42892,
-                    "lon": 13.697369
-                },
-                "posAcc": 1,
-                "utcSec": 9,
-                "raim": 0,
-                "rot": 128,
-                "navStatus": 1,
-                "specialManIndicator": 0
-            },
-            "targetType": "A"
-        }
+    "mmsi": 211211450,
+    "country": "DE",
+    "lastReport": "2015-05-28T09:05:19.869Z",
+    "created": "2015-05-28T09:06:56.578Z",
+    "vesselStatic": {
+    "mmsi": 211211450,
+    "received": "2015-05-28T09:06:56.579Z",
+    "sourceTimestamp": "2015-05-28T09:05:19.869Z",
+    "created": "2015-05-28T09:06:56.579Z",
+    "name": "ALSTER",
+    "callsign": "DRHF",
+    "shipType": 35,
+    "shipTypeCargo": {
+    "shipType": "MILITARY",
+    "code": 35,
+    "shipCargo": "UNDEFINED"
+    },
+    "dimensions": {
+    "dimBow": 21,
+    "dimStern": 63,
+    "dimPort": 10,
+    "dimStarboard": 4
+    },
+
+    "imoNo" : 50602062,
+    "destination" : "RIO DE JANEIRO",
+    "eta" : "2015-05-28T05:00:57.958Z",
+    "posType" : 6,
+    "draught" : 6.0,
+    "version": 1,
+    "dte": 0
+    },
+    "vesselPosition": {
+    "mmsi": 211211450,
+    "received": "2015-05-28T09:06:56.579Z",
+    "sourceTimestamp": "2015-05-28T09:06:10.677Z",
+    "created": "2015-05-28T09:06:56.578Z",
+    "sog": 0.1,
+    "cog": 353.2,
+    "heading" : 298.0,
+    "pos": {
+    "lat": 54.42892,
+    "lon": 13.697369
+    },
+    "posAcc": 1,
+    "utcSec": 9,
+    "raim": 0,
+    "rot": 128,
+    "navStatus": 1,
+    "specialManIndicator": 0
+    },
+    "targetType": "A"
+    }
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class Target {
@@ -370,7 +372,7 @@ public interface AisTrackClient {
         public String toString() {
             return ReflectionToStringBuilder.toString(this);
         }
-        
+
         public Long getMmsi() {
             return mmsi;
         }
@@ -384,7 +386,7 @@ public interface AisTrackClient {
         public void setCountry(String country) {
             this.country = country;
         }
-        
+
         public Date getLastReport() {
             return lastReport;
         }
@@ -420,44 +422,44 @@ public interface AisTrackClient {
             this.vesselPosition = vesselPosition;
         }
     }
-    
+
     /**
-     * 
+     *
      * @author ThomasBerg
      *
      * "vesselStatic": {
-                "mmsi": 211211450,
-                "received": "2015-05-28T09:06:56.579Z",
-                "sourceTimestamp": "2015-05-28T09:05:19.869Z",
-                "created": "2015-05-28T09:06:56.579Z",
-                "name": "ALSTER",
-                "callsign": "DRHF",
-                "shipType": 35,
-                "shipTypeCargo": {
-                    "shipType": "MILITARY",
-                    "code": 35,
-                    "shipCargo": "UNDEFINED"
-                },
-                "dimensions": {
-                    "dimBow": 21,
-                    "dimStern": 63,
-                    "dimPort": 10,
-                    "dimStarboard": 4
-                },
-                
-                "imoNo" : 50602062,
-                "destination" : "RIO DE JANEIRO",
-                "eta" : "2015-05-28T05:00:57.958Z",
-                "posType" : 6,
-                "draught" : 6.0,
-                "version": 1,
-                "dte": 0
-            }
+    "mmsi": 211211450,
+    "received": "2015-05-28T09:06:56.579Z",
+    "sourceTimestamp": "2015-05-28T09:05:19.869Z",
+    "created": "2015-05-28T09:06:56.579Z",
+    "name": "ALSTER",
+    "callsign": "DRHF",
+    "shipType": 35,
+    "shipTypeCargo": {
+    "shipType": "MILITARY",
+    "code": 35,
+    "shipCargo": "UNDEFINED"
+    },
+    "dimensions": {
+    "dimBow": 21,
+    "dimStern": 63,
+    "dimPort": 10,
+    "dimStarboard": 4
+    },
+
+    "imoNo" : 50602062,
+    "destination" : "RIO DE JANEIRO",
+    "eta" : "2015-05-28T05:00:57.958Z",
+    "posType" : 6,
+    "draught" : 6.0,
+    "version": 1,
+    "dte": 0
+    }
      */
-    
+
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class VesselStatic {
-        
+
         private Integer mmsi;
         private Date received;
         private Date sourceTimestamp;
@@ -469,94 +471,94 @@ public interface AisTrackClient {
         private String destination;
         private Date eta;
         private Double draught;
-        
+
         // postType er 0-15
         private Integer postType;
-        
+
         // versino er 0-3
         private Integer version;
-        
+
         // DTE er 0 eller 1
         private Integer dte;
         private ShipTypeCargo shipTypeCargo;
         private Dimensions dimensions;
-        
+
         @Override
         public String toString() {
-            
+
             return ReflectionToStringBuilder.toString(this);
         }
-        
+
         public Integer getMmsi() {
             return mmsi;
         }
         public void setMmsi(Integer mmsi) {
             this.mmsi = mmsi;
         }
-        
+
         public Date getReceived() {
             return received;
         }
         public void setReceived(Date received) {
             this.received = received;
         }
-        
+
         public Date getSourceTimestamp() {
             return sourceTimestamp;
         }
         public void setSourceTimestamp(Date sourceTimestamp) {
             this.sourceTimestamp = sourceTimestamp;
         }
-        
+
         public Date getCreated() {
             return created;
         }
         public void setCreated(Date created) {
             this.created = created;
         }
-        
+
         public String getName() {
             return name;
         }
         public void setName(String name) {
             this.name = name;
         }
-        
+
         public String getCallsign() {
             return callsign;
         }
         public void setCallsign(String callsign) {
             this.callsign = callsign;
         }
-        
+
         public Integer getShipType() {
             return shipType;
         }
         public void setShipType(Integer shipType) {
             this.shipType = shipType;
         }
-        
+
         public Integer getPostType() {
             return postType;
         }
         public void setPostType(Integer postType) {
             this.postType = postType;
         }
-        
+
         public Integer getVersion() {
             return version;
         }
         public void setVersion(Integer version) {
             this.version = version;
         }
-        
+
         public Integer getDte() {
             return dte;
         }
         public void setDte(Integer dte) {
             this.dte = dte;
         }
-        
+
         public ShipTypeCargo getShipTypeCargo() {
             return shipTypeCargo;
         }
@@ -570,21 +572,21 @@ public interface AisTrackClient {
         public void setDimensions(Dimensions dimensions) {
             this.dimensions = dimensions;
         }
-        
+
         public Long getImoNo() {
             return imoNo;
         }
         public void setImoNo(Long imoNo) {
             this.imoNo = imoNo;
         }
-        
+
         public String getDestination() {
             return destination;
         }
         public void setDestination(String destination) {
             this.destination = destination;
         }
-        
+
         public Date getEta() {
             return eta;
         }
@@ -599,31 +601,31 @@ public interface AisTrackClient {
             this.draught = draught;
         }
     }
-    
+
     /**
-    "vesselPosition": {
-        "mmsi": 211211450,
-        "received": "2015-05-28T09:06:56.579Z",
-        "sourceTimestamp": "2015-05-28T09:06:10.677Z",
-        "created": "2015-05-28T09:06:56.578Z",
-        "sog": 0.1,
-        "cog": 353.2,
-        "heading" : 298.0,
-        "pos": {
-            "lat": 54.42892,
-            "lon": 13.697369
-        },
-        "posAcc": 1,
-        "utcSec": 9,
-        "raim": 0,
-        "rot": 128,
-        "navStatus": 1,
-        "specialManIndicator": 0
-    }
-    */
+     "vesselPosition": {
+     "mmsi": 211211450,
+     "received": "2015-05-28T09:06:56.579Z",
+     "sourceTimestamp": "2015-05-28T09:06:10.677Z",
+     "created": "2015-05-28T09:06:56.578Z",
+     "sog": 0.1,
+     "cog": 353.2,
+     "heading" : 298.0,
+     "pos": {
+     "lat": 54.42892,
+     "lon": 13.697369
+     },
+     "posAcc": 1,
+     "utcSec": 9,
+     "raim": 0,
+     "rot": 128,
+     "navStatus": 1,
+     "specialManIndicator": 0
+     }
+     */
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class VesselPosition {
-        
+
         private Integer mmsi;
         private Date received;
         private Date sourceTimestamp;
@@ -639,112 +641,112 @@ public interface AisTrackClient {
         private Integer specialManIndicator;
 
         /**
-        0 = under way using engine, 
-        1 = at anchor, 
-        2 = not under command,
-        3 = restricted maneuverability, 
-        4 = constrained by her draught, 
-        5 = moored, 
-        6 = aground, 
-        7 = engaged in fishing, 
-        8 = under way sailing, 
-        9 = reserved for future amendment of navigational status for ships carrying DG, HS, or MP, or IMO hazard or pollutant category C, high speed craft (HSC),
-        10 = reserved for future amendment of navigational status for ships carrying dangerous goods (DG), harmful substances (HS) or marine pollutants (MP), or IMO hazard or pollutant category A, wing in ground (WIG);11 = power- driven vessel towing astern (regional use),
-        12 = power-driven vessel pushing ahead or towing alongside (regional use);
-        13 = reserved for future use,
-        14 = AIS-SART (active), MOB-AIS, EPIRB-AIS
-        15 = undefined = default (also used by AIS-SART, MOB-AIS and EPIRB- AIS under test)
-        */
+         0 = under way using engine,
+         1 = at anchor,
+         2 = not under command,
+         3 = restricted maneuverability,
+         4 = constrained by her draught,
+         5 = moored,
+         6 = aground,
+         7 = engaged in fishing,
+         8 = under way sailing,
+         9 = reserved for future amendment of navigational status for ships carrying DG, HS, or MP, or IMO hazard or pollutant category C, high speed craft (HSC),
+         10 = reserved for future amendment of navigational status for ships carrying dangerous goods (DG), harmful substances (HS) or marine pollutants (MP), or IMO hazard or pollutant category A, wing in ground (WIG);11 = power- driven vessel towing astern (regional use),
+         12 = power-driven vessel pushing ahead or towing alongside (regional use);
+         13 = reserved for future use,
+         14 = AIS-SART (active), MOB-AIS, EPIRB-AIS
+         15 = undefined = default (also used by AIS-SART, MOB-AIS and EPIRB- AIS under test)
+         */
         private Integer navStatus;
-        
+
         @Override
         public String toString() {
-            
+
             return ReflectionToStringBuilder.toString(this);
         }
-        
+
         public boolean getMoored() {
 
             return navStatus != null && navStatus == 5;
         }
-        
+
         public Integer getMmsi() {
             return mmsi;
         }
         public void setMmsi(Integer mmsi) {
             this.mmsi = mmsi;
         }
-        
+
         public Date getReceived() {
             return received;
         }
         public void setReceived(Date received) {
             this.received = received;
         }
-        
+
         public Date getSourceTimestamp() {
             return sourceTimestamp;
         }
         public void setSourceTimestamp(Date sourceTimestamp) {
             this.sourceTimestamp = sourceTimestamp;
         }
-        
+
         public Date getCreated() {
             return created;
         }
         public void setCreated(Date created) {
             this.created = created;
         }
-        
+
         public Double getSog() {
             return sog;
         }
         public void setSog(Double sog) {
             this.sog = sog;
         }
-        
+
         public Double getCog() {
             return cog;
         }
         public void setCog(Double cog) {
             this.cog = cog;
         }
-        
+
         public Pos getPos() {
             return pos;
         }
         public void setPos(Pos pos) {
             this.pos = pos;
         }
-        
+
         public Integer getPosAcc() {
             return posAcc;
         }
         public void setPosAcc(Integer posAcc) {
             this.posAcc = posAcc;
         }
-        
+
         public Integer getUtcSec() {
             return utcSec;
         }
         public void setUtcSec(Integer utcSec) {
             this.utcSec = utcSec;
         }
-        
+
         public Integer getRaim() {
             return raim;
         }
         public void setRaim(Integer raim) {
             this.raim = raim;
         }
-        
+
         public Double getRot() {
             return rot;
         }
         public void setRot(Double rot) {
             this.rot = rot;
         }
-        
+
         public Integer getNavStatus() {
             return navStatus;
         }
@@ -766,19 +768,19 @@ public interface AisTrackClient {
             this.heading = heading;
         }
     }
-    
+
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class Pos {
-        
+
         private Double lat;
         private Double lon;
-        
+
         @Override
         public String toString() {
-            
+
             return ReflectionToStringBuilder.toString(this);
         }
-        
+
         public Double getLat() {
             return lat;
         }
@@ -793,42 +795,42 @@ public interface AisTrackClient {
             this.lon = lon;
         }
     }
-    
+
     /**
-     * 
+     *
      * @author ThomasBerg
      * "shipTypeCargo": {
-                    "shipType": "UNDEFINED",
-                    "code": 0,
-                    "shipCargo": "UNDEFINED"
-                }
+    "shipType": "UNDEFINED",
+    "code": 0,
+    "shipCargo": "UNDEFINED"
+    }
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class ShipTypeCargo {
-        
+
         /*
         public enum ShipType {
         UNDEFINED, WIG, PILOT, SAR, TUG, PORT_TENDER, ANTI_POLLUTION, LAW_ENFORCEMENT, MEDICAL, FISHING, TOWING, TOWING_LONG_WIDE, DREDGING, DIVING, MILITARY, SAILING, PLEASURE, HSC, PASSENGER, CARGO, TANKER, SHIPS_ACCORDING_TO_RR, UNKNOWN
         }
          */
         private String shipType;
-        
+
         /*
         public enum CargoType {
         UNDEFINED, A, B, C, D
         }
         */
         private String shipCargo;
-        
+
         // Code er et tal 00-99
         private Integer code;
 
         @Override
         public String toString() {
-            
+
             return ReflectionToStringBuilder.toString(this);
         }
-        
+
         public String getShipType() {
             return shipType;
         }
@@ -850,75 +852,74 @@ public interface AisTrackClient {
             this.code = code;
         }
     }
-    
 
-    
+
     /**
-     *     
+     *
      * @author ThomasBerg
      *
-        "dimensions": {
-            "dimBow": 0,
-            "dimStern": 0,
-            "dimPort": 0,
-            "dimStarboard": 0
-        },
-        
-        // Det er tal. I enheden meter.heltal
+    "dimensions": {
+    "dimBow": 0,
+    "dimStern": 0,
+    "dimPort": 0,
+    "dimStarboard": 0
+    },
+
+    // Det er tal. I enheden meter.heltal
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class Dimensions {
-        
+
         private Integer dimBow;
         private Integer dimStern;
         private Integer dimPort;
         private Integer dimStarboard;
-        
+
         @Override
         public String toString() {
-            
+
             return ReflectionToStringBuilder.toString(this);
         }
-        
+
         // dimStern + dimBow
         public Double getLength() {
-            
+
             Double length = null;
             if(dimStern != null && dimBow != null) {
                 Number lengthAsNumber =  dimStern + dimBow;
                 length = lengthAsNumber.doubleValue();
             }
-            
+
             return length;
         }
 
         // dimPort + dimStarboard
         public Double getWidth() {
-            
+
             Double width = null;
             if(dimPort != null && dimStarboard != null) {
                 Number widthAsNumber =  dimPort + dimStarboard;
                 width = widthAsNumber.doubleValue();
             }
-            
+
             return width;
         }
-        
+
         public Integer getDimBow() {
             return dimBow;
         }
-        
+
         public void setDimBow(Integer dimBow) {
             this.dimBow = dimBow;
         }
-        
+
         public Integer getDimStern() {
             return dimStern;
         }
         public void setDimStern(Integer dimStern) {
             this.dimStern = dimStern;
         }
-        
+
         public Integer getDimPort() {
             return dimPort;
         }
