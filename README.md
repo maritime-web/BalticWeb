@@ -41,6 +41,8 @@ On the server side we use:
 * MySQL (Maven configures JBoss datasource to use MySQL)
 * Node.js (Follow the installation instructions at http://nodejs.org)
 * Grunt.js (Follow the installation instructions at http://gruntjs.com)
+* CouchDB
+* a file called arcticweb.properties
 
 ## Initial setup
 
