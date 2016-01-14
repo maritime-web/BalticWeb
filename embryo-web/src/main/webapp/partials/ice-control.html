@@ -6,14 +6,17 @@
                 <tr x-ng-if="!chart.ts">
                     <td colspan=4><h4>{{chart}}</h4></td>
                 </tr>
-                <tr x-ng-if="chart.ts">
+                <tr x-ng-if="chart.ts && !isDownloaded(chart)">
                     <td>{{chart.source}}</td>
                     <td>{{chart.ts}}</td>
                     <td>{{chart.size}}</td>
-                    <td x-ng-if="!isDownloaded(chart)"><a href=# x-ng-click="download($event, chart, iceCharts)">download</a>
-                    </td>
-                    <td x-ng-if="isDownloaded(chart)"><a href=# x-ng-click="zoom($event, chart)">zoom</a> / <a href=#
-                                                                                                               x-ng-click='hideIce($event, chart)'>hide</a>
+                    <td><a href=# x-ng-click="download($event, chart, iceCharts)">download</a></td>
+                </tr>
+                <tr x-ng-if="chart.ts && isDownloaded(chart)" class="alert-success">
+                    <td>{{chart.source}}</td>
+                    <td>{{chart.ts}}</td>
+                    <td>{{chart.size}}</td>
+                    <td><a href=# x-ng-click="zoom($event, chart)">zoom</a> / <a href=# x-ng-click='hideIce($event, chart)'>hide</a>
                     </td>
                 </tr>
                 </tbody>
