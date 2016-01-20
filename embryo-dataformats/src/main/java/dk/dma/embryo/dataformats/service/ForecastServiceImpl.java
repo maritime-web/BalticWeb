@@ -18,14 +18,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.dataformats.model.Forecast;
+import dk.dma.embryo.dataformats.model.*;
 import dk.dma.embryo.dataformats.model.Forecast.Provider;
-import dk.dma.embryo.dataformats.model.ForecastType;
 import dk.dma.embryo.dataformats.model.ForecastType.Type;
 import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
 import dk.dma.embryo.dataformats.netcdf.NetCDFType;
 import dk.dma.embryo.dataformats.netcdf.NetCDFVar;
 import dk.dma.embryo.dataformats.persistence.ForecastDao;
+import dk.dma.embryo.dataformats.persistence.ForecastDataRepository;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -86,6 +86,9 @@ public class ForecastServiceImpl implements ForecastService {
     private ForecastDao forecastDao;
 
     @Inject
+    private ForecastDataRepository forecastDataRepository;
+
+    @Inject
     private ForecastPersistService forecastPersistService;
 
     @Inject
@@ -115,9 +118,8 @@ public class ForecastServiceImpl implements ForecastService {
         return null;
     }
 
-    public List<Forecast> getForecastList(Type type) {
-        List<Forecast> list = forecastDao.list(type);
-        return list;
+    public String getForecastList(Type type) {
+        return forecastDataRepository.list(type);
     }
 
     @Override
@@ -127,18 +129,18 @@ public class ForecastServiceImpl implements ForecastService {
     }
 
     @Override
-    public List<Forecast> listAvailableIceForecasts() {
-        List<Forecast> forecasts = getForecastList(Type.ICE_FORECAST);
-        return forecasts.stream().filter(forecast -> !forecast.getProvider().equals(Provider.FCOO)).collect(Collectors.toList());
+    public String listAvailableIceForecasts() {
+//        return forecasts.stream().filter(forecast -> !forecast.getProvider().equals(Provider.FCOO)).collect(Collectors.toList());
+        return getForecastList(Type.ICE_FORECAST);
     }
 
     @Override
-    public List<Forecast> listAvailableWaveForecasts() {
+    public String listAvailableWaveForecasts() {
         return getForecastList(Type.WAVE_FORECAST);
     }
 
     @Override
-    public List<Forecast> listAvailableCurrentForecasts() {
+    public String listAvailableCurrentForecasts() {
         return getForecastList(Type.CURRENT_FORECAST);
     }
 
@@ -206,17 +208,26 @@ public class ForecastServiceImpl implements ForecastService {
                                                     String json = parseResult.get(type);
                                                     if (json != null) {
                                                         logger.info("Got result of size {}, persisting.", json.length());
-                                                        persistForecast(name, json, ((ForecastType) type).getType(), getJsonSize(json), provider, timestamp, area);
+                                                        Type forecastType = ((ForecastType) type).getType();
+                                                        ForecastDataId id = new ForecastDataId(area, provider, forecastType);
+                                                        ForecastData forecastData = new ForecastData(id, json);
+                                                        ForecastMetaData additionalMetaData = new ForecastMetaData()
+                                                                .withJsonSize(getJsonSize(json))
+                                                                .withTimestamp(timestamp)
+                                                                .withOriginalFileName(name);
+                                                        forecastData.add(additionalMetaData);
+                                                        persistForecastData(forecastData);
+                                                        persistForecast(name, id, forecastType, getJsonSize(json), provider, timestamp, area);
                                                     } else {
                                                         logger.info("Got empty result, persisting.");
-                                                        persistForecast(name, "", ((ForecastType) type).getType(), -1, provider, timestamp, area);
+                                                        persistForecast(name, null, ((ForecastType) type).getType(), -1, provider, timestamp, area);
                                                     }
                                                 } catch (IOException e) {
                                                     // hack to prevent reparse of the file
                                                     int size = -1;
                                                     failedFiles.add(name);
                                                     logger.error("Got error parsing result, persisting.", e);
-                                                    persistForecast(name, "", ((ForecastType) type).getType(), size, provider, timestamp, area);
+                                                    persistForecast(name, null, ((ForecastType) type).getType(), size, provider, timestamp, area);
                                                     if (!failedFiles.contains(name)) {
                                                         embryoLogService.error("Error parsing file " + name, e);
                                                     }
@@ -283,25 +294,27 @@ public class ForecastServiceImpl implements ForecastService {
      * database. This is necessarily in its own class as it requires to be in a
      * separate transaction (if everything was in the same transaction, it would
      * likely timeout).
-     * 
-     * @param name
+     *  @param name
      *            Forecast file name.
-     * @param json
+     * @param forecastDataId
      *            Forecast JSON data.
      * @param type
-     *            Forecast type.
+ *            Forecast type.
      * @param size
-     *            Zipped size of forecast.
+*            Zipped size of forecast.
      * @param provider
-     *            Forecast provider.
+*            Forecast provider.
      * @param timestamp
-     *            Timestamp for forecast start.
+*            Timestamp for forecast start.
      * @param area
-     *            Area name for forecast.
      */
-    private void persistForecast(String name, String json, Type type, int size, Provider provider, long timestamp, String area) {
-        Forecast forecast = new Forecast(name, json, type, size, provider, timestamp, area);
+    private void persistForecast(String name, ForecastDataId forecastDataId, Type type, int size, Provider provider, long timestamp, String area) {
+        Forecast forecast = new Forecast(name, forecastDataId, type, size, provider, timestamp, area);
         forecastPersistService.persist(forecast);
+    }
+
+    private void persistForecastData(ForecastData forecastData) {
+        forecastDataRepository.addOrUpdateForecastData(forecastData);
     }
 
     /**

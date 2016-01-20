@@ -14,16 +14,7 @@
  */
 package dk.dma.embryo.dataformats.model;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -40,7 +31,6 @@ import dk.dma.embryo.dataformats.model.ForecastType.Type;
  */
 @NamedQueries({
         @NamedQuery(name = "Forecast:lookup", query = "SELECT f FROM Forecast f WHERE f.name = :name AND f.ftype = :type"),
-        @NamedQuery(name = "Forecast:find", query = "SELECT f FROM Forecast f JOIN FETCH f.data WHERE f.id = :id"),
         @NamedQuery(name = "Forecast:list", query = "SELECT f FROM Forecast f WHERE f.ftype = :type AND f.size != -1 ORDER BY f.area, f.timestamp DESC"),
         @NamedQuery(name = "Forecast:exists", query = "SELECT COUNT(*) FROM Forecast f WHERE f.name = :name AND f.timestamp = :timestamp"),
         @NamedQuery(name = "Forecast:findDuplicates", query = "SELECT f FROM Forecast f WHERE f.area = :area AND f.provider = :provider AND f.ftype = :type ORDER by f.timestamp DESC, f.size DESC"),
@@ -62,22 +52,21 @@ public class Forecast extends BaseEntity<Long> {
 
     private String area;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
-    @JoinColumn
-    @Basic(fetch = FetchType.LAZY)
-    private ForecastData data;
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name="data_id"))
+    private ForecastDataId forecastDataId;
 
     @Enumerated(EnumType.STRING)
     private Type ftype;
 
     @SuppressWarnings("unused")
-    private Forecast() {
+    protected Forecast() {
     }
 
-    public Forecast(String name, String json, Type type, int size, Provider provider, long timestamp, String area) {
+    public Forecast(String name, ForecastDataId forecastDataId, Type type, int size, Provider provider, long timestamp, String area) {
         this.name = name;
         this.ftype = type;
-        this.data = new ForecastData(json);
+        this.forecastDataId = forecastDataId;
         this.size = size;
         this.provider = provider;
         this.timestamp = timestamp;
@@ -88,15 +77,12 @@ public class Forecast extends BaseEntity<Long> {
         return name;
     }
 
-    public String getData() {
-        if (data != null) {
-            return data.getJson();
-        }
-        return null;
+    public ForecastDataId getForecastDataId() {
+        return forecastDataId;
     }
 
-    public void updateData(String json, int size) {
-        data = new ForecastData(json);
+    public void updateData(ForecastDataId forecastDataId, int size) {
+        this.forecastDataId = forecastDataId;
         this.size = size;
     }
 
@@ -121,7 +107,7 @@ public class Forecast extends BaseEntity<Long> {
     }
 
     public void invalidate() {
-        data = null;
+        forecastDataId = null;
         size = -1;
     }
 

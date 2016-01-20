@@ -14,40 +14,49 @@
  */
 package dk.dma.embryo.dataformats.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Lob;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.embryo.common.EmbryonicException;
 
-import dk.dma.embryo.common.persistence.BaseEntity;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * The actual forecast data. Will not be loaded until a specific forecast has
- * been requested.
- * 
- * @author avlund
  *
  */
-@Entity
-public class ForecastData extends BaseEntity<Long> {
+public class ForecastData {
 
-    private static final long serialVersionUID = 4455436663950833441L;
-
-    @Lob
-    @Column(columnDefinition = "mediumtext")
-    @Basic(fetch = FetchType.LAZY)
     private String json;
+    private ForecastMetaData metaData;
+    private ForecastDataId id;
 
-    ForecastData() {
-    }
-
-    ForecastData(String json) {
+    public ForecastData(ForecastDataId id, String json) {
+        this.id = id;
         this.json = json;
+        this.metaData = new ForecastMetaData(id);
     }
 
     public String getJson() {
-        return json;
+        return mergeWithMetaData();
     }
 
+    private String mergeWithMetaData() {
+        ObjectMapper mapper = new ObjectMapper();
+        HashMap jsonMap;
+        try {
+            jsonMap = mapper.readValue(json, HashMap.class);
+            ((Map)jsonMap.get("metadata")).putAll(metaData.asMap());
+            return mapper.writeValueAsString(jsonMap);
+        } catch (IOException e) {
+            throw new EmbryonicException("Error merging forcast with meta data. Id:  " + getId(), e);
+        }
+    }
+
+    public void add(ForecastMetaData additionalMetaData) {
+        metaData = metaData.with(additionalMetaData);
+    }
+
+    public String getId() {
+        return id.getId();
+    }
 }

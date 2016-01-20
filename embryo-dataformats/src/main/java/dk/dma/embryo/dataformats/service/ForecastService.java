@@ -29,12 +29,12 @@ public interface ForecastService {
 
     Forecast getForecast(long id);
 
-    List<Forecast> getForecastList(Type type);
+    String getForecastList(Type type);
 
-    List<Forecast> listAvailableIceForecasts();
+    String listAvailableIceForecasts();
 
-    List<Forecast> listAvailableWaveForecasts();
+    String listAvailableWaveForecasts();
 
-    List<Forecast> listAvailableCurrentForecasts();
+    String listAvailableCurrentForecasts();
 
 }

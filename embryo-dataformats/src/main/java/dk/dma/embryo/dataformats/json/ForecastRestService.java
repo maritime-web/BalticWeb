@@ -15,6 +15,8 @@
 package dk.dma.embryo.dataformats.json;
 
 import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.dataformats.model.Forecast;
+import dk.dma.embryo.dataformats.persistence.ForecastDataRepository;
 import dk.dma.embryo.dataformats.service.ForecastService;
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
@@ -45,6 +47,9 @@ public class ForecastRestService extends AbstractRestService {
     private ForecastService forecastService;
 
     @Inject
+    private ForecastDataRepository forecastDataRepository;
+
+    @Inject
     private Logger logger;
 
     @GET
@@ -60,9 +65,9 @@ public class ForecastRestService extends AbstractRestService {
     @Path("/ice/{id}")
     @Produces("application/json")
     @GZIP
-    public Response getIcePrognosis(@PathParam(value = "id") long id, @Context Request request) {
+    public Response getIcePrognosis(@PathParam(value = "id") String id, @Context Request request) {
         logger.debug("getIcePrognosis({})", id);
-        String data = forecastService.getForecast(id).getData();
+        String data = forecastDataRepository.getForecastData(id);
         return super.getResponse(request, data, MAX_AGE_1_DAY);
     }
 
@@ -79,9 +84,9 @@ public class ForecastRestService extends AbstractRestService {
     @Path("/waves/{id}")
     @Produces("application/json")
     @GZIP
-    public Response getWavePrognosis(@PathParam(value = "id") long id, @Context Request request) {
+    public Response getWavePrognosis(@PathParam(value = "id") String id, @Context Request request) {
         logger.debug("getWavePrognosis({})", id);
-        String data = forecastService.getForecast(id).getData();
+        String data = forecastDataRepository.getForecastData(id);
         return getResponse(request, data, MAX_AGE_1_DAY);
     }
 
@@ -98,10 +103,10 @@ public class ForecastRestService extends AbstractRestService {
     @Path("/currents/{id}")
     @Produces("application/json")
     @GZIP
-    public Response getCurrentPrognosis(@PathParam(value = "id") long id, @Context Request request) {
+    public Response getCurrentPrognosis(@PathParam(value = "id") String id, @Context Request request) {
         logger.debug("getCurrentPrognosis({})", id);
-        
-        String data = forecastService.getForecast(id).getData();
+
+        String data = forecastDataRepository.getForecastData(id);
         return getResponse(request, data, MAX_AGE_1_DAY);
     }
 }

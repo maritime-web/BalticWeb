@@ -33,8 +33,7 @@ public class ForecastPersistServiceImpl implements ForecastPersistService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public void persist(Forecast forecast) {
-//        System.out.println("In ForecastPersistService, forecast size: " + forecast.getSize() + ", timestamp: " + forecast.getTimestamp() + ", area: " + forecast.getArea() + ", name: " + forecast.getName());
-        
+
         int size = forecast.getSize();
         List<Forecast> found = forecastDao.findByProviderAreaAndType(forecast.getProvider(), forecast.getArea(), forecast.getType());
         boolean saved = false;
@@ -54,7 +53,7 @@ public class ForecastPersistServiceImpl implements ForecastPersistService {
                         // This forecast is bigger
                         if (f.getName().equals(forecast.getName())) {
                             // Same name - we update data
-                            f.updateData(forecast.getData(), size);
+                            f.updateData(forecast.getForecastDataId(), size);
                             saved = true;
                         } else {
                             // Different name - old goes out
@@ -82,88 +81,5 @@ public class ForecastPersistServiceImpl implements ForecastPersistService {
         if(!saved) {
             forecastDao.saveEntity(forecast);
         }
-        
-      
-        
-        
-        
-        /*if (found == null || found.isEmpty()) {
-            System.out.println("Found was empty");
-            forecastDao.saveEntity(forecast);
-        } else {
-            System.out.println("Found was size " + found.size());
-            
-            if (forecast.getSize() == -1) {
-                /*Forecast same = forecastDao.exactlySameExists(forecast.getName(), forecast.getArea(), forecast.getType());
-                if (same != null) {
-                    same.invalidate();
-                    forecastDao.saveEntity(same);
-                } else {
-                    forecast.invalidate();
-                    forecastDao.saveEntity(forecast);
-                }*/
-                /*forecast.invalidate();
-                forecastDao.saveEntity(forecast);
-            } else {
-                Forecast latest = found.get(0);
-                
-                System.out.println("Latest: " + latest);
-                
-                if (latest.getTimestamp() < forecast.getTimestamp()) {
-                    
-                    System.out.println("Latest was older");
-                    if (forecast.getSize() > 0) {
-                        latest.invalidate();
-                        forecastDao.saveEntity(latest);
-                    }
-                    forecastDao.saveEntity(forecast);
-                } else if (latest.getTimestamp() == forecast.getTimestamp() && forecast.getSize() > latest.getSize()) {
-                    System.out.println("Latest was same and smaller");
-                    if (latest.getName().equals(forecast.getName())) {
-                        latest.updateData(forecast.getData(), forecast.getSize());
-                        forecast.invalidate();
-                    } else {
-                        latest.invalidate();
-                    }
-                    forecastDao.saveEntity(latest);
-                    forecastDao.saveEntity(forecast);
-                } else {
-                    System.out.println("A dead end");
-                }
-                if (found.size() > 1) {
-                    System.out.println("Found more than one");
-                    for (int i = 1; i < found.size(); i++) {
-                        Forecast current = found.get(i);
-                        if (current.getSize() != -1 && (latest.getSize() != -1 || forecast.getSize() != -1)) {
-                            System.out.println("Hit");
-                            current.invalidate();
-                            forecastDao.saveEntity(current);
-                        }
-                    }
-                }
-            }*/
-
-            /*
-             * Forecast latest = found.get(0); if (latest.getTimestamp() <
-             * forecast.getTimestamp()) { if (forecast.getSize() > 0) {
-             * latest.invalidate(); forecastDao.saveEntity(latest); }
-             * forecastDao.saveEntity(forecast); } else if
-             * (latest.getTimestamp() == forecast.getTimestamp() &&
-             * forecast.getData().length() > latest.getData().length()) { // If
-             * we have a forecast from two different files, we keep the //
-             * bigger one. latest.updateData(forecast.getData(),
-             * forecast.getSize()); forecastDao.saveEntity(latest); } if
-             * (found.size() > 1 && forecast.getSize() > 0) { boolean inDb =
-             * false; for (int i = 1; i < found.size(); i++) { Forecast current
-             * = found.get(i); if (current.getSize() != -1) {
-             * current.invalidate(); forecastDao.saveEntity(current); } inDb =
-             * inDb || current.getTimestamp() == forecast.getTimestamp(); } if
-             * (!(inDb || latest.getTimestamp() == forecast.getTimestamp())) {
-             * if (latest.getTimestamp() > forecast.getTimestamp()) {
-             * forecast.invalidate(); } forecastDao.saveEntity(forecast); } }
-             */
-
-//        }
     }
-
 }

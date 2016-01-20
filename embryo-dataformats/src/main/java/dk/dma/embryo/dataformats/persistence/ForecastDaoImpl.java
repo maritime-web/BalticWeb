@@ -49,13 +49,7 @@ public class ForecastDaoImpl extends DaoImpl implements ForecastDao {
     
     @Override
     public Forecast findById(long id) {
-        TypedQuery<Forecast> query = em.createNamedQuery("Forecast:find", Forecast.class);
-        query.setParameter("id", id);
-        List<Forecast> resultList = query.getResultList();
-        if (resultList != null && !resultList.isEmpty()) {
-            return resultList.get(0);
-        }
-        return null;
+        return em.find(Forecast.class, id);
     }
 
     @Override
