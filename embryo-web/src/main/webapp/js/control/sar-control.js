@@ -41,8 +41,8 @@ $(function () {
         return JSON.parse(JSON.stringify(object));
     }
 
-    module.controller("SARLayerControl", ['SarService', 'LivePouch', '$timeout', '$log',
-        function (SarService, LivePouch, $timeout, $log) {
+    module.controller("SARLayerControl", ['SarService', 'LivePouch', '$log',
+        function (SarService, LivePouch, $log) {
         var sarDocuments = [];
 
         SarLayerSingleton.getInstance().modified = function (zoneUpdate) {
@@ -67,11 +67,9 @@ $(function () {
 
         SarService.sarSelected("SARLayerControl", function (sarId) {
             if (sarId) {
-                $timeout(function () {
-                    LivePouch.get(sarId).then(function (sar) {
-                        SarLayerSingleton.getInstance().zoomToSarOperation(sar);
-                    }, 5);
-                })
+                LivePouch.get(sarId).then(function (sar) {
+                    SarLayerSingleton.getInstance().zoomToSarOperation(sar);
+                });
             }
         });
 
@@ -153,8 +151,6 @@ $(function () {
                         operations.push(SarService.toSmallSarObject(result.rows[index].doc));
                     }
                     $scope.sars = operations;
-                    $scope.$apply(function () {
-                    })
                 }).catch(function (err) {
                     $log.error("allDocs err")
                     $log.error(err);
@@ -192,8 +188,8 @@ $(function () {
             }
         }]);
 
-    module.controller("OperationControl", ['$scope', 'SarService', 'ViewService', '$log', 'LivePouch', '$timeout',
-        function ($scope, SarService, ViewService, $log, LivePouch, $timeout) {
+    module.controller("OperationControl", ['$scope', 'SarService', 'ViewService', '$log', 'LivePouch',
+        function ($scope, SarService, ViewService, $log, LivePouch) {
 
             $scope.SARTypeTxt = SARTypeTxt;
             $scope.SARStatusTxt = SARStatusTxt;
@@ -224,12 +220,10 @@ $(function () {
                         $log.error(err);
                         throw err;
                     }).then(function (res) {
-                        $timeout(function () {
-                            $scope.selected.sar = res;
-                            $scope.sar = res;
-                            $log.debug("operationcontrol");
-                            $log.debug(res);
-                        })
+                        $scope.selected.sar = res;
+                        $scope.sar = res;
+                        $log.debug("operationcontrol");
+                        $log.debug(res);
                     })
                 } else {
                     $scope.selected.sar = null;
@@ -322,10 +316,6 @@ $(function () {
 
                     $scope.selected.allocations = allocations
                     $scope.patterns = patterns;
-                    if (!$scope.$$phase) {
-                        $scope.$apply(function () {
-                        })
-                    }
                 }).catch(function (error) {
                     $log.error("sareffortview error in controller.js");
                     $log.error(error)
@@ -395,8 +385,6 @@ $(function () {
                 })
 
                 $scope.messages = messages
-                $scope.$apply(function () {
-                })
             }).catch(function (error) {
                 $log.error("sarlogview error");
                 $log.error(error)

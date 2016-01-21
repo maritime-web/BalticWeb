@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var module = angular.module('embryo.sar.service', ['embryo.storageServices', 'embryo.authentication.service']);
+    var module = angular.module('embryo.sar.service', ['pouchdb', 'embryo.storageServices', 'embryo.authentication.service']);
 
     embryo.sar = {}
     // A way to create an enumeration like construction in JavaScript
@@ -1507,5 +1507,33 @@
 
         return service;
     }]);
+
+    module.factory('LivePouch', ['pouchDB', 'CouchUrlResolver', function (pouchDB, CouchUrlResolver) {
+        var dbName = 'embryo-live';
+        var couchUrl = CouchUrlResolver.resolveCouchUrl(dbName);
+
+        var liveDb = pouchDB(dbName);
+        var sync = liveDb.sync(couchUrl, {
+            live: true,
+            retry: true
+        })
+
+        return liveDb;
+    }]);
+
+    module.factory('UserPouch', ['pouchDB', 'CouchUrlResolver', function (pouchDB, CouchUrlResolver) {
+        // make sure this works in development environment as well as other environments
+        var dbName = 'embryo-user';
+        var couchUrl = CouchUrlResolver.resolveCouchUrl(dbName);
+
+        var userDB = new PouchDB(dbName);
+
+        var handler = userDB.replicate.from(couchUrl, {
+            retry: true
+        })
+
+        return userDB;
+    }]);
+
 
 })();

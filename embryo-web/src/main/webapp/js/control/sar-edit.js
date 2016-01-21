@@ -98,8 +98,6 @@ $(function () {
                     LivePouch.get(context.sarId).then(function (sarOperation) {
                         $scope.sarOperation = sarOperation;
                         $scope.sar = sarOperation.input;
-                        $scope.$apply(function () {
-                        });
                     })
                 } else {
                     initNewSar();
@@ -410,8 +408,8 @@ $(function () {
         return JSON.parse(JSON.stringify(object));
     }
 
-    module.controller("SarEffortAllocationController", ['$scope', 'ViewService', 'SarService', 'LivePouch', '$timeout',
-        function ($scope, ViewService, SarService, LivePouch, $timeout) {
+    module.controller("SarEffortAllocationController", ['$scope', 'ViewService', 'SarService', 'LivePouch',
+        function ($scope, ViewService, SarService, LivePouch) {
             $scope.alertMessages = [];
             $scope.message = null;
             $scope.srus = [];
@@ -439,8 +437,6 @@ $(function () {
                 LivePouch.get(allocationId).then(function (allocation) {
                     $scope.effort = allocation;
                     $scope.initEffortAllocation();
-                    $scope.$apply(function () {
-                    })
                 }).catch(function (error) {
                     console.log("loadAllocation error")
                     console.log(error)
@@ -474,21 +470,19 @@ $(function () {
                     key: $scope.sarId,
                     include_docs: true
                 }).then(function (result) {
-                    $timeout(function () {
-                        var srus = [];
-                        var patterns = [];
-                        for (var index in result.rows) {
-                            if (result.rows[index].doc['@type'] === embryo.sar.Type.SearchPattern) {
-                                patterns.push(result.rows[index].doc)
-                            } else {
-                                srus.push(result.rows[index].doc)
-                            }
+                    var srus = [];
+                    var patterns = [];
+                    for (var index in result.rows) {
+                        if (result.rows[index].doc['@type'] === embryo.sar.Type.SearchPattern) {
+                            patterns.push(result.rows[index].doc)
+                        } else {
+                            srus.push(result.rows[index].doc)
                         }
-                        $scope.srus = srus
-                        $scope.patterns = patternsMap(patterns);
+                    }
+                    $scope.srus = srus
+                    $scope.patterns = patternsMap(patterns);
 
 
-                    }, 10)
                 }).catch(function (error) {
                     console.log("sareffortview error")
                     console.log(error)
@@ -643,26 +637,18 @@ $(function () {
                     } catch (error) {
                         console.log(error)
                         $scope.alertMessages = ["internal error", error];
-                        $scope.$apply(function () {
-                        });
                     }
 
                     if (allocation) {
                         LivePouch.put(allocation).then(function () {
                             // TODO fix problem. View closing after first save
                             $scope.provider.close();
-                            $scope.$apply(function () {
-                            });
                         }).catch(function (error) {
                             $scope.alertMessages = ["internal error", error];
-                            $scope.$apply(function () {
-                            });
                         });
                     }
                 }).catch(function (error) {
                     $scope.alertMessages = ["internal error", error];
-                    $scope.$apply(function () {
-                    });
                 });
             }
 
@@ -756,13 +742,11 @@ $(function () {
                     key: zone.sarId,
                     include_docs: true
                 }).then(function (result) {
-                    $timeout(function () {
-                        var patterns = [];
-                        for (var index in result.rows) {
-                            patterns.push(result.rows[index].doc);
-                        }
-                        init(zone, SarService.findLatestModified(patterns));
-                    }, 1)
+                    var patterns = [];
+                    for (var index in result.rows) {
+                        patterns.push(result.rows[index].doc);
+                    }
+                    init(zone, SarService.findLatestModified(patterns));
                 }).catch(function (error) {
                     console.log("sarsearchpattern error")
                     console.log(error)
@@ -798,14 +782,10 @@ $(function () {
                     }
                     return LivePouch.get(zone.sarId)
                 }).then(function (sar) {
-                    $timeout(function () {
-                        $scope.sar = sar;
-                    });
+                    $scope.sar = sar;
                 }).catch(function (error) {
-                    $timeout(function () {
                         // FIXME don't treat error as a string be default.
-                        $scope.errorMessages = [error];
-                    })
+                    $scope.errorMessages = [error];
                 });
             }
 

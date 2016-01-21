@@ -95,41 +95,17 @@
         };
     } ]);
 
-
-
-    storageModule.factory('LivePouch', ['$location', function ($location) {
-        var liveDb = new PouchDB('embryo-live');
-
-        // make sure this works in development environment as well as other environments
-        var couchUrl = "http://localhost:5984/embryo-live"
-        var url = $location.absUrl() ? $location.absUrl().toLocaleLowerCase() : "";
-        if(url.indexOf("localhost:") < 0 && url.indexOf("127.0.0.1:") < 0){
-            couchUrl = $location.protocol() + "://" + $location.host() + "/couchdb/embryo-live";
+    storageModule.service('CouchUrlResolver', ['$location', function ($location) {
+        return {
+            resolveCouchUrl: function (dbName) {
+                var couchUrl = "http://localhost:5984/" + dbName
+                var url = $location.absUrl() ? $location.absUrl().toLocaleLowerCase() : "";
+                if (url.indexOf("localhost:") < 0 && url.indexOf("127.0.0.1:") < 0) {
+                    couchUrl = $location.protocol() + "://" + $location.host() + "/couchdb/" + dbName;
+                }
+                return couchUrl;
+            }
         }
-
-        var sync = liveDb.sync(couchUrl, {
-            live: true,
-            retry: true
-        })
-
-        return liveDb;
-    }]);
-
-    storageModule.factory('UserPouch', ['$location', function ($location) {
-        // make sure this works in development environment as well as other environments
-        var userDB = new PouchDB('embryo-user');
-
-        var couchUrl = "http://localhost:5984/embryo-user"
-        var url = $location.absUrl() ? $location.absUrl().toLocaleLowerCase() : "";
-        if(url.indexOf("localhost:") < 0 && url.indexOf("127.0.0.1:") < 0){
-            couchUrl = $location.protocol() + "://" + $location.host() + "/couchdb/embryo-user";
-        }
-
-        var handler = userDB.replicate.from(couchUrl, {
-            retry: true
-        })
-
-        return userDB;
     }]);
 
 
