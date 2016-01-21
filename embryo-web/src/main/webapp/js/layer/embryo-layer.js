@@ -11,7 +11,12 @@ function EmbryoLayer() {
     this.active = false;
 
     this.show = function () {
-        this.active = true;
+        this.active = true
+        this.redraw();
+    };
+
+    this.hide = function () {
+        this.active = false;
         this.redraw();
     };
 
@@ -65,10 +70,6 @@ function EmbryoLayer() {
         }
     };
 
-    this.hide = function () {
-        this.active = false;
-        this.redraw();
-    };
 
     this.zoomLevels = [];
     this.zoomLevel = 0;
