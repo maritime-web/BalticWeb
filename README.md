@@ -41,15 +41,30 @@ On the server side we use:
 * MySQL (Maven configures JBoss datasource to use MySQL)
 * Node.js (Follow the installation instructions at http://nodejs.org)
 * Grunt.js (Follow the installation instructions at http://gruntjs.com)
+* CouchDB
+* a file called arcticweb.properties
 
 ## Initial setup
+
+Wildfly should be installed using the install script provided in this repository. install-wildfly.sh. Remember to add a admin user using 
+
+    $ chmod +x install-wildfly.sh 
+    $ ./install-wildfly.sh
+    $ ./wildfly-8.2.0.Final/bin/add-user.sh 
 
 As root in MySQL - create a database and a user for ArcticWeb:
 
     create database embryo;
     create user 'embryo'@'localhost' identified by 'embryo';
     grant all on embryo.* to 'embryo'@'localhost';
+    
+You might need to configure the MySQL database to accept large packet sizes. This can be done in the mysql configuration file my.cnf
+depending on OS it might be located in /etc/mysql/my.cnf
 
+    [mysqld]
+    max_allowed_packet=16M
+
+### Configure WildFly ###
 ArcticWeb has a default configuration file which may be overridden by setting the system property "arcticweb.configuration" to the URI of an external configuration file. For example put the following in your JBOSS standalone.xml-file:
 
     <system-properties>
@@ -57,6 +72,8 @@ ArcticWeb has a default configuration file which may be overridden by setting th
     </system-properties>
 
 In particular the file may contain URLs and passwords for the DMI Ice map server.
+
+    $ ./wildfly-8.2.0.Final/bin/standalone.sh 
 
 
 ## Building ##
