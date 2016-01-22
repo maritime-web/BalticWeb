@@ -16,9 +16,9 @@ package dk.dma.embryo.dataformats.service;
 
 import java.util.List;
 
-import dk.dma.embryo.dataformats.model.Forecast;
+import dk.dma.embryo.dataformats.model.ForecastHeader;
 import dk.dma.embryo.dataformats.model.ForecastType;
-import dk.dma.embryo.dataformats.model.ForecastType.Type;
+import dk.dma.embryo.dataformats.model.Type;
 
 public interface ForecastService {
     List<ForecastType> getForecastTypes();
@@ -27,14 +27,12 @@ public interface ForecastService {
 
     void reParse();
 
-    Forecast getForecast(long id);
+    List<ForecastHeader> getForecastList(Type type);
 
-    String getForecastList(Type type);
+    List<ForecastHeader> listAvailableIceForecasts();
 
-    String listAvailableIceForecasts();
+    List<ForecastHeader> listAvailableWaveForecasts();
 
-    String listAvailableWaveForecasts();
-
-    String listAvailableCurrentForecasts();
+    List<ForecastHeader> listAvailableCurrentForecasts();
 
 }

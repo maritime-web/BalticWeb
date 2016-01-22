@@ -39,9 +39,9 @@ public class ForecastDataTest {
     @Test
     public void shouldMergeMetaDataIntoTheJson() throws Exception {
         String json = "{\"metadata\": {\"lon\":\"some longitude\"}}";
-        ForecastDataId id = new ForecastDataId("NW Greenland", Forecast.Provider.DMI, ForecastType.Type.WAVE_FORECAST);
+        ForecastDataId id = new ForecastDataId("NW Greenland", ForecastProvider.DMI, Type.WAVE_FORECAST);
         ForecastData cut = new ForecastData(id, json);
 
-        assertThat(cut.getJson(), allOf(containsString("NW Greenland"), containsString(Forecast.Provider.DMI.name()), containsString(ForecastType.Type.WAVE_FORECAST.name())) );
+        assertThat(cut.getJson(), allOf(containsString("NW Greenland"), containsString(ForecastProvider.DMI.name()), containsString(Type.WAVE_FORECAST.name())) );
     }
 }

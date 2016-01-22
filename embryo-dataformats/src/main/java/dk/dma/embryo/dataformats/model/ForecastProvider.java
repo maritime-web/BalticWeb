@@ -19,24 +19,8 @@
 package dk.dma.embryo.dataformats.model;
 
 /**
- * Created by Steen on 20-01-2016.
+ * Created by Steen on 22-01-2016.
  */
-public enum ForecastMetaDataKeys {
-    ID("id"),
-    TYPE("ftype"),
-    AREA("area"),
-    PROVIDER("provider"),
-    JSON_SIZE("size"),
-    TIMESTAMP("timestamp"),
-    ORIGINAL_FILE_NAME("name");
-
-    private final String keyName;
-
-    ForecastMetaDataKeys(String keyName) {
-        this.keyName = keyName;
-    }
-
-    public String getKeyName() {
-        return keyName;
-    }
+public enum ForecastProvider {
+    DMI, FCOO
 }

@@ -25,9 +25,9 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import dk.dma.embryo.dataformats.model.Forecast.Provider;
+import dk.dma.embryo.dataformats.model.ForecastProvider;
 import dk.dma.embryo.dataformats.model.ForecastType;
-import dk.dma.embryo.dataformats.model.ForecastType.Type;
+import dk.dma.embryo.dataformats.model.Type;
 import dk.dma.embryo.dataformats.service.ForecastServiceImpl;
 
 public class NetCDFParserTest {
@@ -37,11 +37,11 @@ public class NetCDFParserTest {
         NetCDFParser parser = new NetCDFParser();
         ForecastServiceImpl service = new ForecastServiceImpl();
         List<ForecastType> types = service.createData();
-        Map<Provider, Map<String, NetCDFRestriction>> restrictions = service.initRestrictions();
+        Map<ForecastProvider, Map<String, NetCDFRestriction>> restrictions = service.initRestrictions();
         //URL resource = getClass().getResource("/netcdf/hycom-cice_NORTH_2014121512.nc");
         URL resource = getClass().getResource("/netcdf/wam_ATL_2015011506.nc");
         
-        for (NetCDFRestriction restriction : restrictions.get(Provider.DMI).values()) {
+        for (NetCDFRestriction restriction : restrictions.get(ForecastProvider.DMI).values()) {
             System.out.println("Parsing restriction: " + restriction.toString());
             parser.parse(resource.getPath(), types, restriction);
         }

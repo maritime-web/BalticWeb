@@ -18,7 +18,7 @@
 
 package dk.dma.embryo.dataformats.persistence;
 
-import dk.dma.embryo.dataformats.model.ForecastType;
+import dk.dma.embryo.dataformats.model.Type;
 import org.hamcrest.CoreMatchers;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class HttpCouchClientIT {
     @Test
     public void testGetByView() throws Exception {
         HttpCouchClient cut = new HttpCouchClient(getConfig());
-        String viewQuery = "/header_by_type?key=%22"+ForecastType.Type.CURRENT_FORECAST.name()+"%22";
+        String viewQuery = "/header_by_type?key=%22"+ Type.CURRENT_FORECAST.name()+"%22";
 
         String result = cut.getByView(viewQuery);
 

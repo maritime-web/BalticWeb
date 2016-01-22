@@ -34,7 +34,7 @@ public class ForecastMetaDataTest {
 
     @Test
     public void shouldExtractTypeMetaDataFromId() throws Exception {
-        ForecastType.Type type = ForecastType.Type.CURRENT_FORECAST;
+        Type type = Type.CURRENT_FORECAST;
         ForecastMetaData cut = new ForecastMetaData(getForecastIdWithType(type));
 
         Map<?, ?> headerMap = getHeaderMap(cut.asMap());
@@ -54,7 +54,7 @@ public class ForecastMetaDataTest {
 
     @Test
     public void shouldExtractProviderMetaDataFromId() throws Exception {
-        Forecast.Provider provider = Forecast.Provider.DMI;
+        ForecastProvider provider = ForecastProvider.DMI;
         ForecastMetaData cut = new ForecastMetaData(getForecastIdWithProvider(provider));
 
         Map<?, ?> headerMap = getHeaderMap(cut.asMap());
@@ -157,16 +157,16 @@ public class ForecastMetaDataTest {
         new ForecastMetaData(null);
     }
 
-    private ForecastDataId getForecastIdWithType(ForecastType.Type type) {
-        return new ForecastDataId("Some area", Forecast.Provider.DMI, type);
+    private ForecastDataId getForecastIdWithType(Type type) {
+        return new ForecastDataId("Some area", ForecastProvider.DMI, type);
     }
 
     private ForecastDataId getForecastIdWithArea(String area) {
-        return new ForecastDataId(area, Forecast.Provider.DMI, ForecastType.Type.CURRENT_FORECAST);
+        return new ForecastDataId(area, ForecastProvider.DMI, Type.CURRENT_FORECAST);
     }
 
-    private ForecastDataId getForecastIdWithProvider(Forecast.Provider provider) {
-        return new ForecastDataId("Some area", provider, ForecastType.Type.CURRENT_FORECAST);
+    private ForecastDataId getForecastIdWithProvider(ForecastProvider provider) {
+        return new ForecastDataId("Some area", provider, Type.CURRENT_FORECAST);
     }
 
     private Map<?, ?> getHeaderMap(Map<?, ?> map) {

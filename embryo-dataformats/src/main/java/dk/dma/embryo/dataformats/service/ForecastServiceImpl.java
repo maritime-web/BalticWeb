@@ -19,12 +19,11 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.dataformats.model.*;
-import dk.dma.embryo.dataformats.model.Forecast.Provider;
-import dk.dma.embryo.dataformats.model.ForecastType.Type;
+import dk.dma.embryo.dataformats.model.ForecastProvider;
+import dk.dma.embryo.dataformats.model.Type;
 import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
 import dk.dma.embryo.dataformats.netcdf.NetCDFType;
 import dk.dma.embryo.dataformats.netcdf.NetCDFVar;
-import dk.dma.embryo.dataformats.persistence.ForecastDao;
 import dk.dma.embryo.dataformats.persistence.ForecastDataRepository;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -57,7 +56,7 @@ public class ForecastServiceImpl implements ForecastService {
 
     private List<ForecastType> forecastTypes = new ArrayList<>();
 
-    private Map<Provider, Map<String, NetCDFRestriction>> restrictions = new HashMap<>();
+    private Map<ForecastProvider, Map<String, NetCDFRestriction>> restrictions = new HashMap<>();
 
     public static final double MIN_LAT = 55;
     public static final double MID_LAT = 70;
@@ -83,13 +82,7 @@ public class ForecastServiceImpl implements ForecastService {
     private NetCDFService netCDFService;
 
     @Inject
-    private ForecastDao forecastDao;
-
-    @Inject
     private ForecastDataRepository forecastDataRepository;
-
-    @Inject
-    private ForecastPersistService forecastPersistService;
 
     @Inject
     private EmbryoLogService embryoLogService;
@@ -118,29 +111,26 @@ public class ForecastServiceImpl implements ForecastService {
         return null;
     }
 
-    public String getForecastList(Type type) {
+    public List<ForecastHeader> getForecastList(Type type) {
         return forecastDataRepository.list(type);
     }
 
     @Override
-    public Forecast getForecast(long id) {
-        Forecast forecast = forecastDao.findById(id);
-        return forecast;
+    public List<ForecastHeader> listAvailableIceForecasts() {
+        //The quality of FCOO Ice forecasts are not good enough yet
+        List<ForecastHeader> forecastList = getForecastList(Type.ICE_FORECAST);
+        return forecastList.stream()
+                .filter(forecast -> !forecast.getProvider().equals(ForecastProvider.FCOO))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public String listAvailableIceForecasts() {
-//        return forecasts.stream().filter(forecast -> !forecast.getProvider().equals(Provider.FCOO)).collect(Collectors.toList());
-        return getForecastList(Type.ICE_FORECAST);
-    }
-
-    @Override
-    public String listAvailableWaveForecasts() {
+    public List<ForecastHeader> listAvailableWaveForecasts() {
         return getForecastList(Type.WAVE_FORECAST);
     }
 
     @Override
-    public String listAvailableCurrentForecasts() {
+    public List<ForecastHeader> listAvailableCurrentForecasts() {
         return getForecastList(Type.CURRENT_FORECAST);
     }
 
@@ -151,120 +141,103 @@ public class ForecastServiceImpl implements ForecastService {
     public void reParse() {
         Set<String> failedFiles = new HashSet<>();
         Set<String> addedFiles = new HashSet<>();
-        if (!parsing) {
-            logger.info("Re-parsing NetCDF files.");
-            parsing = true;
-            try {
-                // Loop through providers (DMI and FCOO so far)
-                for (String netcdfProvider : netcdfProviders.split(";")) {
-                    // If we - in theory - have more types than just forecasts
-                    // (previously called prognoses)
-                    for (String netcdfType : netcdfTypes.values()) {
-                        String folderName = propertyFileService.getProperty("embryo." + netcdfType + "." + netcdfProvider + ".localDirectory", true);
-                        logger.info("NetCDF folder: " + folderName);
-                        File folder = new File(folderName);
-                        if (folder.exists()) {
-                            File[] files = folder.listFiles(new FileFilter() {
-                                @Override
-                                public boolean accept(File pathname) {
-                                    return pathname.getName().endsWith(".nc");
-                                }
-                            });
-                            if (files != null) {
-                                for (File file : files) {
-                                    String name = file.getName();
-                                    Provider provider = name.contains("fcoo") ? Provider.FCOO : Provider.DMI;
-                                    String timestampStr = name.substring(name.length() - 13, name.length() - 3);
-                                    long timestamp = getTimestamp(timestampStr);
-                                    if (file.length() == 0) {
-                                        if (!forecastDao.exists(name, timestamp)) {
-                                            // File has been downloaded, but
-                                            // there's no entry in the database,
-                                            // probably because of a database
-                                            // wipe. We remove the empty file
-                                            // and it will be re-downloaded next
-                                            // time.
-                                            logger.info("Found empty file {} with no corresponding database entry - deleting.", name);
-                                            if (!file.delete()) {
-                                                logger.error("Could not delete file {}.", name);
-                                            }
-                                        }
-                                    } else {
-                                        logger.info("Importing NetCDF data from file {}.", name);
-                                        int errorSize = failedFiles.size();
-                                        for (Map.Entry<String, NetCDFRestriction> entry : restrictions.get(provider).entrySet()) {
-                                            String area;
-                                            if (entry.getKey().equals(NULL_VALUE)) {
-                                                area = getArea(name);
-                                            } else {
-                                                area = entry.getKey();
-                                            }
-                                            logger.info("Parsing NetCDF area {} for file {}.", area, name);
 
-                                            for (NetCDFType type : getForecastTypes()) {
-                                                logger.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
-                                                try {
-                                                    Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
-                                                    String json = parseResult.get(type);
-                                                    if (json != null) {
-                                                        logger.info("Got result of size {}, persisting.", json.length());
-                                                        Type forecastType = ((ForecastType) type).getType();
-                                                        ForecastDataId id = new ForecastDataId(area, provider, forecastType);
-                                                        ForecastData forecastData = new ForecastData(id, json);
-                                                        ForecastMetaData additionalMetaData = new ForecastMetaData()
-                                                                .withJsonSize(getJsonSize(json))
-                                                                .withTimestamp(timestamp)
-                                                                .withOriginalFileName(name);
-                                                        forecastData.add(additionalMetaData);
-                                                        persistForecastData(forecastData);
-                                                        persistForecast(name, id, forecastType, getJsonSize(json), provider, timestamp, area);
-                                                    } else {
-                                                        logger.info("Got empty result, persisting.");
-                                                        persistForecast(name, null, ((ForecastType) type).getType(), -1, provider, timestamp, area);
-                                                    }
-                                                } catch (IOException e) {
-                                                    // hack to prevent reparse of the file
-                                                    int size = -1;
-                                                    failedFiles.add(name);
-                                                    logger.error("Got error parsing result, persisting.", e);
-                                                    persistForecast(name, null, ((ForecastType) type).getType(), size, provider, timestamp, area);
-                                                    if (!failedFiles.contains(name)) {
-                                                        embryoLogService.error("Error parsing file " + name, e);
-                                                    }
+        if (parsing) {
+            logger.info("Already parsing, will not re-parse at the moment.");
+            return;
+        }
+
+        parsing = true;
+        logger.info("Re-parsing NetCDF files.");
+        try {
+            // Loop through providers (DMI and FCOO so far)
+            for (String netcdfProvider : netcdfProviders.split(";")) {
+                // If we - in theory - have more types than just forecasts
+                // (previously called prognoses)
+                for (String netcdfType : netcdfTypes.values()) {
+                    String folderName = propertyFileService.getProperty("embryo." + netcdfType + "." + netcdfProvider + ".localDirectory", true);
+                    logger.info("NetCDF folder: " + folderName);
+                    File folder = new File(folderName);
+                    if (folder.exists()) {
+                        File[] files = folder.listFiles(new FileFilter() {
+                            @Override
+                            public boolean accept(File pathname) {
+                                return pathname.getName().endsWith(".nc");
+                            }
+                        });
+                        if (files != null) {
+                            for (File file : files) {
+                                String name = file.getName();
+                                ForecastProvider provider = name.contains("fcoo") ? ForecastProvider.FCOO : ForecastProvider.DMI;
+                                String timestampStr = name.substring(name.length() - 13, name.length() - 3);
+                                long timestamp = getTimestamp(timestampStr);
+                                if (file.length() != 0) {
+                                    logger.info("Importing NetCDF data from file {}.", name);
+                                    int errorSize = failedFiles.size();
+                                    for (Map.Entry<String, NetCDFRestriction> entry : restrictions.get(provider).entrySet()) {
+                                        String area;
+                                        if (entry.getKey().equals(NULL_VALUE)) {
+                                            area = getArea(name);
+                                        } else {
+                                            area = entry.getKey();
+                                        }
+                                        logger.info("Parsing NetCDF area {} for file {}.", area, name);
+
+                                        for (NetCDFType type : getForecastTypes()) {
+                                            logger.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
+                                            try {
+                                                Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
+                                                String json = parseResult.get(type);
+                                                if (json != null) {
+                                                    logger.info("Got result of size {}.", json.length());
+                                                    Type forecastType = ((ForecastType) type).getType();
+                                                    ForecastDataId id = new ForecastDataId(area, provider, forecastType);
+                                                    ForecastData forecastData = new ForecastData(id, json);
+                                                    ForecastMetaData additionalMetaData = new ForecastMetaData()
+                                                            .withJsonSize(getJsonSize(json))
+                                                            .withTimestamp(timestamp)
+                                                            .withOriginalFileName(name);
+                                                    forecastData.add(additionalMetaData);
+                                                    persistForecastData(forecastData);
+                                                } else {
+                                                    logger.info("Got empty result for {}.", name);
+                                                }
+                                            } catch (IOException e) {
+                                                failedFiles.add(name);
+                                                logger.error("Got error parsing \"" + name + "\"", e);
+                                                if (!failedFiles.contains(name)) {
+                                                    embryoLogService.error("Error parsing file " + name, e);
                                                 }
                                             }
                                         }
-                                        if (errorSize == failedFiles.size()) {
-                                            addedFiles.add(name);
-                                        }
-                                        file.delete();
-                                        // Create a new, empty file so we
-                                        // don't download it again
-                                        file.createNewFile();
                                     }
+                                    if (errorSize == failedFiles.size()) {
+                                        addedFiles.add(name);
+                                    }
+                                    file.delete();
+                                    // Create a new, empty file so we
+                                    // don't download it again
+                                    file.createNewFile();
                                 }
-
-                            } else {
-                                logger.info("No files found in folder " + folder.getPath());
                             }
                         } else {
-                            throw new IOException("Folder " + folderName + " does not exist.");
+                            logger.info("No files found in folder " + folder.getPath());
                         }
+                    } else {
+                        throw new IOException("Folder " + folderName + " does not exist.");
                     }
                 }
-                if (failedFiles.size() > 0) {
-                    embryoLogService.error("Error parsing files " + failedFiles.toString());
-                } else if (addedFiles.size() > 0) {
-                    embryoLogService.info("Sucesssfully parsed files " + addedFiles);
-                }
-            } catch (IOException e) {
-                logger.error("Unhandled error parsing file", e);
-                embryoLogService.error("Unhandled error parsing file", e);
-            } finally {
-                parsing = false;
             }
-        } else {
-            logger.info("Already parsing, will not re-parse at the moment.");
+            if (failedFiles.size() > 0) {
+                embryoLogService.error("Error parsing files " + failedFiles.toString());
+            } else if (addedFiles.size() > 0) {
+                embryoLogService.info("Sucesssfully parsed files " + addedFiles);
+            }
+        } catch (IOException e) {
+            logger.error("Unhandled error parsing file", e);
+            embryoLogService.error("Unhandled error parsing file", e);
+        } finally {
+            parsing = false;
         }
     }
 
@@ -289,32 +262,12 @@ public class ForecastServiceImpl implements ForecastService {
         return out.toByteArray().length;
     }
 
-    /**
-     * Sends forecast data to the ForecastPersistService to be persisted to
-     * database. This is necessarily in its own class as it requires to be in a
-     * separate transaction (if everything was in the same transaction, it would
-     * likely timeout).
-     *  @param name
-     *            Forecast file name.
-     * @param forecastDataId
-     *            Forecast JSON data.
-     * @param type
- *            Forecast type.
-     * @param size
-*            Zipped size of forecast.
-     * @param provider
-*            Forecast provider.
-     * @param timestamp
-*            Timestamp for forecast start.
-     * @param area
-     */
-    private void persistForecast(String name, ForecastDataId forecastDataId, Type type, int size, Provider provider, long timestamp, String area) {
-        Forecast forecast = new Forecast(name, forecastDataId, type, size, provider, timestamp, area);
-        forecastPersistService.persist(forecast);
-    }
-
     private void persistForecastData(ForecastData forecastData) {
-        forecastDataRepository.addOrUpdateForecastData(forecastData);
+        ForecastHeader existingHeader = forecastDataRepository.getForecastHeader(forecastData.getId());
+        if (forecastData.getHeader().isBetterThan(existingHeader)) {
+            logger.info("Persisting \"{}\".", forecastData.getId());
+            forecastDataRepository.addOrUpdateForecastData(forecastData);
+        }
     }
 
     /**
@@ -446,8 +399,8 @@ public class ForecastServiceImpl implements ForecastService {
      * 
      * @return Areas and their restrictions sorted by providers.  
      */
-    public Map<Provider, Map<String, NetCDFRestriction>> initRestrictions() {
-        Map<Provider, Map<String, NetCDFRestriction>> restrictions = new HashMap<>();
+    public Map<ForecastProvider, Map<String, NetCDFRestriction>> initRestrictions() {
+        Map<ForecastProvider, Map<String, NetCDFRestriction>> restrictions = new HashMap<>();
 
         // NetCDFRestriction emptyRestriction = new NetCDFRestriction();
         NetCDFRestriction bottomLeftRestriction = new NetCDFRestriction(MIN_LAT, MID_LAT, MIN_LON, MID_LON);
@@ -465,14 +418,14 @@ public class ForecastServiceImpl implements ForecastService {
         dmiRestrictions.put("Greenland NE", topRightRestriction);
         dmiRestrictions.put("Svalbard", svalbardRestriction);
         dmiRestrictions.put("Norwegian Sea", norwegianSeaRestriction);
-        restrictions.put(Provider.DMI, dmiRestrictions);
+        restrictions.put(ForecastProvider.DMI, dmiRestrictions);
 
         Map<String, NetCDFRestriction> fcooRestrictions = new HashMap<>();
         fcooRestrictions.put("Greenland SW", bottomLeftRestriction);
         fcooRestrictions.put("Greenland SE", bottomRightRestriction);
         fcooRestrictions.put("Greenland NW", topLeftRestriction);
         fcooRestrictions.put("Greenland NE", topRightRestriction);
-        restrictions.put(Provider.FCOO, fcooRestrictions);
+        restrictions.put(ForecastProvider.FCOO, fcooRestrictions);
 
         return restrictions;
     }

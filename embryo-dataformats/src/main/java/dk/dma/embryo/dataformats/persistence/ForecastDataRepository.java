@@ -18,10 +18,10 @@
 
 package dk.dma.embryo.dataformats.persistence;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dma.embryo.common.EmbryonicException;
-import dk.dma.embryo.dataformats.model.ForecastData;
-import dk.dma.embryo.dataformats.model.ForecastType;
+import dk.dma.embryo.dataformats.model.*;
 
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by Steen on 11-01-2016.
@@ -42,6 +43,7 @@ public class ForecastDataRepository {
     private HttpCouchClient httpCouchClient;
 
     //Required by EJB spec.
+    @SuppressWarnings("unused")
     protected ForecastDataRepository() {
     }
 
@@ -51,24 +53,45 @@ public class ForecastDataRepository {
     }
 
     public void addOrUpdateForecastData(ForecastData forecastData) {
-        httpCouchClient.upsert(forecastData.getId(), forecastData.getJson());
+        httpCouchClient.upsert(forecastData.getIdAsString(), forecastData.getJson());
     }
 
     public String getForecastData(String id) {
         return httpCouchClient.get(id);
     }
 
-    public String list(ForecastType.Type type) {
+    public ForecastHeader getForecastHeader(ForecastDataId id) {
+        String viewQuery = "/header_by_id?key=%22"+id.getId()+"%22";
+
+        String result = httpCouchClient.getByView(viewQuery);
+
+        List<Map> resultList = extractViewResultValues(result);
+        if (resultList.isEmpty()) {
+            return ForecastHeader.createFrom(id);
+        }
+        return ForecastHeader.createFrom(toJsonString(resultList.get(0)));
+    }
+
+    public List<ForecastHeader> list(Type type) {
         String viewQuery = "/header_by_type?key=%22"+type.name()+"%22";
 
         String result = httpCouchClient.getByView(viewQuery);
 
-        return extractViewResultValue(result);
+        return toForecastHeaders(extractViewResultValues(result));
     }
 
-    private String extractViewResultValue(String result) {
+    private List<ForecastHeader> toForecastHeaders(List<Map> viewResult) {
+        return viewResult.stream().map(this::toForecastHeader).collect(Collectors.toList());
+    }
+
+    private ForecastHeader toForecastHeader (Map data) {
+        return ForecastHeader.createFrom(toJsonString(data));
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Map> extractViewResultValues(String result) {
         try {
-            List filteredResult = new ArrayList<>();
+            List<Map> filteredResult = new ArrayList<>();
             ObjectMapper mapper = new ObjectMapper();
             HashMap jsonMap = mapper.readValue(result, HashMap.class);
             List rows = (List) jsonMap.get("rows");
@@ -79,9 +102,18 @@ public class ForecastDataRepository {
                 filteredResult.add(value);
             });
 
-            return mapper.writeValueAsString(filteredResult);
+            return filteredResult;
         } catch (IOException e) {
             throw new EmbryonicException("Couldn't extract view result from:  \"" + result + "\"", e);
+        }
+    }
+
+    private String toJsonString(Object list) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(list);
+        } catch (JsonProcessingException e) {
+            throw new EmbryonicException("Couldn't convert \"" + list + "\" to json string", e);
         }
     }
 }

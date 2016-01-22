@@ -18,29 +18,21 @@
 
 package dk.dma.embryo.dataformats.model;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
+import java.util.Objects;
 
 /**
  * Value class representing identification of a forecast data document.
  */
-@Embeddable
 public class ForecastDataId {
-    @Transient
     private String area;
 
-    @Transient
-    private Forecast.Provider provider;
+    private ForecastProvider provider;
 
-    @Transient
-    private ForecastType.Type type;
+    private Type type;
 
-    @Access(AccessType.FIELD)
     private String id;
 
-    public ForecastDataId(String area, Forecast.Provider provider, ForecastType.Type type) {
+    public ForecastDataId(String area, ForecastProvider provider, Type type) {
         if (area == null) throw new NullPointerException();
         if (provider == null) throw new NullPointerException();
         if (type == null) throw new NullPointerException();
@@ -63,11 +55,34 @@ public class ForecastDataId {
         return area;
     }
 
-    public Forecast.Provider getProvider() {
+    public ForecastProvider getProvider() {
         return provider;
     }
 
-    public ForecastType.Type getType() {
+    public Type getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ForecastDataId that = (ForecastDataId) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "ForecastDataId{" +
+                "area='" + area + '\'' +
+                ", provider=" + provider +
+                ", type=" + type +
+                ", id='" + id + '\'' +
+                '}';
     }
 }

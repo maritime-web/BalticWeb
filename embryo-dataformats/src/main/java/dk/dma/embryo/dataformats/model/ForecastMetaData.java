@@ -34,6 +34,7 @@ public class ForecastMetaData {
 
     public ForecastMetaData(ForecastDataId id) {
         this();
+        metaData.put(ID.getKeyName(), id.getId());
         metaData.put(TYPE.getKeyName(), id.getType().name());
         metaData.put(AREA.getKeyName(), id.getArea());
         metaData.put(PROVIDER.getKeyName(), id.getProvider().name());

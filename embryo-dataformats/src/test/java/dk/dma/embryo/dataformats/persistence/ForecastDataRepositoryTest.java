@@ -18,15 +18,19 @@
 
 package dk.dma.embryo.dataformats.persistence;
 
-import dk.dma.embryo.dataformats.model.ForecastType;
+import dk.dma.embryo.dataformats.model.ForecastDataId;
+import dk.dma.embryo.dataformats.model.ForecastHeader;
+import dk.dma.embryo.dataformats.model.ForecastProvider;
+import dk.dma.embryo.dataformats.model.Type;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.Matchers.not;
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -35,6 +39,7 @@ import static org.mockito.Mockito.when;
  * Created by Steen on 20-01-2016.
  *
  */
+@SuppressWarnings("FieldCanBeLocal")
 @RunWith(MockitoJUnitRunner.class)
 
 public class ForecastDataRepositoryTest {
@@ -44,7 +49,7 @@ public class ForecastDataRepositoryTest {
     @InjectMocks
     private ForecastDataRepository cut;
 
-    private String viewResult = "{\n" +
+    private String viewResultMulti = "{\n" +
             "  \"total_rows\": 30,\n" +
             "  \"offset\": 18,\n" +
             "  \"rows\": [\n" +
@@ -72,15 +77,58 @@ public class ForecastDataRepositoryTest {
             "        \"timestamp\": 1453053600000\n" +
             "      }\n" +
             "    }]}";
+    private String viewResultSingle = "{\n" +
+            "  \"total_rows\": 30,\n" +
+            "  \"offset\": 18,\n" +
+            "  \"rows\": [\n" +
+            "    {\n" +
+            "      \"id\": \"Greenland-NEFCOOICE_FORECAST\",\n" +
+            "      \"key\": \"FCOO\",\n" +
+            "      \"value\": {\n" +
+            "        \"area\": \"Greenland NE\",\n" +
+            "        \"ftype\": \"ICE_FORECAST\",\n" +
+            "        \"size\": 28337,\n" +
+            "        \"provider\": \"FCOO\",\n" +
+            "        \"name\": \"arcticweb_fcoo_ww3_Greenland_9nm_short_v001C_2016011718.nc\",\n" +
+            "        \"timestamp\": 1453053600000\n" +
+            "      }\n" +
+            "    }\n]}";
+
+    @Test
+    public void shouldContainOneForecastHeaderForEachJsonObject() throws Exception {
+        when(httpCouchClient.getByView(anyString())).thenReturn(viewResultMulti);
+
+        List<ForecastHeader> result = cut.list(Type.CURRENT_FORECAST);
+
+        assertThat(result, iterableWithSize(2));
+    }
+
+    @Test
+    public void shouldReturnForecastHeaderWithIdFieldsWhenNoDataFound() throws Exception {
+        when(httpCouchClient.getByView(anyString())).thenReturn("{\n" +
+                "  \"total_rows\": 30,\n" +
+                "  \"offset\": 0,\n" +
+                "  \"rows\": []\n" +
+                "}");
+
+        ForecastDataId id = new ForecastDataId("a", ForecastProvider.DMI, Type.CURRENT_FORECAST);
+        ForecastHeader result = cut.getForecastHeader(id);
+
+        assertThat(result.getId(), is(equalTo(id.getId())));
+    }
 
     @Test
     public void shouldExtractValueAndIdFromRawViewResult() throws Exception {
-        when(httpCouchClient.getByView(anyString())).thenReturn(viewResult);
+        when(httpCouchClient.getByView(anyString())).thenReturn(viewResultSingle);
 
-        String result = cut.list(ForecastType.Type.CURRENT_FORECAST);
+        ForecastHeader result = cut.list(Type.CURRENT_FORECAST).get(0);
 
-        assertThat(result, not(containsString("value")));
-        assertThat(result, containsString("\"id\":\"Greenland-NEFCOOICE_FORECAST\""));
-        assertThat(result, containsString("\"ftype\":\"WAVE_FORECAST\""));
+        assertThat(result.getId(), equalTo("Greenland-NEFCOOICE_FORECAST"));
+        assertThat(result.getArea(), equalTo("Greenland NE"));
+        assertThat(result.getFtype(), equalTo(Type.ICE_FORECAST));
+        assertThat(result.getSize(), equalTo(28337));
+        assertThat(result.getProvider(), equalTo(ForecastProvider.FCOO));
+        assertThat(result.getName(), equalTo("arcticweb_fcoo_ww3_Greenland_9nm_short_v001C_2016011718.nc"));
+        assertThat(result.getTimestamp(), equalTo(1453053600000L));
     }
 }

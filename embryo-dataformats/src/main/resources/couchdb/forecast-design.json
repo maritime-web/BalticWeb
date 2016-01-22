@@ -9,6 +9,9 @@
       },
       "header_by_type": {
         "map" : "function(doc) {if (doc.metadata.header.ftype) {var copy = JSON.parse(JSON.stringify(doc.metadata.header)); copy.time = new Date(doc.metadata.header.timestamp); emit(doc.metadata.header.ftype, copy);}}"
+      },
+      "header_by_id": {
+        "map" : "function(doc) {var header = doc.metadata.header;  if (header) { emit(doc._id, header);}}"
       }
   }
 }

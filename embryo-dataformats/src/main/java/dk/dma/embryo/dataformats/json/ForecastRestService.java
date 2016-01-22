@@ -15,7 +15,6 @@
 package dk.dma.embryo.dataformats.json;
 
 import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.dataformats.model.Forecast;
 import dk.dma.embryo.dataformats.persistence.ForecastDataRepository;
 import dk.dma.embryo.dataformats.service.ForecastService;
 import org.jboss.resteasy.annotations.GZIP;

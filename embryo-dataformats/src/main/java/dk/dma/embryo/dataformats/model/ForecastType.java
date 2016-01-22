@@ -29,12 +29,8 @@ public class ForecastType extends NetCDFType {
     public Type getType() {
         return type;
     }
-    
-    
-    public enum Type {
-        ICE_FORECAST, CURRENT_FORECAST, WAVE_FORECAST, WIND_FORECAST
-    }
-    
+
+
     @Override
     public String toString() {
         return "Forecast type: " + getName() + " (" + type + ")";

@@ -56,7 +56,14 @@ public class ForecastData {
         metaData = metaData.with(additionalMetaData);
     }
 
-    public String getId() {
+    public ForecastDataId getId() {
+        return id;
+    }
+    public String getIdAsString() {
         return id.getId();
+    }
+
+    public ForecastHeader getHeader() {
+        return ForecastHeader.createFrom(metaData);
     }
 }

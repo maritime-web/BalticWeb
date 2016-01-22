@@ -30,8 +30,8 @@ public class ForecastDataIdTest {
     @Test
     public void shouldCreateIdStringByConcatenatingConstructorInputParameters() throws Exception {
         String area = "NE";
-        Forecast.Provider provider = Forecast.Provider.DMI;
-        ForecastType.Type type = ForecastType.Type.CURRENT_FORECAST;
+        ForecastProvider provider = ForecastProvider.DMI;
+        Type type = Type.CURRENT_FORECAST;
         ForecastDataId cut = new ForecastDataId(area, provider, type);
 
         assertThat(cut.getId(), is(area + provider + type));
@@ -40,8 +40,8 @@ public class ForecastDataIdTest {
     @Test(expected = NullPointerException.class)
     public void shouldRequireNonNullValueForArea() throws Exception {
         String area = null;
-        Forecast.Provider provider = Forecast.Provider.DMI;
-        ForecastType.Type type = ForecastType.Type.CURRENT_FORECAST;
+        ForecastProvider provider = ForecastProvider.DMI;
+        Type type = Type.CURRENT_FORECAST;
 
         new ForecastDataId(area, provider, type);
     }
@@ -49,8 +49,8 @@ public class ForecastDataIdTest {
     @Test(expected = NullPointerException.class)
     public void shouldRequireNonNullValueForProvider() throws Exception {
         String area = "NE";
-        Forecast.Provider provider = null;
-        ForecastType.Type type = ForecastType.Type.CURRENT_FORECAST;
+        ForecastProvider provider = null;
+        Type type = Type.CURRENT_FORECAST;
 
         new ForecastDataId(area, provider, type);
     }
@@ -58,8 +58,8 @@ public class ForecastDataIdTest {
     @Test(expected = NullPointerException.class)
     public void shouldRequireNonNullValueForType() throws Exception {
         String area = "NE";
-        Forecast.Provider provider = Forecast.Provider.DMI;;
-        ForecastType.Type type = null;
+        ForecastProvider provider = ForecastProvider.DMI;;
+        Type type = null;
 
         new ForecastDataId(area, provider, type);
     }
