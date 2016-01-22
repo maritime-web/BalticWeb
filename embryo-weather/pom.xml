@@ -10,7 +10,7 @@
 	<parent>
         <groupId>dk.dma.embryo</groupId>
 		<artifactId>embryo-parent</artifactId>
-        <version>2.6-SNAPSHOT</version>
+		<version>2.6-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
 	</parent>
 

@@ -58,7 +58,7 @@ public class AisVessel {
     private String navStatus;
     private Double rot;
     private Double sog;
-//    private String vesselCargo;
+    //    private String vesselCargo;
     @JsonIgnore
     private VesselType type;
     private String vesselType;

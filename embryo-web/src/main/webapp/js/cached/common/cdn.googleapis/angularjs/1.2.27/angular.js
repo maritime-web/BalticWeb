@@ -53,27 +53,27 @@
                 message, i;
 
             message = prefix + template.replace(/\{\d+\}/g, function (match) {
-                var index = +match.slice(1, -1), arg;
+                    var index = +match.slice(1, -1), arg;
 
-                if (index + 2 < templateArgs.length) {
-                    arg = templateArgs[index + 2];
-                    if (typeof arg === 'function') {
-                        return arg.toString().replace(/ ?\{[\s\S]*$/, '');
-                    } else if (typeof arg === 'undefined') {
-                        return 'undefined';
-                    } else if (typeof arg !== 'string') {
-                        return toJson(arg);
+                    if (index + 2 < templateArgs.length) {
+                        arg = templateArgs[index + 2];
+                        if (typeof arg === 'function') {
+                            return arg.toString().replace(/ ?\{[\s\S]*$/, '');
+                        } else if (typeof arg === 'undefined') {
+                            return 'undefined';
+                        } else if (typeof arg !== 'string') {
+                            return toJson(arg);
+                        }
+                        return arg;
                     }
-                    return arg;
-                }
-                return match;
-            });
+                    return match;
+                });
 
             message = message + '\nhttp://errors.angularjs.org/1.2.27/' +
-            (module ? module + '/' : '') + code;
+                (module ? module + '/' : '') + code;
             for (i = 2; i < arguments.length; i++) {
                 message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
-                encodeURIComponent(stringify(arguments[i]));
+                    encodeURIComponent(stringify(arguments[i]));
             }
 
             return new Error(message);
@@ -1201,10 +1201,10 @@
         try {
             return element[0].nodeType === TEXT_NODE ? lowercase(elemHtml) :
                 elemHtml.
-                    match(/^(<[^>]+>)/)[1].
-                    replace(/^<([\w\-]+)/, function (match, nodeName) {
-                        return '<' + lowercase(nodeName);
-                    });
+                match(/^(<[^>]+>)/)[1].
+                replace(/^<([\w\-]+)/, function (match, nodeName) {
+                    return '<' + lowercase(nodeName);
+                });
         } catch (e) {
             return lowercase(elemHtml);
         }
@@ -1262,11 +1262,11 @@
             if (isArray(value)) {
                 forEach(value, function (arrayValue) {
                     parts.push(encodeUriQuery(key, true) +
-                    (arrayValue === true ? '' : '=' + encodeUriQuery(arrayValue, true)));
+                        (arrayValue === true ? '' : '=' + encodeUriQuery(arrayValue, true)));
                 });
             } else {
                 parts.push(encodeUriQuery(key, true) +
-                (value === true ? '' : '=' + encodeUriQuery(value, true)));
+                    (value === true ? '' : '=' + encodeUriQuery(value, true)));
             }
         });
         return parts.length ? parts.join('&') : '';
@@ -1286,9 +1286,9 @@
      */
     function encodeUriSegment(val) {
         return encodeUriQuery(val, true).
-            replace(/%26/gi, '&').
-            replace(/%3D/gi, '=').
-            replace(/%2B/gi, '+');
+        replace(/%26/gi, '&').
+        replace(/%3D/gi, '=').
+        replace(/%2B/gi, '+');
     }
 
 
@@ -1305,11 +1305,11 @@
      */
     function encodeUriQuery(val, pctEncodeSpaces) {
         return encodeURIComponent(val).
-            replace(/%40/gi, '@').
-            replace(/%3A/gi, ':').
-            replace(/%24/g, '$').
-            replace(/%2C/gi, ',').
-            replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
+        replace(/%40/gi, '@').
+        replace(/%3A/gi, ':').
+        replace(/%24/g, '$').
+        replace(/%2C/gi, ',').
+        replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
     }
 
 
@@ -1477,12 +1477,12 @@
             modules.unshift('ng');
             var injector = createInjector(modules);
             injector.invoke(['$rootScope', '$rootElement', '$compile', '$injector', '$animate',
-                    function (scope, element, compile, injector, animate) {
-                        scope.$apply(function () {
-                            element.data('$injector', injector);
-                            compile(element)(scope);
-                        });
-                    }]
+                function (scope, element, compile, injector, animate) {
+                    scope.$apply(function () {
+                        element.data('$injector', injector);
+                        compile(element)(scope);
+                    });
+                }]
             );
             return injector;
         };
@@ -1552,7 +1552,7 @@
         }
 
         assertArg(isFunction(arg), name, 'not a function, got ' +
-        (arg && typeof arg === 'object' ? arg.constructor.name || 'Object' : typeof arg));
+            (arg && typeof arg === 'object' ? arg.constructor.name || 'Object' : typeof arg));
         return arg;
     }
 
@@ -1710,8 +1710,8 @@
                 return ensure(modules, name, function () {
                     if (!requires) {
                         throw $injectorMinErr('nomod', "Module '{0}' is not available! You either misspelled " +
-                        "the module name or forgot to load it. If registering a module ensure that you " +
-                        "specify the dependencies as the second argument.", name);
+                            "the module name or forgot to load it. If registering a module ensure that you " +
+                            "specify the dependencies as the second argument.", name);
                     }
 
                     /** @type {!Array.<Array.<*>>} */
@@ -2075,50 +2075,50 @@
                     $$sanitizeUri: $$SanitizeUriProvider
                 });
                 $provide.provider('$compile', $CompileProvider).
-                    directive({
-                        a: htmlAnchorDirective,
-                        input: inputDirective,
-                        textarea: inputDirective,
-                        form: formDirective,
-                        script: scriptDirective,
-                        select: selectDirective,
-                        style: styleDirective,
-                        option: optionDirective,
-                        ngBind: ngBindDirective,
-                        ngBindHtml: ngBindHtmlDirective,
-                        ngBindTemplate: ngBindTemplateDirective,
-                        ngClass: ngClassDirective,
-                        ngClassEven: ngClassEvenDirective,
-                        ngClassOdd: ngClassOddDirective,
-                        ngCloak: ngCloakDirective,
-                        ngController: ngControllerDirective,
-                        ngForm: ngFormDirective,
-                        ngHide: ngHideDirective,
-                        ngIf: ngIfDirective,
-                        ngInclude: ngIncludeDirective,
-                        ngInit: ngInitDirective,
-                        ngNonBindable: ngNonBindableDirective,
-                        ngPluralize: ngPluralizeDirective,
-                        ngRepeat: ngRepeatDirective,
-                        ngShow: ngShowDirective,
-                        ngStyle: ngStyleDirective,
-                        ngSwitch: ngSwitchDirective,
-                        ngSwitchWhen: ngSwitchWhenDirective,
-                        ngSwitchDefault: ngSwitchDefaultDirective,
-                        ngOptions: ngOptionsDirective,
-                        ngTransclude: ngTranscludeDirective,
-                        ngModel: ngModelDirective,
-                        ngList: ngListDirective,
-                        ngChange: ngChangeDirective,
-                        required: requiredDirective,
-                        ngRequired: requiredDirective,
-                        ngValue: ngValueDirective
-                    }).
-                    directive({
-                        ngInclude: ngIncludeFillContentDirective
-                    }).
-                    directive(ngAttributeAliasDirectives).
-                    directive(ngEventDirectives);
+                directive({
+                    a: htmlAnchorDirective,
+                    input: inputDirective,
+                    textarea: inputDirective,
+                    form: formDirective,
+                    script: scriptDirective,
+                    select: selectDirective,
+                    style: styleDirective,
+                    option: optionDirective,
+                    ngBind: ngBindDirective,
+                    ngBindHtml: ngBindHtmlDirective,
+                    ngBindTemplate: ngBindTemplateDirective,
+                    ngClass: ngClassDirective,
+                    ngClassEven: ngClassEvenDirective,
+                    ngClassOdd: ngClassOddDirective,
+                    ngCloak: ngCloakDirective,
+                    ngController: ngControllerDirective,
+                    ngForm: ngFormDirective,
+                    ngHide: ngHideDirective,
+                    ngIf: ngIfDirective,
+                    ngInclude: ngIncludeDirective,
+                    ngInit: ngInitDirective,
+                    ngNonBindable: ngNonBindableDirective,
+                    ngPluralize: ngPluralizeDirective,
+                    ngRepeat: ngRepeatDirective,
+                    ngShow: ngShowDirective,
+                    ngStyle: ngStyleDirective,
+                    ngSwitch: ngSwitchDirective,
+                    ngSwitchWhen: ngSwitchWhenDirective,
+                    ngSwitchDefault: ngSwitchDefaultDirective,
+                    ngOptions: ngOptionsDirective,
+                    ngTransclude: ngTranscludeDirective,
+                    ngModel: ngModelDirective,
+                    ngList: ngListDirective,
+                    ngChange: ngChangeDirective,
+                    required: requiredDirective,
+                    ngRequired: requiredDirective,
+                    ngValue: ngValueDirective
+                }).
+                directive({
+                    ngInclude: ngIncludeFillContentDirective
+                }).
+                directive(ngAttributeAliasDirectives).
+                directive(ngEventDirectives);
                 $provide.provider({
                     $anchorScroll: $AnchorScrollProvider,
                     $animate: $AnimateProvider,
@@ -2289,10 +2289,10 @@
      */
     function camelCase(name) {
         return name.
-            replace(SPECIAL_CHARS_REGEXP, function (_, separator, letter, offset) {
-                return offset ? letter.toUpperCase() : letter;
-            }).
-            replace(MOZ_HACK_REGEXP, 'Moz$1');
+        replace(SPECIAL_CHARS_REGEXP, function (_, separator, letter, offset) {
+            return offset ? letter.toUpperCase() : letter;
+        }).
+        replace(MOZ_HACK_REGEXP, 'Moz$1');
     }
 
 /////////////////////////////////////////////
@@ -2375,7 +2375,7 @@
             tag = (TAG_NAME_REGEXP.exec(html) || ["", ""])[1].toLowerCase();
             wrap = wrapMap[tag] || wrapMap._default;
             tmp.innerHTML = '<div>&#160;</div>' +
-            wrap[1] + html.replace(XHTML_TAG_REGEXP, "<$1></$2>") + wrap[2];
+                wrap[1] + html.replace(XHTML_TAG_REGEXP, "<$1></$2>") + wrap[2];
             tmp.removeChild(tmp.firstChild);
 
             // Descend through wrappers to the right content
@@ -2530,16 +2530,16 @@
     function jqLiteHasClass(element, selector) {
         if (!element.getAttribute) return false;
         return ((" " + (element.getAttribute('class') || '') + " ").replace(/[\n\t]/g, " ").
-            indexOf(" " + selector + " ") > -1);
+        indexOf(" " + selector + " ") > -1);
     }
 
     function jqLiteRemoveClass(element, cssClasses) {
         if (cssClasses && element.setAttribute) {
             forEach(cssClasses.split(' '), function (cssClass) {
                 element.setAttribute('class', trim(
-                        (" " + (element.getAttribute('class') || '') + " ")
-                            .replace(/[\n\t]/g, " ")
-                            .replace(" " + trim(cssClass) + " ", " "))
+                    (" " + (element.getAttribute('class') || '') + " ")
+                        .replace(/[\n\t]/g, " ")
+                        .replace(" " + trim(cssClass) + " ", " "))
                 );
             });
         }
@@ -4732,11 +4732,11 @@
             if (name) {
                 if (value === undefined) {
                     rawDocument.cookie = escape(name) + "=;path=" + cookiePath +
-                    ";expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                        ";expires=Thu, 01 Jan 1970 00:00:00 GMT";
                 } else {
                     if (isString(value)) {
                         cookieLength = (rawDocument.cookie = escape(name) + '=' + escape(value) +
-                        ';path=' + cookiePath).length + 1;
+                                ';path=' + cookiePath).length + 1;
 
                         // per http://www.ietf.org/rfc/rfc2109.txt browser must allow at minimum:
                         // - 300 cookies
@@ -4744,8 +4744,8 @@
                         // - 4096 bytes per cookie
                         if (cookieLength > 4096) {
                             $log.warn("Cookie '" + name +
-                            "' possibly not set or overflowed because it was too large (" +
-                            cookieLength + " > 4096 bytes)!");
+                                "' possibly not set or overflowed because it was too large (" +
+                                cookieLength + " > 4096 bytes)!");
                         }
                     }
                 }
@@ -6476,7 +6476,7 @@
                                 $template = $compileNode;
                                 $compileNode = templateAttrs.$$element =
                                     jqLite(document.createComment(' ' + directiveName + ': ' +
-                                    templateAttrs[directiveName] + ' '));
+                                        templateAttrs[directiveName] + ' '));
                                 compileNode = $compileNode[0];
                                 replaceWith(jqCollection, sliceArgs($template), compileNode);
 
@@ -6712,12 +6712,12 @@
                                             };
                                         }
                                         parentSet = parentGet.assign || function () {
-                                            // reset the change, or we will throw this exception on every $digest
-                                            lastValue = isolateScope[scopeName] = parentGet(scope);
-                                            throw $compileMinErr('nonassign',
-                                                "Expression '{0}' used with directive '{1}' is non-assignable!",
-                                                attrs[attrName], newIsolateScopeDirective.name);
-                                        };
+                                                // reset the change, or we will throw this exception on every $digest
+                                                lastValue = isolateScope[scopeName] = parentGet(scope);
+                                                throw $compileMinErr('nonassign',
+                                                    "Expression '{0}' used with directive '{1}' is non-assignable!",
+                                                    attrs[attrName], newIsolateScopeDirective.name);
+                                            };
                                         lastValue = isolateScope[scopeName] = parentGet(scope);
                                         isolateScope.$watch(function parentValueWatch() {
                                             var parentValue = parentGet(scope);
@@ -6939,85 +6939,85 @@
                     $compileNode.empty();
 
                     $http.get($sce.getTrustedResourceUrl(templateUrl), {cache: $templateCache}).
-                        success(function (content) {
-                            var compileNode, tempTemplateAttrs, $template, childBoundTranscludeFn;
+                    success(function (content) {
+                        var compileNode, tempTemplateAttrs, $template, childBoundTranscludeFn;
 
-                            content = denormalizeTemplate(content);
+                        content = denormalizeTemplate(content);
 
-                            if (origAsyncDirective.replace) {
-                                if (jqLiteIsTextNode(content)) {
-                                    $template = [];
-                                } else {
-                                    $template = jqLite(trim(content));
-                                }
-                                compileNode = $template[0];
-
-                                if ($template.length != 1 || compileNode.nodeType !== 1) {
-                                    throw $compileMinErr('tplrt',
-                                        "Template for directive '{0}' must have exactly one root element. {1}",
-                                        origAsyncDirective.name, templateUrl);
-                                }
-
-                                tempTemplateAttrs = {$attr: {}};
-                                replaceWith($rootElement, $compileNode, compileNode);
-                                var templateDirectives = collectDirectives(compileNode, [], tempTemplateAttrs);
-
-                                if (isObject(origAsyncDirective.scope)) {
-                                    markDirectivesAsIsolate(templateDirectives);
-                                }
-                                directives = templateDirectives.concat(directives);
-                                mergeTemplateAttributes(tAttrs, tempTemplateAttrs);
+                        if (origAsyncDirective.replace) {
+                            if (jqLiteIsTextNode(content)) {
+                                $template = [];
                             } else {
-                                compileNode = beforeTemplateCompileNode;
-                                $compileNode.html(content);
+                                $template = jqLite(trim(content));
+                            }
+                            compileNode = $template[0];
+
+                            if ($template.length != 1 || compileNode.nodeType !== 1) {
+                                throw $compileMinErr('tplrt',
+                                    "Template for directive '{0}' must have exactly one root element. {1}",
+                                    origAsyncDirective.name, templateUrl);
                             }
 
-                            directives.unshift(derivedSyncDirective);
+                            tempTemplateAttrs = {$attr: {}};
+                            replaceWith($rootElement, $compileNode, compileNode);
+                            var templateDirectives = collectDirectives(compileNode, [], tempTemplateAttrs);
 
-                            afterTemplateNodeLinkFn = applyDirectivesToNode(directives, compileNode, tAttrs,
-                                childTranscludeFn, $compileNode, origAsyncDirective, preLinkFns, postLinkFns,
-                                previousCompileContext);
-                            forEach($rootElement, function (node, i) {
-                                if (node == compileNode) {
-                                    $rootElement[i] = $compileNode[0];
-                                }
-                            });
-                            afterTemplateChildLinkFn = compileNodes($compileNode[0].childNodes, childTranscludeFn);
-
-                            while (linkQueue.length) {
-                                var scope = linkQueue.shift(),
-                                    beforeTemplateLinkNode = linkQueue.shift(),
-                                    linkRootElement = linkQueue.shift(),
-                                    boundTranscludeFn = linkQueue.shift(),
-                                    linkNode = $compileNode[0];
-
-                                if (beforeTemplateLinkNode !== beforeTemplateCompileNode) {
-                                    var oldClasses = beforeTemplateLinkNode.className;
-
-                                    if (!(previousCompileContext.hasElementTranscludeDirective &&
-                                        origAsyncDirective.replace)) {
-                                        // it was cloned therefore we have to clone as well.
-                                        linkNode = jqLiteClone(compileNode);
-                                    }
-
-                                    replaceWith(linkRootElement, jqLite(beforeTemplateLinkNode), linkNode);
-
-                                    // Copy in CSS classes from original node
-                                    safeAddClass(jqLite(linkNode), oldClasses);
-                                }
-                                if (afterTemplateNodeLinkFn.transcludeOnThisElement) {
-                                    childBoundTranscludeFn = createBoundTranscludeFn(scope, afterTemplateNodeLinkFn.transclude, boundTranscludeFn);
-                                } else {
-                                    childBoundTranscludeFn = boundTranscludeFn;
-                                }
-                                afterTemplateNodeLinkFn(afterTemplateChildLinkFn, scope, linkNode, $rootElement,
-                                    childBoundTranscludeFn);
+                            if (isObject(origAsyncDirective.scope)) {
+                                markDirectivesAsIsolate(templateDirectives);
                             }
-                            linkQueue = null;
-                        }).
-                        error(function (response, code, headers, config) {
-                            throw $compileMinErr('tpload', 'Failed to load template: {0}', config.url);
+                            directives = templateDirectives.concat(directives);
+                            mergeTemplateAttributes(tAttrs, tempTemplateAttrs);
+                        } else {
+                            compileNode = beforeTemplateCompileNode;
+                            $compileNode.html(content);
+                        }
+
+                        directives.unshift(derivedSyncDirective);
+
+                        afterTemplateNodeLinkFn = applyDirectivesToNode(directives, compileNode, tAttrs,
+                            childTranscludeFn, $compileNode, origAsyncDirective, preLinkFns, postLinkFns,
+                            previousCompileContext);
+                        forEach($rootElement, function (node, i) {
+                            if (node == compileNode) {
+                                $rootElement[i] = $compileNode[0];
+                            }
                         });
+                        afterTemplateChildLinkFn = compileNodes($compileNode[0].childNodes, childTranscludeFn);
+
+                        while (linkQueue.length) {
+                            var scope = linkQueue.shift(),
+                                beforeTemplateLinkNode = linkQueue.shift(),
+                                linkRootElement = linkQueue.shift(),
+                                boundTranscludeFn = linkQueue.shift(),
+                                linkNode = $compileNode[0];
+
+                            if (beforeTemplateLinkNode !== beforeTemplateCompileNode) {
+                                var oldClasses = beforeTemplateLinkNode.className;
+
+                                if (!(previousCompileContext.hasElementTranscludeDirective &&
+                                    origAsyncDirective.replace)) {
+                                    // it was cloned therefore we have to clone as well.
+                                    linkNode = jqLiteClone(compileNode);
+                                }
+
+                                replaceWith(linkRootElement, jqLite(beforeTemplateLinkNode), linkNode);
+
+                                // Copy in CSS classes from original node
+                                safeAddClass(jqLite(linkNode), oldClasses);
+                            }
+                            if (afterTemplateNodeLinkFn.transcludeOnThisElement) {
+                                childBoundTranscludeFn = createBoundTranscludeFn(scope, afterTemplateNodeLinkFn.transclude, boundTranscludeFn);
+                            } else {
+                                childBoundTranscludeFn = boundTranscludeFn;
+                            }
+                            afterTemplateNodeLinkFn(afterTemplateChildLinkFn, scope, linkNode, $rootElement,
+                                childBoundTranscludeFn);
+                        }
+                        linkQueue = null;
+                    }).
+                    error(function (response, code, headers, config) {
+                        throw $compileMinErr('tpload', 'Failed to load template: {0}', config.url);
+                    });
 
                     return function delayedNodeLinkFn(ignoreChildLinkFn, scope, node, rootElement, boundTranscludeFn) {
                         var childBoundTranscludeFn = boundTranscludeFn;
@@ -7136,19 +7136,19 @@
                                     attr[name] = interpolateFn(scope);
                                     ($$observers[name] || ($$observers[name] = [])).$$inter = true;
                                     (attr.$$observers && attr.$$observers[name].$$scope || scope).
-                                        $watch(interpolateFn, function interpolateFnWatchAction(newValue, oldValue) {
-                                            //special case for class attribute addition + removal
-                                            //so that class changes can tap into the animation
-                                            //hooks provided by the $animate service. Be sure to
-                                            //skip animations when the first digest occurs (when
-                                            //both the new and the old values are the same) since
-                                            //the CSS classes are the non-interpolated values
-                                            if (name === 'class' && newValue != oldValue) {
-                                                attr.$updateClass(newValue, oldValue);
-                                            } else {
-                                                attr.$set(name, newValue);
-                                            }
-                                        });
+                                    $watch(interpolateFn, function interpolateFnWatchAction(newValue, oldValue) {
+                                        //special case for class attribute addition + removal
+                                        //so that class changes can tap into the animation
+                                        //hooks provided by the $animate service. Be sure to
+                                        //skip animations when the first digest occurs (when
+                                        //both the new and the old values are the same) since
+                                        //the CSS classes are the non-interpolated values
+                                        if (name === 'class' && newValue != oldValue) {
+                                            attr.$updateClass(newValue, oldValue);
+                                        } else {
+                                            attr.$set(name, newValue);
+                                        }
+                                    });
                                 }
                             };
                         }
@@ -8542,7 +8542,7 @@
                                 }
                             }
                             parts.push(encodeUriQuery(key) + '=' +
-                            encodeUriQuery(v));
+                                encodeUriQuery(v));
                         });
                     });
                     if (parts.length > 0) {
@@ -8813,7 +8813,7 @@
          * @description
          * Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
    *
-   * @param {string=} value new value to set the starting symbol to.
+         * @param {string=} value new value to set the starting symbol to.
          * @returns {string|self} Returns the symbol when used as getter and self if used as setter.
          */
         this.startSymbol = function (value) {
@@ -10826,7 +10826,7 @@
             if ((token = this.expect('='))) {
                 if (!left.assign) {
                     this.throwError('implies assignment but [' +
-                    this.text.substring(0, token.index) + '] can not be assigned to', token);
+                        this.text.substring(0, token.index) + '] can not be assigned to', token);
                 }
                 right = this.ternary();
                 return function (scope, locals) {
@@ -11305,17 +11305,17 @@
                     needsEnsureSafeObject = true;
                 }
                 code += 'if(s == null) return undefined;\n' +
-                's=' + lookupJs + ';\n';
+                    's=' + lookupJs + ';\n';
                 if (options.unwrapPromises) {
                     code += 'if (s && s.then) {\n' +
-                    ' pw("' + fullExp.replace(/(["\r\n])/g, '\\$1') + '");\n' +
-                    ' if (!("$$v" in s)) {\n' +
-                    ' p=s;\n' +
-                    ' p.$$v = undefined;\n' +
-                    ' p.then(function(v) {p.$$v=' + (wrapWithEso ? 'eso(v)' : 'v') + ';});\n' +
-                    '}\n' +
-                    ' s=' + (wrapWithEso ? 'eso(s.$$v)' : 's.$$v') + '\n' +
-                    '}\n';
+                        ' pw("' + fullExp.replace(/(["\r\n])/g, '\\$1') + '");\n' +
+                        ' if (!("$$v" in s)) {\n' +
+                        ' p=s;\n' +
+                        ' p.$$v = undefined;\n' +
+                        ' p.then(function(v) {p.$$v=' + (wrapWithEso ? 'eso(v)' : 'v') + ';});\n' +
+                        '}\n' +
+                        ' s=' + (wrapWithEso ? 'eso(s.$$v)' : 's.$$v') + '\n' +
+                        '}\n';
 
                 }
             });
@@ -11498,7 +11498,7 @@
                 if (!$parseOptions.logPromiseWarnings || promiseWarningCache.hasOwnProperty(fullExp)) return;
                 promiseWarningCache[fullExp] = true;
                 $log.warn('[$parse] Promise found in the expression `' + fullExp + '`. ' +
-                'Automatic unwrapping of promises in Angular expressions is deprecated.');
+                    'Automatic unwrapping of promises in Angular expressions is deprecated.');
             };
 
             return function (exp, expensiveChecks) {
@@ -12580,7 +12580,7 @@
                                 // copy the items to oldValue and look for changes.
                                 for (var i = 0; i < newLength; i++) {
                                     bothNaN = (oldValue[i] !== oldValue[i]) &&
-                                    (newValue[i] !== newValue[i]);
+                                        (newValue[i] !== newValue[i]);
                                     if (!bothNaN && (oldValue[i] !== newValue[i])) {
                                         changeDetected++;
                                         oldValue[i] = newValue[i];
@@ -12600,7 +12600,7 @@
                                         newLength++;
                                         if (oldValue.hasOwnProperty(key)) {
                                             bothNaN = (oldValue[key] !== oldValue[key]) &&
-                                            (newValue[key] !== newValue[key]);
+                                                (newValue[key] !== newValue[key]);
                                             if (!bothNaN && (oldValue[key] !== newValue[key])) {
                                                 changeDetected++;
                                                 oldValue[key] = newValue[key];
@@ -13362,7 +13362,7 @@
 // Prereq: s is a string.
     function escapeForRegexp(s) {
         return s.replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1').
-            replace(/\x08/g, '\\x08');
+        replace(/\x08/g, '\\x08');
     }
 
 
@@ -13379,8 +13379,8 @@
                     'Illegal sequence *** in string matcher.  String: {0}', matcher);
             }
             matcher = escapeForRegexp(matcher).
-                replace('\\*\\*', '.*').
-                replace('\\*', '[^:/.?&;]*');
+            replace('\\*\\*', '.*').
+            replace('\\*', '[^:/.?&;]*');
             return new RegExp('^' + matcher + '$');
         } else if (isRegExp(matcher)) {
             // The only other type of matcher allowed is a Regexp.
@@ -15150,7 +15150,7 @@
         return function (amount, currencySymbol) {
             if (isUndefined(currencySymbol)) currencySymbol = formats.CURRENCY_SYM;
             return formatNumber(amount, formats.PATTERNS[1], formats.GROUP_SEP, formats.DECIMAL_SEP, 2).
-                replace(/\u00A4/g, currencySymbol);
+            replace(/\u00A4/g, currencySymbol);
         };
     }
 
@@ -15337,7 +15337,7 @@
         var paddedZone = (zone >= 0) ? "+" : "";
 
         paddedZone += padNumber(Math[zone > 0 ? 'floor' : 'ceil'](zone / 60), 2) +
-        padNumber(Math.abs(zone % 60), 2);
+            padNumber(Math.abs(zone % 60), 2);
 
         return paddedZone;
     }
@@ -20485,7 +20485,7 @@
                 forEach(whens, function (expression, key) {
                     whensExpFns[key] =
                         $interpolate(expression.replace(BRACE, startSymbol + numberExp + '-' +
-                        offset + endSymbol));
+                            offset + endSymbol));
                 });
 
                 scope.$watch(function ngPluralizeWatch() {

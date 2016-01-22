@@ -169,7 +169,7 @@ $(function () {
                 $scope.sarOperation.coordinator = calculatedOperation.coordinator;
                 $scope.sarOperation.input = calculatedOperation.input;
                 $scope.sarOperation.output = calculatedOperation.output;
-                if(!$scope.sarOperation.coordinator){
+                if (!$scope.sarOperation.coordinator) {
                     $scope.sarOperation.coordinator = calculatedOperation.coordinator;
                 }
 
@@ -219,30 +219,30 @@ $(function () {
             });
         }
 
-        $scope.end = function () {
-            var id = $scope.sarOperation._id;
+            $scope.end = function () {
+                var id = $scope.sarOperation._id;
 
-            LivePouch.get(id).then(function (sar) {
-                sar.status = embryo.SARStatus.ENDED;
-                LivePouch.put(sar).then(function () {
-                    $scope.provider.doShow = false;
-                    SarService.selectSar(null);
-                }).catch(function (err) {
-                    console.log(err)
-            });
-            });
-        }
-
-        $scope.getUsers = function (query) {
-            UserPouch.get(query).then(function (sar) {
-                sar.status = embryo.SARStatus.ENDED;
-                LivePouch.put(sar).then(function () {
-                    $scope.provider.doShow = false;
-                    SarService.selectSar(null);
-                }).catch(function (err) {
-                    console.log(err)
+                LivePouch.get(id).then(function (sar) {
+                    sar.status = embryo.SARStatus.ENDED;
+                    LivePouch.put(sar).then(function () {
+                        $scope.provider.doShow = false;
+                        SarService.selectSar(null);
+                    }).catch(function (err) {
+                        console.log(err)
+                    });
                 });
-            });
+            }
+
+            $scope.getUsers = function (query) {
+                UserPouch.get(query).then(function (sar) {
+                    sar.status = embryo.SARStatus.ENDED;
+                    LivePouch.put(sar).then(function () {
+                        $scope.provider.doShow = false;
+                        SarService.selectSar(null);
+                    }).catch(function (err) {
+                        console.log(err)
+                });
+                });
         }
 
     }]);
@@ -278,9 +278,10 @@ $(function () {
                         deferred.resolve(users);
                     });
                     return deferred.promise;
-                }().then(function(res) {
+                }().then(function (res) {
                     return res;
-                });;
+                });
+                ;
             }
             $scope.getUsersAndVessels = function (query) {
                 var vessels = []
@@ -604,7 +605,7 @@ $(function () {
                     $scope.effort.wind = latest.wind;
                 }
 
-                if($scope.effort.status === embryo.sar.effort.Status.Active) {
+                if ($scope.effort.status === embryo.sar.effort.Status.Active) {
                     $scope.message = "Sub area is edited by creating a copy of the existing shared sub area. \n";
                     $scope.message += "Write new values below, Calculate sub area, drag and shape sub area on the map and Share it. ";
                     $scope.message += "Your will hereby also replace the existing shared sub area. ";
@@ -624,7 +625,7 @@ $(function () {
 
             $scope.calculate = function () {
 
-                if($scope.effort.status === embryo.sar.effort.Status.Active) {
+                if ($scope.effort.status === embryo.sar.effort.Status.Active) {
                     delete $scope.effort._rev;
                     delete $scope.effort.area;
                     $scope.effort._id = "sarEf-" + Date.now();
@@ -784,7 +785,7 @@ $(function () {
                 }).then(function (sar) {
                     $scope.sar = sar;
                 }).catch(function (error) {
-                        // FIXME don't treat error as a string be default.
+                    // FIXME don't treat error as a string be default.
                     $scope.errorMessages = [error];
                 });
             }

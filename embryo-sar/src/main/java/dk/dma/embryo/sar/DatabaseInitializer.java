@@ -165,7 +165,7 @@ public class DatabaseInitializer {
         String name = user.getUserName();
         if (user.getRole().getClass() == SailorRole.class) {
             Vessel vessel = ((SailorRole) user.getRole()).getVessel();
-            if(vessel.getAisData() != null && vessel.getAisData().getName() != null){
+            if (vessel.getAisData() != null && vessel.getAisData().getName() != null) {
                 name = vessel.getAisData().getName();
             }
         }
@@ -199,11 +199,11 @@ public class DatabaseInitializer {
                 String name = getUserName(user);
                 newOrModifiedUsers.add(new User(id, name, mmsi));
                 logger.info("Adding user with id={} and name={}", user.getId(), name);
-            }else{
+            } else {
                 User couchUser = couchUsers.get(id);
                 String mmsi = getMmsi(user);
                 String name = getUserName(user);
-                if(!couchUser.getName().equals(name) || !ObjectUtils.equals(couchUser.getMmsi(), mmsi)){
+                if (!couchUser.getName().equals(name) || !ObjectUtils.equals(couchUser.getMmsi(), mmsi)) {
                     couchUser.setMmsi(mmsi.toString());
                     couchUser.setName(name);
                     logger.info("Updating user with id={} and name={}", id, name);

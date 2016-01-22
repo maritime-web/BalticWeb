@@ -647,14 +647,14 @@
                                 var paths = rootToLeaf(metadata.rev_tree);
                                 var path = arrayFirst(paths, function (arr) {
                                     return arr.ids.map(function (x) {
-                                            return x.id;
-                                        })
+                                                return x.id;
+                                            })
                                             .indexOf(doc._rev.split('-')[1]) !== -1;
                                 });
 
                                 var indexOfRev = path.ids.map(function (x) {
-                                        return x.id;
-                                    })
+                                            return x.id;
+                                        })
                                         .indexOf(doc._rev.split('-')[1]) + 1;
                                 var howMany = path.ids.length - indexOfRev;
                                 path.ids.splice(indexOfRev, howMany);
@@ -1512,7 +1512,7 @@
                                                              callback) {
 
                         var url = genDBUrl(host, encodeDocId(docId) + '/' +
-                            encodeAttachmentId(attachmentId)) + '?rev=' + rev;
+                                encodeAttachmentId(attachmentId)) + '?rev=' + rev;
 
                         ajax({}, {
                             method: 'DELETE',
@@ -2197,7 +2197,7 @@
                         // MS Edge pretends to be Chrome 42:
                         // https://msdn.microsoft.com/en-us/library/hh869301%28v=vs.85%29.aspx
                         resolve(matchedEdge || !matchedChrome ||
-                        parseInt(matchedChrome[1], 10) >= 43);
+                            parseInt(matchedChrome[1], 10) >= 43);
                     };
                 })["catch"](function () {
                     return false; // error, so assume unsupported
@@ -2851,7 +2851,7 @@
                             var metadata = decodeMetadataCompat(cursor.value);
 
                             metadata.winningRev = metadata.winningRev ||
-                            calculateWinningRev(metadata);
+                                calculateWinningRev(metadata);
 
                             function fetchMetadataSeq() {
                                 // metadata.seq was added post-3.2.0, so if it's missing,
@@ -4175,7 +4175,7 @@
                         }
                         var id = docInfo.metadata.id;
                         tx.executeSql('SELECT json FROM ' + DOC_STORE +
-                        ' WHERE id = ?', [id], function (tx, result) {
+                            ' WHERE id = ?', [id], function (tx, result) {
                             if (result.rows.length) {
                                 var metadata = safeJsonParse(result.rows.item(0).json);
                                 fetchedDocs.set(id, metadata);
@@ -4195,7 +4195,7 @@
                         // but my hunch is that it's cheaper not to serialize the blob
                         // from JS to C if we don't have to (TODO: confirm this)
                         sql = 'INSERT INTO ' + ATTACH_STORE +
-                        ' (digest, body, escaped) VALUES (?,?,1)';
+                            ' (digest, body, escaped) VALUES (?,?,1)';
                         tx.executeSql(sql, [digest, websqlUtils.escapeBlob(data)], function () {
                             callback();
                         }, function () {
@@ -4417,12 +4417,12 @@
                     tx.executeSql(DOC_STORE_WINNINGSEQ_INDEX_SQL);
 
                     tx.executeSql('ALTER TABLE ' + BY_SEQ_STORE +
-                    ' ADD COLUMN deleted TINYINT(1) DEFAULT 0', [], function () {
+                        ' ADD COLUMN deleted TINYINT(1) DEFAULT 0', [], function () {
                         tx.executeSql(BY_SEQ_STORE_DELETED_INDEX_SQL);
                         tx.executeSql('ALTER TABLE ' + DOC_STORE +
-                        ' ADD COLUMN local TINYINT(1) DEFAULT 0', [], function () {
+                            ' ADD COLUMN local TINYINT(1) DEFAULT 0', [], function () {
                             tx.executeSql('CREATE INDEX IF NOT EXISTS \'doc-store-local-idx\' ON ' +
-                            DOC_STORE + ' (local, id)');
+                                DOC_STORE + ' (local, id)');
 
                             var sql = 'SELECT ' + DOC_STORE + '.winningseq AS seq, ' + DOC_STORE +
                                 '.json AS metadata FROM ' + BY_SEQ_STORE + ' JOIN ' + DOC_STORE +
@@ -4445,10 +4445,10 @@
                                     }
                                 }
                                 tx.executeSql('UPDATE ' + DOC_STORE + 'SET local = 1 WHERE id IN ' +
-                                qMarks(local.length), local, function () {
+                                    qMarks(local.length), local, function () {
                                     tx.executeSql('UPDATE ' + BY_SEQ_STORE +
-                                    ' SET deleted = 1 WHERE seq IN ' +
-                                    qMarks(deleted.length), deleted, callback);
+                                        ' SET deleted = 1 WHERE seq IN ' +
+                                        qMarks(deleted.length), deleted, callback);
                                 });
                             });
                         });
@@ -4719,7 +4719,7 @@
                             if (migrated) {
                                 // update the db version within this transaction
                                 tx.executeSql('UPDATE ' + META_STORE + ' SET db_version = ' +
-                                ADAPTER_VERSION);
+                                    ADAPTER_VERSION);
                             }
                             // notify db.id() callers
                             var sql = 'SELECT dbid FROM ' + META_STORE;
@@ -4771,7 +4771,7 @@
                             // table was created, but without the new db_version column,
                             // so add it.
                             tx.executeSql('ALTER TABLE ' + META_STORE +
-                            ' ADD COLUMN db_version INTEGER', [], function () {
+                                ' ADD COLUMN db_version INTEGER', [], function () {
                                 // before version 2, this column didn't even exist
                                 onGetVersion(tx, 1);
                             });
@@ -5228,7 +5228,7 @@
                         var values;
                         if (oldRev) {
                             sql = 'UPDATE ' + LOCAL_STORE + ' SET rev=?, json=? ' +
-                            'WHERE id=? AND rev=?';
+                                'WHERE id=? AND rev=?';
                             values = [newRev, json, id, oldRev];
                         } else {
                             sql = 'INSERT INTO ' + LOCAL_STORE + ' (id, rev, json) VALUES (?,?,?)';
@@ -6290,7 +6290,7 @@
                         options.headers.Accept = 'application/json';
                     }
                     options.headers['Content-Type'] = options.headers['Content-Type'] ||
-                    'application/json';
+                        'application/json';
                 }
 
                 if (options.binary) {
@@ -6370,8 +6370,8 @@
                 module.exports = function () {
                     if ('console' in global && 'warn' in console) {
                         console.warn('PouchDB: the remote database may not have CORS enabled.' +
-                        'If not please enable CORS: ' +
-                        'http://pouchdb.com/errors.html#no_access_control_allow_origin_header');
+                            'If not please enable CORS: ' +
+                            'http://pouchdb.com/errors.html#no_access_control_allow_origin_header');
                     }
                 };
 
@@ -6460,7 +6460,7 @@
                 if (options.json) {
                     headers.set('Accept', 'application/json');
                     headers.set('Content-Type', options.headers['Content-Type'] ||
-                    'application/json');
+                        'application/json');
                 }
 
                 if (options.body && (options.body instanceof Blob)) {
@@ -6488,7 +6488,7 @@
                 if (options.timeout > 0) {
                     timer = setTimeout(function () {
                         wrappedPromise.reject(new Error('Load timeout for resource: ' +
-                        options.url));
+                            options.url));
                     }, options.timeout);
                 }
 
@@ -6543,7 +6543,7 @@
                 } else if (options.json) {
                     options.headers.Accept = 'application/json';
                     options.headers['Content-Type'] = options.headers['Content-Type'] ||
-                    'application/json';
+                        'application/json';
                     if (options.body &&
                         options.processData &&
                         typeof options.body !== "string") {
@@ -6574,7 +6574,7 @@
                     if (typeof hasUpload === 'undefined') {
                         // IE throws an error if you try to access it directly
                         hasUpload = Object.keys(xhr).indexOf('upload') !== -1 &&
-                        typeof xhr.upload !== 'undefined';
+                            typeof xhr.upload !== 'undefined';
                     }
                     if (hasUpload) { // does not exist in ie9
                         xhr.upload.onprogress = xhr.onprogress;
@@ -7740,7 +7740,7 @@
                 // fallback to error by status or unknown error.
                 if (!errType) {
                     errType = errors.getErrorTypeByProp('status', res.status, errReason) ||
-                    errors.UNKNOWN_ERROR;
+                        errors.UNKNOWN_ERROR;
                 }
 
                 error = errors.error(errType, errReason, errName);
@@ -8641,8 +8641,8 @@
              *   "098F4D35"
              */
             var chars = (
-            '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-            'abcdefghijklmnopqrstuvwxyz'
+                '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+                'abcdefghijklmnopqrstuvwxyz'
             ).split('');
 
             function getValue(radix) {
@@ -9018,23 +9018,23 @@
                         typeof options[endkeyName] !== 'undefined' &&
                         collate(options[startkeyName], options[endkeyName]) > 0) {
                         throw new QueryParseError('No rows can match your key range, ' +
-                        'reverse your start_key and end_key or set {descending : true}');
+                            'reverse your start_key and end_key or set {descending : true}');
                     } else if (fun.reduce && options.reduce !== false) {
                         if (options.include_docs) {
                             throw new QueryParseError('{include_docs:true} is invalid for reduce');
                         } else if (options.keys && options.keys.length > 1 && !options.group && !options.group_level) {
                             throw new QueryParseError('Multi-key fetches for reduce views must use ' +
-                            '{group: true}');
+                                '{group: true}');
                         }
                     }
                     if (options.group_level) {
                         if (typeof options.group_level !== 'number') {
                             throw new QueryParseError('Invalid value for integer: "' +
-                            options.group_level + '"');
+                                options.group_level + '"');
                         }
                         if (options.group_level < 0) {
                             throw new QueryParseError('Invalid value for positive integer: ' +
-                            '"' + options.group_level + '"');
+                                '"' + options.group_level + '"');
                         }
                     }
                 }
@@ -9687,7 +9687,7 @@
 
                             if (!fun || typeof fun.map !== 'string') {
                                 throw new NotFoundError('ddoc ' + designDocName +
-                                ' has no view named ' + viewName);
+                                    ' has no view named ' + viewName);
                             }
                             checkQueryParseError(opts, fun);
 
@@ -10437,13 +10437,13 @@
                 var session = uuid();
 
                 result = result || {
-                    ok: true,
-                    start_time: new Date(),
-                    docs_read: 0,
-                    docs_written: 0,
-                    doc_write_failures: 0,
-                    errors: []
-                };
+                        ok: true,
+                        start_time: new Date(),
+                        docs_read: 0,
+                        docs_written: 0,
+                        doc_write_failures: 0,
+                        errors: []
+                    };
 
                 var changesOpts = {};
                 returnValue.ready(src, target);
@@ -10515,14 +10515,14 @@
                     writingCheckpoint = true;
                     return checkpointer.writeCheckpoint(currentBatch.seq,
                         session).then(function () {
-                            writingCheckpoint = false;
-                            if (returnValue.cancelled) {
-                                completeReplication();
-                                throw new Error('cancelled');
-                            }
-                            currentBatch = undefined;
-                            getChanges();
-                        })["catch"](function (err) {
+                        writingCheckpoint = false;
+                        if (returnValue.cancelled) {
+                            completeReplication();
+                            throw new Error('cancelled');
+                        }
+                        currentBatch = undefined;
+                        getChanges();
+                    })["catch"](function (err) {
                         writingCheckpoint = false;
                         abortReplication('writeCheckpoint completed with error', err);
                         throw err;
@@ -10718,8 +10718,8 @@
 
                 function getChanges() {
                     if (!(
-                        !changesPending && !changesCompleted &&
-                        batches.length < batches_limit
+                            !changesPending && !changesCompleted &&
+                            batches.length < batches_limit
                         )) {
                         return;
                     }
@@ -10969,7 +10969,7 @@
                             if (skipIdb && adapterName === 'idb') {
                                 // log it, because this can be confusing during development
                                 console.log('PouchDB is downgrading "' + name + '" to WebSQL to' +
-                                ' avoid data loss, because it was already opened with WebSQL.');
+                                    ' avoid data loss, because it was already opened with WebSQL.');
                                 continue; // keep using websql to avoid user data loss
                             }
                             break;
@@ -11842,11 +11842,11 @@
                 var useColors = this.useColors;
 
                 args[0] = (useColors ? '%c' : '')
-                + this.namespace
-                + (useColors ? ' %c' : ' ')
-                + args[0]
-                + (useColors ? '%c ' : ' ')
-                + '+' + exports.humanize(this.diff);
+                    + this.namespace
+                    + (useColors ? ' %c' : ' ')
+                    + args[0]
+                    + (useColors ? '%c ' : ' ')
+                    + '+' + exports.humanize(this.diff);
 
                 if (!useColors) return args;
 
@@ -12770,7 +12770,7 @@
                                 while (++i < len) {
                                     var objKey = arr[i];
                                     result += exports.toIndexableString(objKey) +
-                                    exports.toIndexableString(key[objKey]);
+                                        exports.toIndexableString(key[objKey]);
                                 }
                             }
                             return result;

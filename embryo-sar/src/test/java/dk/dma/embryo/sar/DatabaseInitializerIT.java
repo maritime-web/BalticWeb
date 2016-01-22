@@ -77,7 +77,7 @@ public class DatabaseInitializerIT {
         final ContainerConfig containerConfig = ContainerConfig.builder()
                 .hostConfig(hostConfig)
                 .image("dmadk/embryo-couchdb:latest").exposedPorts("5984")
-                        //.cmd("sh", "-c", "while :; do sleep 1; done")
+                //.cmd("sh", "-c", "while :; do sleep 1; done")
                 .build();
 
         containerCreation = docker.createContainer(containerConfig);
