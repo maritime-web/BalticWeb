@@ -11,7 +11,12 @@ function EmbryoLayer() {
     this.active = false;
 
     this.show = function () {
-        this.active = true;
+        this.active = true
+        this.redraw();
+    };
+
+    this.hide = function () {
+        this.active = false;
         this.redraw();
     };
 
@@ -65,10 +70,6 @@ function EmbryoLayer() {
         }
     };
 
-    this.hide = function () {
-        this.active = false;
-        this.redraw();
-    };
 
     this.zoomLevels = [];
     this.zoomLevel = 0;
@@ -89,6 +90,29 @@ function EmbryoLayer() {
     this.zoomToCoords = function(minPoint, maxPoint) {
 		this.map.zoomToCoords(minPoint, maxPoint);
     };
+
+    this.zoomToFeatures = function (input, force) {
+
+        function extendBoundsFromFeaturesInLayer(bounds, input, layer) {
+            for (var j in layer.features) {
+                if (typeof input == 'function' && input(layer.features[j])) {
+                    bounds.extend(layer.features[j].geometry.getBounds());
+                } else if (layer.features[j].attributes.id === input) {
+                    bounds.extend(layer.features[j].geometry.getBounds());
+                }
+            }
+            return bounds;
+        }
+
+        var bounds = new OpenLayers.Bounds();
+        for (var index in this.layers) {
+            bounds = extendBoundsFromFeaturesInLayer(bounds, input, this.layers[index]);
+        }
+        if (bounds && bounds.left && bounds.right && bounds.bottom && bounds.top) {
+            this.map.zoomToBounds(bounds, force);
+        }
+    };
+
 
     this.selectListeners = [];
     this.selectableLayers = null;
@@ -188,7 +212,7 @@ function EmbryoLayer() {
     };
     
     this.activateControls = function(){
-        for(key in this.controls) {
+        for (var key in this.controls) {
             var control = this.controls[key];
             if(!control.active) {
             	control.activate();
@@ -197,7 +221,7 @@ function EmbryoLayer() {
     };
     
     this.deactivateControls = function(){
-        for(key in this.controls) {
+        for (var key in this.controls) {
             var control = this.controls[key];
             if(control.active) {
             	control.deactivate();

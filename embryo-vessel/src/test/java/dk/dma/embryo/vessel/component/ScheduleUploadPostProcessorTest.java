@@ -14,14 +14,12 @@
  */
 package dk.dma.embryo.vessel.component;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
+import dk.dma.embryo.vessel.json.ScheduleResponse;
+import dk.dma.embryo.vessel.json.Voyage;
+import dk.dma.embryo.vessel.model.Berth;
+import dk.dma.embryo.vessel.model.Vessel;
+import dk.dma.embryo.vessel.persistence.GeographicDao;
+import dk.dma.embryo.vessel.persistence.ScheduleDao;
 import org.jglue.cdiunit.CdiRunner;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -34,12 +32,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.unitils.reflectionassert.ReflectionAssert;
 
-import dk.dma.embryo.vessel.json.ScheduleResponse;
-import dk.dma.embryo.vessel.json.Voyage;
-import dk.dma.embryo.vessel.model.Berth;
-import dk.dma.embryo.vessel.model.Vessel;
-import dk.dma.embryo.vessel.persistence.GeographicDao;
-import dk.dma.embryo.vessel.persistence.ScheduleDao;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jesper Tejlgaard
@@ -163,13 +161,13 @@ public class ScheduleUploadPostProcessorTest {
 
         ScheduleUploadPostProcessor.VoyageFilter voyageFinder = new ScheduleUploadPostProcessor.VoyageFilter(scheduleDao, 2222L);
 
-        Assert.assertFalse(voyageFinder.apply(new Voyage("2014-32-1", "Nuuk", null, null, null, null, null, null, null)));
-        Assert.assertFalse(voyageFinder.apply(new Voyage("2014-32-2", "Upernavik", null, null, null, null,  null, null, null)));
-        Assert.assertTrue(voyageFinder.apply(new Voyage("OWDD-2014-32-3", "Ilulissat", null, null, null, null,  null, null, null)));
-        Assert.assertTrue(voyageFinder.apply(new Voyage("2014-32-4", "Første gang", null, null, null, null,  null, null, null)));
-        Assert.assertFalse(voyageFinder.apply(new Voyage("2014-32-4", "Anden gang", null, null, null, null,  null, null, null)));
-        Assert.assertFalse(voyageFinder.apply(new Voyage("2014-32-2", "Upernavik", null, null, null, null,  null, null, null)));
-        Assert.assertFalse(voyageFinder.apply(new Voyage("2014-32-4", "Tredje gang", null, null, null, null,  null, null, null)));
+        Assert.assertFalse(voyageFinder.test(new Voyage("2014-32-1", "Nuuk", null, null, null, null, null, null, null)));
+        Assert.assertFalse(voyageFinder.test(new Voyage("2014-32-2", "Upernavik", null, null, null, null, null, null, null)));
+        Assert.assertTrue(voyageFinder.test(new Voyage("OWDD-2014-32-3", "Ilulissat", null, null, null, null, null, null, null)));
+        Assert.assertTrue(voyageFinder.test(new Voyage("2014-32-4", "Første gang", null, null, null, null, null, null, null)));
+        Assert.assertFalse(voyageFinder.test(new Voyage("2014-32-4", "Anden gang", null, null, null, null, null, null, null)));
+        Assert.assertFalse(voyageFinder.test(new Voyage("2014-32-2", "Upernavik", null, null, null, null, null, null, null)));
+        Assert.assertFalse(voyageFinder.test(new Voyage("2014-32-4", "Tredje gang", null, null, null, null, null, null, null)));
 
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Please assign unique Id values in Excel before uploading. The following id(s) are used in schedule(s) for other vessel(s): 2014-32-1, 2014-32-2");

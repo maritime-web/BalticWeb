@@ -21,9 +21,9 @@ function SelectAreaLayer() {
             }
         };
 
-        this.layers.selection = new OpenLayers.Layer.Vector("SelectArea"); 
-        
-        this.controls.regular = new OpenLayers.Control.DrawFeature(this.layers.selection, OpenLayers.Handler.RegularPolygon, {handlerOptions: {sides: 4}}),
+        this.layers.selection = new OpenLayers.Layer.Vector("SelectArea");
+
+        this.controls.regular = new OpenLayers.Control.DrawFeature(this.layers.selection, OpenLayers.Handler.RegularPolygon, {handlerOptions: {sides: 4}})
         this.controls.modify = new OpenLayers.Control.ModifyFeature(this.layers.selection, { mode : OpenLayers.Control.ModifyFeature.DRAG});
         this.controls.regular.handler.irregular = true;
         
@@ -53,7 +53,7 @@ function SelectAreaLayer() {
     this.getSquareBounds = function() {
     	
     	var squareBounds = [];
-    	for(key in this.layers.selection.features) {
+        for (var key in this.layers.selection.features) {
             var feature = this.layers.selection.features[key];
 //			console.log("bounds -> " + feature.geometry.getBounds());
             var bounds = feature.geometry.getBounds();

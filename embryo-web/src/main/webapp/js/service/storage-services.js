@@ -95,10 +95,18 @@
         };
     } ]);
 
-    storageModule.factory('LivePouch', function () {
-        var liveDb = new PouchDB('arcticweb');
-        return liveDb;
-    });
+    storageModule.service('CouchUrlResolver', ['$location', function ($location) {
+        return {
+            resolveCouchUrl: function (dbName) {
+                var couchUrl = "http://localhost:5984/" + dbName
+                var url = $location.absUrl() ? $location.absUrl().toLocaleLowerCase() : "";
+                if (url.indexOf("localhost:") < 0 && url.indexOf("127.0.0.1:") < 0) {
+                    couchUrl = $location.protocol() + "://" + $location.host() + "/couchdb/" + dbName;
+                }
+                return couchUrl;
+            }
+        }
+    }]);
 
 
 }());

@@ -14,8 +14,6 @@
  */
 package dk.dma.embryo.vessel.json;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import dk.dma.embryo.vessel.model.Berth;
 import dk.dma.embryo.vessel.service.GeographicService;
 import org.jboss.resteasy.annotations.GZIP;
@@ -28,6 +26,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -60,7 +60,7 @@ public class BerthRestService {
         }
         
         if(berths != null){
-            transformed = Lists.transform(berths, new BerthTransformerFunction());
+            transformed = berths.stream().map(new BerthTransformerFunction()).collect(Collectors.toList());
         }
 
         logger.debug("berths={}", transformed);

@@ -5,7 +5,7 @@
     <groupId>dk.dma.embryo</groupId>
     <artifactId>embryo-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.5.3</version>
+    <version>2.6-SNAPSHOT</version>
     <name>embryo parent</name>
     <description></description>
 
@@ -104,6 +104,12 @@
             <dependency>
                 <groupId>dk.dma.enav.embryo</groupId>
                 <artifactId>embryo-weather</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.embryo</groupId>
+                <artifactId>embryo-sar</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -212,7 +218,7 @@
             <dependency>
                 <groupId>org.jboss.weld.se</groupId>
                 <artifactId>weld-se</artifactId>
-                <version>1.1.10.Final</version>
+                <version>1.1.31.Final</version>
             </dependency>
 
             <dependency>
@@ -533,6 +539,7 @@
         <module>embryo-map-tiles</module>
         <module>embryo-msi</module>
         <module>embryo-metoc</module>
+        <module>embryo-sar</module>
         <module>embryo-reporting</module>
         <module>embryo-weather</module>
         <module>embryo-web</module>

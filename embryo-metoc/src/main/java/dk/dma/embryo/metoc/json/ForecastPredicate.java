@@ -14,18 +14,17 @@
  */
 package dk.dma.embryo.metoc.json;
 
-import com.google.common.base.Predicate;
-
-import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.Forecast;
+
+import java.util.function.Predicate;
 
 /**
  * @author Jesper Tejlgaard
  */
-public class ForecastPredicate implements Predicate<DmiSejlRuteService.Forecast> {
+public class ForecastPredicate implements Predicate<Forecast> {
 
     @Override
-    public boolean apply(Forecast input) {
+    public boolean test(Forecast input) {
         return (input.getCurrentDir() != null && input.getCurrentSpeed() != null)
                 || (input.getWaveDir() != null && input.getWaveHeight() != null && input.getWavePeriod() != null)
                 || (input.getWindDir() != null && input.getWindSpeed() != null);

@@ -14,14 +14,13 @@
  */
 package dk.dma.embryo.metoc.json;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.Forecast;
+import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.ForecastValue;
 import org.junit.Before;
 import org.junit.Test;
 
-import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.Forecast;
-import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.ForecastValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Jesper Tejlgaard
@@ -43,36 +42,36 @@ public class ForecastPredicateTest {
     }
 
     public void testEmpty(){
-        assertFalse(predicate.apply(forecast));
+        assertFalse(predicate.test(forecast));
     }
     
     @Test
     public void testWave() {
         forecast.setWaveDir(value(1.0));
-        assertFalse(predicate.apply(forecast));
+        assertFalse(predicate.test(forecast));
 
         forecast.setWaveHeight(value(1.0));
-        assertFalse(predicate.apply(forecast));
+        assertFalse(predicate.test(forecast));
 
         forecast.setWavePeriod(value(1.0));
-        assertTrue(predicate.apply(forecast));
+        assertTrue(predicate.test(forecast));
     }
 
     @Test
     public void testCurrent() {
         forecast.setCurrentDir(value(1.0));
-        assertFalse(predicate.apply(forecast));
+        assertFalse(predicate.test(forecast));
 
         forecast.setCurrentSpeed(value(1.0));
-        assertTrue(predicate.apply(forecast));
+        assertTrue(predicate.test(forecast));
     }
 
     @Test
     public void testWindOnly() {
         forecast.setWindDir(value(1.0));
-        assertFalse(predicate.apply(forecast));
+        assertFalse(predicate.test(forecast));
 
         forecast.setWindSpeed(value(1.0));
-        assertTrue(predicate.apply(forecast));
+        assertTrue(predicate.test(forecast));
     }
 }

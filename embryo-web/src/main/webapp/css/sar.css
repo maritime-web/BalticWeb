@@ -83,12 +83,24 @@ table.ctrl td {
     word-wrap: break-word;
 }
 
-.addNewSRU {
-    margin-bottom: 10px
+.sarButtons {
+    margin-top: 20px
 }
 
 .form-group .unit {
     margin-left: 0px;
     padding-left: 0px;
     padding-top: 5px;
+}
+
+#sarEffortAllocationEditPanel {
+    max-width: 750px;
+}
+
+.spForm {
+    max-width:400px;
+}
+
+.subAreaForm {
+    max-width: 409px;
 }
