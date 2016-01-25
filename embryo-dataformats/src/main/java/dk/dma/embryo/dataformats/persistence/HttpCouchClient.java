@@ -1,19 +1,16 @@
-/*
- *  Copyright (c) 2011 Danish Maritime Authority.
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- *
  */
 
 package dk.dma.embryo.dataformats.persistence;
@@ -27,13 +24,17 @@ import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 /**
  *
  */
 public class HttpCouchClient {
-    private final static Logger logger = LoggerFactory.getLogger(HttpCouchClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpCouchClient.class);
 
     private final CouchDbConfig config;
 
@@ -122,7 +123,9 @@ public class HttpCouchClient {
         try {
             HttpResponse httpResponse = execute(Request.Put(config.getForecastDbUrl())).returnResponse();
             int statusCode = httpResponse.getStatusLine().getStatusCode();
-            if (!(statusCode == 412 || statusCode < 300)) throw new EmbryonicException("Unable to create CouchDb from url: " + config.getForecastDbUrl());
+            if (!(statusCode == 412 || statusCode < 300)) {
+                throw new EmbryonicException("Unable to create CouchDb from url: " + config.getForecastDbUrl());
+            }
         } catch (IOException e) {
             throw new EmbryonicException("Unable to create CouchDb from url: " + config.getForecastDbUrl(), e);
         }
@@ -132,7 +135,7 @@ public class HttpCouchClient {
         String designDocument = readFromClassPath(config.getDesignDocumentResourceUrl());
         String designDocumentId  = config.getDesignDocumentId();
         String designUrl = config.getForecastDbUrl() + (config.getForecastDbUrl().endsWith("/") ? designDocumentId : "/"+designDocumentId);
-        logger.info("Upserting design document with id \"" + designDocumentId + "\"");
+        LOGGER.info("Upserting design document with id \"" + designDocumentId + "\"");
         try {
             HttpResponse httpResponse = execute(Request.Put(designUrl).bodyString(designDocument, ContentType.APPLICATION_JSON))
                     .returnResponse();
@@ -156,7 +159,7 @@ public class HttpCouchClient {
 
         StringBuilder sb = new StringBuilder(designDocument);
         sb.insert(sb.indexOf("{") + 1 ,"\"_rev\": " + revId + ", ");
-        logger.info("Updating existing design document\n" + sb);
+        LOGGER.info("Updating existing design document\n" + sb);
         httpResponse = execute(Request.Put(designUrl).bodyString(sb.toString(), ContentType.APPLICATION_JSON))
                 .returnResponse();
 
