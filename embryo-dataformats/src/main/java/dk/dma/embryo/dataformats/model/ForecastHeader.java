@@ -44,6 +44,9 @@ public class ForecastHeader {
 
     private Optional<Type> ftype;
 
+    ////////////////////////////////////////////////////
+    // constructor
+    ///////////////////////////////////////////////////
     public ForecastHeader() {
         this.id = Optional.empty();
         this.name = Optional.empty();
@@ -52,6 +55,9 @@ public class ForecastHeader {
         this.ftype = Optional.empty();
     }
 
+    ////////////////////////////////////////////////////
+    // business logic
+    ///////////////////////////////////////////////////
     public boolean isBetterThan(ForecastHeader other) {
         return hasSameIdAs(other) && (isNewerThan(other) || (isFromSameFileAs(other) && isBiggerThan(other)));
     }
@@ -101,7 +107,26 @@ public class ForecastHeader {
             throw new IllegalArgumentException("Could not deserialize \""+json+"\" into ForecastHeader", e);
         }
     }
+    ////////////////////////////////////////////////////
+    // Object methods
+    ///////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return "ForecastHeader{" +
+                "id=" + id +
+                ", name=" + name +
+                ", provider=" + provider +
+                ", timestamp=" + timestamp +
+                ", size=" + size +
+                ", area=" + area +
+                ", ftype=" + ftype +
+                '}';
+    }
 
+
+    ////////////////////////////////////////////////////
+    // Property methods
+    ///////////////////////////////////////////////////
     public String getId() {
         return id.orElse(null);
     }
@@ -157,18 +182,4 @@ public class ForecastHeader {
     private void setFtype(Type ftype) {
         this.ftype = Optional.ofNullable(ftype);
     }
-
-    @Override
-    public String toString() {
-        return "ForecastHeader{" +
-                "id=" + id +
-                ", name=" + name +
-                ", provider=" + provider +
-                ", timestamp=" + timestamp +
-                ", size=" + size +
-                ", area=" + area +
-                ", ftype=" + ftype +
-                '}';
-    }
-
 }
