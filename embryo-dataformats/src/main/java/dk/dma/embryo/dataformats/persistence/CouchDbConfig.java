@@ -20,18 +20,33 @@ package dk.dma.embryo.dataformats.persistence;
  *
  */
 public class CouchDbConfig {
-    private final String forecastDbUrl;
+    private final String forecastDb;
     private final String designDocumentResourceUrl;
     private final String designDocumentId;
+    private final String host;
+    private final int port;
+    private final String user;
+    private final String password;
 
-    public CouchDbConfig(String forecastDbUrl, String designDocumentResourceUrl, String designDocumentId) {
-        this.forecastDbUrl = forecastDbUrl;
+    private final String forecastDbUrl;
+
+    public CouchDbConfig(String forecastDb, String designDocumentResourceUrl, String designDocumentId, String host, int port, String user, String password) {
+        this.forecastDb = forecastDb;
         this.designDocumentResourceUrl = designDocumentResourceUrl;
         this.designDocumentId = designDocumentId;
+        this.host = host;
+        this.port = port;
+        this.user = user;
+        this.password = password;
+        this.forecastDbUrl = "http://" + host + ":" + port + forecastDb;
     }
 
     public String getForecastDbUrl() {
-        return forecastDbUrl;
+        return this.forecastDbUrl;
+    }
+
+    public String getForecastDb() {
+        return forecastDb;
     }
 
     public String getDesignDocumentResourceUrl() {
@@ -40,5 +55,21 @@ public class CouchDbConfig {
 
     public String getDesignDocumentId() {
         return designDocumentId;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

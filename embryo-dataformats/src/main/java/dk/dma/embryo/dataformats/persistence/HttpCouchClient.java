@@ -16,8 +16,10 @@
 package dk.dma.embryo.dataformats.persistence;
 
 import dk.dma.embryo.common.EmbryonicException;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
@@ -37,10 +39,10 @@ public class HttpCouchClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpCouchClient.class);
 
     private final CouchDbConfig config;
+    private Executor executor;
 
     public HttpCouchClient(CouchDbConfig config) {
         this.config = config;
-        initialize();
     }
 
     public String get(String id) {
@@ -104,19 +106,26 @@ public class HttpCouchClient {
 
     private Response execute(Request request) {
         try {
-            return request
+            return executor.execute(request
                     .connectTimeout(30000)
-                    .socketTimeout(30000)
-                    .execute();
+                    .socketTimeout(30000));
 
         } catch (IOException e) {
             throw new EmbryonicException("Got error requsting: \"" + request + "\"", e);
         }
     }
 
-    private void initialize() {
+    protected void initialize() {
+        createExecutor();
         ensureDB();
         addDesignDocument();
+    }
+
+    private void createExecutor() {
+        HttpHost host = new HttpHost(config.getHost(), config.getPort());
+        executor = Executor.newInstance()
+                .auth(host, config.getUser(), config.getPassword())
+        .authPreemptive(host);
     }
 
     private void ensureDB() {
@@ -124,7 +133,7 @@ public class HttpCouchClient {
             HttpResponse httpResponse = execute(Request.Put(config.getForecastDbUrl())).returnResponse();
             int statusCode = httpResponse.getStatusLine().getStatusCode();
             if (!(statusCode == 412 || statusCode < 300)) {
-                throw new EmbryonicException("Unable to create CouchDb from url: " + config.getForecastDbUrl());
+                throw new EmbryonicException("Unable to create CouchDb from url: " + config.getForecastDbUrl() + " Status code: " + statusCode);
             }
         } catch (IOException e) {
             throw new EmbryonicException("Unable to create CouchDb from url: " + config.getForecastDbUrl(), e);

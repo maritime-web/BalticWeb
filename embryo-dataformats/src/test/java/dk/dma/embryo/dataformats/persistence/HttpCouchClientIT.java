@@ -27,19 +27,19 @@ public class HttpCouchClientIT {
 
     @Test
     public void testInitialize() throws Exception {
-        new HttpCouchClient(getConfig());
+        getHttpCouchClient();
     }
 
     @Test
     public void testUpsert() throws Exception {
-        HttpCouchClient cut = new HttpCouchClient(getConfig());
+        HttpCouchClient cut = getHttpCouchClient();
 
         cut.upsert("testForecast", "{\"weather\": \"fine\"}");
     }
 
     @Test
     public void testGet() throws Exception {
-        HttpCouchClient cut = new HttpCouchClient(getConfig());
+        HttpCouchClient cut = getHttpCouchClient();
         String testForecast = "testForecast";
         cut.upsert(testForecast, "{\"weather\": \"fine\"}");
 
@@ -50,7 +50,7 @@ public class HttpCouchClientIT {
 
     @Test
     public void testGetByView() throws Exception {
-        HttpCouchClient cut = new HttpCouchClient(getConfig());
+        HttpCouchClient cut = getHttpCouchClient();
         String viewQuery = "/header_by_type?key=%22"+ Type.CURRENT_FORECAST.name()+"%22";
 
         String result = cut.getByView(viewQuery);
@@ -58,7 +58,13 @@ public class HttpCouchClientIT {
         System.out.println(result);
     }
 
+    private HttpCouchClient getHttpCouchClient() {
+        HttpCouchClient cut = new HttpCouchClient(getConfig());
+        cut.initialize();
+        return cut;
+    }
+
     private CouchDbConfig getConfig() {
-        return new CouchDbConfig("http://192.168.99.101:5984/forecast", "/couchdb/forecast-design.json", "_design/forecast");
+        return new CouchDbConfig("/forecast", "/couchdb/forecast-design.json", "_design/forecast", "192.168.99.101", 5984, "embryo", "embryo");
     }
 }

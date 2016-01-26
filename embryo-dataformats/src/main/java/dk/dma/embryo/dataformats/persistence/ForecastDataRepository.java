@@ -23,6 +23,7 @@ import dk.dma.embryo.dataformats.model.ForecastDataId;
 import dk.dma.embryo.dataformats.model.ForecastHeader;
 import dk.dma.embryo.dataformats.model.Type;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
@@ -45,6 +46,11 @@ public class ForecastDataRepository {
     //Required by EJB spec.
     @SuppressWarnings("unused")
     protected ForecastDataRepository() {
+    }
+
+    @PostConstruct
+    public void initialize() {
+        httpCouchClient.initialize();
     }
 
     @Inject

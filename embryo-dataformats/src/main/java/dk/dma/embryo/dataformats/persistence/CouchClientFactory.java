@@ -23,13 +23,18 @@ import javax.enterprise.inject.Produces;
  * Created by Steen on 18-01-2016.
  *
  */
+@SuppressWarnings("unused")
 public class CouchClientFactory {
     @Produces
     @CouchDatabase(databaseName = "forecast")
-    public HttpCouchClient createHttpCouchClient(@Property("embryo.couchDb.forecast.url")String forecastDbUrl,
+    public HttpCouchClient createHttpCouchClient(@Property("embryo.couchDb.forecast.db")String forecastDb,
+                                                 @Property("embryo.couchDb.host")String host,
+                                                 @Property("embryo.couchDb.port")int port,
+                                                 @Property("embryo.couchDb.user")String user,
+                                                 @Property("embryo.couchDb.password")String password,
                                                  @Property("embryo.couchDb.forecast.design.resource.url")String designDocumentResourceUrl,
                                                  @Property("embryo.couchDb.forecast.design.document.id")String designDocumentId) {
-        CouchDbConfig config = new CouchDbConfig(forecastDbUrl, designDocumentResourceUrl, designDocumentId);
+        CouchDbConfig config = new CouchDbConfig(forecastDb, designDocumentResourceUrl, designDocumentId, host, port, user, password);
         return new HttpCouchClient(config);
     }
 
