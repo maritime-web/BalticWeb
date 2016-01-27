@@ -3,6 +3,17 @@ describe('embryo.sar', function () {
     describe('SarService', function () {
         var service;
         beforeEach(function () {
+            var mockSubject = {
+                getDetails: function () {
+                    return {
+                        userName: "foo"
+                    };
+                }
+            };
+
+            module('embryo.authentication.service', function ($provide) {
+                $provide.value('Subject', mockSubject);
+            });
             module('embryo.sar.service');
         });
 
@@ -78,7 +89,7 @@ describe('embryo.sar', function () {
 
             expect(formatLatitude(output.searchArea.D.lat)).toBe("61 03.375N");
             expect(formatLongitude(output.searchArea.D.lon)).toBe("051 00.331W");
-            expect(output.searchArea.totalSize).toBeCloseTo(2.5326335063948107 * 2.5326335063948107 * 4, 4);
+            expect(output.searchArea.size).toBeCloseTo(2.5326335063948107 * 2.5326335063948107 * 4, 4);
         });
 
 
@@ -152,7 +163,7 @@ describe('embryo.sar', function () {
 
             expect(formatLatitude(output.searchArea.D.lat)).toBe("61 04.529N");
             expect(formatLongitude(output.searchArea.D.lon)).toBe("050 55.753W");
-            expect(output.searchArea.totalSize).toBeCloseTo(1.3742403439070814 * 1.3742403439070814 * 4, 4);
+            expect(output.searchArea.size).toBeCloseTo(1.3742403439070814 * 1.3742403439070814 * 4, 4);
         });
 
         function executeWithTryCatch(service, input) {
@@ -345,7 +356,7 @@ describe('embryo.sar', function () {
 
              expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 04.229N");
              expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("050 45.497W");
-             expect(sarOperation.searchArea.totalSize).toBeCloseTo(1.3742403439070814 * 1.3742403439070814 * 4, 4);
+             expect(sarOperation.searchArea.size).toBeCloseTo(1.3742403439070814 * 1.3742403439070814 * 4, 4);
              */
         });
 

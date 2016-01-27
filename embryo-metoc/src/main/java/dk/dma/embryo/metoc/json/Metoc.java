@@ -14,15 +14,14 @@
  */
 package dk.dma.embryo.metoc.json;
 
+import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
+import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.MetocForecast;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.google.common.base.Predicate;
-
-import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
-import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.MetocForecast;
+import java.util.function.Predicate;
 
 public class Metoc {
 
@@ -66,7 +65,7 @@ public class Metoc {
         try {
             List<Forecast> forecasts = new ArrayList<Forecast>(metocForecast.getForecasts().length);
             for (DmiSejlRuteService.Forecast dmiForecast : metocForecast.getForecasts()) {
-                if (predicate.apply(dmiForecast)) {
+                if (predicate.test(dmiForecast)) {
                     forecasts.add(Forecast.from(dmiForecast));
                 }
             }

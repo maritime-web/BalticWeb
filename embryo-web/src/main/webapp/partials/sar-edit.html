@@ -1,3 +1,7 @@
+<script type="text/ng-template" id="userTemplate.html">
+    <a>{{match.label}} <span x-ng-show="match.model.mmsi">({{match.model.mmsi}})</span></a>
+</script>
+
 <div x-ng-controller="SAROperationEditController">
 
     <script type="text/ng-template" id="directionTemplate.html">
@@ -409,6 +413,56 @@
                     </span>
                 </div>
             </div>
+            <form x-ng-if="page == 'coordinator'" name="sarCoordinatorForm" class="form-horizontal" novalidate>
+                <div x-ng-controller="SARCoordinatorController">
+                    <h5>New coordinator</h5>
+                    <hr/>
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            You are currently the coordinator of the search and rescue operation {{sar.no}}. If you wish
+                            you
+                            may assign the coordinator role to another user.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-3">Search user</label>
+
+                        <div class="col-xs-4" x-ng-controller="SARUsersController">
+                            <input placeholder="user / mmsi" x-ng-model="coordinator.search"
+                                   x-typeahead="user.name for user in getUsers($viewValue)"
+                                   x-typeahead-on-select="coordinator.user = $item"
+                                   x-typeahead-template-url="userTemplate.html"
+                                   class="input-sm form-control e-location-typeahead" type="text"/>
+                        </div>
+                    </div>
+
+                    <hr/>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-3">Name</label>
+
+                        <div class="col-xs-4">
+                            <input x-ng-model="coordinator.user.name" class="input-sm form-control" type="text"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-3">MMSI</label>
+
+                        <div class="col-xs-4">
+                            <input x-ng-model="coordinator.user.mmsi" class="input-sm form-control" type="text"/>
+                        </div>
+                    </div>
+
+
+                    <div class="col-xs-12">
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-primary btn-sm" x-ng-click="assign()">Assign</button>
+                        <button type="button" class="btn btn-sm" x-ng-click="cancel()">Cancel</button>
+                    </span>
+                    </div>
+                </div>
+            </form>
         </div>
 
     </div>

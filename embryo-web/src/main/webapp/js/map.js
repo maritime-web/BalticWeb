@@ -124,6 +124,8 @@ $(function() {
     var initialized = false;
 
     embryo.map = {
+        selectControl: selectControl,
+        selectLayerByGroup: selectLayerByGroup,
 
         add : function(d) {
             if (d.group && selectLayerByGroup[d.group] == null) {
@@ -153,6 +155,13 @@ $(function() {
         createPoint : function(longitude, latitude) {
             return new OpenLayers.Geometry.Point(longitude, latitude).transform(new OpenLayers.Projection("EPSG:4326"),
                     map.getProjectionObject());
+        },
+        transformToPosition: function (point) {
+            var pointRes = point.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+            return {
+                lon: pointRes.x,
+                lat: pointRes.y
+            };
         },
         select : function(feature) {
             selectControl.unselectAll();
@@ -232,6 +241,21 @@ $(function() {
         		b.extend(maxPoint);
         		map.zoomToExtent(b);
         	}
+        },
+        zoomToBounds: function (bounds, force) {
+            if (!map.getExtent().containsBounds(bounds, false, true) || force) {
+                var b = new OpenLayers.Bounds();
+                b.extend(bounds);
+
+                var deltaV = b.top - b.bottom;
+                var deltaH = b.right - b.left;
+                b.bottom -= deltaV * 0.05;
+                b.left -= deltaH * 0.35;
+                b.right += deltaH * 0.05;
+                b.top += deltaV * 0.1;
+
+                map.zoomToExtent(b);
+            }
         },
         setCenter : function(longitude, latitude, zoom) {
             var pos = transformPosition(longitude, latitude);

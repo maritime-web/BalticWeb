@@ -22,7 +22,7 @@ On the client side we use:
 
 On the server side we use:
 
-* Java 7
+* Java 8
 * Maven (for building)
 * EJB3.1/JPA(Hibernate) (for persistance)
 * CDI/JSR330 (for dependency injection)
@@ -35,21 +35,36 @@ On the server side we use:
 
 ## Prerequisites ##
 
-* Java JDK 1.7
+* Java JDK 1.8
 * Maven 3.x
-* JBoss 7.1.1 (Maven setup to deploy to JBoss)
+* Wildfly 8.2 (Maven setup to deploy to Wildfly)
 * MySQL (Maven configures JBoss datasource to use MySQL)
 * Node.js (Follow the installation instructions at http://nodejs.org)
 * Grunt.js (Follow the installation instructions at http://gruntjs.com)
+* CouchDB
+* a file called arcticweb.properties
 
 ## Initial setup
+
+Wildfly should be installed using the install script provided in this repository. install-wildfly.sh. Remember to add a admin user using 
+
+    $ chmod +x install-wildfly.sh 
+    $ ./install-wildfly.sh
+    $ ./wildfly-8.2.0.Final/bin/add-user.sh 
 
 As root in MySQL - create a database and a user for ArcticWeb:
 
     create database embryo;
     create user 'embryo'@'localhost' identified by 'embryo';
     grant all on embryo.* to 'embryo'@'localhost';
+    
+You might need to configure the MySQL database to accept large packet sizes. This can be done in the mysql configuration file my.cnf
+depending on OS it might be located in /etc/mysql/my.cnf
 
+    [mysqld]
+    max_allowed_packet=16M
+
+### Configure WildFly ###
 ArcticWeb has a default configuration file which may be overridden by setting the system property "arcticweb.configuration" to the URI of an external configuration file. For example put the following in your JBOSS standalone.xml-file:
 
     <system-properties>
@@ -57,6 +72,8 @@ ArcticWeb has a default configuration file which may be overridden by setting th
     </system-properties>
 
 In particular the file may contain URLs and passwords for the DMI Ice map server.
+
+    $ ./wildfly-8.2.0.Final/bin/standalone.sh 
 
 
 ## Building ##
@@ -88,17 +105,17 @@ A local deployment will setup ArcticWeb at the following URL:
 
 To setup test users and data you must first login with dma/qwerty and thereafter push the button at the following URL
 
-    http://localhost:8080/arcticweb/testdata.html
+    http://localhost:8080/testdata.html
 
 Thereafter you can login with orasila/qwerty, oratank/qwerty, dmi/qwerty, etc. 
 
 ## Instant reload of web resources
 
-Grunt has been setup to run a livereload server, which enables instant reload of static web resources (html, css, js, images) upon saving them. Go to the project folder and execute
+Grunt has been setup to run a livereload server, which enables instant reload of static web resources (html, css, js, images) upon saving them. Go to the embryo-web folder and execute
 
     grunt server
 
-Then visit the url: http://localhost:9000/arcticweb/front.html
+Then visit the url: http://localhost:9000
 
 You will now be able to test/see changes to static web resources almost instantly. 
 
