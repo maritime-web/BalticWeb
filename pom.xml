@@ -2,16 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>embryo-web</artifactId>
+	<artifactId>baltic-web</artifactId>
     <groupId>dk.dma.arcticweb</groupId>
 	<packaging>war</packaging>
-	<name>Embryo Web Application</name>
+	<name>Baltic Web Application</name>
 
 	<parent>
         <groupId>dk.dma.embryo</groupId>
 		<artifactId>embryo-parent</artifactId>
         <version>2.6-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<properties>
