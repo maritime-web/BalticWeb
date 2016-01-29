@@ -1,7 +1,7 @@
-Embryo
+BalticWeb
 =========
 
-A tool for ships sailing in the Arctic region around Greenland. ArcticWeb serves as a single access point to safety related information, provides streamlined reporting and allows for voluntary coordinated voyage through sharing of positions and planned routes.
+A tool for ships sailing in the Baltic region. BalticWeb serves as a single access point to safety related information, provides streamlined reporting and allows for voluntary coordinated voyage through sharing of positions and planned routes.
 
 The live system can be found here: https://arcticweb.e-navigation.net
 
