@@ -100,3 +100,17 @@ h3 {
 	margin: 20px auto;
 	width: 80%;
 }
+.strikeout {
+
+	position: relative;
+}
+.strikeout::after {
+	border-bottom: 0.125em solid rgba(255, 0, 0, 0.5);
+	content: "";
+	left: 0;
+	line-height: 1em;
+	margin-top: calc(0.125em / 2 * -1);
+	position: absolute;
+	right: 0;
+	top: 50%;
+}

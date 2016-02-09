@@ -588,7 +588,7 @@ $(function() {
         embryo.map.internalMap.addControl(control);
 
         $scope.zoomAll = function() {
-            embryo.map.setCenter(-65, 70, 3);
+            embryo.map.setCenter(22.0, 59.0, 7);
         };
 
         $scope.switchBaseMap = function() {

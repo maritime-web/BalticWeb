@@ -1,86 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://arcticweb.e-navigation.net/</loc>
+    <loc>https://BalticWeb.e-navigation.net/</loc>
     <image:image>
-      <image:loc>https://arcticweb.e-navigation.net/img/front/ice.jpg</image:loc>
+      <image:loc>https://BalticWeb.e-navigation.net/img/front/ice.jpg</image:loc>
       <image:caption>Latest ice charts from Danish Meteorological Institute. Tailored weather forecasts for uploaded sailing routes.</image:caption>
       <image:geo_location>Arctic</image:geo_location>
       <image:title>Tailored Weather Forecasts and Ice Charts</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://arcticweb.e-navigation.net/img/front/Konsol-h350.jpg</image:loc>
+      <image:loc>https://BalticWeb.e-navigation.net/img/front/Konsol-h350.jpg</image:loc>
       <image:caption>Share routes and schedules with other ships and Arctic Command.</image:caption>
       <image:geo_location>Arctic</image:geo_location>
       <image:title>Coordinated Voyage</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://arcticweb.e-navigation.net/img/img6.jpg</image:loc>
+      <image:loc>https://BalticWeb.e-navigation.net/img/img6.jpg</image:loc>
       <image:caption>AIS-data from satellite and base stations. Simplified and streamlined Greenpos reporting.</image:caption>
       <image:geo_location>Arctic</image:geo_location>
       <image:title>Live AIS-data and Streamlined Reporting</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://arcticweb.e-navigation.net/img/front/iceChart.jpg</image:loc>
+      <image:loc>https://BalticWeb.e-navigation.net/img/front/iceChart.jpg</image:loc>
       <image:caption>The Danish Meteorological Institute, Greenland Ice Service, collects information regarding ice conditions in the waters around Greenland and distributes this information to ships primarily as ice charts and reports.</image:caption>
       <image:geo_location>East Greenland</image:geo_location>
       <image:title>IceCharts</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://arcticweb.e-navigation.net/img/front/weather.png</image:loc>
+      <image:loc>https://BalticWeb.e-navigation.net/img/front/weather.png</image:loc>
       <image:caption>Warnings and forecasts are broadcasted by KNR (Greenland Radio) and Greenland coast radio stations. For schedules, frequencies and areas see "Admiralty List of Radio Signals".</image:caption>
       <image:geo_location>Arctic</image:geo_location>
       <image:title>Weather Chart</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://arcticweb.e-navigation.net/img/front/safety.jpg</image:loc>
+      <image:loc>https://BalticWeb.e-navigation.net/img/front/safety.jpg</image:loc>
       <image:caption>Ship sailing in Arctic ice</image:caption>
       <image:geo_location>Arctic</image:geo_location>
       <image:title>Safety of Navigation</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://arcticweb.e-navigation.net/img/dmi/dmi-logo.png</image:loc>
+      <image:loc>https://BalticWeb.e-navigation.net/img/dmi/dmi-logo.png</image:loc>
       <image:caption>Danish Meteorological Institute</image:caption>
       <image:geo_location>Copenhagen, Denmark</image:geo_location>
       <image:title>Danish Meteorological Institute</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://arcticweb.e-navigation.net/img/dma/dma-logo-h50.png</image:loc>
+      <image:loc>https://BalticWeb.e-navigation.net/img/dma/dma-logo-h50.png</image:loc>
       <image:caption>Danish Maritime Authority</image:caption>
       <image:geo_location>Copenhagen, Denmark</image:geo_location>
       <image:title>Danish Maritime Authority</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://arcticweb.e-navigation.net/content.html#/disclaimer</loc>
+    <loc>https://BalticWeb.e-navigation.net/content.html#/disclaimer</loc>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://arcticweb.e-navigation.net/content.html#/cookies</loc>
+    <loc>https://BalticWeb.e-navigation.net/content.html#/cookies</loc>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://arcticweb.e-navigation.net/content.html#/requestAccess</loc>
+    <loc>https://BalticWeb.e-navigation.net/content.html#/requestAccess</loc>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://arcticweb.e-navigation.net/map.html#/vessel</loc>
+    <loc>https://BalticWeb.e-navigation.net/map.html#/vessel</loc>
     <priority>0.1</priority>
   </url>
   <url>
-    <loc>https://arcticweb.e-navigation.net/map.html#/ice</loc>
+    <loc>https://BalticWeb.e-navigation.net/map.html#/ice</loc>
     <priority>0.1</priority>
   </url>
   <url>
-    <loc>https://arcticweb.e-navigation.net/map.html#/msi</loc>
+    <loc>https://BalticWeb.e-navigation.net/map.html#/msi</loc>
     <priority>0.1</priority>
   </url>
   <url>
-    <loc>https://arcticweb.e-navigation.net/admin.html#/users</loc>
+    <loc>https://BalticWeb.e-navigation.net/admin.html#/users</loc>
     <priority>0.1</priority>
   </url>
   <url>
-    <loc>https://arcticweb.e-navigation.net/admin.html#/log</loc>
+    <loc>https://BalticWeb.e-navigation.net/admin.html#/log</loc>
     <priority>0.1</priority>
   </url>
 </urlset>

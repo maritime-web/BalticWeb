@@ -3,14 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>baltic-web</artifactId>
-    <groupId>dk.dma.arcticweb</groupId>
+    <groupId>dk.dma.enav.balticweb</groupId>
 	<packaging>war</packaging>
 	<name>Baltic Web Application</name>
 
 	<parent>
-        <groupId>dk.dma.embryo</groupId>
-		<artifactId>embryo-parent</artifactId>
-        <version>2.6-SNAPSHOT</version>
+        <groupId>dk.dma.enav.services</groupId>
+		<artifactId>parent</artifactId>
+        <version>2.7-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -22,12 +22,12 @@
 		<hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
 
 		<!-- persistence.xml properties -->
-		<embryo-common.jar>embryo-common-${project.version}.jar</embryo-common.jar>
-		<embryo-dataformats.jar>embryo-dataformats-${project.version}.jar</embryo-dataformats.jar>
-		<embryo-vessel.jar>embryo-vessel-${project.version}.jar</embryo-vessel.jar>
-		<embryo-user.jar>embryo-user-${project.version}.jar</embryo-user.jar>
-		<embryo-reporting.jar>embryo-reporting-${project.version}.jar</embryo-reporting.jar>
-		<embryo-tiles.jar>embryo-map-tiles-${project.version}.jar</embryo-tiles.jar>
+		<embryo-common.jar>common-${project.version}.jar</embryo-common.jar>
+		<embryo-dataformats.jar>dataformats-${project.version}.jar</embryo-dataformats.jar>
+		<embryo-vessel.jar>vessel-${project.version}.jar</embryo-vessel.jar>
+		<embryo-user.jar>user-${project.version}.jar</embryo-user.jar>
+		<embryo-reporting.jar>reporting-${project.version}.jar</embryo-reporting.jar>
+		<embryo-tiles.jar>map-tiles-${project.version}.jar</embryo-tiles.jar>
 
 	</properties>
 
@@ -54,58 +54,61 @@
 		</dependency>
 
         <dependency>
-            <groupId>dk.dma.embryo</groupId>
-            <artifactId>embryo-test-utilities</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+            <artifactId>test-utilities</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>dk.dma.embryo</groupId>
-			<artifactId>embryo-enav-io</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>io</artifactId>
 		</dependency>
 
 		<dependency>
-            <groupId>dk.dma.embryo</groupId>
-			<artifactId>embryo-common</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>common</artifactId>
 		</dependency>
 
 		<dependency>
-            <groupId>dk.dma.embryo</groupId>
-			<artifactId>embryo-vessel</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>vessel</artifactId>
 		</dependency>
 
 		<dependency>
-            <groupId>dk.dma.embryo</groupId>
-			<artifactId>embryo-dataformats</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>dataformats</artifactId>
 		</dependency>
 
 		<dependency>
-            <groupId>dk.dma.embryo</groupId>
-			<artifactId>embryo-user</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>user</artifactId>
 		</dependency>
 
 		<dependency>
-            <groupId>dk.dma.embryo</groupId>
-			<artifactId>embryo-msi</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>msi</artifactId>
+			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
-            <groupId>dk.dma.embryo</groupId>
-			<artifactId>embryo-metoc</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>metoc</artifactId>
 		</dependency>
 
 		<dependency>
-            <groupId>dk.dma.embryo</groupId>
-			<artifactId>embryo-reporting</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>reporting</artifactId>
+			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
-			<groupId>dk.dma.enav.embryo</groupId>
-			<artifactId>embryo-weather</artifactId>
+			<groupId>dk.dma.enav.services</groupId>
+			<artifactId>weather</artifactId>
+			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
-			<groupId>dk.dma.enav.embryo</groupId>
-			<artifactId>embryo-map-tiles</artifactId>
+			<groupId>dk.dma.enav.services</groupId>
+			<artifactId>map-tiles</artifactId>
 		</dependency>
 
 		<dependency>
@@ -114,8 +117,8 @@
 		</dependency>
 
         <dependency>
-            <groupId>dk.dma.embryo</groupId>
-            <artifactId>embryo-sar</artifactId>
+            <groupId>dk.dma.enav.services</groupId>
+            <artifactId>sar</artifactId>
         </dependency>
 
         <!-- Import the Servlet API. -->
@@ -294,7 +297,7 @@
 					<artifactId>wildfly-maven-plugin</artifactId>
 					<version>1.0.2.Final</version>
 					<configuration>
-						<name>arcticweb.war</name>
+						<name>balticweb.war</name>
 					</configuration>
 				</plugin>
 				<plugin>

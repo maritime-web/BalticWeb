@@ -75,7 +75,7 @@
 				<div x-ng-if="searchResults.length <= searchResultsLimit">
 					<div x-ng-repeat="vessel in searchResults" class="searchResultItem">
 						<a href="#" class="panelText" x-ng-click="select($event, vessel)">{{vessel.name}} <font x-ng-if="vessel.inAW"
-							color=#0080C0>AW</font>
+							color=#0080C0>BW</font>
 						</a>
 					</div>
 				</div>
@@ -170,8 +170,8 @@
 					<td>Anchored/Moored</td>
 				</tr>
 				<tr>
-					<td class="aw">AW</td>
-					<td>Vessel participating in ArcticWeb</td>
+					<td class="aw">BW</td>
+					<td>Vessel participating in BalticWeb</td>
 				</tr>
 			</table>
 		</div>
