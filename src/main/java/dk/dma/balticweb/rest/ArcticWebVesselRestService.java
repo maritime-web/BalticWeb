@@ -12,11 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.arcticweb.rest;
+package dk.dma.balticweb.rest;
 
 import javax.enterprise.context.RequestScoped;
 
-import dk.dma.arcticweb.reporting.json.GreenposVesselDetailsAmendment;
 import dk.dma.embryo.vessel.json.VesselRestService;
 
 /**

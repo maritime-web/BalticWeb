@@ -4,7 +4,7 @@
         http://java.sun.com/xml/ns/javaee 
         http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
-  <interceptors>
-    <class>dk.dma.arcticweb.reporting.json.GreenposVesselDetailsAmendment</class>
-  </interceptors>
+  <!--interceptors>
+    <class>dk.dma.balticweb.reporting.json.GreenposVesselDetailsAmendment</class>
+  </interceptors-->
 </beans>

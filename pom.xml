@@ -116,10 +116,10 @@
 			<artifactId>enav-model</artifactId>
 		</dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>dk.dma.enav.services</groupId>
             <artifactId>sar</artifactId>
-        </dependency>
+        </dependency-->
 
         <!-- Import the Servlet API. -->
 		<dependency>
