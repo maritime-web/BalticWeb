@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.arcticweb.rest;
+package dk.dma.balticweb.rest;
 
 import javax.inject.Inject;
 import javax.ws.rs.PUT;
@@ -20,7 +20,7 @@ import javax.ws.rs.Path;
 
 import org.slf4j.Logger;
 
-import dk.dma.arcticweb.service.AppDataServiceBean;
+import dk.dma.balticweb.service.AppDataServiceBean;
 
 /**
  * 
