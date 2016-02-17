@@ -23,8 +23,10 @@ import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+
 import javax.ejb.*;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 
 /**
@@ -107,7 +109,7 @@ public class AisPullJob {
             // searching for all ais data in a specific area i.e. "53.0|11.0|66.0|33.0"
             List<AisVessel> aisVessels = aisDataService.getAisVesselsBBOX(searcharea);
             logger.info("Ais vessels {} found. Maybe they should be stored.", aisVessels.size());
-            // TODO store the list of AIS vessels in mem and in couchDM
+            // TODO store the list of AIS vessels in mem and in couchDB
         } catch (Throwable t) {
             logger.error("AIS PULL Error", t);
             embryoLogService.error("AIS PULL Error", t);
