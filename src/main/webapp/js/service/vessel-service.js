@@ -25,7 +25,7 @@
                             text: "Loading vessels ..."
                         });
 
-                        $http.get(embryo.baseUrl + "rest/vessel/list", {
+                        $http.get(embryo.baseUrl + "rest/vessel/listarea?area=53.0|11.0|66.0|33.0", {
                             timeout : embryo.defaultTimeout
                         }).success(function (vessels) {
                             embryo.messagePanel.replace(messageId, {
