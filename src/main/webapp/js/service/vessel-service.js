@@ -44,6 +44,34 @@
                             }
                         });
                     },
+                    listArea : function(success, error) {
+                        var area = embryo.map.internalMap.getExtent().transform(embryo.map.projection, embryo.map.displayProjection);
+                        console.log("area:" +area);
+                        var messageId = embryo.messagePanel.show({
+                            text: "Loading vessels in area ..." + area
+                        });
+
+
+
+                        $http.get(embryo.baseUrl + "rest/vessel/listarea?area=53.0|11.0|66.0|33.0", {
+                            timeout : embryo.defaultTimeout
+                        }).success(function (vessels) {
+                            embryo.messagePanel.replace(messageId, {
+                                text: vessels.length + " vessels loaded.",
+                                type: "success"
+                            });
+                            success(vessels);
+                        }).error(function (data, status) {
+                            var errorMsg = embryo.ErrorService.errorStatus(data, status, "loading vessels")
+                            embryo.messagePanel.replace(messageId, {
+                                text: errorMsg,
+                                type: "error"
+                            });
+                            if (error) {
+                                error(errorMsg, status);
+                            }
+                        });
+                    },
                     details : function(mmsi, success, error) {
                         $http.get(embryo.baseUrl + "rest/vessel/details", {
                             timeout : embryo.defaultTimeout,

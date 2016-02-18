@@ -16,10 +16,10 @@ package dk.dma.balticweb.rest;
 
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
-import dk.dma.embryo.dataformats.inshore.InshoreIceReportJsonService;
-import dk.dma.embryo.dataformats.json.ForecastRestService;
-import dk.dma.embryo.dataformats.json.IceObservationRestService;
-import dk.dma.embryo.dataformats.json.ShapeFileRestService;
+//import dk.dma.embryo.dataformats.inshore.InshoreIceReportJsonService;
+//import dk.dma.embryo.dataformats.json.ForecastRestService;
+//import dk.dma.embryo.dataformats.json.IceObservationRestService;
+//import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 //import dk.dma.embryo.metoc.json.MetocRestService;
 import dk.dma.embryo.msi.rs.MsiRestService;
 //import dk.dma.embryo.tiles.json.TileSetJsonService;
@@ -53,11 +53,11 @@ public class ApplicationConfig extends Application {
         set.addAll(Arrays.asList(
                 RouteRestService.class, 
                 RouteUploadRestService.class, 
-                ShapeFileRestService.class,
+                //ShapeFileRestService.class,
                 BerthRestService.class,
                 AuthenticationService.class,
                 TestDataRestService.class, 
-                IceObservationRestService.class, 
+//                IceObservationRestService.class,
                 MsiRestService.class,
                 //MetocRestService.class,
                 ArcticWebVesselRestService.class, 
@@ -67,8 +67,8 @@ public class ApplicationConfig extends Application {
                 RequestAccessRestService.class,
                 ForgotPasswordRestService.class, 
                 //WeatherRestService.class,
-                InshoreIceReportJsonService.class, 
-                ForecastRestService.class,
+//                InshoreIceReportJsonService.class,
+//                ForecastRestService.class,
                 FeedbackRestService.class, 
                 //TileSetJsonService.class,
                 AreasOfInterestRestService.class));
