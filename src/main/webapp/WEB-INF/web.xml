@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-         version="3.0">
+         version="3.0" metadata-complete="false">
+
 
     <display-name>BalticWeb - Greenland</display-name>
 
     <!-- Overwrite default security configuration -->
+<!--
     <context-param>
         <param-name>shiroConfigLocations</param-name>
         <param-value>classpath:arcticweb-shiro.ini</param-value>
     </context-param>
+-->
 
     <filter>
         <filter-name>DynamicResourceLoggingFilter</filter-name>
@@ -98,6 +101,30 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Users</web-resource-name>
+            <url-pattern>/rest/vessel/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+<!--
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+-->
+    </security-constraint>
+
+    <login-config>
+        <auth-method>KEYCLOAK</auth-method>
+        <realm-name>demo2</realm-name>
+    </login-config>
+
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
 
 
 </web-app>

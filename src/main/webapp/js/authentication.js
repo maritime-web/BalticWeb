@@ -128,6 +128,12 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             $rootScope.authentication = embryo.authentication;
             var details = embryo.authentication;
 
+            //DUMMY
+            embryo.authentication.permissions = ["Sailor", "Reporting", "Administration"];//Roles
+            embryo.authentication.shipMmsi = "220443000";//user atrributes
+            embryo.authentication.userName = "Orasild";//user name
+            embryo.authentication.projection = "EPSG:900913";//user attribute
+
             this.roles = function () {
                 return typeof embryo.authentication.permissions === 'undefined' ? []
                     : embryo.authentication.permissions;

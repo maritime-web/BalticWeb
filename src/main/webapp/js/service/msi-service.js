@@ -82,7 +82,9 @@
                 $http.get(embryo.baseUrl + 'rest/msi/regions', {
                     timeout : embryo.defaultTimeout
                 }).success(success).error(function(data, status, headers, config) {
-                    error(embryo.ErrorService.errorStatus(data, status, "requesting MSI regions"), status);
+                    if (error) {
+                        error(embryo.ErrorService.errorStatus(data, status, "requesting MSI regions"), status);
+                    }
                 });
             },
             setSelectedRegions : function(regions) {
