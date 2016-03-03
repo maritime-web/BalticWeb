@@ -169,6 +169,17 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             };
 
             this.login = function (username, password, success, error) {
+                //DUMMY
+                embryo.authentication.permissions = ["Sailor", "Reporting", "Administration"];//Roles
+                embryo.authentication.shipMmsi = "220443000";//user atrributes
+                embryo.authentication.userName = "Orasild";//user name
+                embryo.authentication.projection = "EPSG:900913";//user attribute
+                $cookieStore.put('embryo.authentication', embryo.authentication);
+                sessionStorage.clear();
+                $rootScope.authentication = embryo.authentication;
+                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
+
                 var data = {
                     params: {
                         userName: username,
@@ -520,6 +531,8 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             $rootScope.logout = logout;
 
             $rootScope.loginDlg = function (config) {
+                Subject.login();
+/*
                 return $modal.open({
                     controller: embryo.LoginModalCtrl,
                     templateUrl: "loginDialog.html",
@@ -530,6 +543,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
                         }
                     }
                 });
+*/
             };
 
             if (Subject.isLoggedIn()) {
