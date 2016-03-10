@@ -42,7 +42,6 @@
 </head>
 
 <body>
-<div x-ng-include="'partials/common/authentication.html'"></div>
 <div x-ng-include="'partials/common/menu.html'"></div>
 <div class="menuDivider"></div>
 
@@ -103,9 +102,7 @@
                 their organizations may login or request access to BalticWeb via the buttons below.</p>
 
             <div class="btn-group">
-                <button class="btn btn-large btn-primary" x-ng-click="loginDlg()">Log In</button>
-                <a class="btn btn-large  btn-success btn-default" href="content.html#/requestAccess" role="button">Request
-                    Access</a>
+                <button class="btn btn-large btn-primary" x-ng-click="login()">Log In</button>
             </div>
         </div>
         <hr/>

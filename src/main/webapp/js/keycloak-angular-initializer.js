@@ -1,24 +1,22 @@
 var keycloakInitialize = function (module, moduleName) {
     var auth = {};
-    var logout = function(){
-        console.log('*** LOGOUT');
-        auth.loggedIn = false;
-        auth.authz = null;
-        window.location = auth.logoutUrl;
-    };
 
     angular.element(document).ready(function () {
         var keycloakAuth = new Keycloak('keycloak.json');
         auth.loggedIn = false;
 
-        keycloakAuth.init({ onLoad: 'login-required', checkLoginIframe: 'false' }).success(function () {
-            auth.loggedIn = true;
-            auth.authz = keycloakAuth;
-            auth.logoutUrl = keycloakAuth.authServerUrl + "/realms/demo/tokens/logout?redirect_uri=/index.html";
-            module.factory('Auth', function() {
-                return auth;
-            });
-            angular.bootstrap(document, [moduleName]);
+        console.log('*** Keycloak instantiated. Initializing <<<<<<<<');
+        keycloakAuth.init({onLoad: 'check-sso', checkLoginIframe: false })
+            .success(function () {
+                console.log('*** Keycloak Initialized *******************************');
+
+                auth.loggedIn = keycloakAuth.authenticated;
+                auth.authz = keycloakAuth;
+
+                module.factory('Auth', function() {
+                    return auth;
+                });
+                angular.bootstrap(document, [moduleName]);
         }).error(function () {
             console.log('*** ERROR Initializing Keycloak');
             window.location.reload();
@@ -28,26 +26,40 @@ var keycloakInitialize = function (module, moduleName) {
     module.factory('authInterceptor', function($q, Auth) {
         return {
             request: function (config) {
-                var deferred = $q.defer();
-                if (Auth.authz.token) {
-                    console.log('*** CALLING: ' + config.url);
-                    console.log('*** UPDATING TOKEN');
-                    console.log('*** Auth.authz.tokenParsed.iat: ' + Auth.authz.tokenParsed.iat);
-                    console.log('*** Auth.authz.tokenParsed: ' + JSON.stringify(Auth.authz.tokenParsed));
-                    console.log('*** Auth.authz.timeSkew: ' + Auth.authz.timeSkew);
+                var isHtmlRequest = function(config) {
+                    return config.url.indexOf(".html") > 0;
+                };
 
-                    Auth.authz.updateToken(800).success(function() {
-                        console.log('*** TOKEN UPDATED');
-                        console.log('*** Auth.authz.tokenParsed.iat: ' + Auth.authz.tokenParsed.iat);
-                        console.log('*** Auth.authz.tokenParsed: ' + JSON.stringify(Auth.authz.tokenParsed));
-                        console.log('*** Auth.authz.timeSkew: ' + Auth.authz.timeSkew);
+                var shouldAddTokenToRequest = function(config) {
+                    return !isHtmlRequest(config) && Auth.authz.token;
+                };
+
+                if (!isHtmlRequest(config)) {
+                    console.log('*** Intercepted call to : ' + config.url);
+                }
+
+                var deferred = $q.defer();
+                if (shouldAddTokenToRequest(config)) {
+                    console.log('*** UPDATING TOKEN');
+                    //console.log('*** Auth.authz.tokenParsed: ' + JSON.stringify(Auth.authz.tokenParsed));
+
+                    Auth.authz.updateToken(5).success(function() {
                         config.headers = config.headers || {};
                         config.headers.Authorization = 'Bearer ' + Auth.authz.token;
+
+                        console.log('***  ***');
+                        console.log('*** Auth.authz.tokenParsed: ' + JSON.stringify(Auth.authz.tokenParsed));
+                        console.log("authenticated? " + Auth.authz.authenticated);
+                        console.log("isTokenExpired? " + Auth.authz.isTokenExpired());
+                        console.log("timeSkew: " + Auth.authz.timeSkew);
+                        console.log('***  ***');
 
                         deferred.resolve(config);
                     }).error(function() {
                         deferred.reject('Failed to refresh token');
                     });
+                } else {
+                    deferred.resolve(config);
                 }
                 return deferred.promise;
             }

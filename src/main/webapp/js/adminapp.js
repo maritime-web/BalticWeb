@@ -4,8 +4,6 @@
 	    var app = angular.module('embryo.administration', [ 'ui.bootstrap', 'ngRoute', 'embryo.administration.log',
 	            'embryo.administration.users', 'embryo.menu']);
 
-		keycloakInitialize(module, moduleName);
-
 		app.config([ '$routeProvider', function($routeProvider) {
 	        $routeProvider.when('/log', {
 	            templateUrl : 'partials/admin/log.html',
@@ -23,5 +21,7 @@
 	            template : "<div></div>"
 	        });
 	    } ]);
+
+		keycloakInitialize(app, moduleName);
 	}());
 
