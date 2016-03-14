@@ -33,11 +33,13 @@ $(function() {
             return [];
         }
 
-        var sections = [ {
-            name : "ArcticWeb Reporting",
-            services : [],
-            type : "edit"
-        }, {
+        var sections = [
+            //{
+            //name : "ArcticWeb Reporting",
+            //services : [],
+            //type : "edit"
+            //},
+            {
             name : "Additional Information ",
             services : [],
             type : "view"
@@ -112,7 +114,8 @@ $(function() {
                     // information for this particular vessel is available.
                     VesselService.clientSideMmsiSearch(mmsi, function (vesselOverview) {
                         $scope.vesselOverview = vesselOverview;
-                        $scope.vesselScope.yourVesselName = vesselOverview.name;
+                        $scope.vesselScope.yourVesselName = "**fetch vesselname**";
+                        //$scope.vesselScope.yourVesselName = vesselOverview.name;
                     })
                 }
             });

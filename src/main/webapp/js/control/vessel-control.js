@@ -67,12 +67,25 @@ $(function() {
         vesselLayer.draw(vessels);
     };
 
-
+/*
     embryo.mapInitialized(function() {
         embryo.subscription.service.subscribe({
             subscriber: "vesselLayerController",
             name: "VesselService.list",
             fn: embryo.vessel.service.list,
+            interval: embryo.loadFrequence,
+            success: function (data) {
+                vessels = data;
+                vesselLayer.draw(vessels);
+            }
+        });
+    });*/
+
+    embryo.mapInitialized(function() {
+        embryo.subscription.service.subscribe({
+            subscriber: "vesselLayerController",
+            name: "VesselService.listArea",
+            fn: embryo.vessel.service.listArea,
             interval: embryo.loadFrequence,
             success: function (data) {
                 vessels = data;

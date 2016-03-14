@@ -4,7 +4,7 @@
          version="3.0" metadata-complete="false">
 
 
-    <display-name>BalticWeb - Greenland</display-name>
+    <display-name>BalticWeb</display-name>
 
     <!-- Overwrite default security configuration -->
 <!--

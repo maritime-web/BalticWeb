@@ -73,10 +73,10 @@
 			<artifactId>vessel</artifactId>
 		</dependency>
 
-		<dependency>
-            <groupId>dk.dma.enav.services</groupId>
-			<artifactId>dataformats</artifactId>
-		</dependency>
+		<!--<dependency>-->
+            <!--<groupId>dk.dma.enav.services</groupId>-->
+			<!--<artifactId>dataformats</artifactId>-->
+		<!--</dependency>-->
 
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
@@ -89,10 +89,10 @@
 			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
-            <groupId>dk.dma.enav.services</groupId>
-			<artifactId>metoc</artifactId>
-		</dependency>
+		<!--<dependency>-->
+            <!--<groupId>dk.dma.enav.services</groupId>-->
+			<!--<artifactId>metoc</artifactId>-->
+		<!--</dependency>-->
 
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
@@ -100,16 +100,16 @@
 			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
+		<!--dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>weather</artifactId>
 			<version>2.7-SNAPSHOT</version>
-		</dependency>
+		</dependency-->
 
-		<dependency>
-			<groupId>dk.dma.enav.services</groupId>
-			<artifactId>map-tiles</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>dk.dma.enav.services</groupId>-->
+			<!--<artifactId>map-tiles</artifactId>-->
+		<!--</dependency>-->
 
 		<dependency>
 			<groupId>dk.dma.enav</groupId>
