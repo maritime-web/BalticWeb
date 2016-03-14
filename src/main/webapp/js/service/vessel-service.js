@@ -2,7 +2,9 @@
     var module = angular.module('embryo.vessel.service', []);
 
     var subscriptions = {};
-    
+    var EPSG4326 = new OpenLayers.Projection("EPSG:4326");
+    var EPSG900913 = new OpenLayers.Projection("EPSG:900913");
+
     embryo.getMaxSpeed = function(vessel) {
 
     	if(vessel.awsog) {
@@ -15,62 +17,77 @@
     		return 0.0;
     	}
     };
-    
+
+    function getClientBoundBox() {
+        var bounds = embryo.map.internalMap.getExtent().clone();
+        bounds = bounds.transform(EPSG900913, EPSG4326);
+
+        var l = Math.floor(bounds.left * 100) / 100;
+        var b = Math.floor(bounds.bottom * 100) / 100;
+        var r = Math.ceil(bounds.right * 100) / 100;
+        var t = Math.ceil(bounds.top * 100) / 100;
+        var search_bbox = b + "|" + l + "|" + t + "|" + r + "";
+        return search_bbox;
+    }
+
     module.service('VesselService', [
-            '$http',
-            function($http) {
-                return {
+        '$http',
+        function($http) {
+            return {
                     list : function(success, error) {
-                        var messageId = embryo.messagePanel.show({
-                            text: "Loading vessels ..."
-                        });
 
-                        $http.get(embryo.baseUrl + "rest/vessel/listarea?area=53.0|11.0|66.0|33.0", {
-                            timeout : embryo.defaultTimeout
-                        }).success(function (vessels) {
-                            embryo.messagePanel.replace(messageId, {
-                                text: vessels.length + " vessels loaded.",
-                                type: "success"
-                            });
-                            success(vessels);
-                        }).error(function (data, status) {
-                            var errorMsg = embryo.ErrorService.errorStatus(data, status, "loading vessels")
-                            embryo.messagePanel.replace(messageId, {
-                                text: errorMsg,
-                                type: "error"
-                            });
-                            if (error) {
-                                error(errorMsg, status);
-                            }
-                        });
-                    },
-                    listArea : function(success, error) {
-                        var area = embryo.map.internalMap.getExtent().transform(embryo.map.projection, embryo.map.displayProjection);
-                        console.log("area:" +area);
-                        var messageId = embryo.messagePanel.show({
-                            text: "Loading vessels in area ..." + area
-                        });
+                        var search_bbox= getClientBoundBox();
+                        var zoomLvl = embryo.map.internalMap.getZoom();
 
+                        console.log("searching in bbox={" +search_bbox + "} zoomLvl=" + zoomLvl);
 
+                        if(zoomLvl > 8){ // below  zoom level 8 a more detailed and data rich overview is created.
+                            var messageId = embryo.messagePanel.show({
+                                text: " Loading vessels ..."
+                            });
+                            $http.get(embryo.baseUrl + "rest/vessel/listarea?area="+search_bbox, {
+                                timeout : embryo.defaultTimeout
+                            }).success(function (vessels) {
+                                embryo.messagePanel.replace(messageId, {
+                                    text: vessels.length + " vessels loaded in the " + search_bbox,
+                                    type: "success"
+                                });
+                                success(vessels);
+                            }).error(function (data, status) {
+                                var errorMsg = embryo.ErrorService.errorStatus(data, status, "loading vessels")
+                                embryo.messagePanel.replace(messageId, {
+                                    text: errorMsg,
+                                    type: "error"
+                                });
+                                if (error) {
+                                    error(errorMsg, status);
+                                }
+                            });
+                        }else{ // above zoom level 8 a more simplified and lighter overview is created.
 
-                        $http.get(embryo.baseUrl + "rest/vessel/listarea?area=53.0|11.0|66.0|33.0", {
-                            timeout : embryo.defaultTimeout
-                        }).success(function (vessels) {
-                            embryo.messagePanel.replace(messageId, {
-                                text: vessels.length + " vessels loaded.",
-                                type: "success"
+                            var messageId = embryo.messagePanel.show({
+                                text: " Loading overview of vessels ..."
                             });
-                            success(vessels);
-                        }).error(function (data, status) {
-                            var errorMsg = embryo.ErrorService.errorStatus(data, status, "loading vessels")
-                            embryo.messagePanel.replace(messageId, {
-                                text: errorMsg,
-                                type: "error"
+
+                            $http.get(embryo.baseUrl + "rest/vessel/overview?area="+search_bbox, {
+                                timeout : embryo.defaultTimeout
+                            }).success(function (vessels) {
+                                embryo.messagePanel.replace(messageId, {
+                                    text: vessels.length + " vessels loaded",
+                                    type: "success"
+                                });
+                                success(vessels);
+                            }).error(function (data, status) {
+                                var errorMsg = embryo.ErrorService.errorStatus(data, status, "loading vessels overview")
+                                embryo.messagePanel.replace(messageId, {
+                                    text: errorMsg,
+                                    type: "error"
+                                });
+                                if (error) {
+                                    error(errorMsg, status);
+                                }
                             });
-                            if (error) {
-                                error(errorMsg, status);
-                            }
-                        });
+                        }
                     },
                     details : function(mmsi, success, error) {
                         $http.get(embryo.baseUrl + "rest/vessel/details", {

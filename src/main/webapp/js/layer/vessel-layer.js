@@ -38,6 +38,60 @@ function VesselLayer(conf) {
         }
     }
 
+    /**
+     * a simple function that given one color can darken or lighten it.
+     * Given two colors, the function mixes the two, and returns the blended color.
+     * This funtion is bluntly copy/pasted from http://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
+     * by http://stackoverflow.com/users/693927/pimp-trizkit
+     * usage
+     * var color1 = "#FF343B";
+     * var color2 = "#343BFF";
+     * var color3 = "rgb(234,47,120)";
+     * var color4 = "rgb(120,99,248)";
+     * var shadedcolor1 = shadeBlend(0.75,color1);
+     * var shadedcolor3 = shadeBlend(-0.5,color3);
+     * var blendedcolor1 = shadeBlend(0.333,color1,color2);
+     * var blendedcolor34 = shadeBlend(-0.8,color3,color4); // Same as using 0.8
+     * @param p percentage of shade or highlight
+     * @param c0 first color
+     * @param c1 OPTIONAL second color, only for blending
+     * @returns A string with a color.
+     */
+    function shadeBlend(p,c0,c1) {
+        var n=p<0?p*-1:p,u=Math.round,w=parseInt;
+        if(c0.length>7){
+            var f=c0.split(","),t=(c1?c1:p<0?"rgb(0,0,0)":"rgb(255,255,255)").split(","),R=w(f[0].slice(4)),G=w(f[1]),B=w(f[2]);
+            return "rgb("+(u((w(t[0].slice(4))-R)*n)+R)+","+(u((w(t[1])-G)*n)+G)+","+(u((w(t[2])-B)*n)+B)+")"
+        }else{
+            var f=w(c0.slice(1),16),t=w((c1?c1:p<0?"#000000":"#FFFFFF").slice(1),16),R1=f>>16,G1=f>>8&0x00FF,B1=f&0x0000FF;
+            return "#"+(0x1000000+(u(((t>>16)-R1)*n)+R1)*0x10000+(u(((t>>8&0x00FF)-G1)*n)+G1)*0x100+(u(((t&0x0000FF)-B1)*n)+B1)).toString(16).slice(1)
+        }
+    }
+
+    /**
+     * Given a vessels type number betweeen 0-7, return a color in RGB hex format.
+     * @param vo = a vessel
+     * @returns a color in hex format i.e. #0000ff, #737373, #40e0d0
+     *
+     */
+    function colorHexForVessel(vo) {
+        var colorName;
+
+        switch (vo.type) {
+            case "0" : colorName = "#0000ff"; break; // blue
+            case "1" : colorName = "#737373"; break; // grey
+            case "2" : colorName = "#00cc00"; break; // green
+            case "3" : colorName = "#ffa500"; break; // orange
+            case "4" : colorName = "#800080"; break; // purple
+            case "5" : colorName = "#ff0000"; break; // red
+            case "6" : colorName = "#40e0d0"; break; // turquoise
+            case "7" : colorName = "#ffff00"; break; // yellow
+            default :
+                colorName = "#737373"; // grey
+        }
+        return colorName;
+    }
+
     this.init = function() {
         this.zoomLevels = [3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -204,6 +258,19 @@ function VesselLayer(conf) {
         return new OpenLayers.Feature.Vector(geom, attr);
     }
 
+    function createMinimalVesselFeature(vessel) {
+        var colorHex = colorHexForVessel(vessel);
+        var shadedColor = shadeBlend(-0.15,colorHex);
+
+
+        var pointStyle = {fill:true, stroke: true, color: colorHex, fillColor: colorHex,
+            strokeColor: shadedColor, strokeWidth: 1, pointRadius: 2};
+        return new OpenLayers.Feature.Vector(
+            embryo.map.createPoint(vessel.x, vessel.y), { description: 'info' }, pointStyle
+        );
+
+    }
+
     function createAwFeature(vessel, context) {
         return new OpenLayers.Feature.Vector(
             embryo.map.createPoint(vessel.x, vessel.y), {
@@ -232,9 +299,17 @@ function VesselLayer(conf) {
             unSelectable: [],
             awFeatures: []
         };
-
+        console.log("createVesselFeatures vessel size: " + vessels.length);
         $.each(vessels, function (key, value) {
-            if (value.type != null) {
+
+            // in the case that we only have lat,lon,type create a minimal vessel feature.
+            if(value != null && value.mmsi == null &&
+                value.type != null && value.id == null &&
+                value.x && value.y && value.type){
+                // this is a simplified overview vessel representation
+                result.vesselFeatures.push(createMinimalVesselFeature(value));
+            } // standard rich and detailed vessel
+            else if (value.type != null && value.mmsi != null) {
                 if (!selectedFeature || selectedFeature.attributes.vessel.mmsi != value.mmsi) {
                     result.vesselFeatures.push(createVesselFeature(value, context));
                 }
@@ -316,6 +391,7 @@ function VesselLayer(conf) {
             if (cell.items && cell.items.length > 0) {
                 for (var index in cell.items) {
                     var vessel = cell.items[index];
+
                     if (vessel.type != null) {
                         if (!selectedFeature || selectedFeature.attributes.vessel.mmsi != vessel.mmsi) {
                             result.vesselFeatures.push(createVesselFeature(vessel, context));
@@ -355,7 +431,7 @@ function VesselLayer(conf) {
         var that = this;
 
         $.each(this.layers.vessel.features, function (k, v) {
-            if (v.attributes.vessel.mmsi == that.selectedId) {
+            if (v.attributes.vessel != null && v.attributes.vessel.mmsi != null && v.attributes.vessel.mmsi == that.selectedId) {
                 selectedFeature = v;
             }
         });
@@ -382,9 +458,13 @@ function VesselLayer(conf) {
         var arr = vesselLayer.features.slice();
         var idx = $.inArray(selectedFeature, arr);
         if (idx != -1) arr.splice(idx, 1);
+        console.log("features.vesselFeatures.length=" + features.vesselFeatures.length);
+        console.log("removing arr.length=" + arr.length);
+
         vesselLayer.addFeatures(features.vesselFeatures);
         vesselLayer.destroyFeatures(arr);
         vesselLayer.redraw();
+
 
         this.layers.unselectable.removeAllFeatures();
         this.layers.unselectable.addFeatures(features.unSelectable);
