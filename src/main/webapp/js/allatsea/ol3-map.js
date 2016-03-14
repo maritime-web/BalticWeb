@@ -33,7 +33,7 @@ var mousePosition = new ol.control.MousePosition({
     //target: document.getElementById('mouseposition'),
     undefinedHTML: '&nbsp;'
 });
-var balticExtent = ol.proj.transformExtent([12, 56, 28, 66], 'EPSG:4326', 'EPSG:3857');
+var balticExtent = ol.proj.transformExtent([9, 53, 31, 66], 'EPSG:4326', 'EPSG:3857');
 var map = new ol.Map({
     controls: ol.control.defaults().extend([
         new ol.control.OverviewMap(),
