@@ -31,13 +31,13 @@ $(function() {
 
     var controlsByGroup = {};
 
-    var e1 = new OpenLayers.Bounds(-179, -89, 179, 89);
+    var e1 = new ol.Extent(-179, -89, 179, 89);
 
-    e1.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection(embryo.projection));
+    e1.transform(new ol.Projection("EPSG:4326"), new ol.Projection(embryo.projection));
 
-    var map = new OpenLayers.Map({
+    var map = new ol.Map({
         div : "map",
-        controls : [ new OpenLayers.Control.Navigation({
+        controls : [ new ol.Control.Navigation({
             dragPanOptions : {
                 enableKinetic : false
             }
@@ -47,18 +47,18 @@ $(function() {
         fractionalZoom : false
     });
 
-    var selectControl = new OpenLayers.Control.SelectFeature([], {
+    var selectControl = new ol.Control.SelectFeature([], {
         clickout : true,
         toggle : true,
         id : 'ClickCtrl'
     });
     
-    var hoverControl = new OpenLayers.Control.SelectFeature([], {
+    var hoverControl = new ol.Control.SelectFeature([], {
         id : 'HoverCtrl',
         hover : true,
         // highlightOnly : true,
         eventListeners : {
-            // OpenLayers does not have a general support for
+            // ol.does not have a general support for
             // featurehighlighted and featureunhighlighted events like
             // layer.events.on({featureselected:function(event){}})
             // Build our own using embryo.eventbus
@@ -153,11 +153,11 @@ $(function() {
             }
         },
         createPoint : function(longitude, latitude) {
-            return new OpenLayers.Geometry.Point(longitude, latitude).transform(new OpenLayers.Projection("EPSG:4326"),
+            return new ol.Geometry.Point(longitude, latitude).transform(new ol.Projection("EPSG:4326"),
                     map.getProjectionObject());
         },
         transformToPosition: function (point) {
-            var pointRes = point.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+            var pointRes = point.clone().transform(map.getProjectionObject(), new ol.Projection("EPSG:4326"));
             return {
                 lon: pointRes.x,
                 lat: pointRes.y
@@ -197,7 +197,7 @@ $(function() {
         	}
 		},
         zoomToExtent : function(layers) {
-            var extent = new OpenLayers.Bounds();
+            var extent = new ol.Bounds();
 
             extent.bottom = 9999999;
             extent.left = 9999999;
@@ -236,7 +236,7 @@ $(function() {
         },
         zoomToCoords : function(minPoint, maxPoint) {
         	if(!(map.getExtent().containsPixel(minPoint) && map.getExtent().containsPixel(maxPoint))) {
-        		var b = new OpenLayers.Bounds();
+        		var b = new ol.Bounds();
         		b.extend(minPoint);
         		b.extend(maxPoint);
         		map.zoomToExtent(b);
@@ -244,7 +244,7 @@ $(function() {
         },
         zoomToBounds: function (bounds, force) {
             if (!map.getExtent().containsBounds(bounds, false, true) || force) {
-                var b = new OpenLayers.Bounds();
+                var b = new ol.Bounds();
                 b.extend(bounds);
 
                 var deltaV = b.top - b.bottom;
@@ -280,23 +280,23 @@ $(function() {
             return pixel;
         },
         getLonLatFromPixel : function(x, y) {
-            return map.getLonLatFromPixel(new OpenLayers.Pixel(x, y));
+            return map.getLonLatFromPixel(new ol.Pixel(x, y));
         },
         lonLatDifference : function(lonLat1, lonLat2) {
             var lonDiff = lonLat2.lon - lonLat1.lon;
             var latDiff = lonLat2.lat - lonlat1.lat;
-            return new OpenLayers.LonLat(lonDiff, latDiff);
+            return new ol.LonLat(lonDiff, latDiff);
         },
         lonLatDifference : function(lonLat1, lonLat2) {
             var lonDiff = lonLat2.lon - lonLat1.lon;
             var latDiff = lonLat2.lat - lonLat1.lat;
-            return new OpenLayers.LonLat(lonDiff, latDiff);
+            return new ol.LonLat(lonDiff, latDiff);
         },
         transformPosition : function(longitude, latitude){
             return transformPosition(longitude, latitude);
         },
         addToLonLat : function(lonLat, lonLatDiff) {
-            return new OpenLayers.LonLat(lonLat.lon + lonLatDiff.lon, lonLat.lat + lonLatDiff.lat);
+            return new ol.LonLat(lonLat.lon + lonLatDiff.lon, lonLat.lat + lonLatDiff.lat);
         },
         isWithinBorders : function(longitude, latitude) {
             var lonLat = transformPosition(longitude, latitude);
@@ -304,7 +304,7 @@ $(function() {
         },
         internalMap : map,
         createClickControl : function(handler) {
-            var Control = OpenLayers.Class(OpenLayers.Control, {
+            var Control = ol.Class(ol.Control, {
                 defaultHandlerOptions : {
                     'single' : true,
                     'double' : false,
@@ -314,17 +314,17 @@ $(function() {
                 },
 
                 initialize : function(options) {
-                    this.handlerOptions = OpenLayers.Util.extend({}, this.defaultHandlerOptions);
-                    OpenLayers.Control.prototype.initialize.apply(this, arguments);
-                    this.handler = new OpenLayers.Handler.Click(this, {
+                    this.handlerOptions = ol.Util.extend({}, this.defaultHandlerOptions);
+                    ol.Control.prototype.initialize.apply(this, arguments);
+                    this.handler = new ol.Handler.Click(this, {
                         'click' : this.trigger
                     }, this.handlerOptions);
                 },
 
                 trigger : function(e) {
                     var lonlat1 = this.map.getLonLatFromPixel(e.xy);
-                    var lonlat = new OpenLayers.LonLat(lonlat1.lon, lonlat1.lat).transform(this.map
-                            .getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+                    var lonlat = new ol.LonLat(lonlat1.lon, lonlat1.lat).transform(this.map
+                            .getProjectionObject(), new ol.Projection("EPSG:4326"));
                     return handler(lonlat);
                 }
             });
@@ -364,27 +364,27 @@ $(function() {
 
     map.events.register("mousemove", map, function(e) {
         var position = this.events.getMousePosition(e);
-        pixel = new OpenLayers.Pixel(position.x, position.y);
+        pixel = new ol.Pixel(position.x, position.y);
         var lonLat = map.getLonLatFromPixel(pixel);
         if (lonLat) {
             // from Spherical Mercator Projection to WGS 1984
-            lonLat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+            lonLat.transform(map.getProjectionObject(), new ol.Projection("EPSG:4326"));
             $('#coords').html(formatLatitude(lonLat.lat) + ', ' + formatLongitude(lonLat.lon));
         }
     });
 
     /**
-     * Transforms a position to a position that can be used by OpenLayers. The
-     * transformation uses OpenLayers.Projection("EPSG:4326").
+     * Transforms a position to a position that can be used by ol. The
+     * transformation uses ol.Projection("EPSG:4326").
      * 
      * @param lon
      *            The longitude of the position to transform
      * @param lat
      *            The latitude of the position to transform
-     * @returns The transformed position as a OpenLayers.LonLat instance.
+     * @returns The transformed position as a ol.LonLat instance.
      */
     function transformPosition(lon, lat) {
-        return new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map
+        return new ol.LonLat(lon, lat).transform(new ol.Projection("EPSG:4326"), map
                 .getProjectionObject());
     }
 
@@ -394,9 +394,9 @@ $(function() {
     function saveViewCookie() {
         var center = map.getCenter();
         setCookie("dma-ais-zoom-" + embryo.authentication.userName, map.zoom, 30);
-        var lonlat = new OpenLayers.LonLat(map.center.lon, map.center.lat).transform(map.getProjectionObject(), // from
+        var lonlat = new ol.LonLat(map.center.lon, map.center.lat).transform(map.getProjectionObject(), // from
             // Spherical Mercator Projection
-        new OpenLayers.Projection("EPSG:4326") // to WGS 1984
+        new ol.Projection("EPSG:4326") // to WGS 1984
         );
         setCookie("dma-ais-lat-" + embryo.authentication.userName, lonlat.lat, 30);
         setCookie("dma-ais-lon-" + embryo.authentication.userName, lonlat.lon, 30);
@@ -433,7 +433,7 @@ $(function() {
     moveZoomControl();
 
     function setupOsmMap() {
-        var osm = new OpenLayers.Layer.OSM("OSM", embryo.authentication.osm, {
+        var osm = new ol.Layer.OSM("OSM", embryo.authentication.osm, {
             'layers' : 'basic',
             'isBaseLayer' : true
         });
@@ -442,11 +442,11 @@ $(function() {
     }
 
     function setupVectorMap(name) {
-        var e1 = new OpenLayers.Bounds(-179, -89, 179, 89);
+        var e1 = new ol.Bounds(-179, -89, 179, 89);
 
-        e1.transform(new OpenLayers.Projection("EPSG:4326"), embryo.projection);
+        e1.transform(new ol.Projection("EPSG:4326"), embryo.projection);
 
-        var blankLayer = new OpenLayers.Layer("Blank", {
+        var blankLayer = new ol.Layer("Blank", {
             isBaseLayer : true,
             numZoomLevels : 19,
             projection : map.projection,
@@ -511,7 +511,7 @@ $(function() {
         loadViewCookie();
 
         // Event sequence has been created, because it is important that all layers are added before drawing on the map.
-        // OpenLayers will otherwise draw e.g. routes incorrectly
+        // ol.will otherwise draw e.g. routes incorrectly
 
         // Firing this event should provoke adding of layers to the map
         embryo.eventbus.fireEvent(embryo.eventbus.PostLayerInitialize());
@@ -581,7 +581,7 @@ $(function() {
     var zoomModule = angular.module('embryo.zoom', ['embryo.authentication']);
 
     zoomModule.controller('ZoomController', ['$scope', 'Subject', function ($scope, Subject) {
-        var control = new OpenLayers.Control.Zoom({
+        var control = new ol.Control.Zoom({
             zoomInId : 'dmaZoomIn',
             zoomOutId : 'dmaZoomOut'
         });
