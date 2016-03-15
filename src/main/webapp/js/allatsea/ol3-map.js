@@ -12,6 +12,13 @@ var thunderforestAttributions = [
     ol.source.OSM.ATTRIBUTION
 ];
 
+var openseaMapAttributions = [
+    new ol.Attribution({
+        html: '<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Generic License</a> - <a href="http://www.openseamap.org/">www.openseamap.org</a>'
+    }),
+    ol.source.OSM.ATTRIBUTION
+];
+
 maritimeweb.groupLayers = new function () {
     return new ol.layer.Group({
         'title': 'Base maps',
@@ -125,7 +132,7 @@ maritimeweb.groupLayers = new function () {
             }),
             new ol.layer.Tile({
                 title: 'wind_stream_5',
-                visible: true,
+                visible: false,
                 source: new ol.source.XYZ({
                     url: 'http://weather.openportguide.de/demo/' + 'wind_stream/5/{z}/{x}/{y}.png'
                 })
@@ -243,12 +250,22 @@ maritimeweb.groupOverlays = new function () {
         title: 'Overlays',
         layers: [
             new ol.layer.Tile({
+                title: 'Seamark - OpenSeaMap.org',
+                visible: false,
+                source: new ol.source.XYZ({
+                    url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
+                    attributions: openseaMapAttributions//,
+                    //crossOrigin: 'null'
+                })
+            }),
+            new ol.layer.Tile({
                 title: 'Countries',
                 source: new ol.source.TileWMS({
                     url: 'http://demo.opengeo.org/geoserver/wms',
                     params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
                     serverType: 'geoserver'
-                })
+                }),
+                visible: false
             }),
             new ol.layer.Tile({
                 title: 'Weather !',
