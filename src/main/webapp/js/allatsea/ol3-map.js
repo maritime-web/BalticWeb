@@ -1,4 +1,4 @@
-var maritimeweb = {};
+var maritimeweb = maritimeweb || {};
 
     maritimeweb.center = new function () {
         return [22.0, 59.0];
@@ -14,15 +14,21 @@ var thunderforestAttributions = [
 
 var openseaMapAttributions = [
     new ol.Attribution({
-        html: '<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Generic License</a> - <a href="http://www.openseamap.org/">www.openseamap.org</a>'
+        html: '<a href="http://www.openseamap.org/">www.openseamap.org</a> - <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Generic License</a> - '
     }),
     ol.source.OSM.ATTRIBUTION
 ];
 
-maritimeweb.groupLayers = new function () {
+maritimeweb.groupBaseMaps = new function () {
     return new ol.layer.Group({
         'title': 'Base maps',
         layers: [
+            new ol.layer.Tile({
+                title: 'OpenStreetMap',
+                type: 'base',
+                visible: true,
+                source: new ol.source.OSM()
+            }),
             new ol.layer.Tile({
                 title: 'Stamen - Water color',
                 type: 'base',
@@ -107,148 +113,17 @@ maritimeweb.groupLayers = new function () {
                     url: 'http://{a-c}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png',
                     attributions: thunderforestAttributions
                 })
-            }),
-            new ol.layer.Tile({
-                title: 'OSM',
-                type: 'base',
-                visible: true,
-                source: new ol.source.OSM()
-            }),
-            //uyyy
-
-            new ol.layer.Tile({
-                title: 'wind_vector_5',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'wind_vector/5/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'wind_vector_27',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'wind_vector/27/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'wind_stream_5',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'wind_stream/5/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'wind_stream_27',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'wind_stream/27/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'gust_5',
-                visible: false,
-                opacity: 0.3,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'gust/5/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'gust_27',
-                visible: false,
-                opacity: 0.3,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'gust/27/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'surface_pressure_5',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'surface_pressure/5/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'surface_pressure_27',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'surface_pressure/27/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'air_temperature_5',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'air_temperature/5/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'air_temperature_27',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'air_temperature/27/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'precipitation_5',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'precipitation/5/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'precipitation_27',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'precipitation/27/{z}/{x}/{y}.png'
-                })
-            }),
-
-            new ol.layer.Tile({
-                title: 'significant_wave_height_27',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'significant_wave_height/27/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'wind_barb_27',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'wind_barb/27/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'FL100_wind_barb_27',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'FL100_wind_barb/27/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'FL200_wind_barb_27',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'FL200_wind_barb/27/{z}/{x}/{y}.png'
-                })
-            }),
-            new ol.layer.Tile({
-                title: 'FL300_wind_barb_19',
-                visible: false,
-                source: new ol.source.XYZ({
-                    url: 'http://weather.openportguide.de/demo/' + 'FL300_wind_barb/19/{z}/{x}/{y}.png'
-                })
             })
-
-
-            //xxxx
         ]
     });
 
 };
-maritimeweb.groupOverlays = new function () {
+
+maritimeweb.groupAtons = new function () {
     var group =  new ol.layer.Group({
-        title: 'Overlays',
+        title: 'Atons',
         layers: [
+
             new ol.layer.Tile({
                 title: 'Seamark - OpenSeaMap.org',
                 visible: false,
@@ -266,23 +141,49 @@ maritimeweb.groupOverlays = new function () {
                     serverType: 'geoserver'
                 }),
                 visible: false
-            }),
+            })
+        ]
+    });
+    return group;
+};
+
+
+maritimeweb.groupOverlays = new function () {
+    var group =  new ol.layer.Group({
+        title: 'Weather Forecasts',
+        layers: [
             new ol.layer.Tile({
-                title: 'Weather !',
-                source: new ol.source.TileWMS({
-                    url: 'http://weather.openportguide.de/tiles/actual/wind_stream/5/{z}/{x}/{y}.png'
+                title: 'Gust  - openportguide.de',
+                opacity: 0.4,
+                source: new ol.source.XYZ({
+                    url: 'http://weather.openportguide.de/tiles/actual/gust/5/{z}/{x}/{y}.png'
                     //url: 'http://weather.openportguide.de/tiles/actual/air_temperature/wind_stream/5/{z}/{x}/{y}.png'
                 }),
                 visible: false
             }),
+            new ol.layer.Tile({
+                title: 'Wind - openportguide.de',
+                source: new ol.source.XYZ({
+                    url: 'http://weather.openportguide.de/tiles/actual/wind_stream/5/{z}/{x}/{y}.png'
+                }),
+                visible: false
+            }),
                 new ol.layer.Tile({
-                    title: 'Temperature !',
-                    source: new ol.source.TileWMS({
-                        url: 'http://weather.openportguide.de/tiles/actual/wind_stream/5/{z}/{x}/{y}.png'
-                        //url: 'http://weather.openportguide.de/tiles/actual/air_temperature/wind_stream/5/{z}/{x}/{y}.png'
+                    title: 'Air temperature - openportguide.de',
+                    source: new ol.source.XYZ({
+                        //url: 'http://weather.openportguide.de/tiles/actual/wind_stream/5/{z}/{x}/{y}.png'
+                        url: 'http://weather.openportguide.de/tiles/actual/air_temperature/5/{z}/{x}/{y}.png'
                     }),
                     visible: false
-                })
+                }),
+            new ol.layer.Tile({
+                title: 'significant_wave_height - openportguide.org',
+                source: new ol.source.XYZ({
+                    url: 'http://www.openportguide.org//tiles/actual/significant_wave_height/5/{z}/{x}/{y}.png'
+                }),
+                visible: false
+            })
+
 
 
         ]
@@ -292,8 +193,11 @@ maritimeweb.groupOverlays = new function () {
 
     var zoomslider = new ol.control.ZoomSlider();
     var seaScaleLine = new ol.control.ScaleLine({
+        className: 'ol-scale-line',
         units: 'nautical', // 'degrees', 'imperial', 'nautical', 'metric', 'us'
-        minWidth: 80
+        minWidth: 80,
+//        target: 'scaleline',
+        target: document.getElementById('scale-line')
     });
     var metricScaleLine = new ol.control.ScaleLine({
         units: 'metric', // 'degrees', 'imperial', 'nautical', 'metric', 'us'
@@ -310,14 +214,15 @@ maritimeweb.groupOverlays = new function () {
     var mousePosition = new ol.control.MousePosition({
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326',
-        target: 'mouseposition',
-        //target: document.getElementById('mouseposition'),
+        //target: 'mouseposition',
+        target: document.getElementById('mouse-position'),
+        className: 'mouse-position',
         undefinedHTML: '&nbsp;'
     });
     var balticExtent = ol.proj.transformExtent([9, 53, 31, 66], 'EPSG:4326', 'EPSG:3857');
     var map = new ol.Map({
         controls: ol.control.defaults().extend([
-            new ol.control.OverviewMap(),
+            new ol.control.OverviewMap({collapsed: false}),
             seaScaleLine,
             // metricScaleLine,
             zoomslider,
@@ -327,19 +232,10 @@ maritimeweb.groupOverlays = new function () {
         ]),
         target: 'map',
         layers: [
-            //layer_default_osm
-            //,
-            //maritimeweb.groupLayers
-            //,
-            //maritimeweb.groupOverlays
-            /* new ol.layer.Tile({
-             source: new ol.source.XYZ({
-             url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
-             crossOrigin: true
-             })
-             })*/
-            maritimeweb.groupLayers,
-            maritimeweb.groupOverlays
+            maritimeweb.groupBaseMaps,
+            maritimeweb.groupOverlays,
+            maritimeweb.groupAtons,
+
         ],
         view: new ol.View({
             center: ol.proj.fromLonLat(maritimeweb.center),
