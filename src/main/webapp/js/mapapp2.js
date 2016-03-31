@@ -9,5 +9,5 @@
         'embryo.controller.reporting', 'embryo.aisinformation', 'embryo.forecast.control', 'embryo.satellite-ice.control',
         'embryo.areaselect.control']);
 
-    keycloakInitialize(module, moduleName);
+    keycloakInitialize(module, moduleName, true);
 })();

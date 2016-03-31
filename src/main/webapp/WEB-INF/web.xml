@@ -7,12 +7,10 @@
     <display-name>BalticWeb</display-name>
 
     <!-- Overwrite default security configuration -->
-<!--
     <context-param>
         <param-name>shiroConfigLocations</param-name>
         <param-value>classpath:arcticweb-shiro.ini</param-value>
     </context-param>
--->
 
     <filter>
         <filter-name>DynamicResourceLoggingFilter</filter-name>
@@ -23,34 +21,6 @@
         <filter-name>DynamicResourceLoggingFilter</filter-name>
         <url-pattern>/rest/*</url-pattern>
     </filter-mapping>
-
-    <!--
-    <filter>
-        <filter-name>StaticResourceLoggingFilter</filter-name>
-        <filter-class>dk.dma.embryo.common.servlet.StaticResourceLoggingFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>StaticResourceLoggingFilter</filter-name>
-        <url-pattern>/docs/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>StaticResourceLoggingFilter</filter-name>
-        <url-pattern>/css/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>StaticResourceLoggingFilter</filter-name>
-        <url-pattern>/js/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>StaticResourceLoggingFilter</filter-name>
-        <url-pattern>/img/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>StaticResourceLoggingFilter</filter-name>
-        <url-pattern>/partials/*</url-pattern>
-    </filter-mapping>
--->
 
     <filter>
         <filter-name>CacheForeverFilter</filter-name>
@@ -71,18 +41,6 @@
         </init-param>
     </filter>
 
-    <!--
-    <filter>
-        <filter-name>ExpiresFilter</filter-name>
-        <filter-class>dk.dma.embryo.common.servlet.ExpiresFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>ExpiresFilter</filter-name>
-        <url-pattern>/js/ext/*</url-pattern>
-    </filter-mapping>
--->
-
     <filter-mapping>
         <filter-name>SetCacheManifestContentTypeFilter</filter-name>
         <url-pattern>/map.appcache</url-pattern>
@@ -97,34 +55,4 @@
         <filter-name>SetCacheManifestContentTypeFilter</filter-name>
         <url-pattern>/content.appcache</url-pattern>
     </filter-mapping>
-
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Users</web-resource-name>
-            <url-pattern>/rest/vessel/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>user</role-name>
-        </auth-constraint>
-<!--
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
--->
-    </security-constraint>
-
-    <login-config>
-        <auth-method>KEYCLOAK</auth-method>
-        <realm-name>demo2</realm-name>
-    </login-config>
-
-    <security-role>
-        <role-name>user</role-name>
-    </security-role>
-
-
 </web-app>
