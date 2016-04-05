@@ -1,9 +1,0 @@
-{
-  "realm": "demo2",
-  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAljY2+xi96GOFrLRXVm9o5Tcm7nhxZ9oa3ddAua0MUj/PTwh//RFlWNgxJ1eIL64983FxtG1qttzWAEk60+DQCTLslHOweHdlC7kVNy3j40jXWTqLcmhKybpheQVL41LmuHCnBeULZ/QNYkyJczWpftqd5xk32y9ZjdHFF3NTNvVi/CaMh7Tor4zMIwk06KprDNb/THuIwFfqQM/J/CyQQQZTqlVNPDLjmnaYuiQSd9q7X07V3dl/w9JTBeRrpuXjLhwrZn33ZHzU3Dzo2rqOSri8sD/zNPwWPUg13LQe2x0oewyG0u3SwN52ybYjbWpwJOnfLl48+kh8giSERtouDQIDAQAB",
-  "auth-server-url": "http://192.168.99.100:8080/auth",
-  "ssl-required": "none",
-  "resource": "enav-services",
-  "public-client": true,
-  "use-resource-role-mappings": true
-}

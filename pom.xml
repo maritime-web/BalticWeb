@@ -562,19 +562,21 @@
 								</goals>
 								<configuration>
 									<address>subsystem=datasources,data-source=java:jboss/datasources/embryoDS</address>
-									<resource>
-										<enable-resource>true</enable-resource>
-										<properties>
-											<jndi-name>java:jboss/datasources/embryoDS</jndi-name>
-											<connection-url>jdbc:mysql://localhost:3306/embryo</connection-url>
-											<driver-name>mysql</driver-name>
-											<user-name>embryo</user-name>
-											<password>embryo</password>
-											<pool-name>mypool</pool-name>
-											<enabled>true</enabled>
-											<enable>true</enable>
-										</properties>
-									</resource>
+									<resources>
+										<resource>
+											<enable-resource>true</enable-resource>
+											<properties>
+												<jndi-name>java:jboss/datasources/embryoDS</jndi-name>
+												<connection-url>jdbc:mysql://localhost:3306/embryo</connection-url>
+												<driver-name>mysql</driver-name>
+												<user-name>embryo</user-name>
+												<password>embryo</password>
+												<pool-name>mypool</pool-name>
+												<enabled>true</enabled>
+												<enable>true</enable>
+											</properties>
+										</resource>
+									</resources>
 								</configuration>
 							</execution>
 							<execution>

@@ -21,6 +21,7 @@ import dk.dma.embryo.common.rs.CommonExceptionMappers;
 //import dk.dma.embryo.dataformats.json.IceObservationRestService;
 //import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 //import dk.dma.embryo.metoc.json.MetocRestService;
+import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 import dk.dma.embryo.msi.rs.MsiRestService;
 //import dk.dma.embryo.tiles.json.TileSetJsonService;
 import dk.dma.embryo.user.json.AreasOfInterestRestService;
@@ -53,7 +54,7 @@ public class ApplicationConfig extends Application {
         set.addAll(Arrays.asList(
                 RouteRestService.class, 
                 RouteUploadRestService.class, 
-                //ShapeFileRestService.class,
+                ShapeFileRestService.class,
                 BerthRestService.class,
                 AuthenticationService.class,
                 TestDataRestService.class, 
