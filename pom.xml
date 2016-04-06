@@ -520,9 +520,7 @@
 					<plugin>
 						<groupId>org.wildfly.plugins</groupId>
 						<artifactId>wildfly-maven-plugin</artifactId>
-						<version>1.0.2.Final</version>
-                        <!--groupId>org.jboss.as.plugins</groupId>
-                        <artifactId>jboss-as-maven-plugin</artifactId-->
+						<version>1.1.0.Alpha7</version>
 						<executions>
 							<execution>
 								<id>deploy-only</id>
@@ -543,9 +541,7 @@
 					<plugin>
 						<groupId>org.wildfly.plugins</groupId>
 						<artifactId>wildfly-maven-plugin</artifactId>
-						<version>1.0.2.Final</version>
-                        <!--groupId>org.jboss.as.plugins</groupId>
-                        <artifactId>jboss-as-maven-plugin</artifactId-->
+						<version>1.1.0.Alpha7</version>
 						<executions>
 							<execution>
 								<id>install-undeploy</id>
@@ -585,13 +581,8 @@
 								<id>deploy</id>
 								<phase>install</phase>
 								<goals>
-									<goal>deploy</goal>
+									<goal>deploy-only</goal>
 								</goals>
-<!--
-								<configuration>
-									<skipTests>true</skipTests>
-								</configuration>
--->
 							</execution>
 						</executions>
 					</plugin>
