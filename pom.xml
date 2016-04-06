@@ -554,6 +554,7 @@
 									<goal>undeploy</goal>
 								</goals>
 							</execution>
+<!--
 							<execution>
 								<id>add-datasource</id>
 								<phase>install</phase>
@@ -579,15 +580,18 @@
 									</resources>
 								</configuration>
 							</execution>
+-->
 							<execution>
 								<id>deploy</id>
 								<phase>install</phase>
 								<goals>
 									<goal>deploy</goal>
 								</goals>
+<!--
 								<configuration>
 									<skipTests>true</skipTests>
 								</configuration>
+-->
 							</execution>
 						</executions>
 					</plugin>

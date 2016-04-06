@@ -64,11 +64,25 @@ depending on OS it might be located in /etc/mysql/my.cnf
     [mysqld]
     max_allowed_packet=16M
 
+### Configure Keycloak ###
+Download the web and services client keycloak.json configuration from your keycloak server and place them at the default location or override the dafaults in your balticweb.properties.
+
+Default keycloak configuration url's
+
+        web-client: file:///{user.home}/arcticweb/keycloak/web/keycloak.json
+        services-client: file:///{user.home}/arcticweb/keycloak/service/keycloak.json
+
+Properties to override should you want to place the configuration elsewhere
+
+        enav-service.keycloak.service-client.configuration.url
+        and
+        enav-service.keycloak.web-client.configuration.url
+
 ### Configure WildFly ###
-ArcticWeb has a default configuration file which may be overridden by setting the system property "arcticweb.configuration" to the URI of an external configuration file. For example put the following in your JBOSS standalone.xml-file:
+BalticWeb has a default configuration file which may be overridden by setting the system property "balticweb.configuration" to the URI of an external configuration file. For example put the following in your JBOSS standalone.xml-file:
 
     <system-properties>
-        <property name="arcticweb.configuration" value="file:///Users/chvid/sfs/arcticweb.properties"/>
+        <property name="balticweb.configuration" value="file:///Users/chvid/sfs/balticweb.properties"/>
     </system-properties>
 
 In particular the file may contain URLs and passwords for the DMI Ice map server.
