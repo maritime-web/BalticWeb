@@ -180,11 +180,18 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             };
 
             this.logout = function () {
-                clearSessionData($cookieStore, $rootScope);
-                embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
-                console.log("LOGGING OUT location.href: " + location.href);
+                $http.get(embryo.baseUrl + "rest/authentication/logout")
+                    .success(function () {
+                        clearSessionData($cookieStore, $rootScope);
+                        embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
+                        console.log("LOGGING OUT location.href: " + location.href);
 
-                Auth.authz.logout({"redirectUri": location.origin});
+                        Auth.authz.logout({"redirectUri": location.origin});
+                    })
+                    .error(function () {
+                        console.log("%%%%%%%%%%%%%%%%%%%%% ERROR LOGGING OUT ");
+                    });
+
             };
 
             this.authenticationChanged = function (callback) {
