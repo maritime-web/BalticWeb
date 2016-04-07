@@ -19,10 +19,14 @@ var keycloakInitialize = function (module, moduleName, loginRequired) {
                     return auth;
                 });
                 angular.bootstrap(document, [moduleName]);
-            }).error(function () {
-            console.log('*** ERROR Initializing Keycloak');
-            window.location.reload();
-        });
+                if (auth.loggedIn) {
+                    window.location.replace("map.html#/vessel");
+                }
+            })
+            .error(function () {
+                console.log('*** ERROR Initializing Keycloak');
+                window.location.reload();
+            });
     });
 
     module.factory('authInterceptor', function ($q, Auth) {
