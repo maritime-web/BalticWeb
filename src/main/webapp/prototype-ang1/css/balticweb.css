@@ -1,0 +1,34 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: black;
+
+    padding: 0;
+    margin: 0;
+}
+.map {
+    height: 90%;
+    width: 100%;
+}
+.mouse-position {
+    position: absolute;
+    width: 100px;
+    right: 200px;
+    color: #eee;
+    font-size: 10px;
+}
+.scale-line {
+    position: absolute;
+    width: auto;
+    right: 10px;
+
+}
+.ol-scale-line {
+    position: relative;
+    bottom: 0px;
+    right: 0px;
+    background-color: black;
+}
+#footercontainer{
+    color: #eee;
+}

@@ -8,7 +8,7 @@
     <!-- Overwrite default security configuration -->
     <context-param>
         <param-name>shiroConfigLocations</param-name>
-        <param-value>classpath:arcticweb-shiro.ini</param-value>
+        <param-value>classpath:balticweb-shiro.ini</param-value>
     </context-param>
 
     <filter>
