@@ -34,55 +34,58 @@ angular.module("maritimeweb", [])
         var vesselVectorLayer = {};
 
         var refreshVessels = function(evt) {
-            var layers = maritimeweb.groupAtons.getLayers();
 
-            console.log("layers=" + layers + "length=" + layers.length + " toString " + layers.toString);
-            angular.forEach(layers, function(layers){
-                console.log(layers + "name=" +layers.name  + " value=" + layers.value + " layer.title=" + layers.title);
-            } );
-            /*if(('vesselVectorLayer').getVisibility()){
-                console.log("Vessel layer selected. !!!");
-            }*/
+            // TODO Check om vessel-layer er aktiveret.
             $scope.clientBBox = maritimeweb.clientBBOX();
+            $scope.zoomLvl = maritimeweb.map.getView().getZoom();
+
 
             $http.get( "/rest/vessel/listarea?area="+ maritimeweb.clientBBOX(), {
                 timeout : 3000
             }).success(function (vessels) {
-                $scope.vesselsOnMap = [];
+                $scope.vesselsonmap = [];
                 console.log(vessels.length + " vessels loaded  " + evt );
                 $scope.vessels = vessels;
                 $scope.vesselsStatus = "OK";
                 $scope.lastFetchTimestamp = new Date();
                 // success(vessels);
-                maritimeweb.map.removeLayer(vesselVectorLayer);
+               // maritimeweb.map.removeLayer(vesselVectorLayer);
                 maritimeweb.groupAtons.getLayers().remove(vesselVectorLayer);
 
 
-                for(var i = 0; i< $scope.vessels.length; i++){
-                    var testVessel = new Vessel($scope.vessels[i].name, $scope.vessels[i].type, $scope.vessels[i].x,$scope.vessels[i].y);
-                    var vesselMinimalFeature = maritimeweb.createMinimalVesselFeature(testVessel);
-                    $scope.vesselsOnMap.push(vesselMinimalFeature);
+                for(var i = 0; i< vessels.length; i++){
+                    var vesselData = {  name: vessels[i].name || "",
+                                        type: vessels[i].type,
+                                        x: vessels[i].x,
+                                        y: vessels[i].y,
+                                        angle: vessels[i].angle,
+                                        mmsi: vessels[i].mmsi || "",
+                                        callSign: vessels[i].callSign || "",
+                                        moored: vessels[i].moored || false,
+                                        inAW: vessels[i].inAW || false
+                    };
+
+
+
+                    var vesselFeature;
+                    if($scope.zoomLvl > 8) {
+                        vesselFeature = maritimeweb.createVesselFeature(vesselData);
+                    }else{
+                        vesselFeature = maritimeweb.createMinimalVesselFeature(vesselData);
+                    }
+                    $scope.vesselsonmap.push(vesselFeature);
                 }
-                /*
-                angular.forEach($scope.vesselsOnMap, function(name, type, x ,y ){
-                    console.log("name=" + name.name + "=" + type + "=" + x + "=" + y);
-                } );*/
+
                 var vectorSource = new ol.source.Vector({
-                    features: $scope.vesselsOnMap //add an array of vessels
+                    features: $scope.vesselsonmap //add an array of vessels
                 });
-                var iconStyle = new ol.style.Style({
-                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                        anchor: [0.85, 0.5],
-                        opacity: 0.85,
-                        src: 'img/vessel_red.png'
-                    }))
-                });
+
                 vesselVectorLayer = new ol.layer.Vector({
                     name: "vesselVectorLayer",
                     title: "Vessels - AIS data",
-                    source: vectorSource,
-                    style: iconStyle
+                    source: vectorSource
                 });
+                $scope.vesselsStatus = "OK";
 
                 maritimeweb.groupAtons.getLayers().push(vesselVectorLayer);
 
@@ -93,52 +96,7 @@ angular.module("maritimeweb", [])
             });
 
         };
-        //
+        // update the map when a move ends.
         maritimeweb.map.on('moveend', refreshVessels );
-        $scope.testVar = "Andreas";
-
-        var Vessel = function(name, type, x,y){
-            this.name = name;
-            this.type = type;
-            this.x = x;
-            this.y = y;
-        };
-
-        /*
-         "angle": 220.4,
-         "x": 11.865178,
-         "y": 55.942253,
-         "name": "ISEFJORD",
-         "type": "3",
-         "mmsi": 219018998,
-         "callSign": "XPE5739",
-         "moored": false,
-         "inAW": false
-
-         */
-        var Vessel = function( name, type,  x, y, angle, mmsi, callSign, moored, inAW){
-            this.angle = angle;
-            this.x = x;
-            this.y = y;
-            this.name = name;
-            this.type = type;
-            this.mmsi = mmsi;
-            this.callSign = callSign;
-            this.moored = moored;
-            this.inAW = inAW;
-        };
-
-
-
-
-
-// random test data.
-
-
-
-
-
-
-//map.addLayer(vectorLayer);
 
     });

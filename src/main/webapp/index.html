@@ -19,17 +19,21 @@
     <script src="http://openlayers.org/en/v3.14.2/build/ol.js" type="text/javascript"></script>
     </head>
 <body ng-app="maritimeweb">
-<div class="container" ng-controller="VesselsController">
+<div ng-controller="VesselsController">
     <div id="map" class="map"></div>
     <div id="scale-line" class="scale-line"></div>
     <div id="mouse-position" class="mouse-position"></div>
-    <div id="footercontainer">{{testVar}}, BalticWeb, EfficenSea2, MaritimeCloud prototype.
+    <div class="container" >
+    <div id="footercontainer">BalticWeb, EfficenSea2, MaritimeCloud prototype.
         <ul class="list-group">
             <li class="list-group-item text-success">{{clientBBox}}</li>
-            <li class="list-group-item text-success">{{vessels.length}}, {{vessels.status}}, lastFetchTimestamp={{lastFetchTimestamp}}</li>
+            <li class="list-group-item text-success">{{vessels.length}}, {{vesselsStatus}}, lastFetchTimestamp={{lastFetchTimestamp}}</li>
 
-            <li class="list-group-item text-primary" ng-repeat="vessel in vesselsOnMap | orderBy: 'mmsi':true | limitTo: 100">{{vessel.name}} {{vessel.mmsi}} {{vessel.type}}</li>
+            <li class="list-group-item text-primary" ng-repeat="vessel in vessels | limitTo: 100">
+                {{vessel.name}} x:{{vessel.x}} y:{{vessel.y}} angle:{{vessel.angle}}  {{vessel.type}} {{vessel.mmsi}} {{vessel.callsign}} {{vessel.moored}}
+            </li>
         </ul>
+    </div>
     </div>
 </div>
 <script src="prototype-ang1/js/ol3-layerswitcher.js"></script>

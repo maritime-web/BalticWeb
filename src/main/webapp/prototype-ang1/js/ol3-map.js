@@ -9,16 +9,144 @@ maritimeweb = {
         var r = Math.ceil(extent[2] * 100) / 100;
         var t = Math.ceil(extent[3] * 100) / 100;
         var search_bbox = b + "|" + l + "|" + t + "|" + r + "";
-       // console.log("Moveend= " + search_bbox + " " + extent);
-
         return search_bbox;
     },
     testFunction: function(){
         console.log("testing in namespace")
     },
+    createVesselFeature: function (vessel) {
+        var image = maritimeweb.imageForVessel(vessel);
+
+        //var attr = {
+        //    id: vessel.id,
+        //    angle: vessel.angle - 90,
+        //    image: "img/" + image.name,
+        //    imageWidth: function () {
+        //        return image.width * context.vesselSize();
+        //    },
+        //    imageHeight: function () {
+        //        return image.height * context.vesselSize();
+        //    },
+        //    imageYOffset: function () {
+        //        return image.yOffset * context.vesselSize();
+        //    },
+        //    imageXOffset: function () {
+        //        return image.xOffset * context.vesselSize();
+        //    },
+        //    type: "vessel",
+        //    vessel: vessel
+        //};
+
+        var colorHex = maritimeweb.colorHexForVessel(vessel);
+        var shadedColor = maritimeweb.shadeBlend(-0.15, colorHex);
+
+        var markerStyle = new ol.style.Style({
+            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                anchor: [0.85, 0.5],
+                opacity: 0.85,
+                id: vessel.id,
+                rotation: vessel.angle - 90,
+                src: 'img/' + image.name
+            }))
+            ,
+            text: new ol.style.Text({
+            text: vessel.name, // attribute code
+            size: 8,
+            fill: new ol.style.Fill({
+                color: 'blue' // black text //
+            })
+        })
+        });
+
+
+        //var markerStyle = new ol.style.Style({
+        //    image: new ol.style.Circle({
+        //        radius: 3,
+        //        stroke: new ol.style.Stroke({
+        //            color: shadedColor,
+        //            width: 1
+        //
+        //        }),
+        //        fill: new ol.style.Fill({
+        //            color: colorHex // attribute colour
+        //        })
+        //    })
+        //    ,
+        //     text: new ol.style.Text({
+        //        text: vessel.name + " " + vessel.angle, // attribute code
+        //        fill: new ol.style.Fill({
+        //            color: "#000" // black text //
+        //        })
+        //    })
+        //    //desc: 'dette er beskrivelse'
+        //});
+
+        var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
+        var markerVessel = new ol.Feature({
+            geometry: vesselPosition
+        });
+        markerVessel.setStyle(markerStyle);
+
+
+        return markerVessel;
+
+
+        //var defaultStyle = new ol.style.Style({
+        //    fill: new ol.style.Fill({
+        //        color: colorHex
+        //    }),
+        //    stroke: new ol.style.Stroke({
+        //            color: shadedColor,
+        //            width: 10
+        //        }
+        //    )
+        //});
+        //
+        //var pointStyle = {fill:true, stroke: true, color: colorHex, fillColor: colorHex,
+        //    strokeColor: shadedColor, strokeWidth: 1, pointRadius: 2};
+        //
+        //
+        //
+        //var vesselPosition = new ol.geom.Circle(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:3857'), 10);
+
+
+        //var geom = embryo.map.createPoint(vessel.x, vessel.y);
+        // Den her del er anderledes i OL 3 !!! læs om det mandag
+        //return new OpenLayers.Feature.Vector(geom, attr);
+    },
+    /*
+    den her metode skal der lige arbejdes på. fjern jquery.
+     */
+    createVesselFeatures: function (vessels, context, selectedFeature, markedVesselId) {
+        var result = {
+            vesselFeatures: [],
+            unSelectable: [],
+            awFeatures: []
+        };
+        console.log("createVesselFeatures vessel size: " + vessels.length);
+        $.each(vessels, function (key, value) {
+
+            // in the case that we only have lat,lon,type create a minimal vessel feature.
+            if(value != null && value.mmsi == null &&
+                value.type != null && value.id == null &&
+                value.x && value.y && value.type){
+                // this is a simplified overview vessel representation
+                result.vesselFeatures.push(createMinimalVesselFeature(value));
+            } // standard rich and detailed vessel
+            else if (value.type != null && value.mmsi != null) {
+                if (!selectedFeature || selectedFeature.attributes.vessel.mmsi != value.mmsi) {
+                    result.vesselFeatures.push(createVesselFeature(value, context));
+                }
+                /*if (value.inAW) {
+                    result.awFeatures.push(createAwFeature(value, context));
+                }*/
+            }
+        });
+
+        return result;
+    },
     imageForVessel: function (vo) {
         var colorName;
-
         switch (vo.type) {
             case "0" : colorName = "blue"; break;
             case "1" : colorName = "gray"; break;
@@ -48,9 +176,46 @@ maritimeweb = {
                 xOffset: -10,
                 yOffset: -5
             };
-        }
+        };
     },
     createMinimalVesselFeature: function(vessel) {
+
+        var colorHex = maritimeweb.colorHexForVessel(vessel);
+        var shadedColor = maritimeweb.shadeBlend(-0.15, colorHex);
+
+
+        var markerStyle = new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 3,
+                stroke: new ol.style.Stroke({
+                    color: shadedColor,
+                    width: 1
+
+                }),
+                fill: new ol.style.Fill({
+                    color: colorHex // attribute colour
+                })
+            })
+            //,
+            // text: new ol.style.Text({
+            //    text: vessel.name, // attribute code
+            //    fill: new ol.style.Fill({
+            //        color: "#000" // black text //
+            //    })
+            //}),
+            //desc: 'dette er beskrivelse'
+        });
+
+        var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
+        var markerVessel = new ol.Feature({
+            geometry: vesselPosition
+        });
+        markerVessel.setStyle(markerStyle);
+
+
+        return markerVessel;
+
+        /*
         var colorHex = maritimeweb.colorHexForVessel(vessel);
         var shadedColor = maritimeweb.shadeBlend(-0.15, colorHex);
         var defaultStyle = new ol.style.Style({
@@ -74,6 +239,7 @@ maritimeweb = {
             geometry: vesselPosition,
             style: defaultStyle
         });
+        */
     },
 
     /**
@@ -385,7 +551,19 @@ layer_default_osm = new ol.layer.Tile({
 maritimeweb.map = new function () {
     var map = new ol.Map({
         controls: ol.control.defaults().extend([
-            new ol.control.OverviewMap({collapsed: false}),
+            new ol.control.OverviewMap({collapsed: false,
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.OSM({
+                            layer: 'sat'
+                            //'url': '//{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
+                        })
+                    })
+                ],
+                collapseLabel: '-',
+                label: '+',
+
+            }),
             seaScaleLine,
             // metricScaleLine,
             zoomslider,
