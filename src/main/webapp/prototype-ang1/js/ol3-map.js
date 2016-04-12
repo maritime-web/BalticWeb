@@ -1,5 +1,8 @@
 var maritimeweb = maritimeweb || {};
 maritimeweb = {
+    /*
+    get the current bounding box in Bottom left  Top right format.
+     */
     clientBBOX: function(){
 
         var bounds = maritimeweb.map.getView().calculateExtent(maritimeweb.map.getSize());
@@ -14,28 +17,11 @@ maritimeweb = {
     testFunction: function(){
         console.log("testing in namespace")
     },
+    /*
+    Create a vessel feature for any openlayers 3 map.
+     */
     createVesselFeature: function (vessel) {
         var image = maritimeweb.imageForVessel(vessel);
-
-        //var attr = {
-        //    id: vessel.id,
-        //    angle: vessel.angle - 90,
-        //    image: "img/" + image.name,
-        //    imageWidth: function () {
-        //        return image.width * context.vesselSize();
-        //    },
-        //    imageHeight: function () {
-        //        return image.height * context.vesselSize();
-        //    },
-        //    imageYOffset: function () {
-        //        return image.yOffset * context.vesselSize();
-        //    },
-        //    imageXOffset: function () {
-        //        return image.xOffset * context.vesselSize();
-        //    },
-        //    type: "vessel",
-        //    vessel: vessel
-        //};
 
         var colorHex = maritimeweb.colorHexForVessel(vessel);
         var shadedColor = maritimeweb.shadeBlend(-0.15, colorHex);
@@ -58,29 +44,6 @@ maritimeweb = {
         })
         });
 
-
-        //var markerStyle = new ol.style.Style({
-        //    image: new ol.style.Circle({
-        //        radius: 3,
-        //        stroke: new ol.style.Stroke({
-        //            color: shadedColor,
-        //            width: 1
-        //
-        //        }),
-        //        fill: new ol.style.Fill({
-        //            color: colorHex // attribute colour
-        //        })
-        //    })
-        //    ,
-        //     text: new ol.style.Text({
-        //        text: vessel.name + " " + vessel.angle, // attribute code
-        //        fill: new ol.style.Fill({
-        //            color: "#000" // black text //
-        //        })
-        //    })
-        //    //desc: 'dette er beskrivelse'
-        //});
-
         var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
         var markerVessel = new ol.Feature({
             geometry: vesselPosition
@@ -89,62 +52,11 @@ maritimeweb = {
 
 
         return markerVessel;
-
-
-        //var defaultStyle = new ol.style.Style({
-        //    fill: new ol.style.Fill({
-        //        color: colorHex
-        //    }),
-        //    stroke: new ol.style.Stroke({
-        //            color: shadedColor,
-        //            width: 10
-        //        }
-        //    )
-        //});
-        //
-        //var pointStyle = {fill:true, stroke: true, color: colorHex, fillColor: colorHex,
-        //    strokeColor: shadedColor, strokeWidth: 1, pointRadius: 2};
-        //
-        //
-        //
-        //var vesselPosition = new ol.geom.Circle(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:3857'), 10);
-
-
-        //var geom = embryo.map.createPoint(vessel.x, vessel.y);
-        // Den her del er anderledes i OL 3 !!! læs om det mandag
-        //return new OpenLayers.Feature.Vector(geom, attr);
     },
+
     /*
-    den her metode skal der lige arbejdes på. fjern jquery.
+     Given vessel type return the name of the appropiate vessel image icon.
      */
-    createVesselFeatures: function (vessels, context, selectedFeature, markedVesselId) {
-        var result = {
-            vesselFeatures: [],
-            unSelectable: [],
-            awFeatures: []
-        };
-        console.log("createVesselFeatures vessel size: " + vessels.length);
-        $.each(vessels, function (key, value) {
-
-            // in the case that we only have lat,lon,type create a minimal vessel feature.
-            if(value != null && value.mmsi == null &&
-                value.type != null && value.id == null &&
-                value.x && value.y && value.type){
-                // this is a simplified overview vessel representation
-                result.vesselFeatures.push(createMinimalVesselFeature(value));
-            } // standard rich and detailed vessel
-            else if (value.type != null && value.mmsi != null) {
-                if (!selectedFeature || selectedFeature.attributes.vessel.mmsi != value.mmsi) {
-                    result.vesselFeatures.push(createVesselFeature(value, context));
-                }
-                /*if (value.inAW) {
-                    result.awFeatures.push(createAwFeature(value, context));
-                }*/
-            }
-        });
-
-        return result;
-    },
     imageForVessel: function (vo) {
         var colorName;
         switch (vo.type) {
@@ -178,11 +90,12 @@ maritimeweb = {
             };
         };
     },
+    /*
+    Create a simplified vessel feature, with only lat,lon,type.
+     */
     createMinimalVesselFeature: function(vessel) {
-
         var colorHex = maritimeweb.colorHexForVessel(vessel);
         var shadedColor = maritimeweb.shadeBlend(-0.15, colorHex);
-
 
         var markerStyle = new ol.style.Style({
             image: new ol.style.Circle({
@@ -196,14 +109,6 @@ maritimeweb = {
                     color: colorHex // attribute colour
                 })
             })
-            //,
-            // text: new ol.style.Text({
-            //    text: vessel.name, // attribute code
-            //    fill: new ol.style.Fill({
-            //        color: "#000" // black text //
-            //    })
-            //}),
-            //desc: 'dette er beskrivelse'
         });
 
         var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
@@ -211,38 +116,11 @@ maritimeweb = {
             geometry: vesselPosition
         });
         markerVessel.setStyle(markerStyle);
-
-
         return markerVessel;
 
-        /*
-        var colorHex = maritimeweb.colorHexForVessel(vessel);
-        var shadedColor = maritimeweb.shadeBlend(-0.15, colorHex);
-        var defaultStyle = new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: colorHex
-            }),
-            stroke: new ol.style.Stroke({
-                    color: shadedColor,
-                    width: 10
-                }
-            )
-        });
-
-        var pointStyle = {fill:true, stroke: true, color: colorHex, fillColor: colorHex,
-            strokeColor: shadedColor, strokeWidth: 1, pointRadius: 2};
-        //var vesselPosition = new ol.geom.Circle(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:3857'), 10);
-        var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
-
-        //console.log("Created vessel " + vessel.type + " " + vessel.x + " " + vessel.y );
-        return new ol.Feature({
-            geometry: vesselPosition,
-            style: defaultStyle
-        });
-        */
     },
 
-    /**
+    /** TODO: Remove this method and create a methos similar to colorHexForVessel:
      * a simple function that given one color can darken or lighten it.
      * Given two colors, the function mixes the two, and returns the blended color.
      * This funtion is bluntly copy/pasted from http://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
@@ -294,7 +172,22 @@ maritimeweb = {
                 colorName = "#737373"; // grey
         }
         return colorName;
+    },
+    isLayerVisible: function(nameOfLayer) {
+// Check om vessel-layer er aktiveret.
+    var layersinvessel = maritimeweb.groupVessels.getLayers().getArray();
+    for (var i = 0, l; i < layersinvessel.length; i++) {
+        l = layersinvessel[i];
+        if ((l.get('name') === nameOfLayer) && l.get('visible')) {
+            console.log(l.get('title') +
+                " Visible=" + l.get('visible') +
+                " id=" + l.get('id') +
+                " name=" + l.get('name'));
+            return true;
+        }
     }
+    return false;
+}
 
 
 }
@@ -416,7 +309,7 @@ maritimeweb.groupBaseMaps = new function () {
 };
 
 maritimeweb.groupAtons = new function () {
-    var group =  new ol.layer.Group({
+    return new ol.layer.Group({
         title: 'Atons',
         layers: [
             new ol.layer.Tile({
@@ -429,7 +322,44 @@ maritimeweb.groupAtons = new function () {
                 })
             }),
             new ol.layer.Tile({
+                    title: 'MSI Warnings - DMA*',
+                    source: new ol.source.TileWMS({
+                        url: 'http://demo.opengeo.org/geoserver/wms',
+                        params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
+                        serverType: 'geoserver'
+                    }),
+                    visible: false
+                })
+            ,
+            new ol.layer.Tile({
                 title: 'Countries',
+                source: new ol.source.TileWMS({
+                    url: 'http://demo.opengeo.org/geoserver/wms',
+                    params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
+                    serverType: 'geoserver'
+                }),
+                visible: false
+            })
+        ]
+    });
+
+};
+
+maritimeweb.groupVessels = new function () {
+    var group =  new ol.layer.Group({
+        title: 'Vessels',
+        layers: [
+            new ol.layer.Tile({
+                title: 'AIS - Helcon - High-bandwith *',
+                visible: false,
+                source: new ol.source.XYZ({
+                    url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
+                    attributions: openseaMapAttributions//,
+                    //crossOrigin: 'null'
+                })
+            }),
+            new ol.layer.Tile({
+                title: 'AIS Helcon - low-bandwith *',
                 source: new ol.source.TileWMS({
                     url: 'http://demo.opengeo.org/geoserver/wms',
                     params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
@@ -478,9 +408,6 @@ maritimeweb.groupOverlays = new function () {
                 }),
                 visible: false
             })
-
-
-
         ]
     });
     return group;
@@ -490,25 +417,6 @@ maritimeweb.groupOverlays = new function () {
 
 maritimeweb.EPSG4326 = function() { return new ol.Projection("EPSG:4326")};
 maritimeweb.EPSG900913  = function() { return  new ol.Projection("EPSG:900913")};
-
-/*
-maritimeweb.iconFeature = function() {
-    return new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.transform([18.0704, 57.678], 'EPSG:4326', 'EPSG:900913')),
-        name: 'Speed vessel',
-        speed: 40,
-        course: 350
-    });
-};
-
-maritimeweb.iconFeature1  = function() {
-    return new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.transform([18.1234, 55.678], 'EPSG:4326', 'EPSG:900913')),
-        name: 'Large Vessel',
-        speed: 30,
-        course: 20
-    });
-};*/
 
 maritimeweb.center = new function () {
         return [22.0, 59.0];
@@ -549,35 +457,38 @@ layer_default_osm = new ol.layer.Tile({
 
 
 maritimeweb.map = new function () {
+
+    var overviewMap = new ol.control.OverviewMap({
+        collapsed: false,
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM({
+                    layer: 'sat'
+                    //'url': '//{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
+                })
+            })
+        ],
+        collapseLabel: '-',
+        label: '+'
+
+    });
     var map = new ol.Map({
         controls: ol.control.defaults().extend([
-            new ol.control.OverviewMap({collapsed: false,
-                layers: [
-                    new ol.layer.Tile({
-                        source: new ol.source.OSM({
-                            layer: 'sat'
-                            //'url': '//{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
-                        })
-                    })
-                ],
-                collapseLabel: '-',
-                label: '+',
 
-            }),
+            overviewMap,
             seaScaleLine,
             // metricScaleLine,
             zoomslider,
             new ol.control.FullScreen(),
             mousePosition,
             new ol.control.LayerSwitcher()
-
         ]),
         target: 'map',
         layers: [
             maritimeweb.groupBaseMaps,
             maritimeweb.groupOverlays,
-            maritimeweb.groupAtons
-
+            maritimeweb.groupAtons,
+            maritimeweb.groupVessels
         ],
         view: new ol.View({
             center: ol.proj.fromLonLat(maritimeweb.center),
@@ -587,9 +498,23 @@ maritimeweb.map = new function () {
         })
     });
     return map;
-}
-
-
+};
 console.log("loaded OL3 map center = " + maritimeweb.map);
+/*
+ maritimeweb.iconFeature = function() {
+ return new ol.Feature({
+ geometry: new ol.geom.Point(ol.proj.transform([18.0704, 57.678], 'EPSG:4326', 'EPSG:900913')),
+ name: 'Speed vessel',
+ speed: 40,
+ course: 350
+ });
+ };
 
-
+ maritimeweb.iconFeature1  = function() {
+ return new ol.Feature({
+ geometry: new ol.geom.Point(ol.proj.transform([18.1234, 55.678], 'EPSG:4326', 'EPSG:900913')),
+ name: 'Large Vessel',
+ speed: 30,
+ course: 20
+ });
+ };*/

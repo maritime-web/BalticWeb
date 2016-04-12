@@ -32,26 +32,32 @@ angular.module("maritimeweb", [])
 
         $scope.vesselsOnMap = [];
         var vesselVectorLayer = {};
+        // first run
+        var firstRun = true;
 
         var refreshVessels = function(evt) {
 
-            // TODO Check om vessel-layer er aktiveret.
+            if (!firstRun) { // for anything but the first run, check if the layer is visible.
+                if (!maritimeweb.isLayerVisible('vesselVectorLayer')) {
+                    console.log("dont Update layer not visible BREAK");
+                    return null;
+                }
+            }
+
             $scope.clientBBox = maritimeweb.clientBBOX();
             $scope.zoomLvl = maritimeweb.map.getView().getZoom();
 
 
             $http.get( "/rest/vessel/listarea?area="+ maritimeweb.clientBBOX(), {
-                timeout : 3000
+                timeout : 6000
             }).success(function (vessels) {
                 $scope.vesselsonmap = [];
                 console.log(vessels.length + " vessels loaded  " + evt );
                 $scope.vessels = vessels;
                 $scope.vesselsStatus = "OK";
                 $scope.lastFetchTimestamp = new Date();
-                // success(vessels);
-               // maritimeweb.map.removeLayer(vesselVectorLayer);
-                maritimeweb.groupAtons.getLayers().remove(vesselVectorLayer);
 
+                maritimeweb.groupVessels.getLayers().remove(vesselVectorLayer);
 
                 for(var i = 0; i< vessels.length; i++){
                     var vesselData = {  name: vessels[i].name || "",
@@ -65,8 +71,6 @@ angular.module("maritimeweb", [])
                                         inAW: vessels[i].inAW || false
                     };
 
-
-
                     var vesselFeature;
                     if($scope.zoomLvl > 8) {
                         vesselFeature = maritimeweb.createVesselFeature(vesselData);
@@ -77,7 +81,7 @@ angular.module("maritimeweb", [])
                 }
 
                 var vectorSource = new ol.source.Vector({
-                    features: $scope.vesselsonmap //add an array of vessels
+                    features: $scope.vesselsonmap //add an array of vessel features
                 });
 
                 vesselVectorLayer = new ol.layer.Vector({
@@ -86,8 +90,9 @@ angular.module("maritimeweb", [])
                     source: vectorSource
                 });
                 $scope.vesselsStatus = "OK";
+                firstRun = false;
 
-                maritimeweb.groupAtons.getLayers().push(vesselVectorLayer);
+                maritimeweb.groupVessels.getLayers().push(vesselVectorLayer);
 
             }).error(function (data, status) {
                 console.log("could not retrieve ais data" + status);
