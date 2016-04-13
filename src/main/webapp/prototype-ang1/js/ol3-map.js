@@ -350,7 +350,7 @@ maritimeweb.groupVessels = new function () {
         title: 'Vessels',
         layers: [
             new ol.layer.Tile({
-                title: 'AIS - Helcon - High-bandwith *',
+                title: 'AIS - Helcom - High-bandwith *',
                 visible: false,
                 source: new ol.source.XYZ({
                     url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
@@ -359,7 +359,7 @@ maritimeweb.groupVessels = new function () {
                 })
             }),
             new ol.layer.Tile({
-                title: 'AIS Helcon - low-bandwith *',
+                title: 'AIS Helcom - low-bandwith *',
                 source: new ol.source.TileWMS({
                     url: 'http://demo.opengeo.org/geoserver/wms',
                     params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},

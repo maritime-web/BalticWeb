@@ -6,36 +6,92 @@
 
 
 
-    <link rel="stylesheet" href="prototype-ang1/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!--link rel="stylesheet" href="prototype-ang1/bower_components/bootstrap/dist/css/bootstrap.min.css">
+
     <script src="prototype-ang1/bower_components/angular/angular.min.js"></script>
+
+    <script-- src="js/cached/common/cdn.cloudflare/angular-ui-bootstrap/1.3.1/ui-bootstrap-tpls-1.3.1.js"></script-->
+
+
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.1.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
 
     <link rel="stylesheet" href="http://openlayers.org/en/v3.14.2/css/ol.css" type="text/css">
     <link rel="stylesheet" href="prototype-ang1/css/ext/ol3-layerswitcher.css" />
     <link rel="stylesheet" href="prototype-ang1/css/layerswitch/scroll.css" />
-    <link rel="stylesheet" href="prototype-ang1/css/balticweb.css" />
+    <!-- link rel="stylesheet" href="prototype-ang1/css/balticweb.css" /-->
 
 
 
     <script src="http://openlayers.org/en/v3.14.2/build/ol.js" type="text/javascript"></script>
     </head>
 <body ng-app="maritimeweb">
-<div ng-controller="VesselsController">
-    <div id="map" class="map"></div>
-    <div id="scale-line" class="scale-line"></div>
-    <div id="mouse-position" class="mouse-position"></div>
-    <div class="container" >
-    <div id="footercontainer">BalticWeb, EfficenSea2, MaritimeCloud prototype.
-        <ul class="list-group">
-            <li class="list-group-item text-success">{{clientBBox}}</li>
-            <li class="list-group-item text-success">{{vessels.length}}, {{vesselsStatus}}, lastFetchTimestamp={{lastFetchTimestamp}}</li>
+<div ng-controller="MapController">
+    <nav class="navbar navbar-fixed-top navbar-light bg-faded">
+        <a class="navbar-brand" href="#">Fixed top</a>
+        <a class="navbar-brand" href="#">Fixed top</a>
+        <a class="navbar-brand" href="#">Fixed top</a>
+        <a class="navbar-brand" href="#">Fixed top</a>
+        <a class="navbar-brand" href="#">Fixed top</a>
+        <a class="navbar-brand" href="#">Fixed top</a>
 
-            <li class="list-group-item text-primary" ng-repeat="vessel in vessels | limitTo: 100">
-                {{vessel.name}} x:{{vessel.x}} y:{{vessel.y}} angle:{{vessel.angle}}  {{vessel.type}} {{vessel.mmsi}} {{vessel.callsign}} {{vessel.moored}}
-            </li>
+    </nav>
+    <div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+            <li><a href="#">Reports</a></li>
+            <li><a href="#">Analytics</a></li>
+            <li><a href="#">Export</a></li>
         </ul>
+        <ul class="nav nav-sidebar">
+            <li><a href="">Nav item</a></li>
+            <li><a href="">Nav item again</a></li>
+            <li><a href="">One more nav</a></li>
+            <li><a href="">Another nav item</a></li>
+            <li><a href="">More navigation</a></li>
+        </ul>
+        <ul class="nav nav-sidebar">
+            <li><a href="">Nav item again</a></li>
+            <li><a href="">One more nav</a></li>
+            <li><a href="">Another nav item</a></li>
+        </ul>
+        <ul class="nav nav-sidebar">
+        <uib-accordion close-others="oneAtATime">
+            <uib-accordion-group >
+                <uib-accordion-heading>
+                    Vessels within area <span class="badge" ng-bind="vessels.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </uib-accordion-heading>
+                <div class="list-group-item text-primary">
+                    <span class="badge" ng-bind="clientBBox"></span> <span class="badge" ng-bind="vessels.length"></span>{{vessels.length}}, {{vesselsStatus}}, ={{lastFetchTimestamp}}
+                </div>
+
+                <div class="list-group-item text-primary" ng-repeat="vessel in vessels | limitTo: 100">
+                    {{vessel.name}} x:{{vessel.x}} y:{{vessel.y}} angle:{{vessel.angle}}  {{vessel.type}} {{vessel.mmsi}} {{vessel.callsign}} {{vessel.moored}}
+                </div>
+
+            </uib-accordion-group>
+        </uib-accordion>
+        </ul>
+        <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="{{alert.timeout}}">{{alert.msg}}</uib-alert>
+
     </div>
+
+
+    <div class="col-sm-9 main">
+
+        <div id="map" class="map"></div>
+        <div id="scale-line" class="scale-line"></div>
+        <div id="mouse-position" class="mouse-position"></div>
     </div>
+
+    </div><!-- row end -->
+
 </div>
+
 <script src="prototype-ang1/js/ol3-layerswitcher.js"></script>
 <script src="prototype-ang1/js/ol3-map.js" type="text/javascript"></script>
 <script src="prototype-ang1/js/app.js" type="text/javascript"></script>

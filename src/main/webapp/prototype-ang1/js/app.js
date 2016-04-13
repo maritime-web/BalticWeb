@@ -1,51 +1,28 @@
 
-/*
-maritimeweb.groupOverlays.getLayers().push(new ol.layer.Tile({
-    title: 'FLERE Lande',
-    source: new ol.source.TileWMS({
-        url: 'http://demo.opengeo.org/geoserver/wms',
-        params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
-        serverType: 'geoserver'
-    })
-}));
+angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap'])
+    .controller("MapController", function($scope, $http, $timeout) {
 
-maritimeweb.map.getView().on('propertychange', function(e) {
-    switch (e.key) {
-        case 'resolution':
-            console.log(e.oldValue);
-            break;
-    }
-});
+        $scope.alerts = [
+            { type: 'success', msg: 'Well done! You successfully read this important alert message.', timeout: 2000 }
+        ];
 
-*/
-
-
-console.log("maritimeweb - map" + maritimeweb.map);
-console.log("maritimeweb - BBOX metode " + maritimeweb.clientBBOX());
-console.log("maritimeweb - center = " + maritimeweb.center);
-
-
-
-angular.module("maritimeweb", [])
-    .controller("VesselsController", function($scope, $http) {
-
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };
 
         $scope.vesselsOnMap = [];
         var vesselVectorLayer = {};
-        // first run
         var firstRun = true;
+        var loadTimer;
 
         var refreshVessels = function(evt) {
 
-            if (!firstRun) { // for anything but the first run, check if the layer is visible.
-                if (!maritimeweb.isLayerVisible('vesselVectorLayer')) {
-                    console.log("dont Update layer not visible BREAK");
-                    return null;
-                }
-            }
-
             $scope.clientBBox = maritimeweb.clientBBOX();
             $scope.zoomLvl = maritimeweb.map.getView().getZoom();
+            $scope.alerts.push({msg: 'Fetching vessel data',
+                type: 'info',
+                timeout: 2000
+            });
 
 
             $http.get( "/rest/vessel/listarea?area="+ maritimeweb.clientBBOX(), {
@@ -93,15 +70,44 @@ angular.module("maritimeweb", [])
                 firstRun = false;
 
                 maritimeweb.groupVessels.getLayers().push(vesselVectorLayer);
+                $scope.alerts.push({msg: 'retrieved vessels',
+                    type: 'success',
+                    timeout: 2000
+                });
 
             }).error(function (data, status) {
                 console.log("could not retrieve ais data" + status);
+                $scope.alerts.push({msg: 'could not retrieve ais data',
+                    type: 'danger',
+                    timeout: 5000
+                });
                 $scope.vesselsStatus = status;
 
             });
 
         };
+
+        // When the map extent changes, reload the Vessels's using a timer to batch up changes
+        var mapChanged = function () {
+
+            if (!firstRun) { // for anything but the first run, check if the layer is visible.
+                if (!maritimeweb.isLayerVisible('vesselVectorLayer')) {
+                    console.log("     --- dont Update layer not visible BREAK");
+                    return null;
+                }
+
+            }
+            // Make sure we reload at most every  second
+            if (loadTimer) {
+                console.log("     --- too fast");
+                $timeout.cancel(loadTimer);
+            }
+            loadTimer = $timeout(refreshVessels, 1000);
+
+        };
         // update the map when a move ends.
-        maritimeweb.map.on('moveend', refreshVessels );
+        maritimeweb.map.on('moveend', mapChanged );
+        maritimeweb.groupVessels.on('change:visible', mapChanged);
 
     });
+
