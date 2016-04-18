@@ -18,6 +18,18 @@ maritimeweb = {
         console.log("testing in namespace")
     },
     /*
+    Pan to current position
+     */
+    panToPosition: function(postion) {
+        var pan = ol.animation.pan({
+            duration: 2000,
+            source: /** @type {ol.Coordinate} */ (maritimeweb.map.getView().getCenter())
+        });
+        maritimeweb.map.beforeRender(pan);
+        maritimeweb.map.getView().setCenter(ol.proj.fromLonLat(postion));
+        //maritimeweb.map.getView().setZoom(10);
+    },
+    /*
     Create a vessel feature for any openlayers 3 map.
      */
     createVesselFeature: function (vessel) {
@@ -173,9 +185,9 @@ maritimeweb = {
         }
         return colorName;
     },
-    isLayerVisible: function(nameOfLayer) {
-// Check om vessel-layer er aktiveret.
-    var layersinvessel = maritimeweb.groupVessels.getLayers().getArray();
+    isLayerVisible: function(nameOfLayer, layerGroup) {
+// Check om xxx-layer eksempelvis vessel-layer er aktiveret.
+    var layersinvessel = layerGroup.getLayers().getArray();
     for (var i = 0, l; i < layersinvessel.length; i++) {
         l = layersinvessel[i];
         if ((l.get('name') === nameOfLayer) && l.get('visible')) {
@@ -307,6 +319,11 @@ maritimeweb.groupBaseMaps = new function () {
     });
 
 };
+//maritimeweb.endpoint = "https://arcticweb-alpha.e-navigation.net/";
+maritimeweb.endpoint = "/";
+maritimeweb.baseUrl = "/";
+maritimeweb.defaultTimeout = 6000;
+
 
 maritimeweb.groupAtons = new function () {
     return new ol.layer.Group({
@@ -345,10 +362,19 @@ maritimeweb.groupAtons = new function () {
 
 };
 
+maritimeweb.layerVessels = new function () {
+    return new ol.layer.Vector({
+        name: "vesselVectorLayer",
+        title: "Vessels - AIS data dynamic",
+        visible: true
+    });
+}
+
 maritimeweb.groupVessels = new function () {
     var group =  new ol.layer.Group({
         title: 'Vessels',
         layers: [
+            maritimeweb.layerVessels,
             new ol.layer.Tile({
                 title: 'AIS - Helcom - High-bandwith *',
                 visible: false,
@@ -373,7 +399,7 @@ maritimeweb.groupVessels = new function () {
 };
 
 
-maritimeweb.groupOverlays = new function () {
+maritimeweb.groupWeather = new function () {
     var group =  new ol.layer.Group({
         title: 'Weather Forecasts',
         layers: [
@@ -438,7 +464,7 @@ var metricScaleLine = new ol.control.ScaleLine({
 });
 
 var mousePosition = new ol.control.MousePosition({
-    coordinateFormat: ol.coordinate.createStringXY(4),
+    coordinateFormat: ol.coordinate.createStringXY(3),
     projection: 'EPSG:4326',
     //target: 'mouseposition',
     target: document.getElementById('mouse-position'),
@@ -453,8 +479,6 @@ layer_default_osm = new ol.layer.Tile({
     source: new ol.source.OSM({layer: 'sat'}),
     preload: Infinity
 });
-
-
 
 maritimeweb.map = new function () {
 
@@ -486,7 +510,7 @@ maritimeweb.map = new function () {
         target: 'map',
         layers: [
             maritimeweb.groupBaseMaps,
-            maritimeweb.groupOverlays,
+            maritimeweb.groupWeather,
             maritimeweb.groupAtons,
             maritimeweb.groupVessels
         ],

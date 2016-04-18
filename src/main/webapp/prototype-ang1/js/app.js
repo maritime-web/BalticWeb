@@ -1,7 +1,9 @@
 
-angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap'])
-    .controller("MapController", function($scope, $http, $timeout) {
+angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.location.service','maritimeweb.vessel.service'])
+    .controller("MapController", function($scope, $http, $timeout, vesselService, locationService) {
 
+
+        console.log("vesselService=" + vesselService);
         $scope.alerts = [
             { type: 'success', msg: 'Well done! You successfully read this important alert message.', timeout: 2000 }
         ];
@@ -10,8 +12,14 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap'])
             $scope.alerts.splice(index, 1);
         };
 
+        $scope.layerGroupAtons = maritimeweb.groupAtons.getLayers().getArray();
+        $scope.layerGroupVessels = maritimeweb.groupVessels.getLayers().getArray();
+        $scope.layerGroupBasemaps = maritimeweb.groupBaseMaps.getLayers().getArray();
+        $scope.layerGroupWeather = maritimeweb.groupWeather.getLayers().getArray();
+
+        $scope.myPosition = {};
         $scope.vesselsOnMap = [];
-        var vesselVectorLayer = {};
+        //var vesselVectorLayer = {};
         var firstRun = true;
         var loadTimer;
 
@@ -25,27 +33,37 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap'])
             });
 
 
-            $http.get( "/rest/vessel/listarea?area="+ maritimeweb.clientBBOX(), {
-                timeout : 6000
-            }).success(function (vessels) {
-                $scope.vesselsonmap = [];
-                console.log(vessels.length + " vessels loaded  " + evt );
-                $scope.vessels = vessels;
-                $scope.vesselsStatus = "OK";
-                $scope.lastFetchTimestamp = new Date();
 
-                maritimeweb.groupVessels.getLayers().remove(vesselVectorLayer);
+            $scope.vesselsonmap = [];
+          //  var randomVessel = vesselService.details('213');
+           // randomVessel.then(function(data){console.log("details = " + data);});
 
-                for(var i = 0; i< vessels.length; i++){
-                    var vesselData = {  name: vessels[i].name || "",
-                                        type: vessels[i].type,
-                                        x: vessels[i].x,
-                                        y: vessels[i].y,
-                                        angle: vessels[i].angle,
-                                        mmsi: vessels[i].mmsi || "",
-                                        callSign: vessels[i].callSign || "",
-                                        moored: vessels[i].moored || false,
-                                        inAW: vessels[i].inAW || false
+             var promise = vesselService.list().then(function(data){
+                 console.log("this is it. Promise resolved");
+                 $scope.vessels = data;
+             });
+
+           /* promise.then(function(result){
+                 console.log("retrieved data");
+
+                 $scope.vessels = result.data;
+             });*/
+            console.log($scope.vessels.length + " vessels loaded  " + evt );
+
+            $scope.vesselsStatus = "OK";
+            $scope.lastFetchTimestamp = new Date();
+
+
+                for(var i = 0; i< $scope.vessels.length; i++){
+                    var vesselData = {  name: $scope.vessels[i].name || "",
+                                        type: $scope.vessels[i].type,
+                                        x: $scope.vessels[i].x,
+                                        y: $scope.vessels[i].y,
+                                        angle: $scope.vessels[i].angle,
+                                        mmsi: $scope.vessels[i].mmsi || "",
+                                        callSign: $scope.vessels[i].callSign || "",
+                                        moored: $scope.vessels[i].moored || false,
+                                        inAW: $scope.vessels[i].inAW || false
                     };
 
                     var vesselFeature;
@@ -61,29 +79,26 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap'])
                     features: $scope.vesselsonmap //add an array of vessel features
                 });
 
-                vesselVectorLayer = new ol.layer.Vector({
+                maritimeweb.groupVessels.getLayers().remove(maritimeweb.layerVessels);
+                maritimeweb.layerVessels = new ol.layer.Vector({
                     name: "vesselVectorLayer",
-                    title: "Vessels - AIS data",
+                    title: "Vessels - AIS data dynamic",
                     source: vectorSource
                 });
+
+                /*
+                maritimeweb.layerVessels.source = vectorSource;
+                maritimeweb.layerVessels.render*/
                 $scope.vesselsStatus = "OK";
                 firstRun = false;
 
-                maritimeweb.groupVessels.getLayers().push(vesselVectorLayer);
+                maritimeweb.groupVessels.getLayers().push(maritimeweb.layerVessels);
                 $scope.alerts.push({msg: 'retrieved vessels',
                     type: 'success',
                     timeout: 2000
                 });
 
-            }).error(function (data, status) {
-                console.log("could not retrieve ais data" + status);
-                $scope.alerts.push({msg: 'could not retrieve ais data',
-                    type: 'danger',
-                    timeout: 5000
-                });
-                $scope.vesselsStatus = status;
 
-            });
 
         };
 
@@ -91,7 +106,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap'])
         var mapChanged = function () {
 
             if (!firstRun) { // for anything but the first run, check if the layer is visible.
-                if (!maritimeweb.isLayerVisible('vesselVectorLayer')) {
+                if (!maritimeweb.isLayerVisible('vesselVectorLayer', maritimeweb.groupVessels)) {
                     console.log("     --- dont Update layer not visible BREAK");
                     return null;
                 }
@@ -105,6 +120,23 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap'])
             loadTimer = $timeout(refreshVessels, 1000);
 
         };
+
+
+        locationService.get().then(function(result){
+            $scope.myPosition =  [ result.longitude,result.latitude];
+
+            console.log("$scope.myPosition" + $scope.myPosition);
+          //  maritimeweb.map.getView().setCenter(ol.proj.fromLonLat($scope.myPosition ));
+         //   maritimeweb.map.getView().setZoom(10);
+        });
+
+
+        var panTomyPosition = document.getElementById('pan-to-myposition');
+        panTomyPosition.addEventListener('click', function() {
+            maritimeweb.panToPosition($scope.myPosition);
+        }, false);
+
+
         // update the map when a move ends.
         maritimeweb.map.on('moveend', mapChanged );
         maritimeweb.groupVessels.on('change:visible', mapChanged);

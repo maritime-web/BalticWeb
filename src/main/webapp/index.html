@@ -22,78 +22,200 @@
     <link rel="stylesheet" href="http://openlayers.org/en/v3.14.2/css/ol.css" type="text/css">
     <link rel="stylesheet" href="prototype-ang1/css/ext/ol3-layerswitcher.css" />
     <link rel="stylesheet" href="prototype-ang1/css/layerswitch/scroll.css" />
-    <!-- link rel="stylesheet" href="prototype-ang1/css/balticweb.css" /-->
+    <link rel="stylesheet" href="prototype-ang1/css/balticweb.css" />
 
 
 
     <script src="http://openlayers.org/en/v3.14.2/build/ol.js" type="text/javascript"></script>
-    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
 <body ng-app="maritimeweb">
 <div ng-controller="MapController">
-    <nav class="navbar navbar-fixed-top navbar-light bg-faded">
-        <a class="navbar-brand" href="#">Fixed top</a>
-        <a class="navbar-brand" href="#">Fixed top</a>
-        <a class="navbar-brand" href="#">Fixed top</a>
-        <a class="navbar-brand" href="#">Fixed top</a>
-        <a class="navbar-brand" href="#">Fixed top</a>
-        <a class="navbar-brand" href="#">Fixed top</a>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">BalticWeb</a>
+            </div>
 
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <!--<ul class="nav navbar-nav">-->
+                    <!--<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>-->
+                    <!--<li><a href="#">Link</a></li>-->
+                    <!--<li class="dropdown">-->
+                        <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>-->
+                        <!--<ul class="dropdown-menu">-->
+                            <!--<li><a href="#">Action</a></li>-->
+                            <!--<li><a href="#">Another action</a></li>-->
+                            <!--<li><a href="#">Something else here</a></li>-->
+                            <!--<li role="separator" class="divider"></li>-->
+                            <!--<li><a href="#">Separated link</a></li>-->
+                            <!--<li role="separator" class="divider"></li>-->
+                            <!--<li><a href="#">One more separated link</a></li>-->
+                        <!--</ul>-->
+                    <!--</li>-->
+                <!--</ul>-->
+                <!--<form class="navbar-form navbar-left" role="search">-->
+                    <!--<div class="form-group">-->
+                        <!--<input type="text" class="form-control" placeholder="Search">-->
+                    <!--</div>-->
+                    <!--<button type="submit" class="btn btn-default">Submit</button>-->
+                <!--</form>-->
+                <ul class="nav navbar-nav navbar-right">
+                    <li><div id="scale-line" class="scale-line"></div></li>
+                    <li id="mouse-position" class="mouse-position"></li>
+                    <li id="client-position" class="mouse-position">{{myPosition}} </li>
+
+                    <!--<li>-->
+                    <!--<button  id="pan-to-myposition" type="button" class="btn btn-default btn-sm">-->
+                    <!--<span class="glyphicon glyphicon-screenshot"></span> Pan to my position-->
+                    <!--</button>-->
+                    <!--</li>-->
+                    <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+
+                    <li><a href="#" id="pan-to-myposition"> <button type="button"  class="btn btn-default navbar-btn "><span class="glyphicon glyphicon-screenshot"></span> Pan to my position</button></a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Login <span class="glyphicon glyphicon-user"></span></a></li>
+                    <li><a href="#">Help</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
     </nav>
-    <div class="row">
-    <div class="col-sm-3 col-md-2 sidebar">
-        <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="#">Analytics</a></li>
-            <li><a href="#">Export</a></li>
-        </ul>
-        <ul class="nav nav-sidebar">
-            <li><a href="">Nav item</a></li>
-            <li><a href="">Nav item again</a></li>
-            <li><a href="">One more nav</a></li>
-            <li><a href="">Another nav item</a></li>
-            <li><a href="">More navigation</a></li>
-        </ul>
-        <ul class="nav nav-sidebar">
-            <li><a href="">Nav item again</a></li>
-            <li><a href="">One more nav</a></li>
-            <li><a href="">Another nav item</a></li>
-        </ul>
-        <ul class="nav nav-sidebar">
-        <uib-accordion close-others="oneAtATime">
-            <uib-accordion-group >
-                <uib-accordion-heading>
-                    Vessels within area <span class="badge" ng-bind="vessels.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-                </uib-accordion-heading>
-                <div class="list-group-item text-primary">
-                    <span class="badge" ng-bind="clientBBox"></span> <span class="badge" ng-bind="vessels.length"></span>{{vessels.length}}, {{vesselsStatus}}, ={{lastFetchTimestamp}}
-                </div>
 
-                <div class="list-group-item text-primary" ng-repeat="vessel in vessels | limitTo: 100">
-                    {{vessel.name}} x:{{vessel.x}} y:{{vessel.y}} angle:{{vessel.angle}}  {{vessel.type}} {{vessel.mmsi}} {{vessel.callsign}} {{vessel.moored}}
-                </div>
+    <!--<nav class="navbar navbar-top navbar-inverse">-->
+        <!--<a class="navbar-brand" href="#">BalticWeb</a>-->
+        <!--<ul class="nav navbar-nav navbar-right">-->
+            <!--<li><div id="scale-line" class="scale-line"></div></li>-->
+            <!--<li id="mouse-position" class="mouse-position"></li>-->
+            <!--<li id="client-position" class="mouse-position">{{myPosition}} </li>-->
 
-            </uib-accordion-group>
-        </uib-accordion>
-        </ul>
-        <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="{{alert.timeout}}">{{alert.msg}}</uib-alert>
+            <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<button  id="pan-to-myposition" type="button" class="btn btn-default btn-sm">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span class="glyphicon glyphicon-screenshot"></span> Pan to my position&ndash;&gt;-->
+                <!--&lt;!&ndash;</button>&ndash;&gt;-->
+            <!--&lt;!&ndash;</li>&ndash;&gt;-->
+            <!--<li><a href="#" id="pan-to-myposition"> <button type="button"  class="btn btn-default navbar-btn "><span class="glyphicon glyphicon-screenshot"></span> Pan to my position</button></a></li>-->
+            <!--<li><a href="#">Settings</a></li>-->
+            <!--<li><a href="#">Login</a></li>-->
+            <!--<li><a href="#">Help</a></li>-->
+        <!--</ul>-->
+    <!--</nav>-->
+    <div class="container-fluid">
+        <div class="row">
+            <div id="map" class="col-md-10 col-sm-9" >
+            </div>
 
-    </div>
+            <div class="col-md-2 col-sm-3 sidebar">
+                <!--ul class="nav nav-sidebar">
+                    <li class="active"><a href="#">Overview <span class="sr-only">(current)</span> <span class="caret"></span></a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Analytics</a></li>
+                    <li><a href="#">Export</a></li>
+                </ul>
+                <ul class="nav nav-sidebar">
+                    <li><a href="">Basemaps <span class="caret"></span></a></li>
+                    <li ng-repeat="layer in layerGroupBasemaps" ng-class="layer.get('visible') ? 'active' : ''"><a href="">{{layer.get('title')}}</a></li>
+                </ul>
+                <ul class="nav nav-sidebar">
+                    <li><a href="">Nav item again</a></li>
+                    <li><a href="">One more nav</a></li>
+                    <li><a href="">Another nav item</a></li>
+                </ul -->
+
+                <!---->
+                <!--<div class="panel panel-default">-->
+                    <!--&lt;!&ndash; Default panel contents &ndash;&gt;-->
+                    <!--<div class="panel-heading">Panel heading</div>-->
+                    <!--<div class="panel-body">-->
+                        <!--<p>...</p>-->
+                    <!--</div>-->
+
+                    <!--&lt;!&ndash; List group &ndash;&gt;-->
+                    <!--<ul class="list-group">-->
+                        <!--<li class="list-group-item">Cras justo odio</li>-->
+                        <!--<li class="list-group-item">Dapibus ac facilisis in</li>-->
+                        <!--<li class="list-group-item active">Morbi leo risus</li>-->
+                        <!--<li class="list-group-item">Porta ac consectetur ac</li>-->
+                        <!--<li class="list-group-item">Vestibulum at eros</li>-->
+                    <!--</ul>-->
+                <!--</div>-->
 
 
-    <div class="col-sm-9 main">
+                <uib-accordion >
+                    <uib-accordion-group is-open="status.vessel.open">
+                        <uib-accordion-heading>
+                            Vessels <span class="badge info" ng-bind="layerGroupVessels.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.vessel.open, 'glyphicon-chevron-right': !status.open}"></i>
+                        </uib-accordion-heading>
+                        <!-- List group -->
+                        <ul class="list-group">
+                             <li class="list-group-item text-primary" ng-repeat="layer in layerGroupVessels" ng-bind="layer.get('title')"></li>
+                        </ul>
+                    </uib-accordion-group>
 
-        <div id="map" class="map"></div>
-        <div id="scale-line" class="scale-line"></div>
-        <div id="mouse-position" class="mouse-position"></div>
-    </div>
+                    <uib-accordion-group is-open="status.basemap.open">
+                        <uib-accordion-heading>
+                            BaseMaps <span class="badge info" ng-bind="layerGroupBasemaps.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.basemap.open, 'glyphicon-chevron-right': !status.open}"></i>
+                        </uib-accordion-heading>
+                        <div class="list-group-item text-primary" ng-repeat="layer in layerGroupBasemaps" ng-bind="layer.get('title')"></div>
+                    </uib-accordion-group>
 
-    </div><!-- row end -->
+                    <uib-accordion-group is-open="status.weather.open">
+                        <uib-accordion-heading>
+                            Weather <span class="badge info" ng-bind="layerGroupWeather.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.weather.open, 'glyphicon-chevron-right': !status.open}"></i>
+                        </uib-accordion-heading>
+                        <div class="list-group-item text-primary" ng-repeat="layer in layerGroupWeather" ng-bind="layer.get('title')"></div>
+                    </uib-accordion-group>
 
+                    <uib-accordion-group is-open="status.atons.open">
+                        <uib-accordion-heading>
+                            Atons <span class="badge info" ng-bind="layerGroupAtons.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.atons.open, 'glyphicon-chevron-right': !status.open}"></i>
+                        </uib-accordion-heading>
+                        <div class="list-group-item text-primary" ng-repeat="layer in layerGroupAtons" ng-bind="layer.get('title')"></div>
+                    </uib-accordion-group>
+                </uib-accordion>
+
+
+                <uib-accordion close-others="oneAtATime">
+                    <uib-accordion-group >
+                        <uib-accordion-heading>
+                            Vessels within area <span class="badge info" ng-bind="vessels.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                        </uib-accordion-heading>
+
+
+                        <div class="list-group-item text-primary" ng-repeat="vessel in vessels | limitTo: 100">
+                            {{vessel.name}} x:{{vessel.x}} y:{{vessel.y}} angle:{{vessel.angle}}  {{vessel.type}} {{vessel.mmsi}} {{vessel.callsign}} {{vessel.moored}}
+                        </div>
+
+                        <div class="list-group-item text-primary">
+                            <span class="badge" ng-bind="clientBBox"></span> <span class="badge" ng-bind="vesselsStatus"></span> <!--span class="badge" ng-bind="lastFetchTimestamp"></span-->
+                        </div>
+
+                    </uib-accordion-group>
+                </uib-accordion>
+
+                <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="{{alert.timeout}}">{{alert.msg}}</uib-alert>
+
+            </div>
+
+
+
+
+        </div><!-- row end -->
+    </div><!-- container end -->
 </div>
 
-<script src="prototype-ang1/js/ol3-layerswitcher.js"></script>
-<script src="prototype-ang1/js/ol3-map.js" type="text/javascript"></script>
+<script src="prototype-ang1/maps_and_layers/ol3-layerswitcher.js"></script>
+<script src="prototype-ang1/maps_and_layers/ol3-map.js" type="text/javascript"></script>
+<script src="prototype-ang1/vessel/vessel-service.js" type="text/javascript"></script>
+<script src="prototype-ang1/maps_and_layers/location-service.js" type="text/javascript"></script>
+
 <script src="prototype-ang1/js/app.js" type="text/javascript"></script>
 
 </body>
