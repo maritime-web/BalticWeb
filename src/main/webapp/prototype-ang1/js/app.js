@@ -19,6 +19,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
 
         $scope.myPosition = {};
         $scope.vesselsOnMap = [];
+        $scope.vessels = {};
         //var vesselVectorLayer = {};
         var firstRun = true;
         var loadTimer;
@@ -38,65 +39,62 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
           //  var randomVessel = vesselService.details('213');
            // randomVessel.then(function(data){console.log("details = " + data);});
 
-             var promise = vesselService.list().then(function(data){
+             var promise = vesselService.getVesselsInArea().then(function(response){
                  console.log("this is it. Promise resolved");
-                 $scope.vessels = data;
+                 $scope.vessels = response;
+                 console.log($scope.vessels.length + " vessels loaded  "  );
+
+                 $scope.vesselsStatus = "OK";
+                 $scope.lastFetchTimestamp = new Date();
+
+
+                 for(var i = 0; i< $scope.vessels.length; i++){
+                     var vesselData = {  name: $scope.vessels[i].name || "",
+                         type: $scope.vessels[i].type,
+                         x: $scope.vessels[i].x,
+                         y: $scope.vessels[i].y,
+                         angle: $scope.vessels[i].angle,
+                         mmsi: $scope.vessels[i].mmsi || "",
+                         callSign: $scope.vessels[i].callSign || "",
+                         moored: $scope.vessels[i].moored || false,
+                         inAW: $scope.vessels[i].inAW || false
+                     };
+
+                     var vesselFeature;
+                     if($scope.zoomLvl > 8) {
+                         vesselFeature = maritimeweb.createVesselFeature(vesselData);
+                     }else{
+                         vesselFeature = maritimeweb.createMinimalVesselFeature(vesselData);
+                     }
+                     $scope.vesselsonmap.push(vesselFeature);
+                 }
+
+                 var vectorSource = new ol.source.Vector({
+                     features: $scope.vesselsonmap //add an array of vessel features
+                 });
+
+                 maritimeweb.groupVessels.getLayers().remove(maritimeweb.layerVessels);
+                 maritimeweb.layerVessels = new ol.layer.Vector({
+                     name: "vesselVectorLayer",
+                     title: "Vessels - AIS data dynamic",
+                     source: vectorSource
+                 });
+
+                 /*
+                  maritimeweb.layerVessels.source = vectorSource;
+                  maritimeweb.layerVessels.render*/
+                 $scope.vesselsStatus = "OK";
+                 firstRun = false;
+
+                 maritimeweb.groupVessels.getLayers().push(maritimeweb.layerVessels);
+                 $scope.alerts.push({msg: 'retrieved vessels',
+                     type: 'success',
+                     timeout: 2000
+                 });
+
              });
 
-           /* promise.then(function(result){
-                 console.log("retrieved data");
 
-                 $scope.vessels = result.data;
-             });*/
-            console.log($scope.vessels.length + " vessels loaded  " + evt );
-
-            $scope.vesselsStatus = "OK";
-            $scope.lastFetchTimestamp = new Date();
-
-
-                for(var i = 0; i< $scope.vessels.length; i++){
-                    var vesselData = {  name: $scope.vessels[i].name || "",
-                                        type: $scope.vessels[i].type,
-                                        x: $scope.vessels[i].x,
-                                        y: $scope.vessels[i].y,
-                                        angle: $scope.vessels[i].angle,
-                                        mmsi: $scope.vessels[i].mmsi || "",
-                                        callSign: $scope.vessels[i].callSign || "",
-                                        moored: $scope.vessels[i].moored || false,
-                                        inAW: $scope.vessels[i].inAW || false
-                    };
-
-                    var vesselFeature;
-                    if($scope.zoomLvl > 8) {
-                        vesselFeature = maritimeweb.createVesselFeature(vesselData);
-                    }else{
-                        vesselFeature = maritimeweb.createMinimalVesselFeature(vesselData);
-                    }
-                    $scope.vesselsonmap.push(vesselFeature);
-                }
-
-                var vectorSource = new ol.source.Vector({
-                    features: $scope.vesselsonmap //add an array of vessel features
-                });
-
-                maritimeweb.groupVessels.getLayers().remove(maritimeweb.layerVessels);
-                maritimeweb.layerVessels = new ol.layer.Vector({
-                    name: "vesselVectorLayer",
-                    title: "Vessels - AIS data dynamic",
-                    source: vectorSource
-                });
-
-                /*
-                maritimeweb.layerVessels.source = vectorSource;
-                maritimeweb.layerVessels.render*/
-                $scope.vesselsStatus = "OK";
-                firstRun = false;
-
-                maritimeweb.groupVessels.getLayers().push(maritimeweb.layerVessels);
-                $scope.alerts.push({msg: 'retrieved vessels',
-                    type: 'success',
-                    timeout: 2000
-                });
 
 
 
