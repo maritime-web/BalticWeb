@@ -1,6 +1,12 @@
 
 angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.location.service','maritimeweb.vessel.service'])
     .controller("MapController", function($scope, $http, $timeout, vesselService, locationService) {
+        vesselService.details(636014865).then(function(response) {
+            console.log("mmsi details" + response.status);
+            console.log("mmsi details" + response.data);
+
+
+        });
 
 
         console.log("vesselService=" + vesselService);
@@ -18,7 +24,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
         $scope.layerGroupWeather = maritimeweb.groupWeather.getLayers().getArray();
 
         $scope.myPosition = {};
-        $scope.vesselsOnMap = [];
+        $scope.vesselsonmap = [];
         $scope.vessels = {};
         //var vesselVectorLayer = {};
         var firstRun = true;
@@ -33,22 +39,15 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
                 timeout: 2000
             });
 
-
-
-            $scope.vesselsonmap = [];
-          //  var randomVessel = vesselService.details('213');
-           // randomVessel.then(function(data){console.log("details = " + data);});
-
-             var promise = vesselService.getVesselsInArea().then(function(response){
-                 console.log("this is it. Promise resolved");
+             vesselService.getVesselsInArea($scope.zoomLvl, $scope.clientBBox).then(function(response){
+                 $scope.vesselsonmap = [];
                  $scope.vessels = response;
-                 console.log($scope.vessels.length + " vessels loaded  "  );
+                 console.log($scope.vessels.length + " vessels loaded  at zoomLvl=" + $scope.zoomLvl + " bbox=" + $scope.clientBBox   );
 
                  $scope.vesselsStatus = "OK";
                  $scope.lastFetchTimestamp = new Date();
 
-
-                 for(var i = 0; i< $scope.vessels.length; i++){
+                 for(var i = 0; i< $scope.vessels.length; i++){ // process vessel-data and create features
                      var vesselData = {  name: $scope.vessels[i].name || "",
                          type: $scope.vessels[i].type,
                          x: $scope.vessels[i].x,
@@ -69,6 +68,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
                      $scope.vesselsonmap.push(vesselFeature);
                  }
 
+                 // update ol3 layers with new data layers
                  var vectorSource = new ol.source.Vector({
                      features: $scope.vesselsonmap //add an array of vessel features
                  });
@@ -80,23 +80,15 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
                      source: vectorSource
                  });
 
-                 /*
-                  maritimeweb.layerVessels.source = vectorSource;
-                  maritimeweb.layerVessels.render*/
-                 $scope.vesselsStatus = "OK";
                  firstRun = false;
 
                  maritimeweb.groupVessels.getLayers().push(maritimeweb.layerVessels);
-                 $scope.alerts.push({msg: 'retrieved vessels',
+                 $scope.alerts.push({msg: $scope.vessels.length + " vessels retrieved",
                      type: 'success',
                      timeout: 2000
                  });
 
              });
-
-
-
-
 
         };
 
@@ -105,10 +97,9 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
 
             if (!firstRun) { // for anything but the first run, check if the layer is visible.
                 if (!maritimeweb.isLayerVisible('vesselVectorLayer', maritimeweb.groupVessels)) {
-                    console.log("     --- dont Update layer not visible BREAK");
+                    console.log("     --- dont vesselVectorLayer, not visible");
                     return null;
                 }
-
             }
             // Make sure we reload at most every  second
             if (loadTimer) {
@@ -135,9 +126,9 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
         }, false);
 
 
-        // update the map when a move ends.
-        maritimeweb.map.on('moveend', mapChanged );
-        maritimeweb.groupVessels.on('change:visible', mapChanged);
+        //maritimeweb.map.once(mapChanged );
+        maritimeweb.map.on('moveend', mapChanged );         // update the map when a user pan-move ends.
+        maritimeweb.groupVessels.on('change:visible', mapChanged); //
 
     });
 
