@@ -20,7 +20,7 @@ rm -rf  wildfly-conf/target
 echo "Copying standalone.xml to $WILDFLY/standalone/configuration/"
 cp wildfly-conf/standalone.xml $WILDFLY/standalone/configuration/
 
-echo "Setting system property arcticweb.configuration=file://$BASE_DIR/arcticweb.properties"
+echo "Setting system property balticweb.configuration=file://$BASE_DIR/balticweb.properties"
 sed -i -e 's|BASEDIR|'$BASE_DIR'|' $WILDFLY/standalone/configuration/standalone.xml
 
 echo "Installing mysql driver"
