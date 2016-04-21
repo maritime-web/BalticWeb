@@ -1,6 +1,7 @@
 angular.module('maritimeweb.location.service',[]).service('locationService', function ($window, $q) {
     var promise = null;
-    console.log("location SErvice");
+    var detteerentest = 'ddd';
+    console.log("location Service");
     this.get = function () {
         if (!promise) {
             promise = $q(function (resolve, reject) {

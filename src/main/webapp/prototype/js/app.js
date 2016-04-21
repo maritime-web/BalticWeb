@@ -1,27 +1,39 @@
 
-angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.location.service','maritimeweb.vessel.service'])
-    .controller("MapController", function($scope, $http, $timeout, vesselService, locationService) {
+angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.maps_and_layers', 'maritimeweb.location.service','maritimeweb.vessel.layer','maritimeweb.vessel.service'])
+    .controller("MapController", function($scope, $http, $timeout, vesselService, locationService, balticWebMap,vesselLayer) {
 /*        vesselService.details(249453000).then(function(response) {
             console.log("mmsi details" + response.status);
             console.log("mmsi details" + response.data);
 
 
         });
-*/
 
-        console.log("vesselService=" + vesselService);
+*/
+        console.log("Dette er en test = " + locationService.detteerentest);
+        var x = balticWebMap.EPSG900913.toString;
+        console.log("balticWebMap.EPSG900913= " + x);
+
+        balticWebMap.testFunction();
+        console.log(locationService.detteerentest);
+
+
+        locationService.get().then(function(result){
+            $scope.myPosition =  [ result.longitude,result.latitude];
+            postMessageToEndUser($scope, "you are located in " + result.longitude + " " + result.latitude ,'success', 10000 );
+        });
+
         $scope.alerts = [
-            { type: 'success', msg: 'Well done! You successfully read this important alert message.', timeout: 2000 }
+            { type: 'success', msg: 'Welcome to MaritimeWeb', timeout: 2000 }
         ];
 
         $scope.closeAlert = function(index) {
             $scope.alerts.splice(index, 1);
         };
 
-        $scope.layerGroupAtons = maritimeweb.groupAtons.getLayers().getArray();
-        $scope.layerGroupVessels = maritimeweb.groupVessels.getLayers().getArray();
-        $scope.layerGroupBasemaps = maritimeweb.groupBaseMaps.getLayers().getArray();
-        $scope.layerGroupWeather = maritimeweb.groupWeather.getLayers().getArray();
+        $scope.layerGroupAtons = balticWebMap.groupAtons.getLayers().getArray();
+        $scope.layerGroupVessels = balticWebMap.groupVessels.getLayers().getArray();
+        $scope.layerGroupBasemaps = balticWebMap.groupBaseMaps.getLayers().getArray();
+        $scope.layerGroupWeather = balticWebMap.groupWeather.getLayers().getArray();
 
         $scope.myPosition = {};
         $scope.vesselsonmap = [];
@@ -30,10 +42,14 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
         var firstRun = true;
         var loadTimer;
 
+
+        // #########################################################################################################################
+        // ################################    move this method to vessel-layer.js and remove scope dependency  ####################
+        // #########################################################################################################################
         var refreshVessels = function(evt) {
 
-            $scope.clientBBox = maritimeweb.clientBBOX();
-            $scope.zoomLvl = maritimeweb.map.getView().getZoom();
+            $scope.clientBBox = balticWebMap.clientBBOX();
+            $scope.zoomLvl = balticWebMap.map.getView().getZoom();
             $scope.alerts.push({msg: 'Fetching vessel data',
                 type: 'info',
                 timeout: 2000
@@ -61,9 +77,9 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
 
                      var vesselFeature;
                      if($scope.zoomLvl > 8) {
-                         vesselFeature = maritimeweb.createVesselFeature(vesselData);
+                         vesselFeature = vesselLayer.createVesselFeature(vesselData);
                      }else{
-                         vesselFeature = maritimeweb.createMinimalVesselFeature(vesselData);
+                         vesselFeature = vesselLayer.createMinimalVesselFeature(vesselData);
                      }
                      $scope.vesselsonmap.push(vesselFeature);
                  }
@@ -73,62 +89,69 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.locatio
                      features: $scope.vesselsonmap //add an array of vessel features
                  });
 
-                 maritimeweb.groupVessels.getLayers().remove(maritimeweb.layerVessels);
-                 maritimeweb.layerVessels = new ol.layer.Vector({
+                 balticWebMap.groupVessels.getLayers().remove(balticWebMap.layerVessels);
+                 balticWebMap.layerVessels = new ol.layer.Vector({
                      name: "vesselVectorLayer",
-                     title: "Vessels - AIS data dynamic",
+                     title: "Vessels - dynamic",
                      source: vectorSource
                  });
 
                  firstRun = false;
 
-                 maritimeweb.groupVessels.getLayers().push(maritimeweb.layerVessels);
-                 $scope.alerts.push({msg: $scope.vessels.length + " vessels retrieved",
-                     type: 'success',
-                     timeout: 2000
-                 });
+                 balticWebMap.groupVessels.getLayers().push(balticWebMap.layerVessels);
 
+                 postMessageToEndUser($scope, $scope.vessels.length + " vessels retrieved",'success', 2000 );
+
+             }, function(reason) {
+                 //alert('Failed: ' + reason);
+                 $scope.alerts.push({msg: "Connection problems " + reason,
+                     type: 'danger',
+                     timeout: 4000
+                 });
              });
 
         };
+        // #########################################################################################################################
+
 
         // When the map extent changes, reload the Vessels's using a timer to batch up changes
         var mapChanged = function () {
 
             if (!firstRun) { // for anything but the first run, check if the layer is visible.
-                if (!maritimeweb.isLayerVisible('vesselVectorLayer', maritimeweb.groupVessels)) {
-                    console.log("     --- dont vesselVectorLayer, not visible");
+                if (!balticWebMap.isLayerVisible('vesselVectorLayer', balticWebMap.groupVessels)) {
+                   // console.log("     --- dont vesselVectorLayer, not visible");
                     return null;
                 }
             }
-            // Make sure we reload at most every  second
+            // Make sure we reload at most every second
             if (loadTimer) {
-                console.log("     --- too fast");
+               // console.log("     --- too fast");
                 $timeout.cancel(loadTimer);
             }
             loadTimer = $timeout(refreshVessels, 1000);
-
         };
 
 
-        locationService.get().then(function(result){
-            $scope.myPosition =  [ result.longitude,result.latitude];
-
-            console.log("$scope.myPosition" + $scope.myPosition);
-          //  maritimeweb.map.getView().setCenter(ol.proj.fromLonLat($scope.myPosition ));
-         //   maritimeweb.map.getView().setZoom(10);
-        });
+        // #########################################################################################################################
+        // ################################    Listeners                                                        ####################
+        // #########################################################################################################################
 
 
         var panTomyPosition = document.getElementById('pan-to-myposition');
         panTomyPosition.addEventListener('click', function() {
-            maritimeweb.panToPosition($scope.myPosition);
+            balticWebMap.panToPosition($scope.myPosition);
         }, false);
 
-
         //maritimeweb.map.once(mapChanged );
-        maritimeweb.map.on('moveend', mapChanged );         // update the map when a user pan-move ends.
-        maritimeweb.groupVessels.on('change:visible', mapChanged); //
+        balticWebMap.map.on('moveend', mapChanged );         // update the map when a user pan-move ends.
+        balticWebMap.groupVessels.on('change:visible', mapChanged); // listens when visibility on map has been toggled.
 
     });
 
+var postMessageToEndUser = function ($scope, msg, type, timeout) {
+    $scope.alerts.push({
+        msg: msg,
+        type: type,
+        timeout: timeout
+    });
+};

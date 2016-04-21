@@ -1,3 +1,8 @@
+maritimeweb = {};
+maritimeweb.endpoint = "/";
+maritimeweb.baseUrl = "/";
+maritimeweb.defaultTimeout = 6000;
+
 angular.module('maritimeweb.vessel.service',[])
     .service('vesselService', function ($window, $q, $http) {
     var promise = null;
