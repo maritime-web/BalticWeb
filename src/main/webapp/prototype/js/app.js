@@ -1,13 +1,13 @@
 
 angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.location.service','maritimeweb.vessel.service'])
     .controller("MapController", function($scope, $http, $timeout, vesselService, locationService) {
-        vesselService.details(636014865).then(function(response) {
+/*        vesselService.details(249453000).then(function(response) {
             console.log("mmsi details" + response.status);
             console.log("mmsi details" + response.data);
 
 
         });
-
+*/
 
         console.log("vesselService=" + vesselService);
         $scope.alerts = [

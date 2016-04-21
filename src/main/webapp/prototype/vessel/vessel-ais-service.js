@@ -25,8 +25,7 @@ angular.module('maritimeweb.vessel.service',[])
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                     // if no connection use some sort of caching strategy.
-
-                    return reject('Could nor retrieve ais data. Code=' +response.status);
+                    return reject('Could not retrieve ais data in Area. Code=' +response.status);
                 });
 
             });
@@ -52,8 +51,7 @@ angular.module('maritimeweb.vessel.service',[])
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
                 // if no connection use some sort of caching strategy.
-
-                return reject('Could nor retrieve vessels details data. Code=' +response.status);
+                return reject('Could not retrieve vessels details data. Code=' +response.status);
             });
 
         });
@@ -81,13 +79,10 @@ angular.module('maritimeweb.vessel.service',[])
                     // or server returns response with an error status.
                     // if no connection use some sort of caching strategy.
 
-                    return reject('Could nor retrieve vessels details data. Code=' +response.status);
+                    return reject('Could not retrieve historicalTrack. Code=' +response.status);
                 });
-
             });
             return promiseResponse;
-
-
         };
 
         this.saveDetails = function(details) {
@@ -97,7 +92,6 @@ angular.module('maritimeweb.vessel.service',[])
                 });
         };
         /*
-
         this.updateVesselDetailParameter = function(mmsi, name, value) {
             //var s = subscriptions[mmsi];
             if (s) {
@@ -105,7 +99,6 @@ angular.module('maritimeweb.vessel.service',[])
                 this.fireVesselDetailsUpdate(s.vesselDetails);
             }
         };
-
         this.fireVesselDetailsUpdate = function(vesselDetails) {
             //var s = subscriptions[vesselDetails.aisVessel.mmsi];
             if (s) {
@@ -127,7 +120,5 @@ angular.module('maritimeweb.vessel.service',[])
         };
 
         */
-
-
 
 });
