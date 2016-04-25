@@ -11,6 +11,8 @@ angular.module('maritimeweb.nw-nm.layer',[])
         var that = this;
 
         // Actual layer
+        var nwLayer;
+        var nmLayer;
         var nwnmLayer;
 
         // Message list
@@ -55,58 +57,6 @@ angular.module('maritimeweb.nw-nm.layer',[])
             });
         };
 
-
-        /** Converts xy extent array in mercator to a lon-lat extent array */
-        this.toLonLatExtent = function(xyExtent) {
-            if (xyExtent && xyExtent.length == 4) {
-                var minPos = this.toLonLat([xyExtent[0], xyExtent[1]]);
-                var maxPos = this.toLonLat([xyExtent[2], xyExtent[3]]);
-                return [minPos[0], minPos[1], maxPos[0], maxPos[1]];
-            }
-            return null;
-        };
-
-        /** Returns the center of the extent */
-        this.getExtentCenter = function (extent) {
-            var x = extent[0] + (extent[2]-extent[0]) / 2.0;
-            var y = extent[1] + (extent[3]-extent[1]) / 2.0;
-            return [x, y];
-        };
-
-        /** Returns a "sensible" center point of the geometry. Used e.g. for placing labels **/
-        this.getGeometryCenter = function (g) {
-            var point;
-            try {
-                switch (g.getType()) {
-                    case 'MultiPolygon':
-                        var poly = g.getPolygons().reduce(function(left, right) {
-                            return left.getArea() > right.getArea() ? left : right;
-                        });
-                        point = poly.getInteriorPoint().getCoordinates();
-                        break;
-                    case 'MultiLineString':
-                        var lineString = g.getLineStrings().reduce(function(left, right) {
-                            return left.getLength() > right.getLength() ? left : right;
-                        });
-                        point = this.getExtentCenter(lineString.getExtent());
-                        break;
-                    case 'Polygon':
-                        point = g.getInteriorPoint().getCoordinates();
-                        break;
-                    case 'Point':
-                        point = g.getCoordinates();
-                        break;
-                    case 'LineString':
-                    case 'MultiPoint':
-                    case 'GeometryCollection':
-                        point = this.getExtentCenter(g.getExtent());
-                        break;
-                }
-            } catch (ex) {
-            }
-            return point;
-        };
-
         /***************************/
         /** Construct Layer       **/
         /***************************/
@@ -142,10 +92,11 @@ angular.module('maritimeweb.nw-nm.layer',[])
         });
 
         // Construct the layer
-        var features = new ol.Collection();
-        nwnmLayer = new ol.layer.Vector({
+        var nwFeatures = new ol.Collection();
+        nwLayer = new ol.layer.Vector({
+            title: 'Navigational Warnings',
             source: new ol.source.Vector({
-                features: features,
+                features: nwFeatures,
                 wrapX: false
             }),
             style: function(feature) {
@@ -153,15 +104,31 @@ angular.module('maritimeweb.nw-nm.layer',[])
                 if (feature.get('parentFeatureId')) {
                     featureStyle = bufferedStyle;
                 } else {
-                    var message = feature.get('message');
-                    featureStyle = message.mainType == 'NW' ? nwStyle : nmStyle;
+                    featureStyle = nwStyle;
                 }
                 return [ featureStyle ];
             }
         });
-        nwnmLayer.set('name', "NW-NM");
-        nwnmLayer.setVisible(true);
-        //map.addLayer(olLayer);
+        nwLayer.setVisible(true);
+
+        var nmFeatures = new ol.Collection();
+        nmLayer = new ol.layer.Vector({
+            title: 'Notices to Mariners',
+            source: new ol.source.Vector({
+                features: nmFeatures,
+                wrapX: false
+            }),
+            style: function(feature) {
+                var featureStyle;
+                if (feature.get('parentFeatureId')) {
+                    featureStyle = bufferedStyle;
+                } else {
+                    featureStyle = nmStyle;
+                }
+                return [ featureStyle ];
+            }
+        });
+        nmLayer.setVisible(true);
 
 
         /***************************/
@@ -169,7 +136,8 @@ angular.module('maritimeweb.nw-nm.layer',[])
         /***************************/
 
         this.updateLayerFromMessageList = function (messages) {
-            nwnmLayer.getSource().clear();
+            nwLayer.getSource().clear();
+            nmLayer.getSource().clear();
             messageList = messages;
             generalMessages.length = 0;
             if (messageList && messageList.length > 0) {
@@ -179,14 +147,19 @@ angular.module('maritimeweb.nw-nm.layer',[])
                         angular.forEach(message.geometry.features, function (gjFeature) {
                             var olFeature = that.gjToOlFeature(gjFeature);
                             olFeature.set('message', message);
-                            nwnmLayer.getSource().addFeature(olFeature);
+                            if (message.mainType == 'NW') {
+                                nwLayer.getSource().addFeature(olFeature);
+                            } else {
+                                nmLayer.getSource().addFeature(olFeature);
+                            }
                         });
-                    } else if (showGeneral == 'true') {
+                    } else {
                         generalMessages.push(message);
                     }
                 });
             }
         };
+
 
         // Reload the messages
         this.loadMessages = function () {
@@ -207,6 +180,14 @@ angular.module('maritimeweb.nw-nm.layer',[])
                 loadTimer = $timeout(that.loadMessages, 500);
             }
         };
+
+
+        nwnmLayer = new ol.layer.Group({
+            title: 'NW-NM',
+            layers: [ nwLayer, nmLayer ]
+        });
+        nwnmLayer.set('name', "NW");
+        nwnmLayer.setVisible(true);
 
         // Listen for visibility changes of the layer
         nwnmLayer.on('change:visible', this.loadMessages);
