@@ -8,6 +8,8 @@ target/
 .idea
 *.iml
 arcticweb.properties
+balticweb.properties
+
 wildfly-8.*
 
 embryo-web/.buildpath
