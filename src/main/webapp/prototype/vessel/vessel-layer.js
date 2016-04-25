@@ -19,18 +19,26 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
                 rotation: vessel.angle - 90,
                 src: 'img/' + image.name
             }))
-            ,
-            text: new ol.style.Text({
-                text: vessel.name, // attribute code
-                size: 8,
-                fill: new ol.style.Fill({
-                    color: 'blue' // black text //
-                })
-            })
+            //,
+            //text: new ol.style.Text({
+            //    text: vessel.name, // attribute code
+            //    size: 8,
+            //    fill: new ol.style.Fill({
+            //        color: 'blue' // black text //
+            //    })
+            //})
         });
 
         var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
         var markerVessel = new ol.Feature({
+            name:  vessel.name,
+            id: vessel.id,
+            text: 'type = ' +vessel.type,
+            type: vessel.type,
+            angle: vessel.angle,
+            callSign: vessel.callSign,
+            mmsi: vessel.mmsi,
+
             geometry: vesselPosition
         });
         markerVessel.setStyle(markerStyle);
@@ -115,7 +123,8 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
 
         var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
         var markerVessel = new ol.Feature({
-            geometry: vesselPosition
+            geometry: vesselPosition,
+            type: vessel.type,
         });
         markerVessel.setStyle(markerStyle);
         return markerVessel;

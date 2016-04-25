@@ -19,8 +19,9 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
 
 
         locationService.get().then(function(result){
+            $scope.myHDMSPosition = ol.coordinate.toStringHDMS([ result.latitude,result.longitude], 1);
             $scope.myPosition =  [ result.longitude,result.latitude];
-            postMessageToEndUser($scope, "you are located in " + result.longitude + " " + result.latitude ,'success', 10000 );
+            postMessageToEndUser($scope, "you are located in " + $scope.myHDMSPosition  ,'success', 10000 );
         });
 
         $scope.alerts = [
@@ -58,6 +59,8 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
 
              vesselService.getVesselsInArea($scope.zoomLvl, $scope.clientBBox).then(function(response){
                  $scope.vesselsonmap = [];
+                 $scope.vesselsInfoOnMap = [];
+
                  $scope.vessels = response;
                  console.log($scope.vessels.length + " vessels loaded  at zoomLvl=" + $scope.zoomLvl + " bbox=" + $scope.clientBBox   );
 
@@ -77,6 +80,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                      };
 
                      var vesselFeature;
+                     var vesselPopUp;
                      if($scope.zoomLvl > 8) {
                          vesselFeature = vesselLayer.createVesselFeature(vesselData);
                      }else{
@@ -96,6 +100,8 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                      title: "Vessels - dynamic",
                      source: vectorSource
                  });
+                 // TODO: peder suggest that we don't remove and add the layer at each update. Lets try that.
+                 // balticWebMap.groupVessels.getLayer(balticWebMap.layerVessels)
 
                  firstRun = false;
 
@@ -131,6 +137,57 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
             }
             loadTimer = $timeout(refreshVessels, 1000);
         };
+
+// Create a popup overlay which will be used to display feature info
+
+            var element = document.getElementById('popup');
+
+            var popup = new ol.Overlay({
+                element: element,
+                positioning: 'bottom-center',
+                stopEvent: false
+            });
+            balticWebMap.map.addOverlay(popup);
+
+            // display popup on click
+            balticWebMap.map.on('click', function(evt) {
+                    console.log("clicked" + evt.pixel);
+
+                            var feature = balticWebMap.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                            console.log("   feature" + feature);
+                            return feature;
+                        }, null, function(layer) {
+                            return layer === balticWebMap.layerVessels;
+                        });
+
+                        if (feature) {
+                            console.log("feature.get('text'=" + feature.get('text'));
+                            console.log("feature.get('name'=" + feature.get('name'));
+                            console.log("feature.get('title'=" + feature.get('title'));
+                            console.log("feature.get('angle'=" + feature.get('angle'));
+                            console.log("feature.get('type'=" + feature.get('type'));
+                            console.log("feature.get('id'=" + feature.get('id'));
+                            console.log("feature.get('mmsi'=" + feature.get('mmsi'));
+                            console.log("feature.get('callsign'=" + feature.get('callSign'));
+
+
+                            var geometry = feature.getGeometry();
+                            var coord = geometry.getCoordinates();
+                            popup.setPosition(coord);
+                            postMessageToEndUser($scope, "you clicked in " + coord + " feature " + feature ,'success', 2000 );
+                            $(element).popover({
+                                    'placement': 'top',
+                                    'html': true,
+                                    'content': '<h2>' + feature.get('name') + '</h2>' +
+                                                '<p><span class="glyphicon glyphicon-globe"></span> ' + feature.get('mmsi')+ '</p>' +
+                                                '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + feature.get('callSign')+ '</p>'
+
+                            });
+                            $(element).popover('show');
+                        } else {
+                            $(element).popover('destroy');
+                        }
+                });
 
 
         // #########################################################################################################################
