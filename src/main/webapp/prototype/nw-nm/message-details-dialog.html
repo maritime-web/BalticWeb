@@ -1,0 +1,115 @@
+<div>
+
+    <div class="modal-body print" style="padding-bottom: 0">
+
+        <div ng-if="warning">
+            <h2>{{warning}}</h2>
+        </div>
+
+        <div ng-if="msg">
+
+            <button type="button" class="close dialog-close-btn" ng-click="$dismiss('aborted')">x</button>
+
+            <table class='table table-condensed'>
+
+                <tr>
+                    <td class="message-details-item" style="border: none">
+
+                        <!-- Title line -->
+                        <div ng-if="msg.originalInformation">&#10029;</div>
+                        <div ng-if="msg.shortId">{{msg.shortId}}</div>
+                        <div>
+                            <strong>{{msg.descs[0].title}}</strong>
+                        </div>
+
+                        <!-- Reference lines -->
+                        <div class="row" ng-repeat="ref in msg.references">
+                            <div class="col-sm-1 message-details-item-field">Reference</div>
+                            <div class="col-sm-11 message-details-item-value">
+                                <span>{{ref.messageId}}</span>
+                                <span ng-switch="ref.type">
+                                    <span ng-switch-when="REPETITION">(repetition)</span>
+                                    <span ng-switch-when="CANCELLATION">(cancellation)</span>
+                                    <span ng-switch-when="UPDATE">(updated)</span>
+                                </span>
+                            </div>
+                        </div>
+
+
+                        <!-- Time line -->
+                        <!-- Do NOT remove the ng-if="true" gibberish. Grotesquely, it fixes an iPad/iOS error -->
+                        <!-- See: https://github.com/angular/angular.js/issues/9128 -->
+                        <div class="row" ng-if="true">
+                            <div class="col-sm-1 message-details-item-field">Time</div>
+                            <div class="col-sm-11 message-details-item-value">
+                                <span>{{renderTime()}}</span>
+                            </div>
+                        </div>
+
+
+                        <!-- Geometry line -->
+                        <div class="row" ng-if="msg.geometry">
+                            <div class="col-sm-1 message-details-item-field">Location</div>
+                            <div class="col-sm-11 message-details-item-value">
+                                <div>
+                                    <span ng-if="msg.showLocations" ng-click="msg.showLocations = false" class="clickable">hide positions</span>
+                                    <span ng-if="!msg.showLocations" ng-click="msg.showLocations = true" class="clickable">show positions</span>
+                                </div>
+                                <ol ng-if="msg.showLocations" class="message-details-positions">
+                                    <li ng-repeat="c in serializedCoordinates()">
+                                        <span>{{c | lonlat:{ decimals : 3, pp: true } }}<span ng-if="c.name">, {{c.name}}</span></span>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- Details line -->
+                        <div class="row" ng-if="msg.descs[0].description">
+                            <div class="col-sm-1 message-details-item-field">Details</div>
+                            <div class="col-sm-11 message-details-item-value" ng-bind-html="msg.descs[0].description"></div>
+                        </div>
+
+                        <!-- Note line -->
+                        <div class="row" ng-if="msg.descs[0].note">
+                            <div class="col-sm-1 message-details-item-field">Note</div>
+                            <div class="col-sm-11 message-details-item-value">{{msg.descs[0].note}}</div>
+                        </div>
+
+                        <!-- Charts line -->
+                        <div class="row" ng-if="msg.charts.length > 0">
+                            <div class="col-sm-1 message-details-item-field">Charts</div>
+                            <div class="col-sm-11 message-details-item-value">
+                                <span ng-repeat="chart in msg.charts">
+                                    <span ng-if="!$first">, </span>
+                                    {{chart.chartNumber}}
+                                    <span ng-if="chart.internationalNumber">(INT {{chart.internationalNumber}})</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Publication line -->
+                        <div class="row" ng-if="msg.descs[0].publication">
+                            <div class="col-sm-1 message-details-item-field">Publication</div>
+                            <div class="col-sm-11 message-details-item-value">{{msg.descs[0].publication}}</div>
+                        </div>
+
+                        <!-- Source line -->
+                        <div class="row" ng-if="msg.descs[0].source">
+                            <div class="col-sm-12 message-details-item-value text-right">({{msg.descs[0].source}})</div>
+                        </div>
+
+                    </td>
+
+
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="row" style="margin-top: 24px">
+            <div class="form-group col-xs-12" style="text-align: right">
+                <button class="btn btn-primary btn-sm" ng-click="$dismiss('aborted')">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

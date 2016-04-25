@@ -1,6 +1,6 @@
 
-angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap',
-    'maritimeweb.maps_and_layers', 'maritimeweb.location.service','maritimeweb.vessel.layer','maritimeweb.vessel.service','maritimeweb.nw-nm.layer'])
+angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
+    'maritimeweb.map', 'maritimeweb.maps_and_layers', 'maritimeweb.location.service','maritimeweb.vessel.layer','maritimeweb.vessel.service','maritimeweb.nw-nm.layer'])
     .controller("MapController", function($scope, $http, $timeout, vesselService, locationService, balticWebMap,vesselLayer) {
 /*        vesselService.details(249453000).then(function(response) {
             console.log("mmsi details" + response.status);

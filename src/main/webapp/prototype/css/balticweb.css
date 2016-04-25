@@ -33,3 +33,48 @@ html, body {
 #footercontainer{
     color: #eee;
 }
+
+
+.dialog-close-btn {
+    float: right;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    z-index: 2000;
+}
+
+.clickable:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+/** NW-NM Message Details Dialog **/
+
+.message-details-item {
+    padding: 10px!important;
+    font-size: 11px;
+}
+
+.message-details-item-field {
+    font-weight: bold;
+    color: gray;
+    padding-top: 5px;
+}
+
+.message-details-item-value {
+    padding-top: 5px;
+}
+
+.message-details-item-value ol {
+    padding-left: 0;
+}
+
+ol.message-details-positions {
+    margin-left: 20px;
+    color: darkgray;
+}
+
+ol.message-details-positions li span {
+    color:#333;
+}
