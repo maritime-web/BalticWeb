@@ -1,5 +1,5 @@
 
-angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', function() {
+angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmLayer', function(NwNmLayer) {
 
         /*
          get the current bounding box in Bottom left  Top right format.
@@ -377,10 +377,11 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', functio
         });
 
 
+    NwNmLayer.addLayerToMap(this.map);
 
     console.log("loaded OL3 map center = " + map);
 
-});
+}]);
 /*
  maritimeweb.iconFeature = function() {
  return new ol.Feature({
