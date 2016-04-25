@@ -6,7 +6,7 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
      Create a vessel feature for any openlayers 3 map.
      */
     this.createVesselFeature = function (vessel) {
-        var image = this.imageForVessel(vessel);
+        var image = this.imageAndTypeTextForVessel(vessel);
 
         var colorHex = this.colorHexForVessel(vessel);
         var shadedColor = this.shadeBlend(-0.15, colorHex);
@@ -33,8 +33,7 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
         var markerVessel = new ol.Feature({
             name:  vessel.name,
             id: vessel.id,
-            text: 'type = ' +vessel.type,
-            type: vessel.type,
+            type: image.type,
             angle: vessel.angle,
             callSign: vessel.callSign,
             mmsi: vessel.mmsi,
@@ -48,42 +47,100 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
     };
 
     /*
-     Given vessel type return the name of the appropiate vessel image icon.
+     Given vessel type return the name of the appropiate vessel image icon and name in text.
+
+
+     <table class="table table-condensed">
+     <tr>
+     <td><img src="img/vessel_blue.png" /></td>
+     <td>Passenger</td>
+     </tr>
+     <tr>
+     <td><img src="img/vessel_green.png" /></td>
+     <td>Cargo</td>
+     </tr>
+     <tr>
+     <td><img src="img/vessel_red.png" /></td>
+     <td>Tanker</td>
+     </tr>
+     <tr>
+     <td><img src="img/vessel_yellow.png" /></td>
+     <td>High speed craft and WIG</td>
+     </tr>
+     <tr>
+     <td><img src="img/vessel_orange.png" /></td>
+     <td>Fishing</td>
+     </tr>
+     <tr>
+     <td><img src="img/vessel_purple.png" /></td>
+     <td>Sailing and pleasure</td>
+     </tr>
+     <tr>
+     <td><img src="img/vessel_turquoise.png" /></td>
+     <td>Pilot, tug and others</td>
+     </tr>
+     <tr>
+     <td><img src="img/vessel_gray.png" /></td>
+     <td>Undefined / unknown</td>
+     </tr>
+     <tr>
+     <td><img src="img/vessel_white.png" /></td>
+     <td>Sailing</td>
+     </tr>
+     <tr>
+     <td><img src="img/vessel_white_moored.png" /></td>
+     <td>Anchored/Moored</td>
+     </tr>
+     <tr>
+     <td class="aw">BW</td>
+     <td>Vessel participating in BalticWeb</td>
+     </tr>
      */
-    this.imageForVessel = function (vo) {
+    this.imageAndTypeTextForVessel = function (vo) {
         var colorName;
+        var vesselType;
         switch (vo.type) {
             case "0" :
                 colorName = "blue";
+                vesselType = "Passenger";
                 break;
             case "1" :
                 colorName = "gray";
+                vesselType = "Undefined / unknown";
                 break;
             case "2" :
                 colorName = "green";
+                vesselType = "Cargo";
                 break;
             case "3" :
                 colorName = "orange";
+                vesselType = "Fishing";
                 break;
             case "4" :
                 colorName = "purple";
+                vesselType = "Sailing and pleasure";
                 break;
             case "5" :
                 colorName = "red";
+                vesselType = "Tanker";
                 break;
             case "6" :
                 colorName = "turquoise";
+                vesselType = "Pilot, tug and others";
                 break;
             case "7" :
                 colorName = "yellow";
+                vesselType = "High speed craft and WIG";
                 break;
             default :
                 colorName = "gray";
+                vesselType = "Undefined / unknown";
         }
 
         if (vo.moored) {
             return {
                 name: "vessel_" + colorName + "_moored.png",
+                type: vesselType,
                 width: 12,
                 height: 12,
                 xOffset: -6,
@@ -92,6 +149,7 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
         } else {
             return {
                 name: "vessel_" + colorName + ".png",
+                type: vesselType,
                 width: 20,
                 height: 10,
                 xOffset: -10,
@@ -124,7 +182,7 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
         var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
         var markerVessel = new ol.Feature({
             geometry: vesselPosition,
-            type: vessel.type,
+            type: vessel.type
         });
         markerVessel.setStyle(markerStyle);
         return markerVessel;
