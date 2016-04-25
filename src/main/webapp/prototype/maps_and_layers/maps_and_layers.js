@@ -317,7 +317,7 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', functio
     });
 
     var mousePosition = new ol.control.MousePosition({
-        coordinateFormat: ol.coordinate.createStringXY(3),
+        coordinateFormat: ol.coordinate.createStringXY(3), //ol.coordinate.toStringHDMS(coord, 1)
         projection: 'EPSG:4326',
         //target: 'mouseposition',
         target: document.getElementById('mouse-position'),

@@ -18,8 +18,9 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.maps_an
 
 
         locationService.get().then(function(result){
+            $scope.myHDMSPosition = ol.coordinate.toStringHDMS([ result.latitude,result.longitude], 1)
             $scope.myPosition =  [ result.longitude,result.latitude];
-            postMessageToEndUser($scope, "you are located in " + result.longitude + " " + result.latitude ,'success', 10000 );
+            postMessageToEndUser($scope, "you are located in " + $scope.myHDMSPosition  ,'success', 10000 );
         });
 
         $scope.alerts = [
@@ -57,6 +58,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.maps_an
 
              vesselService.getVesselsInArea($scope.zoomLvl, $scope.clientBBox).then(function(response){
                  $scope.vesselsonmap = [];
+                 $scope.vesselspopuponmap = [];
                  $scope.vessels = response;
                  console.log($scope.vessels.length + " vessels loaded  at zoomLvl=" + $scope.zoomLvl + " bbox=" + $scope.clientBBox   );
 
@@ -74,14 +76,23 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.maps_an
                          moored: $scope.vessels[i].moored || false,
                          inAW: $scope.vessels[i].inAW || false
                      };
+                     var coordinate = [$scope.vessels[i].x, $scope.vessels[i].y];
 
                      var vesselFeature;
+                     //var vesselPopup;
                      if($scope.zoomLvl > 8) {
                          vesselFeature = vesselLayer.createVesselFeature(vesselData);
+                         //vesselPopup = new ol.Overlay.Popup();
+                         //balticWebMap.map.addOverlay(vesselPopup);
+                         //balticWebMap.map.on('click', function(evt) {
+                         //    var prettyCoord = ol.coordinate.toStringHDMS(coord, 1)
+                         //    popup.show(coordinate, '<div><h2>Coordinates</h2><p>' + prettyCoord + '</p></div>');
+                         //});
                      }else{
                          vesselFeature = vesselLayer.createMinimalVesselFeature(vesselData);
                      }
                      $scope.vesselsonmap.push(vesselFeature);
+                     //$scope.vesselspopuponmap.push(vesselPopup);
                  }
 
                  // update ol3 layers with new data layers
@@ -145,6 +156,65 @@ angular.module("maritimeweb", ['ngAnimate', 'ui.bootstrap', 'maritimeweb.maps_an
         //maritimeweb.map.once(mapChanged );
         balticWebMap.map.on('moveend', mapChanged );         // update the map when a user pan-move ends.
         balticWebMap.groupVessels.on('change:visible', mapChanged); // listens when visibility on map has been toggled.
+
+
+        // Create a popup overlay which will be used to display feature info
+
+        var element = document.getElementById('popup');
+
+        var popup = new ol.Overlay({
+            element: element,
+            positioning: 'bottom-center',
+            stopEvent: false
+        });
+        balticWebMap.map.addOverlay(popup);
+
+// display popup on click
+        balticWebMap.map.on('click', function(evt) {
+            console.log("clicked" + evt.pixel);
+            //var feature = balticWebMap.map.forEachFeatureAtPixel(evt.pixel,
+            //    function(feature, layer) {
+            //        console.log("   feature" + feature);
+            //
+            //        return feature;
+            //    });
+
+            var feature = balticWebMap.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                console.log("   feature" + feature);
+                return feature;
+            }, null, function(layer) {
+                return layer === balticWebMap.layerVessels;
+            });
+
+            if (feature) {
+                console.log("feature.get('text'=" + feature.get('text'));
+                var geometry = feature.getGeometry();
+                var coord = geometry.getCoordinates();
+                popup.setPosition(coord);
+                postMessageToEndUser($scope, "you clicked in " + coord + " feature " + feature ,'success', 2000 );
+                $(element).popover({
+                    'placement': 'top',
+                    'html': true,
+                    'content': feature.get('name')
+                });
+                $(element).popover('show');
+            } else {
+                $(element).popover('destroy');
+            }
+        });
+
+// change mouse cursor when over marker
+//        $(balticWebMap.map.getViewport()).on('mousemove', function(e) {
+//            var pixel = balticWebMap.map.getEventPixel(e.originalEvent);
+//            var hit = balticWebMap.map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+//                return true;
+//            });
+//            if (hit) {
+//                balticWebMap.map.getTarget().style.cursor = 'pointer';
+//            } else {
+//                balticWebMap.map.getTarget().style.cursor = '';
+//            }
+//        });
 
     });
 
