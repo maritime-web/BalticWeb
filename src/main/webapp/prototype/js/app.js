@@ -32,6 +32,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
         $scope.layerGroupAtons = balticWebMap.groupAtons.getLayers().getArray();
         $scope.layerGroupVessels = balticWebMap.groupVessels.getLayers().getArray();
         $scope.layerGroupBasemaps = balticWebMap.groupBaseMaps.getLayers().getArray();
+       // $scope.layerGroupNotices = balticWebMap.groupNotices.getLayers().getArray();
         $scope.layerGroupWeather = balticWebMap.groupWeather.getLayers().getArray();
 
         $scope.myPosition = {};

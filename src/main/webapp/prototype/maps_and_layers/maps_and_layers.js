@@ -28,7 +28,7 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
             });
             this.map.beforeRender(pan);
             this.map.getView().setCenter(ol.proj.fromLonLat(postion));
-            //maritimeweb.map.getView().setZoom(10);
+            this.map.getView().setZoom(10);
         };
 
         this.isLayerVisible = function (nameOfLayer, layerGroup) {
@@ -169,7 +169,7 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
 
     this.groupAtons = new function () {
         var group =  new ol.layer.Group({
-            title: 'Atons',
+            title: 'Misc.',
             layers: [
                 new ol.layer.Tile({
                     title: 'Seamark - OpenSeaMap.org',
@@ -180,16 +180,6 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
                         //crossOrigin: 'null'
                     })
                 }),
-                new ol.layer.Tile({
-                    title: 'MSI Warnings - DMA*',
-                    source: new ol.source.TileWMS({
-                        url: 'http://demo.opengeo.org/geoserver/wms',
-                        params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
-                        serverType: 'geoserver'
-                    }),
-                    visible: false
-                })
-                ,
                 new ol.layer.Tile({
                     title: 'Countries',
                     source: new ol.source.TileWMS({
@@ -223,27 +213,7 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
     this.groupVessels = new function () {
         var group = new ol.layer.Group({
             title: 'Vessels',
-            layers: [
-                //layerVessels,
-                new ol.layer.Tile({
-                    title: 'AIS - Helcom - High-bandwith *',
-                    visible: false,
-                    source: new ol.source.XYZ({
-                        url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
-                        attributions: openseaMapAttributions//,
-                        //crossOrigin: 'null'
-                    })
-                }),
-                new ol.layer.Tile({
-                    title: 'AIS Helcom - low-bandwith *',
-                    source: new ol.source.TileWMS({
-                        url: 'http://demo.opengeo.org/geoserver/wms',
-                        params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
-                        serverType: 'geoserver'
-                    }),
-                    visible: false
-                })
-            ]
+            layers: []
         });
         return group;
     };
@@ -382,21 +352,3 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
     console.log("loaded OL3 map center = " + map);
 
 }]);
-/*
- maritimeweb.iconFeature = function() {
- return new ol.Feature({
- geometry: new ol.geom.Point(ol.proj.transform([18.0704, 57.678], 'EPSG:4326', 'EPSG:900913')),
- name: 'Speed vessel',
- speed: 40,
- course: 350
- });
- };
-
- maritimeweb.iconFeature1  = function() {
- return new ol.Feature({
- geometry: new ol.geom.Point(ol.proj.transform([18.1234, 55.678], 'EPSG:4326', 'EPSG:900913')),
- name: 'Large Vessel',
- speed: 30,
- course: 20
- });
- };*/
