@@ -1,5 +1,5 @@
 
-angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', function() {
+angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmLayer', function(NwNmLayer) {
 
         /*
          get the current bounding box in Bottom left  Top right format.
@@ -317,7 +317,7 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', functio
     });
 
     var mousePosition = new ol.control.MousePosition({
-        coordinateFormat: ol.coordinate.createStringXY(3), //ol.coordinate.toStringHDMS(coord, 1)
+        coordinateFormat: ol.coordinate.createStringXY(3),
         projection: 'EPSG:4326',
         //target: 'mouseposition',
         target: document.getElementById('mouse-position'),
@@ -377,10 +377,11 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', functio
         });
 
 
+    NwNmLayer.addLayerToMap(this.map);
 
     console.log("loaded OL3 map center = " + map);
 
-});
+}]);
 /*
  maritimeweb.iconFeature = function() {
  return new ol.Feature({
