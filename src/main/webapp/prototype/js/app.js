@@ -42,12 +42,23 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
         var firstRun = true;
         var loadTimer;
 
+        var vectorSource = new ol.source.Vector({
+         features: $scope.vesselsonmap //add an array of vessel features
+         });
+        //balticWebMap.groupVessels.getLayers().remove(balticWebMap.layerVessels);
+        balticWebMap.layerVessels = new ol.layer.Vector({
+            name: "vesselVectorLayer",
+            title: "Vessels - dynamic",
+            source: vectorSource
+        });
+        balticWebMap.groupVessels.getLayers().push(balticWebMap.layerVessels);
+
 
         // #########################################################################################################################
         // ################################    move this method to vessel-layer.js and remove scope dependency  ####################
         // #########################################################################################################################
         var refreshVessels = function (evt) {
-
+            var starttime = new Date().getTime();
             $scope.clientBBox = balticWebMap.clientBBOX();
             $scope.zoomLvl = balticWebMap.map.getView().getZoom();
             $scope.alerts.push({
@@ -73,6 +84,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                         x: $scope.vessels[i].x,
                         y: $scope.vessels[i].y,
                         angle: $scope.vessels[i].angle,
+                        radian: ($scope.vessels[i].angle-90) * (Math.PI / 180),
                         mmsi: $scope.vessels[i].mmsi || "",
                         callSign: $scope.vessels[i].callSign || "",
                         moored: $scope.vessels[i].moored || false,
@@ -80,7 +92,6 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                     };
 
                     var vesselFeature;
-                    var vesselPopUp;
                     if ($scope.zoomLvl > 8) {
                         vesselFeature = vesselLayer.createVesselFeature(vesselData);
                     } else {
@@ -90,24 +101,32 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                 }
 
                 // update ol3 layers with new data layers
-                var vectorSource = new ol.source.Vector({
+                /*var vectorSource = new ol.source.Vector({
                     features: $scope.vesselsonmap //add an array of vessel features
-                });
+                });*/
+                balticWebMap.layerVessels.getSource().clear();
+                balticWebMap.layerVessels.getSource().addFeatures($scope.vesselsonmap);
+                //balticWebMap.groupVessels.getLayers().remove(balticWebMap.layerVessels);
+                //balticWebMap.layerVessels = new ol.layer.Vector({
+                //    name: "vesselVectorLayer",
+                //    title: "Vessels - dynamic",
+                //    source: vectorSource
+                //});
+                //balticWebMap.groupVessels.getLayers().push(balticWebMap.layerVessels);
 
-                balticWebMap.groupVessels.getLayers().remove(balticWebMap.layerVessels);
-                balticWebMap.layerVessels = new ol.layer.Vector({
-                    name: "vesselVectorLayer",
-                    title: "Vessels - dynamic",
-                    source: vectorSource
-                });
+                //balticWebMap.layerVessels.getSo
                 // TODO: peder suggest that we don't remove and add the layer at each update. Lets try that.
-                // balticWebMap.groupVessels.getLayer(balticWebMap.layerVessels)
+                //console.log(balticWebMap.groupVessels.getLayer(balticWebMap.layerVessels));
 
                 firstRun = false;
+                var endtime = new Date().getTime();
+                var timeDiff = endtime - starttime;
 
-                balticWebMap.groupVessels.getLayers().push(balticWebMap.layerVessels);
 
-                postMessageToEndUser($scope, $scope.vessels.length + " vessels retrieved", 'success', 2000);
+
+                postMessageToEndUser($scope, $scope.vessels.length + " vessels retrieved & " +
+                    $scope.vesselsonmap.length + " on map, in " + timeDiff + "msec" , 'success', 2000);
+
 
             }, function (reason) {
                 //alert('Failed: ' + reason);
@@ -163,11 +182,18 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                     console.log("feature.get('text'=" + feature.get('text'));
                     console.log("feature.get('name'=" + feature.get('name'));
                     console.log("feature.get('title'=" + feature.get('title'));
+
                     console.log("feature.get('angle'=" + feature.get('angle'));
+                    console.log("feature.get('radian'=" + feature.get('radian'));
+
+                    console.log("feature.get('.getCoordinates()'=" + feature.get('geometry').getCoordinates());
+                    console.log("feature.get('geometry'=" + ol.coordinate.toStringHDMS([feature.get('longitude'),feature.get('latitude')], 1));
+
                     console.log("feature.get('type'=" + feature.get('type'));
                     console.log("feature.get('id'=" + feature.get('id'));
                     console.log("feature.get('mmsi'=" + feature.get('mmsi'));
                     console.log("feature.get('callsign'=" + feature.get('callSign'));
+
 
 
                     var geometry = feature.getGeometry();
@@ -178,9 +204,15 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                         'placement': 'top',
                         'html': true,
                         'content': '<h2>' + feature.get('name') + '</h2>' +
+                        '<div>' +
                         '<p><span class="glyphicon glyphicon-globe"></span> ' + feature.get('mmsi') + '</p>' +
                         '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + feature.get('callSign') + '</p>' +
-                        '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>'
+                        '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>' +
+                        '<p><span class="glyphicon glyphicon-flag"></span> ' + ol.coordinate.toStringHDMS([feature.get('longitude'),feature.get('latitude')], 3) + '</p>' +
+                        '<p><span class="glyphicon glyphicon-flag"></span> ' + feature.get('angle') + '°</p>' +
+                        '</div>'
+
+
 
                     });
                     $(element).popover('show');

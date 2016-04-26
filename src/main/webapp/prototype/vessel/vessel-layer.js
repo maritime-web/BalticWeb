@@ -10,13 +10,13 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
 
         var colorHex = this.colorHexForVessel(vessel);
         var shadedColor = this.shadeBlend(-0.15, colorHex);
-
+        //var radians = (vessel.angle-90) * (Math.PI / 180);
         var markerStyle = new ol.style.Style({
             image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
                 anchor: [0.85, 0.5],
                 opacity: 0.85,
                 id: vessel.id,
-                rotation: vessel.angle - 90,
+                rotation: vessel.radian,
                 src: 'img/' + image.name
             }))
             //,
@@ -35,9 +35,11 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
             id: vessel.id,
             type: image.type,
             angle: vessel.angle,
+            radian: vessel.radian,          // (vessel.angle * (Math.PI / 180)),
             callSign: vessel.callSign,
             mmsi: vessel.mmsi,
-
+            latitude: vessel.y,
+            longitude: vessel.x,
             geometry: vesselPosition
         });
         markerVessel.setStyle(markerStyle);
