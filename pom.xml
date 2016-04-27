@@ -10,10 +10,11 @@
 	<parent>
         <groupId>dk.dma.enav.services</groupId>
 		<artifactId>parent</artifactId>
-        <version>2.7-SNAPSHOT</version>
+        <version>2.7-MC_Service_registry-SNAPSHOT</version>
 	</parent>
 
 	<properties>
+		<enav-services.version>2.7-MC_Service_registry-SNAPSHOT</enav-services.version>
         <!-- exec-maven-plugin is executed by default -->
         <maven.node.skip>false</maven.node.skip>
 		<jslint.predef>embryo</jslint.predef>
@@ -86,7 +87,6 @@
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>msi</artifactId>
-			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -97,19 +97,19 @@
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>reporting</artifactId>
-			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>weather</artifactId>
-			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
+<!--
 		<dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>map-tiles</artifactId>
 		</dependency>
+-->
 
 		<dependency>
 			<groupId>dk.dma.enav</groupId>
