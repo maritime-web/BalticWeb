@@ -10,10 +10,11 @@
 	<parent>
         <groupId>dk.dma.enav.services</groupId>
 		<artifactId>parent</artifactId>
-        <version>2.7-SNAPSHOT</version>
+        <version>2.7-MC_Service_registry-SNAPSHOT</version>
 	</parent>
 
 	<properties>
+		<enav-services.version>2.7-MC_Service_registry-SNAPSHOT</enav-services.version>
         <!-- exec-maven-plugin is executed by default -->
         <maven.node.skip>false</maven.node.skip>
 		<jslint.predef>embryo</jslint.predef>
@@ -73,10 +74,10 @@
 			<artifactId>vessel</artifactId>
 		</dependency>
 
-		<!--<dependency>-->
-            <!--<groupId>dk.dma.enav.services</groupId>-->
-			<!--<artifactId>dataformats</artifactId>-->
-		<!--</dependency>-->
+		<dependency>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>dataformats</artifactId>
+		</dependency>
 
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
@@ -86,40 +87,39 @@
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>msi</artifactId>
-			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
-		<!--<dependency>-->
-            <!--<groupId>dk.dma.enav.services</groupId>-->
-			<!--<artifactId>metoc</artifactId>-->
-		<!--</dependency>-->
+		<dependency>
+            <groupId>dk.dma.enav.services</groupId>
+			<artifactId>metoc</artifactId>
+		</dependency>
 
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>reporting</artifactId>
-			<version>2.7-SNAPSHOT</version>
 		</dependency>
 
-		<!--dependency>
+		<dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>weather</artifactId>
-			<version>2.7-SNAPSHOT</version>
-		</dependency-->
+		</dependency>
 
-		<!--<dependency>-->
-			<!--<groupId>dk.dma.enav.services</groupId>-->
-			<!--<artifactId>map-tiles</artifactId>-->
-		<!--</dependency>-->
+<!--
+		<dependency>
+			<groupId>dk.dma.enav.services</groupId>
+			<artifactId>map-tiles</artifactId>
+		</dependency>
+-->
 
 		<dependency>
 			<groupId>dk.dma.enav</groupId>
 			<artifactId>enav-model</artifactId>
 		</dependency>
 
-        <!--dependency>
+        <dependency>
             <groupId>dk.dma.enav.services</groupId>
             <artifactId>sar</artifactId>
-        </dependency-->
+        </dependency>
 
         <!-- Import the Servlet API. -->
 		<dependency>
@@ -520,9 +520,7 @@
 					<plugin>
 						<groupId>org.wildfly.plugins</groupId>
 						<artifactId>wildfly-maven-plugin</artifactId>
-						<version>1.0.2.Final</version>
-                        <!--groupId>org.jboss.as.plugins</groupId>
-                        <artifactId>jboss-as-maven-plugin</artifactId-->
+						<version>1.1.0.Alpha7</version>
 						<executions>
 							<execution>
 								<id>deploy-only</id>
@@ -543,9 +541,7 @@
 					<plugin>
 						<groupId>org.wildfly.plugins</groupId>
 						<artifactId>wildfly-maven-plugin</artifactId>
-						<version>1.0.2.Final</version>
-                        <!--groupId>org.jboss.as.plugins</groupId>
-                        <artifactId>jboss-as-maven-plugin</artifactId-->
+						<version>1.1.0.Alpha7</version>
 						<executions>
 							<execution>
 								<id>install-undeploy</id>
@@ -553,39 +549,17 @@
 								<goals>
 									<goal>undeploy</goal>
 								</goals>
-							</execution>
-							<execution>
-								<id>add-datasource</id>
-								<phase>install</phase>
-								<goals>
-									<goal>add-resource</goal>
-								</goals>
 								<configuration>
-									<address>subsystem=datasources,data-source=java:jboss/datasources/embryoDS</address>
-									<resource>
-										<enable-resource>true</enable-resource>
-										<properties>
-											<jndi-name>java:jboss/datasources/embryoDS</jndi-name>
-											<connection-url>jdbc:mysql://localhost:3306/embryo</connection-url>
-											<driver-name>mysql</driver-name>
-											<user-name>embryo</user-name>
-											<password>embryo</password>
-											<pool-name>mypool</pool-name>
-											<enabled>true</enabled>
-											<enable>true</enable>
-										</properties>
-									</resource>
+									<match-pattern>.*</match-pattern>
+									<match-pattern-strategy>all</match-pattern-strategy>
 								</configuration>
 							</execution>
 							<execution>
 								<id>deploy</id>
 								<phase>install</phase>
 								<goals>
-									<goal>deploy</goal>
+									<goal>deploy-only</goal>
 								</goals>
-								<configuration>
-									<skipTests>true</skipTests>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>

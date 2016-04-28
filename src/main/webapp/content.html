@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="embryo.content" manifest="front.appcache" type="text/cache-manifest">
+<html lang="en" manifest="front.appcache" type="text/cache-manifest">
 <head>
     <meta charset="utf-8"/>
     <title>BalticWeb - Content</title>
@@ -25,6 +25,8 @@
     <!-- build:js js/arcticweb-content.js -->
     <script src="js/utils.js" defer="defer"></script>
     <script src="js/embryo.js" defer="defer"></script>
+    <script src="keycloak.js" defer="defer" type="text/javascript"></script>
+    <script src="js/keycloak-angular-initializer.js" defer="defer" type="text/javascript"></script>
     <script src="js/authentication.js" defer="defer" type="text/javascript"></script>
     <script src="js/feedback.js" defer="defer" type="text/javascript"></script>
     <script src="js/menu.js" defer="defer"></script>
@@ -34,7 +36,6 @@
 </head>
 
 <body>
-<div x-ng-include="'partials/common/authentication.html'"></div>
 <div x-ng-include="'partials/common/menu.html'"></div>
 <div class="menuDivider"></div>
 

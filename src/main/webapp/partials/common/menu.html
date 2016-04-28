@@ -18,46 +18,10 @@
                     Vessels
                 </a>
             </li>
-            <!-- li>
-                <a href="map.html#/ice">
-                    <i class="fa fa-asterisk" style="vertical-align: middle; margin-bottom: 4px"></i>
-                    Ice
-                </a>
-            </li>
-            <li>
-                <a href="map.html#/msi">
-                    <i class="fa fa-bullhorn" style="vertical-align: middle; margin-bottom: 4px"></i>
-                    Maritime Safety
-                </a>
-            </li>
-            <li>
-                <a href="map.html#/weather">
-                    <i class="fa fa-cloud" style="vertical-align: middle; margin-bottom: 4px"></i>
-                    Weather
-                </a>
-            </li>
-            <li>
-                <a href="map.html#/forecasts">
-                    <i class="fa fa-bar-chart" style="vertical-align: middle; margin-bottom: 4px"></i>
-                    Forecasts
-                </a>
-            </li>
-            <li>
-                <a href="map.html#/sar">
-                    <i class="fa fa-life-ring" style="vertical-align: middle; margin-bottom: 4px"></i>
-                    Search and Rescue
-                </a>
-            </li -->
             <li x-requires-authenticated>
                 <a href="map.html#/setup">
                     <i class="fa fa-wrench" style="vertical-align: middle; margin-bottom: 4px"></i>
                     Setup
-                </a>
-            </li>
-            <li x-requires-permissions="Administration">
-                <a href="admin.html#/users">
-                    <i class="fa fa-user" style="vertical-align: middle; margin-bottom: 4px"></i>
-                    Users
                 </a>
             </li>
             <li x-requires-permissions="Administration">
@@ -66,13 +30,9 @@
                     Log
                 </a>
             </li>
-            <!-- li><a href="map.html#/adt"> <i class="fa fa-gift"
-                        style="vertical-align: middle; margin-bottom: 4px"></i> Assistance
-                </a></li -->
         </ul>
         <p class="navbar-text navbar-right" x-requires-unauthenticated>
-				<span> <a href="" x-ng-click="loginDlg()">Log In</a> | <a
-                        href="content.html#/requestAccess">Request Access</a>
+				<span> <a href="" x-ng-click="login()">Log In</a>
 				</span>
         </p>
         <ul class="nav navbar-nav navtabs navbar-right" style="padding-right: 20px;">

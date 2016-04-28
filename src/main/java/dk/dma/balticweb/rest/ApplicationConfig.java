@@ -14,6 +14,7 @@
  */
 package dk.dma.balticweb.rest;
 
+import dk.dma.arcticweb.reporting.json.GreenPosRestService;
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
 //import dk.dma.embryo.dataformats.inshore.InshoreIceReportJsonService;
@@ -21,6 +22,7 @@ import dk.dma.embryo.common.rs.CommonExceptionMappers;
 //import dk.dma.embryo.dataformats.json.IceObservationRestService;
 //import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 //import dk.dma.embryo.metoc.json.MetocRestService;
+import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 import dk.dma.embryo.msi.rs.MsiRestService;
 //import dk.dma.embryo.tiles.json.TileSetJsonService;
 import dk.dma.embryo.user.json.AreasOfInterestRestService;
@@ -53,24 +55,19 @@ public class ApplicationConfig extends Application {
         set.addAll(Arrays.asList(
                 RouteRestService.class, 
                 RouteUploadRestService.class, 
-                //ShapeFileRestService.class,
+                ShapeFileRestService.class,
+                GreenPosRestService.class,
                 BerthRestService.class,
                 AuthenticationService.class,
                 TestDataRestService.class, 
-//                IceObservationRestService.class,
                 MsiRestService.class,
-                //MetocRestService.class,
-                ArcticWebVesselRestService.class, 
+                ArcticWebVesselRestService.class,
                 ScheduleRestService.class,
                 LogEntryRestService.class, 
                 UserRestService.class, 
                 RequestAccessRestService.class,
                 ForgotPasswordRestService.class, 
-                //WeatherRestService.class,
-//                InshoreIceReportJsonService.class,
-//                ForecastRestService.class,
-                FeedbackRestService.class, 
-                //TileSetJsonService.class,
+                FeedbackRestService.class,
                 AreasOfInterestRestService.class));
 
         return set;

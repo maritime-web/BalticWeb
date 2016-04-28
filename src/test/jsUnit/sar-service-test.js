@@ -1,3 +1,4 @@
+/*
 describe('embryo.sar', function () {
 
     describe('SarService', function () {
@@ -47,7 +48,7 @@ describe('embryo.sar', function () {
         }
 
 
-        /**
+        /!**
          * This unit test has been produced to ensure the same result as when calculating rapid response SAR operations in the EPD project.
          * The unit test was first written in Java in the EPD project, just making assertion values fit what was actually calculated, and then
          * there after ported to JavaScript. This way it is ensured that the JavaScript SAR calculations at least behaves the same as the Java
@@ -55,7 +56,7 @@ describe('embryo.sar', function () {
          *
          * Produced SAR unit test: https://github.com/dma-enav/EPD/blob/master/epd-common/src/test/java/dk/dma/epd/common/prototype/model/voct/SarOperationTest.java
          * as testRapidResponseWithOneSurfarceDriftPoint()
-         */
+         *!/
         it('create rapid response SAR operation with one surface drift point', function () {
             var formatLatitude = embryo.geo.formatLatitude;
             var formatLongitude = embryo.geo.formatLongitude;
@@ -93,7 +94,7 @@ describe('embryo.sar', function () {
         });
 
 
-        /**
+        /!**
          * This unit test has been produced to ensure the same result as when calculating rapid response SAR operations in the EPD project.
          * The unit test was first written in Java in the EPD project, just making assertion values fit what was actually calculated, and then
          * there after ported to JavaScript. This way it is ensured that the JavaScript SAR calculations at least behaves the same as the Java
@@ -101,7 +102,7 @@ describe('embryo.sar', function () {
          *
          * Produced SAR unit test: https://github.com/dma-enav/EPD/blob/master/epd-common/src/test/java/dk/dma/epd/common/prototype/model/voct/SarOperationTest.java
          * as testRapidResponseWithTwoSurfarceDriftPoint()
-         */
+         *!/
 
         it('create rapid response SAR operation with two surface drift points', function () {
             var searchObjectTypes = service.searchObjectTypes();
@@ -278,7 +279,7 @@ describe('embryo.sar', function () {
         });
 
 
-        /**
+        /!**
          * This unit test has been produced to ensure the same result as when calculating rapid response SAR operations in the EPD project.
          * The unit test was first written in Java in the EPD project, just making assertion values fit what was actually calculated, and then
          * there after ported to JavaScript. This way it is ensured that the JavaScript SAR calculations at least behaves the same as the Java
@@ -286,7 +287,7 @@ describe('embryo.sar', function () {
          *
          * Produced SAR unit test: https://github.com/dma-enav/EPD/blob/master/epd-common/src/test/java/dk/dma/epd/common/prototype/model/voct/SarOperationTest.java
          * as testRapidResponseWithTwoSurfarceDriftPoint()
-         */
+         *!/
 
         it('create datum point SAR operation with one surface drift point', function () {
             var searchObjectTypes = service.searchObjectTypes();
@@ -344,7 +345,7 @@ describe('embryo.sar', function () {
             expect(output.min.rdv.speed).toBeCloseTo(4.8383743, 4);
             expect(output.min.radius).toBeCloseTo(2.5515123, 4);
 
-            /*
+            /!*
              expect(formatLatitude(sarOperation.searchArea.A.lat)).toBe("60 59.801N");
              expect(formatLongitude(sarOperation.searchArea.A.lon)).toBe("050 50.788W");
 
@@ -357,7 +358,7 @@ describe('embryo.sar', function () {
              expect(formatLatitude(sarOperation.searchArea.D.lat)).toBe("61 04.229N");
              expect(formatLongitude(sarOperation.searchArea.D.lon)).toBe("050 45.497W");
              expect(sarOperation.searchArea.size).toBeCloseTo(1.3742403439070814 * 1.3742403439070814 * 4, 4);
-             */
+             *!/
         });
 
 
@@ -365,4 +366,4 @@ describe('embryo.sar', function () {
 
     });
 
-});
+});*/

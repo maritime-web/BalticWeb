@@ -14,6 +14,7 @@ On the client side we use:
 * JavaScript/HTML
 * Grunt (for building)
 * OpenLayers (for maps)
+* Keycloak (for security)
 * JQuery (for DOM-manipulation and calling webservices)
 * Twitter Bootstrap (for basic layout)
 * AngularJS (for forms and similar)
@@ -27,7 +28,7 @@ On the server side we use:
 * EJB3.1/JPA(Hibernate) (for persistance)
 * CDI/JSR330 (for dependency injection)
 * Resteasy (for JSON-webservices)
-* Shiro (for security)
+* Keycloak and Shiro (for security)
 * Apache CXF (for SOAP-webservices)
 * JUnit (for unit-test)
 * Mockito (for mocking)
@@ -36,13 +37,13 @@ On the server side we use:
 ## Prerequisites ##
 
 * Java JDK 1.8
-* Maven 3.x
+* Maven 3.3.1+
 * Wildfly 8.2 (Maven setup to deploy to Wildfly)
 * MySQL (Maven configures JBoss datasource to use MySQL)
 * Node.js (Follow the installation instructions at http://nodejs.org)
 * Grunt.js (Follow the installation instructions at http://gruntjs.com)
 * CouchDB
-* a file called arcticweb.properties
+* a file called balticweb.properties
 
 ## Initial setup
 
@@ -64,11 +65,25 @@ depending on OS it might be located in /etc/mysql/my.cnf
     [mysqld]
     max_allowed_packet=16M
 
+### Configure Keycloak ###
+Download the web and services client keycloak.json configuration from your keycloak server and place them at the default location or override the dafaults in your balticweb.properties.
+
+Default keycloak configuration url's
+
+        web-client: file:///{user.home}/arcticweb/keycloak/web/keycloak.json
+        services-client: file:///{user.home}/arcticweb/keycloak/service/keycloak.json
+
+Properties to override should you want to place the configuration elsewhere
+
+        enav-service.keycloak.service-client.configuration.url
+        and
+        enav-service.keycloak.web-client.configuration.url
+
 ### Configure WildFly ###
-ArcticWeb has a default configuration file which may be overridden by setting the system property "arcticweb.configuration" to the URI of an external configuration file. For example put the following in your JBOSS standalone.xml-file:
+BalticWeb has a default configuration file which may be overridden by setting the system property "balticweb.configuration" to the URI of an external configuration file. For example put the following in your standalone.xml-file:
 
     <system-properties>
-        <property name="arcticweb.configuration" value="file:///Users/chvid/sfs/arcticweb.properties"/>
+        <property name="balticweb.configuration" value="file:///Users/chvid/sfs/balticweb.properties"/>
     </system-properties>
 
 In particular the file may contain URLs and passwords for the DMI Ice map server.
@@ -81,7 +96,7 @@ In particular the file may contain URLs and passwords for the DMI Ice map server
     mvn clean install
 
 
-## Deploy to JBoss
+## Deploy to Wildfly
 
 Initial deployment (Clean, build, install database drivers environmental variables and deploy application)
 
@@ -101,13 +116,10 @@ Daily deployment
 
 A local deployment will setup ArcticWeb at the following URL:
 
-    http://localhost:8080/arcticweb/
+    http://localhost:8080/
 
-To setup test users and data you must first login with dma/qwerty and thereafter push the button at the following URL
+To setup test users you create them in your Keycloak instance
 
-    http://localhost:8080/testdata.html
-
-Thereafter you can login with orasila/qwerty, oratank/qwerty, dmi/qwerty, etc. 
 
 ## Instant reload of web resources
 

@@ -119,14 +119,34 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
     }
 
     serviceModule.provider('Subject', function () {
-        function Subject($http, $rootScope, $cookieStore) {
+        function Subject($http, $rootScope, $cookieStore, Auth) {
+            if (Auth) {
+                console.log("######## AUTH injected ##########");
+            }
             $rootScope.initialAuthentication = embryo.authentication;
             var authentication = $cookieStore.get('embryo.authentication');
             if (typeof authentication !== 'undefined') {
                 embryo.authentication = authentication;
             }
             $rootScope.authentication = embryo.authentication;
-            var details = embryo.authentication;
+
+            $rootScope.$watch(Auth.loggedIn, function(){
+                console.log("==========!!!!!!!! Logged In status changed to " + Auth.loggedIn);
+                if (Auth.loggedIn) {
+                    $http.get(embryo.baseUrl + "rest/authentication/details").success(function (details) {
+                        $cookieStore.put('embryo.authentication', details);
+                        sessionStorage.clear();
+                        $rootScope.authentication = details;
+                        embryo.authentication = details;
+                        console.log("++++++++++++++USER DATA. " + JSON.stringify(details));
+
+                        embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
+                        embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
+                    }).error(function (data, status) {
+                        console.log("FAILED TO GET USER DATA. Status: " + status);
+                    });
+                }
+            });
 
             this.roles = function () {
                 return typeof embryo.authentication.permissions === 'undefined' ? []
@@ -150,49 +170,28 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             };
 
             this.isLoggedIn = function () {
-                /* This is what should be done, but since it's asynchronous (and the directives aren't),
-                 * it requires a bit of thought.
-                 $http.get(embryo.baseUrl + 'rest/authentication/isloggedin').error(function(response) {
-                 if(response.status === 401) {
-                 // This means false
-                 }
-                 });
-                 // Otherwise true
-                 */
-                return this.roles().length > 0;
+                return Auth.loggedIn;
             };
 
-            this.login = function (username, password, success, error) {
-                var data = {
-                    params: {
-                        userName: username,
-                        password: password
-                    }
-                };
-                $http.get(embryo.baseUrl + "rest/authentication/login", data).success(function (details) {
-                    $cookieStore.put('embryo.authentication', details);
-                    sessionStorage.clear();
-                    $rootScope.authentication = details;
-                    embryo.authentication = details;
-
-                    embryo.eventbus.fireEvent(embryo.eventbus.AuthenticatedEvent());
-
-                    // EMBRYO-325
-                    embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
-                    success(details);
-                }).error(function (data, status) {
-                    if (error) {
-                        error(data, status);
-                    }
-                });
+            this.login = function () {
+                if (!Auth.loggedIn) {
+                    Auth.authz.login({scope: 'offline_access'});
+                }
             };
 
-            this.logout = function (success, error) {
-                $http.get(embryo.baseUrl + "rest/authentication/logout").success(function () {
-                    clearSessionData($cookieStore, $rootScope);
-                    embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
-                    success();
-                }).error(error);
+            this.logout = function () {
+                $http.get(embryo.baseUrl + "rest/authentication/logout")
+                    .success(function () {
+                        clearSessionData($cookieStore, $rootScope);
+                        embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
+                        console.log("LOGGING OUT location.href: " + location.href);
+
+                        Auth.authz.logout({"redirectUri": location.origin});
+                    })
+                    .error(function () {
+                        console.log("%%%%%%%%%%%%%%%%%%%%% ERROR LOGGING OUT ");
+                    });
+
             };
 
             this.authenticationChanged = function (callback) {
@@ -204,8 +203,8 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             };
         }
 
-        this.$get = function ($http, $rootScope, $cookieStore) {
-            return new Subject($http, $rootScope, $cookieStore);
+        this.$get = function ($http, $rootScope, $cookieStore, Auth) {
+            return new Subject($http, $rootScope, $cookieStore, Auth);
         };
     });
 
@@ -325,151 +324,9 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
             };
         } ]);
 
-    function detectBrowser() {
-        if (browser.isIE() && browser.ieVersion() <= 8) {
-            $("#ie78ver").html(browser.ieVersion());
-            $("#ie78").show();
-        } else if (browser.isIE() && browser.ieVersion() == 9) {
-            $("#ie9ver").html(browser.ieVersion());
-            $("#ie9").show();
-        }
-    }
-
-    function useCookies() {
-        return "true" == getCookie("cookies-accepted");
-    }
-
-    function rememberUseCookies() {
-        $('#cookiesUsage').css("display", "none");
-        if ("true" != getCookie("cookies-accepted")) {
-            setCookie("cookies-accepted", "true", 365);
-        }
-    }
-
-    embryo.LoginModalCtrl = function ($scope, $http, $modalInstance, $location, Subject, msg) {
-        function resetMsgs() {
-            $scope.infoMsg = null;
-            $scope.msg = null;
-        }
-
-        $scope.msg = msg;
-        $scope.focusMe = true;
-
-        if (browser.isIE() && browser.ieVersion() <= 8) {
-            $scope.ie78ver = browser.ieVersion();
-        } else if (browser.isIE() && browser.ieVersion() == 9) {
-            $scope.ie9ver = browser.ieVersion();
-        }
-
-        $scope.useCookies = useCookies();
-        $scope.user = {};
-        $scope.forgot = false;
-
-        $scope.login = function () {
-            resetMsgs();
-
-            var messageId = embryo.messagePanel.show({
-                text: "Logging in ..."
-            });
-            rememberUseCookies();
-
-            $scope.$close();
-
-            Subject.login($scope.user.name, $scope.user.pwd, function () {
-                var path = location.pathname;
-                if (path.indexOf("index.html") >= 0 || path.indexOf("content.html") >= 0 || path.indexOf(".html") < 0) {
-                    location.href = "map.html#/vessel";
-                }
-
-                embryo.messagePanel.replace(messageId, {
-                    text: "Succesfully logged in.",
-                    type: "success"
-                });
-            }, function (data, status) {
-                // updateNavigationBar();
-                embryo.messagePanel.replace(messageId, {
-                    text: "Log in failed. (" + status + ")",
-                    type: "error"
-                });
-
-                var errorMessage = "";
-                if (status == 401) {
-                    errorMessage = "Wrong user name or password";
-                } else {
-                    errorMessage = embryo.ErrorService.extractError(data, status)[0];
-                }
-                setTimeout(function () {
-                    $scope.loginDlg({
-                        msg: errorMessage
-                    });
-                }, 1000);
-            });
-
-            $("#userName").val("");
-            $("#password").val("");
-            $("#error").css("display", "none");
-            $("#loginWrongLoginOrPassword").css("display", "none");
-
-        };
-
-        $scope.sendPassword = function () {
-            resetMsgs();
-            var data = {
-                emailAddress: $scope.user.email
-            };
-            $http.post(embryo.baseUrl + "rest/forgot-password/request", data).success(function (details) {
-                $scope.infoMsg = 'E-mail sent!';
-                $scope.user.email = '';
-            }).error(function (data, status) {
-                $scope.msg = data;
-            });
-        };
-
-        $scope.passwordEnabled = function () {
-            return $scope.user.email && angular.element('.emailfield').$valid;
-        };
-
-        $scope.forgotPassword = function () {
-            resetMsgs();
-            $scope.forgot = true;
-
-        };
-
-        $scope.back = function () {
-            resetMsgs();
-            $scope.forgot = false;
-        };
-
-        $scope.cancel = function (cb) {
-            var path = location.pathname;
-            if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
-                location = ".";
-            }
-            cb('aborted');
-        };
-    };
-
     function logout(event) {
         event.preventDefault();
-
-        var messageId = embryo.messagePanel.show({
-            text: "Logging out ..."
-        });
-
-        embryo.security.Subject.logout(function () {
-            var path = location.pathname;
-            if (path.indexOf("index.html") < 0 && path.indexOf(".html") >= 0) {
-                location = ".";
-                // setTimeout(function() {
-                // location = ".";
-                // }, 100);
-            }
-        }, function (data, status) {
-            embryo.messagePanel.replace(messageId, {
-                text: "Logout failed. (" + status + ")",
-                type: "error"
-            });
-        });
+        embryo.security.Subject.logout();
     }
 
     var module = angular.module('embryo.authentication', [ 'embryo.base', 'ui.bootstrap.modal', 'ui.bootstrap.tpls',
@@ -506,24 +363,15 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
                 } ]);
         } ]);
 
-    module.run([ 'Subject', '$rootScope', '$location', '$modal', function (Subject, $rootScope, $location, $modal) {
+    module.run([ 'Subject', '$rootScope', function (Subject, $rootScope) {
         embryo.security.Subject = Subject;
 
         embryo.ready(function () {
             $rootScope.Subject = Subject;
             $rootScope.logout = logout;
 
-            $rootScope.loginDlg = function (config) {
-                return $modal.open({
-                    controller: embryo.LoginModalCtrl,
-                    templateUrl: "loginDialog.html",
-                    windowClass: "embryo-small-modal",
-                    resolve: {
-                        msg: function () {
-                            return typeof config === "object" ? config.msg : null;
-                        }
-                    }
-                });
+            $rootScope.login = function () {
+                Subject.login();
             };
 
             if (Subject.isLoggedIn()) {
@@ -532,7 +380,7 @@ embryo.eventbus.registerShorthand(embryo.eventbus.AuthenticationChangedEvent, "a
                 // EMBRYO-325
                 embryo.eventbus.fireEvent(embryo.eventbus.AuthenticationChangedEvent());
             } else if (embryo.authentication.currentPageRequiresAuthentication) {
-                $rootScope.loginDlg();
+                Subject.login();
             }
         });
     } ]);
