@@ -1,5 +1,6 @@
 angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
-        'maritimeweb.map', 'maritimeweb.maps_and_layers', 'maritimeweb.location.service', 'maritimeweb.vessel.layer', 'maritimeweb.vessel.service', 'maritimeweb.nw-nm.layer'])
+        'maritimeweb.map', 'maritimeweb.maps_and_layers', 'maritimeweb.location.service',
+    'maritimeweb.vessel.layer', 'maritimeweb.vessel.service', 'maritimeweb.nw-nm.layer'])
     .controller("MapController", function ($scope, $http, $timeout, vesselService, locationService, balticWebMap, vesselLayer) {
         /*
          vesselService.details(249453000).then(function(response) {
@@ -42,17 +43,6 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
         var firstRun = true;
         var loadTimer;
 
-        var vectorSource = new ol.source.Vector({
-         features: $scope.vesselsonmap //add an array of vessel features
-         });
-        //balticWebMap.groupVessels.getLayers().remove(balticWebMap.layerVessels);
-        balticWebMap.layerVessels = new ol.layer.Vector({
-            name: "vesselVectorLayer",
-            title: "Vessels - dynamic",
-            source: vectorSource
-        });
-        balticWebMap.groupVessels.getLayers().push(balticWebMap.layerVessels);
-
 
         // #########################################################################################################################
         // ################################    move this method to vessel-layer.js and remove scope dependency  ####################
@@ -88,12 +78,13 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                         mmsi: $scope.vessels[i].mmsi || "",
                         callSign: $scope.vessels[i].callSign || "",
                         moored: $scope.vessels[i].moored || false,
-                        inAW: $scope.vessels[i].inAW || false
+                        inBW: $scope.vessels[i].inAW || false
                     };
 
                     var vesselFeature;
                     if ($scope.zoomLvl > 8) {
                         vesselFeature = vesselLayer.createVesselFeature(vesselData);
+
                     } else {
                         vesselFeature = vesselLayer.createMinimalVesselFeature(vesselData);
                     }
@@ -101,28 +92,16 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                 }
 
                 // update ol3 layers with new data layers
-                /*var vectorSource = new ol.source.Vector({
-                    features: $scope.vesselsonmap //add an array of vessel features
-                });*/
+                //vesselLayer.layerVessels().getSource().clear();
+                //vesselLayer.layerVessels().getSource().addFeatures($scope.vesselsonmap);
+
+
                 balticWebMap.layerVessels.getSource().clear();
                 balticWebMap.layerVessels.getSource().addFeatures($scope.vesselsonmap);
-                //balticWebMap.groupVessels.getLayers().remove(balticWebMap.layerVessels);
-                //balticWebMap.layerVessels = new ol.layer.Vector({
-                //    name: "vesselVectorLayer",
-                //    title: "Vessels - dynamic",
-                //    source: vectorSource
-                //});
-                //balticWebMap.groupVessels.getLayers().push(balticWebMap.layerVessels);
-
-                //balticWebMap.layerVessels.getSo
-                // TODO: peder suggest that we don't remove and add the layer at each update. Lets try that.
-                //console.log(balticWebMap.groupVessels.getLayer(balticWebMap.layerVessels));
 
                 firstRun = false;
                 var endtime = new Date().getTime();
                 var timeDiff = endtime - starttime;
-
-
 
                 postMessageToEndUser($scope, $scope.vessels.length + " vessels retrieved & " +
                     $scope.vesselsonmap.length + " on map, in " + timeDiff + "msec" , 'success', 2000);
@@ -179,22 +158,20 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                 });
 
                 if (feature) {
-                    console.log("feature.get('text'=" + feature.get('text'));
-                    console.log("feature.get('name'=" + feature.get('name'));
-                    console.log("feature.get('title'=" + feature.get('title'));
-
-                    console.log("feature.get('angle'=" + feature.get('angle'));
-                    console.log("feature.get('radian'=" + feature.get('radian'));
-
-                    console.log("feature.get('.getCoordinates()'=" + feature.get('geometry').getCoordinates());
-                    console.log("feature.get('geometry'=" + ol.coordinate.toStringHDMS([feature.get('longitude'),feature.get('latitude')], 1));
-
-                    console.log("feature.get('type'=" + feature.get('type'));
-                    console.log("feature.get('id'=" + feature.get('id'));
-                    console.log("feature.get('mmsi'=" + feature.get('mmsi'));
-                    console.log("feature.get('callsign'=" + feature.get('callSign'));
-
-
+                    //console.log("feature.get('text'=" + feature.get('text'));
+                    //console.log("feature.get('name'=" + feature.get('name'));
+                    //console.log("feature.get('title'=" + feature.get('title'));
+                    //
+                    //console.log("feature.get('angle'=" + feature.get('angle'));
+                    //console.log("feature.get('radian'=" + feature.get('radian'));
+                    //
+                    //console.log("feature.get('.getCoordinates()'=" + feature.get('geometry').getCoordinates());
+                    //console.log("feature.get('geometry'=" + ol.coordinate.toStringHDMS([feature.get('longitude'),feature.get('latitude')], 1));
+                    //
+                    //console.log("feature.get('type'=" + feature.get('type'));
+                    //console.log("feature.get('id'=" + feature.get('id'));
+                    //console.log("feature.get('mmsi'=" + feature.get('mmsi'));
+                    //console.log("feature.get('callsign'=" + feature.get('callSign'));
 
                     var geometry = feature.getGeometry();
                     var coord = geometry.getCoordinates();
@@ -205,7 +182,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                         'html': true,
                         'content': '<h2>' + feature.get('name') + '</h2>' +
                         '<div>' +
-                        '<p><span class="glyphicon glyphicon-globe"></span> ' + feature.get('mmsi') + '</p>' +
+                        '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi=' + feature.get('mmsi') + '">' + feature.get('mmsi') + '</a></p>' +
                         '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + feature.get('callSign') + '</p>' +
                         '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>' +
                         '<p><span class="glyphicon glyphicon-flag"></span> ' + ol.coordinate.toStringHDMS([feature.get('longitude'),feature.get('latitude')], 3) + '</p>' +

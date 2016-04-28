@@ -1,5 +1,5 @@
 
-angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmLayer', function(NwNmLayer) {
+angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['vesselLayer','NwNmLayer',  function(vesselLayer, NwNmLayer) {
 
         /*
          get the current bounding box in Bottom left  Top right format.
@@ -44,9 +44,6 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
         };
 
 
-
-
-
     var thunderforestAttributions = [
         new ol.Attribution({
             html: 'Tiles &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>'
@@ -56,7 +53,13 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
 
     var openseaMapAttributions = [
         new ol.Attribution({
-            html: '<a href="http://www.openseamap.org/">www.openseamap.org</a> - <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Generic License</a> - '
+            html: '<p><a href="http://www.openseamap.org/">www.openseamap.org</a> - <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Generic License</a></p>'
+        }),
+        ol.source.OSM.ATTRIBUTION
+    ];
+    var openPortGuideAttributions = [
+        new ol.Attribution({
+            html: '<p>Weather forecasts from <a href="http://www.openportguide.de/">www.openportguide.de</a></p>'
         }),
         ol.source.OSM.ATTRIBUTION
     ];
@@ -195,20 +198,6 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
 
     };
 
-    //this.layerVessels = new function () {
-    //    return new ol.layer.Vector({
-    //        name: "vesselVectorLayer",
-    //        title: "Vessels - AIS data dynamic",
-    //        visible: true
-    //    });
-    //};
-
-    //layerVessels = new ol.layer.Vector({
-    //        name: "vesselVectorLayer",
-    //        title: "Vessels - AIS data dynamic",
-    //        visible: true
-    //    });
-
 
     this.groupVessels = new function () {
         var group = new ol.layer.Group({
@@ -218,7 +207,6 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
         return group;
     };
 
-
     this.groupWeather = new function () {
         var group = new ol.layer.Group({
             title: 'Weather Forecasts',
@@ -227,7 +215,8 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
                     title: 'Gust  - openportguide.de',
                     opacity: 0.4,
                     source: new ol.source.XYZ({
-                        url: 'http://weather.openportguide.de/tiles/actual/gust/5/{z}/{x}/{y}.png'
+                        url: 'http://weather.openportguide.de/tiles/actual/gust/5/{z}/{x}/{y}.png',
+                        attributions: openPortGuideAttributions
                         //url: 'http://weather.openportguide.de/tiles/actual/air_temperature/wind_stream/5/{z}/{x}/{y}.png'
                     }),
                     visible: false
@@ -235,7 +224,8 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
                 new ol.layer.Tile({
                     title: 'Wind - openportguide.de',
                     source: new ol.source.XYZ({
-                        url: 'http://weather.openportguide.de/tiles/actual/wind_stream/5/{z}/{x}/{y}.png'
+                        url: 'http://weather.openportguide.de/tiles/actual/wind_stream/5/{z}/{x}/{y}.png',
+                        attributions: openPortGuideAttributions
                     }),
                     visible: false
                 }),
@@ -243,14 +233,16 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
                     title: 'Air temperature - openportguide.de',
                     source: new ol.source.XYZ({
                         //url: 'http://weather.openportguide.de/tiles/actual/wind_stream/5/{z}/{x}/{y}.png'
-                        url: 'http://weather.openportguide.de/tiles/actual/air_temperature/5/{z}/{x}/{y}.png'
+                        url: 'http://weather.openportguide.de/tiles/actual/air_temperature/5/{z}/{x}/{y}.png',
+                        attributions: openPortGuideAttributions
                     }),
                     visible: false
                 }),
                 new ol.layer.Tile({
                     title: 'Significant Wave Height - openportguide.org',
                     source: new ol.source.XYZ({
-                        url: 'http://www.openportguide.org//tiles/actual/significant_wave_height/5/{z}/{x}/{y}.png'
+                        url: 'http://www.openportguide.org//tiles/actual/significant_wave_height/5/{z}/{x}/{y}.png',
+                        attributions: openPortGuideAttributions
                     }),
                     visible: false
                 })
@@ -269,8 +261,7 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
 
     var center = new function () {
         return [22.0, 59.0];
-    }
-    console.log("loading OL3 map");
+    };
 
 
     var zoomslider = new ol.control.ZoomSlider();
@@ -296,15 +287,11 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
     });
     var balticExtent = ol.proj.transformExtent([9, 53, 31, 66], 'EPSG:4326', 'EPSG:3857');
 
-
     // Add Layers to map-------------------------------------------------------------------------------------------------------
     var layer_default_osm = new ol.layer.Tile({
         source: new ol.source.OSM({layer: 'sat'}),
         preload: Infinity
     });
-
-
-
         var overviewMap = new ol.control.OverviewMap({
             collapsed: false,
             layers: [
@@ -319,7 +306,6 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
             label: '+'
 
         });
-
         this.map = new ol.Map({
             controls: ol.control.defaults().extend([
 
@@ -346,6 +332,27 @@ angular.module('maritimeweb.maps_and_layers',[]).service('balticWebMap', ['NwNmL
             })
         });
 
+    // Add vessel layer
+    this.vessselLayerAttributions = [
+        new ol.Attribution({
+            html: '<p>Vessel information from <a href="http://www.helcom.fi/">Helcom</a> AIS Data</p>'
+        }),
+        ol.source.OSM.ATTRIBUTION
+    ];
+    var vectorSource = new ol.source.Vector({
+        features: [], //to begin with, add an array empty array vessel features
+        attributions: this.vessselLayerAttributions
+    });
+
+    this.layerVessels = new ol.layer.Vector({
+        name: "vesselVectorLayer",
+        title: "Vessels - dynamic Helcom",
+        source: vectorSource,
+        visible: true
+    });
+
+    //this.layerVessels.getSource().setAttributions(this.vessselLayerAttributions);
+    this.groupVessels.getLayers().push(this.layerVessels);
 
     NwNmLayer.addLayerToMap(this.map);
 

@@ -1,5 +1,4 @@
-
-angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() {
+angular.module('maritimeweb.vessel.layer', []).service('vesselLayer', function () {
 
 
     /*
@@ -31,7 +30,7 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
 
         var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
         var markerVessel = new ol.Feature({
-            name:  vessel.name,
+            name: vessel.name,
             id: vessel.id,
             type: image.type,
             angle: vessel.angle,
@@ -261,97 +260,4 @@ angular.module('maritimeweb.vessel.layer',[]).service('vesselLayer', function() 
         return colorName;
     };
 
-
-
-
-    var vessselLayerAttributions = [
-        new ol.Attribution({
-            html: 'helcom ais data'
-        }),
-        ol.source.OSM.ATTRIBUTION
-    ];
-
-
-
-    layerVessels = new ol.layer.Vector({
-        name: "vesselVectorLayer",
-        title: "Vessels - AIS data dynamic",
-        visible: true,
-        attributions: vessselLayerAttributions
-    });
-
-
-    this.groupVessels = new function () {
-        var group = new ol.layer.Group({
-            title: 'Vessels',
-            layers: [
-                layerVessels,
-                new ol.layer.Tile({
-                    title: 'AIS - Helcom - High-bandwith *',
-                    visible: false,
-                    source: new ol.source.XYZ({
-                        url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
-                        attributions: openseaMapAttributions//,
-                        //crossOrigin: 'null'
-                    })
-                }),
-                new ol.layer.Tile({
-                    title: 'AIS Helcom - low-bandwith *',
-                    source: new ol.source.TileWMS({
-                        url: 'http://demo.opengeo.org/geoserver/wms',
-                        params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
-                        serverType: 'geoserver'
-                    }),
-                    visible: false
-                })
-            ]
-        });
-        return group;
-    };
-
-    var thunderforestAttributions = [
-        new ol.Attribution({
-            html: 'Tiles &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>'
-        }),
-        ol.source.OSM.ATTRIBUTION
-    ];
-
-    var openseaMapAttributions = [
-        new ol.Attribution({
-            html: '<a href="http://www.openseamap.org/">www.openseamap.org</a> - <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Generic License</a> - '
-        }),
-        ol.source.OSM.ATTRIBUTION
-    ];
-
-
-
-
-
 });
-
-var postMessageToEndUser = function ($scope, msg, type, timeout) {
-    $scope.alerts.push({
-        msg: msg,
-        type: type,
-        timeout: timeout
-    });
-};
-
-/*
- maritimeweb.iconFeature = function() {
- return new ol.Feature({
- geometry: new ol.geom.Point(ol.proj.transform([18.0704, 57.678], 'EPSG:4326', 'EPSG:900913')),
- name: 'Speed vessel',
- speed: 40,
- course: 350
- });
- };
-
- maritimeweb.iconFeature1  = function() {
- return new ol.Feature({
- geometry: new ol.geom.Point(ol.proj.transform([18.1234, 55.678], 'EPSG:4326', 'EPSG:900913')),
- name: 'Large Vessel',
- speed: 30,
- course: 20
- });
- };*/
