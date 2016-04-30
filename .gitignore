@@ -9,5 +9,5 @@ target/
 *.iml
 balticweb.properties
 wildfly-8.*
-
+/**/keycloak.json
 embryo-web/.buildpath

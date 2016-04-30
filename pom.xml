@@ -116,10 +116,18 @@
 			<artifactId>enav-model</artifactId>
 		</dependency>
 
+		<!--
         <dependency>
             <groupId>dk.dma.enav.services</groupId>
             <artifactId>sar</artifactId>
         </dependency>
+        -->
+
+		<dependency>
+			<groupId>org.niord</groupId>
+			<artifactId>niord-model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+		</dependency>
 
         <!-- Import the Servlet API. -->
 		<dependency>

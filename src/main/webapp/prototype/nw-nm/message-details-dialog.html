@@ -8,6 +8,11 @@
 
         <div ng-if="msg">
 
+            <ol-map ng-if="msg.geometry" class="message-details-map">
+                <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
+                <map-nw-nm-layer name="Message" message="msg" fit-extent="true"></map-nw-nm-layer>
+            </ol-map>
+
             <button type="button" class="close dialog-close-btn" ng-click="$dismiss('aborted')">x</button>
 
             <table class='table table-condensed'>

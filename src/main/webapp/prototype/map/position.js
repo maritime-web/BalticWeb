@@ -1,3 +1,6 @@
+/**
+ * Commonly used functions for formatting and parsing map postions
+ */
 
 
 function formatDegree(deg, isLatitude, decimals, pp) {
@@ -187,20 +190,4 @@ function positionDirective(directive, formatter1, parser) {
     };
 }
 
-angular.module('maritimeweb.map', [])
-
-    .directive('latitude', function() {
-        return positionDirective('latitude', formatLatitude, parseLatitude);
-    })
-
-    .directive('longitude', function() {
-        return positionDirective('longitude', formatLongitude, parseLongitude);
-    })
-
-    .filter('lonlat', ['$rootScope', function($rootScope) {
-        return function(input, args) {
-            args = args || {};
-            return input && input.lat && input.lon ? formatLatLon(input, args.decimals, args.pp).trim() : '';
-        };
-    }]);
 

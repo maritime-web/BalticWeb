@@ -68,7 +68,8 @@ public class ApplicationConfig extends Application {
                 RequestAccessRestService.class,
                 ForgotPasswordRestService.class, 
                 FeedbackRestService.class,
-                AreasOfInterestRestService.class));
+                AreasOfInterestRestService.class,
+                MockNwNmRestService.class));
 
         return set;
     }

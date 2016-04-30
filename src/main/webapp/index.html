@@ -20,140 +20,88 @@
 
     <script src="http://openlayers.org/en/v3.14.2/build/ol.js" type="text/javascript"></script>
 
-    <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
-<body ng-app="maritimeweb">
-<div ng-controller="MapController">
-    <!--<div ng-controller="balticWebMap">-->
+<body>
+<div ng-controller="AppController">
 
-
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">BalticWeb</a>
-                <span><a href="#"><div id="scale-line" class="scale-line"></div></a></span>
-                <button type="button" class="navbar" >
-
-                     <span class="active"><a href="#" id="pan-to-myposition"><span class="glyphicon glyphicon-screenshot"></span></a></span></span>
-                </button>
-
-            </div>
-            <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav">
-                    <!--<li class="active"><a href="#">Home</a></li>-->
-                    <!--<li class="active"><a href="#" id="pan-to-myposition"><span class="glyphicon glyphicon-screenshot"></span> Pan to my position</a></li>-->
-
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Basemaps <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li ng-repeat="layer in layerGroupBasemaps" ><a href="#" ng-bind="layer.get('title')"></a></li>
-                            <!--<li><a href="#">Page 1-1</a></li>-->
-                        </ul>
-                    </li>
-                    <li><a href="#" id="client-position" class="mouse-position">{{myHDMSPosition}}</a></li>
-                    <li><a href="#" id="mouse-position" class="mouse-position"></a></li>
-
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    <div ng-include="'/prototype/partials/menu.html'"></div>
 
     <div class="container-fluid">
         <div class="row">
-            <div id="map" class="col-md-10 col-sm-9" >
+
+            <div class="col-lg-10 col-md-10 col-sm-9">
+                <ol-map class="map maritimeweb-map" map-state="mapState">
+                    <map-layer-group layer-group="mapBackgroundLayers"></map-layer-group>
+                    <map-layer-group layer-group="mapWeatherLayers"></map-layer-group>
+                    <map-layer-group layer-group="mapMiscLayers"></map-layer-group>
+                    <map-nw-nm-layer message-list="nwNmMessages" name="NW-NM"></map-nw-nm-layer>
+                    <map-vessel-layer vessels="vessels" name="Vessels" alerts="alerts"></map-vessel-layer>
+                    <map-current-pos-btn></map-current-pos-btn>
+                    <map-scale-line units="nautical"></map-scale-line>
+                    <map-mouse-position></map-mouse-position>
+                    <map-layer-switcher></map-layer-switcher>
+                    <map-overview collapsed="true"></map-overview>
+                </ol-map>
             </div>
 
-            <div class="col-md-2 col-sm-3 sidebar">
+            <div class="col-lg-2 col-md-2 col-sm-3 sidebar">
 
-                <uib-accordion >
-                    <uib-accordion-group is-open="status.vessel.open">
-                        <uib-accordion-heading>
-                            Vessels <span class="badge info" ng-bind="layerGroupVessels.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.vessel.open, 'glyphicon-chevron-right': !status.open}"></i>
-                        </uib-accordion-heading>
-                        <!-- List group -->
-                        <ul class="list-group">
-                             <li class="list-group-item text-primary" ng-repeat="layer in layerGroupVessels" ng-bind="layer.get('title')"></li>
-                        </ul>
-                    </uib-accordion-group>
-
-                    <uib-accordion-group is-open="status.notices.open">
-                        <uib-accordion-heading>
-                            Notices <span class="badge info" ng-bind="layerGroupNotices.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.notices.open, 'glyphicon-chevron-right': !status.open}"></i>
-                        </uib-accordion-heading>
-                        <div class="list-group-item text-primary" ng-repeat="layer in layerGroupNotices" ng-bind="layer.get('title')"></div>
-                    </uib-accordion-group>
-
-                    <uib-accordion-group is-open="status.weather.open">
-                        <uib-accordion-heading>
-                            Weather <span class="badge info" ng-bind="layerGroupWeather.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.weather.open, 'glyphicon-chevron-right': !status.open}"></i>
-                        </uib-accordion-heading>
-                        <div class="list-group-item text-primary" ng-repeat="layer in layerGroupWeather" ng-bind="layer.get('title')"></div>
-                    </uib-accordion-group>
-
-                    <uib-accordion-group is-open="status.atons.open">
-                        <uib-accordion-heading>
-                            Atons <span class="badge info" ng-bind="layerGroupAtons.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.atons.open, 'glyphicon-chevron-right': !status.open}"></i>
-                        </uib-accordion-heading>
-                        <div class="list-group-item text-primary" ng-repeat="layer in layerGroupAtons" ng-bind="layer.get('title')"></div>
-                    </uib-accordion-group>
-                </uib-accordion>
+                <div style="margin-right: 10px">
+                    <uib-accordion close-others="oneAtATime">
+                        <uib-accordion-group >
+                            <uib-accordion-heading>
+                                Vessels within area <span class="badge info" ng-bind="vessels.length"></span>
+                                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                            </uib-accordion-heading>
 
 
-                <uib-accordion close-others="oneAtATime">
-                    <uib-accordion-group >
-                        <uib-accordion-heading>
-                            Vessels within area <span class="badge info" ng-bind="vessels.length"></span> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-                        </uib-accordion-heading>
+                            <div class="list-group-item text-primary" ng-repeat="vessel in vessels | limitTo: 100">
+                                {{vessel.name}} x:{{vessel.x}} y:{{vessel.y}} angle:{{vessel.angle}}  {{vessel.type}} mmsi:{{vessel.mmsi}} {{vessel.callsign}} {{vessel.moored}}
+                            </div>
+
+                        </uib-accordion-group>
+                    </uib-accordion>
 
 
-                        <div class="list-group-item text-primary" ng-repeat="vessel in vessels | limitTo: 100">
-                            {{vessel.name}} x:{{vessel.x}} y:{{vessel.y}} angle:{{vessel.angle}}  {{vessel.type}} mmsi:{{vessel.mmsi}} {{vessel.callsign}} {{vessel.moored}}
-                        </div>
+                    <uib-accordion close-others="oneAtATime">
+                        <uib-accordion-group >
+                            <uib-accordion-heading>
+                                NW-NM messages <span class="badge info" ng-bind="nwNmMessages.length"></span>
+                                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                            </uib-accordion-heading>
 
-                        <div class="list-group-item text-primary">
-                            <span class="badge" ng-bind="clientBBox"></span> <span class="badge" ng-bind="vesselsStatus"></span> <!--span class="badge" ng-bind="lastFetchTimestamp"></span-->
-                        </div>
 
-                    </uib-accordion-group>
-                </uib-accordion>
+                            <div class="list-group-item text-primary" ng-repeat="msg in nwNmMessages | limitTo: 100">
+                                <a href ng-click="showNwNmDetails(msg)">{{msg.descs[0].title}}</a>
+                            </div>
 
-                <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="{{alert.timeout}}">{{alert.msg}}</uib-alert>
+                        </uib-accordion-group>
+                    </uib-accordion>
 
+                    <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="{{alert.timeout}}">{{alert.msg}}</uib-alert>
+                </div>
             </div>
-
-
-
 
         </div><!-- row end -->
-        <div id="popup">O</div>
         <!--/div> container end -->
     </div><!-- container end -->
 </div>
 
-<script src="prototype/maps_and_layers/ol3-layerswitcher.js"></script>
-<script src="prototype/maps_and_layers/maps_and_layers.js" type="text/javascript"></script>
-<script src="prototype/vessel/vessel-layer.js" type="text/javascript"></script>
-<script src="prototype/vessel/vessel-ais-service.js" type="text/javascript"></script>
-<script src="prototype/nw-nm/nw-nm-layer.js" type="text/javascript"></script>
-<script src="prototype/maps_and_layers/location-service.js" type="text/javascript"></script>
-
-<script src="prototype/js/position.js" type="text/javascript"></script>
+<script src="keycloak.js" type="text/javascript"></script>
+<script src="js/keycloak-angular-initializer.js" type="text/javascript"></script>
 <script src="prototype/js/app.js" type="text/javascript"></script>
+<script src="prototype/js/app-ctrl.js" type="text/javascript"></script>
+<script src="prototype/map/position.js" type="text/javascript"></script>
+<script src="prototype/map/ol3-layerswitcher.js"></script>
+<script src="prototype/map/map-service.js" type="text/javascript"></script>
+<script src="prototype/map/map-directives.js" type="text/javascript"></script>
+<script src="prototype/vessel/ais-vessel-layer.js" type="text/javascript"></script>
+<script src="prototype/nw-nm/nw-nm-layer.js" type="text/javascript"></script>
+
 
 </body>
 </html>
