@@ -33,6 +33,70 @@ angular.module('maritimeweb.vessel')
                 return $http.get('/rest/vessel/historical-track?mmsi=' + encodeURIComponent(mmsi));
             };
 
+
+            /** Returns the image and type text for the given vessel **/
+            this.imageAndTypeTextForVessel = function (vo) {
+                var colorName;
+                var vesselType;
+                switch (vo.type) {
+                    case "0" :
+                        colorName = "blue";
+                        vesselType = "Passenger";
+                        break;
+                    case "1" :
+                        colorName = "gray";
+                        vesselType = "Undefined / unknown";
+                        break;
+                    case "2" :
+                        colorName = "green";
+                        vesselType = "Cargo";
+                        break;
+                    case "3" :
+                        colorName = "orange";
+                        vesselType = "Fishing";
+                        break;
+                    case "4" :
+                        colorName = "purple";
+                        vesselType = "Sailing and pleasure";
+                        break;
+                    case "5" :
+                        colorName = "red";
+                        vesselType = "Tanker";
+                        break;
+                    case "6" :
+                        colorName = "turquoise";
+                        vesselType = "Pilot, tug and others";
+                        break;
+                    case "7" :
+                        colorName = "yellow";
+                        vesselType = "High speed craft and WIG";
+                        break;
+                    default :
+                        colorName = "gray";
+                        vesselType = "Undefined / unknown";
+                }
+
+                if (vo.moored) {
+                    return {
+                        name: "vessel_" + colorName + "_moored.png",
+                        type: vesselType,
+                        width: 12,
+                        height: 12,
+                        xOffset: -6,
+                        yOffset: -6
+                    };
+                } else {
+                    return {
+                        name: "vessel_" + colorName + ".png",
+                        type: vesselType,
+                        width: 20,
+                        height: 10,
+                        xOffset: -10,
+                        yOffset: -5
+                    };
+                }
+            };
+
         }])
 
 
@@ -84,70 +148,6 @@ angular.module('maritimeweb.vessel')
                                 $timeout.cancel(loadTimer);
                             }
                         });
-
-
-                        scope.imageAndTypeTextForVessel = function (vo) {
-                            var colorName;
-                            var vesselType;
-                            switch (vo.type) {
-                                case "0" :
-                                    colorName = "blue";
-                                    vesselType = "Passenger";
-                                    break;
-                                case "1" :
-                                    colorName = "gray";
-                                    vesselType = "Undefined / unknown";
-                                    break;
-                                case "2" :
-                                    colorName = "green";
-                                    vesselType = "Cargo";
-                                    break;
-                                case "3" :
-                                    colorName = "orange";
-                                    vesselType = "Fishing";
-                                    break;
-                                case "4" :
-                                    colorName = "purple";
-                                    vesselType = "Sailing and pleasure";
-                                    break;
-                                case "5" :
-                                    colorName = "red";
-                                    vesselType = "Tanker";
-                                    break;
-                                case "6" :
-                                    colorName = "turquoise";
-                                    vesselType = "Pilot, tug and others";
-                                    break;
-                                case "7" :
-                                    colorName = "yellow";
-                                    vesselType = "High speed craft and WIG";
-                                    break;
-                                default :
-                                    colorName = "gray";
-                                    vesselType = "Undefined / unknown";
-                            }
-
-                            if (vo.moored) {
-                                return {
-                                    name: "vessel_" + colorName + "_moored.png",
-                                    type: vesselType,
-                                    width: 12,
-                                    height: 12,
-                                    xOffset: -6,
-                                    yOffset: -6
-                                };
-                            } else {
-                                return {
-                                    name: "vessel_" + colorName + ".png",
-                                    type: vesselType,
-                                    width: 20,
-                                    height: 10,
-                                    xOffset: -10,
-                                    yOffset: -5
-                                };
-                            }
-
-                        };
 
 
                         /** TODO: Remove this method and create a methos similar to colorHexForVessel:
@@ -255,7 +255,7 @@ angular.module('maritimeweb.vessel')
 
                         /** Create a vessel feature for any openlayers 3 map. */
                         scope.createVesselFeature = function (vessel) {
-                            var image = scope.imageAndTypeTextForVessel(vessel);
+                            var image = VesselService.imageAndTypeTextForVessel(vessel);
 
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({

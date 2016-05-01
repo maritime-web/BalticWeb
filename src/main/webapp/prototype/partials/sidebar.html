@@ -26,22 +26,21 @@
             </uib-tab-heading>
             <div class="sidebar-panel">
 
-                <div ng-if="!loggedIn">Log in to see vessels</div>
+                <div ng-if="!loggedIn" class="vessel-login">
+                    <p>Log in to see vessels</p>
+                    <button class="btn btn-default" ng-click="login()">Login</button>
+                </div>
 
-                <uib-accordion close-others="oneAtATime">
-                    <uib-accordion-group >
-                        <uib-accordion-heading>
-                            Vessels within area <span class="badge info" ng-bind="vessels.length"></span>
-                            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-                        </uib-accordion-heading>
-
-
-                        <div class="list-group-item text-primary" ng-repeat="vessel in vessels | limitTo: 100">
-                            {{vessel.name}} x:{{vessel.x}} y:{{vessel.y}} angle:{{vessel.angle}}  {{vessel.type}} mmsi:{{vessel.mmsi}} {{vessel.callsign}} {{vessel.moored}}
-                        </div>
-
-                    </uib-accordion-group>
-                </uib-accordion>
+                <table width="100%">
+                    <tr ng-repeat="vessel in vessels | limitTo: 100">
+                        <td width="24" class="vessel-item">
+                            <img ng-src="{{iconForVessel(vessel)}}">
+                        </td>
+                        <td class="vessel-item"><span ng-if="vessel.mmsi">{{vessel.mmsi}}</span></td>
+                        <td class="vessel-item">{{vessel.name}}</td>
+                        <td class="vessel-item">{{toLonLat(vessel) | lonlat:{ decimals : 3, pp: true } }}</td>
+                    </tr>
+                </table>
             </div>
         </uib-tab>
 

@@ -1,8 +1,8 @@
 
 angular.module('maritimeweb.app')
 
-    .controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'NwNmService',
-        function ($scope, $http, $window, $timeout, Auth, MapService, NwNmService) {
+    .controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService',
+        function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService) {
 
             $scope.loggedIn = Auth.loggedIn;
 
@@ -38,9 +38,6 @@ angular.module('maritimeweb.app')
             $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
 
 
-            // Vessels
-            $scope.vessels = [];
-
             // Alerts
             $scope.alerts = [
                 {type: 'success', msg: 'Welcome to MaritimeWeb', timeout: 2000}
@@ -52,6 +49,24 @@ angular.module('maritimeweb.app')
                 $scope.alerts.splice(index, 1);
             };
 
+
+            /**************************************/
+            /** Vessel sidebar functionality      **/
+            /**************************************/
+
+            // Vessels
+            $scope.vessels = [];
+
+            /** Returns the icon to use for the given vessel **/
+            $scope.iconForVessel = function (vo) {
+                return '/img/' + VesselService.imageAndTypeTextForVessel(vo).name;
+            };
+
+
+            /** Returns the lat-lon attributes of the vessel */
+            $scope.toLonLat = function (vessel) {
+                return {lon: vessel.x, lat: vessel.y};
+            };
 
             /**************************************/
             /** NW-NM sidebar functionality      **/
