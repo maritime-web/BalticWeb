@@ -12,15 +12,25 @@ angular.module('maritimeweb.nw-nm')
             /**
              * Returns the published NW-NM messages
              */
-            this.getPublishedNwNm = function (instanceId, lang, wkt) {
-                // Possible parameters: "lang", "mainType" and "wkt". Refer to:
-                // http://niord.e-navigation.net/api.html#!/message_list/search
-                var params = 'instanceId=' + encodeURIComponent(instanceId);
-                params += lang ? '&lang=' + lang : '&lang=en';
+            this.getPublishedNwNm = function (instanceIds, lang, wkt) {
+                var params = lang ? 'lang=' + lang : 'lang=en';
+                angular.forEach(instanceIds, function (instanceId) {
+                    params += '&instanceId=' + encodeURIComponent(instanceId);
+                });
                 if (wkt) {
                     params += '&wkt=' + encodeURIComponent(wkt);
                 }
+
                 return $http.get('/rest/nw-nm/messages?' + params);
+            };
+
+
+            /**
+             * Get NW-NM services
+             * TODO: Add parameter for geographical extent
+             */
+            this.getNwNmServices = function () {
+                return $http.get('/rest/nw-nm/services');
             };
 
 
@@ -37,6 +47,23 @@ angular.module('maritimeweb.nw-nm')
                     }
                 });
             };
+
+            /** Returns the area heading for the given message, i.e. two root-most areas **/
+            this.getAreaHeading = function (message) {
+                if (message && message.areas && message.areas.length > 0) {
+                    var area = message.areas[0];
+                    while (area.parent && area.parent.parent) {
+                        area = area.parent;
+                    }
+                    var heading = '';
+                    if (area.parent) {
+                        heading += area.parent.descs[0].name + ' - ';
+                    }
+                    heading += area.descs[0].name;
+                    return heading;
+                }
+                return '';
+            }
         }])
 
 
@@ -51,9 +78,14 @@ angular.module('maritimeweb.nw-nm')
                 require: '^olMap',
                 scope: {
                     name:           '@',
-                    instanceId:     '=',
-                    messageList:    '=?',
+
+                    // Specify the "message" attribute for showing the geometry of a single message
                     message:        '=?',
+
+                    // Specify the "messageList" and "services" attributes for showing and loading messages within map bounds
+                    services:       '=?',
+                    messageList:    '=?',
+
                     language:       '@',
                     showGeneral:    '@',
                     fitExtent:      '@',
@@ -66,11 +98,12 @@ angular.module('maritimeweb.nw-nm')
                     var nwnmLayer;
                     var loadTimer;
                     var maxZoom = scope.maxZoom ? parseInt(scope.maxZoom) : 12;
-                    var instanceId = scope.instanceId || 'urn:mrnx:mcl:service:instance:dma:nw-nm:v0.1';
 
                     scope.showDetails = scope.message !== undefined;
                     scope.generalMessages = []; // Messages with no geometry
                     scope.language = scope.language || 'en';
+                    scope.services = scope.services || [];
+
 
                     olScope.getMap().then(function(map) {
 
@@ -199,12 +232,20 @@ angular.module('maritimeweb.nw-nm')
                         scope.loadMessages = function () {
                             loadTimer = undefined;
 
+                            // Determine the selected service instances
+                            var instanceIds = [];
+                            angular.forEach(scope.services, function (service) {
+                                if (service.selected) {
+                                    instanceIds.push(service.instanceId);
+                                }
+                            });
+
                             var extent = map.getView().calculateExtent(map.getSize());
                             var wkt = MapService.extentToWkt(extent);
 
                             // Load at most scope.maxAtonNo AtoN's
                             NwNmService
-                                .getPublishedNwNm(instanceId, scope.language, wkt)
+                                .getPublishedNwNm(instanceIds, scope.language, wkt)
                                 .success(scope.updateLayerFromMessageList);
                         };
 
@@ -220,6 +261,11 @@ angular.module('maritimeweb.nw-nm')
                                 loadTimer = $timeout(scope.loadMessages, 500);
                             }
                         };
+
+                        // Monitor changes to the service list and selection
+                        if (!scope.showDetails) {
+                            scope.$watch("services", scope.mapChanged, true);
+                        }
 
 
                         /** Returns the list of messages for the given pixel **/

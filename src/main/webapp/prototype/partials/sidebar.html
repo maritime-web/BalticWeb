@@ -1,0 +1,100 @@
+
+<div class="maritimeweb-sidebar">
+
+    <uib-tabset>
+
+        <!-- Messages tab -->
+        <uib-tab>
+            <uib-tab-heading>
+                <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;Messages
+            </uib-tab-heading>
+            <div class="sidebar-panel">
+                <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="{{alert.timeout}}">
+                    {{alert.msg}}
+                </uib-alert>
+                &nbsp;
+            </div>
+        </uib-tab>
+
+
+        <!-- Vessels tab -->
+        <uib-tab>
+            <uib-tab-heading>
+                <img src="/img/vessel_gray.png" />
+                &nbsp;Vessels
+                <span class="badge sidebar-badge" ng-bind="vessels.length"></span>
+            </uib-tab-heading>
+            <div class="sidebar-panel">
+
+                <div ng-if="!loggedIn">Log in to see vessels</div>
+
+                <uib-accordion close-others="oneAtATime">
+                    <uib-accordion-group >
+                        <uib-accordion-heading>
+                            Vessels within area <span class="badge info" ng-bind="vessels.length"></span>
+                            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                        </uib-accordion-heading>
+
+
+                        <div class="list-group-item text-primary" ng-repeat="vessel in vessels | limitTo: 100">
+                            {{vessel.name}} x:{{vessel.x}} y:{{vessel.y}} angle:{{vessel.angle}}  {{vessel.type}} mmsi:{{vessel.mmsi}} {{vessel.callsign}} {{vessel.moored}}
+                        </div>
+
+                    </uib-accordion-group>
+                </uib-accordion>
+            </div>
+        </uib-tab>
+
+
+        <!-- NW-NM tab -->
+        <uib-tab>
+            <uib-tab-heading>
+                <img src="/img/nwnm/msi.png" height="16"/>
+                NW-NM
+                <span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>
+            </uib-tab-heading>
+
+            <div class="sidebar-panel">
+
+                <div class="message-services">
+                    <table cellpadding="10">
+                        <tr>
+                            <td width="60" valign="top">
+                                <img src="/img/servicereg_152.png" height="48">
+                            </td>
+                            <td width="*">
+                                <strong>MC NW-NM Services</strong>&nbsp;
+                                <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
+                                <div class="message-service" ng-repeat="s in nwNmServices">
+                                    <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <table>
+                    <tr ng-repeat-start="msg in nwNmMessages" ng-if="$index == 0 || nwnmAreaHeading($index) != nwnmAreaHeading($index - 1)">
+                        <td colspan="2"  class="message-area-heading">
+                            {{nwnmAreaHeading($index)}}
+                        </td>
+                    </tr>
+                    <tr ng-repeat-end>
+                        <td width="24" align="left" class="message-item">
+                            <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm.png" height="18"/>
+                            <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/msi.png" height="18"/>
+                        </td>
+                        <td width="*" class="message-item">
+                            <span ng-if="msg.shortId">{{msg.shortId}}:&nbsp;</span>
+                            <a href ng-click="showNwNmDetails(msg)">{{msg.descs[0].title}}</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </uib-tab>
+
+
+    </uib-tabset>
+
+</div>

@@ -40,24 +40,74 @@ body {
     text-decoration: underline;
 }
 
+/** Map and sidebar **/
+
+.maritimeweb-map {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 200px;
+    bottom: 0;
+    background-color: #b5d0d0;
+}
+
+.maritimeweb-sidebar {
+    padding: 5px;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 200px;
+    bottom: 0;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+@media (min-width: 600px) {
+    .maritimeweb-map {
+        right: 300px;
+    }
+
+    .maritimeweb-sidebar {
+        width: 300px;
+    }
+}
+
+@media (min-width: 800px) {
+    .maritimeweb-map {
+        right: 400px;
+    }
+
+    .maritimeweb-sidebar {
+        width: 400px;
+    }
+}
+
+@media (min-width: 1000px) {
+    .maritimeweb-map {
+        right: 500px;
+    }
+
+    .maritimeweb-sidebar {
+        width: 500px;
+    }
+}
+
+.sidebar-panel {
+    padding: 10px 5px;
+}
+
+.sidebar-badge {
+    background-color: lightgray;
+    font-size: 10px;
+}
+
 /** Maps **/
 
 .map {
     position: relative;
     overflow: hidden;
-}
-
-.maritimeweb-map {
-    /*
-    position: absolute;
-    top: 50px;
-    left: 0;
-    right: 0;
-    bottom: 200px;
-    */
     width: 100%;
-    height: 800px;
-    background-color: #b5d0d0;
+    height: 100%;
 }
 
 .map-current-pos-btn {
@@ -116,6 +166,32 @@ body {
 .popover {
     font-size: 10px;
     width: 240px;
+}
+
+/** NW-NM list **/
+
+.message-services {
+    margin: 10px 20px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: lightgray;
+}
+
+.message-services {
+
+}
+
+.message-item {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.message-area-heading {
+    padding: 10px 5px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: lightgray;
+    color: white;
 }
 
 /** NW-NM Message Details Dialog **/
