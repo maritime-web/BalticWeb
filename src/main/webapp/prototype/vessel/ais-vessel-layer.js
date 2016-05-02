@@ -432,16 +432,15 @@ angular.module('maritimeweb.vessel')
                                         html: true,
                                         animation: true,
                                         delay: 5500,
-                                        //trigger: 'hover',
+                                        trigger: 'focus',
                                         'template': '<div class="popover" role="tooltip"><div class="arrow"></div>'
-                                       // + '<h3 class="popover-title"></h3>'
+                                        + '<h3 class="popover-title"></h3>'
                                         + '<div class="popover-content"></div>'
                                         + '</div>'
                                     });
-                                    //$(elm).attr('data-title',feature.get('name'));
                                     $(elm).attr('data-content',
                                         //'<div class="popover-content">' +
-                                        '<h3>' + feature.get('name') + '</h3>' +
+                                       // '<h3>' + feature.get('name') + '</h3>' +
                                         '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi=' + feature.get('mmsi') + '">' + feature.get('mmsi') + '</a></p>' +
                                         '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + feature.get('callSign') + '</p>' +
                                         '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>' +
@@ -449,12 +448,16 @@ angular.module('maritimeweb.vessel')
                                         '<p><span class="glyphicon glyphicon-flag"></span> ' + feature.get('angle') + '°</p>'
                                     //    '</div>'
                                     );
-                                   // $(elm).attr('data-title',feature.get('name'));
-
+                                    $(elm).attr( 'data-placement', 'top' );
+                                    $(elm).attr( 'data-original-title', feature.get('name') );
+                                    $(elm).attr( 'data-html', true );
+                                    $(elm).attr( 'data-animation', true );
                                     $(elm).popover('show');
                                 } else {
                                     $(elm).popover('destroy');
                                 }
+                            } else { // close popups when zoomed below lvl 8 and clicks on map...
+                                $(elm).popover('destroy');
                             }
                         });
 
