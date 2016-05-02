@@ -1,4 +1,5 @@
-angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
+var moduleName = "maritimeweb";
+var module = angular.module(moduleName, ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
         'maritimeweb.map', 'maritimeweb.maps_and_layers', 'maritimeweb.location.service',
     'maritimeweb.vessel.layer', 'maritimeweb.vessel.service', 'maritimeweb.nw-nm.layer'])
     .controller("MapController", function ($scope, $http, $timeout, vesselService, locationService, balticWebMap, vesselLayer) {
@@ -151,6 +152,7 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
         // display popup on click
         balticWebMap.map.on('click', function (evt) {
             if ($scope.zoomLvl > 8) {
+
                 var feature = balticWebMap.map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
                     return feature;
                 }, null, function (layer) {
@@ -178,20 +180,25 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
                     popup.setPosition(coord);
 
                     $(element).popover({
-                        'placement': 'top',
-                        'html': true,
-                        'content': '<h2>' + feature.get('name') + '</h2>' +
-                        '<div>' +
+                        placement: 'top',
+                        html: true,
+                        animation: true,
+                        delay: 5500,
+                        //trigger: 'hover',
+                        'template': '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3>'
+                        + '<div class="popover-content"></div></div>'
+
+
+
+                    });
+                    $(element).attr('data-title',feature.get('name'));
+                    $(element).attr('data-content', '<div>' +
                         '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi=' + feature.get('mmsi') + '">' + feature.get('mmsi') + '</a></p>' +
                         '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + feature.get('callSign') + '</p>' +
                         '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>' +
                         '<p><span class="glyphicon glyphicon-flag"></span> ' + ol.coordinate.toStringHDMS([feature.get('longitude'),feature.get('latitude')], 3) + '</p>' +
                         '<p><span class="glyphicon glyphicon-flag"></span> ' + feature.get('angle') + '°</p>' +
-                        '</div>'
-
-
-
-                    });
+                        '</div>');
                     $(element).popover('show');
                 } else {
                     $(element).popover('destroy');
@@ -215,6 +222,8 @@ angular.module("maritimeweb", ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
         balticWebMap.groupVessels.on('change:visible', mapChanged); // listens when visibility on map has been toggled.
 
     });
+console.log("module instantiate");
+//keycloakInitialize(module, moduleName, false);
 
 var postMessageToEndUser = function ($scope, msg, type, timeout) {
     $scope.alerts.push({
