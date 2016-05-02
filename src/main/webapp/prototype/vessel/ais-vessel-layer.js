@@ -428,17 +428,29 @@ angular.module('maritimeweb.vessel')
                                     popup.setPosition(coord);
 
                                     $(elm).popover({
-                                        'placement': 'top',
-                                        'html': true,
-                                        'content': '<p><strong>' + feature.get('name') + '</strong></p>' +
-                                        '<div>' +
+                                        placement: 'top',
+                                        html: true,
+                                        animation: true,
+                                        delay: 5500,
+                                        //trigger: 'hover',
+                                        'template': '<div class="popover" role="tooltip"><div class="arrow"></div>'
+                                       // + '<h3 class="popover-title"></h3>'
+                                        + '<div class="popover-content"></div>'
+                                        + '</div>'
+                                    });
+                                    //$(elm).attr('data-title',feature.get('name'));
+                                    $(elm).attr('data-content',
+                                        //'<div class="popover-content">' +
+                                        '<h3>' + feature.get('name') + '</h3>' +
                                         '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi=' + feature.get('mmsi') + '">' + feature.get('mmsi') + '</a></p>' +
                                         '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + feature.get('callSign') + '</p>' +
                                         '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>' +
-                                        '<p><span class="glyphicon glyphicon-flag"></span> ' + ol.coordinate.toStringHDMS([feature.get('longitude'), feature.get('latitude')], 3) + '</p>' +
-                                        '<p><span class="glyphicon glyphicon-flag"></span> ' + feature.get('angle') + '°</p>' +
-                                        '</div>'
-                                    });
+                                        '<p><span class="glyphicon glyphicon-flag"></span> ' + ol.coordinate.toStringHDMS([feature.get('longitude'),feature.get('latitude')], 3) + '</p>' +
+                                        '<p><span class="glyphicon glyphicon-flag"></span> ' + feature.get('angle') + '°</p>'
+                                    //    '</div>'
+                                    );
+                                   // $(elm).attr('data-title',feature.get('name'));
+
                                     $(elm).popover('show');
                                 } else {
                                     $(elm).popover('destroy');
