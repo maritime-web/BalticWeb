@@ -194,7 +194,7 @@ public class MockNwNmRestService {
     /**
      * Task that downloads messages from a given url
      */
-    private final static class MessageLoaderTask implements Callable<List<MessageVo>> {
+    private static final class MessageLoaderTask implements Callable<List<MessageVo>> {
 
         String url;
         Logger logger = LoggerFactory.getLogger(MessageLoaderTask.class);
