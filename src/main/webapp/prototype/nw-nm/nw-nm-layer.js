@@ -244,10 +244,12 @@ angular.module('maritimeweb.nw-nm')
 
 
                         var layerGeoJSONmsi = new ol.layer.Vector({
-                            title: 'Navigational Warnings - boundaries',
+                            title: 'Navigational Warnings - relevance area',
                             source: source,
                             style: stylesArea
                         });
+                        layerGeoJSONmsi.setVisible(false);
+
 
                         // Construct the layer
                         var nwFeatures = new ol.Collection();
@@ -267,7 +269,7 @@ angular.module('maritimeweb.nw-nm')
                                 return [ featureStyle ];
                             }
                         });
-                        nwLayer.setVisible(false);
+                        nwLayer.setVisible(true);
 
                         var nmFeatures = new ol.Collection();
                         nmLayer = new ol.layer.Vector({
