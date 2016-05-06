@@ -267,7 +267,7 @@ angular.module('maritimeweb.nw-nm')
                                 return [ featureStyle ];
                             }
                         });
-                        nwLayer.setVisible(true);
+                        nwLayer.setVisible(false);
 
                         var nmFeatures = new ol.Collection();
                         nmLayer = new ol.layer.Vector({
