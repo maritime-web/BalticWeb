@@ -25,6 +25,7 @@ import dk.dma.embryo.common.rs.CommonExceptionMappers;
 import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 import dk.dma.embryo.msi.rs.MsiRestService;
 //import dk.dma.embryo.tiles.json.TileSetJsonService;
+import dk.dma.embryo.msi.rs.MwNmRestService;
 import dk.dma.embryo.user.json.AreasOfInterestRestService;
 import dk.dma.embryo.user.json.AuthenticationService;
 import dk.dma.embryo.user.json.FeedbackRestService;
@@ -35,6 +36,7 @@ import dk.dma.embryo.vessel.json.BerthRestService;
 import dk.dma.embryo.vessel.json.RouteRestService;
 import dk.dma.embryo.vessel.json.RouteUploadRestService;
 import dk.dma.embryo.vessel.json.ScheduleRestService;
+import dk.dma.enav.services.registry.ServiceLookupRestService;
 //import dk.dma.embryo.weather.json.WeatherRestService;
 
 import javax.ws.rs.ApplicationPath;
@@ -69,7 +71,8 @@ public class ApplicationConfig extends Application {
                 ForgotPasswordRestService.class, 
                 FeedbackRestService.class,
                 AreasOfInterestRestService.class,
-                MockNwNmRestService.class));
+                MwNmRestService.class,
+                ServiceLookupRestService.class));
 
         return set;
     }

@@ -103,6 +103,10 @@
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>weather</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>dk.dma.enav.services</groupId>
+			<artifactId>service-registry</artifactId>
+		</dependency>
 
 <!--
 		<dependency>

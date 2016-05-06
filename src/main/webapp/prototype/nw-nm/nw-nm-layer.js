@@ -30,7 +30,7 @@ angular.module('maritimeweb.nw-nm')
              * TODO: Add parameter for geographical extent
              */
             this.getNwNmServices = function () {
-                return $http.get('/rest/nw-nm/services');
+                return $http.get('/rest/service/lookup');
             };
 
 
