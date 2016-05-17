@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 <classloading xmlns="urn:jboss:classloading:1.0"
-              name="arcticweb.war"
+              name="balticweb.war"
               domain="localhost"
               export-all="NON_EMPTY"
               import-all="true">
