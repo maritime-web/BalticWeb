@@ -26,7 +26,6 @@
       "karma-junit-reporter": "~0.2.2",
       "karma-phantomjs-launcher": "~0.1.4",
       "grunt-appcache": "~0.1.8",
-      "jasmine-core": "latest",
-      "ol3-layerswitcher": "git://github.com/walkermatt/ol3-layerswitcher.git"
+      "jasmine-core": "latest"
     }
 }
