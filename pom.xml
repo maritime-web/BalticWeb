@@ -482,7 +482,7 @@
                             <skip>${maven.node.skip}</skip>
                         </configuration>
                         <executions>
-                           <!-- <execution>
+                            <execution>
                                 <id>initialize</id>
                                 <phase>initialize</phase>
                                 <goals>
@@ -504,9 +504,9 @@
                                 <configuration>
                                     <executable>grunt</executable>
                                 </configuration>
-                            </execution>-->
+                            </execution>
 
-<!--                            <execution>
+                 <!--           <execution>
                                 <id>jsunit</id>
                                 <phase>test</phase>
                                 <goals>
