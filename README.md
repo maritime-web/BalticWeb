@@ -84,7 +84,7 @@ Properties to override should you want to place the configuration elsewhere
 BalticWeb has a default configuration file which may be overridden by setting the system property "balticweb.configuration" to the URI of an external configuration file. For example put the following in your standalone.xml-file:
 
     <system-properties>
-        <property name="balticweb.configuration" value="file:///Users/chvid/sfs/balticweb.properties"/>
+        <property name="balticweb.configuration" value="file:///~/balticweb/properties/balticweb.properties"/>
     </system-properties>
 
 In particular the file may contain URLs and passwords for the DMI Ice map server.
