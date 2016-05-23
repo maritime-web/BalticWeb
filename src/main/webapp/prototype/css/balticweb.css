@@ -1,27 +1,24 @@
-html {
-    width: 100%;
-    height: 100%;
-}
 
-body {
-    font-size: 12px;
-    margin: 0;
-    padding: 0;
-}
 
 .panel-title {
     font-size: 12px;
 }
 
-.mouse-position {
-    /*position: absolute;
-    width: 100px;
-    right: 40%;
-    */
-    top: 20px;
-    color: #F5F5FF;
-    font-size: 11px;
+.navbar {
+
+    margin: 0;
 }
+
+
+.footer, .push  {
+    position: absolute;
+    bottom: 0;
+    height: 60px;
+    background-color: #f5f5f5;
+    width:100%;
+}
+
+
 #footercontainer{
     color: #eee;
 }
@@ -40,8 +37,9 @@ body {
     text-decoration: underline;
 }
 
-/** Map and sidebar **/
 
+/** Map and sidebar **/
+/*
 .maritimeweb-map {
     position: absolute;
     top: 50px;
@@ -90,7 +88,12 @@ body {
     .maritimeweb-sidebar {
         width: 500px;
     }
+}*/
+.maritimeweb-sidebar {
+    padding: 0px;
+    overflow-y: scroll;
 }
+
 
 .sidebar-panel {
     padding: 10px 5px;
@@ -104,10 +107,9 @@ body {
 /** Maps **/
 
 .map {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    height: 600px;
 }
 
 .map-current-pos-btn {
@@ -121,6 +123,27 @@ body {
     border-radius: 4px;
     background-color: rgba(255, 255, 255, 0.4);
     opacity: 0.8;
+}
+
+.map-current-pos-orientation-btn {
+    left: 8px;
+    top: 100px;
+    font-size: 12px;
+    position: absolute;
+    z-index: 100;
+    margin: 0;
+    padding: 3px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.4);
+    opacity: 0.8;
+}
+
+.map-current-pos-orientation-btn span {
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: rgba(0, 60, 136, 0.5);
+    list-style-type:none;
 }
 
 .map-current-pos-btn span {
@@ -164,7 +187,7 @@ body {
 }
 
 .popover {
-    font-size: 10px;
+    font-size: 1em;
     width: 240px;
 }
 
@@ -249,11 +272,11 @@ ol.message-details-positions li span {
     background-color: #b5d0d0;
 }
 
-@media (min-width: 800px) {
+/*@media (min-width: 800px) {
     .message-details-map {
         height: 300px;
     }
-}
+}*/
 
 .message-details-map .ol-zoom {
     top: auto;
@@ -266,4 +289,30 @@ ol.message-details-positions li span {
     top: 30px;
     right: 30px;
     z-index: 2000;
+}
+/*
+beta ribbon banner in pure css
+*/
+
+body:after{
+    content: "beta";
+    position: fixed;
+    width: 80px;
+    height: 25px;
+    background: red;
+    opacity: 80;
+    fill-opacity: 80;
+    top: 7px;
+    left: -20px;
+    text-align: center;
+    font-size: 13px;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #fff;
+    line-height: 27px;
+    -ms-transform:rotate(-45deg);
+    -webkit-transform:rotate(-45deg);
+    transform:rotate(-45deg);
+    z-index:9999;
 }
