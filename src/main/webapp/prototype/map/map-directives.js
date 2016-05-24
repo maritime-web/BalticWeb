@@ -107,10 +107,14 @@ angular.module('maritimeweb.map')
 
                 // Disable rotation on mobile devices
                 var controls = scope.readonly ? [] : ol.control.defaults({ rotate: false });
-                var interactions = scope.readonly ? [] : ol.interaction.defaults({ altShiftDragRotate: false, pinchRotate: false});
-
+                var interactions = scope.readonly ? [] : ol.interaction.defaults({ altShiftDragRotate: true, pinchRotate: true});
+                var balticExtent = ol.proj.transformExtent([9, 53, 31, 66], 'EPSG:4326', 'EPSG:3857');
                 var layers = [];
-                var view = new ol.View();
+                var view = new ol.View({
+                    zoom: 7,
+                    minZoom: 6,
+                    extent: balticExtent
+                });
                 var map = new ol.Map({
                     target: angular.element(element)[0],
                     layers: layers,
@@ -143,6 +147,7 @@ angular.module('maritimeweb.map')
                     // Update the map
                     view.setCenter(MapService.fromLonLat(center));
                     view.setZoom(zoom);
+                    
                 };
                 scope.updateMapExtent(true);
 
