@@ -361,7 +361,7 @@ angular.module('maritimeweb.map')
             require: '^olMap',
             template:
                 "<span class='map-current-pos-btn'>" +
-                "  <span class='glyphicon glyphicon-screenshot' ng-click='currentPos()' tooltip='Current Position'></span>" +
+                "  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
                 "</span>",
             scope: {
             },
@@ -376,6 +376,8 @@ angular.module('maritimeweb.map')
 
                             var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
                             map.getView().setCenter(center);
+                            map.getView().setZoom(15);
+
                         }, function () {
                             console.error('Unable to get current position');
                         });
@@ -387,6 +389,43 @@ angular.module('maritimeweb.map')
         };
     }])
 
+    /**
+     * The map-current-pos-btn directive will add a current-position button to the map.
+     */
+    .directive('mapCurrentPosOrientationBtn', ['$window', 'MapService', function ($window, MapService) {
+        return {
+            restrict: 'E',
+            replace: false,
+            require: '^olMap',
+            template:
+            "<span class='map-current-pos-orientation-btn'>" +
+            "  <span class='glyphicon glyphicon-screenshot' ng-click='currentPosOrientation()' tooltip='Current Position and orientation'></span>" +
+            "</span>",
+            scope: {
+            },
+            link: function(scope, element, attrs, ctrl) {
+                var olScope     = ctrl.getOpenlayersScope();
+
+                olScope.getMap().then(function(map) {
+
+                    scope.currentPosOrientation = function () {
+                        $window.navigator.geolocation.getCurrentPosition(function (pos) {
+                            console.log('Got current position and rotation', pos.coords);
+                            // set up geolocation to track our position
+
+
+                            //var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
+                            //map.getView().setCenter(center);
+                        }, function () {
+                            console.error('Unable to get current position and orientation');
+                        });
+                    }
+
+                });
+
+            }
+        };
+    }])
 
     /**
      * The map-scale-line directive will add a scale line to the map.
