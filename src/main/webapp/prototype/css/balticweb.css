@@ -14,6 +14,7 @@ body {
     position: absolute;
     bottom: 0;
     width: 100%;
+    font-size: x-small;
     /* Set the fixed height of the footer here */
     height: 100px;
 }
@@ -349,7 +350,7 @@ beta ribbon banner in pure css
 */
 
 body:after {
-    content: "beta";
+    content: "alpha";
     position: absolute;
     width: 80px;
     height: 25px;
