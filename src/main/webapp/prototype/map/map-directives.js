@@ -366,7 +366,8 @@ angular.module('maritimeweb.map')
             require: '^olMap',
             template:
                 "<span class='map-current-pos-btn'>" +
-                "  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
+                    "<span><i class='fa fa-location-arrow' ng-click='currentPos()' tooltip='Current Position' aria-hidden='true'></i></span>" +
+                //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
                 "</span>",
             scope: {
             },
@@ -404,7 +405,7 @@ angular.module('maritimeweb.map')
             require: '^olMap',
             template:
             "<span class='map-current-pos-orientation-btn'>" +
-            "  <span class='glyphicon glyphicon-screenshot' ng-click='currentPosOrientation()' tooltip='Current Position and orientation'></span>" +
+            " <span><i class='fa fa-location-arrow' aria-hidden='true' ng-click='currentPosOrientation()' tooltip='Current Position and orientation' ></i></span>" +
             "</span>",
             scope: {
             },
