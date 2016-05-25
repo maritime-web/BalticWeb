@@ -34,13 +34,14 @@ angular.module('maritimeweb.app')
             // Map state and layers
             $scope.mapState = {};
             $scope.mapBackgroundLayers = MapService.createStdBgLayerGroup();
+            $scope.layersBaseMap =$scope.mapBackgroundLayers.getLayers().getArray();  
             $scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
             $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
 
 
             // Alerts
             $scope.alerts = [
-                {type: 'success', msg: 'Welcome to MaritimeWeb', timeout: 2000}
+                {type: 'success', msg: 'Welcome to MaritimeWeb', timeout: 3000}
             ];
 
 
@@ -95,7 +96,46 @@ angular.module('maritimeweb.app')
                 $window.localStorage[service.instanceId] = service.selected;
             };
 
-            
+            /** Toggle the selected status of the service **/
+            $scope.toggleService = function(service) {
+                console.log("toggleService $window.localStorage[" + service.instanceId + "] active= " +
+                     " new status=" + service.selected);
+
+                service.selected  = (service.selected == true) ? false : true; // toggle layer visibility
+                if(service.selected){
+                    $scope.alerts.push({
+                        msg: 'Activating ' + service.name + ' layer',
+                        type: 'info',
+                        timeout: 3000
+                    });
+                }
+
+                // $window.localStorage[service.instanceId] = service.selected;
+            };
+
+            /** Toggle the selected status of the service **/
+            $scope.switchBaseMap = function(basemap) {
+                // disable every basemaps
+                angular.forEach($scope.layersBaseMap, function(value){
+                    console.log(value.get('title'));
+                    value.setVisible(false)
+
+                });
+
+                basemap.setVisible(true);// activate selected basemap
+
+                    $scope.alerts.push({
+                        msg: 'Activating map ' + basemap.get('title') ,
+                        type: 'info',
+                        timeout: 3000
+                    });
+
+
+                // $window.localStorage[service.instanceId] = service.selected;
+            };
+
+
+
             /** Show the details of the message */
             $scope.showNwNmDetails = function (message) {
                 NwNmService.showMessageInfo(message);

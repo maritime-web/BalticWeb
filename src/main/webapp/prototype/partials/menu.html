@@ -17,15 +17,30 @@
             <ul class="nav navbar-nav">
 
                  <li class="dropdown">
-                      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-map-o" aria-hidden="true"></i> Maps <span class="caret"></span></a>
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-map-o fa-lg" aria-hidden="true"></i> Maps <span class="caret"></span></a>
                       <ul class="dropdown-menu">
-                          <li><a href="#">item A</a></li>
-                          <li><a href="#">item B</a></li>
+                          <li class="dropdown-header"><i class="fa fa-anchor" aria-hidden="true"></i> Change the map</li>
+                          <li ng-repeat="basemap in layersBaseMap"  ng-class="{'active':basemap.getVisible()}"><a href="#" ng-bind="basemap.get('title')" ng-click="switchBaseMap(basemap)"></a></li>
 
                       </ul>
                   </li>
 
             </ul>
+
+            <ul class="nav navbar-nav">
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i> Notices <span class="caret"></span></a>
+                    <ul class="dropdown-menu" >
+                        <li class="dropdown-header"><img src="/img/nwnm/msi.png" height="16"/> Navigational warnings and notices to mariners </li>
+                        <li ng-repeat="aService in nwNmServices" ng-class="{'active':aService.selected}"><a href="#" ng-click="toggleService(aService)"> {{aService.name}}</a></li>
+
+                    </ul>
+                </li>
+
+            </ul>
+
+
 
             <ul ng-if="!loggedIn" class="nav navbar-nav navbar-right">
                 <li><a href ng-click="login()"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
