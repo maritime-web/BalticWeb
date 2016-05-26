@@ -19,6 +19,7 @@ angular.module('maritimeweb.map')
             var mapDefaultLongitude = 22;
             var mapDefaultLatitude = 59;
             var mapDefaultZoomLevel = 7;
+            var mapMaxZoomLevel = 9;
 
 
             /** Returns the data projection */
@@ -218,7 +219,7 @@ angular.module('maritimeweb.map')
 
                 var thunderforestAttributions = [
                     new ol.Attribution({
-                        html: 'Tiles &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>'
+                        html: '<span>Tiles &copy; <a href="http://www.thunderforest.com/">Thunderforest</a></span>'
                     }),
                     ol.source.OSM.ATTRIBUTION
                 ];
@@ -273,15 +274,6 @@ angular.module('maritimeweb.map')
                             })
                         }),
                         new ol.layer.Tile({
-                            title: 'Thunderforest - OpenCycleMap',
-                            type: 'base',
-                            visible: false,
-                            source: new ol.source.OSM({
-                                url: 'http://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png',
-                                attributions: thunderforestAttributions
-                            })
-                        }),
-                        new ol.layer.Tile({
                             title: 'Thunderforest - Outdoors',
                             type: 'base',
                             visible: false,
@@ -327,7 +319,15 @@ angular.module('maritimeweb.map')
 
                 var openPortGuideAttributions = [
                     new ol.Attribution({
-                        html: '<p>Weather forecasts from <a href="http://www.openportguide.de/">www.openportguide.de</a></p>'
+                        html: '<div class="panel panel-default">' +
+                                '<div class="panel-heading">Weather forecasts from  <a href="http://www.openportguide.de/">www.openportguide.de</a></div>' +
+                                '<div class="panel-body">' +
+                                '<span>Weather forecasts are from <a href="http://www.openportguide.de/">www.openportguide.de <img src="/img/OpenPortGuideLogo_32.png"/></a><br />' +
+                                    'The work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>  ' +
+                                    '<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a></span>' +
+                              '</div>' +
+                        '</div>'
+
                     }),
                     ol.source.OSM.ATTRIBUTION
                 ];
@@ -336,10 +336,9 @@ angular.module('maritimeweb.map')
                     title: 'Weather Forecasts',
                     layers: [
                         new ol.layer.Tile({
-                            title: 'Gust  - openportguide.de',
-                            opacity: 0.4,
+                            title: 'Surface Pressure  - openportguide.de',
                             source: new ol.source.XYZ({
-                                url: 'http://weather.openportguide.de/tiles/actual/gust/5/{z}/{x}/{y}.png',
+                                url: 'http://weather.openportguide.de/tiles/actual/surface_pressure/5/{z}/{x}/{y}.png',
                                 attributions: openPortGuideAttributions
                                 //url: 'http://weather.openportguide.de/tiles/actual/air_temperature/wind_stream/5/{z}/{x}/{y}.png'
                             }),
@@ -356,12 +355,21 @@ angular.module('maritimeweb.map')
                         new ol.layer.Tile({
                             title: 'Air temperature - openportguide.de',
                             source: new ol.source.XYZ({
-                                //url: 'http://weather.openportguide.de/tiles/actual/wind_stream/5/{z}/{x}/{y}.png'
                                 url: 'http://weather.openportguide.de/tiles/actual/air_temperature/5/{z}/{x}/{y}.png',
                                 attributions: openPortGuideAttributions
                             }),
                             visible: false
                         }),
+                        new ol.layer.Tile({
+                            title: 'Precipitation - openportguide.de',
+                            source: new ol.source.XYZ({
+                                //url: 'http://weather.openportguide.de/tiles/actual/wind_stream/5/{z}/{x}/{y}.png'
+                                url: 'http://weather.openportguide.de/tiles/actual/precipitation/5/{z}/{x}/{y}.png',
+                                attributions: openPortGuideAttributions
+                            }),
+                            visible: false
+                        }),
+
                         new ol.layer.Tile({
                             title: 'Significant Wave Height - openportguide.org',
                             source: new ol.source.XYZ({
@@ -379,25 +387,30 @@ angular.module('maritimeweb.map')
 
                 var openseaMapAttributions = [
                     new ol.Attribution({
-                        html: '<p><a href="http://www.openseamap.org/">www.openseamap.org</a> ' +
-                        '- <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">' +
-                        '<img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a>'+
-                        '<br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">'+
-                        'Creative Commons Attribution-ShareAlike 2.0 Generic License</a></p>'
-                    }),
-                    ol.source.OSM.ATTRIBUTION
+                        html: '<div class="panel panel-default">' +
+                        '<div class="panel-heading">SeaMark the OpenSeaMap.org layer</div>' +
+                        '<div class="panel-body">' +
+                        '<span>' +
+                            'The OpenSeaMap.org layer and all its content is attributed to <a href="http://www.openseamap.org/">www.openseamap.org</a> ' +
+                            '- <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">' +
+                            '<img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a>' +
+                            '<br />The OpenSeaMap.org layer is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">' +
+                            'Creative Commons Attribution-ShareAlike 2.0 Generic License</a>' +
+                        '</span>' +
+                        '</div>'
+                    })
                 ];
 
                 return new ol.layer.Group({
                     title: 'Misc.',
                     layers: [
+                       // layerGeoJSONmsi,
                         new ol.layer.Tile({
                             title: 'Seamark - OpenSeaMap.org',
                             visible: false,
                             source: new ol.source.XYZ({
                                 url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
-                                attributions: openseaMapAttributions//,
-                                //crossOrigin: 'null'
+                                attributions: openseaMapAttributions
                             })
                         }),
                         new ol.layer.Tile({
@@ -411,7 +424,8 @@ angular.module('maritimeweb.map')
                         })
                     ]
                 });
-            }
+            };
+
         }]);
 
 

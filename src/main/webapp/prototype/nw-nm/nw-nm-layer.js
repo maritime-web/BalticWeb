@@ -1,5 +1,5 @@
 /**
- * Defines the main NW-NM message layer
+ * Defines the main NW-NM message layer. navigational warnings and notices to mariners
  *
  * TODO: Lifecycle management, convert to use backend data...
  */
@@ -95,7 +95,6 @@ angular.module('maritimeweb.nw-nm')
                     var olScope = ctrl.getOpenlayersScope();
                     var nwLayer;
                     var nmLayer;
-                    var boundsLayer;
                     var nwnmLayer;
                     var loadTimer;
                     var maxZoom = scope.maxZoom ? parseInt(scope.maxZoom) : 12;

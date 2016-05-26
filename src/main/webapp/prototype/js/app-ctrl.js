@@ -37,6 +37,9 @@ angular.module('maritimeweb.app')
             $scope.layersBaseMap =$scope.mapBackgroundLayers.getLayers().getArray();  
             $scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
             $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
+            $scope.mapTrafficLayers = VesselService.getLayerGroup();
+            console.log("VesselService.getLayerGroup()=" +VesselService.getLayerGroup());
+
 
 
             // Alerts
@@ -94,6 +97,24 @@ angular.module('maritimeweb.app')
             /** Update the selected status of the service **/
             $scope.nwNmSelected = function(service) {
                 $window.localStorage[service.instanceId] = service.selected;
+            };
+
+
+
+
+            /** Toggle the selected status of the layer **/
+            $scope.toggleLayer = function(layer) {
+
+                (layer.getVisible() == true) ? layer.setVisible(false) : layer.setVisible(true); // toggle layer visibility
+                if(layer.getVisible()){
+                    $scope.alerts.push({
+                        msg: 'Activating ' + layer.get('title') + ' layer',
+                        type: 'info',
+                        timeout: 3000
+                    });
+                }
+
+                // $window.localStorage[service.instanceId] = service.selected;
             };
 
             /** Toggle the selected status of the service **/
