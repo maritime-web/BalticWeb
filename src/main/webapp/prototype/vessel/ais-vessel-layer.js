@@ -1,17 +1,12 @@
 /**
  * Defines the main AIS vessel layer
  */
-var vesselLayers;
 
 angular.module('maritimeweb.vessel')
 
     /** Service for accessing AIS vessel data **/
     .service('VesselService', ['$http',
         function($http) {
-
-            this.getLayerGroup = function (){
-                return vesselLayers;
-            };
 
             /** Returns the AIS vessels within the bbox */
             this.getVesselsInArea = function (zoomLvl, bbox) {
@@ -126,6 +121,7 @@ angular.module('maritimeweb.vessel')
                 },
                 link: function(scope, element, attrs, ctrl) {
                     var olScope = ctrl.getOpenlayersScope();
+                    var vesselLayers;
                     var loadTimer;
                     scope.alerts = scope.alerts || [];
                     scope.loggedIn = Auth.loggedIn;
@@ -368,11 +364,11 @@ angular.module('maritimeweb.vessel')
                         // Create vessel layer
                         var vessselLayerAttributions = [
                             new ol.Attribution({
-                                html: '<div class="panel panel-default">' +
-                                '<div class="panel-heading">Vessel AIS Traffic information</div>' +
+                                html: '<div class="panel panel-info">' +
+                                '<div class="panel-heading">Traffic information</div>' +
                                 '<div class="panel-body">' +
-                                '<span>' +
-                                'Vessel information from <a href="http://www.helcom.fi/">Helcom</a> AIS Data' +
+                                    '<span>' +
+                                    'Vessel AIS Traffic information <a href="http://www.helcom.fi/">Helcom</a> AIS Data' +
                                     '</span>' +
                                 '</div>'
                             }),
@@ -386,18 +382,19 @@ angular.module('maritimeweb.vessel')
 
                         var vesselLayer = new ol.layer.Vector({
                             name: "vesselVectorLayer",
-                            title: "Vessels - dynamic Helcom",
+                            title: "Vessels - Helcom",
                             source: vectorSource,
                             visible: true
                         });
 
                         vesselLayers = new ol.layer.Group({
-                            title: scope.name || 'Vessels',
+                            title: 'Vessels',
                             layers: [ vesselLayer ],
                             visible: true
                         });
 
                         map.addLayer(vesselLayers);
+                        $rootScope.mapTrafficLayers = vesselLayers; // add group-layer to rootscope so it can be enabled/disabled
 
                         // update the map when a user pan-move ends.
                         map.on('moveend', scope.mapChanged);
@@ -405,9 +402,6 @@ angular.module('maritimeweb.vessel')
                         // listens when visibility on map has been toggled.
                         vesselLayers.on('change:visible', scope.mapChanged);
 
-                        scope.getLayerGroup = function (){
-                            return vesselLayers;
-                        };
                         /***************************/
                         /** Vessel Details        **/
                         /***************************/

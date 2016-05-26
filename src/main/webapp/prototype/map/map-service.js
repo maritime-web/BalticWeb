@@ -319,7 +319,7 @@ angular.module('maritimeweb.map')
 
                 var openPortGuideAttributions = [
                     new ol.Attribution({
-                        html: '<div class="panel panel-default">' +
+                        html: '<div class="panel panel-info">' +
                                 '<div class="panel-heading">Weather forecasts from  <a href="http://www.openportguide.de/">www.openportguide.de</a></div>' +
                                 '<div class="panel-body">' +
                                 '<span>Weather forecasts are from <a href="http://www.openportguide.de/">www.openportguide.de <img src="/img/OpenPortGuideLogo_32.png"/></a><br />' +
@@ -387,7 +387,7 @@ angular.module('maritimeweb.map')
 
                 var openseaMapAttributions = [
                     new ol.Attribution({
-                        html: '<div class="panel panel-default">' +
+                        html: '<div class="panel panel-info">' +
                         '<div class="panel-heading">SeaMark the OpenSeaMap.org layer</div>' +
                         '<div class="panel-body">' +
                         '<span>' +

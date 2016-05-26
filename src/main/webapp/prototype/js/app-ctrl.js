@@ -34,19 +34,14 @@ angular.module('maritimeweb.app')
             // Map state and layers
             $scope.mapState = {};
             $scope.mapBackgroundLayers = MapService.createStdBgLayerGroup();
-            $scope.layersBaseMap =$scope.mapBackgroundLayers.getLayers().getArray();  
             $scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
             $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
-            $scope.mapTrafficLayers = VesselService.getLayerGroup();
-            console.log("VesselService.getLayerGroup()=" +VesselService.getLayerGroup());
-
-
+            //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
 
             // Alerts
             $scope.alerts = [
                 {type: 'success', msg: 'Welcome to MaritimeWeb', timeout: 3000}
             ];
-
 
             /** Closes the alert at the given index */
             $scope.closeAlert = function (index) {
@@ -100,11 +95,8 @@ angular.module('maritimeweb.app')
             };
 
 
-
-
             /** Toggle the selected status of the layer **/
             $scope.toggleLayer = function(layer) {
-
                 (layer.getVisible() == true) ? layer.setVisible(false) : layer.setVisible(true); // toggle layer visibility
                 if(layer.getVisible()){
                     $scope.alerts.push({
@@ -113,14 +105,10 @@ angular.module('maritimeweb.app')
                         timeout: 3000
                     });
                 }
-
-                // $window.localStorage[service.instanceId] = service.selected;
             };
 
             /** Toggle the selected status of the service **/
             $scope.toggleService = function(service) {
-              /*  console.log("toggleService $window.localStorage[" + service.instanceId + "] active= " +
-                     " new status=" + service.selected);*/
                 service.selected  = (service.selected == true) ? false : true; // toggle layer visibility
                 if(service.selected){
                     $scope.alerts.push({
@@ -129,8 +117,6 @@ angular.module('maritimeweb.app')
                         timeout: 3000
                     });
                 }
-
-                // $window.localStorage[service.instanceId] = service.selected;
             };
 
             /** Toggle the selected status of the service **/
@@ -139,19 +125,14 @@ angular.module('maritimeweb.app')
                 angular.forEach($scope.layersBaseMap, function(value){
                     //console.log(value.get('title'));
                     value.setVisible(false)
-
                 });
-
                 basemap.setVisible(true);// activate selected basemap
 
-                    $scope.alerts.push({
-                        msg: 'Activating map ' + basemap.get('title') ,
-                        type: 'info',
-                        timeout: 3000
-                    });
-
-
-                // $window.localStorage[service.instanceId] = service.selected;
+                $scope.alerts.push({
+                    msg: 'Activating map ' + basemap.get('title') ,
+                    type: 'info',
+                    timeout: 3000
+                });
             };
 
 
