@@ -402,7 +402,7 @@ angular.module('maritimeweb.map')
                 ];
 
                 return new ol.layer.Group({
-                    title: 'Misc.',
+                    title: 'Navigation',
                     layers: [
                        // layerGeoJSONmsi,
                         new ol.layer.Tile({
@@ -412,7 +412,7 @@ angular.module('maritimeweb.map')
                                 url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
                                 attributions: openseaMapAttributions
                             })
-                        }),
+                        })/*,
                         new ol.layer.Tile({
                             title: 'Countries',
                             source: new ol.source.TileWMS({
@@ -421,7 +421,7 @@ angular.module('maritimeweb.map')
                                 serverType: 'geoserver'
                             }),
                             visible: false
-                        })
+                        })*/
                     ]
                 });
             };

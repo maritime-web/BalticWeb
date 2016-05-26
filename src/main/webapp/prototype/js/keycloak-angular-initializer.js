@@ -48,7 +48,7 @@ var keycloakInitialize = function (module, moduleName, loginRequired, loggedInPa
                     Auth.authz.updateToken(5).success(function () {
                         config.headers = config.headers || {};
                         config.headers.Authorization = 'Bearer ' + Auth.authz.token;
-                        console.log('*** Auth.authz.tokenParsed: ' + JSON.stringify(Auth.authz.tokenParsed));
+                        //console.log('*** Auth.authz.tokenParsed: ' + JSON.stringify(Auth.authz.tokenParsed));
                         deferred.resolve(config);
                     }).error(function () {
                         deferred.reject('Failed to refresh token');

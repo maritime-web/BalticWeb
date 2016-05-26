@@ -119,9 +119,8 @@ angular.module('maritimeweb.app')
 
             /** Toggle the selected status of the service **/
             $scope.toggleService = function(service) {
-                console.log("toggleService $window.localStorage[" + service.instanceId + "] active= " +
-                     " new status=" + service.selected);
-
+              /*  console.log("toggleService $window.localStorage[" + service.instanceId + "] active= " +
+                     " new status=" + service.selected);*/
                 service.selected  = (service.selected == true) ? false : true; // toggle layer visibility
                 if(service.selected){
                     $scope.alerts.push({
@@ -138,7 +137,7 @@ angular.module('maritimeweb.app')
             $scope.switchBaseMap = function(basemap) {
                 // disable every basemaps
                 angular.forEach($scope.layersBaseMap, function(value){
-                    console.log(value.get('title'));
+                    //console.log(value.get('title'));
                     value.setVisible(false)
 
                 });

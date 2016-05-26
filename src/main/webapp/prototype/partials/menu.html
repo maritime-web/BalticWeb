@@ -58,7 +58,7 @@
 
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-life-ring fa-lg" aria-hidden="true"></i> Misc. <span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-life-ring fa-lg" aria-hidden="true"></i> Navigation <span class="caret"></span></a>
                     <ul class="dropdown-menu" >
                         <li class="dropdown-header"> <i class="fa fa-life-ring" aria-hidden="true"></i> Various maritime services</li>
                         <li ng-repeat="aService in mapMiscLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
