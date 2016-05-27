@@ -297,7 +297,7 @@ angular.module('maritimeweb.vessel')
                                 });
                                 return;
                             }
-
+                            $rootScope.loadingData = true; // start spinner
                             scope.alerts.push({
                                 msg: 'Fetching vessel data',
                                 type: 'info',
@@ -338,8 +338,11 @@ angular.module('maritimeweb.vessel')
 
                                     vesselLayer.getSource().clear();
                                     vesselLayer.getSource().addFeatures(features);
+                                    $rootScope.loadingData = false; // stop spinner
                                 })
                                 .error(function (reason) {
+                                    $rootScope.loadingData = false; // stop spinner
+                                    console.log(reason);
                                     scope.alerts.push({
                                         msg: "Connection problems " + reason,
                                         type: 'danger',

@@ -12,6 +12,8 @@
             <a class="navbar-brand" href="#"><i class="fa fa-anchor fa-lg" aria-hidden="true"></i>
                 BalticWeb
             </a>
+            <!--<p class="navbar-text navbar-toggle" data-toggle="collapse" data-target="#myNavbar" ng-if="loadingData" > <i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></p>-->
+
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
@@ -68,13 +70,15 @@
 
 
 
-
             <ul ng-if="!loggedIn" class="nav navbar-nav navbar-right">
                 <li><a href ng-click="login()"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
             </ul>
             <ul ng-if="loggedIn" class="nav navbar-nav navbar-right">
                 <li><a href="#" ng-click="accountManagement()"><span class="glyphicon glyphicon-user"></span> {{userName()}}</a></li>
                 <li><a href="" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"  ng-if="loadingData"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></a></li>
             </ul>
         </div>
     </div>
