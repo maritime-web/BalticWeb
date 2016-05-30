@@ -1,0 +1,28 @@
+version: '2'
+services:
+  balticweb:
+    image: dmadk/balticweb
+    links:
+      - mysqldb:db
+      - couchdb:couch
+    ports: 
+      - "8080:8080"
+      - "8443:8443"
+      #- "9990:9990"
+    depends_on: 
+      - mysqldb
+      - couchdb
+    volumes: 
+      - ~$USER/balticweb/properties:/opt/jboss/wildfly/balticweb_properties
+  mysqldb:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: embryo
+      MYSQL_PASSWORD: embryo
+      MYSQL_DATABASE: embryo
+  couchdb:
+    image: dmadk/embryo-couchdb
+    volumes:
+      - ~$USER/balticweb/couchdb:/data
+
