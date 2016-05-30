@@ -30,10 +30,14 @@
 
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-ship fa-lg" aria-hidden="true"></i> Traffic <span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-ship fa-lg" aria-hidden="true"></i> Traffic & Navigation<span class="caret"></span></a>
                     <ul class="dropdown-menu" >
                         <li class="dropdown-header"> <i class="fa fa-ship" aria-hidden="true"></i> Vessel position information from AIS</li>
                         <li ng-repeat="aService in mapTrafficLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
+
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header"> <i class="fa fa-life-ring" aria-hidden="true"></i> Maritime navigational aid information</li>
+                        <li ng-repeat="aService in mapMiscLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
                     </ul>
                 </li>
             </ul>
@@ -57,17 +61,6 @@
                     </ul>
                 </li>
             </ul>
-
-            <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-life-ring fa-lg" aria-hidden="true"></i> Navigation <span class="caret"></span></a>
-                    <ul class="dropdown-menu" >
-                        <li class="dropdown-header"> <i class="fa fa-life-ring" aria-hidden="true"></i> Maritime navigation services</li>
-                        <li ng-repeat="aService in mapMiscLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
-                    </ul>
-                </li>
-            </ul>
-
 
 
             <ul ng-if="!loggedIn" class="nav navbar-nav navbar-right">

@@ -466,6 +466,14 @@ angular.module('maritimeweb.vessel')
                                 }
                             } else { // close popups when zoomed below lvl 8 and clicks on map...
                                 $(elm).popover('destroy');
+                                if (scope.loggedIn) {
+                                    scope.alerts.push({
+                                        msg: 'Zoom in for more detailed information',
+                                        type: 'info',
+                                        timeout: 2000
+                                    });
+                                    return;
+                                }
                             }
                         });
 
