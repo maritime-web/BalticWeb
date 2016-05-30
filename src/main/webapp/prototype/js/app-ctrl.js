@@ -3,7 +3,6 @@ angular.module('maritimeweb.app')
 
     .controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService',
         function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService) {
-
             $scope.loggedIn = Auth.loggedIn;
 
             /** Logs the user in via Keycloak **/
@@ -121,9 +120,10 @@ angular.module('maritimeweb.app')
 
             /** Toggle the selected status of the service **/
             $scope.switchBaseMap = function(basemap) {
+                //console.log('Switching BaseMap');
                 // disable every basemaps
-                angular.forEach($scope.layersBaseMap, function(value){
-                    //console.log(value.get('title'));
+                angular.forEach($scope.mapBackgroundLayers.getLayers().getArray(), function(value){
+                   // console.log("disabling " + value.get('title'));
                     value.setVisible(false)
                 });
                 basemap.setVisible(true);// activate selected basemap
