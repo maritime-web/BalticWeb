@@ -55,6 +55,11 @@ angular.module('maritimeweb.app')
             // Vessels
             $scope.vessels = [];
 
+            $scope.showgraphSidebar = false;
+            $scope.toggle = function() {
+                $scope.showgraphSidebar = !$scope.showgraphSidebar;
+            }
+
             /** Returns the icon to use for the given vessel **/
             $scope.iconForVessel = function (vo) {
                 return '/img/' + VesselService.imageAndTypeTextForVessel(vo).name;

@@ -309,6 +309,7 @@ angular.module('maritimeweb.nw-nm')
                             if (messages && messages.length > 0) {
                                 scope.messageList.push.apply(scope.messageList, messages);
                                 angular.forEach(scope.messageList, scope.addMessageToLayer);
+
                             }
                         };
 
@@ -336,6 +337,7 @@ angular.module('maritimeweb.nw-nm')
 
                         /** Loads the messages from the server **/
                         scope.loadMessages = function () {
+                            $rootScope.loadingData = true; // stop spinner
                             loadTimer = undefined;
 
                             // Determine the selected service instances
@@ -353,6 +355,8 @@ angular.module('maritimeweb.nw-nm')
                             NwNmService
                                 .getPublishedNwNm(instanceIds, scope.language, wkt)
                                 .success(scope.updateLayerFromMessageList);
+                            $rootScope.loadingData = false; // stop spinner
+
                         };
 
 

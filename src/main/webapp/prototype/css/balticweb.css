@@ -6,17 +6,19 @@ html {
 
 body {
     /* Margin bottom by footer height */
-    margin-bottom: 100px;
+    margin-bottom: 0px;
 }
 /* Sticky footer styles
 -------------------------------------------------- */
 .footer {
     position: absolute;
-    bottom: 0;
+    bottom: -70px;
     width: 100%;
     font-size: x-small;
     /* Set the fixed height of the footer here */
-    height: 100px;
+    height: auto;
+    background-color: whitesmoke;
+
 }
 
 .push {
@@ -32,6 +34,7 @@ body {
 
 .navbar {
     margin: 0;
+
 }
 
 .dialog-close-btn {
@@ -99,8 +102,58 @@ body {
     }
 }*/
 .maritimeweb-sidebar {
-    padding: 0px;
-   /* overflow-y: scroll;*/
+
+    position: absolute;
+    top: 75px;
+    bottom: 3%;
+    right: 2%;
+    padding: 1em;
+    margin: 1em;
+    z-index: 9999;
+    height: auto;
+    background-color: white ;
+
+
+    overflow-y: scroll;
+
+    opacity: 0.90;
+
+}
+.sidebar-toggle{
+    top: 75px;
+    right: 12px;
+    width: 2em;
+    font-size: 1.5em;
+    position: absolute;
+    z-index: 100;
+    margin: 0;
+    padding: 3px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.4);
+    opacity: 0.8;
+}
+
+
+
+.sidebar-toggle:hover {
+    cursor: hand;
+    background-color: rgba(255, 255, 255, 0.8);
+
+}
+.sidebar-toggle span {
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: rgba(0, 60, 136, 0.5);
+    list-style-type: none;
+}
+
+.sidebar-toggle:hover span {
+    cursor: pointer;
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: rgba(0, 60, 136, 0.9);
 }
 
 .sidebar-panel {
@@ -115,11 +168,30 @@ body {
 /** Maps **/
 
 .map {
-    padding: 5px;
+    padding: 0px;
     margin-right: 0px;
-    height: 600px;
+    height: 90%;
+    width:100%;
+    position: absolute;
+    border: 1px #269 solid;
 
+    background-color:#269;
+    background-image: linear-gradient(white 2px, transparent 2px),
+    linear-gradient(90deg, white 2px, transparent 2px),
+    linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
+    background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
+    /*
+    background:url(
+    data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAI0lEQVQIW2M8c+bMfxMTE0YGKADxwRyYBIxGUQHTgV0lNjMBG7MizEwu19wAAAAASUVORK5CYII=
+    ) repeat;
+    */
 }
+
+
+
+/*
 @media (min-width: 300px) {
     .map {
         height: 475px;
@@ -131,16 +203,20 @@ body {
         height: 500px;
     }
 }
-@media (min-width: 600px) {
+@media (min-width: 767px) {
     .map {
         height: 600px;
     }
 }
+
+
 @media (min-width: 1000px) {
     .map {
         height: 700px;
     }
 }
+*/
+
 
 
 .map-current-pos-btn {
@@ -229,10 +305,6 @@ body {
     background-color: rgba(0, 60, 136, 0.5);
 }
 
-.layer-switcher {
-    top: 10px;
-    right: 20px;
-}
 
 .popover {
     font-size: 1em;
@@ -313,17 +385,19 @@ ol.message-details-positions li span {
 
 .message-details-map {
     width: 100%;
-    height: 200px;
+   /* height: 200px;*/
     border: 1px solid lightgray;
     margin-bottom: 20px;
     background-color: #b5d0d0;
+    position: relative;
+    height: 200px;
 }
 
-/*@media (min-width: 800px) {
+@media (min-width: 800px) {
     .message-details-map {
         height: 300px;
     }
-}*/
+}
 
 .message-details-map .ol-zoom {
     top: auto;
@@ -343,7 +417,7 @@ ol.message-details-positions li span {
 Making room for the beta ribbon banner
 */
 .navbar-brand{
-    padding-left: 50px;
+    padding-left: 41px;
 }
 /*
 beta ribbon banner in pure css
