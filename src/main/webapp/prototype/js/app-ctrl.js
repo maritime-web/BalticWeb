@@ -81,7 +81,8 @@ angular.module('maritimeweb.app')
             /** Reloads the NW-NM services **/
             $scope.refreshNwNmServices = function () {
                 $scope.nwNmServices.length = 0;
-                NwNmService.getNwNmServices()
+
+                NwNmService.getNwNmServices($scope.mapState['wktextent'])
                     .success(function (services) {
                         // Update the selected status from localstorage
                         angular.forEach(services, function (service) {
@@ -90,7 +91,14 @@ angular.module('maritimeweb.app')
                         })
                     });
             };
-            $scope.refreshNwNmServices();
+
+            var stopWatching = $scope.$watch("mapState['wktextent']", function (newValue) {
+                if (angular.isDefined(newValue)) {
+                    
+                    $scope.refreshNwNmServices();
+                    // stopWatching();
+                }
+            });
 
 
             /** Update the selected status of the service **/

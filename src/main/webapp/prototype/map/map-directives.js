@@ -170,6 +170,7 @@ angular.module('maritimeweb.map')
                         scope.mapState['zoom'] = view.getZoom();
                         scope.mapState['center'] = MapService.round(MapService.toLonLat(view.getCenter()), 4);
                         scope.mapState['extent'] = MapService.round(MapService.toLonLatExtent(extent), 4);
+                        scope.mapState['wktextent'] = MapService.extentToWkt(extent);
                         scope.$$phase || scope.$apply();
                     };
                     map.on('moveend', scope.mapChanged);

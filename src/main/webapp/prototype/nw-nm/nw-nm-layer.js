@@ -29,8 +29,9 @@ angular.module('maritimeweb.nw-nm')
              * Get NW-NM services
              * TODO: Add parameter for geographical extent
              */
-            this.getNwNmServices = function () {
-                var params = 'wkt=' + encodeURIComponent('POLYGON ((6 50, 6 60, 19 60, 19 50, 6 50))');
+            this.getNwNmServices = function (wkt) {
+                // var params = 'wkt=' + encodeURIComponent('POLYGON ((6 50, 6 60, 19 60, 19 50, 6 50))');
+                var params = 'wkt=' + encodeURIComponent(wkt);
                 var pathParam = encodeURIComponent('urn:mrnx:mcl:service:dma:nw-nm:rest');
                 var request = '/rest/service/lookup/'+ pathParam +'?' + params;
                 return $http.get(request);
