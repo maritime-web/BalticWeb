@@ -14,7 +14,7 @@
  */
 package dk.dma.balticweb.rest;
 
-import dk.dma.arcticweb.reporting.json.GreenPosRestService;
+//import dk.dma.arcticweb.reporting.json.GreenPosRestService;
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
 //import dk.dma.embryo.dataformats.inshore.InshoreIceReportJsonService;
@@ -22,7 +22,7 @@ import dk.dma.embryo.common.rs.CommonExceptionMappers;
 //import dk.dma.embryo.dataformats.json.IceObservationRestService;
 //import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 //import dk.dma.embryo.metoc.json.MetocRestService;
-import dk.dma.embryo.dataformats.json.ShapeFileRestService;
+//import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 import dk.dma.embryo.msi.rs.MsiRestService;
 //import dk.dma.embryo.tiles.json.TileSetJsonService;
 import dk.dma.embryo.msi.rs.MwNmRestService;
@@ -57,8 +57,8 @@ public class ApplicationConfig extends Application {
         set.addAll(Arrays.asList(
                 RouteRestService.class, 
                 RouteUploadRestService.class, 
-                ShapeFileRestService.class,
-                GreenPosRestService.class,
+  //              ShapeFileRestService.class,
+                //GreenPosRestService.class,
                 BerthRestService.class,
                 AuthenticationService.class,
                 TestDataRestService.class, 
@@ -70,7 +70,7 @@ public class ApplicationConfig extends Application {
                 RequestAccessRestService.class,
                 ForgotPasswordRestService.class, 
                 FeedbackRestService.class,
-                AreasOfInterestRestService.class,
+               // AreasOfInterestRestService.class,
                 MwNmRestService.class,
                 ServiceLookupRestService.class));
 

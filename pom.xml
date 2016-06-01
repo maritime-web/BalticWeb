@@ -74,10 +74,10 @@
 			<artifactId>vessel</artifactId>
 		</dependency>
 
-		<dependency>
+	<!--	<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>dataformats</artifactId>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
@@ -89,12 +89,14 @@
 			<artifactId>msi</artifactId>
 		</dependency>
 
+<!--
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>metoc</artifactId>
 		</dependency>
+-->
 
-		<dependency>
+<!--		<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>reporting</artifactId>
 		</dependency>
@@ -102,7 +104,7 @@
 		<dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>weather</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>service-registry</artifactId>
