@@ -45,7 +45,7 @@ angular.module('maritimeweb.map')
     /**
      * Defines the parent ol-map directive.
      */
-    .directive('olMap', ['$rootScope', '$q', '$timeout', 'MapService', function ($rootScope, $q, $timeout, MapService) {
+    .directive('olMap', ['$rootScope', '$q', '$timeout', 'MapService', '$window', function ($rootScope, $q, $timeout, MapService, $window) {
         return {
             restrict: 'EA',
             replace: true,
@@ -171,6 +171,7 @@ angular.module('maritimeweb.map')
                         scope.mapState['center'] = MapService.round(MapService.toLonLat(view.getCenter()), 4);
                         scope.mapState['extent'] = MapService.round(MapService.toLonLatExtent(extent), 4);
                         scope.mapState['wktextent'] = MapService.extentToWkt(extent);
+                        $window.localStorage.setItem('mapState-storage', JSON.stringify(scope.mapState)); // storing map state
                         scope.$$phase || scope.$apply();
                     };
                     map.on('moveend', scope.mapChanged);

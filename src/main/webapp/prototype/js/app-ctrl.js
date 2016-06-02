@@ -32,7 +32,7 @@ angular.module('maritimeweb.app')
 
 
             // Map state and layers
-            $scope.mapState = {};
+            $scope.mapState =  JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage'))  : {};
             $scope.mapBackgroundLayers = MapService.createStdBgLayerGroup();
             $scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
             $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
@@ -168,5 +168,5 @@ angular.module('maritimeweb.app')
                 var msg = $scope.nwNmMessages[index];
                 return NwNmService.getAreaHeading(msg);
             };
-
+            
         }]);
