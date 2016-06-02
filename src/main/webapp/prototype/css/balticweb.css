@@ -185,16 +185,17 @@ body {
 */
 
 .sidebar-toggle-btn {
+    color: white;
     top: 140px;
     left: 12px;
-    width: 43px;
     font-size: 1.5em;
     position: absolute;
     z-index: 100;
     margin: 0;
     padding: 3px;
     border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.5);
+    border: 2px  rgba(255, 255, 255, 0.9) solid;
+    background-color: rgba(0, 60, 136, 0.5);
     transition: background .5s ease-in-out;
     -moz-transition: background .5s ease-in-out;
     -webkit-transition: background .5s ease-in-out;
@@ -204,10 +205,10 @@ body {
 
 .sidebar-toggle-btn:hover {
     cursor: hand;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 60, 136, 0.9);
 
 }
-.sidebar-toggle-btn span {
+/*.sidebar-toggle-btn span {
     color: white;
     border-radius: 4px;
     padding: 4px;
@@ -227,7 +228,7 @@ body {
     border-radius: 4px;
     padding: 4px;
     background-color: rgba(0, 60, 136, 0.9);
-}
+}*/
 
 
 
