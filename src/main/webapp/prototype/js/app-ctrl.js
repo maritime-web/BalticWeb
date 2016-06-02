@@ -3,6 +3,7 @@ angular.module('maritimeweb.app')
 
     .controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService',
         function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService) {
+            var loadTimerService = false;
             $scope.loggedIn = Auth.loggedIn;
 
             /** Logs the user in via Keycloak **/
@@ -55,10 +56,7 @@ angular.module('maritimeweb.app')
             // Vessels
             $scope.vessels = [];
 
-            $scope.showgraphSidebar = false;
-            $scope.toggle = function() {
-                $scope.showgraphSidebar = !$scope.showgraphSidebar;
-            }
+ 
 
             /** Returns the icon to use for the given vessel **/
             $scope.iconForVessel = function (vo) {
@@ -80,6 +78,7 @@ angular.module('maritimeweb.app')
 
             /** Reloads the NW-NM services **/
             $scope.refreshNwNmServices = function () {
+
                 $scope.nwNmServices.length = 0;
 
                 NwNmService.getNwNmServices($scope.mapState['wktextent'])
@@ -89,14 +88,22 @@ angular.module('maritimeweb.app')
                             $scope.nwNmServices.push(service);
                             service.selected = $window.localStorage[service.instanceId] == 'true';
                         })
-                    });
+                    })
+                    .error(function(error){
+                    console.error("Error getting NW NM service. Reason=" + error);
+                })
             };
 
             var stopWatching = $scope.$watch("mapState['wktextent']", function (newValue) {
                 if (angular.isDefined(newValue)) {
-                    
-                    $scope.refreshNwNmServices();
-                    // stopWatching();
+
+                    if (loadTimerService) {
+                        $timeout.cancel(loadTimerService);
+                    }
+                    loadTimerService = $timeout(function () {
+                            //console.log("load timer start");
+                            $scope.refreshNwNmServices();
+                        }, 5000);
                 }
             });
 

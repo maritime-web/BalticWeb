@@ -72,6 +72,7 @@ angular.module('maritimeweb.nw-nm')
 
 
 
+        
     /**
      * The map-nw-nm-layer directive supports drawing a list of messages or a single message on a map layer
      */
@@ -80,6 +81,10 @@ angular.module('maritimeweb.nw-nm')
             return {
                 restrict: 'E',
                 require: '^olMap',
+                template:
+                "<span ng-class='{hidden : !sidebarListViewShowBtn}' class='sidebar-toggle-btn'>" +
+                "   <span ng-click='toggleList()' > <i class='fa fa-list-ol ' aria-hidden='true'></i> </span>" +
+                "</span>",
                 scope: {
                     name:           '@',
 
@@ -107,6 +112,15 @@ angular.module('maritimeweb.nw-nm')
                     scope.generalMessages = []; // Messages with no geometry
                     scope.language = scope.language || 'en';
                     scope.services = scope.services || [];
+
+
+                    scope.showgraphSidebar = false;
+
+                    scope.toggleList = function() {
+                        $rootScope.showgraphSidebar = !$rootScope.showgraphSidebar;
+                        //console.log("toggle list visibility = " +$rootScope.showgraphSidebar);
+
+                    };
 
 
                     olScope.getMap().then(function(map) {
@@ -364,12 +378,16 @@ angular.module('maritimeweb.nw-nm')
                         /** When the map extent changes, reload the messages using a timer to batch up changes **/
                         scope.mapChanged = function () {
                             // TODO: Check if either nwLayer or nmLayer is visible. Not working. Why?
+                            //console.log("nwnmLayer.getVisible()=" + nwnmLayer.getVisible());
                             if (nwnmLayer.getVisible()) {
+                                scope.sidebarListViewShowBtn = true;
                                 // Make sure we reload at most every half second
                                 if (loadTimer) {
                                     $timeout.cancel(loadTimer);
                                 }
                                 loadTimer = $timeout(scope.loadMessages, 500);
+                            }else{
+                                scope.sidebarListViewShowBtn = false;
                             }
                         };
 

@@ -36,6 +36,10 @@ body {
     margin: 0;
 
 }
+.ng-hide {
+    height: 0;
+    opacity: 0;
+}
 
 .dialog-close-btn {
     float: right;
@@ -102,14 +106,13 @@ body {
     }
 }*/
 .maritimeweb-sidebar {
-
     position: absolute;
     top: 75px;
     bottom: 3%;
     right: 2%;
     margin: 1em;
     z-index: 300;
-    height: auto;
+    height: 75%;
     background-color: white ;
 
     border-radius: 4px;
@@ -117,6 +120,7 @@ body {
     overflow-y: scroll;
 
     opacity: 0.90;
+    border: 1px #269 solid;
 
 }
 
@@ -181,7 +185,7 @@ body {
 */
 
 .sidebar-toggle-btn {
-    top: 180px;
+    top: 140px;
     left: 12px;
     width: 43px;
     font-size: 1.5em;
@@ -208,7 +212,7 @@ body {
     border-radius: 4px;
     padding: 4px;
     width: 44px;
-    margin:0px;
+    margin: 0;
 
     background-color: rgba(0, 60, 136, 0.5);
     list-style-type: none;

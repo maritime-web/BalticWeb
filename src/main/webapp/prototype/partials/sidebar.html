@@ -1,5 +1,6 @@
 
-<div  ng-class="showgraphSidebar ? 'maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar' : 'hidden'" >
+<!-- div ng-hide="!showgraphSidebar" ng-class="showgraphSidebar ? 'maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar' : 'hidden '" -->
+<div ng-show="showgraphSidebar" class="maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar" >
 
     <uib-tabset>
 
@@ -74,7 +75,7 @@
                         </td>
                     </tr>
                 </table>
-<!--                <div class="message-services">
+                <div class="message-services">
                     <table cellpadding="10">
                         <tr>
                             <td width="60" valign="top">
@@ -89,7 +90,7 @@
                             </td>
                         </tr>
                     </table>
-                </div>-->
+                </div>
             </div>
 
         </uib-tab>
