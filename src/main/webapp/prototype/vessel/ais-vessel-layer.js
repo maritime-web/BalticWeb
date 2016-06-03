@@ -5,8 +5,8 @@
 angular.module('maritimeweb.vessel')
 
     /** Service for accessing AIS vessel data **/
-    .service('VesselService', ['$http',
-        function($http) {
+    .service('VesselService', ['$http', 'growl',
+        function($http, growl) {
 
             /** Returns the AIS vessels within the bbox */
             this.getVesselsInArea = function (zoomLvl, bbox) {
@@ -107,8 +107,8 @@ angular.module('maritimeweb.vessel')
      * It will automatically load the vessels for the current map bounding box,
      * but only if the user is logged in.
      */
-    .directive('mapVesselLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'VesselService',
-        function ($rootScope, $timeout, Auth, MapService, VesselService) {
+    .directive('mapVesselLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'VesselService', 'growl',
+        function ($rootScope, $timeout, Auth, MapService, VesselService, growl) {
             return {
                 restrict: 'E',
                 replace: false,
@@ -123,7 +123,6 @@ angular.module('maritimeweb.vessel')
                     var olScope = ctrl.getOpenlayersScope();
                     var vesselLayers;
                     var loadTimer;
-                    scope.alerts = scope.alerts || [];
                     scope.loggedIn = Auth.loggedIn;
 
                     olScope.getMap().then(function(map) {
@@ -290,19 +289,12 @@ angular.module('maritimeweb.vessel')
                         scope.refreshVessels = function () {
 
                             if (!scope.loggedIn) {
-                                scope.alerts.push({
-                                    msg: 'Log in to see vessels',
-                                    type: 'info',
-                                    timeout: 1000
-                                });
+                                growl.info('Log in to see vessels');
                                 return;
                             }
                             $rootScope.loadingData = true; // start spinner
-                            scope.alerts.push({
-                                msg: 'Fetching vessel data',
-                                type: 'info',
-                                timeout: 1000
-                            });
+                            growl.info('Fetching vessel data', {ttl: 3000});
+
 
                             var zoomLvl = map.getView().getZoom();
                             scope.vessels.length = 0;
@@ -343,11 +335,7 @@ angular.module('maritimeweb.vessel')
                                 .error(function (reason) {
                                     $rootScope.loadingData = false; // stop spinner
                                     console.log(reason);
-                                    scope.alerts.push({
-                                        msg: "Connection problems " + reason,
-                                        type: 'danger',
-                                        timeout: 4000
-                                    });
+                                    growl.error("Connection problems " + reason);
                                 });
 
                         };
@@ -475,11 +463,7 @@ angular.module('maritimeweb.vessel')
                             } else { // close popups when zoomed below lvl 8 and clicks on map...
                                 $(elm).popover('destroy');
                                 if (scope.loggedIn) {
-                                    scope.alerts.push({
-                                        msg: 'Zoom in for more detailed information',
-                                        type: 'info',
-                                        timeout: 2000
-                                    });
+                                    growl.success('<b>Zoom</b> in for more detailed information');
                                     return;
                                 }
                             }

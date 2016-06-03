@@ -1,8 +1,14 @@
 
-angular.module('maritimeweb.app')
+var maritimewebapp = angular.module('maritimeweb.app');
 
-    .controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService',
-        function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService) {
+maritimewebapp.config(['growlProvider', function (growlProvider) {
+    growlProvider.globalTimeToLive(8000);
+    growlProvider.globalPosition('top-right');
+}]);
+
+
+maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService', 'growl',
+        function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, growl) {
             var loadTimerService = false;
             $scope.loggedIn = Auth.loggedIn;
 
@@ -39,14 +45,7 @@ angular.module('maritimeweb.app')
             //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
 
             // Alerts
-            $scope.alerts = [
-                {type: 'success', msg: 'Welcome to MaritimeWeb', timeout: 3000}
-            ];
-
-            /** Closes the alert at the given index */
-            $scope.closeAlert = function (index) {
-                $scope.alerts.splice(index, 1);
-            };
+            growl.success('Welcome to MaritimeWeb');
 
 
             /**************************************/
@@ -90,7 +89,9 @@ angular.module('maritimeweb.app')
                         })
                     })
                     .error(function(error){
-                    console.error("Error getting NW NM service. Reason=" + error);
+                        growl.error("Error getting NW NM service. Reason=" + error);
+
+                        console.error("Error getting NW NM service. Reason=" + error);
                 })
             };
 
@@ -118,11 +119,7 @@ angular.module('maritimeweb.app')
             $scope.toggleLayer = function(layer) {
                 (layer.getVisible() == true) ? layer.setVisible(false) : layer.setVisible(true); // toggle layer visibility
                 if(layer.getVisible()){
-                    $scope.alerts.push({
-                        msg: 'Activating ' + layer.get('title') + ' layer',
-                        type: 'info',
-                        timeout: 3000
-                    });
+                    growl.info('Activating ' + layer.get('title') + ' layer');
                 }
             };
 
@@ -130,11 +127,7 @@ angular.module('maritimeweb.app')
             $scope.toggleService = function(service) {
                 service.selected  = (service.selected == true) ? false : true; // toggle layer visibility
                 if(service.selected){
-                    $scope.alerts.push({
-                        msg: 'Activating ' + service.name + ' layer',
-                        type: 'info',
-                        timeout: 3000
-                    });
+                    growl.info('Activating ' + service.name + ' layer');
                 }
             };
 
@@ -147,12 +140,7 @@ angular.module('maritimeweb.app')
                     value.setVisible(false)
                 });
                 basemap.setVisible(true);// activate selected basemap
-
-                $scope.alerts.push({
-                    msg: 'Activating map ' + basemap.get('title') ,
-                    type: 'info',
-                    timeout: 3000
-                });
+                growl.info('Activating map ' + basemap.get('title'));
             };
 
 
