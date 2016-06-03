@@ -367,26 +367,28 @@ angular.module('maritimeweb.map')
             replace: false,
             require: '^olMap',
             template:
-                "<span class='map-current-pos-btn'>" +
-                    "<span><i class='fa fa-location-arrow' ng-click='currentPos()' tooltip='Current Position' aria-hidden='true'></i></span>" +
+                "<span class='map-current-pos-btn'  tooltip='Go to current position' data-toggle='tooltip' data-placement='right' title='Go to current position' >" +
+                    "<span><i class='fa fa-location-arrow' ng-click='currentPos()'aria-hidden='true'></i></span>" +
                 //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
                 "</span>",
             scope: {
             },
             link: function(scope, element, attrs, ctrl) {
                 var olScope     = ctrl.getOpenlayersScope();
-
                 olScope.getMap().then(function(map) {
-
                     scope.currentPos = function () {
+                        scope.loadingData = true; // start spinner
                         $window.navigator.geolocation.getCurrentPosition(function (pos) {
                             console.log('Got current position', pos.coords);
 
                             var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
                             map.getView().setCenter(center);
                             map.getView().setZoom(15);
+                            scope.loadingData = false; // stop spinner
 
                         }, function () {
+                            scope.loadingData = false; // stop spinner
+
                             console.error('Unable to get current position');
                         });
                     }
@@ -444,7 +446,7 @@ angular.module('maritimeweb.map')
             replace: true,
             require: '^olMap',
             template:
-            "<span class='map-scale-line'></span>",
+            "<span class='map-scale-line'  tooltip='nautical miles' data-toggle='tooltip' data-placement='bottom' title='nautical miles'></span>",
             scope: {
                 units    : '@',
                 minWidth : '='

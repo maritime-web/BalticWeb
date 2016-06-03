@@ -439,7 +439,7 @@ angular.module('maritimeweb.vessel')
                                         placement: 'top',
                                         html: true,
                                         animation: true,
-                                        delay: 5500,
+                                        delay: 500,
                                         trigger: 'focus',
                                         'template': '<div class="popover" role="tooltip"><div class="arrow"></div>'
                                         + '<h3 class="popover-title"></h3>'
@@ -461,6 +461,14 @@ angular.module('maritimeweb.vessel')
                                     $(elm).attr( 'data-html', true );
                                     $(elm).attr( 'data-animation', true );
                                     $(elm).popover('show');
+                                    var pan = ol.animation.pan({
+                                            duration: 1500,
+                                            source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
+                                      });
+                                    map.beforeRender(pan);
+                                    map.getView().setCenter(coord);
+
+
                                 } else {
                                     $(elm).popover('destroy');
                                 }

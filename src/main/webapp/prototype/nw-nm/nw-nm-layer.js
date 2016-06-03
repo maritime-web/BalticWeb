@@ -82,8 +82,9 @@ angular.module('maritimeweb.nw-nm')
                 restrict: 'E',
                 require: '^olMap',
                 template:
-                "<span ng-class='{hidden : !sidebarListViewShowBtn}' class='sidebar-toggle-btn'>" +
-                "   <span ng-click='toggleList()' > <i class='fa fa-list-ol ' aria-hidden='true'></i> </span>" +
+                "<span ng-class='{hidden : !sidebarListViewShowBtn}' class='sidebar-toggle-btn' " +
+                " tooltip='Toggle detailed list-view' data-toggle='tooltip' data-placement='right' title='Toggle detailed list-view'>" +
+                "   <span ng-click='toggleList()' > <i class='fa fa-list fa-lg ' aria-hidden='true'></i> </span>" +
                 "</span>",
                 scope: {
                     name:           '@',
