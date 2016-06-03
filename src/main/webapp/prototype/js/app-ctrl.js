@@ -3,7 +3,7 @@ var maritimewebapp = angular.module('maritimeweb.app');
 
 maritimewebapp.config(['growlProvider', function (growlProvider) {
     growlProvider.globalTimeToLive(8000);
-    growlProvider.globalPosition('top-right');
+    growlProvider.globalPosition('bottom-right');
 }]);
 
 
