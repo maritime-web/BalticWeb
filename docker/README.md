@@ -8,9 +8,10 @@ A dockerized container for the BalticWeb project. The container deploys the late
 * Two configuration files for Keycloak as described in [BalticWeb](https://github.com/maritime-web/BalticWeb#configure-keycloak)
 
 ## Initial Setup
-Clone the repository to a choosen directory using
+Clone the repository to a chosen directory using and go the directory containing the Docker files
 
-    $ git clone https://github.com/maritime-web/BalticWeb-Docker.git
+    $ git clone https://github.com/maritime-web/BalticWeb.git
+    $ cd BalticWeb/docker
 
 In your home directory you need to make two new directories - 'balticweb/properties' and 'balticweb/couchdb'. The latter needs to have the subdirectory 'couchdb/etc/local.d'.
 In the 'balticweb/properties' directory you should put the 'balticweb.properties' file, and in 'balticweb/couchdb/etc/local.d' you should put the configuration files you wish to use for the CouchDB.
@@ -46,7 +47,7 @@ Or
 
 	$ docker-compose down
 
-The second way of starting is using the script deploy.sh which also makes a [WatchTower](https://github.com/CenturyLinkLabs/watchtower#watchtower) container which makes sure that you are always running the latest version of BalticWeb.
+The second way of starting is using the script deploy.sh which also makes a [WatchTower](https://github.com/CenturyLinkLabs/watchtower#watchtower) container which makes sure that the latest version of BalticWeb is always running.
 On the first startup using this method do
 	
 	$ chmod +x deploy.sh
