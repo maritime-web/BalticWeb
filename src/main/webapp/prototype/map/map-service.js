@@ -308,9 +308,8 @@ angular.module('maritimeweb.map')
                                 url: 'http://{a-c}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png',
                                 attributions: thunderforestAttributions
                             })
-                        }),
-                        //
-                        new ol.layer.Tile({
+                        })
+                       /* new ol.layer.Tile({
                             title: 'Arcgisonline - Light Grey Base',
                             type: 'base',
                             visible: false,
@@ -318,7 +317,7 @@ angular.module('maritimeweb.map')
                                 url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}.png',
                                 attributions: thunderforestAttributions
                             })
-                        })
+                        })*/
                     ]
                 });
             };
