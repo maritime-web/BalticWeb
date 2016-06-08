@@ -1,11 +1,11 @@
 
 <!-- div ng-hide="!showgraphSidebar" ng-class="showgraphSidebar ? 'maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar' : 'hidden '" -->
-<div ng-show="showgraphSidebar" class="maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar" >
+<div uib-collapse="!showgraphSidebar" class="maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar" >
 
     <uib-tabset>
 
         <!-- Messages tab -->
-        <uib-tab>
+        <!--uib-tab>
             <uib-tab-heading>
                 <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;Messages
             </uib-tab-heading>
@@ -15,11 +15,11 @@
                 </uib-alert>
                 &nbsp;
             </div>
-        </uib-tab>
+        </uib-tab-->
 
 
         <!-- Vessels tab -->
-       <!-- <uib-tab>
+<!--        <uib-tab>
             <uib-tab-heading>
                 <img src="/img/vessel_gray.png" />
                 &nbsp;Vessels
@@ -32,12 +32,12 @@
                     <button class="btn btn-default" ng-click="login()">Login</button>
                 </div>
 
-                <table width="100%">
+                <table class="table table-striped" >
                     <tr ng-repeat="vessel in vessels | limitTo: 100">
                         <td width="24" class="vessel-item">
                             <img ng-src="{{iconForVessel(vessel)}}">
                         </td>
-                        <td class="vessel-item"><span ng-if="vessel.mmsi">{{vessel.mmsi}}</span></td>
+                        <td class="vessel-item"><span ng-if="vessel.mmsi"> <a href ng-click="showVesselDetails(vessel.mmsi)" >{{vessel.mmsi}}</a></span></td>
                         <td class="vessel-item">{{vessel.name}}</td>
                         <td class="vessel-item">{{toLonLat(vessel) | lonlat:{ decimals : 3, pp: true } }}</td>
                     </tr>
@@ -58,7 +58,7 @@
 
 
 
-                <table>
+                <table class="table table-striped">
                     <tr ng-repeat-start="msg in nwNmMessages" ng-if="$index == 0 || nwnmAreaHeading($index) != nwnmAreaHeading($index - 1)">
                         <td colspan="2"  class="message-area-heading">
                             {{nwnmAreaHeading($index)}}
@@ -76,7 +76,7 @@
                     </tr>
                 </table>
                 <div class="message-services">
-                    <table cellpadding="10">
+                    <table class="table table-striped" cellpadding="10">
                         <tr>
                             <td width="60" valign="top">
                                 <img src="/img/servicereg_152.png" height="48">
