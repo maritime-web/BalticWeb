@@ -188,7 +188,6 @@ body {
     color: white;
     top: 140px;
     left: 12px;
-    font-size: 1.5em;
     position: absolute;
     z-index: 100;
     margin: 0;
@@ -200,8 +199,6 @@ body {
     -moz-transition: background .5s ease-in-out;
     -webkit-transition: background .5s ease-in-out;
 }
-
-
 
 .sidebar-toggle-btn:hover {
     cursor: hand;

@@ -5,8 +5,8 @@
 angular.module('maritimeweb.vessel')
 
     /** Service for accessing AIS vessel data **/
-    .service('VesselService', ['$http', 'growl',
-        function($http, growl) {
+    .service('VesselService', ['$http', 'growl', '$uibModal',
+        function($http, growl, $uibModal) {
 
             /** Returns the AIS vessels within the bbox */
             this.getVesselsInArea = function (zoomLvl, bbox) {
@@ -21,7 +21,41 @@ angular.module('maritimeweb.vessel')
 
             /** Returns the details for the given MMSI **/
             this.details = function (mmsi) {
+                console.log("getting details in VesselService");
                 return $http.get('/rest/vessel/details?mmsi=' + encodeURIComponent(mmsi));
+            };
+
+            /** Open the message details dialog **/
+            this.showVesselInfoFromMMsi = function (mmsi) {
+
+                var message = this.details(mmsi);
+                return $uibModal.open({
+                    controller: "VesselDialogCtrl",
+                    templateUrl: "/prototype/vessel/vessel-details-dialog.html",
+                    size: 'lg',
+                    resolve: {
+                        message: function () {
+                            return message;
+                        }
+                    }
+                });
+            };
+
+
+            /** Open the message details dialog **/
+            this.showVesselInfo = function (vessel) {
+
+                var message = this.details(vessel.mmsi);
+                return $uibModal.open({
+                    controller: "VesselDialogCtrl",
+                    templateUrl: "/prototype/vessel/vessel-details-dialog.html",
+                    size: 'lg',
+                    resolve: {
+                        message: function () {
+                            return message;
+                        }
+                    }
+                });
             };
 
             /** Saves the vessel details **/
@@ -284,6 +318,13 @@ angular.module('maritimeweb.vessel')
                             return markerVessel;
                         };
 
+                        scope.showVesselDetails = function(mmsi) {
+                            console.log("ais layer - showVesselDetails");
+                            var vesselDetails = VesselService.details(mmsi);
+                            console.log("ais layer = vesselDetails" +vesselDetails);
+                            growl.info("got vesseldetails " + vesselDetails);
+
+                        };
 
                         /** Refreshes the list of vessels from the server */
                         scope.refreshVessels = function () {
@@ -293,7 +334,7 @@ angular.module('maritimeweb.vessel')
                                 return;
                             }
                             $rootScope.loadingData = true; // start spinner
-                            growl.info('Fetching vessel data', {ttl: 3000});
+                            growl.info('Fetching vessel data <i class="fa fa-cog fa-spin  fa-fw"></i><span class="sr-only">Loading...</span>', {ttl: 3000});
 
 
                             var zoomLvl = map.getView().getZoom();
@@ -331,6 +372,8 @@ angular.module('maritimeweb.vessel')
                                     vesselLayer.getSource().clear();
                                     vesselLayer.getSource().addFeatures(features);
                                     $rootScope.loadingData = false; // stop spinner
+                                    growl.success('<b>' +scope.vessels.length +'</b> vessels loaded', {ttl: 3000});
+
                                 })
                                 .error(function (reason) {
                                     $rootScope.loadingData = false; // stop spinner
@@ -434,6 +477,7 @@ angular.module('maritimeweb.vessel')
                                         + '<div class="popover-content"></div>'
                                         + '</div>'
                                     });
+                                    var mmsi = feature.get('mmsi');
                                     $(elm).attr('data-content',
                                         //'<div class="popover-content">' +
                                        // '<h3>' + feature.get('name') + '</h3>' +
@@ -441,13 +485,17 @@ angular.module('maritimeweb.vessel')
                                         '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + feature.get('callSign') + '</p>' +
                                         '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>' +
                                         '<p><span class="glyphicon glyphicon-flag"></span> ' + ol.coordinate.toStringHDMS([feature.get('longitude'),feature.get('latitude')], 3) + '</p>' +
-                                        '<p><span class="glyphicon glyphicon-flag"></span> ' + feature.get('angle') + '°</p>'
+                                        '<p><span class="glyphicon glyphicon-flag"></span> ' + feature.get('angle') + '°</p>' 
+                                      //   '<p><a href ng-click="VesselService.showVesselInfoFromMMsi(mmsi)" >' +feature.get('mmsi') +'</a><---</p>' +
+                                       //     '<p><a href onclick="showVesselInfo('+ feature.get('mmsi') +')">more information on vessel</a> x <a href="#/vessel/'+ feature.get('mmsi') +'">link</a></a></p>'
                                     //    '</div>'
                                     );
                                     $(elm).attr( 'data-placement', 'top' );
                                     $(elm).attr( 'data-original-title', feature.get('name') );
                                     $(elm).attr( 'data-html', true );
                                     $(elm).attr( 'data-animation', true );
+
+
                                     $(elm).popover('show');
                                     var pan = ol.animation.pan({
                                             duration: 1500,
@@ -473,4 +521,45 @@ angular.module('maritimeweb.vessel')
                     });
                 }
             };
+        }])
+
+    /*******************************************************************
+     * Controller that handles displaying vessel details in a dialog
+     *******************************************************************/
+    .controller('VesselDialogCtrl', ['$scope', '$window', 'VesselService', 'message',
+        function ($scope, $window, VesselService, message) {
+            'use strict';
+            console.log("Vessel data= " + JSON.stringify(message.data));
+            $scope.warning = undefined;
+            $scope.msg = message;
+
+
+            var navStatusTexts = {
+                0: "Under way using engine",
+                1: "At anchor",
+                2: "Not under command",
+                3: "Restricted manoeuvrability",
+                4: "Constrained by her draught",
+                5: "Moored",
+                6: "Aground",
+                7: "Engaged in fishing",
+                8: "Under way",
+                12: "Power-driven vessel pushing ahead or towing alongside",
+                14: "Ais SART",
+                15: "Undefined"
+            };
+
+            $scope.navStatusText = function (navStatus) {
+                if (navStatus && navStatusTexts.hasOwnProperty(navStatus)) {
+                    return navStatusTexts[navStatus]
+                }
+                return null;
+            };
+
+
+
         }]);
+    /**
+     * controller handling the details view for a vessel.
+     */
+

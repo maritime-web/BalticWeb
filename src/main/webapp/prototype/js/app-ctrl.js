@@ -4,14 +4,53 @@ var maritimewebapp = angular.module('maritimeweb.app');
 maritimewebapp.config(['growlProvider', function (growlProvider) {
     growlProvider.globalTimeToLive(8000);
     growlProvider.globalPosition('bottom-right');
+
 }]);
 
 
-maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService', 'growl',
+/*
+maritimewebapp.config( ['$stateProvider', '$urlRouterProvider', function ($stateProvider,
+              $urlRouterProvider) {
+        /!* configure states here *!/
+    $urlRouterProvider.otherwise('/');
+
+
+    $stateProvider
+        .state('vessel', {
+            url: "/vessel/",
+            templateUrl: '/prototype/vessel/vessel-details-dialog.html',
+            controller: function () {
+                // If we got here from a url of /vessel/42
+
+                console.log("vessel no MMSI state provider");
+            }
+        })
+        .state('vessel.detail', {
+            url: "/vessel/:mmsi",
+            templateUrl: '/prototype/vessel/vessel-details-dialog.html',
+            controller: function () {
+                // If we got here from a url of /vessel/42
+
+                console.log("vesselMMSI state provider" + mmsi);
+            }
+        })
+        .state('about', {
+            url: '/about',
+            templateUrl: '/prototype/about.html'
+
+        });
+
+    }]
+);
+
+*/
+
+
+maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService', 'growl', 
         function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, growl) {
             var loadTimerService = false;
             $scope.loggedIn = Auth.loggedIn;
-
+            
             /** Logs the user in via Keycloak **/
             $scope.login = function () {
                 Auth.authz.login();
@@ -89,8 +128,7 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
                         })
                     })
                     .error(function(error){
-                        growl.error("Error getting NW NM service. Reason=" + error);
-
+                       // growl.error("Error getting NW NM service. Reason=" + error);
                         console.error("Error getting NW NM service. Reason=" + error);
                 })
             };
@@ -143,6 +181,17 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
                 growl.info('Activating map ' + basemap.get('title'));
             };
 
+
+
+
+            $scope.showVesselDetails = function(mmsi) {
+                //var vesselDetails = VesselService.details(vessel.mmsi);
+                 VesselService.showVesselInfoFromMMsi(mmsi);
+                //console.log("App Ctr received = vesselDetails" +JSON.stringify(vesselDetails));
+                //growl.info("got vesseldetails " + JSON.stringify(vesselDetails));
+                growl.info("got vesseldetails " );
+
+            };
 
 
             /** Show the details of the message */

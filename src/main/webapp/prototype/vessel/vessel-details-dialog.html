@@ -1,0 +1,235 @@
+<div>
+
+    <div class="modal-body print" style="padding-bottom: 0">
+
+        <div ng-if="warning">
+            <h2>{{warning}}</h2>
+        </div>
+
+        <div class="row" ng-if="msg">
+            <!--
+            {"data":
+            {"mmsi":null,
+            "maritimeId":null,
+            "commCapabilities":null,
+            "maxSpeed":null,
+            "grossTon":null,
+            "maxPersons":null,
+            "iceClass":null,
+            "helipad":null,
+            "additionalInformation":
+                {"schedule":false,
+                "routeId":null,
+                "historicalTrack":false},
+            "aisVessel":
+                {"country":"DE",
+                "sourceRegion":"806",
+                "lastReport":1465200424215,
+                "mmsi":211501590,
+                "targetType":"B",
+                "callsign":"DF6348",
+                "cog":101.9,
+                "lat":54.167362,
+                "length":12,
+                "lon":11.58399,
+                "moored":false,
+                "name":"EVA MARIA",
+                "sog":4.3,
+                "vesselType":"SAILING",
+                "width":3},
+            "mmsiNumber":211501590}
+
+
+               var navStatusTexts = {
+                    0: "Under way using engine",
+                    1: "At anchor",
+                    2: "Not under command",
+                    3: "Restricted manoeuvrability",
+                    4: "Constrained by her draught",
+                    5: "Moored",
+                    6: "Aground",
+                    7: "Engaged in fishing",
+                    8: "Under way",
+                    12: "Power-driven vessel pushing ahead or towing alongside",
+                    14: "Ais SART",
+                    15: "Undefined"
+                }
+
+                    navStatusText = function (navStatus) {
+                    if (navStatus && navStatusTexts.hasOwnProperty(navStatus)) {
+                        return navStatusTexts[navStatus]
+                    }
+                    return null;
+                };
+
+            -->
+
+
+            <h3 ng-bind="msg.data.aisVessel.name">
+                <flag class="pull-right" country="{{msg.data.aisVessel.country}}" size="32"></flag>
+            </h3>
+
+
+            <table class="table table-striped table-hover">
+
+                <tr ng-if="msg.data.aisVessel.country">
+                    <th scope="row">Country</th>
+                    <td>
+                        <flag country="{{msg.data.aisVessel.country}}" size="32"></flag>
+                    </td>
+                    <td>{{msg.data.aisVessel.country}}</td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.callsign">
+                    <th scope="row">callsign</th>
+                    <td>{{msg.data.aisVessel.callsign}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.mmsi">
+                    <th scope="row">mmsi</th>
+                    <td>{{msg.data.aisVessel.mmsi}}</td>
+                    <td><a target="_blank"
+                           href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{msg.data.aisVessel.mmsi}}">marinetraffic.com/ais/details/ships/{{msg.data.aisVessel.mmsi}}</a>
+                    </td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.imoNo">
+                    <th scope="row">imoNo</th>
+                    <td>{{msg.data.aisVessel.imoNo}}</td>
+                    <td><a target="_blank"
+                           href="http://maritime-connector.com/ship-search/?keyword=&ship=&imo={{msg.data.aisVessel.imoNo}}&type=&limit=25&sort=&sort_type=">maritime-connector.com/ship/{{msg.data.aisVessel.imoNo}}</a>
+                    </td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.length && msg.data.aisVessel.width">
+                    <th scope="row">Length &times; Width</th>
+                    <td>{{msg.data.aisVessel.length}}m</td>
+                    <td>{{msg.data.aisVessel.width}}m</td>
+                </tr>
+
+
+                <tr ng-if="msg.data.aisVessel.vesselType">
+                    <th scope="row">Vessel Type</th>
+                    <td>{{msg.data.aisVessel.vesselType}}</td>
+                    <td></td>
+                </tr>
+
+
+                <tr ng-if="msg.data.aisVessel.lastReport">
+                    <th scope="row">Last Report</th>
+                    <td>~ {{msg.data.aisVessel.lastReport | timeAgo}}</td>
+                    <td>{{msg.data.aisVessel.lastReport | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
+                </tr>
+
+
+                <tr ng-if="msg.data.aisVessel.lat">
+                    <th scope="row">Lat/Lon</th>
+                    <td>{{msg.data.aisVessel.lat}}</td>
+                    <td>{{msg.data.aisVessel.lon}}</td>
+                </tr>
+                <tr ng-if="msg.data.aisVessel.heading">
+                    <th scope="row">Heading</th>
+                    <td>{{msg.data.aisVessel.heading}}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th scope="row">Moored</th>
+                    <td>{{msg.data.aisVessel.moored ? 'yes' : 'no'}}</td>
+                    <td></td>
+                </tr>
+                <tr ng-if="msg.data.aisVessel.destination">
+                    <th scope="row">Destination</th>
+                    <td>{{msg.data.aisVessel.destination}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.eta">
+                    <th scope="row">Estimated Time of Arrival</th>
+                    <td>~ {{msg.data.aisVessel.eta | timeAgo}}</td>
+                    <td>{{msg.data.aisVessel.eta | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">Navigational status</th>
+                    <td>{{navStatusText(msg.data.aisVessel.navStatus)}}</td>
+                    <td>{{msg.data.aisVessel.navStatus}}</td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.draught">
+                    <th scope="row">Draught</th>
+                    <td>{{msg.data.aisVessel.draught}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.cog">
+                    <th scope="row">COG</th>
+                    <td>{{msg.data.aisVessel.cog}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.sog"
+                    tooltip="Speed Over the Ground (SOG) is the speed of the vessel relative to the surface of the earth.">
+                    <th scope="row">SOG</th>
+                    <td>{{msg.data.aisVessel.sog}}</td>
+                    <td></td>
+                </tr>
+
+
+                <tr ng-if="msg.data.aisVessel.rot">
+                    <th scope="row">ROT</th>
+                    <td>{{msg.data.aisVessel.rot}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.targetType">
+                    <th scope="row">Target Type</th>
+                    <td>{{msg.data.aisVessel.targetType}}</td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <uib-accordion close-others="oneAtATime">
+                <uib-accordion-group heading="AIS Vessel" is-open="false" is-disabled="false">
+                    <table class="table table-striped table-hover">
+                        <tr ng-repeat="(property, value) in msg.data.aisVessel">
+                            <th scope="row"></th>
+                            <td>{{property}}</td>
+                            <td>{{value}}</td>
+                        </tr>
+                    </table>
+                </uib-accordion-group>
+
+                <uib-accordion-group heading="Additional Information" is-open="false" is-disabled="false">
+                    <h3>Additional Information</h3>
+                    <table class="table table-striped table-hover">
+                        <tr ng-repeat="(property, value) in msg.data.additionalInformation">
+                            <th scope="row"></th>
+                            <td>{{property}}</td>
+                            <td>{{value}}</td>
+                        </tr>
+                    </table>
+                    </table>
+                </uib-accordion-group>
+            </uib-accordion>
+
+
+            <!--            <h3>All</h3>
+                        <table class="table table-striped table-hover">
+                            <tr ng-repeat="(property, value) in msg.data">
+                                <th scope="row"></th>
+                                <td>{{property}}</td>
+                                <td>{{value}}</td>
+                            </tr>
+                        </table>-->
+
+            <button type="button" class="close dialog-close-btn" ng-click="$dismiss('aborted')">x</button>
+
+        </div>
+        <div class="row" style="margin-top: 24px">
+            <div class="form-group col-xs-12" style="text-align: right">
+                <button class="btn btn-primary btn-sm" ng-click="$dismiss('aborted')">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
