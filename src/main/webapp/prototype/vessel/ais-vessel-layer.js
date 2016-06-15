@@ -20,9 +20,9 @@ angular.module('maritimeweb.vessel')
             };
 
             /** Returns the details for the given MMSI **/
-            this.details = function (mmsi) {
+            this.details = function (vessel) {
                 console.log("getting details in VesselService");
-                return $http.get('/rest/vessel/details?mmsi=' + encodeURIComponent(mmsi));
+                return $http.get('/rest/vessel/details?mmsi=' + encodeURIComponent(vessel.mmsi));
             };
 
             /** Open the message details dialog **/
@@ -286,6 +286,37 @@ angular.module('maritimeweb.vessel')
 
                         };
 
+                        /** Create a historic vessel feature, with only lat,lon,cog,roc,ts. */
+                        scope.createHistoricVesselFeature = function (vessel) {
+                            var image = VesselService.imageAndTypeTextForVessel(vessel);
+
+                            var markerStyle = new ol.style.Style({
+                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                    anchor: [0.85, 0.5],
+                                    opacity: 0.85,
+                                    id: vessel.id,
+                                    rotation: vessel.radian,
+                                    src: 'img/' + image.name
+                                }))
+                            });
+
+                            var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
+
+                            var markerVessel = new ol.Feature({
+
+                                type: image.type,
+                                angle: vessel.angle,
+                                radian: vessel.radian,  // (vessel.angle * (Math.PI / 180)),
+                                latitude: vessel.y,
+                                longitude: vessel.x,
+                                geometry: vesselPosition
+                            });
+                            markerVessel.setStyle(markerStyle);
+                            return markerVessel;
+
+                        };
+
+
 
                         /** Create a vessel feature for any openlayers 3 map. */
                         scope.createVesselFeature = function (vessel) {
@@ -318,9 +349,10 @@ angular.module('maritimeweb.vessel')
                             return markerVessel;
                         };
 
-                        scope.showVesselDetails = function(mmsi) {
+                        scope.showVesselDetails = function(vessel) {
                             console.log("ais layer - showVesselDetails");
-                            var vesselDetails = VesselService.details(mmsi);
+                            scope.vessel = vessel;
+                            var vesselDetails = VesselService.details(vessel);
                             console.log("ais layer = vesselDetails" +vesselDetails);
                             growl.info("got vesseldetails " + vesselDetails);
 
@@ -523,15 +555,174 @@ angular.module('maritimeweb.vessel')
             };
         }])
 
-    /*******************************************************************
+
+    .directive('route', ['$rootScope', '$timeout', 'MapService', 'VesselService', 'growl',
+        function ($rootScope, $timeout, MapService, VesselService, growl) {
+            return {
+                restrict: 'E',
+                require: '^olMap',
+                scope: {
+                    name:         '@',
+                    points:       '=?',
+                    feat:         '=?',
+                    vessel:       '=?'
+                },
+                link: function(scope, element, attrs, ctrl) {
+                    console.log("got route" + scope.points.length +
+                                " and vessel " + scope.vessel
+                                + " feat=" + scope.feat.length
+                    );
+                    var olScope = ctrl.getOpenlayersScope();
+                    var vesselLayers;
+
+
+
+                    olScope.getMap().then(function(map) {
+
+                        var vectorSource = new ol.source.Vector({
+                            features: []
+                        });
+
+
+                        var vesselLayer = new ol.layer.Vector({
+                            name: "routeVectorLayer",
+                            title: "route",
+                            source: vectorSource,
+                            visible: true
+                        });
+                        var markerStyle = new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 4,
+                                stroke: new ol.style.Stroke({
+                                    color: '#00FF00',
+                                    width: 2
+
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: '#0f00ff' // attribute colour
+                                })
+                            })
+                        });
+                        var featureArray = [];
+
+                        vesselLayer.setStyle(markerStyle);
+
+/*                        angular.forEach(scope.points, function(key, value){
+                            // make features
+                            console.log(value + ' = ' + key);
+                            var vesselPosition = new ol.geom.Point(ol.proj.transform(key, 'EPSG:4326', 'EPSG:900913'));
+                            var markerVessel = new ol.Feature({
+                                geometry: vesselPosition,
+                                name: 'super name'
+                            });
+                            vesselLayer.getSource().addFeature(markerVessel);
+                        });*/
+
+
+
+                       // markerVessel.setStyle(markerStyle);
+                        vesselLayer.getSource().addFeatures(scope.feat);
+
+                        vesselLayers = new ol.layer.Group({
+                            title: 'Route',
+                            layers: [ vesselLayer ],
+                            visible: true
+                        });
+
+                        map.addLayer(vesselLayers);
+                       // var center = MapService.fromLonLat([vesselPosition.coordinates[0], vesselPosition.coordinates[1]]);
+                       // map.getView().setCenter(center);
+                        map.getView().setCenter(vesselLayer.getSource().getFeatures()[0].getGeometry().getCoordinates());
+                     /*   console.log(angular.forEach(vesselLayer.getSource().getFeatures(), function(value, key) {
+                            console.log(key + ': ' + value.getGeometry().getCoordinates());
+                        }));*/
+
+                        console.log("Hey look, it's a new route with " + vesselLayer.getSource().getFeatures().length + " features");
+
+                        // Clean up when the layer is destroyed
+                        scope.$on('$destroy', function () {
+                            if (angular.isDefined(vesselLayers)) {
+                                map.removeLayer(vesselLayers);
+                            }
+                        });
+                    });
+                }
+            }
+        }])
+
+                        /*******************************************************************
      * Controller that handles displaying vessel details in a dialog
      *******************************************************************/
-    .controller('VesselDialogCtrl', ['$scope', '$window', 'VesselService', 'message',
-        function ($scope, $window, VesselService, message) {
+    .controller('VesselDialogCtrl', ['$scope', '$window', 'VesselService', 'message', 'growl', 'timeAgo','$filter',
+        function ($scope, $window, VesselService, message, growl, timeAgo, $filter) {
             'use strict';
-            console.log("Vessel data= " + JSON.stringify(message.data));
+           // console.log("Vessel data= " + JSON.stringify(message.data));
             $scope.warning = undefined;
             $scope.msg = message;
+
+            $scope.getHistoricalTrack = function(mmsi, type) {
+                 VesselService.historicalTrack(mmsi).then(function successCallback(response) {
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    $scope.historicalTrackOutput = response.data;
+                     growl.success("Retrieved historical points " + response.data.length)
+
+                     var linePoints = [];
+                     angular.forEach(response.data, function(value, key) {
+                         this.push([value.lon, value.lat]);
+                     }, linePoints);
+                     $scope.routePoints = linePoints;
+
+
+                     // Features are better
+                     var lineFeatures = [];
+                     var generateHistoricalMarker = function (value) {
+                         var vesselPosition = new ol.geom.Point(ol.proj.transform([value.lon, value.lat], 'EPSG:4326', 'EPSG:900913'));
+                         var markerStyle = new ol.style.Style({
+                             image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                 anchor: [0.85, 0.5],
+                                 opacity: 0.85,
+                                 id: value.ts,
+                                 rotation: (value.cog - 90) * (Math.PI / 180),
+                                 src: 'img/vessel_green.png'
+                             }))
+                       /*      ,
+                             text: new ol.style.Text({
+                                 text: $filter('timeAgo')(value.ts) + ' ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z'), // attribute code
+                                 size: 10,
+                                 font: "Arial",
+                                 fill: new ol.style.Fill({
+                                     color: 'blue' // black text //
+                                 })
+                             })*/
+                         });
+
+                         var markerVessel = new ol.Feature({
+                             geometry: vesselPosition
+                         });
+                         markerVessel.setStyle(markerStyle);
+                         return markerVessel;
+                     };
+
+                     //
+                     angular.forEach(response.data, function(value, key) {
+                         var markerVessel = generateHistoricalMarker(value);
+                         this.push(markerVessel);
+                     }, lineFeatures);
+                     $scope.routeFeatures = lineFeatures;
+                     console.log("$scope.routeFeatures.length="+$scope.routeFeatures.length) ;
+                    return response;
+
+
+                }, function errorCallback(response) {
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                    console.error("Error historicalTrack=" + response.status);
+                     growl.error("No historical for this vessel" + vessel.name);
+
+                });
+
+            };
 
 
             var navStatusTexts = {

@@ -1,6 +1,6 @@
 <div>
 
-    <div class="modal-body print" style="padding-bottom: 0">
+    <div class="modal-body " style="padding: 1em; margin: 1em;">
 
         <div ng-if="warning">
             <h2>{{warning}}</h2>
@@ -151,6 +151,33 @@
                 </tr>
 
                 <tr>
+                    <th scope="row">Historical track</th>
+                    <td >
+                          <btn class="btn btn-primary" ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)">Get Historical Track</btn>
+
+                    </td>
+                    <td>
+                        <span ng-if="routePoints" class="badge badge-primary" ng-bind="routePoints.length"></span>
+                    </td>
+                </tr>
+               <tr>
+
+                    <td colspan="3">
+                            <ol-map ng-if="routeFeatures" class="message-details-map">
+                                <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
+                                <route points="routePoints" vessel="vessel" feat="routeFeatures"></route>
+                            </ol-map>
+                    </td>
+               </tr>
+
+                <tr ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 10">
+                       <th scope="row">{{object.ts | timeAgo}} {{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</th>
+                       <td>{{object.cog}} {{object.sog}}</td>
+                       <td>{{object.lat}}/ {{object.lon}}</td>
+                </tr>
+
+
+                <tr>
                     <th scope="row">Navigational status</th>
                     <td>{{navStatusText(msg.data.aisVessel.navStatus)}}</td>
                     <td>{{msg.data.aisVessel.navStatus}}</td>
@@ -209,8 +236,10 @@
                             <td>{{value}}</td>
                         </tr>
                     </table>
-                    </table>
                 </uib-accordion-group>
+
+
+
             </uib-accordion>
 
 

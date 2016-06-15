@@ -81,7 +81,7 @@ angular.module('maritimeweb.nw-nm')
             return {
                 restrict: 'E',
                 require: '^olMap',
-                template:
+                template: // TODO this element is no longer limited to nw-nm and should be removed from this layer.!
                 "<span ng-class='{hidden : !sidebarListViewShowBtn}' class='sidebar-toggle-btn' " +
                 " tooltip='Toggle detailed list-view' data-toggle='tooltip' data-placement='right' title='Toggle detailed list-view'>" +
                 "   <span ng-click='toggleList()' > <i class='fa fa-list fa-lg ' aria-hidden='true'></i> </span>" +
@@ -117,6 +117,7 @@ angular.module('maritimeweb.nw-nm')
 
                     scope.showgraphSidebar = false;
 
+                    // TODO this toggle element is no longer limited to nw-nm and should be removed from this layer.! Move to another file. Shared between layers. Vessel and nm atm.
                     scope.toggleList = function() {
                         $rootScope.showgraphSidebar = !$rootScope.showgraphSidebar;
                         //console.log("toggle list visibility = " +$rootScope.showgraphSidebar);
