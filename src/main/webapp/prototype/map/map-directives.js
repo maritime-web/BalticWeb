@@ -359,9 +359,9 @@ angular.module('maritimeweb.map')
 
 
     /**
-     * The map-current-pos-btn directive will add a current-position button to the map.
+     * The map-current-pos-btn directive will add a current-position button to the map. The button centers on current position and places a image marker.
      */
-    .directive('mapCurrentPosBtn', ['$window', 'MapService', function ($window, MapService) {
+    .directive('mapCurrentPosBtn', ['$window', 'MapService', 'growl', function ($window, MapService, growl) {
         return {
             restrict: 'E',
             replace: false,
@@ -384,12 +384,35 @@ angular.module('maritimeweb.map')
                             var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
                             map.getView().setCenter(center);
                             map.getView().setZoom(15);
+
+                            var markerPosition = new ol.geom.Point(ol.proj.transform([pos.coords.longitude, pos.coords.latitude], 'EPSG:4326', 'EPSG:900913'));
+                            var markerStyle = new ol.style.Style({
+                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                    anchor: [0.85, 0.5],
+                                    src: 'img/geolocation_marker.png'
+                                }))
+                            });
+
+                            var markerFeature = new ol.Feature({
+                                geometry: markerPosition
+                            });
+                            markerFeature.setStyle(markerStyle);
+
+                            var vectorSource = new ol.source.Vector({
+                                features: [markerFeature]
+                            });
+
+                            var vectorLayer = new ol.layer.Vector({
+                                source: vectorSource
+                            });
+                            map.addLayer(vectorLayer);
+
                             scope.loadingData = false; // stop spinner
 
                         }, function () {
                             scope.loadingData = false; // stop spinner
-
                             console.error('Unable to get current position');
+                            growl.error('Unable to retrieve current position');
                         });
                     }
 
