@@ -573,7 +573,7 @@ angular.module('maritimeweb.vessel')
                                 + " feat=" + scope.feat.length
                     );
                     var olScope = ctrl.getOpenlayersScope();
-                    var vesselLayers;
+                    var routeLayers;
 
 
 
@@ -584,13 +584,13 @@ angular.module('maritimeweb.vessel')
                         });
 
 
-                        var vesselLayer = new ol.layer.Vector({
+                        var routeFeatureLayer = new ol.layer.Vector({
                             name: "routeVectorLayer",
                             title: "route",
                             source: vectorSource,
                             visible: true
                         });
-                        var markerStyle = new ol.style.Style({
+               /*         var markerStyle = new ol.style.Style({
                             image: new ol.style.Circle({
                                 radius: 4,
                                 stroke: new ol.style.Stroke({
@@ -603,10 +603,9 @@ angular.module('maritimeweb.vessel')
                                 })
                             })
                         });
-                        var featureArray = [];
 
-                        vesselLayer.setStyle(markerStyle);
-
+                         routeFeatureLayer.setStyle(markerStyle);
+*/
 /*                        angular.forEach(scope.points, function(key, value){
                             // make features
                             console.log(value + ' = ' + key);
@@ -621,30 +620,225 @@ angular.module('maritimeweb.vessel')
 
 
                        // markerVessel.setStyle(markerStyle);
-                        vesselLayer.getSource().addFeatures(scope.feat);
+                         routeFeatureLayer.getSource().addFeatures(scope.feat);
 
-                        vesselLayers = new ol.layer.Group({
-                            title: 'Route',
-                            layers: [ vesselLayer ],
-                            visible: true
-                        });
-
-                        map.addLayer(vesselLayers);
+             
                        // var center = MapService.fromLonLat([vesselPosition.coordinates[0], vesselPosition.coordinates[1]]);
                        // map.getView().setCenter(center);
-                        map.getView().setCenter(vesselLayer.getSource().getFeatures()[0].getGeometry().getCoordinates());
+                        map.getView().setCenter( routeFeatureLayer.getSource().getFeatures()[0].getGeometry().getCoordinates());
                      /*   console.log(angular.forEach(vesselLayer.getSource().getFeatures(), function(value, key) {
                             console.log(key + ': ' + value.getGeometry().getCoordinates());
                         }));*/
 
-                        console.log("Hey look, it's a new route with " + vesselLayer.getSource().getFeatures().length + " features");
+                        console.log("Hey look, it's a new route with " +  routeFeatureLayer.getSource().getFeatures().length + " features");
 
                         // Clean up when the layer is destroyed
                         scope.$on('$destroy', function () {
-                            if (angular.isDefined(vesselLayers)) {
-                                map.removeLayer(vesselLayers);
+                            if (angular.isDefined(routeLayers)) {
+                                map.removeLayer(routeLayers);
                             }
                         });
+
+
+          /*              var polyline = [
+                            [55.5, 13.2],
+                            [55.4, 13.2],
+                            [55.3, 13.2],
+                            [55.2, 13.3],
+                            [55.1, 13.4],
+                            [55.0, 13.5],
+                            [55.1, 13.5],
+                            [55.2, 13.6],
+                            [55.3, 13.7],
+                            [55.4, 13.8],
+                            [55.5, 13.9]
+                        ];
+                        polyline.forEach(function(item,index,arr){
+                            console.log("#" + index + "  " + item);
+                            console.log("?"  );
+                            arr[index] = ol.proj.transform([ item[1],item[0]], 'EPSG:4326', 'EPSG:900913');
+
+                        });*/
+               /*         scope.feat.forEach(function(item,index,arr){
+                            // console.log("#" + index + "  " + item);
+                            console.log("#" + index + "?" + item.getGeometry() );
+                           // arr[index] = ol.proj.transform([ item[1],item[0]], 'EPSG:4326', 'EPSG:900913');
+
+                        });*/
+                        var lineRoute = new ol.geom.LineString(scope.points);
+
+                        var routeCoords = lineRoute.getCoordinates();
+                        var routeLength = routeCoords.length;
+
+                        var routeFeature = new ol.Feature({
+                            type: 'route',
+                            geometry: lineRoute
+                        });
+                        var geoMarker = new ol.Feature({
+                            type: 'geoMarker',
+                            geometry: new ol.geom.Point(routeCoords[0])
+                        });
+                   /*     var startMarker = new ol.Feature({
+                            type: 'icon',
+                            geometry: new ol.geom.Point(routeCoords[0])
+                        });
+                        var endMarker = new ol.Feature({
+                            type: 'icon',
+                            geometry: new ol.geom.Point(routeCoords[routeLength - 1])
+                        });*/
+                        var startMarker = scope.feat[0];
+                        var endMarker = scope.feat[scope.feat.length-1];
+
+                        var styles = {
+                            'route': new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                    width: 6, color: [237, 212, 0, 0.8]
+                                })
+                            }),
+                            'icon': new ol.style.Style({
+                                image: new ol.style.Icon({
+                                    anchor: [0.5, 1],
+                                    src: 'img/geolocation_marker.png'
+                                })
+                            }),
+                            'geoMarker': new ol.style.Style({
+                                image: new ol.style.Icon({
+                                    anchor: [0.5, 1],
+                                    src: 'img/geolocation_marker.png'
+                                })
+                            })
+                        };
+
+                        var animating = false;
+                        var speed, now, orgIndexVal;
+                        var speedInput = document.getElementById('speed');
+                        var startButton = document.getElementById('start-animation');
+
+                        var animationLayer = new ol.layer.Vector({
+                            source: new ol.source.Vector({
+                                features: [routeFeature, geoMarker, startMarker, endMarker]
+                            }),
+                            style: function(feature) {
+                                // hide geoMarker if animation is active
+                                if (animating && feature.get('type') === 'geoMarker') {
+                                    return null;
+                                }
+                                return styles[feature.get('type')];
+                            }
+                        });
+
+     /*                   var map = new ol.Map({
+                            target: document.getElementById('map'),
+                            loadTilesWhileAnimating: true,
+                            view: new ol.View({
+                                center: center,
+                                zoom: 10,
+                                minZoom: 2,
+                                maxZoom: 19
+                            }),
+                            layers: [
+                                /!*            new ol.layer.Tile({
+                                 source: new ol.source.BingMaps({
+                                 imagerySet: 'AerialWithLabels',
+                                 key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF'
+                                 })
+                                 })*!/
+                                new ol.layer.Tile({
+                                    title: 'OpenStreetMap',
+                                    type: 'base',
+                                    visible: true,
+                                    source: new ol.source.OSM()
+                                })
+                                ,
+                                vectorLayer
+                            ]
+                        });*/
+                        var index = 0;
+              
+                        var moveFeature = function(event) {
+                            var vectorContext = event.vectorContext;
+                            var frameState = event.frameState;
+
+                            if (animating) {
+                                var elapsedTime = frameState.time - now;
+                                // here the trick to increase speed is to jump some indexes
+                                // on lineString coordinates
+                                var index = Math.round(speed * elapsedTime / 1000);
+
+                                // framerate diagnostics
+                                //console.log("point=" + index + " out of " + routeLength + " diff " + (index - orgIndexVal));
+                                //orgIndexVal = index;
+                                if (index >= routeLength) {
+                                    index = 0; // rewind, and loop
+                                    console.log("loop, one more time");
+                                    stopAnimation(true);
+                                    startAnimation();
+                                    //return;
+                                }
+
+                               // var currentPoint = new ol.geom.Point(routeCoords[index]);
+                                //var feature = new ol.Feature(currentPoint);
+                                var feature = scope.feat[index];
+                                vectorContext.drawFeature(feature, feature.getStyle());
+                                //vectorContext.drawFeature(feature, feature.getStyle().getImage().setOpacity(1.0));
+                                $rootScope.activeRoutePoint = feature.getId() + " <<---" + index;
+                                //index++;
+
+                                //  vectorContext.drawFeature(feature, styles.geoMarker);
+
+
+                            }
+                            // tell OL3 to continue the postcompose animation
+                            map.render();
+                        };
+
+
+
+                        var startAnimation =  function() {
+                            if (animating) {
+                                stopAnimation(false);
+                            } else {
+
+                                animating = true;
+                                now = new Date().getTime();
+                                speed = speedInput.value;
+                                //speed = 10;
+                                startButton.textContent = 'Cancel Animation';
+                                // hide geoMarker
+                                geoMarker.setStyle(null);
+                                // just in case you pan somewhere else
+                                // map.getView().setCenter(center);
+                                map.on('postcompose', moveFeature);
+                                map.render();
+                            }
+                        };
+
+
+                        /**
+                         * @param {boolean} ended end of animation.
+                         */
+                        var stopAnimation = function(ended) {
+                            animating = false;
+                            startButton.textContent = 'Start Animation';
+
+                            // if animation cancelled set the marker at the beginning
+                            var coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
+                            /** @type {ol.geom.Point} */ (geoMarker.getGeometry())
+                                .setCoordinates(coord);
+                            //remove listener
+                            map.un('postcompose', moveFeature);
+                        };
+
+                        routeLayers = new ol.layer.Group({
+                            title: 'Route',
+                            layers: [  animationLayer ],
+                            visible: true
+                        });
+
+                        map.addLayer(routeLayers);
+                        startButton.addEventListener('click', startAnimation, false);
+
+
                     });
                 }
             }
@@ -669,7 +863,7 @@ angular.module('maritimeweb.vessel')
 
                      var linePoints = [];
                      angular.forEach(response.data, function(value, key) {
-                         this.push([value.lon, value.lat]);
+                         this.push(ol.proj.transform([value.lon, value.lat], 'EPSG:4326', 'EPSG:900913'));
                      }, linePoints);
                      $scope.routePoints = linePoints;
 
@@ -680,8 +874,8 @@ angular.module('maritimeweb.vessel')
                          var vesselPosition = new ol.geom.Point(ol.proj.transform([value.lon, value.lat], 'EPSG:4326', 'EPSG:900913'));
                          var markerStyle = new ol.style.Style({
                              image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                 anchor: [0.85, 0.5],
-                                 opacity: 0.85,
+                                 anchor: [1.0, 0.5],
+                                 opacity: 0.90,
                                  id: value.ts,
                                  rotation: (value.cog - 90) * (Math.PI / 180),
                                  src: 'img/vessel_green.png'
@@ -698,7 +892,9 @@ angular.module('maritimeweb.vessel')
                          });
 
                          var markerVessel = new ol.Feature({
-                             geometry: vesselPosition
+                             geometry: vesselPosition,
+                             myproperty: "time " + $filter('timeAgo')(value.ts) + ' ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z'),
+                             id: value.ts
                          });
                          markerVessel.setStyle(markerStyle);
                          return markerVessel;
@@ -710,6 +906,8 @@ angular.module('maritimeweb.vessel')
                          this.push(markerVessel);
                      }, lineFeatures);
                      $scope.routeFeatures = lineFeatures;
+                     console.log("$scope.routePoints.length="+$scope.routePoints.length) ;
+
                      console.log("$scope.routeFeatures.length="+$scope.routeFeatures.length) ;
                     return response;
 
@@ -722,6 +920,12 @@ angular.module('maritimeweb.vessel')
 
                 });
 
+            };
+
+
+            /** Returns the lat-lon attributes of the vessel */
+            $scope.toLonLat = function (long, lati) {
+                return {lon: long, lat: lati};
             };
 
 
@@ -750,7 +954,4 @@ angular.module('maritimeweb.vessel')
 
 
         }]);
-    /**
-     * controller handling the details view for a vessel.
-     */
-
+ 

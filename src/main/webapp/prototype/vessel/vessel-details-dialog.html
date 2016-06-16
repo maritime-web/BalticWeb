@@ -6,7 +6,7 @@
             <h2>{{warning}}</h2>
         </div>
 
-        <div class="row" ng-if="msg">
+        <div class="row " ng-if="msg">
             <!--
             {"data":
             {"mmsi":null,
@@ -74,10 +74,10 @@
 
                 <tr ng-if="msg.data.aisVessel.country">
                     <th scope="row">Country</th>
-                    <td>
+                    <td>{{msg.data.aisVessel.country}}
                         <flag country="{{msg.data.aisVessel.country}}" size="32"></flag>
                     </td>
-                    <td>{{msg.data.aisVessel.country}}</td>
+                    <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.callsign">
@@ -88,24 +88,27 @@
 
                 <tr ng-if="msg.data.aisVessel.mmsi">
                     <th scope="row">mmsi</th>
-                    <td>{{msg.data.aisVessel.mmsi}}</td>
-                    <td><a target="_blank"
+                    <td>{{msg.data.aisVessel.mmsi}} <br>
+                        <a target="_blank"
                            href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{msg.data.aisVessel.mmsi}}">marinetraffic.com/ais/details/ships/{{msg.data.aisVessel.mmsi}}</a>
                     </td>
+                    <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.imoNo">
                     <th scope="row">imoNo</th>
-                    <td>{{msg.data.aisVessel.imoNo}}</td>
-                    <td><a target="_blank"
+                    <td>{{msg.data.aisVessel.imoNo}} <br>
+                        <a target="_blank"
                            href="http://maritime-connector.com/ship-search/?keyword=&ship=&imo={{msg.data.aisVessel.imoNo}}&type=&limit=25&sort=&sort_type=">maritime-connector.com/ship/{{msg.data.aisVessel.imoNo}}</a>
+
                     </td>
+                    <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.length && msg.data.aisVessel.width">
                     <th scope="row">Length &times; Width</th>
-                    <td>{{msg.data.aisVessel.length}}m</td>
-                    <td>{{msg.data.aisVessel.width}}m</td>
+                    <td>{{msg.data.aisVessel.length}}m &times; {{msg.data.aisVessel.width}}m</td>
+                    <td></td>
                 </tr>
 
 
@@ -116,18 +119,33 @@
                 </tr>
 
 
-                <tr ng-if="msg.data.aisVessel.lastReport">
-                    <th scope="row">Last Report</th>
-                    <td>~ {{msg.data.aisVessel.lastReport | timeAgo}}</td>
-                    <td>{{msg.data.aisVessel.lastReport | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
-                </tr>
+
 
 
                 <tr ng-if="msg.data.aisVessel.lat">
-                    <th scope="row">Lat/Lon</th>
-                    <td>{{msg.data.aisVessel.lat}}</td>
-                    <td>{{msg.data.aisVessel.lon}}</td>
+                    <th scope="row">Position (Lat/Lon)</th>
+                    <td>{{ toLonLat(msg.data.aisVessel.lon, msg.data.aisVessel.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
+                    <td></td>
                 </tr>
+
+                <tr ng-if="msg.data.aisVessel.lastReport">
+                    <th scope="row">Position - Last Report</th>
+                    <td>~ {{msg.data.aisVessel.lastReport | timeAgo}} <br> {{msg.data.aisVessel.lastReport | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.destination">
+                    <th scope="row">Destination</th>
+                    <td>{{msg.data.aisVessel.destination}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.eta">
+                    <th scope="row">Estimated Time of Arrival</th>
+                    <td>~ {{msg.data.aisVessel.eta | timeAgo}} <br> {{msg.data.aisVessel.eta | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
+                    <td></td>
+                </tr>
+
                 <tr ng-if="msg.data.aisVessel.heading">
                     <th scope="row">Heading</th>
                     <td>{{msg.data.aisVessel.heading}}</td>
@@ -138,32 +156,31 @@
                     <td>{{msg.data.aisVessel.moored ? 'yes' : 'no'}}</td>
                     <td></td>
                 </tr>
-                <tr ng-if="msg.data.aisVessel.destination">
-                    <th scope="row">Destination</th>
-                    <td>{{msg.data.aisVessel.destination}}</td>
-                    <td></td>
-                </tr>
-
-                <tr ng-if="msg.data.aisVessel.eta">
-                    <th scope="row">Estimated Time of Arrival</th>
-                    <td>~ {{msg.data.aisVessel.eta | timeAgo}}</td>
-                    <td>{{msg.data.aisVessel.eta | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
-                </tr>
 
                 <tr>
                     <th scope="row">Historical track</th>
-                    <td >
-                          <btn class="btn btn-primary" ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)">Get Historical Track</btn>
+                    <td  ng-if="!routePoints">
+                          <btn class="btn btn-primary" ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"
+                               tooltip="retrieve detailed historical track points" data-toggle="tooltip"
+                               data-placement="right" title="retrieve detailed historical track points">Get Historical Track
+                              <i class="fa fa-arrow-down" aria-hidden="true"></i></btn><br>
 
+                    </td>
+                    <td  ng-if="routePoints">
+                        <btn class="btn btn-info" ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"> {{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn><br>
+                        <label for="speed">
+                            speed:&nbsp;
+                            <input id="speed" type="range" min="10" max="999" step="10" value="10">
+                        </label>
+                        <button id="start-animation">Start Animation</button>
+                        <span ng-bind="activeRoutePoint"></span>
                     </td>
                     <td>
-                        <span ng-if="routePoints" class="badge badge-primary" ng-bind="routePoints.length"></span>
                     </td>
                 </tr>
-               <tr>
-
+               <tr ng-if="routeFeatures">
                     <td colspan="3">
-                            <ol-map ng-if="routeFeatures" class="message-details-map">
+                            <ol-map  class="route-details-map">
                                 <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
                                 <route points="routePoints" vessel="vessel" feat="routeFeatures"></route>
                             </ol-map>
@@ -171,16 +188,16 @@
                </tr>
 
                 <tr ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 10">
-                       <th scope="row">{{object.ts | timeAgo}} {{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</th>
+                       <th scope="row">{{object.ts | timeAgo}}<br> {{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</th>
                        <td>{{object.cog}} {{object.sog}}</td>
-                       <td>{{object.lat}}/ {{object.lon}}</td>
+                       <td>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
                 </tr>
 
 
                 <tr>
                     <th scope="row">Navigational status</th>
                     <td>{{navStatusText(msg.data.aisVessel.navStatus)}}</td>
-                    <td>{{msg.data.aisVessel.navStatus}}</td>
+                    <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.draught">
