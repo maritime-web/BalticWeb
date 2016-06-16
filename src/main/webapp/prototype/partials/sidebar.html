@@ -33,7 +33,7 @@
                 </div>
 
                 <table class="table table-striped" >
-                    <tr ng-repeat="vessel in vessels | limitTo: 100">
+                    <tr ng-repeat="vessel in vessels | orderBy: 'mmsi' | limitTo: 100">
                         <td width="24" class="vessel-item">
                             <img ng-src="{{iconForVessel(vessel)}}">
                         </td>
