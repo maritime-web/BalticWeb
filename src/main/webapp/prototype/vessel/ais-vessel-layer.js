@@ -573,12 +573,10 @@ angular.module('maritimeweb.vessel')
                     name: '@',
                     autoplay: '=?',
                     points: '=?',
-                    feat: '=?',
-                    vessel: '=?'
+                    feat: '=?'
                 },
                 link: function (scope, element, attrs, ctrl) {
                     console.log("got route" + scope.points.length +
-                        " and vessel " + scope.vessel +
                         " feat=" + scope.feat.length +
                         "autoplay=" + scope.autoplay
                     );
