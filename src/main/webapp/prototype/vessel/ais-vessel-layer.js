@@ -561,8 +561,40 @@ angular.module('maritimeweb.vessel')
             return {
                 restrict: 'E',
                 require: '^olMap',
+                template:
+                /*  "<ul class='list-group  hidden-xs hidden-sm message-details-map col-md-6 col-lg-6'>" +
+                        "<li class='list-group-item'>" +
+                            "<btn ng-if='!animating' class='btn btn-info' id='start-animation' ng-click='startAnimation()'> <i class='fa fa-play' aria-hidden='true'></i> </btn> &nbsp;" +
+                            "<btn ng-if='animating' class='btn btn-info' id='start-animation' ng-click='stopAnimation()'> <i class='fa fa-stop' aria-hidden='true'></i> </btn> &nbsp;" +
+                            "<label for='speed'>" + " Animation speed:&nbsp;" + "<input id='speed' type='range' min='1' max='999' step='10' value='10'> " + "</label>" +
+                        "</li>" +
+                       "<li class='list-group-item'>" + "<label for='speed'>" + " Animation speed:&nbsp;" + "<input id='speed' type='range' min='1' max='999' step='10' value='10'> " + "</label>" + "</li>" +*/
+/*                        "<li class='list-group-item'>" + "<span class='badge'>{{activeRouteTSTimeAgo}}</span>" + "Time ago:" + "</li>" +
+                        "<li class='list-group-item'>" + "<span class='badge'>{{activeRouteTS}}</span>" + "Timestamp:" + "</li>" +
+                        "<li class='list-group-item'>" + "<span class='badge'>{{activeRoutePoint | lonlat:{ decimals : 3, pp: true} }}</span>" + "Position:" + "</li>" +
+                        "<li class='list-group-item'>" + "<span class='badge'>{{activeRouteCOG}}</span>" + "COG:" + "</li>" +
+                        "<li class='list-group-item'>" + "<span class='badge'>{{activeRouteSOG}}</span>" + "SOG:" + "</li>" +
+
+
+
+                "</ul>" */
+                "<div class=' hidden-xs hidden-sm message-details-route col-md-3 col-lg-3'>" +
+                "<btn ng-if='!animating' class='btn btn-success' id='start-animation' ng-click='startAnimation()'> <i class='fa fa-play' aria-hidden='true'></i> </btn> " +
+                "<btn ng-if='animating' class='btn btn-danger' id='start-animation' ng-click='stopAnimation()' tooltip='stop animation' data-toggle='tooltip'  " +
+                " data-placement='right' title='stop animation'> <i class='fa fa-stop' aria-hidden='true'></i> </btn><br>" +
+                "<label for='speed'>" + " Animation speed:&nbsp;" + "<input id='speed' type='range' min='1' max='999' step='10' value='10'> " + "</label><br>" +
+                "" +
+                "" +
+                "<span class='label label-primary'>{{activeRouteTSTimeAgo}}</span><br>" +
+                "<span class='label label-primary'>{{activeRouteTS}}</span><br>" +
+                "<span class='label label-primary'>{{activeRoutePoint | lonlat:{ decimals : 3, pp: true} }}</span><br>" +
+                "<span class='label label-primary'>{{activeRouteCOG}}</span> COG <br>" +
+                "<span class='label label-primary'>{{activeRouteSOG}}</span> SOG<br>" +
+                "</div>"
+                ,
                 scope: {
                     name:         '@',
+                    autoplay:     '=?',
                     points:       '=?',
                     feat:         '=?',
                     vessel:       '=?'
@@ -570,7 +602,9 @@ angular.module('maritimeweb.vessel')
                 link: function(scope, element, attrs, ctrl) {
                     console.log("got route" + scope.points.length +
                                 " and vessel " + scope.vessel
-                                + " feat=" + scope.feat.length
+                                + " feat=" + scope.feat.length +
+                            "autoplay=" + scope.autoplay
+
                     );
                     var olScope = ctrl.getOpenlayersScope();
                     var routeLayers;
@@ -622,7 +656,7 @@ angular.module('maritimeweb.vessel')
                        // markerVessel.setStyle(markerStyle);
                          routeFeatureLayer.getSource().addFeatures(scope.feat);
 
-             
+
                        // var center = MapService.fromLonLat([vesselPosition.coordinates[0], vesselPosition.coordinates[1]]);
                        // map.getView().setCenter(center);
                         map.getView().setCenter( routeFeatureLayer.getSource().getFeatures()[0].getGeometry().getCoordinates());
@@ -674,11 +708,12 @@ angular.module('maritimeweb.vessel')
                             type: 'route',
                             geometry: lineRoute
                         });
+                        /*
                         var geoMarker = new ol.Feature({
                             type: 'geoMarker',
                             geometry: new ol.geom.Point(routeCoords[0])
                         });
-                   /*     var startMarker = new ol.Feature({
+                       var startMarker = new ol.Feature({
                             type: 'icon',
                             geometry: new ol.geom.Point(routeCoords[0])
                         });
@@ -709,18 +744,18 @@ angular.module('maritimeweb.vessel')
                             })
                         };
 
-                        var animating = false;
+                        scope.animating = false;
                         var speed, now, orgIndexVal;
                         var speedInput = document.getElementById('speed');
-                        var startButton = document.getElementById('start-animation');
+                       // var startButton = document.getElementById('start-animation');
 
                         var animationLayer = new ol.layer.Vector({
                             source: new ol.source.Vector({
-                                features: [routeFeature, geoMarker, startMarker, endMarker]
+                                features: [routeFeature, startMarker, endMarker]
                             }),
                             style: function(feature) {
                                 // hide geoMarker if animation is active
-                                if (animating && feature.get('type') === 'geoMarker') {
+                                if (scope.animating && feature.get('type') === 'geoMarker') {
                                     return null;
                                 }
                                 return styles[feature.get('type')];
@@ -754,12 +789,12 @@ angular.module('maritimeweb.vessel')
                             ]
                         });*/
                         var index = 0;
-              
+
                         var moveFeature = function(event) {
                             var vectorContext = event.vectorContext;
                             var frameState = event.frameState;
 
-                            if (animating) {
+                            if (scope.animating) {
                                 var elapsedTime = frameState.time - now;
                                 // here the trick to increase speed is to jump some indexes
                                 // on lineString coordinates
@@ -771,8 +806,7 @@ angular.module('maritimeweb.vessel')
                                 if (index >= routeLength) {
                                     index = 0; // rewind, and loop
                                     console.log("loop, one more time");
-                                    stopAnimation(true);
-                                    startAnimation();
+                                    scope.stopAnimation(true);
                                     //return;
                                 }
 
@@ -781,7 +815,12 @@ angular.module('maritimeweb.vessel')
                                 var feature = scope.feat[index];
                                 vectorContext.drawFeature(feature, feature.getStyle());
                                 //vectorContext.drawFeature(feature, feature.getStyle().getImage().setOpacity(1.0));
-                                $rootScope.activeRoutePoint = feature.getId() + " <<---" + index;
+                                scope.activeRoutePoint = feature.get('position') ;
+                                scope.activeRouteTS = feature.get('ts')  ;
+                                scope.activeRouteTSTimeAgo = feature.get('tsTimeAgo')  ;
+                                scope.activeRouteCOG = feature.get('cog') ;
+                                scope.activeRouteSOG = feature.get('sog') ;
+
                                 //index++;
 
                                 //  vectorContext.drawFeature(feature, styles.geoMarker);
@@ -794,18 +833,18 @@ angular.module('maritimeweb.vessel')
 
 
 
-                        var startAnimation =  function() {
-                            if (animating) {
-                                stopAnimation(false);
+                        scope.startAnimation =  function() {
+                            if (scope.animating) {
+                                scope.stopAnimation(false);
                             } else {
 
-                                animating = true;
+                                scope.animating = true;
                                 now = new Date().getTime();
                                 speed = speedInput.value;
                                 //speed = 10;
-                                startButton.textContent = 'Cancel Animation';
+                                // startButton.textContent = 'Cancel Animation';
                                 // hide geoMarker
-                                geoMarker.setStyle(null);
+                               // geoMarker.setStyle(null);
                                 // just in case you pan somewhere else
                                 // map.getView().setCenter(center);
                                 map.on('postcompose', moveFeature);
@@ -817,17 +856,21 @@ angular.module('maritimeweb.vessel')
                         /**
                          * @param {boolean} ended end of animation.
                          */
-                        var stopAnimation = function(ended) {
-                            animating = false;
-                            startButton.textContent = 'Start Animation';
+                        scope.stopAnimation = function(ended) {
+                            scope.animating = false;
+                          //  startButton.textContent = 'Start Animation';
 
                             // if animation cancelled set the marker at the beginning
-                            var coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
-                            /** @type {ol.geom.Point} */ (geoMarker.getGeometry())
+                           /* var coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
+                            /!** @type {ol.geom.Point} *!/ (geoMarker.getGeometry())
                                 .setCoordinates(coord);
                             //remove listener
-                            map.un('postcompose', moveFeature);
+                            map.un('postcompose', moveFeature);*/
                         };
+
+                        // automatically zoom and pan the map to fit my features
+                        var extent = animationLayer.getSource().getExtent();
+                        map.getView().fit(extent, map.getSize());
 
                         routeLayers = new ol.layer.Group({
                             title: 'Route',
@@ -836,15 +879,19 @@ angular.module('maritimeweb.vessel')
                         });
 
                         map.addLayer(routeLayers);
-                        startButton.addEventListener('click', startAnimation, false);
 
 
+                        if(scope.autoplay){
+                            scope.startAnimation();
+                        };
+
+                        //startButton.addEventListener('click', startAnimation, false);
                     });
                 }
             }
         }])
 
-                        /*******************************************************************
+     /*******************************************************************
      * Controller that handles displaying vessel details in a dialog
      *******************************************************************/
     .controller('VesselDialogCtrl', ['$scope', '$window', 'VesselService', 'message', 'growl', 'timeAgo','$filter',
@@ -867,8 +914,7 @@ angular.module('maritimeweb.vessel')
                      }, linePoints);
                      $scope.routePoints = linePoints;
 
-
-                     // Features are better
+                     // Features are more detailed
                      var lineFeatures = [];
                      var generateHistoricalMarker = function (value) {
                          var vesselPosition = new ol.geom.Point(ol.proj.transform([value.lon, value.lat], 'EPSG:4326', 'EPSG:900913'));
@@ -880,37 +926,52 @@ angular.module('maritimeweb.vessel')
                                  rotation: (value.cog - 90) * (Math.PI / 180),
                                  src: 'img/vessel_green.png'
                              }))
-                       /*      ,
+                             ,
                              text: new ol.style.Text({
-                                 text: $filter('timeAgo')(value.ts) + ' ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z'), // attribute code
+                                 text: $filter('timeAgo')(value.ts) + ' - ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC', // attribute code
                                  size: 10,
+                                 offsetY: 20
+                                 /*,
                                  font: "Arial",
                                  fill: new ol.style.Fill({
-                                     color: 'blue' // black text //
+                                     color: 'green' // black text //
                                  })
-                             })*/
+                                 */
+                             })
                          });
 
                          var markerVessel = new ol.Feature({
                              geometry: vesselPosition,
-                             myproperty: "time " + $filter('timeAgo')(value.ts) + ' ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z'),
-                             id: value.ts
+                             cog: value.cog,
+                             sog: value.sog,
+                             id: value.ts,
+                             ts: $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC',
+                             tsTimeAgo:  $filter('timeAgo')(value.ts),
+                             position: $scope.toLonLat( value.lon, value.lat)
                          });
                          markerVessel.setStyle(markerStyle);
                          return markerVessel;
                      };
-
-                     //
+/*
+                      iterate over the historical track data retrievied in the format
+                         [{
+                         "cog": 122.9,
+                         "lat": 55.723106666666666,
+                         "lon": 21.10174333333333,
+                         "sog": 0,
+                         "ts": 1465473596620
+                         },
+                         {...}
+                         ]
+                      */ 
                      angular.forEach(response.data, function(value, key) {
                          var markerVessel = generateHistoricalMarker(value);
                          this.push(markerVessel);
                      }, lineFeatures);
                      $scope.routeFeatures = lineFeatures;
                      console.log("$scope.routePoints.length="+$scope.routePoints.length) ;
-
                      console.log("$scope.routeFeatures.length="+$scope.routeFeatures.length) ;
                     return response;
-
 
                 }, function errorCallback(response) {
                     // called asynchronously if an error occurs
@@ -922,12 +983,10 @@ angular.module('maritimeweb.vessel')
 
             };
 
-
             /** Returns the lat-lon attributes of the vessel */
             $scope.toLonLat = function (long, lati) {
                 return {lon: long, lat: lati};
             };
-
 
             var navStatusTexts = {
                 0: "Under way using engine",
@@ -950,8 +1009,5 @@ angular.module('maritimeweb.vessel')
                 }
                 return null;
             };
-
-
-
         }]);
  

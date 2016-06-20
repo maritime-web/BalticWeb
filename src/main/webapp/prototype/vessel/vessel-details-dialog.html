@@ -64,11 +64,9 @@
 
             -->
 
-
             <h3 ng-bind="msg.data.aisVessel.name">
                 <flag class="pull-right" country="{{msg.data.aisVessel.country}}" size="32"></flag>
             </h3>
-
 
             <table class="table table-striped table-hover">
 
@@ -100,7 +98,6 @@
                     <td>{{msg.data.aisVessel.imoNo}} <br>
                         <a target="_blank"
                            href="http://maritime-connector.com/ship-search/?keyword=&ship=&imo={{msg.data.aisVessel.imoNo}}&type=&limit=25&sort=&sort_type=">maritime-connector.com/ship/{{msg.data.aisVessel.imoNo}}</a>
-
                     </td>
                     <td></td>
                 </tr>
@@ -111,18 +108,13 @@
                     <td></td>
                 </tr>
 
-
                 <tr ng-if="msg.data.aisVessel.vesselType">
                     <th scope="row">Vessel Type</th>
                     <td>{{msg.data.aisVessel.vesselType}}</td>
                     <td></td>
                 </tr>
 
-
-
-
-
-                <tr ng-if="msg.data.aisVessel.lat">
+                <tr ng-if="msg.data.aisVessel.lat && msg.data.aisVessel.lon ">
                     <th scope="row">Position (Lat/Lon)</th>
                     <td>{{ toLonLat(msg.data.aisVessel.lon, msg.data.aisVessel.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
                     <td></td>
@@ -159,7 +151,7 @@
 
                 <tr>
                     <th scope="row">Historical track</th>
-                    <td  ng-if="!routePoints">
+                    <td ng-if="!routePoints">
                           <btn class="btn btn-primary" ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"
                                tooltip="retrieve detailed historical track points" data-toggle="tooltip"
                                data-placement="right" title="retrieve detailed historical track points">Get Historical Track
@@ -168,12 +160,6 @@
                     </td>
                     <td  ng-if="routePoints">
                         <btn class="btn btn-info" ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"> {{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn><br>
-                        <label for="speed">
-                            speed:&nbsp;
-                            <input id="speed" type="range" min="10" max="999" step="10" value="10">
-                        </label>
-                        <button id="start-animation">Start Animation</button>
-                        <span ng-bind="activeRoutePoint"></span>
                     </td>
                     <td>
                     </td>
@@ -182,15 +168,28 @@
                     <td colspan="3">
                             <ol-map  class="route-details-map">
                                 <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
-                                <route points="routePoints" vessel="vessel" feat="routeFeatures"></route>
+                                <route points="routePoints" vessel="vessel" feat="routeFeatures" autoplay="true"></route>
                             </ol-map>
                     </td>
                </tr>
 
-                <tr ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 10">
-                       <th scope="row">{{object.ts | timeAgo}}<br> {{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</th>
-                       <td>{{object.cog}} {{object.sog}}</td>
-                       <td>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
+                <tr  ng-if="historicalTrackOutput.length>1">
+                    <th scope="row">Historical position</th>
+                    <td>
+                    <uib-accordion close-others="oneAtATime">
+                        <uib-accordion-group heading="List historical tracks" is-open="false" is-disabled="false">
+                            <div ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 100" class="well-sm">
+                            <span>{{object.ts | timeAgo}}<br> {{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</span>
+                            <!--<td>{{object.cog}} {{object.sog}}</td>-->
+                            <span>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</span>
+                            </div>
+                        </uib-accordion-group>
+
+
+
+                    </uib-accordion>
+                    </td>
+
                 </tr>
 
 
