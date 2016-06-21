@@ -64,8 +64,8 @@
 
             -->
 
-            <h3 ng-bind="msg.data.aisVessel.name">
-                <flag class="pull-right" country="{{msg.data.aisVessel.country}}" size="32"></flag>
+            <h3>
+                {{msg.data.aisVessel.name}} <flag country="{{msg.data.aisVessel.country}}" size="32"></flag>
             </h3>
 
             <table class="table table-striped table-hover">
@@ -73,7 +73,7 @@
                 <tr ng-if="msg.data.aisVessel.country">
                     <th scope="row">Country</th>
                     <td>{{msg.data.aisVessel.country}}
-                        <flag country="{{msg.data.aisVessel.country}}" size="32"></flag>
+                        <!--<flag country="{{msg.data.aisVessel.country}}" size="32"></flag>-->
                     </td>
                     <td></td>
                 </tr>

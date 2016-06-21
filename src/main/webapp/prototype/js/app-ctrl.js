@@ -107,6 +107,8 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
                 return {lon: vessel.x, lat: vessel.y};
             };
 
+   
+
             /**************************************/
             /** NW-NM sidebar functionality      **/
             /**************************************/
@@ -189,7 +191,7 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
                  VesselService.showVesselInfoFromMMsi(mmsi);
                 //console.log("App Ctr received = vesselDetails" +JSON.stringify(vesselDetails));
                 //growl.info("got vesseldetails " + JSON.stringify(vesselDetails));
-                growl.info("got vesseldetails " );
+                growl.info("Vessel details retrieved for " + mmsi );
 
             };
 
