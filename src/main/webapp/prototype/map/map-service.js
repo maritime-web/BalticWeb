@@ -19,7 +19,6 @@ angular.module('maritimeweb.map')
             var mapDefaultLongitude = 22;
             var mapDefaultLatitude = 59;
             var mapDefaultZoomLevel = 7;
-            var mapMaxZoomLevel = 9;
 
 
             /** Returns the data projection */

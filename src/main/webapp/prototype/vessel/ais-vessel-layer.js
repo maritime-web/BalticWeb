@@ -286,47 +286,17 @@ angular.module('maritimeweb.vessel')
 
                         };
 
-                        /** Create a historic vessel feature, with only lat,lon,cog,roc,ts. */
-                        scope.createHistoricVesselFeature = function (vessel) {
-                            var image = VesselService.imageAndTypeTextForVessel(vessel);
-
-                            var markerStyle = new ol.style.Style({
-                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                    anchor: [0.85, 0.5],
-                                    opacity: 0.85,
-                                    id: vessel.id,
-                                    rotation: vessel.radian,
-                                    src: 'img/' + image.name
-                                }))
-                            });
-
-                            var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
-
-                            var markerVessel = new ol.Feature({
-
-                                type: image.type,
-                                angle: vessel.angle,
-                                radian: vessel.radian,  // (vessel.angle * (Math.PI / 180)),
-                                latitude: vessel.y,
-                                longitude: vessel.x,
-                                geometry: vesselPosition
-                            });
-                            markerVessel.setStyle(markerStyle);
-                            return markerVessel;
-
-                        };
-
-
                         /** Create a vessel feature for any openlayers 3 map. */
                         scope.createVesselFeature = function (vessel) {
                             var image = VesselService.imageAndTypeTextForVessel(vessel);
 
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                    anchor: [0.85, 0.5],
+                                    anchor: [0.5, 1.0],
                                     opacity: 0.85,
                                     id: vessel.id,
                                     rotation: vessel.radian,
+                                    rotateWithView: true,
                                     src: 'img/' + image.name
                                 }))
                             });
@@ -468,7 +438,6 @@ angular.module('maritimeweb.vessel')
                         /** Vessel Details        **/
                         /***************************/
 
-
                         var elm = document.getElementById('vessel-info');
 
                         var popup = new ol.Overlay({
@@ -552,8 +521,6 @@ angular.module('maritimeweb.vessel')
         }])
 
 
-
-
     /*******************************************************************
      * Controller that handles displaying vessel details in a dialog
      *  Its
@@ -569,7 +536,7 @@ angular.module('maritimeweb.vessel')
                 VesselService.historicalTrack(mmsi).then(function successCallback(response) {
                     // this callback will be called asynchronously
                     // when the response is available
-                    growl.success("Retrieved historical points " + response.data.length)
+                    growl.success("Retrieved historical points " + response.data.length);
 
                     var linePoints = [];
                     angular.forEach(response.data, function (value, key) {
