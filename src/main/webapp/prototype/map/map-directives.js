@@ -105,8 +105,8 @@ angular.module('maritimeweb.map')
                 }
 
 
-                // Disable rotation on mobile devices
-                var controls = scope.readonly ? [] : ol.control.defaults({ rotate: false });
+                // Enable rotation on mobile devices
+                var controls = scope.readonly ? [] : ol.control.defaults({ rotate: false }).extend([new ol.control.Rotate()]);
                 var interactions = scope.readonly ? [] : ol.interaction.defaults({ altShiftDragRotate: true, pinchRotate: true});
                 var balticExtent = ol.proj.transformExtent([9, 53, 31, 66], 'EPSG:4326', 'EPSG:3857');
                 var layers = [];
@@ -122,7 +122,7 @@ angular.module('maritimeweb.map')
                     controls: controls,
                     interactions: interactions
                 });
-
+                //map.addControl(new ol.control.Rotate());
 
                 // Set extent (center and zoom) of the map.
                 scope.updateMapExtent = function (initial) {
@@ -388,7 +388,7 @@ angular.module('maritimeweb.map')
                             var markerPosition = new ol.geom.Point(ol.proj.transform([pos.coords.longitude, pos.coords.latitude], 'EPSG:4326', 'EPSG:900913'));
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                    anchor: [0.85, 0.5],
+                                    anchor: [0.5, 0.5],
                                     src: 'img/geolocation_marker.png'
                                 }))
                             });
@@ -431,26 +431,72 @@ angular.module('maritimeweb.map')
             replace: false,
             require: '^olMap',
             template:
-            "<span class='map-current-pos-orientation-btn'>" +
+            "<span class='map-current-pos-btn'>" +
             " <span><i class='fa fa-location-arrow' aria-hidden='true' ng-click='currentPosOrientation()' tooltip='Current Position and orientation' ></i></span>" +
             "</span>",
             scope: {
             },
             link: function(scope, element, attrs, ctrl) {
                 var olScope     = ctrl.getOpenlayersScope();
-
                 olScope.getMap().then(function(map) {
-
                     scope.currentPosOrientation = function () {
+                        scope.loadingData = true; // start spinner
                         $window.navigator.geolocation.getCurrentPosition(function (pos) {
-                            console.log('Got current position and rotation', pos.coords);
-                            // set up geolocation to track our position
+                            console.log('Got current position', pos.coords);
 
 
-                            //var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
-                            //map.getView().setCenter(center);
+
+
+
+                            var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
+                            map.getView().setCenter(center);
+                            map.getView().setZoom(15);
+
+                            var markerPosition = new ol.geom.Point(ol.proj.transform([pos.coords.longitude, pos.coords.latitude], 'EPSG:4326', 'EPSG:900913'));
+                            var markerStyle = new ol.style.Style({
+                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                    anchor: [0.5, 0.5],
+                                    src: 'img/geolocation_marker.png'
+                                }))
+                            });
+
+                            var markerFeature = new ol.Feature({
+                                geometry: markerPosition
+                            });
+                            markerFeature.setStyle(markerStyle);
+
+                            var vectorSource = new ol.source.Vector({
+                                features: [markerFeature]
+                            });
+
+                            var vectorLayer = new ol.layer.Vector({
+                                source: vectorSource
+                            });
+                            map.addLayer(vectorLayer);
+
+                            var deviceOrientation = new ol.DeviceOrientation();
+                            deviceOrientation.setTracking(true);
+
+                            // tilt the map
+                            deviceOrientation.on(['change:beta', 'change:gamma'], function(event) {
+                                var center = map.getView().getCenter();
+                                var resolution = view.getResolution();
+                                var beta = event.target.getBeta() || 0;
+                                var gamma = event.target.getGamma() || 0;
+
+                                center[0] -= resolution * gamma * 25;
+                                center[1] += resolution * beta * 25;
+                                console.log("devices orientation is changing. Beta=" + beta + " gamma=" + gamma);
+
+                                map.getView().setCenter(map.getView().constrainCenter(center));
+                            });
+
+                            scope.loadingData = false; // stop spinner
+
                         }, function () {
-                            console.error('Unable to get current position and orientation');
+                            scope.loadingData = false; // stop spinner
+                            console.error('Unable to get current position');
+                            growl.error('Unable to retrieve current position');
                         });
                     }
 

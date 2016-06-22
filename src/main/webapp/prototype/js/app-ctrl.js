@@ -186,9 +186,9 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
 
 
 
-            $scope.showVesselDetails = function(mmsi) {
+            $scope.showVesselDetails = function(vessel) {
                 //var vesselDetails = VesselService.details(vessel.mmsi);
-                 VesselService.showVesselInfoFromMMsi(mmsi);
+                 VesselService.showVesselInfoFromMMsi(vessel);
                 //console.log("App Ctr received = vesselDetails" +JSON.stringify(vesselDetails));
                 //growl.info("got vesseldetails " + JSON.stringify(vesselDetails));
                 growl.info("Vessel details retrieved" );
