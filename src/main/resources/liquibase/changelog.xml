@@ -380,12 +380,12 @@
     <include file="liquibase/arcticweb-1.12.xml"/>
     <!--<include file="liquibase/embryo-tiles-1.14.xml"/>-->
     <include file="liquibase/embryo-user-2.2.xml"/>
-    <include file="liquibase/embryo-reporting-2.2.xml"/>
+    <!--<include file="liquibase/embryo-reporting-2.2.xml"/>-->
     <!--<include file="liquibase/embryo-dataformats-2.2.xml"/>-->
     <include file="liquibase/embryo-user-2.3.xml"/>
     <include file="liquibase/embryo-vessel-2.4.xml"/>
     <include file="liquibase/embryo-user-2.5.xml"/>
-    <include file="liquibase/embryo-reporting-2.5.xml"/>
+    <!--<include file="liquibase/embryo-reporting-2.5.xml"/>-->
     <include file="liquibase/embryo-vessel-2.5.xml"/>
     <!--<include file="liquibase/embryo-dataformats-2.5.xml"/>-->
     <include file="liquibase/embryo-user-2.6.xml"/>

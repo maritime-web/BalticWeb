@@ -1,10 +1,11 @@
 
-<div class="maritimeweb-sidebar">
+<!-- div ng-hide="!showgraphSidebar" ng-class="showgraphSidebar ? 'maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar' : 'hidden '" -->
+<div uib-collapse="!showgraphSidebar" class="maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar" >
 
     <uib-tabset>
 
         <!-- Messages tab -->
-        <uib-tab>
+        <!--uib-tab>
             <uib-tab-heading>
                 <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;Messages
             </uib-tab-heading>
@@ -14,7 +15,7 @@
                 </uib-alert>
                 &nbsp;
             </div>
-        </uib-tab>
+        </uib-tab-->
 
 
         <!-- Vessels tab -->
@@ -31,12 +32,12 @@
                     <button class="btn btn-default" ng-click="login()">Login</button>
                 </div>
 
-                <table width="100%">
-                    <tr ng-repeat="vessel in vessels | limitTo: 100">
+                <table class="table table-striped" >
+                    <tr ng-repeat="vessel in vessels | orderBy: 'mmsi' | limitTo: 100">
                         <td width="24" class="vessel-item">
                             <img ng-src="{{iconForVessel(vessel)}}">
                         </td>
-                        <td class="vessel-item"><span ng-if="vessel.mmsi">{{vessel.mmsi}}</span></td>
+                        <td class="vessel-item"><span ng-if="vessel.mmsi"> <a href ng-click="showVesselDetails(vessel)" >{{vessel.mmsi}}</a></span></td>
                         <td class="vessel-item">{{vessel.name}}</td>
                         <td class="vessel-item">{{toLonLat(vessel) | lonlat:{ decimals : 3, pp: true } }}</td>
                     </tr>
@@ -55,24 +56,9 @@
 
             <div class="sidebar-panel">
 
-                <div class="message-services">
-                    <table cellpadding="10">
-                        <tr>
-                            <td width="60" valign="top">
-                                <img src="/img/servicereg_152.png" height="48">
-                            </td>
-                            <td width="*">
-                                <strong>MC NW-NM Services</strong>&nbsp;
-                                <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
-                                <div class="message-service" ng-repeat="s in nwNmServices">
-                                    <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
 
-                <table>
+
+                <table class="table table-striped">
                     <tr ng-repeat-start="msg in nwNmMessages" ng-if="$index == 0 || nwnmAreaHeading($index) != nwnmAreaHeading($index - 1)">
                         <td colspan="2"  class="message-area-heading">
                             {{nwnmAreaHeading($index)}}
@@ -89,6 +75,22 @@
                         </td>
                     </tr>
                 </table>
+                <div class="message-services">
+                    <table class="table table-striped" cellpadding="10">
+                        <tr>
+                            <td width="60" valign="top">
+                                <img src="/img/servicereg_152.png" height="48">
+                            </td>
+                            <td width="*">
+                                <strong>MC NW-NM Services</strong>&nbsp;
+                                <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
+                                <div class="message-service" ng-repeat="s in nwNmServices">
+                                    <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
 
         </uib-tab>

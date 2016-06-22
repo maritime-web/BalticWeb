@@ -1,31 +1,45 @@
+
 html {
-    width: 100%;
-    height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-    font-size: 12px;
-    margin: 0;
-    padding: 0;
+    /* Margin bottom by footer height */
+    margin-bottom: 0px;
+}
+/* Sticky footer styles
+-------------------------------------------------- */
+.footer {
+    position: absolute;
+    bottom: -70px;
+    width: 100%;
+    font-size: x-small;
+    /* Set the fixed height of the footer here */
+    height: 80px;
+    background-color: white;
+
+}
+
+.push {
+    position: absolute;
+    bottom: 0;
+    height: auto;
+    width: 100%;
 }
 
 .panel-title {
     font-size: 12px;
 }
 
-.mouse-position {
-    /*position: absolute;
-    width: 100px;
-    right: 40%;
-    */
-    top: 20px;
-    color: #F5F5FF;
-    font-size: 11px;
-}
-#footercontainer{
-    color: #eee;
-}
+.navbar {
+    margin: 0;
 
+}
+.ng-hide {
+    height: 0;
+    opacity: 0;
+}
 
 .dialog-close-btn {
     float: right;
@@ -41,7 +55,7 @@ body {
 }
 
 /** Map and sidebar **/
-
+/*
 .maritimeweb-map {
     position: absolute;
     top: 50px;
@@ -90,6 +104,24 @@ body {
     .maritimeweb-sidebar {
         width: 500px;
     }
+}*/
+.maritimeweb-sidebar {
+    position: absolute;
+    top: 75px;
+    bottom: 3%;
+    right: 2%;
+    margin: 1em;
+    z-index: 300;
+    height: 75%;
+    background-color: white ;
+
+    border-radius: 4px;
+    padding: 4px;
+    overflow-y: scroll;
+
+    opacity: 0.90;
+    border: 1px #269 solid;
+
 }
 
 .sidebar-panel {
@@ -104,16 +136,103 @@ body {
 /** Maps **/
 
 .map {
-    position: relative;
-    overflow: hidden;
+    padding: 0px;
+    margin-right: 0px;
+    height: 90%;
     width: 100%;
-    height: 100%;
+    position: absolute;
+    border: 1px #269 solid;
+    background-color:#269;
+    background-image: linear-gradient(white 2px, transparent 2px),
+    linear-gradient(90deg, white 2px, transparent 2px),
+    linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
+    background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
+    /*
+    background:url(
+    data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAI0lEQVQIW2M8c+bMfxMTE0YGKADxwRyYBIxGUQHTgV0lNjMBG7MizEwu19wAAAAASUVORK5CYII=
+    ) repeat;
+    */
 }
 
+
+
+/*
+@media (min-width: 300px) {
+    .map {
+        height: 475px;
+    }
+}
+
+@media (min-width: 400px) {
+    .map {
+        height: 500px;
+    }
+}
+@media (min-width: 767px) {
+    .map {
+        height: 600px;
+    }
+}
+
+
+@media (min-width: 1000px) {
+    .map {
+        height: 700px;
+    }
+}
+*/
+
+.sidebar-toggle-btn {
+    color: white;
+    top: 140px;
+    left: 12px;
+    position: absolute;
+    z-index: 100;
+    margin: 0;
+    padding: 3px;
+    border-radius: 4px;
+    border: 2px  rgba(255, 255, 255, 0.9) solid;
+    background-color: rgba(0, 60, 136, 0.5);
+    transition: background .5s ease-in-out;
+    -moz-transition: background .5s ease-in-out;
+    -webkit-transition: background .5s ease-in-out;
+}
+
+.sidebar-toggle-btn:hover {
+    cursor: hand;
+    background-color: rgba(0, 60, 136, 0.9);
+
+}
+/*.sidebar-toggle-btn span {
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+    width: 44px;
+    margin: 0;
+
+    background-color: rgba(0, 60, 136, 0.5);
+    list-style-type: none;
+    transition: background .5s ease-in-out;
+    -moz-transition: background .5s ease-in-out;
+    -webkit-transition: background .5s ease-in-out;
+}
+
+.sidebar-toggle-btn:hover span {
+    cursor: pointer;
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: rgba(0, 60, 136, 0.9);
+}*/
+
+
+
 .map-current-pos-btn {
-    left: 8px;
-    top: 70px;
-    font-size: 12px;
+    left: 12px;
+    top: 80px;
+    font-size: 1.5em;
     position: absolute;
     z-index: 100;
     margin: 0;
@@ -121,15 +240,53 @@ body {
     border-radius: 4px;
     background-color: rgba(255, 255, 255, 0.4);
     opacity: 0.8;
+
 }
 
+.map-current-pos-btn:hover {
+    cursor: hand;
+    background-color: rgba(255, 255, 255, 0.8);
+
+}
 .map-current-pos-btn span {
     color: white;
     border-radius: 4px;
     padding: 4px;
     background-color: rgba(0, 60, 136, 0.5);
-    list-style-type:none;
+    list-style-type: none;
 }
+
+.map-current-pos-btn:hover span {
+    cursor: pointer;
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: rgba(0, 60, 136, 0.9);
+}
+
+.map-current-pos-orientation-btn {
+    left: 12px;
+    top: 100px;
+    font-size: 1.5em;
+    position: absolute;
+    z-index: 100;
+    margin: 0;
+    padding: 3px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.4);
+    opacity: 0.8;
+    cursor: hand;
+}
+
+.map-current-pos-orientation-btn span {
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: rgba(0, 60, 136, 0.5);
+    list-style-type: none;
+}
+
+
 
 .map-scale-line {
     left: 50px;
@@ -149,27 +306,23 @@ body {
     top: 10px;
     border-radius: 4px;
     padding: 4px;
-    width: 160px;
-    height: 21px;
+    width: auto;
+    height: 1.85em;
     text-align: center;
-    font-size: 10px;
+    font-size: 0.8em;
     color: white;
     z-index: 100;
     background-color: rgba(0, 60, 136, 0.5);
 }
 
-.layer-switcher {
-    top: 10px;
-    right: 20px;
-}
+
 
 .popover {
-    font-size: 10px;
+    font-size: 1em;
     width: 240px;
 }
 
 /** Vessel list **/
-
 
 .vessel-login {
     margin: 10px 20px;
@@ -214,7 +367,7 @@ body {
 /** NW-NM Message Details Dialog **/
 
 .message-details-item {
-    padding: 10px!important;
+    padding: 10px !important;
     font-size: 11px;
 }
 
@@ -238,15 +391,40 @@ ol.message-details-positions {
 }
 
 ol.message-details-positions li span {
-    color:#333;
+    color: #333;
 }
 
 .message-details-map {
     width: 100%;
-    height: 200px;
+    /* height: 200px;*/
     border: 1px solid lightgray;
     margin-bottom: 20px;
     background-color: #b5d0d0;
+    position: relative;
+    height: 200px;
+}
+
+.message-details-route {
+    /* height: 200px;*/
+    border: 1px solid #b5d0d0;
+    background-color: rgba(255, 255, 255, 0.4);
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    padding: 1em;
+
+    z-index: 100;
+}
+
+
+.route-details-map {
+    width: 100%;
+    /* height: 200px;*/
+    border: 1px solid lightgray;
+    margin-bottom: 20px;
+    background-color: #b5d0d0;
+    position: relative;
+    height: 450px;
 }
 
 @media (min-width: 800px) {
@@ -266,4 +444,42 @@ ol.message-details-positions li span {
     top: 30px;
     right: 30px;
     z-index: 2000;
+}
+
+
+/*
+Making room for the beta ribbon banner
+*/
+.navbar-brand{
+    padding-left: 41px;
+}
+/*
+beta ribbon banner in pure css
+*/
+
+body:after {
+    content: "alpha";
+    position: absolute;
+    width: 80px;
+    height: 25px;
+    background: red;
+   /* opacity: 0.90;
+    fill-opacity: 0.90;*/
+    top: 7px;
+    left: -20px;
+    text-align: center;
+    font-size: 13px;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #fff;
+    line-height: 27px;
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    z-index: 9999;
+}
+
+.ol-attribution ul{
+    font-size: small;
 }

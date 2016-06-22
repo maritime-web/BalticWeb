@@ -74,10 +74,10 @@
 			<artifactId>vessel</artifactId>
 		</dependency>
 
-		<dependency>
+	<!--	<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>dataformats</artifactId>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
@@ -89,12 +89,14 @@
 			<artifactId>msi</artifactId>
 		</dependency>
 
+<!--
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>metoc</artifactId>
 		</dependency>
+-->
 
-		<dependency>
+<!--		<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>reporting</artifactId>
 		</dependency>
@@ -102,7 +104,7 @@
 		<dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>weather</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>service-registry</artifactId>
@@ -444,7 +446,7 @@
                                     </arguments>
                                 </configuration>
                             </execution>
-                            <execution>
+                <!--            <execution>
                                 <id>jsunit</id>
                                 <phase>test</phase>
                                 <goals>
@@ -458,7 +460,7 @@
                                         <argument>test</argument>
                                     </arguments>
                                 </configuration>
-                            </execution>
+                            </execution>-->
                         </executions>
                     </plugin>
                 </plugins>
@@ -506,7 +508,7 @@
                                 </configuration>
                             </execution>
 
-                            <execution>
+                 <!--           <execution>
                                 <id>jsunit</id>
                                 <phase>test</phase>
                                 <goals>
@@ -518,7 +520,7 @@
                                         <argument>test</argument>
                                     </arguments>
                                 </configuration>
-                            </execution>
+                            </execution>-->
                         </executions>
                     </plugin>
                 </plugins>

@@ -1,32 +1,82 @@
 
 <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container-fluid">
+
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">BalticWeb</a>
+
+            <a class="navbar-brand" href="#"><i class="fa fa-anchor fa-lg" aria-hidden="true"></i>
+                BalticWeb
+            </a>
+            <!--<p class="navbar-text navbar-toggle" data-toggle="collapse" data-target="#myNavbar" ng-if="loadingData" > <i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></p>-->
+
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
 
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Basemaps <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li ng-repeat="layer in layerGroupBasemaps" ><a href="#" ng-bind="layer.get('title')"></a></li>
-                    </ul>
-                </li>
+                 <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-map-o fa-lg" aria-hidden="true"></i> Maps <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                          <li class="dropdown-header"><i class="fa fa-anchor" aria-hidden="true"></i> Change the map</li>
+                          <li ng-repeat="basemap in mapBackgroundLayers.getLayers().getArray()"  ng-class="{'active':basemap.getVisible()}"><a href="#" ng-bind="basemap.get('title')" ng-click="switchBaseMap(basemap)"></a></li>
+                      </ul>
+                  </li>
 
             </ul>
+
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-ship fa-lg" aria-hidden="true"></i> Traffic<span class="caret"></span></a>
+                    <ul class="dropdown-menu" >
+                        <li class="dropdown-header"> <i class="fa fa-ship" aria-hidden="true"></i> Vessel position information from AIS</li>
+                        <li ng-repeat="aService in mapTrafficLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"> <span class="badge badge-success " ng-bind="vessels.length"></span></a></li>
+
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header"> <i class="fa fa-life-ring" aria-hidden="true"></i> Maritime navigational aid information</li>
+                        <li ng-repeat="aService in mapMiscLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
+
+                        <li role="separator" class="divider"></li>
+
+                        <li class="dropdown-header"><img src="/img/nwnm/msi.png" height="16"/> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Navigational warnings and notices to mariners </li>
+                        <li ng-repeat="aService in nwNmServices" ng-class="{'active':aService.selected}"><a href="#" ng-click="toggleService(aService)"> {{aService.name}}</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+<!--            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i> Notices <span class="caret"></span></a>
+                    <ul class="dropdown-menu" >
+                        <li class="dropdown-header"><img src="/img/nwnm/msi.png" height="16"/> Navigational warnings and notices to mariners </li>
+                        <li ng-repeat="aService in nwNmServices" ng-class="{'active':aService.selected}"><a href="#" ng-click="toggleService(aService)"> {{aService.name}}</a></li>
+                    </ul>
+                </li>
+            </ul>-->
+
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cloud fa-lg" aria-hidden="true"></i> Forecast <span class="caret"></span></a>
+                    <ul class="dropdown-menu" >
+                        <li class="dropdown-header"> <i class="fa fa-sun-o" aria-hidden="true"></i> <i class="fa fa-bolt" aria-hidden="true"></i> Weather forecasts in the Baltics</li>
+                        <li ng-repeat="aService in mapWeatherLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
+                    </ul>
+                </li>
+            </ul>
+
 
             <ul ng-if="!loggedIn" class="nav navbar-nav navbar-right">
                 <li><a href ng-click="login()"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
             </ul>
             <ul ng-if="loggedIn" class="nav navbar-nav navbar-right">
-                <li><a href="" ng-click="accountManagement()">{{userName()}}</a></li>
+                <li><a href="#" ng-click="accountManagement()"><span class="glyphicon glyphicon-user"></span> {{userName()}}</a></li>
                 <li><a href="" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"  ng-if="loadingData"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></a></li>
             </ul>
         </div>
     </div>

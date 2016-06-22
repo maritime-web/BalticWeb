@@ -45,7 +45,7 @@ angular.module('maritimeweb.map')
     /**
      * Defines the parent ol-map directive.
      */
-    .directive('olMap', ['$rootScope', '$q', '$timeout', 'MapService', function ($rootScope, $q, $timeout, MapService) {
+    .directive('olMap', ['$rootScope', '$q', '$timeout', 'MapService', '$window', function ($rootScope, $q, $timeout, MapService, $window) {
         return {
             restrict: 'EA',
             replace: true,
@@ -107,10 +107,14 @@ angular.module('maritimeweb.map')
 
                 // Disable rotation on mobile devices
                 var controls = scope.readonly ? [] : ol.control.defaults({ rotate: false });
-                var interactions = scope.readonly ? [] : ol.interaction.defaults({ altShiftDragRotate: false, pinchRotate: false});
-
+                var interactions = scope.readonly ? [] : ol.interaction.defaults({ altShiftDragRotate: true, pinchRotate: true});
+                var balticExtent = ol.proj.transformExtent([9, 53, 31, 66], 'EPSG:4326', 'EPSG:3857');
                 var layers = [];
-                var view = new ol.View();
+                var view = new ol.View({
+                    zoom: 7,
+                    minZoom: 6,
+                    extent: balticExtent
+                });
                 var map = new ol.Map({
                     target: angular.element(element)[0],
                     layers: layers,
@@ -143,6 +147,7 @@ angular.module('maritimeweb.map')
                     // Update the map
                     view.setCenter(MapService.fromLonLat(center));
                     view.setZoom(zoom);
+                    
                 };
                 scope.updateMapExtent(true);
 
@@ -165,6 +170,8 @@ angular.module('maritimeweb.map')
                         scope.mapState['zoom'] = view.getZoom();
                         scope.mapState['center'] = MapService.round(MapService.toLonLat(view.getCenter()), 4);
                         scope.mapState['extent'] = MapService.round(MapService.toLonLatExtent(extent), 4);
+                        scope.mapState['wktextent'] = MapService.extentToWkt(extent);
+                        $window.localStorage.setItem('mapState-storage', JSON.stringify(scope.mapState)); // storing map state
                         scope.$$phase || scope.$apply();
                     };
                     map.on('moveend', scope.mapChanged);
@@ -352,32 +359,60 @@ angular.module('maritimeweb.map')
 
 
     /**
-     * The map-current-pos-btn directive will add a current-position button to the map.
+     * The map-current-pos-btn directive will add a current-position button to the map. The button centers on current position and places a image marker.
      */
-    .directive('mapCurrentPosBtn', ['$window', 'MapService', function ($window, MapService) {
+    .directive('mapCurrentPosBtn', ['$window', 'MapService', 'growl', function ($window, MapService, growl) {
         return {
             restrict: 'E',
             replace: false,
             require: '^olMap',
             template:
-                "<span class='map-current-pos-btn'>" +
-                "  <span class='glyphicon glyphicon-screenshot' ng-click='currentPos()' tooltip='Current Position'></span>" +
+                "<span class='map-current-pos-btn'  tooltip='Go to current position' data-toggle='tooltip' data-placement='right' title='Go to current position' >" +
+                    "<span><i class='fa fa-location-arrow' ng-click='currentPos()'aria-hidden='true'></i></span>" +
+                //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
                 "</span>",
             scope: {
             },
             link: function(scope, element, attrs, ctrl) {
                 var olScope     = ctrl.getOpenlayersScope();
-
                 olScope.getMap().then(function(map) {
-
                     scope.currentPos = function () {
+                        scope.loadingData = true; // start spinner
                         $window.navigator.geolocation.getCurrentPosition(function (pos) {
                             console.log('Got current position', pos.coords);
 
                             var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
                             map.getView().setCenter(center);
+                            map.getView().setZoom(15);
+
+                            var markerPosition = new ol.geom.Point(ol.proj.transform([pos.coords.longitude, pos.coords.latitude], 'EPSG:4326', 'EPSG:900913'));
+                            var markerStyle = new ol.style.Style({
+                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                    anchor: [0.85, 0.5],
+                                    src: 'img/geolocation_marker.png'
+                                }))
+                            });
+
+                            var markerFeature = new ol.Feature({
+                                geometry: markerPosition
+                            });
+                            markerFeature.setStyle(markerStyle);
+
+                            var vectorSource = new ol.source.Vector({
+                                features: [markerFeature]
+                            });
+
+                            var vectorLayer = new ol.layer.Vector({
+                                source: vectorSource
+                            });
+                            map.addLayer(vectorLayer);
+
+                            scope.loadingData = false; // stop spinner
+
                         }, function () {
+                            scope.loadingData = false; // stop spinner
                             console.error('Unable to get current position');
+                            growl.error('Unable to retrieve current position');
                         });
                     }
 
@@ -387,6 +422,43 @@ angular.module('maritimeweb.map')
         };
     }])
 
+    /**
+     * The map-current-pos-btn directive will add a current-position button to the map.
+     */
+    .directive('mapCurrentPosOrientationBtn', ['$window', 'MapService', function ($window, MapService) {
+        return {
+            restrict: 'E',
+            replace: false,
+            require: '^olMap',
+            template:
+            "<span class='map-current-pos-orientation-btn'>" +
+            " <span><i class='fa fa-location-arrow' aria-hidden='true' ng-click='currentPosOrientation()' tooltip='Current Position and orientation' ></i></span>" +
+            "</span>",
+            scope: {
+            },
+            link: function(scope, element, attrs, ctrl) {
+                var olScope     = ctrl.getOpenlayersScope();
+
+                olScope.getMap().then(function(map) {
+
+                    scope.currentPosOrientation = function () {
+                        $window.navigator.geolocation.getCurrentPosition(function (pos) {
+                            console.log('Got current position and rotation', pos.coords);
+                            // set up geolocation to track our position
+
+
+                            //var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
+                            //map.getView().setCenter(center);
+                        }, function () {
+                            console.error('Unable to get current position and orientation');
+                        });
+                    }
+
+                });
+
+            }
+        };
+    }])
 
     /**
      * The map-scale-line directive will add a scale line to the map.
@@ -397,7 +469,7 @@ angular.module('maritimeweb.map')
             replace: true,
             require: '^olMap',
             template:
-            "<span class='map-scale-line'></span>",
+            "<span class='map-scale-line'  tooltip='nautical miles' data-toggle='tooltip' data-placement='bottom' title='nautical miles'></span>",
             scope: {
                 units    : '@',
                 minWidth : '='

@@ -1,26 +1,61 @@
 /**
  * Defines the main AIS vessel layer
  */
+
 angular.module('maritimeweb.vessel')
 
-    /** Service for accessing AIS vessel data **/
-    .service('VesselService', ['$http',
-        function($http) {
+/** Service for accessing AIS vessel data **/
+    .service('VesselService', ['$http', 'growl', '$uibModal',
+        function ($http, growl, $uibModal) {
 
             /** Returns the AIS vessels within the bbox */
             this.getVesselsInArea = function (zoomLvl, bbox) {
                 var url = '';
-                if (zoomLvl > 8){ // below  zoom level 8 a more detailed and data rich overview is created.
-                    url += "rest/vessel/listarea?area="+ bbox;
+                if (zoomLvl > 8) { // below  zoom level 8 a more detailed and data rich overview is created.
+                    url += "rest/vessel/listarea?area=" + bbox;
                 } else {
-                    url += "rest/vessel/overview?area="+ bbox;
+                    url += "rest/vessel/overview?area=" + bbox;
                 }
                 return $http.get(url);
             };
 
             /** Returns the details for the given MMSI **/
-            this.details = function (mmsi) {
-                return $http.get('/rest/vessel/details?mmsi=' + encodeURIComponent(mmsi));
+            this.details = function (vessel) {
+                console.log("getting details in VesselService");
+                return $http.get('/rest/vessel/details?mmsi=' + encodeURIComponent(vessel.mmsi));
+            };
+
+            /** Open the message details dialog **/
+            this.showVesselInfoFromMMsi = function (mmsi) {
+
+                var message = this.details(mmsi);
+                return $uibModal.open({
+                    controller: "VesselDialogCtrl",
+                    templateUrl: "/prototype/vessel/vessel-details-dialog.html",
+                    size: 'lg',
+                    resolve: {
+                        message: function () {
+                            return message;
+                        }
+                    }
+                });
+            };
+
+
+            /** Open the message details dialog **/
+            this.showVesselInfo = function (vessel) {
+
+                var message = this.details(vessel.mmsi);
+                return $uibModal.open({
+                    controller: "VesselDialogCtrl",
+                    templateUrl: "/prototype/vessel/vessel-details-dialog.html",
+                    size: 'lg',
+                    resolve: {
+                        message: function () {
+                            return message;
+                        }
+                    }
+                });
             };
 
             /** Saves the vessel details **/
@@ -106,26 +141,25 @@ angular.module('maritimeweb.vessel')
      * It will automatically load the vessels for the current map bounding box,
      * but only if the user is logged in.
      */
-    .directive('mapVesselLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'VesselService',
-        function ($rootScope, $timeout, Auth, MapService, VesselService) {
+    .directive('mapVesselLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'VesselService', 'growl',
+        function ($rootScope, $timeout, Auth, MapService, VesselService, growl) {
             return {
                 restrict: 'E',
                 replace: false,
                 template: '<div id="vessel-info"/>',
                 require: '^olMap',
                 scope: {
-                    name:       '@',
-                    alerts:     '=?',
-                    vessels:    '=?'
+                    name: '@',
+                    alerts: '=?',
+                    vessels: '=?'
                 },
-                link: function(scope, element, attrs, ctrl) {
+                link: function (scope, element, attrs, ctrl) {
                     var olScope = ctrl.getOpenlayersScope();
                     var vesselLayers;
                     var loadTimer;
-                    scope.alerts = scope.alerts || [];
                     scope.loggedIn = Auth.loggedIn;
 
-                    olScope.getMap().then(function(map) {
+                    olScope.getMap().then(function (map) {
 
                         /** get the current bounding box in Bottom left  Top right format. */
                         scope.clientBBOX = function () {
@@ -140,7 +174,7 @@ angular.module('maritimeweb.vessel')
 
 
                         // Clean up when the layer is destroyed
-                        scope.$on('$destroy', function() {
+                        scope.$on('$destroy', function () {
                             if (angular.isDefined(vesselLayers)) {
                                 map.removeLayer(vesselLayers);
                             }
@@ -252,6 +286,36 @@ angular.module('maritimeweb.vessel')
 
                         };
 
+                        /** Create a historic vessel feature, with only lat,lon,cog,roc,ts. */
+                        scope.createHistoricVesselFeature = function (vessel) {
+                            var image = VesselService.imageAndTypeTextForVessel(vessel);
+
+                            var markerStyle = new ol.style.Style({
+                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                    anchor: [0.85, 0.5],
+                                    opacity: 0.85,
+                                    id: vessel.id,
+                                    rotation: vessel.radian,
+                                    src: 'img/' + image.name
+                                }))
+                            });
+
+                            var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
+
+                            var markerVessel = new ol.Feature({
+
+                                type: image.type,
+                                angle: vessel.angle,
+                                radian: vessel.radian,  // (vessel.angle * (Math.PI / 180)),
+                                latitude: vessel.y,
+                                longitude: vessel.x,
+                                geometry: vesselPosition
+                            });
+                            markerVessel.setStyle(markerStyle);
+                            return markerVessel;
+
+                        };
+
 
                         /** Create a vessel feature for any openlayers 3 map. */
                         scope.createVesselFeature = function (vessel) {
@@ -281,29 +345,25 @@ angular.module('maritimeweb.vessel')
                                 geometry: vesselPosition
                             });
                             markerVessel.setStyle(markerStyle);
-
-
                             return markerVessel;
                         };
 
+                        scope.showVesselDetails = function (vessel) {
+                            scope.vessel = vessel;
+                            var vesselDetails = VesselService.details(vessel);
+                            growl.info("Retrieving vesseldetails");
+
+                        };
 
                         /** Refreshes the list of vessels from the server */
                         scope.refreshVessels = function () {
 
                             if (!scope.loggedIn) {
-                                scope.alerts.push({
-                                    msg: 'Log in to see vessels',
-                                    type: 'info',
-                                    timeout: 1000
-                                });
+                                growl.info('Log in to see vessels');
                                 return;
                             }
-
-                            scope.alerts.push({
-                                msg: 'Fetching vessel data',
-                                type: 'info',
-                                timeout: 1000
-                            });
+                            $rootScope.loadingData = true; // start spinner
+                            growl.info('Fetching vessel data <i class="fa fa-cog fa-spin  fa-fw"></i><span class="sr-only">Loading...</span>', {ttl: 3000});
 
                             var zoomLvl = map.getView().getZoom();
                             scope.vessels.length = 0;
@@ -339,13 +399,14 @@ angular.module('maritimeweb.vessel')
 
                                     vesselLayer.getSource().clear();
                                     vesselLayer.getSource().addFeatures(features);
+                                    $rootScope.loadingData = false; // stop spinner
+                                    growl.success('<b>' + scope.vessels.length + '</b> vessels loaded', {ttl: 3000});
+
                                 })
                                 .error(function (reason) {
-                                    scope.alerts.push({
-                                        msg: "Connection problems " + reason,
-                                        type: 'danger',
-                                        timeout: 4000
-                                    });
+                                    $rootScope.loadingData = false; // stop spinner
+                                    console.log(reason);
+                                    growl.error("Connection problems " + reason);
                                 });
 
                         };
@@ -365,7 +426,13 @@ angular.module('maritimeweb.vessel')
                         // Create vessel layer
                         var vessselLayerAttributions = [
                             new ol.Attribution({
-                                html: '<p>Vessel information from <a href="http://www.helcom.fi/">Helcom</a> AIS Data</p>'
+                                html: '<div class="panel panel-info">' +
+                                '<div class="panel-heading">Traffic information</div>' +
+                                '<div class="panel-body">' +
+                                '<span>' +
+                                'Vessel AIS Traffic information <a href="http://www.helcom.fi/">Helcom</a> AIS Data' +
+                                '</span>' +
+                                '</div>'
                             }),
                             ol.source.OSM.ATTRIBUTION
                         ];
@@ -377,25 +444,25 @@ angular.module('maritimeweb.vessel')
 
                         var vesselLayer = new ol.layer.Vector({
                             name: "vesselVectorLayer",
-                            title: "Vessels - dynamic Helcom",
+                            title: "Vessels - Helcom",
                             source: vectorSource,
                             visible: true
                         });
 
                         vesselLayers = new ol.layer.Group({
-                            title: scope.name || 'Vessels',
-                            layers: [ vesselLayer ],
+                            title: 'Vessels',
+                            layers: [vesselLayer],
                             visible: true
                         });
 
                         map.addLayer(vesselLayers);
+                        $rootScope.mapTrafficLayers = vesselLayers; // add group-layer to rootscope so it can be enabled/disabled
 
                         // update the map when a user pan-move ends.
                         map.on('moveend', scope.mapChanged);
 
                         // listens when visibility on map has been toggled.
                         vesselLayers.on('change:visible', scope.mapChanged);
-
 
                         /***************************/
                         /** Vessel Details        **/
@@ -431,33 +498,50 @@ angular.module('maritimeweb.vessel')
                                         placement: 'top',
                                         html: true,
                                         animation: true,
-                                        delay: 5500,
+                                        delay: 500,
                                         trigger: 'focus',
                                         'template': '<div class="popover" role="tooltip"><div class="arrow"></div>'
                                         + '<h3 class="popover-title"></h3>'
                                         + '<div class="popover-content"></div>'
                                         + '</div>'
                                     });
+                                    var mmsi = feature.get('mmsi');
                                     $(elm).attr('data-content',
                                         //'<div class="popover-content">' +
-                                       // '<h3>' + feature.get('name') + '</h3>' +
+                                        // '<h3>' + feature.get('name') + '</h3>' +
                                         '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi=' + feature.get('mmsi') + '">' + feature.get('mmsi') + '</a></p>' +
                                         '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + feature.get('callSign') + '</p>' +
                                         '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>' +
-                                        '<p><span class="glyphicon glyphicon-flag"></span> ' + ol.coordinate.toStringHDMS([feature.get('longitude'),feature.get('latitude')], 3) + '</p>' +
+                                        '<p><span class="glyphicon glyphicon-flag"></span> ' + ol.coordinate.toStringHDMS([feature.get('longitude'), feature.get('latitude')], 3) + '</p>' +
                                         '<p><span class="glyphicon glyphicon-flag"></span> ' + feature.get('angle') + '°</p>'
-                                    //    '</div>'
+                                        //   '<p><a href ng-click="VesselService.showVesselInfoFromMMsi(mmsi)" >' +feature.get('mmsi') +'</a><---</p>' +
+                                        //     '<p><a href onclick="showVesselInfo('+ feature.get('mmsi') +')">more information on vessel</a> x <a href="#/vessel/'+ feature.get('mmsi') +'">link</a></a></p>'
+                                        //    '</div>'
                                     );
-                                    $(elm).attr( 'data-placement', 'top' );
-                                    $(elm).attr( 'data-original-title', feature.get('name') );
-                                    $(elm).attr( 'data-html', true );
-                                    $(elm).attr( 'data-animation', true );
+                                    $(elm).attr('data-placement', 'top');
+                                    $(elm).attr('data-original-title', feature.get('name'));
+                                    $(elm).attr('data-html', true);
+                                    $(elm).attr('data-animation', true);
+
+
                                     $(elm).popover('show');
+                                    var pan = ol.animation.pan({
+                                        duration: 1500,
+                                        source: /** @type {ol.Coordinate} */ (map.getView().getCenter())
+                                    });
+                                    map.beforeRender(pan);
+                                    map.getView().setCenter(coord);
+
+
                                 } else {
                                     $(elm).popover('destroy');
                                 }
                             } else { // close popups when zoomed below lvl 8 and clicks on map...
                                 $(elm).popover('destroy');
+                                if (scope.loggedIn) {
+                                    growl.success('<b>Zoom</b> in for more detailed information');
+                                    return;
+                                }
                             }
                         });
 
@@ -465,4 +549,123 @@ angular.module('maritimeweb.vessel')
                     });
                 }
             };
+        }])
+
+
+
+
+    /*******************************************************************
+     * Controller that handles displaying vessel details in a dialog
+     *  Its
+     *******************************************************************/
+    .controller('VesselDialogCtrl', ['$scope', '$window', 'VesselService', 'message', 'growl', 'timeAgo', '$filter',
+        function ($scope, $window, VesselService, message, growl, timeAgo, $filter) {
+            'use strict';
+            // console.log("Vessel data= " + JSON.stringify(message.data));
+            $scope.warning = undefined;
+            $scope.msg = message;
+
+            $scope.getHistoricalTrack = function (mmsi, type) {
+                VesselService.historicalTrack(mmsi).then(function successCallback(response) {
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    growl.success("Retrieved historical points " + response.data.length)
+
+                    var linePoints = [];
+                    angular.forEach(response.data, function (value, key) {
+                        this.push(ol.proj.transform([value.lon, value.lat], 'EPSG:4326', 'EPSG:900913'));
+                    }, linePoints);
+
+                    // Features are more detailed
+                    var lineFeatures = [];
+                    var generateHistoricalMarker = function (value) {
+                        var vesselPosition = new ol.geom.Point(ol.proj.transform([value.lon, value.lat], 'EPSG:4326', 'EPSG:900913'));
+                        var markerStyle = new ol.style.Style({
+                            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                anchor: [0.5, 0.5],
+                                opacity: 0.90,
+                                id: value.ts,
+                                rotation: (value.cog - 90) * (Math.PI / 180),
+                                rotateWithView: true,
+                                src: 'img/vessel_green.png'
+                            }))
+                            ,
+                            text: new ol.style.Text({
+                                text: $filter('timeAgo')(value.ts) + ' - ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC', // attribute code
+                                size: 10,
+                                offsetY: 20
+                            })
+                        });
+
+                        var markerVessel = new ol.Feature({
+                            geometry: vesselPosition,
+                            cog: value.cog,
+                            sog: value.sog,
+                            id: value.ts,
+                            ts: $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC',
+                            tsTimeAgo: $filter('timeAgo')(value.ts),
+                            position: $scope.toLonLat(value.lon, value.lat)
+                        });
+                        markerVessel.setStyle(markerStyle);
+                        return markerVessel;
+                    };
+                    /*
+                     iterate over the historical track data retrievied in the format
+                     [{
+                     "cog": 122.9,
+                     "lat": 55.723106666666666,
+                     "lon": 21.10174333333333,
+                     "sog": 0,
+                     "ts": 1465473596620
+                     },
+                     {...}
+                     ]
+                     */
+                    angular.forEach(response.data, function (value, key) {
+                        var markerVessel = generateHistoricalMarker(value);
+                        this.push(markerVessel);
+                    }, lineFeatures);
+
+                    $scope.routeFeatures = lineFeatures;  // detailed description of the historical tracks
+                    $scope.routePoints = linePoints;  // simple version of the route, list of [[lon,lat],[lon,lat],...]
+                    $scope.historicalTrackOutput = response.data; // the response data, is this still needed?
+                    return response;
+
+                }, function errorCallback(response) {
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                    console.error("Error historicalTrack=" + response.status);
+                    growl.error("No historical for this vessel" + vessel.name);
+
+                });
+
+            };
+
+            /** Returns the lat-lon attributes of the vessel */
+            $scope.toLonLat = function (long, lati) {
+                return {lon: long, lat: lati};
+            };
+
+            var navStatusTexts = {
+                0: "Under way using engine",
+                1: "At anchor",
+                2: "Not under command",
+                3: "Restricted manoeuvrability",
+                4: "Constrained by her draught",
+                5: "Moored",
+                6: "Aground",
+                7: "Engaged in fishing",
+                8: "Under way",
+                12: "Power-driven vessel pushing ahead or towing alongside",
+                14: "Ais SART",
+                15: "Undefined"
+            };
+
+            $scope.navStatusText = function (navStatus) {
+                if (navStatus && navStatusTexts.hasOwnProperty(navStatus)) {
+                    return navStatusTexts[navStatus]
+                }
+                return null;
+            };
         }]);
+ 

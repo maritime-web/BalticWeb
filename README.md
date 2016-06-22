@@ -1,9 +1,9 @@
 BalticWeb
 =========
 
-A tool for ships sailing in the Baltic region. BalticWeb serves as a single access point to safety related information, provides streamlined reporting and allows for voluntary coordinated voyage through sharing of positions and planned routes.
+A tool for ships sailing in the Baltic region. BalticWeb serves as a single access point to safety related information.
 
-The live system can be found here: https://arcticweb.e-navigation.net
+The live system will in a very near future be found here: https://balticweb.e-navigation.net
 
 ## Software Architecture
 
@@ -12,14 +12,12 @@ The ArcticWeb client is a rich client HTML/JS-application with a server side JSO
 On the client side we use:
 
 * JavaScript/HTML
-* Grunt (for building)
-* OpenLayers (for maps)
+* OpenLayers 3(for maps)
 * Keycloak (for security)
 * JQuery (for DOM-manipulation and calling webservices)
 * Twitter Bootstrap (for basic layout)
 * AngularJS (for forms and similar)
-* HTML5 Application Cache
-* Karma (for unit testing)
+
 
 On the server side we use:
 
@@ -44,9 +42,12 @@ On the server side we use:
 * Grunt.js (Follow the installation instructions at http://gruntjs.com)
 * CouchDB
 * a file called balticweb.properties
+* Local lost-node, https://github.com/rprinz08/lost-node and services registered.
+* MongoDB
 
 ## Initial setup
 
+We are in the mist of containerizing the setup so in a very near future you should be able to pull all relevant docker images from docker-hub simply by using docker-compose and the settings from this project https://github.com/maritime-web/BalticWeb-Docker. This should ease the installation process.
 Wildfly should be installed using the install script provided in this repository. install-wildfly.sh. Remember to add a admin user using 
 
     $ chmod +x install-wildfly.sh 
@@ -83,7 +84,7 @@ Properties to override should you want to place the configuration elsewhere
 BalticWeb has a default configuration file which may be overridden by setting the system property "balticweb.configuration" to the URI of an external configuration file. For example put the following in your standalone.xml-file:
 
     <system-properties>
-        <property name="balticweb.configuration" value="file:///Users/chvid/sfs/balticweb.properties"/>
+        <property name="balticweb.configuration" value="file:///~/balticweb/properties/balticweb.properties"/>
     </system-properties>
 
 In particular the file may contain URLs and passwords for the DMI Ice map server.

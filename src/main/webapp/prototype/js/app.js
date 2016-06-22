@@ -1,8 +1,9 @@
 
 // Define all modules here
 angular.module('maritimeweb.map', []);
-angular.module('maritimeweb.app', []);
-angular.module('maritimeweb.vessel', []);
+angular.module('maritimeweb.app', ['angular-growl']);
+angular.module('maritimeweb.route', ['angular-growl']);
+angular.module('maritimeweb.vessel', ['yaru22.angular-timeago']);
 angular.module('maritimeweb.nw-nm', []);
 
 (function () {
@@ -10,9 +11,7 @@ angular.module('maritimeweb.nw-nm', []);
 
     var moduleName = 'maritimeweb';
     var module = angular.module(moduleName, ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
-        'maritimeweb.map', 'maritimeweb.app', 'maritimeweb.vessel', 'maritimeweb.nw-nm']);
-    
-
+        'maritimeweb.map', 'maritimeweb.app', 'maritimeweb.vessel', 'maritimeweb.nw-nm', 'ngFlag', 'yaru22.angular-timeago', 'maritimeweb.route']);
         keycloakInitialize(module, moduleName, false);
 })();
 
