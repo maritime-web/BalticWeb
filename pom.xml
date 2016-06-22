@@ -4,17 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>baltic-web</artifactId>
     <groupId>dk.dma.enav.balticweb</groupId>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Baltic Web Application</name>
 
 	<parent>
         <groupId>dk.dma.enav.services</groupId>
 		<artifactId>parent</artifactId>
-        <version>2.7-MC_Service_registry-SNAPSHOT</version>
+        <version>1.0-MC_Service_registry-SNAPSHOT</version>
 	</parent>
 
 	<properties>
-		<enav-services.version>2.7-MC_Service_registry-SNAPSHOT</enav-services.version>
         <!-- exec-maven-plugin is executed by default -->
         <maven.node.skip>false</maven.node.skip>
 		<jslint.predef>embryo</jslint.predef>
