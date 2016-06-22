@@ -23,12 +23,12 @@
 		<hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
 
 		<!-- persistence.xml properties -->
-		<embryo-common.jar>common-${project.version}.jar</embryo-common.jar>
-		<embryo-dataformats.jar>dataformats-${project.version}.jar</embryo-dataformats.jar>
-		<embryo-vessel.jar>vessel-${project.version}.jar</embryo-vessel.jar>
-		<embryo-user.jar>user-${project.version}.jar</embryo-user.jar>
-		<embryo-reporting.jar>reporting-${project.version}.jar</embryo-reporting.jar>
-		<embryo-tiles.jar>map-tiles-${project.version}.jar</embryo-tiles.jar>
+		<embryo-common.jar>common-${project.parent.version}.jar</embryo-common.jar>
+		<embryo-dataformats.jar>dataformats-${project.parent.version}.jar</embryo-dataformats.jar>
+		<embryo-vessel.jar>vessel-${project.parent.version}.jar</embryo-vessel.jar>
+		<embryo-user.jar>user-${project.parent.version}.jar</embryo-user.jar>
+		<embryo-reporting.jar>reporting-${project.parent.version}.jar</embryo-reporting.jar>
+		<embryo-tiles.jar>map-tiles-${project.parent.version}.jar</embryo-tiles.jar>
 
 	</properties>
 
