@@ -94,20 +94,15 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
             // Vessels
             $scope.vessels = [];
 
- 
-
             /** Returns the icon to use for the given vessel **/
             $scope.iconForVessel = function (vo) {
                 return '/img/' + VesselService.imageAndTypeTextForVessel(vo).name;
             };
 
-
             /** Returns the lat-lon attributes of the vessel */
             $scope.toLonLat = function (vessel) {
                 return {lon: vessel.x, lat: vessel.y};
             };
-
-   
 
             /**************************************/
             /** NW-NM sidebar functionality      **/
@@ -187,6 +182,7 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
 
 
             $scope.showVesselDetails = function(vessel) {
+                console.log("mmsi" +  vessel);
                 //var vesselDetails = VesselService.details(vessel.mmsi);
                  VesselService.showVesselInfoFromMMsi(vessel);
                 //console.log("App Ctr received = vesselDetails" +JSON.stringify(vesselDetails));

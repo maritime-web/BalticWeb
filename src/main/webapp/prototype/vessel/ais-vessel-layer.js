@@ -24,11 +24,17 @@ angular.module('maritimeweb.vessel')
                 console.log("getting details in VesselService");
                 return $http.get('/rest/vessel/details?mmsi=' + encodeURIComponent(vessel.mmsi));
             };
+            /** Returns the details for the given MMSI **/
+            this.detailsMMSI = function (mmsi) {
+                console.log("getting details in VesselService");
+                return $http.get('/rest/vessel/details?mmsi=' + encodeURIComponent(mmsi));
+            };
 
             /** Open the message details dialog **/
             this.showVesselInfoFromMMsi = function (mmsi) {
+                console.log("showVesselInfoFromMMsi mmsi=" + mmsi);
 
-                var message = this.details(mmsi);
+                var message = this.detailsMMSI(mmsi);
                 return $uibModal.open({
                     controller: "VesselDialogCtrl",
                     templateUrl: "/prototype/vessel/vessel-details-dialog.html",
@@ -146,7 +152,18 @@ angular.module('maritimeweb.vessel')
             return {
                 restrict: 'E',
                 replace: false,
-                template: '<div id="vessel-info"/>',
+                template: '<div id="vessel-info"/> <div id="popup" class="ol-popup">' +
+                '<span>>>{{nwNmServices.length}}<<</span>' +
+            '<a href="#" id="popup-closer" class="ol-popup-closer"></a>'+
+                '<div vesselpopover></div> '+
+                '<div vesselpopup></div> '+
+                '<div id="popup-content"></div>'+
+                '<div>'+
+
+                '</div>'+
+                '<button uib-popover="I appeared on mouse enter!" popover-trigger="mouseenter" type="button" class="btn btn-default">Mouseenter</button>' +
+
+                '</div>',
                 require: '^olMap',
                 scope: {
                     name: '@',
@@ -318,7 +335,17 @@ angular.module('maritimeweb.vessel')
                             return markerVessel;
                         };
 
+                        this.showVesselDetails = function (vessel) {
+                            console.log(" this.showVesselDetails");
+                            scope.vessel = vessel;
+                            var vesselDetails = VesselService.details(vessel);
+                            growl.info("Retrieving vesseldetails");
+
+                        };
+
+
                         scope.showVesselDetails = function (vessel) {
+                            console.log("scope.showVesselDetails");
                             scope.vessel = vessel;
                             var vesselDetails = VesselService.details(vessel);
                             growl.info("Retrieving vesseldetails");
@@ -380,7 +407,10 @@ angular.module('maritimeweb.vessel')
                                 });
 
                         };
-
+                        scope.newQuote = function(){
+                            //alert('It works' + scope.vessel.name);
+                            VesselService.showVesselInfoFromMMsi(scope.vessel.mmsi);
+                        };
 
                         /** When the map extent changes, reload the Vessels's using a timer to batch up changes */
                         scope.mapChanged = function () {
@@ -447,8 +477,113 @@ angular.module('maritimeweb.vessel')
                         });
                         map.addOverlay(popup);
 
-                        // display popup on click
-                        map.on('click', function (evt) {
+
+                        /**
+                         * Elements that make up the popup.
+                         */
+                        var container = document.getElementById('popup');
+                        var content = document.getElementById('popup-content');
+                        var closer = document.getElementById('popup-closer');
+
+
+                        /**
+                         * Create an overlay to anchor the popup to the map.
+                         */
+                        var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+                            element: container,
+                            autoPan: true,
+                            autoPanAnimation: {
+                                duration: 250
+                            }
+                        }));
+
+                        /**
+                         * Add a click handler to hide the popup.
+                         * @return {boolean} Don't follow the href.
+                         */
+                        closer.onclick = function() {
+                            overlay.setPosition(undefined);
+                            closer.blur();
+                            return false;
+                        };
+
+                        map.addOverlay(overlay);
+
+
+
+                        /**
+                         * Add a click handler to the map to render the popup.
+                         */
+                        map.on('singleclick', function(evt) {
+
+                            var zoomLvl = map.getView().getZoom();
+
+                            if (zoomLvl > 8) {
+                                var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                                    return feature;
+                                }, null, function (layer) {
+                                    return layer === vesselLayer;
+                                });
+
+                                if (feature) {
+                                    var geometry = feature.getGeometry();
+                                    var coord = geometry.getCoordinates();
+
+                                    var mmsi = feature.get('mmsi');
+
+
+                                    var coordinate = evt.coordinate;
+                                    var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
+                                        coordinate, 'EPSG:3857', 'EPSG:4326'));
+
+                                    scope.mmsi = mmsi;
+                                    scope.vessel = {};
+                                    scope.vessel.name = feature.get('name');
+                                    scope.vessel.mmsi = mmsi;
+                                    scope.vessel.type = feature.get('type') ;
+                                    scope.vessel.callsign = feature.get('callSign');
+                                    scope.vessel.position = ol.coordinate.toStringHDMS([feature.get('longitude'), feature.get('latitude')], 3);
+
+                                    content.innerHTML =
+                                        //'<div class="popover" role="tooltip">' +
+                                        '<h3 class="popover-title">' + feature.get('name') +'</h3>' +
+                                        '<div class="popover-content">' +
+                                        '<div vesselpopup></div>' +
+                                        '<div vesselpopover></div>' +
+
+                                    '<div vesselpopup callsign="' + feature.get('callSign') + '" ' +
+                                        '               mmsi="' + mmsi + '" ' +
+                                        '               type="'  + feature.get('type') + '" ' +
+                                        '               position="'  + ol.coordinate.toStringHDMS([feature.get('longitude'), feature.get('latitude')], 3) + '" ' +
+                                        '               angle="' + feature.get('angle') + '"></div>'+
+
+                                            
+                                       // '</div>' +
+                                        '</div> ';
+
+                                    overlay.setPosition(coordinate);
+
+                                } else {
+                                    //$(elm).popover('destroy');
+                                    console.log("destroy");
+                                }
+                            } else { // close popups when zoomed below lvl 8 and clicks on map...
+                                //$(elm).popover('destroy');
+                                if (scope.loggedIn) {
+                                    growl.success('<b>Zoom</b> in for more detailed information');
+                                    return;
+                                }
+                            }
+
+
+
+                        });
+
+
+
+
+                        // display popup on dbl-click
+                        map.on('doubleclick', function (evt) {
                             var zoomLvl = map.getView().getZoom();
 
                             if (zoomLvl > 8) {
@@ -478,6 +613,7 @@ angular.module('maritimeweb.vessel')
                                     $(elm).attr('data-content',
                                         //'<div class="popover-content">' +
                                         // '<h3>' + feature.get('name') + '</h3>' +
+
                                         '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi=' + feature.get('mmsi') + '">' + feature.get('mmsi') + '</a></p>' +
                                         '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + feature.get('callSign') + '</p>' +
                                         '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>' +
@@ -519,8 +655,54 @@ angular.module('maritimeweb.vessel')
                 }
             };
         }])
+    .directive('vesselpopover', function($compile){
+        return {
+            restrict : 'A',
+            link : function(scope, elem){
 
+                var content = $("#popover-content").html();
+                var compileContent = $compile(content)(scope);
+                var title = $("#popover-head").html();
+                var options = {
+                    content: compileContent,
+                    html: true,
+                    title: title
+                };
 
+                $(elem).popover(options);
+            }
+        }
+    })
+    .directive('vesselpopup', function() {
+        return {
+            template: '<span>callsign{{vessel.callSign}}</span>' +
+                      '<span>vesseltype{{vessel.type}}</span>' +
+                      '<span> {{vessel.name}}</span>' +
+                      '<span>{{vessel.mmsi}}</span>' +
+                      '<span>           <button type="button" ng-click="newQuote()">More details</button> </span>' +
+                      '<span> <a href="#" ng-click="newQuote()" > </a> </span>'
+            //'<span ng-if="vessel.mmsi">#showNwNmDetails# <a href="#" ng-click="showNwNmDetails({{vessel.mmsi}})" >' + vessel.mmsi+ '</a></span><br>'
+
+        };
+        /*        return {
+            scope: {
+                callSign: '=callsign',
+                vesselType: '=type',
+                mmsi: '=mmsi'
+            },
+            template:                                     '<span ng-click=""> ' + $rootScope.nwNmServices +' </span>' +
+            '<span ng-if="vessel.mmsi"># <a href="#" ng-click="alert(' +mmsi + ');" >' + mmsi + '</a></span><br>'+
+            '<span ng-if="vessel.mmsi">#showNwNmDetails# <a href="#" ng-click="showNwNmDetails(' + mmsi +')" >' + mmsi+ '</a></span><br>'+
+            '<span ng-if="vessel.mmsi">###<a href="#" ng-click="showVesselInfoFromMMsi(' + mmsi + ')" >' + mmsi+ '</a></span><br>'+
+            '<span ng-if="vessel.mmsi">#### <a href="#" ng-click="VesselService.showVesselInfoFromMMsi(' + mmsi + ')" >' + mmsi + '</a></span><br>'+
+
+            '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi=' + feature.get('mmsi') + '">' + feature.get('mmsi') + '</a></p>' +
+            '<p><span class="glyphicon glyphicon-phone-alt"></span> ' + callSign + '</p>' +
+            '<p><span class="glyphicon glyphicon-tag"></span> ' + feature.get('type') + '</p>' +
+            '<p><span class="glyphicon glyphicon-flag"></span> ' + ol.coordinate.toStringHDMS([feature.get('longitude'), feature.get('latitude')], 3) + '</p>' +
+            '<p><span class="glyphicon glyphicon-flag"></span> ' + feature.get('angle') + '°</p>'
+        };*/
+    })
     /*******************************************************************
      * Controller that handles displaying vessel details in a dialog
      *  Its
