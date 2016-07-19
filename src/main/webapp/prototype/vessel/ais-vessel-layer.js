@@ -163,7 +163,7 @@ angular.module('maritimeweb.vessel')
                     '<p><span class="glyphicon glyphicon-tag"></span> {{vessel.type}}</p>' +
                     '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.position}}</p>' +
                     '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.angle}}°</p>'+
-                    '<p><button uib-popover="retrieve more information. Historical tracks" popover-trigger="mouseenter"' +
+                    '<p><button uib-popover="Retrieve more detaild information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
                     ' popover-placement="bottom" type="button" class="btn btn-primary"' +
                     ' ng-click="getMoreVesselDetails()" >More details</button></p>' +
                 '</div>'+
@@ -331,23 +331,6 @@ angular.module('maritimeweb.vessel')
                             });
                             markerVessel.setStyle(markerStyle);
                             return markerVessel;
-                        };
-
-                        this.showVesselDetails = function (vessel) {
-                            console.log(" this.showVesselDetails");
-                            scope.vessel = vessel;
-                            var vesselDetails = VesselService.details(vessel);
-                            growl.info("Retrieving vesseldetails");
-
-                        };
-
-
-                        scope.showVesselDetails = function (vessel) {
-                            console.log("scope.showVesselDetails");
-                            scope.vessel = vessel;
-                            var vesselDetails = VesselService.details(vessel);
-                            growl.info("Retrieving vesseldetails");
-
                         };
 
                         /** Refreshes the list of vessels from the server */

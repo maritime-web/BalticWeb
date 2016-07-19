@@ -152,14 +152,18 @@
                 <tr>
                     <th scope="row">Historical track</th>
                     <td ng-if="!routePoints">
-                          <btn class="btn btn-primary" ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"
-                               tooltip="retrieve detailed historical track points" data-toggle="tooltip"
-                               data-placement="right" title="retrieve detailed historical track points">Get Historical Track
+                          <btn class="btn btn-primary" uib-popover="Download any tracked position points available and show animation on map. The animation can be computationel intensive." ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"
+                               popover-trigger="mouseenter"
+                               popover-placement="right" type="button" class="btn btn-info">Display historical Track
                               <i class="fa fa-arrow-down" aria-hidden="true"></i></btn><br>
 
                     </td>
                     <td  ng-if="routePoints">
-                        <btn class="btn btn-info" ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"> {{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn><br>
+                        <btn uib-popover="Watch all {{routePoints.length}} points as a route animation on the map below. Timestamps, Speed-over-ground and position is displayed in
+                         the bottom left frame and reflects the status at the current position. Jittery movement may be caused by variable GPS-position precision. Precision is not present in data."
+                             popover-trigger="mouseenter"
+                         popover-placement="right" type="button" class="btn btn-info"
+                         ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)" >{{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn>
                     </td>
                     <td>
                     </td>
@@ -173,22 +177,38 @@
                     </td>
                </tr>
 
-                <tr  ng-if="historicalTrackOutput.length>1">
-                    <th scope="row">Historical position</th>
+<!--                <tr ng-if="historicalTrackOutput.length>1">
+                    <th scope="row">SOG - Speed-over-Ground</th>
+                    <td>
+                        <uib-accordion close-others="oneAtATime">
+                            <uib-accordion-group heading="List historical tracks" is-open="false" is-disabled="false">
+                                <div ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 100" class="well-sm">
+                                    <span>{{object.ts | timeAgo}}<br> {{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</span>
+                                    <span>Course-over-Ground: <b>{{object.cog}}</b> - Speed-over-Ground: <b>{{object.sog}}</b></span>&lt;!&ndash;  COG. the actual course your sailing relative to the Earth &ndash;&gt;
+                                    <span>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</span>
+                                </div>
+                            </uib-accordion-group>
+                        </uib-accordion>
+                    </td>
+                    <td></td>
+                </tr>-->
+
+                <tr ng-if="historicalTrackOutput.length>1">
+
+                    <th scope="row">List of tracked position</th>
                     <td>
                     <uib-accordion close-others="oneAtATime">
                         <uib-accordion-group heading="List historical tracks" is-open="false" is-disabled="false">
                             <div ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 100" class="well-sm">
                             <span>{{object.ts | timeAgo}}<br> {{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</span>
-                            <!--<td>{{object.cog}} {{object.sog}}</td>-->
+                            <span>Course-over-Ground: <b>{{object.cog}}</b> - Speed-over-Ground: <b>{{object.sog}}</b></span>
                             <span>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</span>
                             </div>
                         </uib-accordion-group>
-
-
-
                     </uib-accordion>
                     </td>
+                    <td></td>
+
 
                 </tr>
 
@@ -232,7 +252,7 @@
                 </tr>
             </table>
 
-            <uib-accordion close-others="oneAtATime">
+            <!--uib-accordion close-others="oneAtATime">
                 <uib-accordion-group heading="AIS Vessel" is-open="false" is-disabled="false">
                     <table class="table table-striped table-hover">
                         <tr ng-repeat="(property, value) in msg.data.aisVessel">
@@ -256,7 +276,7 @@
 
 
 
-            </uib-accordion>
+            </uib-accordion -->
 
 
             <!--            <h3>All</h3>
