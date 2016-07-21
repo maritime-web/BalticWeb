@@ -48,22 +48,6 @@ angular.module('maritimeweb.vessel')
             };
 
 
-            /** Open the message details dialog **/
-            this.showVesselInfo = function (vessel) {
-
-                var message = this.details(vessel.mmsi);
-                return $uibModal.open({
-                    controller: "VesselDialogCtrl",
-                    templateUrl: "/prototype/vessel/vessel-details-dialog.html",
-                    size: 'lg',
-                    resolve: {
-                        message: function () {
-                            return message;
-                        }
-                    }
-                });
-            };
-
             /** Saves the vessel details **/
             this.saveDetails = function (details) {
                 return $http.post("/rest/vessel/save-details", details);
@@ -163,7 +147,7 @@ angular.module('maritimeweb.vessel')
                     '<p><span class="glyphicon glyphicon-tag"></span> {{vessel.type}}</p>' +
                     '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.position}}</p>' +
                     '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.angle}}°</p>'+
-                    '<p><button uib-popover="Retrieve more detaild information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
+                    '<p><button uib-popover="Retrieve more detailed information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
                     ' popover-placement="bottom" type="button" class="btn btn-primary"' +
                     ' ng-click="getMoreVesselDetails()" >More details</button></p>' +
                 '</div>'+
