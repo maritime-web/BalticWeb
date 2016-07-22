@@ -3,9 +3,9 @@
  */
 angular.module('maritimeweb.map')
 
-    /**
-     * The language service is used for changing language, etc.
-     */
+/**
+ * The language service is used for changing language, etc.
+ */
     .service('MapService', [
         function () {
             'use strict';
@@ -118,11 +118,11 @@ angular.module('maritimeweb.map')
 
             /** Converts the given extent to a WKT */
             this.extentToWkt = function (extent) {
-                var polygon =  ol.geom.Polygon.fromExtent(extent);
+                var polygon = ol.geom.Polygon.fromExtent(extent);
                 return this.olGeometryToWkt(polygon);
             };
-            
-            
+
+
             /** ************************ **/
             /** GeoJSON Functionality    **/
             /** ************************ **/
@@ -249,30 +249,6 @@ angular.module('maritimeweb.map')
                             })
                         }),
                         new ol.layer.Tile({
-                            title: 'MapQuest - OSM',
-                            type: 'base',
-                            visible: false,
-                            source: new ol.source.MapQuest({
-                                layer: 'osm'
-                            })
-                        }),
-                        new ol.layer.Tile({
-                            title: 'MapQuest - Satellite',
-                            type: 'base',
-                            visible: false,
-                            source: new ol.source.MapQuest({
-                                layer: 'sat'
-                            })
-                        }),
-                        new ol.layer.Tile({
-                            title: 'MapQuest - Hybrid',
-                            type: 'base',
-                            visible: false,
-                            source: new ol.source.MapQuest({
-                                layer: 'hyb'
-                            })
-                        }),
-                        new ol.layer.Tile({
                             title: 'Thunderforest - Outdoors',
                             type: 'base',
                             visible: false,
@@ -308,15 +284,15 @@ angular.module('maritimeweb.map')
                                 attributions: thunderforestAttributions
                             })
                         })
-                       /* new ol.layer.Tile({
-                            title: 'Arcgisonline - Light Grey Base',
-                            type: 'base',
-                            visible: false,
-                            source: new ol.source.OSM({
-                                url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}.png',
-                                attributions: thunderforestAttributions
-                            })
-                        })*/
+                        /* new ol.layer.Tile({
+                         title: 'Arcgisonline - Light Grey Base',
+                         type: 'base',
+                         visible: false,
+                         source: new ol.source.OSM({
+                         url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}.png',
+                         attributions: thunderforestAttributions
+                         })
+                         })*/
                     ]
                 });
             };
@@ -328,12 +304,12 @@ angular.module('maritimeweb.map')
                 var openPortGuideAttributions = [
                     new ol.Attribution({
                         html: '<div class="panel panel-info">' +
-                                '<div class="panel-heading">Weather forecasts from  <a href="http://www.openportguide.de/">www.openportguide.de</a></div>' +
-                                '<div class="panel-body">' +
-                                '<span>Weather forecasts are from <a href="http://www.openportguide.de/">www.openportguide.de <img src="/img/OpenPortGuideLogo_32.png"/></a><br />' +
-                                    'The work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>  ' +
-                                    '<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a></span>' +
-                              '</div>' +
+                        '<div class="panel-heading">Weather forecasts from  <a href="http://www.openportguide.de/">www.openportguide.de</a></div>' +
+                        '<div class="panel-body">' +
+                        '<span>Weather forecasts are from <a href="http://www.openportguide.de/">www.openportguide.de <img src="/img/OpenPortGuideLogo_32.png"/></a><br />' +
+                        'The work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>  ' +
+                        '<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a></span>' +
+                        '</div>' +
                         '</div>'
 
                     }),
@@ -399,11 +375,11 @@ angular.module('maritimeweb.map')
                         '<div class="panel-heading">SeaMark the OpenSeaMap.org layer</div>' +
                         '<div class="panel-body">' +
                         '<span>' +
-                            'The OpenSeaMap.org layer and all its content is attributed to <a href="http://www.openseamap.org/">www.openseamap.org</a> ' +
-                            '- <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">' +
-                            '<img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a>' +
-                            '<br />The OpenSeaMap.org layer is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">' +
-                            'Creative Commons Attribution-ShareAlike 2.0 Generic License</a>' +
+                        'The OpenSeaMap.org layer and all its content is attributed to <a href="http://www.openseamap.org/">www.openseamap.org</a> ' +
+                        '- <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">' +
+                        '<img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /></a>' +
+                        '<br />The OpenSeaMap.org layer is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">' +
+                        'Creative Commons Attribution-ShareAlike 2.0 Generic License</a>' +
                         '</span>' +
                         '</div>'
                     })
@@ -412,7 +388,7 @@ angular.module('maritimeweb.map')
                 return new ol.layer.Group({
                     title: 'Navigation',
                     layers: [
-                       // layerGeoJSONmsi,
+                        // layerGeoJSONmsi,
                         new ol.layer.Tile({
                             title: 'Seamark - OpenSeaMap.org',
                             visible: false,
@@ -420,16 +396,7 @@ angular.module('maritimeweb.map')
                                 url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
                                 attributions: openseaMapAttributions
                             })
-                        })/*,
-                        new ol.layer.Tile({
-                            title: 'Countries',
-                            source: new ol.source.TileWMS({
-                                url: 'http://demo.opengeo.org/geoserver/wms',
-                                params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
-                                serverType: 'geoserver'
-                            }),
-                            visible: false
-                        })*/
+                        })
                     ]
                 });
             };
