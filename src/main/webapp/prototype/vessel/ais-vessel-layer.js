@@ -593,7 +593,7 @@ angular.module('maritimeweb.vessel')
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                     console.error("Error historicalTrack=" + response.status);
-                    growl.error("No historical for this vessel" + vessel.name);
+                    growl.error("No historical for this vessel");
 
                 });
 
