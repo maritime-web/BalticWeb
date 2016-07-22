@@ -106,6 +106,7 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
                     console.error("Error getting NW NM service. Reason=" + error);
                 })
         };
+/*
 
         var stopWatching = $scope.$watch("mapState['wktextent']", function (newValue) {
             if (angular.isDefined(newValue)) {
@@ -120,6 +121,7 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
             }
         });
 
+*/
 
         /** Update the selected status of the service **/
         $scope.nwNmSelected = function (service) {
