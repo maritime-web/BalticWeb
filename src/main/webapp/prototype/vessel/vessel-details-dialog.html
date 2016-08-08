@@ -156,19 +156,24 @@
                                popover-trigger="mouseenter"
                                popover-placement="right" type="button" class="btn btn-info">Display historical Track
                               <i class="fa fa-arrow-down" aria-hidden="true"></i></btn><br>
-
                     </td>
-                    <td  ng-if="routePoints">
+                    <td  ng-if="routePoints.length>0">
                         <btn uib-popover="Watch all {{routePoints.length}} points as a route animation on the map below. Timestamps, Speed-over-ground and position is displayed in
                          the bottom left frame and reflects the status at the current position. Jittery movement may be caused by variable GPS-position precision. Precision is not present in data."
                              popover-trigger="mouseenter"
                          popover-placement="right" type="button" class="btn btn-info"
                          ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)" >{{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn>
                     </td>
+                    <td  ng-if="routePoints.length==0">
+                        <btn uib-popover="No positions tracked for this vessel."
+                             popover-trigger="mouseenter"
+                             popover-placement="right" type="button" class="btn btn-danger"
+                             ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)" >{{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn>
+                    </td>
                     <td>
                     </td>
                 </tr>
-               <tr ng-if="routeFeatures">
+               <tr ng-if="routeFeatures && routePoints.length > 0">
                     <td colspan="3">
                             <ol-map  class="route-details-map">
                                 <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
