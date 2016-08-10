@@ -69,100 +69,32 @@
             </h3>
 
             <table class="table table-striped table-hover">
-
-                <tr ng-if="msg.data.aisVessel.country">
-                    <th scope="row">Country</th>
-                    <td>{{msg.data.aisVessel.country}}
-                        <!--<flag country="{{msg.data.aisVessel.country}}" size="32"></flag>-->
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr ng-if="msg.data.aisVessel.callsign">
-                    <th scope="row">callsign</th>
-                    <td>{{msg.data.aisVessel.callsign}}</td>
-                    <td></td>
-                </tr>
-
-                <tr ng-if="msg.data.aisVessel.mmsi">
-                    <th scope="row">mmsi</th>
-                    <td>{{msg.data.aisVessel.mmsi}} <br>
-                        <a target="_blank"
-                           href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{msg.data.aisVessel.mmsi}}">marinetraffic.com/ais/details/ships/{{msg.data.aisVessel.mmsi}}</a>
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr ng-if="msg.data.aisVessel.imoNo">
-                    <th scope="row">imoNo</th>
-                    <td>{{msg.data.aisVessel.imoNo}} <br>
-                        <a target="_blank"
-                           href="http://maritime-connector.com/ship-search/?keyword=&ship=&imo={{msg.data.aisVessel.imoNo}}&type=&limit=25&sort=&sort_type=">maritime-connector.com/ship/{{msg.data.aisVessel.imoNo}}</a>
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr ng-if="msg.data.aisVessel.length && msg.data.aisVessel.width">
-                    <th scope="row">Length &times; Width</th>
-                    <td>{{msg.data.aisVessel.length}}m &times; {{msg.data.aisVessel.width}}m</td>
-                    <td></td>
-                </tr>
-
-                <tr ng-if="msg.data.aisVessel.vesselType">
-                    <th scope="row">Vessel Type</th>
-                    <td>{{msg.data.aisVessel.vesselType}}</td>
-                    <td></td>
-                </tr>
-
                 <tr ng-if="msg.data.aisVessel.lat && msg.data.aisVessel.lon ">
-                    <th scope="row">Position (Lat/Lon)</th>
+                    <th scope="row"><span class="glyphicon glyphicon-flag"></span> Position (Lat/Lon)</th>
                     <td>{{ toLonLat(msg.data.aisVessel.lon, msg.data.aisVessel.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
                     <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.lastReport">
-                    <th scope="row">Position - Last Report</th>
-                    <td>~ {{msg.data.aisVessel.lastReport | timeAgo}} <br> {{msg.data.aisVessel.lastReport | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
-                    <td></td>
-                </tr>
-
-                <tr ng-if="msg.data.aisVessel.destination">
-                    <th scope="row">Destination</th>
-                    <td>{{msg.data.aisVessel.destination}}</td>
-                    <td></td>
-                </tr>
-
-                <tr ng-if="msg.data.aisVessel.eta">
-                    <th scope="row">Estimated Time of Arrival</th>
-                    <td>~ {{msg.data.aisVessel.eta | timeAgo}} <br> {{msg.data.aisVessel.eta | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
-                    <td></td>
-                </tr>
-
-                <tr ng-if="msg.data.aisVessel.heading">
-                    <th scope="row">Heading</th>
-                    <td>{{msg.data.aisVessel.heading}}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th scope="row">Moored</th>
-                    <td>{{msg.data.aisVessel.moored ? 'yes' : 'no'}}</td>
+                    <th scope="row"><i class="fa fa-clock-o" aria-hidden="true"></i></span> Position received</th>
+                    <td>{{msg.data.aisVessel.lastReport | timeAgo}} <br> {{msg.data.aisVessel.lastReport | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
                     <td></td>
                 </tr>
 
                 <tr>
-                    <th scope="row">Historical track</th>
+                    <th scope="row"><i class="fa fa-history" aria-hidden="true"></i> Historical track</th>
                     <td ng-if="!routePoints">
-                          <btn class="btn btn-primary" uib-popover="Download any tracked position points available and show animation on map. The animation can be computationel intensive." ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"
-                               popover-trigger="mouseenter"
-                               popover-placement="right" type="button" class="btn btn-info">Display historical Track
-                              <i class="fa fa-arrow-down" aria-hidden="true"></i></btn><br>
+                        <btn class="btn btn-primary" uib-popover="Download any tracked position points available and show animation on map. The animation can be computationel intensive." ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"
+                             popover-trigger="mouseenter"
+                             popover-placement="right" type="button" class="btn btn-info">Display historical Track
+                            <i class="fa fa-arrow-down" aria-hidden="true"></i></btn><br>
                     </td>
                     <td  ng-if="routePoints.length>0">
                         <btn uib-popover="Watch all {{routePoints.length}} points as a route animation on the map below. Timestamps, Speed-over-ground and position is displayed in
                          the bottom left frame and reflects the status at the current position. Jittery movement may be caused by variable GPS-position precision. Precision is not present in data."
                              popover-trigger="mouseenter"
-                         popover-placement="right" type="button" class="btn btn-info"
-                         ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)" >{{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn>
+                             popover-placement="right" type="button" class="btn btn-info"
+                             ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)" >{{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn>
                     </td>
                     <td  ng-if="routePoints.length==0">
                         <btn uib-popover="No positions tracked for this vessel."
@@ -173,102 +105,184 @@
                     <td>
                     </td>
                 </tr>
-               <tr ng-if="routeFeatures && routePoints.length > 0">
+                <tr ng-if="routeFeatures && routePoints.length > 0">
                     <td colspan="3">
-                            <ol-map  class="route-details-map">
-                                <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
-                                <route points="routePoints" feat="routeFeatures" autoplay="true"></route>
-                            </ol-map>
+                        <ol-map  class="route-details-map">
+                            <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
+                            <route points="routePoints" feat="routeFeatures" autoplay="true"></route>
+                        </ol-map>
                     </td>
-               </tr>
+                </tr>
 
-<!--                <tr ng-if="historicalTrackOutput.length>1">
-                    <th scope="row">SOG - Speed-over-Ground</th>
+                <!--                <tr ng-if="historicalTrackOutput.length>1">
+                                    <th scope="row">SOG - Speed-over-Ground</th>
+                                    <td>
+                                        <uib-accordion close-others="oneAtATime">
+                                            <uib-accordion-group heading="List historical tracks" is-open="false" is-disabled="false">
+                                                <div ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 100" class="well-sm">
+                                                    <span>{{object.ts | timeAgo}}<br> {{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</span>
+                                                    <span>Course-over-Ground: <b>{{object.cog}}</b> - Speed-over-Ground: <b>{{object.sog}}</b></span>&lt;!&ndash;  COG. the actual course your sailing relative to the Earth &ndash;&gt;
+                                                    <span>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</span>
+                                                </div>
+                                            </uib-accordion-group>
+                                        </uib-accordion>
+                                    </td>
+                                    <td></td>
+                                </tr>-->
+
+                <tr ng-if="historicalTrackOutput.length > 1">
+                    <th scope="row"><i class="fa fa-tachometer" aria-hidden="true"></i> <b>SOG</b> <br><small> Speed Over the Ground <br>is the speed of the vessel <br>relative to the surface of the earth.</small></th>
+                    <td>
+                        <canvas id="line" class="chart chart-line" chart-data="sogChartdata"
+                                chart-labels="sogChartlabels" chart-series="sogChartseries" chart-options="sogChartoptions"
+                                chart-dataset-override="sogChartdatasetOverride" chart-click="onClick">
+                        </canvas>
+                    </td>
+                </tr>
+
+
+                <tr ng-if="historicalTrackOutput.length > 1">
+
+                    <th scope="row"><i class="fa fa-history" aria-hidden="true"></i> Table of tracked <br>
+                                    positions<br>
+                                    <i class="fa fa-table fa-2x" aria-hidden="true"></i>
+                    </th>
                     <td>
                         <uib-accordion close-others="oneAtATime">
-                            <uib-accordion-group heading="List historical tracks" is-open="false" is-disabled="false">
-                                <div ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 100" class="well-sm">
-                                    <span>{{object.ts | timeAgo}}<br> {{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</span>
-                                    <span>Course-over-Ground: <b>{{object.cog}}</b> - Speed-over-Ground: <b>{{object.sog}}</b></span>&lt;!&ndash;  COG. the actual course your sailing relative to the Earth &ndash;&gt;
-                                    <span>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</span>
-                                </div>
+                            <uib-accordion-group heading="Expand table of tracked positions" is-open="false" is-disabled="false">
+                                <table class="table table-striped table-hover table-bordered table-condensed">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Time</th>
+                                        <th>Timestamp</th>
+                                        <th>Position</th>
+                                        <th>Course-over-Ground</th>
+                                        <th>Speed-over-Ground</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 100">
+                                        <td>{{$index+1}}</td>
+                                        <td>{{object.ts | timeAgo}}</td>
+                                        <td>{{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
+                                        <td>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
+                                        <td>{{object.cog}}</td>
+                                        <td>{{object.sog}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </uib-accordion-group>
                         </uib-accordion>
-                    </td>
-                    <td></td>
-                </tr>-->
-
-                <tr ng-if="historicalTrackOutput.length>1">
-
-                    <th scope="row">List of tracked position</th>
-                    <td>
-                    <uib-accordion close-others="oneAtATime">
-                        <uib-accordion-group heading="List historical tracks" is-open="false" is-disabled="false">
-                            <table class="table table-striped table-hover table-bordered table-condensed">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Time</th>
-                                    <th>Timestamp</th>
-                                    <th>Position</th>
-                                    <th>Course-over-Ground</th>
-                                    <th>Speed-over-Ground</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 100">
-                                    <td>{{$index+1}}</td>
-                                    <td>{{object.ts | timeAgo}}</td>
-                                    <td>{{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
-                                    <td>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
-                                    <td>{{object.cog}}</td>
-                                    <td>{{object.sog}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </uib-accordion-group>
-                    </uib-accordion>
                     </td>
                     <td></td>
 
 
                 </tr>
 
+                <tr ng-if="msg.data.aisVessel.country">
+                    <th scope="row"><span class="glyphicon glyphicon-home"></span> Country</th>
+                    <td>{{msg.data.aisVessel.country}}
+                        <!--<flag country="{{msg.data.aisVessel.country}}" size="32"></flag>-->
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.callsign">
+                    <th scope="row"><i class="glyphicon glyphicon-phone-alt" aria-hidden="true"></i> Callsign</th>
+                    <td>{{msg.data.aisVessel.callsign}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.mmsi">
+                    <th scope="row"><i class="glyphicon glyphicon-globe"></i> MMSI</th>
+                    <td>{{msg.data.aisVessel.mmsi}} <br>
+                        <a target="_blank"
+                           href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{msg.data.aisVessel.mmsi}}">marinetraffic.com/ais/details/ships/{{msg.data.aisVessel.mmsi}}</a>
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.imoNo">
+                    <th scope="row"><i class="glyphicon glyphicon-globe"></i> IMO number</th>
+                    <td>{{msg.data.aisVessel.imoNo}} <br>
+                        <a target="_blank"
+                           href="http://maritime-connector.com/ship-search/?keyword=&ship=&imo={{msg.data.aisVessel.imoNo}}&type=&limit=25&sort=&sort_type=">maritime-connector.com/ship/{{msg.data.aisVessel.imoNo}}</a>
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.length && msg.data.aisVessel.width">
+                    <th scope="row"><span class="glyphicon glyphicon-move"></span> Length &times; Width</th>
+                    <td>{{msg.data.aisVessel.length}}m &times; {{msg.data.aisVessel.width}}m</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.vesselType">
+                    <th scope="row"><span class="glyphicon glyphicon-tag"></span> Vessel Type</th>
+                    <td>{{msg.data.aisVessel.vesselType}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.destination">
+                    <th scope="row"><i class="fa fa-calendar" aria-hidden="true"></i> Destination</th>
+                    <td>{{msg.data.aisVessel.destination}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.eta">
+                    <th scope="row"><i class="fa fa-calendar" aria-hidden="true"></i> Estimated Time of Arrival</th>
+                    <td>~ {{msg.data.aisVessel.eta | timeAgo}} <br> {{msg.data.aisVessel.eta | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
+                    <td></td>
+                </tr>
+
 
                 <tr>
-                    <th scope="row">Navigational status</th>
+                    <th scope="row"><i class="fa fa-anchor" aria-hidden="true"></i> Moored</th>
+                    <td>{{msg.data.aisVessel.moored ? 'Yes' : 'No'}}</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.navStatus">
+                    <th scope="row"><i class="fa fa-compass" aria-hidden="true"></i> Navigational status</th>
                     <td>{{navStatusText(msg.data.aisVessel.navStatus)}}</td>
                     <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.draught">
-                    <th scope="row">Draught</th>
+                    <th scope="row"><i class="fa fa-compass" aria-hidden="true"></i> Draught</th>
                     <td>{{msg.data.aisVessel.draught}}</td>
                     <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.cog">
-                    <th scope="row">COG</th>
-                    <td>{{msg.data.aisVessel.cog}}</td>
+                    <th scope="row"><i class="fa fa-compass" aria-hidden="true"></i> COG</th>
+                    <td>{{msg.data.aisVessel.cog}}°</td>
+                    <td></td>
+                </tr>
+
+                <tr ng-if="msg.data.aisVessel.heading">
+                    <th scope="row"><i class="fa fa-compass" aria-hidden="true"></i> Heading</th>
+                    <td>{{msg.data.aisVessel.heading}}°</td>
                     <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.sog"
                     tooltip="Speed Over the Ground (SOG) is the speed of the vessel relative to the surface of the earth.">
-                    <th scope="row">SOG</th>
+                    <th scope="row"><i class="fa fa-tachometer" aria-hidden="true"></i> SOG</th>
                     <td>{{msg.data.aisVessel.sog}}</td>
                     <td></td>
                 </tr>
 
 
                 <tr ng-if="msg.data.aisVessel.rot">
-                    <th scope="row">ROT</th>
+                    <th scope="row"><i class="fa fa-compass" aria-hidden="true"></i> ROT</th>
                     <td>{{msg.data.aisVessel.rot}}</td>
                     <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.targetType">
-                    <th scope="row">Target Type</th>
+                    <th scope="row"><span class="glyphicon glyphicon-tag"></span> Target Type</th>
                     <td>{{msg.data.aisVessel.targetType}}</td>
                     <td></td>
                 </tr>

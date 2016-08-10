@@ -3,7 +3,6 @@ var maritimewebapp = angular.module('maritimeweb.app');
 maritimewebapp.config(['growlProvider', function (growlProvider) {
     growlProvider.globalTimeToLive(8000);
     growlProvider.globalPosition('bottom-right');
-
 }]);
 
 maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService', 'growl', '$uibModal',
@@ -147,16 +146,13 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
 
         /** Toggle the selected status of the service **/
         $scope.switchBaseMap = function (basemap) {
-            //console.log('Switching BaseMap');
-            // disable every basemaps
-            angular.forEach($scope.mapBackgroundLayers.getLayers().getArray(), function (value) {
+            angular.forEach($scope.mapBackgroundLayers.getLayers().getArray(), function (value) { // disable every basemaps
                 // console.log("disabling " + value.get('title'));
                 value.setVisible(false)
             });
             basemap.setVisible(true);// activate selected basemap
             growl.info('Activating map ' + basemap.get('title'));
         };
-
 
         $scope.showVesselDetails = function (vessel) {
             console.log("mmsi" + vessel);

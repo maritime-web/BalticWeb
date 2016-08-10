@@ -19,7 +19,7 @@ angular.module('maritimeweb.route')
                 "<span class='label label-primary'>{{activeRouteTSTimeAgo}}</span><br>" +
                 "<span class='label label-primary'>{{activeRouteTS}}</span><br>" +
                 "<span class='label label-primary'>{{activeRoutePoint | lonlat:{ decimals : 3, pp: true} }}</span><br>" +
-                "<span class='label label-primary'>{{activeRouteCOG}}</span> COG <br>" +
+                "<span class='label label-primary'>{{activeRouteCOG}}</span> COG<br>" +
                 "<span class='label label-primary'>{{activeRouteSOG}}</span> SOG<br>" +
                 "</div>"
                 ,

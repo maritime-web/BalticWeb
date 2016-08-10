@@ -136,21 +136,20 @@ angular.module('maritimeweb.vessel')
             return {
                 restrict: 'E',
                 replace: false,
-                template:
-                '<div id="vessel-info"></div>' +
+                template: '<div id="vessel-info"></div>' +
                 '<div id="popup" class="ol-popup">' +
-                '<a href="#" id="popup-closer" class="ol-popup-closer"></a>'+
+                '<a href="#" id="popup-closer" class="ol-popup-closer"></a>' +
                 '<h3 class="popover-title">{{vessel.name}}</h3>' +
                 '<div class="popover-content">' +
-                    '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{vessel.mmsi}}">{{vessel.mmsi}}</a></p>' +
-                    '<p><span class="glyphicon glyphicon-phone-alt"></span> {{vessel.callsign}} </p>' +
-                    '<p><span class="glyphicon glyphicon-tag"></span> {{vessel.type}}</p>' +
-                    '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.position}}</p>' +
-                    '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.angle}}°</p>'+
-                    '<p><button uib-popover="Retrieve more detailed information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
-                    ' popover-placement="bottom" type="button" class="btn btn-primary"' +
-                    ' ng-click="getMoreVesselDetails()" >More details</button></p>' +
-                '</div>'+
+                '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{vessel.mmsi}}">{{vessel.mmsi}}</a></p>' +
+                '<p><span class="glyphicon glyphicon-phone-alt"></span> {{vessel.callsign}} </p>' +
+                '<p><span class="glyphicon glyphicon-tag"></span> {{vessel.type}}</p>' +
+                '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.position}}</p>' +
+                '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.angle}}°</p>' +
+                '<p><button uib-popover="Retrieve more detailed information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
+                ' popover-placement="bottom" type="button" class="btn btn-primary"' +
+                ' ng-click="getMoreVesselDetails()" >More details</button></p>' +
+                '</div>' +
                 '</div>',
                 require: '^olMap',
                 scope: {
@@ -372,7 +371,7 @@ angular.module('maritimeweb.vessel')
                                 });
 
                         };
-                        scope.getMoreVesselDetails = function (){
+                        scope.getMoreVesselDetails = function () {
                             VesselService.showVesselInfoFromMMsi(scope.vessel.mmsi);
                         };
 
@@ -462,7 +461,7 @@ angular.module('maritimeweb.vessel')
                          * Add a click handler to hide the popup.
                          * @return {boolean} Don't follow the href.
                          */
-                        closer.onclick = function() {
+                        closer.onclick = function () {
                             overlay.setPosition(undefined);
                             closer.blur();
                             return false;
@@ -473,7 +472,7 @@ angular.module('maritimeweb.vessel')
                         /**
                          * Add a click handler to the map to render the popup.
                          */
-                        map.on('singleclick', function(evt) {
+                        map.on('singleclick', function (evt) {
 
                             var zoomLvl = map.getView().getZoom();
 
@@ -497,7 +496,7 @@ angular.module('maritimeweb.vessel')
                                     overlay.setPosition(coordinate);
                                 } else {
                                     //$(elm).popover('destroy');
-                                   // console.log("destroy");
+                                    // console.log("destroy");
                                 }
                             } else { // close popups when zoomed below lvl 8 and clicks on map...
                                 //$(elm).popover('destroy');
@@ -519,14 +518,12 @@ angular.module('maritimeweb.vessel')
     .controller('VesselDialogCtrl', ['$scope', '$window', 'VesselService', 'message', 'growl', 'timeAgo', '$filter',
         function ($scope, $window, VesselService, message, growl, timeAgo, $filter) {
             'use strict';
-            // console.log("Vessel data= " + JSON.stringify(message.data));
             $scope.warning = undefined;
             $scope.msg = message;
 
+
             $scope.getHistoricalTrack = function (mmsi, type) {
                 VesselService.historicalTrack(mmsi).then(function successCallback(response) {
-                    // this callback will be called asynchronously
-                    // when the response is available
                     growl.success("Retrieved historical points " + response.data.length);
 
                     var linePoints = [];
@@ -534,8 +531,52 @@ angular.module('maritimeweb.vessel')
                         this.push(ol.proj.transform([value.lon, value.lat], 'EPSG:4326', 'EPSG:900913'));
                     }, linePoints);
 
-                    // Features are more detailed
+                    // Chart.js with speed-over-ground
+                    var listSpeedOverGround = [];
+                    var listSpeedOverGroundLabels = [];
+
+                    angular.forEach(response.data, function (value, key) {
+                        listSpeedOverGround.push(value.sog);
+                        listSpeedOverGroundLabels.push($filter('timeAgo')(value.ts) + ' - ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC');
+                    });
+
+                    $scope.sogChartlabels = listSpeedOverGroundLabels;
+                    $scope.sogChartseries = ['Speed over Ground'];
+                    $scope.sogChartdata = [listSpeedOverGround];
+                    $scope.onClick = function (points, evt) {
+                        console.log(points, evt);
+                    };
+
+                    $scope.sogChartdatasetOverride = [{
+                        yAxisID: 'y-axis-1',
+                        borderJoinStyle: 'round',
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        pointBorderColor: "rgba(0,0,0,1)",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1
+                    }];
+                    $scope.sogChartoptions = {
+                        responsive: true,
+                        responsiveAnimationDuration: 1500,
+                        scales: {
+                            yAxes: [
+                                {
+                                    id: 'y-axis-1',
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'left'
+                                }
+                            ],
+                            xAxes: [{
+                                display: false
+                            }]
+                        }
+                    };
+
+                    // Map - Features are more detailed
                     var lineFeatures = [];
+
                     var generateHistoricalMarker = function (value) {
                         var vesselPosition = new ol.geom.Point(ol.proj.transform([value.lon, value.lat], 'EPSG:4326', 'EPSG:900913'));
                         var markerStyle = new ol.style.Style({
@@ -586,7 +627,7 @@ angular.module('maritimeweb.vessel')
 
                     $scope.routeFeatures = lineFeatures;  // detailed description of the historical tracks
                     $scope.routePoints = linePoints;  // simple version of the route, list of [[lon,lat],[lon,lat],...]
-                    $scope.historicalTrackOutput = response.data; // the response data, is this still needed?
+                    $scope.historicalTrackOutput = response.data; // the response data
                     return response;
 
                 }, function errorCallback(response) {
