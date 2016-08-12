@@ -1,4 +1,4 @@
-<div>
+<div class="ng-cloak">
 
     <div class="modal-body " style="padding: 1em; margin: 1em;">
 
@@ -70,14 +70,14 @@
 
             <table class="table table-striped table-hover">
                 <tr ng-if="msg.data.aisVessel.lat && msg.data.aisVessel.lon ">
-                    <th scope="row"><span class="glyphicon glyphicon-flag"></span> Position (Lat/Lon)</th>
+                    <th scope="row"><span class="glyphicon glyphicon-flag"></span> Position</th>
                     <td>{{ toLonLat(msg.data.aisVessel.lon, msg.data.aisVessel.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
                     <td></td>
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.lastReport">
                     <th scope="row"><i class="fa fa-clock-o" aria-hidden="true"></i></span> Position received</th>
-                    <td>{{msg.data.aisVessel.lastReport | timeAgo}} <br> {{msg.data.aisVessel.lastReport | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
+                    <td><bold>{{msg.data.aisVessel.lastReport | timeAgo}}</bold> <br> {{msg.data.aisVessel.lastReport | date:'yyyy-MM-dd HH:mm:ss' : 'UTC'}} UTC</td>
                     <td></td>
                 </tr>
 
@@ -131,7 +131,7 @@
                                 </tr>-->
 
                 <tr ng-if="historicalTrackOutput.length > 1">
-                    <th scope="row"><i class="fa fa-tachometer" aria-hidden="true"></i> <b>SOG</b> <br><small> Speed Over the Ground <br>is the speed of the vessel <br>relative to the surface of the earth.</small></th>
+                    <th scope="row"><i class="fa fa-tachometer" aria-hidden="true"></i> <b>SOG</b> <br><small> Speed Over the Ground <br>is the speed of the vessel <br>relative to the surface of the earth. Values are in knots.</small></th>
                     <td>
                         <canvas id="line" class="chart chart-line" chart-data="sogChartdata"
                                 chart-labels="sogChartlabels" chart-series="sogChartseries" chart-options="sogChartoptions"
@@ -165,7 +165,7 @@
                                     <tr ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 100">
                                         <td>{{$index+1}}</td>
                                         <td>{{object.ts | timeAgo}}</td>
-                                        <td>{{object.ts | date:'yyyy-MM-dd HH:mm:ss Z' : 'UTC'}} UTC</td>
+                                        <td>{{object.ts | date:'yyyy-MM-dd HH:mm:ss' : 'UTC'}} UTC</td>
                                         <td>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
                                         <td>{{object.cog}}</td>
                                         <td>{{object.sog}}</td>
@@ -237,11 +237,11 @@
                 </tr>
 
 
-                <tr>
+                <!-- <tr>
                     <th scope="row"><i class="fa fa-anchor" aria-hidden="true"></i> Moored</th>
                     <td>{{msg.data.aisVessel.moored ? 'Yes' : 'No'}}</td>
                     <td></td>
-                </tr>
+                </tr>-->
 
                 <tr ng-if="msg.data.aisVessel.navStatus">
                     <th scope="row"><i class="fa fa-compass" aria-hidden="true"></i> Navigational status</th>
@@ -270,7 +270,7 @@
                 <tr ng-if="msg.data.aisVessel.sog"
                     tooltip="Speed Over the Ground (SOG) is the speed of the vessel relative to the surface of the earth.">
                     <th scope="row"><i class="fa fa-tachometer" aria-hidden="true"></i> SOG</th>
-                    <td>{{msg.data.aisVessel.sog}}</td>
+                    <td>{{msg.data.aisVessel.sog}} knots</td>
                     <td></td>
                 </tr>
 
@@ -282,7 +282,7 @@
                 </tr>
 
                 <tr ng-if="msg.data.aisVessel.targetType">
-                    <th scope="row"><span class="glyphicon glyphicon-tag"></span> Target Type</th>
+                    <th scope="row"><span class="glyphicon glyphicon-flag"></span> AIS Transponder Type <a href="http://www.dma.dk/AIS/WORTHKNOWINGABOUTAIS/Sider/AISclassAandB.aspx#" target="_blank"><span class="glyphicon glyphicon-info-sign"></span></a></th>
                     <td>{{msg.data.aisVessel.targetType}}</td>
                     <td></td>
                 </tr>

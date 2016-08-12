@@ -39,6 +39,9 @@ angular.module('maritimeweb.vessel')
                     controller: "VesselDialogCtrl",
                     templateUrl: "/prototype/vessel/vessel-details-dialog.html",
                     size: 'lg',
+                    keyboard: 'true',
+                    backdrop: 'static',
+                    animation: 'true',
                     resolve: {
                         message: function () {
                             return message;
@@ -136,16 +139,16 @@ angular.module('maritimeweb.vessel')
             return {
                 restrict: 'E',
                 replace: false,
-                template: '<div id="vessel-info"></div>' +
+                template: '<div id="vessel-info" class="ng-cloak"></div>' +
                 '<div id="popup" class="ol-popup">' +
                 '<a href="#" id="popup-closer" class="ol-popup-closer"></a>' +
                 '<h3 class="popover-title">{{vessel.name}}</h3>' +
                 '<div class="popover-content">' +
-                '<p><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{vessel.mmsi}}">{{vessel.mmsi}}</a></p>' +
-                '<p><span class="glyphicon glyphicon-phone-alt"></span> {{vessel.callsign}} </p>' +
-                '<p><span class="glyphicon glyphicon-tag"></span> {{vessel.type}}</p>' +
-                '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.position}}</p>' +
-                '<p><span class="glyphicon glyphicon-flag"></span> {{vessel.angle}}°</p>' +
+                '<p uib-popover="MMSI number" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{vessel.mmsi}}">{{vessel.mmsi}}</a></p>' +
+                '<p uib-popover="Radio call sign" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-volume-up"></span> {{vessel.callsign}} </p>' +
+                '<p uib-popover="Type of vessel i.e. Tanker, Passenger, Fishing etc." popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-tag"></span> {{vessel.type}}</p>' +
+                '<p uib-popover="GPS position in latitude longitude" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-flag"></span> {{vessel.position}}</p>' +
+                '<p uib-popover="Direction of the ship in degrees" popover-placement="left" popover-trigger="mouseenter"><i class="fa fa-compass" aria-hidden="true"></i> {{vessel.angle}}°</p>' +
                 '<p><button uib-popover="Retrieve more detailed information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
                 ' popover-placement="bottom" type="button" class="btn btn-primary"' +
                 ' ng-click="getMoreVesselDetails()" >More details</button></p>' +
