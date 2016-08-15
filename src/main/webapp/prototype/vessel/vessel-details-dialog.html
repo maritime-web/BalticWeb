@@ -182,8 +182,8 @@
 
                 <tr ng-if="msg.data.aisVessel.country">
                     <th scope="row"><span class="glyphicon glyphicon-home"></span> Country</th>
-                    <td>{{msg.data.aisVessel.country}}
-                        <!--<flag country="{{msg.data.aisVessel.country}}" size="32"></flag>-->
+                    <td ><span>{{msg.data.aisVessel.country}}  - {{msg.data.aisVessel.country | isoCountry}} -
+                        <flag country="{{msg.data.aisVessel.country}}" size="16"></flag></span>
                     </td>
                     <td></td>
                 </tr>

@@ -11,7 +11,7 @@ angular.module('maritimeweb.nw-nm', []);
 
     var moduleName = 'maritimeweb';
     var module = angular.module(moduleName, ['ngAnimate', 'ngSanitize', 'ui.bootstrap',
-        'maritimeweb.map', 'maritimeweb.app', 'maritimeweb.vessel', 'maritimeweb.nw-nm', 'ngFlag', 'chart.js', 'yaru22.angular-timeago', 'maritimeweb.route']);
+        'maritimeweb.map', 'maritimeweb.app', 'maritimeweb.vessel', 'maritimeweb.nw-nm', 'maritimeweb.route', 'ngFlag', 'chart.js', 'yaru22.angular-timeago',  'iso-3166-country-codes']);
         keycloakInitialize(module, moduleName, false);
 })();
 

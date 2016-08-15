@@ -11,7 +11,7 @@ angular.module('maritimeweb.route')
             return {
                 restrict: 'E',
                 require: '^olMap',
-                template: "<div class=' hidden-xs hidden-sm message-details-route col-md-3 col-lg-3'>" +
+                template: "<div class='hidden-xs hidden-sm message-details-route col-md-3 col-lg-3 ng-cloak'>" +
                 "<btn ng-if='!animating' class='btn btn-success' id='start-animation' ng-click='startAnimation()'> <i class='fa fa-play' aria-hidden='true'></i> </btn> " +
                 "<btn ng-if='animating' class='btn btn-danger' id='start-animation' ng-click='stopAnimation()' tooltip='stop animation' data-toggle='tooltip'  " +
                 " data-placement='right' title='stop animation'> <i class='fa fa-stop' aria-hidden='true'></i> </btn><br>" +
@@ -20,7 +20,7 @@ angular.module('maritimeweb.route')
                 "<span class='label label-primary'>{{activeRouteTS}}</span><br>" +
                 "<span class='label label-primary'>{{activeRoutePoint | lonlat:{ decimals : 3, pp: true} }}</span><br>" +
                 "<span class='label label-primary'>{{activeRouteCOG}}</span> COG<br>" +
-                "<span class='label label-primary'>{{activeRouteSOG}}</span> SOG<br>" +
+                "<span class='label label-primary'>{{activeRouteSOG}}</span> knots SOG<br>" +
                 "</div>"
                 ,
                 scope: {
@@ -141,7 +141,6 @@ angular.module('maritimeweb.route')
                             map.render();      // tell OL3 to continue the postcompose animation
                         };
 
-
                         scope.startAnimation = function () {
                             if (scope.animating) {
                                 scope.stopAnimation(false);
@@ -154,7 +153,6 @@ angular.module('maritimeweb.route')
                                 map.render();
                             }
                         };
-
 
                         /**
                          * @param {boolean} ended end of animation.

@@ -54,57 +54,6 @@ body {
     text-decoration: underline;
 }
 
-/** Map and sidebar **/
-/*
-.maritimeweb-map {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    right: 200px;
-    bottom: 0;
-    background-color: #b5d0d0;
-}
-
-.maritimeweb-sidebar {
-    padding: 5px;
-    position: absolute;
-    top: 50px;
-    right: 0;
-    width: 200px;
-    bottom: 0;
-    overflow: hidden;
-    overflow-y: scroll;
-}
-
-@media (min-width: 600px) {
-    .maritimeweb-map {
-        right: 300px;
-    }
-
-    .maritimeweb-sidebar {
-        width: 300px;
-    }
-}
-
-@media (min-width: 800px) {
-    .maritimeweb-map {
-        right: 400px;
-    }
-
-    .maritimeweb-sidebar {
-        width: 400px;
-    }
-}
-
-@media (min-width: 1000px) {
-    .maritimeweb-map {
-        right: 500px;
-    }
-
-    .maritimeweb-sidebar {
-        width: 500px;
-    }
-}*/
 #refuse {
     background: url( /img/bgr_refuse.png ) no-repeat center center fixed;
     -webkit-background-size: cover;
@@ -165,31 +114,6 @@ body {
 
 
 
-/*
-@media (min-width: 300px) {
-    .map {
-        height: 475px;
-    }
-}
-
-@media (min-width: 400px) {
-    .map {
-        height: 500px;
-    }
-}
-@media (min-width: 767px) {
-    .map {
-        height: 600px;
-    }
-}
-
-
-@media (min-width: 1000px) {
-    .map {
-        height: 700px;
-    }
-}
-*/
 
 .sidebar-toggle-btn {
     color: white;
@@ -212,29 +136,6 @@ body {
     background-color: rgba(0, 60, 136, 0.9);
 
 }
-/*.sidebar-toggle-btn span {
-    color: white;
-    border-radius: 4px;
-    padding: 4px;
-    width: 44px;
-    margin: 0;
-
-    background-color: rgba(0, 60, 136, 0.5);
-    list-style-type: none;
-    transition: background .5s ease-in-out;
-    -moz-transition: background .5s ease-in-out;
-    -webkit-transition: background .5s ease-in-out;
-}
-
-.sidebar-toggle-btn:hover span {
-    cursor: pointer;
-    color: white;
-    border-radius: 4px;
-    padding: 4px;
-    background-color: rgba(0, 60, 136, 0.9);
-}*/
-
-
 
 .map-current-pos-btn {
     left: 12px;
@@ -531,4 +432,10 @@ body:after {
 }
 .ol-popup-closer:after {
     content: "✖";
+}
+
+
+/* aligning of content in table of vesseldata.*/
+.table tbody>tr>td.vert-align{
+    vertical-align: middle;
 }
