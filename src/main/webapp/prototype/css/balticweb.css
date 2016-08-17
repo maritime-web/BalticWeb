@@ -439,3 +439,28 @@ body:after {
 .table tbody>tr>td.vert-align{
     vertical-align: middle;
 }
+
+/*  compass */
+
+.compass-div {
+    border: 0;
+    float: left;
+    position: relative;
+}
+.compass-circle {
+    width: 98px;
+    height: 98px;
+}
+.compass-needle {
+    width: 98px;
+    height: 98px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    /*
+    -webkit-transform: rotate(75deg);
+    -moz-transform: rotate(75deg);
+    -o-transform: rotate(75deg);
+    -ms-transform: rotate(75deg);
+    transform: rotate(75deg); */
+}
