@@ -20,7 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.niord.model.IJsonSerializable;
-import org.niord.model.vo.MessageVo;
+import org.niord.model.message.MessageVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
