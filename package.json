@@ -1,6 +1,6 @@
 {
   "name": "balticweb",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-cli": "^1.2.0",
@@ -30,7 +30,12 @@
     "jasmine-core": "latest"
   },
   "dependencies": {
+    "angular": "^1.5.8",
     "angular-chart.js": "^0.10.2",
-    "chart.js": "^2.2.1"
+    "angular-growl-v2": "^0.7.5",
+    "angular-timeago": "^0.4.3",
+    "chart.js": "^2.2.1",
+    "iso-3166-country-codes-angular": "^1.2.1",
+    "moment": "^2.14.1"
   }
 }

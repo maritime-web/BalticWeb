@@ -1,0 +1,96 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "iso-3166-country-codes-angular",
+        "scope": null,
+        "escapedName": "iso-3166-country-codes-angular",
+        "name": "iso-3166-country-codes-angular",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/home/andreas/Code/dma/BalticWeb"
+    ]
+  ],
+  "_from": "iso-3166-country-codes-angular@latest",
+  "_id": "iso-3166-country-codes-angular@1.2.1",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/iso-3166-country-codes-angular",
+  "_nodeVersion": "0.10.43",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/iso-3166-country-codes-angular-1.2.1.tgz_1458854134537_0.020118962274864316"
+  },
+  "_npmUser": {
+    "name": "rsertelon",
+    "email": "romain.npm@sertelon.fr"
+  },
+  "_npmVersion": "3.8.2",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "iso-3166-country-codes-angular",
+    "scope": null,
+    "escapedName": "iso-3166-country-codes-angular",
+    "name": "iso-3166-country-codes-angular",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/iso-3166-country-codes-angular/-/iso-3166-country-codes-angular-1.2.1.tgz",
+  "_shasum": "1a7f30a863c8f389cc1a60a3bb841b6ea9f2009c",
+  "_shrinkwrap": null,
+  "_spec": "iso-3166-country-codes-angular",
+  "_where": "/home/andreas/Code/dma/BalticWeb",
+  "author": {
+    "name": "Romain Sertelon"
+  },
+  "bugs": {
+    "url": "https://github.com/rsertelon/iso-3166-country-codes-angular/issues"
+  },
+  "dependencies": {},
+  "description": "An AngularJS module to work with Country Codes",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.7.1",
+    "grunt-contrib-uglify": "~0.2.2"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "1a7f30a863c8f389cc1a60a3bb841b6ea9f2009c",
+    "tarball": "https://registry.npmjs.org/iso-3166-country-codes-angular/-/iso-3166-country-codes-angular-1.2.1.tgz"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "gitHead": "71b8e02e1e7aa462d11b604f3aeabfcb3e431d97",
+  "homepage": "https://github.com/rsertelon/iso-3166-country-codes-angular#readme",
+  "keywords": [
+    "Country",
+    "Code",
+    "ISO",
+    "3166"
+  ],
+  "license": "Public Domain",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "rsertelon",
+      "email": "romain.npm@sertelon.fr"
+    }
+  ],
+  "name": "iso-3166-country-codes-angular",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rsertelon/iso-3166-country-codes-angular.git"
+  },
+  "scripts": {},
+  "version": "1.2.1"
+}

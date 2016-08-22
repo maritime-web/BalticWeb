@@ -1,0 +1,51 @@
+{
+  "author": {
+    "name": "Brian Park",
+    "email": "yaru22@gmail.com"
+  },
+  "name": "angular-timeago",
+  "description": "Angular directive/filter/service for formatting date so that it displays how long ago the given time was compared to now.",
+  "version": "0.4.1",
+  "license": "MIT",
+  "homepage": "https://github.com/yaru22/angular-timeago",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yaru22/angular-timeago.git"
+  },
+  "keywords": [
+    "angular",
+    "directive",
+    "filter",
+    "service",
+    "timeago",
+    "moment"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "0.4.5",
+    "grunt-contrib-clean": "1.0.0",
+    "grunt-contrib-concat": "1.0.1",
+    "grunt-contrib-connect": "1.0.2",
+    "grunt-contrib-copy": "1.0.0",
+    "grunt-contrib-jshint": "1.0.0",
+    "grunt-contrib-uglify": "1.0.1",
+    "grunt-contrib-watch": "1.0.0",
+    "grunt-jsbeautifier": "0.2.12",
+    "grunt-karma": "1.0.0",
+    "grunt-ng-annotate": "2.0.2",
+    "grunt-open": "0.2.3",
+    "grunt-protractor-runner": "3.1.0",
+    "grunt-release": "0.13.1",
+    "karma": "0.13.22",
+    "karma-chrome-launcher": "1.0.1",
+    "karma-mocha": "1.0",
+    "matchdep": "1.0.1",
+    "mocha": "2.4.5",
+    "protractor": "3.3.0",
+    "serve-static": "1.10.2"
+  },
+  "main": "dist/angular-timeago.js",
+  "scripts": {
+    "test": "grunt test"
+  }
+}
