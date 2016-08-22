@@ -13,7 +13,7 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
             var uibModalInstance = $uibModal.open({
                 animation: 'true',
                 templateUrl: '/prototype/js/welcome.html',
-                controller: 'ModalInstanceCtrl',
+                controller: 'AcceptTermsCtrl',
                 size: size
             })
         };
@@ -179,7 +179,7 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
 
     }]);
 
-maritimewebapp.controller('ModalInstanceCtrl', ['$scope', '$uibModalInstance', '$window', function ($scope, $uibModalInstance, $window) {
+maritimewebapp.controller('AcceptTermsCtrl', ['$scope', '$uibModalInstance', '$window', function ($scope, $uibModalInstance, $window) {
     $scope.accept = function () {
         var ttl = new Date();
         var numberOfDaysToAdd = 14;

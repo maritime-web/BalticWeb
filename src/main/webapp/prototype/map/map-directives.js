@@ -264,7 +264,6 @@ angular.module('maritimeweb.map')
         };
     }])
 
-
     /**
      * The map-layer-group adds an entire layer group to the map
      */
@@ -442,11 +441,6 @@ angular.module('maritimeweb.map')
                     scope.currentPosOrientation = function () {
                         scope.loadingData = true; // start spinner
                         $window.navigator.geolocation.getCurrentPosition(function (pos) {
-                            console.log('Got current position', pos.coords);
-
-
-
-
 
                             var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
                             map.getView().setCenter(center);
@@ -542,7 +536,6 @@ angular.module('maritimeweb.map')
         };
     }])
 
-
     /**
      * The map-mouse-position directive will add a current-mouse position panel the map.
      */
@@ -572,10 +565,8 @@ angular.module('maritimeweb.map')
                         scope.currentPos = undefined;
                         scope.$$phase || scope.$apply();
                     });
-
                 });
             }
         };
-    }])
-;
+    }]);
 
