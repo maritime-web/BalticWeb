@@ -1,11 +1,4 @@
-var maritimewebapp = angular.module('maritimeweb.app');
-
-maritimewebapp.config(['growlProvider', function (growlProvider) {
-    growlProvider.globalTimeToLive(8000);
-    growlProvider.globalPosition('bottom-right');
-}]);
-
-maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService', 'growl', '$uibModal',
+angular.module('maritimeweb.app').controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService', 'growl', '$uibModal',
     function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, growl, $uibModal) {
         var loadTimerService = false;
 
@@ -179,15 +172,3 @@ maritimewebapp.controller("AppController", ['$scope', '$http', '$window', '$time
 
     }]);
 
-maritimewebapp.controller('AcceptTermsCtrl', ['$scope', '$uibModalInstance', '$window', function ($scope, $uibModalInstance, $window) {
-    $scope.accept = function () {
-        var ttl = new Date();
-        var numberOfDaysToAdd = 14;
-        ttl.setDate(ttl.getDate() + numberOfDaysToAdd);
-        $window.localStorage.setItem('terms_accepted_ttl', ttl); // storing today date plus 14 days. Don't show the first-run modal for the next 14 days.
-        $uibModalInstance.close();
-    };
-    $scope.refuse = function () {
-        $window.location.href = '/refuse.html';
-    };
-}]);
