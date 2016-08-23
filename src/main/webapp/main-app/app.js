@@ -12,6 +12,7 @@ angular.module(moduleName + '.nw-nm', []);
 
     var module = angular.module(moduleName, [
         'ngAnimate',
+        'ngRoute',
         'ngSanitize',
         'ui.bootstrap',
         moduleName + '.map',

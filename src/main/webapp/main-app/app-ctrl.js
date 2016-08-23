@@ -1,11 +1,13 @@
-angular.module('maritimeweb.app').controller("AppController", ['$scope', '$http', '$window', '$timeout', 'Auth', 'MapService', 'VesselService', 'NwNmService', 'growl', '$uibModal',
+angular.module('maritimeweb.app').controller("AppController", [
+    '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
+    'VesselService', 'NwNmService', 'growl', '$uibModal',
     function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, growl, $uibModal) {
         var loadTimerService = false;
 
         $scope.welcomeToBalticWebModal = function (size) {
             var uibModalInstance = $uibModal.open({
                 animation: 'true',
-                templateUrl: '/prototype/js/welcome.html',
+                templateUrl: 'main-app/welcome.html',
                 controller: 'AcceptTermsCtrl',
                 size: size
             })
