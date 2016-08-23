@@ -561,10 +561,11 @@ angular.module('maritimeweb.map')
                         scope.$$phase || scope.$apply();
                     });
 
+                 /*
                     $(map.getViewport()).on('mouseout', function() {
                         scope.currentPos = undefined;
                         scope.$$phase || scope.$apply();
-                    });
+                    });*/
                 });
             }
         };

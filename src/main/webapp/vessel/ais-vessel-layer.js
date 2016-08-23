@@ -151,7 +151,7 @@ angular.module('maritimeweb.vessel')
                 '<p uib-popover="Direction of the ship in degrees" popover-placement="left" popover-trigger="mouseenter"><i class="fa fa-compass" aria-hidden="true"></i> {{vessel.angle}}°</p>' +
                 '<p><button uib-popover="Retrieve more detailed information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
                 ' popover-placement="bottom" type="button" class="btn btn-primary"' +
-                ' ng-click="getMoreVesselDetails()" >More details</button></p>' +
+                ' ng-click="getMoreVesselDetails()" ng-href="#/vessel/{{vessel.mmsi}}" >More details</button></p>' +
                 '</div>' +
                 '</div>',
                 require: '^olMap',
@@ -376,6 +376,7 @@ angular.module('maritimeweb.vessel')
                         };
                         scope.getMoreVesselDetails = function () {
                             VesselService.showVesselInfoFromMMsi(scope.vessel.mmsi);
+
                         };
 
                         /** When the map extent changes, reload the Vessels's using a timer to batch up changes */
