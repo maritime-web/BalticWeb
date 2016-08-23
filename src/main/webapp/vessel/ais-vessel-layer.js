@@ -37,7 +37,7 @@ angular.module('maritimeweb.vessel')
                 var message = this.detailsMMSI(mmsi);
                 return $uibModal.open({
                     controller: "VesselDialogCtrl",
-                    templateUrl: "/prototype/vessel/vessel-details-dialog.html",
+                    templateUrl: "/vessel/vessel-details-dialog.html",
                     size: 'lg',
                     keyboard: 'true',
                     backdrop: 'static',
