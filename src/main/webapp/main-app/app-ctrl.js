@@ -7,7 +7,7 @@ angular.module('maritimeweb.app').controller("AppController", [
         $scope.welcomeToBalticWebModal = function (size) {
             var uibModalInstance = $uibModal.open({
                 animation: 'true',
-                templateUrl: 'main-app/welcome.html',
+                templateUrl: 'partials/welcome.html',
                 controller: 'AcceptTermsCtrl',
                 size: size
             })

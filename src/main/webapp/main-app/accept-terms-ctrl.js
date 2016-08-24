@@ -7,6 +7,6 @@ angular.module('maritimeweb.app').controller('AcceptTermsCtrl', ['$scope', '$uib
         $uibModalInstance.close();
     };
     $scope.refuse = function () {
-        $window.location.href = '/refuse.html';
+        $window.location.href = '/partials/refuse.html';
     };
 }]);

@@ -42,7 +42,7 @@ angular.module('maritimeweb.nw-nm')
             this.showMessageInfo = function (message) {
                 return $uibModal.open({
                     controller: "MessageDialogCtrl",
-                    templateUrl: "/prototype/nw-nm/message-details-dialog.html",
+                    templateUrl: "nw-nm/message-details-dialog.html",
                     size: 'lg',
                     resolve: {
                         message: function () {

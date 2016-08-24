@@ -17,7 +17,7 @@
         </div>
 
 
-        <div class="collapse navbar-collapse" id="myNavbar">
+   <!--     <div class="collapse navbar-collapse" id="myNavbar">
 
             <div class="nav navbar-nav" uib-dropdown dropdown-append-to-body>
                 <li class="dropdown">
@@ -29,8 +29,8 @@
                         <li ng-repeat="basemap in mapBackgroundLayers.getLayers().getArray()"  ng-class="{'active':basemap.getVisible()}"><a href="#" ng-bind="basemap.get('title')" ng-click="switchBaseMap(basemap)"></a></li>
                     </ul>
                 </li>
-            </div>
-<!--            <ul class="nav navbar-nav">
+            </div>-->
+            <ul class="nav navbar-nav">
 
                  <li class="dropdown">
                       <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-map-o fa-lg" aria-hidden="true"></i> Maps <span class="caret"></span></a>
@@ -40,9 +40,9 @@
                       </ul>
                   </li>
 
-            </ul>-->
+            </ul>
 
-<!--            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-ship fa-lg" aria-hidden="true"></i> Traffic<span class="caret"></span></a>
                     <ul class="dropdown-menu" >
@@ -59,8 +59,8 @@
                         <li ng-repeat="aService in nwNmServices" ng-class="{'active':aService.selected}"><a href="#" ng-click="toggleService(aService)"> {{aService.name}}</a></li>
                     </ul>
                 </li>
-            </ul>-->
-            <div class="nav navbar-nav" uib-dropdown dropdown-append-to-body>
+            </ul>
+<!--            <div class="nav navbar-nav" uib-dropdown dropdown-append-to-body>
                 <li class="dropdown">
                     <a id="btn-append-to-to-body" class="dropdown-toggle" uib-dropdown-toggle><i class="fa fa-ship fa-lg" aria-hidden="true"></i> Traffic<span class="caret"></span></a>
 
@@ -79,7 +79,7 @@
                         <li ng-repeat="aService in nwNmServices" ng-class="{'active':aService.selected}"><a href="#" ng-click="toggleService(aService)"> {{aService.name}}</a></li>
                     </ul>
                 </li>
-            </div>
+            </div>-->
 
 <!--            <ul class="nav navbar-nav">
                 <li class="dropdown">
@@ -91,7 +91,7 @@
                 </li>
             </ul>-->
 
-<!--            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cloud fa-lg" aria-hidden="true"></i> Forecast <span class="caret"></span></a>
                     <ul class="dropdown-menu" >
@@ -99,9 +99,9 @@
                         <li ng-repeat="aService in mapWeatherLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
                     </ul>
                 </li>
-            </ul>-->
+            </ul>
 
-            <div class="nav navbar-nav" uib-dropdown dropdown-append-to-body>
+<!--            <div class="nav navbar-nav" uib-dropdown dropdown-append-to-body>
                 <li class="dropdown">
                     <a id="btn-append-to-to-body" class="dropdown-toggle" uib-dropdown-toggle><i class="fa fa-cloud fa-lg" aria-hidden="true"></i> Forecast <span class="caret"></span></a>
 
@@ -111,26 +111,37 @@
                         <li ng-repeat="aService in mapWeatherLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
                     </ul>
                 </li>
-            </div>
+            </div>-->
 
             <div class="nav navbar-nav" uib-dropdown dropdown-append-to-body>
                 <li class="dropdown">
 
                 <a id="btn-append-to-to-body" class="dropdown-toggle" uib-dropdown-toggle>
                     <span class="glyphicon glyphicon-info-sign"></span>
-                    About <span class="caret"></span>
+                    Info <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-to-body">
                     <li role="menuitem"><a ng-href="#/disclaimer"><span class="glyphicon glyphicon-asterisk"></span> Disclaimer</a></li>
-                <!--    <li role="menuitem"><a href="#">Another action</a></li>
-                    <li role="menuitem"><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li role="menuitem"><a href="#">Separated link</a></li>-->
+                    <li role="menuitem"><a ng-href="#/about"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
+
+                    <!--    <li role="menuitem"><a href="#">Another action</a></li>
+                        <li role="menuitem"><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li role="menuitem"><a href="#">Separated link</a></li>-->
                 </ul>
                 </li>
 
             </div>
 
+        <ul class="nav navbar-nav">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-info-sign"></span>
+                    Info <span class="caret"></span></a>
+                <ul class="dropdown-menu" >
+                    <li role="menuitem"><a ng-href="#/disclaimer"><span class="glyphicon glyphicon-asterisk"></span> Disclaimer</a></li>
+                    <li role="menuitem"><a ng-href="#/about"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>                </ul>
+            </li>
+        </ul>
 
             <ul ng-if="!loggedIn" class="nav navbar-nav navbar-right">
                 <li><a href ng-click="login()"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
