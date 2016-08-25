@@ -10,8 +10,8 @@ angular.module('maritimeweb').config(['$locationProvider', '$routeProvider',
             templateUrl: 'partials/about-page-wrapper.html'
         }).
         when('/vessel/:mmsi', {
-            controller: 'VesselDialogCtrl',
-            templateUrl: 'vessel/vessel-details-dialog.html'
+            controller: 'VesselDetailsCtrl',
+            templateUrl: 'vessel/vessel-details.html'
         }).
         otherwise({
             templateUrl: 'partials/map.html'

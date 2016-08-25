@@ -18,14 +18,15 @@ angular.module('maritimeweb.vessel')
                 '<a href="#" id="popup-closer" class="ol-popup-closer"></a>' +
                 '<h3 class="popover-title">{{vessel.name}}</h3>' +
                 '<div class="popover-content">' +
-                '<p uib-popover="MMSI number" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-globe"></span> <a target="_blank" href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{vessel.mmsi}}">{{vessel.mmsi}}</a></p>' +
+                '<p uib-popover="MMSI number" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-globe"></span> <a ng-href="#/vessel/{{vessel.mmsi}}">{{vessel.mmsi}}</a></p>' +
                 '<p uib-popover="Radio call sign" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-volume-up"></span> {{vessel.callsign}} </p>' +
                 '<p uib-popover="Type of vessel i.e. Tanker, Passenger, Fishing etc." popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-tag"></span> {{vessel.type}}</p>' +
                 '<p uib-popover="GPS position in latitude longitude" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-flag"></span> {{vessel.position}}</p>' +
                 '<p uib-popover="Direction of the ship in degrees" popover-placement="left" popover-trigger="mouseenter"><i class="fa fa-compass" aria-hidden="true"></i> {{vessel.angle}}°</p>' +
-                '<p><button uib-popover="Retrieve more detailed information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
-                ' popover-placement="bottom" type="button" class="btn btn-primary"' +
-                ' ng-click="getMoreVesselDetails()">More details</button></p>' +
+                //'<p><button uib-popover="Retrieve more detailed information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
+                //' popover-placement="bottom" type="button" class="btn btn-primary"' +
+                //' ng-click="getMoreVesselDetails()">More details</button></p>' +
+                '<p><a ng-href="#/vessel/{{vessel.mmsi}}">More details</a></p>' +
                 '</div>' +
                 '</div>',
                 require: '^olMap',
@@ -65,7 +66,7 @@ angular.module('maritimeweb.vessel')
                         });
 
 
-                        /** TODO: Remove this method and create a methos similar to colorHexForVessel:
+                        /** TODO: Remove this method and create a method similar to colorHexForVessel:
                          * a simple function that given one color can darken or lighten it.
                          * Given two colors, the function mixes the two, and returns the blended color.
                          * This funtion is bluntly copy/pasted from http://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors

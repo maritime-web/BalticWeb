@@ -1,0 +1,266 @@
+<div class="ng-cloak" ng-controller="VesselDetailsCtrl as vdctrl">
+    <div ng-include="vessel-details-dialog.html"></div>
+
+
+    <div class="container-fluid" >
+        <h3>
+            {{msg.data.aisVessel.name}} <flag country="{{msg.data.aisVessel.country}}" size="32"></flag>
+        </h3>
+        <div ng-if="routeFeatures && routePoints.length > 0" class="row">
+            <div class="col-md-12">
+                <ol-map  class="route-details-map">
+                    <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
+                    <route points="routePoints" feat="routeFeatures" autoplay="true"></route>
+                </ol-map>
+            </div>
+        </div>
+
+        <div ng-if="historicalTrackOutput.length > 1" class="row">
+            <div class="col-md-12"><i class="fa fa-tachometer" aria-hidden="true"></i> <b>SOG</b> <small> Speed Over the Ground
+                is the speed of the vessel relative to the surface of the earth. Values are in knots.</small></div>
+            <canvas id="line" class="chart chart-line" chart-data="sogChartdata"
+                    chart-labels="sogChartlabels" chart-series="sogChartseries" chart-options="sogChartoptions"
+                    chart-dataset-override="sogChartdatasetOverride" chart-click="onClick">
+            </canvas>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-6 well " ng-if="msg.data.aisVessel.lat && msg.data.aisVessel.lon ">
+                <h3>Position</h3>
+                <p><span class="glyphicon glyphicon-flag"></span> {{ toLonLat(msg.data.aisVessel.lon, msg.data.aisVessel.lat) | lonlat:{ decimals : 3, pp: true} }}</p>
+                <p><i class="fa fa-clock-o" aria-hidden="true"></i> Position received:  <strong>{{msg.data.aisVessel.lastReport | timeAgo}}</strong> at  {{msg.data.aisVessel.lastReport | date:'yyyy-MM-dd HH:mm:ss' : 'UTC'}} UTC</p>
+
+                <p ng-if="msg.data.aisVessel.destination">
+                    <i class="fa fa-calendar" aria-hidden="true"></i> Destination: {{msg.data.aisVessel.destination}}
+                </p>
+
+                <p ng-if="msg.data.aisVessel.eta">
+                    <th scope="row"><i class="fa fa-calendar" aria-hidden="true"></i> ETA: <!-- Estimated Time of Arrival:--> ~ {{msg.data.aisVessel.eta | timeAgo}} <br> {{msg.data.aisVessel.eta | date:'yyyy-MM-dd HH:mm:ss' : 'UTC'}} UTC</td>
+
+                </p>
+
+                <p ng-if="msg.data.aisVessel.navStatus">
+                    <i class="fa fa-compass" aria-hidden="true"></i> Navigational status:
+                    {{navStatusText(msg.data.aisVessel.navStatus)}}
+
+                </p>
+
+                <p ng-if="msg.data.aisVessel.draught">
+                    <i class="fa fa-compass" aria-hidden="true"></i> Draught: {{msg.data.aisVessel.draught}}
+                </p>
+
+
+                <p ng-if="msg.data.aisVessel.sog"
+                   tooltip="Speed Over the Ground (SOG) is the speed of the vessel relative to the surface of the earth.">
+                <i class="fa fa-tachometer" aria-hidden="true"></i> SOG: {{msg.data.aisVessel.sog}} knots
+                </p>
+
+
+                <p ng-if="msg.data.aisVessel.rot">
+                <p scope="row"><i class="fa fa-compass" aria-hidden="true" tootltip="the speed at which a ship, vessel, or unit is turning at, or is capable of turning at."></i> ROT:
+                {{msg.data.aisVessel.rot}}
+                </p>
+
+                <div ng-if="msg.data.aisVessel.cog" >
+                    <p><i class="fa fa-compass" aria-hidden="true"></i> COG : <!--- the actual course the vessel is <br> sailing relative to the Earth</spanp> -->
+                        {{msg.data.aisVessel.cog}}°
+                    <p class='compass-div'>
+                        <img class='compass-circle-small' src='/img/compass.png' alt='Compass illustration. The actual course the vessel is {{msg.data.aisVessel.cog}}°'>
+                        <img rotate-element data-rotationdegree='{{msg.data.aisVessel.cog}}'
+                             uib-popover=" The actual course the vessel is {{msg.data.aisVessel.cog}}°"
+                             popover-trigger="mouseenter"
+                             popover-placement="right"
+                             class='compass-needle-small' src='/img/compass-needle.png' alt='{{msg.data.aisVessel.cog}}°'>
+                    </p>
+                    </p>
+                </div>
+
+
+                <div ng-if="msg.data.aisVessel.heading" >
+                    <p><i class="fa fa-compass" aria-hidden="true"></i> Heading: {{msg.data.aisVessel.heading}}°</p>
+                        <div class='compass-div'>
+                            <img class='compass-circle-small' src='/img/compass.png' alt='Compass illustration. The course the vessel is heading{{msg.data.aisVessel.heading}}°'>
+                            <img rotate-element data-rotationdegree='{{msg.data.aisVessel.heading}}'
+                                 class='compass-needle-small' src='/img/compass-needle.png' alt='{{msg.data.aisVessel.heading}}°'
+                                 uib-popover=" The vessel is heading at course {{msg.data.aisVessel.heading}}°"
+                                 popover-trigger="mouseenter"
+                                 popover-placement="right">
+                        </div>
+
+                </div>
+
+
+
+            </div>
+            <div class="col-md-2 ">
+                <div class="well">
+                <h3>Actions</h3>
+                <div >
+                <p><i class="fa fa-history" aria-hidden="true"></i> Positions the last 24-hours:</p>
+                    <span ng-if="!routePoints">
+                        <btn class="btn btn-primary" uib-popover="Download any tracked position points available and show animation on map. The animation can be computationel intensive." ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"
+                             popover-trigger="mouseenter"
+                             popover-placement="right" type="button" class="btn btn-info"> Historical Track
+                            <i class="fa fa-arrow-down" aria-hidden="true"></i></btn><br>
+                    </span>
+                    <span  ng-if="routePoints.length>0">
+                        <btn uib-popover="Watch all {{routePoints.length}} points as a route animation on the map below. Timestamps, Speed-over-ground and position is displayed in
+                         the bottom left frame and reflects the status at the current position. Jittery movement may be caused by variable GPS-position precision. Precision is not present in data."
+                             popover-trigger="mouseenter"
+                             popover-placement="right" type="button" class="btn btn-info"
+                             ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)" >{{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn>
+                    </span>
+                    <span  ng-if="routePoints.length==0">
+                        <btn uib-popover="No positions tracked for this vessel."
+                             popover-trigger="mouseenter"
+                             popover-placement="right" type="button" class="btn btn-danger"
+                             ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)" >{{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn>
+                    </span>
+                </div>
+                    <div class="row"><br></div>
+                <div>
+                    <p><span class="glyphicon glyphicon-road" aria-hidden="true"></span> Upload route:</p>
+                    <p>
+                        <button type="button" class="btn btn-success" disabled="disabled">Upload <i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+                    </p>
+                </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3 well ">
+                <h3>Information</h3>
+
+
+                <p ng-if="msg.data.aisVessel.country">
+              <span class="glyphicon glyphicon-home"></span> Country:
+                   <span> {{msg.data.aisVessel.country | isoCountry}} [{{msg.data.aisVessel.country}}]
+                        <flag country="{{msg.data.aisVessel.country}}" size="16"></flag></span>
+
+                </p>
+
+                <p ng-if="msg.data.aisVessel.callsign">
+                    <p scope="row"><span class="glyphicon glyphicon-volume-up"></span> Radio callsign: {{msg.data.aisVessel.callsign}}</p>
+                </p>
+
+                <p ng-if="msg.data.aisVessel.mmsi">
+                    <p scope="row"><i class="glyphicon glyphicon-globe"></i> MMSI: {{msg.data.aisVessel.mmsi}} -
+                        <a target="_blank"
+                           href="http://www.marinetraffic.com/ais/shipdetails.aspx?mmsi={{msg.data.aisVessel.mmsi}}">marinetraffic.com/ais/details/ships/{{msg.data.aisVessel.mmsi}}</a>
+                    </p>
+                </p>
+
+                <p ng-if="msg.data.aisVessel.imoNo">
+                    <p scope="row"><i class="glyphicon glyphicon-globe"></i> IMO number: {{msg.data.aisVessel.imoNo}} <br>
+                        <a target="_blank"
+                           href="http://maritime-connector.com/ship-search/?keyword=&ship=&imo={{msg.data.aisVessel.imoNo}}&type=&limit=25&sort=&sort_type=">maritime-connector.com/ship/{{msg.data.aisVessel.imoNo}}</a>
+                    </p>
+                </p>
+
+                <p ng-if="msg.data.aisVessel.length && msg.data.aisVessel.width">
+                    <p scope="row"><span class="glyphicon glyphicon-move"></span> Length &times; Width: {{msg.data.aisVessel.length}}m &times; {{msg.data.aisVessel.width}}m</p>
+                </p>
+
+                <p ng-if="msg.data.aisVessel.vesselType">
+                    <p><span class="glyphicon glyphicon-tag"></span> Vessel Type: {{msg.data.aisVessel.vesselType}}</p>
+                </p>
+
+                <p ng-if="msg.data.aisVessel.targetType">
+                <p ><span class="glyphicon glyphicon-flag"></span> AIS Transponder Type <a href="http://www.dma.dk/AIS/WORTHKNOWINGABOUTAIS/Sider/AISclassAandB.aspx#" target="_blank"><span class="glyphicon glyphicon-info-sign"></span></a>: {{msg.data.aisVessel.targetType}}
+                </p>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <table class="table table-striped table-hover">
+ <!--       <tr>
+            <th scope="row"><i class="fa fa-history" aria-hidden="true"></i> Historical track</th>
+            <td ng-if="!routePoints">
+                <btn class="btn btn-primary" uib-popover="Download any tracked position points available and show animation on map. The animation can be computationel intensive." ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)"
+                     popover-trigger="mouseenter"
+                     popover-placement="right" type="button" class="btn btn-info">Display historical Track
+                    <i class="fa fa-arrow-down" aria-hidden="true"></i></btn><br>
+            </td>
+            <td  ng-if="routePoints.length>0">
+                <btn uib-popover="Watch all {{routePoints.length}} points as a route animation on the map below. Timestamps, Speed-over-ground and position is displayed in
+                         the bottom left frame and reflects the status at the current position. Jittery movement may be caused by variable GPS-position precision. Precision is not present in data."
+                     popover-trigger="mouseenter"
+                     popover-placement="right" type="button" class="btn btn-info"
+                     ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)" >{{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn>
+            </td>
+            <td  ng-if="routePoints.length==0">
+                <btn uib-popover="No positions tracked for this vessel."
+                     popover-trigger="mouseenter"
+                     popover-placement="right" type="button" class="btn btn-danger"
+                     ng-click="getHistoricalTrack(msg.data.aisVessel.mmsi)" >{{routePoints.length}} tracked positions <i class="fa fa-refresh" aria-hidden="true"></i></btn>
+            </td>
+            <td>
+            </td>
+        </tr>-->
+<!--        <tr ng-if="routeFeatures && routePoints.length > 0">
+            <td colspan="3">
+                <ol-map  class="route-details-map">
+                    <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
+                    <route points="routePoints" feat="routeFeatures" autoplay="true"></route>
+                </ol-map>
+            </td>
+        </tr>
+
+        <tr ng-if="historicalTrackOutput.length > 1">
+            <th scope="row"><i class="fa fa-tachometer" aria-hidden="true"></i> <b>SOG</b> <br><small> Speed Over the Ground <br>is the speed of the vessel <br>relative to the surface of the earth. Values are in knots.</small></th>
+            <td>
+                <canvas id="line" class="chart chart-line" chart-data="sogChartdata"
+                        chart-labels="sogChartlabels" chart-series="sogChartseries" chart-options="sogChartoptions"
+                        chart-dataset-override="sogChartdatasetOverride" chart-click="onClick">
+                </canvas>
+            </td>
+        </tr>-->
+
+        <tr ng-if="historicalTrackOutput.length > 1">
+
+            <th scope="row"><i class="fa fa-history" aria-hidden="true"></i> Table of tracked <br>
+                positions<br>
+                <i class="fa fa-table fa-2x" aria-hidden="true"></i>
+            </th>
+            <td>
+                <uib-accordion close-others="oneAtATime">
+                    <uib-accordion-group heading="Expand table of tracked positions" is-open="false" is-disabled="false">
+                        <table class="table table-striped table-hover table-bordered table-condensed">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Time</th>
+                                <th>Timestamp</th>
+                                <th>Position</th>
+                                <th>Course-over-Ground</th>
+                                <th>Speed-over-Ground</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="object in historicalTrackOutput | orderBy : 'ts' : true | limitTo: 100">
+                                <td>{{$index+1}}</td>
+                                <td>{{object.ts | timeAgo}}</td>
+                                <td>{{object.ts | date:'yyyy-MM-dd HH:mm:ss' : 'UTC'}} UTC</td>
+                                <td>{{ toLonLat(object.lon, object.lat) | lonlat:{ decimals : 3, pp: true} }}</td>
+                                <td>{{object.cog}}</td>
+                                <td>{{object.sog}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </uib-accordion-group>
+                </uib-accordion>
+            </td>
+            <td></td>
+
+
+        </tr>
+
+
+
+    </table>
+</div>
