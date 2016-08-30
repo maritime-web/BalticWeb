@@ -14,6 +14,7 @@ angular.module('maritimeweb').config(['$locationProvider', '$routeProvider',
             templateUrl: 'vessel/vessel-details.html'
         }).
         otherwise({
+            //controller: 'AppController',
             templateUrl: 'partials/map.html'
         });
     }
