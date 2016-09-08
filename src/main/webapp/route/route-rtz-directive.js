@@ -12,11 +12,11 @@ angular.module('maritimeweb.route')
                 restrict: 'E',
                 require: '^olMap',
                 template:
-                '<div id="route-info" class="ng-cloak"></div>' +
-                    '<div id="popup" class="ol-popup">' +
-                    '<a href="#" id="popup-closer" class="ol-popup-closer"></a>' +
+                '<div id="waypoint-route-info" class="ng-cloak"></div>' +
+                    '<div id="waypoint-popup" class="ol-popup">' +
+                    '<a href="#" id="waypoint-popup-closer" class="ol-popup-closer"></a>' +
                     '<h3 class="popover-title">{{waypoint.name}}</h3>' +
-                    '<div class="popover-content">' +
+                    '<div id="waypoint-popover-content" class="popover-content">' +
                         '<p>Speed: {{waypoint.speed}}</p>' +
                         '<p>Eta: {{waypoint.eta}}</p>' +
                         '<p>Radius: {{waypoint.radius}}</p>' +
@@ -40,8 +40,7 @@ angular.module('maritimeweb.route')
 
                     console.log("route RTZ got route points=" +  scope.points.length +
                         " feat=" + scope.features.length +
-                        "autoplay=" + scope.autoplay //+
-                         //   " scope.points=" + JSON.stringify(scope.points)
+                        "autoplay=" + scope.autoplay
                     );
                     var olScope = ctrl.getOpenlayersScope();
                     var routeLayers;
@@ -59,7 +58,6 @@ angular.module('maritimeweb.route')
                                 color: [255, 0, 0, 0.8]
                             })
                         })
-
                     });
 
                     var vectorSource = new ol.source.Vector({
@@ -78,8 +76,6 @@ angular.module('maritimeweb.route')
                         layers: [animationLayer, routeFeatureLayer],
                         visible: true
                     });
-
-
 
 
                     olScope.getMap().then(function (map) {
@@ -133,7 +129,6 @@ angular.module('maritimeweb.route')
                             if (scope.animating) {
                                 scope.stopAnimation(false);
                             } else {
-
                                 scope.animating = true;
                                 now = new Date().getTime();
                                 speed = speedInput.value;
@@ -149,13 +144,11 @@ angular.module('maritimeweb.route')
                             scope.animating = false;
                         };
 
-
-
                         /**
                          * Clickable waypoints pop-up content
                          */
 
-                        var elm = document.getElementById('vessel-info');
+                        var elm = document.getElementById('waypoint-route-info');
 
                         var popup = new ol.Overlay({
                             element: elm,
@@ -167,9 +160,9 @@ angular.module('maritimeweb.route')
                         /**
                          * Elements that make up the popup.
                          */
-                        var container = document.getElementById('popup');
-                        var content = document.getElementById('popup-content');
-                        var closer = document.getElementById('popup-closer');
+                        var container = document.getElementById('waypoint-popup');
+                        var content = document.getElementById('waypoint-popup-content');
+                        var closer = document.getElementById('waypoint-popup-closer');
 
                         /**
                          * Create an overlay to anchor the popup to the map.
@@ -249,10 +242,7 @@ angular.module('maritimeweb.route')
 
                                 var extent = routeFeatureLayer.getSource().getExtent();
                                 map.getView().fit(extent, map.getSize());  // automatically zoom and pan the map to fit my features
-
                             });
-
-
                     }, true);
                 }
             }
