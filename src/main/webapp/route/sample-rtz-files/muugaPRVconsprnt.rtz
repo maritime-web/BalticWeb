@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+  <routeInfo routeName=" 14021A"/>
+  <waypoints>
+    <waypoint id="1" name="Harbour">
+      <position lat="59.49783333333333" lon="24.9485"/>
+    </waypoint>
+    <waypoint id="2" name="Breakwtr" radius="0.3">
+      <position lat="59.49966666666667" lon="24.954666666666668"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.05" speedMax="13.67" speedMin="13.67" starboardXTD="0.05"/>
+    </waypoint>
+    <waypoint id="3" name="HarbLimi" radius="1.0">
+      <position lat="59.51416666666667" lon="24.975"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.11" speedMax="13.67" speedMin="13.67" starboardXTD="0.11"/>
+    </waypoint>
+    <waypoint id="4" name="MuugaPILOT" radius="2.0">
+      <position lat="59.60016666666667" lon="24.866666666666667"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.33" speedMax="13.67" speedMin="13.67" starboardXTD="0.33"/>
+    </waypoint>
+    <waypoint id="5" name="Kuradimuna" radius="2.0">
+      <position lat="59.709833333333336" lon="24.826833333333333"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.54" speedMax="13.67" speedMin="13.67" starboardXTD="0.54"/>
+    </waypoint>
+    <waypoint id="6" name="Keri" radius="2.0">
+      <position lat="59.82083333333333" lon="25.207"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.54" speedMax="13.67" speedMin="13.67" starboardXTD="0.54"/>
+    </waypoint>
+    <waypoint id="7" name="Kalbada" radius="2.0">
+      <position lat="59.992666666666665" lon="25.539666666666665"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.27" speedMax="13.67" speedMin="13.67" starboardXTD="0.27"/>
+    </waypoint>
+    <waypoint id="8" name="PorvooLh" radius="1.0">
+      <position lat="60.05833333333333" lon="25.5775"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.16" speedMax="13.67" speedMin="13.67" starboardXTD="0.16"/>
+    </waypoint>
+    <waypoint id="9" name="Kalkskar" radius="1.0">
+      <position lat="60.12833333333333" lon="25.5775"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.08" speedMax="13.67" speedMin="13.67" starboardXTD="0.08"/>
+    </waypoint>
+    <waypoint id="10" name="Varlaxud" radius="0.5">
+      <position lat="60.20366666666666" lon="25.609833333333334"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.08" speedMax="13.67" speedMin="13.67" starboardXTD="0.08"/>
+    </waypoint>
+    <waypoint id="11" name="Estamsud" radius="1.0">
+      <position lat="60.22" lon="25.5925"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.04" speedMax="13.67" speedMin="13.67" starboardXTD="0.04"/>
+    </waypoint>
+    <waypoint id="12" name="Svartbac" radius="1.0">
+      <position lat="60.278333333333336" lon="25.548333333333332"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.05" speedMax="13.67" speedMin="13.67" starboardXTD="0.05"/>
+    </waypoint>
+    <waypoint id="13" name="Porvoo" radius="0.3">
+      <position lat="60.31" lon="25.563333333333333"/>
+    </waypoint>
+  </waypoints>
+  <schedules>
+    <schedule id="1">
+      <calculated>
+        <sheduleElement eta="2016-04-15T12:00:01.000Z" waypointId="1"/>
+        <sheduleElement eta="2016-04-15T12:00:58.000Z" speed="13.67" waypointId="2"/>
+        <sheduleElement eta="2016-04-15T12:05:39.000Z" speed="13.67" waypointId="3"/>
+        <sheduleElement eta="2016-04-15T12:32:32.000Z" speed="13.67" waypointId="4"/>
+        <sheduleElement eta="2016-04-15T13:01:54.000Z" speed="13.67" waypointId="5"/>
+        <sheduleElement eta="2016-04-15T14:00:12.000Z" speed="13.67" waypointId="6"/>
+        <sheduleElement eta="2016-04-15T15:03:18.000Z" speed="13.67" waypointId="7"/>
+        <sheduleElement eta="2016-04-15T15:21:18.000Z" speed="13.67" waypointId="8"/>
+        <sheduleElement eta="2016-04-15T15:39:44.000Z" speed="13.67" waypointId="9"/>
+        <sheduleElement eta="2016-04-15T16:00:01.000Z" speed="13.67" waypointId="10"/>
+        <sheduleElement eta="2016-04-15T16:04:52.000Z" speed="13.67" waypointId="11"/>
+        <sheduleElement eta="2016-04-15T16:21:17.000Z" speed="13.67" waypointId="12"/>
+        <sheduleElement eta="2016-04-15T16:29:51.000Z" speed="13.67" waypointId="13"/>
+      </calculated>
+    </schedule>
+  </schedules>
+</route>

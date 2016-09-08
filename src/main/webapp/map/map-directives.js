@@ -53,7 +53,9 @@ angular.module('maritimeweb.map')
             template: '<div class="map {{class}}" ng-cloak ng-transclude></div>',
             scope: {
                 mapState: '=',
-                readonly: '='
+                readonly: '=',
+                minzoom: '=',
+                extent: '='
             },
 
             controller: function($scope) {
@@ -112,7 +114,7 @@ angular.module('maritimeweb.map')
                 var layers = [];
                 var view = new ol.View({
                     zoom: 7,
-                    minZoom: 6,
+                    minZoom: scope.minzoom,
                     extent: balticExtent
                 });
                 var map = new ol.Map({

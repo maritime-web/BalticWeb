@@ -39,6 +39,8 @@
     "chart.js": "^2.2.1",
     "iso-3166-country-codes-angular": "^1.2.1",
     "moment": "^2.14.1",
-    "numeral": "^1.5.3"
+    "ng-file-upload": "^12.2.5",
+    "numeral": "^1.5.3",
+    "xml2json": "^0.10.0"
   }
 }

@@ -1,0 +1,110 @@
+<div ng-controller="RouteLoadCtrl">
+
+    <div class="container">
+
+
+        <div>
+
+            <h3>{{rtzName}}</h3>
+
+            <div ng-if="oLfeatures.length > 0">
+                <div class="well">
+
+                    <ol-map class="route-details-map" minzoom="1">
+                        <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
+                        <routertz points="oLpoints" features="oLfeatures" autoplay="false"></routertz>
+                        <map-scale-line units="nautical"></map-scale-line>
+                        <map-mouse-position></map-mouse-position>
+                        <!--<map-layer-switcher></map-layer-switcher>-->
+                        <map-overview collapsed="false"></map-overview>
+                    </ol-map>
+
+                    <h4>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span></h4>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-8">
+            <div class="well">
+                <h3>
+                    Load RTZ Route
+                </h3>
+                <p>
+                <form>
+                    <!--<input type="file" ng-file-select="onFileSelect($files)" >-->
+                    <!--  <input type="file" ng-file-select="onFileSelect($files)" multiple> -->
+
+                    <label class="btn btn-success btn-file">
+                        <span class="glyphicon glyphicon-file"></span>
+                        <span class="glyphicon glyphicon-upload"></span>
+                        Browse file system <input type="file" ng-file-select="onFileSelect($files)" style="display: none;">
+                    </label>
+
+                </form>
+                </p>
+                <p>
+                    <b>Progress:</b>
+                    <progress value="{{progress}}"></progress>
+                </p>
+            </div>
+            <div class="col-5">
+                <div class="alert alert-warning alert-dismissible " role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Demo page!</strong> Please note that this is not an operational page. Here you can load an RTZ route file. Nothing more. The route is not stored or exchanged.
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="well">
+                <h2>Debug</h2>
+
+                <div>OpenLayers features JSON:<br>
+                    <button type="button" class="btn btn-default" ng-click="jsonFeatCollapsed = !jsonFeatCollapsed">Show
+                        JSON
+                        features
+                    </button>
+                    <hr>
+                    <div uib-collapse="jsonFeatCollapsed">
+                        <div class="well well-lg">
+                            <div>
+                                <json-formatter class="json-formatter-dark" open="1" json="oLfeatures"></json-formatter>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div>JSON (from XML):<br>
+                    <button type="button" class="btn btn-default" ng-click="jsonCollapsed = !jsonCollapsed">Show JSON
+                        input
+                    </button>
+                    <hr>
+                    <div uib-collapse="jsonCollapsed">
+                        <div class="well well-lg">
+                            <div>
+                                <json-formatter class="json-formatter-dark" open="1" json="rtzJSON"></json-formatter>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="button" class="btn btn-default" ng-click="xmlCollapsed = !xmlCollapsed">Show XML input
+                    </button>
+                    <hr>
+                    <div uib-collapse="xmlCollapsed">
+                        <div class="well well-lg">
+                            <div>XML:
+                                <pre class="xml-formatter-dark">{{rtzXML}}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

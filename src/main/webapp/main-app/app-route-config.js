@@ -13,6 +13,12 @@ angular.module('maritimeweb').config(['$locationProvider', '$routeProvider',
             controller: 'VesselDetailsCtrl',
             templateUrl: 'vessel/vessel-details.html'
         }).
+        when('/vessel/:mmsi/route', {
+            templateUrl: 'route/route-load.html'
+        }).
+        when('/route-demo', {
+            templateUrl: 'route/route-load.html'
+        }).
         otherwise({
             //controller: 'AppController',
             templateUrl: 'partials/map.html'

@@ -6,7 +6,7 @@ angular.module('maritimeweb.route')
 
 /** Service for displaying a route on a map **/
 
-    .directive('route', ['$rootScope', '$timeout', 'MapService', 'VesselService', 'growl',
+    .directive('routeanimate', ['$rootScope', '$timeout', 'MapService', 'VesselService', 'growl',
         function ($rootScope, $timeout, MapService, VesselService, growl) {
             return {
                 restrict: 'E',
@@ -33,6 +33,7 @@ angular.module('maritimeweb.route')
                     console.log("got route" + scope.points.length +
                         " feat=" + scope.feat.length +
                         "autoplay=" + scope.autoplay
+                     //   " scope.points=" + JSON.stringify(scope.points)
                     );
                     var olScope = ctrl.getOpenlayersScope();
                     var routeLayers;
@@ -61,14 +62,13 @@ angular.module('maritimeweb.route')
                                 map.removeLayer(routeLayers);
                             }
                         });
-
                         var lineRoute = new ol.geom.LineString(scope.points);
-
                         var routeCoords = lineRoute.getCoordinates();
                         var routeLength = routeCoords.length;
+                        //console.log("lineRoute: " + lineRoute + " routeCoords: " + routeCoords + " length: " + routeLength);
 
                         var routeFeature = new ol.Feature({
-                            type: 'route',
+                            type: 'dashed-route',
                             geometry: lineRoute
                         });
 
@@ -76,6 +76,15 @@ angular.module('maritimeweb.route')
                         var endMarker = scope.feat[scope.feat.length - 1];
 
                         var styles = {
+                            'dashed-route': new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                    //lineDash: [10, 20, 0, 20],
+                                    lineDash: [5, 10, 0, 10],
+                                    lineJoin: 'miter',
+                                    width: 4,
+                                    color: [255, 0, 0, 0.8]
+                                })
+                            }),
                             'route': new ol.style.Style({
                                 stroke: new ol.style.Stroke({
                                     width: 6, color: [237, 212, 0, 0.8]

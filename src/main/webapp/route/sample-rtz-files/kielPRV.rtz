@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+  <routeInfo routeName="Route_1464598347287"/>
+  <waypoints>
+    <waypoint id="1" name="WP_001">
+      <position lat="60.0425" lon="25.568333333333335"/>
+    </waypoint>
+    <waypoint id="2" name="WP_002" radius="0.29">
+      <position lat="60.0" lon="25.544166666666666"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.3" speedMax="12.0" speedMin="12.0" starboardXTD="0.3"/>
+    </waypoint>
+    <waypoint id="3" name="WP_003" radius="0.29">
+      <position lat="59.875" lon="25.166666666666668"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.3" speedMax="12.0" speedMin="12.0" starboardXTD="0.3"/>
+    </waypoint>
+    <waypoint id="4" name="WP_004" radius="0.29">
+      <position lat="59.8" lon="24.5"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+    </waypoint>
+    <waypoint id="5" name="WP_005" radius="0.29">
+      <position lat="59.5" lon="22.533333333333335"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+    </waypoint>
+    <waypoint id="6" name="WP_006" radius="0.29">
+      <position lat="59.15" lon="21.65"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+    </waypoint>
+    <waypoint id="7" name="WP_007" radius="0.29">
+      <position lat="56.84166666666667" lon="18.433333333333334"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+    </waypoint>
+    <waypoint id="8" name="WP_008" radius="0.29">
+      <position lat="56.1" lon="16.65"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+    </waypoint>
+    <waypoint id="9" name="WP_009" radius="0.29">
+      <position lat="55.44166666666667" lon="14.583333333333334"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+    </waypoint>
+    <waypoint id="10" name="WP_010" radius="0.29">
+      <position lat="55.06666666666667" lon="14.066666666666666"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+    </waypoint>
+    <waypoint id="11" name="WP_011" radius="0.29">
+      <position lat="54.78443333333333" lon="12.706766666666667"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.3" speedMax="12.0" speedMin="12.0" starboardXTD="0.3"/>
+    </waypoint>
+    <waypoint id="12" name="WP_012" radius="0.29">
+      <position lat="54.5956" lon="12.255983333333333"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.3" speedMax="12.0" speedMin="12.0" starboardXTD="0.3"/>
+    </waypoint>
+    <waypoint id="13" name="WP_013" radius="0.29">
+      <position lat="54.52166666666667" lon="12.225"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.3" speedMax="12.0" speedMin="12.0" starboardXTD="0.3"/>
+    </waypoint>
+    <waypoint id="14" name="WP_014" radius="0.29">
+      <position lat="54.46" lon="12.195"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.3" speedMax="12.0" speedMin="12.0" starboardXTD="0.3"/>
+    </waypoint>
+    <waypoint id="15" name="WP_015" radius="0.29">
+      <position lat="54.44" lon="12.166666666666666"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.3" speedMax="12.0" speedMin="12.0" starboardXTD="0.3"/>
+    </waypoint>
+    <waypoint id="16" name="WP_016" radius="0.29">
+      <position lat="54.44" lon="11.783333333333333"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+    </waypoint>
+    <waypoint id="17" name="WP_017" radius="0.29">
+      <position lat="54.60333333333333" lon="11.15"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+    </waypoint>
+    <waypoint id="18" name="WP_018" radius="0.29">
+      <position lat="54.57333333333333" lon="10.596666666666666"/>
+      <leg geometryType="Loxodrome" portsideXTD="0.3" speedMax="12.0" speedMin="12.0" starboardXTD="0.3"/>
+    </waypoint>
+    <waypoint id="19" name="WP_019" radius="0.29">
+      <position lat="54.495916666666666" lon="10.27915"/>
+    </waypoint>
+  </waypoints>
+  <schedules>
+    <schedule id="1">
+      <calculated>
+        <sheduleElement eta="2016-05-30T12:00:00.000Z" waypointId="1"/>
+        <sheduleElement eta="2016-05-30T12:13:15.000Z" speed="12.0" waypointId="2"/>
+        <sheduleElement eta="2016-05-30T13:21:18.000Z" speed="12.0" waypointId="3"/>
+        <sheduleElement eta="2016-05-30T15:04:20.000Z" speed="12.0" waypointId="4"/>
+        <sheduleElement eta="2016-05-30T20:15:56.000Z" speed="12.0" waypointId="5"/>
+        <sheduleElement eta="2016-05-30T23:07:13.000Z" speed="12.0" waypointId="6"/>
+        <sheduleElement eta="2016-05-31T13:28:33.000Z" speed="12.0" waypointId="7"/>
+        <sheduleElement eta="2016-05-31T19:38:42.000Z" speed="12.0" waypointId="8"/>
+        <sheduleElement eta="2016-06-01T02:19:45.000Z" speed="12.0" waypointId="9"/>
+        <sheduleElement eta="2016-06-01T04:42:53.000Z" speed="12.0" waypointId="10"/>
+        <sheduleElement eta="2016-06-01T08:52:18.000Z" speed="12.0" waypointId="11"/>
+        <sheduleElement eta="2016-06-01T10:28:54.000Z" speed="12.0" waypointId="12"/>
+        <sheduleElement eta="2016-06-01T10:51:44.000Z" speed="12.0" waypointId="13"/>
+        <sheduleElement eta="2016-06-01T11:10:58.000Z" speed="12.0" waypointId="14"/>
+        <sheduleElement eta="2016-06-01T11:18:44.000Z" speed="12.0" waypointId="15"/>
+        <sheduleElement eta="2016-06-01T12:25:39.000Z" speed="12.0" waypointId="16"/>
+        <sheduleElement eta="2016-06-01T14:26:24.000Z" speed="12.0" waypointId="17"/>
+        <sheduleElement eta="2016-06-01T16:03:04.000Z" speed="12.0" waypointId="18"/>
+        <sheduleElement eta="2016-06-01T17:03:03.000Z" speed="12.0" waypointId="19"/>
+      </calculated>
+    </schedule>
+  </schedules>
+</route>

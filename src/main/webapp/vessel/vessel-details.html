@@ -1,6 +1,4 @@
 <div class="ng-cloak">
-    <div ng-include="vessel-details-dialog.html"></div>
-
 
     <div class="container-fluid">
         <h3>
@@ -13,7 +11,7 @@
 
                     <ol-map class="route-details-map">
                         <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
-                        <route points="routePoints" feat="routeFeatures" autoplay="true"></route>
+                        <routeanimate points="routePoints" feat="routeFeatures" autoplay="true"></routeanimate>
                     </ol-map>
                 </div>
             </div>
@@ -80,8 +78,7 @@
                     <p ng-if="msg.data.aisVessel.rot">
                     <p scope="row"><i class="fa fa-compass" aria-hidden="true"
                                       tootltip="the speed at which a ship, vessel, or unit is turning at, or is capable of turning at."></i>
-                        ROT:
-                        {{msg.data.aisVessel.rot}}
+                        ROT: {{msg.data.aisVessel.rot}}
                     </p>
 
                     <div ng-if="msg.data.aisVessel.cog">
@@ -151,8 +148,10 @@
                     <div>
                         <p><span class="glyphicon glyphicon-road" aria-hidden="true"></span> Upload planned route:</p>
                         <p>
-                            <button type="button" class="btn btn-success" disabled="disabled">Upload <i
-                                    class="fa fa-arrow-up" aria-hidden="true"></i></button>
+                            <a href="/#/vessel/{{mmsi}}/route/" class="btn btn-success" role="button">Upload <i
+                                    class="fa fa-arrow-up" aria-hidden="true"></i></a>
+                            <!--button type="button" class="btn btn-success" disabled="disabled">Upload <i
+                                    class="fa fa-arrow-up" aria-hidden="true"></i></button-->
                         </p>
                     </div>
 
