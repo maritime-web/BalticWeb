@@ -1,0 +1,104 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "ng-file-upload",
+        "scope": null,
+        "escapedName": "ng-file-upload",
+        "name": "ng-file-upload",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/home/andreas/Code/dma/BalticWeb"
+    ]
+  ],
+  "_from": "ng-file-upload@latest",
+  "_id": "ng-file-upload@12.2.5",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/ng-file-upload",
+  "_nodeVersion": "0.12.0",
+  "_npmOperationalInternal": {
+    "host": "packages-16-east.internal.npmjs.com",
+    "tmp": "tmp/ng-file-upload-12.2.5.tgz_1472248903699_0.9280648743733764"
+  },
+  "_npmUser": {
+    "name": "danial.farid",
+    "email": "danial.farid@gmail.com"
+  },
+  "_npmVersion": "2.12.1",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "ng-file-upload",
+    "scope": null,
+    "escapedName": "ng-file-upload",
+    "name": "ng-file-upload",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ng-file-upload/-/ng-file-upload-12.2.5.tgz",
+  "_shasum": "49a449ff5c53cd81a2253aeee49ed7f458fd32ca",
+  "_shrinkwrap": null,
+  "_spec": "ng-file-upload",
+  "_where": "/home/andreas/Code/dma/BalticWeb",
+  "author": {
+    "name": "danial.farid@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/danialfarid/ng-file-upload/issues"
+  },
+  "dependencies": {},
+  "description": "An AngularJS directive for file upload using HTML5 with FileAPI polyfill for unsupported browsers",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-jshint": "^0.11.0",
+    "grunt-contrib-uglify": "^0.8.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-git": "~0.2.14",
+    "grunt-serve": "^0.1.6",
+    "grunt-text-replace": "~0.3.12",
+    "jshint-stylish": "^1.0.0",
+    "load-grunt-tasks": "^3.1.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "49a449ff5c53cd81a2253aeee49ed7f458fd32ca",
+    "tarball": "https://registry.npmjs.org/ng-file-upload/-/ng-file-upload-12.2.5.tgz"
+  },
+  "gitHead": "93ce694cd8badb5774aa5787146bdf7d9556edee",
+  "homepage": "https://github.com/danialfarid/ng-file-upload",
+  "keywords": [
+    "angularjs",
+    "ng-file-upload",
+    "file-upload",
+    "javascript"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "danial.farid",
+      "email": "danial.farid@gmail.com"
+    }
+  ],
+  "name": "ng-file-upload",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danialfarid/ng-file-upload.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "12.2.5"
+}
