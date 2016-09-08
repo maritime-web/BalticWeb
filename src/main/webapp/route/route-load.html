@@ -25,38 +25,57 @@
 
         </div>
 
-        <div class="col-8">
-            <div class="well">
-                <h3>
-                    Load RTZ Route
-                </h3>
-                <p>
-                <form>
-                    <!--<input type="file" ng-file-select="onFileSelect($files)" >-->
-                    <!--  <input type="file" ng-file-select="onFileSelect($files)" multiple> -->
+        <div class="col-lg-12">
+            <div class="col-lg-6">
+                <div class="well">
+                    <h3>Load RTZ Route</h3>
+                    <h3><small>upload your own Route plan exchange format file</small></h3>
+                    <p>
+                    <form>
+                        <!--<input type="file" ng-file-select="onFileSelect($files)" >-->
+                        <!--  <input type="file" ng-file-select="onFileSelect($files)" multiple> -->
 
-                    <label class="btn btn-success btn-file">
-                        <span class="glyphicon glyphicon-file"></span>
-                        <span class="glyphicon glyphicon-upload"></span>
-                        Browse file system <input type="file" ng-file-select="onFileSelect($files)" style="display: none;">
-                    </label>
+                        <label class="btn btn-success btn-lg btn-file">
+                            <span class="glyphicon glyphicon-file"></span>
+                            <span class="glyphicon glyphicon-upload"></span>
+                            Browse file system <input type="file" ng-file-select="onFileSelect($files)" style="display: none;">
+                        </label>
 
-                </form>
-                </p>
-                <p>
-                    <b>Progress:</b>
-                    <progress value="{{progress}}"></progress>
-                </p>
-            </div>
-            <div class="col-5">
-                <div class="alert alert-warning alert-dismissible " role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong>Demo page!</strong> Please note that this is not an operational page. Here you can load an RTZ route file. Nothing more. The route is not stored or exchanged.
+
+
+                    </form>
+                    </p>
+
+                    <p>
+                        <b>Progress:</b>
+                        <progress value="{{progress}}"></progress>
+                    </p>
                 </div>
             </div>
-        </div>
+            <div class="col-lg-4 col-lg-offset-2">
+                <div class="well">
+                <h3>
+                    Sample RTZ Routes
+                    <small>load RTZ files</small>
+                </h3>
+                <form name="myForm">
+                    <label for="repeatSelect"> Route: </label>
+                    <select class="form-control" name="repeatSelect" id="repeatSelect" ng-model="sampleFile">
+                        <option ng-repeat="option in sampleRTZdata" value="{{option.id}}">{{option.name}}</option>
+                    </select>
+                </form>
+                </div>
+            </div>
 
-        <div class="col-12">
+        </div>
+        <div class="col-lg-6 col-lg-offset-3">
+            <div class="alert alert-warning alert-dismissible " role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Demo page!</strong> Please note that this is not an operational page. Here you can load an RTZ route file. Nothing more. The route is not stored or exchanged.
+            </div>
+        </div>
+        <hr>
+        <div class="col-lg-12">
             <div class="well">
                 <h2>Debug</h2>
 

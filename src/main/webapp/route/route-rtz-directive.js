@@ -38,7 +38,7 @@ angular.module('maritimeweb.route')
                 },
                 link: function (scope, element, attrs, ctrl) {
 
-                    console.log("route RTZ got route points=" +  scope.points.length +
+                    $log.log("route RTZ got route points=" +  scope.points.length +
                         " feat=" + scope.features.length +
                         "autoplay=" + scope.autoplay
                     );
@@ -54,7 +54,7 @@ angular.module('maritimeweb.route')
                                 //lineDash: [10, 20, 0, 20],
                                 lineDash: [5, 10, 0, 10],
                                 lineJoin: 'miter',
-                                width: 4,
+                                width: 2,
                                 color: [255, 0, 0, 0.8]
                             })
                         })
@@ -238,7 +238,7 @@ angular.module('maritimeweb.route')
                                 animationLayer.getSource().addFeature(routeFeature);
                                 routeFeatureLayer.getSource().addFeatures(scope.features);
 
-                                $log.debug("retrieved the map animationLayer=" + animationLayer.getSource().getFeatures().length + " routeFeatureLayer=" + routeFeatureLayer.getSource().getFeatures().length);
+                                //$log.debug("retrieved the map animationLayer=" + animationLayer.getSource().getFeatures().length + " routeFeatureLayer=" + routeFeatureLayer.getSource().getFeatures().length);
 
                                 var extent = routeFeatureLayer.getSource().getExtent();
                                 map.getView().fit(extent, map.getSize());  // automatically zoom and pan the map to fit my features

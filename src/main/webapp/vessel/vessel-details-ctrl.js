@@ -3,8 +3,8 @@ angular.module('maritimeweb.vessel')
  * Controller that handles displaying vessel details in a dialog
  *  Its
  *******************************************************************/
-    .controller('VesselDetailsCtrl', ['$scope', '$routeParams', '$window', 'VesselService', 'growl', 'timeAgo', '$filter',
-        function ($scope, $routeParams, $window, VesselService, growl, timeAgo, $filter) {
+    .controller('VesselDetailsCtrl', ['$scope', '$routeParams', '$window', 'VesselService', 'growl', 'timeAgo', '$filter', '$location',
+        function ($scope, $routeParams, $window, VesselService, growl, timeAgo, $filter, $location) {
             'use strict';
 
             console.log("VesselDetailsCtrl routeParams.mmsi=" + $routeParams.mmsi) ;
@@ -18,8 +18,6 @@ angular.module('maritimeweb.vessel')
             }, function(reason) {
                 console.log('Failed: ' + reason);
             });
-            console.log("$scope.msg=" + $scope.msg);
-
 
             $scope.getHistoricalTrack = function (mmsi, type) {
                 VesselService.historicalTrack(mmsi).then(function successCallback(response) {

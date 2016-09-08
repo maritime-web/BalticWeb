@@ -8,8 +8,8 @@ angular.module('maritimeweb.vessel')
      * It will automatically load the vessels for the current map bounding box,
      * but only if the user is logged in.
      */
-    .directive('mapVesselLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'VesselService', 'growl',
-        function ($rootScope, $timeout, Auth, MapService, VesselService, growl) {
+    .directive('mapVesselLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'VesselService', 'growl', '$log',
+        function ($rootScope, $timeout, Auth, MapService, VesselService, growl, $log) {
             return {
                 restrict: 'E',
                 replace: false,
@@ -244,7 +244,7 @@ angular.module('maritimeweb.vessel')
                                 })
                                 .error(function (reason) {
                                     $rootScope.loadingData = false; // stop spinner
-                                    console.log(reason);
+                                    $log.error(reason);
                                     growl.error("Connection problems " + reason);
                                 });
 
@@ -389,4 +389,4 @@ angular.module('maritimeweb.vessel')
                     });
                 }
             };
-        }])
+        }]);

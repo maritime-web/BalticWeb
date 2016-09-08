@@ -13,6 +13,14 @@ angular.module('maritimeweb.route')
             $scope.jsonCollapsed = true;
             $scope.jsonFeatCollapsed = true;
 
+
+            $scope.sampleRTZdata = [
+                {id: 'ExamplefileworkswithENSI.rtz', name: 'Talin - Helsinki'},
+              /*  {id: 'muugaPRVconsprnt.rtz', name: 'Talin - Helsinki'},*/
+                {id: 'hesastofuru.rtz', name: 'Helsinki - Stockholm'},
+                {id: 'kielPRV.rtz', name: 'Helsinki - Kiel'}
+            ];
+            $scope.sampleFile = $scope.sampleRTZdata[0].id;
             /**
              * Generate a openlayers features array and ol points array from the transformed RTZ JSON.
              * @param json_result transformed RTZ JSON from an RTZ xml
@@ -52,7 +60,7 @@ angular.module('maritimeweb.route')
              * convience method for loading a sample rtz route
              */
             $scope.autoPreloadRTZfile = function(){
-                $http.get('/route/sample-rtz-files/ExamplefileworkswithENSI.rtz', {
+                $http.get('/route/sample-rtz-files/' + $scope.sampleFile, {
                     transformResponse: function (data, headers) {
                         $scope.rtzXML = data;
                         $scope.rtzJSON = fileReader.transformRtzXMLtoJSON(data);
@@ -81,13 +89,13 @@ angular.module('maritimeweb.route')
             $scope.createWaypointFeature = function (waypoint) {
                 var markerStyle = new ol.style.Style({
                     image: new ol.style.Circle({
-                        radius: 4,
+                        radius: 3,
                         stroke: new ol.style.Stroke({
                             color: 'red',
                             width: 2
                         }),
                        fill: new ol.style.Fill({
-                            color: 'white' // attribute colour
+                            color: [255, 0, 0, 0.5]
                         })
                     })
                 });
@@ -102,6 +110,7 @@ angular.module('maritimeweb.route')
                     radius: waypoint.radius,
                     eta: waypoint.eta,
                     speed: waypoint.speed,
+                    leg: waypoint.leg,
                     //ts: $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC',
                     //tsTimeAgo: $filter('timeAgo')(value.ts),
                     position: $scope.toLonLat(waypoint.position._lon, waypoint.position._lat)
@@ -110,6 +119,15 @@ angular.module('maritimeweb.route')
                 return markWaypoint;
             };
 
+            // while watch if a new RTZ route has been uploaded
+            $scope.$watch("sampleFile", function(newValue, oldValue) {
+                if (newValue){
+                    $log.log("sample file uploaded" + $scope.sampleFile)
+                    $scope.autoPreloadRTZfile(); // TODO: disable the auto load later on
+                }
+
+
+            }, true);
             $scope.autoPreloadRTZfile(); // TODO: disable the auto load later on
         }]);
 
