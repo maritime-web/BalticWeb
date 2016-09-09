@@ -1,14 +1,10 @@
 <div ng-controller="RouteLoadCtrl">
-
     <div class="container">
-
-
         <div>
-
             <h3>{{rtzName}}</h3>
 
             <div ng-if="oLfeatures.length > 0">
-                <div class="well">
+                <div id="rtz-map" class="well">
 
                     <ol-map class="route-details-map" minzoom="1">
                         <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
@@ -19,11 +15,26 @@
                         <map-overview collapsed="false"></map-overview>
                     </ol-map>
 
-                    <h4>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span></h4>
+                    <h4>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span>  Active Waypoint: <span class="badge badge-info">#{{$root.activeWayPoint}}</span></h4>
                 </div>
             </div>
 
+            <div class="row ">
+                <div class="col-md-12">
+                    <div class="well">
+                        <div><i class="fa fa-tachometer" aria-hidden="true"></i> <b>SOG</b>
+                            <small>Speed</small>
+                        </div>
+                        <canvas id="line" class="chart chart-line" chart-data="sogChartdata"
+                                chart-labels="sogChartlabels" chart-series="sogChartseries" chart-options="sogChartoptions"
+                                chart-dataset-override="sogChartdatasetOverride" chart-click="onClick">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
 
         <div class="col-lg-12">
             <div class="col-lg-6">
@@ -55,8 +66,8 @@
             <div class="col-lg-4 col-lg-offset-2">
                 <div class="well">
                 <h3>
-                    Sample RTZ Routes
-                    <small>load RTZ files</small>
+                    Sample RTZ Routes<br>
+                    <small>try out these example routes</small>
                 </h3>
                 <form name="myForm">
                     <label for="repeatSelect"> Route: </label>
@@ -124,6 +135,5 @@
             </div>
         </div>
     </div>
-
 
 </div>

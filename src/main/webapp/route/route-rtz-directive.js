@@ -201,6 +201,9 @@ angular.module('maritimeweb.route')
                                 if (feature) {
                                     var geometry = feature.getGeometry();
                                     var coordinate = evt.coordinate;
+                                    $rootScope.activeWayPoint = feature.get('id');
+                                    $rootScope.$apply();
+                                    $log.info("#" + $rootScope.activeWayPoint);
                                     scope.waypoint = {};
                                     scope.waypoint.id = feature.get('id');
                                     scope.waypoint.name = feature.get('wayname');
@@ -219,6 +222,7 @@ angular.module('maritimeweb.route')
                         }
                         map.addLayer(routeLayers);
                     });
+
 
                     // while watch if a new RTZ route has been uploaded
                     scope.$watch("points", function(newValue, oldValue) {
