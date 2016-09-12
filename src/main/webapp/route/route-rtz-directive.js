@@ -17,15 +17,16 @@ angular.module('maritimeweb.route')
                     '<a href="#" id="waypoint-popup-closer" class="ol-popup-closer"></a>' +
                     '<h3 class="popover-title">{{waypoint.name}}</h3>' +
                     '<div id="waypoint-popover-content" class="popover-content">' +
-                        '<p>Speed: {{waypoint.speed}}</p>' +
+                        '<p>Waypoint number: {{waypoint.id}}</p>' +
                         '<p>Eta: {{waypoint.eta}}</p>' +
+                        '<p>Time: {{waypoint.etatimeago}}</p>' +
                         '<p>Radius: {{waypoint.radius}}</p>' +
-                        '<p>Number: {{waypoint.id}}</p>' +
-                        '<p>speedMin: {{waypoint.speedmin}}</p>' +
-                        '<p>speedMax: {{waypoint.speedmax}}</p>' +
-                        '<p>geometryType: {{waypoint.geometrytype}}</p>' +
-                        '<p>portsideXTD: {{waypoint.portsidextd}}</p>' +
-                        '<p>starboardXTD: {{waypoint.starboardxtd}}</p>' +
+                        '<p>Speed: {{waypoint.speed}}</p>' +
+                        '<p>Speed Min: {{waypoint.speedmin}}</p>' +
+                        '<p>Speed Max: {{waypoint.speedmax}}</p>' +
+                        '<p>Geometry Type: {{waypoint.geometrytype}}</p>' +
+                        '<p>Portside XTD: {{waypoint.portsidextd}}</p>' +
+                        '<p>Starboard XTD: {{waypoint.starboardxtd}}</p>' +
                     '</div>' +
                 '</div>',
                 /*"<div class='hidden-xs hidden-sm message-details-route col-md-3 col-lg-3 ng-cloak'>" +
@@ -196,7 +197,7 @@ angular.module('maritimeweb.route')
                          * Add a click handler to the map to render the popup.
                          */
                         map.on('singleclick', function (evt) {
-                            
+
                                 var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
                                     return feature;
                                 }, null, function (layer) {
@@ -214,6 +215,7 @@ angular.module('maritimeweb.route')
                                     scope.waypoint.name = feature.get('wayname');
                                     scope.waypoint.radius = feature.get('radius');
                                     scope.waypoint.eta = feature.get('eta');
+                                    scope.waypoint.etatimeago = feature.get('etatimeago');
                                     scope.waypoint.speed = feature.get('speed');
                                     scope.waypoint.speedmin = feature.get('speedmin');
                                     scope.waypoint.speedmax= feature.get('speedmax');

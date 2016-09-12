@@ -6,7 +6,14 @@ angular.module('maritimeweb.route')
     .controller('RouteLoadCtrl', ['$scope', '$rootScope', '$http', '$routeParams', '$window',  'growl', 'timeAgo', '$filter', 'Upload', '$timeout', 'fileReader', '$log',
         function ($scope, $rootScope, $http, $routeParams, $window, growl, timeAgo, $filter, Upload, $timeout, fileReader,$log) {
             'use strict';
-            console.log("RouteLoadCtrl routeParams.mmsi=" + $routeParams.mmsi);
+            $log.debug("RouteLoadCtrl routeParams.mmsi=" + $routeParams.mmsi);
+            $scope.activeWayPoint = 0;
+
+            // debug menu starts collapsed.
+            $scope.xmlCollapsed = true;
+            $scope.jsonCollapsed = true;
+            $scope.jsonFeatCollapsed = true;
+
             $scope.instantiateListsforCharts = function () {
                 var charts = {};
                 charts.listSpeed = []; // speed
@@ -21,15 +28,7 @@ angular.module('maritimeweb.route')
                 return charts;
             };
 
-            $scope.activeWayPoint = 0;
-
             var charts =  $scope.instantiateListsforCharts();
-
-
-            // debug menu starts collapsed.
-            $scope.xmlCollapsed = true;
-            $scope.jsonCollapsed = true;
-            $scope.jsonFeatCollapsed = true;
 
 
             $scope.sampleRTZdata = [
@@ -39,6 +38,7 @@ angular.module('maritimeweb.route')
                 {id: 'kielPRV.rtz', name: 'Helsinki - Kiel'}
             ];
             $scope.sampleFile = $scope.sampleRTZdata[0].id;
+
             var resetChartArrays = function () {
                 charts.listMinSpeed.splice(0, charts.listMinSpeed.length);
                 charts.listMaxSpeed.splice(0, charts.listMaxSpeed.length);
@@ -88,7 +88,9 @@ angular.module('maritimeweb.route')
                                 position: way_value.position,
                                 leg: way_value.leg,
                                 speed: schedule_value._speed,
-                                eta: schedule_value._eta
+                                eta: schedule_value._eta,
+                                etats: Date.parse(schedule_value._eta),
+                                etatimeago: $filter('timeAgo')(Date.parse(schedule_value._eta))
                             };
                             if(way_value.leg){
                                 // $log.log("way_value: " + JSON.stringify(way_value.leg));
@@ -175,7 +177,7 @@ angular.module('maritimeweb.route')
                     portsidextd: waypoint.portsideXTD,
                     starboardxtd: waypoint.starboardXTD,
                     //ts: $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC',
-                    //tsTimeAgo: $filter('timeAgo')(value.ts),
+                    etatimeago: waypoint.etatimeago,
                     position: $scope.toLonLat(waypoint.position._lon, waypoint.position._lat)
                 });
                 markWaypoint.setStyle(markerStyle);
