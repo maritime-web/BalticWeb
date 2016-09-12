@@ -21,6 +21,11 @@ angular.module('maritimeweb.route')
                         '<p>Eta: {{waypoint.eta}}</p>' +
                         '<p>Radius: {{waypoint.radius}}</p>' +
                         '<p>Number: {{waypoint.id}}</p>' +
+                        '<p>speedMin: {{waypoint.speedmin}}</p>' +
+                        '<p>speedMax: {{waypoint.speedmax}}</p>' +
+                        '<p>geometryType: {{waypoint.geometrytype}}</p>' +
+                        '<p>portsideXTD: {{waypoint.portsidextd}}</p>' +
+                        '<p>starboardXTD: {{waypoint.starboardxtd}}</p>' +
                     '</div>' +
                 '</div>',
                 /*"<div class='hidden-xs hidden-sm message-details-route col-md-3 col-lg-3 ng-cloak'>" +
@@ -191,7 +196,7 @@ angular.module('maritimeweb.route')
                          * Add a click handler to the map to render the popup.
                          */
                         map.on('singleclick', function (evt) {
-
+                            
                                 var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
                                     return feature;
                                 }, null, function (layer) {
@@ -210,6 +215,15 @@ angular.module('maritimeweb.route')
                                     scope.waypoint.radius = feature.get('radius');
                                     scope.waypoint.eta = feature.get('eta');
                                     scope.waypoint.speed = feature.get('speed');
+                                    scope.waypoint.speedmin = feature.get('speedmin');
+                                    scope.waypoint.speedmax= feature.get('speedmax');
+                                    scope.waypoint.geometrytype= feature.get('geometrytype');
+                                    scope.waypoint.portsidextd = feature.get('portsidextd');
+                                    scope.waypoint.starboardxtd= feature.get('starboardxtd');
+                                    $log.debug("#" + feature);
+
+                                    $log.debug("#" + JSON.stringify(scope.waypoint));
+
                                     overlay.setPosition(coordinate);
                                 } else {
                                     overlay.setPosition(undefined);

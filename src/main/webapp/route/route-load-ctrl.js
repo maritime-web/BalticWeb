@@ -9,8 +9,12 @@ angular.module('maritimeweb.route')
             console.log("RouteLoadCtrl routeParams.mmsi=" + $routeParams.mmsi);
             $scope.instantiateListsforCharts = function () {
                 var charts = {};
+                charts.listSpeed = []; // speed
                 charts.listMinSpeed = []; // speed
-                charts.listMinSpeedLabels = [];  // speed labels
+                charts.listMaxSpeed = []; // speed
+                charts.listPortsidextd = [];
+                charts.listStarboardxtd = [];
+                charts.listWaypointLabels = [];  // speed labels
                 charts.listRadius = [];
                 charts.listETA = [];
                 charts.listID = [];
@@ -37,7 +41,11 @@ angular.module('maritimeweb.route')
             $scope.sampleFile = $scope.sampleRTZdata[0].id;
             var resetChartArrays = function () {
                 charts.listMinSpeed.splice(0, charts.listMinSpeed.length);
-                charts.listMinSpeedLabels.splice(0, charts.listMinSpeedLabels.length);
+                charts.listMaxSpeed.splice(0, charts.listMaxSpeed.length);
+                charts.listStarboardxtd.splice(0, charts.listStarboardxtd.length);
+                charts.listPortsidextd.splice(0, charts.listPortsidextd.length);
+                charts.listSpeed.splice(0, charts.listSpeed.length);
+                charts.listWaypointLabels.splice(0, charts.listWaypointLabels.length);
                 charts.listRadius.splice(0, charts.listRadius.length);
                 charts.listETA.splice(0, charts.listETA.length);
                 charts.listID.splice(0, charts.listID.length);
@@ -47,8 +55,12 @@ angular.module('maritimeweb.route')
              * @param feature
              */
             var addFeatureToCharts = function (feature) {
-                charts.listMinSpeed.push(feature.speed);
-                charts.listMinSpeedLabels.push(feature.wayname);
+                charts.listMinSpeed.push(feature.speedMin);
+                charts.listMaxSpeed.push(feature.speedMax);
+                charts.listStarboardxtd.push(feature.starboardXTD);
+                charts.listPortsidextd.push(feature.portsideXTD);
+                charts.listSpeed.push(feature.speed);
+                charts.listWaypointLabels.push(feature.wayname);
                 charts.listRadius.push(feature.radius);
                 charts.listETA.push(feature.eta);
                 charts.listID.push(feature.id);
@@ -68,6 +80,7 @@ angular.module('maritimeweb.route')
                 angular.forEach(json_result.route.waypoints.waypoint, function (way_value, key) {
                     angular.forEach(json_result.route.schedules.schedule.calculated.sheduleElement, function (schedule_value, key) {
                         if (way_value._id == schedule_value._waypointId) { // pairing schedule events with waypoints
+                            $log.log("way_value: " + JSON.stringify(way_value));
                             var feature = {
                                 id: way_value._id,
                                 wayname: way_value._name,
@@ -77,6 +90,21 @@ angular.module('maritimeweb.route')
                                 speed: schedule_value._speed,
                                 eta: schedule_value._eta
                             };
+                            if(way_value.leg){
+                                // $log.log("way_value: " + JSON.stringify(way_value.leg));
+
+                                feature.speedMin = way_value.leg._speedMin;
+                                feature.speedMax = way_value.leg._speedMax;
+                                feature.geometryType = way_value.leg._geometryType;
+                                feature.portsideXTD = way_value.leg._portsideXTD;
+                                feature.starboardXTD = way_value.leg._starboardXTD;
+                   /*             speedMin: way_value.leg.speedMin,
+                                    speedMax: way_value.leg.speedMax,
+                                    geometryType: way_value.leg.geometryType,
+                                    portsideXTD: way_value.leg.portsideXTD,
+                                    starboardXTD: way_value.leg.starboardXTD,*/
+                            }
+                            $log.log("feature" + JSON.stringify(feature) );
                             addFeatureToCharts(feature);
                             $scope.oLpoints.push( ol.proj.transform([parseFloat(way_value.position._lon), parseFloat(way_value.position._lat)], 'EPSG:4326', 'EPSG:900913'));
                             $scope.oLfeatures.push($scope.createWaypointFeature(feature));
@@ -140,7 +168,12 @@ angular.module('maritimeweb.route')
                     radius: waypoint.radius,
                     eta: waypoint.eta,
                     speed: waypoint.speed,
-                    leg: waypoint.leg,
+                    //leg: waypoint.leg,
+                    speedmax: waypoint.speedMax,
+                    speedmin: waypoint.speedMin,
+                    geometrytype: waypoint.geometryType,
+                    portsidextd: waypoint.portsideXTD,
+                    starboardxtd: waypoint.starboardXTD,
                     //ts: $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC',
                     //tsTimeAgo: $filter('timeAgo')(value.ts),
                     position: $scope.toLonLat(waypoint.position._lon, waypoint.position._lat)
@@ -153,9 +186,7 @@ angular.module('maritimeweb.route')
             $scope.$watch("sampleFile", function(newValue, oldValue) {
                 if (newValue){
                     $log.log("sample file uploaded" + $scope.sampleFile);
-
                     $scope.autoPreloadRTZfile(); // TODO: disable the auto load later on
-
                     $window.scrollTo(0, 0);
                 }
             }, true);
@@ -166,12 +197,12 @@ angular.module('maritimeweb.route')
 
            /* angular.forEach(response.data, function (value, key) {
                 listMinSpeed.push(value.sog);
-                listMinSpeedLabels.push($filter('timeAgo')(value.ts) + ' - ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC');
+                listWaypointLabels.push($filter('timeAgo')(value.ts) + ' - ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC');
             });
 */
-            $scope.sogChartlabels = charts.listMinSpeedLabels;
-            $scope.sogChartseries = ['Minimum speed ', ' radius'];
-            $scope.sogChartdata = [charts.listMinSpeed,charts.listRadius];
+            $scope.sogChartlabels = charts.listWaypointLabels;
+            $scope.sogChartseries = ['Speed','Min. speed', 'Max. speed', 'starboard', 'portside', 'radius'];
+            $scope.sogChartdata = [charts.listSpeed, charts.listMinSpeed, charts.listMaxSpeed,charts.listStarboardxtd, charts.listPortsidextd, charts.listRadius];
             $scope.onClick = function (points, evt) {
                // console.log(points, evt);
                 //$log.info(points[0]._index);
