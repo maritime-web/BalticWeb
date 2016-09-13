@@ -25,10 +25,70 @@
                         <div><i class="fa fa-tachometer" aria-hidden="true"></i> <b>SOG</b>
                             <small>Speed</small>
                         </div>
-                        <canvas id="line" class="chart chart-line" chart-data="sogChartdata"
+                        <canvas id="line" class="chart chart-bar" chart-data="sogChartdata"
                                 chart-labels="sogChartlabels" chart-series="sogChartseries" chart-options="sogChartoptions"
                                 chart-dataset-override="sogChartdatasetOverride" chart-click="onClick">
                         </canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row ">
+                <div class="col-md-12">
+                    <div class="well">
+                        <h3><i class="fa fa-table" aria-hidden="true"></i> Table of waypoints</h3>
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <td>
+                                    <uib-accordion close-others="oneAtATime">
+                                        <uib-accordion-group heading="{{rtzName}}" is-open="true"
+                                                             is-disabled="false">
+                                            <table class="table table-striped table-hover table-bordered table-condensed">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Name</th>
+                                                    <th>Time</th>
+                                                    <th>Timestamp</th>
+                                                    <th><span class="glyphicon glyphicon-flag"></span> Position</th>
+                                                    <th>Radius</th>
+                                                    <th>Speed</th>
+                                                    <th>Min. speed</th>
+                                                    <th>Max. speed</th>
+                                                    <th>Geometry</th>
+                                                    <th>Starboard xtd</th>
+                                                    <th>Portside xtd</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="object in oLfeatures | limitTo: 100"
+                                                    ng-class="{ 'active'   : $root.activeWayPoint == object.get('id')}"
+                                                    ng-click="setSelected(object.get('id'))">
+                                                    <td ng-bind="object.get('id')"></td>
+                                                    <td ng-bind="object.get('wayname')"> </td>
+                                                    <td>{{object.get('etatimeago')}}</td>
+                                                    <td>{{object.get('eta')}}</td>
+                                                    <td> {{ toLonLat(object.get('lon'), object.get('lat')) | lonlat:{ decimals : 3, pp: true} }}</td>
+                                                    <td>{{object.get('radius')}}<span ng-if="object.get('radius')">nm</span></td>
+                                                    <td>{{object.get('speed')}}<span ng-if="object.get('speed')">nm</span></td>
+                                                    <td>{{object.get('speedmin')}}<span ng-if="object.get('speedmin')">nm</span></td>
+                                                    <td>{{object.get('speedmax')}}<span ng-if="object.get('speedmax')">nm</span></td>
+                                                    <td>{{object.get('geometrytype')}}</td>
+                                                    <td>{{object.get('starboardxtd') | number:4 }}<span ng-if="object.get('starboardxtd')">nm</span></td>
+                                                    <td>{{object.get('portsidextd') | number:4 }}<span ng-if="object.get('portsidextd')">nm</span></td>
+
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </uib-accordion-group>
+                                    </uib-accordion>
+                                </td>
+                                <td></td>
+
+
+                            </tr>
+                        </table>
+
                     </div>
                 </div>
             </div>

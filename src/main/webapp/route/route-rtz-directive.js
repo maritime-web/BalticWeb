@@ -18,6 +18,7 @@ angular.module('maritimeweb.route')
                     '<h3 class="popover-title">{{waypoint.name}}</h3>' +
                     '<div id="waypoint-popover-content" class="popover-content">' +
                         '<p>Waypoint number: {{waypoint.id}}</p>' +
+                        '<p>Position: {{ toLonLat(waypoint.lon, waypoint.lat) | lonlat:{ decimals : 3, pp: true} }} </p>' +
                         '<p>Eta: {{waypoint.eta}}</p>' +
                         '<p>Time: {{waypoint.etatimeago}}</p>' +
                         '<p>Radius: {{waypoint.radius}}</p>' +
@@ -213,6 +214,8 @@ angular.module('maritimeweb.route')
                                     scope.waypoint = {};
                                     scope.waypoint.id = feature.get('id');
                                     scope.waypoint.name = feature.get('wayname');
+                                    scope.waypoint.lon = feature.get('lon');
+                                    scope.waypoint.lat = feature.get('lat');
                                     scope.waypoint.radius = feature.get('radius');
                                     scope.waypoint.eta = feature.get('eta');
                                     scope.waypoint.etatimeago = feature.get('etatimeago');
@@ -238,6 +241,11 @@ angular.module('maritimeweb.route')
                         }
                         map.addLayer(routeLayers);
                     });
+
+                    /** Returns the lat-lon attributes of the vessel */
+                    scope.toLonLat = function (long, lati) {
+                        return {lon: long, lat: lati};
+                    };
 
 
                     // while watch if a new RTZ route has been uploaded

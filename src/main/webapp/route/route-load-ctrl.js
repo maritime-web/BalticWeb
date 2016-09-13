@@ -73,7 +73,7 @@ angular.module('maritimeweb.route')
                 $scope.rtzJSON = json_result; // used for debugging.
                 $scope.rtzName = json_result.route.routeInfo._routeName;
 
-                $scope.oLfeatures = [];
+                $scope.oLfeatures = []; // openlayers features
                 $scope.oLpoints = [];
                 resetChartArrays();
 
@@ -167,6 +167,8 @@ angular.module('maritimeweb.route')
                     name: waypoint.wayname,
                     wayname: waypoint.wayname,
                     id: waypoint.id,
+                    lon: waypoint.position._lon,
+                    lat: waypoint.position._lat,
                     radius: waypoint.radius,
                     eta: waypoint.eta,
                     speed: waypoint.speed,
@@ -206,26 +208,13 @@ angular.module('maritimeweb.route')
             $scope.sogChartseries = ['Speed','Min. speed', 'Max. speed', 'starboard', 'portside', 'radius'];
             $scope.sogChartdata = [charts.listSpeed, charts.listMinSpeed, charts.listMaxSpeed,charts.listStarboardxtd, charts.listPortsidextd, charts.listRadius];
             $scope.onClick = function (points, evt) {
-               // console.log(points, evt);
-                //$log.info(points[0]._index);
                 angular.forEach(points, function (value, key) {
-                    //console.log("#" + value._index);
                     if(value._index != null && value._index >= 0){
-           //             $scope.activeWayPoint = points[0]._index;
-                        $rootScope.activeWayPoint = points[0]._index;
+                        $rootScope.activeWayPoint = (points[0]._index + 1);
                     }
-                    //value._index;
                 });
                 console.log("#" + $rootScope.activeWayPoint);
-           //     $scope.$apply();
                 $rootScope.$apply();
-
-
-                /*if(points[0]._index){
-                    $scope.activeWayPoint = points[0]._index;
-                }*/
-
-
             };
 
             $scope.sogChartdatasetOverride = [{
@@ -241,7 +230,12 @@ angular.module('maritimeweb.route')
             $scope.sogChartoptions = {
                 responsive: true,
                 showLines: true,
-
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: 'rgb(100, 149, 237)'
+                    }
+                },
                 responsiveAnimationDuration: 1500,
                 scales: {
                     yAxes: [
@@ -264,6 +258,20 @@ angular.module('maritimeweb.route')
                     }]
                 }
             };
+
+            /** Returns the lat-lon attributes of the vessel */
+            $scope.toLonLat = function (long, lati) {
+                return {lon: long, lat: lati};
+            };
+
+            /**
+             * select id from table row
+             * @param idSelectedRow
+             */
+            $scope.setSelected = function (idSelectedRow){
+                $rootScope.activeWayPoint  = idSelectedRow;
+            };
+
 
 
         }]);
