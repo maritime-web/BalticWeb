@@ -84,7 +84,43 @@ angular.module('maritimeweb.route')
                         visible: true
                     });
 
+                    /**
+                     * Elements that make up the popup.
+                     */
+                    var container = document.getElementById('waypoint-popup');
+                    var content = document.getElementById('waypoint-popup-content');
+                    var closer = document.getElementById('waypoint-popup-closer');
 
+
+                    /**
+                     * Create an overlay to anchor the popup to the map.
+                     */
+                    var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+                        element: container,
+                        autoPan: true,
+                        autoPanAnimation: {
+                            duration: 250
+                        }
+                    }));
+
+
+                    scope.populatePopupWaypoint = function (feature) {
+                        scope.waypoint = {};
+                        scope.waypoint.id = feature.get('id');
+                        scope.waypoint.name = feature.get('wayname');
+                        scope.waypoint.lon = feature.get('lon');
+                        scope.waypoint.lat = feature.get('lat');
+                        scope.waypoint.radius = feature.get('radius');
+                        scope.waypoint.eta = feature.get('eta');
+                        scope.waypoint.etatimeago = feature.get('etatimeago');
+                        scope.waypoint.speed = feature.get('speed');
+                        scope.waypoint.speedmin = feature.get('speedmin');
+                        scope.waypoint.speedmax = feature.get('speedmax');
+                        scope.waypoint.geometrytype = feature.get('geometrytype');
+                        scope.waypoint.portsidextd = feature.get('portsidextd');
+                        scope.waypoint.starboardxtd = feature.get('starboardxtd');
+                        $log.debug("#" + feature);
+                    };
                     olScope.getMap().then(function (map) {
 
                         routeFeatureLayer.getSource().addFeatures(scope.features);
@@ -164,23 +200,7 @@ angular.module('maritimeweb.route')
                         });
                         map.addOverlay(popup);
 
-                        /**
-                         * Elements that make up the popup.
-                         */
-                        var container = document.getElementById('waypoint-popup');
-                        var content = document.getElementById('waypoint-popup-content');
-                        var closer = document.getElementById('waypoint-popup-closer');
 
-                        /**
-                         * Create an overlay to anchor the popup to the map.
-                         */
-                        var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
-                            element: container,
-                            autoPan: true,
-                            autoPanAnimation: {
-                                duration: 250
-                            }
-                        }));
 
                         /**
                          * Add a click handler to hide the popup.
@@ -206,30 +226,14 @@ angular.module('maritimeweb.route')
                                 });
 
                                 if (feature) {
-                                    var geometry = feature.getGeometry();
+
                                     var coordinate = evt.coordinate;
                                     $rootScope.activeWayPoint = feature.get('id');
                                     $rootScope.$apply();
-                                    $log.info("#" + $rootScope.activeWayPoint);
-                                    scope.waypoint = {};
-                                    scope.waypoint.id = feature.get('id');
-                                    scope.waypoint.name = feature.get('wayname');
-                                    scope.waypoint.lon = feature.get('lon');
-                                    scope.waypoint.lat = feature.get('lat');
-                                    scope.waypoint.radius = feature.get('radius');
-                                    scope.waypoint.eta = feature.get('eta');
-                                    scope.waypoint.etatimeago = feature.get('etatimeago');
-                                    scope.waypoint.speed = feature.get('speed');
-                                    scope.waypoint.speedmin = feature.get('speedmin');
-                                    scope.waypoint.speedmax= feature.get('speedmax');
-                                    scope.waypoint.geometrytype= feature.get('geometrytype');
-                                    scope.waypoint.portsidextd = feature.get('portsidextd');
-                                    scope.waypoint.starboardxtd= feature.get('starboardxtd');
-                                    $log.debug("#" + feature);
 
-                                    $log.debug("#" + JSON.stringify(scope.waypoint));
-
-                                    overlay.setPosition(coordinate);
+                                    // well, the directive watches the rootscopes directive so we don't have to do anymore...
+                                    // scope.populatePopupWaypoint(feature);
+                                    //overlay.setPosition(coordinate);
                                 } else {
                                     overlay.setPosition(undefined);
                                     closer.blur();
@@ -242,13 +246,30 @@ angular.module('maritimeweb.route')
                         map.addLayer(routeLayers);
                     });
 
-                    /** Returns the lat-lon attributes of the vessel */
+                    /** Returns the lat-lon attributesas json-object */
                     scope.toLonLat = function (long, lati) {
                         return {lon: long, lat: lati};
                     };
 
+                    // while watch if a new active waypoint has been selected via the chart or the table. If so, we pop the popup for that Openlayer Feature.
+                    $rootScope.$watch("activeWayPoint", function(newValue, oldValue) {
+                        if (newValue)
+                            olScope.getMap().then(function (map) {
 
-                    // while watch if a new RTZ route has been uploaded
+                                var activeFeature = routeFeatureLayer.getSource().getFeatureById(newValue);
+                                $log.debug("we need to highlight this one. ActiveFeature  ID=" + activeFeature.getId());
+                                if (activeFeature) {
+                                    var coordinate = activeFeature.getGeometry().getCoordinates();
+                                    scope.populatePopupWaypoint(activeFeature);
+                                    overlay.setPosition(coordinate);
+                                } else {
+                                    overlay.setPosition(undefined);
+                                    closer.blur();
+                                }
+                            });
+                    }, true);
+
+                    // watch if a new RTZ route has been uploaded by the end user.
                     scope.$watch("points", function(newValue, oldValue) {
                         if (newValue)
                             olScope.getMap().then(function (map) {
@@ -265,8 +286,6 @@ angular.module('maritimeweb.route')
 
                                 animationLayer.getSource().addFeature(routeFeature);
                                 routeFeatureLayer.getSource().addFeatures(scope.features);
-
-                                //$log.debug("retrieved the map animationLayer=" + animationLayer.getSource().getFeatures().length + " routeFeatureLayer=" + routeFeatureLayer.getSource().getFeatures().length);
 
                                 var extent = routeFeatureLayer.getSource().getExtent();
                                 map.getView().fit(extent, map.getSize());  // automatically zoom and pan the map to fit my features

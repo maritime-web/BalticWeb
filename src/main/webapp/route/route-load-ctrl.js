@@ -182,6 +182,7 @@ angular.module('maritimeweb.route')
                     etatimeago: waypoint.etatimeago,
                     position: $scope.toLonLat(waypoint.position._lon, waypoint.position._lat)
                 });
+                markWaypoint.setId(waypoint.id);
                 markWaypoint.setStyle(markerStyle);
                 return markWaypoint;
             };
@@ -211,15 +212,31 @@ angular.module('maritimeweb.route')
                 angular.forEach(points, function (value, key) {
                     if(value._index != null && value._index >= 0){
                         $rootScope.activeWayPoint = (points[0]._index + 1);
+                        $log.log(value);
+
+                        $log.log(value._view.backgroundColor);
+                       // $log.log("key " + key);
+                        value._model.backgroundColor = 'rgba(255, 0, 0, 0.9)';
+                        value._model.fillColor = 'rgba(255, 0, 0, 0.9)';
+                        value._model.strokeColor = 'rgba(255, 0, 0, 0.9)';
                     }
                 });
                 console.log("#" + $rootScope.activeWayPoint);
                 $rootScope.$apply();
             };
+            $scope.colours =  [{ // default
+                    "fillColor": "rgba(224, 108, 112, 1)",
+                    "strokeColor": "rgba(207,100,103,1)",
+                    "pointColor": "rgba(220,220,220,1)",
+                    "pointStrokeColor": "#fff",
+                    "pointHighlightFill": "#fff",
+                    "pointHighlightStroke": "rgba(151,187,205,0.8)"
+                }];
+
 
             $scope.sogChartdatasetOverride = [{
                 yAxisID: 'y-axis-1',
-                /*yAxisID: 'y-axis-2',*/
+               // yAxisID: 'y-axis-2',
                 borderJoinStyle: 'round',
                 pointRadius: 1,
                 pointHitRadius: 10,
@@ -230,6 +247,7 @@ angular.module('maritimeweb.route')
             $scope.sogChartoptions = {
                 responsive: true,
                 showLines: true,
+
                 legend: {
                     display: true,
                     labels: {
@@ -242,15 +260,17 @@ angular.module('maritimeweb.route')
                         {
                             id: 'y-axis-1',
                             type: 'linear',
+                            label: 'Speed',
                             display: true,
                             position: 'left'
                         }
-/*                        ,
+                 /*       ,
                         {
                             id: 'y-axis-2',
                             type: 'linear',
+                            label: 'radius',
                             display: true,
-                            position: 'left'
+                            position: 'right'
                         }*/
                     ],
                     xAxes: [{
