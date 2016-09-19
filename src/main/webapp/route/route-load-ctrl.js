@@ -4,7 +4,7 @@ angular.module('maritimeweb.route')
  *  and generate the needed open-layers features.
  *******************************************************************/
     .controller('RouteLoadCtrl', ['$scope', '$rootScope', '$http', '$routeParams', '$window',  'growl', 'timeAgo', '$filter', 'Upload', '$timeout', 'fileReader', '$log',
-        function ($scope, $rootScope, $http, $routeParams, $window, growl, timeAgo, $filter, Upload, $timeout, fileReader,$log) {
+        function ($scope, $rootScope, $http, $routeParams, $window, growl, timeAgo, $filter, Upload, $timeout, fileReader, $log) {
             'use strict';
             $log.debug("RouteLoadCtrl routeParams.mmsi=" + $routeParams.mmsi);
             $scope.activeWayPoint = 0;
@@ -13,6 +13,10 @@ angular.module('maritimeweb.route')
             $scope.xmlCollapsed = true;
             $scope.jsonCollapsed = true;
             $scope.jsonFeatCollapsed = true;
+
+            //
+            var can = document.getElementById('rtzchart');
+            var ctx = can.getContext('2d');
 
             $scope.instantiateListsforCharts = function () {
                 var charts = {};
@@ -30,9 +34,9 @@ angular.module('maritimeweb.route')
 
             var charts =  $scope.instantiateListsforCharts();
 
-
             $scope.sampleRTZdata = [
                 {id: 'ExamplefileworkswithENSI.rtz', name: 'Talin - Helsinki'},
+                {id: 'Helsinki_to_Rotterdam_via_Aarhus-Bremerhaven.rtz', name: 'Helsinki to Rotterdam'},
               /*  {id: 'muugaPRVconsprnt.rtz', name: 'Talin - Helsinki'},*/
                 {id: 'hesastofuru.rtz', name: 'Helsinki - Stockholm'},
                 {id: 'kielPRV.rtz', name: 'Helsinki - Kiel'}
@@ -76,42 +80,51 @@ angular.module('maritimeweb.route')
                 $scope.oLfeatures = []; // openlayers features
                 $scope.oLpoints = [];
                 resetChartArrays();
+                $log.log(typeof(json_result.route.schedules.schedule));
+                $log.log(typeof(json_result.route.schedules.schedule.calculated));
+
+                if(!json_result.route.waypoints.waypoint &&
+                    json_result.route.waypoints.waypoint.length > 0){
+                    growl.error("No Waypoints in RTZ");
+                    $log.error("No waypoints");
+                }
 
                 angular.forEach(json_result.route.waypoints.waypoint, function (way_value, key) {
-                    angular.forEach(json_result.route.schedules.schedule.calculated.sheduleElement, function (schedule_value, key) {
-                        if (way_value._id == schedule_value._waypointId) { // pairing schedule events with waypoints
-                            $log.log("way_value: " + JSON.stringify(way_value));
-                            var feature = {
-                                id: way_value._id,
-                                wayname: way_value._name,
-                                radius: way_value._radius,
-                                position: way_value.position,
-                                leg: way_value.leg,
-                                speed: schedule_value._speed,
-                                eta: schedule_value._eta,
-                                etats: Date.parse(schedule_value._eta),
-                                etatimeago: $filter('timeAgo')(Date.parse(schedule_value._eta))
-                            };
-                            if(way_value.leg){
-                                // $log.log("way_value: " + JSON.stringify(way_value.leg));
+                    $scope.oLpoints.push( ol.proj.transform([parseFloat(way_value.position._lon), parseFloat(way_value.position._lat)], 'EPSG:4326', 'EPSG:900913'));
 
-                                feature.speedMin = way_value.leg._speedMin;
-                                feature.speedMax = way_value.leg._speedMax;
-                                feature.geometryType = way_value.leg._geometryType;
-                                feature.portsideXTD = way_value.leg._portsideXTD;
-                                feature.starboardXTD = way_value.leg._starboardXTD;
-                   /*             speedMin: way_value.leg.speedMin,
-                                    speedMax: way_value.leg.speedMax,
-                                    geometryType: way_value.leg.geometryType,
-                                    portsideXTD: way_value.leg.portsideXTD,
-                                    starboardXTD: way_value.leg.starboardXTD,*/
+                    var feature = {
+                        id: way_value._id,
+                        wayname: way_value._name,
+                        radius: way_value._radius,
+                        position: way_value.position,
+                        leg: way_value.leg
+
+                    };
+                    if(way_value.leg){
+                        feature['speedMin'] = way_value.leg._speedMin;
+                        feature['speedMax'] = way_value.leg._speedMax;
+                        feature['geometryType'] = way_value.leg._geometryType;
+                        feature['portsideXTD'] = way_value.leg._portsideXTD;
+                        feature['starboardXTD'] = way_value.leg._starboardXTD;
+                       }
+
+                    if(typeof(json_result.route.schedules.schedule.calculated) !== "undefined"){
+                        angular.forEach(json_result.route.schedules.schedule.calculated.sheduleElement, function (schedule_value, key) {
+                            if (way_value._id == schedule_value._waypointId) { // pairing schedule events with waypoints
+                                feature['speed'] =  schedule_value._speed;
+                                feature['eta'] =  schedule_value._eta;
+                                feature['etats'] =  Date.parse(schedule_value._eta);
+                                feature['etatimeago'] =  $filter('timeAgo')(Date.parse(schedule_value._eta));
                             }
-                            $log.log("feature" + JSON.stringify(feature) );
-                            addFeatureToCharts(feature);
-                            $scope.oLpoints.push( ol.proj.transform([parseFloat(way_value.position._lon), parseFloat(way_value.position._lat)], 'EPSG:4326', 'EPSG:900913'));
-                            $scope.oLfeatures.push($scope.createWaypointFeature(feature));
-                        }
-                    });
+                        });
+                    }else{
+                        growl.error("No schedule for route");
+                        $log.log("No schedule for route")
+                    }
+
+                    $log.log("feature" + JSON.stringify(feature) );
+                    addFeatureToCharts(feature);
+                    $scope.oLfeatures.push($scope.createWaypointFeature(feature));
                 });
 
             };
@@ -195,6 +208,32 @@ angular.module('maritimeweb.route')
                     $window.scrollTo(0, 0);
                 }
             }, true);
+
+
+
+            // while watch if a new active waypoint has been selected via the chart or the table. If so, we pop the popup for that Openlayer Feature.
+            $rootScope.$watch("activeWayPoint", function(newValue, oldValue) {
+                if (newValue){
+                    $log.log("update active waypoint " + newValue + " " );
+                    //$log.log(can);
+                    var chart_x_coord = (can.width /   $scope.oLfeatures.length-1 ) * ($rootScope.activeWayPoint);
+                    ctx.beginPath();
+                    ctx.moveTo(chart_x_coord ,0);
+                    ctx.lineTo(chart_x_coord, can.height );
+                    ctx.lineWidth = 4;
+                    ctx.strokeStyle = '#ff0000';
+                    //ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(chart_x_coord+3 ,0);
+                    ctx.lineTo(chart_x_coord+3, can.height );
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = '#000000';
+                   // ctx.stroke();
+
+
+                }
+
+            }, true);
            // $scope.autoPreloadRTZfile(); // TODO: disable the auto load later on
 
             // SPEED Charts
@@ -212,13 +251,16 @@ angular.module('maritimeweb.route')
                 angular.forEach(points, function (value, key) {
                     if(value._index != null && value._index >= 0){
                         $rootScope.activeWayPoint = (points[0]._index + 1);
-                        $log.log(value);
+                     //   $log.log(value);
 
-                        $log.log(value._view.backgroundColor);
+                   //     $log.log(value._view.backgroundColor);
                        // $log.log("key " + key);
-                        value._model.backgroundColor = 'rgba(255, 0, 0, 0.9)';
+              /*          value._model.backgroundColor = 'rgba(255, 0, 0, 0.9)';
                         value._model.fillColor = 'rgba(255, 0, 0, 0.9)';
                         value._model.strokeColor = 'rgba(255, 0, 0, 0.9)';
+                        value._xScale.ctx.fillStyle = 'rgba(255, 0, 0, 0.9)';
+
+               */
                     }
                 });
                 console.log("#" + $rootScope.activeWayPoint);

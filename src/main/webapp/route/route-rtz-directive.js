@@ -21,13 +21,13 @@ angular.module('maritimeweb.route')
                         '<p>Position: {{ toLonLat(waypoint.lon, waypoint.lat) | lonlat:{ decimals : 3, pp: true} }} </p>' +
                         '<p>Eta: {{waypoint.eta}}</p>' +
                         '<p>Time: {{waypoint.etatimeago}}</p>' +
-                        '<p>Radius: {{waypoint.radius}}</p>' +
+                        /*'<p>Radius: {{waypoint.radius}}</p>' +
                         '<p>Speed: {{waypoint.speed}}</p>' +
                         '<p>Speed Min: {{waypoint.speedmin}}</p>' +
                         '<p>Speed Max: {{waypoint.speedmax}}</p>' +
                         '<p>Geometry Type: {{waypoint.geometrytype}}</p>' +
                         '<p>Portside XTD: {{waypoint.portsidextd}}</p>' +
-                        '<p>Starboard XTD: {{waypoint.starboardxtd}}</p>' +
+                        '<p>Starboard XTD: {{waypoint.starboardxtd}}</p>' +*/
                     '</div>' +
                 '</div>',
                 /*"<div class='hidden-xs hidden-sm message-details-route col-md-3 col-lg-3 ng-cloak'>" +
