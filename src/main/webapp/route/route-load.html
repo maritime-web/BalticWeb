@@ -8,11 +8,11 @@
 
                     <ol-map class="route-details-map" minzoom="1">
                         <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
-                        <routertz points="oLpoints" features="oLfeatures" autoplay="false"></routertz>
+                        <routertz points="oLpoints" features="oLfeatures" animatedfeatures="oLanimatedfeatures" autoplay="true"></routertz>
                         <map-scale-line units="nautical"></map-scale-line>
                         <map-mouse-position></map-mouse-position>
                         <!--<map-layer-switcher></map-layer-switcher>-->
-                        <map-overview collapsed="true"></map-overview>
+                        <!--map-overview collapsed="true"></map-overview-->
                     </ol-map>
 
                     <h4>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span>  Active Waypoint: <span class="badge badge-info">#{{$root.activeWayPoint}}</span></h4>

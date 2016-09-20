@@ -29,19 +29,27 @@ angular.module('maritimeweb.route')
                         '<p>Portside XTD: {{waypoint.portsidextd}}</p>' +
                         '<p>Starboard XTD: {{waypoint.starboardxtd}}</p>' +*/
                     '</div>' +
-                '</div>',
-                /*"<div class='hidden-xs hidden-sm message-details-route col-md-3 col-lg-3 ng-cloak'>" +
+                '</div>' +
+                "<div class='hidden-xs hidden-sm message-details-route col-md-3 col-lg-3 ng-cloak'>" +
                 "<btn ng-if='!animating' class='btn btn-success' id='start-animation' ng-click='startAnimation()'> <i class='fa fa-play' aria-hidden='true'></i> </btn> " +
                 "<btn ng-if='animating' class='btn btn-danger' id='start-animation' ng-click='stopAnimation()' tooltip='stop animation' data-toggle='tooltip'  " +
                 " data-placement='right' title='stop animation'> <i class='fa fa-stop' aria-hidden='true'></i> </btn><br>" +
-                "<label for='speed'>" + " Animation speed:&nbsp;" + "<input id='speed' type='range' min='1' max='999' step='10' value='10'> " + "</label><br>" +
+                "<label for='speed'>" + " Animation speed:&nbsp;" + "<input id='speed' type='range' min='1' max='50' step='1' value='2'> " + "</label><br>" +
+                "<span class='label label-primary' ng-if='activeRouteName'>{{activeRouteName}}</span><br>" +
+                "<span class='label label-primary'>{{activeRouteTS}}</span><br>" +
+                "<span class='label label-primary'>{{activeRouteTSetaTimeAgo}}</span><br>" +
+                "<span class='label label-primary'>{{activeRoutePoint | lonlat:{ decimals : 3, pp: true} }}</span><br>" +
+                "<span class='label label-primary'>{{activeRouteSpeed }}</span><br>" +
+
                 "</div>"
-                ,*/
+                ,
                 scope: {
                     name: '@',
                     autoplay: '=?',
                     points: '=?',
-                    features: '=?'
+                    features: '=?',
+                    animatedfeatures: '=?'
+
                 },
                 link: function (scope, element, attrs, ctrl) {
 
@@ -50,9 +58,47 @@ angular.module('maritimeweb.route')
                         "autoplay=" + scope.autoplay
                     );
                     var olScope = ctrl.getOpenlayersScope();
+
+                    var styles = {
+                        'route': new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                width: 6, color: [237, 212, 0, 0.8]
+                            })
+                        }),
+                        'icon': new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1],
+                                src: 'data/icon.png'
+                            })
+                        }),
+                        'geoMarker': new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 7,
+                                snapToPixel: false,
+                                fill: new ol.style.Fill({color: 'black'}),
+                                stroke: new ol.style.Stroke({
+                                    color: 'white', width: 2
+                                })
+                            })
+                        })
+                    };
+
                     var routeLayers;
 
                     var animationLayer = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: []
+                        }),
+                        style: function (feature) {
+                        // hide geoMarker if animation is active
+                        if (scope.animating && feature.get('type') === 'geoMarker') {
+                            return null;
+                        }
+                        return styles[feature.get('type')];
+                    }
+                    });
+
+                    var pathLayer = new ol.layer.Vector({
                         source: new ol.source.Vector({
                             features: []
                         }),
@@ -80,7 +126,7 @@ angular.module('maritimeweb.route')
 
                     routeLayers = new ol.layer.Group({
                         title: 'Route',
-                        layers: [animationLayer, routeFeatureLayer],
+                        layers: [pathLayer, animationLayer, routeFeatureLayer],
                         visible: true
                     });
 
@@ -148,6 +194,10 @@ angular.module('maritimeweb.route')
                          */
 
                         var index = 0;
+                        var speed, now, orgIndexVal;
+                        var speedInput = document.getElementById('speed');
+                        var routeLength = scope.animatedfeatures.length;
+
 
                         var moveFeature = function (event) {
                             var vectorContext = event.vectorContext;
@@ -155,15 +205,31 @@ angular.module('maritimeweb.route')
 
                             if (scope.animating) {
                                 var elapsedTime = frameState.time - now;
-                                var index = Math.round(speed * elapsedTime / 1000);
+                                //$log.log("elapsedTime:" + elapsedTime);
+                                index = Math.round(speed * elapsedTime / 1000);
 
-                                if (index >= routeLength) {
+                                if (index >= scope.animatedfeatures.length) {
                                     index = 0; // rewind, and loop
+                                    //scope.stopAnimation(true); //
                                     scope.stopAnimation(true);
+                                    growl.info("Animation is about to start", {ttl: 5000});
+                                    $timeout(function() {
+                                        scope.startAnimation();
+                                    },5000);
+
+
+
                                 }
 
-                                var feature = scope.features[index];
+                                var feature = scope.animatedfeatures[index];
                                 vectorContext.drawFeature(feature, feature.getStyle());
+                                scope.activeRoutePoint = feature.get('position');
+                                scope.activeRouteName = feature.get('name');
+                                scope.activeRouteSpeed = feature.get('speed');
+                                scope.activeRouteTS = feature.get('eta');
+                                scope.activeRouteTSetaTimeAgo = feature.get('etatimeago');
+
+                                //index++;
                              }
                             map.render();      // tell OL3 to continue the postcompose animation
                         };
@@ -180,12 +246,17 @@ angular.module('maritimeweb.route')
                             }
                         };
 
+                        if (scope.autoplay) {
+                            $timeout(scope.startAnimation(),2000);
+                        }
                         /**
                          * @param {boolean} ended end of animation.
                          */
                         scope.stopAnimation = function (ended) {
                             scope.animating = false;
                         };
+
+
 
                         /**
                          * Clickable waypoints pop-up content
@@ -240,9 +311,6 @@ angular.module('maritimeweb.route')
                                 }
                         });
 
-                        if (scope.autoplay) {
-                            scope.startAnimation();
-                        }
                         map.addLayer(routeLayers);
                     });
 
@@ -258,6 +326,7 @@ angular.module('maritimeweb.route')
 
                                 var activeFeature = routeFeatureLayer.getSource().getFeatureById(newValue);
                                 $log.debug("we need to highlight this one. ActiveFeature  ID=" + activeFeature.getId());
+                                scope.stopAnimation();
                                 if (activeFeature) {
                                     var coordinate = activeFeature.getGeometry().getCoordinates();
                                     scope.populatePopupWaypoint(activeFeature);
@@ -274,6 +343,7 @@ angular.module('maritimeweb.route')
                         if (newValue)
                             olScope.getMap().then(function (map) {
                                 animationLayer.getSource().clear();
+                                pathLayer.getSource().clear();
                                 routeFeatureLayer.getSource().clear();
 
                                 var routeFeature = new ol.Feature({
@@ -284,7 +354,8 @@ angular.module('maritimeweb.route')
                                 var startMarker = scope.features[0];
                                 var endMarker = scope.features[scope.features.length - 1];
 
-                                animationLayer.getSource().addFeature(routeFeature);
+                                //animationLayer.getSource().addFeatures(scope.animatedfeatures);
+                                pathLayer.getSource().addFeature(routeFeature);
                                 routeFeatureLayer.getSource().addFeatures(scope.features);
 
                                 var extent = routeFeatureLayer.getSource().getExtent();
