@@ -36,7 +36,7 @@ angular.module('maritimeweb.route')
 
             $scope.sampleRTZdata = [
                 {id: 'ExamplefileworkswithENSI.rtz', name: 'Talin - Helsinki'},
-                {id: 'Helsinki_to_Rotterdam_via_Aarhus-Bremerhaven.rtz', name: 'Helsinki to Rotterdam'},
+                {id: 'Helsinki_to_Rotterdam_via_Aarhus-Bremerhaven.rtz', name: 'BIMCO - Helsinki to Rotterdam'},
               /*  {id: 'muugaPRVconsprnt.rtz', name: 'Talin - Helsinki'},*/
                 {id: 'hesastofuru.rtz', name: 'Helsinki - Stockholm'},
                 {id: 'kielPRV.rtz', name: 'Helsinki - Kiel'}
@@ -89,23 +89,41 @@ angular.module('maritimeweb.route')
                     $log.error("No waypoints");
                 }
 
+                var defaultWayPoint = {};
+
+                if(json_result.route.waypoints.defaultWaypoint){
+                    defaultWayPoint = json_result.route.waypoints.defaultWaypoint;
+                    $log.info("defaultWayPoint" + JSON.stringify(defaultWayPoint));
+                }
+
                 angular.forEach(json_result.route.waypoints.waypoint, function (way_value, key) {
                     $scope.oLpoints.push( ol.proj.transform([parseFloat(way_value.position._lon), parseFloat(way_value.position._lat)], 'EPSG:4326', 'EPSG:900913'));
 
                     var feature = {
                         id: way_value._id,
                         wayname: way_value._name,
-                        radius: way_value._radius,
+                        radius: (way_value._radius) ? way_value._radius : defaultWayPoint._radius,
                         position: way_value.position,
-                        leg: way_value.leg
+                        // leg: way_value.leg,
+                        leg: (way_value.leg) ? way_value.leg : defaultWayPoint.leg
+
 
                     };
+
+                    if(defaultWayPoint.leg ){
+                        feature['speedMin'] = (defaultWayPoint.leg._speedMin) ? defaultWayPoint.leg._speedMin : '';
+                        feature['speedMax'] = (defaultWayPoint.leg._speedMax) ? defaultWayPoint.leg._speedMax : '';
+                        feature['geometryType'] = (defaultWayPoint.leg._geometryType) ? defaultWayPoint.leg._geometryType : '';
+                        feature['portsideXTD'] = (defaultWayPoint.leg._portsideXTD) ? defaultWayPoint.leg._portsideXTD: '';
+                        feature['starboardXTD'] =  (defaultWayPoint.leg._starboardXTD) ? defaultWayPoint.leg._starboardXTD: '';
+                    }
+
                     if(way_value.leg){
-                        feature['speedMin'] = way_value.leg._speedMin;
-                        feature['speedMax'] = way_value.leg._speedMax;
-                        feature['geometryType'] = way_value.leg._geometryType;
-                        feature['portsideXTD'] = way_value.leg._portsideXTD;
-                        feature['starboardXTD'] = way_value.leg._starboardXTD;
+                        feature['speedMin'] = (way_value.leg._speedMin) ? way_value.leg._speedMin : feature['speedMin'];
+                        feature['speedMax'] = (way_value.leg._speedMax) ? way_value.leg._speedMax : feature['speedMax'];
+                        feature['geometryType'] = (way_value.leg._geometryType) ? way_value.leg._geometryType: feature['geometryType'];
+                        feature['portsideXTD'] = (way_value.leg._portsideXTD) ? way_value.leg._portsideXTD: feature['portsideXTD'];
+                        feature['starboardXTD'] =  (way_value.leg._starboardXTD) ? way_value.leg._starboardXTD: feature['starboardXTD'];
                        }
 
                     if(typeof(json_result.route.schedules.schedule.calculated) !== "undefined"){
@@ -119,10 +137,10 @@ angular.module('maritimeweb.route')
                         });
                     }else{
                         growl.error("No schedule for route");
-                        $log.log("No schedule for route")
+                       // $log.log("No schedule for route");
                     }
 
-                    $log.log("feature" + JSON.stringify(feature) );
+                   // $log.log("feature" + JSON.stringify(feature) );
                     addFeatureToCharts(feature);
                     $scope.oLfeatures.push($scope.createWaypointFeature(feature));
                 });
