@@ -1,0 +1,118 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "geolib",
+        "scope": null,
+        "escapedName": "geolib",
+        "name": "geolib",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/home/andreas/Code/dma/BalticWeb"
+    ]
+  ],
+  "_from": "geolib@latest",
+  "_id": "geolib@2.0.21",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/geolib",
+  "_nodeVersion": "6.0.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/geolib-2.0.21.tgz_1462565330115_0.23257172270677984"
+  },
+  "_npmUser": {
+    "name": "manuelbieh",
+    "email": "node@manuelbieh.de"
+  },
+  "_npmVersion": "3.8.6",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "geolib",
+    "scope": null,
+    "escapedName": "geolib",
+    "name": "geolib",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/geolib/-/geolib-2.0.21.tgz",
+  "_shasum": "b0e14025abb1d050b472aba92e04012c4097a23b",
+  "_shrinkwrap": null,
+  "_spec": "geolib",
+  "_where": "/home/andreas/Code/dma/BalticWeb",
+  "author": {
+    "name": "Manuel Bieh",
+    "url": "http://www.manuelbieh.com/"
+  },
+  "bugs": {
+    "url": "https://github.com/manuelbieh/geolib/issues"
+  },
+  "dependencies": {},
+  "description": "Library to perform geo specific tasks",
+  "devDependencies": {
+    "grunt": "~0.4",
+    "grunt-cli": "*",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-concat": "~0.3",
+    "grunt-contrib-copy": "~0.4",
+    "grunt-contrib-jshint": "~0.6.2",
+    "grunt-contrib-qunit": "~0.2.0",
+    "grunt-contrib-uglify": "~0.2",
+    "grunt-jslint": "~1.0.0",
+    "grunt-text-replace": "~0.3.6",
+    "load-grunt-tasks": "~0.4.0",
+    "phantomjs": ">=1.8.0",
+    "time-grunt": "~0.3.1"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "b0e14025abb1d050b472aba92e04012c4097a23b",
+    "tarball": "https://registry.npmjs.org/geolib/-/geolib-2.0.21.tgz"
+  },
+  "files": [
+    "dist/geolib.js",
+    "dist/geolib.elevation.js"
+  ],
+  "gitHead": "0406fbd120cb371a89a1676e47e9de5f0e51a4a5",
+  "homepage": "http://github.com/manuelbieh/Geolib",
+  "keywords": [
+    "geolocation",
+    "geo",
+    "distance",
+    "geojson",
+    "geospatial",
+    "lbs",
+    "location"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "main": "dist/geolib.js",
+  "maintainers": [
+    {
+      "name": "manuelbieh",
+      "email": "node@manuelbieh.de"
+    }
+  ],
+  "name": "geolib",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/manuelbieh/geolib.git"
+  },
+  "scripts": {
+    "test": "grunt travis --verbose"
+  },
+  "version": "2.0.21"
+}
