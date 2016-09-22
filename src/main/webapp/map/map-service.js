@@ -316,9 +316,38 @@ angular.module('maritimeweb.map')
                     ol.source.OSM.ATTRIBUTION
                 ];
 
+                var nasaAttributions = [
+                    new ol.Attribution({
+                        html: '<div class="panel panel-info">' +
+                        '<div class="panel-heading">NASA: Satellite image from NASA</div>' +
+                        '<div class="panel-body">' +
+                        '<span>We acknowledge the use of data products or imagery from the Land, Atmosphere Near real-time Capability for EOS (LANCE) system operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ.</span>' +
+                        '</div>' +
+                        '</div>'
+
+                    }),
+                    ol.source.OSM.ATTRIBUTION
+                ];
+
                 return new ol.layer.Group({
                     title: 'Weather Forecasts',
                     layers: [
+                        new ol.layer.Tile({
+                            title: 'NASA: Satellite image of the Baltics',
+
+                            source: new ol.source.XYZ({
+                                urls:[
+                                    'http://ec2-52-211-163-57.eu-west-1.compute.amazonaws.com:8080/BalticSea.2016265.terra.250m/{z}/{x}/{y}.png'
+                                ],
+                                attributions: nasaAttributions,
+                                minZoom: 3,
+                                maxZoom: 8,
+                                tilePixelRatio: 1.000000
+                            }),
+                            visible: false
+
+                        }),
+
                         new ol.layer.Tile({
                             title: 'Surface Pressure  - openportguide.de',
                             source: new ol.source.XYZ({
@@ -361,7 +390,18 @@ angular.module('maritimeweb.map')
                                 attributions: openPortGuideAttributions
                             }),
                             visible: false
-                        })
+                        })/*,
+                        new ol.layer.Vector({
+                            title: 'tidal - Barrenswatch',
+                            source: new ol.source.Vector({
+                                projection : 'EPSG:3857',
+                                url: 'map/barrenswatch_no_salstraumen.json',
+                            //url: 'https://www.barentswatch.no/api/v1/geodata/saltstraumen',
+                                format: new ol.format.GeoJSON()
+                            }),
+                            visible: false
+
+                        })*/
                     ]
                 });
             };
