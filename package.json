@@ -37,6 +37,7 @@
     "angular-timeago": "^0.4.3",
     "angular-ui-bootstrap": "^2.1.1",
     "chart.js": "^2.2.1",
+    "geolib": "^2.0.21",
     "iso-3166-country-codes-angular": "^1.2.1",
     "moment": "^2.14.1",
     "ng-file-upload": "^12.2.5",

@@ -64,6 +64,8 @@
                                                     <th>Geometry</th>
                                                     <th>Starboard xtd</th>
                                                     <th>Portside xtd</th>
+                                                    <th>Distance</th>
+                                                    <th>Direction</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -82,6 +84,8 @@
                                                     <td>{{object.get('geometrytype')}}</td>
                                                     <td>{{object.get('starboardxtd') | number:4 }}<span ng-if="object.get('starboardxtd')">nm</span></td>
                                                     <td>{{object.get('portsidextd') | number:4 }}<span ng-if="object.get('portsidextd')">nm</span></td>
+                                                    <td>{{object.get('distance')}}</td>
+                                                    <td>{{object.get('direction')}}</td>
 
                                                 </tr>
                                                 </tbody>

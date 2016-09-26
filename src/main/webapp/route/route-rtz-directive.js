@@ -89,6 +89,7 @@ angular.module('maritimeweb.route')
                         source: new ol.source.Vector({
                             features: []
                         }),
+                        updateWhileAnimating: true,
                         style: function (feature) {
                         // hide geoMarker if animation is active
                         if (scope.animating && feature.get('type') === 'geoMarker') {
@@ -171,7 +172,6 @@ angular.module('maritimeweb.route')
 
                         routeFeatureLayer.getSource().addFeatures(scope.features);
                         map.getView().setCenter(routeFeatureLayer.getSource().getFeatures()[0].getGeometry().getCoordinates());
-
                         // Clean up when the layer is destroyed
                         scope.$on('$destroy', function () {
                             if (angular.isDefined(routeLayers)) {
@@ -190,47 +190,74 @@ angular.module('maritimeweb.route')
                         scope.animating = false;
 
                         /**
-                         * Animation of the route. Maybe we can use this later.
+                         * Animation of the route.
                          */
 
                         var index = 0;
+                        var renders = 0;
                         var speed, now, orgIndexVal;
                         var speedInput = document.getElementById('speed');
                         var routeLength = scope.animatedfeatures.length;
-
+                        var style = new ol.style.Style({
+                            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                color: '#8959A8',
+                                src: 'http://openlayers.org/en/v3.18.2/examples/data/dot.png'
+                            }))
+                        });
+                        var markerStyle = new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 5,
+                                stroke: new ol.style.Stroke({
+                                    color: 'black',
+                                    width: 2
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: [255, 0, 0, 0.5]
+                                })
+                            })
+                        });
 
                         var moveFeature = function (event) {
                             var vectorContext = event.vectorContext;
                             var frameState = event.frameState;
 
+
                             if (scope.animating) {
                                 var elapsedTime = frameState.time - now;
-                                //$log.log("elapsedTime:" + elapsedTime);
-                                index = Math.round(speed * elapsedTime / 1000);
+                                //$log.log("elapsedTime:" + elapsedTime + " renders" + renders++);
+                                 index = Math.round(speed * elapsedTime / 1000);
 
                                 if (index >= scope.animatedfeatures.length) {
                                     index = 0; // rewind, and loop
-                                    //scope.stopAnimation(true); //
+                                    renders = 0;
                                     scope.stopAnimation(true);
                                     growl.info("Animation is about to start", {ttl: 5000});
                                     $timeout(function() {
                                         scope.startAnimation();
                                     },5000);
-
-
-
                                 }
 
                                 var feature = scope.animatedfeatures[index];
-                                vectorContext.drawFeature(feature, feature.getStyle());
+                                var retrievedStyle = feature.getStyle();
+                                retrievedStyle.getImage().load();
+                                vectorContext.drawFeature(feature, retrievedStyle);
+
                                 scope.activeRoutePoint = feature.get('position');
                                 scope.activeRouteName = feature.get('name');
                                 scope.activeRouteSpeed = feature.get('speed');
                                 scope.activeRouteTS = feature.get('eta');
                                 scope.activeRouteTSetaTimeAgo = feature.get('etatimeago');
+                            /*    var pan = ol.animation.pan({
+                                    duration: 500,
+                                    source: /!** @type {ol.Coordinate} *!/ (map.getView().getCenter())
+                                });
+                                map.beforeRender(pan);
+                                map.getView().setCenter(feature.getGeometry().getCoordinates());*/
 
                                 //index++;
                              }
+
+                            //$timeout(map.render(),3000);      // tell OL3 to continue the postcompose animation
                             map.render();      // tell OL3 to continue the postcompose animation
                         };
 
@@ -255,8 +282,6 @@ angular.module('maritimeweb.route')
                         scope.stopAnimation = function (ended) {
                             scope.animating = false;
                         };
-
-
 
                         /**
                          * Clickable waypoints pop-up content
