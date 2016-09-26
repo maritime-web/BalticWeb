@@ -123,6 +123,7 @@ angular.module('maritimeweb.route')
                 $scope.oLfeatures = []; // openlayers features
                 $scope.oLanimatedfeatures = []; // openlayers animated features
                 $scope.oLpoints = [];
+                $scope.totaldistance = 0;
 
                 var defaultWayPoint = {}; // standard waypoint
                 if (json_result.route.waypoints.defaultWaypoint) {
@@ -174,27 +175,27 @@ angular.module('maritimeweb.route')
 
                             feature['distance'] =  geolib.convertUnit('sm',geolib.getDistance(current_pos,  next_pos));
                             $log.log("getDistance:" + feature['distance']   );
+                            $scope.totaldistance += feature['distance'];
 
                             if(feature['geometryType'] === 'Orthodrome'){ // A great circle, also known as an orthodrome
                                 feature['direction'] = geolib.getBearing(current_pos, next_pos);
-                                $log.log("getBearing:" + feature['direction']   );
+                              //  $log.log("getBearing:" + feature['direction']   );
                             }else{ // Loxodrome (or rhumb line) is a line crossing all meridians at a constant angle.
                                 feature['direction'] = geolib.getRhumbLineBearing(current_pos, next_pos);
-                                $log.log("getRhumbLineBearing:" + feature['direction']   );
+                               // $log.log("getRhumbLineBearing:" + feature['direction']   );
                             }
-
 
                             feature['radian'] = feature['direction'] ? ((feature['direction'] - 90) * (Math.PI / 180)) : 0;
 
                             if(!feature['direction']){
-                                feature['direction'] = 1.0;
-                                feature['radian'] = 1.0;
+                                feature['direction'] = 0.0;
+                                feature['radian'] = 0.0;
                                 $log.error("its undefined. Feature" + JSON.stringify(feature));
 
                             }
                         }else{
-                            feature['direction'] = 1.0;
-                            feature['radian'] = 1.0;
+                            feature['direction'] = 0.0;
+                            feature['radian'] = 0.0;
 
                         }
 

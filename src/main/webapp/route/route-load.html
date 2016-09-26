@@ -15,7 +15,8 @@
                         <!--map-overview collapsed="true"></map-overview-->
                     </ol-map>
 
-                    <h4>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span>  Active Waypoint: <span class="badge badge-info">#{{$root.activeWayPoint}}</span></h4>
+                    <h4>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span>  Active Waypoint: <span class="badge badge-info">#{{$root.activeWayPoint}}</span>
+                        Distance: <span class="badge badge-info">{{totaldistance | number:2 }}</span>Nautical miles </h4>
                 </div>
             </div>
 

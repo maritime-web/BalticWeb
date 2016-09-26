@@ -80,6 +80,44 @@ angular.module('maritimeweb.route')
                                     color: 'white', width: 2
                                 })
                             })
+                        }),
+                        endStyle: new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 6,
+                                stroke: new ol.style.Stroke({
+                                    color: 'darkred',
+                                    width: 2
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: [255, 0, 0, 0.5]
+                                })
+                            }),
+                            text: new ol.style.Text({
+                                text: 'END', // attribute code
+                                font: 'bold 14 Verdana',
+                                offsetY: 20,
+                                stroke: new ol.style.Stroke({color: "white", width: 5})
+                            })
+                        }),
+                        startStyle: new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 6,
+                                stroke: new ol.style.Stroke({
+                                    color: 'darkred',
+                                    width: 2
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: [255, 0, 0, 0.5]
+                                })
+                            }),
+                            text: new ol.style.Text({
+                                text: 'START', // attribute code
+                                font: 'bold 14 Verdana',
+                                offsetY: 20,
+                                stroke: new ol.style.Stroke({color: "white", width: 5})
+                                //rotation: 45
+                            })
+
                         })
                     };
 
@@ -198,24 +236,6 @@ angular.module('maritimeweb.route')
                         var speed, now, orgIndexVal;
                         var speedInput = document.getElementById('speed');
                         var routeLength = scope.animatedfeatures.length;
-                        var style = new ol.style.Style({
-                            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                color: '#8959A8',
-                                src: 'http://openlayers.org/en/v3.18.2/examples/data/dot.png'
-                            }))
-                        });
-                        var markerStyle = new ol.style.Style({
-                            image: new ol.style.Circle({
-                                radius: 5,
-                                stroke: new ol.style.Stroke({
-                                    color: 'black',
-                                    width: 2
-                                }),
-                                fill: new ol.style.Fill({
-                                    color: [255, 0, 0, 0.5]
-                                })
-                            })
-                        });
 
                         var moveFeature = function (event) {
                             var vectorContext = event.vectorContext;
@@ -379,9 +399,16 @@ angular.module('maritimeweb.route')
                                 var startMarker = scope.features[0];
                                 var endMarker = scope.features[scope.features.length - 1];
 
+                                startMarker.setStyle(styles['startStyle']);
+                                endMarker.setStyle(styles['endStyle']);
+
+
+
                                 //animationLayer.getSource().addFeatures(scope.animatedfeatures);
                                 pathLayer.getSource().addFeature(routeFeature);
                                 routeFeatureLayer.getSource().addFeatures(scope.features);
+                                routeFeatureLayer.getSource().addFeature(startMarker);
+                                routeFeatureLayer.getSource().addFeature(endMarker);
 
                                 var extent = routeFeatureLayer.getSource().getExtent();
                                 map.getView().fit(extent, map.getSize());  // automatically zoom and pan the map to fit my features
