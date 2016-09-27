@@ -9,7 +9,7 @@
             <div class="col-md-12">
                 <div class="well">
 
-                    <ol-map class="route-details-map">
+                    <ol-map class="route-details-map" minzoom="1" swlon="0" swlat="0" nelon="90" nelat="90">
                         <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
                         <routeanimate points="routePoints" feat="routeFeatures" autoplay="true"></routeanimate>
                     </ol-map>
