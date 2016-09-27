@@ -251,10 +251,10 @@ angular.module('maritimeweb.route')
                                     index = 0; // rewind, and loop
                                     renders = 0;
                                     scope.stopAnimation(true);
-                                    growl.info("Animation is about to start", {ttl: 5000});
+                                    /* growl.info("Animation is about to start", {ttl: 5000});
                                     $timeout(function() {
                                         scope.startAnimation();
-                                    },5000);
+                                    },5000);*/
                                 }
 
                                 var feature = scope.animatedfeatures[index];

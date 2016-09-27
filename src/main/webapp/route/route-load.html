@@ -56,16 +56,16 @@
                                                     <th>#</th>
                                                     <th>Name</th>
                                                     <th>Time</th>
-                                                    <th>Timestamp</th>
+                                                    <th>ETA</th>
                                                     <th><span class="glyphicon glyphicon-flag"></span> Position</th>
-                                                    <th>Radius</th>
-                                                    <th>Speed</th>
-                                                    <th>Min. speed</th>
-                                                    <th>Max. speed</th>
+                                                    <th>Radius (nm)</th>
+                                                    <th>Speed (knot)</th>
+                                                    <th>Min. speed (knot)</th>
+                                                    <th>Max. speed (knot)</th>
                                                     <th>Geometry</th>
-                                                    <th>Starboard xtd</th>
-                                                    <th>Portside xtd</th>
-                                                    <th>Distance</th>
+                                                    <th>Starboard xtd (nm)</th>
+                                                    <th>Portside xtd (nm)</th>
+                                                    <th>Distance (nm)</th>
                                                     <th>Direction</th>
                                                 </tr>
                                                 </thead>
@@ -78,15 +78,15 @@
                                                     <td>{{object.get('etatimeago')}}</td>
                                                     <td>{{object.get('eta')}}</td>
                                                     <td> {{ toLonLat(object.get('lon'), object.get('lat')) | lonlat:{ decimals : 3, pp: true} }}</td>
-                                                    <td>{{object.get('radius')}}<span ng-if="object.get('radius')">nm</span></td>
-                                                    <td>{{object.get('speed')}}<span ng-if="object.get('speed')">nm</span></td>
-                                                    <td>{{object.get('speedmin')}}<span ng-if="object.get('speedmin')">nm</span></td>
-                                                    <td>{{object.get('speedmax')}}<span ng-if="object.get('speedmax')">nm</span></td>
+                                                    <td>{{object.get('radius') | number:2}}</td>
+                                                    <td>{{object.get('speed')}}</td>
+                                                    <td>{{object.get('speedmin')}}</td>
+                                                    <td>{{object.get('speedmax')}}</td>
                                                     <td>{{object.get('geometrytype')}}</td>
-                                                    <td>{{object.get('starboardxtd') | number:4 }}<span ng-if="object.get('starboardxtd')">nm</span></td>
-                                                    <td>{{object.get('portsidextd') | number:4 }}<span ng-if="object.get('portsidextd')">nm</span></td>
-                                                    <td>{{object.get('distance')}}</td>
-                                                    <td>{{object.get('direction')}}</td>
+                                                    <td>{{object.get('starboardxtd') | number:4 }}</td>
+                                                    <td>{{object.get('portsidextd') | number:4 }}</td>
+                                                    <td>{{object.get('distance')| number:2}}</td>
+                                                    <td>{{object.get('direction')| number:2}}</td>
 
                                                 </tr>
                                                 </tbody>

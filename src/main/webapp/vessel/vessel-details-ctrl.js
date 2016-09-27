@@ -87,9 +87,11 @@ angular.module('maritimeweb.vessel')
                             }))
                             ,
                             text: new ol.style.Text({
-                                text: $filter('timeAgo')(value.ts) + ' - ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC', // attribute code
-                                size: 10,
-                                offsetY: 20
+                                text: $filter('timeAgo')(value.ts) + ' - ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss', 'UTC') , // attribute code
+                                font: 'bold 14 Verdana',
+                                offsetY: 40,
+                                stroke: new ol.style.Stroke({color: "white", width: 5}),
+                                size: 10
                             })
                         });
 

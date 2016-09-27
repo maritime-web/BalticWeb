@@ -248,6 +248,7 @@ angular.module('maritimeweb.route')
                         $scope.rtzJSON = fileReader.transformRtzXMLtoJSON(result);
                         resetChartArrays();
                         createOpenLayersFeatFromRTZ($scope.rtzJSON);
+                        $window.scrollTo(0, 0);
                     });
             };
 
@@ -397,10 +398,13 @@ angular.module('maritimeweb.route')
             $scope.sogChartlabels = charts.listWaypointLabels;
             $scope.sogChartseries = ['Speed', 'Min. speed', 'Max. speed', 'starboard', 'portside', 'radius'];
             $scope.sogChartdata = [charts.listSpeed, charts.listMinSpeed, charts.listMaxSpeed, charts.listStarboardxtd, charts.listPortsidextd, charts.listRadius];
+
+
             $scope.onClick = function (points, evt) {
                 angular.forEach(points, function (value, key) {
                     if (value._index != null && value._index >= 0) {
                         $rootScope.activeWayPoint = (points[0]._index + 1);
+                        $window.scrollTo(0, 0);
                     }
                 });
                 console.log("#" + $rootScope.activeWayPoint);
