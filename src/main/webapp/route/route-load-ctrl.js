@@ -39,6 +39,7 @@ angular.module('maritimeweb.route')
                 {id: 'Helsinki_to_Rotterdam_via_Aarhus-Bremerhaven.rtz', name: 'BIMCO - Helsinki to Rotterdam'},
                 /*  {id: 'muugaPRVconsprnt.rtz', name: 'Talin - Helsinki'},*/
                 {id: 'hesastofuru.rtz', name: 'Helsinki - Stockholm'},
+                {id: 'rtz_route_with_signature.xml', name: 'St. Peter - Kot Orreng'},
                 {id: 'kielPRV.rtz', name: 'Helsinki - Kiel'}
             ];
             $scope.sampleFile = $scope.sampleRTZdata[0].id;

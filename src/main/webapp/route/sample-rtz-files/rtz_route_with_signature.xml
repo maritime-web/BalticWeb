@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<route xmlns="http://www.cirm.org/RTZ/1/0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.cirm.org/RTZ/1/0 http://www.cirm.org/rtz/RTZ%20Schema%20version%201_0.xsd"
+       version="1.0"
+>
+    <routeInfo routeName="StPeter-Kot Orreng"/>
+    <waypoints>
+        <waypoint id="1" name="Port entrance">
+            <position lat="59.98931667574726" lon="30.159833325335235"/>
+        </waypoint>
+        <waypoint id="2" name="0002" radius="0.5">
+            <position lat="59.96286663763784" lon="29.794849991029313"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="8.0" speedMin="8.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="3" name="Kronstadt" radius="0.5">
+            <position lat="59.97996667762117" lon="29.76073332798802"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="8.0" speedMin="8.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="4" name="Zapadnaya" radius="0.5">
+            <position lat="60.0231499909683" lon="29.50578332391862"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="8.0" speedMin="8.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="5" name="0005" radius="0.5">
+            <position lat="60.02598332456036" lon="29.495249993330823"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="8.0" speedMin="8.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="6" name="Pilot" radius="0.5">
+            <position lat="60.02803331025509" lon="29.426183328783296"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="8.0" speedMin="8.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="7" name="0007" radius="1.0">
+            <position lat="60.051838274242854" lon="28.53030436619999"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="22.0" speedMin="22.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="8" name="Seskar" radius="1.0">
+            <position lat="60.073795907707975" lon="28.428380176391038"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="22.0" speedMin="22.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="9" name="Nagayeva grund" radius="1.0">
+            <position lat="60.13539368351596" lon="28.271932469102776"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="22.0" speedMin="22.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="10" name="Sommers" radius="1.0">
+            <position lat="60.200093682009175" lon="27.766563118998356"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="22.0" speedMin="22.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="11" name="Gogland" radius="1.0">
+            <position lat="59.986059338925855" lon="27.04763095288717"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="22.0" speedMin="22.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="12" name="Rodsher N" radius="1.0">
+            <position lat="60.02499130543409" lon="26.590009138031903"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="22.0" speedMin="22.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="13" name="Rodsher NW" radius="1.0">
+            <position lat="60.016666629743206" lon="26.49999999518128"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="22.0" speedMin="22.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="14" name="DIGSKAR" radius="1.0">
+            <position lat="60.14398329489125" lon="26.319949996266075"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="22.0" speedMin="22.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="15" name="TAINIO" radius="2.0">
+            <position lat="60.19506666490741" lon="26.382266662219443"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="22.0" speedMin="22.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="16" name="PILOT" radius="1.0">
+            <position lat="60.239942209102075" lon="26.420683642802373"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="18.0" speedMin="18.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="17" name="OSTERGRUND" radius="1.0">
+            <position lat="60.27334667987461" lon="26.499769981274476"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="18.0" speedMin="18.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="18" name="LANGO" radius="0.7999999999999999">
+            <position lat="60.36699772008716" lon="26.68387987318138"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="18.0" speedMin="18.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="19" name="VEHKALUOTO 1" radius="1.0">
+            <position lat="60.39926985436944" lon="26.875134136262318"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="18.0" speedMin="18.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="20" name="MUSSALO" radius="1.0">
+            <position lat="60.417449977092126" lon="26.918766659979887"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="21" name="KUKOURIN MUTKA" radius="1.0">
+            <position lat="60.43023329575216" lon="26.956999996130367"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="22" name="RUOTSIN SALMI" radius="0.5">
+            <position lat="60.45421667879728" lon="26.97241666319368"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="23" name="NORSKAN SALMI" radius="1.0">
+            <position lat="60.468849963585804" lon="26.9697166626101"/>
+            <leg geometryType="Loxodrome" portsideXTD="0.5" speedMax="12.0" speedMin="12.0" starboardXTD="0.5"/>
+        </waypoint>
+        <waypoint id="24" name="HIETANEN" radius="0.5">
+            <position lat="60.48263332278122" lon="26.954783325553915"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="1">
+            <calculated>
+                <sheduleElement eta="2016-03-02T12:00:00.000Z" waypointId="1"/>
+                <sheduleElement eta="2016-03-03T09:28:46.000Z" speed="8.0" waypointId="2"/>
+                <sheduleElement eta="2016-03-03T09:39:38.000Z" speed="8.0" waypointId="3"/>
+                <sheduleElement eta="2016-03-03T10:40:14.000Z" speed="8.0" waypointId="4"/>
+                <sheduleElement eta="2016-03-03T10:42:55.000Z" speed="8.0" waypointId="5"/>
+                <sheduleElement eta="2016-03-03T10:58:28.000Z" speed="8.0" waypointId="6"/>
+                <sheduleElement eta="2016-03-03T12:11:49.000Z" speed="8.0" waypointId="7"/>
+                <sheduleElement eta="2016-03-03T12:20:53.000Z" speed="8.0" waypointId="8"/>
+                <sheduleElement eta="2016-03-03T12:37:09.000Z" speed="8.0" waypointId="9"/>
+                <sheduleElement eta="2016-03-03T13:19:39.000Z" speed="8.0" waypointId="10"/>
+                <sheduleElement eta="2016-03-03T14:28:00.000Z" speed="8.0" waypointId="11"/>
+                <sheduleElement eta="2016-03-03T15:05:59.000Z" speed="8.0" waypointId="12"/>
+                <sheduleElement eta="2016-03-03T15:13:28.000Z" speed="8.0" waypointId="13"/>
+                <sheduleElement eta="2016-03-03T15:38:58.000Z" speed="8.0" waypointId="14"/>
+                <sheduleElement eta="2016-03-03T15:48:45.000Z" speed="8.0" waypointId="15"/>
+                <sheduleElement eta="2016-03-03T15:58:30.000Z" speed="8.0" waypointId="16"/>
+                <sheduleElement eta="2016-03-03T16:08:48.000Z" speed="8.0" waypointId="17"/>
+                <sheduleElement eta="2016-03-03T16:34:57.000Z" speed="8.0" waypointId="18"/>
+                <sheduleElement eta="2016-03-03T16:54:56.000Z" speed="8.0" waypointId="19"/>
+                <sheduleElement eta="2016-03-03T17:03:23.000Z" speed="8.0" waypointId="20"/>
+                <sheduleElement eta="2016-03-03T17:10:13.000Z" speed="8.0" waypointId="21"/>
+                <sheduleElement eta="2016-03-03T17:17:46.000Z" speed="8.0" waypointId="22"/>
+                <sheduleElement eta="2016-03-03T17:22:10.000Z" speed="8.0" waypointId="23"/>
+                <sheduleElement eta="2016-03-03T17:31:32.000Z" speed="8.0" waypointId="24"/>
+            </calculated>
+        </schedule>
+    </schedules>
+    <extensions>
+    <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <SignedInfo>
+            <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+            <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+            <Reference URI="">
+                <Transforms>
+                    <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                </Transforms>
+                <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                <DigestValue>ZXFoEHa9WM+4XDX5uXpAkdzOcYxXREYqclSBD3lOJbQ=</DigestValue>
+            </Reference>
+        </SignedInfo>
+        <SignatureValue>Z6XTKUGkIXoW8RK3uqektpjOAa1dZMVlh01ssgF8fxEmQt9Y7vHiVXSipHhND0kydlUAnIUeyl6W
+            bus9jTMg1IjbouTH8rSzGkoEPuFpEzkVUPbxH/uihOn46nUTcHiglHUnhbDy/hU9hwWBBxSSE8X3
+            iTA0gOkg1Q4F8ukNyVUojU3t62z0MhtrS2goRM/fX6nukvxuPOqNyEFGRCN6pHP4GaXxH2K2tIvb
+            AVSGN5C0rYvuJ7TJc2y+vuFW2AmknzrpNzhkXzoqg3AjxIe4YqUB9Pg1wQPvO2gn5qq0TNe/IySE
+            UgUstAfu18s9vemWa3/2n9lw56pEySRrHo292A==
+        </SignatureValue>
+        <KeyInfo>
+            <X509Data>
+                <X509Certificate>MIIEiDCCA3CgAwIBAgIIm32CpIvaJ5AwDQYJKoZIhvcNAQEFBQ
+                    AwfjELMAkGA1UEBhMCRkkxFDAS
+                    BgNVBAgTC0xhbnNpLVN1b21pMRAwDgYDVQQHEwdLYWFyaW5hMRQwEgYDVQQKEwtOYXZpZWxla3Ry
+                    bzESMBAGA1UECxMJRU5TSS1UZXN0MR0wGwYDVQQDExRlbnNpLWludGVybWVkaWF0ZS1jYTAeFw0x
+                    NTA3MDUyMTAwMDBaFw0xNjA3MDUwOTAwMDBaMHYxCzAJBgNVBAYTAkZJMRQwEgYDVQQIEwtMYW5z
+                    aS1TdW9taTEQMA4GA1UEBxMHS2FhcmluYTEUMBIGA1UEChMLTmF2aWVsZWt0cm8xEjAQBgNVBAsT
+                    CUVOU0ktVGVzdDEVMBMGA1UEAxMMZW5zaS1jbGllbnQxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+                    MIIBCgKCAQEAu2F6mMqR6A9jMaeCV/h+CS7/cZ0lKYlJA+ei6hGWb+3+MOZJtTVZAd9HCsemrIG6
+                    eOOd+hKjaGLxb84u58YVHv9zIf4OJJC/27ydME2Iyr1R6sLOz1gTYB5wzJfiZavO0XoMLrOqdPme
+                    3bHeqMTRwCL4TfaMn/MoWbxl9htWjT18BTnTQD0+Z2JAk4x3zs3jt41W14CuMK0ORyvXhHlIFrOS
+                    PDD6qr7kEunHrX4ekUTXY9zG54KUk/qKGueUZByO0c/Q/BYh+EYaztvl+Qq9J30q3yt4UYgNPFtT
+                    uJxTyvFfdN29Aq4KP/otQZu6ktqCpL65jNER6qfCrB192oHWjwIDAQABo4IBEDCCAQwwgakGA1Ud
+                    IwSBoTCBnoAUzAvmT5IQjBIvs2F3cVJt/PHTbo2hfKR6MHgxCzAJBgNVBAYTAkZJMRQwEgYDVQQI
+                    EwtMYW5zaS1TdW9taTEQMA4GA1UEBxMHS2FhcmluYTEUMBIGA1UEChMLTmF2aWVsZWt0cm8xEjAQ
+                    BgNVBAsTCUVOU0ktVGVzdDEXMBUGA1UEAxMOZW5zaS10ZXN0LXJvb3SCCBAvX8jD405oMB0GA1Ud
+                    DgQWBBS5Ne67ExZsnKTZha6EkTEEUA+1YTALBgNVHQ8EBAMCBeAwMgYDVR0lBCswKQYIKwYBBQUH
+                    AwIGCCsGAQUFBwMBBgorBgEEAYI3FAICBgcrBgEFAgMFMA0GCSqGSIb3DQEBBQUAA4IBAQBW6efz
+                    4eVcAe/oh4yDUsLNfhTK2DevN1JM9/dMnhksh2XlvFP+uk7aHXTiIq60AbS7bZeie5TLa+KeoO5L
+                    XhBH/0NzWnUYbHtYtnSgEtYlZM6PrZ29JyNVqfwl7P7ZksG/thfzbw76rr4yT9GIca70P/DWN33m
+                    uFOfeomOQj5QkL5q2LF5FZSPWgZoInj0pVRuYnzhK9+D2MWsZgMk0Lx/G6I0WwhhCGN6J8TPOf5W
+                    jPoF4hJEfTLujE4HZW8Kg/3RrSZbadgdAoq0UJIlYSkmC/JD/YFekZ9k5QOgziTVpdduyIe3wB79
+                    OONRp/buCSYk/p5UkTAbT8zSQcLlTAgd
+                </X509Certificate>
+                <X509Certificate>
+                    MIIEnjCCA4agAwIBAgIIEC9fyMPjTmgwDQYJKoZIhvcNAQEFBQAweDELMAkGA1UEBhMCRkkx
+                    FDAS
+                    BgNVBAgTC0xhbnNpLVN1b21pMRAwDgYDVQQHEwdLYWFyaW5hMRQwEgYDVQQKEwtOYXZpZWxla3Ry
+                    bzESMBAGA1UECxMJRU5TSS1UZXN0MRcwFQYDVQQDEw5lbnNpLXRlc3Qtcm9vdDAeFw0xNTA3MDUy
+                    MTAwMDBaFw0yNTA3MDMwOTAwMDBaMH4xCzAJBgNVBAYTAkZJMRQwEgYDVQQIEwtMYW5zaS1TdW9t
+                    aTEQMA4GA1UEBxMHS2FhcmluYTEUMBIGA1UEChMLTmF2aWVsZWt0cm8xEjAQBgNVBAsTCUVOU0kt
+                    VGVzdDEdMBsGA1UEAxMUZW5zaS1pbnRlcm1lZGlhdGUtY2EwggEiMA0GCSqGSIb3DQEBAQUAA4IB
+                    DwAwggEKAoIBAQCZoQihdjQ+rmGcJhPzK2m0clqD1Do2xyhhccaC74jl+aoI2/S+mVzX7fOwfk26
+                    R0S3lpt/b2rtpTvGfsVH+Ia6iRBNnpEUrWsSkmsyiJGXd1KO4VWG/qZjp2qKYrt+bScBHg0nJlNu
+                    qh4hnBKhcWDYMyPxVtWK9Av/TuUZnmfzyhv6tj3vmo7R1OwXZwL8qjHbif8UfNdX2M3GG8yeEzHd
+                    wMBzA86J/H0iX3ojHfwbAdHnAkmdw2XEmNY+H8riSzbZG0C86+xcJkxfKs5WMl8JlFljHAxWxc4i
+                    ULy3mJhu1XdWugt5aiUTuLuv6JVtav9A/sGCTG7xjjGkK6lUBCB3AgMBAAGjggEkMIIBIDASBgNV
+                    HRMBAf8ECDAGAQH/AgEAMIGpBgNVHSMEgaEwgZ6AFCS8RBPVUX2x73+T7LhnF9Na2Cu2oXykejB4
+                    MQswCQYDVQQGEwJGSTEUMBIGA1UECBMLTGFuc2ktU3VvbWkxEDAOBgNVBAcTB0thYXJpbmExFDAS
+                    BgNVBAoTC05hdmllbGVrdHJvMRIwEAYDVQQLEwlFTlNJLVRlc3QxFzAVBgNVBAMTDmVuc2ktdGVz
+                    dC1yb290gghBZB3Hmnpp3DAdBgNVHQ4EFgQUzAvmT5IQjBIvs2F3cVJt/PHTbo0wCwYDVR0PBAQD
+                    AgGmMDIGA1UdJQQrMCkGCCsGAQUFBwMCBggrBgEFBQcDAQYKKwYBBAGCNxQCAgYHKwYBBQIDBTAN
+                    BgkqhkiG9w0BAQUFAAOCAQEAUXyK8BpVPhBaMZrsBmJCZWk490Bf5zwwpa59zHe4gq/AGA1vNRPH
+                    jD3rrv3lNsvI7uLp8amMJD2pH9fu61+031/DyHELpdsZiKKvuMtUVmuplRqVnCg0rfipUElm088v
+                    MBRwHykhKw4NeAuWgPdL2984NkThcxuZQ5+yuz2atC5vE03YCbnpOxzjsN2bZcqMWujCkuwSZhUY
+                    LmjyP84RaA34vaAf/L9TnB+2sWE1QrT7/gfmdCX2I5CLJpTdkRZVvO4Lt/t/pPHixNrACibhFALE
+                    5iOV2x06AbjGhvT7EfYRo0V3Y0c2eRIKWkx89EVFYo6DuvyIQEh/7AXuzMP/iQ==
+                </X509Certificate>
+            </X509Data>
+        </KeyInfo>
+    </Signature>
+    </extensions>
+</route>
