@@ -8,7 +8,7 @@
 
                     <ol-map class="route-details-map" minzoom="1" swlon="0" swlat="0" nelon="90" nelat="90">
                         <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
-                        <routertz points="oLpoints" features="oLfeatures" animatedfeatures="oLanimatedfeatures" autoplay="false"></routertz>
+                        <routertz points="oLpoints" features="oLfeatures" animatedfeatures="oLanimatedfeatures" autoplay="true"></routertz>
                         <map-scale-line units="nautical"></map-scale-line>
                         <map-mouse-position></map-mouse-position>
                         <!--<map-layer-switcher></map-layer-switcher>-->
@@ -75,18 +75,18 @@
                                                     ng-click="setSelected(object.get('id'))">
                                                     <td ng-bind="object.get('id')"></td>
                                                     <td ng-bind="object.get('wayname')"> </td>
-                                                    <td>{{object.get('etatimeago')}}</td>
-                                                    <td>{{object.get('eta')}}</td>
-                                                    <td> {{ toLonLat(object.get('lon'), object.get('lat')) | lonlat:{ decimals : 3, pp: true} }}</td>
-                                                    <td>{{object.get('radius') | number:2}}</td>
-                                                    <td>{{object.get('speed')}}</td>
-                                                    <td>{{object.get('speedmin')}}</td>
-                                                    <td>{{object.get('speedmax')}}</td>
+                                                    <td><small>{{object.get('etatimeago')}}</small></td>
+                                                    <td><small>{{object.get('eta')}}</small></td>
+                                                    <td><small>{{ toLonLat(object.get('lon'), object.get('lat')) | lonlat:{ decimals : 3, pp: true} }}</small></td>
+                                                    <td class="text-right">{{object.get('radius') | number:2}}</td>
+                                                    <td class="text-right">{{object.get('speed')}}</td>
+                                                    <td class="text-right">{{object.get('speedmin')}}</td>
+                                                    <td class="text-right">{{object.get('speedmax')}}</td>
                                                     <td>{{object.get('geometrytype')}}</td>
-                                                    <td>{{object.get('starboardxtd') | number:4 }}</td>
-                                                    <td>{{object.get('portsidextd') | number:4 }}</td>
-                                                    <td>{{object.get('distance')| number:2}}</td>
-                                                    <td>{{object.get('direction')| number:2}}</td>
+                                                    <td class="text-right">{{object.get('starboardxtd') | number:4 }}</td>
+                                                    <td class="text-right">{{object.get('portsidextd') | number:4 }}</td>
+                                                    <td class="text-right">{{object.get('distance')| number:2}}</td>
+                                                    <td class="text-right">{{object.get('direction')| number:2}}°</td>
 
                                                 </tr>
                                                 </tbody>
@@ -153,7 +153,8 @@
         <div class="col-lg-6 col-lg-offset-3">
             <div class="alert alert-warning alert-dismissible " role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <strong>Demo page!</strong> Please note that this is not an operational page. Here you can load an RTZ route file. Nothing more. The route is not stored or exchanged.
+                <strong>Demo page!</strong> Please note that this is not an operational page. Here you can upload an RTZ route file. Nothing more. The route is not stored or exchanged.<br>
+                Be aware that the route-demo page is a work-in-progress, only a subset of the <a href="http://www.cirm.org/rtz/RTZ%20Schema%20version%201_0.txt">RTZ specification</a> is supported atm. Feedback, comments and error reporting are most welcome
             </div>
         </div>
         <hr>

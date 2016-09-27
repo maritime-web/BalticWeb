@@ -6,8 +6,8 @@ angular.module('maritimeweb.route')
 
 /** Service for displaying a route on a map **/
 
-    .directive('routertz', ['$rootScope', '$timeout', 'MapService', 'VesselService', 'growl', '$log',
-        function ($rootScope, $timeout, MapService, VesselService, growl, $log) {
+    .directive('routertz', ['$rootScope', '$timeout', 'MapService', 'VesselService', 'growl', '$log', '$window',
+        function ($rootScope, $timeout, MapService, VesselService, growl, $log, $window) {
             return {
                 restrict: 'E',
                 require: '^olMap',
@@ -374,6 +374,7 @@ angular.module('maritimeweb.route')
                                 var activeFeature = routeFeatureLayer.getSource().getFeatureById(newValue);
                                 $log.debug("we need to highlight this one. ActiveFeature  ID=" + activeFeature.getId());
                                 scope.stopAnimation();
+
                                 if (activeFeature) {
                                     var coordinate = activeFeature.getGeometry().getCoordinates();
                                     scope.populatePopupWaypoint(activeFeature);
@@ -382,6 +383,7 @@ angular.module('maritimeweb.route')
                                     overlay.setPosition(undefined);
                                     closer.blur();
                                 }
+                                $window.scrollTo(0, 0);
                             });
                     }, true);
 
@@ -403,7 +405,6 @@ angular.module('maritimeweb.route')
 
                                 startMarker.setStyle(styles['startStyle']);
                                 endMarker.setStyle(styles['endStyle']);
-
 
 
                                 //animationLayer.getSource().addFeatures(scope.animatedfeatures);
