@@ -131,6 +131,43 @@ angular.module('maritimeweb.route')
                     $log.info("defaultWayPoint" + JSON.stringify(defaultWayPoint));
                 }
 
+                var calculateDistanceAndDirection = function (key, way_value, feature) {
+                    /**
+                     * Calculate the distance and the angle given the current point
+                     */
+                    if (key + 1 < json_result.route.waypoints.waypoint.length) {
+                        var next_point_lat = json_result.route.waypoints.waypoint[key + 1].position._lat;
+                        var next_point_lon = json_result.route.waypoints.waypoint[key + 1].position._lon;
+                        var current_pos = {latitude: way_value.position._lat, longitude: way_value.position._lon};
+                        var next_pos = {latitude: next_point_lat, longitude: next_point_lon};
+
+                        feature['distance'] = geolib.convertUnit('sm', geolib.getDistance(current_pos, next_pos));
+                        // $log.log("getDistance:" + feature['distance']   );
+                        $scope.totaldistance += feature['distance'];
+
+                        if (feature['geometryType'] === 'Orthodrome') { // A great circle, also known as an orthodrome
+                            feature['direction'] = geolib.getBearing(current_pos, next_pos);
+                              $log.log("getBearing:" + feature['direction']   );
+                        } else { // Loxodrome (or rhumb line) is a line crossing all meridians at a constant angle.
+                            feature['direction'] = geolib.getRhumbLineBearing(current_pos, next_pos);
+                             $log.log("getRhumbLineBearing:" + feature['direction']   );
+                        }
+
+                        //feature['radian'] = feature['direction'] ? ((feature['direction'] - 90) * (Math.PI / 180)) : 0;
+                        feature['radian'] =  ((feature['direction'] - 90) * (Math.PI / 180));
+
+                        if (!feature['direction'] && feature['direction']!=0 ) {
+                            feature['direction'] = 0.0;
+                            feature['radian'] = 0.0;
+                            $log.error("its undefined. Feature" + JSON.stringify(feature));
+
+                        }
+                    } else {
+                        feature['direction'] = 0.0;
+                        feature['radian'] = 0.0;
+
+                    }
+                };
                 if (!json_result.route.waypoints.waypoint &&
                     json_result.route.waypoints.waypoint.length > 0) {
                     growl.error("No Waypoints in RTZ file");
@@ -163,41 +200,7 @@ angular.module('maritimeweb.route')
                             feature['portsideXTD'] = (way_value.leg._portsideXTD) ? way_value.leg._portsideXTD : feature['portsideXTD'];
                             feature['starboardXTD'] = (way_value.leg._starboardXTD) ? way_value.leg._starboardXTD : feature['starboardXTD'];
                         }
-
-                        /**
-                         * Calculate the distance and the angle given the current point
-                         */
-                        if(key+1 < json_result.route.waypoints.waypoint.length ){
-                            var next_point_lat = json_result.route.waypoints.waypoint[key+1].position._lat;
-                            var next_point_lon = json_result.route.waypoints.waypoint[key+1].position._lon;
-                            var current_pos = {latitude: way_value.position._lat, longitude: way_value.position._lon};
-                            var next_pos = {latitude: next_point_lat, longitude: next_point_lon};
-
-                            feature['distance'] =  geolib.convertUnit('sm',geolib.getDistance(current_pos,  next_pos));
-                            $log.log("getDistance:" + feature['distance']   );
-                            $scope.totaldistance += feature['distance'];
-
-                            if(feature['geometryType'] === 'Orthodrome'){ // A great circle, also known as an orthodrome
-                                feature['direction'] = geolib.getBearing(current_pos, next_pos);
-                              //  $log.log("getBearing:" + feature['direction']   );
-                            }else{ // Loxodrome (or rhumb line) is a line crossing all meridians at a constant angle.
-                                feature['direction'] = geolib.getRhumbLineBearing(current_pos, next_pos);
-                               // $log.log("getRhumbLineBearing:" + feature['direction']   );
-                            }
-
-                            feature['radian'] = feature['direction'] ? ((feature['direction'] - 90) * (Math.PI / 180)) : 0;
-
-                            if(!feature['direction']){
-                                feature['direction'] = 0.0;
-                                feature['radian'] = 0.0;
-                                $log.error("its undefined. Feature" + JSON.stringify(feature));
-
-                            }
-                        }else{
-                            feature['direction'] = 0.0;
-                            feature['radian'] = 0.0;
-
-                        }
+                        calculateDistanceAndDirection(key, way_value, feature);
 
                         if (typeof(json_result.route.schedules.schedule.calculated) !== "undefined") {
 
@@ -314,22 +317,35 @@ angular.module('maritimeweb.route')
                 var waypointPosition = new ol.geom.Point(ol.proj.transform([parseFloat(waypoint.position._lon), parseFloat(waypoint.position._lat)], 'EPSG:4326', 'EPSG:900913'));
                 var markWaypoint = this.createOpenLayerFeature(waypointPosition, waypoint);
                 markWaypoint.setId(waypoint.id);
-
-                if(!markWaypoint.get('radian')){
-                    $log.error("radian is not defined");
+                var animatedMarkerStyle;
+                if(!markWaypoint.get('radian') && markWaypoint.get('radian') == 0){
+                    $log.debug("radian is not defined ID=" + markWaypoint.get('id'));
                     markWaypoint['radian'] = 0;
+                     animatedMarkerStyle = new ol.style.Style({
+                        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                            anchor: [0.5, 0.5],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'fraction',
+                            opacity: 0.85,
+                            rotation:  markWaypoint.get('radian'),
+                            rotateWithView: false,
+                            src: 'img/vessel_green_moored.png'
+                        }))
+                    });
+
+                }else {
+                     animatedMarkerStyle = new ol.style.Style({
+                        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                            anchor: [0.5, 0.5],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'fraction',
+                            opacity: 0.85,
+                            rotation:  markWaypoint.get('radian'),
+                            rotateWithView: false,
+                            src: 'img/vessel_green.png'
+                        }))
+                    });
                 }
-                var animatedMarkerStyle = new ol.style.Style({
-                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                        anchor: [0.5, 0.5],
-                        anchorXUnits: 'fraction',
-                        anchorYUnits: 'fraction',
-                        opacity: 0.85,
-                        rotation:  markWaypoint.get('radian'),
-                        rotateWithView: false,
-                        src: 'img/vessel_green.png'
-                    }))
-                });
                 markWaypoint.setStyle(animatedMarkerStyle);
                 return markWaypoint;
             };

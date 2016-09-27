@@ -6,9 +6,9 @@
             <div ng-if="oLfeatures.length > 0">
                 <div id="rtz-map" class="well">
 
-                    <ol-map class="route-details-map" minzoom="1">
+                    <ol-map class="route-details-map" minzoom="1" swlon="0" swlat="0" nelon="90" nelat="90">
                         <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
-                        <routertz points="oLpoints" features="oLfeatures" animatedfeatures="oLanimatedfeatures" autoplay="true"></routertz>
+                        <routertz points="oLpoints" features="oLfeatures" animatedfeatures="oLanimatedfeatures" autoplay="false"></routertz>
                         <map-scale-line units="nautical"></map-scale-line>
                         <map-mouse-position></map-mouse-position>
                         <!--<map-layer-switcher></map-layer-switcher>-->
@@ -70,7 +70,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat="object in oLfeatures | limitTo: 100"
+                                                <tr ng-repeat="object in oLfeatures | limitTo: 300"
                                                     ng-class="{ 'active'   : $root.activeWayPoint == object.get('id')}"
                                                     ng-click="setSelected(object.get('id'))">
                                                     <td ng-bind="object.get('id')"></td>

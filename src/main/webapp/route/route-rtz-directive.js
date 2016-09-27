@@ -260,19 +260,21 @@ angular.module('maritimeweb.route')
                                 var feature = scope.animatedfeatures[index];
                                 var retrievedStyle = feature.getStyle();
                                 retrievedStyle.getImage().load();
-                                vectorContext.drawFeature(feature, retrievedStyle);
 
                                 scope.activeRoutePoint = feature.get('position');
                                 scope.activeRouteName = feature.get('name');
                                 scope.activeRouteSpeed = feature.get('speed');
                                 scope.activeRouteTS = feature.get('eta');
                                 scope.activeRouteTSetaTimeAgo = feature.get('etatimeago');
-                            /*    var pan = ol.animation.pan({
-                                    duration: 500,
-                                    source: /!** @type {ol.Coordinate} *!/ (map.getView().getCenter())
-                                });
-                                map.beforeRender(pan);
-                                map.getView().setCenter(feature.getGeometry().getCoordinates());*/
+
+                                vectorContext.drawFeature(feature, retrievedStyle);
+
+                                /*    var pan = ol.animation.pan({
+                                        duration: 500,
+                                        source: /!** @type {ol.Coordinate} *!/ (map.getView().getCenter())
+                                    });
+                                    map.beforeRender(pan);
+                                    map.getView().setCenter(feature.getGeometry().getCoordinates());*/
 
                                 //index++;
                              }
@@ -294,7 +296,7 @@ angular.module('maritimeweb.route')
                         };
 
                         if (scope.autoplay) {
-                            $timeout(scope.startAnimation(),2000);
+                            $timeout(scope.startAnimation(),5000);
                         }
                         /**
                          * @param {boolean} ended end of animation.
