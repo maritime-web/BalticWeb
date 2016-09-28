@@ -57,6 +57,34 @@ angular.module('maritimeweb.route')
                         " feat=" + scope.features.length +
                         "autoplay=" + scope.autoplay
                     );
+
+                    var  animatedMarkerStyle = new ol.style.Style({
+                        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                            anchor: [0.5, 0.5],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'fraction',
+                            opacity: 0.85,
+                            rotation: 0,
+                            rotateWithView: false,
+                            src: 'img/vessel_green_moored.png'
+                        }))
+                    });
+
+                    var markerStyle = new ol.style.Style({
+                        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                            anchor: [0.5, 0.5],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'fraction',
+                            opacity: 0.85,
+                            rotation:  0,
+                            rotateWithView: false,
+                            src: 'img/vessel_green.png'
+                        }))
+                    });
+
+                    animatedMarkerStyle.getImage().load();
+                    markerStyle.getImage().load();
+
                     var olScope = ctrl.getOpenlayersScope();
 
                     var styles = {
@@ -251,10 +279,6 @@ angular.module('maritimeweb.route')
                                     index = 0; // rewind, and loop
                                     renders = 0;
                                     scope.stopAnimation(true);
-                                    /* growl.info("Animation is about to start", {ttl: 5000});
-                                    $timeout(function() {
-                                        scope.startAnimation();
-                                    },5000);*/
                                 }
 
                                 var feature = scope.animatedfeatures[index];
@@ -266,20 +290,9 @@ angular.module('maritimeweb.route')
                                 scope.activeRouteSpeed = feature.get('speed');
                                 scope.activeRouteTS = feature.get('eta');
                                 scope.activeRouteTSetaTimeAgo = feature.get('etatimeago');
-
                                 vectorContext.drawFeature(feature, retrievedStyle);
-
-                                /*    var pan = ol.animation.pan({
-                                        duration: 500,
-                                        source: /!** @type {ol.Coordinate} *!/ (map.getView().getCenter())
-                                    });
-                                    map.beforeRender(pan);
-                                    map.getView().setCenter(feature.getGeometry().getCoordinates());*/
-
-                                //index++;
                              }
 
-                            //$timeout(map.render(),3000);      // tell OL3 to continue the postcompose animation
                             map.render();      // tell OL3 to continue the postcompose animation
                         };
 
@@ -296,7 +309,7 @@ angular.module('maritimeweb.route')
                         };
 
                         if (scope.autoplay) {
-                            $timeout(scope.startAnimation(),5000);
+                            $timeout(function(){scope.startAnimation()}, 5000);
                         }
                         /**
                          * @param {boolean} ended end of animation.

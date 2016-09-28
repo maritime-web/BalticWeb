@@ -356,18 +356,17 @@ angular.module('maritimeweb.route')
             // while watch if a new RTZ route has been uploaded
             $scope.$watch("sampleFile", function (newValue, oldValue) {
                 if (newValue) {
-                    $log.log("sample file uploaded" + $scope.sampleFile);
+                    $log.debug("sample file uploaded" + $scope.sampleFile);
                     $scope.autoPreloadRTZfile(); // TODO: disable the auto load later on
                     $window.scrollTo(0, 0);
                 }
             }, true);
 
 
-            // while watch if a new active waypoint has been selected via the chart or the table. If so, we pop the popup for that Openlayer Feature.
+            // while watch if a new active waypoint has been selected via the chart or the table. If so, we need to update the chart.
             $rootScope.$watch("activeWayPoint", function (newValue, oldValue) {
                 if (newValue) {
-                    $log.log("update active waypoint " + newValue + " ");
-                    //$log.log(can);
+                    $log.debug("update active waypoint " + newValue + " ");
 
                     // we need to draw something on the chart. Something that can indicate the current active waypoint we
                     var chart_x_coord = (can.width / $scope.oLfeatures.length - 1 ) * ($rootScope.activeWayPoint);
@@ -386,21 +385,20 @@ angular.module('maritimeweb.route')
                 }
 
             }, true);
-            // $scope.autoPreloadRTZfile(); // TODO: disable the auto load later on
 
             // SPEED Charts
             // Chart.js with speed-over-ground
 
-            /* angular.forEach(response.data, function (value, key) {
-             listMinSpeed.push(value.sog);
-             listWaypointLabels.push($filter('timeAgo')(value.ts) + ' - ' + $filter('date')(value.ts, 'yyyy-MM-dd HH:mm:ss Z', 'UTC') + ' UTC');
-             });
-             */
             $scope.sogChartlabels = charts.listWaypointLabels;
             $scope.sogChartseries = ['Speed', 'Min. speed', 'Max. speed', 'starboard', 'portside', 'radius'];
             $scope.sogChartdata = [charts.listSpeed, charts.listMinSpeed, charts.listMaxSpeed, charts.listStarboardxtd, charts.listPortsidextd, charts.listRadius];
 
 
+            /**
+             * Chart.js onclick method. Set new current waypoint.
+             * @param points
+             * @param evt
+             */
             $scope.onClick = function (points, evt) {
                 angular.forEach(points, function (value, key) {
                     if (value._index != null && value._index >= 0) {
@@ -408,7 +406,6 @@ angular.module('maritimeweb.route')
                         $window.scrollTo(0, 0);
                     }
                 });
-                console.log("#" + $rootScope.activeWayPoint);
                 $rootScope.$apply();
             };
             $scope.colours = [{ // default
@@ -478,6 +475,12 @@ angular.module('maritimeweb.route')
             $scope.setSelected = function (idSelectedRow) {
                 $rootScope.activeWayPoint = idSelectedRow;
             };
+
+            $scope.$on('$destroy', function iVeBeenDismissed() {
+                // say goodbye to your controller here
+                // release resources, cancel request...
+                $log.log("destroy route load ctrl");
+            })
 
 
         }]);
