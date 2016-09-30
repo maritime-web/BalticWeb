@@ -1,7 +1,8 @@
 angular.module('maritimeweb.app').controller("AppController", [
     '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
-    'VesselService', 'NwNmService', 'growl', '$uibModal',
-    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, growl, $uibModal) {
+    'VesselService', 'NwNmService', 'growl', '$uibModal', '$log',
+    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, growl, $uibModal, $log) {
+
         var loadTimerService = false;
 
         $scope.welcomeToBalticWebModal = function (size) {
@@ -48,7 +49,7 @@ angular.module('maritimeweb.app').controller("AppController", [
 
 
         var accepted_terms = $window.localStorage.getItem('terms_accepted_ttl');
-        console.log("accepted_terms ttl = " + accepted_terms);
+        $log.info("accepted_terms ttl = " + accepted_terms);
         var now = new Date();
 
         if (accepted_terms == null || (new Date(accepted_terms).getTime() < now )) {
@@ -97,7 +98,7 @@ angular.module('maritimeweb.app').controller("AppController", [
                 })
                 .error(function (error) {
                     // growl.error("Error getting NW NM service. Reason=" + error);
-                    console.error("Error getting NW NM service. Reason=" + error);
+                    log.error("Error getting NW NM service. Reason=" + error);
                 })
         };
 /*
@@ -150,7 +151,7 @@ angular.module('maritimeweb.app').controller("AppController", [
         };
 
         $scope.showVesselDetails = function (vessel) {
-            console.log("mmsi" + vessel);
+            $log.info("mmsi" + vessel);
             //var vesselDetails = VesselService.details(vessel.mmsi);
             VesselService.showVesselInfoFromMMsi(vessel);
             //console.log("App Ctr received = vesselDetails" +JSON.stringify(vesselDetails));

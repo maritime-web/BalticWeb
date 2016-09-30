@@ -99,16 +99,16 @@ angular.module('maritimeweb.route')
                     var current_pos = {latitude: way_value.position._lat, longitude: way_value.position._lon};
                     var next_pos = {latitude: next_point_lat, longitude: next_point_lon};
 
+                    feature['distance_meters'] = geolib.getDistance(current_pos, next_pos);
                     feature['distance'] = geolib.convertUnit('sm', geolib.getDistance(current_pos, next_pos));
 
                     if (feature['geometryType'] === 'Orthodrome'){ // A great circle, also known as an orthodrome
                         feature['direction'] = geolib.getBearing(current_pos, next_pos);
-                        $log.log("getBearing:" + feature['direction'
-                                ]   );
+                        //$log.log("getBearing:" + feature['direction']);
                     } else{
                         // Loxodrome (or rhumb line) is a line crossing all meridians at a constant angle.
                         feature['direction'] = geolib.getRhumbLineBearing(current_pos, next_pos);
-                        $log.log("getRhumbLineBearing:" + feature['direction']   );
+                        //$log.log("getRhumbLineBearing:" + feature['direction']   );
                     }
                 }
             };
@@ -129,7 +129,7 @@ angular.module('maritimeweb.route')
                 var defaultWayPoint = {}; // standard waypoint
                 if (json_result.route.waypoints.defaultWaypoint) {
                     defaultWayPoint = json_result.route.waypoints.defaultWaypoint;
-                    $log.info("defaultWayPoint" + JSON.stringify(defaultWayPoint));
+                    //$log.info("defaultWayPoint" + JSON.stringify(defaultWayPoint));
                 }
 
                 var calculateDistanceAndDirection = function (key, way_value, feature) {
@@ -141,17 +141,18 @@ angular.module('maritimeweb.route')
                         var next_point_lon = json_result.route.waypoints.waypoint[key + 1].position._lon;
                         var current_pos = {latitude: way_value.position._lat, longitude: way_value.position._lon};
                         var next_pos = {latitude: next_point_lat, longitude: next_point_lon};
-
-                        feature['distance'] = geolib.convertUnit('sm', geolib.getDistance(current_pos, next_pos));
+                        var distance_meters = geolib.getDistance(current_pos, next_pos);
+                        feature['distance_meters'] = distance_meters;
+                        feature['distance'] = geolib.convertUnit('sm', distance_meters);
                         // $log.log("getDistance:" + feature['distance']   );
                         $scope.totaldistance += feature['distance'];
 
                         if (feature['geometryType'] === 'Orthodrome') { // A great circle, also known as an orthodrome
                             feature['direction'] = geolib.getBearing(current_pos, next_pos);
-                              $log.log("getBearing:" + feature['direction']   );
+                            //  $log.log("getBearing:" + feature['direction']   );
                         } else { // Loxodrome (or rhumb line) is a line crossing all meridians at a constant angle.
                             feature['direction'] = geolib.getRhumbLineBearing(current_pos, next_pos);
-                             $log.log("getRhumbLineBearing:" + feature['direction']   );
+                            // $log.log("getRhumbLineBearing:" + feature['direction']   );
                         }
 
                         //feature['radian'] = feature['direction'] ? ((feature['direction'] - 90) * (Math.PI / 180)) : 0;
@@ -160,7 +161,7 @@ angular.module('maritimeweb.route')
                         if (!feature['direction'] && feature['direction']!=0 ) {
                             feature['direction'] = 0.0;
                             feature['radian'] = 0.0;
-                            $log.error("its undefined. Feature" + JSON.stringify(feature));
+                            // $log.error("its undefined. Feature" + JSON.stringify(feature));
 
                         }
                     } else {
@@ -174,7 +175,7 @@ angular.module('maritimeweb.route')
                     growl.error("No Waypoints in RTZ file");
                     $log.error("No Waypoints in RTZ file");
                 } else {
-                    angular.forEach(json_result.route.waypoints.waypoint, function (way_value, key) {
+                    angular.forEach(json_result.route.waypoints.waypoint, function (way_value, key) { // todo: according to xsd we might need to handle multiple waypoints lists
 
                         $scope.oLpoints.push(ol.proj.transform([parseFloat(way_value.position._lon), parseFloat(way_value.position._lat)], 'EPSG:4326', 'EPSG:900913'));
 
@@ -220,6 +221,33 @@ angular.module('maritimeweb.route')
                         addFeatureToCharts(feature);
                         $scope.oLfeatures.push($scope.createWaypointFeature(feature));
                         $scope.oLanimatedfeatures.push($scope.createAnimatedWaypointFeature(feature));
+
+                        // Interpolation features for the animation
+                        // In the context of computer animation, interpolation is inbetweening, or filling in frames between the key frames
+                        if (feature['distance_meters']> 1000.0) {
+                            var inBetweenFeatures = Math.floor(feature['distance_meters']/ 1000); // the amount of inbetween features we need to create in order to create a smooth animation
+                            var smoothingFeature  = feature;
+                            var pos = {
+                                lat: parseFloat(feature['position']._lat),
+                                lon: parseFloat(feature['position']._lon)
+                            };
+
+                            for (var j = 1; j <= inBetweenFeatures; j++) {
+
+                                if (pos.lat && pos.lon) {
+                                    var newPosition = geolib.computeDestinationPoint(pos,
+                                        ((feature['distance_meters'] / inBetweenFeatures) * j),
+                                        feature['direction']); // calculate a new position.
+                                    smoothingFeature['lat'] = parseFloat(newPosition.latitude);
+                                    smoothingFeature['lon'] = parseFloat(newPosition.longitude);
+                                    //smoothingFeature['id'] =  smoothingFeature['id'] + Math.random();
+                                    smoothingFeature['position'] = {"_lat": parseFloat(newPosition.latitude), "_lon": parseFloat(newPosition.longitude)};
+                                    $scope.oLanimatedfeatures.push($scope.createAnimatedWaypointFeature(smoothingFeature));
+                                }else{
+                                    $log.error("no point found for keyfeature. named=" + feature.wayname)
+                                }
+                            }
+                        }
                     });
                 }
 
@@ -264,7 +292,7 @@ angular.module('maritimeweb.route')
              * @returns {ol.Feature}
              */
             $scope.createOpenLayerFeature = function (waypointPosition, waypoint) {
-                var markWaypoint = new ol.Feature({
+                return new ol.Feature({
                     geometry: waypointPosition,
                     name: waypoint.wayname,
                     wayname: waypoint.wayname,
@@ -287,7 +315,7 @@ angular.module('maritimeweb.route')
                     etatimeago: waypoint.etatimeago,
                     position: $scope.toLonLat(waypoint.position._lon, waypoint.position._lat)
                 });
-                return markWaypoint;
+
             };
 
             /** Create a waypoint feature, with  lat,lon,. */
@@ -315,7 +343,6 @@ angular.module('maritimeweb.route')
 
             /** Create a waypoint feature, with  lat,lon,. */
             $scope.createAnimatedWaypointFeature = function (waypoint) {
-
                 var waypointPosition = new ol.geom.Point(ol.proj.transform([parseFloat(waypoint.position._lon), parseFloat(waypoint.position._lat)], 'EPSG:4326', 'EPSG:900913'));
                 var markWaypoint = this.createOpenLayerFeature(waypointPosition, waypoint);
                 markWaypoint.setId(waypoint.id);
@@ -366,7 +393,7 @@ angular.module('maritimeweb.route')
             // while watch if a new active waypoint has been selected via the chart or the table. If so, we need to update the chart.
             $rootScope.$watch("activeWayPoint", function (newValue, oldValue) {
                 if (newValue) {
-                    $log.debug("update active waypoint " + newValue + " ");
+                    //$log.debug("update active waypoint " + newValue + " ");
 
                     // we need to draw something on the chart. Something that can indicate the current active waypoint we
                     var chart_x_coord = (can.width / $scope.oLfeatures.length - 1 ) * ($rootScope.activeWayPoint);

@@ -34,7 +34,7 @@ angular.module('maritimeweb.route')
                 "<btn ng-if='!animating' class='btn btn-success' id='start-animation' ng-click='startAnimation()'> <i class='fa fa-play' aria-hidden='true'></i> </btn> " +
                 "<btn ng-if='animating' class='btn btn-danger' id='start-animation' ng-click='stopAnimation()' tooltip='stop animation' data-toggle='tooltip'  " +
                 " data-placement='right' title='stop animation'> <i class='fa fa-stop' aria-hidden='true'></i> </btn><br>" +
-                "<label for='speed'>" + " Animation speed:&nbsp;" + "<input id='speed' type='range' min='1' max='50' step='1' value='2'> " + "</label><br>" +
+                "<label for='speed'>" + " Animation speed:&nbsp;" + "<input id='speed' type='range' min='1' max='50' step='1' value='10'> " + "</label><br>" +
                 "<span class='label label-primary' ng-if='activeRouteName'>{{activeRouteName}}</span><br>" +
                 "<span class='label label-primary'>{{activeRouteTS}}</span><br>" +
                 "<span class='label label-primary'>{{activeRouteTSetaTimeAgo}}</span><br>" +
@@ -385,7 +385,7 @@ angular.module('maritimeweb.route')
                             olScope.getMap().then(function (map) {
 
                                 var activeFeature = routeFeatureLayer.getSource().getFeatureById(newValue);
-                                $log.debug("we need to highlight this one. ActiveFeature  ID=" + activeFeature.getId());
+                                $log.debug("ActiveFeature  ID=" + activeFeature.getId());
                                 scope.stopAnimation();
 
                                 if (activeFeature) {
