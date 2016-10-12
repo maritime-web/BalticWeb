@@ -333,11 +333,26 @@ angular.module('maritimeweb.map')
                     title: 'Weather Forecasts',
                     layers: [
                         new ol.layer.Tile({
-                            title: 'NASA: Satellite image of the Baltics',
+                            title: 'NASA: Aqua Satellite image',
 
                             source: new ol.source.XYZ({
                                 urls:[
-                                    'http://ec2-52-211-163-57.eu-west-1.compute.amazonaws.com:8080/BalticSea.2016265.terra.250m/{z}/{x}/{y}.png'
+                                    'http://ec2-52-211-163-57.eu-west-1.compute.amazonaws.com:8080/BalticSea.latest.aqua.250m/{z}/{x}/{y}.png'
+                                ],
+                                attributions: nasaAttributions,
+                                minZoom: 3,
+                                maxZoom: 8,
+                                tilePixelRatio: 1.000000
+                            }),
+                            visible: false
+
+                        }),
+                        new ol.layer.Tile({
+                            title: 'NASA: Terra satellite image',
+
+                            source: new ol.source.XYZ({
+                                urls:[
+                                    'http://ec2-52-211-163-57.eu-west-1.compute.amazonaws.com:8080/BalticSea.latest.terra.250m/{z}/{x}/{y}.png'
                                 ],
                                 attributions: nasaAttributions,
                                 minZoom: 3,
