@@ -27,13 +27,13 @@ angular.module('maritimeweb.nw-nm')
 
             /**
              * Get NW-NM services
-             * TODO: Add parameter for geographical extent
              */
             this.getNwNmServices = function (wkt) {
                 // var params = 'wkt=' + encodeURIComponent('POLYGON ((6 50, 6 60, 19 60, 19 50, 6 50))');
                 var params = 'wkt=' + encodeURIComponent(wkt);
-                var pathParam = encodeURIComponent('urn:mrnx:mcl:service:dma:nw-nm:rest');
-                var request = '/rest/service/lookup/'+ pathParam +'?' + params;
+                var pathParam1 = encodeURIComponent('urn:mrnx:mcl:service:dma:nw-nm:rest');
+                var pathParam2 = encodeURIComponent('0.1');
+                var request = '/rest/service/lookup/' + pathParam1 + '/' + pathParam2 +'?' + params;
                 return $http.get(request);
             };
 
