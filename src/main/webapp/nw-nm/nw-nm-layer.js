@@ -29,11 +29,10 @@ angular.module('maritimeweb.nw-nm')
              * Get NW-NM services
              */
             this.getNwNmServices = function (wkt) {
-                // var params = 'wkt=' + encodeURIComponent('POLYGON ((6 50, 6 60, 19 60, 19 50, 6 50))');
-                var params = 'wkt=' + encodeURIComponent(wkt);
+                var params = wkt ? '?wkt=' + encodeURIComponent(wkt) : '';
                 var pathParam1 = encodeURIComponent('urn:mrnx:mcl:service:dma:nw-nm:rest');
                 var pathParam2 = encodeURIComponent('0.1');
-                var request = '/rest/service/lookup/' + pathParam1 + '/' + pathParam2 +'?' + params;
+                var request = '/rest/service/lookup/' + pathParam1 + '/' + pathParam2 + params;
                 return $http.get(request);
             };
 
@@ -105,6 +104,7 @@ angular.module('maritimeweb.nw-nm')
                     var olScope = ctrl.getOpenlayersScope();
                     var nwLayer;
                     var nmLayer;
+                    var boundaryLayer;
                     var nwnmLayer;
                     var loadTimer;
                     var maxZoom = scope.maxZoom ? parseInt(scope.maxZoom) : 12;
@@ -120,7 +120,6 @@ angular.module('maritimeweb.nw-nm')
                     // TODO this toggle element is no longer limited to nw-nm and should be removed from this layer.! Move to another file. Shared between layers. Vessel and nm atm.
                     scope.toggleList = function() {
                         $rootScope.showgraphSidebar = !$rootScope.showgraphSidebar;
-                        //console.log("toggle list visibility = " +$rootScope.showgraphSidebar);
 
                     };
 
@@ -172,110 +171,35 @@ angular.module('maritimeweb.nw-nm')
                         });
 
 
-                        var stylesArea = [
-                            /* We are using two different styles for the polygons:
-                             *  - The first style is for the polygons themselves.
-                             *  - The second style is to draw the vertices of the polygons.
-                             *    In a custom `geometry` function the vertices of a polygon are
-                             *    returned as `MultiPoint` geometry, which will be used to render
-                             *    the style.
-                             */
-                            new ol.style.Style({
+                        var boundaryStyle = new ol.style.Style({
                                 stroke: new ol.style.Stroke({
-                                    color: 'blue',
-                                    width: 3
+                                    color: 'rgba(255, 0, 255, 0.5)',
+                                    width: 1
                                 }),
                                 fill: new ol.style.Fill({
-                                    color: 'rgba(0, 0, 255, 0.1)'
+                                    color: 'rgba(255, 0, 255, 0.05)'
                                 })
+                            });
+
+
+
+                        // Construct the boundary layers
+                        boundaryLayer = new ol.layer.Vector({
+                            title: 'Navigational Warnings',
+                            source: new ol.source.Vector({
+                                features: new ol.Collection(),
+                                wrapX: false
                             }),
-                            new ol.style.Style({
-                                image: new ol.style.Circle({
-                                    radius: 5,
-                                    fill: new ol.style.Fill({
-                                        color: 'darkblue'
-                                    })
-                                }),
-                                geometry: function(feature) {
-                                    // return the coordinates of the first ring of the polygon
-                                    var coordinates = feature.getGeometry().getCoordinates()[0];
-                                    return new ol.geom.MultiPoint(coordinates);
-                                }
-                            })
-                        ];
-
-                        var projMercator = 'EPSG:3857';
-                        var proj4326 = 'EPSG:4326';
-
-                        var geojsonObject = {
-                            'type': 'FeatureCollection',
-                            'crs': {
-                                'type': 'name',
-                                'properties': {
-                                    'name': projMercator
-                                }
-                            },
-                            'features': [
-                                {
-                                    'type': 'Feature',
-                                    'geometry': {
-                                        'type': 'Polygon',
-                                        'coordinates': [
-                                            [
-                                                [14.0020751953125, 54.95869417101662],
-                                                [15.0457763671875, 55.6930679264579],
-                                                [16.5069580078125, 55.363502833950776],
-                                                [14.633789062500002, 54.53383250794428],
-                                                [14.414062499999998, 54.65794628989232],
-                                                [14.3975830078125, 54.81334841741929],
-                                                [14.161376953124998, 54.81334841741929],
-                                                [14.0020751953125, 54.95869417101662]
-                                            ]
-                                        ]
-                                    }
-                                }]
-                        };
-                        /*
-                        var gmlObject = '<p2:LinearRing xmlns:p2="http://www.opengis.net/gml">' +
-                              '<p2:pos>14.0020751953125 54.95869417101662</p2:pos>' +
-                            '<p2:pos>15.0457763671875 55.6930679264579</p2:pos>' +
-                        '<p2:pos>16.5069580078125 55.363502833950776</p2:pos>' +
-                        '<p2:pos>14.633789062500002 54.53383250794428</p2:pos>' +
-                        '<p2:pos>14.414062499999998 54.65794628989232</p2:pos>' +
-                        '<p2:pos>14.3975830078125 54.81334841741929</p2:pos>' +
-                        '<p2:pos>14.161376953124998 54.81334841741929</p2:pos>' +
-                        '<p2:pos>14.0020751953125 54.95869417101662</p2:pos>' +
-                        '</p2:LinearRing>' ;
-
-                        var source = new ol.source.Vector({
-                            features: (new ol.format.GML3()).readFeatures(gmlObject, {
-                                dataProjection: proj4326,
-                                featureProjection: projMercator
-                            })
-                        });*/
-
-                        var source = new ol.source.Vector({
-                            features: (new ol.format.GeoJSON()).readFeatures(geojsonObject, {
-                                dataProjection: proj4326,
-                                featureProjection: projMercator
-                            })
+                            style: [ boundaryStyle ]
                         });
+                        boundaryLayer.setVisible(true);
 
 
-                        var layerGeoJSONmsi = new ol.layer.Vector({
-                            title: 'Navigational Warnings - relevance area',
-                            source: source,
-                            style: stylesArea
-                        });
-                        layerGeoJSONmsi.setVisible(false);
-
-
-                        // Construct the layer
-                        var nwFeatures = new ol.Collection();
+                        // Construct the NW layers
                         nwLayer = new ol.layer.Vector({
                             title: 'Navigational Warnings',
                             source: new ol.source.Vector({
-                                features: nwFeatures,
+                                features: new ol.Collection(),
                                 wrapX: false
                             }),
                             style: function(feature) {
@@ -290,11 +214,11 @@ angular.module('maritimeweb.nw-nm')
                         });
                         nwLayer.setVisible(true);
 
-                        var nmFeatures = new ol.Collection();
+                        // Construct the NM layers
                         nmLayer = new ol.layer.Vector({
                             title: 'Notices to Mariners',
                             source: new ol.source.Vector({
-                                features: nmFeatures,
+                                features: new ol.Collection(),
                                 wrapX: false
                             }),
                             style: function(feature) {
@@ -315,14 +239,21 @@ angular.module('maritimeweb.nw-nm')
                         /***************************/
 
 
-                        /** Updates the NW and NM layers from the given message list */
-                        scope.updateLayerFromMessageList = function (messages) {
+                        // Resets the NW-NM layer
+                        scope.resetNwNmLayer = function () {
                             nwLayer.getSource().clear();
                             nmLayer.getSource().clear();
 
-
                             scope.messageList.length = 0;
                             scope.generalMessages.length = 0;
+                        };
+
+
+                        /** Updates the NW and NM layers from the given message list */
+                        scope.updateNwNmLayerFromMessageList = function (messages) {
+
+                            scope.resetNwNmLayer();
+
                             if (messages && messages.length > 0) {
                                 scope.messageList.push.apply(scope.messageList, messages);
                                 angular.forEach(scope.messageList, scope.addMessageToLayer);
@@ -331,31 +262,65 @@ angular.module('maritimeweb.nw-nm')
                         };
 
 
+                        /** Returns the list of GeoJson features of all message parts **/
+                        scope.getMessagePartFeatures = function (message) {
+                            var g = [];
+                            if (message && message.parts) {
+                                angular.forEach(message.parts, function (part) {
+                                    if (part.geometry && part.geometry.features && part.geometry.features.length > 0) {
+                                        g.push.apply(g, part.geometry.features);
+                                    }
+                                })
+                            }
+                            return g;
+                        };
+
+
                         /** Adds a single message to the layer **/
                         scope.addMessageToLayer = function (message) {
-                            if (message.geometry && message.geometry.features.length > 0) {
-
-                                angular.forEach(message.geometry.features, function (gjFeature) {
-                                    var olFeature = MapService.gjToOlFeature(gjFeature);
-                                    olFeature.set('message', message);
-                                    if (message.mainType == 'NW') {
-                                        nwLayer.getSource().addFeature(olFeature);
-                                    } else {
-                                        nmLayer.getSource().addFeature(olFeature);
+                            if (message.parts) {
+                                var features = scope.getMessagePartFeatures(message);
+                                angular.forEach(features, function (gjFeature) {
+                                    try {
+                                        var olFeature = MapService.gjToOlFeature(gjFeature);
+                                        olFeature.set('message', message);
+                                        if (message.mainType == 'NW') {
+                                            nwLayer.getSource().addFeature(olFeature);
+                                        } else {
+                                            nmLayer.getSource().addFeature(olFeature);
+                                        }
+                                    } catch (err) {
                                     }
                                 });
                             } else {
-                                generalMessages.push(message);
+                                scope.generalMessages.push(message);
                             }
                         };
 
 
+                        /** Updates the service boundary layer **/
+                        scope.updateServiceBoundaryLayer = function () {
+                            boundaryLayer.getSource().clear();
+                            angular.forEach(scope.services, function (service) {
+                                if (service.selected && service.boundary) {
+                                    try {
+                                        var olFeature = MapService.wktToOlFeature(service.boundary);
+                                        boundaryLayer.getSource().addFeature(olFeature);
+                                    } catch (error) {
+                                        console.error("Error creating boundary for " + service.boundary);
+                                    }
+                                }
+                            });
+                        };
 
 
-                        /** Loads the messages from the server **/
-                        scope.loadMessages = function () {
+                        /** Updates the message and boundary layers from the current NW-NM service selection **/
+                        scope.updateLayersFromServices = function () {
                             $rootScope.loadingData = true; // stop spinner
                             loadTimer = undefined;
+
+                            // Update the service boundary layer
+                            scope.updateServiceBoundaryLayer();
 
                             // Determine the selected service instances
                             var instanceIds = [];
@@ -365,30 +330,35 @@ angular.module('maritimeweb.nw-nm')
                                 }
                             });
 
-                            var extent = map.getView().calculateExtent(map.getSize());
-                            var wkt = MapService.extentToWkt(extent);
+                            // If no service is selected, clear the layers
+                            if (instanceIds.length == 0) {
+                                if (scope.messageList.length > 0) {
+                                    scope.resetNwNmLayer();
+                                }
 
-                            // Load at most scope.maxAtonNo AtoN's
-                            NwNmService
-                                .getPublishedNwNm(instanceIds, scope.language, wkt)
-                                .success(scope.updateLayerFromMessageList);
-                            $rootScope.loadingData = false; // stop spinner
+                            } else {
 
+                                var extent = map.getView().calculateExtent(map.getSize());
+                                var wkt = MapService.extentToWkt(extent);
+
+                                NwNmService
+                                    .getPublishedNwNm(instanceIds, scope.language, wkt)
+                                    .success(scope.updateNwNmLayerFromMessageList);
+                                $rootScope.loadingData = false; // stop spinner
+                            }
                         };
 
 
                         /** When the map extent changes, reload the messages using a timer to batch up changes **/
                         scope.mapChanged = function () {
-                            // TODO: Check if either nwLayer or nmLayer is visible. Not working. Why?
-                            //console.log("nwnmLayer.getVisible()=" + nwnmLayer.getVisible());
                             if (nwnmLayer.getVisible()) {
                                 scope.sidebarListViewShowBtn = true;
                                 // Make sure we reload at most every half second
                                 if (loadTimer) {
                                     $timeout.cancel(loadTimer);
                                 }
-                                loadTimer = $timeout(scope.loadMessages, 500);
-                            }else{
+                                loadTimer = $timeout(scope.updateLayersFromServices, 500);
+                            } else {
                                 scope.sidebarListViewShowBtn = false;
                             }
                         };
@@ -421,7 +391,7 @@ angular.module('maritimeweb.nw-nm')
                         // Construct NW-NM layer
                         nwnmLayer = new ol.layer.Group({
                             title: scope.name || 'NW-NM',
-                            layers: [ layerGeoJSONmsi, nwLayer, nmLayer ]
+                            layers: [ boundaryLayer, nwLayer, nmLayer ]
                         });
                         nwnmLayer.setVisible(true);
                         map.addLayer(nwnmLayer);
@@ -433,7 +403,7 @@ angular.module('maritimeweb.nw-nm')
 
                         } else {
                             // Listen for visibility changes of the layer
-                            nwnmLayer.on('change:visible', scope.loadMessages);
+                            nwnmLayer.on('change:visible', scope.updateLayersFromServices);
 
                             map.on('moveend', scope.mapChanged);
 
@@ -480,43 +450,17 @@ angular.module('maritimeweb.nw-nm')
             $scope.warning = undefined;
             $scope.msg = message;
 
-            /** Render the time of a message */
-            $scope.renderTime = function () {
-                // First check for a textual time description
-                var time;
-                var lang = 'en';
-                var desc = $scope.msg.descs[0];
-                if (desc && desc.time) {
-                    time = desc.time;
-                } else {
-                    var from = moment($scope.msg.startDate);
-                    time = from.locale(lang).format("lll");
-                    if ($scope.msg.endDate) {
-                        var to = moment($scope.msg.endDate);
-                        var fromDate = from.locale(lang).format("ll");
-                        var toDate = to.locale(lang).format("ll");
-                        var toDateTime = to.locale(lang).format("lll");
-                        if (fromDate == toDate) {
-                            // Same dates
-                            time += " - " + toDateTime.replace(toDate, '');
-                        } else {
-                            time += " - " + toDateTime;
+            $scope.hasGeometry = function () {
+                if ($scope.msg && $scope.msg.parts) {
+                    for (var x = 0; x < $scope.msg.parts.length; x++) {
+                        var part = $scope.msg.parts[x];
+                        if (part.geometry) {
+                            return true;
                         }
                     }
-                    time += ' ' + from.format('z');
                 }
-                return time;
+                return false;
             };
 
-
-            $scope.coordinates = [];
-
-            $scope.serializedCoordinates = function () {
-                // Compute on-demand
-                if ($scope.coordinates.length == 0 && $scope.msg.geometry) {
-                    MapService.serializeCoordinates($scope.msg.geometry, $scope.coordinates, {}, 0, true);
-                }
-                return $scope.coordinates;
-            };
         }]);
 

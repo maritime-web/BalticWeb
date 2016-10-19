@@ -1,12 +1,21 @@
-angular.module('maritimeweb.app').controller("AppController", [
-    '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
-    'VesselService', 'NwNmService', 'growl', '$uibModal', '$log',
+angular.module('maritimeweb.app')
+
+    .controller("AppController", [
+        '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
+        'VesselService', 'NwNmService', 'growl', '$uibModal', '$log',
     function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, growl, $uibModal, $log) {
 
-        var loadTimerService = false;
+        // Cancel any pending NW-NN queries
+        var loadTimerService = undefined;
+        $scope.$on("$destroy", function() {
+            if (loadTimerService) {
+                $timeout.cancel(loadTimerService);
+            }
+        });
+
 
         $scope.welcomeToBalticWebModal = function (size) {
-            var uibModalInstance = $uibModal.open({
+            $uibModal.open({
                 animation: 'true',
                 templateUrl: 'partials/welcome.html',
                 controller: 'AcceptTermsCtrl',
@@ -83,13 +92,30 @@ angular.module('maritimeweb.app').controller("AppController", [
         $scope.nwNmServices = [];
         $scope.nwNmMessages = [];
 
-        /** Reloads the NW-NM services **/
+        /** Schedules reload of the NW-NM services **/
         $scope.refreshNwNmServices = function () {
+            if (loadTimerService) {
+                $timeout.cancel(loadTimerService);
+            }
+            loadTimerService = $timeout(function () {
+                $scope.loadNwNmServices();
+            }, 500);
+        };
 
-            $scope.nwNmServices.length = 0;
 
-            NwNmService.getNwNmServices($scope.mapState['wktextent'])
+        // Refresh the service list every time the map bounds changes
+        $scope.$watch("mapState['wktextent']", $scope.refreshNwNmServices);
+
+
+        /** Loads the NW-NM services **/
+        $scope.loadNwNmServices = function (wkt) {
+
+            wkt = wkt || $scope.mapState['wktextent'];
+
+            NwNmService.getNwNmServices(wkt)
                 .success(function (services) {
+                    $scope.nwNmServices.length = 0;
+
                     // Update the selected status from localstorage
                     angular.forEach(services, function (service) {
                         $scope.nwNmServices.push(service);
@@ -101,20 +127,6 @@ angular.module('maritimeweb.app').controller("AppController", [
                     $log.error("Error getting NW NM service. Reason=" + error);
                 })
         };
-
-        var stopWatching = $scope.$watch("mapState['wktextent']", function (newValue) {
-            if (angular.isDefined(newValue)) {
-
-                if (loadTimerService) {
-                    $timeout.cancel(loadTimerService);
-                }
-                loadTimerService = $timeout(function () {
-                    //$log.debug("refreshNwNmServices - load timer start");
-                    $scope.refreshNwNmServices();
-                }, 5000);
-            }
-        });
-
 
 
         /** Update the selected status of the service **/
@@ -133,7 +145,7 @@ angular.module('maritimeweb.app').controller("AppController", [
 
         /** Toggle the selected status of the service **/
         $scope.toggleService = function (service) {
-            service.selected = (service.selected == true) ? false : true; // toggle layer visibility
+            service.selected = (service.selected != true); // toggle layer visibility
             if (service.selected) {
                 growl.info('Activating ' + service.name + ' layer');
             }

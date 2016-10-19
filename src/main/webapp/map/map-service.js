@@ -123,64 +123,9 @@ angular.module('maritimeweb.map')
             };
 
 
-            /** ************************ **/
-            /** GeoJSON Functionality    **/
-            /** ************************ **/
-
-            /** Serializes the coordinates of a geometry */
-            this.serializeCoordinates = function (g, coords, props, index, includeCoord) {
-                var that = this;
-                props = props || {};
-                index = index || 0;
-                var bufferFeature = props['parentFeatureId'];
-                if (g) {
-                    if (g instanceof Array) {
-                        if (g.length >= 2 && $.isNumeric(g[0])) {
-                            if (includeCoord && !bufferFeature) {
-                                coords.push({
-                                    lon: g[0],
-                                    lat: g[1],
-                                    name: props['name:' + index + ':en']
-                                });
-                            }
-                            index++;
-                        } else {
-                            for (var x = 0; x < g.length; x++) {
-                                index = that.serializeCoordinates(g[x], coords, props, index, includeCoord);
-                            }
-                        }
-                    } else if (g.type == 'FeatureCollection') {
-                        for (var x = 0; g.features && x < g.features.length; x++) {
-                            index = that.serializeCoordinates(g.features[x], coords, props, index, includeCoord);
-                        }
-                    } else if (g.type == 'Feature') {
-                        index = that.serializeCoordinates(g.geometry, coords, g.properties, index, includeCoord);
-                    } else if (g.type == 'GeometryCollection') {
-                        for (var x = 0; g.geometries && x < g.geometries.length; x++) {
-                            index = that.serializeCoordinates(g.geometries[x], coords, props, index, includeCoord);
-                        }
-                    } else if (g.type == 'MultiPolygon') {
-                        for (var p = 0; p < g.coordinates.length; p++) {
-                            // For polygons, do not include coordinates for interior rings
-                            for (var x = 0; x < g.coordinates[p].length; x++) {
-                                index = that.serializeCoordinates(g.coordinates[p][x], coords, props, index, x == 0);
-                            }
-                        }
-                    } else if (g.type == 'Polygon') {
-                        // For polygons, do not include coordinates for interior rings
-                        for (var x = 0; x < g.coordinates.length; x++) {
-                            index = that.serializeCoordinates(g.coordinates[x], coords, props, index, x == 0);
-                        }
-                    } else if (g.type) {
-                        index = that.serializeCoordinates(g.coordinates, coords, props, index, includeCoord);
-                    }
-                }
-                return index;
-            };
-
-            /** Converts a GeoJSON geometry to an OL geometry **/
-            this.gjToOlGeometry = function (g) {
-                return geoJsonFormat.readGeometry(g, {
+            /** Converts a GeoJSON feature to an OL feature **/
+            this.gjToOlFeature = function (feature) {
+                return geoJsonFormat.readFeature(feature, {
                     dataProjection: proj4326,
                     featureProjection: projMercator
                 });
@@ -188,8 +133,8 @@ angular.module('maritimeweb.map')
 
 
             /** Converts a GeoJSON feature to an OL feature **/
-            this.gjToOlFeature = function (feature) {
-                return geoJsonFormat.readFeature(feature, {
+            this.wktToOlFeature = function (feature) {
+                return wktFormat.readFeature(feature, {
                     dataProjection: proj4326,
                     featureProjection: projMercator
                 });

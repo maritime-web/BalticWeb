@@ -8,112 +8,89 @@
 
         <div ng-if="msg">
 
-            <ol-map ng-if="msg.geometry" class="message-details-map">
+            <ol-map ng-if="hasGeometry()" class="message-details-map">
                 <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
                 <map-nw-nm-layer name="Message" message="msg" fit-extent="true"></map-nw-nm-layer>
             </ol-map>
 
             <button type="button" class="close dialog-close-btn" ng-click="$dismiss('aborted')">x</button>
 
-            <table class='table table-condensed'>
+            <td class="message-details-item">
 
-                <tr>
-                    <td class="message-details-item" style="border: none">
 
-                        <!-- Title line -->
-                        <div ng-if="msg.originalInformation">&#10029;</div>
-                        <div ng-if="msg.shortId">{{msg.shortId}}</div>
-                        <div>
-                            <strong>{{msg.descs[0].title}}</strong>
-                        </div>
+                <!-- Title line -->
+                <div ng-if="msg.originalInformation">&#10029;</div>
 
-                        <!-- Reference lines -->
-                        <div class="row" ng-repeat="ref in msg.references">
-                            <div class="col-sm-1 message-details-item-field">Reference</div>
-                            <div class="col-sm-11 message-details-item-value">
+                <div ng-if="msg.shortId"><span class="badge label-message-id">{{msg.shortId}}</span></div>
+                <div>
+                    <strong>{{msg.descs[0].title}}</strong>
+                    <span ng-if="msg.descs[0].lang != 'en'" style="color: darkgray;">
+                        <img ng-src="/img/nwnm/flags/{{msg.descs[0].lang}}.png" style="height: 12px; opacity: 0.5;"/>
+                    </span>
+                </div>
+
+                <table class="message-details-item-fields">
+
+                    <!-- Reference lines -->
+                    <tr ng-if="msg.references && msg.references.length > 0">
+                        <th>References</th>
+                        <td>
+                            <div ng-repeat="ref in msg.references">
                                 <span>{{ref.messageId}}</span>
                                 <span ng-switch="ref.type">
                                     <span ng-switch-when="REPETITION">(repetition)</span>
                                     <span ng-switch-when="CANCELLATION">(cancellation)</span>
                                     <span ng-switch-when="UPDATE">(updated)</span>
                                 </span>
-                            </div>
-                        </div>
-
-
-                        <!-- Time line -->
-                        <!-- Do NOT remove the ng-if="true" gibberish. Grotesquely, it fixes an iPad/iOS error -->
-                        <!-- See: https://github.com/angular/angular.js/issues/9128 -->
-                        <div class="row" ng-if="true">
-                            <div class="col-sm-1 message-details-item-field">Time</div>
-                            <div class="col-sm-11 message-details-item-value">
-                                <span>{{renderTime()}}</span>
-                            </div>
-                        </div>
-
-
-                        <!-- Geometry line -->
-                        <div class="row" ng-if="msg.geometry">
-                            <div class="col-sm-1 message-details-item-field">Location</div>
-                            <div class="col-sm-11 message-details-item-value">
-                                <div>
-                                    <span ng-if="msg.showLocations" ng-click="msg.showLocations = false" class="clickable">hide positions</span>
-                                    <span ng-if="!msg.showLocations" ng-click="msg.showLocations = true" class="clickable">show positions</span>
-                                </div>
-                                <ol ng-if="msg.showLocations" class="message-details-positions">
-                                    <li ng-repeat="c in serializedCoordinates()">
-                                        <span>{{c | lonlat:{ decimals : 3, pp: true } }}<span ng-if="c.name">, {{c.name}}</span></span>
-                                    </li>
-                                </ol>
-                            </div>
-                        </div>
-
-                        <!-- Details line -->
-                        <div class="row" ng-if="msg.descs[0].description">
-                            <div class="col-sm-1 message-details-item-field">Details</div>
-                            <div class="col-sm-11 message-details-item-value" ng-bind-html="msg.descs[0].description"></div>
-                        </div>
-
-                        <!-- Note line -->
-                        <div class="row" ng-if="msg.descs[0].note">
-                            <div class="col-sm-1 message-details-item-field">Note</div>
-                            <div class="col-sm-11 message-details-item-value">{{msg.descs[0].note}}</div>
-                        </div>
-
-                        <!-- Charts line -->
-                        <div class="row" ng-if="msg.charts.length > 0">
-                            <div class="col-sm-1 message-details-item-field">Charts</div>
-                            <div class="col-sm-11 message-details-item-value">
-                                <span ng-repeat="chart in msg.charts">
-                                    <span ng-if="!$first">, </span>
-                                    {{chart.chartNumber}}
-                                    <span ng-if="chart.internationalNumber">(INT {{chart.internationalNumber}})</span>
+                                <span ng-if="ref.descs && ref.descs.length > 0 && ref.descs[0].description">
+                                    - {{ref.descs[0].description}}
                                 </span>
                             </div>
-                        </div>
-
-                        <!-- Publication line -->
-                        <div class="row" ng-if="msg.descs[0].publication">
-                            <div class="col-sm-1 message-details-item-field">Publication</div>
-                            <div class="col-sm-11 message-details-item-value">{{msg.descs[0].publication}}</div>
-                        </div>
-
-                        <!-- Source line -->
-                        <div class="row" ng-if="msg.descs[0].source">
-                            <div class="col-sm-12 message-details-item-value text-right">({{msg.descs[0].source}})</div>
-                        </div>
-
-                    </td>
+                        </td>
+                    </tr>
 
 
-                </tr>
-            </table>
+                    <!-- Details line -->
+                    <tr ng-if="msg.parts" ng-repeat="part in msg.parts">
+                        <th>
+                            <span ng-if="$index == 0 || msg.parts[$index].type != msg.parts[$index - 1].type">
+                                {{part.type.toLowerCase()}}
+                            </span>
+                        </th>
+                        <td class="message-description">
+                            <div ng-if="part.descs">
+                                <p ng-if="part.descs[0].subject"><strong>{{part.descs[0].subject}}</strong></p>
+                                <div ng-if="part.descs[0].details" ng-bind-html="part.descs[0].details | toTrusted"></div>
+                            </div>
+                        </td>
+                    </tr>
 
-        </div>
 
-        <div class="row" style="margin-top: 24px">
-            <div class="form-group col-xs-12" style="text-align: right">
-                <button class="btn btn-primary btn-sm" ng-click="$dismiss('aborted')">Close</button>
+                    <!-- Charts line -->
+                    <tr ng-if="msg.charts.length > 0">
+                        <th>Charts</th>
+                        <td>
+                            <span ng-repeat="chart in msg.charts">
+                                <span ng-if="!$first">, </span>
+                                {{chart.chartNumber}}
+                                <span ng-if="chart.internationalNumber">(INT {{chart.internationalNumber}})</span>
+                            </span>
+                        </td>
+                    </tr>
+
+
+                    <!-- Source line -->
+                    <tr ng-if="msg.descs[0].source">
+                        <td colspan="2" class="text-right">({{msg.descs[0].source}})</td>
+                    </tr>
+
+                </table>
+            </div>
+
+            <div class="row" style="margin: 10px 0">
+                <div class="col-xs-12" style="text-align: right">
+                    <button class="btn btn-primary btn-sm" ng-click="$dismiss('aborted')">Close</button>
+                </div>
             </div>
         </div>
     </div>

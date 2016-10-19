@@ -268,6 +268,7 @@ body {
 }
 
 .message-item {
+    font-size: 11px;
     padding: 5px;
     border-bottom: 1px solid #eee;
 }
@@ -287,27 +288,109 @@ body {
     font-size: 11px;
 }
 
-.message-details-item-field {
-    font-weight: bold;
+table.message-details-item-fields {
+    font-size: 11px;
+    width: 100%;
+}
+
+table.message-details-item-fields th {
+    width: 85px;
+    max-width: 85px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: top;
     color: gray;
     padding-top: 5px;
 }
 
-.message-details-item-value {
+table.message-details-item-fields td {
     padding-top: 5px;
 }
 
-.message-details-item-value ol {
-    padding-left: 0;
+.label-message-id {
+    background-color: gray;
+    font-size: 10px;
+    display: inline-block;
+    margin-bottom: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-ol.message-details-positions {
-    margin-left: 20px;
-    color: darkgray;
+
+/** For tables in the message rich text description field **/
+.message-description table {
+    border-collapse: collapse;
+    border: 1px solid #333;
 }
 
-ol.message-details-positions li span {
+.message-description table td, .message-description table th {
+    vertical-align: top;
+    border: 1px solid #333;
+    padding: 3px;
+}
+
+.message-description ol, .message-description ul {
+    padding-left: 20px;
+    margin-bottom: 0;
+}
+
+.message-description ol li, .message-description ul li {
+    margin-bottom: 3px;
+}
+
+.message-description ol li:last-child, .message-description ul li:last-child {
+    margin-bottom: 0;
+}
+
+.message-description p, .message-description p {
+    margin: 0 0 3px 0;
+}
+
+.message-description ol li p:last-child, .message-description ul li p:last-child {
+    padding: 0;
+    margin: 0;
+}
+
+table.no-border {
+    border: 0;
+}
+
+table.no-border td, table.no-border th {
+    border: 0;
+}
+
+table.condensed {
+    padding: 0;
+}
+
+table.condensed td, table.condensed th {
+    padding: 0;
+}
+
+tr.underline td {
+    border-bottom: 1px solid #333;
+}
+
+td.underline {
+    border-bottom: 1px solid #333;
+}
+
+table.positions {
+    border: 0;
+    margin-bottom: 1mm;
+}
+
+table.positions td, table.positions th {
     color: #333;
+    border: 0;
+    padding: 0 3mm 0 0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+table.positions td:nth-child(1) {
+    text-align: right;
+    color: darkgray;
 }
 
 .message-details-map {

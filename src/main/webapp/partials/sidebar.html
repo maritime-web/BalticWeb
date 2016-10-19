@@ -65,12 +65,12 @@
                         </td>
                     </tr>
                     <tr ng-repeat-end>
-                        <td width="24" align="left" class="message-item">
-                            <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm.png" height="18"/>
-                            <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/msi.png" height="18"/>
+                        <td width="20" align="left" class="message-item">
+                            <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm.png" height="20"/>
+                            <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/nw.png" height="20"/>
                         </td>
                         <td width="*" class="message-item">
-                            <span ng-if="msg.shortId">{{msg.shortId}}:&nbsp;</span>
+                            <span ng-if="msg.shortId" class="badge label-message-id">{{msg.shortId}}</span>
                             <a href ng-click="showNwNmDetails(msg)">{{msg.descs[0].title}}</a>
                         </td>
                     </tr>

@@ -41,6 +41,14 @@ angular.module('maritimeweb.map')
         };
     }])
 
+    /**
+     * Displays trusted content
+     */
+    .filter('toTrusted', ['$sce', function ($sce) {
+        return function (value) {
+            return $sce.trustAsHtml(value);
+        };
+    }])
 
     /**
      * Defines the parent ol-map directive.
