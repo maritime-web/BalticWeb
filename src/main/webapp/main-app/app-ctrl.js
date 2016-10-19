@@ -98,10 +98,9 @@ angular.module('maritimeweb.app').controller("AppController", [
                 })
                 .error(function (error) {
                     // growl.error("Error getting NW NM service. Reason=" + error);
-                    log.error("Error getting NW NM service. Reason=" + error);
+                    $log.error("Error getting NW NM service. Reason=" + error);
                 })
         };
-/*
 
         var stopWatching = $scope.$watch("mapState['wktextent']", function (newValue) {
             if (angular.isDefined(newValue)) {
@@ -110,13 +109,13 @@ angular.module('maritimeweb.app').controller("AppController", [
                     $timeout.cancel(loadTimerService);
                 }
                 loadTimerService = $timeout(function () {
-                    //console.log("load timer start");
+                    //$log.debug("refreshNwNmServices - load timer start");
                     $scope.refreshNwNmServices();
                 }, 5000);
             }
         });
 
-*/
+
 
         /** Update the selected status of the service **/
         $scope.nwNmSelected = function (service) {
