@@ -55,7 +55,7 @@
                         <li ng-repeat="aService in mapMiscLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
 
                         <li role="separator" class="divider"></li>
-                        <li class="dropdown-header"><img src="/img/nwnm/msi.png" height="16"/> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Navigational warnings and notices to mariners </li>
+                        <li class="dropdown-header"><img src="/img/nwnm/nw.png" height="16"/> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Navigational warnings and notices to mariners </li>
                         <li ng-repeat="aService in nwNmServices" ng-class="{'active':aService.selected}"><a href="#" ng-click="toggleService(aService)"> {{aService.name}}</a></li>
 
                         <li role="separator" class="divider"></li>
@@ -80,7 +80,7 @@
 
                         <li role="separator" class="divider"></li>
 
-                        <li class="dropdown-header"><img src="/img/nwnm/msi.png" height="16"/> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Navigational warnings and notices to mariners </li>
+                        <li class="dropdown-header"><img src="/img/nwnm/nw.png" height="16"/> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Navigational warnings and notices to mariners </li>
                         <li ng-repeat="aService in nwNmServices" ng-class="{'active':aService.selected}"><a href="#" ng-click="toggleService(aService)"> {{aService.name}}</a></li>
                     </ul>
                 </li>
@@ -90,7 +90,7 @@
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i> Notices <span class="caret"></span></a>
                     <ul class="dropdown-menu" >
-                        <li class="dropdown-header"><img src="/img/nwnm/msi.png" height="16"/> Navigational warnings and notices to mariners </li>
+                        <li class="dropdown-header"><img src="/img/nwnm/nw.png" height="16"/> Navigational warnings and notices to mariners </li>
                         <li ng-repeat="aService in nwNmServices" ng-class="{'active':aService.selected}"><a href="#" ng-click="toggleService(aService)"> {{aService.name}}</a></li>
                     </ul>
                 </li>

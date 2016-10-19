@@ -146,7 +146,7 @@ angular.module('maritimeweb.nw-nm')
                             image: new ol.style.Icon({
                                 anchor: [0.5, 0.5],
                                 scale: 0.3,
-                                src: '/img/nwnm/msi.png'
+                                src: '/img/nwnm/nw.png'
                             })
                         });
 
