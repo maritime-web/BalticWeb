@@ -15,18 +15,10 @@
 package dk.dma.balticweb.rest;
 
 //import dk.dma.arcticweb.reporting.json.GreenPosRestService;
+
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
-//import dk.dma.embryo.dataformats.inshore.InshoreIceReportJsonService;
-//import dk.dma.embryo.dataformats.json.ForecastRestService;
-//import dk.dma.embryo.dataformats.json.IceObservationRestService;
-//import dk.dma.embryo.dataformats.json.ShapeFileRestService;
-//import dk.dma.embryo.metoc.json.MetocRestService;
-//import dk.dma.embryo.dataformats.json.ShapeFileRestService;
 import dk.dma.embryo.msi.rs.MsiRestService;
-//import dk.dma.embryo.tiles.json.TileSetJsonService;
-import dk.dma.embryo.msi.rs.MwNmRestService;
-import dk.dma.embryo.user.json.AreasOfInterestRestService;
 import dk.dma.embryo.user.json.AuthenticationService;
 import dk.dma.embryo.user.json.FeedbackRestService;
 import dk.dma.embryo.user.json.ForgotPasswordRestService;
@@ -36,14 +28,23 @@ import dk.dma.embryo.vessel.json.BerthRestService;
 import dk.dma.embryo.vessel.json.RouteRestService;
 import dk.dma.embryo.vessel.json.RouteUploadRestService;
 import dk.dma.embryo.vessel.json.ScheduleRestService;
+import dk.dma.enav.services.nwnm.NwNmRestService;
 import dk.dma.enav.services.registry.ServiceLookupRestService;
-//import dk.dma.embryo.weather.json.WeatherRestService;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+//import dk.dma.embryo.dataformats.inshore.InshoreIceReportJsonService;
+//import dk.dma.embryo.dataformats.json.ForecastRestService;
+//import dk.dma.embryo.dataformats.json.IceObservationRestService;
+//import dk.dma.embryo.dataformats.json.ShapeFileRestService;
+//import dk.dma.embryo.metoc.json.MetocRestService;
+//import dk.dma.embryo.dataformats.json.ShapeFileRestService;
+//import dk.dma.embryo.tiles.json.TileSetJsonService;
+//import dk.dma.embryo.weather.json.WeatherRestService;
 
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
@@ -71,7 +72,7 @@ public class ApplicationConfig extends Application {
                 ForgotPasswordRestService.class, 
                 FeedbackRestService.class,
                // AreasOfInterestRestService.class,
-                MwNmRestService.class,
+                NwNmRestService.class,
                 ServiceLookupRestService.class));
 
         return set;
