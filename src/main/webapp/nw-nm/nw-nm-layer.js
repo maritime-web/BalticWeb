@@ -106,13 +106,15 @@ angular.module('maritimeweb.nw-nm')
                     var nmLayer;
                     var boundaryLayer;
                     var nwnmLayer;
-                    var loadTimer;
                     var maxZoom = scope.maxZoom ? parseInt(scope.maxZoom) : 12;
 
                     scope.showDetails = scope.message !== undefined;
                     scope.generalMessages = []; // Messages with no geometry
                     scope.language = scope.language || 'en';
                     scope.services = scope.services || [];
+
+                    // MOVE AWAY FROM THIS DIRECTIVE
+                    scope.sidebarListViewShowBtn = true;
 
 
                     scope.showgraphSidebar = false;
@@ -130,9 +132,6 @@ angular.module('maritimeweb.nw-nm')
                         scope.$on('$destroy', function() {
                             if (angular.isDefined(nwnmLayer)) {
                                 map.removeLayer(nwnmLayer);
-                            }
-                            if (angular.isDefined(loadTimer)) {
-                                $timeout.cancel(loadTimer);
                             }
                         });
 
@@ -239,25 +238,22 @@ angular.module('maritimeweb.nw-nm')
                         /***************************/
 
 
-                        // Resets the NW-NM layer
-                        scope.resetNwNmLayer = function () {
-                            nwLayer.getSource().clear();
-                            nmLayer.getSource().clear();
+                        /** Updates the service boundary layer **/
+                        scope.updateServiceBoundaryLayer = function () {
 
-                            scope.messageList.length = 0;
-                            scope.generalMessages.length = 0;
-                        };
+                            boundaryLayer.getSource().clear();
 
-
-                        /** Updates the NW and NM layers from the given message list */
-                        scope.updateNwNmLayerFromMessageList = function (messages) {
-
-                            scope.resetNwNmLayer();
-
-                            if (messages && messages.length > 0) {
-                                scope.messageList.push.apply(scope.messageList, messages);
-                                angular.forEach(scope.messageList, scope.addMessageToLayer);
-
+                            if (scope.services && scope.services.length > 0) {
+                                angular.forEach(scope.services, function (service) {
+                                    if (service.selected && service.boundary) {
+                                        try {
+                                            var olFeature = MapService.wktToOlFeature(service.boundary);
+                                            boundaryLayer.getSource().addFeature(olFeature);
+                                        } catch (error) {
+                                            console.error("Error creating boundary for " + service.boundary);
+                                        }
+                                    }
+                                });
                             }
                         };
 
@@ -298,75 +294,18 @@ angular.module('maritimeweb.nw-nm')
                         };
 
 
-                        /** Updates the service boundary layer **/
-                        scope.updateServiceBoundaryLayer = function () {
-                            boundaryLayer.getSource().clear();
-                            angular.forEach(scope.services, function (service) {
-                                if (service.selected && service.boundary) {
-                                    try {
-                                        var olFeature = MapService.wktToOlFeature(service.boundary);
-                                        boundaryLayer.getSource().addFeature(olFeature);
-                                    } catch (error) {
-                                        console.error("Error creating boundary for " + service.boundary);
-                                    }
-                                }
-                            });
-                        };
-
-
                         /** Updates the message and boundary layers from the current NW-NM service selection **/
-                        scope.updateLayersFromServices = function () {
-                            $rootScope.loadingData = true; // stop spinner
-                            loadTimer = undefined;
+                        scope.updateMessageListLayers = function () {
 
-                            // Update the service boundary layer
-                            scope.updateServiceBoundaryLayer();
+                            nwLayer.getSource().clear();
+                            nmLayer.getSource().clear();
+                            scope.generalMessages.length = 0;
 
-                            // Determine the selected service instances
-                            var instanceIds = [];
-                            angular.forEach(scope.services, function (service) {
-                                if (service.selected) {
-                                    instanceIds.push(service.instanceId);
-                                }
-                            });
-
-                            // If no service is selected, clear the layers
-                            if (instanceIds.length == 0) {
-                                if (scope.messageList.length > 0) {
-                                    scope.resetNwNmLayer();
-                                }
-
-                            } else {
-
-                                var extent = map.getView().calculateExtent(map.getSize());
-                                var wkt = MapService.extentToWkt(extent);
-
-                                NwNmService
-                                    .getPublishedNwNm(instanceIds, scope.language, wkt)
-                                    .success(scope.updateNwNmLayerFromMessageList);
-                                $rootScope.loadingData = false; // stop spinner
+                            if (scope.messageList && scope.messageList.length > 0) {
+                                angular.forEach(scope.messageList, scope.addMessageToLayer);
                             }
+
                         };
-
-
-                        /** When the map extent changes, reload the messages using a timer to batch up changes **/
-                        scope.mapChanged = function () {
-                            if (nwnmLayer.getVisible()) {
-                                scope.sidebarListViewShowBtn = true;
-                                // Make sure we reload at most every half second
-                                if (loadTimer) {
-                                    $timeout.cancel(loadTimer);
-                                }
-                                loadTimer = $timeout(scope.updateLayersFromServices, 500);
-                            } else {
-                                scope.sidebarListViewShowBtn = false;
-                            }
-                        };
-
-                        // Monitor changes to the service list and selection
-                        if (!scope.showDetails) {
-                            scope.$watch("services", scope.mapChanged, true);
-                        }
 
 
                         /** Returns the list of messages for the given pixel **/
@@ -402,10 +341,12 @@ angular.module('maritimeweb.nw-nm')
                             scope.addMessageToLayer(scope.message);
 
                         } else {
-                            // Listen for visibility changes of the layer
-                            nwnmLayer.on('change:visible', scope.updateLayersFromServices);
 
-                            map.on('moveend', scope.mapChanged);
+                            // Listen for changes that should cause updates to the layers
+                            scope.$watch("services", scope.updateServiceBoundaryLayer, true);
+                            scope.$watch("messageList", scope.updateMessageListLayers, true);
+                            nwnmLayer.on('change:visible', scope.updateMessageListLayers);
+
 
                             map.on('click', function(evt) {
                                 var messages = scope.getMessagesForPixel(map.getEventPixel(evt.originalEvent));

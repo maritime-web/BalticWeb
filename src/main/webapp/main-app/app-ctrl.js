@@ -91,6 +91,15 @@ angular.module('maritimeweb.app')
 
         $scope.nwNmServices = [];
         $scope.nwNmMessages = [];
+        $scope.nwNmLanguage = 'en';
+
+        /**
+         * Computes the current NW-NM service boundary
+         */
+        $scope.currentNwNmBoundary = function () {
+            return $scope.mapState['wktextent'];
+        };
+
 
         /** Schedules reload of the NW-NM services **/
         $scope.refreshNwNmServices = function () {
@@ -102,25 +111,36 @@ angular.module('maritimeweb.app')
             }, 500);
         };
 
-
-        // Refresh the service list every time the map bounds changes
-        $scope.$watch("mapState['wktextent']", $scope.refreshNwNmServices);
+        // Refresh the service list every time the NW-NM boundary changes
+        $scope.$watch($scope.currentNwNmBoundary, $scope.refreshNwNmServices);
 
 
         /** Loads the NW-NM services **/
-        $scope.loadNwNmServices = function (wkt) {
+        $scope.loadNwNmServices = function () {
 
-            wkt = wkt || $scope.mapState['wktextent'];
+            var wkt = $scope.currentNwNmBoundary();
 
             NwNmService.getNwNmServices(wkt)
                 .success(function (services) {
                     $scope.nwNmServices.length = 0;
 
                     // Update the selected status from localstorage
+                    var instanceIds = [];
                     angular.forEach(services, function (service) {
                         $scope.nwNmServices.push(service);
                         service.selected = $window.localStorage[service.instanceId] == 'true';
-                    })
+                        if (service.selected) {
+                            instanceIds.push(service.instanceId);
+                        }
+                    });
+
+                    // Load messages for all the selected service instances
+                    NwNmService
+                        .getPublishedNwNm(instanceIds, $scope.nwNmLanguage, wkt)
+                        .success(function (messages) {
+                            $scope.nwNmMessages = messages;
+                        });
+
                 })
                 .error(function (error) {
                     // growl.error("Error getting NW NM service. Reason=" + error);
@@ -132,6 +152,19 @@ angular.module('maritimeweb.app')
         /** Update the selected status of the service **/
         $scope.nwNmSelected = function (service) {
             $window.localStorage[service.instanceId] = service.selected;
+        };
+
+
+        /** Show the details of the message */
+        $scope.showNwNmDetails = function (message) {
+            NwNmService.showMessageInfo(message);
+        };
+
+
+        /** Returns the area heading for the message with the given index */
+        $scope.nwnmAreaHeading = function (index) {
+            var msg = $scope.nwNmMessages[index];
+            return NwNmService.getAreaHeading(msg);
         };
 
 
@@ -169,19 +202,6 @@ angular.module('maritimeweb.app')
             //growl.info("got vesseldetails " + JSON.stringify(vesselDetails));
             growl.info("Vessel details retrieved");
 
-        };
-
-
-        /** Show the details of the message */
-        $scope.showNwNmDetails = function (message) {
-            NwNmService.showMessageInfo(message);
-        };
-
-
-        /** Returns the area heading for the message with the given index */
-        $scope.nwnmAreaHeading = function (index) {
-            var msg = $scope.nwNmMessages[index];
-            return NwNmService.getAreaHeading(msg);
         };
 
     }]);
