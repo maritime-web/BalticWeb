@@ -92,6 +92,10 @@ angular.module('maritimeweb.app')
         $scope.nwNmServices = [];
         $scope.nwNmMessages = [];
         $scope.nwNmLanguage = 'en';
+        $scope.nwNmType = {
+            NW: $window.localStorage['nwNmShowNw'] != 'false',
+            NM: $window.localStorage['nwNmShowNm'] == 'true'
+        };
 
         /**
          * Computes the current NW-NM service boundary
@@ -135,8 +139,14 @@ angular.module('maritimeweb.app')
                     });
 
                     // Load messages for all the selected service instances
+                    var mainType = null;
+                    if ($scope.nwNmType.NW && !$scope.nwNmType.NM) {
+                        mainType = 'NW';
+                    } else if (!$scope.nwNmType.NW && $scope.nwNmType.NM) {
+                        mainType = 'NM';
+                    }
                     NwNmService
-                        .getPublishedNwNm(instanceIds, $scope.nwNmLanguage, wkt)
+                        .getPublishedNwNm(instanceIds, $scope.nwNmLanguage, mainType, wkt)
                         .success(function (messages) {
                             $scope.nwNmMessages = messages;
                         });
@@ -146,6 +156,14 @@ angular.module('maritimeweb.app')
                     // growl.error("Error getting NW NM service. Reason=" + error);
                     $log.error("Error getting NW NM service. Reason=" + error);
                 })
+        };
+
+
+        /** Called when the NW-NM type selection has been changed **/
+        $scope.nwNmTypeChanged = function () {
+            $window.localStorage['nwNmShowNw'] = '' + $scope.nwNmType.NW;
+            $window.localStorage['nwNmShowNm'] = '' + $scope.nwNmType.NM;
+            $scope.loadNwNmServices();
         };
 
 

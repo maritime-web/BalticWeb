@@ -12,11 +12,14 @@ angular.module('maritimeweb.nw-nm')
             /**
              * Returns the published NW-NM messages
              */
-            this.getPublishedNwNm = function (instanceIds, lang, wkt) {
+            this.getPublishedNwNm = function (instanceIds, lang, mainType, wkt) {
                 var params = lang ? 'lang=' + lang : 'lang=en';
                 angular.forEach(instanceIds, function (instanceId) {
                     params += '&instanceId=' + encodeURIComponent(instanceId);
                 });
+                if (mainType) {
+                    params += '&mainType=' + mainType;
+                }
                 if (wkt) {
                     params += '&wkt=' + encodeURIComponent(wkt);
                 }

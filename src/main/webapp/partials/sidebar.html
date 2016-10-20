@@ -58,8 +58,16 @@
 
                 <div class="message-services">
                     <div class="message-services-header">
-                        <strong>MC NW-NM Services</strong>&nbsp;
-                        <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
+                        <div>
+                            <strong>MC NW-NM Services</strong>&nbsp;
+                            <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
+                        </div>
+                        <div>
+                            Display &nbsp;&nbsp;
+                            <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()">&nbsp;NW
+                            &nbsp;&nbsp;
+                            <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()">&nbsp;NtM
+                        </div>
                     </div>
                     <div class="message-service" ng-repeat="s in nwNmServices">
                         <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
