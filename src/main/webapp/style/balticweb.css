@@ -257,14 +257,20 @@ body {
 /** NW-NM list **/
 
 .message-services {
-    margin: 10px 20px;
-    padding: 10px;
+    font-size: 11px;
+    margin: 10px 0;
     border-radius: 4px;
-    background-color: lightgray;
+    border: 1px solid lightgray;
 }
 
-.message-services {
+.message-services-header {
+    text-align: center;
+    background-color: lightgray;
+    padding: 5px;
+}
 
+.message-service {
+    padding: 5px 10px;
 }
 
 .message-item {

@@ -152,6 +152,7 @@ angular.module('maritimeweb.app')
         /** Update the selected status of the service **/
         $scope.nwNmSelected = function (service) {
             $window.localStorage[service.instanceId] = service.selected;
+            $scope.loadNwNmServices();
         };
 
 

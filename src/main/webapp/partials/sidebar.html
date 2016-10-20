@@ -56,7 +56,15 @@
 
             <div class="sidebar-panel">
 
-
+                <div class="message-services">
+                    <div class="message-services-header">
+                        <strong>MC NW-NM Services</strong>&nbsp;
+                        <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
+                    </div>
+                    <div class="message-service" ng-repeat="s in nwNmServices">
+                        <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
+                    </div>
+                </div>
 
                 <table class="table table-striped">
                     <tr ng-repeat-start="msg in nwNmMessages" ng-if="$index == 0 || nwnmAreaHeading($index) != nwnmAreaHeading($index - 1)">
@@ -75,22 +83,6 @@
                         </td>
                     </tr>
                 </table>
-                <div class="message-services">
-                    <table class="table table-striped" cellpadding="10">
-                        <tr>
-                            <td width="60" valign="top">
-                                <img src="/img/servicereg_152.png" height="48">
-                            </td>
-                            <td width="*">
-                                <strong>MC NW-NM Services</strong>&nbsp;
-                                <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
-                                <div class="message-service" ng-repeat="s in nwNmServices">
-                                    <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
             </div>
 
         </uib-tab>
