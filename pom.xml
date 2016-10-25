@@ -32,6 +32,7 @@
 
 	</properties>
 
+<!--
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -44,6 +45,7 @@
 
 		</dependencies>
 	</dependencyManagement>
+-->
 
 	<dependencies>
 		<!-- Added here again because weld jar contains older version of slf4j. 
@@ -151,14 +153,14 @@
 		<!-- Import the Common Annotations API (JSR-250). -->
 		<dependency>
 			<groupId>org.jboss.spec.javax.annotation</groupId>
-			<artifactId>jboss-annotations-api_1.1_spec</artifactId>
+			<artifactId>jboss-annotations-api_1.2_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
 		<!-- Import the EJB API. -->
 		<dependency>
 			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
+			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
