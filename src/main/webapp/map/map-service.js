@@ -177,47 +177,20 @@ angular.module('maritimeweb.map')
                             visible: true,
                             source: new ol.source.OSM()
                         }),
-                        new ol.layer.Tile({
+/*                        new ol.layer.Tile({
                             title: 'Stamen - Water color',
                             type: 'base',
                             visible: false,
                             source: new ol.source.Stamen({
                                 layer: 'watercolor'
                             })
-                        }),
+                        }),*/
                         new ol.layer.Tile({
                             title: 'Stamen - Toner',
                             type: 'base',
                             visible: false,
                             source: new ol.source.Stamen({
                                 layer: 'toner'
-                            })
-                        }),
-                        new ol.layer.Tile({
-                            title: 'Thunderforest - Outdoors',
-                            type: 'base',
-                            visible: false,
-                            source: new ol.source.OSM({
-                                url: 'http://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png',
-                                attributions: thunderforestAttributions
-                            })
-                        }),
-                        new ol.layer.Tile({
-                            title: 'Thunderforest - Landscape',
-                            type: 'base',
-                            visible: false,
-                            source: new ol.source.OSM({
-                                url: 'http://{a-c}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
-                                attributions: thunderforestAttributions
-                            })
-                        }),
-                        new ol.layer.Tile({
-                            title: 'Thunderforest - Transport',
-                            type: 'base',
-                            visible: false,
-                            source: new ol.source.OSM({
-                                url: 'http://{a-c}.tile.thunderforest.com/transport/{z}/{x}/{y}.png',
-                                attributions: thunderforestAttributions
                             })
                         }),
                         new ol.layer.Tile({
@@ -278,7 +251,7 @@ angular.module('maritimeweb.map')
                     title: 'Weather Forecasts',
                     layers: [
                         new ol.layer.Tile({
-                            title: 'NASA: Aqua Satellite image',
+                            title: 'NASA: Latest - Aqua Satellite image',
 
                             source: new ol.source.XYZ({
                                 urls:[
@@ -293,7 +266,7 @@ angular.module('maritimeweb.map')
 
                         }),
                         new ol.layer.Tile({
-                            title: 'NASA: Terra satellite image',
+                            title: 'NASA: Latest - Terra satellite image',
 
                             source: new ol.source.XYZ({
                                 urls:[
@@ -306,9 +279,9 @@ angular.module('maritimeweb.map')
                             }),
                             visible: false
 
-                        }),
+                        })
 
-                        new ol.layer.Tile({
+/*                        new ol.layer.Tile({
                             title: 'Surface Pressure  - openportguide.de',
                             source: new ol.source.XYZ({
                                 url: 'http://weather.openportguide.de/tiles/actual/surface_pressure/5/{z}/{x}/{y}.png',
@@ -350,7 +323,9 @@ angular.module('maritimeweb.map')
                                 attributions: openPortGuideAttributions
                             }),
                             visible: false
-                        })/*,
+                        })*/
+
+                        /*,
                         new ol.layer.Vector({
                             title: 'tidal - Barrenswatch',
                             source: new ol.source.Vector({
