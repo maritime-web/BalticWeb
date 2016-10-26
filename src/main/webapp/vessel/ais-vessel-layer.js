@@ -18,11 +18,11 @@ angular.module('maritimeweb.vessel')
                 '<a href="#" id="popup-closer" class="ol-popup-closer"></a>' +
                 '<h3 class="popover-title">{{vessel.name}}</h3>' +
                 '<div class="popover-content">' +
-                '<p uib-popover="MMSI number" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-globe"></span> <a ng-href="#/vessel/{{vessel.mmsi}}">{{vessel.mmsi}}</a></p>' +
-                '<p uib-popover="Radio call sign" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-volume-up"></span> {{vessel.callsign}} </p>' +
-                '<p uib-popover="Type of vessel i.e. Tanker, Passenger, Fishing etc." popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-tag"></span> {{vessel.type}}</p>' +
-                '<p uib-popover="GPS position in latitude longitude" popover-placement="left" popover-trigger="mouseenter"><span class="glyphicon glyphicon-flag"></span> {{vessel.position}}</p>' +
-                '<p uib-popover="Direction of the ship in degrees" popover-placement="left" popover-trigger="mouseenter"><i class="fa fa-compass" aria-hidden="true"></i> {{vessel.angle}}°</p>' +
+                '<p uib-popover="MMSI number" popover-placement="left" popover-trigger="mouseenter">MMSI: {{vessel.mmsi}}</p>' +
+                '<p uib-popover="Radio call sign" popover-placement="left" popover-trigger="mouseenter">Radio: {{vessel.callsign}} </p>' +
+                '<p uib-popover="Type of vessel i.e. Tanker, Passenger, Fishing etc." popover-placement="left" popover-trigger="mouseenter">Type: {{vessel.type}}</p>' +
+                '<p uib-popover="GPS position in latitude longitude" popover-placement="left" popover-trigger="mouseenter">Position: {{vessel.position}}</p>' +
+                '<p uib-popover="Direction of the ship in degrees" popover-placement="left" popover-trigger="mouseenter">COG: {{vessel.angle}}°</p>' +
                 //'<p><button uib-popover="Retrieve more detailed information about {{vessel.name}} i.e. past track, destination, estimated-time-of-arrivel, size, speed-over-ground, country of origin, IMO number and more" popover-trigger="mouseenter"' +
                 //' popover-placement="bottom" type="button" class="btn btn-primary"' +
                 //' ng-click="getMoreVesselDetails()">More details</button></p>' +
