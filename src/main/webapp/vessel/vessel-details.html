@@ -38,8 +38,8 @@
             <div class="col-md-6" ng-if="msg.data.aisVessel.lat && msg.data.aisVessel.lon ">
                 <div class="well">
 
-                    <h3>Position</h3>
-                    <p><span class="glyphicon glyphicon-flag"></span> {{ toLonLat(msg.data.aisVessel.lon,
+                    <h3>Information</h3>
+                    <p><span class="glyphicon glyphicon-flag"></span> Position: {{ toLonLat(msg.data.aisVessel.lon,
                         msg.data.aisVessel.lat) | lonlat:{ decimals : 3, pp: true} }}</p>
                     <p><i class="fa fa-clock-o" aria-hidden="true"></i> Position received: <strong>{{msg.data.aisVessel.lastReport
                         | timeAgo}}</strong> at {{msg.data.aisVessel.lastReport | date:'yyyy-MM-dd HH:mm:ss' : 'UTC'}}
@@ -161,7 +161,7 @@
 
             <div class="col-md-4 ">
                 <div class="well">
-                    <h3>Information</h3>
+                    <h3>Static information</h3>
 
                     <p ng-if="msg.data.aisVessel.country">
                         <span class="glyphicon glyphicon-home"></span> Country:
