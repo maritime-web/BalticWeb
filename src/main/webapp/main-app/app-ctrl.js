@@ -125,36 +125,53 @@ angular.module('maritimeweb.app')
             var wkt = $scope.currentNwNmBoundary();
 
             NwNmService.getNwNmServices(wkt)
-                .success(function (services) {
+                .success(function (services, status) {
+                    $log.debug("Status " + status);
                     $scope.nwNmServices.length = 0;
 
                     // Update the selected status from localstorage
                     var instanceIds = [];
-                    angular.forEach(services, function (service) {
-                        $scope.nwNmServices.push(service);
-                        service.selected = $window.localStorage[service.instanceId] == 'true';
-                        if (service.selected) {
-                            instanceIds.push(service.instanceId);
-                        }
-                    });
+                    if(status==204){
+                        $scope.nwNmServicesStatus = 'false';
+                        $window.localStorage[NwNmService.serviceID()] = 'false';
+                        $scope.nwNmMessages = [];
 
-                    // Load messages for all the selected service instances
-                    var mainType = null;
-                    if ($scope.nwNmType.NW && !$scope.nwNmType.NM) {
-                        mainType = 'NW';
-                    } else if (!$scope.nwNmType.NW && $scope.nwNmType.NM) {
-                        mainType = 'NM';
                     }
-                    NwNmService
-                        .getPublishedNwNm(instanceIds, $scope.nwNmLanguage, mainType, wkt)
-                        .success(function (messages) {
-                            $scope.nwNmMessages = messages;
+
+                    if(status==200){
+                        $scope.nwNmServicesStatus = 'true';
+                        $window.localStorage[NwNmService.serviceID()] = 'true';
+
+
+                            angular.forEach(services, function (service) {
+                            $scope.nwNmServices.push(service);
+                            service.selected = $window.localStorage[service.instanceId] == 'true';
+                            if (service.selected) {
+                                instanceIds.push(service.instanceId);
+                            }
                         });
 
+                        // Load messages for all the selected service instances
+                        var mainType = null;
+                        if ($scope.nwNmType.NW && !$scope.nwNmType.NM) {
+                            mainType = 'NW';
+                        } else if (!$scope.nwNmType.NW && $scope.nwNmType.NM) {
+                            mainType = 'NM';
+                        }
+                        if($window.localStorage[NwNmService.serviceID()]){
+                            NwNmService
+                                .getPublishedNwNm(instanceIds, $scope.nwNmLanguage, mainType, wkt)
+                                .success(function (messages) {
+                                    $scope.nwNmMessages = messages;
+                                });
+                        }
+                    }
                 })
                 .error(function (error) {
                     // growl.error("Error getting NW NM service. Reason=" + error);
-                    $log.error("Error getting NW NM service. Reason=" + error);
+                    $window.localStorage[NwNmService.serviceID()] = 'false';
+
+                    $log.debug("Error getting NW NM service. Reason=" + error);
                 })
         };
 

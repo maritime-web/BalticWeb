@@ -9,6 +9,8 @@ angular.module('maritimeweb.nw-nm')
     .service('NwNmService', ['$http', '$uibModal',
         function($http, $uibModal) {
 
+            this.serviceID = function(){ return 'urn:mrnx:mcl:service:dma:nw-nm:rest'};
+            this.serviceVersion = function(){ return '0.1'};
             /**
              * Returns the published NW-NM messages
              */
@@ -33,8 +35,8 @@ angular.module('maritimeweb.nw-nm')
              */
             this.getNwNmServices = function (wkt) {
                 var params = wkt ? '?wkt=' + encodeURIComponent(wkt) : '';
-                var pathParam1 = encodeURIComponent('urn:mrnx:mcl:service:dma:nw-nm:rest');
-                var pathParam2 = encodeURIComponent('0.1');
+                var pathParam1 = encodeURIComponent(this.serviceID());
+                var pathParam2 = encodeURIComponent(this.serviceVersion());
                 var request = '/rest/service/lookup/' + pathParam1 + '/' + pathParam2 + params;
                 return $http.get(request);
             };

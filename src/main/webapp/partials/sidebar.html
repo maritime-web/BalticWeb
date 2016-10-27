@@ -18,6 +18,30 @@
         </uib-tab-->
 
 
+        <uib-tab>
+            <uib-tab-heading>
+                Satellite
+            </uib-tab-heading>
+            <div class="sidebar-panel">
+
+<!--                <div ng-if="!loggedIn" class="well">
+                    <p>Log in to see satellite images</p>
+                    <button class="btn btn-default" ng-click="login()">Login</button>
+                </div>-->
+
+                <table class="table table-striped" >
+                    <tr ng-repeat="service in services">
+                        <td >
+                           {{iconForVessel(vessel)}}
+                        </td>
+                        <td class="vessel-item"><span ng-if="vessel.mmsi"> <a href ng-click="showVesselDetails(vessel)" >{{vessel.mmsi}}</a></span></td>
+                        <td class="vessel-item">{{vessel.name}}</td>
+                        <td class="vessel-item">{{toLonLat(vessel) | lonlat:{ decimals : 3, pp: true } }}</td>
+                    </tr>
+                </table>
+            </div>
+        </uib-tab>
+
         <!-- Vessels tab -->
         <uib-tab>
             <uib-tab-heading>
@@ -27,7 +51,7 @@
             </uib-tab-heading>
             <div class="sidebar-panel">
 
-                <div ng-if="!loggedIn" class="vessel-login">
+                <div ng-if="!loggedIn" class="well">
                     <p>Log in to see vessels</p>
                     <button class="btn btn-default" ng-click="login()">Login</button>
                 </div>
@@ -37,8 +61,8 @@
                         <td width="24" class="vessel-item">
                             <img ng-src="{{iconForVessel(vessel)}}">
                         </td>
-                        <td class="vessel-item"><span ng-if="vessel.mmsi"> <a href ng-click="showVesselDetails(vessel)" >{{vessel.mmsi}}</a></span></td>
-                        <td class="vessel-item">{{vessel.name}}</td>
+                        <td class="vessel-item"><span ng-if="vessel.mmsi">{{vessel.mmsi}}</span></td>
+                        <td class="vessel-item"><a ng-href="#/vessel/{{vessel.mmsi}}">{{vessel.name}}</a></td>
                         <td class="vessel-item">{{toLonLat(vessel) | lonlat:{ decimals : 3, pp: true } }}</td>
                     </tr>
                 </table>
@@ -54,26 +78,25 @@
                 <span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>
             </uib-tab-heading>
 
-            <div class="sidebar-panel">
+            <div class="panel" ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'" >
+                <div class="panel-heading">MC NW-NM Services  <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
 
-                <div class="message-services">
-                    <div class="message-services-header">
-                        <div>
-                            <strong>MC NW-NM Services</strong>&nbsp;
-                            <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
-                        </div>
-                        <div>
-                            Display &nbsp;&nbsp;
-                            <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()">&nbsp;NW
-                            &nbsp;&nbsp;
-                            <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()">&nbsp;NtM
-                        </div>
-                    </div>
-                    <div class="message-service" ng-repeat="s in nwNmServices">
-                        <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
+
+
+                    <div class="small pull-right">
+                        Display &nbsp;&nbsp;
+                        <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()">&nbsp;NW
+                        &nbsp;&nbsp;
+                        <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()">&nbsp;NtM
                     </div>
                 </div>
 
+
+
+                <div class="panel-body">
+                    <div class="message-service" ng-repeat="s in nwNmServices">
+                        <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
+                    </div>
                 <table class="table table-striped">
                     <tr ng-repeat-start="msg in nwNmMessages" ng-if="$index == 0 || nwnmAreaHeading($index) != nwnmAreaHeading($index - 1)">
                         <td colspan="2"  class="message-area-heading">
@@ -91,6 +114,7 @@
                         </td>
                     </tr>
                 </table>
+                </div>
             </div>
 
         </uib-tab>
