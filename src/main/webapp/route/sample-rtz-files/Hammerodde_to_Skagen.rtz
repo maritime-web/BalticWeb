@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+  <routeInfo routeName="Hammerode - Skagen" />
+  <waypoints>
+    <defaultWaypoint>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </defaultWaypoint>
+    <waypoint id="1" name="Hammerodde NØ">
+      <position lat="55.33351666666667" lon="14.80985"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="2" name="Hammerodde NV">
+      <position lat="55.33416666666667" lon="14.75155"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="3" name="TSS Bornholmsgat Ø">
+      <position lat="55.158633333333334" lon="14.374983333333333"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="4" name="TSS Bornholmsgat">
+      <position lat="55.11805" lon="14.162816666666666"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="5" name="TSS Bornholmsgat V">
+      <position lat="55.06111666666666" lon="14.085716666666666"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="6" name="TSS Bornholmsgat">
+      <position lat="54.85965" lon="13.066783333333333"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="7" name="DW 79/80">
+      <position lat="54.77531666666667" lon="12.725983333333334"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="8" name="DW 73/74">
+      <position lat="54.600183333333334" lon="12.270783333333334"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="9" name="T72">
+      <position lat="54.52075" lon="12.227366666666667"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="10" name="T71">
+      <position lat="54.46073333333333" lon="12.199466666666666"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="11" name="T71">
+      <position lat="54.44178333333333" lon="12.1747"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="12" name="T67/68">
+      <position lat="54.441833333333335" lon="11.78585"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="13" name="T63">
+      <position lat="54.60191666666667" lon="11.145583333333333"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="14" name="T62">
+      <position lat="54.596833333333336" lon="11.018916666666666"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="15" name="DW58/61">
+      <position lat="54.68253333333333" lon="10.777216666666666"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="16" name="DW56/59">
+      <position lat="54.7358" lon="10.782216666666667"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="17" name="DW57/LLB S">
+      <position lat="54.80475" lon="10.834733333333334"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="18" name="DW52/Højbjerg">
+      <position lat="54.87615" lon="10.83945"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="19" name="DW50/53">
+      <position lat="54.939733333333336" lon="10.889816666666666"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="20" name="DW48/51">
+      <position lat="54.97428333333333" lon="10.972016666666667"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="21" name="DW46">
+      <position lat="55.03018333333333" lon="10.99825"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="22" name="DW44/45">
+      <position lat="55.06483333333333" lon="11.001983333333333"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="23" name="DW42/43">
+      <position lat="55.0796" lon="10.991816666666667"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="24" name="DW41">
+      <position lat="55.143283333333336" lon="10.992666666666667"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="25" name="DW38/39">
+      <position lat="55.158883333333335" lon="11.0052"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="26" name="T33/Agersø Flak">
+      <position lat="55.2026" lon="11.099316666666667"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="27" name="T32/Vengeance">
+      <position lat="55.22923333333333" lon="11.105833333333333"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="28" name="T28A">
+      <position lat="55.31451666666667" lon="11.03985"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="29" name="T25A">
+      <position lat="55.36915" lon="11.0392"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="30" name="T25">
+      <position lat="55.51513333333333" lon="10.871433333333334"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="31" name="T23">
+      <position lat="55.64653333333333" lon="10.781866666666666"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="32" name="T21/22">
+      <position lat="55.760983333333336" lon="10.81325"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="33" name="T20">
+      <position lat="55.82448333333333" lon="10.8182"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="34" name="T16">
+      <position lat="55.91866666666667" lon="10.958733333333333"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="35" name="T14/15">
+      <position lat="55.95708333333333" lon="11.010933333333334"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="36" name="T13">
+      <position lat="56.02185" lon="11.088716666666667"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="37" name="Sjællands Rev N">
+      <position lat="56.10315" lon="11.1813"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="38" name="T10/11">
+      <position lat="56.1711" lon="11.274666666666667"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="39" name="T6">
+      <position lat="56.75641666666667" lon="11.8918"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="40" name="T3">
+      <position lat="57.46991666666667" lon="11.421183333333333"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="41" name="T2">
+      <position lat="57.504733333333334" lon="11.356516666666666"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+    <waypoint id="42" name="T1A">
+      <position lat="57.7335" lon="10.905566666666667"/>
+      <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+  </waypoints>
+  <schedules>
+    <schedule id="1" />
+  </schedules>
+</route>

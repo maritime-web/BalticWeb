@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<route xmlns="http://www.cirm.org/RTZ/1/0" version="1.0">
+    <routeInfo routeName="Skagen - Hammerodde" />
+    <waypoints>
+        <defaultWaypoint>
+            <leg speedMin="14.0" speedMax="14.0" />
+        </defaultWaypoint>
+        <waypoint id="1" name="Lodsmærke SKAGEN 1">
+            <position lat="57.783366666666666" lon="10.633816666666666" />
+        </waypoint>
+        <waypoint id="2" name="Skagen NØ">
+            <position lat="57.7828" lon="10.748016666666667" />
+        </waypoint>
+        <waypoint id="3" name="T3">
+            <position lat="57.464" lon="11.404183333333334" />
+        </waypoint>
+        <waypoint id="4" name="T6">
+            <position lat="56.75588333333334" lon="11.8695" />
+        </waypoint>
+        <waypoint id="5" name="T10/11">
+            <position lat="56.17545" lon="11.270066666666667" />
+        </waypoint>
+        <waypoint id="6" name="Sjællands Rev N">
+            <position lat="56.10081666666667" lon="11.1354" />
+        </waypoint>
+        <waypoint id="7" name="T13">
+            <position lat="56.02385" lon="11.080366666666666" />
+        </waypoint>
+        <waypoint id="8" name="T14/15">
+            <position lat="55.95616666666667" lon="10.999216666666667" />
+        </waypoint>
+        <waypoint id="9" name="T16">
+            <position lat="55.92105" lon="10.94965" />
+        </waypoint>
+        <waypoint id="10" name="Hatter barn">
+            <position lat="55.8862" lon="10.812" />
+        </waypoint>
+        <waypoint id="11" name="T21/22">
+            <position lat="55.75926666666667" lon="10.8024" />
+        </waypoint>
+        <waypoint id="12" name="T23">
+            <position lat="55.64593333333333" lon="10.772916666666667" />
+        </waypoint>
+        <waypoint id="13" name="T25">
+            <position lat="55.509966666666664" lon="10.867366666666667" />
+        </waypoint>
+        <waypoint id="14" name="T25A">
+            <position lat="55.36825" lon="11.032316666666667" />
+        </waypoint>
+        <waypoint id="15" name="T28A">
+            <position lat="55.313833333333335" lon="11.032116666666667" />
+        </waypoint>
+        <waypoint id="16" name="T32/Vengeance">
+            <position lat="55.229683333333334" lon="11.098283333333333" />
+        </waypoint>
+        <waypoint id="17" name="T33/Agersø Flak">
+            <position lat="55.20601666666666" lon="11.095316666666667" />
+        </waypoint>
+        <waypoint id="18" name="DW38/39">
+            <position lat="55.16578333333333" lon="11.001066666666667" />
+        </waypoint>
+        <waypoint id="19" name="DW41">
+            <position lat="55.14621666666667" lon="10.987933333333334" />
+        </waypoint>
+        <waypoint id="20" name="DW42/43">
+            <position lat="55.0774" lon="10.986983333333333" />
+        </waypoint>
+        <waypoint id="21" name="DW44/45">
+            <position lat="55.061683333333335" lon="10.995566666666667" />
+        </waypoint>
+        <waypoint id="22" name="DW46">
+            <position lat="55.0359" lon="10.994233333333334" />
+        </waypoint>
+        <waypoint id="23" name="DW49">
+            <position lat="54.9842" lon="10.971166666666667" />
+        </waypoint>
+        <waypoint id="24" name="DW48/51">
+            <position lat="54.97071666666667" lon="10.9593" />
+        </waypoint>
+        <waypoint id="25" name="DW50/53">
+            <position lat="54.94193333333333" lon="10.881833333333333" />
+        </waypoint>
+        <waypoint id="26" name="DW52/Højbjerg">
+            <position lat="54.8773" lon="10.8372" />
+        </waypoint>
+        <waypoint id="27" name="DW57/LLB S">
+            <position lat="54.80335" lon="10.831333333333333" />
+        </waypoint>
+        <waypoint id="28" name="DW56/59">
+            <position lat="54.7373" lon="10.776416666666666" />
+        </waypoint>
+        <waypoint id="29" name="DW58/61">
+            <position lat="54.676633333333335" lon="10.766366666666666" />
+        </waypoint>
+        <waypoint id="30" name="T62">
+            <position lat="54.58893333333333" lon="11.0165" />
+        </waypoint>
+        <waypoint id="31" name="T63">
+            <position lat="54.595616666666665" lon="11.144816666666667" />
+        </waypoint>
+        <waypoint id="32" name="T67/68">
+            <position lat="54.4162" lon="11.777533333333333" />
+        </waypoint>
+        <waypoint id="33" name="T70">
+            <position lat="54.4159" lon="12.156466666666667" />
+        </waypoint>
+        <waypoint id="34" name="T71">
+            <position lat="54.45845" lon="12.210266666666667" />
+        </waypoint>
+        <waypoint id="35" name="T72">
+            <position lat="54.518633333333334" lon="12.243833333333333" />
+        </waypoint>
+        <waypoint id="36" name="DW73/74">
+            <position lat="54.59256666666667" lon="12.277616666666667" />
+        </waypoint>
+        <waypoint id="37" name="DW79/80">
+            <position lat="54.77126666666667" lon="12.729433333333333" />
+        </waypoint>
+        <waypoint id="38" name="Arkona">
+            <position lat="54.8129" lon="13.091333333333333" />
+        </waypoint>
+        <waypoint id="39" name="TSS Bornholmsgat V">
+            <position lat="55.02125" lon="14.148616666666667" />
+        </waypoint>
+        <waypoint id="40" name="Hammerodde NV">
+            <position lat="55.31561666666666" lon="14.73525" />
+        </waypoint>
+        <waypoint id="41" name="Hammerodde NØ">
+            <position lat="55.33335" lon="14.783416666666668" />
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="1" />
+    </schedules>
+</route>
