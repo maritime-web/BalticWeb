@@ -4,44 +4,6 @@
 
     <uib-tabset>
 
-        <!-- Messages tab -->
-        <!--uib-tab>
-            <uib-tab-heading>
-                <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;Messages
-            </uib-tab-heading>
-            <div class="sidebar-panel">
-                <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="{{alert.timeout}}">
-                    {{alert.msg}}
-                </uib-alert>
-                &nbsp;
-            </div>
-        </uib-tab-->
-
-
-        <uib-tab>
-            <uib-tab-heading>
-                Satellite
-            </uib-tab-heading>
-            <div class="sidebar-panel">
-
-<!--                <div ng-if="!loggedIn" class="well">
-                    <p>Log in to see satellite images</p>
-                    <button class="btn btn-default" ng-click="login()">Login</button>
-                </div>-->
-
-                <table class="table table-striped" >
-                    <tr ng-repeat="service in services">
-                        <td >
-                           {{iconForVessel(vessel)}}
-                        </td>
-                        <td class="vessel-item"><span ng-if="vessel.mmsi"> <a href ng-click="showVesselDetails(vessel)" >{{vessel.mmsi}}</a></span></td>
-                        <td class="vessel-item">{{vessel.name}}</td>
-                        <td class="vessel-item">{{toLonLat(vessel) | lonlat:{ decimals : 3, pp: true } }}</td>
-                    </tr>
-                </table>
-            </div>
-        </uib-tab>
-
         <!-- Vessels tab -->
         <uib-tab>
             <uib-tab-heading>
@@ -81,8 +43,6 @@
             <div class="panel" ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'" >
                 <div class="panel-heading">MC NW-NM Services  <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="refreshNwNmServices()"></small>
 
-
-
                     <div class="small pull-right">
                         Display &nbsp;&nbsp;
                         <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()">&nbsp;NW
@@ -90,8 +50,6 @@
                         <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()">&nbsp;NtM
                     </div>
                 </div>
-
-
 
                 <div class="panel-body">
                     <div class="message-service" ng-repeat="s in nwNmServices">
@@ -116,6 +74,40 @@
                 </table>
                 </div>
             </div>
+
+        </uib-tab>
+
+        <uib-tab>
+            <uib-tab-heading>
+                <span class="glyphicon glyphicon-globe"></span> Satellite
+            </uib-tab-heading>
+            <div class="panel panel-default">
+
+                <!-- <div ng-if="!loggedIn" class="well">
+                    <p>Log in to see satellite images</p>
+                    <button class="btn btn-default" ng-click="login()">Login</button>
+                </div>-->
+
+                    <!-- Default panel contents -->
+                    <div class="panel-heading"><span class="glyphicon glyphicon-globe"></span> Nasa Satellite images</div>
+                    <div class="panel-body">
+                        <p>Browse satellite imagery</p>
+                    </div>
+
+                    <!-- Table -->
+                    <table class="table" ng-repeat="aService in mapWeatherLayers.getLayers().getArray()" >
+
+                        <tr ng-class="{'active':aService.getVisible()}">
+                        <td>    <a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)" ></a></td>
+                        </tr>
+
+                    </table>
+                <div class="panel-footer">
+                    <p class="small">Disclamer: We acknowledge the use of data products or imagery from the Land, Atmosphere Near real-time
+                        Capability for EOS (LANCE) system operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ.</p>
+                </div>
+
+                </div>
 
         </uib-tab>
 

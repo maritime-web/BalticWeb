@@ -255,7 +255,7 @@ angular.module('maritimeweb.map')
 
                             source: new ol.source.XYZ({
                                 urls:[
-                                    'http://ec2-52-211-163-57.eu-west-1.compute.amazonaws.com:8080/BalticSea.latest.aqua.250m/{z}/{x}/{y}.png'
+                                    'http://satellite.e-navigation.net:8080/BalticSea.latest.aqua.250m/{z}/{x}/{y}.png'
                                 ],
                                 attributions: nasaAttributions,
                                 minZoom: 3,
@@ -270,7 +270,7 @@ angular.module('maritimeweb.map')
 
                             source: new ol.source.XYZ({
                                 urls:[
-                                    'http://ec2-52-211-163-57.eu-west-1.compute.amazonaws.com:8080/BalticSea.latest.terra.250m/{z}/{x}/{y}.png'
+                                    'http://satellite.e-navigation.net:8080/BalticSea.latest.terra.250m/{z}/{x}/{y}.png'
                                 ],
                                 attributions: nasaAttributions,
                                 minZoom: 3,
