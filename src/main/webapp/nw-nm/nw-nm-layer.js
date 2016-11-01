@@ -120,7 +120,7 @@ angular.module('maritimeweb.nw-nm')
 
                     // MOVE AWAY FROM THIS DIRECTIVE
                     scope.sidebarListViewShowBtn = !scope.showDetails;
-                    scope.showgraphSidebar = false;
+                    scope.showgraphSidebar = true;
                     // TODO this toggle element is no longer limited to nw-nm and should be removed from this layer.! Move to another file. Shared between layers. Vessel and nm atm.
                     scope.toggleList = function() {
                         $rootScope.showgraphSidebar = !$rootScope.showgraphSidebar;
