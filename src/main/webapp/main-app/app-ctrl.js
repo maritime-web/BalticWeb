@@ -2,8 +2,8 @@ angular.module('maritimeweb.app')
 
     .controller("AppController", [
         '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
-        'VesselService', 'NwNmService', 'growl', '$uibModal', '$log',
-    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, growl, $uibModal, $log) {
+        'VesselService', 'NwNmService', 'SatelliteService', 'growl', '$uibModal', '$log',
+    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, growl, $uibModal, $log) {
 
         // Cancel any pending NW-NN queries
         var loadTimerService = undefined;
@@ -52,7 +52,7 @@ angular.module('maritimeweb.app')
         // Map state and layers
         $scope.mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
         $scope.mapBackgroundLayers = MapService.createStdBgLayerGroup();
-        $scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
+        //$scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
         $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
         //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
 
@@ -90,6 +90,7 @@ angular.module('maritimeweb.app')
         /**************************************/
 
         $scope.nwNmServices = [];
+        $scope.satelliteInstances =  [];
         $scope.nwNmMessages = [];
         $scope.nwNmLanguage = 'en';
         $scope.nwNmType = {
@@ -111,7 +112,7 @@ angular.module('maritimeweb.app')
                 $timeout.cancel(loadTimerService);
             }
             loadTimerService = $timeout(function () {
-                $scope.loadNwNmServices();
+                $scope.loadServicesFromRegistry();
             }, 500);
         };
 
@@ -119,14 +120,17 @@ angular.module('maritimeweb.app')
         $scope.$watch($scope.currentNwNmBoundary, $scope.refreshNwNmServices);
 
 
-        /** Loads the NW-NM services **/
-        $scope.loadNwNmServices = function () {
+        /** Loads the  services **/
+        $scope.loadServicesFromRegistry = function () {
+            $log.debug("loadServicesFromRegistry");
 
             var wkt = $scope.currentNwNmBoundary();
 
+
+
             NwNmService.getNwNmServices(wkt)
                 .success(function (services, status) {
-                    $log.debug("Status " + status);
+                    $log.debug("NVNM Status " + status);
                     $scope.nwNmServices.length = 0;
 
                     // Update the selected status from localstorage
@@ -180,14 +184,14 @@ angular.module('maritimeweb.app')
         $scope.nwNmTypeChanged = function () {
             $window.localStorage['nwNmShowNw'] = '' + $scope.nwNmType.NW;
             $window.localStorage['nwNmShowNm'] = '' + $scope.nwNmType.NM;
-            $scope.loadNwNmServices();
+            $scope.loadServicesFromRegistry();
         };
 
 
         /** Update the selected status of the service **/
         $scope.nwNmSelected = function (service) {
             $window.localStorage[service.instanceId] = service.selected;
-            $scope.loadNwNmServices();
+            $scope.loadServicesFromRegistry();
         };
 
 

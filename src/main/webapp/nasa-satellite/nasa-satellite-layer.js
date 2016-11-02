@@ -6,133 +6,240 @@
 angular.module('maritimeweb.nasa-satellite')
 
 /** Service for retrieving NASA services **/
-    .service('NASASatelitteService', ['$http',
-        function($http) {
+    .service('SatelliteService', ['$http', '$log', 'timeAgo', '$filter',
+        function ($http, $log, timeAgo, $filter) {
 
+            this.serviceID = function () {
+                return 'urn:mrn:mcl:service:technical:dma:tiles-service'
+            };
+            this.serviceVersion = function () {
+                return '0.2'
+            };
 
             /**
-             * Get NASA Services
+             * Get NASA Services for WKT
              */
             this.getNasaServices = function (wkt) {
                 var params = wkt ? '?wkt=' + encodeURIComponent(wkt) : '';
-                var pathParam1 = encodeURIComponent('urn:mrn:mcl:service:instance:dma:tiles-service');
-                var pathParam2 = encodeURIComponent('0.1');
+                var pathParam1 = encodeURIComponent(this.serviceID());
+                var pathParam2 = encodeURIComponent(this.serviceVersion());
                 var request = '/rest/service/lookup/' + pathParam1 + '/' + pathParam2 + params;
+
                 return $http.get(request);
             };
 
-
-            this.getDayOfYear = function(){
-                var now = new Date();
-                var start = new Date(now.getFullYear(), 0, 0);
-                var diff = now - start;
-                var oneDay = 1000 * 60 * 60 * 24;
-                var day = Math.floor(diff / oneDay);
-                return day;
-            };
-
             // http://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
-            this.isLeapYear = function(anydate) {
-                var year = date.getFullYear();
-                if((year & 3) != 0) return false;
+            this.isLeapYear = function (anydate) {
+                var year = anydate.getFullYear();
+                if ((year & 3) != 0) return false;
                 return ((year % 100) != 0 || (year % 400) == 0);
             };
 
             // Get Day of Year
-            this.getDOY = function(anydate) {
+            this.getDOY = function (anydate) {
                 var dayCount = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
                 var mn = anydate.getMonth();
                 var dn = anydate.getDate();
                 var dayOfYear = dayCount[mn] + dn;
-                if(mn > 1 && this.isLeapYear()) dayOfYear++;
+                if (mn > 1 && this.isLeapYear(anydate)) dayOfYear++;
                 return dayOfYear;
             };
+
+            /**
+             * Convert a Service registry instance to a OpenLayer tile layer.
+             * @param aServiceInstance
+             * @param days i.e. 0, 1, 2 days ago. 0 = today, 2 = two days ago.
+             * @returns {ol.layer.Tile}
+             */
+            this.createTileLayerFromService = function (aServiceInstance, daysAgo) {
+
+                $log.debug("createTileLayerFromService  aServiceInstance.url=" + aServiceInstance.url);
+                var url = aServiceInstance.url;
+                var description = "";
+                var timeAgo;
+                if (daysAgo == 0 || !daysAgo) {
+                    url = url.replace("{date}", "latest");
+                    description = "latest";
+                } else {
+                    var now = new Date();
+                    now.setDate(now.getDate() - daysAgo);
+                    var year = now.getUTCFullYear();
+                    var dayofyear = this.getDOY(now);
+                    url = url.replace("{date}", year + "" + dayofyear);
+                    description = $filter('timeAgo')(now.getTime()); // neatly filtered timestamp
+                    timeAgo = now.getTime();
+                }
+
+
+                // 'http://satellite.e-navigation.net:8080/BalticSea.latest.terra.250m/{z}/{x}/{y}.png'
+                // http://satellite.e-navigation.net:8080/BalticSea.latest.terra.250m/{z}/{x}/{y}.png
+                // http://ec2-52-211-163-57.eu-west-1.compute.amazonaws.com:8080/BalticSea.latest.terra.250m/6/32/19.png
+
+                var nasaAttributions = [
+                    new ol.Attribution({
+                        html: '<div class="panel panel-info">' +
+                        '<div class="panel-heading">Satellite image from NASA</div>' +
+                        '<div class="panel-body">' +
+                        '<span>We acknowledge the use of data products or imagery from the Land, Atmosphere Near real-time Capability for EOS (LANCE) system operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ.</span>' +
+                        '</div>' +
+                        '</div>'
+
+                    }),
+                    ol.source.OSM.ATTRIBUTION
+                ];
+                return new ol.layer.Tile({
+                    id: aServiceInstance.instanceId,
+                    title: aServiceInstance.name, // 'NASA: one day ago - Aqua Satellite image',
+                    description: description,
+                    timeago: timeAgo,
+                    zIndex: 0,
+                    source: new ol.source.XYZ({
+                        urls: [url],
+                        attributions: nasaAttributions,
+                        minZoom: 3,
+                        maxZoom: 8,
+                        tilePixelRatio: 1.000000
+                    }),
+                    visible: false
+                });
+            };
+
+            this.createSatelliteLayers = function (serviceInstances) {
+                var self = this;
+                var layers = [];
+                angular.forEach(serviceInstances, function (aServiceInstance) {
+                    layers.push(self.createTileLayerFromService(aServiceInstance, 0));
+                });
+
+                return layers;
+            }
+
         }])
-
-
-    /**
-     * The map-nw-nm-layer directive supports drawing a list of messages or a single message on a map layer
-     */
-    .directive('mapSatelliteLayer', ['$rootScope', '$timeout', 'MapService',
-        function ($rootScope, $timeout, MapService) {
+    .directive('mapSatelliteLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'SatelliteService', 'growl', '$log', '$window',
+        function ($rootScope, $timeout, Auth, MapService, SatelliteService, growl, $log, $window) {
             return {
                 restrict: 'E',
+                replace: false,
+                template: '',
                 require: '^olMap',
-                template: "",
                 scope: {
-                    name:           '@',
-                    // Specify the "message" attribute for showing the geometry of a single message
-                    message:        '=?',
-                    // Specify the "messageList" and "services" attributes for showing and loading messages within map bounds
-                    services:       '=?',
-                    messageList:    '=?',
-
-                    language:       '@',
-                    showGeneral:    '@',
-                    fitExtent:      '@',
-                    maxZoom:        '@'
+                    name: '@'
                 },
-                link: function(scope, element, attrs, ctrl) {
+                link: function (scope, element, attrs, ctrl) {
                     var olScope = ctrl.getOpenlayersScope();
-                    var nwLayer;
+                    var satelliteLayers;
+                    var loadTimer;
+                    scope.loggedIn = Auth.loggedIn;
+
+                    /** When the map extent changes, reload the Vessels's using a timer to batch up changes */
+                    scope.mapChanged = function () {
+                        if (loadTimer) {
+                            $timeout.cancel(loadTimer);
+                        }
+                        loadTimer = $timeout(scope.refreshServiceRegistry, 1000);
+
+                    };
+
+                    olScope.getMap().then(function (map) {
+                        var satelliteLayers = [];
+
+                        var layerGroup = new ol.layer.Group({
+                            title: 'Satellite Imagery',
+                            layers: satelliteLayers,
+                            visible: true,
+                            zIndex: 0
+
+                        });
+                        layerGroup.setVisible(true);
+                        map.addLayer(layerGroup);
 
 
+                        // Clean up when the layer is destroyed
+                        scope.$on('$destroy', function () {
+                            $log.debug("Satellite layer destroyed");
+                            if (angular.isDefined(layerGroup)) {
+                                map.removeLayer(layerGroup);
+                            }
+                            if (angular.isDefined(loadTimer)) {
+                                $timeout.cancel(loadTimer);
+                            }
+                        });
 
 
-                        /***************************/
-                        /** Map creation          **/
-                        /***************************/
+                        /** Refreshes the list of vessels from the server */
+                        scope.refreshServiceRegistry = function () {
+                            $log.debug("refreshServiceRegistry");
+                            var mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
 
-                    var nasaAttributions = [
-                        new ol.Attribution({
-                            html: '<div class="panel panel-info">' +
-                            '<div class="panel-heading">Satellite image from NASA</div>' +
-                            '<div class="panel-body">' +
-                            '<span>We acknowledge the use of data products or imagery from the Land, Atmosphere Near real-time Capability for EOS (LANCE) system operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ.</span>' +
-                            '</div>' +
-                            '</div>'
+                            var wkt = mapState['wktextent'];
 
-                        }),
-                        ol.source.OSM.ATTRIBUTION
-                    ];
+                            $rootScope.mapWeatherLayers = layerGroup; // add group-layer to rootscope so it can be enabled/disabled
 
-                    var satelliteLayer =  new ol.layer.Group({
-                        title: 'Weather Forecasts',
-                        layers: [
-                            new ol.layer.Tile({
-                                title: 'NASA: one day ago - Aqua Satellite image',
 
-                                source: new ol.source.XYZ({
-                                    urls:[
-                                        'http://satellite.e-navigation.net:8080/BalticSea.2016300.aqua.250m/{z}/{x}/{y}.png'
-                                    ],
-                                    attributions: nasaAttributions,
-                                    minZoom: 3,
-                                    maxZoom: 8,
-                                    tilePixelRatio: 1.000000
-                                }),
-                                visible: false
+                            SatelliteService.getNasaServices(wkt).success(function (services, status) {
+                                $log.debug("Nasa Status " + status + " SatelliteService.serviceID()=" + SatelliteService.serviceID());
+                                angular.forEach(services, function (service) {
+                                    $log.debug("Service=" + service.instanceId);
+                                });
 
-                            }),
-                            new ol.layer.Tile({
-                                title: 'NASA: one day ago - Terra satellite image',
+                                // Update the selected status from localstorage
+                                if (status == 204) {
+                                    $rootScope.SatelliteServicesStatus = 'false';
+                                    $window.localStorage[SatelliteService.serviceID()] = 'false';
+                                    while($rootScope.mapWeatherLayers.getLayers().getArray().length > 0) {
+                                        $rootScope.mapWeatherLayers.getLayers().getArray().pop().setVisible(false);
+                                    }
+                                    // TODO: Need to store visibility state for each satellite instance...
+                                    //$rootScope.mapWeatherLayers.getLayers().getArray().splice(0,$rootScope.mapWeatherLayers.getLayers().getArray().length);
+                                    //$rootScope.mapWeatherLayers.getLayers().getArray().length = 0;
 
-                                source: new ol.source.XYZ({
-                                    urls:[
-                                        'http://satellite.e-navigation.net:8080/BalticSea.2016300.terra.250m/{z}/{x}/{y}.png'
-                                    ],
-                                    attributions: nasaAttributions,
-                                    minZoom: 3,
-                                    maxZoom: 8,
-                                    tilePixelRatio: 1.000000
-                                }),
-                                visible: false
-                            })
-                        ]
+                                }
+
+                                if (status == 200) {
+                                    $rootScope.SatelliteServicesStatus = 'true';
+                                    $window.localStorage[SatelliteService.serviceID()] = 'true';
+                                    angular.forEach(services, function (service) {
+                                        var shouldAddService = true;
+                                        if ($rootScope.mapWeatherLayers.getLayers().getArray().length > 0) {
+                                            angular.forEach($rootScope.mapWeatherLayers.getLayers().getArray(), function (existingServices) {
+                                                if (existingServices.get('id') == service.instanceId) {
+                                                    $log.debug("Already Found " + service.name + " satellite in local list - move on");
+                                                    shouldAddService = false;
+                                                }
+                                            });
+                                        }
+
+                                        if (shouldAddService) {
+                                            $log.debug("### Adding satellite instance " + service.name);
+
+                                            for (var i = 0; i < 4; i++) {
+                                                var instanceLayer = SatelliteService.createTileLayerFromService(service, i);
+                                                $rootScope.mapWeatherLayers.getLayers().getArray().push(instanceLayer);
+                                                map.addLayer(instanceLayer);
+                                                instanceLayer.on('change:visible', scope.mapChanged);
+                                            }
+
+                                        }
+                                    });
+
+                                    if ($window.localStorage[SatelliteService.serviceID()]) {
+                                        $log.debug("SatelliteServices enabled!");
+                                    }
+                                }
+
+                            }).error(function (error) {
+                                $log.error("Error retrieving NASA service " + error);
+                                layerGroup.setVisible(false);
+                            });
+
+                        };
+
+                        // update the map when a user pan-move ends.
+                        map.on('moveend', scope.mapChanged);
+
                     });
-                    satelliteLayer.setVisible(true);
-                    map.addLayer(satelliteLayer);
-                    }
-                };
-            }
-        ]);
+                }
+            };
+        }]);
+
+

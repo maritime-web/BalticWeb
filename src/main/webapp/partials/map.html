@@ -1,10 +1,10 @@
 <div id="wrap">
-     <ol-map class="map col-xs-12 col-sm-12 col-md-12 col-lg-12" map-state="mapState" minzoom="6"  swlon="9" swlat="53" nelon="31" nelat="66" >
-        <map-layer-group layer-group="mapBackgroundLayers" layer-switcher="true"></map-layer-group>
-        <map-layer-group layer-group="mapWeatherLayers" layer-switcher="true"></map-layer-group>
-        <map-layer-group layer-group="mapMiscLayers" layer-switcher="true"></map-layer-group>
-        <map-nw-nm-layer message-list="nwNmMessages" services="nwNmServices" name="NW-NM" layer-switcher="true"></map-nw-nm-layer>
-        <map-vessel-layer vessels="vessels" name="Vessels" alerts="alerts" layer-switcher="true"></map-vessel-layer>
+     <ol-map class="map col-xs-12 col-sm-12 col-md-12 col-lg-12" map-state="mapState" minzoom="6"  swlon="1" swlat="30" nelon="61" nelat="66" >
+        <map-layer-group layer-group="mapBackgroundLayers" ></map-layer-group>
+        <map-satellite-layer></map-satellite-layer>
+        <map-layer-group layer-group="mapMiscLayers" ></map-layer-group>
+        <map-nw-nm-layer message-list="nwNmMessages" services="nwNmServices" name="NW-NM" ></map-nw-nm-layer>
+        <map-vessel-layer vessels="vessels" name="Vessels" alerts="alerts" ></map-vessel-layer>
         <!--<map-current-pos-btn></map-current-pos-btn>-->
         <map-current-pos-orientation-btn></map-current-pos-orientation-btn>
         <map-scale-line units="nautical"></map-scale-line>

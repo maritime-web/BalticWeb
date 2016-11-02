@@ -6,6 +6,7 @@ angular.module('maritimeweb.app', ['angular-growl']);
 angular.module('maritimeweb.route', ['angular-growl', 'ngFileUpload']);
 angular.module('maritimeweb.vessel', ['yaru22.angular-timeago']);
 angular.module('maritimeweb.nw-nm', []);
+angular.module('maritimeweb.nasa-satellite', ['yaru22.angular-timeago']);
 
 (function () {
     "use strict";
@@ -21,6 +22,7 @@ angular.module('maritimeweb.nw-nm', []);
         'maritimeweb.vessel',
         'maritimeweb.nw-nm',
         'maritimeweb.route',
+        'maritimeweb.nasa-satellite',
         'ngFlag',
         'chart.js',
         'yaru22.angular-timeago',
