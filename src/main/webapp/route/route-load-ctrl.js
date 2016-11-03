@@ -275,11 +275,30 @@ angular.module('maritimeweb.route')
                 $scope.progress = 0;
                 fileReader.readAsDataUrl($scope.file, $scope)
                     .then(function (result) {
-                        $scope.rtzXML = result;
-                        $scope.rtzJSON = fileReader.transformRtzXMLtoJSON(result);
-                        resetChartArrays();
-                        createOpenLayersFeatFromRTZ($scope.rtzJSON);
-                        $window.scrollTo(0, 0);
+                        // get the RTZ specification xsd
+                        $http.get('/route/RTZ_Schema.xsd', { cache: true,
+                            transformResponse: function(data, headers) {
+                                return data;
+                            }
+                        }).then(function(response) {
+                            if (!$scope.rtzSchema) {
+                                $scope.rtzSchema = response.data;
+                            }
+                            // validate the RTZ file against the RTZ xsd
+                            var errors = xmllint.validateXML({xml: result, schema: $scope.rtzSchema}).errors;
+                            if (!errors) {
+                                $scope.rtzXML = result;
+                                $scope.rtzJSON = fileReader.transformRtzXMLtoJSON(result);
+                                resetChartArrays();
+                                createOpenLayersFeatFromRTZ($scope.rtzJSON);
+                                $window.scrollTo(0, 0);
+                            } else {
+                                growl.error("RTZ is not valid!");
+                                errors.forEach(function (error) {
+                                    growl.error(error);
+                                })
+                            }
+                        });
                     });
             };
 
