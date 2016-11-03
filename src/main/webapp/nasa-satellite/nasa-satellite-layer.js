@@ -48,7 +48,7 @@ angular.module('maritimeweb.nasa-satellite')
             /**
              * Convert a Service registry instance to a OpenLayer tile layer.
              * @param aServiceInstance
-             * @param days i.e. 0, 1, 2 days ago. 0 = today, 2 = two days ago.
+             * @param daysAgo i.e. 0, 1, 2 days ago. 0 = today, 2 = two days ago.
              * @returns {ol.layer.Tile}
              */
             this.createTileLayerFromService = function (aServiceInstance, daysAgo) {
@@ -62,7 +62,7 @@ angular.module('maritimeweb.nasa-satellite')
                     description = "latest";
                 } else {
                     var now = new Date();
-                    now.setDate(now.getDate() - daysAgo);
+                    now.setDate(now.getDate() - (daysAgo+1));
                     var year = now.getUTCFullYear();
                     var dayofyear = this.getDOY(now);
                     url = url.replace("{date}", year + "" + dayofyear);
@@ -212,7 +212,7 @@ angular.module('maritimeweb.nasa-satellite')
                                         if (shouldAddService) {
                                             $log.debug("### Adding satellite instance " + service.name);
 
-                                            for (var i = 0; i < 4; i++) {
+                                            for (var i = 0; i < 1; i++) { // only yesterday
                                                 var instanceLayer = SatelliteService.createTileLayerFromService(service, i);
                                                 $rootScope.mapWeatherLayers.getLayers().getArray().push(instanceLayer);
                                                 map.addLayer(instanceLayer);

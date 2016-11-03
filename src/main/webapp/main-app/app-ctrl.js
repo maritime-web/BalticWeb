@@ -234,6 +234,21 @@ angular.module('maritimeweb.app')
             growl.info('Activating map ' + basemap.get('title'));
         };
 
+        /** Toggle the selected status of the service **/
+        $scope.switchService = function (groupLayers, layerToBeActivated) {
+            angular.forEach(groupLayers, function (layerToBeDisabled) { // disable every basemaps
+                layerToBeDisabled.setVisible(false)
+            });
+
+            layerToBeActivated.selected = (layerToBeActivated.selected != true); // toggle service visibility. if already active
+            if (layerToBeActivated.selected) {
+                layerToBeActivated.setVisible(true);// activate selected basemap
+                growl.info('Activating map ' + layerToBeActivated.get('title'));
+            }
+
+
+        };
+
         $scope.showVesselDetails = function (vessel) {
             $log.info("mmsi" + vessel);
             //var vesselDetails = VesselService.details(vessel.mmsi);

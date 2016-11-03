@@ -102,7 +102,7 @@
                        ng-repeat="aService in mapWeatherLayers.getLayers().getArray()">
 
                     <tr ng-class="{'active':aService.getVisible()}">
-                        <td><a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a> <span
+                        <td><a href="#" ng-bind="aService.get('title')" ng-click="switchService(mapWeatherLayers.getLayers().getArray(), aService)"></a> <span
                                 class="label label-success" ng-bind="aService.get('description')"></span></td>
                     </tr>
 
