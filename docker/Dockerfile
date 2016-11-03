@@ -16,6 +16,13 @@ RUN npm install grunt
 
 RUN yum clean all
 
+# set locals for image to support UTF-8
+ENV LANG en_US.UTF-8
+
+ENV LANGUAGE en_US:en
+
+ENV LC_ALL en_US.UTF-8
+
 USER jboss
 
 RUN /opt/jboss/wildfly/bin/add-user.sh admin admin --silent
