@@ -24,7 +24,6 @@ angular.module('maritimeweb.nasa-satellite')
                 var pathParam1 = encodeURIComponent(this.serviceID());
                 var pathParam2 = encodeURIComponent(this.serviceVersion());
                 var request = '/rest/service/lookup/' + pathParam1 + '/' + pathParam2 + params;
-
                 return $http.get(request);
             };
 
@@ -52,9 +51,8 @@ angular.module('maritimeweb.nasa-satellite')
              * @returns {ol.layer.Tile}
              */
             this.createTileLayerFromService = function (aServiceInstance, daysAgo) {
-
-                $log.debug("createTileLayerFromService  aServiceInstance.url=" + aServiceInstance.url);
-                var url = aServiceInstance.url;
+             //   $log.debug("createTileLayerFromService  aServiceInstance.url=" + aServiceInstance.url);
+                var url = aServiceInstance.url; // http://satellite.e-navigation.net:8080/BalticSea.latest.terra.250m/{z}/{x}/{y}.png
                 var description = "";
                 var timeAgo;
                 if (daysAgo == 0 || !daysAgo) {
@@ -69,11 +67,6 @@ angular.module('maritimeweb.nasa-satellite')
                     description = $filter('timeAgo')(now.getTime()); // neatly filtered timestamp
                     timeAgo = now.getTime();
                 }
-
-
-                // 'http://satellite.e-navigation.net:8080/BalticSea.latest.terra.250m/{z}/{x}/{y}.png'
-                // http://satellite.e-navigation.net:8080/BalticSea.latest.terra.250m/{z}/{x}/{y}.png
-                // http://ec2-52-211-163-57.eu-west-1.compute.amazonaws.com:8080/BalticSea.latest.terra.250m/6/32/19.png
 
                 var nasaAttributions = [
                     new ol.Attribution({
@@ -104,15 +97,14 @@ angular.module('maritimeweb.nasa-satellite')
                 });
             };
 
-            this.createSatelliteLayers = function (serviceInstances) {
+ /*           this.createSatelliteLayers = function (serviceInstances) {
                 var self = this;
                 var layers = [];
                 angular.forEach(serviceInstances, function (aServiceInstance) {
                     layers.push(self.createTileLayerFromService(aServiceInstance, 0));
                 });
-
                 return layers;
-            }
+            }*/
 
         }])
     .directive('mapSatelliteLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'SatelliteService', 'growl', '$log', '$window',
@@ -137,7 +129,6 @@ angular.module('maritimeweb.nasa-satellite')
                             $timeout.cancel(loadTimer);
                         }
                         loadTimer = $timeout(scope.refreshServiceRegistry, 1000);
-
                     };
 
                     olScope.getMap().then(function (map) {
@@ -166,21 +157,15 @@ angular.module('maritimeweb.nasa-satellite')
                         });
 
 
-                        /** Refreshes the list of vessels from the server */
+                        /** Refreshes the list of satellite images from the service registry */
                         scope.refreshServiceRegistry = function () {
-                            $log.debug("refreshServiceRegistry");
                             var mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
-
                             var wkt = mapState['wktextent'];
 
                             $rootScope.mapWeatherLayers = layerGroup; // add group-layer to rootscope so it can be enabled/disabled
 
 
                             SatelliteService.getNasaServices(wkt).success(function (services, status) {
-                                $log.debug("Nasa Status " + status + " SatelliteService.serviceID()=" + SatelliteService.serviceID());
-                                angular.forEach(services, function (service) {
-                                    $log.debug("Service=" + service.instanceId);
-                                });
 
                                 // Update the selected status from localstorage
                                 if (status == 204) {
@@ -190,9 +175,6 @@ angular.module('maritimeweb.nasa-satellite')
                                         $rootScope.mapWeatherLayers.getLayers().getArray().pop().setVisible(false);
                                     }
                                     // TODO: Need to store visibility state for each satellite instance...
-                                    //$rootScope.mapWeatherLayers.getLayers().getArray().splice(0,$rootScope.mapWeatherLayers.getLayers().getArray().length);
-                                    //$rootScope.mapWeatherLayers.getLayers().getArray().length = 0;
-
                                 }
 
                                 if (status == 200) {
@@ -203,7 +185,7 @@ angular.module('maritimeweb.nasa-satellite')
                                         if ($rootScope.mapWeatherLayers.getLayers().getArray().length > 0) {
                                             angular.forEach($rootScope.mapWeatherLayers.getLayers().getArray(), function (existingServices) {
                                                 if (existingServices.get('id') == service.instanceId) {
-                                                    $log.debug("Already Found " + service.name + " satellite in local list - move on");
+                                                    //$log.debug("Already Found " + service.name + " satellite in local list - move on");
                                                     shouldAddService = false;
                                                 }
                                             });
@@ -212,19 +194,15 @@ angular.module('maritimeweb.nasa-satellite')
                                         if (shouldAddService) {
                                             $log.debug("### Adding satellite instance " + service.name);
 
-                                            for (var i = 0; i < 1; i++) { // only yesterday
+                                            for (var i = 0; i < 1; i++) { // only yesterday. Extend here if want to display more older layers
                                                 var instanceLayer = SatelliteService.createTileLayerFromService(service, i);
                                                 $rootScope.mapWeatherLayers.getLayers().getArray().push(instanceLayer);
                                                 map.addLayer(instanceLayer);
                                                 instanceLayer.on('change:visible', scope.mapChanged);
                                             }
-
                                         }
                                     });
 
-                                    if ($window.localStorage[SatelliteService.serviceID()]) {
-                                        $log.debug("SatelliteServices enabled!");
-                                    }
                                 }
 
                             }).error(function (error) {
