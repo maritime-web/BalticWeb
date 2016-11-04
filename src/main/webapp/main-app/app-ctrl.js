@@ -68,6 +68,9 @@ angular.module('maritimeweb.app')
         }
 
 
+
+
+
         /**************************************/
         /** Vessel sidebar functionality      **/
         /**************************************/
@@ -122,15 +125,13 @@ angular.module('maritimeweb.app')
 
         /** Loads the  services **/
         $scope.loadServicesFromRegistry = function () {
-            $log.debug("loadServicesFromRegistry");
+            $log.debug("     ...loadServicesFromRegistry");
 
             var wkt = $scope.currentNwNmBoundary();
 
-
-
             NwNmService.getNwNmServices(wkt)
                 .success(function (services, status) {
-                    $log.debug("NVNM Status " + status);
+                    //$log.debug("NVNM Status " + status);
                     $scope.nwNmServices.length = 0;
 
                     // Update the selected status from localstorage

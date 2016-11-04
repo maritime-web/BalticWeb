@@ -7,12 +7,17 @@ angular.module('maritimeweb.route')
         function ($scope, $rootScope, $http, $routeParams, $window, growl, timeAgo, $filter, Upload, $timeout, fileReader, $log) {
             'use strict';
             $log.debug("RouteLoadCtrl routeParams.mmsi=" + $routeParams.mmsi);
+
+            $rootScope.showgraphSidebar = false; // rough disabling of the sidebar
+
             $scope.activeWayPoint = 0;
 
             // debug menu starts collapsed.
             $scope.xmlCollapsed = true;
             $scope.jsonCollapsed = true;
             $scope.jsonFeatCollapsed = true;
+            $scope.showCharts = false;
+
 
             //
             var can = document.getElementById('rtzchart');
@@ -35,6 +40,7 @@ angular.module('maritimeweb.route')
             var charts = $scope.instantiateListsforCharts();
 
             $scope.sampleRTZdata = [
+                {id: '', name: 'pick a sample route'},
                 {id: 'ExamplefileworkswithENSI.rtz', name: 'Talin - Helsinki'},
                 {id: 'Helsinki_to_Rotterdam_via_Aarhus-Bremerhaven.rtz', name: 'BIMCO - Helsinki to Rotterdam'},
                 /*  {id: 'muugaPRVconsprnt.rtz', name: 'Talin - Helsinki'},*/
@@ -71,6 +77,7 @@ angular.module('maritimeweb.route')
                 charts.listRadius.push(feature.radius);
                 charts.listETA.push(feature.eta);
                 charts.listID.push(feature.id);
+                $scope.showCharts = true;
             };
 
             var calculateDistanceAndDirectionToNextPoint = function (key, json_result, way_value, feature) {
@@ -252,6 +259,27 @@ angular.module('maritimeweb.route')
                         }
                     });
                 }
+            };
+
+            /**
+             * store all features in local storge, on a server or right now. Throw them on the route scope.
+             */
+            $scope.storeAllFeaturesSomewhere = function() {
+                $scope.loading = true;
+                $log.debug("storing route for mmsi" + $routeParams.mmsi);
+                $rootScope.route_id = $routeParams.mmsi;
+                $rootScope.route_oLfeatures = $scope.oLfeatures;
+                $rootScope.route_oLanimatedfeatures = $scope.oLanimatedfeatures; // storing today date plus 14 days. Don't show the first-run modal for the next 14 days.
+                $rootScope.route_oLpoints =  $scope.oLpoints; // storing today date plus 14 days. Don't show the first-run modal for the next 14 days.
+                $rootScope.route_totaldistance = $scope.totaldistance; // storing today date plus 14 days. Don't show the first-run modal for the next 14 days.
+                var redirect = function(){
+                    $rootScope.showgraphSidebar = true; // rough disabling of the sidebar
+
+                    $scope.loading = false;
+                    $window.location.href = '/#/';
+                };
+                $timeout(  redirect, 3000);
+
 
             };
 
@@ -268,6 +296,8 @@ angular.module('maritimeweb.route')
                 }).then(function (result) {
                     resetChartArrays();
                     createOpenLayersFeatFromRTZ(result.data);
+                   // $scope.storeAllFeaturesSomewhere();
+
                 });
             };
 
@@ -295,7 +325,7 @@ angular.module('maritimeweb.route')
                             } else {
                                 growl.error("RTZ is not valid!");
                                 errors.forEach(function (error) {
-                                    growl.error(error);
+                                    growl.error(error,{disableCountDown: true});
                                 })
                             }
                         });

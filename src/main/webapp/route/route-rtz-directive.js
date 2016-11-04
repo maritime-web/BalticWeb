@@ -166,6 +166,36 @@ angular.module('maritimeweb.route')
                         }
                         return styles[feature.get('type')];
                     }
+                    });                 var pathLayer = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: []
+                        }),
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                //lineDash: [10, 20, 0, 20],
+                                lineDash: [5, 10, 0, 10],
+                                lineJoin: 'miter',
+                                width: 2,
+                                color: [255, 0, 0, 0.8]
+                            })
+                        })
+                    });
+
+                    var vectorSource = new ol.source.Vector({
+                        features: []
+                    });
+
+                    var routeFeatureLayer = new ol.layer.Vector({
+                        name: "routeVectorLayer",
+                        title: "route",
+                        source: vectorSource,
+                        visible: true
+                    });
+
+                    routeLayers = new ol.layer.Group({
+                        title: 'Route',
+                        layers: [pathLayer, animationLayer, routeFeatureLayer],
+                        visible: true
                     });
 
                     var pathLayer = new ol.layer.Vector({
@@ -435,5 +465,179 @@ angular.module('maritimeweb.route')
                     }, true);
                 }
             }
-        }]);
+        }])
+    /**
+     * very simple route in a map. The key is that it doesn't have an animation.
+     */
+    .directive('simpleRtzRoute', ['MapService', '$rootScope', '$log', function (MapService, $rootScope, $log) {
+        return {
+            restrict: 'E',
+            replace: true,
+            require: '^olMap',
+            template: '',
+            scope: {
+                name: '@',
+                    points: '=?',
+                    features: '=?'
+            },
+            link: function(scope, element, attrs, ctrl) {
+                $log.info("The simple rtz route got features: ");// + $rootScope.route_oLfeatures.length + " and oLpoints:" + $rootScope.route_oLpoints.length );
+                var olScope         = ctrl.getOpenlayersScope();
+
+                olScope.getMap().then(function(map) {
+                    var  animatedMarkerStyle = new ol.style.Style({
+                        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                            anchor: [0.5, 0.5],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'fraction',
+                            opacity: 0.85,
+                            rotation: 0,
+                            rotateWithView: false,
+                            src: 'img/vessel_green_moored.png'
+                        }))
+                    });
+
+                    var markerStyle = new ol.style.Style({
+                        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                            anchor: [0.5, 0.5],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'fraction',
+                            opacity: 0.85,
+                            rotation:  0,
+                            rotateWithView: false,
+                            src: 'img/vessel_green.png'
+                        }))
+                    });
+
+                    markerStyle.getImage().load();
+
+                    var olScope = ctrl.getOpenlayersScope();
+
+                    var styles = {
+                        'route': new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                width: 6, color: [237, 212, 0, 0.8]
+                            })
+                        }),
+                        'icon': new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1],
+                                src: 'data/icon.png'
+                            })
+                        }),
+                        'geoMarker': new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 7,
+                                snapToPixel: false,
+                                fill: new ol.style.Fill({color: 'black'}),
+                                stroke: new ol.style.Stroke({
+                                    color: 'white', width: 2
+                                })
+                            })
+                        }),
+                        endStyle: new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 6,
+                                stroke: new ol.style.Stroke({
+                                    color: 'darkred',
+                                    width: 2
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: [255, 0, 0, 0.5]
+                                })
+                            }),
+                            text: new ol.style.Text({
+                                text: 'END', // attribute code
+                                font: 'bold 14 Verdana',
+                                offsetY: 20,
+                                stroke: new ol.style.Stroke({color: "white", width: 5})
+                            })
+                        }),
+                        startStyle: new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 6,
+                                stroke: new ol.style.Stroke({
+                                    color: 'darkred',
+                                    width: 2
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: [255, 0, 0, 0.5]
+                                })
+                            }),
+                            text: new ol.style.Text({
+                                text: 'START', // attribute code
+                                font: 'bold 14 Verdana',
+                                offsetY: 20,
+                                stroke: new ol.style.Stroke({color: "white", width: 5})
+                                //rotation: 45
+                            })
+
+                        })
+                    };
+
+                    var routeLayers;
+
+                    var pathLayer = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: []
+                        }),
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                //lineDash: [10, 20, 0, 20],
+                                lineDash: [5, 10, 0, 10],
+                                lineJoin: 'miter',
+                                width: 2,
+                                color: [255, 0, 0, 0.8]
+                            })
+                        })
+                    });
+
+                    var vectorSource = new ol.source.Vector({
+                        features: []
+                    });
+
+                    var routeFeatureLayer = new ol.layer.Vector({
+                        name: "routeVectorLayer",
+                        title: "route",
+                        source: vectorSource,
+                        visible: true
+                    });
+
+                     routeLayers = new ol.layer.Group({
+                        title: 'Route',
+                        layers: [pathLayer, routeFeatureLayer],
+                        visible: true
+                    });
+
+
+                    pathLayer.getSource().clear();
+                    routeFeatureLayer.getSource().clear();
+
+                    var routeFeature = new ol.Feature({
+                        type: 'route',
+                        geometry: new ol.geom.LineString($rootScope.route_oLpoints)
+                    });
+
+                    var startMarker = $rootScope.route_oLfeatures[0];
+                    var endMarker = $rootScope.route_oLfeatures[$rootScope.route_oLfeatures.length - 1];
+
+                    startMarker.setStyle(styles['startStyle']);
+                    endMarker.setStyle(styles['endStyle']);
+
+
+                    //animationLayer.getSource().addFeatures(scope.animatedfeatures);
+                    pathLayer.getSource().addFeature(routeFeature);
+                    routeFeatureLayer.getSource().addFeatures($rootScope.route_oLfeatures);
+                    routeFeatureLayer.getSource().addFeature(startMarker);
+                    routeFeatureLayer.getSource().addFeature(endMarker);
+                    map.addLayer(routeLayers);
+
+                    var extent = routeFeatureLayer.getSource().getExtent();
+                    map.getView().fit(extent, map.getSize());  // automatically zoom and pan the map to fit my features
+
+
+                });
+            }
+        };
+    }]);
  
