@@ -287,7 +287,7 @@ angular.module('maritimeweb.vessel')
                             name: "vesselVectorLayer",
                             title: "Vessels - Helcom",
                             source: vectorSource,
-                            visible: true
+                            visible: false
                         });
 
                         vesselLayers = new ol.layer.Group({

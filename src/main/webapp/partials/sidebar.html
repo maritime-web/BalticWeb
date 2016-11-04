@@ -1,7 +1,53 @@
 <!-- div ng-hide="!showgraphSidebar" ng-class="showgraphSidebar ? 'maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar' : 'hidden '" -->
-<div uib-collapse="!showgraphSidebar" class="maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar">
+<div uib-collapse="showgraphSidebar" class="maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar">
 
     <uib-tabset type="pills">
+
+        <uib-tab>
+            <uib-tab-heading ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+                <span class="glyphicon glyphicon-globe"></span> Satellite
+                <span class="badge sidebar-badge" ng-bind="mapWeatherLayers.getLayers().getArray().length"></span>
+
+            </uib-tab-heading>
+            <div ng-if="!loggedIn" class="sidebar-panel">
+                <div class="well">
+                    <p>Log in to access satellite services</p>
+                    <button class="btn btn-default" ng-click="login()">Login</button>
+                </div>
+            </div>
+
+
+            <div class="panel" ng-if="loggedIn" ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+
+                <div class="panel-heading"><span class="glyphicon glyphicon-globe"></span> Nasa Satellite images
+                </div>
+                <div class="panel-body">
+                    <p>Browse satellite imagery from the last days</p>
+                </div>
+
+                <!-- Table -->
+                <table class="table" ng-if="SatelliteServicesStatus=='true'"
+                       ng-repeat="aService in mapWeatherLayers.getLayers().getArray()">
+
+                    <tr ng-class="{'active':aService.getVisible()}">
+                        <td><a href="#" ng-bind="aService.get('title')"
+                               ng-click="switchService(mapWeatherLayers.getLayers().getArray(), aService)"></a>
+                            <span
+                                    class="label label-success" ng-bind="aService.get('description')"></span></td>
+                    </tr>
+
+                </table>
+                <div class="panel-footer">
+                    <p class="small">Disclamer: We acknowledge the use of data products or imagery from the Land,
+                        Atmosphere Near real-time
+                        Capability for EOS (LANCE) system operated by the NASA/GSFC/Earth Science Data and
+                        Information
+                        System (ESDIS) with funding provided by NASA/HQ.</p>
+                </div>
+
+            </div>
+
+        </uib-tab>
 
         <!-- Vessels tab -->
         <uib-tab>
@@ -16,8 +62,16 @@
                     <p>Log in to see vessels</p>
                     <button class="btn btn-default" ng-click="login()">Login</button>
                 </div>
+                <div ng-if="loggedIn" class="well">
+                    <span><i class="fa fa-ship" aria-hidden="true"></i> Vessel position information from AIS</span>
+                    <div>
+                        <span ng-repeat="aService in mapTrafficLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}">
+                            <input type="checkbox" ng-click="toggleLayer(aService)"  >
+                            <a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"> <span class="badge badge-success " ng-bind="vessels.length"></span></a></span>
+                    </div>
+                </div>
 
-                <table class="table table-striped">
+                <table ng-if="aService.getVisible()" class="table table-striped">
                     <tr ng-repeat="vessel in vessels | orderBy: 'mmsi' | limitTo: 100">
                         <td width="24" class="vessel-item">
                             <img ng-src="{{iconForVessel(vessel)}}">
@@ -79,51 +133,7 @@
 
         </uib-tab>
 
-        <uib-tab>
-            <uib-tab-heading ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
-                <span class="glyphicon glyphicon-globe"></span> Satellite
-                <span class="badge sidebar-badge" ng-bind="mapWeatherLayers.getLayers().getArray().length"></span>
 
-            </uib-tab-heading>
-            <div ng-if="!loggedIn" class="sidebar-panel">
-                <div class="well">
-                    <p>Log in to access satellite services</p>
-                    <button class="btn btn-default" ng-click="login()">Login</button>
-                </div>
-            </div>
-
-
-            <div class="panel" ng-if="loggedIn" ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
-
-                    <div class="panel-heading"><span class="glyphicon glyphicon-globe"></span> Nasa Satellite images
-                    </div>
-                    <div class="panel-body">
-                        <p>Browse satellite imagery from the last days</p>
-                    </div>
-
-                    <!-- Table -->
-                    <table class="table" ng-if="SatelliteServicesStatus=='true'"
-                           ng-repeat="aService in mapWeatherLayers.getLayers().getArray()">
-
-                        <tr ng-class="{'active':aService.getVisible()}">
-                            <td><a href="#" ng-bind="aService.get('title')"
-                                   ng-click="switchService(mapWeatherLayers.getLayers().getArray(), aService)"></a>
-                                <span
-                                        class="label label-success" ng-bind="aService.get('description')"></span></td>
-                        </tr>
-
-                    </table>
-                    <div class="panel-footer">
-                        <p class="small">Disclamer: We acknowledge the use of data products or imagery from the Land,
-                            Atmosphere Near real-time
-                            Capability for EOS (LANCE) system operated by the NASA/GSFC/Earth Science Data and
-                            Information
-                            System (ESDIS) with funding provided by NASA/HQ.</p>
-                    </div>
-
-            </div>
-
-        </uib-tab>
 
 
     </uib-tabset>

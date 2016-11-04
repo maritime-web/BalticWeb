@@ -125,10 +125,12 @@ angular.module('maritimeweb.nasa-satellite')
 
                     /** When the map extent changes, reload the Vessels's using a timer to batch up changes */
                     scope.mapChanged = function () {
-                        if (loadTimer) {
-                            $timeout.cancel(loadTimer);
+                        if (scope.loggedIn) {
+                            if (loadTimer) {
+                                $timeout.cancel(loadTimer);
+                            }
+                            loadTimer = $timeout(scope.refreshServiceRegistry, 1000);
                         }
-                        loadTimer = $timeout(scope.refreshServiceRegistry, 1000);
                     };
 
                     olScope.getMap().then(function (map) {
