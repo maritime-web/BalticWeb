@@ -3,11 +3,12 @@ angular.module('maritimeweb.vessel')
  * Controller that handles displaying vessel details in a dialog
  *  Its
  *******************************************************************/
-    .controller('VesselDetailsCtrl', ['$scope', '$routeParams', '$window', 'VesselService', 'growl', 'timeAgo', '$filter', '$location',
-        function ($scope, $routeParams, $window, VesselService, growl, timeAgo, $filter, $location) {
+    .controller('VesselDetailsCtrl', ['$scope', '$routeParams', '$window', 'VesselService', 'growl', 'timeAgo', '$filter', '$location', '$rootScope',
+        function ($scope, $routeParams, $window, VesselService, growl, timeAgo, $filter, $location, $rootScope) {
             'use strict';
 
             console.log("VesselDetailsCtrl routeParams.mmsi=" + $routeParams.mmsi) ;
+            $rootScope.showgraphSidebar = false;
             $scope.mmsi = $routeParams.mmsi;
             //$scope.msg = VesselService.detailsMMSI($scope.mmsi);
 

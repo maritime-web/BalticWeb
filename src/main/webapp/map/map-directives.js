@@ -58,7 +58,8 @@ angular.module('maritimeweb.map')
             restrict: 'EA',
             replace: true,
             transclude: true,
-            template: '<div class="map {{class}}" ng-cloak ng-transclude></div>',
+            template: "<div class='map {{class}}' ng-cloak ng-transclude>" +
+            "</div>",
             scope: {
                 mapState: '=',
                 readonly: '=',
@@ -74,6 +75,7 @@ angular.module('maritimeweb.map')
             },
 
             controller: function($scope) {
+
                 var _map = $q.defer();
 
                 $scope.getMap = function() {
@@ -96,6 +98,7 @@ angular.module('maritimeweb.map')
 
                 // Clean-up
                 element.on('$destroy', function() {
+
                     if (isDefined(updateSizeTimer)) {
                         $timeout.cancel(updateSizeTimer);
                         updateSizeTimer = null;
@@ -587,6 +590,34 @@ angular.module('maritimeweb.map')
                         scope.$$phase || scope.$apply();
                     });*/
                 });
+            }
+        };
+    }])
+    /**
+     *
+     */
+    .directive('mapSidebarBtn', ['MapService', '$log', '$rootScope', function (MapService, $log, $rootScope) {
+        return {
+            restrict: 'E',
+            replace: true,
+            require: '^olMap',
+            template:
+            "<span class='sidebar-toggle-btn' " +
+            " tooltip='Toggle detailed list-view' data-toggle='tooltip' data-placement='right' title='Toggle detailed list-view'>" +
+            "   <span ng-click='toggleSideBarList()' > <i class='fa fa-list fa-lg ' aria-hidden='true'></i> </span>" +
+            "</span>" ,
+            scope: {
+            },
+            link: function(scope, element, attrs, ctrl) {
+                var olScope         = ctrl.getOpenlayersScope();
+                $rootScope.showgraphSidebar = true;
+                $log.info();
+                scope.toggleSideBarList = function(){
+                    $rootScope.showgraphSidebar = !$rootScope.showgraphSidebar;
+                };
+                scope.disableSidebar = function(){
+                    $rootScope.showgraphSidebar = false;
+                }
             }
         };
     }]);

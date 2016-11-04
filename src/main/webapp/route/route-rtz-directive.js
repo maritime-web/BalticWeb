@@ -52,6 +52,9 @@ angular.module('maritimeweb.route')
 
                 },
                 link: function (scope, element, attrs, ctrl) {
+                    $log.info("scope.showgraphSidebar" + scope.showgraphSidebar);
+                    $log.info("$rootScope.showgraphSidebar" + $rootScope.showgraphSidebar);
+                    $rootScope.showgraphSidebar = false; // disable sidebar.
 
                     $log.log("route RTZ got route points=" +  scope.points.length +
                         " feat=" + scope.features.length +

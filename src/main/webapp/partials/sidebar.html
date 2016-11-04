@@ -1,6 +1,5 @@
-<!-- div ng-hide="!showgraphSidebar" ng-class="showgraphSidebar ? 'maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar' : 'hidden '" -->
-<div uib-collapse="showgraphSidebar" class="maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar">
 
+<div uib-collapse="!$root.showgraphSidebar"  class="maritimeweb-sidebar col-xs-9 col-sm-3  col-md-3 sidebar"> <!-- uib-collapse="showgraphSidebar" -->
     <uib-tabset type="pills">
 
         <uib-tab>
@@ -71,7 +70,7 @@
                     </div>
                 </div>
 
-                <table ng-if="aService.getVisible()" class="table table-striped">
+                <table ng-if="mapTrafficLayers.getLayers().getArray()[0].getVisible()" class="table table-striped">
                     <tr ng-repeat="vessel in vessels | orderBy: 'mmsi' | limitTo: 100">
                         <td width="24" class="vessel-item">
                             <img ng-src="{{iconForVessel(vessel)}}">
@@ -138,4 +137,4 @@
 
     </uib-tabset>
 
-</div>
+</>
