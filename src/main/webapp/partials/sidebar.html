@@ -58,17 +58,44 @@
             <div class="sidebar-panel">
 
                 <div ng-if="!loggedIn" class="well">
-                    <p>Log in to see vessels</p>
+                    <p>Log in to access vessel data</p>
                     <button class="btn btn-default" ng-click="login()">Login</button>
                 </div>
-                <div ng-if="loggedIn" class="well">
+
+                <div class="panel panel-default" ng-if="loggedIn" >
+
+                    <div class="panel-heading"><span class="glyphicon glyphicon-globe"></span> AIS information
+                    </div>
+                    <div class="panel-body">
+                        <p><i class="fa fa-ship" aria-hidden="true"></i> Position information from AIS providers</p>
+                    </div>
+
+                    <!-- Table -->
+                    <table class="table"
+                           ng-repeat="aService in mapTrafficLayers.getLayers().getArray()">
+
+                        <tr ng-class="{'active':aService.getVisible()}">
+                            <td><a href="#" ng-bind="aService.get('title')"
+                                   ng-click="toggleLayer(aService)"></a>
+                                <!--<span class="label label-success" ng-bind="aService.get('title')"></span>-->
+                            </td>
+                        </tr>
+
+                    </table>
+             <!--       <div class="panel-footer">
+                        <p class="small"></p>
+                    </div>
+-->
+                </div>
+
+<!--                <div ng-if="loggedIn" class="well">
                     <span><i class="fa fa-ship" aria-hidden="true"></i> Vessel position information from AIS</span>
                     <div>
                         <span ng-repeat="aService in mapTrafficLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}">
-                            <input type="checkbox" ng-click="toggleLayer(aService)"  >
+                            <input type="checkbox" ng-model="aService.getVisible()" ng-readonly="true" ng-click="toggleLayer(aService)"  >
                             <a href="#" ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"> <span class="badge badge-success " ng-bind="vessels.length"></span></a></span>
                     </div>
-                </div>
+                </div>-->
 
                 <table ng-if="mapTrafficLayers.getLayers().getArray()[0].getVisible()" class="table table-striped">
                     <tr ng-repeat="vessel in vessels | orderBy: 'mmsi' | limitTo: 100">

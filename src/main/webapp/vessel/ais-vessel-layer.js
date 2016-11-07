@@ -238,6 +238,7 @@ angular.module('maritimeweb.vessel')
 
                                     vesselLayer.getSource().clear();
                                     vesselLayer.getSource().addFeatures(features);
+                                    vesselLayer.setZIndex(10);
                                     $rootScope.loadingData = false; // stop spinner
                                     growl.success('<b>' + scope.vessels.length + '</b> vessels loaded', {ttl: 3000});
 
@@ -261,6 +262,8 @@ angular.module('maritimeweb.vessel')
                                     $timeout.cancel(loadTimer);
                                 }
                                 loadTimer = $timeout(scope.refreshVessels, 500);
+                            }else{
+                                scope.vessels.length = 0;
                             }
                         };
 
@@ -301,6 +304,8 @@ angular.module('maritimeweb.vessel')
 
                         // update the map when a user pan-move ends.
                         map.on('moveend', scope.mapChanged);
+
+
 
                         // listens when visibility on map has been toggled.
                         vesselLayers.on('change:visible', scope.mapChanged);
@@ -379,10 +384,10 @@ angular.module('maritimeweb.vessel')
                                 }
                             } else { // close popups when zoomed below lvl 8 and clicks on map...
                                 //$(elm).popover('destroy');
-                                if (scope.loggedIn) {
+                             /*   if (scope.loggedIn) {
                                     growl.success('<b>Zoom</b> in for more detailed information');
                                     return;
-                                }
+                                }*/
                             }
 
                         });

@@ -195,12 +195,23 @@ angular.module('maritimeweb.nasa-satellite')
 
                                         if (shouldAddService) {
                                             $log.debug("### Adding satellite instance " + service.name);
+                                            // add to localstorage, false as default
+
 
                                             for (var i = 0; i < 1; i++) { // only yesterday. Extend here if want to display more older layers
                                                 var instanceLayer = SatelliteService.createTileLayerFromService(service, i);
                                                 $rootScope.mapWeatherLayers.getLayers().getArray().push(instanceLayer);
                                                 map.addLayer(instanceLayer);
                                                 instanceLayer.on('change:visible', scope.mapChanged);
+                                               // var active = $window.localStorage.getItem(service.instanceId);
+                                               // $log.debug("     active" + active + " #" + service.instanceId);
+                                                if ( $window.localStorage.getItem(service.instanceId) === "true") {
+                                                    $log.info("layer should be active!");
+                                                    instanceLayer.setVisible(true);
+                                                    instanceLayer.setZIndex(0);
+                                                } else {
+                                                    $window.localStorage.setItem(service.instanceId, false);
+                                                }
                                             }
                                         }
                                     });

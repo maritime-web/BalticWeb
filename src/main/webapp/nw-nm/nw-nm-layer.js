@@ -172,12 +172,14 @@ angular.module('maritimeweb.nw-nm')
                         // Construct the boundary layers
                         boundaryLayer = new ol.layer.Vector({
                             title: 'Navigational Warnings',
+                            zIndex: 11,
                             source: new ol.source.Vector({
                                 features: new ol.Collection(),
                                 wrapX: false
                             }),
                             style: [ boundaryStyle ]
                         });
+                        boundaryLayer.setZIndex(11);
                         boundaryLayer.setVisible(true);
 
 
@@ -198,6 +200,7 @@ angular.module('maritimeweb.nw-nm')
                                 return [ featureStyle ];
                             }
                         });
+                        nwLayer.setZIndex(11);
                         nwLayer.setVisible(true);
 
                         // Construct the NM layers
@@ -217,6 +220,7 @@ angular.module('maritimeweb.nw-nm')
                                 return [ featureStyle ];
                             }
                         });
+                        nmLayer.setZIndex(11);
                         nmLayer.setVisible(true);
 
 
@@ -317,9 +321,12 @@ angular.module('maritimeweb.nw-nm')
                         // Construct NW-NM layer
                         nwnmLayer = new ol.layer.Group({
                             title: scope.name || 'NW-NM',
+                            zIndex: 11,
                             layers: [ boundaryLayer, nwLayer, nmLayer ]
                         });
+                        nwnmLayer.setZIndex(11);
                         nwnmLayer.setVisible(true);
+
                         map.addLayer(nwnmLayer);
 
 

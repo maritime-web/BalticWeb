@@ -69,8 +69,6 @@ angular.module('maritimeweb.app')
 
 
 
-
-
         /**************************************/
         /** Vessel sidebar functionality      **/
         /**************************************/
@@ -238,13 +236,16 @@ angular.module('maritimeweb.app')
         /** Toggle the selected status of the service **/
         $scope.switchService = function (groupLayers, layerToBeActivated) {
             angular.forEach(groupLayers, function (layerToBeDisabled) { // disable every basemaps
-                layerToBeDisabled.setVisible(false)
+                layerToBeDisabled.setVisible(false);
+                $log.debug(" ol disabling " + layerToBeDisabled.get('id'));
+                $window.localStorage.setItem(layerToBeDisabled.get('id'), false );
             });
 
             layerToBeActivated.selected = (layerToBeActivated.selected != true); // toggle service visibility. if already active
             if (layerToBeActivated.selected) {
                 layerToBeActivated.setVisible(true);// activate selected basemap
                 growl.info('Activating map ' + layerToBeActivated.get('title'));
+                $window.localStorage.setItem(layerToBeActivated.get('id'), true );
             }
 
 

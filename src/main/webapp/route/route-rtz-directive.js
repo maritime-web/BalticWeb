@@ -613,28 +613,29 @@ angular.module('maritimeweb.route')
                     pathLayer.getSource().clear();
                     routeFeatureLayer.getSource().clear();
 
-                    var routeFeature = new ol.Feature({
-                        type: 'route',
-                        geometry: new ol.geom.LineString($rootScope.route_oLpoints)
-                    });
+                    if($rootScope.route_oLfeatures && $rootScope.route_oLfeatures.length > 0){
+                        var routeFeature = new ol.Feature({
+                            type: 'route',
+                            geometry: new ol.geom.LineString($rootScope.route_oLpoints)
+                        });
 
-                    var startMarker = $rootScope.route_oLfeatures[0];
-                    var endMarker = $rootScope.route_oLfeatures[$rootScope.route_oLfeatures.length - 1];
+                        var startMarker = $rootScope.route_oLfeatures[0];
+                        var endMarker = $rootScope.route_oLfeatures[$rootScope.route_oLfeatures.length - 1];
 
-                    startMarker.setStyle(styles['startStyle']);
-                    endMarker.setStyle(styles['endStyle']);
+                        startMarker.setStyle(styles['startStyle']);
+                        endMarker.setStyle(styles['endStyle']);
 
 
-                    //animationLayer.getSource().addFeatures(scope.animatedfeatures);
-                    pathLayer.getSource().addFeature(routeFeature);
-                    routeFeatureLayer.getSource().addFeatures($rootScope.route_oLfeatures);
-                    routeFeatureLayer.getSource().addFeature(startMarker);
-                    routeFeatureLayer.getSource().addFeature(endMarker);
-                    map.addLayer(routeLayers);
+                        //animationLayer.getSource().addFeatures(scope.animatedfeatures);
+                        pathLayer.getSource().addFeature(routeFeature);
+                        routeFeatureLayer.getSource().addFeatures($rootScope.route_oLfeatures);
+                        routeFeatureLayer.getSource().addFeature(startMarker);
+                        routeFeatureLayer.getSource().addFeature(endMarker);
+                        map.addLayer(routeLayers);
 
-                    var extent = routeFeatureLayer.getSource().getExtent();
-                    map.getView().fit(extent, map.getSize());  // automatically zoom and pan the map to fit my features
-
+                        var extent = routeFeatureLayer.getSource().getExtent();
+                        map.getView().fit(extent, map.getSize());  // automatically zoom and pan the map to fit my features
+                    }
 
                 });
             }
