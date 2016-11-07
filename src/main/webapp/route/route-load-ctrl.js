@@ -13,6 +13,7 @@ angular.module('maritimeweb.route')
             $scope.activeWayPoint = 0;
 
             // debug menu starts collapsed.
+            $scope.debugCollapsed = true;
             $scope.xmlCollapsed = true;
             $scope.jsonCollapsed = true;
             $scope.jsonFeatCollapsed = true;
@@ -22,6 +23,11 @@ angular.module('maritimeweb.route')
             //
             var can = document.getElementById('rtzchart');
             var ctx = can.getContext('2d');
+
+            $scope.toggleDebug = function () {
+                $log.debug("toggle debug");
+                $scope.debugCollapsed = !$scope.debugCollapsed;
+            };
 
             $scope.instantiateListsforCharts = function () {
                 var charts = {};
