@@ -631,6 +631,8 @@ angular.module('maritimeweb.route')
                         routeFeatureLayer.getSource().addFeatures($rootScope.route_oLfeatures);
                         routeFeatureLayer.getSource().addFeature(startMarker);
                         routeFeatureLayer.getSource().addFeature(endMarker);
+                        routeFeatureLayer.setZIndex(13);
+                        pathLayer.setZIndex(13);
                         map.addLayer(routeLayers);
 
                         var extent = routeFeatureLayer.getSource().getExtent();

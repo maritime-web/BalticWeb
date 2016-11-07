@@ -237,7 +237,7 @@ angular.module('maritimeweb.app')
         $scope.switchService = function (groupLayers, layerToBeActivated) {
             angular.forEach(groupLayers, function (layerToBeDisabled) { // disable every basemaps
                 layerToBeDisabled.setVisible(false);
-                $log.debug(" ol disabling " + layerToBeDisabled.get('id'));
+                //$log.debug(" ol disabling " + layerToBeDisabled.get('id'));
                 $window.localStorage.setItem(layerToBeDisabled.get('id'), false );
             });
 
