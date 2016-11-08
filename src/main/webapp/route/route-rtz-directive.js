@@ -474,7 +474,28 @@ angular.module('maritimeweb.route')
             restrict: 'E',
             replace: true,
             require: '^olMap',
-            template: '',
+            template:
+            '<div>' +
+            '<div id="smp-waypoint-route-info" class="ng-cloak"></div>' +
+            '<div id="smp-waypoint-popup" class="ol-popup">' +
+            '<a href="#" id="smp-waypoint-popup-closer" class="ol-popup-closer"></a>' +
+            '<h3 class="popover-title">{{waypoint.name}}</h3>' +
+            '<div id="smp-waypoint-popover-content" class="popover-content">' +
+            '<p>Waypoint number: {{waypoint.id}}</p>' +
+            '<p>Position: {{ waypoint.lon}} - {{waypoint.lat}} </p>' +
+            '<p>Eta: {{waypoint.eta}}</p>' +
+            '<p>Time: {{waypoint.etatimeago}}</p>' +
+            /*'<p>Radius: {{waypoint.radius}}</p>' +
+             '<p>Speed: {{waypoint.speed}}</p>' +
+             '<p>Speed Min: {{waypoint.speedmin}}</p>' +
+             '<p>Speed Max: {{waypoint.speedmax}}</p>' +
+             '<p>Geometry Type: {{waypoint.geometrytype}}</p>' +
+             '<p>Portside XTD: {{waypoint.portsidextd}}</p>' +
+             '<p>Starboard XTD: {{waypoint.starboardxtd}}</p>' +*/
+            '</div>' +
+            '</div>' +
+            '</div>'
+            ,
             scope: {
                 name: '@',
                     points: '=?',
@@ -483,6 +504,24 @@ angular.module('maritimeweb.route')
             link: function(scope, element, attrs, ctrl) {
                 $log.info("The simple rtz route got features: ");// + $rootScope.route_oLfeatures.length + " and oLpoints:" + $rootScope.route_oLpoints.length );
                 var olScope         = ctrl.getOpenlayersScope();
+
+                scope.populatePopupWaypoint = function (feature) {
+                    scope.waypoint = {};
+                    scope.waypoint.id = feature.get('id');
+                    scope.waypoint.name = feature.get('wayname');
+                    scope.waypoint.lon = feature.get('lon');
+                    scope.waypoint.lat = feature.get('lat');
+                    scope.waypoint.radius = feature.get('radius');
+                    scope.waypoint.eta = feature.get('eta');
+                    scope.waypoint.etatimeago = feature.get('etatimeago');
+                    scope.waypoint.speed = feature.get('speed');
+                    scope.waypoint.speedmin = feature.get('speedmin');
+                    scope.waypoint.speedmax = feature.get('speedmax');
+                    scope.waypoint.geometrytype = feature.get('geometrytype');
+                    scope.waypoint.portsidextd = feature.get('portsidextd');
+                    scope.waypoint.starboardxtd = feature.get('starboardxtd');
+                    $log.debug("#" + feature.get('id'));
+                };
 
                 olScope.getMap().then(function(map) {
                     var  animatedMarkerStyle = new ol.style.Style({
@@ -624,6 +663,76 @@ angular.module('maritimeweb.route')
 
                         startMarker.setStyle(styles['startStyle']);
                         endMarker.setStyle(styles['endStyle']);
+
+                        /**
+                         * Clickable waypoints pop-up content
+                         */
+
+                        var elm = document.getElementById('smp-waypoint-route-info');
+
+                        /**
+                         * Elements that make up the popup.
+                         */
+                        var container = document.getElementById('smp-waypoint-popup');
+                        var content = document.getElementById('smp-waypoint-popup-content');
+                        var closer = document.getElementById('smp-waypoint-popup-closer');
+
+                        /**
+                         * Create an overlay to anchor the popup to the map.
+                         */
+                        var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+                            element: container,
+                            autoPan: true,
+                            autoPanAnimation: {
+                                duration: 250
+                            }
+                        }));
+
+                        var popup = new ol.Overlay({
+                            element: elm,
+                            positioning: 'bottom-center',
+                            stopEvent: false
+                        });
+                        map.addOverlay(popup);
+
+
+
+                        /**
+                         * Add a click handler to hide the popup.
+                         * @return {boolean} Don't follow the href.
+                         */
+                        closer.onclick = function () {
+                            overlay.setPosition(undefined);
+                            closer.blur();
+                            return false;
+                        };
+
+                        map.addOverlay(overlay);
+
+                        /**
+                         * Add a click handler to the map to render the popup.
+                         */
+                        map.on('singleclick', function (evt) {
+
+                            var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                                return feature;
+                            }, null, function (layer) {
+                                return layer === routeFeatureLayer;
+                            });
+
+                            if (feature) {
+
+                                var coordinate = evt.coordinate;
+                                //$rootScope.activeWayPoint = feature.get('id');
+                                //$rootScope.$apply();
+                                 scope.populatePopupWaypoint(feature);
+                                overlay.setPosition(coordinate);
+                                scope.$apply();
+                            } else {
+                                overlay.setPosition(undefined);
+                                closer.blur();
+                            }
+                        });
 
 
                         //animationLayer.getSource().addFeatures(scope.animatedfeatures);

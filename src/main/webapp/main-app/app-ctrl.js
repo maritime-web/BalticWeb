@@ -114,7 +114,7 @@ angular.module('maritimeweb.app')
             }
             loadTimerService = $timeout(function () {
                 $scope.loadServicesFromRegistry();
-            }, 500);
+            }, 1000);
         };
 
         // Refresh the service list every time the NW-NM boundary changes
@@ -123,8 +123,7 @@ angular.module('maritimeweb.app')
 
         /** Loads the  services **/
         $scope.loadServicesFromRegistry = function () {
-            $log.debug("     ...loadServicesFromRegistry");
-
+            //$log.debug("     ...loadServicesFromRegistry");
             var wkt = $scope.currentNwNmBoundary();
 
             NwNmService.getNwNmServices(wkt)

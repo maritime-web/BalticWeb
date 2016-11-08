@@ -273,11 +273,13 @@ angular.module('maritimeweb.route')
             $scope.storeAllFeaturesSomewhere = function() {
                 $scope.loading = true;
                 $log.debug("storing route for mmsi" + $routeParams.mmsi);
+
                 $rootScope.route_id = $routeParams.mmsi;
+                $rootScope.route_name = $scope.rtzName;
                 $rootScope.route_oLfeatures = $scope.oLfeatures;
-                $rootScope.route_oLanimatedfeatures = $scope.oLanimatedfeatures; // storing today date plus 14 days. Don't show the first-run modal for the next 14 days.
-                $rootScope.route_oLpoints =  $scope.oLpoints; // storing today date plus 14 days. Don't show the first-run modal for the next 14 days.
-                $rootScope.route_totaldistance = $scope.totaldistance; // storing today date plus 14 days. Don't show the first-run modal for the next 14 days.
+                $rootScope.route_oLanimatedfeatures = $scope.oLanimatedfeatures;
+                $rootScope.route_oLpoints =  $scope.oLpoints;
+                $rootScope.route_totaldistance = $scope.totaldistance;
                 var redirect = function(){
                     $rootScope.showgraphSidebar = true; // rough disabling of the sidebar
 
