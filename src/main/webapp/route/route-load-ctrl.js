@@ -3,11 +3,24 @@ angular.module('maritimeweb.route')
  * Controller that handles uploading an RTZ route for a vessel
  *  and generate the needed open-layers features.
  *******************************************************************/
-    .controller('RouteLoadCtrl', ['$scope', '$rootScope', '$http', '$routeParams', '$window', 'growl', 'timeAgo', '$filter', 'Upload', '$timeout', 'fileReader', '$log',
-        function ($scope, $rootScope, $http, $routeParams, $window, growl, timeAgo, $filter, Upload, $timeout, fileReader, $log) {
+    .controller('RouteLoadCtrl', ['$scope', 'VesselService', '$rootScope', '$http', '$routeParams', '$window', 'growl', 'timeAgo', '$filter', 'Upload', '$timeout', 'fileReader', '$log',
+        function ($scope, VesselService, $rootScope, $http, $routeParams, $window, growl, timeAgo, $filter, Upload, $timeout, fileReader, $log) {
             'use strict';
             $log.debug("RouteLoadCtrl routeParams.mmsi=" + $routeParams.mmsi);
+            if($routeParams.mmsi) {
 
+                $scope.route_mmsi = $routeParams.mmsi;
+                VesselService.detailsMMSI($routeParams.mmsi).then(function(vesselDetails) {
+                    $log.info('Success: ' + vesselDetails);
+                    $scope.msg = vesselDetails;
+                    $log.info(vesselDetails);
+                    $rootScope.route_vesselname = vesselDetails.data.aisVessel.name;
+
+
+                }, function(reason) {
+                    console.log('Failed: ' + reason);
+                });
+            }
             $rootScope.showgraphSidebar = false; // rough disabling of the sidebar
 
             $scope.activeWayPoint = 0;
