@@ -1,8 +1,8 @@
 
 <div uib-collapse="!$root.showgraphSidebar"  class="maritimeweb-sidebar col-xs-9 col-sm-4  col-md-4 sidebar"> <!-- uib-collapse="showgraphSidebar" -->
-    <uib-tabset type="pills">
+    <uib-tabset type="pills" justified="true">
 
-        <uib-tab>
+        <uib-tab classes="btn-sm">
             <uib-tab-heading ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <span class="glyphicon glyphicon-globe"></span> Satellite
                 <span class="badge sidebar-badge" ng-bind="mapWeatherLayers.getLayers().getArray().length"></span>
@@ -29,7 +29,7 @@
                        ng-repeat="aService in mapWeatherLayers.getLayers().getArray()">
 
                     <tr ng-class="{'active':aService.getVisible()}">
-                        <td><a href="#" ng-bind="aService.get('title')"
+                        <td><a href ng-bind="aService.get('title')"
                                ng-click="switchService(mapWeatherLayers.getLayers().getArray(), aService)"></a>
                             <span
                                     class="label label-success" ng-bind="aService.get('description')"></span>
@@ -50,8 +50,8 @@
         </uib-tab>
 
         <!-- Vessels tab -->
-        <uib-tab>
-            <uib-tab-heading>
+        <uib-tab classes="btn-sm">
+            <uib-tab-heading classes="btn-sm" >
                 <img src="/img/vessel_gray.png"/>
                 &nbsp;Vessels
                 <span class="badge sidebar-badge" ng-bind="vessels.length"></span>
@@ -76,7 +76,7 @@
                            ng-repeat="aService in mapTrafficLayers.getLayers().getArray()">
 
                         <tr ng-class="{'active':aService.getVisible()}">
-                            <td><a href="/#/" ng-bind="aService.get('title')"
+                            <td><a href ng-bind="aService.get('title')"
                                    ng-click="toggleLayer(aService)"></a>
                                 <!--<span class="label label-success" ng-bind="aService.get('title')"></span>-->
                             </td>
@@ -113,7 +113,7 @@
 
 
         <!-- NW-NM tab -->
-        <uib-tab>
+        <uib-tab classes="btn-sm">
             <uib-tab-heading>
                 <img src="/img/nwnm/nw.png" height="16"/>
                 NW-NM
@@ -161,7 +161,7 @@
         </uib-tab>
 
         <!-- Route tab -->
-        <uib-tab ng-if="$root.route_id">
+        <uib-tab ng-if="$root.route_id" classes="btn-sm">
             <uib-tab-heading>
                 <span>Route <span class="badge sidebar-badge">1</span></span>
             </uib-tab-heading>

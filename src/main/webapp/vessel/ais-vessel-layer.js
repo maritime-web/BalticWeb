@@ -15,7 +15,7 @@ angular.module('maritimeweb.vessel')
                 replace: false,
                 template: '<div id="vessel-info" class="ng-cloak"></div>' +
                 '<div id="popup" class="ol-popup">' +
-                '<a href="#" id="popup-closer" class="ol-popup-closer"></a>' +
+                '<a href id="popup-closer" class="ol-popup-closer"></a>' +
                 '<h3 class="popover-title">{{vessel.name}}</h3>' +
                 '<div class="popover-content">' +
                 '<p uib-popover="MMSI number" popover-placement="left" popover-trigger="mouseenter">MMSI: {{vessel.mmsi}}</p>' +

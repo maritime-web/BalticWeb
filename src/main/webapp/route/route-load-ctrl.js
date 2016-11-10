@@ -297,7 +297,7 @@ angular.module('maritimeweb.route')
                     $rootScope.showgraphSidebar = true; // rough disabling of the sidebar
 
                     $scope.loading = false;
-                    $window.location.href = '/#/';
+                    $window.location.href = '#';
                 };
                 $timeout(  redirect, 3000);
 
