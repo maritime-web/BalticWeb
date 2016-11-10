@@ -602,9 +602,11 @@ angular.module('maritimeweb.map')
             replace: true,
             require: '^olMap',
             template:
-            "<span class='sidebar-toggle-btn' " +
+            "<span class='sidebar-toggle-btn' ng-click='toggleSideBarList()'  " +
             " tooltip='Toggle detailed list-view' data-toggle='tooltip' data-placement='right' title='Toggle detailed list-view'>" +
-            "   <span ng-click='toggleSideBarList()' > <i class='fa fa-list fa-lg ' aria-hidden='true'></i> </span>" +
+            "   <span >" +
+            "<i ng-if='!$root.showgraphSidebar' class='fa fa-list fa-lg ' aria-hidden='true'></i> </span>" +
+            "<i ng-if='$root.showgraphSidebar' class='fa fa-times fa-lg ' aria-hidden='true'></i> </span>" +
             "</span>" ,
             scope: {
             },

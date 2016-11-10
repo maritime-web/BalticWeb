@@ -64,9 +64,9 @@ body {
 }
 .maritimeweb-sidebar {
     position: absolute;
-    top: 75px;
+    top: 51px;
     bottom: 3%;
-    right: 2%;
+    right: 24px;
     margin: 1em;
     z-index: 300;
     height: 75%;
@@ -126,8 +126,8 @@ body {
 
 .sidebar-toggle-btn {
     color: white;
-    top: 140px;
-    left: 12px;
+    top: 10px;
+    right: 12px;
     position: absolute;
     z-index: 100;
     margin: 0;
