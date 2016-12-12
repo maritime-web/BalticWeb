@@ -39,8 +39,9 @@
                                 <span>{{ref.messageId}}</span>
                                 <span ng-switch="ref.type">
                                     <span ng-switch-when="REPETITION">(repetition)</span>
+                                    <span ng-switch-when="REPETITION_NEW_TIME">(repetition with new time)</span>
                                     <span ng-switch-when="CANCELLATION">(cancellation)</span>
-                                    <span ng-switch-when="UPDATE">(updated)</span>
+                                    <span ng-switch-when="UPDATE">(updated repetition)</span>
                                 </span>
                                 <span ng-if="ref.descs && ref.descs.length > 0 && ref.descs[0].description">
                                     - {{ref.descs[0].description}}
