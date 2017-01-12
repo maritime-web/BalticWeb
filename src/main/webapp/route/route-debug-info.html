@@ -1,0 +1,49 @@
+<div class="container">
+    <button type="button" class="btn btn-sm pull-right" style="opacity: 0.5" ng-click="toggleDebug()">Debug info <i class="fa fa-cog"></i></button>
+    <div class="well" ng-if="!debugCollapsed">
+        <h2>Debug information</h2>
+
+        <div>OpenLayers features JSON:<br>
+            <button type="button" class="btn btn-default" ng-click="jsonFeatCollapsed = !jsonFeatCollapsed">Toggle
+                JSON
+                features
+            </button>
+            <hr>
+            <div uib-collapse="jsonFeatCollapsed">
+                <div class="well well-lg">
+                    <div>
+                        <json-formatter class="json-formatter-dark" open="1" json="oLfeatures"></json-formatter>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div>JSON (from XML):<br>
+            <button type="button" class="btn btn-default" ng-click="jsonCollapsed = !jsonCollapsed">Toggle JSON
+                input
+            </button>
+            <hr>
+            <div uib-collapse="jsonCollapsed">
+                <div class="well well-lg">
+                    <div>
+                        <json-formatter class="json-formatter-dark" open="1" json="rtzJSON"></json-formatter>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button type="button" class="btn btn-defaul" ng-click="xmlCollapsed = !xmlCollapsed">Toggle XML input
+            </button>
+            <hr>
+            <div uib-collapse="xmlCollapsed">
+                <div class="well well-lg">
+                    <div>XML:
+                        <pre class="xml-formatter-dark">{{rtzXML}}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
