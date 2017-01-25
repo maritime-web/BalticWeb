@@ -281,7 +281,7 @@ angular.module('maritimeweb.route')
             };
 
             /**
-             * store all features in local storge, on a server or right now. Throw them on the route scope.
+             * store all features in local storge, on a server or right now. Throw them on the root scope.
              */
             $scope.storeAllFeaturesSomewhere = function() {
                 $scope.loading = true;
