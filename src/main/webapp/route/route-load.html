@@ -1,22 +1,66 @@
 <div ng-controller="RouteLoadCtrl">
     <div class="container">
         <div class="row">
-            <div class="col-xs-9">
+            <div class="col-lg-6">
                 <h3 ng-bind="rtzName"></h3>
                 <h3 ng-if="route_vesselname && rtzName "> for {{route_vesselname}} </h3>
                 <!--<h1 ng-if="!rtzName">Upload route</h1>-->
             </div>
-            <div class="col-xs-3" style="padding: 20px 26px " >
-                     <span ng-if="oLfeatures.length > 0" >
-                         <button type="button" ng-if="!loading" ng-click="storeAllFeaturesSomewhere()" class="btn  btn-lg  btn-success ">
-                            <span class="glyphicon glyphicon-check"></span> Use route
+            <div class="col-lg-3 text-justify text-center" style="padding: 20px 26px">
+
+            <span ng-if="oLfeatures.length > 0">
+                        <button type="button" ng-if="!optimizing && !optimized" ng-click="optimizeRoute()"
+                                class="btn  btn-lg  btn-warning center-block">
+                            <span class="glyphicon glyphicon-thumbs-up glyphicon-random"></span> Optimize
                         </button>
+                        <button type="button" ng-if="optimizing" class="btn btn-lg btn-warning center-block">
+                          <i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Optimizing...
+                        </button>
+                        <button type="button" ng-if="optimized" ng-click="storeAllOptimizedFeaturesSomewhere()" class="btn btn-lg btn-warning center-block">
+                          <i class="glyphicon glyphicon-thumbs-up glyphicon-check"></i> Use optimized route
+                        </button>
+                        <div ng-if="!optimized" class="caption">
+                        <h3>Ask for optimization</h3>
+                        <span class="text-justify small">
+                         Send your route to the SSPA and ask them to optimize your planned route with regards to water current, weather, wind, tides, destination and traffic.
+                        </span>
+
+                            <div ng-if="optimizing" class="alert alert-warning alert-dismissible" role="alert">
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                      aria-hidden="true">&times;</span></button>
+                                        <strong>DEMO Version!</strong> This is under development for illustration only. Don't set sails just yet.
+                            </div>
+                        </div>
+
+                        <div ng-if="optimized" class="caption">
+                        <h3>Route optimized</h3>
+                        <span class="text-justify small">
+                            The uploaded route has been optimized and is marked with orange you can choose to accept the route or manual edit your original route.
+                        </span>
+
+
+                        </div>
                      </span>
-                <span ng-if="oLfeatures.length > 0">
-                        <button type="button" ng-if="loading" ng-click="storeAllFeaturesSomewhere()" class="btn btn-lg btn-primary ">
+
+            </div>
+            <div class="col-lg-3 text-justify text-center" style="padding: 20px 26px ">
+
+                 <span ng-if="oLfeatures.length > 0">
+
+                     <button type="button" ng-if="!loading" ng-click="storeAllFeaturesSomewhere()"
+                             class="btn  btn-lg  btn-success center-block">
+                        <span class="glyphicon glyphicon-check"></span> Use route
+                    </button>
+                    <button type="button" ng-if="loading" class="btn btn-lg btn-primary center-block">
                           <i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Loading...
-                        </button>
-                </span>
+                    </button>
+                    <div class="caption">
+                    <h3>Finalize</h3>
+                     <span class="text-justify small">
+                         Save your route and share it with the nearest VTS center
+                     </span>
+                    </div>
+                 </span>
             </div>
         </div>
     </div>
@@ -49,6 +93,7 @@
                     <ol-map class="route-details-map"  minzoom="1" swlon="0" swlat="0" nelon="90" nelat="90">
                         <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
                         <routertz points="oLpoints" features="oLfeatures" animatedfeatures="oLanimatedfeatures" autoplay="true"></routertz>
+                        <optimizedroutertz points="oLOptimizedpoints" features="oLOptimizedfeatures" animatedfeatures="oLanimatedOptimizedfeatures" autoplay="false"></optimizedroutertz>
                         <map-scale-line units="nautical"></map-scale-line>
                         <map-mouse-position></map-mouse-position>
                         <map-nw-nm-layer message-list="nwNmMessages" services="nwNmServices" name="NW-NM" ></map-nw-nm-layer>
@@ -57,7 +102,9 @@
                     </ol-map>
 
                     <h4>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span>  Active Waypoint: <span class="badge badge-info">#{{$root.activeWayPoint}}</span>
-                        Distance: <span class="badge badge-info">{{totaldistance | number:2 }}</span>Nautical miles </h4>
+                        Distance: <span class="badge badge-info">{{totaldistance | number:2 }}</span> Nautical miles </h4>
+                    <h4 ng-if="optimized">Optimized Waypoints: <span class="badge badge-info">{{oLOptimizedfeatures.length}}</span>
+                        Distance: <span class="badge badge-info">{{totalOptimizedDistance | number:2 }}</span> Nautical miles </h4>
                 </div>
             </div>
     </div>
