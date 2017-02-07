@@ -493,6 +493,7 @@ angular.module('maritimeweb.route')
                 '</div>' +
                 '</div>' +
                 "<div ng-if='animatedfeatures.length>0' class='hidden-xs hidden-sm message-details-optimized-route col-md-3 col-lg-3 ng-cloak'>" +
+                "<h3>Optimized route</h3> " +
                 "<btn ng-if='!animating' class='btn btn-success' id='start-animation' ng-click='startAnimation()'> <i class='fa fa-play' aria-hidden='true'></i> </btn> " +
                 "<btn ng-if='animating' class='btn btn-danger' id='start-animation' ng-click='stopAnimation()' tooltip='stop animation' data-toggle='tooltip'  " +
                 " data-placement='right' title='stop animation'> <i class='fa fa-stop' aria-hidden='true'></i> </btn><br>" +
@@ -556,7 +557,7 @@ angular.module('maritimeweb.route')
                     var styles = {
                         'route': new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                width: 6, color: [237, 212, 0, 0.8]
+                                width: 6, color: [255, 165, 0, 0.8]
                             })
                         }),
                         'icon': new ol.style.Style({
@@ -579,11 +580,11 @@ angular.module('maritimeweb.route')
                             image: new ol.style.Circle({
                                 radius: 6,
                                 stroke: new ol.style.Stroke({
-                                    color: 'darkorange',
-                                    width: 2
+                                    color: [255, 165, 0, 0.2],
+                                    width: 1
                                 }),
                                 fill: new ol.style.Fill({
-                                    color: [255, 0, 0, 0.5]
+                                    color: [255, 140, 0, 0.1]
                                 })
                             }),
                             text: new ol.style.Text({
@@ -597,11 +598,11 @@ angular.module('maritimeweb.route')
                             image: new ol.style.Circle({
                                 radius: 6,
                                 stroke: new ol.style.Stroke({
-                                    color: 'darkorange',
-                                    width: 2
+                                    color:  [255, 165, 0, 0.1],
+                                    width: 1
                                 }),
                                 fill: new ol.style.Fill({
-                                    color: [255, 0, 0, 0.5]
+                                    color: [255, 140, 0, 0.5]
                                 })
                             }),
                             text: new ol.style.Text({
@@ -629,7 +630,8 @@ angular.module('maritimeweb.route')
                             }
                             return styles[feature.get('type')];
                         }
-                    });                 var pathLayer = new ol.layer.Vector({
+                    });
+                    var pathLayer = new ol.layer.Vector({
                         source: new ol.source.Vector({
                             features: []
                         }),
@@ -639,7 +641,7 @@ angular.module('maritimeweb.route')
                                 lineDash: [5, 10, 0, 10],
                                 lineJoin: 'miter',
                                 width: 2,
-                                color: [255, 0, 0, 0.8]
+                                color: [255, 140, 0, 0.8]
                             })
                         })
                     });
@@ -671,7 +673,7 @@ angular.module('maritimeweb.route')
                                 lineDash: [5, 10, 0, 10],
                                 lineJoin: 'miter',
                                 width: 2,
-                                color: [0, 255, 0, 0.8]
+                                color: [255, 140, 0, 0.8]
                             })
                         })
                     });
@@ -762,7 +764,76 @@ angular.module('maritimeweb.route')
                         var speedInput = document.getElementById('speed');
                         var routeLength = scope.animatedfeatures.length;
 
+
+                        // all styling related to interactions and editing
+                        var overlayInteractionStyle = (function() {
+                            /* jshint -W069 */
+                            var styles = {};
+                            styles['Polygon'] = [
+                                new ol.style.Style({
+                                    fill: new ol.style.Fill({
+                                        color: [255, 255, 255, 0.5]
+                                    })
+                                }),
+                                new ol.style.Style({
+                                    stroke: new ol.style.Stroke({
+                                        color: [255, 255, 255, 1],
+                                        width: 5
+                                    })
+                                }),
+                                new ol.style.Style({
+                                    stroke: new ol.style.Stroke({
+                                        color: [255, 140, 0, 1],
+                                        width: 3
+                                    })
+                                })
+                            ];
+                            styles['MultiPolygon'] = styles['Polygon'];
+
+                            styles['LineString'] = [
+                                new ol.style.Style({
+                                    stroke: new ol.style.Stroke({
+                                        color: [255, 255, 255, 1],
+                                        width: 5
+                                    })
+                                }),
+                                new ol.style.Style({
+                                    stroke: new ol.style.Stroke({
+                                        color: [255, 140, 0, 1],
+                                        width: 3
+                                    })
+                                })
+                            ];
+                            styles['MultiLineString'] = styles['LineString'];
+
+                            styles['Point'] = [
+                                new ol.style.Style({
+                                    image: new ol.style.Circle({
+                                        radius: 7,
+                                        fill: new ol.style.Fill({
+                                            color: [255, 140, 0, 1]
+                                        }),
+                                        stroke: new ol.style.Stroke({
+                                            color: [255, 255, 255, 0.75],
+                                            width: 1.5
+                                        })
+                                    }),
+                                    zIndex: 100000
+                                })
+                            ];
+                            styles['MultiPoint'] = styles['Point'];
+
+                            styles['GeometryCollection'] = styles['Polygon'].concat(styles['Point']);
+
+                            return function(feature, resolution) {
+                                return styles[feature.getGeometry().getType()];
+                            };
+                            /* jshint +W069 */
+                        })();
+
+
                         var moveFeature = function (event) {
+                            // TODO in the case of the map has been edited we need to re-create the animation features.
                             var vectorContext = event.vectorContext;
                             var frameState = event.frameState;
 
@@ -845,7 +916,7 @@ angular.module('maritimeweb.route')
                         /**
                          * Add a click handler to the map to render the popup.
                          */
-                        map.on('singleclick', function (evt) {
+     /*                   map.on('singleclick', function (evt) {
 
                             var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
                                 return feature;
@@ -866,9 +937,24 @@ angular.module('maritimeweb.route')
                                 overlay.setPosition(undefined);
                                 closer.blur();
                             }
+                        });*/
+
+                        var select = new ol.interaction.Select({
+                            style: overlayInteractionStyle
                         });
 
+                        var modify = new ol.interaction.Modify({
+                            features: select.getFeatures(),
+                            style: overlayInteractionStyle
+                        });
+
+
+
                         map.addLayer(routeLayers);
+                        map.getInteractions().extend([select, modify]);
+
+
+
                     });
 
                     /** Returns the lat-lon attributesas json-object */
@@ -877,50 +963,12 @@ angular.module('maritimeweb.route')
                     };
 
 
-
-
-                    // watch if a new RTZ route has been uploaded by the end user.
-                       $rootScope.$watch("oLOptimizedpoints", function(newValue, oldValue) {
-                        if (newValue)
-                            olScope.getMap().then(function (map) {
-                                growl.info("oLOptimizedpoints Route has been optimized. Lets go");
-                                $log.info("oLOptimizedpoints route has been optimized. lets update the map");
-                               // animationLayer.getSource().clear();
-                               // pathLayer.getSource().clear();
-                               // routeFeatureLayer.getSource().clear();
-
-                                var routeFeature = new ol.Feature({
-                                    type: 'route',
-                                    geometry: new ol.geom.LineString(scope.points)
-                                });
-
-/*
-                                var startMarker = scope.features[0];
-                                var endMarker = scope.features[scope.features.length - 1];
-
-                                startMarker.setStyle(styles['startStyle']);
-                                endMarker.setStyle(styles['endStyle']);
-*/
-
-
-                                //animationLayer.getSource().addFeatures(scope.animatedfeatures);
-                                pathLayer.getSource().addFeature(routeFeature);
-                                routeFeatureLayer.getSource().addFeatures(scope.features);
-                               // routeFeatureLayer.getSource().addFeature(startMarker);
-                               // routeFeatureLayer.getSource().addFeature(endMarker);
-
-                                var extent = routeFeatureLayer.getSource().getExtent();
-                                map.getView().fit(extent, map.getSize());  // automatically zoom and pan the map to fit my features
-                            });
-                    }, true);
-
-
                     // watch if a new RTZ route has been uploaded by the end user.
                     scope.$watch("points", function(newValue, oldValue) {
                         if (newValue && newValue.length>0)
                             olScope.getMap().then(function (map) {
-                                growl.info("optimized points Route has been optimized. Lets go");
-                                $log.info("optimized points route has been optimized. lets update the map");
+                                growl.info("Route has been optimized. Optimized route is orange");
+                                $log.info("Route has been optimized. Optimized route is orange");
                                 animationLayer.getSource().clear();
                                 pathLayer.getSource().clear();
                                 routeFeatureLayer.getSource().clear();

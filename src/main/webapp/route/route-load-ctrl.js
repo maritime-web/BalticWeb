@@ -410,9 +410,9 @@ angular.module('maritimeweb.route')
                         growl.error("No Waypoints in RTZ file");
                         $log.error("No Waypoints in RTZ file");
                     } else {
-                        angular.forEach($scope.rtzJSON.route.waypoints.waypoint, function (way_value, key) { // simulate optimization. well, we randomize data atm.
-                            way_value.position._lon = parseFloat(way_value.position._lon) + ((Math.random() - 0.5) * 0.07);
-                            way_value.position._lat = parseFloat(way_value.position._lat) + ((Math.random() - 0.5) * 0.07);
+                        angular.forEach($scope.rtzJSON.route.waypoints.waypoint, function (way_value, key) { // simulate optimization. well, we randomize data atm. TODO We need to contact a service instead
+                            way_value.position._lon = parseFloat(way_value.position._lon) + ((Math.random() - 0.5) * 0.01);
+                            way_value.position._lat = parseFloat(way_value.position._lat) + ((Math.random() - 0.5) * 0.01);
                         });
                         angular.forEach($scope.rtzJSON.route.waypoints.waypoint, function (way_value, key) {
 
@@ -484,7 +484,7 @@ angular.module('maritimeweb.route')
                                         $scope.oLanimatedOptimizedfeatures.push($scope.createAnimatedOptimizedWaypointFeature(smoothingFeature));
                                         //$scope.oLfeatures.push($scope.createAnimatedWaypointFeature(smoothingFeature));
                                     }else{
-                                        $log.error("no point found for keyfeature. named=" + feature.wayname)
+                                        $log.error("No point found for keyfeature. Named=" + feature.wayname)
                                     }
                                 }
                             }
@@ -611,11 +611,11 @@ angular.module('maritimeweb.route')
                     image: new ol.style.Circle({
                         radius: 3,
                         stroke: new ol.style.Stroke({
-                            color: 'green',
+                            color: [255, 165, 0, 0.9],
                             width: 2
                         }),
                         fill: new ol.style.Fill({
-                            color: [0, 255, 0, 0.5]
+                            color: [255, 140, 0, 0.9]
                         })
                     })
                 });
@@ -673,11 +673,11 @@ angular.module('maritimeweb.route')
                     image: new ol.style.Circle({
                         radius: 3,
                         stroke: new ol.style.Stroke({
-                            color: 'orange',
+                            color: [255, 165, 0, 0.5],
                             width: 2
                         }),
                         fill: new ol.style.Fill({
-                            color: [255, 0, 0, 0.5]
+                            color: [255, 140, 0, 0.5]
                         })
                     })
                 });
