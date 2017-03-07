@@ -126,7 +126,7 @@ angular.module('maritimeweb.app')
             //$log.debug("     ...loadServicesFromRegistry");
             var wkt = $scope.currentNwNmBoundary();
 
-            NwNmService.getNwNmServices(wkt)
+            NwNmService.getNwNmServices()
                 .success(function (services, status) {
                     //$log.debug("NVNM Status " + status);
                     $scope.nwNmServices.length = 0;
