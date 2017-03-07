@@ -125,8 +125,9 @@ angular.module('maritimeweb.app')
         $scope.loadServicesFromRegistry = function () {
             //$log.debug("     ...loadServicesFromRegistry");
             var wkt = $scope.currentNwNmBoundary();
+           // var wkt = "POLYGON((-14.475675390625005 40.024168123114805,-14.475675390625005 68.88565248991273,59.92373867187499 68.88565248991273,59.92373867187499 40.024168123114805,-14.475675390625005 40.024168123114805))";
 
-            NwNmService.getNwNmServices()
+            NwNmService.getNwNmServices(wkt) // add wkt here when SR can handle WKT searches again.
                 .success(function (services, status) {
                     //$log.debug("NVNM Status " + status);
                     $scope.nwNmServices.length = 0;
