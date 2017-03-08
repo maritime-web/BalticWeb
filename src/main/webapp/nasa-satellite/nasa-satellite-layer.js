@@ -10,7 +10,7 @@ angular.module('maritimeweb.nasa-satellite')
         function ($http, $log, timeAgo, $filter) {
 
             this.serviceID = function () {
-                return 'urn:mrn:mcl:service:technical:dma:tiles-service'
+                return 'urn:mrn:mcl:service:design:dma:tiles-service'
             };
             this.serviceVersion = function () {
                 return '0.2'
