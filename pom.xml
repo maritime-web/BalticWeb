@@ -11,7 +11,7 @@
 	<parent>
         <groupId>dk.dma.enav.services</groupId>
 		<artifactId>parent</artifactId>
-        <version>1.0-MC_Service_registry-SNAPSHOT</version>
+        <version>1.0.4-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -131,11 +131,12 @@
         </dependency>
         -->
 
-		<dependency>
+<!--		<dependency>
 			<groupId>org.niord</groupId>
 			<artifactId>niord-model</artifactId>
             <version>1.0-SNAPSHOT</version>
-		</dependency>
+			<scope>compile</scope>
+		</dependency>-->
 
         <!-- Import the Servlet API. -->
 		<dependency>
@@ -185,7 +186,13 @@
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>
-	</dependencies>
+<!--		<dependency>
+			<groupId>org.niord</groupId>
+			<artifactId>niord-core</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>-->
+    </dependencies>
 
 	<build>
 		<resources>

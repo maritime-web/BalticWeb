@@ -54,6 +54,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -330,7 +331,7 @@ public class AppDataServiceBean {
         createNanoqLogin();
     }
 
-    private <E extends IEntity<K>, K> void deleteAll(Class<E> type) {
+    private <E extends IEntity<K>, K extends Serializable> void deleteAll(Class<E> type) {
         try {
             logger.info("Deleting entities of type {}", type.getName());
             List<E> entities = vesselDao.getAll(type);
