@@ -6,8 +6,8 @@ angular.module('maritimeweb.map')
 /**
  * The language service is used for changing language, etc.
  */
-    .service('MapService', [
-        function () {
+    .service('MapService', ['$http',
+        function ($http) {
             'use strict';
 
             var that = this;
@@ -131,6 +131,26 @@ angular.module('maritimeweb.map')
                 });
             };
 
+            this.createWMSTileLayer = function () {
+                var olLayer = new ol.layer.Tile({
+                    title: "WMS",
+                    visible: false,
+                    source: new ol.source.TileWMS({
+                        url: 'http://www.idee.es/wms/MTN-Raster/MTN-Raster',
+                        params: {
+                            'LAYERS': 'mtn_rasterizado',
+                            'TRANSPARENT': 'true'
+                        }
+                    })
+                });
+
+                    olLayer.getSource().setTileLoadFunction(); // customAjaxWMSLoader
+                    olLayer.setMaxResolution(1000);
+
+                return olLayer;
+
+            };
+
 
             /** Converts a GeoJSON feature to an OL feature **/
             this.wktToOlFeature = function (feature) {
@@ -156,6 +176,21 @@ angular.module('maritimeweb.map')
                 }
                 return false;
             };
+
+            this.customAjaxWMSLoader = function (tile, src) {
+                $http.get(src, {responseType: 'arraybuffer'})
+                    .then(function (response) {
+                        var img = tile.getImage();
+                        try {
+                            var blob = new Blob([response.data], {type: 'image/png'});
+                            img.src = (window.URL || window.webkitURL).createObjectURL(blob);
+                            img.width = img.height = 256;
+                        } catch (err) {
+                            img.src = "/img/blank.png";
+                            img.width = img.height = 256;
+                        }
+                    });
+            }
 
 
             /** Creates a group of standard background layers **/
@@ -201,7 +236,33 @@ angular.module('maritimeweb.map')
                                 url: 'http://{a-c}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png',
                                 attributions: thunderforestAttributions
                             })
+                        }),
+                        new ol.layer.Tile({
+                            title: 'TEST: MTN raster',
+                            visible: false,
+                            source: new ol.source.TileWMS({
+                                url: 'http://www.idee.es/wms/MTN-Raster/MTN-Raster',
+                                params: {
+                                    'LAYERS': 'mtn_rasterizado',
+                                    'TRANSPARENT': 'true'
+                                }
+                            })
+                        }),
+                        new ol.layer.Tile({
+                            title: 'TEST: Sea map',
+                            visible: false,
+                            source: new ol.source.TileWMS({
+                                url: '/wms/',
+                                params: {
+                                    'LAYERS': 'cells',
+                                    'TRANSPARENT': 'true'
+                                },
+                                tileLoadFunction: this.customAjaxWMSLoader
+                            })
                         })
+                        //,
+                        //this.createWMSTileLayer()
+
                         /* new ol.layer.Tile({
                          title: 'Arcgisonline - Light Grey Base',
                          type: 'base',
@@ -214,6 +275,7 @@ angular.module('maritimeweb.map')
                     ]
                 });
             };
+
 
 
             /** Creates a group of standard weather layers **/

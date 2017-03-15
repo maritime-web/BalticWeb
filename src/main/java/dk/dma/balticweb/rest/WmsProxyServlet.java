@@ -57,7 +57,7 @@ public class WmsProxyServlet extends HttpServlet {
 
 
     public WmsProxyServlet(){
-        System.out.println("WmsProxyServlet WmsProxyServlet WmsProxyServlet");
+        System.out.println("WmsProxyServlet");
     }
 
     public void init(){
