@@ -133,7 +133,7 @@ angular.module('maritimeweb.map')
 
             this.createWMSTileLayer = function () {
                 var olLayer = new ol.layer.Tile({
-                    title: "WMS",
+                    title: "Map of Spain",
                     visible: false,
                     source: new ol.source.TileWMS({
                         url: 'http://www.idee.es/wms/MTN-Raster/MTN-Raster',
@@ -186,11 +186,13 @@ angular.module('maritimeweb.map')
                             img.src = (window.URL || window.webkitURL).createObjectURL(blob);
                             img.width = img.height = 256;
                         } catch (err) {
+                            console.log("customAjaxWMSLoader Error" + err + " " + response.status);
+
                             img.src = "/img/blank.png";
                             img.width = img.height = 256;
                         }
                     });
-            }
+            };
 
 
             /** Creates a group of standard background layers **/
@@ -244,7 +246,7 @@ angular.module('maritimeweb.map')
                                 url: 'http://www.idee.es/wms/MTN-Raster/MTN-Raster',
                                 params: {
                                     'LAYERS': 'mtn_rasterizado',
-                                    'TRANSPARENT': 'true'
+                                    'TRANSPARENT': 'TRUE'
                                 }
                             })
                         }),
@@ -255,11 +257,24 @@ angular.module('maritimeweb.map')
                                 url: '/wms/',
                                 params: {
                                     'LAYERS': 'cells',
-                                    'TRANSPARENT': 'true'
+                                    'TRANSPARENT': 'TRUE'
                                 },
                                 tileLoadFunction: this.customAjaxWMSLoader
                             })
+                        }),
+                        new ol.layer.Tile({
+                            title: 'TEST: GEBCO',
+                            visible: false,
+                            source: new ol.source.TileWMS({
+                                url: 'http://www.gebco.net/data_and_products/gebco_web_services/web_map_service/',
+                                params: {
+                                    'LAYERS': 'GEBCO_LATEST',
+                                    'TRANSPARENT': 'TRUE'
+                                }
+                            })
                         })
+                        //http://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?request=getCapabilities&service=wms&version=1.3.0
+
                         //,
                         //this.createWMSTileLayer()
 
