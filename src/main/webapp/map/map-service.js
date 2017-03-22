@@ -131,25 +131,6 @@ angular.module('maritimeweb.map')
                 });
             };
 
-            this.createWMSTileLayer = function () {
-                var olLayer = new ol.layer.Tile({
-                    title: "WMS",
-                    visible: false,
-                    source: new ol.source.TileWMS({
-                        url: 'http://www.idee.es/wms/MTN-Raster/MTN-Raster',
-                        params: {
-                            'LAYERS': 'mtn_rasterizado',
-                            'TRANSPARENT': 'true'
-                        }
-                    })
-                });
-
-                    olLayer.getSource().setTileLoadFunction(); // customAjaxWMSLoader
-                    olLayer.setMaxResolution(1000);
-
-                return olLayer;
-
-            };
 
 
             /** Converts a GeoJSON feature to an OL feature **/
@@ -178,7 +159,7 @@ angular.module('maritimeweb.map')
             };
 
             this.customAjaxWMSLoader = function (tile, src) {
-                $http.get(src, {responseType: 'arraybuffer'})
+                $http.get(src, {timeout: 4000, responseType: 'arraybuffer'})
                     .then(function (response) {
                         var img = tile.getImage();
                         try {
@@ -190,7 +171,7 @@ angular.module('maritimeweb.map')
                             img.width = img.height = 256;
                         }
                     });
-            }
+            };
 
 
             /** Creates a group of standard background layers **/
@@ -237,7 +218,7 @@ angular.module('maritimeweb.map')
                                 attributions: thunderforestAttributions
                             })
                         }),
-                        new ol.layer.Tile({
+ /*                       new ol.layer.Tile({
                             title: 'TEST: MTN raster',
                             visible: false,
                             source: new ol.source.TileWMS({
@@ -247,9 +228,9 @@ angular.module('maritimeweb.map')
                                     'TRANSPARENT': 'true'
                                 }
                             })
-                        }),
+                        }),*/
                         new ol.layer.Tile({
-                            title: 'TEST: Sea map',
+                            title: 'Danish Geodata Agency - Sea map',
                             visible: false,
                             source: new ol.source.TileWMS({
                                 url: '/wms/',
