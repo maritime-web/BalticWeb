@@ -236,7 +236,7 @@ angular.module('maritimeweb.map')
                                 url: '/wms/',
                                 params: {
                                     'LAYERS': 'cells',
-                                    'TRANSPARENT': 'true'
+                                    'TRANSPARENT': 'TRUE'
                                 },
                                 tileLoadFunction: this.customAjaxWMSLoader
                             })
