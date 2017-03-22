@@ -171,8 +171,9 @@ angular.module('maritimeweb.app')
                     }
                 })
                 .error(function (error) {
-                    // growl.error("Error getting NW NM service. Reason=" + error);
+                    growl.error("Error getting NW NM service from Service Register.");
                     $window.localStorage[NwNmService.serviceID()] = 'false';
+                    $scope.nwNmServicesStatus = 'false';
 
                     $log.debug("Error getting NW NM service. Reason=" + error);
                 })

@@ -133,6 +133,7 @@ angular.module('maritimeweb.map')
 
 
 
+
             /** Converts a GeoJSON feature to an OL feature **/
             this.wktToOlFeature = function (feature) {
                 return wktFormat.readFeature(feature, {
@@ -159,7 +160,7 @@ angular.module('maritimeweb.map')
             };
 
             this.customAjaxWMSLoader = function (tile, src) {
-                $http.get(src, {timeout: 4000, responseType: 'arraybuffer'})
+                $http.get(src, {responseType: 'arraybuffer'})
                     .then(function (response) {
                         var img = tile.getImage();
                         try {
