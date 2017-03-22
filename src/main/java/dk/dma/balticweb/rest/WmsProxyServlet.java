@@ -1,29 +1,29 @@
-package dk.dma.balticweb.rest;
-
-/*
- * Copyright 2016 Danish Maritime Authority.
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
+ */
+package dk.dma.balticweb.rest;
+/*
  *
  * Proxy WMS data
  *
- * Created by andreas on 3/2/17.
+ * Created by andreas on 3/2/17 borrowed from niord project.
  *
  * This servlet will mask out a couple of colours that makes the current Danish WMS service unusable...
  *
- * Define the settings for the "wmsLogin", "wmsPassword", etc. in the "${niord.home}/niord.json" settings file.
  */
+
+import dk.dma.embryo.common.configuration.Property;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 
@@ -33,36 +33,23 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Map;
 import java.util.stream.Collectors;
-import dk.dma.embryo.common.configuration.Property;
-
-
-//import static org.niord.core.settings.Setting.Type.Password;
-//import static org.niord.core.settings.Setting.Type.Boolean;
 
 @WebServlet(value = "/wms/*")
 public class WmsProxyServlet extends HttpServlet {
 
     // The color we want transparent
-    final static Color[]    MASKED_COLORS   = { Color.WHITE, new Color(221, 241, 239) };
-    final static int        COLOR_DIST      = 20;
-    final static int        CACHE_TIMEOUT   =  24 * 60 * 60; // 24 hours
+    static final Color[]    MASKED_COLORS   = { Color.WHITE, new Color(221, 241, 239) };
+    static final int        COLOR_DIST      = 20;
+    static final int        CACHE_TIMEOUT   =  24 * 60 * 60; // 24 hours
     static final String     BLANK_IMAGE     = "/img/blank.png";
-
-
-    public WmsProxyServlet(){
-        System.out.println("WmsProxyServlet");
-    }
-
-    public void init(){
-        System.out.println("init WmsProxyServlet");
-    }
 
     @Inject
     Logger log;
