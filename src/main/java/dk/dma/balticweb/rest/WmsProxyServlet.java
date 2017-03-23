@@ -123,8 +123,9 @@ public class WmsProxyServlet extends HttpServlet {
         String url = wmsProvider + "?" + params;
         log.info("Loading image " + url);
 
+        InputStream urlInputStream = null;
         try {
-            InputStream urlInputStream = (new URL(url)).openStream();
+            urlInputStream = (new URL(url)).openStream();
             BufferedImage image = Sanselan.getBufferedImage(urlInputStream);
             if (image != null) {
                 //image = transformWhiteToTransparent(image);
@@ -137,14 +138,17 @@ public class WmsProxyServlet extends HttpServlet {
             }
             urlInputStream.close();
         } catch (Exception e) {
-            log.info("Failed loading WMS image for URL " + url + ": " + e);
+            log.error("Failed loading WMS image for URL " + url + ": " + e);
+            if (urlInputStream != null) {
+                urlInputStream.close();
+            }
         }
 
         // Fall back to return a blank image
         try {
             response.sendRedirect(BLANK_IMAGE);
         } catch (Exception e) {
-            log.info("Failed returning blank image for URL " + url + ": " + e);
+            log.error("Failed returning blank image for URL " + url + ": " + e);
         }
     }
 
