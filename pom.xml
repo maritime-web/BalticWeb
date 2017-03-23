@@ -186,6 +186,12 @@
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.sanselan</groupId>
+			<artifactId>sanselan</artifactId>
+			<version>0.97-incubator</version>
+		</dependency>
 <!--		<dependency>
 			<groupId>org.niord</groupId>
 			<artifactId>niord-core</artifactId>

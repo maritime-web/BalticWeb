@@ -25,18 +25,19 @@ package dk.dma.balticweb.rest;
 
 import dk.dma.embryo.common.configuration.Property;
 import org.apache.commons.lang.StringUtils;
+import org.apache.sanselan.ImageFormat;
+import org.apache.sanselan.Sanselan;
 import org.slf4j.Logger;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Map;
@@ -123,16 +124,18 @@ public class WmsProxyServlet extends HttpServlet {
         log.info("Loading image " + url);
 
         try {
-            BufferedImage image = ImageIO.read(new URL(url));
+            InputStream urlInputStream = (new URL(url)).openStream();
+            BufferedImage image = Sanselan.getBufferedImage(urlInputStream);
             if (image != null) {
                 //image = transformWhiteToTransparent(image);
 
                 OutputStream out = response.getOutputStream();
-                ImageIO.write(image, "png", out);
+                Sanselan.writeImage(image, out, ImageFormat.IMAGE_FORMAT_PNG, null);
                 image.flush();
                 out.close();
                 return;
             }
+            urlInputStream.close();
         } catch (Exception e) {
             log.info("Failed loading WMS image for URL " + url + ": " + e);
         }
