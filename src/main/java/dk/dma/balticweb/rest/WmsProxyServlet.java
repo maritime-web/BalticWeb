@@ -28,14 +28,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
 import org.slf4j.Logger;
-
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
