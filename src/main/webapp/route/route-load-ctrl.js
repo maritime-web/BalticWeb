@@ -60,6 +60,9 @@ angular.module('maritimeweb.route')
 
             $scope.sampleRTZdata = [
                 {id: '', name: 'pick a sample route'},
+                {id: 'E2_GOT-GDYNIA_TEST_DROGDEN_2.rtz', name: 'E2 GOT GDYNIA TEST DROGDEN 2'},
+                {id: 'E2_GOT_GDYNIA_TEST.rtz', name: 'E2 GOT GDYNIA TEST'},
+                {id: 'E2_GOT_GDYNIA_TEST_OPTIMIZED.rtz', name: 'E2 GOT GDYNIA TEST OPTIMIZED'},
                 {id: 'ExamplefileworkswithENSI.rtz', name: 'Talin - Helsinki'},
                 {id: 'Helsinki_to_Rotterdam_via_Aarhus-Bremerhaven.rtz', name: 'BIMCO - Helsinki to Rotterdam'},
                 /*  {id: 'muugaPRVconsprnt.rtz', name: 'Talin - Helsinki'},*/

@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+    <routeInfo routeName="E2_GOT-GDYNIA_TEST_DROGDEN 2"/>
+    <waypoints>
+        <defaultWaypoint radius="0.10">
+            <leg portsideXTD="0.10" starboardXTD="0.10" safetyContour="30.00" safetyDepth="30.00" geometryType="Loxodrome"/>
+        </defaultWaypoint>
+        <waypoint id="1" name="SKANDIAHAMNEN">
+            <position lat="57.68726667" lon="11.86143333"/>
+        </waypoint>
+        <waypoint id="2" radius="0.50">
+            <position lat="57.68291667" lon="11.84178333"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="3" radius="0.50">
+            <position lat="57.67816667" lon="11.80670000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="4" radius="0.50">
+            <position lat="57.65973333" lon="11.77031667"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="5" radius="0.50">
+            <position lat="57.64925000" lon="11.70620000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="6" radius="0.50">
+            <position lat="57.63546667" lon="11.69275000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="7" name="PILOT GBG OFF" radius="0.50">
+            <position lat="57.61031667" lon="11.66111667"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="8" name="ROUTE T" radius="0.50">
+            <position lat="57.09820410" lon="11.63776345"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="9" name="ANHOLT" radius="0.50">
+            <position lat="56.75125000" lon="11.87620000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="10" radius="0.50">
+            <position lat="56.52605000" lon="11.96565000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="11" radius="0.50">
+            <position lat="56.29481667" lon="12.06281667"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="40" name="VTS SOUND REPORTING" radius="0.50">
+            <position lat="56.24134962" lon="12.19701667"/>
+        </waypoint>
+        <waypoint id="12" name="M1" radius="0.50">
+            <position lat="56.11400000" lon="12.51785000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="13" name="M4" radius="0.50">
+            <position lat="56.05176667" lon="12.64388333"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="14" radius="0.50">
+            <position lat="55.98651448" lon="12.61885470"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="15" radius="0.50">
+            <position lat="55.90527945" lon="12.61773295"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="16" radius="0.50">
+            <position lat="55.80990662" lon="12.70712798"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="17" radius="0.50">
+            <position lat="55.73698365" lon="12.67792568"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="18" name="DROGDEN IN" radius="0.50">
+            <position lat="55.65695243" lon="12.68561600"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="38" radius="0.50">
+            <position lat="55.62737730" lon="12.69499248"/>
+            <leg safetyContour="8.00"/>
+        </waypoint>
+        <waypoint id="19" name="DROGDEN OUT" radius="0.50">
+            <position lat="55.54712327" lon="12.70689060"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="20" radius="0.50">
+            <position lat="55.41936667" lon="12.65701667"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="21" name="FALSTERBOREV" radius="0.50">
+            <position lat="55.30496667" lon="12.63095000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="22" name="BLENHEIM" radius="0.50">
+            <position lat="55.24970000" lon="12.86905000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="23" name="TSS ADLERGRUND" radius="0.50">
+            <position lat="54.61283333" lon="14.24518333"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="24" radius="0.50">
+            <position lat="54.59070000" lon="14.37078333"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="25" radius="0.50">
+            <position lat="54.59779672" lon="14.50086630"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="26" name="TSS SLUPSKA BANK" radius="0.50">
+            <position lat="54.77598333" lon="16.49848333"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="27" radius="0.50">
+            <position lat="54.80960000" lon="16.87396667"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="28" radius="0.50">
+            <position lat="54.88416667" lon="17.37908333"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="29" radius="0.50">
+            <position lat="54.94136445" lon="18.52546933"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="30" name="GDANREP" radius="0.50">
+            <position lat="54.75039688" lon="19.00473810"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="31" radius="0.50">
+            <position lat="54.59251667" lon="18.87820000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="32" name="BUOY GN" radius="0.50">
+            <position lat="54.53683333" lon="18.79125000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="34" name="ENTRANCE GDYNIA" radius="0.50">
+            <position lat="54.53518333" lon="18.60563333"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="35" radius="0.50">
+            <position lat="54.53565000" lon="18.55440000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="36" radius="0.50">
+            <position lat="54.53526667" lon="18.54446667"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+        <waypoint id="37" name="BERTH GDYNIA" radius="0.50">
+            <position lat="54.53161667" lon="18.53495000"/>
+            <leg safetyContour="8.00" safetyDepth="10.00"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="0" name="Base Calculation">
+            <manual>
+                <sheduleElement waypointId="1" etd="2017-03-09T08:00:00Z"/>
+                <sheduleElement waypointId="2" speed="5.00"/>
+                <sheduleElement waypointId="3" speed="8.00"/>
+                <sheduleElement waypointId="4" speed="12.00"/>
+                <sheduleElement waypointId="5" speed="14.00"/>
+                <sheduleElement waypointId="6" speed="14.00"/>
+                <sheduleElement waypointId="7" speed="16.00"/>
+                <sheduleElement waypointId="8" speed="18.00"/>
+                <sheduleElement waypointId="9" speed="18.00"/>
+                <sheduleElement waypointId="10" speed="18.00"/>
+                <sheduleElement waypointId="11" speed="18.00"/>
+                <sheduleElement waypointId="40" speed="18.00"/>
+                <sheduleElement waypointId="12" speed="18.00"/>
+                <sheduleElement waypointId="13" speed="18.00"/>
+                <sheduleElement waypointId="14" speed="18.00"/>
+                <sheduleElement waypointId="15" speed="18.00"/>
+                <sheduleElement waypointId="16" speed="18.00"/>
+                <sheduleElement waypointId="17" speed="18.00"/>
+                <sheduleElement waypointId="18" speed="15.00"/>
+                <sheduleElement waypointId="38" speed="15.00"/>
+                <sheduleElement waypointId="19" speed="15.00"/>
+                <sheduleElement waypointId="20" speed="18.00"/>
+                <sheduleElement waypointId="21" speed="18.00"/>
+                <sheduleElement waypointId="22" speed="18.00"/>
+                <sheduleElement waypointId="23" speed="18.00"/>
+                <sheduleElement waypointId="24" speed="18.00"/>
+                <sheduleElement waypointId="25" speed="18.00"/>
+                <sheduleElement waypointId="26" speed="18.00"/>
+                <sheduleElement waypointId="27" speed="18.00"/>
+                <sheduleElement waypointId="28" speed="18.00"/>
+                <sheduleElement waypointId="29" speed="18.00"/>
+                <sheduleElement waypointId="30" speed="18.00"/>
+                <sheduleElement waypointId="31" speed="18.00"/>
+                <sheduleElement waypointId="32" speed="15.00"/>
+                <sheduleElement waypointId="34" speed="12.00"/>
+                <sheduleElement waypointId="35" speed="8.00"/>
+                <sheduleElement waypointId="36" speed="5.00"/>
+                <sheduleElement waypointId="37" speed="1.00"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" etd="2017-03-09T08:00:00Z"/>
+                <sheduleElement waypointId="2" speed="5.00"/>
+                <sheduleElement waypointId="3" speed="8.00"/>
+                <sheduleElement waypointId="4" speed="12.00"/>
+                <sheduleElement waypointId="5" speed="14.00"/>
+                <sheduleElement waypointId="6" speed="14.00"/>
+                <sheduleElement waypointId="7" speed="16.00"/>
+                <sheduleElement waypointId="8" speed="18.00"/>
+                <sheduleElement waypointId="9" speed="18.00"/>
+                <sheduleElement waypointId="10" speed="18.00"/>
+                <sheduleElement waypointId="11" speed="18.00"/>
+                <sheduleElement waypointId="40" speed="18.00"/>
+                <sheduleElement waypointId="12" speed="18.00"/>
+                <sheduleElement waypointId="13" speed="18.00"/>
+                <sheduleElement waypointId="14" speed="18.00"/>
+                <sheduleElement waypointId="15" speed="18.00"/>
+                <sheduleElement waypointId="16" speed="18.00"/>
+                <sheduleElement waypointId="17" speed="18.00"/>
+                <sheduleElement waypointId="18" speed="15.00"/>
+                <sheduleElement waypointId="38" speed="15.00"/>
+                <sheduleElement waypointId="19" speed="15.00"/>
+                <sheduleElement waypointId="20" speed="18.00"/>
+                <sheduleElement waypointId="21" speed="18.00"/>
+                <sheduleElement waypointId="22" speed="18.00"/>
+                <sheduleElement waypointId="23" speed="18.00"/>
+                <sheduleElement waypointId="24" speed="18.00"/>
+                <sheduleElement waypointId="25" speed="18.00"/>
+                <sheduleElement waypointId="26" speed="18.00"/>
+                <sheduleElement waypointId="27" speed="18.00"/>
+                <sheduleElement waypointId="28" speed="18.00"/>
+                <sheduleElement waypointId="29" speed="18.00"/>
+                <sheduleElement waypointId="30" speed="18.00"/>
+                <sheduleElement waypointId="31" speed="18.00"/>
+                <sheduleElement waypointId="32" speed="15.00"/>
+                <sheduleElement waypointId="34" speed="12.00"/>
+                <sheduleElement waypointId="35" speed="8.00"/>
+                <sheduleElement waypointId="36" speed="5.00"/>
+                <sheduleElement waypointId="37" speed="1.00"/>
+            </calculated>
+        </schedule>
+        <schedule id="1" name="SCHEDULE E2_GOT_GDY_TEST DROGDEN 2">
+            <manual>
+                <sheduleElement waypointId="1" etd="2017-03-09T08:00:00Z"/>
+                <sheduleElement waypointId="2" speed="5.00"/>
+                <sheduleElement waypointId="3" speed="8.00"/>
+                <sheduleElement waypointId="4" speed="12.00"/>
+                <sheduleElement waypointId="5" speed="14.00"/>
+                <sheduleElement waypointId="6" speed="14.00"/>
+                <sheduleElement waypointId="7" speed="16.00"/>
+                <sheduleElement waypointId="8" speed="18.00"/>
+                <sheduleElement waypointId="9" speed="18.00"/>
+                <sheduleElement waypointId="10" speed="18.00"/>
+                <sheduleElement waypointId="11" speed="18.00"/>
+                <sheduleElement waypointId="40" speed="18.00"/>
+                <sheduleElement waypointId="12" speed="18.00"/>
+                <sheduleElement waypointId="13" speed="18.00"/>
+                <sheduleElement waypointId="14" speed="18.00"/>
+                <sheduleElement waypointId="15" speed="18.00"/>
+                <sheduleElement waypointId="16" speed="18.00"/>
+                <sheduleElement waypointId="17" speed="18.00"/>
+                <sheduleElement waypointId="18" speed="15.00"/>
+                <sheduleElement waypointId="38" speed="15.00"/>
+                <sheduleElement waypointId="19" speed="15.00"/>
+                <sheduleElement waypointId="20" speed="18.00"/>
+                <sheduleElement waypointId="21" speed="18.00"/>
+                <sheduleElement waypointId="22" speed="18.00"/>
+                <sheduleElement waypointId="23" speed="18.00"/>
+                <sheduleElement waypointId="24" speed="18.00"/>
+                <sheduleElement waypointId="25" speed="18.00"/>
+                <sheduleElement waypointId="26" speed="18.00"/>
+                <sheduleElement waypointId="27" speed="18.00"/>
+                <sheduleElement waypointId="28" speed="18.00"/>
+                <sheduleElement waypointId="29" speed="18.00"/>
+                <sheduleElement waypointId="30" speed="18.00"/>
+                <sheduleElement waypointId="31" speed="18.00"/>
+                <sheduleElement waypointId="32" speed="15.00"/>
+                <sheduleElement waypointId="34" speed="12.00"/>
+                <sheduleElement waypointId="35" speed="8.00"/>
+                <sheduleElement waypointId="36" speed="5.00"/>
+                <sheduleElement waypointId="37" speed="1.00"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" etd="2017-03-09T08:00:00Z"/>
+                <sheduleElement waypointId="2" eta="2017-03-09T08:07:47Z" etd="2017-03-09T08:07:47Z" speed="5.00"/>
+                <sheduleElement waypointId="3" eta="2017-03-09T08:15:49Z" etd="2017-03-09T08:15:49Z" speed="8.00"/>
+                <sheduleElement waypointId="4" eta="2017-03-09T08:23:55Z" etd="2017-03-09T08:23:55Z" speed="12.00"/>
+                <sheduleElement waypointId="5" eta="2017-03-09T08:32:46Z" etd="2017-03-09T08:32:46Z" speed="14.00"/>
+                <sheduleElement waypointId="6" eta="2017-03-09T08:37:28Z" etd="2017-03-09T08:37:28Z" speed="14.00"/>
+                <sheduleElement waypointId="7" eta="2017-03-09T08:43:52Z" etd="2017-03-09T08:43:52Z" speed="16.00"/>
+                <sheduleElement waypointId="8" eta="2017-03-09T10:26:41Z" etd="2017-03-09T10:26:41Z" speed="18.00"/>
+                <sheduleElement waypointId="9" eta="2017-03-09T11:41:10Z" etd="2017-03-09T11:41:10Z" speed="18.00"/>
+                <sheduleElement waypointId="10" eta="2017-03-09T12:27:28Z" etd="2017-03-09T12:27:28Z" speed="18.00"/>
+                <sheduleElement waypointId="11" eta="2017-03-09T13:14:26Z" etd="2017-03-09T13:14:26Z" speed="18.00"/>
+                <sheduleElement waypointId="40" eta="2017-03-09T13:33:25Z" etd="2017-03-09T13:33:25Z" speed="18.00"/>
+                <sheduleElement waypointId="12" eta="2017-03-09T14:17:21Z" etd="2017-03-09T14:17:21Z" speed="18.00"/>
+                <sheduleElement waypointId="13" eta="2017-03-09T14:35:18Z" etd="2017-03-09T14:35:18Z" speed="18.00"/>
+                <sheduleElement waypointId="14" eta="2017-03-09T14:49:18Z" etd="2017-03-09T14:49:18Z" speed="18.00"/>
+                <sheduleElement waypointId="15" eta="2017-03-09T15:05:20Z" etd="2017-03-09T15:05:20Z" speed="18.00"/>
+                <sheduleElement waypointId="16" eta="2017-03-09T15:26:43Z" etd="2017-03-09T15:26:43Z" speed="18.00"/>
+                <sheduleElement waypointId="17" eta="2017-03-09T15:42:02Z" etd="2017-03-09T15:42:02Z" speed="18.00"/>
+                <sheduleElement waypointId="18" eta="2017-03-09T16:01:27Z" etd="2017-03-09T16:01:27Z" speed="15.00"/>
+                <sheduleElement waypointId="38" eta="2017-03-09T16:08:43Z" etd="2017-03-09T16:08:43Z" speed="15.00"/>
+                <sheduleElement waypointId="19" eta="2017-03-09T16:27:52Z" etd="2017-03-09T16:27:52Z" speed="15.00"/>
+                <sheduleElement waypointId="20" eta="2017-03-09T16:54:16Z" etd="2017-03-09T16:54:16Z" speed="18.00"/>
+                <sheduleElement waypointId="21" eta="2017-03-09T17:16:10Z" etd="2017-03-09T17:16:10Z" speed="18.00"/>
+                <sheduleElement waypointId="22" eta="2017-03-09T17:46:14Z" etd="2017-03-09T17:46:14Z" speed="18.00"/>
+                <sheduleElement waypointId="23" eta="2017-03-09T21:09:50Z" etd="2017-03-09T21:09:50Z" speed="18.00"/>
+                <sheduleElement waypointId="24" eta="2017-03-09T21:25:06Z" etd="2017-03-09T21:25:06Z" speed="18.00"/>
+                <sheduleElement waypointId="25" eta="2017-03-09T21:40:34Z" etd="2017-03-09T21:40:34Z" speed="18.00"/>
+                <sheduleElement waypointId="26" eta="2017-03-10T01:35:13Z" etd="2017-03-10T01:35:13Z" speed="18.00"/>
+                <sheduleElement waypointId="27" eta="2017-03-10T02:19:08Z" etd="2017-03-10T02:19:08Z" speed="18.00"/>
+                <sheduleElement waypointId="28" eta="2017-03-10T03:19:21Z" etd="2017-03-10T03:19:21Z" speed="18.00"/>
+                <sheduleElement waypointId="29" eta="2017-03-10T05:31:43Z" etd="2017-03-10T05:31:43Z" speed="18.00"/>
+                <sheduleElement waypointId="30" eta="2017-03-10T06:38:12Z" etd="2017-03-10T06:38:12Z" speed="18.00"/>
+                <sheduleElement waypointId="31" eta="2017-03-10T07:13:45Z" etd="2017-03-10T07:13:45Z" speed="18.00"/>
+                <sheduleElement waypointId="32" eta="2017-03-10T07:31:16Z" etd="2017-03-10T07:31:16Z" speed="15.00"/>
+                <sheduleElement waypointId="34" eta="2017-03-10T08:04:38Z" etd="2017-03-10T08:04:38Z" speed="12.00"/>
+                <sheduleElement waypointId="35" eta="2017-03-10T08:17:58Z" etd="2017-03-10T08:17:58Z" speed="8.00"/>
+                <sheduleElement waypointId="36" eta="2017-03-10T08:20:48Z" etd="2017-03-10T08:20:48Z" speed="5.00"/>
+                <sheduleElement waypointId="37" eta="2017-03-10T08:52:17Z" speed="1.00"/>
+            </calculated>
+        </schedule>
+    </schedules>
+    <extensions>
+        <extension name="ukccalc" manufacturer="Transas">
+            <ukc ref_id="2" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="3" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="4" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="5" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="6" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="7" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="8" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="9" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="10" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="11" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="40" draught="5.3" depth="0" ukc="0"/>
+            <ukc ref_id="12" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="13" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="14" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="15" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="16" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="17" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="18" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="38" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="19" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="20" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="21" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="22" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="23" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="24" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="25" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="26" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="27" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="28" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="29" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="30" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="31" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="32" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="34" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="35" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="36" draught="5.3" squat="1" depth="0" ukc="0"/>
+            <ukc ref_id="37" draught="5.3" squat="1" depth="0" ukc="0"/>
+        </extension>
+    </extensions>
+</route>
