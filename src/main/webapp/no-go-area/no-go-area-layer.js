@@ -36,7 +36,7 @@ angular.module('maritimeweb.no-go-area')
                     data: {
                         "draught": 6,
                         "northWest": {
-                            "lon": 12.0,
+                            "lon": 12.1,
                             "lat": 55.74
                         },
                         "southEast": {
@@ -48,11 +48,11 @@ angular.module('maritimeweb.no-go-area')
                 };
 
                 $http(req).then(function(data) {
-                    $scope.noGoAreas = data;
                     console.log(data);
+                    return data;
                 }, function(error) {
                     console.log(error);
-                    $scope.noGoAreas = error;
+                    return error;
                 });
             };
 
@@ -185,8 +185,9 @@ angular.module('maritimeweb.no-go-area')
                         scope.getNoGoArea = function(){
                             var olFeature = MapService.wktToOlFeature('POLYGON((9.419409 54.36294,  13.149009 54.36294, 13.149009 56.36316, 9.419409 56.36316, 9.419409 54.36294))');
                             serviceAvailableLayer.getSource().addFeature(olFeature);
-                            NoGoAreaService.getNoGoAreas(6, 0,0,0,0,0, null);
-                            alert("Do a No go area request");
+                            scope.nogoarea = NoGoAreaService.getNoGoAreas(6, 0,0,0,0,0, null);
+                            console.log(scope.nogoarea);
+                            // growl.info("Do a No go area request " + scope.nogoarea);
                         };
 
                     });
