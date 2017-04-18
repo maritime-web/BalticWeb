@@ -182,10 +182,24 @@ angular.module('maritimeweb.no-go-area')
 
                         map.addLayer(noGoGroupLayer);
 
+                        /** get the current bounding box in Bottom left  Top right format. */
+                        scope.clientBBOX = function () {
+                            var bounds = map.getView().calculateExtent(map.getSize());
+                            var extent = ol.proj.transformExtent(bounds, MapService.featureProjection(), MapService.dataProjection());
+                            var l = Math.floor(extent[0] * 100) / 100;
+                            var b = Math.floor(extent[1] * 100) / 100;
+                            var r = Math.ceil(extent[2] * 100) / 100;
+                            var t = Math.ceil(extent[3] * 100) / 100;
+                            return [b , l , t , r ];
+                        };
+
+
                         scope.getNoGoArea = function(){
                             var olFeature = MapService.wktToOlFeature('POLYGON((9.419409 54.36294,  13.149009 54.36294, 13.149009 56.36316, 9.419409 56.36316, 9.419409 54.36294))');
                             serviceAvailableLayer.getSource().addFeature(olFeature);
-                            scope.nogoarea = NoGoAreaService.getNoGoAreas(6, 0,0,0,0,0, null);
+                            serviceAvailableLayer.getSource().addFeature(map.getView().getExtent().toGeometry());
+                            bboxBLTR = scope.clientBBOX();
+                            scope.nogoarea = NoGoAreaService.getNoGoAreas(6, bboxBLTR[3],bboxBLTR[2],bboxBLTR[1],bboxBLTR[0],0, null);
                             console.log(scope.nogoarea);
                             // growl.info("Do a No go area request " + scope.nogoarea);
                         };
