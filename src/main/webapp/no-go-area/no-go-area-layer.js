@@ -28,7 +28,7 @@ angular.module('maritimeweb.no-go-area')
 
             this.getNoGoAreas = function (draught, se_lat,  nw_lon,  nw_lat, se_lon, time) {
                 //  55.36 12.08 55.6 12.66 0
-                $log.info(
+                $log.debug(
                     "{ nw_lon " + nw_lon +
                     ", nw_lat " +  nw_lat +
                         "} ### {" +
@@ -68,18 +68,28 @@ angular.module('maritimeweb.no-go-area')
                 restrict: 'E',
                 require: '^olMap',
                 template:    "<span class='map-no-go-btn'>" +
-                                " <span><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoArea()' tooltip='Retrieve No-Go area' ></i></span>" +
-                                " <span><i class='fa fa-caret-square-o-right' aria-hidden='true' ng-click='getNextNoGoArea()' tooltip='Next' ></i></span>" +
+                                " <span  tooltip='Retrieve No Go Zone' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoArea()' tooltip='Retrieve No-Go area' ></i></span>" +
+                                " <span  tooltip='Retrieve No Go Zone + 1 hour' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-caret-square-o-right' aria-hidden='true' ng-click='getNextNoGoArea()' tooltip='Next' ></i></span>" +
                              "</span>",
                 scope: {
                     name:           '@'
                 },
                 link: function(scope, element, attrs, ctrl) {
+
                     var olScope = ctrl.getOpenlayersScope();
                     var noGoLayer;
                     var serviceAvailableLayer;
                     var boundaryLayer;
                     var maxZoom = scope.maxZoom ? parseInt(scope.maxZoom) : 12;
+                    const top_nw_lon = 56.30;
+                    const bottom_se_lon = 54.4;
+                    const right_nw_lat = 13.0;
+                    const left_se_lat = 10.0;
+                    /*const top_nw_lon = 56.36316;
+                    const bottom_se_lon = 54.36294;
+                    const right_nw_lat = 13.149009;
+                    const left_se_lat = 9.419409;
+                    */
 
                     olScope.getMap().then(function(map) {
 
@@ -96,32 +106,32 @@ angular.module('maritimeweb.no-go-area')
                         /***************************/
 
 
-                        var boundaryStyle = new ol.style.Style({
+                        var noGoStyleRed = new ol.style.Style({
                                 stroke: new ol.style.Stroke({
                                     color: 'rgba(255, 0, 10, 0.5)',
                                     width: 1
                                 }),
                                 fill: new ol.style.Fill({
-                                    color: 'rgba(255, 0, 10, 0.05)'
+                                    color: 'rgba(255, 0, 10, 0.10)'
                                 })
                             });
-                        var availableStyle = new ol.style.Style({
+                        var availableServiceStyle = new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'rgba(0, 255, 0, 0.8)',
-                                width: 2
+                                color: 'rgba(0, 255, 10, 0.8)',
+                                width: 3
                             })
                         });
 
 
                         // Construct the boundary layers
                         boundaryLayer = new ol.layer.Vector({
-                            title: 'NO GO AREA',
+                            title: 'Calculated NO GO AREA',
                             zIndex: 11,
                             source: new ol.source.Vector({
                                 features: new ol.Collection(),
                                 wrapX: false
                             }),
-                            style: [ boundaryStyle ]
+                            style: [ noGoStyleRed ]
                         });
 
                         serviceAvailableLayer  = new ol.layer.Vector({
@@ -131,36 +141,16 @@ angular.module('maritimeweb.no-go-area')
                                 features: new ol.Collection(),
                                 wrapX: false
                             }),
-                            style: [ availableStyle ]
+                            style: [ availableServiceStyle ]
                         });
 
-                        serviceAvailableLayer.setZIndex(11);
+                        serviceAvailableLayer.setZIndex(12);
                         serviceAvailableLayer.setVisible(true);
-
                         serviceAvailableLayer.getSource().clear();
-                        try {
-                            var olFeature = MapService.wktToOlFeature('POLYGON((9.419409 54.36294,  13.149009 54.36294, 13.149009 56.36316, 9.419409 56.36316, 9.419409 54.36294))');
-                            serviceAvailableLayer.getSource().addFeature(olFeature);
-                        } catch (error) {
-                            console.error("Error displaying Service Available boundary");
-                        }
+
 
                         boundaryLayer.setZIndex(11);
                         boundaryLayer.setVisible(true);
-
-                        /** Updates the service boundary layer **/
-                        scope.updateServiceBoundaryLayer = function () {
-
-                            boundaryLayer.getSource().clear();
-                            try {
-                                var olFeature = MapService.wktToOlFeature(service.boundary);
-                                boundaryLayer.getSource().addFeature(olFeature);
-                            } catch (error) {
-                                $log.error("Error displaying no go boundary");
-                                growl.error("Error displaying no go boundary");
-                            }
-
-                        };
 
 
                         /***************************/
@@ -169,7 +159,7 @@ angular.module('maritimeweb.no-go-area')
 
                         // Construct No Go Layer Group layer
                         noGoGroupLayer = new ol.layer.Group({
-                            title: scope.name || 'No Go Area',
+                            title: scope.name || 'No Go Service',
                             zIndex: 11,
                             layers: [ boundaryLayer, serviceAvailableLayer]
                         });
@@ -186,35 +176,63 @@ angular.module('maritimeweb.no-go-area')
                             var b = Math.floor(extent[1] * 100) / 100;
                             var r = Math.ceil(extent[2] * 100) / 100;
                             var t = Math.ceil(extent[3] * 100) / 100;
+
+
+                            if(l < left_se_lat) {l= left_se_lat;}
+                            if(b < bottom_se_lon) { b = bottom_se_lon;}
+                            if(r >  right_nw_lat){ r =  right_nw_lat;}
+                            if(t > top_nw_lon) { t = top_nw_lon;}
+
                             // hard coded service limitations...
-                            if(l < 9.419409) {l= 9.419409;}
+                      /*      if(l < 9.419409) {l = 9.419410;}
                             if(b < 54.36294) { b = 54.36294;}
-                            if(r >  13.149009){ r =  13.149009;}
-                            if(t > 56.36316) { t = 56.36316;}
+                            if(r >  13.149009){ r =  13.149010;}
+                            if(t > 56.36316) { t = 56.36326;}*/
                             return [b , l , t , r ];
                         };
 
 
-                        scope.getNoGoArea = function(){
-                            var olFeature = MapService.wktToOlFeature('POLYGON((9.419409 54.36294,  13.149009 54.36294, 13.149009 56.36316, 9.419409 56.36316, 9.419409 54.36294))');
-                            //var olFeatureExtent = MapService.wktToOlFeature(map.getView().extent.toGeometry().toString());
+                        scope.drawServiceLimitation = function() {
+                            try {
+                                var olServiceActiveArea = MapService.wktToOlFeature('POLYGON(('
+                                    + left_se_lat + ' ' + bottom_se_lon + ',  '
+                                    + right_nw_lat + ' ' + bottom_se_lon +', '
+                                    + right_nw_lat + ' ' + top_nw_lon + ', '
+                                    + left_se_lat + ' ' + top_nw_lon + ', '
+                                    + left_se_lat +' ' + bottom_se_lon + '))');
+                                serviceAvailableLayer.getSource().addFeature(olServiceActiveArea);
+                            } catch (error) {
+                                $log.error("Error displaying Service Available boundary");
+                            }
+                        };
 
-                            serviceAvailableLayer.getSource().addFeature(olFeature);
-                            // serviceAvailableLayer.getSource().addFeature(olFeatureExtent);
+                        scope.getNextNoGoArea = function(){
+                            scope.time.setHours(scope.time.getHours() + 1);
+                            //growl.info("No go zone retrieved and marked with red. <br> " + scope.time.toISOString());
+                            scope.getNoGoArea(scope.time);
+                        };
+
+
+
+
+                        scope.getNoGoArea = function(time){
+                            scope.drawServiceLimitation();
+
+                            if(!time){
+                                time = new Date();
+                            }
+                            scope.time = time;
                             boundaryLayer.getSource().clear();
 
                             bboxBLTR = scope.clientBBOXAndServiceLimit();
-                            var date = new Date();
-                            var now = date.toISOString();
+                            var now = time.toISOString();
                             NoGoAreaService.getNoGoAreas(6, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
                                 function(response) {
-                                //console.log(data);
                                     $log.debug("bboxBLTR=" +bboxBLTR + " Time= " + now);
                                     $log.debug("Status=" + response.status);
-                                    $log.debug("WKT=" + response.data.wkt);
                                     var olFeature = MapService.wktToOlFeature(response.data.wkt);
                                     boundaryLayer.getSource().addFeature(olFeature);
-
+                                    growl.info("No-Go zone retrieved and marked with red. <br> " + scope.time.toISOString())
                                 }, function(error) {
                                     boundaryLayer.getSource().clear();
                                     $log.error(error.data.message);
@@ -222,8 +240,6 @@ angular.module('maritimeweb.no-go-area')
 
                             });
 
-
-                            // growl.info("Do a No go area request " + scope.nogoarea);
                         };
 
                     });

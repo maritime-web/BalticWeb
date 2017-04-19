@@ -162,6 +162,13 @@ body {
     cursor: hand;
     background-color: rgba(255, 255, 255, 0.8);
 }
+.map-no-go-btn span {
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: rgba(0, 60, 136, 0.5);
+}
+
 .map-current-pos-btn {
     left: 12px;
     top: 80px;
