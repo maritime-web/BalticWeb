@@ -240,7 +240,7 @@ angular.module('maritimeweb.vessel')
                                     vesselLayer.getSource().addFeatures(features);
                                     vesselLayer.setZIndex(10);
                                     $rootScope.loadingData = false; // stop spinner
-                                    growl.success('<b>' + scope.vessels.length + '</b> vessels loaded', {ttl: 3000});
+                                    //growl.success('<b>' + scope.vessels.length + '</b> vessels loaded', {ttl: 3000});
 
                                 })
                                 .error(function (reason) {
