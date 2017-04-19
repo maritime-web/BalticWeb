@@ -62,15 +62,19 @@ angular.module('maritimeweb.no-go-area')
     /**
      * The map-no-Go-Area-Layer directive
      */
-    .directive('mapNoGoLayer', ['$rootScope', '$timeout', 'MapService', 'NoGoAreaService', '$log', 'growl',
-        function ($rootScope, $timeout, MapService, NoGoAreaService, $log, growl) {
+    .directive('mapNoGoLayer', ['$rootScope', '$timeout', 'MapService', 'NoGoAreaService', '$log', 'growl', '$interval', 'timeAgo', '$filter',
+        function ($rootScope, $timeout, MapService, NoGoAreaService, $log, growl, $interval, timeAgo, $filter) {
             return {
                 restrict: 'E',
                 require: '^olMap',
-                template:    "<span class='map-no-go-btn'>" +
-                                " <span  tooltip='Retrieve No Go Zone' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoArea()' tooltip='Retrieve No-Go area' ></i></span>" +
-                                " <span  tooltip='Retrieve No Go Zone + 1 hour' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-caret-square-o-right' aria-hidden='true' ng-click='getNextNoGoArea()' tooltip='Next' ></i></span>" +
-                             "</span>",
+                template:    "<span class='map-no-go-btn hidden-xs hidden-sm'>" +
+                                "<div>No-Go Zone</div>" +
+                                " <span  tooltip='Retrieve No Go Zone' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
+                                " <span  tooltip='Animate No Go Zone ' data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
+                                " <span  tooltip='Retrieve No Go Zone + 1 hour' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
+                                " <span  tooltip='Fake Animate No Go Zone ' data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
+
+                "</span>",
                 scope: {
                     name:           '@'
                 },
@@ -80,11 +84,12 @@ angular.module('maritimeweb.no-go-area')
                     var noGoLayer;
                     var serviceAvailableLayer;
                     var boundaryLayer;
-                    var maxZoom = scope.maxZoom ? parseInt(scope.maxZoom) : 12;
                     const top_nw_lon = 56.30;
                     const bottom_se_lon = 54.4;
                     const right_nw_lat = 13.0;
                     const left_se_lat = 10.0;
+                    scope.draught_counter = 6;
+
                     /*const top_nw_lon = 56.36316;
                     const bottom_se_lon = 54.36294;
                     const right_nw_lat = 13.149009;
@@ -207,32 +212,63 @@ angular.module('maritimeweb.no-go-area')
                         };
 
                         scope.getNextNoGoArea = function(){
+                            if(!scope.time){
+                                scope.time = new Date();
+                            }
                             scope.time.setHours(scope.time.getHours() + 1);
-                            //growl.info("No go zone retrieved and marked with red. <br> " + scope.time.toISOString());
+                            scope.getNoGoArea(scope.time);
+                        };
+
+                        scope.getNextFakeNoGoArea = function(){
+                            if(!scope.time){
+                                scope.time = new Date();
+                            }
+                            scope.draught_counter = scope.draught_counter +3 ;
+                            scope.time.setHours(scope.time.getHours() + 1);
+                            scope.getNoGoArea(scope.time, scope.draught_counter);
+                        };
+
+                        scope.doGruntAnimation = function(){
+                            $log.info("doGruntAnimation");
+                            $interval(scope.getNextNoGoArea, 2200, 8);
+                        };
+
+                        scope.doFakeGruntAnimation = function(){
+                            $log.info("doFakeGruntAnimation");
+                            $interval(scope.getNextFakeNoGoArea, 2200, 8);
+                        };
+
+                        scope.getNoGoAreaUI = function(){
+                            scope.time = new Date();
                             scope.getNoGoArea(scope.time);
                         };
 
 
 
 
-                        scope.getNoGoArea = function(time){
+                        scope.getNoGoArea = function(time, draught){
                             scope.drawServiceLimitation();
-
+                            scope.draught_counter = draught ? draught : 6;
                             if(!time){
                                 time = new Date();
                             }
+
                             scope.time = time;
-                            boundaryLayer.getSource().clear();
 
                             bboxBLTR = scope.clientBBOXAndServiceLimit();
                             var now = time.toISOString();
-                            NoGoAreaService.getNoGoAreas(6, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
+                            NoGoAreaService.getNoGoAreas(scope.draught_counter, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
                                 function(response) {
                                     $log.debug("bboxBLTR=" +bboxBLTR + " Time= " + now);
                                     $log.debug("Status=" + response.status);
+                                    boundaryLayer.getSource().clear();
+
                                     var olFeature = MapService.wktToOlFeature(response.data.wkt);
                                     boundaryLayer.getSource().addFeature(olFeature);
-                                    growl.info("No-Go zone retrieved and marked with red. <br> " + scope.time.toISOString())
+                                    var timeAgoString = $filter('timeAgo')(scope.time);
+                                    growl.info("No-Go zone retrieved and marked with red. <br> "
+                                        + scope.draught_counter + " meters draught.<br>"
+                                        + timeAgoString + " <br> "+ scope.time.toISOString())
                                 }, function(error) {
                                     boundaryLayer.getSource().clear();
                                     $log.error(error.data.message);
