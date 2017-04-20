@@ -82,6 +82,7 @@ angular.module('maritimeweb.no-go-area')
 
                     var olScope = ctrl.getOpenlayersScope();
                     var noGoLayer;
+                    var noGoGroupLayer;
                     var serviceAvailableLayer;
                     var boundaryLayer;
                     const top_nw_lon = 56.30;
@@ -163,7 +164,7 @@ angular.module('maritimeweb.no-go-area')
                         /***************************/
 
                         // Construct No Go Layer Group layer
-                        noGoGroupLayer = new ol.layer.Group({
+                         noGoGroupLayer = new ol.layer.Group({
                             title: scope.name || 'No Go Service',
                             zIndex: 11,
                             layers: [ boundaryLayer, serviceAvailableLayer]
@@ -255,7 +256,7 @@ angular.module('maritimeweb.no-go-area')
 
                             scope.time = time;
 
-                            bboxBLTR = scope.clientBBOXAndServiceLimit();
+                            var bboxBLTR = scope.clientBBOXAndServiceLimit();
                             var now = time.toISOString();
                             NoGoAreaService.getNoGoAreas(scope.draught_counter, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
                                 function(response) {
