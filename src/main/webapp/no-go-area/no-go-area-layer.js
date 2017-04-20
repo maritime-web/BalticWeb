@@ -37,7 +37,7 @@ angular.module('maritimeweb.no-go-area')
                     "} time " + time);
                 var req = {
                     method: 'POST',
-                    url: 'http://service-lb.e-navigation.net/nogo/area/wkt',
+                    url: 'https://service-lb.e-navigation.net/nogo/area/wkt',
                     headers: {
                         'Content-Type': 'application/json;charset=UTF-8'
                     },
@@ -67,14 +67,18 @@ angular.module('maritimeweb.no-go-area')
             return {
                 restrict: 'E',
                 require: '^olMap',
-                template:    "<span class='map-no-go-btn hidden-xs hidden-sm'>" +
-                                "<div>No-Go Zone</div>" +
-                                " <span  tooltip='Retrieve No Go Zone' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
-                                " <span  tooltip='Animate No Go Zone ' data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
-                                " <span  tooltip='Retrieve No Go Zone + 1 hour' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
-                                " <span  tooltip='Fake Animate No Go Zone ' data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
-
-                "</span>",
+                template:
+                            "<span class='map-no-go-btn hidden-xs hidden-sm' >" +
+                            "" +
+                            '<button type="button" class="btn btn-default" ng-click="noGoCollapsed = !noGoCollapsed">No Go check</button>' +
+                                "<div uib-collapse='!noGoCollapsed'>" +
+                                    //  "<div>Draught: <input type='number'/></div>" +
+                                    " <span  tooltip='Retrieve No Go Zone' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
+                                    " <span  tooltip='Animate No Go Zone ' data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
+                                    " <span  tooltip='Retrieve No Go Zone + 1 hour' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
+                                    " <span  tooltip='Fake Animate No Go Zone ' data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
+                                "</div>" +
+                           "</span>",
                 scope: {
                     name:           '@'
                 },
@@ -272,8 +276,10 @@ angular.module('maritimeweb.no-go-area')
                                         + timeAgoString + " <br> "+ scope.time.toISOString())
                                 }, function(error) {
                                     boundaryLayer.getSource().clear();
-                                    $log.error(error.data.message);
-                                    growl.error(error.data.message);
+                                    $log.error(error);
+                                    if(error.data.message){
+                                        growl.error(error.data.message);
+                                    }
 
                             });
 
