@@ -219,17 +219,17 @@ angular.module('maritimeweb.map')
                                 attributions: thunderforestAttributions
                             })
                         }),
- /*                       new ol.layer.Tile({
-                            title: 'TEST: MTN raster',
+                        new ol.layer.Tile({
+                            title: 'sjofartsverket.se - Sjokort',
                             visible: false,
                             source: new ol.source.TileWMS({
-                                url: 'http://www.idee.es/wms/MTN-Raster/MTN-Raster',
+                                url: 'https://geokatalog.sjofartsverket.se/mapservice/wms.axd/Sjokort_TS',
                                 params: {
-                                    'LAYERS': 'mtn_rasterizado',
+                                    'LAYERS': 'Sjokort',
                                     'TRANSPARENT': 'true'
                                 }
                             })
-                        }),*/
+                        }),
                         new ol.layer.Tile({
                             title: 'Danish Geodata Agency - Sea map',
                             visible: false,
