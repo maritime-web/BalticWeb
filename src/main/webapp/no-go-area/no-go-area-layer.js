@@ -164,7 +164,7 @@ angular.module('maritimeweb.no-go-area')
                         /***************************/
 
                         // Construct No Go Layer Group layer
-                         noGoGroupLayer = new ol.layer.Group({
+                         var noGoGroupLayer = new ol.layer.Group({
                             title: scope.name || 'No Go Service',
                             zIndex: 11,
                             layers: [ boundaryLayer, serviceAvailableLayer]
