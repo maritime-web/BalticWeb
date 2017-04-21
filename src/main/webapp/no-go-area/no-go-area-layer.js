@@ -42,7 +42,7 @@ angular.module('maritimeweb.no-go-area')
                         'Content-Type': 'application/json;charset=UTF-8'
                     },
                     data: {
-                        "draught": 6,
+                        "draught": draught,
                         "northWest": {
                             "lon": nw_lon,      // 12.1,
                             "lat": nw_lat       // 55.74
