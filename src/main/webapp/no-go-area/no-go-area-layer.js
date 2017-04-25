@@ -72,11 +72,13 @@ angular.module('maritimeweb.no-go-area')
                             "" +
                             '<button type="button" class="btn btn-default" ng-click="noGoCollapsed = !noGoCollapsed">No Go check</button>' +
                                 "<div uib-collapse='!noGoCollapsed'>" +
-                                    //  "<div>Draught: <input type='number'/></div>" +
-                                    " <span  tooltip='Retrieve No Go Zone' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
-                                    " <span  tooltip='Animate No Go Zone ' data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
-                                    " <span  tooltip='Retrieve No Go Zone + 1 hour' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
-                                    " <span  tooltip='Fake Animate No Go Zone ' data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
+                                    "<div class='form-group'>" +
+                                    "<label>Draught:</label> <input type='number' ng-model='ship_draught' class='form-control'> </input>" +
+                                    " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
+                                    " <span data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
+                                    " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
+                                    " <span data-toggle='tooltip' data-placement='bottom' title='Fake Animate No Go Zone'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
+                                    "<div>Time: {{timeAgoString}}</div>" +
                                 "</div>" +
                            "</span>",
                 scope: {
@@ -93,7 +95,9 @@ angular.module('maritimeweb.no-go-area')
                     const bottom_se_lon = 54.4;
                     const right_nw_lat = 13.0;
                     const left_se_lat = 10.0;
-                    scope.draught_counter = 6;
+                    scope.ship_draught = 6;
+                    scope.time = new Date();
+                    scope.timeAgoString = "";
 
                     /*const top_nw_lon = 56.36316;
                     const bottom_se_lon = 54.36294;
@@ -228,9 +232,9 @@ angular.module('maritimeweb.no-go-area')
                             if(!scope.time){
                                 scope.time = new Date();
                             }
-                            scope.draught_counter = scope.draught_counter +3 ;
+                            scope.ship_draught = scope.ship_draught +0.5 ;
                             scope.time.setHours(scope.time.getHours() + 1);
-                            scope.getNoGoArea(scope.time, scope.draught_counter);
+                            scope.getNoGoArea(scope.time, scope.ship_draught);
                         };
 
                         scope.doGruntAnimation = function(){
@@ -245,7 +249,7 @@ angular.module('maritimeweb.no-go-area')
 
                         scope.getNoGoAreaUI = function(){
                             scope.time = new Date();
-                            scope.getNoGoArea(scope.time);
+                            scope.getNoGoArea(scope.time, scope.ship_draught);
                         };
 
 
@@ -253,7 +257,7 @@ angular.module('maritimeweb.no-go-area')
 
                         scope.getNoGoArea = function(time, draught){
                             scope.drawServiceLimitation();
-                            scope.draught_counter = draught ? draught : 6;
+                            scope.ship_draught = draught ? draught : 6;
                             if(!time){
                                 time = new Date();
                             }
@@ -262,7 +266,7 @@ angular.module('maritimeweb.no-go-area')
 
                             var bboxBLTR = scope.clientBBOXAndServiceLimit();
                             var now = time.toISOString();
-                            NoGoAreaService.getNoGoAreas(scope.draught_counter, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
+                            NoGoAreaService.getNoGoAreas(scope.ship_draught, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
                                 function(response) {
                                     $log.debug("bboxBLTR=" +bboxBLTR + " Time= " + now);
                                     $log.debug("Status=" + response.status);
@@ -270,9 +274,9 @@ angular.module('maritimeweb.no-go-area')
 
                                     var olFeature = MapService.wktToOlFeature(response.data.wkt);
                                     boundaryLayer.getSource().addFeature(olFeature);
-                                    var timeAgoString = $filter('timeAgo')(scope.time);
+                                    scope.timeAgoString = $filter('timeAgo')(scope.time);
                                     growl.info("No-Go zone retrieved and marked with red. <br> "
-                                        + scope.draught_counter + " meters draught.<br>"
+                                        + scope.ship_draught + " meters draught.<br>"
                                         + timeAgoString + " <br> "+ scope.time.toISOString())
                                 }, function(error) {
                                     boundaryLayer.getSource().clear();
