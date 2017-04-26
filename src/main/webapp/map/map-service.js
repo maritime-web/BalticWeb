@@ -176,6 +176,48 @@ angular.module('maritimeweb.map')
 
 
             /** Creates a group of standard background layers **/
+            this.createSuperSeaMapLayerGroup = function () {
+                return new ol.layer.Group({
+                    'title': 'Combined Nautical Charts ',
+                    layers: [
+                        new ol.layer.Tile({
+                            title: 'OpenStreetMap',
+                            type: 'base',
+                            visible: false,
+                            source: new ol.source.OSM()
+                        }),
+
+                        new ol.layer.Tile({
+                            title: 'sjofartsverket.se - Sjokort',
+                            visible: false,
+                            source: new ol.source.TileWMS({
+                                url: 'https://geokatalog.sjofartsverket.se/mapservice/wms.axd/Sjokort_TS',
+                                minZoom: 10,
+                                params: {
+                                    'LAYERS': 'Sjokort',
+                                    'TRANSPARENT': 'true'
+                                }
+                            })
+                        }),
+                        new ol.layer.Tile({
+                            title: 'Danish Geodata Agency - Sea map',
+                            visible: false,
+                            source: new ol.source.TileWMS({
+                                url: '/wms/',
+                                params: {
+                                    'LAYERS': 'cells',
+                                    'TRANSPARENT': 'TRUE'
+                                },
+                                minZoom: 10,
+                                tileLoadFunction: this.customAjaxWMSLoader
+                            })
+                        })
+                    ]
+                });
+            };
+
+
+            /** Creates a group of standard background layers **/
             this.createStdBgLayerGroup = function () {
 
                 var thunderforestAttributions = [
@@ -210,6 +252,7 @@ angular.module('maritimeweb.map')
                                 layer: 'toner'
                             })
                         }),
+
                         new ol.layer.Tile({
                             title: 'Thunderforest - Transport Dark',
                             type: 'base',

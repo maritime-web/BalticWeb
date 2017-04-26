@@ -55,6 +55,8 @@ angular.module('maritimeweb.app')
         //$scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
         $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
         //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
+        $scope.mapSeaMapLayer =  MapService.createSuperSeaMapLayerGroup();
+
 
 
         var accepted_terms = $window.localStorage.getItem('terms_accepted_ttl');
@@ -232,6 +234,28 @@ angular.module('maritimeweb.app')
             });
             basemap.setVisible(true);// activate selected basemap
             growl.info('Activating map ' + basemap.get('title'));
+        };
+
+        /** Toggle the selected status of the service **/
+        $scope.toggleSeaMap = function () {
+            $log.debug(" Toogle sea maps");
+            if ($scope.loggedIn) {
+                angular.forEach($scope.mapBackgroundLayers.getLayers().getArray(), function (value) { // disable every basemaps
+                    // console.log("disabling " + value.get('title'));
+                    value.setVisible(false)
+                });
+                angular.forEach($scope.mapSeaMapLayer.getLayers().getArray(), function (value) { // disable/enable every basemaps
+                    $log.debug(value + " value.getVisible()=" + value.getVisible());
+                    value.setVisible(!value.getVisible());
+                    if(!value.getVisible()){
+                        $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true); // default to standard map when disabling
+                    }
+                });
+                growl.info('Activating combined  nautical chart');
+            } else {
+                growl.info("You need to login to access Nautical charts");
+                $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true);
+            }
         };
 
         /** Toggle the selected status of the service **/

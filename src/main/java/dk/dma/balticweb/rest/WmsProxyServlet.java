@@ -87,7 +87,7 @@ public class WmsProxyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        System.out.println("WmsProxyServlet doGet");
+
         // Enforce "wmsProtected" flag. If set, only authenticated users can load the tiles.
         // On the client level, load the tiles using Ajax (see map-directive.js) to ensure
         // that the proper headers are passed along
@@ -104,6 +104,7 @@ public class WmsProxyServlet extends HttpServlet {
         if (StringUtils.isBlank(wmsServiceName) || StringUtils.isBlank(wmsProvider) ||
                 StringUtils.isBlank(wmsLogin) || StringUtils.isBlank(wmsPassword)) {
             response.sendRedirect(BLANK_IMAGE);
+            log.error("No WMS login or Password found ");
             return;
         }
 
@@ -121,7 +122,7 @@ public class WmsProxyServlet extends HttpServlet {
         }
 
         String url = wmsProvider + "?" + params;
-        log.info("Loading image " + url);
+        log.debug("Loading image from " + url);
 
         InputStream urlInputStream = null;
         try {
