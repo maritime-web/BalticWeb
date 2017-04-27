@@ -62,8 +62,8 @@ angular.module('maritimeweb.no-go-area')
     /**
      * The map-no-Go-Area-Layer directive
      */
-    .directive('mapNoGoLayer', ['$rootScope', '$timeout', 'MapService', 'NoGoAreaService', '$log', 'growl', '$interval', 'timeAgo', '$filter',
-        function ($rootScope, $timeout, MapService, NoGoAreaService, $log, growl, $interval, timeAgo, $filter) {
+    .directive('mapNoGoLayer', ['$rootScope', '$timeout', 'MapService', 'NoGoAreaService', '$log', 'growl', '$interval', 'timeAgo', '$filter', 'Auth',
+        function ($rootScope, $timeout, MapService, NoGoAreaService, $log, growl, $interval, timeAgo, $filter, Auth) {
             return {
                 restrict: 'E',
                 require: '^olMap',
@@ -72,17 +72,24 @@ angular.module('maritimeweb.no-go-area')
                             "" +
                             '<button type="button" class="btn btn-default" ng-click="noGoCollapsed = !noGoCollapsed">No Go</button>' +
                                 "<div uib-collapse='!noGoCollapsed'>" +
-                                "<div>Check vessel can go through the no-go zone</div>" +
+                               "<div ng-if='loggedIn'>" +
+                                    "<div>Check vessel can go through the no-go zone</div>" +
                                     "<div class='form-group'>" +
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
-                                    "<br> " +
-                                    "<label>Draught:</label> <input type='number' ng-model='ship_draught' class='form-control'> </input>" +
+                                        " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
+                                        "<br> " +
+                                        "<label>Draught:</label> <input type='number' ng-model='ship_draught' class='form-control'> </input>" +
 
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase draught 0,5 meters'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
-                                    "<div><label>Time:</label>  {{timeAgoString}}</div>" +
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
+                                        " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase draught 0,5 meters'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
+                                        "<div><label>Time:</label>  {{timeAgoString}}</div>" +
+                                        " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
+                                        " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
+                                    "</div>" +
                                 "</div>" +
+                                "<div ng-if='!loggedIn'>" +
+                                    "<p>Login is required</p>" +
+                                    "<button class='btn btn-default' ng-click='login()'>Login</button>" +
+                                "</div>" +
+                            "</div>" +
                            "</span>",
                 scope: {
                     name:           '@'
@@ -290,6 +297,12 @@ angular.module('maritimeweb.no-go-area')
 
                             });
 
+                        };
+
+                        scope.loggedIn = Auth.loggedIn;
+
+                        scope.login = function () {
+                            Auth.authz.login();
                         };
 
                     });
