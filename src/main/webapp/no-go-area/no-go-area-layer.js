@@ -68,17 +68,20 @@ angular.module('maritimeweb.no-go-area')
                 restrict: 'E',
                 require: '^olMap',
                 template:
-                            "<span class='map-no-go-btn hidden-xs hidden-sm' >" +
+                            "<span class='map-no-go-btn col-lg-3 hidden-xs hidden-sm' >" +
                             "" +
-                            '<button type="button" class="btn btn-default" ng-click="noGoCollapsed = !noGoCollapsed">No Go check</button>' +
+                            '<button type="button" class="btn btn-default" ng-click="noGoCollapsed = !noGoCollapsed">No Go</button>' +
                                 "<div uib-collapse='!noGoCollapsed'>" +
+                                "<div>Check vessel can go through the no-go zone</div>" +
                                     "<div class='form-group'>" +
-                                    "<label>Draught:</label> <input type='number' ng-model='ship_draught' class='form-control'> </input>" +
                                     " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
+                                    "<br> " +
+                                    "<label>Draught:</label> <input type='number' ng-model='ship_draught' class='form-control'> </input>" +
+
+                                    " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase draught 0,5 meters'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
+                                    "<div><label>Time:</label>  {{timeAgoString}}</div>" +
+                                    " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
                                     " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Fake Animate No Go Zone'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
-                                    "<div>Time: {{timeAgoString}}</div>" +
                                 "</div>" +
                            "</span>",
                 scope: {
