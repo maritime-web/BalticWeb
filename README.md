@@ -7,7 +7,7 @@ The live system will in a very near future be found here: https://balticweb.e-na
 
 ## Software Architecture
 
-The ArcticWeb client is a rich client HTML/JS-application with a server side JSON webservice API. The server is a J2EE 6 application.
+The BalticWeb client is a rich client HTML/JS-application with a server side JSON webservice API. The server is a J2EE 6 application.
 
 On the client side we use:
 
@@ -52,9 +52,9 @@ Wildfly should be installed using the install script provided in this repository
 
     $ chmod +x install-wildfly.sh 
     $ ./install-wildfly.sh
-    $ ./wildfly-8.2.0.Final/bin/add-user.sh 
+    $ ./wildfly-8.2.0.Final/bin/add-user.sh (add a management user to the Wildfly admin console on localhost:9990)
 
-As root in MySQL - create a database and a user for ArcticWeb:
+As root in MySQL - create a database and a user for BalticWeb:
 
     create database embryo;
     create user 'embryo'@'localhost' identified by 'embryo';
@@ -103,7 +103,7 @@ Initial deployment (Clean, build, install database drivers environmental variabl
 
     embryo-web> mvn install -P fulldeploy
 
-    or 
+    or
 
     Embryo> mvn install -P fulldeploy
 
