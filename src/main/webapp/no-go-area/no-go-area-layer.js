@@ -62,8 +62,8 @@ angular.module('maritimeweb.no-go-area')
     /**
      * The map-no-Go-Area-Layer directive
      */
-    .directive('mapNoGoLayer', ['$rootScope', '$timeout', 'MapService', 'NoGoAreaService', '$log', 'growl', '$interval', 'timeAgo', '$filter',
-        function ($rootScope, $timeout, MapService, NoGoAreaService, $log, growl, $interval, timeAgo, $filter) {
+    .directive('mapNoGoLayer', ['$rootScope', '$timeout', 'MapService', 'NoGoAreaService', '$log', 'growl', '$interval', 'timeAgo', '$filter', 'Auth',
+        function ($rootScope, $timeout, MapService, NoGoAreaService, $log, growl, $interval, timeAgo, $filter, Auth) {
             return {
                 restrict: 'E',
                 require: '^olMap',
@@ -72,13 +72,20 @@ angular.module('maritimeweb.no-go-area')
                             "" +
                             '<button type="button" class="btn btn-default" ng-click="noGoCollapsed = !noGoCollapsed">No Go check</button>' +
                                 "<div uib-collapse='!noGoCollapsed'>" +
-                                    "<div class='form-group'>" +
-                                    "<label>Draught:</label> <input type='number' ng-model='ship_draught' class='form-control'> </input>" +
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
-                                    " <span data-toggle='tooltip' data-placement='bottom' title='Fake Animate No Go Zone'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
-                                    "<div>Time: {{timeAgoString}}</div>" +
+                                    "<div ng-if='loggedIn'>" +
+                                        "<div class='form-group'>" +
+                                            "<label>Draught:</label> <input type='number' ng-model='ship_draught' class='form-control'> </input>" +
+                                            " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
+                                            " <span data-toggle='tooltip' data-placement='bottom' title='Animate'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
+                                            " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
+                                            " <span data-toggle='tooltip' data-placement='bottom' title='Fake Animate No Go Zone'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
+                                            "<div>Time: {{timeAgoString}}</div>" +
+                                        "</div>" +
+                                    "</div>" +
+                                    "<div ng-if='!loggedIn'>" +
+                                        "<p>No Go requires login.</p>" +
+                                        "<button class='btn btn-default' ng-click='login()'>Login</button>" +
+                                    "</div>" +
                                 "</div>" +
                            "</span>",
                 scope: {
@@ -289,6 +296,11 @@ angular.module('maritimeweb.no-go-area')
 
                         };
 
+                        scope.loggedIn = Auth.loggedIn;
+
+                        scope.login = function () {
+                            Auth.authz.login();
+                        };
                     });
                 }
             };
