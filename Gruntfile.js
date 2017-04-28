@@ -55,7 +55,7 @@ module.exports = function (grunt) {
             },
             proxies: [
                 {
-                    context: [ '/rest' ],
+                    context: [ '/rest', '/keycloak.json' ],
                     host: 'localhost',
                     port: '8080',
                     https: false,

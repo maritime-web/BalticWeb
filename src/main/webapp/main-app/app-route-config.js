@@ -19,6 +19,9 @@ angular.module('maritimeweb').config(['$locationProvider', '$routeProvider',
         when('/route-demo', {
             templateUrl: 'route/route-load.html'
         }).
+        when('/vessel-traffic-service', {
+            templateUrl: 'vessel-traffic-service/vessel-traffic-service-form.html'
+        }).
         otherwise({
             //controller: 'AppController',
             templateUrl: 'partials/map.html'

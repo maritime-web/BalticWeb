@@ -50,6 +50,11 @@ body {
     z-index: 2000;
 }
 
+.dialog-input-strong{
+    font-weight: bold;
+}
+
+
 .clickable:hover {
     cursor: pointer;
     text-decoration: underline;
@@ -80,6 +85,44 @@ body {
     border: 1px #269 solid;
 
 }
+
+    /* Vessel Traffic Service */
+
+.bold{font-weight:bold;}
+.pad-top{padding-top:6px;}
+.vts-input{width:160px;}
+.vts-input-small{width:40px;}
+.vts-hr{padding: 4px; margin: 4px;}
+.vts-center{text-align: center;}
+.vtsinvalid{
+    border-color: rgba(229, 103, 23, 0.8);
+    box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
+    outline: 0 none;
+}
+.vtsvalid{
+    border-color: rgba(68, 142, 24, 0.8);
+    box-shadow: 0 1px 1px rgba(78, 229, 50, 0.07) inset, 0 0 8px rgba(114, 229, 56, 0.6);
+    outline: 0 none;
+}
+
+.vts-force-spacing-100{
+    min-width:100px;
+    max-width:100px;
+    display: inline-block;
+}
+.vts-force-spacing-200{
+    min-width:200px;
+    max-width:200px;
+    display: inline-block;
+}
+.vts-force-spacing-300{
+    min-width:300px;
+    max-width:300px;
+    display: inline-block;
+}
+
+
+    /* END Vessel Traffic Service */
 
 .sidebar-panel {
     padding: 10px 5px;
