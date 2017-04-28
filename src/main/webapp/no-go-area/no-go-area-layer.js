@@ -79,7 +79,7 @@ angular.module('maritimeweb.no-go-area')
                                         "<br> " +
                                         "<label>Draught:</label> <input type='number' ng-model='ship_draught' class='form-control'> </input>" +
 
-                                        " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase draught 0,5 meters'><i class='fa fa-star' aria-hidden='true' ng-click='doFakeGruntAnimation()'  ></i></span> " +
+                                        " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase draught 0,5 meters'><i class='fa fa-star' aria-hidden='true' ng-click='doIncreaseDraughtAnimation()'  ></i></span> " +
                                         "<div><label>Time:</label>  {{timeAgoString}}</div>" +
                                         " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
                                         " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
@@ -238,12 +238,11 @@ angular.module('maritimeweb.no-go-area')
                             scope.getNoGoArea(scope.time);
                         };
 
-                        scope.getNextFakeNoGoArea = function(){
+                        scope.getNextNoGoAreaIncreaseDraught = function(){
                             if(!scope.time){
                                 scope.time = new Date();
                             }
                             scope.ship_draught = scope.ship_draught +0.5 ;
-                            scope.time.setHours(scope.time.getHours() + 1);
                             scope.getNoGoArea(scope.time, scope.ship_draught);
                         };
 
@@ -252,9 +251,9 @@ angular.module('maritimeweb.no-go-area')
                             $interval(scope.getNextNoGoArea, 2200, 8);
                         };
 
-                        scope.doFakeGruntAnimation = function(){
-                            $log.info("doFakeGruntAnimation");
-                            $interval(scope.getNextFakeNoGoArea, 2200, 8);
+                        scope.doIncreaseDraughtAnimation = function(){
+                            $log.info("doIncreaseDraughtAnimation");
+                            $interval(scope.getNextNoGoAreaIncreaseDraught, 2200, 8);
                         };
 
                         scope.getNoGoAreaUI = function(){

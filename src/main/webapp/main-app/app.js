@@ -7,6 +7,7 @@ angular.module('maritimeweb.route', ['angular-growl', 'ngFileUpload']);
 angular.module('maritimeweb.vessel', ['yaru22.angular-timeago']);
 angular.module('maritimeweb.nw-nm', []);
 angular.module('maritimeweb.no-go-area', []);
+angular.module('maritimeweb.weather', []);
 angular.module('maritimeweb.nasa-satellite', ['yaru22.angular-timeago']);
 
 (function () {
@@ -23,6 +24,7 @@ angular.module('maritimeweb.nasa-satellite', ['yaru22.angular-timeago']);
         'maritimeweb.vessel',
         'maritimeweb.nw-nm',
         'maritimeweb.no-go-area',
+        'maritimeweb.weather',
         'maritimeweb.route',
         'maritimeweb.nasa-satellite',
         'ngFlag',

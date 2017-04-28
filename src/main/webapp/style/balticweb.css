@@ -146,6 +146,31 @@ body {
 
 }
 
+.map-weather-btn {
+    left: 12px;
+    top: 130px;
+    font-size: 1.0em;
+    width: 8em;
+    position: absolute;
+    z-index: 100;
+    margin: 0;
+    padding: 3px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.4);
+    opacity: 0.8;
+}
+
+.map-weather-btn:hover {
+    cursor: hand;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+.map-weather-btn span {
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: rgba(0, 60, 136, 0.5);
+}
+
 .map-no-go-btn{
     left: 12px;
     top: 160px;
