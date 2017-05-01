@@ -92,6 +92,15 @@ body {
 .pad-top{padding-top:6px;}
 .vts-input{width:160px;}
 .vts-input-small{width:40px;}
+.vts-input-medium{width:60px;}
+/*#vtsparentdiv input[type=number]::-webkit-inner-spin-button,*/
+/*#vtsparentdiv input[type=number]::-webkit-outer-spin-button{*/
+    /*-webkit-appearance: none;*/
+    /*margin: 0;*/
+/*}*/
+.vts-lesspadding{
+    padding: 2px 6px;
+}
 .vts-hr{padding: 4px; margin: 4px;}
 .vts-center{text-align: center;}
 .vtsinvalid{
@@ -120,6 +129,7 @@ body {
     max-width:300px;
     display: inline-block;
 }
+
 
 
     /* END Vessel Traffic Service */

@@ -3,8 +3,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         //Add any new VTS centers here - call them if you miss information - be sure to triple check and ask for reserve VHF channels
         $scope.VTSCenterData = [
-            {id: 0, shortname: 'BELTREP', name: 'Denmark - BELTREP - The Great Belt Vessel Traffic Service', callsign:'Great Belt Traffic', email:'vts@beltrep.org', telephone:'+45 58 37 68 68', vhfchannel1:'North 74', vhfchannel2:'South 11', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'11', vhfreservechannel2:'' },
-            {id: 1, shortname: 'SOUNDREP', name: 'Sweden - SOUNDREP - Sound Vessel Traffic Service', callsign:'Sound VTS', email:'contact@soundvts.org', telephone:'+46 771-630600', vhfchannel1:'North 73', vhfchannel2:'South 71', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'68', vhfreservechannel2:'79' },
+            {id: 0, shortname: 'BELTREP', name: 'Denmark - BELTREP - The Great Belt Vessel Traffic Service', callsign:'Great Belt Traffic', email:'vts@beltrep.org', telephone:'+45 58 37 68 68', vhfchannel1:'North 74', vhfchannel2:'South 11', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'11', vhfreservechannel2:'',
+
+            },
+            {id: 1, shortname: 'SOUNDREP', name: 'Sweden - SOUNDREP - Sound Vessel Traffic Service', callsign:'Sound VTS', email:'contact@soundvts.org', telephone:'+46 771-630600', vhfchannel1:'North 73', vhfchannel2:'South 71', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'68', vhfreservechannel2:'79',
+
+            },
         ];
         var VTSData = $scope.VTSCenterData;
 
@@ -16,6 +20,13 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.vtsvesselimoinput = "";
         $scope.vtsvesselimolabel = "IMO";
         $scope.vtsvesseldraughtinput = "";
+        $scope.vtsvesselairdraughtinput = "";
+        $scope.vtsvesselpersonsinput = "";
+        $scope.vtsvesselposloninput = "";
+        $scope.vtsvesselposlatinput = "";
+        $scope.vtsvesseltrueheadinginput = "";
+
+
         $scope.vtsetadateinput = "";
         $scope.vtsetatimeinput = "";
 
@@ -26,14 +37,48 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.setvtsvesselMMSIValid = false;
         $scope.setvtsvesselIMOValid = false;
         $scope.setvtsvesselDraughtValid = false;
+        $scope.setvtsvesselAirDraughtValid = false;
+        $scope.setvtsvesselPersonsValid = false;
+        $scope.setvtsvesselPosLonValid = false;
+        $scope.setvtsvesselPosLatValid = false;
+        $scope.setvtsvesselTrueHeadingValid = false;
+
+
         $scope.setvtsETADateValid = false;
         $scope.setvtsETATimeValid = false;
 
 
 
+        //allows only string of max number val 99.9 to pass
+        $scope.VTSValidation999 = function(str){
+            str = str.replace(/[^0-9.]/, '')
+            if(str==".")str="0." //cant start with period
+            if(str.length > 1) { //has to start with zero if period is first char
+                if (str.substring(0,1) == ".") str = "0" + str;
+            }
+            //remove all periods but the first
+            if(str.length > 1) {
+                for (var i = 0; i != str.length - 1; i++) {
+                    if (str.substring(i, i + 1) == ".") {
+                        if (i != str.length - 1) {
+                            var da = str.substring(0, i);
+                            var db = str.substring(i + 1, str.length).replace(".", "");
+                            db = db.substring(0,1); //only one decimal place allowed
+                            str = da +"."+ db;
+                        }
+                        break;
+                    }
+                }
+            }
+            if(str.length > 4) str = str.substring(0,4) //cant be more than 4 chars
+            return str;
+        }
+
+
+
         //test if all items check out, then display "SEND" button
         $scope.VTSValidationAllDone = function(){
-             if($scope.setvtsvesselnameValid && $scope.setvtsvesselcallsignValid ){
+             if($scope.setvtsvesselnameValid && $scope.setvtsvesselcallsignValid && $scope.setvtsvesselMMSIValid && $scope.setvtsvesselIMOValid && $scope.setvtsvesselDraughtValid && $scope.setvtsvesselAirDraughtValid && $scope.setvtsvesselPersonsValid){
                  $scope.VTSReadyToSend = true;
              }
         };
@@ -84,14 +129,70 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             $scope.VTSValidationAllDone(); //If all done, display send button
         };
 
-
-
+        //max 99.9
         $scope.VTSVesselDraughtValidation = function() {
-            var draught = $scope.vtsvesseldraughtinput;
-            draught = draught.replace(/\D/g, '');
-            if(draught.length > 2) draught = draught.substring(0,2)
+            var draught = $scope.VTSValidation999($scope.vtsvesseldraughtinput);
+            var draughtFloat = parseFloat(draught);
+            if(draughtFloat > 0 && draughtFloat < 100) {
+                $scope.setvtsvesselDraughtValid = true
+            }else{
+                $scope.setvtsvesselDraughtValid = false;
+            }
             $scope.vtsvesseldraughtinput = draught;
+            $scope.VTSValidationAllDone(); //If all done, display send button
         }
+
+        //max 99.9
+        $scope.VTSVesselAirDraughtValidation = function() {
+            var draught = $scope.VTSValidation999($scope.vtsvesselairdraughtinput);
+            var draughtFloat = parseFloat(draught);
+            if(draughtFloat > 0 && draughtFloat < 100) {
+                $scope.setvtsvesselAirDraughtValid = true
+            }else{
+                $scope.setvtsvesselAirDraughtValid = false;
+            }
+            $scope.vtsvesselairdraughtinput = draught;
+            $scope.VTSValidationAllDone(); //If all done, display send button
+        }
+
+        //minimum 1 person on board
+        $scope.VTSVesselPersonsValidation = function(){
+            var persons = $scope.vtsvesselpersonsinput;
+            persons = persons.replace(/\D/g, '');
+            if(persons.length>5) persons = persons.substring(0,5);
+            if(parseInt(persons) > 0){
+                $scope.setvtsvesselPersonsValid = true
+            } else {
+                $scope.setvtsvesselPersonsValid = false
+            }
+            $scope.vtsvesselpersonsinput = persons; //send cleaned to input field
+            $scope.VTSValidationAllDone(); //If all done, display send button
+        };
+
+        //No validation for now, just pops in the GPS coords into fields if can
+        $scope.VTSVesselPositionValidation = function(){
+
+            // !! - for some reason this code can run through without actually updating the fields and button must be pressed again. (try to press, delete values, press again)
+
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                } else {
+                    // console.log("Geolocation is not supported by this browser.");
+                }
+            }
+            function showPosition(position) {
+                $scope.vtsvesselposloninput = position.coords.longitude;
+                $scope.vtsvesselposlatinput = position.coords.latitude;
+            }
+            getLocation();
+        }
+
+
+
+
+
+
 
     //END input validation area
 
@@ -102,7 +203,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
 
 
-    //click on dropdown menu to open the VTS form
+    //clicking on dropdown menu to open the VTS form reates the input html according to VTSCenterData available
     $scope.selectVTSCenterChange = function (selectedItem) {
         var html = "",
             vtsID=0;
