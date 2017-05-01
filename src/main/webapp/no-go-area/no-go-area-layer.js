@@ -70,7 +70,7 @@ angular.module('maritimeweb.no-go-area')
                 template:
                             "<span class='map-no-go-btn col-lg-3 hidden-xs hidden-sm' >" +
                             "" +
-                            '<button type="button" class="btn btn-default" ng-click="noGoCollapsed = !noGoCollapsed">No Go</button>' +
+                            '<button type="button" class="btn btn-default" ng-click="noGoCollapsed = !noGoCollapsed">No Go <i  ng-if="!noGoCollapsed" class="fa fa-caret-down" aria-hidden="true"></i>  <i  ng-if="noGoCollapsed" class="fa fa-caret-up" aria-hidden="true"></i></button>' +
                                 "<div uib-collapse='!noGoCollapsed'>" +
                                "<div ng-if='loggedIn'>" +
                                     "<div>Check vessel can go through the no-go zone</div>" +

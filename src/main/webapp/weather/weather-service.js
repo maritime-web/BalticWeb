@@ -46,8 +46,8 @@ angular.module('maritimeweb.weather')
                             "lat": se_lat
                         },
                         "time": time, //"2017-04-19T14:10:00Z"
-                        "nx": 10,
-                        "ny": 10
+                      //  "nx": 30,
+                      //  "ny": 30
 
                     }
                 };
@@ -573,6 +573,10 @@ angular.module('maritimeweb.weather')
 
                     map.addLayer(noGoGroupLayer);
 
+                    var scale = 1;
+                    var waypointtextoffset = 46;
+
+
                     /** get the current bounding box in Bottom left  Top right format. */
                     scope.clientBBOXAndServiceLimit = function () {
                         var bounds = map.getView().calculateExtent(map.getSize());
@@ -635,9 +639,9 @@ angular.module('maritimeweb.weather')
                         scope.getWeatherInArea(scope.time);
                     };
 
-                    scope.getWeatherInArea = function(time){
+                    scope.getWeatherInArea = function (time) {
                         scope.drawServiceLimitation();
-                        if(!time){
+                        if (!time) {
                             time = new Date();
                         }
 
@@ -645,9 +649,9 @@ angular.module('maritimeweb.weather')
 
                         var bboxBLTR = scope.clientBBOXAndServiceLimit();
                         var now = time.toISOString();
-                        WeatherService.getWeather( bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
-                            function(response) {
-                                $log.debug("bboxBLTR=" +bboxBLTR + " Time= " + now);
+                        WeatherService.getWeather(bboxBLTR[0], bboxBLTR[1], bboxBLTR[2], bboxBLTR[3], now).then(
+                            function (response) {
+                                $log.debug("bboxBLTR=" + bboxBLTR + " Time= " + now);
                                 $log.debug("Status=" + response.status);
                                 $log.debug("Response data: " + response.data);
                                 $log.debug("Response data: " + response.data.forecastDate);
@@ -656,166 +660,70 @@ angular.module('maritimeweb.weather')
 
                                 var features = new Array(response.data.points.length);
 
-                                for (var i = 0; i < response.data.points.length; i++) {
+                                if (response.data.points.length > 0) {
+                                    boundaryLayer.getSource().clear();
 
-                                }
-                                    if(response.data.points.length > 0){
-                                        var iconFeature = new ol.Feature({
-                                            geometry: new ol.geom.Point([0, 0]),
-                                            name: 'Null Island',
-                                            population: 4000,
-                                            rainfall: 500
-                                        });
 
-                                        var iconStyle = new ol.style.Style({
-                                            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                                anchor: [0.5, 46],
-                                                anchorXUnits: 'fraction',
-                                                anchorYUnits: 'pixels',
-                                                src: 'img/WOR_backdropcircle.png'
-                                            }))
-                                        });
+                                    var i = 0;
+                                    response.data.points.forEach(function (weatherObj) {
+                                        if (weatherObj.windSpeed && weatherObj.windDirection) {
 
-                                        iconFeature.setStyle(iconStyle);
-                                        boundaryLayer.getSource().addFeature(iconFeature);
 
-                                        // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
-                                        var markerPosition = new ol.geom.Point(ol.proj.transform([11.00, 55.00], 'EPSG:4326', 'EPSG:900913'));
+                                        /**
+                                         *      "windDirection": 100.74,
+                                         * "windSpeed": 10.46,
+                                         * "currentDirection": 162.57,
+                                         * "currentSpeed": 0.43
+                                         */
+
+                                            // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
+                                        var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
 
                                         var iconlocFeature = new ol.Feature({
                                             geometry: markerPosition,
                                             name: 'Weather',
-                                            population: 4000,
-                                            rainfall: 500
+                                            windStrength: weatherObj.windSpeed,
+                                            windDirection: weatherObj.windDirection,
+                                            waterCurrent: weatherObj.currentSpeed,
+                                            waterDirection: weatherObj.currentDirection
                                         });
 
                                         var iconlocStyle = new ol.style.Style({
                                             image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                                anchor: [0.5, 0.5],
+                                                anchor: [1, 1],
                                                 anchorXUnits: 'fraction',
                                                 anchorYUnits: 'pixels',
-                                                rotation: degToRad(180),
+                                                rotation:  (weatherObj.windDirection - 90) * (Math.PI / 180),//degToRad(weatherObj.windDirection),
                                                 rotateWithView: true,
-                                                src: 'img/WOR_backdropcircle.png'
-                                            }))
+                                                src: 'img/wind/mark005.png'
+                                            })),
+                                            text: new ol.style.Text({
+                                                font: 'bold 12px helvetica,sans-serif',
+                                                text: "" + weatherObj.windSpeed + "k - " + weatherObj.windDirection + "° ",
+                                                offsetX: 0,
+                                                offsetY: waypointtextoffset * scale,
+                                                scale: (1 * scale),
+                                                fill: new ol.style.Fill({
+                                                    color: '#000'
+                                                }),
+                                                stroke: new ol.style.Stroke({
+                                                    color: '#fff',
+                                                    width: 1
+                                                })
+                                            })
                                         });
+
 
                                         iconlocFeature.setStyle(iconlocStyle);
                                         boundaryLayer.getSource().addFeature(iconlocFeature);
-
-                                        var i = 0;
-                                        response.data.points.forEach(function(weatherObj){
-
-                                            function simpleStyle() {
-                                                return [ new ol.style.Style({
-                                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                                    anchor: [0.5, 46],
-                                                    anchorXUnits: 'fraction',
-                                                    anchorYUnits: 'pixels',
-                                                    opacity: 0.75,
-
-                                                    src: 'img/WOR_backdropcircle.png'
-                                                }))
-                                            })
-                                                ];
-                                            }
-
-
-                                            function styleFunction() {
-                                                return [
-                                                    new ol.style.Style({
-                                                        fill: new ol.style.Fill({
-                                                            color: 'rgba(255,255,255,0.4)'
-                                                        }),
-                                                        stroke: new ol.style.Stroke({
-                                                            color: '#3399CC',
-                                                            width: 1.25
-                                                        }),
-                                                        text: new ol.style.Text({
-                                                            font: '12px Calibri,sans-serif',
-                                                            fill: new ol.style.Fill({ color: '#000' }),
-                                                            stroke: new ol.style.Stroke({
-                                                                color: '#fff', width: 2
-                                                            }),
-                                                            // get the text from the feature - `this` is ol.Feature
-                                                            // and show only under certain resolution
-                                                            text: 'T' + weatherObj
-                                                        })
-                                                    })
-                                                ];
-                                            }
-                                            var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lat, weatherObj.coordinate.lon], 'EPSG:4326', 'EPSG:900913'));
-                                            var feature =      new ol.Feature(new ol.geom.Point(weatherObj.coordinate));
-                                            var markerweather = new ol.Feature({
-                                                name: '',
-                                                id: '',
-                                                type: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                                    anchor: [0.5, 1],
-                                                    anchorXUnits: 'fraction',
-                                                    anchorYUnits: 'pixels',
-                                                    opacity: 0.75,
-
-                                                    src: 'img/WOR_backdropcircle.png'
-                                                })),
-                                               // angle: vessel.angle,
-                                              //  radian: vessel.radian,  // (vessel.angle * (Math.PI / 180)),
-                                              //  callSign: vessel.callSign,
-                                              //  mmsi: vessel.mmsi,
-                                              //  latitude: vessel.y,
-                                               // longitude: vessel.x,
-                                                geometry: markerPosition
-                                            });
-                                            markerweather.setStyle(styleFunction());
-
-
-                                            // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
-                                            var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
-
-                                            var iconlocFeature = new ol.Feature({
-                                                geometry: markerPosition,
-                                                name: 'Weather',
-                                                population: 4000,
-                                                rainfall: 500
-                                            });
-
-                                            var iconlocStyle = new ol.style.Style({
-                                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                                    anchor: [0.5, 0.5],
-                                                    anchorXUnits: 'fraction',
-                                                    anchorYUnits: 'pixels',
-                                                    rotation: degToRad(weatherObj),
-                                                    rotateWithView: true,
-                                                    src: 'img/WOR_backdropcircle.png'
-                                                }))
-                                            });
-
-                                            iconlocFeature.setStyle(iconlocStyle);
-                                            boundaryLayer.getSource().addFeature(iconlocFeature);
-
-                                            features[i] = markerweather;
-
-                                            i++;
-                                            boundaryLayer.getSource().addFeature(markerweather);
-                                            //features[i].setText()
-                                            console.log(weatherObj);
-
-                                        })
                                     }
-
-
-                              //  boundaryLayer.getSource().clear();
-                             //   boundaryLayer.getSource().addFeatures(features);
-/*
-                                var olFeature = MapService.wktToOlFeature(response.data.wkt);
-                                boundaryLayer.getSource().addFeature(olFeature);
-                                scope.timeAgoString = $filter('timeAgo')(scope.time);
-                                growl.info("No-Go zone retrieved and marked with red. <br> "
-                                    + scope.ship_draught + " meters draught.<br>"
-                                    + timeAgoString + " <br> "+ scope.time.toISOString());*/
-                            }, function(error) {
+                                        i++;
+                                    })
+                                }
+                            }, function (error) {
                                 boundaryLayer.getSource().clear();
                                 $log.error(error);
-                                if(error.data.message){
+                                if (error.data.message) {
                                     growl.error(error.data.message);
                                 }
 
