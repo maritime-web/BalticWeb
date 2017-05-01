@@ -198,7 +198,7 @@ angular.module('maritimeweb.vessel')
                         scope.refreshVessels = function () {
 
                             if (!scope.loggedIn) {
-                                growl.info('Log in to see vessels');
+                                //growl.info('Log in to see vessels');
                                 return;
                             }
                             $rootScope.loadingData = true; // start spinner
