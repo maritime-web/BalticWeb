@@ -693,7 +693,7 @@ angular.module('maritimeweb.weather')
                                                 anchor: [1, 1],
                                                 anchorXUnits: 'fraction',
                                                 anchorYUnits: 'pixels',
-                                                rotation:  (weatherObj.windDirection - 90) * (Math.PI / 180),//degToRad(weatherObj.windDirection),
+                                                rotation:  (weatherObj.windDirection - (180)) * (Math.PI / 180),//degToRad(weatherObj.windDirection),
                                                 rotateWithView: true,
                                                 src: 'img/wind/mark005.png'
                                             })),
