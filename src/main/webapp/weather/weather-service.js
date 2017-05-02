@@ -65,7 +65,7 @@ angular.module('maritimeweb.weather')
             restrict: 'E',
             require: '^olMap',
             template:
-            "<span class='map-weather-btn col-lg-3 hidden-xs hidden-sm' >" +
+            "<span class='map-weather-btn hidden-xs hidden-sm' >" +
                 '<button type="button" class="btn btn-default" ng-click="getWeatherAreaUI()">W</button>' +
             "</span>",
             scope: {
@@ -451,7 +451,7 @@ angular.module('maritimeweb.weather')
                     iconFeature3.setId(type + '_windmarker');
 
                     return [iconFeature, iconFeature2, iconFeature3];
-                }
+                };
 
 
 
@@ -468,7 +468,7 @@ angular.module('maritimeweb.weather')
                         }))
                     });
                     return WORMLoadinStyle;
-                }
+                };
 
 
 
@@ -482,7 +482,7 @@ angular.module('maritimeweb.weather')
                     iconFeature.setId("WORMLoadingIcon");
                     return [iconFeature];
 
-                }
+                };
 
 
 
@@ -639,6 +639,58 @@ angular.module('maritimeweb.weather')
                         scope.getWeatherInArea(scope.time);
                     };
 
+                    scope.findWeatherIcon = function(windstr){
+
+                        var markerImageNamePath = "img/wind/";
+
+
+                        //Determine wind marker image to display
+                        if (windstr < 1.9){
+                            markerImageNamePath += 'mark000.png';
+                        } else if (windstr >= 2 && windstr < 7.5) {
+                            markerImageNamePath += 'mark005.png';
+                        } else if (windstr >= 7.5 && windstr < 12.5) {
+                            markerImageNamePath += 'mark010.png';
+                        } else if (windstr >= 12.5 && windstr < 17.5) {
+                            markerImageNamePath += 'mark015.png';
+                        } else if (windstr >= 17.5 && windstr < 22.5) {
+                            markerImageNamePath += 'mark020.png';
+                        } else if (windstr >= 22.5 && windstr < 27.5) {
+                            markerImageNamePath += 'mark025.png';
+                        } else if (windstr >= 27.5 && windstr < 32.5) {
+                            markerImageNamePath += 'mark030.png';
+                        } else if (windstr >= 32.5 && windstr < 37.5) {
+                            markerImageNamePath += 'mark035.png';
+                        } else if (windstr >= 37.5 && windstr < 42.5) {
+                            markerImageNamePath += 'mark040.png';
+                        } else if (windstr >= 42.5 && windstr < 47.5) {
+                            markerImageNamePath += 'mark045.png';
+                        } else if (windstr >= 47.5 && windstr < 52.5) {
+                            markerImageNamePath += 'mark050.png';
+                        } else if (windstr >= 52.5 && windstr < 57.5) {
+                            markerImageNamePath += 'mark055.png';
+                        } else if (windstr >= 57.5 && windstr < 62.5) {
+                            markerImageNamePath += 'mark060.png';
+                        } else if (windstr >= 62.5 && windstr < 67.5) {
+                            markerImageNamePath += 'mark065.png';
+                        } else if (windstr >= 67.5 && windstr < 72.5) {
+                            markerImageNamePath += 'mark070.png';
+                        } else if (windstr >= 72.5 && windstr < 77.5) {
+                            markerImageNamePath += 'mark075.png';
+                        } else if (windstr >= 77.5 && windstr < 82.5) {
+                            markerImageNamePath += 'mark080.png';
+                        } else if (windstr >= 82.5 && windstr < 87.5) {
+                            markerImageNamePath += 'mark085.png';
+                        } else if (windstr >= 87.5 && windstr < 92.5) {
+                            markerImageNamePath += 'mark090.png';
+                        } else if (windstr >= 92.5 && windstr < 97.5) {
+                            markerImageNamePath += 'mark095.png';
+                        } else if (windstr >= 97.5) {
+                            markerImageNamePath += 'mark100.png';
+                        }
+                        return markerImageNamePath;
+                    };
+
                     scope.getWeatherInArea = function (time) {
                         scope.drawServiceLimitation();
                         if (!time) {
@@ -695,7 +747,7 @@ angular.module('maritimeweb.weather')
                                                 anchorYUnits: 'pixels',
                                                 rotation:  (weatherObj.windDirection - (180)) * (Math.PI / 180),//degToRad(weatherObj.windDirection),
                                                 rotateWithView: true,
-                                                src: 'img/wind/mark005.png'
+                                                src: scope.findWeatherIcon(weatherObj.windSpeed)
                                             })),
                                             text: new ol.style.Text({
                                                 font: 'bold 12px helvetica,sans-serif',
