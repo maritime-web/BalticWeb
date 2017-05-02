@@ -67,30 +67,41 @@ angular.module('maritimeweb.no-go-area')
             return {
                 restrict: 'E',
                 require: '^olMap',
-                template:
-                            "<span class='map-no-go-btn col-lg-3 hidden-xs hidden-sm' >" +
-                            "" +
-                            '<button type="button" class="btn btn-default" ng-click="noGoCollapsed = !noGoCollapsed">No Go <i  ng-if="!noGoCollapsed" class="fa fa-caret-down" aria-hidden="true"></i>  <i  ng-if="noGoCollapsed" class="fa fa-caret-up" aria-hidden="true"></i></button>' +
-                                "<div uib-collapse='!noGoCollapsed'>" +
-                               "<div ng-if='loggedIn'>" +
-                                    "<div>Check vessel can go through the no-go zone</div>" +
-                                    "<div class='form-group'>" +
-                                        " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone'><i class='fa fa-area-chart' aria-hidden='true' ng-click='getNoGoAreaUI()'  ></i></span> " +
-                                        "<br> " +
-                                        "<label>Draught:</label> <input type='number' ng-model='ship_draught' class='form-control'> </input>" +
+                template: '<div class="map-no-go-btn panel panel-default">' +
+                '<div class="panel-heading" ng-click="noGoCollapsed = !noGoCollapsed">No Go <i  ng-if="!noGoCollapsed" class="fa fa-caret-down" aria-hidden="true"></i>  <i  ng-if="noGoCollapsed" class="fa fa-caret-up" aria-hidden="true"></i></button></div>' +
+                '<div uib-collapse="!noGoCollapsed" class="panel-body">' +
+                    "<div ng-if='loggedIn'>" +
+                        "<div class='well well-sm'>  <br>" +
+                        "<div>Check if a vessel can pass safely. Enter the minimum required sea level depth.</div>" +
+                            "<div class='form-group '>" +
 
-                                        " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase draught 0,5 meters'><i class='fa fa-star' aria-hidden='true' ng-click='doIncreaseDraughtAnimation()'  ></i></span> " +
-                                        "<div><label>Time:</label>  {{timeAgoString}}</div>" +
-                                        " <span data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true' ng-click='doGruntAnimation()' ></i></span> " +
-                                        " <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
-                                    "</div>" +
-                                "</div>" +
-                                "<div ng-if='!loggedIn'>" +
-                                    "<p>Login is required</p>" +
-                                    "<button class='btn btn-default' ng-click='login()'>Login</button>" +
-                                "</div>" +
+
+                            "<div><label for='depth'><small>Minimum depth:</small></label> <input id='depth' type='number' ng-model='ship.draught' class='form-control input-sm col-lg-1'> </input> </div>" +
+
                             "</div>" +
-                           "</span>",
+                            "<div>" +
+                                 "<span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone' ng-click='getNoGoAreaUI()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> Mark if area is safe</span> " +
+                            "</div>" +
+                        "</div>" +
+                    "<div class='well well-sm'> Start an animation where the time is increased with 1 hour.<br> Usefull in areas with high tidal where sea depth levels changes during the day.   <br>" +
+                    "<div><label>Ago:</label>  {{timeAgoString}}</div>" +
+                    "<div><label>Time:</label>  <small> {{time}} </small>" + "</div>" + // <input type='text' ng-model='time' class='form-control small'> </input>
+                    "<span ng-click='doGruntAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true'  ></i> Time animation</span> " +
+                    //" <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
+                    "</div>" +
+
+                    "<div class='well well-sm'> Start an animation where the minimum depth is increased with 0.5 meters. <br>" +
+                    " <span  ng-click='doIncreaseDraughtAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase min. depth 0,5 meters'><i class='fa fa-play' aria-hidden='true'  ></i>Depth animation</span> " +
+                    "</div>" +
+                "</div>" +
+                "</div>" +
+                "<div ng-if='!loggedIn'>" +
+                "<p>Login is required</p>" +
+                "<button class='btn btn-default' ng-click='login()'>Login</button>" +
+                "</div>" +
+                "</div>" +
+                '</div>' +
+                '</div>',
                 scope: {
                     name:           '@'
                 },
@@ -105,7 +116,8 @@ angular.module('maritimeweb.no-go-area')
                     const bottom_se_lon = 54.4;
                     const right_nw_lat = 13.0;
                     const left_se_lat = 10.0;
-                    scope.ship_draught = 6;
+                    scope.ship = {};
+                    scope.ship.draught = 6;
                     scope.time = new Date();
                     scope.timeAgoString = "";
 
@@ -235,6 +247,7 @@ angular.module('maritimeweb.no-go-area')
                                 scope.time = new Date();
                             }
                             scope.time.setHours(scope.time.getHours() + 1);
+
                             scope.getNoGoArea(scope.time);
                         };
 
@@ -242,8 +255,9 @@ angular.module('maritimeweb.no-go-area')
                             if(!scope.time){
                                 scope.time = new Date();
                             }
-                            scope.ship_draught = scope.ship_draught +0.5 ;
-                            scope.getNoGoArea(scope.time, scope.ship_draught);
+                            scope.ship.draught = scope.ship.draught + 0.5 ;
+
+                            scope.getNoGoArea(scope.time);
                         };
 
                         scope.doGruntAnimation = function(){
@@ -258,15 +272,14 @@ angular.module('maritimeweb.no-go-area')
 
                         scope.getNoGoAreaUI = function(){
                             scope.time = new Date();
-                            scope.getNoGoArea(scope.time, scope.ship_draught);
+                           // scope.ship_draught = scope.ship_draught +0.0;
+
+                            scope.getNoGoArea(scope.time);
                         };
 
-
-
-
-                        scope.getNoGoArea = function(time, draught){
+                        scope.getNoGoArea = function(time){
                             scope.drawServiceLimitation();
-                            scope.ship_draught = draught ? draught : 6;
+
                             if(!time){
                                 time = new Date();
                             }
@@ -275,7 +288,7 @@ angular.module('maritimeweb.no-go-area')
 
                             var bboxBLTR = scope.clientBBOXAndServiceLimit();
                             var now = time.toISOString();
-                            NoGoAreaService.getNoGoAreas(scope.ship_draught, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
+                            NoGoAreaService.getNoGoAreas(scope.ship.draught, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
                                 function(response) {
                                     $log.debug("bboxBLTR=" +bboxBLTR + " Time= " + now);
                                     $log.debug("Status=" + response.status);
