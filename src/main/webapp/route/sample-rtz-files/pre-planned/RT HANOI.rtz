@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+    <routeInfo routeName="RT HANOI"/>
+    <waypoints>
+        <defaultWaypoint>
+            <leg portsideXTD="0.00" starboardXTD="0.00" safetyContour="30.00" safetyDepth="30.00" geometryType="Loxodrome"/>
+        </defaultWaypoint>
+        <waypoint id="1">
+            <position lat="56.19669517" lon="12.31848083"/>
+        </waypoint>
+        <waypoint id="2" radius="0.30">
+            <position lat="56.09375717" lon="12.56062117"/>
+        </waypoint>
+        <waypoint id="3" radius="0.30">
+            <position lat="56.05437267" lon="12.64188950"/>
+        </waypoint>
+        <waypoint id="4" radius="0.30">
+            <position lat="55.90154417" lon="12.62139517"/>
+        </waypoint>
+        <waypoint id="5">
+            <position lat="55.80945017" lon="12.71223600"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="0" name="NTProCalc">
+            <manual>
+                <sheduleElement waypointId="1" speed="8.70"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:49Z" etd="1970-01-18T06:13:49Z" speed="8.70"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="8.70"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:54Z" etd="1970-01-18T06:13:54Z" speed="8.70"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:57Z" etd="1970-01-18T06:13:57Z" speed="8.70"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" speed="8.70"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:49Z" etd="1970-01-18T06:13:49Z" speed="8.70"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="8.70"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:54Z" etd="1970-01-18T06:13:54Z" speed="8.70"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:57Z" etd="1970-01-18T06:13:57Z" speed="8.70"/>
+            </calculated>
+        </schedule>
+    </schedules>
+</route>
