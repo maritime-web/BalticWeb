@@ -68,7 +68,11 @@ angular.module('maritimeweb.no-go-area')
                 restrict: 'E',
                 require: '^olMap',
                 template: '<div class="map-no-go-btn panel panel-default">' +
-                '<div class="panel-heading" ng-click="noGoCollapsed = !noGoCollapsed">No Go <i  ng-if="!noGoCollapsed" class="fa fa-caret-down" aria-hidden="true"></i>  <i  ng-if="noGoCollapsed" class="fa fa-caret-up" aria-hidden="true"></i></button></div>' +
+                '<div class="panel-heading" ng-click="noGoCollapsed = !noGoCollapsed">' +
+                'No Go <i  ng-if="!noGoCollapsed" class="fa fa-caret-down" aria-hidden="true"></i> <button class="btn btn-sm" ng-if="noGoCollapsed" >  <i  class="fa fa-caret-up" aria-hidden="true"></i></button>' +
+                '<button ng-if="noGoCollapsed && loggedIn" class="btn btn-sm pull-right" ng-click="clearNoGo()">Clear <i   class="fa fa-undo" aria-hidden="true"></i></button>' +
+                '</div>' +
+
                 '<div uib-collapse="!noGoCollapsed" class="panel-body">' +
                     "<div ng-if='loggedIn'>" +
                         "<div class='well well-sm'>  <br>" +
@@ -80,7 +84,7 @@ angular.module('maritimeweb.no-go-area')
 
                             "</div>" +
                             "<div>" +
-                                 "<span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone' ng-click='getNoGoAreaUI()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> Mark if area is safe</span> " +
+                                 "<span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone' ng-click='getNoGoAreaUI()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> Mark non-safe area red</span> " +
                             "</div>" +
                         "</div>" +
                     "<div class='well well-sm'> Start an animation where the time is increased with 1 hour.<br> Usefull in areas with high tidal where sea depth levels changes during the day.   <br>" +
@@ -240,6 +244,12 @@ angular.module('maritimeweb.no-go-area')
                             } catch (error) {
                                 $log.error("Error displaying Service Available boundary");
                             }
+                        };
+
+                        scope.clearNoGo = function() {
+                            $log.info("Clear no go");
+                            serviceAvailableLayer.getSource().clear();
+                            boundaryLayer.getSource().clear();
                         };
 
                         scope.getNextNoGoArea = function(){
