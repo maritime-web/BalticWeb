@@ -95,7 +95,7 @@ angular.module('maritimeweb.no-go-area')
                     "</div>" +
                 "</div>" +
                 "</div>" +
-                "<div ng-if='!loggedIn'>" +
+                "<div ng-if='!loggedIn && noGoCollapsed' class='well well-sm'>" +
                 "<p>Login is required</p>" +
                 "<button class='btn btn-default' ng-click='login()'>Login</button>" +
                 "</div>" +
@@ -299,7 +299,7 @@ angular.module('maritimeweb.no-go-area')
                                     scope.timeAgoString = $filter('timeAgo')(scope.time);
                                     growl.info("No-Go zone retrieved and marked with red. <br> "
                                         + scope.ship_draught + " meters draught.<br>"
-                                        + timeAgoString + " <br> "+ scope.time.toISOString())
+                                        + scope.timeAgoString + " <br> "+ scope.time.toISOString())
                                 }, function(error) {
                                     boundaryLayer.getSource().clear();
                                     $log.error(error);
