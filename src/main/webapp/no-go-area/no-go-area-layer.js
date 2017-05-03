@@ -69,8 +69,9 @@ angular.module('maritimeweb.no-go-area')
                 require: '^olMap',
                 template: '<div class="map-no-go-btn panel panel-default">' +
                 '<div class="panel-heading" ng-click="noGoCollapsed = !noGoCollapsed">' +
-                'No Go <i  ng-if="!noGoCollapsed" class="fa fa-caret-down" aria-hidden="true"></i> <button class="btn btn-sm" ng-if="noGoCollapsed" >  <i  class="fa fa-caret-up" aria-hidden="true"></i></button>' +
-                '<button ng-if="noGoCollapsed && loggedIn" class="btn btn-sm pull-right" ng-click="clearNoGo()">Clear <i   class="fa fa-undo" aria-hidden="true"></i></button>' +
+                'No Go <i  ng-if="!noGoCollapsed" class="fa fa-caret-down" aria-hidden="true"></i> <button class="pull-right" ng-if="noGoCollapsed" >  <i  class="fa fa-caret-up" aria-hidden="true"></i></button>' +
+                '<button ng-if="loading"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></button>' +
+                '<button ng-if="noGoCollapsed && loggedIn" class="pull-right" ng-click="clearNoGo()">Clear <i   class="fa fa-undo" aria-hidden="true"></i></button>' +
                 '</div>' +
 
                 '<div uib-collapse="!noGoCollapsed" class="panel-body">' +
@@ -79,23 +80,21 @@ angular.module('maritimeweb.no-go-area')
                         "<div>Check if a vessel can pass safely. Enter the minimum required sea level depth.</div>" +
                             "<div class='form-group '>" +
 
-
                             "<div><label for='depth'><small>Minimum depth:</small></label> <input id='depth' type='number' ng-model='ship.draught' class='form-control input-sm col-lg-1'> </input> </div>" +
-
                             "</div>" +
                             "<div>" +
-                                 "<span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone' ng-click='getNoGoAreaUI()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> Mark non-safe area red</span> " +
+                                 "<button data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone' ng-click='getNoGoAreaUI()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> Mark non-safe area red</button> " +
                             "</div>" +
                         "</div>" +
                     "<div class='well well-sm'> Start an animation where the time is increased with 1 hour.<br> Usefull in areas with high tidal where sea depth levels changes during the day.   <br>" +
                     "<div><label>Ago:</label>  {{timeAgoString}}</div>" +
                     "<div><label>Time:</label>  <small> {{time}} </small>" + "</div>" + // <input type='text' ng-model='time' class='form-control small'> </input>
-                    "<span ng-click='doGruntAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true'  ></i> Time animation</span> " +
+                    "<button ng-click='doGruntAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true'  ></i> Time animation</button> " +
                     //" <span data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ng-click='getNextNoGoArea()'  ></i></span> " +
                     "</div>" +
 
                     "<div class='well well-sm'> Start an animation where the minimum depth is increased with 0.5 meters. <br>" +
-                    " <span  ng-click='doIncreaseDraughtAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase min. depth 0,5 meters'><i class='fa fa-play' aria-hidden='true'  ></i>Depth animation</span> " +
+                    " <button  ng-click='doIncreaseDraughtAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase min. depth 0,5 meters'><i class='fa fa-play' aria-hidden='true'  ></i>Depth animation</button> " +
                     "</div>" +
                 "</div>" +
                 "</div>" +
@@ -124,6 +123,8 @@ angular.module('maritimeweb.no-go-area')
                     scope.ship.draught = 6;
                     scope.time = new Date();
                     scope.timeAgoString = "";
+                    scope.loading = false;
+                    scope.animating = false;
 
                     /*const top_nw_lon = 56.36316;
                     const bottom_se_lon = 54.36294;
@@ -288,6 +289,7 @@ angular.module('maritimeweb.no-go-area')
                         };
 
                         scope.getNoGoArea = function(time){
+                            scope.loading = true;
                             scope.drawServiceLimitation();
 
                             if(!time){
@@ -309,13 +311,15 @@ angular.module('maritimeweb.no-go-area')
                                     scope.timeAgoString = $filter('timeAgo')(scope.time);
                                     growl.info("No-Go zone retrieved and marked with red. <br> "
                                         + scope.ship_draught + " meters draught.<br>"
-                                        + scope.timeAgoString + " <br> "+ scope.time.toISOString())
+                                        + scope.timeAgoString + " <br> "+ scope.time.toISOString());
+                                    scope.loading= false;
                                 }, function(error) {
                                     boundaryLayer.getSource().clear();
                                     $log.error(error);
                                     if(error.data.message){
                                         growl.error(error.data.message);
-                                    }
+                                    };
+                                    scope.loading= false;
 
                             });
 
