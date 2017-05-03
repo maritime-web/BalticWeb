@@ -89,19 +89,35 @@ body {
     /* Vessel Traffic Service */
 
 .bold{font-weight:bold;}
-.pad-top{padding-top:6px;}
+.vts-grey-text{color:#bbbbbb;}
+.vts-pad-top{padding-top:6px;}
 .vts-input{width:160px;}
 .vts-input-small{width:40px;}
 .vts-input-medium{width:60px;}
+.vts-input-standard{width:100px;}
+.vts-input-large{width:200px;}
+.vts-textarea-standard{position:relative; top:8px; width:240px;}
 /*#vtsparentdiv input[type=number]::-webkit-inner-spin-button,*/
 /*#vtsparentdiv input[type=number]::-webkit-outer-spin-button{*/
     /*-webkit-appearance: none;*/
     /*margin: 0;*/
 /*}*/
+.vts-less-lineheight{
+    line-height: 1;
+}
 .vts-lesspadding{
     padding: 2px 6px;
 }
-.vts-hr{padding: 4px; margin: 4px;}
+.vts-select-lesspadding{
+    padding:0;
+    height:26px;
+}
+.vts-hr{
+    padding: 0px;
+    margin: 2px;
+    color: #bbbbbb;
+    border-color: #bbbbbb;
+}
 .vts-center{text-align: center;}
 .vtsinvalid{
     border-color: rgba(229, 103, 23, 0.8);
@@ -117,6 +133,11 @@ body {
 .vts-force-spacing-100{
     min-width:100px;
     max-width:100px;
+    display: inline-block;
+}
+.vts-force-spacing-150{
+    min-width:150px;
+    max-width:150px;
     display: inline-block;
 }
 .vts-force-spacing-200{
