@@ -167,10 +167,11 @@ angular.module('maritimeweb.vessel')
                         scope.markVesselFeature = function (vessel) {
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                    anchor: [0.5, 1.0],
+                                    anchor: [0.5, 0.5],
                                     opacity: 0.85,
                                     id: vessel.id + '_marker',
-                                    rotation: vessel.radian,
+                                    offset: [3, -3],
+                                    //rotation: vessel.radian,
                                     rotateWithView: true,
                                     src: 'img/selection.png'
                                 }))
