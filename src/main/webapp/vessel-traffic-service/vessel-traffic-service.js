@@ -1,12 +1,12 @@
 angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scope', '$uibModalInstance', '$window', '$sce',
     function ($scope, $uibModalInstance, $window, $sce) {
-
         //Add any new VTS centers here - call them if you miss information - be sure to triple check and ask for reserve VHF channels
         $scope.VTSCenterData = [
             {id: 0, shortname: 'BELTREP', name: 'Denmark - BELTREP - The Great Belt Vessel Traffic Service', callsign:'Great Belt Traffic', email:'vts@beltrep.org', telephone:'+45 58 37 68 68', telephone2:'', fax:'', vhfchannel1:'North 74', vhfchannel2:'South 11', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'11', vhfreservechannel2:'',
                 showMaxDraught:false,
                 showAirDraught:true,
                 showFuelQuantity:false,
+                showFuelDetails:true,
                 showVesselType:false,
                 showVesselLength:false,
                 showDeadWeightTonnage:true,
@@ -15,30 +15,35 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 showMaxDraught:true,
                 showAirDraught:true,
                 showFuelQuantity:false,
+                showFuelDetails:true,
                 showVesselType:false,
                 showVesselLength:false,
                 showDeadWeightTonnage:false,
             },
             //All GOFREP have same criteria
-            {id: 2, shortname: 'GOFREP Helsinki', name: 'Finland - GOFREP - Gulf Of Finland Vessel Traffic Service', callsign:'Helsinki Traffic', email:'gofrep@fta.fi', telephone:'+358 (0)204 48 5387', telephone2:'+358 (0)204 48 5388', fax:'+358 (0)204 48 5394', vhfchannel1:'60', vhfchannel2:'80', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'', vhfreservechannel2:'',
+            {id: 2, shortname: 'GOFREP Helsinki', name: 'Finland - GOFREP - Gulf Of Finland Vessel Traffic Service', callsign:'Helsinki Traffic', email:'gofrep@fta.fi', telephone:'+358 (0)204 48 5387', telephone2:'+358 (0)204 48 5388', fax:'+358 (0)204 48 5394', vhfchannel1:'60', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'80', vhfreservechannel2:'',
                 showMaxDraught:true,
                 showAirDraught:false,
+                showFuelQuantity:true,
+                showFuelDetails:false,
+                showVesselType:true,
+                showVesselLength:true,
+                showDeadWeightTonnage:false,
+                showCargoInfomation:true,
+            },
+            {id: 3, shortname: 'GOFREP Tallinn', name: 'Estonia - GOFREP Tallinn - Gulf Of Finland Vessel Traffic Service', callsign:'Tallinn Traffic', email:'gofrep@vta.ee', telephone:'+372 6 205 764', telephone2:'+372 6 205 777', fax:'+372 620 5766', vhfchannel1:'61', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'81', vhfreservechannel2:'',
+                showMaxDraught:true,
+                showAirDraught:false,
+                showFuelDetails:false,
                 showFuelQuantity:true,
                 showVesselType:true,
                 showVesselLength:true,
                 showDeadWeightTonnage:false,
             },
-            {id: 3, shortname: 'GOFREP Tallinn', name: 'Estonia - GOFREP Tallinn - Gulf Of Finland Vessel Traffic Service', callsign:'Tallinn Traffic', email:'gofrep@vta.ee', telephone:'+372 6 205 764', telephone2:'+372 6 205 777', fax:'+372 620 5766', vhfchannel1:'61', vhfchannel2:'81', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'', vhfreservechannel2:'',
+            {id: 4, shortname: 'GOFREP St. Petersburg', name: 'Russia - GOFREP Helsinki - Gulf Of Finland Vessel Traffic Service', callsign:'St. Peterburg Traffic', email:'gofrep@rsbm.ru', telephone:'+7 12 380 70 21', telephone2:'+7 812 380 70 81', fax:'+7 812 3880 70 20', vhfchannel1:'74', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'10', vhfreservechannel2:'',
                 showMaxDraught:true,
                 showAirDraught:false,
-                showFuelQuantity:true,
-                showVesselType:true,
-                showVesselLength:true,
-                showDeadWeightTonnage:false,
-            },
-            {id: 4, shortname: 'GOFREP St. Petersburg', name: 'Russia - GOFREP Helsinki - Gulf Of Finland Vessel Traffic Service', callsign:'St. Peterburg Traffic', email:'gofrep@rsbm.ru', telephone:'+7 12 380 70 21', telephone2:'+7 812 380 70 81', fax:'+7 812 3880 70 20', vhfchannel1:'74', vhfchannel2:'10', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'', vhfreservechannel2:'',
-                showMaxDraught:true,
-                showAirDraught:false,
+                showFuelDetails:false,
                 showFuelQuantity:true,
                 showVesselType:true,
                 showVesselLength:true,
@@ -47,6 +52,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             {id: 5, shortname: 'TESTREP', name: 'Roland - ROREP - Awesome Vessel Traffic Service', callsign:'YOLO VTS', email:'yolo@swag.org', telephone:'555-no-idea', telephone2:'555-still-dunno', fax:'555-fax-fun', vhfchannel1:'North 1', vhfchannel2:'East 2', vhfchannel3:'West 3', vhfchannel4:'South 4', vhfreservechannel1:'11', vhfreservechannel2:'12',
                 showMaxDraught:true,
                 showAirDraught:true,
+                showFuelDetails:true,
                 showFuelQuantity:true,
                 showVesselType:true,
                 showVesselLength:true,
@@ -60,11 +66,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.fuelTypes = [
             {name:"MFO/BF/HFO/FO", description:"Heavy Fuel Oil"},
             {name:"MDO/MDF", description:"Marine Diesel Fuel"},
-            {name:"LD/LDO/Destilate Diesel", description:"Light Diesel Oil"},
+            {name:"LD/LDO/Distilate", description:"Light Diesel Oil"},
             {name:"MGO/GO", description:"Marine Gas Oil"},
             {name:"IF/IFO/BF/MFO", description:"Marine Fuel Oil"},
             {name:"LSFO", description:"Low Sulphur Fuel Oil"},
-            {name:"LNG", description:"Liquid Natural Gas"}
+            {name:"LNG", description:"Liquid Natural Gas"},
+            {name:"Other", description:""}
         ]
 
         $scope.beltRepRoutes = ["", ""];
@@ -72,16 +79,16 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
 
     //Input validation area
-        $scope.vtsvesselnameinput = "";
-        $scope.vtsvesselcallsigninput = "";
-        $scope.vtsvesselmmsiinput = "";
-        $scope.vtsvesselmmsilabel = "MMSI: ";
-        $scope.vtsvesselimoinput = "";
-        $scope.vtsvesselimolabel = "IMO";
-        $scope.vtsvesseldraughtinput = "";
-        $scope.vtsvesselairdraughtinput = "";
-        $scope.vtsvesselpersonsinput = "";
-        $scope.vtsvessellengthinput = "";
+
+        //vessel information
+        $scope.vtsvesselnameinput = ""; $scope.vtsvesselcallsigninput = ""; $scope.vtsvesselmmsiinput = ""; $scope.vtsvesselmmsilabel = "MMSI: "; $scope.vtsvesselimoinput = "";
+        $scope.vtsvesselimolabel = "IMO"; $scope.vtsvesseldraughtinput = ""; $scope.vtsvesselairdraughtinput = ""; $scope.vtsvesselpersonsinput = ""; $scope.vtsvessellengthinput = "";
+
+        //fuel information
+        $scope.vtsvesselfueltype00input = ""; $scope.vtsvesselfueltype01input = ""; $scope.vtsvesselfueltype02input = ""; $scope.vtsvesselfueltype03input = "";
+        $scope.vtsvesselfueltype04input = ""; $scope.vtsvesselfueltype05input = ""; $scope.vtsvesselfueltype06input = ""; $scope.vtsvesselfueltype07input = "";
+
+
 
         $scope.vtsvesselposloninput = "";
         $scope.vtsvesselposlatinput = "";
@@ -90,8 +97,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.vtsetadateinput = "";
         $scope.vtsetatimeinput = "";
 
-        $scope.VTSReadyToSend = false;
+        $scope.VTSReadyToSend = false; //global readystate
 
+        //vessel information
         $scope.setvtsvesselnameValid = false;
         $scope.setvtsvesselcallsignValid = false;
         $scope.setvtsvesselMMSIValid = false;
@@ -102,10 +110,20 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.setvtsvesselLengthValid = false;
         $scope.setvtsVesselTypeValid = false;
 
+        //voyage information
         $scope.setvtsvesselPosLonValid = false;
         $scope.setvtsvesselPosLatValid = false;
         $scope.setvtsvesselTrueHeadingValid = false;
 
+        //fuel information 0:invalid, 1:neutral, 2:valid
+        $scope.setvtsFuelType00Valid = 0;
+        $scope.setvtsFuelType01Valid = 0;
+        $scope.setvtsFuelType02Valid = 0;
+        $scope.setvtsFuelType03Valid = 0;
+        $scope.setvtsFuelType04Valid = 0;
+        $scope.setvtsFuelType05Valid = 0;
+        $scope.setvtsFuelType06Valid = 0;
+        $scope.setvtsFuelType07Valid = 0;
 
         $scope.setvtsETADateValid = false;
         $scope.setvtsETATimeValid = false;
@@ -255,7 +273,104 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             $scope.setvtsVesselTypeValid = true;
         }
 
+        //fuel types - number 999999, no decimal. One filled makes all other neutral because only one field is mandatory
+        $scope.VTSFuelTypeValidation = function(){
+            var strValue = "";
+            var totFuel = 0;
 
+            strValue = ($scope.vtsvesselfueltype00input + "").replace(/\D/g, '');
+            $scope.vtsvesselfueltype00input = parseInt(strValue);
+            if(strValue!="") {
+                totFuel += parseInt(strValue);
+                (parseInt(strValue)>0) ? $scope.setvtsFuelType00Valid = 1 : $scope.setvtsFuelType00Valid = 0;
+            }else{
+                $scope.setvtsFuelType00Valid = 0;
+            }
+
+            strValue = ($scope.vtsvesselfueltype01input + "").replace(/\D/g, '');
+            $scope.vtsvesselfueltype01input = parseInt(strValue);
+            if(strValue!="") {
+                totFuel += parseInt(strValue);
+                (parseInt(strValue)>0) ? $scope.setvtsFuelType01Valid = 1 : $scope.setvtsFuelType01Valid = 0;
+            }else{
+                $scope.setvtsFuelType01Valid = 0;
+            }
+
+            strValue = ($scope.vtsvesselfueltype02input + "").replace(/\D/g, '');
+            $scope.vtsvesselfueltype02input = parseInt(strValue);
+            if(strValue!="") {
+                totFuel += parseInt(strValue);
+                (parseInt(strValue)>0) ? $scope.setvtsFuelType02Valid = 1 : $scope.setvtsFuelType02Valid = 0;
+            }else{
+                $scope.setvtsFuelType02Valid = 0;
+            }
+
+            strValue = ($scope.vtsvesselfueltype03input + "").replace(/\D/g, '');
+            $scope.vtsvesselfueltype03input = parseInt(strValue);
+            if(strValue!="") {
+                totFuel += parseInt(strValue);
+                (parseInt(strValue)>0) ? $scope.setvtsFuelType03Valid = 1 : $scope.setvtsFuelType03Valid = 0;
+            }else{
+                $scope.setvtsFuelType03Valid = 0;
+            }
+
+            strValue = ($scope.vtsvesselfueltype04input + "").replace(/\D/g, '');
+            $scope.vtsvesselfueltype04input = parseInt(strValue);
+            if(strValue!="") {
+                totFuel += parseInt(strValue);
+                (parseInt(strValue)>0) ? $scope.setvtsFuelType04Valid = 1 : $scope.setvtsFuelType04Valid = 0;
+            }else{
+                $scope.setvtsFuelType04Valid = 0;
+            }
+
+            strValue = ($scope.vtsvesselfueltype05input + "").replace(/\D/g, '');
+            $scope.vtsvesselfueltype05input = parseInt(strValue);
+            if(strValue!="") {
+                totFuel += parseInt(strValue);
+                (parseInt(strValue)>0) ? $scope.setvtsFuelType05Valid = 1 : $scope.setvtsFuelType05Valid = 0;
+            }else{
+                $scope.setvtsFuelType05Valid = 0;
+            }
+
+            strValue = ($scope.vtsvesselfueltype06input + "").replace(/\D/g, '');
+            $scope.vtsvesselfueltype06input = parseInt(strValue);
+            if(strValue!="") {
+                totFuel += parseInt(strValue);
+                (parseInt(strValue)>0) ? $scope.setvtsFuelType06Valid = 1 : $scope.setvtsFuelType06Valid = 0;
+            }else{
+                $scope.setvtsFuelType06Valid = 0;
+            }
+
+            strValue = ($scope.vtsvesselfueltype07input + "").replace(/\D/g, '');
+            $scope.vtsvesselfueltype07input = parseInt(strValue);
+            if(strValue!="") {
+                totFuel += parseInt(strValue);
+                (parseInt(strValue)>0) ? $scope.setvtsFuelType07Valid = 1 : $scope.setvtsFuelType07Valid = 0;
+            }else{
+                $scope.setvtsFuelType07Valid = 0;
+            }
+
+            $scope.vtsTotalFuel = parseInt(totFuel).toLocaleString();
+            if(totFuel>0) { //if any field validates, all are validated
+                if($scope.setvtsFuelType00Valid==0) $scope.setvtsFuelType00Valid = 2;
+                if($scope.setvtsFuelType01Valid==0) $scope.setvtsFuelType01Valid = 2;
+                if($scope.setvtsFuelType02Valid==0) $scope.setvtsFuelType02Valid = 2;
+                if($scope.setvtsFuelType03Valid==0) $scope.setvtsFuelType03Valid = 2;
+                if($scope.setvtsFuelType04Valid==0) $scope.setvtsFuelType04Valid = 2;
+                if($scope.setvtsFuelType05Valid==0) $scope.setvtsFuelType05Valid = 2;
+                if($scope.setvtsFuelType06Valid==0) $scope.setvtsFuelType06Valid = 2;
+                if($scope.setvtsFuelType07Valid==0) $scope.setvtsFuelType07Valid = 2;
+            }else{
+                $scope.setvtsFuelType00Valid = 0;
+                $scope.setvtsFuelType01Valid = 0;
+                $scope.setvtsFuelType02Valid = 0;
+                $scope.setvtsFuelType03Valid = 0;
+                $scope.setvtsFuelType04Valid = 0;
+                $scope.setvtsFuelType05Valid = 0;
+                $scope.setvtsFuelType06Valid = 0;
+                $scope.setvtsFuelType07Valid = 0;
+            }
+        }
 
 
 
@@ -284,14 +399,14 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         //create contact information for VTS center in cmpact form
         html += "<span style='min-width:200px;max-width:200px;display: inline-block; text-align: left;'>Call sign: &#34;"+VTSData[vtsID].callsign+"&#34;</span>";
-        if(VTSData[vtsID].vhfchannel1!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF channel "+VTSData[vtsID].vhfchannel1+"</span>";
-        if(VTSData[vtsID].vhfchannel2!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF channel "+VTSData[vtsID].vhfchannel2+"</span>";
+        if(VTSData[vtsID].vhfchannel1!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF ch. "+VTSData[vtsID].vhfchannel1+"</span>";
+        if(VTSData[vtsID].vhfchannel2!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF ch. "+VTSData[vtsID].vhfchannel2+"</span>";
 
         //radio channels VHF
         //if more than 2 channels, add them to their own div - very rare that happens.
         if(VTSData[vtsID].vhfchannel3!="" || VTSData[vtsID].vhfchannel4!="") html += "<div><span style='min-width:200px;max-width:200px;display: inline-block; text-align: left;'>&nbsp;</span>";
-        if(VTSData[vtsID].vhfchannel3!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>&nbsp;</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF channel "+VTSData[vtsID].vhfchannel3+"</span>";
-        if(VTSData[vtsID].vhfchannel4!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF channel "+VTSData[vtsID].vhfchannel4+"</span>";
+        if(VTSData[vtsID].vhfchannel3!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>&nbsp;</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF ch. "+VTSData[vtsID].vhfchannel3+"</span>";
+        if(VTSData[vtsID].vhfchannel4!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF ch. "+VTSData[vtsID].vhfchannel4+"</span>";
         if(VTSData[vtsID].vhfchannel3!="" || VTSData[vtsID].vhfchannel4!="") html += "</div>";
 
         //There is always a reserve channel or two
@@ -319,18 +434,19 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         //field logic - some fields are not required by certain VTS
 
-        $scope.showMaxDraught = VTSData[vtsID].showMaxDraught
-        $scope.showAirDraught = VTSData[vtsID].showAirDraught
-        $scope.showFuelQuantity = VTSData[vtsID].showFuelQuantity
-        $scope.showVesselType = VTSData[vtsID].showVesselType
-        $scope.showVesselLength = VTSData[vtsID].showVesselLength
-        $scope.showDeadWeightTonnage = VTSData[vtsID].showDeadWeightTonnage
+        $scope.showMaxDraught = VTSData[vtsID].showMaxDraught;
+        $scope.showAirDraught = VTSData[vtsID].showAirDraught;
+        $scope.showFuelQuantity = VTSData[vtsID].showFuelQuantity;
+        $scope.showVesselType = VTSData[vtsID].showVesselType;
+        $scope.showVesselLength = VTSData[vtsID].showVesselLength;
+        $scope.showDeadWeightTonnage = VTSData[vtsID].showDeadWeightTonnage;
+        $scope.showFuelDetails = VTSData[vtsID].showFuelDetails;
 
 
     };
 
-
     $scope.selectedVesselType = "";
+    $scope.vtsTotalFuel=""; //added up and displayed from validation
 
     $scope.sendVTSForm = function () {
         alert("Sending VTS form now..");

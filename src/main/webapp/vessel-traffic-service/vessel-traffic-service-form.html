@@ -11,10 +11,12 @@
         <div class="" ng-bind-html="VTSSelectedTrafficCenterData"></div>
     </div>
 
-    <hr class="vts-hr"> <!-- VESSEL INFORMATION ------------------------------------------------------------------- -->
 
-    <div id="vtsparentdiv" ng-show="VTSSelected">
-        <span class="bold">Vessel information</span>
+    <div id="vtsparentdiv" class="vts-pad-top" ng-show="VTSSelected">
+
+        <hr class="vts-hr"> <!-- VESSEL INFORMATION ------------------------------------------------------------------- -->
+        <span class="bold vts-pad-top">Vessel information</span>
+
         <div>
             <div class="vts-force-spacing-200 ">
                 <span class="vts-force-spacing-100">Vessel name:</span>
@@ -33,7 +35,7 @@
                 <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselIMOValid]" type="text" ng-model="vtsvesselimoinput" ng-change="VTSVesselIMOValidation()"  onfocus="this.value = this.value;">
             </div>
         </div>
-        <div class="">
+        <div class="vts-pad-top">
             <div class="vts-force-spacing-200 ">
                 <span class="vts-force-spacing-200">Number of people on board</span>
                 <input class="vts-input-medium vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPersonsValid]"  ng-model="vtsvesselpersonsinput" ng-change="VTSVesselPersonsValidation()">
@@ -46,7 +48,7 @@
                 <span class="vts-force-spacing-200">Air draught (m)</span>
                 <input class="vts-input-small vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselAirDraughtValid]"  ng-model="vtsvesselairdraughtinput" ng-change="VTSVesselAirDraughtValidation()">
             </div>
-            <div class="vts-force-spacing-200 ">
+            <div class="vts-force-spacing-200" >
                 <textarea class="vts-textarea-standard" placeholder="Defects, deficiencies or limitations?"></textarea>
             </div>
         </div>
@@ -66,14 +68,37 @@
                 <input class="vts-input-small vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselDraughtValid]"  ng-model="vtsvesseldraughtinput" ng-change="VTSVesselDraughtValidation()">
             </div>
             <div class="vts-force-spacing-200 " ng-show="showFuelQuantity">
-                <span class="vts-force-spacing-200">Total Fuel(MT)</span>
-                <input class="vts-input-small vts-center" ><span class="vts-grey-text">(Carrying over 5000 MT)</span>
+                <span class="vts-force-spacing-200">Total Fuel (MT)</span>
+                <input class="vts-input-small vts-center" ><span class="vts-grey-text"> (if over 5000 MT)</span>
             </div>
         </div>
-        <!-- FUEL INFORMATION -->
-        <div class="vts-pad-top">
+
+        <div class="vts-pad-top" ng-show="showFuelDetails">
+
+            <hr class="vts-hr" > <!-- FUEL INFORMATION ------------------------------------------------------------------- -->
+            <div ><span class="bold" >Fuel information </span><span class="vts-grey-text"> - current fuel quantity on board, in metric tonnes: {{vtsTotalFuel}}</span></div>
+
+            <div class="vts-pad-top">
+                <span class="vts-force-spacing-200" ><input class="vts-input-medium vts-center" ng-model="vtsvesselfueltype00input" ng-class="{0:'vtsinvalid', 1:'vtsvalid',2:'vtsneutral'}[setvtsFuelType00Valid]" ng-change="VTSFuelTypeValidation()"> {{fuelTypes[0].name}}</span>
+                <span class="vts-force-spacing-200" ><input class="vts-input-medium vts-center" ng-model="vtsvesselfueltype01input" ng-class="{0:'vtsinvalid', 1:'vtsvalid',2:'vtsneutral'}[setvtsFuelType01Valid]" ng-change="VTSFuelTypeValidation()"> {{fuelTypes[1].name}}</span>
+                <span class="vts-force-spacing-200" ><input class="vts-input-medium vts-center" ng-model="vtsvesselfueltype02input" ng-class="{0:'vtsinvalid', 1:'vtsvalid',2:'vtsneutral'}[setvtsFuelType02Valid]" ng-change="VTSFuelTypeValidation()"> {{fuelTypes[2].name}}</span>
+                <span class="vts-force-spacing-200" ><input class="vts-input-medium vts-center" ng-model="vtsvesselfueltype03input" ng-class="{0:'vtsinvalid', 1:'vtsvalid',2:'vtsneutral'}[setvtsFuelType03Valid]" ng-change="VTSFuelTypeValidation()"> {{fuelTypes[3].name}}</span>
+            </div>
+            <div class="vts-pad-top">
+                <span class="vts-force-spacing-200" ><input class="vts-input-medium vts-center" ng-model="vtsvesselfueltype04input" ng-class="{0:'vtsinvalid', 1:'vtsvalid',2:'vtsneutral'}[setvtsFuelType04Valid]" ng-change="VTSFuelTypeValidation()"> {{fuelTypes[4].name}}</span>
+                <span class="vts-force-spacing-200" ><input class="vts-input-medium vts-center" ng-model="vtsvesselfueltype05input" ng-class="{0:'vtsinvalid', 1:'vtsvalid',2:'vtsneutral'}[setvtsFuelType05Valid]" ng-change="VTSFuelTypeValidation()"> {{fuelTypes[5].name}}</span>
+                <span class="vts-force-spacing-200" ><input class="vts-input-medium vts-center" ng-model="vtsvesselfueltype06input" ng-class="{0:'vtsinvalid', 1:'vtsvalid',2:'vtsneutral'}[setvtsFuelType06Valid]" ng-change="VTSFuelTypeValidation()"> {{fuelTypes[6].name}}</span>
+                <span class="vts-force-spacing-200" ><input class="vts-input-medium vts-center" ng-model="vtsvesselfueltype07input" ng-class="{0:'vtsinvalid', 1:'vtsvalid',2:'vtsneutral'}[setvtsFuelType07Valid]" ng-change="VTSFuelTypeValidation()"> {{fuelTypes[7].name}}</span>
+            </div>
         </div>
 
+
+        <div class="vts-pad-top" >
+
+            <hr class="vts-hr" > <!-- CARGO INFORMATION ------------------------------------------------------------------- -->
+            <div ><span class="bold" >Cargo information </span><span class="vts-grey-text" > - detailed cargo description</span></div>
+
+        </div>
 
         <hr class="vts-hr"> <!-- VOYAGE INFORMATION ------------------------------------------------------------------- -->
 
