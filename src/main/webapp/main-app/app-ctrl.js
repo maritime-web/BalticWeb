@@ -89,6 +89,29 @@ angular.module('maritimeweb.app')
         };
 
         /**************************************/
+        /** Vessel Traffic Control functionality      **/
+        /**************************************/
+
+        $scope.activateVTSForm = function (size) {
+            growl.info('Activating Vessel Traffic Control');
+            $uibModal.open({
+                animation: 'true',
+                templateUrl: 'vessel-traffic-service/vessel-traffic-service-form.html',
+                controller: 'VesselTrafficServiceCtrl',
+                size: size
+            })
+        };
+
+        // $scope.update = function() {
+        //     $scope.item.size.code = $scope.selectedItem.code
+        //     // use $scope.selectedItem.code and $scope.selectedItem.name here
+        //     // for other stuff ...
+        // }
+
+
+            /**************************************/
+
+        /**************************************/
         /** NW-NM sidebar functionality      **/
         /**************************************/
 
