@@ -336,6 +336,173 @@ angular.module('maritimeweb.route')
 
 
 
+            /**
+             * method for optimizing route. At the moment and ONLY for illustrative purposes in this method
+             * we just return a pre planned optimized route. Its the same route everytime
+             *
+             */
+            $scope.optimizeRouteHardcoded = function(json_result) {
+
+                $scope.rtzOptiJSON = json_result; // used for debugging.
+                $scope.rtzOptiName = json_result.route.routeInfo._routeName;
+
+                $scope.optimizing = true;
+                $log.debug("Harcoded Optimizing route for mmsi" + $routeParams.mmsi);
+
+                $scope.rtzOptimizedName =  $scope.rtzName + "Optimized by SSPA" ;
+
+                $scope.oLOptimizedfeatures = []; // openlayers optimized features
+                $scope.oLanimatedOptimizedfeatures = []; // openlayers animated optimized features
+                $scope.oLOptimizedpoints = [];
+                $scope.totalOptimizedDistance = 0;
+
+                /*$rootScope.route_id = $routeParams.mmsi;
+                 $rootScope.route_name = $scope.rtzName;
+                 $rootScope.route_oLfeatures = $scope.oLfeatures;
+                 $rootScope.route_oLanimatedfeatures = $scope.oLanimatedfeatures;
+                 $rootScope.route_oLpoints =  $scope.oLpoints;
+                 $rootScope.route_totaldistance = $scope.totaldistance;
+                 */
+
+                var defaultWayPoint = {}; // standard waypoint
+                if ($scope.rtzJSON.route.waypoints.defaultWaypoint) {
+                    defaultWayPoint = $scope.rtzJSON.route.waypoints.defaultWaypoint;
+                }
+
+                var calculateDistanceAndDirection = function (key, way_value, feature) {
+                    /**
+                     * Calculate the distance and the angle given the current point
+                     */
+                    if (key + 1 < $scope.rtzOptiJSON.route.waypoints.waypoint.length) {
+                        var next_point_lat = $scope.rtzOptiJSON.route.waypoints.waypoint[key + 1].position._lat;
+                        var next_point_lon = $scope.rtzOptiJSON.route.waypoints.waypoint[key + 1].position._lon;
+                        var current_pos = {latitude: way_value.position._lat, longitude: way_value.position._lon};
+                        var next_pos = {latitude: next_point_lat, longitude: next_point_lon};
+                        var distance_meters = geolib.getDistance(current_pos, next_pos);
+                        feature['distance_meters'] = distance_meters;
+                        feature['distance'] = geolib.convertUnit('sm', distance_meters);
+                        // $log.log("getDistance:" + feature['distance']   );
+                        $scope.totalOptimizedDistance += feature['distance'];
+
+                        if (feature['geometryType'] === 'Orthodrome') { // A great circle, also known as an orthodrome
+                            feature['direction'] = geolib.getBearing(current_pos, next_pos);
+                            //  $log.log("getBearing:" + feature['direction']   );
+                        } else { // Loxodrome (or rhumb line) is a line crossing all meridians at a constant angle.
+                            feature['direction'] = geolib.getRhumbLineBearing(current_pos, next_pos);
+                            // $log.log("getRhumbLineBearing:" + feature['direction']   );
+                        }
+
+                        //feature['radian'] = feature['direction'] ? ((feature['direction'] - 90) * (Math.PI / 180)) : 0;
+                        feature['radian'] =  ((feature['direction'] - 90) * (Math.PI / 180));
+
+                        if (!feature['direction'] && feature['direction']!=0 ) {
+                            feature['direction'] = 0.0;
+                            feature['radian'] = 0.0;
+                            // $log.error("its undefined. Feature" + JSON.stringify(feature));
+
+                        }
+                    } else {
+                        feature['direction'] = 0.0;
+                        feature['radian'] = 0.0;
+
+                    }
+                };
+
+                var hardcodedOptimization = function(){
+                    $scope.optimizing = false;
+                    $scope.optimized = true;
+
+                    if (!$scope.rtzOptiJSON.route.waypoints.waypoint &&
+                        $scope.rtzOptiJSON.route.waypoints.waypoint.length > 0) {
+                        growl.error("No Waypoints in RTZ file");
+                        $log.error("No Waypoints in RTZ file");
+                    } else {
+                        //angular.forEach($scope.rtzOptiJSON.route.waypoints.waypoint, function (way_value, key) {
+                        angular.forEach($scope.rtzOptiJSON.route.waypoints.waypoint, function (way_value, key) {
+
+                            $scope.oLOptimizedpoints.push(ol.proj.transform([parseFloat(way_value.position._lon), parseFloat(way_value.position._lat)], 'EPSG:4326', 'EPSG:900913'));
+
+                            var feature = {
+                                id: way_value._id,
+                                wayname: way_value._name + " optimized",
+                                radius: (way_value._radius) ? way_value._radius : defaultWayPoint._radius,
+                                position: way_value.position,
+                                leg: (way_value.leg) ? way_value.leg : defaultWayPoint.leg
+                            };
+
+                            if (defaultWayPoint.leg) {
+                                feature['speedMin'] = (defaultWayPoint.leg._speedMin) ? defaultWayPoint.leg._speedMin : '';
+                                feature['speedMax'] = (defaultWayPoint.leg._speedMax) ? defaultWayPoint.leg._speedMax : '';
+                                feature['geometryType'] = (defaultWayPoint.leg._geometryType) ? defaultWayPoint.leg._geometryType : '';
+                                feature['portsideXTD'] = (defaultWayPoint.leg._portsideXTD) ? defaultWayPoint.leg._portsideXTD : '';
+                                feature['starboardXTD'] = (defaultWayPoint.leg._starboardXTD) ? defaultWayPoint.leg._starboardXTD : '';
+                            }
+
+                            if (way_value.leg) {
+                                feature['speedMin'] = (way_value.leg._speedMin) ? way_value.leg._speedMin : feature['speedMin'];
+                                feature['speedMax'] = (way_value.leg._speedMax) ? way_value.leg._speedMax : feature['speedMax'];
+                                feature['geometryType'] = (way_value.leg._geometryType) ? way_value.leg._geometryType : feature['geometryType'];
+                                feature['portsideXTD'] = (way_value.leg._portsideXTD) ? way_value.leg._portsideXTD : feature['portsideXTD'];
+                                feature['starboardXTD'] = (way_value.leg._starboardXTD) ? way_value.leg._starboardXTD : feature['starboardXTD'];
+                            }
+                            calculateDistanceAndDirection(key, way_value, feature);
+
+                            if (typeof($scope.rtzOptiJSON.route.schedules.schedule.calculated) !== "undefined") {
+
+                                angular.forEach($scope.rtzOptiJSON.route.schedules.schedule.calculated.sheduleElement, function (schedule_value, key) {
+                                    if (way_value._id == schedule_value._waypointId) { // pairing schedule events with waypoints
+                                        feature['speed'] = schedule_value._speed;
+                                        feature['eta'] = schedule_value._eta;
+                                        feature['etats'] = Date.parse(schedule_value._eta);
+                                        feature['etatimeago'] = $filter('timeAgo')(Date.parse(schedule_value._eta));
+                                    }
+                                });
+                            } else {
+                                growl.error("No schedule for optimized route");
+                            }
+
+                            // addFeatureToCharts(feature);
+                            $scope.oLOptimizedfeatures.push($scope.createOptimizedWaypointFeature(feature));
+                            $scope.oLanimatedOptimizedfeatures.push($scope.createOptimizedFeature(feature));
+
+                            // Interpolation features for the animation
+                            // In the context of computer animation, interpolation is inbetweening, or filling in frames between the key frames
+                            if (feature['distance_meters']> 1000.0) {
+                                var inBetweenFeatures = Math.floor(feature['distance_meters']/ 1000); // the amount of inbetween features we need to create in order to create a smooth animation
+                                var smoothingFeature  = feature;
+                                var pos = {
+                                    lat: parseFloat(feature['position']._lat),
+                                    lon: parseFloat(feature['position']._lon)
+                                };
+
+                                for (var j = 1; j <= inBetweenFeatures; j++) {
+
+                                    if (pos.lat && pos.lon) {
+                                        var newPosition = geolib.computeDestinationPoint(pos,
+                                            ((feature['distance_meters'] / inBetweenFeatures) * j),
+                                            feature['direction']); // calculate a new position.
+                                        smoothingFeature['lat'] = parseFloat(newPosition.latitude);
+                                        smoothingFeature['lon'] = parseFloat(newPosition.longitude);
+                                        //smoothingFeature['id'] =  smoothingFeature['id'] + Math.random();
+                                        smoothingFeature['position'] = {"_lat": parseFloat(newPosition.latitude), "_lon": parseFloat(newPosition.longitude)};
+                                        $scope.oLanimatedOptimizedfeatures.push($scope.createAnimatedOptimizedWaypointFeature(smoothingFeature));
+                                        //$scope.oLfeatures.push($scope.createAnimatedWaypointFeature(smoothingFeature));
+                                    }else{
+                                        $log.error("No point found for keyfeature. Named=" + feature.wayname)
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                };
+
+                $timeout( hardcodedOptimization, 3000);
+            };
+
+
+
+
 
             /**
              * method for optimizing route. At the moment and ONLY for illustrative purposes we just fiddle and randomizes
@@ -513,6 +680,27 @@ angular.module('maritimeweb.route')
                     resetChartArrays();
                     createOpenLayersFeatFromRTZ(result.data);
                    // $scope.storeAllFeaturesSomewhere();
+
+                });
+            };
+
+
+            /**
+             * convience method for simulating an pre-entered optmized sample rtz route
+             */
+            $scope.autoPreloadOptimizedRTZfile = function () {
+                $http.get('/route/sample-rtz-files/optimized/E2_GOT-GDYNIA_TEST_DROGDEN_OPTIMIZED.RTZ', {
+                    transformResponse: function (data, headers) {
+                        $scope.rtzOptiXML = data;
+                        $scope.rtzOptiJSON = fileReader.transformRtzXMLtoJSON(data);
+                        return $scope.rtzOptiJSON;
+                    }
+                }).then(function (result) {
+                    //resetChartArrays();
+                    //createOpenLayersFeatFromRTZ(result.data);
+                    $scope.optimizeRouteHardcoded(result.data)
+                    // $scope.storeAllFeaturesSomewhere();
+                    //return result.data;
 
                 });
             };

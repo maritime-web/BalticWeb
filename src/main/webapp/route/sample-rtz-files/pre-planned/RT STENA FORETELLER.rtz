@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+    <routeInfo routeName="RT STENA FORETELLER"/>
+    <waypoints>
+        <defaultWaypoint>
+            <leg portsideXTD="0.00" starboardXTD="0.00" safetyContour="30.00" safetyDepth="30.00" geometryType="Loxodrome"/>
+        </defaultWaypoint>
+        <waypoint id="1">
+            <position lat="56.37249467" lon="12.01961617"/>
+        </waypoint>
+        <waypoint id="2" radius="0.30">
+            <position lat="56.29745450" lon="12.06004650"/>
+        </waypoint>
+        <waypoint id="3" radius="0.30">
+            <position lat="56.11564267" lon="12.51081033"/>
+        </waypoint>
+        <waypoint id="4" radius="0.30">
+            <position lat="56.05369617" lon="12.63781333"/>
+        </waypoint>
+        <waypoint id="5" radius="0.30">
+            <position lat="56.00095533" lon="12.66636933"/>
+        </waypoint>
+        <waypoint id="6" radius="0.30">
+            <position lat="55.97975233" lon="12.66896850"/>
+        </waypoint>
+        <waypoint id="7" radius="0.30">
+            <position lat="55.89758383" lon="12.62163700"/>
+        </waypoint>
+        <waypoint id="8" radius="0.30">
+            <position lat="55.80993150" lon="12.70634100"/>
+        </waypoint>
+        <waypoint id="9">
+            <position lat="55.78172483" lon="12.68287700"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="0" name="NTProCalc">
+            <manual>
+                <sheduleElement waypointId="1" speed="15.60"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:46Z" etd="1970-01-18T06:13:46Z" speed="15.60"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:51Z" etd="1970-01-18T06:13:51Z" speed="15.60"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:52Z" etd="1970-01-18T06:13:52Z" speed="15.60"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:53Z" etd="1970-01-18T06:13:53Z" speed="15.60"/>
+                <sheduleElement waypointId="6" eta="1970-01-18T06:13:53Z" etd="1970-01-18T06:13:53Z" speed="15.60"/>
+                <sheduleElement waypointId="7" eta="1970-01-18T06:13:54Z" etd="1970-01-18T06:13:54Z" speed="15.60"/>
+                <sheduleElement waypointId="8" eta="1970-01-18T06:13:56Z" etd="1970-01-18T06:13:56Z" speed="15.60"/>
+                <sheduleElement waypointId="9" eta="1970-01-18T06:13:56Z" etd="1970-01-18T06:13:56Z" speed="15.60"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" speed="15.60"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:46Z" etd="1970-01-18T06:13:46Z" speed="15.60"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:51Z" etd="1970-01-18T06:13:51Z" speed="15.60"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:52Z" etd="1970-01-18T06:13:52Z" speed="15.60"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:53Z" etd="1970-01-18T06:13:53Z" speed="15.60"/>
+                <sheduleElement waypointId="6" eta="1970-01-18T06:13:53Z" etd="1970-01-18T06:13:53Z" speed="15.60"/>
+                <sheduleElement waypointId="7" eta="1970-01-18T06:13:54Z" etd="1970-01-18T06:13:54Z" speed="15.60"/>
+                <sheduleElement waypointId="8" eta="1970-01-18T06:13:56Z" etd="1970-01-18T06:13:56Z" speed="15.60"/>
+                <sheduleElement waypointId="9" eta="1970-01-18T06:13:56Z" etd="1970-01-18T06:13:56Z" speed="15.60"/>
+            </calculated>
+        </schedule>
+    </schedules>
+</route>

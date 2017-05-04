@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+    <routeInfo routeName="RT GLOVIS PACIFIC"/>
+    <waypoints>
+        <defaultWaypoint>
+            <leg portsideXTD="0.00" starboardXTD="0.00" safetyContour="30.00" safetyDepth="30.00" geometryType="Loxodrome"/>
+        </defaultWaypoint>
+        <waypoint id="1">
+            <position lat="55.68393433" lon="12.92717583"/>
+        </waypoint>
+        <waypoint id="2" radius="0.30">
+            <position lat="55.71783133" lon="12.82091883"/>
+        </waypoint>
+        <waypoint id="3" radius="0.30">
+            <position lat="55.90182700" lon="12.62608567"/>
+        </waypoint>
+        <waypoint id="4" radius="0.30">
+            <position lat="55.98167000" lon="12.69363233"/>
+        </waypoint>
+        <waypoint id="5" radius="0.30">
+            <position lat="56.05613183" lon="12.65696050"/>
+        </waypoint>
+        <waypoint id="6">
+            <position lat="56.12977567" lon="12.52176100"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="0" name="NTProCalc">
+            <manual>
+                <sheduleElement waypointId="1" speed="12.40"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:46Z" etd="1970-01-18T06:13:46Z" speed="12.40"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="12.40"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:52Z" etd="1970-01-18T06:13:52Z" speed="12.40"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:53Z" etd="1970-01-18T06:13:53Z" speed="12.40"/>
+                <sheduleElement waypointId="6" eta="1970-01-18T06:13:55Z" etd="1970-01-18T06:13:55Z" speed="12.40"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" speed="12.40"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:46Z" etd="1970-01-18T06:13:46Z" speed="12.40"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="12.40"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:52Z" etd="1970-01-18T06:13:52Z" speed="12.40"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:53Z" etd="1970-01-18T06:13:53Z" speed="12.40"/>
+                <sheduleElement waypointId="6" eta="1970-01-18T06:13:55Z" etd="1970-01-18T06:13:55Z" speed="12.40"/>
+            </calculated>
+        </schedule>
+    </schedules>
+</route>

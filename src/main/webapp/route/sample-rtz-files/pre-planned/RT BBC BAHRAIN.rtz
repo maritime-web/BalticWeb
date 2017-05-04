@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+    <routeInfo routeName="RT BBC BAHRAIN"/>
+    <waypoints>
+        <defaultWaypoint>
+            <leg portsideXTD="0.00" starboardXTD="0.00" safetyContour="30.00" safetyDepth="30.00" geometryType="Loxodrome"/>
+        </defaultWaypoint>
+        <waypoint id="1">
+            <position lat="56.18824633" lon="11.92471967"/>
+        </waypoint>
+        <waypoint id="2" radius="1.00">
+            <position lat="56.22385217" lon="12.13376800"/>
+        </waypoint>
+        <waypoint id="3" radius="1.00">
+            <position lat="56.11944817" lon="12.50003100"/>
+        </waypoint>
+        <waypoint id="4" radius="0.50">
+            <position lat="56.05357833" lon="12.64196600"/>
+        </waypoint>
+        <waypoint id="5" radius="0.50">
+            <position lat="56.01243817" lon="12.62964000"/>
+        </waypoint>
+        <waypoint id="6" radius="0.50">
+            <position lat="55.91490083" lon="12.64049833"/>
+        </waypoint>
+        <waypoint id="7">
+            <position lat="55.80918900" lon="12.70147283"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="0" name="NTProCalc">
+            <manual>
+                <sheduleElement waypointId="1" speed="20.50"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:46Z" etd="1970-01-18T06:13:46Z" speed="20.50"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:49Z" etd="1970-01-18T06:13:49Z" speed="20.50"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="15.50"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:51Z" etd="1970-01-18T06:13:51Z" speed="15.50"/>
+                <sheduleElement waypointId="6" eta="1970-01-18T06:13:52Z" etd="1970-01-18T06:13:52Z" speed="15.50"/>
+                <sheduleElement waypointId="7" eta="1970-01-18T06:13:54Z" etd="1970-01-18T06:13:54Z" speed="15.50"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" speed="20.50"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:46Z" etd="1970-01-18T06:13:46Z" speed="20.50"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:49Z" etd="1970-01-18T06:13:49Z" speed="20.50"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="15.50"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:51Z" etd="1970-01-18T06:13:51Z" speed="15.50"/>
+                <sheduleElement waypointId="6" eta="1970-01-18T06:13:52Z" etd="1970-01-18T06:13:52Z" speed="15.50"/>
+                <sheduleElement waypointId="7" eta="1970-01-18T06:13:54Z" etd="1970-01-18T06:13:54Z" speed="15.50"/>
+            </calculated>
+        </schedule>
+    </schedules>
+</route>
