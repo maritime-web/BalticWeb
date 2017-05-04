@@ -27,7 +27,7 @@
         <extension module="org.wildfly.extension.undertow"/>
     </extensions>
     <system-properties>
-        <property name="arcticweb.configuration" value="file://BASEDIR/arcticweb.properties"/>
+        <property name="balticweb.configuration" value="file://BASEDIR/balticweb.properties"/>
     </system-properties>
     <management>
         <security-realms>
