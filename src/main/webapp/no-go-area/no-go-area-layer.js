@@ -251,6 +251,7 @@ angular.module('maritimeweb.no-go-area')
                             $log.info("Clear no go");
                             serviceAvailableLayer.getSource().clear();
                             boundaryLayer.getSource().clear();
+                            scope.loading = false;
                         };
 
                         scope.getNextNoGoArea = function(){
@@ -308,19 +309,18 @@ angular.module('maritimeweb.no-go-area')
 
                                     var olFeature = MapService.wktToOlFeature(response.data.wkt);
                                     boundaryLayer.getSource().addFeature(olFeature);
+                                    scope.loading= false;
                                     scope.timeAgoString = $filter('timeAgo')(scope.time);
                                     growl.info("No-Go zone retrieved and marked with red. <br> "
                                         + scope.ship_draught + " meters draught.<br>"
                                         + scope.timeAgoString + " <br> "+ scope.time.toISOString());
-                                    scope.loading= false;
                                 }, function(error) {
+                                    scope.loading= false;
                                     boundaryLayer.getSource().clear();
                                     $log.error(error);
                                     if(error.data.message){
                                         growl.error(error.data.message);
-                                    };
-                                    scope.loading= false;
-
+                                    }
                             });
 
                         };
