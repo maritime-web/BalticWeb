@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+    <routeInfo routeName="RT TYCHO BRAHE"/>
+    <waypoints>
+        <defaultWaypoint>
+            <leg portsideXTD="0.00" starboardXTD="0.00" safetyContour="30.00" safetyDepth="30.00" geometryType="Loxodrome"/>
+        </defaultWaypoint>
+        <waypoint id="1">
+            <position lat="56.03441067" lon="12.62155300"/>
+        </waypoint>
+        <waypoint id="2">
+            <position lat="56.03911317" lon="12.68515867"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="0" name="NTProCalc">
+            <manual>
+                <sheduleElement waypointId="1" speed="10.50"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:46Z" etd="1970-01-18T06:13:46Z" speed="10.50"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" speed="10.50"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:46Z" etd="1970-01-18T06:13:46Z" speed="10.50"/>
+            </calculated>
+        </schedule>
+    </schedules>
+</route>

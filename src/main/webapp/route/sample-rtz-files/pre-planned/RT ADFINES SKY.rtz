@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+    <routeInfo routeName="RT ADFINES SKY"/>
+    <waypoints>
+        <defaultWaypoint>
+            <leg portsideXTD="0.00" starboardXTD="0.00" safetyContour="30.00" safetyDepth="30.00" geometryType="Loxodrome"/>
+        </defaultWaypoint>
+        <waypoint id="1">
+            <position lat="56.18877133" lon="12.09427467"/>
+        </waypoint>
+        <waypoint id="2" radius="1.00">
+            <position lat="56.48041150" lon="12.54078250"/>
+        </waypoint>
+        <waypoint id="3">
+            <position lat="56.58463183" lon="12.76552617"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="0" name="NTProCalc">
+            <manual>
+                <sheduleElement waypointId="1" speed="12.90"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:52Z" etd="1970-01-18T06:13:52Z" speed="12.90"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:55Z" etd="1970-01-18T06:13:55Z" speed="12.90"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" speed="12.90"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:52Z" etd="1970-01-18T06:13:52Z" speed="12.90"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:55Z" etd="1970-01-18T06:13:55Z" speed="12.90"/>
+            </calculated>
+        </schedule>
+    </schedules>
+</route>

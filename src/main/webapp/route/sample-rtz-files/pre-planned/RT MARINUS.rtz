@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+    <routeInfo routeName="RT MARINUS"/>
+    <waypoints>
+        <defaultWaypoint>
+            <leg portsideXTD="0.00" starboardXTD="0.00" safetyContour="30.00" safetyDepth="30.00" geometryType="Loxodrome"/>
+        </defaultWaypoint>
+        <waypoint id="1">
+            <position lat="55.77197317" lon="12.75793550"/>
+        </waypoint>
+        <waypoint id="2" radius="0.30">
+            <position lat="55.85820767" lon="12.67147833"/>
+        </waypoint>
+        <waypoint id="3" radius="0.30">
+            <position lat="55.91808133" lon="12.63215650"/>
+        </waypoint>
+        <waypoint id="4" radius="0.30">
+            <position lat="55.98131000" lon="12.69396983"/>
+        </waypoint>
+        <waypoint id="5" radius="0.30">
+            <position lat="56.05565400" lon="12.65519583"/>
+        </waypoint>
+        <waypoint id="6" radius="0.30">
+            <position lat="56.12533400" lon="12.52970050"/>
+        </waypoint>
+        <waypoint id="7" radius="0.30">
+            <position lat="56.29714483" lon="12.08923517"/>
+        </waypoint>
+        <waypoint id="8">
+            <position lat="56.34050400" lon="12.07133467"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="0" name="NTProCalc">
+            <manual>
+                <sheduleElement waypointId="1" eta="1970-01-18T06:13:45Z" etd="1970-01-18T06:13:45Z" speed="12.00"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:47Z" etd="1970-01-18T06:13:47Z" speed="12.00"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:48Z" etd="1970-01-18T06:13:48Z" speed="12.00"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="12.00"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:51Z" etd="1970-01-18T06:13:51Z" speed="12.00"/>
+                <sheduleElement waypointId="6" eta="1970-01-18T06:13:53Z" etd="1970-01-18T06:13:53Z" speed="12.00"/>
+                <sheduleElement waypointId="7" eta="1970-01-18T06:13:58Z" etd="1970-01-18T06:13:58Z" speed="12.00"/>
+                <sheduleElement waypointId="8" eta="1970-01-18T06:13:59Z" etd="1970-01-18T06:13:59Z" speed="12.00"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" eta="1970-01-18T06:13:45Z" etd="1970-01-18T06:13:45Z" speed="12.00"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:47Z" etd="1970-01-18T06:13:47Z" speed="12.00"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:48Z" etd="1970-01-18T06:13:48Z" speed="12.00"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="12.00"/>
+                <sheduleElement waypointId="5" eta="1970-01-18T06:13:51Z" etd="1970-01-18T06:13:51Z" speed="12.00"/>
+                <sheduleElement waypointId="6" eta="1970-01-18T06:13:53Z" etd="1970-01-18T06:13:53Z" speed="12.00"/>
+                <sheduleElement waypointId="7" eta="1970-01-18T06:13:58Z" etd="1970-01-18T06:13:58Z" speed="12.00"/>
+                <sheduleElement waypointId="8" eta="1970-01-18T06:13:59Z" etd="1970-01-18T06:13:59Z" speed="12.00"/>
+            </calculated>
+        </schedule>
+    </schedules>
+</route>

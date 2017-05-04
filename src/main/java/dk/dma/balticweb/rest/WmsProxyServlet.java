@@ -43,7 +43,9 @@ import java.net.URL;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet(value = "/wms/*")
+@WebServlet(value = "/wms/*",
+        name = "WMS proxy servlet",
+        description = "This is a secured wms servlet")
 public class WmsProxyServlet extends HttpServlet {
 
     // The color we want transparent

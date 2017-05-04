@@ -162,6 +162,37 @@ angular.module('maritimeweb.vessel')
                             return markerVessel;
                         };
 
+
+                        /** Mark a vessel feature with a ring. */
+                        scope.markVesselFeature = function (vessel) {
+                            var markerStyle = new ol.style.Style({
+                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                    anchor: [0.5, 0.5],
+                                    opacity: 0.85,
+                                    id: vessel.id + '_marker',
+                                    offset: [3, -3],
+                                    //rotation: vessel.radian,
+                                    rotateWithView: true,
+                                    src: 'img/selection.png'
+                                }))
+                            });
+
+                            var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
+                            var markVessel = new ol.Feature({
+                                name: vessel.name,
+                                id: vessel.id,
+                                angle: vessel.angle,
+                                radian: vessel.radian,  // (vessel.angle * (Math.PI / 180)),
+                                callSign: vessel.callSign,
+                                mmsi: vessel.mmsi,
+                                latitude: vessel.y,
+                                longitude: vessel.x,
+                                geometry: vesselPosition
+                            });
+                            markVessel.setStyle(markerStyle);
+                            return markVessel;
+                        };
+
                         /** Create a vessel feature for any openlayers 3 map. */
                         scope.createVesselFeature = function (vessel) {
                             var image = VesselService.imageAndTypeTextForVessel(vessel);
@@ -198,7 +229,7 @@ angular.module('maritimeweb.vessel')
                         scope.refreshVessels = function () {
 
                             if (!scope.loggedIn) {
-                                growl.info('Log in to see vessels');
+                                //growl.info('Log in to see vessels');
                                 return;
                             }
                             $rootScope.loadingData = true; // start spinner
@@ -229,9 +260,17 @@ angular.module('maritimeweb.vessel')
                                         var vesselFeature;
                                         if (zoomLvl > 8) {
                                             vesselFeature = scope.createVesselFeature(vesselData);
+                                            if(vessel.mmsi=="219020208"){
+                                                var markVessel = scope.markVesselFeature(vesselData);
+                                                features.push(markVessel);
+                                            }
 
                                         } else {
                                             vesselFeature = scope.createMinimalVesselFeature(vesselData);
+                                            if(vessel.mmsi=="219020208"){
+                                                var markVessel = scope.markVesselFeature(vesselData);
+                                                features.push(markVessel);
+                                            }
                                         }
                                         features.push(vesselFeature);
                                     }
@@ -288,7 +327,7 @@ angular.module('maritimeweb.vessel')
 
                         var vesselLayer = new ol.layer.Vector({
                             name: "vesselVectorLayer",
-                            title: "Vessels - Helcom",
+                            title: "Vessels - AIS",
                             source: vectorSource,
                             visible: true
                         });

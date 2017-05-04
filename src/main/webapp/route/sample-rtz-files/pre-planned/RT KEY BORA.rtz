@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+    <routeInfo routeName="RT KEY BORA"/>
+    <waypoints>
+        <defaultWaypoint>
+            <leg portsideXTD="0.00" starboardXTD="0.00" safetyContour="30.00" safetyDepth="30.00" geometryType="Loxodrome"/>
+        </defaultWaypoint>
+        <waypoint id="1">
+            <position lat="56.14664800" lon="12.48392683"/>
+        </waypoint>
+        <waypoint id="2" radius="1.00">
+            <position lat="56.30083567" lon="12.08053767"/>
+        </waypoint>
+        <waypoint id="3" radius="1.00">
+            <position lat="56.75813317" lon="11.89542200"/>
+        </waypoint>
+        <waypoint id="4">
+            <position lat="56.83470417" lon="11.84434400"/>
+        </waypoint>
+    </waypoints>
+    <schedules>
+        <schedule id="0" name="NTProCalc">
+            <manual>
+                <sheduleElement waypointId="1" speed="13.60"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="13.60"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:57Z" etd="1970-01-18T06:13:57Z" speed="13.60"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:59Z" etd="1970-01-18T06:13:59Z" speed="13.60"/>
+            </manual>
+            <calculated>
+                <sheduleElement waypointId="1" speed="13.60"/>
+                <sheduleElement waypointId="2" eta="1970-01-18T06:13:50Z" etd="1970-01-18T06:13:50Z" speed="13.60"/>
+                <sheduleElement waypointId="3" eta="1970-01-18T06:13:57Z" etd="1970-01-18T06:13:57Z" speed="13.60"/>
+                <sheduleElement waypointId="4" eta="1970-01-18T06:13:59Z" etd="1970-01-18T06:13:59Z" speed="13.60"/>
+            </calculated>
+        </schedule>
+    </schedules>
+</route>
