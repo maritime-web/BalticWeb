@@ -129,10 +129,20 @@ body {
     box-shadow: 0 1px 1px rgba(78, 229, 50, 0.07) inset, 0 0 8px rgba(114, 229, 56, 0.6);
     outline: 0 none;
 }
+.vtsvalid:focus {
+    border-color: rgba(68, 142, 24, 0.8);
+    box-shadow: 0 1px 1px rgba(78, 229, 50, 0.07) inset, 0 0 8px rgba(114, 229, 56, 0.6);
+    outline: 0 none;
+}
 .vtsneutral{
     border-color: rgb(102, 101, 103,0.8);
     box-shadow: 0 1px 1px rgba(219, 214, 229, 0.07) inset, 0 0 8px rgba(226, 223, 229, 0.6);
     outline: 0 none;
+}
+.vtsinvalid:focus {
+    border-color: rgba(229, 103, 23, 0.8);
+    box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
+    outline: 0 none !important;
 }
 
 .vts-force-spacing-100{

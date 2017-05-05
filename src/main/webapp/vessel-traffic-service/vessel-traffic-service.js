@@ -3,6 +3,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         //Add any new VTS centers here - call them if you miss information - be sure to triple check and ask for reserve VHF channels
         $scope.VTSCenterData = [
             {id: 0, shortname: 'BELTREP', name: 'Denmark - BELTREP - The Great Belt Vessel Traffic Service', callsign:'Great Belt Traffic', email:'vts@beltrep.org', telephone:'+45 58 37 68 68', telephone2:'', fax:'', vhfchannel1:'North 74', vhfchannel2:'South 11', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'11', vhfreservechannel2:'',
+                iconImage:"img/OpenPortGuideLogo_32.png",
+                VTSGuideLink:"http://forsvaret.dk/VTSSTB/eng/Documents/BELTREP%20Information%20ver%200.pdf",
                 showMaxDraught:false,
                 showAirDraught:true,
                 showFuelQuantity:false,
@@ -10,8 +12,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 showVesselType:false,
                 showVesselLength:false,
                 showDeadWeightTonnage:true,
+                showCargoType:true,
             },
             {id: 1, shortname: 'SOUNDREP', name: 'Sweden - SOUNDREP - Sound Vessel Traffic Service', callsign:'Sound VTS', email:'contact@soundvts.org', telephone:'+46 771-630600', telephone2:'', fax:'', vhfchannel1:'North 73', vhfchannel2:'South 71', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'68', vhfreservechannel2:'79',
+                iconImage:"img/MaritimeCloud_logo_mini_45.png",
+                VTSGuideLink:"http://www.sjofartsverket.se/en/Sound-VTS/Reporting/Reporting-procedures/",
                 showMaxDraught:true,
                 showAirDraught:true,
                 showFuelQuantity:false,
@@ -19,9 +24,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 showVesselType:false,
                 showVesselLength:false,
                 showDeadWeightTonnage:false,
+                showCargoType:true,
             },
             //All GOFREP have same criteria
             {id: 2, shortname: 'GOFREP Helsinki', name: 'Finland - GOFREP - Gulf Of Finland Vessel Traffic Service', callsign:'Helsinki Traffic', email:'gofrep@fta.fi', telephone:'+358 (0)204 48 5387', telephone2:'+358 (0)204 48 5388', fax:'+358 (0)204 48 5394', vhfchannel1:'60', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'80', vhfreservechannel2:'',
+                iconImage:"",
+                VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
                 showMaxDraught:true,
                 showAirDraught:false,
                 showFuelQuantity:true,
@@ -30,8 +38,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 showVesselLength:true,
                 showDeadWeightTonnage:false,
                 showCargoInfomation:true,
+                showCargoType:false,
             },
             {id: 3, shortname: 'GOFREP Tallinn', name: 'Estonia - GOFREP Tallinn - Gulf Of Finland Vessel Traffic Service', callsign:'Tallinn Traffic', email:'gofrep@vta.ee', telephone:'+372 6 205 764', telephone2:'+372 6 205 777', fax:'+372 620 5766', vhfchannel1:'61', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'81', vhfreservechannel2:'',
+                iconImage:"",
+                VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
                 showMaxDraught:true,
                 showAirDraught:false,
                 showFuelDetails:false,
@@ -39,8 +50,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 showVesselType:true,
                 showVesselLength:true,
                 showDeadWeightTonnage:false,
+                showCargoType:false,
             },
             {id: 4, shortname: 'GOFREP St. Petersburg', name: 'Russia - GOFREP Helsinki - Gulf Of Finland Vessel Traffic Service', callsign:'St. Peterburg Traffic', email:'gofrep@rsbm.ru', telephone:'+7 12 380 70 21', telephone2:'+7 812 380 70 81', fax:'+7 812 3880 70 20', vhfchannel1:'74', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'10', vhfreservechannel2:'',
+                iconImage:"",
+                VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
                 showMaxDraught:true,
                 showAirDraught:false,
                 showFuelDetails:false,
@@ -48,8 +62,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 showVesselType:true,
                 showVesselLength:true,
                 showDeadWeightTonnage:false,
+                showCargoType:false,
             },
             {id: 5, shortname: 'TESTREP', name: 'Roland - ROREP - Awesome Vessel Traffic Service', callsign:'YOLO VTS', email:'yolo@swag.org', telephone:'555-no-idea', telephone2:'555-still-dunno', fax:'555-fax-fun', vhfchannel1:'North 1', vhfchannel2:'East 2', vhfchannel3:'West 3', vhfchannel4:'South 4', vhfreservechannel1:'11', vhfreservechannel2:'12',
+                iconImage:"img/ring.png",
+                VTSGuideLink:"http://images.fandango.com/images/fandangoblog/minions618F1.jpg",
                 showMaxDraught:true,
                 showAirDraught:true,
                 showFuelDetails:true,
@@ -57,6 +74,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 showVesselType:true,
                 showVesselLength:true,
                 showDeadWeightTonnage:true,
+                showCargoType:true,
             },
         ];
         var VTSData = $scope.VTSCenterData;
@@ -72,9 +90,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             {name:"LSFO", description:"Low Sulphur Fuel Oil"},
             {name:"LNG", description:"Liquid Natural Gas"},
             {name:"Other", description:""}
-        ]
+        ];
+        $scope.cargoTypes = ["Ballast", "Bulk - grain", "Bulk - other than grain", "Chemicals", "Container/Trailer", "General Cargo", "Gas", "Oil", "Passenger", "Reefer", "Other"]
 
-        $scope.beltRepRoutes = ["", ""];
+        //Specific VTS center route dropdowns (They usually have predefined routes and abbreviations as specified in their pilot/master's guide )
+        $scope.BELTREPRoutes = ["", ""];
+        $scope.SOUNDREPRoutes = ["", ""];
 
 
 
@@ -124,6 +145,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.setvtsFuelType05Valid = 0;
         $scope.setvtsFuelType06Valid = 0;
         $scope.setvtsFuelType07Valid = 0;
+
+        //cargo information
+        $scope.setvtsCargoTypeValid = false;
 
         $scope.setvtsETADateValid = false;
         $scope.setvtsETATimeValid = false;
@@ -371,6 +395,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 $scope.setvtsFuelType07Valid = 0;
             }
         }
+        $scope.selectVesselCargoChange = function (selectedItem) {
+            $scope.setvtsCargoTypeValid = true;
+        }
 
 
 
@@ -385,7 +412,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
 
 
-    //clicking on dropdown menu to open the VTS form reates the input html according to VTSCenterData available
+    //clicking on dropdown menu to open the VTS form reates the input html according to VTSCenterData available - made as html insert because so many unknowns.
     $scope.selectVTSCenterChange = function (selectedItem) {
         var html = "",
             vtsID=0;
@@ -396,34 +423,46 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             }
         }
         $scope.VTSSelectedTrafficCenterName = VTSData[vtsID].name;
+        if(VTSData[vtsID].iconImage!=""){
+            html = "<span style='min-width:24px;max-width:24px;display: inline-block; text-align: left; '><img style='width:20px;height:20px;' src='"+VTSData[vtsID].iconImage+"'></span>";
+            $scope.VTSSelectedTrafficCenterLogo = $sce.trustAsHtml(html);
+            html = "";
+        }
+        if(VTSData[vtsID].VTSGuideLink!=""){
+            html = "<span style='min-width:200px;max-width:100%;display: inline-block; text-align: right; right:0;float:right;'><a target='_blank' href='"+VTSData[vtsID].VTSGuideLink+"'>View Master&#39;s Guide online</a></span>";
+            $scope.VTSSelectedTrafficCenterGuide = $sce.trustAsHtml(html);
+            html = "";
+        }
+
+
 
         //create contact information for VTS center in cmpact form
-        html += "<span style='min-width:200px;max-width:200px;display: inline-block; text-align: left;'>Call sign: &#34;"+VTSData[vtsID].callsign+"&#34;</span>";
+        html += "<span style='min-width:220px;max-width:220px;display: inline-block; text-align: left;'>Call sign: &#34;"+VTSData[vtsID].callsign+"&#34;</span>";
         if(VTSData[vtsID].vhfchannel1!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF ch. "+VTSData[vtsID].vhfchannel1+"</span>";
         if(VTSData[vtsID].vhfchannel2!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF ch. "+VTSData[vtsID].vhfchannel2+"</span>";
 
         //radio channels VHF
         //if more than 2 channels, add them to their own div - very rare that happens.
-        if(VTSData[vtsID].vhfchannel3!="" || VTSData[vtsID].vhfchannel4!="") html += "<div><span style='min-width:200px;max-width:200px;display: inline-block; text-align: left;'>&nbsp;</span>";
+        if(VTSData[vtsID].vhfchannel3!="" || VTSData[vtsID].vhfchannel4!="") html += "<div><span style='min-width:220px;max-width:220px;display: inline-block; text-align: left;'>&nbsp;</span>";
         if(VTSData[vtsID].vhfchannel3!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>&nbsp;</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF ch. "+VTSData[vtsID].vhfchannel3+"</span>";
         if(VTSData[vtsID].vhfchannel4!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;'>VHF ch. "+VTSData[vtsID].vhfchannel4+"</span>";
         if(VTSData[vtsID].vhfchannel3!="" || VTSData[vtsID].vhfchannel4!="") html += "</div>";
 
         //There is always a reserve channel or two
-        if(VTSData[vtsID].vhfreservechannel1!="" || VTSData[vtsID].vhfreservechannel2!="") html += "<div><span style='min-width:200px;max-width:200px;display: inline-block; text-align: left;font-style:italic;color:#999999'>Reserve channels:</span>";
+        if(VTSData[vtsID].vhfreservechannel1!="" || VTSData[vtsID].vhfreservechannel2!="") html += "<div><span style='min-width:220px;max-width:220px;display: inline-block; text-align: left;font-style:italic;color:#999999'>Reserve channels:</span>";
         if(VTSData[vtsID].vhfreservechannel1!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>&nbsp;</span><span style='min-width:140px;max-width:140px;display: inline-block;font-style:italic;color:#999999'>VHF "+VTSData[vtsID].vhfreservechannel1+"</span>";
         if(VTSData[vtsID].vhfreservechannel2!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:140px;max-width:140px;display: inline-block;font-style:italic;color:#999999'>VHF "+VTSData[vtsID].vhfreservechannel2+"</span>";
         if(VTSData[vtsID].vhfreservechannel1!="" || VTSData[vtsID].vhfreservechannel2!="") html += "</div>";
 
         //Email and telephone
         if(VTSData[vtsID].email!="" || VTSData[vtsID].telephone!="" || VTSData[vtsID].telephone2!="" ) html += "<div>";
-        if(VTSData[vtsID].email!="") html += "<span style='min-width:200px;max-width:200px;display: inline-block;'>Email: "+VTSData[vtsID].email+"</span>";
-        if(VTSData[vtsID].telephone!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:200px;max-width:200px;display: inline-block;'>Phone: "+VTSData[vtsID].telephone+"</span>";
-        if(VTSData[vtsID].telephone2!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:200px;max-width:200px;display: inline-block;'>Phone2: "+VTSData[vtsID].telephone2+"</span>";
+        if(VTSData[vtsID].email!="") html += "<span style='min-width:220px;max-width:200px;display: inline-block;'>Email: "+VTSData[vtsID].email+"</span>";
+        if(VTSData[vtsID].telephone!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:220px;max-width:220px;display: inline-block;'>Phone: "+VTSData[vtsID].telephone+"</span>";
+        if(VTSData[vtsID].telephone2!="") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:220px;max-width:220px;display: inline-block;'>Phone2: "+VTSData[vtsID].telephone2+"</span>";
         if(VTSData[vtsID].email!="" || VTSData[vtsID].telephone!="" || VTSData[vtsID].telephone2!="") html += "</div>";
 
         //Not all VTS have a fax
-        if(VTSData[vtsID].fax!="") html += "<div><span style='min-width:200px;max-width:200px;display: inline-block;'>Fax: "+VTSData[vtsID].fax+"</span></div>";
+        if(VTSData[vtsID].fax!="") html += "<div><span style='min-width:220px;max-width:220px;display: inline-block;'>Fax: "+VTSData[vtsID].fax+"</span></div>";
 
         //displays the form fields
         $scope.VTSSelected = true;
@@ -441,6 +480,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.showVesselLength = VTSData[vtsID].showVesselLength;
         $scope.showDeadWeightTonnage = VTSData[vtsID].showDeadWeightTonnage;
         $scope.showFuelDetails = VTSData[vtsID].showFuelDetails;
+        $scope.showCargoType = VTSData[vtsID].showCargoType;
+
 
 
     };

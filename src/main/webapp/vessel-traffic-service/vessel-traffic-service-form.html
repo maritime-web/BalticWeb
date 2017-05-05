@@ -7,7 +7,7 @@
         <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>
     </select>
     <div>
-        <div class="vts-pad-top"><strong>{{VTSSelectedTrafficCenterName}}</strong></div>
+        <div class="vts-pad-top"><span ng-bind-html="VTSSelectedTrafficCenterLogo"></span><strong>{{VTSSelectedTrafficCenterName}}</strong><span ng-bind-html="VTSSelectedTrafficCenterGuide"></span></div>
         <div class="" ng-bind-html="VTSSelectedTrafficCenterData"></div>
     </div>
 
@@ -97,6 +97,12 @@
 
             <hr class="vts-hr" > <!-- CARGO INFORMATION ------------------------------------------------------------------- -->
             <div ><span class="bold" >Cargo information </span><span class="vts-grey-text" > - detailed cargo description</span></div>
+
+            <div class="vts-force-spacing-300 vts-pad-top" ng-show="showCargoType">
+                <select class="form-control ng-pristine ng-valid ng-touched vts-force-spacing-200 vts-select-lesspadding" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoTypeValid]"   name="vts-center-select" ng-options="items for items in cargoTypes" ng-model="selectedCargoType" ng-change="selectVesselCargoChange(selectedCargoType)" >
+                    <option value="" selected disabled class="ng-binding ng-scope ">Select a cargo type:</option>
+                </select>
+            </div>
 
         </div>
 
