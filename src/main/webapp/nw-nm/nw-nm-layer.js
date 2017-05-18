@@ -10,7 +10,7 @@ angular.module('maritimeweb.nw-nm')
         function($http, $uibModal) {
 
             this.serviceID = function(){ return 'urn:mrn:mcl:service:design:dma:nw-nm-rest'};
-            this.serviceVersion = function(){ return '0.3'};
+            this.serviceVersion = function(){ return '0.4'};
             /**
              * Returns the published NW-NM messages
              */
