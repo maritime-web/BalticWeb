@@ -60,7 +60,7 @@
                 </select>
             </div>
             <div class="vts-force-spacing-200 " ng-show="showVesselLength">
-                <span class="vts-force-spacing-200">Vessel length:</span>
+                <span class="vts-force-spacing-200">Vessel length (m):</span>
                 <input class="vts-input-small vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselLengthValid]"  ng-model="vtsvessellengthinput" ng-change="VTSVesselLengthValidation()">
             </div>
             <div class="vts-force-spacing-200 " ng-show="showDeadWeightTonnage">
@@ -283,7 +283,33 @@
                     <span class="vts-force-spacing-100">(metric tonnes)</span>
                 </div>
             </div>
+
+
+            <!-- Dangerous cargo classes on board and total tonnage -->
+            <div class="vts-pad-top " >
+                <div class="" >
+                    <div class=" vts-pad-top">IMO classes of dangerous cargo on board: <strong>{{vtsdangerouscargotypeslabel}}</strong></div>
+                    <div class=" vts-pad-top">Total tonnage of dangerous cargo on board: <strong>{{vtsdangerouscargotonnagelabel}}</strong></div>
+                </div>
+            </div>
+
         </div>
+
+            <hr class="vts-hr-seperator" >
+
+            <div >
+                <span class="vts-force-spacing-350" >
+                    <div >Pollution or dangerous cargo lost overboard:</div>
+                    <textarea class="vts-textarea-large" placeholder="Please describe the pollutant and where it was lost. Any additional information may be of great value."></textarea>
+                </span>
+                <span class="vts-force-spacing-350" >
+                    <div>Contact details for information of cargo :</div>
+                    <textarea class="vts-textarea-large" ng-model="vtscargotcontactdetailsinput" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselContactDetailsValid]" ng-change="VTSCargoContactInformationChange()"></textarea>
+                </span>
+            </div>
+
+
+
 
             <!--<div class="vts-force-spacing-300 vts-pad-top">-->
                 <!--<span class="vts-force-spacing-300">SafeSeaNet manifest reference:</span>-->
@@ -302,17 +328,17 @@
                 <div class="vts-force-spacing-300 ">
                     <div>Vessel actual position longitude:<span ng-model="vtsvesselposlondegreeslabel"></span></div>
                     <div class="">
-                        <input class="vts-input-small vts-center " type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonValid]" ng-model="vtsvesselposlondegreesinput">
+                        <input class="vts-input-small vts-center " type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonDegreesValid]" ng-model="vtsvesselposlondegreesinput" ng-change="VTSPositionLonDegValidation()">
                         <span> deg.</span>
-                        <input class="vts-input-medium vts-center " type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonValid]" ng-model="vtsvesselposlonminutesinput">
+                        <input class="vts-input-medium vts-center " type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonMinutesValid]" ng-model="vtsvesselposlonminutesinput" ng-change="VTSPositionLonMinValidation()">
                         <span> min. N</span>
                     </div>
                 </div>
                 <div class="vts-force-spacing-300 ">
                     <div>Vessel actual position latitude:<span ng-model="vtsvesselposlatdegreeslabel"></span></div>
-                    <input class="vts-input-small vts-center" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatValid]" ng-model="vtsvesselposlatdegreesinput"><span> deg.</span>
+                    <input class="vts-input-small vts-center" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatDegreesValid]" ng-model="vtsvesselposlatdegreesinput" ng-change="VTSPositionLatDegValidation()"><span> deg.</span>
 
-                    <input class="vts-input-medium vts-center" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatValid]" ng-model="vtsvesselposlatminutesinput"><span> min. E</span>
+                    <input class="vts-input-medium vts-center" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatMinutesValid]" ng-model="vtsvesselposlatminutesinput" ng-change="VTSPositionLatMinValidation()"><span> min. E</span>
 
                 </div>
                 <div class="vts-pad-top">
@@ -336,7 +362,7 @@
             </div>
             <div class="vts-force-spacing-100 " >
                 <span class="vts-force-spacing-100">True heading:</span>
-                <input class="vts-input-small" type="text"ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselTrueHeadingValid]"  ng-model="vtsvesseltrueheadinginput"  >
+                <input class="vts-input-small vts-center" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselTrueHeadingValid]"  ng-model="vtsvesseltrueheadinginput" ng-change="VTSTrueHeadingValidation()" >
             </div>
         </div>
 

@@ -96,7 +96,22 @@ body {
 .vts-input-medium{width:70px;}
 .vts-input-standard{width:100px;}
 .vts-input-large{width:200px;}
-.vts-textarea-standard{position:relative; top:8px; width:240px; height:32px;}
+.vts-textarea-standard{
+    position:relative;
+    top:8px;
+    width:240px;
+    height:32px;
+    max-width:240px;
+    max-height:350px
+}
+.vts-textarea-large{
+    position:relative;
+    top:0px;
+    width:240px;
+    height:100px;
+    max-width:350px;
+    max-height:350px
+}
 /*#vtsparentdiv input[type=number]::-webkit-inner-spin-button,*/
 /*#vtsparentdiv input[type=number]::-webkit-outer-spin-button{*/
     /*-webkit-appearance: none;*/

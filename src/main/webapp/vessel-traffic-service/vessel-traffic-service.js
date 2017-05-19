@@ -1,5 +1,5 @@
-angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scope', '$uibModalInstance', '$window', '$sce',
-    function ($scope, $uibModalInstance, $window, $sce) {
+angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scope', '$uibModalInstance', '$window', '$sce', 'growl',
+    function ($scope, $uibModalInstance, $window, $sce, growl) {
         //Add any new VTS centers here - call them if you miss information - be sure to triple check and ask for reserve VHF channels
         $scope.VTSCenterData = [
             {id: 0, shortname: 'BELTREP', name: 'Denmark - BELTREP - The Great Belt Vessel Traffic Service', callsign:'Great Belt Traffic', email:'vts@beltrep.org', telephone:'+45 58 37 68 68', telephone2:'', fax:'', vhfchannel1:'North 74', vhfchannel2:'South 11', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'11', vhfreservechannel2:'',
@@ -42,8 +42,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
                 showMaxDraught:true,
                 showAirDraught:false,
-                showFuelDetails:false,
                 showFuelQuantity:true,
+                showFuelDetails:false,
                 showVesselType:true,
                 showVesselLength:true,
                 showDeadWeightTonnage:false,
@@ -53,8 +53,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
                 showMaxDraught:true,
                 showAirDraught:false,
-                showFuelDetails:false,
                 showFuelQuantity:true,
+                showFuelDetails:false,
                 showVesselType:true,
                 showVesselLength:true,
                 showDeadWeightTonnage:false,
@@ -121,7 +121,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         $scope.VTSReadyToSend = false; //global readystate
 
-        //vessel information - should be autofilled through service at login
+        //vessel information - should probably be autofilled through service at login if available
         $scope.setvtsvesselnameValid = false;
         $scope.setvtsvesselcallsignValid = false;
         $scope.setvtsvesselMMSIValid = false;
@@ -144,14 +144,20 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         //cargo information
         // $scope.setvtsCargoSSNIDValid = false; //SafeSeaNet manifest ID reference - has full manifest - should be autofilled through service at login - requires cooperation with SSN
         $scope.setvtsCargoTypeValid = false;
+        $scope.setvtsvesselContactDetailsValid = false;
 
-        //voyage information - should be autofilled through service at login
-        $scope.vtsvesselposloninput = "";
-        //$scope.vtsvesselposlatinput = "";
+        //voyage information - should be autofilled through service at login if available
+        $scope.vtsvesselposlondegreesinput = "";
+        $scope.vtsvesselposlonminutesinput = "";
+        $scope.vtsvesselposlatdegreesinput = "";
+        $scope.vtsvesselposlatminutesinput = "";
+        $scope.vtscargotcontactdetailsinput = "";
         $scope.vtsvesseltrueheadinginput = "";
 
         $scope.setvtsvesselPosLonValid = false;
         $scope.setvtsvesselPosLatValid = false;
+        $scope.setvtsvesselPosLonMinutesValid = false;
+        $scope.setvtsvesselPosLatMinutesValid = false;
         $scope.setvtsvesselTrueHeadingValid = false;
 
         $scope.setvtsETADateValid = false;
@@ -281,70 +287,78 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             $scope.VTSValidationAllDone(); //If all done, display send button
         };
 
-        // //No validation for now, just pops in the GPS coords into fields if can
-        // $scope.VTSVesselPositionValidation = function(){
-        //
-        //     // !! - for some reason this code can run through without actually updating the fields and button must be pressed again. (try to press, delete values, press again)
-        //
-        //     function getLocationx() {
-        //         if (navigator.geolocation) {
-        //             navigator.geolocation.getCurrentPosition(showPosition);
-        //         } else {
-        //             // console.log("Geolocation is not supported by this browser.");
-        //         }
-        //     }
-        //     function showPosition(position) {
-        //         $scope.vtsvesselposloninput = position.coords.longitude;
-        //         $scope.vtsvesselposlatinput = position.coords.latitude;
-        //     }
-        //     getLocation();
-        // }
-
-
-        $scope.geolocFail = function(){
-            growl.error('Unable to retrieve current position, perhaps your browser is blocking this feature.');
-            $scope.getGPSCoordsBtnDisabled = false;
-        }
         $scope.getLocation = function(){
-            $scope.getGPSCoordsBtnDisabled = true;
             if (navigator.geolocation) {
-                var location_timeout = setTimeout("geolocFail()", 5000);
-
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    clearTimeout(location_timeout);
-                    $scope.getGPSCoordsBtnDisabled = false;
-
-
                     $scope.retMinutesFromDecDegrees = function(decDeg){
                         var deg = (decDeg+"").substring(0,(decDeg+"").indexOf("."));
                         deg = Math.round((60*(decDeg-deg))*10000)/10000
                         return deg
                     }
-
                     var lon = position.coords.longitude;
                     $scope.vtsvesselposlondegreesinput = (lon+"").substring(0,(lon+"").indexOf("."))
                     $scope.vtsvesselposlonminutesinput = $scope.retMinutesFromDecDegrees(lon);
-
-                    // var lon = position.coords.longitude;
-                    // var deg = (lon+"").substring(0,(lon+"").indexOf("."));
-                    // $scope.vtsvesselposlondegreesinput = deg; //update the degrees
-                    // $scope.vtsvesselposlonminutesinput = Math.round((60*(lon-deg))*10000)/10000; //update the minutes
-                    // $scope.vtsvesselposlondegreeslabel = $sce.trustAsHtml(deg+"&deg;"+" "+(60*(lon-deg)))
-
                     var lat = position.coords.latitude;
                     $scope.vtsvesselposlatdegreesinput = (lat+"").substring(0,(lat+"").indexOf("."))
                     $scope.vtsvesselposlatminutesinput = $scope.retMinutesFromDecDegrees(lat);
-
-                    //$scope.vtsvesselposlatinput = position.coords.latitude;
-                }, function (error) {
-                    clearTimeout(location_timeout);
-                    $scope.geolocFail();
                 });
             } else {
-                // Fallback for no geolocation
-                $scope.geolocFail();
+                growl.error('Unable to retrieve current position, perhaps your browser is blocking this feature.');
             }
         }
+
+
+
+        //validates 0-90 or 0-180 degrees, 0.0001-60.0000 minutes
+        $scope.VTSPositionDegValidationHelper = function(input,testfor){
+            // var deg = (decDeg+"").;
+                var inputDec = 0;
+                if(testfor!="decimalminutes") input = input.replace(/\D/g, '');
+            var re;
+            if(testfor==90){
+                re = new RegExp(/^([1-9]|[1-8]\d|90)$/);
+                input = input.substring(0,2);
+            }
+            if(testfor==180){
+                re = new RegExp(/^(0{0,2}[0-9]|0?[1-9][0-9]|1[0-7][0-9]|180)$/);
+                input = input.substring(0,3);
+            }
+            var output = {valid:false,value:input,decimals:0}
+
+            if(testfor=="decimalminutes"){
+                inputDec = (input.indexOf(".")!=-1) ? input.substring((input+"").indexOf(".")+1,input.length) : "";
+                inputDec = inputDec.substring(0,4)
+                re = new RegExp(/^([1-9]|[1-5]\d|60)$/);
+                input = input.substring(0,2);
+                output.value = (input.indexOf(".")==-1) ? input : input.substring(0,input.length-(inputDec.length+1));
+                output.decimals = (inputDec>0) ? inputDec : "";
+            }
+
+            var m = re.exec(input);
+            if (m == null) {
+                output.valid = false;
+            } else {
+                output.valid = true;
+            }
+            console.log(output)
+            return output;
+        }
+        $scope.VTSPositionLonDegValidation = function(){
+            var retVal = $scope.VTSPositionDegValidationHelper($scope.vtsvesselposlondegreesinput,90);
+            $scope.vtsvesselposlondegreesinput = retVal.value;
+            $scope.setvtsvesselPosLonDegreesValid = retVal.valid;
+        }
+        $scope.VTSPositionLatDegValidation = function(){
+            var retVal = $scope.VTSPositionDegValidationHelper($scope.vtsvesselposlatdegreesinput,180);
+            $scope.vtsvesselposlatdegreesinput = retVal.value;
+            $scope.setvtsvesselPosLatDegreesValid = retVal.valid;
+        }
+        $scope.VTSPositionLatMinValidation = function(){
+            // var retVal = $scope.VTSPositionDegValidationHelper($scope.vtsvesselposlatminutesinput,"decimalminutes");
+            console.log($scope.vtsvesselposlatminutesinput.match(new RegExp(/^([1-9]|[1-5]\d|60)(\.[0-9]{1,4})?$/)));
+        }
+
+        // setvtsvesselPosLonMinutesValid
 
 
 
@@ -377,7 +391,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                     }catch(exceptionNoElements){}
                 }
             }
-            console.log("totFuel:",totFuel)
+            // console.log("totFuel:",totFuel)
 
             //set/reset valid colours - must be more than 1 ton of fuel on board.
             if(totFuel>0) {
@@ -433,7 +447,21 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             (check) ? $scope.showCargoTypeFields = true : $scope.showCargoTypeFields = false;
         }
 
+        $scope.VTSCargoContactInformationChange = function(){
+            var input = $scope.vtscargotcontactdetailsinput;
+            if(input!="" && input.length>5) {
+                $scope.setvtsvesselContactDetailsValid = true;
+            }else{
+                $scope.setvtsvesselContactDetailsValid = false;
+            }
+        }
+
+
+
+
         $scope.VTSDangerousCargoTypeValidation = function (selectedItem) {
+            var totalDGTonnage = 0;
+            var IMOtypesofDG = "";
 
             if(selectedItem == 1) {
                 var input = $scope.vtsdangerouscargotype01input.replace(/\D/g, '');
@@ -469,12 +497,119 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             }
             if(selectedItem == 9) {
                 var input = $scope.vtsdangerouscargotype09input.replace(/\D/g, '');
-                $scope.vtsdangerouscargotype09input = input;
+                $scope.vtsdangerouscargotype09input = parseInt(input);
             }
             if(selectedItem == 10) {
                 var input = $scope.vtsdangerouscargotype10input.replace(/\D/g, '');
-                $scope.vtsdangerouscargotype10input = input;
+                $scope.vtsdangerouscargotype10input = parseInt(input);
             }
+
+            //display the types of cargo
+            if($scope.vtsdangerouscargotype01input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype01input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 1";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+            if($scope.vtsdangerouscargotype02input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype02input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 2";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+            if($scope.vtsdangerouscargotype03input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype03input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 3";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+            if($scope.vtsdangerouscargotype04input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype04input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 4";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+            if($scope.vtsdangerouscargotype05input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype05input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 5";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+            if($scope.vtsdangerouscargotype06input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype06input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 6";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+            if($scope.vtsdangerouscargotype07input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype07input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 7";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+            if($scope.vtsdangerouscargotype08input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype08input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 8";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+            if($scope.vtsdangerouscargotype09input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype09input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 9";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+            if($scope.vtsdangerouscargotype10input != "") {
+                var input = parseInt($scope.vtsdangerouscargotype10input);
+                if(input.isNaN)input=0;
+                if(input>0){
+                    IMOtypesofDG = IMOtypesofDG + " - 10";
+                    totalDGTonnage += parseInt(input);
+                }
+            }
+
+            $scope.vtsdangerouscargotypeslabel = IMOtypesofDG.substring(3,IMOtypesofDG.length)
+            $scope.vtsdangerouscargotonnagelabel = totalDGTonnage;
+
+
+        }
+
+        //only number between and including 0 to 360 with cleanup
+        $scope.VTSTrueHeadingValidation = function(){
+            var inputStr = "";
+            var inputInt = 0;
+            var inputStr = $scope.vtsvesseltrueheadinginput.replace(/\D/g, '');
+            if(inputStr.length>3) inputStr = inputStr.substring(0,3);
+            inputInt = parseInt(inputStr + "");
+            if(inputInt.isNaN) inputInt = 0;
+            inputStr = inputInt+"";
+            var re = new RegExp(/^(?:36[0]|3[0-5][0-9]|[12][0-9][0-9]|[1-9]?[0-9])?$/); //0-360 only
+            var m = re.exec(inputStr);
+            if (m == null) {
+                $scope.setvtsvesselTrueHeadingValid = false;
+            } else {
+                $scope.setvtsvesselTrueHeadingValid = true;
+            }
+            if(inputStr === "NaN") inputStr=""; //
+            $scope.vtsvesseltrueheadinginput = inputStr;
         }
 
 
