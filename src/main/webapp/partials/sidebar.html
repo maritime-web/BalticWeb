@@ -2,6 +2,56 @@
 <div uib-collapse="!$root.showgraphSidebar"  class="maritimeweb-sidebar col-xs-9 col-sm-4  col-md-4 sidebar"> <!-- uib-collapse="showgraphSidebar" -->
     <uib-tabset type="pills" justified="true">
 
+
+        <!-- NW-NM tab -->
+        <uib-tab classes="btn-sm">
+            <uib-tab-heading>
+                <img src="/img/nwnm/nw.png" height="16"/>
+                NW-NM
+                <span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>
+            </uib-tab-heading>
+
+            <div class="panel" ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+                <div class="panel-heading">Navigationel Warnings and Notices to Mariners
+                    <small tooltip="Refresh" class="glyphicon glyphicon-refresh"
+                           ng-click="refreshNwNmServices()"></small>
+
+                    <div class="small pull-right">
+                        Display &nbsp;&nbsp;
+                        <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()">&nbsp;NW
+                        &nbsp;&nbsp;
+                        <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()">&nbsp;NtM
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="message-service" ng-repeat="s in nwNmServices">
+                        <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
+                    </div>
+                    <table class="table table-striped">
+                        <tr ng-repeat-start="msg in nwNmMessages"
+                            ng-if="$index == 0 || nwnmAreaHeading($index) != nwnmAreaHeading($index - 1)">
+                            <td colspan="2" class="message-area-heading">
+                                {{nwnmAreaHeading($index)}}
+                            </td>
+                        </tr>
+                        <tr ng-repeat-end>
+                            <td width="20" align="left" class="message-item">
+                                <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm.png" height="20"/>
+                                <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/nw.png" height="20"/>
+                            </td>
+                            <td width="*" class="message-item">
+                                <span ng-if="msg.shortId" class="badge label-message-id">{{msg.shortId}}</span>
+                                <a href ng-click="showNwNmDetails(msg)">{{msg.descs[0].title}}</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </uib-tab>
+
+
         <uib-tab classes="btn-sm">
             <uib-tab-heading ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <span class="glyphicon glyphicon-globe"></span> Satellite
@@ -112,53 +162,7 @@
         </uib-tab>
 
 
-        <!-- NW-NM tab -->
-        <uib-tab classes="btn-sm">
-            <uib-tab-heading>
-                <img src="/img/nwnm/nw.png" height="16"/>
-                NW-NM
-                <span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>
-            </uib-tab-heading>
 
-            <div class="panel" ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
-                <div class="panel-heading">MC NW-NM Services
-                    <small tooltip="Refresh" class="glyphicon glyphicon-refresh"
-                           ng-click="refreshNwNmServices()"></small>
-
-                    <div class="small pull-right">
-                        Display &nbsp;&nbsp;
-                        <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()">&nbsp;NW
-                        &nbsp;&nbsp;
-                        <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()">&nbsp;NtM
-                    </div>
-                </div>
-
-                <div class="panel-body">
-                    <div class="message-service" ng-repeat="s in nwNmServices">
-                        <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
-                    </div>
-                    <table class="table table-striped">
-                        <tr ng-repeat-start="msg in nwNmMessages"
-                            ng-if="$index == 0 || nwnmAreaHeading($index) != nwnmAreaHeading($index - 1)">
-                            <td colspan="2" class="message-area-heading">
-                                {{nwnmAreaHeading($index)}}
-                            </td>
-                        </tr>
-                        <tr ng-repeat-end>
-                            <td width="20" align="left" class="message-item">
-                                <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm.png" height="20"/>
-                                <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/nw.png" height="20"/>
-                            </td>
-                            <td width="*" class="message-item">
-                                <span ng-if="msg.shortId" class="badge label-message-id">{{msg.shortId}}</span>
-                                <a href ng-click="showNwNmDetails(msg)">{{msg.descs[0].title}}</a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-        </uib-tab>
 
         <!-- Route tab -->
         <uib-tab ng-if="$root.route_id" classes="btn-sm">
