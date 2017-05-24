@@ -49,7 +49,7 @@
                 <input class="vts-input-small vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselAirDraughtValid]"  ng-model="vtsvesselairdraughtinput" ng-change="VTSVesselAirDraughtValidation()">
             </div>
             <div class="vts-force-spacing-200" >
-                <textarea class="vts-textarea-standard" placeholder="Defects, deficiencies or limitations?"></textarea>
+                <textarea class="vts-textarea-standard" ng-model="vtsvesseldefectsinput" placeholder="Defects, deficiencies or limitations?"></textarea>
             </div>
         </div>
         <div class="vts-pad-top">
@@ -283,11 +283,6 @@
                     <input class="vts-input-medium vts-center" ng-model="vtsdangerouscargotype09input" ng-change="VTSDangerousCargoTypeValidation(9)">
                     <span class="vts-force-spacing-100">(metric tonnes)</span>
                 </div>
-                <div class="" >
-                    <span class="vts-force-spacing-100 vts-pad-top">IMO class 6:</span>
-                    <input class="vts-input-medium vts-center" ng-model="vtsdangerouscargotype10input" ng-change="VTSDangerousCargoTypeValidation(10)">
-                    <span class="vts-force-spacing-100">(metric tonnes)</span>
-                </div>
             </div>
 
 
@@ -306,7 +301,7 @@
             <div >
                 <span class="vts-force-spacing-350" >
                     <div >Pollution or dangerous cargo lost overboard:</div>
-                    <textarea class="vts-textarea-large" placeholder="Please describe the pollutant and where it was lost. Any additional information may be of great value."></textarea>
+                    <textarea class="vts-textarea-large" ng-model="vtsdangerouscargooverboard" placeholder="Please describe the pollutant and where it was lost. Any additional information may be of great value."></textarea>
                 </span>
                 <span class="vts-force-spacing-350" >
                     <div>Contact details for information of cargo :</div>
@@ -365,7 +360,7 @@
                 <input class="vts-input-small vts-center" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselTrueHeadingValid]"  ng-model="vtsvesseltrueheadinginput" ng-change="VTSTrueHeadingValidation()" >
             </div>
             <div class="vts-force-spacing-300">
-                <span class="vts-force-spacing-300">Arrival at {{VTSSelectedTrafficCenterShortname}} (UTC)</span>
+                <span class="vts-force-spacing-300">Arrival at {{VTSSelectedTrafficCenterShortname}} (UTC) (not in use)</span>
                 <input class="vts-input-medium vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsEtaDateValid]" type="text" ng-model="vtsetadateinput" ng-change="VTSEtaDateValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = 'DATE'" placeholder="DATE">
                 <input class="vts-input-medium vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsEtaTimeValid]" type="text" ng-model="vtsetatimeinput" ng-change="VTSEtaTimeValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = 'TIME'" placeholder="TIME">
             </div>
