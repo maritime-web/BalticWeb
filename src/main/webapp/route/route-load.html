@@ -104,11 +104,20 @@
                         <!--<map-layer-switcher></map-layer-switcher>-->
                         <!--map-overview collapsed="true"></map-overview-->
                     </ol-map>
+                    <h3 ng-if="optimized">Your route</h3>
 
-                    <h4>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span>  Active Waypoint: <span class="badge badge-info">#{{$root.activeWayPoint}}</span>
-                        Distance: <span class="badge badge-info">{{totaldistance | number:2 }}</span> Nautical miles </h4>
-                    <h4 ng-if="optimized">Optimized Waypoints: <span class="badge badge-info">{{oLOptimizedfeatures.length}}</span>
-                        Distance: <span class="badge badge-info">{{totalOptimizedDistance | number:2 }}</span> Nautical miles </h4>
+                    <div>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span></div>
+                        <div>Active Waypoint: <span class="badge badge-info">#{{$root.activeWayPoint}}</span></div>
+                            <div>Distance: <span class="badge badge-info">{{totaldistance | number:2 }}</span> Nautical miles </div>
+                    <div ng-if="optimized">Your route is marked with red.</div>
+                    <img ng-if="optimized" src="/img/route_legend_normal_cropped.png"/>
+                    <h3 ng-if="optimized">Optmized route</h3>
+                    <div ng-if="optimized">Waypoints: <span class="badge badge-info">{{oLOptimizedfeatures.length}}</span></div>
+                    <div ng-if="optimized">Distance: <span class="badge badge-info">{{totalOptimizedDistance | number:2 }}</span> <small>Nautical miles </small></div>
+                    <div ng-if="optimized">Optimized route is marked with orange. </div>
+                    <img ng-if="optimized" src="/img/route_legend_optimized.png" />
+
+
                 </div>
             </div>
     </div>
