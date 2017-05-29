@@ -951,7 +951,8 @@ angular.module('maritimeweb.route')
 
 
                         map.addLayer(routeLayers);
-                        map.getInteractions().extend([select, modify]);
+                        //map.getInteractions().extend([select, modify]);
+                        map.getInteractions().extend([select]);
 
 
 
