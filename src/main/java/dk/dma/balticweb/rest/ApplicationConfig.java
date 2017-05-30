@@ -18,7 +18,7 @@ package dk.dma.balticweb.rest;
 
 import dk.dma.embryo.common.log.LogEntryRestService;
 import dk.dma.embryo.common.rs.CommonExceptionMappers;
-import dk.dma.embryo.msi.rs.MsiRestService;
+//import dk.dma.embryo.msi.rs.MsiRestService;
 import dk.dma.embryo.user.json.AuthenticationService;
 import dk.dma.embryo.user.json.FeedbackRestService;
 import dk.dma.embryo.user.json.ForgotPasswordRestService;
@@ -63,7 +63,7 @@ public class ApplicationConfig extends Application {
                 BerthRestService.class,
                 AuthenticationService.class,
                 TestDataRestService.class, 
-                MsiRestService.class,
+//                MsiRestService.class,
                 ArcticWebVesselRestService.class,
                 ScheduleRestService.class,
                 LogEntryRestService.class, 
@@ -73,6 +73,7 @@ public class ApplicationConfig extends Application {
                 FeedbackRestService.class,
                // AreasOfInterestRestService.class,
                 NwNmRestService.class,
+                VTSEmailRestService.class,
                 ServiceLookupRestService.class));
 
         return set;

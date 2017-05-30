@@ -6,15 +6,26 @@
     <select class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in VTSCenterData" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname)">
         <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>
     </select>
-    <div>
-        <div class="vts-pad-top"><span ng-bind-html="VTSSelectedTrafficCenterLogo"></span><strong>{{VTSSelectedTrafficCenterName}}</strong><span ng-bind-html="VTSSelectedTrafficCenterGuide"></span></div>
-        <div class="" ng-bind-html="VTSSelectedTrafficCenterData"></div>
-    </div>
+        <div>
+            <div class="vts-pad-top"><span ng-bind-html="VTSSelectedTrafficCenterLogo"></span><strong>{{VTSSelectedTrafficCenterName}}</strong><span ng-bind-html="VTSSelectedTrafficCenterGuide"></span></div>
+            <div class="" ng-bind-html="VTSSelectedTrafficCenterData"></div>
+        </div>
 
 
     <div id="vtsparentdiv" class="vts-pad-top" ng-show="VTSSelected" >
 
-        <hr class="vts-hr"> <!-- VESSEL INFORMATION ------------------------------------------------------------------- -->
+        <hr class="vts-hr"> <!-- ETA ------------------------------------------------------------------- -->
+        <div style="padding-bottom:6px;">
+            <span class="bold vts-pad-top">Estimated Time of Arrival at {{VTSSelectedTrafficCenterShortname}}  </span>
+            <div class="vts-pad-top">
+                <input class="vts-input-medium vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsEtaDateValid]" type="text" ng-model="vtsetadateinput" ng-change="VTSEtaDateValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = 'DATE'" placeholder="DATE">
+                <input class="vts-input-medium vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsEtaTimeValid]" type="text" ng-model="vtsetatimeinput" ng-change="VTSEtaTimeValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = 'TIME'" placeholder="TIME">
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="vts-force-spacing-300">ETA at {{VTSSelectedTrafficCenterShortname}} (UTC) (currently not used)</span>
+            </div>
+        </div>
+
+        <hr class="vts-hr vts-pad-top" > <!-- VESSEL INFORMATION ------------------------------------------------------------------- -->
         <span class="bold vts-pad-top">Vessel information</span>
 
         <div>
@@ -303,7 +314,7 @@
                     <div >Pollution or dangerous cargo lost overboard:</div>
                     <textarea class="vts-textarea-large" ng-model="vtsdangerouscargooverboard" placeholder="Please describe the pollutant and where it was lost. Any additional information may be of great value."></textarea>
                 </span>
-                <span class="vts-force-spacing-350" >
+                <span class="vts-force-spacing-350" ng-show="showCargoContactInformationInput">
                     <div>Contact details for information of cargo :</div>
                     <textarea class="vts-textarea-large" ng-model="vtscargotcontactdetailsinput" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselContactDetailsValid]" ng-change="VTSCargoContactInformationChange()"></textarea>
                 </span>
@@ -358,11 +369,6 @@
             <div class="vts-force-spacing-200">
                 <span class="vts-force-spacing-200">True heading:</span>
                 <input class="vts-input-small vts-center" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselTrueHeadingValid]"  ng-model="vtsvesseltrueheadinginput" ng-change="VTSTrueHeadingValidation()" >
-            </div>
-            <div class="vts-force-spacing-300">
-                <span class="vts-force-spacing-300">Arrival at {{VTSSelectedTrafficCenterShortname}} (UTC) (not in use)</span>
-                <input class="vts-input-medium vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsEtaDateValid]" type="text" ng-model="vtsetadateinput" ng-change="VTSEtaDateValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = 'DATE'" placeholder="DATE">
-                <input class="vts-input-medium vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsEtaTimeValid]" type="text" ng-model="vtsetatimeinput" ng-change="VTSEtaTimeValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = 'TIME'" placeholder="TIME">
             </div>
         </div>
 

@@ -1,6 +1,7 @@
-angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scope', '$uibModalInstance', '$window', '$sce', 'growl',
-    function ($scope, $uibModalInstance, $window, $sce, growl) {
-        //Add any new VTS centers here - call them if you miss information - be sure to triple check and ask for reserve VHF channels
+angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scope', '$uibModalInstance', '$window', '$sce', 'growl', '$http',
+    function ($scope, $uibModalInstance, $window, $sce, growl, $http) {
+        //Add any new VTS centers here - TODO - this should be put into the maritime cloud as a service
+        //shortname MAY NOT HAVE SPACES
         $scope.VTSCenterData = [
             {id: 0, shortname: 'BELTREP', name: 'Denmark - BELTREP - The Great Belt Vessel Traffic Service', callsign:'Great Belt Traffic', email:'vts@beltrep.org', telephone:'+45 58 37 68 68', telephone2:'', fax:'', vhfchannel1:'North 74', vhfchannel2:'South 11', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'11', vhfreservechannel2:'',
                 iconImage:"img/OpenPortGuideLogo_32.png",
@@ -8,7 +9,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 showMaxDraught:false,
                 showAirDraught:true,
                 showFuelQuantity:false,
-                showFuelDetails:true,
+                showFuelDetails:false, //required but disabled for testing
                 showVesselType:false,
                 showVesselLength:false,
                 showDeadWeightTonnage:true,
@@ -22,7 +23,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 showMaxDraught:true,
                 showAirDraught:true,
                 showFuelQuantity:false,
-                showFuelDetails:true,
+                showFuelDetails:false, //required but disabled for testing
                 showVesselType:false,
                 showVesselLength:false,
                 showDeadWeightTonnage:false,
@@ -31,7 +32,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 sendSummaryTo:"email",
             },
             //All GOFREP have same criteria
-            {id: 2, shortname: 'GOFREP Helsinki', name: 'Finland - GOFREP - Gulf Of Finland Vessel Traffic Service', callsign:'Helsinki Traffic', email:'gofrep@fta.fi', telephone:'+358 (0)204 48 5387', telephone2:'+358 (0)204 48 5388', fax:'+358 (0)204 48 5394', vhfchannel1:'60', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'80', vhfreservechannel2:'',
+            {id: 2, shortname: 'GOFREP-Helsinki', name: 'Finland - GOFREP - Gulf Of Finland Vessel Traffic Service', callsign:'Helsinki Traffic', email:'gofrep@fta.fi', telephone:'+358 (0)204 48 5387', telephone2:'+358 (0)204 48 5388', fax:'+358 (0)204 48 5394', vhfchannel1:'60', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'80', vhfreservechannel2:'',
                 iconImage:"",
                 VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
                 showMaxDraught:true,
@@ -45,7 +46,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 deadWeightTonnageLimit:0, //always show
                 sendSummaryTo:"email",
             },
-            {id: 3, shortname: 'GOFREP Tallinn', name: 'Estonia - GOFREP Tallinn - Gulf Of Finland Vessel Traffic Service', callsign:'Tallinn Traffic', email:'gofrep@vta.ee', telephone:'+372 6 205 764', telephone2:'+372 6 205 777', fax:'+372 620 5766', vhfchannel1:'61', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'81', vhfreservechannel2:'',
+            {id: 3, shortname: 'GOFREP-Tallinn', name: 'Estonia - GOFREP Tallinn - Gulf Of Finland Vessel Traffic Service', callsign:'Tallinn Traffic', email:'gofrep@vta.ee', telephone:'+372 6 205 764', telephone2:'+372 6 205 777', fax:'+372 620 5766', vhfchannel1:'61', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'81', vhfreservechannel2:'',
                 iconImage:"",
                 VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
                 showMaxDraught:true,
@@ -59,7 +60,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 deadWeightTonnageLimit:0,
                 sendSummaryTo:"email",
             },
-            {id: 4, shortname: 'GOFREP St. Petersburg', name: 'Russia - GOFREP Helsinki - Gulf Of Finland Vessel Traffic Service', callsign:'St. Peterburg Traffic', email:'gofrep@rsbm.ru', telephone:'+7 12 380 70 21', telephone2:'+7 812 380 70 81', fax:'+7 812 3880 70 20', vhfchannel1:'74', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'10', vhfreservechannel2:'',
+            {id: 4, shortname: 'GOFREP-St.Petersburg', name: 'Russia - GOFREP Helsinki - Gulf Of Finland Vessel Traffic Service', callsign:'St. Peterburg Traffic', email:'gofrep@rsbm.ru', telephone:'+7 12 380 70 21', telephone2:'+7 812 380 70 81', fax:'+7 812 3880 70 20', vhfchannel1:'74', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'10', vhfreservechannel2:'',
                 iconImage:"",
                 VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
                 showMaxDraught:true,
@@ -91,7 +92,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         var VTSData = $scope.VTSCenterData;
         $scope.VTSID = 9999; //for reference when validating - 9999 is pristine
 
-        //DWT multiplier may be needed to force display of fuel types, according to National Single Window project.
+        //DWT multiplier may be needed to force display of fuel types, according to National Single Window project. Not implemented yet.
         $scope.vesselTypes = [
             {type:"General Cargo", DWTmultiplier:0.5285},
             {type:"Bulk Carrier", DWTmultiplier:0.5285},
@@ -140,7 +141,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         ];
 
         //displays as vessel type input but is really a cargo definition
-        $scope.cargoTypes = ["Ballast", "Bulk - grain", "Bulk - other than grain", "Chemicals", "Container/Trailer", "General Cargo", "Gas", "Oil", "Passenger", "Reefer", "Other"]
+        $scope.cargoTypes = ["None", "Ballast", "Bulk - grain", "Bulk - other than grain", "Chemicals", "Container/Trailer", "General Cargo", "Gas", "Oil", "Passenger", "Reefer", "Other"]
 
         //Specific VTS center route dropdowns (They usually have predefined routes and abbreviations as specified in their pilot/master's guide )
         $scope.BELTREPRoutes = ["", ""];
@@ -219,6 +220,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.VTSReadyToSend = false; //global readystate
 
         $scope.reportSummary = { //what is sent to the VTS
+
+            //VTS information
+            vtsShortName:"",
+            vtsCallSign:"",
+            vtsEmail:"",
 
             //Vessel information
             vesselName:"",
@@ -316,12 +322,15 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.VTSValidationAllDone = function(){
 
             //force valid if not required
-            if(!VTSData[$scope.VTSID].showMaxDraught) $scope.setvtsvesselDraughtValid = true
-            if(!VTSData[$scope.VTSID].showAirDraught) $scope.setvtsvesselAirDraughtValid = true
-            if(!VTSData[$scope.VTSID].showDeadWeightTonnage) $scope.setvtsvesselDeadWeightValid = true
-            if(!VTSData[$scope.VTSID].showVesselType) $scope.setvtsVesselTypeValid = true
-            if(!VTSData[$scope.VTSID].showVesselLength) $scope.setvtsVesselLengthValid = true
-            if(!VTSData[$scope.VTSID].showFuelDetails) $scope.fuelDetailsValid = true
+            if(!VTSData[$scope.VTSID].showMaxDraught) $scope.setvtsvesselDraughtValid = true;
+            if(!VTSData[$scope.VTSID].showAirDraught) $scope.setvtsvesselAirDraughtValid = true;
+            if(!VTSData[$scope.VTSID].showDeadWeightTonnage) $scope.setvtsvesselDeadWeightValid = true;
+            if(!VTSData[$scope.VTSID].showVesselType) $scope.setvtsVesselTypeValid = true;
+            if(!VTSData[$scope.VTSID].showVesselLength) $scope.setvtsVesselLengthValid = true;
+            if(!VTSData[$scope.VTSID].showFuelDetails) $scope.fuelDetailsValid = true;
+
+            //exception for cargo information
+            if($scope.showCargoContactInformationInput == false) $scope.setvtsvesselContactDetailsValid = true;
 
             //grouped valid states into 3 to make less confusing
             var group1valid = false,
@@ -346,7 +355,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             }else{
                 $scope.VTSReadyToSend = true;
             }
-            // console.log("Ready to send?",$scope.VTSReadyToSend)
         };
 
         //length greater than 1
@@ -539,7 +547,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             var retVal = $scope.VTSPositionDegValidationHelper($scope.vtsvesselposlatminutesinput,"decimalminutes");
             $scope.vtsvesselposlatminutesinput = retVal.value;
             $scope.setvtsvesselPosLatMinutesValid = retVal.valid;
-            // console.log($scope.vtsvesselposlatminutesinput.match(new RegExp(/^([1-9]|[1-5]\d|60)(\.[0-9]{1,4})?$/)));
+            // console.log($scope.vtsvesselposlatminutesinput.match(new RegExp(/^([1-9]|[1-5]\d|60)(\.[0-9]{1,4})?$/))); //may need to revert
             $scope.VTSValidationAllDone();
         }
         $scope.VTSPositionLonMinValidation = function(){
@@ -607,25 +615,39 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         }
 
         $scope.selectVesselCargoChange = function (selectedItem) {
-            if(selectedItem!="Bulk - grain" && selectedItem != "Ballast" && selectedItem != "Passenger" && selectedItem != "Bulk - other than grain"
+            if(selectedItem!="None" && selectedItem!="Bulk - grain" && selectedItem != "Ballast" && selectedItem != "Passenger" && selectedItem != "Bulk - other than grain"
                 && selectedItem != "Reefer" && selectedItem != "Container/Trailer" && selectedItem != "General Cargo") {
                 $scope.showCargoTypeFields = true;
                 $scope.showCargoTypesCheckbox = true;
                 $scope.vtsDangCargoCheck = true;
                 $scope.vtsDangCargoCheckDisabled = true; //cannot turn off
+                $scope.showCargoContactInformationInput = true;
             }else{
                 $scope.showCargoTypeFields = false;
-                $scope.showCargoTypesCheckbox = true;
+                (selectedItem=="None") ? $scope.showCargoTypesCheckbox = false : $scope.showCargoTypesCheckbox = true
                 $scope.vtsDangCargoCheck = false;
                 $scope.vtsDangCargoCheckDisabled = false;
+                if((selectedItem=="None" || selectedItem=="Ballast")){
+                    $scope.showCargoContactInformationInput = false;
+                }else{
+                    $scope.showCargoContactInformationInput = true;
+                }
             }
             $scope.setvtsCargoTypeValid = true;
             $scope.vtsvesselcargotypeholder = selectedItem;
+            $scope.VTSCargoContactInformationChange();
             $scope.VTSValidationAllDone();
         }
 
         $scope.VTSDangerousCargoCheckbox = function(check){
-            (check) ? $scope.showCargoTypeFields = true : $scope.showCargoTypeFields = false;
+            if(check == true){
+                $scope.showCargoTypeFields = true;
+                $scope.showCargoContactInformationInput = true;
+            }else{
+                $scope.showCargoTypeFields = false;
+                if($scope.vtsvesselcargotypeholder == "Ballast") $scope.showCargoContactInformationInput = false;
+            }
+            $scope.VTSCargoContactInformationChange();
         }
 
         $scope.VTSCargoContactInformationChange = function(){
@@ -896,7 +918,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
     $scope.sendVTSForm = function () {
 
-        //vessel info
+        $scope.reportSummary.vtsShortName=VTSData[$scope.VTSID].shortname,
+        $scope.reportSummary.vtsCallSign=VTSData[$scope.VTSID].callsign,
+        $scope.reportSummary.vtsEmail=VTSData[$scope.VTSID].email,
+
+            //vessel info
         $scope.reportSummary.vesselName = $scope.vtsvesselnameinput;
         $scope.reportSummary.vesselCallSign = $scope.vtsvesselcallsigninput;
         $scope.reportSummary.vesselMMSI = $scope.vtsvesselmmsiinput;
@@ -955,7 +981,24 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
 
         console.log("VTS REPORT:",$scope.reportSummary)
-        $uibModalInstance.close();
+
+        $http({
+            url: '/rest/vtsemail',
+            method: "POST",
+            data: JSON.stringify($scope.reportSummary),
+            headers:{'Content-Type': 'application/json'}
+        })
+        .then(function(data) {
+                var parsedData = JSON.parse(JSON.stringify(data));
+                $uibModalInstance.close('forceclose','forceclose'); //close VTS interface
+                growl.success("VTS report was successfully sent to "+$scope.reportSummary.vtsShortName+"!");
+                // console.log("success:",parsedData.data.message); //TODO - option for user to save receipt of report
+            },
+            function(data) { // optional
+                alert("Your report could not be sent. Please check your internet connection and try again.\nIf this message persists with an established internet connection, please contact the Department of E-Navigation: sfs@dma.dk");
+            });
+
+
     };
 
     $scope.hideVTSForm = function () {
@@ -963,9 +1006,13 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
     };
 
         $scope.$on('modal.closing', function(event, reason, closed) {
-            // console.log('modal.closing: ' + (closed ? 'close' : 'dismiss') + '(' + reason + ')'); //keep this plz
+            // console.log('modal.closing: ' + (closed ? 'close' : 'dismiss') + '(' + reason + ')');
             var message = "You are about to leave the VTS interface. Any changes you have made may be lost.\nClick OK to exit or Cancel to remain in the VTS interface.";
             switch (reason){
+                case "forceclose":
+                    $scope.VTSID=9999;
+                    message = "forceclose";
+                    break;
                 case "backdrop click":
                     message = ""; //will do nothing
                     break;
