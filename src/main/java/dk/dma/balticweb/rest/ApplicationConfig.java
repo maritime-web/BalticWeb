@@ -30,6 +30,7 @@ import dk.dma.embryo.vessel.json.RouteUploadRestService;
 import dk.dma.embryo.vessel.json.ScheduleRestService;
 import dk.dma.enav.services.nwnm.NwNmRestService;
 import dk.dma.enav.services.registry.ServiceLookupRestService;
+import dk.dma.enav.services.vtsreport.service.VtsService;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -73,7 +74,7 @@ public class ApplicationConfig extends Application {
                 FeedbackRestService.class,
                // AreasOfInterestRestService.class,
                 NwNmRestService.class,
-                VTSEmailRestService.class,
+                VtsService.class,
                 ServiceLookupRestService.class));
 
         return set;

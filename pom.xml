@@ -112,6 +112,10 @@
 			<artifactId>service-registry</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>dk.dma.enav.services</groupId>
+			<artifactId>vts-report</artifactId>
+		</dependency>
 <!--
 		<dependency>
 			<groupId>dk.dma.enav.services</groupId>

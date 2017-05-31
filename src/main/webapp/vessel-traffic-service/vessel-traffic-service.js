@@ -74,7 +74,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 deadWeightTonnageLimit:0,
                 sendSummaryTo:"email",
             },
-            {id: 5, shortname: 'TESTREP', name: 'Roland - ROREP - Awesome Vessel Traffic Service', callsign:'YOLO VTS', email:'yolo@swag.org', telephone:'555-no-idea', telephone2:'555-still-dunno', fax:'555-fax-fun', vhfchannel1:'North 1', vhfchannel2:'East 2', vhfchannel3:'West 3', vhfchannel4:'South 4', vhfreservechannel1:'11', vhfreservechannel2:'12',
+            {id: 5, shortname: 'TESTREP', name: 'Roland - ROREP - Awesome Vessel Traffic Service', callsign:'YOLO VTS', email:'rob@dma.dk', telephone:'555-no-idea', telephone2:'555-still-dunno', fax:'555-fax-fun', vhfchannel1:'North 1', vhfchannel2:'East 2', vhfchannel3:'West 3', vhfchannel4:'South 4', vhfreservechannel1:'11', vhfreservechannel2:'12',
                 iconImage:"img/ring.png",
                 VTSGuideLink:"http://images.fandango.com/images/fandangoblog/minions618F1.jpg",
                 showMaxDraught:true,
@@ -92,7 +92,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         var VTSData = $scope.VTSCenterData;
         $scope.VTSID = 9999; //for reference when validating - 9999 is pristine
 
-        //DWT multiplier may be needed to force display of fuel types, according to National Single Window project. Not implemented yet.
+        //DWT multiplier may be needed to force display of fuel types, according to National Single Window project. Not implemented in BalticWeb yet.
         $scope.vesselTypes = [
             {type:"General Cargo", DWTmultiplier:0.5285},
             {type:"Bulk Carrier", DWTmultiplier:0.5285},
