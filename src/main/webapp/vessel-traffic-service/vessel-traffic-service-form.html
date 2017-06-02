@@ -18,10 +18,19 @@
         <div style="padding-bottom:6px;">
             <span class="bold vts-pad-top">Estimated Time of Arrival at {{VTSSelectedTrafficCenterShortname}}  </span>
             <div class="vts-pad-top">
+                <div>ETA at {{VTSSelectedTrafficCenterShortname}} (UTC) (currently not used)</div>
                 <input class="vts-input-medium vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsEtaDateValid]" type="text" ng-model="vtsetadateinput" ng-change="VTSEtaDateValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = 'DATE'" placeholder="DATE">
                 <input class="vts-input-medium vts-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsEtaTimeValid]" type="text" ng-model="vtsetatimeinput" ng-change="VTSEtaTimeValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = 'TIME'" placeholder="TIME">
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span class="vts-force-spacing-300">ETA at {{VTSSelectedTrafficCenterShortname}} (UTC) (currently not used)</span>
+            </div>
+            <div class="vts-pad-top">
+                <div class="vts-force-spacing-200 " >
+                    <span class="vts-force-spacing-200">Port of destination:</span>
+                    <input class="vts-input " ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPortOfDestinationValid]" type="text" ng-model="vtsvesselportofdestinationinput" ng-change="VTSVesselPortOfDestinationValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = ''" placeholder="">
+                </div>
+                <div class="vts-force-spacing-200 ">
+                    <span class="vts-force-spacing-100">Route</span>
+                    <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselRouteValid]" type="text" ng-model="vtsvesselrouteinput" onfocus="this.placeholder = 'Currently not in use'" onblur="this.placeholder = ''" placeholder="Currently not in use">
+                </div>
             </div>
         </div>
 
@@ -372,16 +381,6 @@
             </div>
         </div>
 
-        <div class="vts-pad-top">
-            <div class="vts-force-spacing-200 " >
-                <span class="vts-force-spacing-200">Port of destination:</span>
-                <input class="vts-input " ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPortOfDestinationValid]" type="text" ng-model="vtsvesselportofdestinationinput" ng-change="VTSVesselPortOfDestinationValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = ''" placeholder="">
-            </div>
-            <div class="vts-force-spacing-200 ">
-                <span class="vts-force-spacing-100">Route</span>
-                <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselRouteValid]" type="text" ng-model="vtsvesselrouteinput" onfocus="this.placeholder = 'Currently not in use'" onblur="this.placeholder = ''" placeholder="Currently not in use">
-            </div>
-        </div>
 
 
         <hr class="vts-hr"> <!-- CARGO INFORMATION ------------------------------------------------------------------- -->

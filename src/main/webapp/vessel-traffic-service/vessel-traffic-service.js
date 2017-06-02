@@ -1,95 +1,32 @@
-angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scope', '$uibModalInstance', '$window', '$sce', 'growl', '$http',
-    function ($scope, $uibModalInstance, $window, $sce, growl, $http) {
+angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scope', '$uibModalInstance', '$window', '$sce', 'growl', '$http', 'Auth',
+    function ($scope, $uibModalInstance, $window, $sce, growl, $http, Auth) {
         //Add any new VTS centers here - TODO - this should be put into the maritime cloud as a service
         //shortname MAY NOT HAVE SPACES
-        $scope.VTSCenterData = [
-            {id: 0, shortname: 'BELTREP', name: 'Denmark - BELTREP - The Great Belt Vessel Traffic Service', callsign:'Great Belt Traffic', email:'vts@beltrep.org', telephone:'+45 58 37 68 68', telephone2:'', fax:'', vhfchannel1:'North 74', vhfchannel2:'South 11', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'11', vhfreservechannel2:'',
-                iconImage:"img/OpenPortGuideLogo_32.png",
-                VTSGuideLink:"http://forsvaret.dk/VTSSTB/eng/Documents/BELTREP%20Information%20ver%200.pdf",
-                showMaxDraught:false,
-                showAirDraught:true,
-                showFuelQuantity:false,
-                showFuelDetails:false, //required but disabled for testing
-                showVesselType:false,
-                showVesselLength:false,
-                showDeadWeightTonnage:true,
-                showGrossTonnage:false,
-                deadWeightTonnageLimit:1000, //at which tonnage to display fueldetails - uses deadWeightTonnageMultiplier with cargoTypes
-                sendSummaryTo:"email", //sends summary as email to the registered email, can also send as JSON to service in future version, ex: "https://beltrep.org/services/VTSservice"
-            },
-            {id: 1, shortname: 'SOUNDREP', name: 'Sweden - SOUNDREP - Sound Vessel Traffic Service', callsign:'Sound VTS', email:'contact@soundvts.org', telephone:'+46 771-630600', telephone2:'', fax:'', vhfchannel1:'North 73', vhfchannel2:'South 71', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'68', vhfreservechannel2:'79',
-                iconImage:"img/logo_SOUNDREP.png",
-                VTSGuideLink:"http://www.sjofartsverket.se/pages/32062/SoundVTS2011.pdf",
-                showMaxDraught:true,
-                showAirDraught:true,
-                showFuelQuantity:false,
-                showFuelDetails:false, //required but disabled for testing
-                showVesselType:false,
-                showVesselLength:false,
-                showDeadWeightTonnage:false,
-                showGrossTonnage:false,
-                deadWeightTonnageLimit:1000,
-                sendSummaryTo:"email",
-            },
-            //All GOFREP have same criteria
-            {id: 2, shortname: 'GOFREP-Helsinki', name: 'Finland - GOFREP - Gulf Of Finland Vessel Traffic Service', callsign:'Helsinki Traffic', email:'gofrep@fta.fi', telephone:'+358 (0)204 48 5387', telephone2:'+358 (0)204 48 5388', fax:'+358 (0)204 48 5394', vhfchannel1:'60', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'80', vhfreservechannel2:'',
-                iconImage:"",
-                VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
-                showMaxDraught:true,
-                showAirDraught:false,
-                showFuelQuantity:true,
-                showFuelDetails:false,
-                showVesselType:true,
-                showVesselLength:true,
-                showDeadWeightTonnage:false,
-                showGrossTonnage:false,
-                deadWeightTonnageLimit:0, //always show
-                sendSummaryTo:"email",
-            },
-            {id: 3, shortname: 'GOFREP-Tallinn', name: 'Estonia - GOFREP Tallinn - Gulf Of Finland Vessel Traffic Service', callsign:'Tallinn Traffic', email:'gofrep@vta.ee', telephone:'+372 6 205 764', telephone2:'+372 6 205 777', fax:'+372 620 5766', vhfchannel1:'61', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'81', vhfreservechannel2:'',
-                iconImage:"",
-                VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
-                showMaxDraught:true,
-                showAirDraught:false,
-                showFuelQuantity:true,
-                showFuelDetails:false,
-                showVesselType:true,
-                showVesselLength:true,
-                showDeadWeightTonnage:false,
-                showGrossTonnage:false,
-                deadWeightTonnageLimit:0,
-                sendSummaryTo:"email",
-            },
-            {id: 4, shortname: 'GOFREP-St.Petersburg', name: 'Russia - GOFREP Helsinki - Gulf Of Finland Vessel Traffic Service', callsign:'St. Peterburg Traffic', email:'gofrep@rsbm.ru', telephone:'+7 12 380 70 21', telephone2:'+7 812 380 70 81', fax:'+7 812 3880 70 20', vhfchannel1:'74', vhfchannel2:'', vhfchannel3:'', vhfchannel4:'', vhfreservechannel1:'10', vhfreservechannel2:'',
-                iconImage:"",
-                VTSGuideLink:"http://www.vta.ee/public/GOFREP_web.pdf",
-                showMaxDraught:true,
-                showAirDraught:false,
-                showFuelQuantity:true,
-                showFuelDetails:false,
-                showVesselType:true,
-                showVesselLength:true,
-                showDeadWeightTonnage:false,
-                showGrossTonnage:false,
-                deadWeightTonnageLimit:0,
-                sendSummaryTo:"email",
-            },
-            {id: 5, shortname: 'TESTREP', name: 'Roland - ROREP - Awesome Vessel Traffic Service', callsign:'YOLO VTS', email:'rob@dma.dk', telephone:'555-no-idea', telephone2:'555-still-dunno', fax:'555-fax-fun', vhfchannel1:'North 1', vhfchannel2:'East 2', vhfchannel3:'West 3', vhfchannel4:'South 4', vhfreservechannel1:'11', vhfreservechannel2:'12',
-                iconImage:"img/ring.png",
-                VTSGuideLink:"http://images.fandango.com/images/fandangoblog/minions618F1.jpg",
-                showMaxDraught:true,
-                showAirDraught:true,
-                showFuelDetails:true,
-                showFuelQuantity:true,
-                showVesselType:true,
-                showVesselLength:true,
-                showDeadWeightTonnage:true,
-                showGrossTonnage:true,
-                deadWeightTonnageLimit:0,
-                sendSummaryTo:"email",
-            },
-        ];
-        var VTSData = $scope.VTSCenterData;
+
+
+        var VTSData = []; //local array
+        $http({ // get the VTS definition objects from service - builds the correct buttons/fields
+            url: '/rest/vtsinterface',
+            method: "GET",
+            data: "",
+            headers:{'Content-Type': 'application/text'}
+        })
+            .then(function(data) {
+                    var parsedData = JSON.parse(JSON.stringify(data));
+                    growl.success("VTS interface population service was successful.");
+                    $scope.VTSCenterData = parsedData.data.VtsJsObjects;
+                    VTSData = $scope.VTSCenterData;
+                    $scope.digest(); //reflow the interface with the data
+                },
+                function(data) { // error
+                    growl.error("VTS interface population service could not be contacted. Please check your internet connection and try again.\nRetrying in 5 seconds.");
+                });
+
+
+
+        //Auth.loggedIn
+
+        VTSData = $scope.VTSCenterData;
         $scope.VTSID = 9999; //for reference when validating - 9999 is pristine
 
         //DWT multiplier may be needed to force display of fuel types, according to National Single Window project. Not implemented in BalticWeb yet.
@@ -918,69 +855,69 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
     $scope.sendVTSForm = function () {
 
-        $scope.reportSummary.vtsShortName=VTSData[$scope.VTSID].shortname,
-        $scope.reportSummary.vtsCallSign=VTSData[$scope.VTSID].callsign,
-        $scope.reportSummary.vtsEmail=VTSData[$scope.VTSID].email,
+        $scope.reportSummary.vtsShortName = "" + VTSData[$scope.VTSID].shortname,
+        $scope.reportSummary.vtsCallSign = "" + VTSData[$scope.VTSID].callsign,
+        $scope.reportSummary.vtsEmail = "" + VTSData[$scope.VTSID].email,
 
             //vessel info
-        $scope.reportSummary.vesselName = $scope.vtsvesselnameinput;
-        $scope.reportSummary.vesselCallSign = $scope.vtsvesselcallsigninput;
-        $scope.reportSummary.vesselMMSI = $scope.vtsvesselmmsiinput;
-        $scope.reportSummary.vesselIMO = $scope.vtsvesselimoinput;
-        $scope.reportSummary.vesselDraught = $scope.vtsvesseldraughtinput;
-        $scope.reportSummary.vesselAirDraught = $scope.vtsvesselairdraughtinput;
-        $scope.reportSummary.vesselPersonsOnboard = $scope.vtsvesselpersonsinput;
-        $scope.reportSummary.vesselLength = $scope.vtsvessellengthinput;
-        $scope.reportSummary.vesselDeadWeight = $scope.vtsvesseldeadweightinput;
-        $scope.reportSummary.vesselGRT = $scope.vtsvesselgrosstonnageinput;
-        $scope.reportSummary.vesselDefects = $scope.vtsvesseldefectsinput;
-        $scope.reportSummary.vesselType = $scope.vtsvesseltypeholder;
+        $scope.reportSummary.vesselName = "" + $scope.vtsvesselnameinput;
+        $scope.reportSummary.vesselCallSign = "" + $scope.vtsvesselcallsigninput;
+        $scope.reportSummary.vesselMMSI = "" + $scope.vtsvesselmmsiinput;
+        $scope.reportSummary.vesselIMO = "" + $scope.vtsvesselimoinput;
+        $scope.reportSummary.vesselDraught = "" + $scope.vtsvesseldraughtinput;
+        $scope.reportSummary.vesselAirDraught = "" + $scope.vtsvesselairdraughtinput;
+        $scope.reportSummary.vesselPersonsOnboard = "" + $scope.vtsvesselpersonsinput;
+        $scope.reportSummary.vesselLength = "" + $scope.vtsvessellengthinput;
+        $scope.reportSummary.vesselDeadWeight = "" + $scope.vtsvesseldeadweightinput;
+        $scope.reportSummary.vesselGRT = "" + $scope.vtsvesselgrosstonnageinput;
+        $scope.reportSummary.vesselDefects = "" + $scope.vtsvesseldefectsinput;
+        $scope.reportSummary.vesselType = "" + $scope.vtsvesseltypeholder;
 
         //fuel
-        $scope.reportSummary.fuelTotalFuel = parseFloat($scope.vtsTotalFuel); //all fuel added up
-        $scope.reportSummary.fuelTypeHFORegular = $scope.vtsvesselfueltype00_0input;
-        $scope.reportSummary.fuelTypeHFOLowSulphur = $scope.vtsvesselfueltype00_1input;
-        $scope.reportSummary.fuelTypeHFOUltraLowSulphur = $scope.vtsvesselfueltype00_2input;
-        $scope.reportSummary.fuelTypeIFORegular = $scope.vtsvesselfueltype01_0input;
-        $scope.reportSummary.fuelTypeIFOLowSulphur = $scope.vtsvesselfueltype01_1input;
-        $scope.reportSummary.fuelTypeIFOUltraLowSulphur = $scope.vtsvesselfueltype01_2input;
-        $scope.reportSummary.fuelTypeMDORegular = $scope.vtsvesselfueltype02_0input;
-        $scope.reportSummary.fuelTypeMDOLowSulphur = $scope.vtsvesselfueltype02_1input;
-        $scope.reportSummary.fuelTypeMDOUltraLowSulphur = $scope.vtsvesselfueltype02_2input;
-        $scope.reportSummary.fuelTypeMGORegular = $scope.vtsvesselfueltype03_0input;
-        $scope.reportSummary.fuelTypeMGOLowSulphur = $scope.vtsvesselfueltype03_1input;
-        $scope.reportSummary.fuelTypeMGOUltraLowSulphur = $scope.vtsvesselfueltype03_2input;
-        $scope.reportSummary.fuelTypeLPG = $scope.vtsvesselfueltype04_0input;
-        $scope.reportSummary.fuelTypeLNG = $scope.vtsvesselfueltype05_0input;
+        $scope.reportSummary.fuelTotalFuel = "" + (parseFloat($scope.vtsTotalFuel)); //all fuel added up
+        $scope.reportSummary.fuelTypeHFORegular = "" + $scope.vtsvesselfueltype00_0input;
+        $scope.reportSummary.fuelTypeHFOLowSulphur = "" + $scope.vtsvesselfueltype00_1input;
+        $scope.reportSummary.fuelTypeHFOUltraLowSulphur = "" + $scope.vtsvesselfueltype00_2input;
+        $scope.reportSummary.fuelTypeIFORegular = "" + $scope.vtsvesselfueltype01_0input;
+        $scope.reportSummary.fuelTypeIFOLowSulphur = "" + $scope.vtsvesselfueltype01_1input;
+        $scope.reportSummary.fuelTypeIFOUltraLowSulphur = "" + $scope.vtsvesselfueltype01_2input;
+        $scope.reportSummary.fuelTypeMDORegular = "" + $scope.vtsvesselfueltype02_0input;
+        $scope.reportSummary.fuelTypeMDOLowSulphur = "" + $scope.vtsvesselfueltype02_1input;
+        $scope.reportSummary.fuelTypeMDOUltraLowSulphur = "" + $scope.vtsvesselfueltype02_2input;
+        $scope.reportSummary.fuelTypeMGORegular = "" + $scope.vtsvesselfueltype03_0input;
+        $scope.reportSummary.fuelTypeMGOLowSulphur = "" + $scope.vtsvesselfueltype03_1input;
+        $scope.reportSummary.fuelTypeMGOUltraLowSulphur = "" + $scope.vtsvesselfueltype03_2input;
+        $scope.reportSummary.fuelTypeLPG = "" + $scope.vtsvesselfueltype04_0input;
+        $scope.reportSummary.fuelTypeLNG = "" + $scope.vtsvesselfueltype05_0input;
 
         //cargo
         $scope.reportSummary.cargoType = $scope.vtsvesselcargotypeholder;
-        $scope.reportSummary.cargoIMOClass01 = ($scope.vtsdangerouscargotype01input!="") ? parseFloat($scope.vtsdangerouscargotype01input) : 0;
-        $scope.reportSummary.cargoIMOClass02 = ($scope.vtsdangerouscargotype02input!="") ? parseFloat($scope.vtsdangerouscargotype02input) : 0;
-        $scope.reportSummary.cargoIMOClass03 = ($scope.vtsdangerouscargotype03input!="") ? parseFloat($scope.vtsdangerouscargotype03input) : 0;
-        $scope.reportSummary.cargoIMOClass04 = ($scope.vtsdangerouscargotype04input!="") ? parseFloat($scope.vtsdangerouscargotype04input) : 0;
-        $scope.reportSummary.cargoIMOClass05 = ($scope.vtsdangerouscargotype05input!="") ? parseFloat($scope.vtsdangerouscargotype05input) : 0;
-        $scope.reportSummary.cargoIMOClass06 = ($scope.vtsdangerouscargotype06input!="") ? parseFloat($scope.vtsdangerouscargotype06input) : 0;
-        $scope.reportSummary.cargoIMOClass07 = ($scope.vtsdangerouscargotype07input!="") ? parseFloat($scope.vtsdangerouscargotype07input) : 0;
-        $scope.reportSummary.cargoIMOClass08 = ($scope.vtsdangerouscargotype08input!="") ? parseFloat($scope.vtsdangerouscargotype08input) : 0;
-        $scope.reportSummary.cargoIMOClass09 = ($scope.vtsdangerouscargotype09input!="") ? parseFloat($scope.vtsdangerouscargotype09input) : 0;
-        $scope.reportSummary.cargoDangerousCargoTotalTonnage = $scope.vtsdangerouscargotonnagelabel;
+        $scope.reportSummary.cargoIMOClass01 = "" + (($scope.vtsdangerouscargotype01input!="") ? (parseFloat($scope.vtsdangerouscargotype01input)) : 0);
+        $scope.reportSummary.cargoIMOClass02 = "" + (($scope.vtsdangerouscargotype02input!="") ? (parseFloat($scope.vtsdangerouscargotype02input)) : 0);
+        $scope.reportSummary.cargoIMOClass03 = "" + (($scope.vtsdangerouscargotype03input!="") ? (parseFloat($scope.vtsdangerouscargotype03input)) : 0);
+        $scope.reportSummary.cargoIMOClass04 = "" + (($scope.vtsdangerouscargotype04input!="") ? (parseFloat($scope.vtsdangerouscargotype04input)) : 0);
+        $scope.reportSummary.cargoIMOClass05 = "" + (($scope.vtsdangerouscargotype05input!="") ? (parseFloat($scope.vtsdangerouscargotype05input)) : 0);
+        $scope.reportSummary.cargoIMOClass06 = "" + (($scope.vtsdangerouscargotype06input!="") ? (parseFloat($scope.vtsdangerouscargotype06input)) : 0);
+        $scope.reportSummary.cargoIMOClass07 = "" + (($scope.vtsdangerouscargotype07input!="") ? (parseFloat($scope.vtsdangerouscargotype07input)) : 0);
+        $scope.reportSummary.cargoIMOClass08 = "" + (($scope.vtsdangerouscargotype08input!="") ? (parseFloat($scope.vtsdangerouscargotype08input)) : 0);
+        $scope.reportSummary.cargoIMOClass09 = "" + (($scope.vtsdangerouscargotype09input!="") ? (parseFloat($scope.vtsdangerouscargotype09input)) : 0);
+        $scope.reportSummary.cargoDangerousCargoTotalTonnage = "" + ($scope.vtsdangerouscargotonnagelabel);
         if($scope.reportSummary.vtsdangerouscargotonnagelabel != "" ) $scope.reportSummary.cargoDangerousCargoOnBoard = true;
-        $scope.reportSummary.cargoIMOClassesOnBoard = $scope.vtsdangerouscargotypeslabel;
-        $scope.reportSummary.cargoPollutantOrDCLostOverBoard = $scope.vtsdangerouscargooverboard;
-        $scope.reportSummary.cargoInformationOrOwnerContact = $scope.vtscargotcontactdetailsinput;
+        $scope.reportSummary.cargoIMOClassesOnBoard = "" + ($scope.vtsdangerouscargotypeslabel);
+        $scope.reportSummary.cargoPollutantOrDCLostOverBoard = "" + ($scope.vtsdangerouscargooverboard);
+        $scope.reportSummary.cargoInformationOrOwnerContact = "" + ($scope.vtscargotcontactdetailsinput);
 
         //voyage info
-        $scope.reportSummary.voyagePositionLon = $scope.vtsvesselposlondegreesinput +","+ $scope.vtsvesselposlonminutesinput;
-        $scope.reportSummary.voyagePositionLat = $scope.vtsvesselposlatdegreesinput +","+ $scope.vtsvesselposlatminutesinput;
-        $scope.reportSummary.voyageSpeed = parseFloat($scope.vtsvesselspeedinput);
-        $scope.reportSummary.voyageTrueHeading = parseFloat($scope.vtsvesseltrueheadinginput);
-        $scope.reportSummary.voyagePortOfDestination = $scope.vtsvesselportofdestinationinput;
-        $scope.reportSummary.voyageVTSETADate = $scope.vtsetadateinput;
-        $scope.reportSummary.voyageVTSETATime = $scope.vtsetatimeinput;
+        $scope.reportSummary.voyagePositionLon = "" + ($scope.vtsvesselposlondegreesinput +","+ $scope.vtsvesselposlonminutesinput);
+        $scope.reportSummary.voyagePositionLat = "" + ($scope.vtsvesselposlatdegreesinput +","+ $scope.vtsvesselposlatminutesinput);
+        $scope.reportSummary.voyageSpeed = "" + (parseFloat($scope.vtsvesselspeedinput));
+        $scope.reportSummary.voyageTrueHeading = "" + (parseFloat($scope.vtsvesseltrueheadinginput));
+        $scope.reportSummary.voyagePortOfDestination = "" + ($scope.vtsvesselportofdestinationinput);
+        $scope.reportSummary.voyageVTSETADate = "" + ($scope.vtsetadateinput);
+        $scope.reportSummary.voyageVTSETATime = "" + ($scope.vtsetatimeinput);
 
 
-        console.log("VTS REPORT:",$scope.reportSummary)
+        // console.log("VTS REPORT:",$scope.reportSummary)
 
         $http({
             url: '/rest/vtsemail',
@@ -989,10 +926,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             headers:{'Content-Type': 'application/json'}
         })
         .then(function(data) {
+                console.log("data:",data);
                 var parsedData = JSON.parse(JSON.stringify(data));
+                console.log("parsedData:",parsedData);
                 $uibModalInstance.close('forceclose','forceclose'); //close VTS interface
                 growl.success("VTS report was successfully sent to "+$scope.reportSummary.vtsShortName+"!");
-                // console.log("success:",parsedData.data.message); //TODO - option for user to save receipt of report
+                console.log("success:",parsedData.confirm);
             },
             function(data) { // optional
                 alert("Your report could not be sent. Please check your internet connection and try again.\nIf this message persists with an established internet connection, please contact the Department of E-Navigation: sfs@dma.dk");
