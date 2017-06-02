@@ -98,15 +98,15 @@
 		</dependency>
 -->
 
-<!--		<dependency>
+		<!--<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>reporting</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>dk.dma.enav.services</groupId>
-			<artifactId>weather</artifactId>
-		</dependency>-->
+                <dependency>
+                    <groupId>dk.dma.enav.services</groupId>
+                    <artifactId>weather</artifactId>
+                </dependency>-->
 		<dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>service-registry</artifactId>
@@ -427,8 +427,8 @@
 						<!-- optional: default phase is "generate-resources" -->
 						<phase>generate-resources</phase>
 						<configuration>
-							<nodeVersion>v5.4.0</nodeVersion>
-							<npmVersion>3.10.5</npmVersion>
+							<nodeVersion>v7.9.0</nodeVersion>
+							<npmVersion>5.0.1</npmVersion>
 						</configuration>
 					</execution>
 					<execution>
