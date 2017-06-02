@@ -2,7 +2,7 @@
  * Defines the main No-go area layer.
  *
  */
-angular.module('maritimeweb.no-go-area')
+angular.module('maritimeweb.no-go-area-self')
 
     /** Service for accessing No Go areas **/
     .service('NoGoAreaService', ['$http', '$log',

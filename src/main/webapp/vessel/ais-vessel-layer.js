@@ -233,7 +233,7 @@ angular.module('maritimeweb.vessel')
                                 return;
                             }
                             $rootScope.loadingData = true; // start spinner
-                            growl.info('Fetching vessel data <i class="fa fa-cog fa-spin  fa-fw"></i><span class="sr-only">Loading...</span>', {ttl: 3000});
+                           // growl.info('Fetching vessel data <i class="fa fa-cog fa-spin  fa-fw"></i><span class="sr-only">Loading...</span>', {ttl: 3000});
 
                             var zoomLvl = map.getView().getZoom();
                             scope.vessels.length = 0;

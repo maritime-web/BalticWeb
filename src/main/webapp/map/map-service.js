@@ -67,6 +67,7 @@ angular.module('maritimeweb.map')
             };
 
 
+
             /** Converts lon-lat extent array to xy extent array in mercator */
             this.fromLonLatExtent = function (lonLatExtent) {
                 if (lonLatExtent && lonLatExtent.length == 4) {
@@ -462,6 +463,76 @@ angular.module('maritimeweb.map')
                     ]
                 });
             };
+
+
+            /***************************/
+            /** noGoLayer Layers      **/
+            /***************************/
+            this.createNoGoLayerGroup = function () {
+
+                var noGoStyleRed = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(255, 0, 10, 0.5)',
+                        width: 1
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255, 0, 10, 0.10)'
+                    })
+                });
+                var availableServiceStyle = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 255, 10, 0.8)',
+                        width: 3
+                    })
+                });
+
+
+                // Construct the boundary layers
+                var boundaryLayer = new ol.layer.Vector({
+                    title: 'Calculated NO GO AREA',
+                    zIndex: 11,
+                    source: new ol.source.Vector({
+                        features: new ol.Collection(),
+                        wrapX: false
+                    }),
+                    style: [noGoStyleRed]
+                });
+
+                var serviceAvailableLayer = new ol.layer.Vector({
+                    title: 'Service Available - NO GO AREA',
+                    zIndex: 11,
+                    source: new ol.source.Vector({
+                        features: new ol.Collection(),
+                        wrapX: false
+                    }),
+                    style: [availableServiceStyle]
+                });
+
+                serviceAvailableLayer.setZIndex(12);
+                serviceAvailableLayer.setVisible(true);
+                serviceAvailableLayer.getSource().clear();
+
+
+                boundaryLayer.setZIndex(11);
+                boundaryLayer.setVisible(true);
+
+
+                /***************************/
+                /** Map creation          **/
+                /***************************/
+
+                // Construct No Go Layer Group layer
+                var noGoGroupLayer = new ol.layer.Group({
+                    title: 'No Go Service',
+                    zIndex: 11,
+                    layers: [boundaryLayer, serviceAvailableLayer]
+                });
+                noGoGroupLayer.setZIndex(11);
+                noGoGroupLayer.setVisible(true);
+
+                return noGoGroupLayer;
+            }
+
 
         }]);
 

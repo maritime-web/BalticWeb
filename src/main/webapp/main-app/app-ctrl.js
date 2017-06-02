@@ -2,8 +2,8 @@ angular.module('maritimeweb.app')
 
     .controller("AppController", [
         '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
-        'VesselService', 'NwNmService', 'SatelliteService', 'growl', '$uibModal', '$log',
-    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, growl, $uibModal, $log) {
+        'VesselService', 'NwNmService', 'SatelliteService', 'growl', '$uibModal', '$log', '$interval',
+    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, growl, $uibModal, $log, $interval) {
 
         // Cancel any pending NW-NN queries
         var loadTimerService = undefined;
@@ -56,6 +56,7 @@ angular.module('maritimeweb.app')
         $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
         //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
         $scope.mapSeaMapLayer =  MapService.createSuperSeaMapLayerGroup();
+        // $scope.mapNoGoLayer =  MapService.createNoGoLayerGroup(); // is set in the no-go-layer
 
 
 
@@ -108,8 +109,71 @@ angular.module('maritimeweb.app')
         //     // for other stuff ...
         // }
 
+        /**************************************/
+        const top_nw_lon = 56.30;
+        const bottom_se_lon = 54.4;
+        const right_nw_lat = 13.0;
+        const left_se_lat = 10.0;
+        $scope.nogo = {};
+        $scope.nogo.ship = {};
+        $scope.nogo.ship.draught = 4;
+        $scope.nogo.time = new Date();
+        $scope.nogo.timeAgoString = "just now";
+        $scope.nogo.loading = false;
+        $scope.nogo.animating = false;
 
-            /**************************************/
+
+        $scope.checkNoGoService = function () {
+            $log.info("main app controller - check no go service");
+            $scope.mapNoGoLayer.setVisible(false);
+            $scope.mapNoGoLayer.setVisible(true);
+
+        };
+
+        $scope.disableNoGoService = function () {
+            $log.info("main app controller - disable no go service");
+            $scope.mapNoGoLayer.setVisible(false);
+        };
+
+        $scope.enableNoGoService = function () {
+            $log.info("main app controller - enable no go service");
+            $scope.mapNoGoLayer.setVisible(true);
+        };
+
+        $scope.clearNoGo = function() {
+            $log.info("Clear no go");
+            serviceAvailableLayer.getSource().clear();
+            boundaryLayer.getSource().clear();
+            $scope.nogo.loading = false;
+        };
+
+        $scope.getNextNoGoArea = function(){
+            if(!$scope.nogo.time || ("" ==$scope.nogo.time)){
+                $scope.nogo.time = new Date();
+            }
+            $scope.nogo.time.setHours($scope.nogo.time.getHours() + 1);
+            console.log("getNextNoGoArea " + $scope.nogo.time);
+            $scope.checkNoGoService();
+        };
+
+        $scope.getNextNoGoAreaIncreaseDraught = function(){
+            if(!$scope.nogo.time){
+                $scope.nogo.time = new Date();
+            }
+            $scope.nogo.ship.draught = $scope.nogo.ship.draught + 0.5 ;
+            $scope.checkNoGoService();
+        };
+
+        $scope.doGruntAnimation = function(){
+            $log.info("doGruntAnimation");
+            $interval($scope.getNextNoGoArea, 2200, 8);
+        };
+
+        $scope.doIncreaseDraughtAnimation = function(){
+            $log.info("doIncreaseDraughtAnimation");
+            $interval($scope.getNextNoGoAreaIncreaseDraught, 2200, 8);
+        };
+
 
         /**************************************/
         /** NW-NM sidebar functionality      **/

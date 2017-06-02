@@ -304,7 +304,7 @@ angular.module('maritimeweb.route')
                 $rootScope.route_oLpoints =  $scope.oLpoints;
                 $rootScope.route_totaldistance = $scope.totaldistance;
                 var redirect = function(){
-                    $rootScope.showgraphSidebar = true; // rough disabling of the sidebar
+                    $rootScope.showgraphSidebar = true; // rough enabling of the sidebar
 
                     $scope.loading = false;
                     $window.location.href = '#';
@@ -326,7 +326,7 @@ angular.module('maritimeweb.route')
                 $rootScope.route_oLpoints =  $scope.oLOptimizedpoints;
                 $rootScope.route_totaldistance = $scope.totalOptimizedDistance;
                 var redirect = function(){
-                    $rootScope.showgraphSidebar = true; // rough disabling of the sidebar
+                    $rootScope.showgraphSidebar = true; // rough enabling of the sidebar
 
                     $scope.loading = false;
                     $window.location.href = '#';
@@ -349,7 +349,7 @@ angular.module('maritimeweb.route')
                 $scope.optimizing = true;
                 $log.debug("Harcoded Optimizing route for mmsi" + $routeParams.mmsi);
 
-                $scope.rtzOptimizedName =  $scope.rtzName + "Optimized by SSPA" ;
+                $scope.rtzOptimizedName =  $scope.rtzName + " optimized" ;
 
                 $scope.oLOptimizedfeatures = []; // openlayers optimized features
                 $scope.oLanimatedOptimizedfeatures = []; // openlayers animated optimized features

@@ -67,7 +67,8 @@ angular.module('maritimeweb.no-go-area')
             return {
                 restrict: 'E',
                 require: '^olMap',
-                template: '<div class="map-no-go-btn panel panel-default">' +
+                template:'',
+                /*'<div class="map-no-go-btn panel panel-default">' +
                 '<div class="panel-heading" ng-click="noGoCollapsed = !noGoCollapsed">' +
                 'No Go <i  ng-if="!noGoCollapsed" class="fa fa-caret-down" aria-hidden="true"></i> <button class="pull-right" ng-if="noGoCollapsed" >  <i  class="fa fa-caret-up" aria-hidden="true"></i></button>' +
                 '<button ng-if="loading"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></button>' +
@@ -104,10 +105,8 @@ angular.module('maritimeweb.no-go-area')
                 "</div>" +
                 "</div>" +
                 '</div>' +
-                '</div>',
-                scope: {
-                    name:           '@'
-                },
+                '</div>',*/
+
                 link: function(scope, element, attrs, ctrl) {
 
                     var olScope = ctrl.getOpenlayersScope();
@@ -115,17 +114,19 @@ angular.module('maritimeweb.no-go-area')
                     var noGoGroupLayer;
                     var serviceAvailableLayer;
                     var boundaryLayer;
+                    var loadTimer;
+
                     const top_nw_lon = 56.30;
                     const bottom_se_lon = 54.4;
                     const right_nw_lat = 13.0;
                     const left_se_lat = 10.0;
-                    scope.ship = {};
+                   /* scope.ship = {};
                     scope.ship.draught = 6;
                     scope.time = new Date();
                     scope.timeAgoString = "";
                     scope.loading = false;
                     scope.animating = false;
-
+*/
                     /*const top_nw_lon = 56.36316;
                     const bottom_se_lon = 54.36294;
                     const right_nw_lat = 13.149009;
@@ -167,6 +168,7 @@ angular.module('maritimeweb.no-go-area')
                         // Construct the boundary layers
                         boundaryLayer = new ol.layer.Vector({
                             title: 'Calculated NO GO AREA',
+                            name: 'NoGoArea',
                             zIndex: 11,
                             source: new ol.source.Vector({
                                 features: new ol.Collection(),
@@ -202,12 +204,30 @@ angular.module('maritimeweb.no-go-area')
                          var noGoGroupLayer = new ol.layer.Group({
                             title: scope.name || 'No Go Service',
                             zIndex: 11,
-                            layers: [ boundaryLayer, serviceAvailableLayer]
+                            layers: [  serviceAvailableLayer, boundaryLayer]
                         });
                         noGoGroupLayer.setZIndex(11);
                         noGoGroupLayer.setVisible(true);
 
+                        scope.drawServiceLimitation = function() {
+                            try {
+                                var olServiceActiveArea = MapService.wktToOlFeature('POLYGON(('
+                                    + left_se_lat + ' ' + bottom_se_lon + ',  '
+                                    + right_nw_lat + ' ' + bottom_se_lon +', '
+                                    + right_nw_lat + ' ' + top_nw_lon + ', '
+                                    + left_se_lat + ' ' + top_nw_lon + ', '
+                                    + left_se_lat +' ' + bottom_se_lon + '))');
+                                serviceAvailableLayer.getSource().addFeature(olServiceActiveArea);
+                            } catch (error) {
+                                $log.error("Error displaying Service Available boundary");
+                            }
+                        };
+
+                        //scope.drawServiceLimitation();
+
                         map.addLayer(noGoGroupLayer);
+                        $rootScope.mapNoGoLayer = noGoGroupLayer;
+
 
                         /** get the current bounding box in Bottom left  Top right format. */
                         scope.clientBBOXAndServiceLimit = function () {
@@ -233,19 +253,7 @@ angular.module('maritimeweb.no-go-area')
                         };
 
 
-                        scope.drawServiceLimitation = function() {
-                            try {
-                                var olServiceActiveArea = MapService.wktToOlFeature('POLYGON(('
-                                    + left_se_lat + ' ' + bottom_se_lon + ',  '
-                                    + right_nw_lat + ' ' + bottom_se_lon +', '
-                                    + right_nw_lat + ' ' + top_nw_lon + ', '
-                                    + left_se_lat + ' ' + top_nw_lon + ', '
-                                    + left_se_lat +' ' + bottom_se_lon + '))');
-                                serviceAvailableLayer.getSource().addFeature(olServiceActiveArea);
-                            } catch (error) {
-                                $log.error("Error displaying Service Available boundary");
-                            }
-                        };
+
 
                         scope.clearNoGo = function() {
                             $log.info("Clear no go");
@@ -289,19 +297,34 @@ angular.module('maritimeweb.no-go-area')
                             scope.getNoGoArea(scope.time);
                         };
 
-                        scope.getNoGoArea = function(time){
-                            scope.loading = true;
-                            scope.drawServiceLimitation();
-
-                            if(!time){
-                                time = new Date();
+                        /** When the map extent changes, reload the nogo's using a timer to batch up changes */
+                        scope.mapChanged = function () {
+                            //if (MapService.isLayerVisible('NoGoArea', noGoGroupLayer)) {
+                            if (noGoGroupLayer.getVisible()) {
+                                if (loadTimer) {
+                                    $timeout.cancel(loadTimer);
+                                }
+                                loadTimer = $timeout(scope.getNoGoAreaUI(), 5000);
                             }
+                        };
 
-                            scope.time = time;
+                        scope.getNoGoArea = function(){
+
+                            $log.info("$rootScope.mapNoGoLayer =" + scope.mapNoGoLayer);
+                            $log.info("$rootScope.nogo =" + scope.nogo);
+                            $log.info("$rootScope.nogo.ship.draught =" + scope.nogo.ship.draught);
+                            $log.info("$rootScope.nogo.timeAgoString =" + scope.nogo.timeAgoString);
+                            $log.info("$rootScope.nogo.time =" + scope.nogo.time);
+                            $log.info("$rootScope.nogo.loading =" + scope.nogo.loading);
+                            $log.info("$rootScope.nogo.animating =" + scope.nogo.animating);
+                            scope.nogo.loading = true;
+                           scope.drawServiceLimitation();
+
+
 
                             var bboxBLTR = scope.clientBBOXAndServiceLimit();
-                            var now = time.toISOString();
-                            NoGoAreaService.getNoGoAreas(scope.ship.draught, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
+                            var now = scope.nogo.time.toISOString();
+                            NoGoAreaService.getNoGoAreas(scope.nogo.ship.draught, bboxBLTR[0],bboxBLTR[1],bboxBLTR[2],bboxBLTR[3], now).then(
                                 function(response) {
                                     $log.debug("bboxBLTR=" +bboxBLTR + " Time= " + now);
                                     $log.debug("Status=" + response.status);
@@ -309,13 +332,13 @@ angular.module('maritimeweb.no-go-area')
 
                                     var olFeature = MapService.wktToOlFeature(response.data.wkt);
                                     boundaryLayer.getSource().addFeature(olFeature);
-                                    scope.loading= false;
-                                    scope.timeAgoString = $filter('timeAgo')(scope.time);
+                                    scope.nogo.loading= false;
+                                    scope.nogo.timeAgoString = $filter('timeAgo')(scope.nogo.time);
                                     growl.info("No-Go zone retrieved and marked with red. <br> "
-                                        + scope.ship_draught + " meters draught.<br>"
-                                        + scope.timeAgoString + " <br> "+ scope.time.toISOString());
+                                        + scope.nogo.ship.draught + " meters draught.<br>"
+                                        + scope.nogo.timeAgoString + " <br> "+ scope.nogo.time.toISOString());
                                 }, function(error) {
-                                    scope.loading= false;
+                                    scope.nogo.loading= false;
                                     boundaryLayer.getSource().clear();
                                     $log.error(error);
                                     if(error.data.message){
@@ -324,6 +347,18 @@ angular.module('maritimeweb.no-go-area')
                             });
 
                         };
+
+                        // update the map when a user pan-move ends.
+                        //map.on('moveend', scope.mapChanged);
+
+                        // listens when visibility on map has been toggled.
+                        boundaryLayer.on('change:visible', scope.mapChanged);
+                        noGoGroupLayer.on('change:visible', scope.mapChanged);
+
+                        scope.$watch("nogo.time", console.log("times changing" + scope.nogo.time),true);
+                        scope.$watch("nogo.ship.draught", console.log("draught changing" + scope.nogo.ship.draught), true);
+
+
 
                         scope.loggedIn = Auth.loggedIn;
 
