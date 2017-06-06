@@ -6,10 +6,15 @@
     <select class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in VTSCenterData" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname)">
         <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>
     </select>
-        <div>
-            <div class="vts-pad-top"><span ng-bind-html="VTSSelectedTrafficCenterLogo"></span><strong>{{VTSSelectedTrafficCenterName}}</strong><span ng-bind-html="VTSSelectedTrafficCenterGuide"></span></div>
-            <div class="" ng-bind-html="VTSSelectedTrafficCenterData"></div>
-        </div>
+    <div>
+        <div class="vts-pad-top"><span ng-bind-html="VTSSelectedTrafficCenterLogo"></span><strong>{{VTSSelectedTrafficCenterName}}</strong><span ng-bind-html="VTSSelectedTrafficCenterGuide"></span></div>
+        <div class="" ng-bind-html="VTSSelectedTrafficCenterData"></div>
+    </div>
+    <div class="vts-pad-top" ng-show="!isLoggedIn">
+        <div class="vts-red-text vts-center bold">You are not logged in the Maritime Cloud!</div>
+        <div>The VTS report can only be sent to the VTS center when you are logged in to the Maritime Cloud. Press the 'Login' button below to log in.</div>
+        <div class="vts-greytext vts-center bold">For testing purposes, the login is not mandatory.</div>
+    </div>
 
 
     <div id="vtsparentdiv" class="vts-pad-top" ng-show="VTSSelected" >
@@ -244,7 +249,7 @@
                     </select>
                 </span>
                 <span class="vts-force-spacing-300" ng-show="showCargoTypesCheckbox">
-                    <input type="checkbox" ng-disabled="vtsDangCargoCheckDisabled" class="vts-checkbox" ng-checked="vtsDangCargoCheck" ng-change="VTSDangerousCargoCheckbox(vtsDangCargoCheck)" ng-model="vtsDangCargoCheck"><span class="vts-checkbox-label">Dangerous cargo on board</span>
+                    <input type="checkbox" ng-disabled="vtsDangCargoCheckDisabled" class="vts-checkbox" ng-checked="vtsDangCargoCheckBoxState" ng-change="VTSDangerousCargoCheckbox(vtsDangCargoCheckBoxState)" ng-model="vtsDangCargoCheckBoxState"><span class="vts-checkbox-label">Dangerous cargo on board</span>
                 </span>
             </div>
 
@@ -400,6 +405,9 @@
 
 <div class="modal-footer">
     <div class="col-md-12 text-center">
+        <button class="btn btn-primary" ng-show="!isLoggedIn" type="button" ng-click="login()">
+            Login
+        </button>
         <button class="btn btn-success" ng-show="VTSReadyToSend" type="button" ng-click="sendVTSForm()">
             <i class="fa fa-check" aria-hidden="true"></i> Send
         </button>
