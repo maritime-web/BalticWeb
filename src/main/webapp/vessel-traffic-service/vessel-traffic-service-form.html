@@ -1,7 +1,7 @@
 <div class="modal-header vts-less-lineheight">
-    <h3 class="modal-title">Vessel Traffic Service - notification form - <i>simulated test!</i></h3>
+    <h3 class="modal-title">Vessel Traffic Service - notification form</h3>
 </div>
-<div class="modal-body ">
+<div id="modalbody" class="modal-body ng-hide">
 
     <select class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in VTSCenterData" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname)">
         <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>

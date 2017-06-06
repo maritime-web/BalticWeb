@@ -14,6 +14,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                     growl.success("VTS interface population service was successful.");
                     $scope.VTSCenterData = parsedData.data.VtsJsObjects;
                     VTSData = $scope.VTSCenterData;
+                    angular.element(document.querySelector('#modalbody')).removeClass('ng-hide'); //hidden until angular is ready so it doesnt pop up and down
                 },
                 function(data) { // error
                     growl.error("VTS interface population service could not be contacted. Please check your internet connection and try again.\nRetrying in 5 seconds.");
