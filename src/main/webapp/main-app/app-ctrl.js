@@ -116,7 +116,7 @@ angular.module('maritimeweb.app')
         const left_se_lat = 10.0;
         $scope.nogo = {};
         $scope.nogo.ship = {};
-        $scope.nogo.ship.draught = 4;
+        $scope.nogo.ship.draught = 6;
         $scope.nogo.time = new Date();
         $scope.nogo.timeAgoString = "just now";
         $scope.nogo.loading = false;
