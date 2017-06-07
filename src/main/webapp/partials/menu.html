@@ -37,7 +37,7 @@
                       <ul class="dropdown-menu">
                           <li class="dropdown-header"><i class="fa fa-anchor" aria-hidden="true"></i> Combined Nautical maps</li>
                           <!--<li ng-if="loggedIn" ng-repeat="basemap in mapSeaMapLayer.getLayers().getArray()"  ng-class="{'active':basemap.getVisible()}"><a href ng-bind="basemap.get('title')" ng-click="toggleSeaMap()"></a></li>-->
-                          <li ng-if="loggedIn" ng-class="{'active':mapSeaMapLayer.getLayers().getArray()[0].getVisible()}"><a href ng-click="toggleSeaMap()">Natical Chart <small>Sjofartsverket & Geodatastryelsen</small></a></li>
+                          <li ng-if="loggedIn" ng-class="{'active':mapSeaMapLayer.getLayers().getArray()[0].getVisible()}"><a href ng-click="toggleSeaMap()">Nautical Chart <small>Sjofartsverket & Geodatastryelsen</small></a></li>
                           <li ng-if="!loggedIn" > <a href ng-click="login()"></span>Requires log in...</a></li>
                           <li role="separator" class="divider"></li>
                           <li class="dropdown-header"><i class="fa fa-anchor" aria-hidden="true"></i> Display a single map</li>
@@ -60,6 +60,11 @@
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header"> <i class="fa fa-life-ring" aria-hidden="true"></i> Maritime navigational aid information</li>
                         <li ng-repeat="aService in mapMiscLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
+
+                    <!--    <li role="separator" class="divider"></li>
+                        <li class="dropdown-header"> <i class="fa fa-life-ring" aria-hidden="true"></i> Maritime No-Go-Service</li>
+                        <li ng-repeat="aService in mapNoGoLayer.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
+-->
 
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header"><img src="/img/nwnm/nw.png" height="16"/> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Navigational warnings and notices to mariners </li>

@@ -2,6 +2,136 @@
 <div uib-collapse="!$root.showgraphSidebar"  class="maritimeweb-sidebar col-xs-9 col-sm-4  col-md-4 sidebar"> <!-- uib-collapse="showgraphSidebar" -->
     <uib-tabset type="pills" justified="true">
 
+
+        <!-- NW-NM tab -->
+        <uib-tab classes="btn-sm">
+            <uib-tab-heading>
+                <img src="/img/nwnm/nw.png" height="16"/>
+                NW-NM
+                <span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>
+            </uib-tab-heading>
+
+            <div class="panel" ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+                <div class="panel-heading">Navigationel Warnings and Notices to Mariners
+                    <small tooltip="Refresh" class="glyphicon glyphicon-refresh"
+                           ng-click="refreshNwNmServices()"></small>
+
+                    <div class="small pull-right">
+                        Display &nbsp;&nbsp;
+                        <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()">&nbsp;NW
+                        &nbsp;&nbsp;
+                        <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()">&nbsp;NtM
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="message-service" ng-repeat="s in nwNmServices">
+                        <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
+                    </div>
+                    <table class="table table-striped">
+                        <tr ng-repeat-start="msg in nwNmMessages"
+                            ng-if="$index == 0 || nwnmAreaHeading($index) != nwnmAreaHeading($index - 1)">
+                            <td colspan="2" class="message-area-heading">
+                                {{nwnmAreaHeading($index)}}
+                            </td>
+                        </tr>
+                        <tr ng-repeat-end>
+                            <td width="20" align="left" class="message-item">
+                                <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm.png" height="20"/>
+                                <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/nw.png" height="20"/>
+                            </td>
+                            <td width="*" class="message-item">
+                                <span ng-if="msg.shortId" class="badge label-message-id">{{msg.shortId}}</span>
+                                <a href ng-click="showNwNmDetails(msg)">{{msg.descs[0].title}}</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </uib-tab>
+
+
+
+        <uib-tab classes="btn-sm">
+            <uib-tab-heading ng-class="(NoGoServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+                <span class="glyphicon glyphicon-globe"></span> No-Go
+                <!--<span class="badge sidebar-badge" ng-bind="mapNoGoLayer.getLayers().getArray().length"></span>-->
+
+            </uib-tab-heading>
+            <div ng-if="!loggedIn" class="sidebar-panel">
+                <div class="well">
+                    <p>Log in to access No-Go services</p>
+                    <button class="btn btn-default" ng-click="login()">Login</button>
+                </div>
+            </div>
+
+
+            <div class="panel" ng-if="loggedIn" ng-class="(NoGoServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+
+                <div class="panel-heading"><span class="glyphicon glyphicon-globe"></span> No-Go services
+                    <button ng-if="nogo.loading"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></button>
+
+                </div>
+                <div class="panel-body">
+
+                    <div ng-if='loggedIn'>
+                    <div class='well well-sm'>
+                        <div>Check if a vessel can pass safely. Enter the minimum required sea level depth.</div>
+                        <div class='form-group '>
+
+                            <div><label for='depth'><small>Minimum depth:</small></label> <input id='depth' type='number' ng-model='nogo.ship.draught' class='form-control input-sm col-lg-1'> </input> </div>
+                            </div>
+                        <div>
+                            <button data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone' ng-click='checkNoGoService()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> Mark non-safe area red</button>
+                            <button class="pull-right" ng-click="disableNoGoService()">Clear <i   class="fa fa-undo" aria-hidden="true"></i></button>
+
+                        </div>
+
+
+
+                    <!--    <div>
+                            <button data-toggle='tooltip' data-placement='bottom' title='enable' ng-click='enableNoGoService()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> enable</button>
+                        </div>-->
+
+                        </div>
+                    <div class='well well-sm'> Start an animation where the time is increased with 1 hour.<br> Usefull in areas with high tidal where sea depth levels changes during the day.   <br>
+                        <div data-toggle='tooltip' data-placement='bottom' title='When is this relevant?'><label>Ago:</label>  {{nogo.timeAgoString}}</div>
+                        <div data-toggle='tooltip' data-placement='bottom' title={{nogo.time}}><label>Time:</label> <b>{{nogo.time.getUTCHours() + ":" + nogo.time.getUTCMinutes() + ":" + nogo.time.getUTCSeconds() }}</b> <small>{{nogo.time.getUTCDay()}} - {{nogo.time.getMonth()+1}} -  {{nogo.time.getFullYear()}} </small> UTC</div>
+                        <!--<input type='text' ng-model='nogo.time' class='form-control small'> </input-->
+                        <button ng-click='doGruntAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true'  ></i> Time animation</button>
+                        <button ng-click='getNextNoGoArea()' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ></i></button>
+                        </div>
+
+                    <div class='well well-sm'> Start an animation where the minimum depth is increased with 0.5 meters. <br>
+                        <button  ng-click='doIncreaseDraughtAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase min. depth 0,5 meters'><i class='fa fa-play' aria-hidden='true'  ></i> Depth animation</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Table -->
+           <!--     <table class="table"
+                       ng-repeat="aService in mapNoGoLayer.getLayers().getArray()">
+
+                    <tr ng-class="{'active':aService.getVisible()}">
+                        <td><a href ng-bind="aService.get('title')"
+                               ng-click="toggleLayer(aService)"></a>
+                            &lt;!&ndash;<span class="label label-success" ng-bind="aService.get('title')"></span>&ndash;&gt;
+                        </td>
+                    </tr>
+
+                </table>-->
+
+                <div class="panel-footer">
+                    <p class="small">Disclamer: </p>
+                </div>
+
+            </div>
+
+        </uib-tab>
+
+
         <uib-tab classes="btn-sm">
             <uib-tab-heading ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <span class="glyphicon glyphicon-globe"></span> Satellite
@@ -112,53 +242,7 @@
         </uib-tab>
 
 
-        <!-- NW-NM tab -->
-        <uib-tab classes="btn-sm">
-            <uib-tab-heading>
-                <img src="/img/nwnm/nw.png" height="16"/>
-                NW-NM
-                <span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>
-            </uib-tab-heading>
 
-            <div class="panel" ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
-                <div class="panel-heading">MC NW-NM Services
-                    <small tooltip="Refresh" class="glyphicon glyphicon-refresh"
-                           ng-click="refreshNwNmServices()"></small>
-
-                    <div class="small pull-right">
-                        Display &nbsp;&nbsp;
-                        <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()">&nbsp;NW
-                        &nbsp;&nbsp;
-                        <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()">&nbsp;NtM
-                    </div>
-                </div>
-
-                <div class="panel-body">
-                    <div class="message-service" ng-repeat="s in nwNmServices">
-                        <input type="checkbox" ng-model="s.selected" ng-change="nwNmSelected(s)">&nbsp;{{s.name}}
-                    </div>
-                    <table class="table table-striped">
-                        <tr ng-repeat-start="msg in nwNmMessages"
-                            ng-if="$index == 0 || nwnmAreaHeading($index) != nwnmAreaHeading($index - 1)">
-                            <td colspan="2" class="message-area-heading">
-                                {{nwnmAreaHeading($index)}}
-                            </td>
-                        </tr>
-                        <tr ng-repeat-end>
-                            <td width="20" align="left" class="message-item">
-                                <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm.png" height="20"/>
-                                <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/nw.png" height="20"/>
-                            </td>
-                            <td width="*" class="message-item">
-                                <span ng-if="msg.shortId" class="badge label-message-id">{{msg.shortId}}</span>
-                                <a href ng-click="showNwNmDetails(msg)">{{msg.descs[0].title}}</a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-        </uib-tab>
 
         <!-- Route tab -->
         <uib-tab ng-if="$root.route_id" classes="btn-sm">

@@ -15,7 +15,7 @@
                         </button-->
                         <button type="button" ng-if="!optimizing && !optimized" ng-click="autoPreloadOptimizedRTZfile()"
                                 class="btn  btn-lg  btn-warning center-block">
-                            <span class="glyphicon glyphicon-thumbs-up glyphicon-random"></span> Optimize
+                            <span class="glyphicon glyphicon-thumbs-up glyphicon-random"></span> Optimize my route
                         </button>
                         <button type="button" ng-if="optimizing" class="btn btn-lg btn-warning center-block">
                           <i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Optimizing...
@@ -26,7 +26,7 @@
                         <div ng-if="!optimized" class="caption">
                         <h3>Ask for optimization</h3>
                         <span class="text-justify small">
-                         Send your route to the SSPA and ask them to optimize your planned route with regards to water current, weather, wind, tides, destination and traffic.
+                         Ask an authority to optimize your planned route with regards to water current, weather, wind, tides, destination and traffic.
                         </span>
 
                             <div ng-if="optimizing" class="alert alert-warning alert-dismissible" role="alert">
@@ -53,15 +53,15 @@
 
                      <button type="button" ng-if="!loading" ng-click="storeAllFeaturesSomewhere()"
                              class="btn  btn-lg  btn-success center-block">
-                        <span class="glyphicon glyphicon-check"></span> Use route
+                        <span class="glyphicon glyphicon-check"></span> Use my route
                     </button>
-                    <button type="button" ng-if="loading" class="btn btn-lg btn-primary center-block">
+                    <button type="button" ng-if="loading && !optimized" class="btn btn-lg btn-primary center-block">
                           <i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Loading...
                     </button>
                     <div class="caption">
                     <h3>Finalize</h3>
                      <span class="text-justify small">
-                         Save your route and share it with the nearest VTS center
+                         Save your route and use it
                      </span>
                     </div>
                  </span>
@@ -104,11 +104,20 @@
                         <!--<map-layer-switcher></map-layer-switcher>-->
                         <!--map-overview collapsed="true"></map-overview-->
                     </ol-map>
+                    <h3 ng-if="optimized">Your route</h3>
 
-                    <h4>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span>  Active Waypoint: <span class="badge badge-info">#{{$root.activeWayPoint}}</span>
-                        Distance: <span class="badge badge-info">{{totaldistance | number:2 }}</span> Nautical miles </h4>
-                    <h4 ng-if="optimized">Optimized Waypoints: <span class="badge badge-info">{{oLOptimizedfeatures.length}}</span>
-                        Distance: <span class="badge badge-info">{{totalOptimizedDistance | number:2 }}</span> Nautical miles </h4>
+                    <div>Waypoints: <span class="badge badge-info">{{oLfeatures.length}}</span></div>
+                        <div>Active Waypoint: <span class="badge badge-info">#{{$root.activeWayPoint}}</span></div>
+                            <div>Distance: <span class="badge badge-info">{{totaldistance | number:2 }}</span> Nautical miles </div>
+                    <div ng-if="optimized">Your route is marked with red.</div>
+                    <img ng-if="optimized" src="/img/route_legend_normal_cropped.png"/>
+                    <h3 ng-if="optimized">Optmized route</h3>
+                    <div ng-if="optimized">Waypoints: <span class="badge badge-info">{{oLOptimizedfeatures.length}}</span></div>
+                    <div ng-if="optimized">Distance: <span class="badge badge-info">{{totalOptimizedDistance | number:2 }}</span> <small>Nautical miles </small></div>
+                    <div ng-if="optimized">Optimized route is marked with orange. </div>
+                    <img ng-if="optimized" src="/img/route_legend_optimized.png" />
+
+
                 </div>
             </div>
     </div>
