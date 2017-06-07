@@ -105,7 +105,8 @@ public class WmsProxyServlet extends HttpServlet {
         // Check that the WMS provider has been defined using system properties
         if (StringUtils.isBlank(wmsServiceName) || StringUtils.isBlank(wmsProvider) ||
                 StringUtils.isBlank(wmsLogin) || StringUtils.isBlank(wmsPassword)) {
-            response.sendRedirect(BLANK_IMAGE);
+            response.sendRedirect(getProperRedirectURL(request));
+
             log.error("No WMS login or Password found ");
             return;
         }
@@ -149,10 +150,27 @@ public class WmsProxyServlet extends HttpServlet {
 
         // Fall back to return a blank image
         try {
-            response.sendRedirect(BLANK_IMAGE);
+            response.sendRedirect(getProperRedirectURL(request));
         } catch (Exception e) {
             log.error("Failed returning blank image for URL " + url + ": " + e);
         }
+    }
+
+    public static String getProperRedirectURL(HttpServletRequest req) {
+
+        String scheme = req.getScheme();             // http
+        String serverName = req.getServerName();     // hostname.com
+        int serverPort = req.getServerPort();        // 80
+
+        StringBuilder url = new StringBuilder();
+        url.append(scheme).append("://").append(serverName);
+
+        if (serverPort != 80 && serverPort != 443) {
+            url.append(":").append(serverPort); // too keep the local developer happy. Only append speciel ports i.e. 8080
+        }
+        url.append(BLANK_IMAGE);
+       // System.out.println("url.toString() = " + url.toString());
+        return url.toString();
     }
 
 
