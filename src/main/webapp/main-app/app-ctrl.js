@@ -90,7 +90,7 @@ angular.module('maritimeweb.app')
         };
 
         /**************************************/
-        /** Vessel Traffic Control functionality      **/
+        /** Vessel Traffic Service functionality      **/
         /**************************************/
 
         $scope.activateVTSForm = function (size) {
@@ -102,6 +102,7 @@ angular.module('maritimeweb.app')
                 size: size
             })
         };
+
 
         // $scope.update = function() {
         //     $scope.item.size.code = $scope.selectedItem.code

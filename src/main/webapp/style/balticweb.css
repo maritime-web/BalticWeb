@@ -89,14 +89,30 @@ body {
     /* Vessel Traffic Service */
 
 .bold{font-weight:bold;}
-.vts-grey-text{color:#bbbbbb;}
-.vts-pad-top{padding-top:6px;}
+.vts-grey-text{color:#999999;}
+.vts-red-text{color:#bb0000;}
+.vts-pad-top{padding-top:8px;}
 .vts-input{width:160px;}
 .vts-input-small{width:40px;}
-.vts-input-medium{width:60px;}
+.vts-input-medium{width:70px;}
 .vts-input-standard{width:100px;}
 .vts-input-large{width:200px;}
-.vts-textarea-standard{position:relative; top:8px; width:240px;}
+.vts-textarea-standard{
+    position:relative;
+    top:8px;
+    width:240px;
+    height:32px;
+    max-width:240px;
+    max-height:350px
+}
+.vts-textarea-large{
+    position:relative;
+    top:0px;
+    width:240px;
+    height:100px;
+    max-width:350px;
+    max-height:350px
+}
 /*#vtsparentdiv input[type=number]::-webkit-inner-spin-button,*/
 /*#vtsparentdiv input[type=number]::-webkit-outer-spin-button{*/
     /*-webkit-appearance: none;*/
@@ -108,15 +124,29 @@ body {
 .vts-lesspadding{
     padding: 2px 6px;
 }
+.vts-nopadding{
+    padding: 0;
+}
 .vts-select-lesspadding{
     padding:0;
     height:26px;
 }
 .vts-hr{
     padding: 0px;
-    margin: 2px;
-    color: #bbbbbb;
-    border-color: #bbbbbb;
+    margin: 4px;
+    color: #999999;
+    border-color: #999999;
+    width:100%;
+}
+.vts-hr-seperator{
+    position: relative;
+    top:8px;
+    padding: 4px;
+    margin: 0px;
+    margin-left: 5%;
+    color: #eeeeee;
+    border-color: #eeeeee;
+    width:90%;
 }
 .vts-center{text-align: center;}
 .vtsinvalid{
@@ -129,7 +159,32 @@ body {
     box-shadow: 0 1px 1px rgba(78, 229, 50, 0.07) inset, 0 0 8px rgba(114, 229, 56, 0.6);
     outline: 0 none;
 }
+.vtsvalid:focus {
+    border-color: rgba(68, 142, 24, 0.8);
+    box-shadow: 0 1px 1px rgba(78, 229, 50, 0.07) inset, 0 0 8px rgba(114, 229, 56, 0.6);
+    outline: 0 none;
+}
+.vtsneutral{
+    border-color: rgb(102, 101, 103, 0.8);
+    box-shadow: 0 1px 1px rgba(219, 214, 229, 0.07) inset, 0 0 8px rgba(226, 223, 229, 0.6);
+    outline: 0 none;
+}
+.vtsinvalid:focus {
+    border-color: rgba(229, 103, 23, 0.8);
+    box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
+    outline: 0 none !important;
+}
 
+.vts-force-spacing-50{
+    min-width:50px;
+    max-width:50px;
+    display: inline-block;
+}
+.vts-force-spacing-80{
+    min-width:80px;
+    max-width:80px;
+    display: inline-block;
+}
 .vts-force-spacing-100{
     min-width:100px;
     max-width:100px;
@@ -149,6 +204,28 @@ body {
     min-width:300px;
     max-width:300px;
     display: inline-block;
+}
+.vts-force-spacing-350{
+    min-width:350px;
+    max-width:350px;
+    display: inline-block;
+}
+
+.vts-checkbox[type=checkbox] { /* larger checkbox */
+    -ms-transform: scale(1.5);
+    -moz-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+    -o-transform: scale(1.5);
+    padding: 0;
+    margin: 0;
+    vertical-align: bottom;
+    position: relative;
+    top: -3px;
+}
+.vts-checkbox-label{
+    display: inline;
+    padding-left: 6px;
+    padding-right:10px;
 }
 
 
