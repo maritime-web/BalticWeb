@@ -163,8 +163,11 @@ public class WmsProxyServlet extends HttpServlet {
         int serverPort = req.getServerPort();        // 80
 
         StringBuilder url = new StringBuilder();
-        url.append(scheme).append("://").append(serverName);
-
+        if(!serverName.contains("localhost")){ // force https, if not on localhost
+            url.append("https").append("://").append(serverName);
+        }else {
+            url.append(scheme).append("://").append(serverName);
+        }
         if (serverPort != 80 && serverPort != 443) {
             url.append(":").append(serverPort); // too keep the local developer happy. Only append speciel ports i.e. 8080
         }
