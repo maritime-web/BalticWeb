@@ -411,6 +411,9 @@
         <button class="btn btn-success" ng-show="VTSReadyToSend" type="button" ng-click="sendVTSForm()">
             <i class="fa fa-check" aria-hidden="true"></i> Send
         </button>
+        <button class="btn btn-primary disabled" ng-show="!VTSReadyToSend" type="button" >
+            <i class="fa fa-check" aria-hidden="true"></i> Send
+        </button>
         <button class="btn btn-danger"  type="button" ng-click="hideVTSForm()"><i class="fa fa-ban" aria-hidden="true"></i>
             Cancel
         </button>
