@@ -335,7 +335,7 @@ angular.module('maritimeweb.no-go-area')
                                     scope.nogo.loading= false;
                                     scope.nogo.timeAgoString = $filter('timeAgo')(scope.nogo.time);
                                     growl.info("No-Go zone retrieved and marked with red. <br> "
-                                        + scope.nogo.ship.draught + " meters draught.<br>"
+                                        + scope.nogo.ship.draught + " meters depth.<br>"
                                         + scope.nogo.timeAgoString + " <br> "+ scope.nogo.time.toISOString());
                                 }, function(error) {
                                     scope.nogo.loading= false;
@@ -355,10 +355,10 @@ angular.module('maritimeweb.no-go-area')
                         boundaryLayer.on('change:visible', scope.mapChanged);
                         noGoGroupLayer.on('change:visible', scope.mapChanged);
 
+                        /*
                         scope.$watch("nogo.time", console.log("times changing" + scope.nogo.time),true);
-                        scope.$watch("nogo.ship.draught", console.log("draught changing" + scope.nogo.ship.draught), true);
-
-
+                        scope.$watch("nogo.ship.draught", console.log("depth changing" + scope.nogo.ship.draught), true);
+                        */
 
                         scope.loggedIn = Auth.loggedIn;
 
