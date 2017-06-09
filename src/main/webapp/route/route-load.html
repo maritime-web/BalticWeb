@@ -20,8 +20,11 @@
                         <button type="button" ng-if="optimizing" class="btn btn-lg btn-warning center-block">
                           <i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Optimizing...
                         </button>
-                        <button type="button" ng-if="optimized" ng-click="storeAllOptimizedFeaturesSomewhere()" class="btn btn-lg btn-warning center-block">
+                        <button type="button" ng-if="optimized && !loadingoptimized" ng-click="storeAllOptimizedFeaturesSomewhere()" class="btn btn-lg btn-warning center-block">
                           <i class="glyphicon glyphicon-thumbs-up glyphicon-check"></i> Use optimized route
+                        </button>
+                        <button type="button" ng-if="loadingoptimized" class="btn btn-lg btn-primary center-block">
+                              <i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Storing...
                         </button>
                         <div ng-if="!optimized" class="caption">
                         <h3>Ask for optimization</h3>
@@ -62,8 +65,8 @@
                              class="btn  btn-lg  btn-success center-block">
                         <span class="glyphicon glyphicon-check"></span> Use my route
                     </button>
-                    <button type="button" ng-if="loading && !optimized" class="btn btn-lg btn-primary center-block">
-                          <i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Loading...
+                    <button type="button" ng-if="loading" class="btn btn-lg btn-primary center-block">
+                          <i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Storing...
                     </button>
                     <div class="caption">
                     <h3>Finalize</h3>

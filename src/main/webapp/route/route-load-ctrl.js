@@ -3,8 +3,8 @@ angular.module('maritimeweb.route')
  * Controller that handles uploading an RTZ route for a vessel
  *  and generate the needed open-layers features.
  *******************************************************************/
-    .controller('RouteLoadCtrl', ['$scope', 'VesselService', '$rootScope', '$http', '$routeParams', '$window', 'growl', 'timeAgo', '$filter', 'Upload', '$timeout', 'fileReader', '$log',
-        function ($scope, VesselService, $rootScope, $http, $routeParams, $window, growl, timeAgo, $filter, Upload, $timeout, fileReader, $log) {
+    .controller('RouteLoadCtrl', ['$scope', 'VesselService', 'WeatherService', '$rootScope', '$http', '$routeParams', '$window', 'growl', 'timeAgo', '$filter', 'Upload', '$timeout', 'fileReader', '$log',
+        function ($scope, VesselService, weatherService, $rootScope, $http, $routeParams, $window, growl, timeAgo, $filter, Upload, $timeout, fileReader, $log) {
             'use strict';
             $log.debug("RouteLoadCtrl routeParams.mmsi=" + $routeParams.mmsi);
             if($routeParams.mmsi) {
@@ -31,6 +31,8 @@ angular.module('maritimeweb.route')
             $scope.jsonCollapsed = true;
             $scope.jsonFeatCollapsed = true;
             $scope.showCharts = false;
+            $scope.rtzXML;
+            $scope.rtzWeatherXML;
 
 
             //
@@ -60,9 +62,9 @@ angular.module('maritimeweb.route')
 
             $scope.sampleRTZdata = [
                 {id: '', name: 'pick a sample route'},
-                {id: 'E2_GOT-GDYNIA_TEST_DROGDEN_2.rtz', name: 'E2 GOT GDYNIA TEST DROGDEN 2'},
-                {id: 'E2_GOT_GDYNIA_TEST.rtz', name: 'E2 GOT GDYNIA TEST'},
-                {id: 'E2_GOT_GDYNIA_TEST_OPTIMIZED.rtz', name: 'E2 GOT GDYNIA TEST OPTIMIZED'},
+            /*    {id: 'E2_GOT-GDYNIA_TEST_DROGDEN_2.rtz', name: 'E2 GOT GDYNIA TEST DROGDEN 2'},
+                {id: 'E2_GOT_GDYNIA_TEST.rtz', name: 'E2 GOT GDYNIA TEST'},*/
+                {id: 'E2_GOT-GDYNIA_Fuel_optimized_Original.rtz', name: 'E2 GOT GDYNIA - Optimized for fuel efficiency'},
                 {id: 'ExamplefileworkswithENSI.rtz', name: 'Talin - Helsinki'},
                 {id: 'Helsinki_to_Rotterdam_via_Aarhus-Bremerhaven.rtz', name: 'BIMCO - Helsinki to Rotterdam'},
                 /*  {id: 'muugaPRVconsprnt.rtz', name: 'Talin - Helsinki'},*/
@@ -70,6 +72,7 @@ angular.module('maritimeweb.route')
                 {id: 'rtz_route_with_signature.xml', name: 'St. Peter - Kot Orreng'},
                 {id: 'Hammerodde_to_Skagen.rtz', name: 'Hammerodde to Skagen'},
                 {id: 'Skagen_to_Hammerodde.rtz', name: 'Skagen to Hammerodde'},
+                {id: 'E2_GOT_GDYNIA_TEST_OPTIMIZED.rtz', name: 'E2 GOT GDYNIA TEST OPTIMIZED'},
                 {id: 'kielPRV.rtz', name: 'Helsinki - Kiel'}
             ];
             $scope.sampleFile = $scope.sampleRTZdata[0].id;
@@ -316,7 +319,7 @@ angular.module('maritimeweb.route')
              * store all features in local storge, on a server or right now. Throw them on the root scope.
              */
             $scope.storeAllOptimizedFeaturesSomewhere = function() {
-                $scope.loading = true;
+                $scope.loadingoptimized = true;
                 $log.debug("storing optimized route for mmsi" + $routeParams.mmsi);
 
                 $rootScope.route_id = $routeParams.mmsi;
@@ -328,7 +331,7 @@ angular.module('maritimeweb.route')
                 var redirect = function(){
                     $rootScope.showgraphSidebar = true; // rough enabling of the sidebar
 
-                    $scope.loading = false;
+                    $scope.loadingoptimized = false;
                     $window.location.href = '#';
                 };
                 $timeout( redirect, 3000);
@@ -512,7 +515,7 @@ angular.module('maritimeweb.route')
                 $scope.optimizing = true;
                 $log.debug("Optimizing route for mmsi" + $routeParams.mmsi);
 
-                $scope.rtzOptimizedName =  $scope.rtzName + "Optimized by SSPA" ;
+                $scope.rtzOptimizedName =  $scope.rtzName + "Optimized" ;
 
                 $scope.oLOptimizedfeatures = []; // openlayers optimized features
                 $scope.oLanimatedOptimizedfeatures = []; // openlayers animated optimized features
@@ -673,10 +676,20 @@ angular.module('maritimeweb.route')
                 $http.get('/route/sample-rtz-files/' + $scope.sampleFile, {
                     transformResponse: function (data, headers) {
                         $scope.rtzXML = data;
+
                         $scope.rtzJSON = fileReader.transformRtzXMLtoJSON(data);
                         return $scope.rtzJSON;
                     }
                 }).then(function (result) {
+                    $log.info("$scope.rtzXML= " + $scope.rtzXML);
+
+                /*      Enabling weather-on-route Service
+                        weatherService.getWeatherOnRoute($scope.rtzXML).then(function (weatherResult) {
+                        $scope.rtzWeatherXML = weatherResult.data;
+                        $log.info(weatherResult.data);
+                        $log.info("$scope.rtzWeatherXML= " + $scope.rtzWeatherXML);
+
+                    });*/
                     resetChartArrays();
                     createOpenLayersFeatFromRTZ(result.data);
                    // $scope.storeAllFeaturesSomewhere();
