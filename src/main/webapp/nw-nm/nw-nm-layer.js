@@ -275,6 +275,67 @@ angular.module('maritimeweb.nw-nm')
                                             nwLayer.getSource().addFeature(olFeature);
                                         } else {
                                             nmLayer.getSource().addFeature(olFeature);
+
+
+
+
+                                            var extraMarkerPosition = olFeature.getGeometry();
+
+
+                                            /**
+                                             * LineStrings are hard to see on the map with many, so we decided to mark them up with an icon at the start and end.
+                                             */
+                                            if(extraMarkerPosition.getType()=='LineString'){
+
+                                                var nwStyle = new ol.style.Style({
+                                                    fill: new ol.style.Fill({ color: 'rgba(255, 0, 255, 0.2)' }),
+                                                    stroke: new ol.style.Stroke({ color: '#8B008B', width: 1 }),
+                                                    image: new ol.style.Icon({
+                                                        anchor: [0.5, 0.5],
+                                                        scale: 0.3,
+                                                        src: '/img/nwnm/nw.png'
+                                                    })
+                                                });
+
+                                                var pointsArray = extraMarkerPosition.getExtent();
+
+                                                var firstPosition = new ol.geom.Point([pointsArray[0], pointsArray[1]]);
+                                                var secondPosition = new ol.geom.Point([pointsArray[2], pointsArray[3]]);
+
+
+                                                console.log("firstPosition #  # " + firstPosition.getCoordinates());
+                                                console.log("secondPosition #  # " + secondPosition.getCoordinates());
+
+                                                /*
+                                                var json = [{latitude: pointsArray[0], longitude: pointsArray[1]},
+                                                {latitude: pointsArray[2], longitude: pointsArray[3]}];
+
+                                                var center = geolib.getCenter(json);
+                                                console.log("json ### " + center.toString());
+                                                console.log("json # latitude # " + center.latitude);
+                                                console.log("json # longitude # " + center.longitude);
+                                                */
+                                                //var middlePosition = new ol.geom.Point(ol.proj.transform([center.longitude, center.latitude], 'EPSG:4326', 'EPSG:900913'));
+                                                //var middlePosition = new ol.geom.Point(ol.proj.transform([center.longitude, center.latitude], 'EPSG:4326', 'EPSG:900913'));
+                                               // var middlePosition = new ol.geom.Point(ol.proj.transform([center.longitude, center.latitude], 'EPSG:4326', 'EPSG:900913'));
+                                               // console.log("middlePosition ### " + middlePosition.getCoordinates().toString());
+
+                                                var firstMarker = new ol.Feature({
+                                                    geometry: firstPosition
+                                                });
+                                               /* var middleMarker = new ol.Feature({
+                                                    geometry: middlePosition
+                                                });*/
+                                                var secondMarker = new ol.Feature({
+                                                    geometry: secondPosition
+                                                });
+                                                firstMarker.setStyle(nwStyle);
+                                                secondMarker.setStyle(nwStyle);
+                                                // middleMarker.setStyle(nwStyle);
+                                                nmLayer.getSource().addFeature(firstMarker);
+                                                nmLayer.getSource().addFeature(secondMarker);
+                                                //nmLayer.getSource().addFeature(middleMarker);
+                                            }
                                         }
                                     } catch (err) {
                                     }
