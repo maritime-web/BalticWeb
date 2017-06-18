@@ -2,8 +2,8 @@ angular.module('maritimeweb.app')
 
     .controller("AppController", [
         '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
-        'VesselService', 'NwNmService', 'SatelliteService', 'growl', '$uibModal', '$log', '$interval',
-    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, growl, $uibModal, $log, $interval) {
+        'VesselService', 'NwNmService', 'SatelliteService', 'ServiceRegistryService', 'growl', '$uibModal', '$log', '$interval',
+    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, ServiceRegistryService, growl, $uibModal, $log, $interval) {
 
         // Cancel any pending NW-NN queries
         var loadTimerService = undefined;
@@ -57,6 +57,54 @@ angular.module('maritimeweb.app')
         //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
         $scope.mapSeaMapLayer =  MapService.createSuperSeaMapLayerGroup();
         // $scope.mapNoGoLayer =  MapService.createNoGoLayerGroup(); // is set in the no-go-layer
+        //$scope.mcServiceRegistryInstances = ServiceRegistryService.getServiceInstances('POLYGON((9.268411718750002%2053.89831670389188%2C9.268411718750002%2057.58991390302003%2C18.392557226562502%2057.58991390302003%2C18.392557226562502%2053.89831670389188%2C9.268411718750002%2053.89831670389188))');
+        $scope.mcServiceRegistryInstances =  [];
+
+        $scope.isThereAnyServiceRegistry = function () {
+            $log.debug("isThereAnyServiceRegistry");
+
+            ServiceRegistryService.getServiceInstances().success(function (services, status) {
+                //$log.debug("NVNM Status " + status);
+                $scope.mcServiceRegistryInstances.length = 0;
+
+                // Update the selected status from localstorage
+                var instanceIds = [];
+                if(status==204){
+                    $scope.mcServiceRegistryInstancesStatus = 'false';
+                   // $window.localStorage[NwNmService.serviceID()] = 'false';
+                    $scope.mcServiceRegistryInstancesMessages = [];
+
+                }
+
+                if(status==200){
+                    $log.debug("isThereAnyServiceRegistry 200 OK");
+
+                    $scope.mcServiceRegistryInstancesStatus = 'true';
+                  //  $window.localStorage[NwNmService.serviceID()] = 'true';
+
+
+                    angular.forEach(services, function (service) {
+                        $scope.mcServiceRegistryInstances.push(service);
+                    /*    service.selected = $window.localStorage[service.instanceId] == 'true';
+                        if (service.selected) {
+                            instanceIds.push(service.instanceId);
+                        }*/
+                    });
+
+
+           /*         if($window.localStorage[NwNmService.serviceID()]){
+                        NwNmService
+                            .getPublishedNwNm(instanceIds, $scope.nwNmLanguage, mainType, wkt)
+                            .success(function (messages) {
+                                $scope.nwNmMessages = messages;
+                            });
+                    }*/
+                }
+            });
+
+
+        }
+
 
 
 
@@ -372,6 +420,27 @@ angular.module('maritimeweb.app')
             //growl.info("got vesseldetails " + JSON.stringify(vesselDetails));
             growl.info("Vessel details retrieved");
 
+        };
+
+        /**
+         * store all features in local storge, on a server or right now. Throw them on the root scope.
+         */
+        $scope.redirectToFrontpage = function() {
+            $scope.loading = true;
+            $log.debug("redirect to Frontpage");
+            var redirect = function(){
+                //$rootScope.showgraphSidebar = true; // rough enabling of the sidebar
+
+                $scope.loading = false;
+                $window.location.href = '#';
+            };
+            $timeout( redirect, 100);
+        };
+
+        $scope.getInstancesFromServiceRegistry = function (wkt) {
+            var params = wkt ? '?wkt=' + encodeURIComponent(wkt) : '';
+            var request = '/rest/service/lookup/' + params;
+            return $http.get(request);
         };
 
     }]);

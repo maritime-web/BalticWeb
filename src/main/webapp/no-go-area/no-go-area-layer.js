@@ -8,6 +8,9 @@ angular.module('maritimeweb.no-go-area')
     .service('NoGoAreaService', ['$http', '$log',
         function($http, $log) {
 
+        /*
+            NOGO - is still not a service in the service registry
+         */
             this.serviceID = function(){ return 'urn:mrn:mcl:service:design:dma:no-go-area'};
             this.serviceVersion = function(){ return '0.1'};
 
