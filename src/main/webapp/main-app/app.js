@@ -2,7 +2,7 @@ var moduleName = 'maritimeweb';
 
 // Define all modules here
 angular.module('maritimeweb.map', []);
-angular.module('maritimeweb.app', ['angular-growl']);
+angular.module('maritimeweb.app', ['angular-growl','g1b.datetime-inputs']);
 angular.module('maritimeweb.route', ['angular-growl', 'ngFileUpload']);
 angular.module('maritimeweb.vessel', ['yaru22.angular-timeago']);
 angular.module('maritimeweb.nw-nm', []);

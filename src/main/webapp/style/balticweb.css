@@ -227,8 +227,26 @@ body {
     padding-left: 6px;
     padding-right:10px;
 }
+.vts-checkbox-label-blue{
+    color:#0000bb;
+}
+.vts-time-picker-box-highlight{
+    background: #b0d4f3  !important;
+}
+.time-picker-mod{
+    min-width:200px !important;
+    width:200px !important;
+    max-width:200px !important;
+}
 
-
+.vts-utc-label{
+    margin-right: 10px;
+}
+.vts-align-utc-checkbox{
+    top: -22px;
+    position: relative;
+    left: 24px;
+}
 
     /* END Vessel Traffic Service */
 
