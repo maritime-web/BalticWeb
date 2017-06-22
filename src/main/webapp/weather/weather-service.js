@@ -54,6 +54,22 @@ angular.module('maritimeweb.weather')
                 return $http(req);
             };
 
+
+            this.getWeatherOnRoute = function (rtz) {
+
+                var req = {
+                    method: 'POST',
+                    url: 'https://service-lb.e-navigation.net/weather/rtz?wind=true&current=true&density=false&seaLevel=true',
+                    headers: {
+                        'Content-Type': 'application/xml;charset=UTF-8',
+                        'Accept': 'application/json;charset=UTF-8'
+                    },
+
+                    data: rtz
+                };
+                return $http(req);
+            };
+
         }])
     /**
      * The map-no-Go-Area-Layer directive
@@ -445,7 +461,7 @@ angular.module('maritimeweb.weather')
                         name: 'WOR_windmarker',
                         type: type,
                         identifier: identifier,
-                        src: 'img/wind/mark005.png',
+                        src: 'img/wind/mark005.png'
                     });
                     iconFeature3.setStyle(retWORMWindStyle(scale, winddir, windstr, markertext, wavedir));
                     iconFeature3.setId(type + '_windmarker');

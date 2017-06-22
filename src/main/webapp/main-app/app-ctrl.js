@@ -56,16 +56,77 @@ angular.module('maritimeweb.app')
         $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
         //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
         $scope.mapSeaMapLayer =  MapService.createSuperSeaMapLayerGroup();
+        $scope.mapMCLayers = ''; //  MapService.createMCLayerGroup();
         // $scope.mapNoGoLayer =  MapService.createNoGoLayerGroup(); // is set in the no-go-layer
         //$scope.mcServiceRegistryInstances = ServiceRegistryService.getServiceInstances('POLYGON((9.268411718750002%2053.89831670389188%2C9.268411718750002%2057.58991390302003%2C18.392557226562502%2057.58991390302003%2C18.392557226562502%2053.89831670389188%2C9.268411718750002%2053.89831670389188))');
         $scope.mcServiceRegistryInstances =  [];
 
         $scope.isThereAnyServiceRegistry = function () {
-            $log.debug("isThereAnyServiceRegistry");
+            $log.info("isThereAnyServiceRegistry");
+
+
+            var mcStylePurple = new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'rgba(180, 0, 180, 0.5)',
+                    width: 1
+                }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(180, 0, 180, 0.10)'
+                })
+            });
+
+            // Construct the boundary layers
+            var boundaryLayer = new ol.layer.Vector({
+                id: 'mcboundary',
+                title: 'MaritimeCloud Service Instance AREA',
+                zIndex: 11,
+                source: new ol.source.Vector({
+                    features: new ol.Collection(),
+                    wrapX: false
+                }),
+                style: [mcStylePurple]
+            });
+
+            /*         var serviceAvailableLayer = new ol.layer.Vector({
+             id: 'serviceavailboundary',
+             title: 'Service Available - NO GO AREA',
+             zIndex: 11,
+             source: new ol.source.Vector({
+             features: new ol.Collection(),
+             wrapX: false
+             }),
+             style: [greenServiceStyle]
+             });
+
+             serviceAvailableLayer.setZIndex(12);
+             serviceAvailableLayer.setVisible(true);
+             serviceAvailableLayer.getSource().clear();*/
+
+
+            boundaryLayer.setZIndex(11);
+            boundaryLayer.setVisible(true);
+
+
+            /***************************/
+            /** Map creation          **/
+            /***************************/
+
+            // Construct No Go Layer Group layer
+            var mcSRGroupLayer = new ol.layer.Group({
+                title: 'MC Service Registry',
+                zIndex: 11,
+                layers: [boundaryLayer]
+            });
+            mcSRGroupLayer.setZIndex(11);
+            mcSRGroupLayer.setVisible(true);
+            $scope.mapMCLayers = mcSRGroupLayer;
+
 
             ServiceRegistryService.getServiceInstances().success(function (services, status) {
                 //$log.debug("NVNM Status " + status);
                 $scope.mcServiceRegistryInstances.length = 0;
+
+
 
                 // Update the selected status from localstorage
                 var instanceIds = [];
@@ -82,9 +143,40 @@ angular.module('maritimeweb.app')
                     $scope.mcServiceRegistryInstancesStatus = 'true';
                   //  $window.localStorage[NwNmService.serviceID()] = 'true';
 
+                    var title = $scope.mapMCLayers.getLayers().getArray()[0].get('title');
+                    $log.info("title" + title);
+
+                    var olServiceActiveAreaSample = MapService.wktToOlFeature('POLYGON((-97.9000 42.0000, -97.9000 78.0000, 36.2000 78.0000, 36.2000 42.0000, 97.9000 42.0000))');
+                    // $scope.mapMCLayers.getLayers().getArray()[0].getSource().addFeature(olServiceActiveArea);
+                    boundaryLayer.getSource().addFeature(olServiceActiveAreaSample);
+
 
                     angular.forEach(services, function (service) {
                         $scope.mcServiceRegistryInstances.push(service);
+                        // var title = $scope.mapMCLayers.getLayers().getArray()[0].get('title');
+
+
+                        // $scope.mapSeaMapLayer.getLayers().getArray()[0].getSource().clear();
+
+                        if (service.boundary) {
+
+                            try {
+                                // $log.info("Name: " + service.name + " Boundary: " + service.boundary + " ");
+                                var olFeature = MapService.wktToOlGeomFeature(service.boundary);
+                                //boundaryLayer.addFeature(olFeature)
+                            } catch (error) {
+                                $log.error("Error displaying service. " + "Name: " + service.name + " Boundary: " + service.boundary );
+                            }
+                            $log.info(service);
+                        }
+
+                    }, function(error) {
+                        $rootScope.loading= false;
+                      //  $scope.mapSeaMapLayer.getLayers().getArray()[0].getSource().clear();
+                        $log.error(error);
+                        if(error.data.message){
+                            growl.error(error.data.message);
+                        }
                     /*    service.selected = $window.localStorage[service.instanceId] == 'true';
                         if (service.selected) {
                             instanceIds.push(service.instanceId);
