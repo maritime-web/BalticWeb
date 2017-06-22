@@ -165,7 +165,7 @@ body {
     outline: 0 none;
 }
 .vtsneutral{
-    border-color: rgb(102, 101, 103, 0.8);
+    border-color: rgba(102, 101, 103, 0.8);
     box-shadow: 0 1px 1px rgba(219, 214, 229, 0.07) inset, 0 0 8px rgba(226, 223, 229, 0.6);
     outline: 0 none;
 }
@@ -231,8 +231,16 @@ body {
     color:#0000bb;
 }
 .vts-time-picker-box-highlight{
-    background: #b0d4f3  !important;
+    border: solid 2px #474bc3 !important;
 }
+.vts-datetime-picker-box-highlight-invalid{
+    background: #f39595 !important;
+}
+.vts-datetime-picker-box-highlight-valid{
+    background: #9dee5e !important;
+}
+
+
 .time-picker-mod{
     min-width:200px !important;
     width:200px !important;

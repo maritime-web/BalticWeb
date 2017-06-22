@@ -104,6 +104,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.vtsForceUTCTimeCheckBoxState = false; //checkbox to activate UTC timezone
         $scope.vtsUtcTime = moment.utc().format('HH : mm');
         $scope.vtsLocalTime = moment().format('HH : mm');
+        $scope.vtsLocalDate = moment().format('DD MMM YYYY');
+        $scope.setvtsvesseletaTimeDateValid = false;
 
         //vessel information
         $scope.vtsvesselnameinput = ""; $scope.vtsvesselcallsigninput = ""; $scope.vtsvesselmmsiinput = ""; $scope.vtsvesselmmsilabel = "MMSI: "; $scope.vtsvesselimoinput = "";
@@ -169,9 +171,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.setvtsvesselPortOfDestinationValid = false;
         $scope.setvtsvesselRouteValid = false;
 
-        $scope.vtsetadateinput = "";
-        $scope.vtsetatimeinput = "";
-
         $scope.VTSReadyToSend = false; //global readystate
 
         $scope.reportSummary = { //what is sent to the VTS
@@ -234,8 +233,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             voyagePositionLat:0, //Latitude position of vessel, format is degrees and decimal minutes, ex: 55,39.9999 - (0-180),(0-60).(0-9999) (E/W)
             voyageSpeed:0, //Current speed of vessel, in knots
             voyageTrueHeading:0, //Current true heading, 0-360 degrees, 1 decimal
-            voyageVTSETADate:"", //String - Arrival date at VTS area, DD-MM-YYYY
-            voyageVTSETATime:"", //String - Arrival time at VTS area, HH:MM
+            voyageVTSETADateTime:"", //String - Arrival date at VTS area, DD-MM-YYYY HH:mm
             voyagePortOfDestination:"", //String - name of port
         };
 
@@ -288,7 +286,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 group4valid = false,
                 group5valid = false,
                 group6valid = false,
-                group7valid = false;
+                group7valid = false,
+                group8valid = false;
 
             if($scope.setvtsvesselnameValid && $scope.setvtsvesselcallsignValid && $scope.setvtsvesselMMSIValid) group1valid = true;
             if($scope.setvtsvesselIMOValid && $scope.setvtsvesselDraughtValid && $scope.setvtsvesselAirDraughtValid) group2valid = true;
@@ -297,56 +296,145 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             if($scope.setvtsvesselPosLonDegreesValid && $scope.setvtsvesselPosLatDegreesValid) group5valid = true;
             if($scope.setvtsvesselPosLonMinutesValid && $scope.setvtsvesselPosLatMinutesValid) group6valid = true;
             if($scope.setvtsvesselSpeedValid && $scope.setvtsvesselTrueHeadingValid && $scope.setvtsvesselPortOfDestinationValid) group7valid = true;
+            if($scope.setvtsvesseletaTimeDateValid) group8valid = true;
 
+            console.log("");
+            console.log("");
+            console.log("");
+            console.log("setvtsvesselnameValid:",$scope.setvtsvesselnameValid);
+            console.log("setvtsvesselcallsignValid:",$scope.setvtsvesselcallsignValid);
+            console.log("setvtsvesselMMSIValid:",$scope.setvtsvesselMMSIValid);
+            console.log("setvtsvesselIMOValid:",$scope.setvtsvesselIMOValid);
+            console.log("setvtsvesselDraughtValid:",$scope.setvtsvesselDraughtValid);
+            console.log("setvtsvesselAirDraughtValid:",$scope.setvtsvesselAirDraughtValid);
+            console.log("setvtsvesselPersonsValid:",$scope.setvtsvesselPersonsValid);
+            console.log("setvtsVesselTypeValid:",$scope.setvtsVesselTypeValid);
+            console.log("setvtsVesselLengthValid:",$scope.setvtsVesselLengthValid);
+            console.log("fuelDetailsValid:",$scope.fuelDetailsValid);
+            console.log("setvtsCargoTypeValid:",$scope.setvtsCargoTypeValid);
+            console.log("setvtsvesselContactDetailsValid:",$scope.setvtsvesselContactDetailsValid);
+            console.log("setvtsvesselPosLonDegreesValid:",$scope.setvtsvesselPosLonDegreesValid);
+            console.log("setvtsvesselPosLatDegreesValid:",$scope.setvtsvesselPosLatDegreesValid);
 
-            if(group1valid==false || group2valid==false || group3valid==false || group4valid==false || group5valid==false || group6valid==false || group7valid==false) {
+            console.log("setvtsvesselSpeedValid:",$scope.setvtsvesselSpeedValid);
+            console.log("setvtsvesselTrueHeadingValid:",$scope.setvtsvesselTrueHeadingValid);
+            console.log("setvtsvesselPortOfDestinationValid:",$scope.setvtsvesselPortOfDestinationValid);
+            console.log("setvtsvesseletaTimeDateValid:",$scope.setvtsvesseletaTimeDateValid);
+
+            console.log("group1valid",group1valid);
+            console.log("group2valid",group2valid);
+            console.log("group3valid",group3valid);
+            console.log("group4valid",group4valid);
+            console.log("group5valid",group5valid);
+            console.log("group6valid",group6valid);
+            console.log("group7valid",group7valid);
+            console.log("group8valid",group8valid);
+
+            if(group1valid==false || group2valid==false || group3valid==false || group4valid==false || group5valid==false || group6valid==false || group7valid==false || group8valid==false) {
                 $scope.VTSReadyToSend = false;
+                console.log("DOOD!");
             }else{
                 if($scope.isLoggedIn){
                     $scope.VTSReadyToSend = true;
                 }
             }
+            console.log("VTSReadyToSend",$scope.VTSReadyToSend);
+
         };
 
         $scope.VTSForceUTCTimezoneCheckBox = function(vtsForceUTCTimeCheckBoxState){
             //keep timepicker open
-            if(angular.element(document.querySelector(".datetime-input.time .display")).scope().selected !== undefined){
-                angular.element(document.querySelector(".datetime-input.time .display")).scope().toggleEditPopover();
+            if(angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).scope().selected !== undefined){
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).scope().toggleEditPopover();
             }
             $scope.timeInputClick(); //style the input
             $scope.vtsForceUTCTimeCheckBoxState = vtsForceUTCTimeCheckBoxState;
             if(vtsForceUTCTimeCheckBoxState == true) {
-                angular.element(document.querySelector(".datetime-input.time .display .time")).html($scope.vtsUtcTime);
-                angular.element(document.querySelector(".datetime-input.time .display")).addClass("vts-time-picker-box-highlight");
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html($scope.vtsUtcTime);
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).addClass("vts-time-picker-box-highlight");
             }else{
-                angular.element(document.querySelector(".datetime-input.time .display .time")).html($scope.vtsLocalTime);
-                angular.element(document.querySelector(".datetime-input.time .display")).removeClass("vts-time-picker-box-highlight");
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html($scope.vtsLocalTime);
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).removeClass("vts-time-picker-box-highlight");
             }
         };
+
+        $scope.toggleDateValid = function(valid){
+            $scope.setvtsvesseletaTimeDateValid = valid;
+            if(valid==true){
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.date .display")).addClass("vts-datetime-picker-box-highlight-valid");
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.date .display")).removeClass("vts-datetime-picker-box-highlight-invalid");
+            }else{
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.date .display")).removeClass("vts-datetime-picker-box-highlight-valid");
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.date .display")).addClass("vts-datetime-picker-box-highlight-invalid");
+            }
+        };
+        $scope.toggleTimeValid = function(valid){
+            $scope.setvtsvesseletaTimeDateValid = valid;
+            if(valid==true){
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).addClass("vts-datetime-picker-box-highlight-valid");
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).removeClass("vts-datetime-picker-box-highlight-invalid");
+            }else{
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).removeClass("vts-datetime-picker-box-highlight-valid");
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).addClass("vts-datetime-picker-box-highlight-invalid");
+            }
+            $scope.VTSValidationAllDone();
+        };
+
+        $scope.validateEtaTimeDate = function(){
+            var isSameDay = moment(moment($scope.vtsLocalDate, 'DD MMM YYYY')).isSame(moment(moment().format('MMM DD YYYY')));
+            var isAfterDay = moment(moment($scope.vtsLocalDate, 'DD MMM YYYY')).isAfter(moment(moment().format('YYYY-MM-DD')));
+            var isAfterTime = $scope.vtsLocalTime.replace(":","").replace("  ","") > moment().format('HH:mm').replace(":","");
+            if(isAfterDay){
+                $scope.toggleDateValid(true);
+            }else if(isSameDay && isAfterTime){
+                $scope.toggleDateValid(true);
+            }else{
+                $scope.toggleDateValid(false);
+            }
+            if(isAfterDay){
+                $scope.toggleTimeValid(true);
+            }else if(isAfterTime && isSameDay){
+                $scope.toggleTimeValid(true);
+            }else{
+                $scope.toggleTimeValid(false);
+            }
+        }
+
+        $scope.dateInputChange = function (now) {
+            $scope.vtsLocalDate = moment(now._d).format('DD MMM YYYY');
+            $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + moment.utc().format('DD MMM YYYY');
+            angular.element(document.querySelector("#timedateutclabel")).html($scope.vtsDateStamp + " - " + $scope.vtsUtcTime + " UTC"); //update timepicker with now
+            $scope.validateEtaTimeDate();
+        }
 
         $scope.timeInputChange = function (now) {
             var formattedtime = moment(now._d).format('HH : mm');
             var utctime = moment.utc(now._d).format('HH : mm');
+            $scope.vtsLocalTime = formattedtime;
+            $scope.vtsUtcTime = utctime;
+
+            angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html($scope.vtsLocalTime); //update time
+
             //toggle utc time
             if($scope.vtsForceUTCTimeCheckBoxState == true){
-                angular.element(document.querySelector(".datetime-input.time .display .time")).html(utctime);
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html(utctime);
             }else{
-                angular.element(document.querySelector(".datetime-input.time .display .time")).html(formattedtime);
+                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html(formattedtime);
             }
-            //display and date on label
+            //display time and date on label
             $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + moment.utc().format('DD MMM YYYY');
             angular.element(document.querySelector("#timedateutclabel")).html($scope.vtsDateStamp + " - " + utctime + " UTC"); //update timepicker with now
             //update the scope times
-            $scope.vtsLocalTime = formattedtime;
-            $scope.vtsUtcTime = utctime;
+
+            $scope.validateEtaTimeDate();
         };
 
         $scope.timeInputClick = function(){ //styles the timepicker display
-            angular.element(document.querySelector(".vts-timepicker.datetime-input.time .edit-popover .header")).addClass('ng-hide'); //remove redundant datepicker
-            angular.element(document.querySelector(".vts-timepicker.datetime-input.time .edit-popover")).addClass('time-picker-mod'); //make smaller
-            angular.element(document.querySelector(".vts-timepicker.datetime-input.time .timer .timer-seconds")).addClass('ng-hide'); //remove seconds
-            angular.element(document.querySelector(".vts-timepicker.datetime-input.time .clear-button")).addClass('ng-hide'); //remove clear button
-            angular.element(document.querySelector(".vts-timepicker.datetime-input.time .timer div:nth-child(4)")).addClass("ng-hide");
+            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .edit-popover .header")).addClass('ng-hide'); //remove redundant datepicker
+            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .edit-popover")).addClass('time-picker-mod'); //make smaller
+            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .timer .timer-seconds")).addClass('ng-hide'); //remove seconds
+            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .clear-button")).addClass('ng-hide'); //remove clear button
+            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .timer div:nth-child(4)")).addClass("ng-hide");
         };
 
 
@@ -889,6 +977,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         //displays the form fields
         $scope.VTSSelected = true;
 
+        //display time input as invalid
+        angular.element(document.querySelector(".datetime-input.date .display")).addClass("vts-datetime-picker-box-highlight-invalid");
+        angular.element(document.querySelector(".datetime-input.time .display")).addClass("vts-datetime-picker-box-highlight-invalid");
+
+
         $scope.VTSSelectedTrafficCenterData = $sce.trustAsHtml(html);
         $scope.VTSSelectedTrafficCenterShortname = $sce.trustAsHtml(VTSData[vtsID].shortname);
 
@@ -963,11 +1056,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.reportSummary.voyageSpeed = "" + (parseFloat($scope.vtsvesselspeedinput));
         $scope.reportSummary.voyageTrueHeading = "" + (parseFloat($scope.vtsvesseltrueheadinginput));
         $scope.reportSummary.voyagePortOfDestination = "" + ($scope.vtsvesselportofdestinationinput);
-        $scope.reportSummary.voyageVTSETADate = "" + ($scope.vtsetadateinput);
-        $scope.reportSummary.voyageVTSETATime = "" + ($scope.vtsetatimeinput);
+        $scope.reportSummary.voyageVTSETADateTime = "" + ($scope.vtsLocalDate + " - " + $scope.vtsLocalTime);
+
 
         // debug
-        // console.log("VTS REPORT:",$scope.reportSummary)
+        console.log("VTS REPORT:",$scope.reportSummary);
 
         //Send form endpoint *************************************************************************************
         $http({

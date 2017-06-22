@@ -21,17 +21,18 @@
 
         <hr class="vts-hr"> <!-- ETA ------------------------------------------------------------------- -->
         <div style="padding-bottom:6px;">
-            <span class="bold vts-pad-top">Estimated Time of Arrival at {{VTSSelectedTrafficCenterShortname}} reporting area:
-                <span id="timedateutclabel" class="vts-force-spacing-200">
-                        {{vtsDateStamp}} - {{vtsUTCTimeStamp}} UTC
-                </span>
+            <span class="bold vts-pad-top">
+                Estimated Time of Arrival at {{VTSSelectedTrafficCenterShortname}} reporting area:
+            </span>
+            <span id="timedateutclabel" class="vts-force-spacing-200">
+                {{vtsDateStamp}} - {{vtsUTCTimeStamp}} UTC
             </span>
             <div class="vts-pad-top">
                 <div class="vts-force-spacing-200 ">
-                    <date-input date="now" on-change="timeInputChange(now)" placeholder="{{vtsCurrentDateStamp}}"></date-input>
+                    <date-input date="now" class="vts-timedatepicker" on-change="dateInputChange(now)" placeholder="{{vtsCurrentDateStamp}}"></date-input>
                 </div>
                 <div class="vts-force-spacing-200 ">
-                    <time-input time="time" class="vts-timepicker" on-change="timeInputChange(time)" ng-click="timeInputClick()"></time-input>
+                    <time-input time="time" class="vts-timedatepicker" on-change="timeInputChange(time)" ng-click="timeInputClick()"></time-input>
                 </div>
                 <div class="vts-force-spacing-200 vts-align-utc-checkbox">
                     <input type="checkbox" class="vts-checkbox" ng-checked="vtsForceUTCTimeCheckBoxState" ng-change="VTSForceUTCTimezoneCheckBox(vtsForceUTCTimeCheckBoxState)"  ng-model="vtsForceUTCTimeCheckBoxState"><span class="vts-checkbox-label vts-checkbox-label-blue">Display UTC time</span>
@@ -413,12 +414,15 @@
         <button class="btn btn-primary" ng-show="!isLoggedIn" type="button" ng-click="login()">
             Login
         </button>
-        <button class="btn btn-success" ng-show="VTSReadyToSend" type="button" ng-click="sendVTSForm()">
+        <button class="btn btn-success disabled" ng-show="VTSReadyToSend" type="button" ng-click="sendVTSForm()">
             <i class="fa fa-check" aria-hidden="true"></i> Send
         </button>
-        <button class="btn btn-primary disabled" ng-show="!VTSReadyToSend" type="button" >
-            <i class="fa fa-check" aria-hidden="true"></i> Send
-        </button>
+        <!--<button class="btn btn-success" ng-show="VTSReadyToSend" type="button" ng-click="sendVTSForm()">-->
+            <!--<i class="fa fa-check" aria-hidden="true"></i> Send-->
+        <!--</button>-->
+        <!--<button class="btn btn-primary disabled" ng-show="!VTSReadyToSend" type="button" >-->
+            <!--<i class="fa fa-check" aria-hidden="true"></i> Send-->
+        <!--</button>-->
         <button class="btn btn-danger"  type="button" ng-click="hideVTSForm()"><i class="fa fa-ban" aria-hidden="true"></i>
             Cancel
         </button>
