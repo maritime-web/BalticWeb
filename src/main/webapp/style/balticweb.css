@@ -250,10 +250,11 @@ body {
 .vts-utc-label{
     margin-right: 10px;
 }
-.vts-align-utc-checkbox{
-    top: -22px;
+.vts-align-utc-label{
+    top: -17px;
     position: relative;
-    left: 24px;
+    left: 9px;
+    font-size: 2.2em;
 }
 
     /* END Vessel Traffic Service */

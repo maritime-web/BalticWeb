@@ -25,17 +25,17 @@
                 Estimated Time of Arrival at {{VTSSelectedTrafficCenterShortname}} reporting area:
             </span>
             <span id="timedateutclabel" class="vts-force-spacing-200">
-                {{vtsDateStamp}} - {{vtsUTCTimeStamp}} UTC
+                {{vtsDateStamp}} - {{vtsTimeStamp}} UTC
             </span>
             <div class="vts-pad-top">
                 <div class="vts-force-spacing-200 ">
                     <date-input date="now" class="vts-timedatepicker" on-change="dateInputChange(now)" placeholder="{{vtsCurrentDateStamp}}"></date-input>
                 </div>
                 <div class="vts-force-spacing-200 ">
-                    <time-input time="time" class="vts-timedatepicker" on-change="timeInputChange(time)" ng-click="timeInputClick()"></time-input>
+                    <time-input time="time" class="vts-timedatepicker"  on-change="timeInputChange(time)" ng-click="timeInputClick()"></time-input>
                 </div>
-                <div class="vts-force-spacing-200 vts-align-utc-checkbox">
-                    <input type="checkbox" class="vts-checkbox" ng-checked="vtsForceUTCTimeCheckBoxState" ng-change="VTSForceUTCTimezoneCheckBox(vtsForceUTCTimeCheckBoxState)"  ng-model="vtsForceUTCTimeCheckBoxState"><span class="vts-checkbox-label vts-checkbox-label-blue">Display UTC time</span>
+                <div class="vts-force-spacing-200 vts-align-utc-label">
+                    UTC
                 </div>
             </div>
 
@@ -327,11 +327,11 @@
 
             <div >
                 <span class="vts-force-spacing-350" >
-                    <div >Pollution or dangerous cargo lost overboard:</div>
+                    <span >Pollution or dangerous cargo lost overboard:</span>
                     <textarea class="vts-textarea-large" ng-model="vtsdangerouscargooverboard" placeholder="Please describe the pollutant and where it was lost. Any additional information may be of great value."></textarea>
                 </span>
                 <span class="vts-force-spacing-350" ng-show="showCargoContactInformationInput">
-                    <div>Contact details for information of cargo :</div>
+                    <span>Contact details for information of cargo :</span>
                     <textarea class="vts-textarea-large" ng-model="vtscargotcontactdetailsinput" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselContactDetailsValid]" ng-change="VTSCargoContactInformationChange()"></textarea>
                 </span>
             </div>

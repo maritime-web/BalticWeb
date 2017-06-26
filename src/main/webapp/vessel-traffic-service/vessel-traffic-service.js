@@ -19,10 +19,10 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                         VTSData = $scope.VTSCenterData; //place in local
                         angular.element(document.querySelector('#modalbody')).removeClass('ng-hide'); //hidden until angular is ready so it doesnt pop up and down
                         //display date and time in utc
-                        $scope.vtsUTCTimeStamp = moment.utc().format('HH : mm');
+                        $scope.vtsTimeStamp = moment.utc().format('HH : mm');
                         $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + moment.utc().format('DD MMM YYYY');
                         angular.element(document.querySelector(".datetime-input.date .display .date")).html(moment().format('DD MMM YYYY')); //update timepicker display with now
-                        angular.element(document.querySelector(".datetime-input.time .display .time")).html(moment().format('HH : mm')); //update timepicker display with now
+                        angular.element(document.querySelector(".datetime-input.time .display .time")).html(moment.utc().format('HH : mm')); //update timepicker display with now
                     },
                     function(data) { // error
                         growl.error("VTS interface population service could not be contacted. Please check your internet connection and try again.\nRetrying in 5 seconds.");
@@ -59,7 +59,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             {type:"Ferry", DWTmultiplier:0},
             {type:"Tug boat", DWTmultiplier:0},
             {type:"Barge", DWTmultiplier:0},
-            {type:"Other", DWTmultiplier:999999},
+            {type:"Other", DWTmultiplier:999999}
         ];
         /*
          A regression analysis performed by "The National Institute for Land and Infrastructure Management in Japan":
@@ -87,7 +87,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             {name:"MGO", description:"Marine Gas Oil"},
             {name:"LPG", description:"Liquid Petroleum Gas"},
             {name:"LNG", description:"Liquid Natural Gas"},
-            {name:"Other", description:""},
+            {name:"Other", description:""}
         ];
 
         //displays as vessel type input but is really a cargo definition
@@ -103,7 +103,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         //ETA at VTS
         $scope.vtsForceUTCTimeCheckBoxState = false; //checkbox to activate UTC timezone
         $scope.vtsUtcTime = moment.utc().format('HH : mm');
-        $scope.vtsLocalTime = moment().format('HH : mm');
         $scope.vtsLocalDate = moment().format('DD MMM YYYY');
         $scope.setvtsvesseletaTimeDateValid = false;
 
@@ -234,7 +233,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             voyageSpeed:0, //Current speed of vessel, in knots
             voyageTrueHeading:0, //Current true heading, 0-360 degrees, 1 decimal
             voyageVTSETADateTime:"", //String - Arrival date at VTS area, DD-MM-YYYY HH:mm
-            voyagePortOfDestination:"", //String - name of port
+            voyagePortOfDestination:"" //String - name of port
         };
 
 
@@ -332,7 +331,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
             if(group1valid==false || group2valid==false || group3valid==false || group4valid==false || group5valid==false || group6valid==false || group7valid==false || group8valid==false) {
                 $scope.VTSReadyToSend = false;
-                console.log("DOOD!");
             }else{
                 if($scope.isLoggedIn){
                     $scope.VTSReadyToSend = true;
@@ -342,21 +340,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         };
 
-        $scope.VTSForceUTCTimezoneCheckBox = function(vtsForceUTCTimeCheckBoxState){
-            //keep timepicker open
-            if(angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).scope().selected !== undefined){
-                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).scope().toggleEditPopover();
-            }
-            $scope.timeInputClick(); //style the input
-            $scope.vtsForceUTCTimeCheckBoxState = vtsForceUTCTimeCheckBoxState;
-            if(vtsForceUTCTimeCheckBoxState == true) {
-                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html($scope.vtsUtcTime);
-                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).addClass("vts-time-picker-box-highlight");
-            }else{
-                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html($scope.vtsLocalTime);
-                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display")).removeClass("vts-time-picker-box-highlight");
-            }
-        };
+
 
         $scope.toggleDateValid = function(valid){
             $scope.setvtsvesseletaTimeDateValid = valid;
@@ -383,7 +367,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.validateEtaTimeDate = function(){
             var isSameDay = moment(moment($scope.vtsLocalDate, 'DD MMM YYYY')).isSame(moment(moment().format('MMM DD YYYY')));
             var isAfterDay = moment(moment($scope.vtsLocalDate, 'DD MMM YYYY')).isAfter(moment(moment().format('YYYY-MM-DD')));
-            var isAfterTime = $scope.vtsLocalTime.replace(":","").replace("  ","") > moment().format('HH:mm').replace(":","");
+            var isAfterTime = $scope.vtsUtcTime.replace(":","").replace("  ","") > moment.utc().format('HH:mm').replace(":","");
             if(isAfterDay){
                 $scope.toggleDateValid(true);
             }else if(isSameDay && isAfterTime){
@@ -398,43 +382,29 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             }else{
                 $scope.toggleTimeValid(false);
             }
-        }
+        };
 
         $scope.dateInputChange = function (now) {
             $scope.vtsLocalDate = moment(now._d).format('DD MMM YYYY');
-            $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + moment.utc().format('DD MMM YYYY');
-            angular.element(document.querySelector("#timedateutclabel")).html($scope.vtsDateStamp + " - " + $scope.vtsUtcTime + " UTC"); //update timepicker with now
+            $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + $scope.vtsLocalDate;
+            angular.element(document.querySelector("#timedateutclabel")).html($scope.vtsDateStamp + " - " + $scope.vtsUtcTime + " UTC"); //workaround to force update
             $scope.validateEtaTimeDate();
-        }
+        };
 
         $scope.timeInputChange = function (now) {
-            var formattedtime = moment(now._d).format('HH : mm');
-            var utctime = moment.utc(now._d).format('HH : mm');
-            $scope.vtsLocalTime = formattedtime;
-            $scope.vtsUtcTime = utctime;
-
-            angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html($scope.vtsLocalTime); //update time
-
-            //toggle utc time
-            if($scope.vtsForceUTCTimeCheckBoxState == true){
-                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html(utctime);
-            }else{
-                angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html(formattedtime);
-            }
+            $scope.vtsUtcTime = moment.utc(now._d).format('HH : mm'); //update selected time
+            angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html($scope.vtsUtcTime);
             //display time and date on label
-            $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + moment.utc().format('DD MMM YYYY');
-            angular.element(document.querySelector("#timedateutclabel")).html($scope.vtsDateStamp + " - " + utctime + " UTC"); //update timepicker with now
-            //update the scope times
-
+            angular.element(document.querySelector("#timedateutclabel")).html($scope.vtsDateStamp + " - " + $scope.vtsUtcTime + " UTC"); //update timepicker with now
             $scope.validateEtaTimeDate();
         };
 
         $scope.timeInputClick = function(){ //styles the timepicker display
-            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .edit-popover .header")).addClass('ng-hide'); //remove redundant datepicker
-            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .edit-popover")).addClass('time-picker-mod'); //make smaller
-            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .timer .timer-seconds")).addClass('ng-hide'); //remove seconds
-            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .clear-button")).addClass('ng-hide'); //remove clear button
-            angular.element(document.querySelector(".vts-vts-timedatepicker.datetime-input.time .timer div:nth-child(4)")).addClass("ng-hide");
+            angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .edit-popover .header")).addClass('ng-hide'); //remove redundant datepicker
+            angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .edit-popover")).addClass('time-picker-mod'); //make smaller
+            angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .timer .timer-seconds")).addClass('ng-hide'); //remove seconds
+            angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .clear-button")).addClass('ng-hide'); //remove clear button
+            angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .timer div:nth-child(4)")).addClass("ng-hide");
         };
 
 
@@ -550,8 +520,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         //just numbers - not mandatory input
         $scope.VTSVesselGTValidation = function() {
-            var GT = $scope.vtsvesselgrosstonnageinput.replace(/\D/g, '');
-            $scope.vtsvesselgrosstonnageinput = GT;
+            $scope.vtsvesselgrosstonnageinput = $scope.vtsvesselgrosstonnageinput.replace(/\D/g, '');
         };
 
             $scope.getLocation = function(){
@@ -602,11 +571,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             }
 
             var m = re.exec(input); //executes the validation
-            if (m == null) {
-                output.valid = false;
-            } else {
-                output.valid = true;
-            }
+            (m == null) ? output.valid = false : output.valid = true;
             return output;
         };
         $scope.VTSPositionLonDegValidation = function(){
@@ -739,47 +704,48 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.VTSDangerousCargoTypeValidation = function (selectedItem) {
             var totalDGTonnage = 0;
             var IMOtypesofDG = "";
+            var input;
 
             if(selectedItem == 1) {
-                var input = $scope.vtsdangerouscargotype01input.replace(/\D/g, '');
+                input = $scope.vtsdangerouscargotype01input.replace(/\D/g, '');
                 $scope.vtsdangerouscargotype01input = input;
             }
             if(selectedItem == 2) {
-                var input = $scope.vtsdangerouscargotype02input.replace(/\D/g, '');
+                input = $scope.vtsdangerouscargotype02input.replace(/\D/g, '');
                 $scope.vtsdangerouscargotype02input = input;
             }
             if(selectedItem == 3) {
-                var input = $scope.vtsdangerouscargotype03input.replace(/\D/g, '');
+                input = $scope.vtsdangerouscargotype03input.replace(/\D/g, '');
                 $scope.vtsdangerouscargotype03input = input;
             }
             if(selectedItem == 4) {
-                var input = $scope.vtsdangerouscargotype04input.replace(/\D/g, '');
+                input = $scope.vtsdangerouscargotype04input.replace(/\D/g, '');
                 $scope.vtsdangerouscargotype04input = input;
             }
             if(selectedItem == 5) {
-                var input = $scope.vtsdangerouscargotype05input.replace(/\D/g, '');
+                input = $scope.vtsdangerouscargotype05input.replace(/\D/g, '');
                 $scope.vtsdangerouscargotype05input = input;
             }
             if(selectedItem == 6) {
-                var input = $scope.vtsdangerouscargotype06input.replace(/\D/g, '');
+                input = $scope.vtsdangerouscargotype06input.replace(/\D/g, '');
                 $scope.vtsdangerouscargotype06input = input;
             }
             if(selectedItem == 7) {
-                var input = $scope.vtsdangerouscargotype07input.replace(/\D/g, '');
+                input = $scope.vtsdangerouscargotype07input.replace(/\D/g, '');
                 $scope.vtsdangerouscargotype07input = input;
             }
             if(selectedItem == 8) {
-                var input = $scope.vtsdangerouscargotype08input.replace(/\D/g, '');
+                input = $scope.vtsdangerouscargotype08input.replace(/\D/g, '');
                 $scope.vtsdangerouscargotype08input = input;
             }
             if(selectedItem == 9) {
-                var input = $scope.vtsdangerouscargotype09input.replace(/\D/g, '');
+                input = $scope.vtsdangerouscargotype09input.replace(/\D/g, '');
                 $scope.vtsdangerouscargotype09input = parseInt(input);
             }
 
             //display the types of cargo
             if($scope.vtsdangerouscargotype01input != "") {
-                var input = parseInt($scope.vtsdangerouscargotype01input);
+                input = parseInt($scope.vtsdangerouscargotype01input);
                 if(input.isNaN)input=0;
                 if(input>0){
                     IMOtypesofDG = IMOtypesofDG + " - 1";
@@ -787,7 +753,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 }
             }
             if($scope.vtsdangerouscargotype02input != "") {
-                var input = parseInt($scope.vtsdangerouscargotype02input);
+                input = parseInt($scope.vtsdangerouscargotype02input);
                 if(input.isNaN)input=0;
                 if(input>0){
                     IMOtypesofDG = IMOtypesofDG + " - 2";
@@ -795,7 +761,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 }
             }
             if($scope.vtsdangerouscargotype03input != "") {
-                var input = parseInt($scope.vtsdangerouscargotype03input);
+                input = parseInt($scope.vtsdangerouscargotype03input);
                 if(input.isNaN)input=0;
                 if(input>0){
                     IMOtypesofDG = IMOtypesofDG + " - 3";
@@ -803,7 +769,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 }
             }
             if($scope.vtsdangerouscargotype04input != "") {
-                var input = parseInt($scope.vtsdangerouscargotype04input);
+                input = parseInt($scope.vtsdangerouscargotype04input);
                 if(input.isNaN)input=0;
                 if(input>0){
                     IMOtypesofDG = IMOtypesofDG + " - 4";
@@ -811,7 +777,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 }
             }
             if($scope.vtsdangerouscargotype05input != "") {
-                var input = parseInt($scope.vtsdangerouscargotype05input);
+                input = parseInt($scope.vtsdangerouscargotype05input);
                 if(input.isNaN)input=0;
                 if(input>0){
                     IMOtypesofDG = IMOtypesofDG + " - 5";
@@ -819,7 +785,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 }
             }
             if($scope.vtsdangerouscargotype06input != "") {
-                var input = parseInt($scope.vtsdangerouscargotype06input);
+                input = parseInt($scope.vtsdangerouscargotype06input);
                 if(input.isNaN)input=0;
                 if(input>0){
                     IMOtypesofDG = IMOtypesofDG + " - 6";
@@ -827,7 +793,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 }
             }
             if($scope.vtsdangerouscargotype07input != "") {
-                var input = parseInt($scope.vtsdangerouscargotype07input);
+                input = parseInt($scope.vtsdangerouscargotype07input);
                 if(input.isNaN)input=0;
                 if(input>0){
                     IMOtypesofDG = IMOtypesofDG + " - 7";
@@ -835,7 +801,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 }
             }
             if($scope.vtsdangerouscargotype08input != "") {
-                var input = parseInt($scope.vtsdangerouscargotype08input);
+                input = parseInt($scope.vtsdangerouscargotype08input);
                 if(input.isNaN)input=0;
                 if(input>0){
                     IMOtypesofDG = IMOtypesofDG + " - 8";
@@ -843,7 +809,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 }
             }
             if($scope.vtsdangerouscargotype09input != "") {
-                var input = parseInt($scope.vtsdangerouscargotype09input);
+                input = parseInt($scope.vtsdangerouscargotype09input);
                 if(input.isNaN)input=0;
                 if(input>0){
                     IMOtypesofDG = IMOtypesofDG + " - 9";
@@ -1056,7 +1022,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.reportSummary.voyageSpeed = "" + (parseFloat($scope.vtsvesselspeedinput));
         $scope.reportSummary.voyageTrueHeading = "" + (parseFloat($scope.vtsvesseltrueheadinginput));
         $scope.reportSummary.voyagePortOfDestination = "" + ($scope.vtsvesselportofdestinationinput);
-        $scope.reportSummary.voyageVTSETADateTime = "" + ($scope.vtsLocalDate + " - " + $scope.vtsLocalTime);
+        $scope.reportSummary.voyageVTSETADateTime = "" + ($scope.vtsLocalDate + " - " + $scope.vtsUtcTime);
 
 
         // debug
@@ -1075,6 +1041,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 growl.success("VTS report was successfully sent to "+$scope.reportSummary.vtsShortName+"!");
             },
             function(data) { // optional
+                console.log(data);
                 alert("Your report could not be sent. Please check your internet connection and try again.\nIf this message persists with an established internet connection, please contact the Department of E-Navigation: sfs@dma.dk");
             });
 
