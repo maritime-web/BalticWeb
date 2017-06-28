@@ -56,114 +56,84 @@ angular.module('maritimeweb.app')
         $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
         //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
         $scope.mapSeaMapLayer =  MapService.createSuperSeaMapLayerGroup();
-        $scope.mapMCLayers = ''; //  MapService.createMCLayerGroup();
+        $scope.mapMCLayers = MapService.createMCLayerGroup();
         // $scope.mapNoGoLayer =  MapService.createNoGoLayerGroup(); // is set in the no-go-layer
         //$scope.mcServiceRegistryInstances = ServiceRegistryService.getServiceInstances('POLYGON((9.268411718750002%2053.89831670389188%2C9.268411718750002%2057.58991390302003%2C18.392557226562502%2057.58991390302003%2C18.392557226562502%2053.89831670389188%2C9.268411718750002%2053.89831670389188))');
         $scope.mcServiceRegistryInstances =  [];
 
+        $scope.isit = function () {
+            var x =MapService.isLayerVisible('',$scope.mapMCLayers );
+            var y =MapService.isLayerVisible('MaritimeCloud Service Instance AREA',$scope.mapMCLayers );
+            $log.info("X " + x);
+            $log.info("Y " + y);
+            $log.info("mcboundary = " + MapService.isLayerVisible('mcboundary',$scope.mapMCLayers));
+            $log.info("mcboundary = " +$scope.mapMCLayers);
+            $log.info("mcboundary [0]= " + $scope.mapMCLayers.getLayers().getArray()[0]);
+            $log.info("mcboundary [0] name= " + $scope.mapMCLayers.getLayers().getArray()[0].get('name'));
+            $log.info("mcboundary [0] scope.mapMCLayers.getLayers().getArray()[0].getSource()= " + $scope.mapMCLayers.getLayers().getArray()[0].getSource());
+            $log.info("mcboundary [0] scope.mapMCLayers.getLayers().getArray()[0].getSource().getFeatures= " + $scope.mapMCLayers.getLayers().getArray()[0].getSource().getFeatures());
+            var layersInGroup = $scope.mapMCLayers.getLayers().getArray();
+            for (var i = 0, l; i < layersInGroup.length; i++) {
+                l = layersInGroup[i];
+                    $log.info(l.get('name'));
+                    $log.info(l.get('visible'));
+                 var wkt = 'GEOMETRYCOLLECTION(POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90)))';
+                 var olFeature = MapService.wktToOlFeature(wkt);
+                 olFeature.setId('xxx');
+                l.getSource().addFeature(olFeature);
+                // l.getSource().clear();
+                $log.info("features= " + l.getSource().getFeatures());
+                l.getSource().addFeature(olFeature);
+
+                var markerStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 500,
+                        stroke: new ol.style.Stroke({
+                            color: '#ffff00',
+                            width: 5
+                        }),
+                        fill: new ol.style.Fill({
+                            color: '#00FF33' // attribute colour
+                        })
+                    })
+                });
+                var vesselPosition = new ol.geom.Point(ol.proj.transform([55, 10], 'EPSG:4326', 'EPSG:900913'));
+                var markerVessel = new ol.Feature({
+                    geometry: vesselPosition
+                });
+                markerVessel.setStyle(markerStyle);
+
+            }
+        };
+
         $scope.isThereAnyServiceRegistry = function () {
             $log.info("isThereAnyServiceRegistry");
 
-
-            var mcStylePurple = new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: 'rgba(180, 0, 180, 0.5)',
-                    width: 1
-                }),
-                fill: new ol.style.Fill({
-                    color: 'rgba(180, 0, 180, 0.10)'
-                })
-            });
-
-            // Construct the boundary layers
-            var boundaryLayer = new ol.layer.Vector({
-                id: 'mcboundary',
-                title: 'MaritimeCloud Service Instance AREA',
-                zIndex: 11,
-                source: new ol.source.Vector({
-                    features: new ol.Collection(),
-                    wrapX: false
-                }),
-                style: [mcStylePurple]
-            });
-
-            /*         var serviceAvailableLayer = new ol.layer.Vector({
-             id: 'serviceavailboundary',
-             title: 'Service Available - NO GO AREA',
-             zIndex: 11,
-             source: new ol.source.Vector({
-             features: new ol.Collection(),
-             wrapX: false
-             }),
-             style: [greenServiceStyle]
-             });
-
-             serviceAvailableLayer.setZIndex(12);
-             serviceAvailableLayer.setVisible(true);
-             serviceAvailableLayer.getSource().clear();*/
-
-
-            boundaryLayer.setZIndex(11);
-            boundaryLayer.setVisible(true);
-
-
-            /***************************/
-            /** Map creation          **/
-            /***************************/
-
-            // Construct No Go Layer Group layer
-            var mcSRGroupLayer = new ol.layer.Group({
-                title: 'MC Service Registry',
-                zIndex: 11,
-                layers: [boundaryLayer]
-            });
-            mcSRGroupLayer.setZIndex(11);
-            mcSRGroupLayer.setVisible(true);
-            $scope.mapMCLayers = mcSRGroupLayer;
-
-
             ServiceRegistryService.getServiceInstances().success(function (services, status) {
-                //$log.debug("NVNM Status " + status);
+
                 $scope.mcServiceRegistryInstances.length = 0;
-
-
-
                 // Update the selected status from localstorage
                 var instanceIds = [];
                 if(status==204){
                     $scope.mcServiceRegistryInstancesStatus = 'false';
-                   // $window.localStorage[NwNmService.serviceID()] = 'false';
                     $scope.mcServiceRegistryInstancesMessages = [];
-
                 }
-
                 if(status==200){
-                    $log.debug("isThereAnyServiceRegistry 200 OK");
-
                     $scope.mcServiceRegistryInstancesStatus = 'true';
-                  //  $window.localStorage[NwNmService.serviceID()] = 'true';
-
-                    var title = $scope.mapMCLayers.getLayers().getArray()[0].get('title');
-                    $log.info("title" + title);
-
-                    var olServiceActiveAreaSample = MapService.wktToOlFeature('POLYGON((-97.9000 42.0000, -97.9000 78.0000, 36.2000 78.0000, 36.2000 42.0000, 97.9000 42.0000))');
-                    // $scope.mapMCLayers.getLayers().getArray()[0].getSource().addFeature(olServiceActiveArea);
-                    boundaryLayer.getSource().addFeature(olServiceActiveAreaSample);
-
 
                     angular.forEach(services, function (service) {
                         $scope.mcServiceRegistryInstances.push(service);
-                        // var title = $scope.mapMCLayers.getLayers().getArray()[0].get('title');
-
-
-                        // $scope.mapSeaMapLayer.getLayers().getArray()[0].getSource().clear();
 
                         if (service.boundary) {
 
                             try {
-                                // $log.info("Name: " + service.name + " Boundary: " + service.boundary + " ");
-                                var olFeature = MapService.wktToOlGeomFeature(service.boundary);
-                                //boundaryLayer.addFeature(olFeature)
+                                 $log.info("Name: " + service.name + " Boundary: " + service.boundary + " ");
+                                var wktString = service.boundary.split('\+').join('').replace(/\s+\(\(/, '\(\('); // remove + and whitespaces
+                                $log.info("wktString=" + wktString);
+
+                                var olFeature = MapService.wktToOlFeature(wktString);
+                                $scope.mapMCLayers.getLayers().getArray()[0].getSource().addFeature(olFeature);
+
                             } catch (error) {
                                 $log.error("Error displaying service. " + "Name: " + service.name + " Boundary: " + service.boundary );
                             }
@@ -172,31 +142,14 @@ angular.module('maritimeweb.app')
 
                     }, function(error) {
                         $rootScope.loading= false;
-                      //  $scope.mapSeaMapLayer.getLayers().getArray()[0].getSource().clear();
                         $log.error(error);
                         if(error.data.message){
                             growl.error(error.data.message);
                         }
-                    /*    service.selected = $window.localStorage[service.instanceId] == 'true';
-                        if (service.selected) {
-                            instanceIds.push(service.instanceId);
-                        }*/
                     });
-
-
-           /*         if($window.localStorage[NwNmService.serviceID()]){
-                        NwNmService
-                            .getPublishedNwNm(instanceIds, $scope.nwNmLanguage, mainType, wkt)
-                            .success(function (messages) {
-                                $scope.nwNmMessages = messages;
-                            });
-                    }*/
                 }
             });
-
-
-        }
-
+        };
 
 
 
@@ -515,7 +468,7 @@ angular.module('maritimeweb.app')
         };
 
         /**
-         * store all features in local storge, on a server or right now. Throw them on the root scope.
+         * store all features in local storage, on a server or right now. Throw them on the root scope.
          */
         $scope.redirectToFrontpage = function() {
             $scope.loading = true;

@@ -11,7 +11,7 @@
 	<parent>
         <groupId>dk.dma.enav.services</groupId>
 		<artifactId>parent</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>1.0.5-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -421,6 +421,7 @@
 				<version>1.0</version>
 				<configuration>
 					<skip>${maven.node.skip}</skip>
+					<!--failOnError>true</failOnError-->
 				</configuration>
 				<executions>
 					<execution>
@@ -431,7 +432,7 @@
 						<!-- optional: default phase is "generate-resources" -->
 						<phase>generate-resources</phase>
 						<configuration>
-							<nodeVersion>v7.9.0</nodeVersion>
+							<nodeVersion>v7.8.0</nodeVersion>
 							<npmVersion>5.0.1</npmVersion>
 						</configuration>
 					</execution>

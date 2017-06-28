@@ -540,7 +540,7 @@ angular.module('maritimeweb.map')
                 noGoGroupLayer.setVisible(true);
 
                 return noGoGroupLayer;
-            }
+            };
 
 
 
@@ -555,13 +555,25 @@ angular.module('maritimeweb.map')
                         width: 1
                     }),
                     fill: new ol.style.Fill({
-                        color: 'rgba(180, 0, 180, 0.10)'
+                        color: 'rgba(180, 0, 180, 0.40)'
                     })
                 });
                 var greenServiceStyle = new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: 'rgba(0, 255, 10, 0.8)',
                         width: 3
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(5, 200, 10, 0.05)'
+                    })
+                });
+                var highlightServiceRed = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(255, 0, 10, 0.5)',
+                        width: 1
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255, 0, 10, 0.10)'
                     })
                 });
 
@@ -569,18 +581,9 @@ angular.module('maritimeweb.map')
                 // Construct the boundary layers
                 var boundaryLayer = new ol.layer.Vector({
                     id: 'mcboundary',
-                    title: 'MaritimeCloud Service Instance AREA',
-                    zIndex: 11,
-                    source: new ol.source.Vector({
-                        features: new ol.Collection(),
-                        wrapX: false
-                    }),
-                    style: [mcStylePurple]
-                });
-
-       /*         var serviceAvailableLayer = new ol.layer.Vector({
-                    id: 'serviceavailboundary',
-                    title: 'Service Available - NO GO AREA',
+                    //title: 'MaritimeCloud Service Instance AREA',
+                    title: 'mcboundary',
+                    name: 'mcboundary',
                     zIndex: 11,
                     source: new ol.source.Vector({
                         features: new ol.Collection(),
@@ -589,36 +592,25 @@ angular.module('maritimeweb.map')
                     style: [greenServiceStyle]
                 });
 
+                var serviceAvailableLayer = new ol.layer.Vector({
+                    id: 'serviceavailboundary',
+                    title: 'Service Available - NO GO AREA',
+                    name: 'Service Available - NO GO AREA',
+                    zIndex: 11,
+                    source: new ol.source.Vector({
+                        features: new ol.Collection(),
+                        wrapX: false
+                    }),
+                    style: [highlightServiceRed]
+                });
+
                 serviceAvailableLayer.setZIndex(12);
                 serviceAvailableLayer.setVisible(true);
-                serviceAvailableLayer.getSource().clear();*/
+                serviceAvailableLayer.getSource().clear();
 
 
                 boundaryLayer.setZIndex(11);
                 boundaryLayer.setVisible(true);
-                var wkt = 'MULTIPOLYGON (((9.624023437500002 54.838663612975125, 9.448242187500002 54.84498993218759, ' +
-                    '9.382324218750002 54.807017138462555, 9.206542968750002 54.832336301970344, 8.6572265625 54.90819859298938, ' +
-                    '8.536376953125 54.990221720048936, 8.382568359375002 55.065786886591724, 7.415771484375 55.19768334019969, ' +
-                    '5.778808593749998 55.528630522571916, 5.44921875 55.24781504467555, 5.185546875 55.24155203565252, ' +
-                    '4.757080078125 55.391592107033404, 4.229736328125 55.76421316483771, 3.3837890624999996 55.91227293006361, ' +
-                    '3.2739257812499996 56.09042714399155, 7.8662109375 57.48040333923342, 8.887939453125 57.692405535264584, ' +
-                    '9.404296875 57.99063188288076, 9.99755859375 58.269065573473284, 10.535888671875 58.14751859907358, ' +
-                    '11.041259765625002 57.83305491291088, 12.15087890625 56.5231395643722, 12.10693359375 56.29825315291387, ' +
-                    '12.384338378906248 56.20975914792473, 12.634277343749996 56.058235955596075, 12.664489746093746 56.015272531542365, ' +
-                    '12.656249999999998 55.91996893509676, 12.711181640624998 55.82134464477079, 12.892456054687496 55.64659898563684, ' +
-                    '12.878723144531248 55.60783270038269, 12.716674804687498 55.541064956111, 12.7056884765625 55.48819145580225, ' +
-                    '12.617797851562498 55.41654360858007, 12.6397705078125 55.285372382493534, 12.7935791015625 55.15376626853558, ' +
-                    '13.062744140624998 55.06893234377864, 13.1561279296875 55.01542594056298, 12.930908203124998 54.82917227452137, ' +
-                    '12.7276611328125 54.76267040025496, 12.453002929687498 54.680183097099984, 12.117919921875 54.41573362292809, ' +
-                    '11.942138671874996 54.36455818952146, 11.678466796874998 54.35815677227373, 11.321411132812498 54.56569261911193, ' +
-                    '11.118164062499996 54.62933821655574, 10.925903320312498 54.63569730606386, 10.739135742187498 54.54339315407256, ' +
-                    '10.623779296874998 54.54339315407256, 10.360107421874998 54.62933821655574, 10.184326171874998 54.77534585936445, ' +
-                    '10.057983398437496 54.77534585936445, 9.876708984374998 54.8386636129751, 9.624023437500002 54.838663612975125)), ' +
-                    '((14.0020751953125 54.95869417101662, 15.0457763671875 55.6930679264579, 16.5069580078125 55.363502833950776, ' +
-                    '14.633789062500002 54.53383250794428, 14.414062499999998 54.65794628989232, 14.3975830078125 54.81334841741929, ' +
-                    '14.161376953124998 54.81334841741929, 14.0020751953125 54.95869417101662)))';
-                var olFeature = this.wktToOlFeature(wkt);
-                boundaryLayer.getSource().addFeature(olFeature);
 
 
                 /***************************/
@@ -628,11 +620,14 @@ angular.module('maritimeweb.map')
                 // Construct No Go Layer Group layer
                 var mcSRGroupLayer = new ol.layer.Group({
                     title: 'MC Service Registry',
+                    name: 'MC Service Registry',
                     zIndex: 11,
-                    layers: [boundaryLayer]
+                    layers: [boundaryLayer, serviceAvailableLayer]
                 });
                 mcSRGroupLayer.setZIndex(11);
                 mcSRGroupLayer.setVisible(true);
+
+
 
                 return mcSRGroupLayer;
             }
