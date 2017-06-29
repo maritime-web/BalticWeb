@@ -309,8 +309,8 @@ angular.module('maritimeweb.route')
 
                 $window.localStorage.setItem('route_id', $routeParams.mmsi);
                 $window.localStorage.setItem('route_name', $scope.rtzName);
-                $window.localStorage.setItem('route_oLfeatures', JSON.stringify($scope.oLfeatures));
-                $window.localStorage.setItem('route_oLanimatedfeatures', JSON.stringify($scope.oLanimatedfeatures));
+                $window.localStorage.setItem('route_oLfeatures', $scope.oLfeatures);
+                $window.localStorage.setItem('route_oLanimatedfeatures', $scope.oLanimatedfeatures);
                 $window.localStorage.setItem('route_oLpoints', JSON.stringify($scope.oLpoints));
                 $window.localStorage.setItem('route_totaldistance' , $scope.totaldistance);
 
@@ -339,8 +339,8 @@ angular.module('maritimeweb.route')
 
                 $window.localStorage.setItem('route_id', $routeParams.mmsi);
                 $window.localStorage.setItem('route_name', $scope.rtzOptimizedName);
-                $window.localStorage.setItem('route_oLfeatures', JSON.stringify($scope.oLOptimizedfeatures));
-                $window.localStorage.setItem('route_oLanimatedfeatures', JSON.stringify($scope.oLanimatedOptimizedfeatures));
+                $window.localStorage.setItem('route_oLfeatures', $scope.oLOptimizedfeatures);
+                $window.localStorage.setItem('route_oLanimatedfeatures', $scope.oLanimatedOptimizedfeatures);
                 $window.localStorage.setItem('route_oLpoints', JSON.stringify($scope.oLOptimizedpoints));
                 $window.localStorage.setItem('route_totaldistance' , $scope.totalOptimizedDistance);
 
