@@ -396,17 +396,23 @@ angular.module('maritimeweb.vessel')
                          * Add a click handler to the map to render the popup.
                          */
                         map.on('singleclick', function (evt) {
-
                             var zoomLvl = map.getView().getZoom();
-
                             if (zoomLvl > 8) {
-                                var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                         /*       var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+
                                     return feature;
                                 }, null, function (layer) {
                                     return layer === vesselLayer;
-                                });
+                                });*/
 
-                                if (feature) {
+                                var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+                                    if(feature.get('mmsi')){
+                                        return feature;
+                                    }
+                                    return false;
+                                },{hitTolerance: 4});
+
+                                if (feature && feature.get('mmsi')) {
                                     var geometry = feature.getGeometry();
                                     var coordinate = evt.coordinate;
                                     scope.vessel = {};
@@ -418,15 +424,19 @@ angular.module('maritimeweb.vessel')
                                     scope.vessel.position = ol.coordinate.toStringHDMS([feature.get('longitude'), feature.get('latitude')], 3);
                                     overlay.setPosition(coordinate);
                                 } else {
-                                    //$(elm).popover('destroy');
-                                    // console.log("destroy");
+                                    // $(elm).popover('destroy');
+                                     $log.debug("destroy");
+                                    overlay.setPosition(undefined);
                                 }
                             } else { // close popups when zoomed below lvl 8 and clicks on map...
-                                //$(elm).popover('destroy');
-                             /*   if (scope.loggedIn) {
-                                    growl.success('<b>Zoom</b> in for more detailed information');
-                                    return;
-                                }*/
+                                // $(elm).popover('destroy');
+                                $log.debug("destroy - zoomed below lvl 8 ");
+                                overlay.setPosition(undefined);
+
+                                /*   if (scope.loggedIn) {
+                                       growl.success('<b>Zoom</b> in for more detailed information');
+                                       return;
+                                   }*/
                             }
 
                         });

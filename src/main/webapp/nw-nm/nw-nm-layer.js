@@ -185,6 +185,7 @@ angular.module('maritimeweb.nw-nm')
 
                         // Construct the NW layers
                         nwLayer = new ol.layer.Vector({
+                            name: 'Navigational Warnings',
                             title: 'Navigational Warnings',
                             source: new ol.source.Vector({
                                 features: new ol.Collection(),
@@ -205,6 +206,7 @@ angular.module('maritimeweb.nw-nm')
 
                         // Construct the NM layers
                         nmLayer = new ol.layer.Vector({
+                            name: 'Notices to Mariners',
                             title: 'Notices to Mariners',
                             source: new ol.source.Vector({
                                 features: new ol.Collection(),
@@ -276,11 +278,7 @@ angular.module('maritimeweb.nw-nm')
                                         } else {
                                             nmLayer.getSource().addFeature(olFeature);
 
-
-
-
                                             var extraMarkerPosition = olFeature.getGeometry();
-
 
                                             /**
                                              * LineStrings are hard to see on the map with many, so we decided to mark them up with an icon at the start and end.
@@ -301,24 +299,6 @@ angular.module('maritimeweb.nw-nm')
 
                                                 var firstPosition = new ol.geom.Point([pointsArray[0], pointsArray[1]]);
                                                 var secondPosition = new ol.geom.Point([pointsArray[2], pointsArray[3]]);
-
-
-                                                console.log("firstPosition #  # " + firstPosition.getCoordinates());
-                                                console.log("secondPosition #  # " + secondPosition.getCoordinates());
-
-                                                /*
-                                                var json = [{latitude: pointsArray[0], longitude: pointsArray[1]},
-                                                {latitude: pointsArray[2], longitude: pointsArray[3]}];
-
-                                                var center = geolib.getCenter(json);
-                                                console.log("json ### " + center.toString());
-                                                console.log("json # latitude # " + center.latitude);
-                                                console.log("json # longitude # " + center.longitude);
-                                                */
-                                                //var middlePosition = new ol.geom.Point(ol.proj.transform([center.longitude, center.latitude], 'EPSG:4326', 'EPSG:900913'));
-                                                //var middlePosition = new ol.geom.Point(ol.proj.transform([center.longitude, center.latitude], 'EPSG:4326', 'EPSG:900913'));
-                                               // var middlePosition = new ol.geom.Point(ol.proj.transform([center.longitude, center.latitude], 'EPSG:4326', 'EPSG:900913'));
-                                               // console.log("middlePosition ### " + middlePosition.getCoordinates().toString());
 
                                                 var firstMarker = new ol.Feature({
                                                     geometry: firstPosition

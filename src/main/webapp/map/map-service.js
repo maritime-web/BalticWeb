@@ -601,7 +601,7 @@ angular.module('maritimeweb.map')
                         features: new ol.Collection(),
                         wrapX: false
                     }),
-                    style: [highlightServiceRed]
+                    style: [greenServiceStyle]
                 });
 
                 serviceAvailableLayer.setZIndex(12);
@@ -626,8 +626,6 @@ angular.module('maritimeweb.map')
                 });
                 mcSRGroupLayer.setZIndex(11);
                 mcSRGroupLayer.setVisible(true);
-
-
 
                 return mcSRGroupLayer;
             }
