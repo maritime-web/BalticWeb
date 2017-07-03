@@ -28,11 +28,14 @@ angular.module('maritimeweb.app')
         /** Logs the user in via Keycloak **/
         $scope.login = function () {
             Auth.authz.login();
+            //TODO sample Stena Danica 265177000. You can change this to anything you want, or even better login
+            $window.localStorage.setItem('mmsi', 265177000);
         };
 
         /** Logs the user out via Keycloak **/
         $scope.logout = function () {
             Auth.authz.logout();
+            $window.localStorage.setItem('mmsi', 0);
         };
 
         /** Returns the user name ,**/
@@ -87,7 +90,7 @@ angular.module('maritimeweb.app')
 
                 var markerStyle = new ol.style.Style({
                     image: new ol.style.Circle({
-                        radius: 500,
+                        radius: 400,
                         stroke: new ol.style.Stroke({
                             color: '#ffff00',
                             width: 5
@@ -102,7 +105,7 @@ angular.module('maritimeweb.app')
                     geometry: vesselPosition
                 });
                 markerVessel.setStyle(markerStyle);
-
+                l.getSource().addFeature(markerVessel);
             }
         };
 
@@ -329,7 +332,7 @@ angular.module('maritimeweb.app')
                         $window.localStorage[NwNmService.serviceID()] = 'true';
 
 
-                            angular.forEach(services, function (service) {
+                        angular.forEach(services, function (service) {
                             $scope.nwNmServices.push(service);
                             service.selected = $window.localStorage[service.instanceId] == 'true';
                             if (service.selected) {
@@ -480,12 +483,6 @@ angular.module('maritimeweb.app')
                 $window.location.href = '#';
             };
             $timeout( redirect, 100);
-        };
-
-        $scope.getInstancesFromServiceRegistry = function (wkt) {
-            var params = wkt ? '?wkt=' + encodeURIComponent(wkt) : '';
-            var request = '/rest/service/lookup/' + params;
-            return $http.get(request);
         };
 
     }]);

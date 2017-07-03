@@ -8,8 +8,8 @@ angular.module('maritimeweb.vessel')
      * It will automatically load the vessels for the current map bounding box,
      * but only if the user is logged in.
      */
-    .directive('mapVesselLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'VesselService', 'growl', '$log',
-        function ($rootScope, $timeout, Auth, MapService, VesselService, growl, $log) {
+    .directive('mapVesselLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'VesselService', 'growl', '$log', '$window',
+        function ($rootScope, $timeout, Auth, MapService, VesselService, growl, $log, $window) {
             return {
                 restrict: 'E',
                 replace: false,
@@ -260,17 +260,13 @@ angular.module('maritimeweb.vessel')
                                         var vesselFeature;
                                         if (zoomLvl > 8) {
                                             vesselFeature = scope.createVesselFeature(vesselData);
-                                            if(vessel.mmsi=="219020208"){
+                                            if($window.localStorage.getItem('mmsi')!= null && $window.localStorage.getItem('mmsi')==vessel.mmsi){
                                                 var markVessel = scope.markVesselFeature(vesselData);
                                                 features.push(markVessel);
                                             }
 
                                         } else {
                                             vesselFeature = scope.createMinimalVesselFeature(vesselData);
-                                            if(vessel.mmsi=="219020208"){
-                                                var markVessel = scope.markVesselFeature(vesselData);
-                                                features.push(markVessel);
-                                            }
                                         }
                                         features.push(vesselFeature);
                                     }
