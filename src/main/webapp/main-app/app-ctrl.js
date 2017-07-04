@@ -64,48 +64,15 @@ angular.module('maritimeweb.app')
         //$scope.mcServiceRegistryInstances = ServiceRegistryService.getServiceInstances('POLYGON((9.268411718750002%2053.89831670389188%2C9.268411718750002%2057.58991390302003%2C18.392557226562502%2057.58991390302003%2C18.392557226562502%2053.89831670389188%2C9.268411718750002%2053.89831670389188))');
         $scope.mcServiceRegistryInstances =  [];
 
-        $scope.isit = function () {
-            var x =MapService.isLayerVisible('',$scope.mapMCLayers );
-            var y =MapService.isLayerVisible('MaritimeCloud Service Instance AREA',$scope.mapMCLayers );
-            $log.info("X " + x);
-            $log.info("Y " + y);
-            $log.info("mcboundary = " + MapService.isLayerVisible('mcboundary',$scope.mapMCLayers));
-            $log.info("mcboundary = " +$scope.mapMCLayers);
-            $log.info("mcboundary [0]= " + $scope.mapMCLayers.getLayers().getArray()[0]);
-            $log.info("mcboundary [0] name= " + $scope.mapMCLayers.getLayers().getArray()[0].get('name'));
-            $log.info("mcboundary [0] scope.mapMCLayers.getLayers().getArray()[0].getSource()= " + $scope.mapMCLayers.getLayers().getArray()[0].getSource());
-            $log.info("mcboundary [0] scope.mapMCLayers.getLayers().getArray()[0].getSource().getFeatures= " + $scope.mapMCLayers.getLayers().getArray()[0].getSource().getFeatures());
+        $scope.clearServiceRegistry = function () {
             var layersInGroup = $scope.mapMCLayers.getLayers().getArray();
             for (var i = 0, l; i < layersInGroup.length; i++) {
                 l = layersInGroup[i];
-                    $log.info(l.get('name'));
-                    $log.info(l.get('visible'));
-                 var wkt = 'GEOMETRYCOLLECTION(POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90)))';
-                 var olFeature = MapService.wktToOlFeature(wkt);
-                 olFeature.setId('xxx');
-                l.getSource().addFeature(olFeature);
-                // l.getSource().clear();
-                $log.info("features= " + l.getSource().getFeatures());
-                l.getSource().addFeature(olFeature);
-
-                var markerStyle = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 400,
-                        stroke: new ol.style.Stroke({
-                            color: '#ffff00',
-                            width: 5
-                        }),
-                        fill: new ol.style.Fill({
-                            color: '#00FF33' // attribute colour
-                        })
-                    })
-                });
-                var vesselPosition = new ol.geom.Point(ol.proj.transform([55, 10], 'EPSG:4326', 'EPSG:900913'));
-                var markerVessel = new ol.Feature({
-                    geometry: vesselPosition
-                });
-                markerVessel.setStyle(markerStyle);
-                l.getSource().addFeature(markerVessel);
+                l.getSource().clear();
+            }
+            for(var j = $scope.mcServiceRegistryInstances.length-1; j >=0 ; j--){
+                $scope.mcServiceRegistryInstances.splice(j, 1);
+                
             }
         };
 
@@ -131,7 +98,7 @@ angular.module('maritimeweb.app')
 
                             try {
                                  $log.info("Name: " + service.name + " Boundary: " + service.boundary + " ");
-                                var wktString = service.boundary.split('\+').join('').replace(/\s+\(\(/, '\(\('); // remove + and whitespaces
+                                var wktString = service.boundary.split('\+').join('').replace(/\s+\(\(/, '\(\('); // remove + and whitespaces from the wkt...
                                 $log.info("wktString=" + wktString);
 
                                 var olFeature = MapService.wktToOlFeature(wktString);
