@@ -111,7 +111,7 @@ module.exports = function (grunt) {
         // }
         // },
         useminPrepare: {
-            html: [ '<%= proj.src %>/*.html'],
+            html: [ '<%= proj.src %>/index.html'],
             options: {
                 dest: '<%= proj.build %>',
                 staging: '<%= proj.target %>'
@@ -338,31 +338,14 @@ module.exports = function (grunt) {
                     ]
                 },
                 network: "*"
-            },
-            usermanual: {
-                dest: 'target/build/usermanual.appcache',
-                cache: {
-                    literals: [//as is in the "CACHE:" section
-                        'css/cached/cdn.netdna/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0',
-                        'docs/index.html',
-                        'docs/doc.css'
-                    ],
-                    patterns: [
-                       	'src/main/webapp/docs/img/**',
-                       	'src/main/webapp/css/cached/**',
-                       	'src/main/webapp/js/cached/common/**',
-                    	'src/main/webapp/js/cached/docs/**',
-                       	
-                    ]
-                },
-                network: "*"
             }
         },
         concurrent: {
             server: [ 'concat:dist' ],
             // test : [ 'coffee', 'copy:styles' ],
             build: [ 'copy:styles2Build', 'copy:html2Build' ]
-        },
+        }
+        ,
         karma: {
             options: {
                 configFile: 'src/test/resources/karma.conf.js',
@@ -410,13 +393,13 @@ module.exports = function (grunt) {
     // grunt.registerTask('test', [ 'clean:server', 'concurrent:test',
     // 'autoprefixer', 'connect:test', 'karma' ]);
 
-    grunt.registerTask('test', [ 'karma:continuous' ]);
+     grunt.registerTask('test', [ 'karma:continuous' ]);
 
     //grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'concat', 'usemin',
     //   'copy:gen2Build', 'copy:toTarget', 'appcache:map', 'appcache:front']);
 
     grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'replace:run', 'concat', 'usemin',
-        'copy:gen2Build', 'appcache:map', 'appcache:front', 'appcache:usermanual', 'replace:run', 'copy:toTarget']);
+        'copy:gen2Build', 'appcache:map', 'appcache:front',  'replace:run', 'copy:toTarget']);
 
     // 'clean:dist',
     // 'useminPrepare',

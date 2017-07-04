@@ -306,6 +306,14 @@ angular.module('maritimeweb.route')
                 $rootScope.route_oLanimatedfeatures = $scope.oLanimatedfeatures;
                 $rootScope.route_oLpoints =  $scope.oLpoints;
                 $rootScope.route_totaldistance = $scope.totaldistance;
+
+                $window.localStorage.setItem('route_id', $routeParams.mmsi);
+                $window.localStorage.setItem('route_name', $scope.rtzName);
+                $window.localStorage.setItem('route_oLfeatures', $scope.oLfeatures);
+                $window.localStorage.setItem('route_oLanimatedfeatures', $scope.oLanimatedfeatures);
+                $window.localStorage.setItem('route_oLpoints', JSON.stringify($scope.oLpoints));
+                $window.localStorage.setItem('route_totaldistance' , $scope.totaldistance);
+
                 var redirect = function(){
                     $rootScope.showgraphSidebar = true; // rough enabling of the sidebar
 
@@ -328,6 +336,14 @@ angular.module('maritimeweb.route')
                 $rootScope.route_oLanimatedfeatures = $scope.oLanimatedOptimizedfeatures;
                 $rootScope.route_oLpoints =  $scope.oLOptimizedpoints;
                 $rootScope.route_totaldistance = $scope.totalOptimizedDistance;
+
+                $window.localStorage.setItem('route_id', $routeParams.mmsi);
+                $window.localStorage.setItem('route_name', $scope.rtzOptimizedName);
+                $window.localStorage.setItem('route_oLfeatures', $scope.oLOptimizedfeatures);
+                $window.localStorage.setItem('route_oLanimatedfeatures', $scope.oLanimatedOptimizedfeatures);
+                $window.localStorage.setItem('route_oLpoints', JSON.stringify($scope.oLOptimizedpoints));
+                $window.localStorage.setItem('route_totaldistance' , $scope.totalOptimizedDistance);
+
                 var redirect = function(){
                     $rootScope.showgraphSidebar = true; // rough enabling of the sidebar
 
@@ -706,6 +722,8 @@ angular.module('maritimeweb.route')
                     transformResponse: function (data, headers) {
                         $scope.rtzOptiXML = data;
                         $scope.rtzOptiJSON = fileReader.transformRtzXMLtoJSON(data);
+                        $window.localStorage.setItem('rtzXML', data); // storing route RTZ
+                        $window.localStorage.setItem('rtzJSON', $scope.rtzOptiJSON); // storing route JSON RTZ
                         return $scope.rtzOptiJSON;
                     }
                 }).then(function (result) {

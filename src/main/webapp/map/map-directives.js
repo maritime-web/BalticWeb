@@ -136,7 +136,7 @@ angular.module('maritimeweb.map')
                 var view = new ol.View({
                     zoom: 7,
                     minZoom: scope.minzoom,
-                    extent: balticExtent
+                   // extent: balticExtent
                 });
                 var map = new ol.Map({
                     target: angular.element(element)[0],

@@ -143,6 +143,15 @@ angular.module('maritimeweb.map')
                 });
             };
 
+            /** Converts a GeoJSON feature to an OL feature **/
+            this.wktToOlGeomFeature = function (feature) {
+                return wktFormat.readGeometry(feature, {
+                    dataProjection: proj4326,
+                    featureProjection: projMercator
+                });
+            };
+
+
 
             /** ************************ **/
             /** Standard map layers      **/
@@ -531,7 +540,96 @@ angular.module('maritimeweb.map')
                 noGoGroupLayer.setVisible(true);
 
                 return noGoGroupLayer;
+            };
+
+
+
+            /***************************/
+            /** noGoLayer Layers      **/
+            /***************************/
+            this.createMCLayerGroup = function () {
+
+                var mcStylePurple = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(180, 0, 180, 0.5)',
+                        width: 1
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(180, 0, 180, 0.40)'
+                    })
+                });
+                var greenServiceStyle = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 255, 10, 0.8)',
+                        width: 3
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(5, 200, 10, 0.05)'
+                    })
+                });
+                var highlightServiceRed = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(255, 0, 10, 0.5)',
+                        width: 1
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255, 0, 10, 0.10)'
+                    })
+                });
+
+
+                // Construct the boundary layers
+                var boundaryLayer = new ol.layer.Vector({
+                    id: 'mcboundary',
+                    //title: 'MaritimeCloud Service Instance AREA',
+                    title: 'mcboundary',
+                    name: 'mcboundary',
+                    zIndex: 11,
+                    source: new ol.source.Vector({
+                        features: new ol.Collection(),
+                        wrapX: false
+                    }),
+                    style: [greenServiceStyle]
+                });
+
+                var serviceAvailableLayer = new ol.layer.Vector({
+                    id: 'serviceavailboundary',
+                    title: 'Service Available - NO GO AREA',
+                    name: 'Service Available - NO GO AREA',
+                    zIndex: 11,
+                    source: new ol.source.Vector({
+                        features: new ol.Collection(),
+                        wrapX: false
+                    }),
+                    style: [greenServiceStyle]
+                });
+
+                serviceAvailableLayer.setZIndex(12);
+                serviceAvailableLayer.setVisible(true);
+                serviceAvailableLayer.getSource().clear();
+
+
+                boundaryLayer.setZIndex(11);
+                boundaryLayer.setVisible(true);
+
+
+                /***************************/
+                /** Map creation          **/
+                /***************************/
+
+                // Construct No Go Layer Group layer
+                var mcSRGroupLayer = new ol.layer.Group({
+                    title: 'MC Service Registry',
+                    name: 'MC Service Registry',
+                    zIndex: 11,
+                    layers: [boundaryLayer, serviceAvailableLayer]
+                });
+                mcSRGroupLayer.setZIndex(11);
+                mcSRGroupLayer.setVisible(true);
+
+                return mcSRGroupLayer;
             }
+
 
 
         }]);
