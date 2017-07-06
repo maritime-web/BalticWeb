@@ -104,7 +104,7 @@
             <div ng-if="oLfeatures.length > 0">
                 <div id="rtz-map" class="well">
 
-                    <ol-map class="route-details-map"  minzoom="1" swlon="0" swlat="0" nelon="90" nelat="90">
+                    <ol-map class="map route-details-map"  minzoom="1" swlon="0" swlat="0" nelon="90" nelat="90">
                         <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
                         <routertz points="oLpoints" features="oLfeatures" animatedfeatures="oLanimatedfeatures" autoplay="true"></routertz>
                         <optimizedroutertz points="oLOptimizedpoints" features="oLOptimizedfeatures" animatedfeatures="oLanimatedOptimizedfeatures" autoplay="false"></optimizedroutertz>
