@@ -31,35 +31,48 @@
                 <div class="vts-force-spacing-200 ">
                     <date-input date="now" class="vts-timedatepicker" on-change="dateInputChange(now)" placeholder="{{vtsCurrentDateStamp}}"></date-input>
                 </div>
-                <div class="vts-force-spacing-200 ">
-                    <time-input time="time" class="vts-timedatepicker"  on-change="timeInputChange(time)" ng-click="timeInputClick()"></time-input>
+                <div class="vts-force-spacing-350 ">
+                    <div class="vts-force-spacing-200 ">
+                       <time-input time="time" class="vts-timedatepicker"  on-change="timeInputChange(time)" ng-click="timeInputClick()"></time-input>
+                    </div>
+                    <span class="vts-align-utc-label">UTC</span>
                 </div>
-                <div class="vts-force-spacing-200 vts-align-utc-label">
-                    UTC
-                </div>
+                <!--<div class="vts-force-spacing-200 vts-align-utc-label">-->
+                    <!--UTC-->
+                <!--</div>-->
             </div>
 
         </div>
 
         <hr class="vts-hr vts-pad-top" > <!-- VESSEL INFORMATION ------------------------------------------------------------------- -->
         <span class="bold vts-pad-top">Vessel information</span>
+        <div>
+            <span class="vts-force-spacing-200">{{vtsvesselmmsilabel}}</span>
+            <br>
+            <div >
+                <input class="vts-input-standard" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselMMSIValid]" type="text" ng-model="vtsvesselmmsiinput" ng-change="VTSVesselMMSIValidation()" >
+            </div>
+            <div class="vts-pad-top">
+                <button class="btn btn-default vts-lesspadding"  ng-class="{false:'', true:'vts-btn-highlight'}[setvtsvesselMMSIValid]" ng-disabled="!isLoggedIn || !setvtsvesselMMSIValid" type="button" ng-click="populateInputsWithAisData()"><i class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></i>
+                    Insert AIS data
+                </button>
+            </div>
+        </div>
+
+        <hr class="vts-hr-seperator" >
 
         <div>
             <div class="vts-force-spacing-200 ">
                 <span class="vts-force-spacing-100">Vessel name:</span>
-                <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselnameValid]" type="text" ng-model="vtsvesselnameinput" ng-change="VTSVesselNameValidation()" >
+                <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselnameValid]" type="text" ng-model="vtsvesselnameinput" ng-change="VTSVesselNameValidation()" placeholder="{{placeholderAisVesselName}}">
             </div>
             <div class="vts-force-spacing-200 " >
                 <span class="vts-force-spacing-100">Callsign:</span>
-                <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselcallsignValid]" type="text" ng-model="vtsvesselcallsigninput" ng-change="VTSVesselCallsignValidation()" >
-            </div>
-            <div class="vts-force-spacing-200 ">
-                <span class="vts-force-spacing-200">{{vtsvesselmmsilabel}}</span>
-                <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselMMSIValid]" type="text" ng-model="vtsvesselmmsiinput" ng-change="VTSVesselMMSIValidation()" >
+                <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselcallsignValid]" type="text" ng-model="vtsvesselcallsigninput" ng-change="VTSVesselCallsignValidation()"  placeholder="{{placeholderAisVesselCallsign}}">
             </div>
             <div class="vts-force-spacing-200 ">
                 <span class="vts-force-spacing-100" >{{vtsvesselimolabel}}</span>
-                <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselIMOValid]" type="text" ng-model="vtsvesselimoinput" ng-change="VTSVesselIMOValidation()"  onfocus="this.value = this.value;">
+                <input class="vts-input-standard" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselIMOValid]" type="text" ng-model="vtsvesselimoinput" ng-change="VTSVesselIMOValidation()"  onfocus="this.value = this.value;"  placeholder="{{placeholderAisVesselImo}}">
             </div>
         </div>
         <div class="vts-pad-top">
@@ -326,14 +339,30 @@
             <hr class="vts-hr-seperator" >
 
             <div >
-                <span class="vts-force-spacing-350" >
+                <div class="vts-force-spacing-350 vts-pad-top" ng-show="showCargoContactInformationInput">
+                    <span>Designated Person Ashore (DPA) or cargo agent:</span>
+                    <div class="vts-pad-top">
+                        <span class="vts-force-spacing-100">Name:</span>
+                        <input class="vts-input-large" ng-model="vtscargodesignatedpersonashorenameinput" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselDPANameValid]" ng-change="VTSDangerousCargoContactNameValidate()">
+                    </div>
+                    <div class="vts-pad-top">
+                        <span class="vts-force-spacing-100">Telephone:</span>
+                        <input class="vts-input-large" ng-model="vtscargodesignatedpersonashoretelephoneinput" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselDPAPhoneValid]" ng-change="VTSDangerousCargoContactPhonenumberValidate()">
+                    </div>
+                    <div class="vts-pad-top">
+                        <span class="vts-force-spacing-100">Email:</span>
+                        <input class="vts-input-large" ng-model="vtscargodesignatedpersonashoreemailinput" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselDPAEmailValid]" ng-change="VTSDangerousCargoContactEmailValidate()">
+                    </div>
+                </div>
+                <div class="vts-force-spacing-350 vts-pad-top" style="position: relative; top:7px;" ng-show="showCargoContactInformationInput">
+                    <span class="vts-pad-top">Additional contact details for information of cargo:</span>
+                    <textarea class="vts-textarea-large" ng-model="vtscargoadditionalcontactdetailsinput"  ng-change="VTSCargoContactInformationChange()"></textarea>
+                </div>
+                <br>
+                <div class="vts-force-spacing-350 vts-pad-top" >
                     <span >Pollution or dangerous cargo lost overboard:</span>
                     <textarea class="vts-textarea-large" ng-model="vtsdangerouscargooverboard" placeholder="Please describe the pollutant and where it was lost. Any additional information may be of great value."></textarea>
-                </span>
-                <span class="vts-force-spacing-350" ng-show="showCargoContactInformationInput">
-                    <span>Contact details for information of cargo :</span>
-                    <textarea class="vts-textarea-large" ng-model="vtscargotcontactdetailsinput" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselContactDetailsValid]" ng-change="VTSCargoContactInformationChange()"></textarea>
-                </span>
+                </div>
             </div>
 
 
@@ -381,7 +410,7 @@
             <div class="vts-pad-top">
                 <div class="vts-force-spacing-200 " >
                     <span class="vts-force-spacing-200">Port of destination:</span>
-                    <input class="vts-input " ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPortOfDestinationValid]" type="text" ng-model="vtsvesselportofdestinationinput" ng-change="VTSVesselPortOfDestinationValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = ''" placeholder="">
+                    <input class="vts-input " ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPortOfDestinationValid]" type="text" ng-model="vtsvesselportofdestinationinput" ng-change="VTSVesselPortOfDestinationValidation()" onfocus="this.placeholder = ''" onblur="this.placeholder = ''" placeholder="{{placeholderAisVesselDestination}}">
                 </div>
                 <div class="vts-force-spacing-200 ">
                     <span class="vts-force-spacing-100">Route</span>
@@ -395,7 +424,7 @@
                 </div>
                 <div class="vts-force-spacing-200">
                     <span class="vts-force-spacing-200">True heading:</span>
-                    <input class="vts-input-small vts-center" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselTrueHeadingValid]"  ng-model="vtsvesseltrueheadinginput" ng-change="VTSTrueHeadingValidation()" >
+                    <input class="vts-input-small vts-center" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselTrueHeadingValid]"  ng-model="vtsvesseltrueheadinginput" ng-change="VTSTrueHeadingValidation()" placeholder="{{placeholderAisVesselCog}}">
                 </div>
             </div>
         </div>

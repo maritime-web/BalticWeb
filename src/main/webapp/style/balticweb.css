@@ -108,7 +108,7 @@ body {
 .vts-textarea-large{
     position:relative;
     top:0px;
-    width:240px;
+    width:300px;
     height:100px;
     max-width:350px;
     max-height:350px
@@ -230,16 +230,35 @@ body {
 .vts-checkbox-label-blue{
     color:#0000bb;
 }
+.datetime-input.date .display .date{
+    font-size:1.6em !important;
+}
+.datetime-input.time .display .time{
+    font-size:1.6em !important;
+}
+.vts-timedatepicker{
+    height:3em !important;
+    min-height:3em !important;
+    max-height:3em !important;
+}
 .vts-time-picker-box-highlight{
     border: solid 2px #474bc3 !important;
 }
 .vts-datetime-picker-box-highlight-invalid{
     background: #f39595 !important;
+    height:3em !important;
+    min-height:3em !important;
+    max-height:3em !important;
 }
 .vts-datetime-picker-box-highlight-valid{
     background: #9dee5e !important;
+    height:3em !important;
+    min-height:3em !important;
+    max-height:3em !important;
 }
-
+.vts-btn-highlight{
+    background-color: #97fba0 !important;
+}
 
 .time-picker-mod{
     min-width:200px !important;
@@ -251,10 +270,10 @@ body {
     margin-right: 10px;
 }
 .vts-align-utc-label{
-    top: -17px;
+    top: -13px;
     position: relative;
     left: 9px;
-    font-size: 2.2em;
+    font-size: 1.6em;
 }
 
     /* END Vessel Traffic Service */
