@@ -64,7 +64,6 @@ angular.module('maritimeweb.serviceregistry')
                 },
                 link: function (scope, element, attrs, ctrl) {
                     var olScope = ctrl.getOpenlayersScope();
-                    var satelliteLayers;
                     var loadTimer;
                     scope.loggedIn = Auth.loggedIn;
 
@@ -106,6 +105,7 @@ angular.module('maritimeweb.serviceregistry')
 
                         /** Refreshes the list of satellite images from the service registry */
                         scope.refreshServiceRegistry = function () {
+                            $log.info("refreshing service register");
                             var mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
                             var wkt = mapState['wktextent'];
 
@@ -117,7 +117,7 @@ angular.module('maritimeweb.serviceregistry')
                                 // Update the selected status from localstorage
                                 if (status == 204) {
                                     $rootScope.mcServiceRegistryInstanceStatus = 'false';
-                                    $window.localStorage[SatelliteService.serviceID()] = 'false';
+                                    $window.localStorage[ServiceRegistryService.serviceID()] = 'false';
                                     while($rootScope.mapWeatherLayers.getLayers().getArray().length > 0) {
                                         $rootScope.mapWeatherLayers.getLayers().getArray().pop().setVisible(false);
                                     }
@@ -126,9 +126,10 @@ angular.module('maritimeweb.serviceregistry')
 
                                 if (status == 200) {
                                     $rootScope.mcServiceRegistryInstancesStatus = 'true';
-                                    $window.localStorage[SatelliteService.serviceID()] = 'true';
+                                    $window.localStorage[ServiceRegistryService.serviceID()] = 'true';
                                     angular.forEach(services, function (service) {
                                         var shouldAddService = true;
+
                                         if ($rootScope.mapWeatherLayers.getLayers().getArray().length > 0) {
                                             angular.forEach($rootScope.mapMCLayers.getLayers().getArray(), function (existingServices) {
                                                 if (existingServices.get('id') == service.instanceId) {
@@ -139,12 +140,12 @@ angular.module('maritimeweb.serviceregistry')
                                         }
 
                                         if (shouldAddService) {
-                                            $log.debug("### Adding satellite instance " + service.name);
+                                            $log.debug("### Adding SR instance " + service.name);
                                             // add to localstorage, false as default
 
 
                                             for (var i = 0; i < 1; i++) { // only yesterday. Extend here if want to display more older layers
-                                                var instanceLayer = SatelliteService.createTileLayerFromService(service, i);
+                                                var instanceLayer = ServiceRegistryService.createTileLayerFromService(service, i);
                                                 $rootScope.mapMCLayers.getLayers().getArray().push(instanceLayer);
                                                 map.addLayer(instanceLayer);
                                                 instanceLayer.on('change:visible', scope.mapChanged);

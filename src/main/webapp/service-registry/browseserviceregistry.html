@@ -11,11 +11,6 @@
 
         <div class="map-sr-sidebar col-xs-9 col-sm-3  col-md-3 "> <!-- uib-collapse="showgraphSidebar" -->
                 <div >
-                    <span ng-class="(mcServiceRegistryInstancesStatus=='true') ? 'panel-primary' : 'panel-default'">
-                        <span class="glyphicon glyphicon-globe"></span> MC  <span ng-if="mcServiceRegistryInstancesStatus" class="badge sidebar-badge" ng-bind="mcServiceRegistryInstances.length"></span>
-                        <!--<span class="badge sidebar-badge" ng-bind="mapNoGoLayer.getLayers().getArray().length"></span>-->
-
-                    </span>
                     <div ng-if="!loggedIn" class="sidebar-panel">
                         <div class="well">
                             <p>Log in to access Service Registry</p>
@@ -28,6 +23,7 @@
 
                         <div class="panel-heading" ><span class="glyphicon glyphicon-globe"></span> MC - Service Registry
                             <button ng-if="nogo.loading"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></button>
+                            <span ng-if="mcServiceRegistryInstancesStatus" class="badge sidebar-badge" ng-bind="mcServiceRegistryInstances.length"></span>
                             <small tooltip="Refresh" class="glyphicon glyphicon-refresh"
                                    ng-click="isThereAnyServiceRegistry()"></small>
                             <small tooltip="Refresh" class="glyphicon glyphicon-remove-circle"
@@ -80,7 +76,7 @@
                                 popover-trigger="mouseenter"
                                 popover-placement="bottom"
                                 ng-click="console.log(instance.name)">
-                                <td><a href="" ng-bind="instance.name" ng-click="highlightInstsance(instance)" ></a>
+                                <td><a href="" ng-bind="instance.name" ng-click="highlightInstance(instance)" ></a>
                                     <span ng-if="instance.warnings.length>0" class="alert alert-warning" ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                    <span>length: {{instance.warnings.length}}</span>
                                     <ul>
