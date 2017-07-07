@@ -6,6 +6,7 @@ angular.module('maritimeweb.app')
         function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, ServiceRegistryService, growl, $uibModal, $log, $interval, $rootScope) {
 
             $rootScope.showgraphSidebar = false; // rough disabling of the sidebar
+            $scope.highlightedInstance = {};
 
             // Cancel any pending NW-NN queries
             var loadTimerService = undefined;
@@ -67,7 +68,26 @@ angular.module('maritimeweb.app')
 
 
             $scope.highlightInstance = function (instance) {
-                $log.info("instance name " + instance.name);
+                $scope.highlightedInstance.id = instance.id;
+                $scope.highlightedInstance.description = instance.description;
+                $scope.highlightedInstance.name = instance.name;
+                $scope.highlightedInstance.version = instance.version;
+                $scope.highlightedInstance.instanceId = instance.instanceId;
+
+                // TODO Highlight WKT on map
+                /*var feature = $scope.mapMCLayers.getLayers().getArray()[0].getSource().getFeatureById(instance.id);
+                var highlightStyle = new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#ffcc33',
+                        width: 2
+                    })});
+
+                feature.setStyle(highlightStyle);
+                $scope.mapMCLayers.getLayers().getArray()[0].getSource().addFeature(feature);
+*/
             };
 
             $scope.isThereAnyServiceRegistry = function () {
@@ -96,6 +116,11 @@ angular.module('maritimeweb.app')
                                     // $log.info("wktString=" + wktString);
 
                                     var olFeature = MapService.wktToOlFeature(wktString);
+                                    olFeature.setId(service.id);
+                                    olFeature.name = service.name;
+                                    olFeature.version = service.version;
+                                    olFeature.instanceId = service.instanceId;
+                                    olFeature.description = service.description;
                                     $scope.mapMCLayers.getLayers().getArray()[0].getSource().addFeature(olFeature);
 
                                 } catch (error) {
@@ -154,7 +179,9 @@ angular.module('maritimeweb.app')
             };
 
             // reload services on startup
-            $scope.isThereAnyServiceRegistry();
+            if($scope.loggedIn){
+                $scope.isThereAnyServiceRegistry();
+            }
 
         }]);
 

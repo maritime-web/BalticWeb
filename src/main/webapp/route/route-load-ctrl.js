@@ -18,7 +18,7 @@ angular.module('maritimeweb.route')
 
 
                 }, function(reason) {
-                    console.log('Failed: ' + reason);
+                    $log.error('Failed: ' + reason);
                 });
             }
             $rootScope.showgraphSidebar = false; // rough disabling of the sidebar

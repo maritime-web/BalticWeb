@@ -59,68 +59,10 @@ angular.module('maritimeweb.app')
         $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
         //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
         $scope.mapSeaMapLayer =  MapService.createSuperSeaMapLayerGroup();
-        $scope.mapMCLayers = MapService.createMCLayerGroup();
+        // $scope.mapMCLayers = MapService.createMCLayerGroup();
         // $scope.mapNoGoLayer =  MapService.createNoGoLayerGroup(); // is set in the no-go-layer
         //$scope.mcServiceRegistryInstances = ServiceRegistryService.getServiceInstances('POLYGON((9.268411718750002%2053.89831670389188%2C9.268411718750002%2057.58991390302003%2C18.392557226562502%2057.58991390302003%2C18.392557226562502%2053.89831670389188%2C9.268411718750002%2053.89831670389188))');
         $scope.mcServiceRegistryInstances =  [];
-
-        $scope.clearServiceRegistry = function () {
-            var layersInGroup = $scope.mapMCLayers.getLayers().getArray();
-            for (var i = 0, l; i < layersInGroup.length; i++) {
-                l = layersInGroup[i];
-                l.getSource().clear();
-            }
-            for(var j = $scope.mcServiceRegistryInstances.length-1; j >=0 ; j--){
-                $scope.mcServiceRegistryInstances.splice(j, 1);
-                
-            }
-        };
-
-        $scope.isThereAnyServiceRegistry = function () {
-            $log.info("isThereAnyServiceRegistry");
-
-            ServiceRegistryService.getServiceInstances().success(function (services, status) {
-
-                $scope.mcServiceRegistryInstances.length = 0;
-                // Update the selected status from localstorage
-                var instanceIds = [];
-                if(status==204){
-                    $scope.mcServiceRegistryInstancesStatus = 'false';
-                    $scope.mcServiceRegistryInstancesMessages = [];
-                }
-                if(status==200){
-                    $scope.mcServiceRegistryInstancesStatus = 'true';
-
-                    angular.forEach(services, function (service) {
-                        $scope.mcServiceRegistryInstances.push(service);
-
-                        if (service.boundary) {
-
-                            try {
-                                 $log.info("Name: " + service.name + " Boundary: " + service.boundary + " ");
-                                var wktString = service.boundary.split('\+').join('').replace(/\s+\(\(/, '\(\('); // remove + and whitespaces from the wkt...
-                                $log.info("wktString=" + wktString);
-
-                                var olFeature = MapService.wktToOlFeature(wktString);
-                                $scope.mapMCLayers.getLayers().getArray()[0].getSource().addFeature(olFeature);
-
-                            } catch (error) {
-                                $log.error("Error displaying service. " + "Name: " + service.name + " Boundary: " + service.boundary );
-                            }
-                            $log.info(service);
-                        }
-
-                    }, function(error) {
-                        $rootScope.loading= false;
-                        $log.error(error);
-                        if(error.data.message){
-                            growl.error(error.data.message);
-                        }
-                    });
-                }
-            });
-        };
-
 
 
         var accepted_terms = $window.localStorage.getItem('terms_accepted_ttl');
