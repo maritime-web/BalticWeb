@@ -161,20 +161,24 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.vtsvesselposlatdegreesinput = "";
         $scope.vtsvesselposlatminutesinput = "";
         $scope.vtscargoadditionalcontactdetailsinput = "";
-        $scope.vtsvesseltrueheadinginput = "";
+        $scope.vtsvesseltruecourseinput = "";
         $scope.vtsvesselportofdestinationinput = "";
 
         $scope.setvtsvesselPosLonDegreesValid = false;
         $scope.setvtsvesselPosLatDegreesValid = false;
         $scope.setvtsvesselPosLonMinutesValid = false;
         $scope.setvtsvesselPosLatMinutesValid = false;
+        $scope.showCourseOverGround = false;
 
         $scope.setvtsvesselSpeedValid = false;
-        $scope.setvtsvesselTrueHeadingValid = false;
+        $scope.setvtsvesselTrueCourseValid = false;
+        $scope.setvtsvesselCourseOverGroundValid = false;
         $scope.setvtsEtaDateValid = false;
         $scope.setvtsEtaTimeValid = false;
         $scope.setvtsvesselPortOfDestinationValid = false;
         $scope.setvtsvesselRouteValid = false;
+        $scope.courseOverGroundValid = true;
+
 
         $scope.VTSReadyToSend = false; //global readystate
 
@@ -240,7 +244,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             voyagePositionLon:0, //Longitude position of vessel, format is degrees and decimal minutes, ex: 12,59.9999 - (0-90),(0-60).(0-9999) (N/S)
             voyagePositionLat:0, //Latitude position of vessel, format is degrees and decimal minutes, ex: 55,39.9999 - (0-180),(0-60).(0-9999) (E/W)
             voyageSpeed:0, //Current speed of vessel, in knots
-            voyageTrueHeading:0, //Current true heading, 0-360 degrees, 1 decimal
+            voyageTrueCourse:0, //Current true heading, 0-360 degrees, 1 decimal
+            voyageCourseOverGround:0, //COG from AIS
             voyageVTSETADateTime:"", //String - Arrival date at VTS area, DD-MM-YYYY HH:mm
             voyagePortOfDestination:"" //String - name of port
         };
@@ -267,7 +272,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         //allows only string of max number val 99.9 to pass
         $scope.VTSValidation999 = function(str){
-            str = str.replace(/[^0-9.]/, '');
+            str = str.toString().replace(/[^0-9.]/, '');
             if(str==".")str="0."; //cant start with period
             if(str.length > 1) { //has to start with zero if period is first char
                 if (str.substring(0,1) == ".") str = "0" + str;
@@ -290,6 +295,29 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             return str;
         };
 
+        //only number between and including 0.0 to 359.9, 1 decimal place with cleanup (int or float)
+        $scope.VTSValidation360 = function(str){
+            var isValid = false;
+            if(str == "." || str == "0.0") str = "0.";
+            if(str.length>5) str = str.substring(0,5); //cant be longer than 359.9
+            if(str.indexOf(".") !== -1 && str.length > 2 && (str.substring(str.length-1,str.length) != ".")) { //has period - treat as float
+                var inputFloat = parseFloat(str);
+                if (inputFloat.isNaN) inputFloat = 0.0;
+                if (inputFloat > 0.0 && (inputFloat < 360.0)) isValid = true;
+                str = inputFloat + "";
+                str = str.substring(0,str.indexOf(".")+2); //only one decimal returned
+            }else if(str.indexOf(".") < 0 && str.length>0){ //No period, treat as int
+                var inputInt = parseInt(str);
+                if(inputInt.isNaN) inputInt = 0;
+                if (inputInt > -1 && (inputInt < 360)) isValid = true;
+                str = inputInt;
+            }else if(str.length < 1) {
+                isValid = false;
+            }
+            return [isValid,str];
+        };
+
+
         //test if all items check out, then display "SEND" button
         $scope.VTSValidationAllDone = function(){
 
@@ -300,6 +328,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             if(!VTSData[$scope.VTSID].showVesselType) $scope.setvtsVesselTypeValid = true;
             if(!VTSData[$scope.VTSID].showVesselLength) $scope.setvtsVesselLengthValid = true;
             if(!VTSData[$scope.VTSID].showFuelDetails) $scope.fuelDetailsValid = true;
+            if(!$scope.showCourseOverGround) $scope.courseOverGroundValid = true;
+
+
 
             //exception for cargo information
             if($scope.showCargoContactInformationInput == false) $scope.setvtsvesselContactDetailsValid = true;
@@ -323,20 +354,20 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             if($scope.fuelDetailsValid && $scope.setvtsCargoTypeValid && $scope.setvtsvesselContactDetailsValid) group4valid = true;
             if($scope.setvtsvesselPosLonDegreesValid && $scope.setvtsvesselPosLatDegreesValid) group5valid = true;
             if($scope.setvtsvesselPosLonMinutesValid && $scope.setvtsvesselPosLatMinutesValid) group6valid = true;
-            if($scope.setvtsvesselSpeedValid && $scope.setvtsvesselTrueHeadingValid && $scope.setvtsvesselPortOfDestinationValid) group7valid = true;
-            if($scope.setvtsvesseletaTimeDateValid) group8valid = true;
+            if($scope.setvtsvesselSpeedValid && $scope.setvtsvesselTrueCourseValid && $scope.setvtsvesselPortOfDestinationValid) group7valid = true;
+            if($scope.setvtsvesseletaTimeDateValid && $scope.setvtsvesselCourseOverGroundValid) group8valid = true;
 
-            console.log("");
-            console.log("");
-            console.log("");
-            console.log("group1valid",group1valid);
-            console.log("group2valid",group2valid);
-            console.log("group3valid",group3valid);
-            console.log("group4valid",group4valid);
-            console.log("group5valid",group5valid);
-            console.log("group6valid",group6valid);
-            console.log("group7valid",group7valid);
-            console.log("group8valid",group8valid);
+            // console.log("");
+            // console.log("");
+            // console.log("");
+            // console.log("group1valid",group1valid);
+            // console.log("group2valid",group2valid);
+            // console.log("group3valid",group3valid);
+            // console.log("group4valid",group4valid);
+            // console.log("group5valid",group5valid);
+            // console.log("group6valid",group6valid);
+            // console.log("group7valid",group7valid);
+            // console.log("group8valid",group8valid);
 
             if(group1valid==false || group2valid==false || group3valid==false || group4valid==false || group5valid==false || group6valid==false || group7valid==false || group8valid==false) {
                 $scope.VTSReadyToSend = false;
@@ -466,28 +497,35 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         //     vesselWidth:""
         // };
 
-        $scope.populateInputsWithAisData = function(){
+        $scope.populateInputsWithAisData = function(){ //only populates empty fields
 
-            $scope.vtsvesselnameinput = $scope.aisData.vesselName;
+            if($scope.vtsvesselnameinput == "") $scope.vtsvesselnameinput = $scope.aisData.vesselName;
             if($scope.aisData.vesselName != "") $scope.VTSVesselNameValidation(false); //skips global validator
 
-            $scope.vtsvesselcallsigninput = $scope.aisData.vesselCallsign;
+            if($scope.vtsvesselcallsigninput == "") $scope.vtsvesselcallsigninput = $scope.aisData.vesselCallsign;
             if($scope.aisData.vesselCallsign != "") $scope.VTSVesselCallsignValidation(false);
 
-            $scope.vtsvesselimoinput = $scope.aisData.vesselImo;
+            if($scope.vtsvesselimoinput == "") $scope.vtsvesselimoinput = $scope.aisData.vesselImo;
             if($scope.aisData.vesselImo != "") $scope.VTSVesselIMOValidation(false);
 
-            $scope.vtsvesselportofdestinationinput = $scope.aisData.vesselDestination;
+            if($scope.vtsvesselportofdestinationinput == "") $scope.vtsvesselportofdestinationinput = $scope.aisData.vesselDestination;
             if($scope.aisData.vesselDestination != "") $scope.VTSVesselPortOfDestinationValidation(false);
 
-            $scope.vtsvesseltrueheadinginput = $scope.aisData.vesselCog;
-            if($scope.aisData.vesselCog != "") $scope.VTSTrueHeadingValidation(false);
+            if($scope.vtsvesseldraughtinput == "") $scope.vtsvesseldraughtinput = $scope.aisData.vesselDraught;
+            if($scope.aisData.vesselDraught != "") $scope.VTSVesselDraughtValidation(false);
 
+            if($scope.vtsvessellengthinput == "") $scope.vtsvessellengthinput = $scope.aisData.vesselLength;
+            if($scope.aisData.vesselLength != "") $scope.VTSVesselLengthValidation(false);
 
+            if($scope.aisData.vesselCOG != "") {
+                $scope.showCourseOverGround = true; //display in UI
+                if($scope.vtsvesselcourseovergroundinput == "") $scope.vtsvesselcourseovergroundinput = $scope.aisData.vesselLength;
+                $scope.VTSCourseOverGroundValidation(false);
+            }
             $scope.VTSValidationAllDone(); //finally validate all values for ready to send
         };
 
-        //Fetches AIS data  - changes background colour or affected inputs and adds placeholder if they are empty
+        //Fetches AIS data  - changes background colour of affected inputs and adds placeholder
         $scope.getAisDataByMmsi = function(){
             if($scope.setvtsvesselMMSIValid && $scope.isLoggedIn) {
                 VesselService.detailsMMSI($scope.vtsvesselmmsiinput).then(function (vesselDetails) {
@@ -498,6 +536,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                     $scope.aisData.vesselImo = vesselDetails.data.aisVessel.imoNo;
                     $scope.aisData.vesselCog = vesselDetails.data.aisVessel.cog;
                     $scope.aisData.vesselDestination = vesselDetails.data.aisVessel.destination;
+                    $scope.aisData.vesselDraught = vesselDetails.data.aisVessel.draught;
+                    $scope.aisData.vesselLength = vesselDetails.data.aisVessel.length;
+                    $scope.aisData.vesselCOG = vesselDetails.data.aisVessel.cog;
 
                     //load the placeholders
                     $scope.placeholderAisVesselName = $scope.aisData.vesselName;
@@ -505,6 +546,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                     $scope.placeholderAisVesselImo = $scope.aisData.vesselImo;
                     $scope.placeholderAisVesselCog = $scope.aisData.vesselCog;
                     $scope.placeholderAisVesselDestination = $scope.aisData.vesselDestination;
+                    $scope.placeholderAisVesselDraught = $scope.aisData.vesselDraught;
+                    $scope.placeholderAisVesselLength = $scope.aisData.vesselLength;
+                    $scope.vtsvesselcourseovergroundinput = $scope.aisData.vesselCOG;
 
 
 
@@ -532,29 +576,21 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         };
 
         //max 99.9
-        $scope.VTSVesselDraughtValidation = function() {
-            var draught = $scope.VTSValidation999($scope.vtsvesseldraughtinput);
-            var draughtFloat = parseFloat(draught);
-            if (isNaN(draughtFloat)) draughtFloat = 0;
-            if(draughtFloat > 0.1 && draughtFloat < 100) {
-                $scope.setvtsvesselDraughtValid = true
-            }else{
-                $scope.setvtsvesselDraughtValid = false;
-            }
-            $scope.vtsvesseldraughtinput = draught;
-            $scope.VTSValidationAllDone();
+        $scope.VTSVesselDraughtValidation = function(validate) {
+            var input = $scope.VTSValidation999($scope.vtsvesseldraughtinput);
+            var inputFloat = parseFloat(input);
+            if (isNaN(inputFloat)) inputFloat = 0.0;
+            (inputFloat > 0.0 && inputFloat < 100.0) ? $scope.setvtsvesselDraughtValid = true : $scope.setvtsvesselDraughtValid = false;
+            $scope.vtsvesseldraughtinput = input;
+            if(validate) $scope.VTSValidationAllDone();
         };
 
         //max 99.9
         $scope.VTSVesselAirDraughtValidation = function() {
-            var draught = $scope.VTSValidation999($scope.vtsvesselairdraughtinput);
-            var draughtFloat = parseFloat(draught);
-            if(draughtFloat > 0 && draughtFloat < 100) {
-                $scope.setvtsvesselAirDraughtValid = true
-            }else{
-                $scope.setvtsvesselAirDraughtValid = false;
-            }
-            $scope.vtsvesselairdraughtinput = draught;
+            var input = $scope.VTSValidation999($scope.vtsvesselairdraughtinput);
+            var inputFloat = parseFloat(input);
+            (inputFloat > 0 && inputFloat < 100) ? $scope.setvtsvesselAirDraughtValid = true : $scope.setvtsvesselAirDraughtValid = false;
+            $scope.vtsvesselairdraughtinput = input;
             $scope.VTSValidationAllDone();
         };
 
@@ -563,11 +599,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             var persons = $scope.vtsvesselpersonsinput;
             persons = persons.toString().replace(/\D/g, '');
             if(persons.length>5) persons = persons.substring(0,5);
-            if(parseInt(persons) > 0){
-                $scope.setvtsvesselPersonsValid = true
-            } else {
-                $scope.setvtsvesselPersonsValid = false
-            }
+            (parseInt(persons) > 0) ? $scope.setvtsvesselPersonsValid = true : $scope.setvtsvesselPersonsValid = false;
             $scope.vtsvesselpersonsinput = persons; //send cleaned to input field
             $scope.VTSValidationAllDone();
         };
@@ -578,13 +610,32 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         };
 
         //cant be longer than 999m
-        $scope.VTSVesselLengthValidation = function(){
-            var GT = $scope.vtsvessellengthinput.toString().replace(/\D/g, '');
-            var GTint = parseInt(GT);
-            if (isNaN(GTint)) GTint = 0;
-            (GTint > 1 && GTint < 999) ? $scope.setvtsvesselLengthValid = true : $scope.setvtsvesselLengthValid = false;
-            $scope.vtsvessellengthinput = GT;
-            $scope.VTSValidationAllDone();
+        $scope.VTSVesselLengthValidation = function(validate){
+            var inputStr = $scope.vtsvessellengthinput + "";
+            if(inputStr == "." || inputStr == "0.0") {
+                $scope.vtsvessellengthinput = "0.";
+                inputStr = "0."
+            }
+            if(inputStr.length>5) inputStr = inputStr.substring(0,5); //cant be longer than 999.9
+            if(inputStr.indexOf(".") !== -1 && inputStr.length > 2 && (inputStr.substring(inputStr.length-1,inputStr.length) != ".")) { //has period - treat as float
+                var inputFloat = parseFloat(inputStr);
+                if (inputFloat.isNaN) inputFloat = 0.0;
+                var isValid = false;
+                if (inputFloat > 0.1 && inputFloat < 1000.0) isValid = true;
+                $scope.setvtsvesselLengthValid = isValid;
+                inputStr = inputFloat;
+            }else if(inputStr.indexOf(".") < 0 && inputStr.length>0){ //No period, treat as int
+                var inputInt = parseInt(inputStr);
+                if(inputInt.isNaN) inputInt = 0;
+                var isValid = false;
+                if (inputInt > 1 && inputInt < 999) isValid = true;
+                $scope.setvtsvesselLengthValid = isValid;
+                inputStr = inputInt;
+            }else if(inputStr.length < 1) {
+                $scope.setvtsvesselLengthValid = false;
+            }
+            $scope.vtsvessellengthinput = inputStr;
+            if(validate) $scope.VTSValidationAllDone();
         };
 
         //any number
@@ -779,7 +830,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             $scope.VTSValidationAllDone();
         };
 
-        $scope.VTSDangerousCargoContactNameValidate = function(){
+        $scope.VTSDangerousCargoContactNameValidation = function(){
             var input = $scope.vtscargodesignatedpersonashorenameinput;
             if(input!="" && input.length>5) {
                 $scope.setvtsvesselDPANameValid = true;
@@ -790,7 +841,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         };
 
 
-        $scope.VTSDangerousCargoContactPhonenumberValidate = function(){
+        $scope.VTSDangerousCargoContactPhonenumberValidation = function(){
             var input = $scope.vtscargodesignatedpersonashoretelephoneinput;
             input = input.replace(/[^-+()0-9]/g, '');
             $scope.vtscargodesignatedpersonashoretelephoneinput = input;
@@ -803,7 +854,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         };
 
 
-        $scope.VTSDangerousCargoContactEmailValidate = function(){
+        $scope.VTSDangerousCargoContactEmailValidation = function(){
             var input = $scope.vtscargodesignatedpersonashoreemailinput;
             var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if(input!="" && input.length>5) {
@@ -935,34 +986,19 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         };
 
-        //only number between and including 0 to 360 with cleanup
-        $scope.VTSTrueHeadingValidation = function(validate){
-            var inputStr = $scope.vtsvesseltrueheadinginput.toString();
-            console.log("true heading validate:",inputStr);
-            if(inputStr == "." || inputStr == "0.0") {
-                $scope.vtsvesseltrueheadinginput = "0.";
-                inputStr = "0."
-            }
-            if(inputStr.length>5) inputStr = inputStr.substring(0,5); //cant be longer than 359.9
+        $scope.VTSTrueCourseValidation = function(validate){
+            var inputStr = $scope.vtsvesseltruecourseinput + "";
+            var ret = $scope.VTSValidation360(inputStr);
+            $scope.setvtsvesselTrueCourseValid = ret[0];
+            $scope.vtsvesseltruecourseinput = ret[1];
+            if(validate) $scope.VTSValidationAllDone();
+        };
 
-            if(inputStr.indexOf(".") !== -1 && inputStr.length > 2 && (inputStr.substring(inputStr.length-1,inputStr.length) != ".")) { //has period - treat as float
-                var inputFloat = parseFloat(inputStr);
-                if (inputFloat.isNaN) inputFloat = 0.0;
-                var isValid = false;
-                if (inputFloat > 0.0 && (inputFloat < 360.0)) isValid = true;
-                $scope.setvtsvesselTrueHeadingValid = isValid;
-                inputStr = inputFloat;
-            }else if(inputStr.indexOf(".") < 0 && inputStr.length>0){ //No period, treat as int
-                var inputInt = parseInt(inputStr);
-                if(inputInt.isNaN) inputInt = 0;
-                var isValid = false;
-                if (inputInt > 0 && (inputInt < 360)) isValid = true;
-                $scope.setvtsvesselTrueHeadingValid = isValid;
-                inputStr = inputInt;
-            }
-
-            $scope.vtsvesseltrueheadinginput = inputStr;
-
+        $scope.VTSCourseOverGroundValidation = function(validate){ //only appears in UI when using AIS data
+            var inputStr = $scope.vtsvesselcourseovergroundinput + "";
+            var ret = $scope.VTSValidation360(inputStr);
+            $scope.setvtsvesselCourseOverGroundValid = ret[0];
+            $scope.vtsvesselcourseovergroundinput = ret[1];
             if(validate) $scope.VTSValidationAllDone();
         };
 
@@ -1076,6 +1112,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         $scope.VTSFuelTypeValidation(); //disables all fuel inputs if nothing
         $scope.VTSValidationAllDone(); //just in case
+
+
+        //debugging
+        $scope.vtsvesselmmsiinput = "219021000";
+        $scope.VTSVesselMMSIValidation();
+
     };
 
     $scope.selectedVesselType = "";
@@ -1147,14 +1189,14 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.reportSummary.voyagePositionLon = "" + ($scope.vtsvesselposlondegreesinput +","+ $scope.vtsvesselposlonminutesinput);
         $scope.reportSummary.voyagePositionLat = "" + ($scope.vtsvesselposlatdegreesinput +","+ $scope.vtsvesselposlatminutesinput);
         $scope.reportSummary.voyageSpeed = "" + (parseFloat($scope.vtsvesselspeedinput));
-        $scope.reportSummary.voyageTrueHeading = "" + (parseFloat($scope.vtsvesseltrueheadinginput));
+        $scope.reportSummary.voyageTrueCourse = "" + (parseFloat($scope.vtsvesseltruecourseinput));
         $scope.reportSummary.voyagePortOfDestination = "" + ($scope.vtsvesselportofdestinationinput);
         $scope.reportSummary.voyageVTSETADateTime = "" + ($scope.vtsLocalDate + " - " + $scope.vtsUtcTime);
 
 
         // debug
         console.log("VTS REPORT:",$scope.reportSummary);
-
+        // console.log("post:"+JSON.stringify($scope.reportSummary)); //debug
         //Send form endpoint *************************************************************************************
         $http({
             url: '/rest/vtsemail',

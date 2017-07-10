@@ -276,6 +276,54 @@ body {
     font-size: 1.6em;
 }
 
+.vts-placeholder-highlight::-webkit-input-placeholder { /* Chrome */
+    color: #7376c7;
+}
+.vts-placeholder-highlight::-webkit-input-placeholder{ /* Chrome */
+    color: #7376c7;
+}
+
+.vts-placeholder-highlight:-ms-input-placeholder { /* IE 10+ */
+    color: #7376c7;
+}
+.vts-placeholder-highlight::-moz-placeholder { /* Firefox 19+ */
+    color: #7376c7;
+    opacity: 1;
+}
+.vts-placeholder-highlight:-moz-placeholder { /* Firefox 4 - 18 */
+    color: #7376c7;
+    opacity: 1;
+}
+
+.vts-pulse {
+    background-color: #b3ccff;
+    animation-name: vts-pulse;
+    animation-duration: 3s;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-direction: alternate;
+    animation-iteration-count: 10;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}
+
+@keyframes vts-pulse {
+    0% {
+        background-color: #b3ccff;
+    }
+    50% {
+        background-color: #989bff;
+    }
+    100% {
+        background-color: #b3ccff;
+    }
+}
+
+
+
+
+
+
     /* END Vessel Traffic Service */
 
 .sidebar-panel {
