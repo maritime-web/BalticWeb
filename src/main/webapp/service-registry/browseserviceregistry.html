@@ -1,0 +1,193 @@
+<div ng-controller="MCSRController">
+    <div id="wrap">
+
+        <ol-map class="map-sr-browser col-xs-9 col-sm-9 col-md-9 col-lg-9" map-state="mapState" minzoom="3"  swlon="-31" swlat="30" nelon="61" nelat="80" >
+            <map-layer-group layer-group="mapMCLayers" ></map-layer-group>
+            <map-layer-group layer-group="mapBackgroundLayers" ></map-layer-group>
+
+            <map-overview collapsed="false"></map-overview>
+
+        </ol-map>
+
+        <div class="map-sr-sidebar col-xs-9 col-sm-3  col-md-3 "> <!-- uib-collapse="showgraphSidebar" -->
+                <div >
+                    <div ng-if="!loggedIn" class="sidebar-panel">
+                        <div class="well">
+                            <p>Log in to access Service Registry</p>
+                            <button class="btn btn-default" ng-click="login()">Login</button>
+                        </div>
+                    </div>
+
+
+                    <div class="panel" ng-if="loggedIn" ng-class="(mcServiceRegistryInstancesStatus=='true') ? 'panel-primary' : 'panel-default'">
+
+                        <div class="panel-heading" ><span class="glyphicon glyphicon-globe"></span> MC - Service Registry
+                            <button ng-if="nogo.loading"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></button>
+                            <span ng-if="mcServiceRegistryInstancesStatus" class="badge sidebar-badge" ng-bind="mcServiceRegistryInstances.length"></span>
+                            <small tooltip="Refresh" class="glyphicon glyphicon-refresh"
+                                   ng-click="isThereAnyServiceRegistry()"></small>
+                            <small tooltip="Refresh" class="glyphicon glyphicon-remove-circle"
+                                   ng-click="clearServiceRegistry()"></small>
+                        </div>
+                        <div class="panel-body">
+                            <p>All the instances in The Service Registry</p>
+                            <p>Use the list or map to highlight a service instance(s) to get details and coverage.</p>
+                        </div>
+                        <!-- List group -->
+                        <ul class="list-group" ng-if="highlightedInstance.id">
+
+                            <li class="list-group-item"><b>ID</b>: <span ng-bind="highlightedInstance.id"/></li>
+                            <li class="list-group-item"><b>Instance ID</b>: <span  ng-bind="highlightedInstance.instanceId"/></li>
+                            <li class="list-group-item"><b>Version</b>: <span  ng-bind="highlightedInstance.version"/></li>
+                            <li class="list-group-item"><b>Name</b>: <span  ng-bind="highlightedInstance.name"/></li>
+                            <li class="list-group-item"><b>Description</b>: <span  ng-bind="highlightedInstance.description"/></li>
+                        </ul>
+
+                        <!-- Table -->
+                        <table class="table"
+                               ng-repeat="instance in mcServiceRegistryInstances">
+                            <!--
+                              {
+                                "id": 107,
+                                "instanceId": "urn:mrn:mcl:service:instance:dmi:METOC_SejlRute-service",
+                                "version": "0.1",
+                                "name": "DMI Route METOC service",
+                                "description": "Model based MetOcean prognoses from Danish Meteorological Institite along a given route or location(s) covering the North Atlantic region",
+                                "status": "provisional",
+                                "availability": 99.9,
+                                "technicalDesignId": {
+                                  "id": "urn:mrn:mcl:service:design:dmi:METOC_SejlRute-service",
+                                  "version": "0.1"
+                                },
+                                "boundary": "GEOMETRYCOLLECTION(POLYGON((-97.9000 42.0000, -97.9000 78.0000, 36.2000 78.0000, 36.2000 42.0000, -97.9000 42.0000)))",
+                                "url": "http://ocean.dmi.dk/apps/SejlRute/SejlRute.php",
+                                "producedBy": {
+                                  "id": "urn:mrn:mcl:user:dmi:mhri",
+                                  "name": "xxxxxxxxxxxxx",
+                                  "description": "Sxxxxxxxxxxxxxxxxxxxxxx",
+                                  "contactInfo": "xxxxxxx@dmi.dk",
+                                  "commercial": null
+                                },
+                                "providedBy": {
+                                  "id": "urn:mrn:mcl:org:dmi",
+                                  "name": "DMI",
+                                  "description": "Danish Meteorological Institute",
+                                  "contactInfo": "dmi@dmi.dk",
+                                  "commercial": null
+                                },
+                                "errors": [],
+                                "warnings": []
+                              }
+                            -->
+                            <tr ng-class="{'active':(instance.instanceId===highlightedInstance.instanceId)}"
+                                ng-click="console.log(instance.name)">
+                                <td><a href="" ng-bind="instance.name" ng-click="highlightInstance(instance)" ></a>
+                                    <span ng-if="instance.warnings.length>0" class="alert alert-warning" ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                   <span>length: {{instance.warnings.length}}</span>
+                                    <ul>
+                                     <li ng-repeat="warn in instance.warnings"> {{warn.value}}</li>
+                                     </ul>
+                                 </span>
+                                    <!--<span  ng-bind="instance.description"></span>-->
+                                    <span class="label label-success" ng-bind="instance.instanceID"></span>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <div class="panel-footer">
+                            <p class="small">Disclamer: </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+
+                <!-- Route tab -->
+                <uib-tab ng-if="$root.route_id" classes="btn-sm">
+                    <uib-tab-heading>
+                        <span>Route <span class="badge sidebar-badge">1</span></span>
+                    </uib-tab-heading>
+
+                    <div class="panel" ng-show="$root.route_id" class="panel-primary">
+                        <!-- div class="panel-heading"><h3>Route: {{$root.route_name}}</h3></div-->
+
+                        <div class="panel-body">
+
+                            <!-- Table -->
+                            <table class="table table-striped table-hover table-bordered ">
+                                <tr>
+                                    <td>Route name: {{$root.route_name}}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Vessel name: <a ng-href="#/vessel/{{$root.route_id}}">{{$root.route_vesselname}}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td>Vessel MMSI: <a ng-href="#/vessel/{{$root.route_id}}">{{$root.route_id}}</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Distance: {{$root.route_totaldistance | number:2}} nautical miles
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Waypoints: {{$root.route_oLfeatures.length}}
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table class="table table-striped table-hover table-bordered table-condensed">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Time</th>
+                                    <th>ETA</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="object in $root.route_oLfeatures | limitTo: 300">
+                                    <td ng-bind="object.get('id')"></td>
+                                    <td ng-bind="object.get('wayname')"> </td>
+                                    <td><small>{{object.get('etatimeago')}}</small></td>
+                                    <td><small>{{object.get('eta')}}</small></td>
+                                    <!--<td class="text-right">{{object.get('speed')}}</td>-->
+                                    <!--<td class="text-right">{{object.get('distance')| number:2}}</td>-->
+                                </tr>
+                                </tbody>
+
+                            </table>
+                            <div class="panel-footer">
+                                <p class="small">Uploaded route</p>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                </uib-tab>
+
+        <div class="push"></div>
+    </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <!--<h1 ng-if="!rtzName">Upload route</h1>-->
+                </div>
+            </div>
+
+
+
+</div>
+

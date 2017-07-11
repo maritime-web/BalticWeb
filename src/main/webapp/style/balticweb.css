@@ -357,6 +357,44 @@ body {
     ) repeat;
     */
 }
+
+.map-sr-browser {
+    padding: 0px;
+    height: 90%;
+    width: 70%;
+    position: absolute;
+    border: 1px #269 solid;
+    background-color:#269;
+    background-image: linear-gradient(white 2px, transparent 2px),
+    linear-gradient(90deg, white 2px, transparent 2px),
+    linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
+    background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
+    /*
+    background:url(
+    data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAI0lEQVQIW2M8c+bMfxMTE0YGKADxwRyYBIxGUQHTgV0lNjMBG7MizEwu19wAAAAASUVORK5CYII=
+    ) repeat;
+    */
+}
+
+.map-sr-sidebar {
+    position: absolute;
+    width: 30%;
+    right: 0px;
+    z-index: 300;
+
+    background-color: white ;
+
+    border-radius: 4px;
+    padding: 4px;
+    overflow-y: scroll;
+
+
+    border: 1px #269 solid;
+
+}
+
 .json-formatter-dark{
     background-color: #2e2e2e;
 }
