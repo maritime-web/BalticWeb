@@ -30,13 +30,18 @@
                                    ng-click="clearServiceRegistry()"></small>
                         </div>
                         <div class="panel-body">
-                            <p>All the service in The Service Registry</p>
-                            <p ng-bind="highlightedInstance.id"></p>
-                            <p ng-bind="highlightedInstance.instanceId"></p>
-                            <p ng-bind="highlightedInstance.version"></p>
-                            <p ng-bind="highlightedInstance.name"></p>
-                            <p ng-bind="highlightedInstance.description"></p>
+                            <p>All the instances in The Service Registry</p>
+                            <p>Use the list or map to highlight a service instance(s) to get details and coverage.</p>
                         </div>
+                        <!-- List group -->
+                        <ul class="list-group" ng-if="highlightedInstance.id">
+
+                            <li class="list-group-item"><b>ID</b>: <span ng-bind="highlightedInstance.id"/></li>
+                            <li class="list-group-item"><b>Instance ID</b>: <span  ng-bind="highlightedInstance.instanceId"/></li>
+                            <li class="list-group-item"><b>Version</b>: <span  ng-bind="highlightedInstance.version"/></li>
+                            <li class="list-group-item"><b>Name</b>: <span  ng-bind="highlightedInstance.name"/></li>
+                            <li class="list-group-item"><b>Description</b>: <span  ng-bind="highlightedInstance.description"/></li>
+                        </ul>
 
                         <!-- Table -->
                         <table class="table"
@@ -58,9 +63,9 @@
                                 "url": "http://ocean.dmi.dk/apps/SejlRute/SejlRute.php",
                                 "producedBy": {
                                   "id": "urn:mrn:mcl:user:dmi:mhri",
-                                  "name": "Mads Hvid Ribergaard",
-                                  "description": "Senior researcher/oceanographer at DMI",
-                                  "contactInfo": "mhri@dmi.dk",
+                                  "name": "xxxxxxxxxxxxx",
+                                  "description": "Sxxxxxxxxxxxxxxxxxxxxxx",
+                                  "contactInfo": "xxxxxxx@dmi.dk",
                                   "commercial": null
                                 },
                                 "providedBy": {
@@ -74,12 +79,7 @@
                                 "warnings": []
                               }
                             -->
-                            <tr uib-popover=" {{instance.name}} {{instance.version}} Status: {{instance.status}}
-                                availability: {{instance.availability}} <br>
-                                Provide
-{{instance.providedBy.name}} {{instance.providedBy.description}} {{instance.providedBy.name}} {{instance.providedBy.name}}"
-                                popover-trigger="mouseenter"
-                                popover-placement="bottom"
+                            <tr ng-class="{'active':(instance.instanceId===highlightedInstance.instanceId)}"
                                 ng-click="console.log(instance.name)">
                                 <td><a href="" ng-bind="instance.name" ng-click="highlightInstance(instance)" ></a>
                                     <span ng-if="instance.warnings.length>0" class="alert alert-warning" ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -88,7 +88,7 @@
                                      <li ng-repeat="warn in instance.warnings"> {{warn.value}}</li>
                                      </ul>
                                  </span>
-                                    <span  ng-bind="instance.description"></span>
+                                    <!--<span  ng-bind="instance.description"></span>-->
                                     <span class="label label-success" ng-bind="instance.instanceID"></span>
                                 </td>
                             </tr>
