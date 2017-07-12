@@ -4,12 +4,16 @@ angular.module('maritimeweb.app')
         '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
         'VesselService', 'NwNmService', 'SatelliteService', 'ServiceRegistryService', 'growl', '$uibModal', '$log', '$interval', '$rootScope',
         function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, ServiceRegistryService, growl, $uibModal, $log, $interval, $rootScope) {
+            // var olScope = $scope.getOpenlayersScope();
 
             $rootScope.showgraphSidebar = false; // rough disabling of the sidebar
             $scope.highlightedInstance = {};
 
+        /*    olScope.getMap().then(function (map) {
+                $log.info("got the map ");
+            });*/
 
-            $scope.mcStylePurple = new ol.style.Style({
+                $scope.mcStylePurple = new ol.style.Style({
                 stroke: new ol.style.Stroke({
                     color: 'rgba(180, 0, 180, 0.5)',
                     width: 1
@@ -56,17 +60,7 @@ angular.module('maritimeweb.app')
                     style: [$scope.greenServiceStyle]
                 });
 
-                var serviceAvailableLayer = new ol.layer.Vector({
-                    id: 'serviceavailboundary',
-                    title: 'Service Available - NO GO AREA',
-                    name: 'Service Available - NO GO AREA',
-                    zIndex: 11,
-                    source: new ol.source.Vector({
-                        features: new ol.Collection(),
-                        wrapX: false
-                    }),
-                    style: [$scope.greenServiceStyle]
-                });
+
 
                 var duration = 3000;
                 function flash(feature) {
@@ -106,14 +100,10 @@ angular.module('maritimeweb.app')
                     listenerKey = map.on('postcompose', animate);
                 }
 
-                serviceAvailableLayer.getSource().on('addfeature', function(e) {
+                boundaryLayer.getSource().on('addfeature', function(e) {
                     flash(e.feature);
                 });
 
-
-                serviceAvailableLayer.setZIndex(12);
-                serviceAvailableLayer.setVisible(true);
-                serviceAvailableLayer.getSource().clear();
 
 
                 boundaryLayer.setZIndex(11);
@@ -129,13 +119,15 @@ angular.module('maritimeweb.app')
                     title: 'MC Service Registry',
                     name: 'MC Service Registry',
                     zIndex: 11,
-                    layers: [boundaryLayer, serviceAvailableLayer]
+                    layers: [boundaryLayer]
                 });
                 mcSRGroupLayer.setZIndex(11);
                 mcSRGroupLayer.setVisible(true);
 
                 return mcSRGroupLayer;
             }
+
+
 
 
             // Cancel any pending NW-NN queries
@@ -216,12 +208,14 @@ angular.module('maritimeweb.app')
                 $log.info();
 
                 var feature = $scope.mapMCLayers.getLayers().getArray()[0].getSource().getFeatureById(instance.instanceId);
+                if(feature){
+                    $log.info("Feature found by id " + feature.getId());
 
-                $log.info("Feature found by id " + feature.getId());
-
-                feature.setStyle($scope.highlightServiceRed);
-                $scope.mapMCLayers.getLayers().getArray()[0].getSource().addFeature(feature);
-
+                    feature.setStyle($scope.highlightServiceRed);
+                    $scope.mapMCLayers.getLayers().getArray()[0].getSource().addFeature(feature);
+                }else{
+                    $log.errror("Service instance has no geom");
+                }
             };
 
             $scope.isThereAnyServiceRegistry = function () {
