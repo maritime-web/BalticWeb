@@ -8,8 +8,8 @@ angular.module('maritimeweb.serviceregistry')
  * It will automatically load the vessels for the current map bounding box,
  * but only if the user is logged in.
  */
-    .directive('mapServiceRegistryLayer', ['$rootScope', '$timeout', 'Auth', 'ServiceRegistryService', 'growl', '$log', '$window',
-        function ($rootScope, $timeout, Auth, ServiceRegistryService, growl, $log, $window) {
+    .directive('mapServiceRegistryLayer', ['$rootScope', '$timeout', 'Auth', 'ServiceRegistryService', 'MapService','growl', '$log',
+        function ($rootScope, $timeout, Auth, ServiceRegistryService, MapService, growl, $log) {
             return {
                 restrict: 'E',
                 replace: false,
@@ -78,15 +78,14 @@ angular.module('maritimeweb.serviceregistry')
                          */
                         map.on('singleclick', function (evt) {
                             $rootScope.highlightedInstances = []; // reset all selections
-
+                            $rootScope.highlightedInstancescoordinate = [];
 
                             var features = $rootScope.mapMCLayers.getLayers().getArray()[0].getSource().getFeatures();
                             $log.info("Features found " + features.length);
 
-                            angular.forEach(features, function (feature) {
+                            angular.forEach(features, function (feature) { // reset all highlights
                                 feature.setStyle(ServiceRegistryService.greenServiceStyle);
                             });
-
 
                             var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
                                 /*
@@ -99,6 +98,11 @@ angular.module('maritimeweb.serviceregistry')
                                 $rootScope.highlightedInstances.push(feature.instanceId);
                                 return false;
                             }, {hitTolerance: 4});
+
+                            var tmp = MapService.toLonLat(evt.coordinate); //evt.coordinate;
+                            $rootScope.highlightedInstancescoordinate = { lon: tmp[0], lat: tmp[1] }; // MapService.toLonLat(evt.coordinate); //evt.coordinate;
+                            $rootScope.highlightedInstancescoordinateXY = MapService.toLonLat(evt.coordinate);
+
                             $rootScope.$apply();
 
 

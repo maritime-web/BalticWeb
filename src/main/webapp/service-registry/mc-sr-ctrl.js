@@ -11,11 +11,14 @@ angular.module('maritimeweb.serviceregistry')
             $rootScope.highlightedInstances = [];
 
 
+
             $scope.loggedIn = Auth.loggedIn;
 
             /** Logs the user in via Keycloak **/
             $scope.login = function () {
-                //TODO sample Stena Danica 265177000. You can change this to anything you want, or even better login
+                Auth.authz.login();
+                //TODO sample Stena Danica 265177000. You can change this to anything you want, or even better take it from the login token.
+                $window.localStorage.setItem('mmsi', 265177000);
             };
 
             /** Logs the user out via Keycloak **/
@@ -37,7 +40,6 @@ angular.module('maritimeweb.serviceregistry')
             $scope.accountManagement = function () {
                 Auth.authz.accountManagement();
             };
-
             // Map state and layers
             $scope.mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
 
@@ -69,6 +71,8 @@ angular.module('maritimeweb.serviceregistry')
                 $scope.highlightedInstance.name = instance.name;
                 $scope.highlightedInstance.version = instance.version;
                 $scope.highlightedInstance.instanceId = instance.instanceId;
+                $scope.highlightedInstance.boundary = instance.boundary;
+                $rootScope.highlightedInstancescoordinate = [];
                 $rootScope.highlightedInstances = [];
 
                 var features = $rootScope.mapMCLayers.getLayers().getArray()[0].getSource().getFeatures();
