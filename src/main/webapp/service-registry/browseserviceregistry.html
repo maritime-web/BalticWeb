@@ -4,7 +4,7 @@
         <ol-map class="map-sr-browser col-xs-9 col-sm-9 col-md-9 col-lg-9" map-state="mapState" minzoom="3"  swlon="-31" swlat="30" nelon="61" nelat="80" >
             <map-layer-group layer-group="mapMCLayers" ></map-layer-group>
             <map-layer-group layer-group="mapBackgroundLayers" ></map-layer-group>
-
+            <map-service-registry-layer></map-service-registry-layer>
             <map-overview collapsed="false"></map-overview>
 
         </ol-map>
@@ -34,7 +34,7 @@
                             <p>Use the list or map to highlight a service instance(s) to get details and coverage.</p>
                         </div>
                         <!-- List group -->
-                        <ul class="list-group" ng-if="highlightedInstance.id">
+                        <ul class="list-group" ng-if="highlightedInstance.id && highlightedInstances.length<1">
 
                             <li class="list-group-item"><b>ID</b>: <span ng-bind="highlightedInstance.id"/></li>
                             <li class="list-group-item"><b>Instance ID</b>: <span  ng-bind="highlightedInstance.instanceId"/></li>
@@ -79,7 +79,7 @@
                                 "warnings": []
                               }
                             -->
-                            <tr ng-class="{'active':(instance.instanceId===highlightedInstance.instanceId)}"
+                            <tr ng-class="{'active':(instance.instanceId===highlightedInstance.instanceId) || isHighlighted(instance.instanceId)}"
                                 ng-click="console.log(instance.name)">
                                 <td><a href="" ng-bind="instance.name" ng-click="highlightInstance(instance)" ></a>
                                     <span ng-if="instance.warnings.length>0" class="alert alert-warning" ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
