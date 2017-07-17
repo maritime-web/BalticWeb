@@ -93,7 +93,7 @@ body {
 .vts-red-text{color:#bb0000;}
 .vts-pad-top{padding-top:8px;}
 .vts-input{width:160px;}
-.vts-input-small{width:40px;}
+.vts-input-small{width:50px;}
 .vts-input-medium{width:70px;}
 .vts-input-standard{width:100px;}
 .vts-input-large{width:200px;}
@@ -113,11 +113,9 @@ body {
     max-width:350px;
     max-height:350px
 }
-/*#vtsparentdiv input[type=number]::-webkit-inner-spin-button,*/
-/*#vtsparentdiv input[type=number]::-webkit-outer-spin-button{*/
-    /*-webkit-appearance: none;*/
-    /*margin: 0;*/
-/*}*/
+.vts-cargo-input-forced-disabled:disabled {
+    background: #eeeeee;
+}
 .vts-less-lineheight{
     line-height: 1;
 }
@@ -174,7 +172,6 @@ body {
     box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
     outline: 0 none !important;
 }
-
 .vts-force-spacing-50{
     min-width:50px;
     max-width:50px;
@@ -265,7 +262,6 @@ body {
     width:200px !important;
     max-width:200px !important;
 }
-
 .vts-utc-label{
     margin-right: 10px;
 }
@@ -274,6 +270,15 @@ body {
     position: relative;
     left: 9px;
     font-size: 1.6em;
+}
+.vts-cargotype-border{
+    border:solid 1px #eeeeee;
+}
+.vts-cargotype-hover-highlight:hover {
+    border:solid 1px #666666;
+}
+.vts-cargotype-selected-highlight {
+    background:#cccccc;
 }
 
 .vts-placeholder-highlight::-webkit-input-placeholder { /* Chrome */
