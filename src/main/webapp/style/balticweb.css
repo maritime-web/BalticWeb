@@ -91,6 +91,10 @@ body {
 .bold{font-weight:bold;}
 .vts-grey-text{color:#999999;}
 .vts-red-text{color:#bb0000;}
+.vts-button-green{background-color:rgba(0,254,119,0.4) !important;}
+.vts-button-green:hover{background-color:rgba(0,254,119,0.2) !important;}
+.vts-button-green:active{background-color:rgba(0,254,119,0.6) !important;}
+.vts-button-green:focus{background-color:rgba(0,254,119,0.3) !important;}
 .vts-pad-top{padding-top:8px;}
 .vts-input{width:160px;}
 .vts-input-small{width:50px;}
@@ -305,13 +309,12 @@ body {
     animation-name: vts-pulse;
     animation-duration: 3s;
     animation-timing-function: ease-out;
-    animation-delay: 0;
+    animation-delay: 0ms;
     animation-direction: alternate;
     animation-iteration-count: 10;
     animation-fill-mode: none;
     animation-play-state: running;
 }
-
 @keyframes vts-pulse {
     0% {
         background-color: #b3ccff;
@@ -324,6 +327,28 @@ body {
     }
 }
 
+.pulse-text-once {
+    background-color: #ffffff;
+    animation-name: pulse-text-once;
+    animation-duration: 2s;
+    animation-timing-function: ease-out;
+    animation-delay: 0ms;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}
+@keyframes pulse-text-once {
+    0% {
+        background-color: #ffffff;
+    }
+    50% {
+        background-color: rgba(0,254,119,0.4);
+    }
+    100% {
+        background-color: #ffffff;
+    }
+}
 
 
 

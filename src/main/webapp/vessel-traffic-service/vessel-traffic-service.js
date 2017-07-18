@@ -126,9 +126,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         //Cargo information
         $scope.selectedCargoType = "";
         $scope.vtsvesselcargossnidinput = "";
-        // $scope.vtsdangerouscargotype01input = ""; $scope.vtsdangerouscargotype02input = ""; $scope.vtsdangerouscargotype03input = ""; $scope.vtsdangerouscargotype04input = "";
-        // $scope.vtsdangerouscargotype05input = ""; $scope.vtsdangerouscargotype06input = ""; $scope.vtsdangerouscargotype07input = ""; $scope.vtsdangerouscargotype08input = "";
-        // $scope.vtsdangerouscargotype09input = ""; $scope.vtsdangerouscargotype10input = "";
         $scope.cargoAddToManifestDisabled = true;
         $scope.vtsdangerouscargotonnageinput = "";
         $scope.vtsvesselcargotypeholder = "";
@@ -228,7 +225,14 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             fuelTypeLPG:0, //(Liquid Petroleum Gas)
             fuelTypeLNG:0, //(Liquid Natural Gas)
 
-            //Cargo Information in Tonnes, 1 decimal
+            //Cargo Information in Tonnes, 3 decimals
+            cargoEntries:[
+                // {
+                // imoClass:"",
+                // tonnage:"",
+                // note:""
+                // }
+            ],
             cargoType:"", //String, predefined by dropdown. Certain cargotypes demand listing of dangerous cargo/goods (DG/DC)
             cargoIMOClass01:0, //Explosives
             cargoIMOClass02:0, //Gases
@@ -798,9 +802,16 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             $scope.dgSelectedType7 = false;
             $scope.dgSelectedType8 = false;
             $scope.dgSelectedType9 = false;
-            $scope.vtsSelectedDangerousCargoDescription = "";
+            $scope.vtsdangerouscargoselectedinput = "IMO class " + number;
 
             switch(number){
+                case "": //clear everything
+                    $scope.vtsSelectedDangerousCargoDescription = "You can now add another entry to the dangerous cargo manifest.";
+                    $scope.vtsdangerouscargoselectedinput = "";
+                    $scope.vtsdangerouscargotonnageinput = "";
+                    $scope.cargoAddToManifestDisabled = true;
+                    $scope.vtsdangerouscargonoteinput = "";
+                    break
                 case "1":
                     $scope.dgSelectedType1 = true;
                     $scope.vtsSelectedDangerousCargoDescription = "Explosives - all types";
@@ -862,12 +873,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                     $scope.vtsSelectedDangerousCargoDescription = "Other dangerous or polluting substances";
                     break;
             };
-            $scope.vtsdangerouscargoselectedinput = "IMO class " + number;
             window.setTimeout(function () { //sets focus on tonnage input
                 var el = document.getElementById('vts-cargo-tonnage-input');
-                el.focus();
-                el.setSelectionRange(0, el.value.length);
-                $scope.validateDangerousCargoTonnage();
+                el.focus(); //set focus
+                el.setSelectionRange(0, el.value.length); //select value
+                $scope.validateDangerousCargoTonnage(); //clears selection when no parameter
             }, 0);
         };
 
@@ -881,18 +891,40 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         };
 
         $scope.cargoAddToManifestFunction = function(){
-            //first clear the inputs & selection
-            $scope.vtsdangerouscargoselectedinput = "";
-            $scope.vtsdangerouscargotonnageinput = "";
-            $scope.VTSDangerousCargoTypeSelection();
-            $scope.validateDangerousCargoTonnage(); //set invalid
+            var repEn = {//add to report summary
+                imoClass: $scope.vtsdangerouscargoselectedinput,
+                tonnage: $scope.vtsdangerouscargotonnageinput + "",
+                note: $scope.vtsdangerouscargonoteinput + ""
+            }
+            $scope.reportSummary.cargoEntries.push(repEn)
+            $scope.VTSDangerousCargoTypeSelection(""); //clears everything
 
-            //then add a span with the cargo to the manifest list.
+            //prepare a nice list to display in GUI
+            var tmpArr = $scope.reportSummary.cargoEntries; //shorthand
+            var entries = "";
+            var entryStyle="style='overflow:hidden;max-height:29px;min-height:29px;padding-top:3px;'";
+            for(var i=$scope.reportSummary.cargoEntries.length-1;i!=-1;i--){
+                if($scope.reportSummary.cargoEntries.length-1 == i){
+                    entries += "<div class='pulse-text-once ' "+entryStyle+">"; //latest one flashes so user sees addition
+                }else{
+                    entries += "<div "+entryStyle+">";
+                }
+                var imgName = ""; //add the image - pending on type and animation
+                var ics = tmpArr[i].imoClass.substring(10,tmpArr[i].imoClass.length);
+                if(ics == "1" || ics == "2.2" || ics == "9") ics += ".animated"
+                imgName = 'img/cargo_labels/dg.'+ics+'.gif';
 
-
-
+                entries += "<button class='btn btn-default vts-lesspadding' style='background-color:rgba(254,188,188,0.5)' type='button' ng-click=''><i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Remove</button>";
+                entries += "&nbsp;<img style='height:26px;' src="+imgName+">"
+                entries += "&nbsp;<span class='bold vts-force-spacing-100'>"+tmpArr[i].imoClass+"</span> - ";
+                entries += "<span class='bold vts-force-spacing-80'>"+tmpArr[i].tonnage+" MT</span>";
+                //note is not mandatory
+                if(tmpArr[i].note && tmpArr[i].note!="" && tmpArr[i].note!="undefined") entries += " - <span style='font-style: italic;'>"+tmpArr[i].note+"</span>";
+                entries += "</div>"; //close it
+            }
+            $scope.cargoManifestList = $sce.trustAsHtml(entries); //display in GUI
         };
-        alert("TODO: make validator for tonnage - float, 3 decimal places, blur the cargo tonnage box, add cargo to manifest list");
+        // TODO: make remove button work, make validator for tonnage to float, 3 decimal places, blur the cargo tonnage box, make order of validation work with box and class selector
 
         $scope.VTSCargoContactInformationChange = function(){
             var input = $scope.vtscargoadditionalcontactdetailsinput;
@@ -1007,7 +1039,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
 
         $scope.cargoInputKeyUp = function(evt){
-            console.log("key:",evt.keyCode);
             if(evt.keyCode==13 && !$scope.cargoAddToManifestDisabled){
                 $scope.cargoAddToManifestFunction();
             }

@@ -379,17 +379,22 @@
                         <div class="vts-pad-top">
                             <span class="vts-grey-text">{{vtsSelectedDangerousCargoDescription}}&nbsp;</span>
                         </div>
-                        <div class="vts-pad-top">
-                            <input class="vts-input-standard vts-cargo-input-forced-disabled"  ng-model="vtsdangerouscargoselectedinput" ng-disabled="true">
-                            <span class="vts-force-spacing-50">&nbsp;</span>
-                            <input class="vts-input-small" id="vts-cargo-tonnage-input" ng-keyup="cargoInputKeyUp($event)" ng-change="validateDangerousCargoTonnage()" ng-model="vtsdangerouscargotonnageinput">
-                            <span class="vts-force-spacing-100">Metric tonnes</span>
-                            <input class="vts-input-large" ng-model="vtsdangerouscargoinput" placeholder="Additional cargo information">
+                        <div>
+                            <div class="vts-force-spacing-350 vts-pad-top">
+                                <input class="vts-input-standard vts-cargo-input-forced-disabled"  ng-model="vtsdangerouscargoselectedinput" ng-disabled="true">
+                                <span class="vts-force-spacing-50">&nbsp;</span>
+                                <input class="vts-input-medium" id="vts-cargo-tonnage-input" ng-keyup="cargoInputKeyUp($event)" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[!cargoAddToManifestDisabled]" ng-change="validateDangerousCargoTonnage()" ng-model="vtsdangerouscargotonnageinput">
+                                <span class="vts-force-spacing-100">Metric tonnes</span>
+                            </div>
+                            <div class="vts-force-spacing-350 vts-pad-top">
+                                <input class="vts-input-large" ng-model="vtsdangerouscargonoteinput" placeholder="Additional cargo information">
+                                <button class="btn btn-default vts-lesspadding" ng-disabled="cargoAddToManifestDisabled"  ng-class="{false:'', true:'vts-button-green'}[!cargoAddToManifestDisabled]" type="button" ng-click="cargoAddToManifestFunction()"><i class="glyphicon glyphicon-plus"></i>
+                                    Add to manifest
+                                </button>
+                            </div>
                         </div>
                         <hr class="vts-hr-seperator" >
-                        <button class="btn btn-default vts-lesspadding" ng-disabled="cargoAddToManifestDisabled" type="button" ng-click="cargoAddToManifestFunction()"><i class="glyphicon glyphicon-globe"></i>
-                            Add to manifest
-                        </button>
+                        <div ng-bind-html="cargoManifestList"></div> <!-- CARGO LIST ENTERED HERE -->
                         <hr class="vts-hr-seperator" >
                     </div>
                 </div>
