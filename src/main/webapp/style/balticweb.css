@@ -260,6 +260,9 @@ body {
 .vts-btn-highlight{
     background-color: #97fba0 !important;
 }
+.vts-btn-highlight-danger{
+    background-color: #fb5858 !important;
+}
 
 .time-picker-mod{
     min-width:200px !important;
@@ -283,6 +286,9 @@ body {
 }
 .vts-cargotype-selected-highlight {
     background:#cccccc;
+}
+.vts-cargolist-border{
+    border:solid 1px #666666;
 }
 
 .vts-placeholder-highlight::-webkit-input-placeholder { /* Chrome */
@@ -344,6 +350,28 @@ body {
     }
     50% {
         background-color: rgba(0,254,119,0.4);
+    }
+    100% {
+        background-color: #ffffff;
+    }
+}
+.vts-quick-pulse {
+    background-color: #ffffff;
+    animation-name: vts-pulse;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-out;
+    animation-delay: 0ms;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}
+@keyframes vts-quick-pulse {
+    0% {
+        background-color: #ffffff;
+    }
+    50% {
+        background-color: #a4c5ff;
     }
     100% {
         background-color: #ffffff;
