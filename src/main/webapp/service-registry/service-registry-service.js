@@ -10,6 +10,39 @@ angular.module('maritimeweb.serviceregistry')
                 return $http.get(request);
             };
 
+
+            this.mcStylePurple = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(180, 0, 180, 0.5)',
+                        width: 1
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(180, 0, 180, 0.40)'
+                    })
+                });
+
+            this.greenServiceStyle = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 255, 10, 0.8)',
+                        width: 3
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(5, 200, 10, 0.05)'
+                    })
+                });
+
+
+            this.highlightServiceRed =  new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(255, 0, 10, 0.5)',
+                        width: 1
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255, 0, 10, 0.10)'
+                    })
+                });
+
+
             /**
              * Convert a Service registry instance to a OpenLayer tile layer.
              * @param aServiceInstance
@@ -51,130 +84,4 @@ angular.module('maritimeweb.serviceregistry')
                 });
             };
 
-        }])
-    .directive('mapMCServiceInstanceLayer', ['$rootScope', '$timeout', 'Auth', 'MapService', 'ServiceRegistryService', 'growl', '$log', '$window',
-        function ($rootScope, $timeout, Auth, MapService, SatelliteService, growl, $log, $window) {
-            return {
-                restrict: 'E',
-                replace: false,
-                template: '',
-                require: '^olMap',
-                scope: {
-                    name: '@'
-                },
-                link: function (scope, element, attrs, ctrl) {
-                    var olScope = ctrl.getOpenlayersScope();
-                    var loadTimer;
-                    scope.loggedIn = Auth.loggedIn;
-
-                    /** When the map extent changes, reload the Vessels's using a timer to batch up changes */
-                    scope.mapChanged = function () {
-                        if (scope.loggedIn) {
-                            if (loadTimer) {
-                                $timeout.cancel(loadTimer);
-                            }
-                            loadTimer = $timeout(scope.refreshServiceRegistry, 1000);
-                        }
-                    };
-
-                    olScope.getMap().then(function (map) {
-                        var mcServiceRegistryInstanceLayers = [];
-
-                        var layerGroup = new ol.layer.Group({
-                            title: 'MC Service Registry',
-                            layers: mcServiceRegistryInstanceLayers,
-                            visible: true,
-                            zIndex: 0
-
-                        });
-                        layerGroup.setVisible(true);
-                        map.addLayer(layerGroup);
-
-
-                        // Clean up when the layer is destroyed
-                        scope.$on('$destroy', function () {
-                            $log.debug("MC layer destroyed");
-                            if (angular.isDefined(layerGroup)) {
-                                map.removeLayer(layerGroup);
-                            }
-                            if (angular.isDefined(loadTimer)) {
-                                $timeout.cancel(loadTimer);
-                            }
-                        });
-
-
-                        /** Refreshes the list of satellite images from the service registry */
-                        scope.refreshServiceRegistry = function () {
-                            $log.info("refreshing service register");
-                            var mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
-                            var wkt = mapState['wktextent'];
-
-                            $rootScope.mapMCLayers = layerGroup; // add group-layer to rootscope so it can be enabled/disabled
-
-
-                            ServiceRegistryService.getServiceInstances(wkt).success(function (services, status) {
-
-                                // Update the selected status from localstorage
-                                if (status == 204) {
-                                    $rootScope.mcServiceRegistryInstanceStatus = 'false';
-                                    $window.localStorage[ServiceRegistryService.serviceID()] = 'false';
-                                    while($rootScope.mapWeatherLayers.getLayers().getArray().length > 0) {
-                                        $rootScope.mapWeatherLayers.getLayers().getArray().pop().setVisible(false);
-                                    }
-                                    // TODO: Need to store visibility state for each satellite instance...
-                                }
-
-                                if (status == 200) {
-                                    $rootScope.mcServiceRegistryInstancesStatus = 'true';
-                                    $window.localStorage[ServiceRegistryService.serviceID()] = 'true';
-                                    angular.forEach(services, function (service) {
-                                        var shouldAddService = true;
-
-                                        if ($rootScope.mapWeatherLayers.getLayers().getArray().length > 0) {
-                                            angular.forEach($rootScope.mapMCLayers.getLayers().getArray(), function (existingServices) {
-                                                if (existingServices.get('id') == service.instanceId) {
-                                                    //$log.debug("Already Found " + service.name + " satellite in local list - move on");
-                                                    shouldAddService = false;
-                                                }
-                                            });
-                                        }
-
-                                        if (shouldAddService) {
-                                            $log.debug("### Adding SR instance " + service.name);
-                                            // add to localstorage, false as default
-
-
-                                            for (var i = 0; i < 1; i++) { // only yesterday. Extend here if want to display more older layers
-                                                var instanceLayer = ServiceRegistryService.createTileLayerFromService(service, i);
-                                                $rootScope.mapMCLayers.getLayers().getArray().push(instanceLayer);
-                                                map.addLayer(instanceLayer);
-                                                instanceLayer.on('change:visible', scope.mapChanged);
-                                                // var active = $window.localStorage.getItem(service.instanceId);
-                                                // $log.debug("     active" + active + " #" + service.instanceId);
-                                                if ( $window.localStorage.getItem(service.instanceId) === "true") {
-                                                    $log.info("layer should be active!");
-                                                    instanceLayer.setVisible(true);
-                                                    instanceLayer.setZIndex(0);
-                                                } else {
-                                                    $window.localStorage.setItem(service.instanceId, false);
-                                                }
-                                            }
-                                        }
-                                    });
-
-                                }
-
-                            }).error(function (error) {
-                                $log.error("Error retrieving MC service instances " + error);
-                                layerGroup.setVisible(false);
-                            });
-
-                        };
-
-                        // update the map when a user pan-move ends.
-                        map.on('moveend', scope.mapChanged);
-
-                    });
-                }
-            };
         }]);

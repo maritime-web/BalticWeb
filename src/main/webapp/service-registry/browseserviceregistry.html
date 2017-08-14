@@ -4,8 +4,9 @@
         <ol-map class="map-sr-browser col-xs-9 col-sm-9 col-md-9 col-lg-9" map-state="mapState" minzoom="3"  swlon="-31" swlat="30" nelon="61" nelat="80" >
             <map-layer-group layer-group="mapMCLayers" ></map-layer-group>
             <map-layer-group layer-group="mapBackgroundLayers" ></map-layer-group>
-
+            <map-service-registry-layer></map-service-registry-layer>
             <map-overview collapsed="false"></map-overview>
+            <map-mouse-position></map-mouse-position>
 
         </ol-map>
 
@@ -32,16 +33,24 @@
                         <div class="panel-body">
                             <p>All the instances in The Service Registry</p>
                             <p>Use the list or map to highlight a service instance(s) to get details and coverage.</p>
+                            <p ng-if="highlightedInstances.length>0">
+
+                                <span class="label label-primary" ng-bind="highlightedInstances.length"></span> instances relevant at <span ng-bind="highlightedInstancescoordinate | lonlat:{ decimals : 2, pp: true } "></span>.
+
+                            </p>
                         </div>
                         <!-- List group -->
-                        <ul class="list-group" ng-if="highlightedInstance.id">
+                        <ul class="list-group" ng-if="highlightedInstance.id && highlightedInstances.length<1">
 
                             <li class="list-group-item"><b>ID</b>: <span ng-bind="highlightedInstance.id"/></li>
                             <li class="list-group-item"><b>Instance ID</b>: <span  ng-bind="highlightedInstance.instanceId"/></li>
                             <li class="list-group-item"><b>Version</b>: <span  ng-bind="highlightedInstance.version"/></li>
                             <li class="list-group-item"><b>Name</b>: <span  ng-bind="highlightedInstance.name"/></li>
                             <li class="list-group-item"><b>Description</b>: <span  ng-bind="highlightedInstance.description"/></li>
+                            <li class="list-group-item" ng-if="!highlightedInstance.boundary"  ><b>Boundary</b>: <span>Instance has no relevance boundary defined <i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span></li>
+
                         </ul>
+
 
                         <!-- Table -->
                         <table class="table"
@@ -79,9 +88,11 @@
                                 "warnings": []
                               }
                             -->
-                            <tr ng-class="{'active':(instance.instanceId===highlightedInstance.instanceId)}"
+                            <tr ng-class="{'active':(instance.instanceId===highlightedInstance.instanceId) || isHighlighted(instance.instanceId)}"
                                 ng-click="console.log(instance.name)">
                                 <td><a href="" ng-bind="instance.name" ng-click="highlightInstance(instance)" ></a>
+                                    <span ng-if="!instance.boundary"  uib-popover="Instance has no relevance boundary defined" popover-placement="bottom" popover-trigger="mouseenter" ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+
                                     <span ng-if="instance.warnings.length>0" class="alert alert-warning" ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                    <span>length: {{instance.warnings.length}}</span>
                                     <ul>
@@ -89,7 +100,7 @@
                                      </ul>
                                  </span>
                                     <!--<span  ng-bind="instance.description"></span>-->
-                                    <span class="label label-success" ng-bind="instance.instanceID"></span>
+                                    <!--span class="label label-success" ng-bind="instance.instanceId"></span-->
                                 </td>
                             </tr>
 
@@ -178,16 +189,19 @@
 
                 </uib-tab>
 
-        <div class="push"></div>
     </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <!--<h1 ng-if="!rtzName">Upload route</h1>-->
-                </div>
+
+
+    </div>
+    <div class="wrap" >
+        <div class="row">
+            <div class="col-lg-4">
+
+                <!--<h1 ng-if="!rtzName">Upload route</h1>-->
             </div>
+        </div>
 
 
 
+    </div>
 </div>
-

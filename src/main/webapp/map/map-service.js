@@ -10,7 +10,6 @@ angular.module('maritimeweb.map')
         function ($http) {
             'use strict';
 
-            var that = this;
             var projMercator = 'EPSG:3857';
             var proj4326 = 'EPSG:4326';
             var geoJsonFormat = new ol.format.GeoJSON();

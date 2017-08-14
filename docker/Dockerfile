@@ -8,12 +8,6 @@ RUN yum remove -y java-1.7.0-openjdk-devel
 
 RUN yum install -y java-1.8.0-openjdk-devel
 
-RUN yum install -y epel-release
-
-RUN yum install -y nodejs npm --enablerepo=epel
-
-RUN npm install grunt
-
 RUN yum clean all
 
 # set locals for image to support UTF-8

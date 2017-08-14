@@ -11,7 +11,8 @@
 	<parent>
         <groupId>dk.dma.enav.services</groupId>
 		<artifactId>parent</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+		<!-- Version number for development. Release versions don't get pushed to VCS -->
+        <version>1.0-Developer-SNAPSHOT</version>
 	</parent>
 
 	<properties>

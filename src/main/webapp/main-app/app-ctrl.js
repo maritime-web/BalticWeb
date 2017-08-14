@@ -28,7 +28,7 @@ angular.module('maritimeweb.app')
         /** Logs the user in via Keycloak **/
         $scope.login = function () {
             Auth.authz.login();
-            //TODO sample Stena Danica 265177000. You can change this to anything you want, or even better login
+            //TODO sample Stena Danica 265177000. You can change this to anything you want, or even better take it from the login token.
             $window.localStorage.setItem('mmsi', 265177000);
         };
 
