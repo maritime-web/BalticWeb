@@ -37,9 +37,10 @@
                     </div>
                     <span class="vts-align-utc-label">UTC</span>
                 </div>
-                <!--<div class="vts-force-spacing-200 vts-align-utc-label">-->
-                    <!--UTC-->
-                <!--</div>-->
+                <div class="vts-responsive-minimap" style="position: relative;" >
+                    <div  id='minimap' class="vts-responsive-minimap" style="position:absolute;left:0px;top:0px;"></div>
+                    <div  class="vts-responsive-minimap" style="background-color:#ffffff;position:absolute;left:0px;top:0px;opacity:0.1;cursor: default;" ng-click="doNothing()"></div>
+                </div>
             </div>
 
         </div>
@@ -379,15 +380,15 @@
                         <div class="vts-pad-top">
                             <span class="vts-grey-text">{{vtsSelectedDangerousCargoDescription}}&nbsp;</span>
                         </div>
-                        <div>
+                        <div >
                             <div class="vts-force-spacing-350 vts-pad-top">
                                 <!--<input class="vts-input-standard vts-cargo-input-forced-disabled"  ng-model="vtsdangerouscargoselectedinput" ng-disabled="true">-->
                                 <span class="vts-force-spacing-100 bold" >IMO class {{vtsdangerouscargoselectedinput}}</span>
-                                <input class="vts-input-medium vts-cargo-tonnage-input-selector" id="vts-cargo-tonnage-input" ng-keyup="cargoInputKeyUp($event)" ng-class="{'invalid':'vtsinvalid', 'valid':'vtsvalid', 'neutral':''}[setvtsCargoTonnageValidState]" ng-change="validateDangerousCargoTonnage()" ng-model="vtsdangerouscargotonnageinput">
+                                <input class="vts-input-medium vts-cargo-tonnage-input-selector" ng-disabled="cargoAddToManifestDisabled" id="vts-cargo-tonnage-input" ng-keyup="cargoInputKeyUp($event)" ng-class="{'invalid':'vtsinvalid', 'valid':'vtsvalid', 'neutral':''}[setvtsCargoTonnageValidState]" ng-change="validateDangerousCargoTonnage()" ng-model="vtsdangerouscargotonnageinput">
                                 <span class="vts-force-spacing-100">Metric tonnes</span>
                             </div>
                             <div class="vts-force-spacing-350 vts-pad-top">
-                                <input class="vts-input-large" id="vts-selected-cargo-input" ng-model="vtsdangerouscargonoteinput" placeholder="Additional cargo information">
+                                <input class="vts-input-large" id="vts-selected-cargo-input" ng-disabled="cargoAddToManifestDisabled" ng-model="vtsdangerouscargonoteinput" placeholder="Additional cargo information">
                                 <button class="btn btn-default vts-lesspadding" ng-disabled="cargoAddToManifestDisabled"  ng-class="{false:'', true:'vts-button-green'}[!cargoAddToManifestDisabled]" type="button" ng-click="cargoAddToManifestFunction()"><i class="glyphicon glyphicon-plus"></i>
                                     Add to manifest
                                 </button>
@@ -433,7 +434,7 @@
                 </div>
                 <div class="vts-force-spacing-350 vts-pad-top" style="position: relative; top:7px;" ng-show="showCargoContactInformationInput">
                     <span class="vts-pad-top">Additional contact details for information of cargo:</span>
-                    <textarea class="vts-textarea-large" ng-model="vtscargoadditionalcontactdetailsinput"  ng-change="VTSCargoContactInformationChange()"></textarea>
+                    <textarea class="vts-textarea-large" ng-model="vtscargoadditionalcontactdetailsinput"  ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselContactDetailsValid]" ng-change="VTSCargoContactInformationChange()"></textarea>
                 </div>
                 <br>
                 <div class="vts-force-spacing-350 vts-pad-top" >
@@ -462,22 +463,26 @@
                 <div class="vts-force-spacing-300 " >
                     <div>Vessel actual position longitude:<span ng-model="vtsvesselposlondegreeslabel"></span></div>
                     <div class="">
-                        <input class="vts-input-small vts-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonDegreesValid]" ng-model="vtsvesselposlondegreesinput" ng-change="VTSVesselCurrentPositionLonDegValidation(true)">
+                        <input class="vts-input-small vts-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonDegreesValid]" ng-model="vtsvesselposlondegreesinput" ng-change="VTSVesselCurrentPositionLonDegValidation(true)" placeholder="{{placeholderAisVesselLonDegrees}}">
                         <span> deg.</span>
-                        <input class="vts-input-medium vts-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonMinutesValid]" ng-model="vtsvesselposlonminutesinput" ng-change="VTSVesselCurrentPositionLonMinValidation(true)">
-                        <span> min. N</span>
+                        <input class="vts-input-medium vts-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonMinutesValid]" ng-model="vtsvesselposlonminutesinput" ng-change="VTSVesselCurrentPositionLonMinValidation(true)" placeholder="{{placeholderAisVesselLonDecimalMinutes}}">
+                        <span> min. {{vtsCurrentPosCompassAppendEW}}</span>
                     </div>
                 </div>
                 <div class="vts-force-spacing-300 ">
                     <div>Vessel actual position latitude:<span ng-model="vtsvesselposlatdegreeslabel"></span></div>
-                    <input class="vts-input-small vts-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatDegreesValid]" ng-model="vtsvesselposlatdegreesinput" ng-change="VTSVesselCurrentPositionLatDegValidation(true)"><span> deg.</span>
-
-                    <input class="vts-input-medium vts-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatMinutesValid]" ng-model="vtsvesselposlatminutesinput" ng-change="VTSVesselCurrentPositionLatMinValidation(true)"><span> min. E</span>
+                    <input class="vts-input-small vts-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatDegreesValid]" ng-model="vtsvesselposlatdegreesinput" ng-change="VTSVesselCurrentPositionLatDegValidation(true)" placeholder="{{placeholderAisVesselLatDegrees}}">
+                    <span> deg.</span>
+                    <input class="vts-input-medium vts-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatMinutesValid]" ng-model="vtsvesselposlatminutesinput" ng-change="VTSVesselCurrentPositionLatMinValidation(true)" placeholder="{{placeholderAisVesselLatDecimalMinutes}}">
+                    <span> min. {{vtsCurrentPosCompassAppendNS}}</span>
 
                 </div>
                 <div class="vts-pad-top">
                     <button class="btn btn-default vts-lesspadding" ng-disabled="getGPSCoordsBtnDisabled" type="button" ng-click="getLocation()"><i class="glyphicon glyphicon-globe" aria-hidden="true"></i>
                         Use GPS
+                    </button>
+                    <button class="btn btn-default vts-lesspadding" ng-disabled="!aisdataReady" ng-show="isLoggedIn" type="button" ng-click="setLocationByAIS()"><i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
+                        Use AIS
                     </button>
                 </div>
             </div>

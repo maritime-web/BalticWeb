@@ -379,6 +379,24 @@ body {
 }
 
 
+@media screen and (max-width: 992px) {
+    .vts-responsive-minimap{
+        width: 100%;
+        height: 200px;
+    }
+}
+@media screen and (min-width: 610px) and (max-width: 992px) {
+    .vts-responsive-minimap{
+        width: 100%;
+        height: 270px;
+    }
+}
+@media screen and (min-width: 993px) {
+    .vts-responsive-minimap{
+        width: 100%;
+        height: 300px;
+    }
+}
 
 
 

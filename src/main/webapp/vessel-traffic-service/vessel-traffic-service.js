@@ -2,6 +2,117 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
     function ($scope, $uibModalInstance, $window, $sce, growl, $http, Auth, VesselService) {
 
 
+        var mapcounter = 30;
+        var redrawMiniMapTimer;
+        var minimap;
+        function redrawMiniMapLoad() {//force drawing of map because timing issue
+            try {
+                window.dispatchEvent(new Event('resize'));
+            }catch(errorTrap){}
+            mapcounter--;
+            if (mapcounter == 0) clearInterval(redrawMiniMapTimer);
+
+        }
+        var vectorSource = new ol.source.Vector({
+            title: 'vectorLayer',
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    // color: "#bb0000",
+                    color: 'rgba(238, 153, 0,0.4)',
+                    weight: 1
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'rgba(238, 153, 0, 0.8)',
+                    width: 3
+                })
+            })
+        });
+
+        window.addEventListener('resize', function() { //centers vessel and area
+            var extent = vectorSource.getExtent();
+            minimap.getView().fit(extent, minimap.getSize());
+        });
+
+        function miniMapUpdate(areaWKT, AISpos, AISheading){ //creates area and ais vessel icon on map
+            if(!areaWKT || areaWKT=="" || areaWKT.length<9) {
+                areaWKT = "POLYGON((12.18333 56.11611, 12.18333 56.23333, 12.29417 56.30222, 12.45778 56.30222,12.8 56.13333, 13.13333 55.68333, 13.0425 55.39139, 12.91389 55.16667,12.45778 55.16667,12.45778 55.29556, 12.59806 55.55778))";
+            }
+            vectorSource.clear();
+            var format = new ol.format.WKT();
+            var areafeature = format.readFeature(areaWKT, {
+                dataProjection: 'EPSG:4326',
+                featureProjection: 'EPSG:3857'
+            });
+            areafeature.setStyle(
+                new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: 'rgba(238, 153, 0,0.4)',
+                        weight: 1
+                    })
+                })
+            );
+            vectorSource.addFeature(areafeature);
+
+            if (AISpos && AISpos.length > 1) {//only if there is a pos
+                function degToRad(deg) {
+                    return (deg * 0.01745329251) - 1.5707963268; //to rad, then add rad offset of 90 deg
+                }
+
+                var vesselfeature = new ol.Feature({
+                    geometry: new ol.geom.Point(ol.proj.transform(AISpos, 'EPSG:4326', 'EPSG:3857')),
+                    name: 'Vessel'
+                });
+                var iconStyle = new ol.style.Style({
+                    image: new ol.style.Icon(({
+                        anchor: [10, 5],
+                        anchorXUnits: 'pixels',
+                        anchorYUnits: 'pixels',
+                        opacity: 0.75,
+                        src: 'img/vessel_red.png',
+                        rotation: (AISheading != null && parseInt(AISheading) > -1 && parseInt(AISheading) < 360) ? degToRad(parseInt(AISheading)) : 0
+                    }))
+                });
+                vectorSource.addFeature(vesselfeature);
+                vesselfeature.setStyle(iconStyle);
+            }
+
+            var extent = vectorSource.getExtent();
+            minimap.getView().fit(extent, minimap.getSize());
+        }
+
+        function miniMapLoad() { //when user selets a VTS centre
+            redrawMiniMapTimer = setInterval(function(){ redrawMiniMapLoad(); }, 300); //makes sure it displays right
+            var view = new ol.View({
+                center: [0, 0],
+                zoom: 5
+            });
+            minimap = new ol.Map({
+                controls : ol.control.defaults({
+                    attribution : false,
+                    zoom : false
+                }),
+                zoom: 3.5,
+                minZoom: 0,
+                maxZoom: 4,
+                center: [0.0, 0.0],
+                layers: [
+                    new ol.layer.Tile({
+                        title: 'OpenStreetMap',
+                        type: 'base',
+                        visible: true,
+                        source: new ol.source.OSM()
+                    }),
+                    new ol.layer.Vector({
+                        source: vectorSource
+                    })
+                ],
+                target: 'minimap',
+                view: view
+            });
+        }
+        $scope.doNothing = function(){/*stops map interaction*/};
+
+
         //Populate the interface using json object from service - anon allowed
         var VTSData = []; //local array
         var getInterfaceObjectsFromService = function(){
@@ -16,12 +127,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                         growl.success("VTS interface population service was successful.");
                         $scope.VTSCenterData = parsedData.data.VtsJsObjects;
                         VTSData = $scope.VTSCenterData; //place in local
-                        angular.element(document.querySelector('#modalbody')).removeClass('ng-hide'); //hidden until angular is ready so it doesnt pop up and down
-                        //display date and time in utc
-                        $scope.vtsTimeStamp = moment.utc().format('HH : mm');
+                        angular.element(document.querySelector('#modalbody')).removeClass('ng-hide'); //is hidden until angular is ready
+                        $scope.vtsTimeStamp = moment.utc().format('HH : mm');//display date and time in utc
                         $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + moment.utc().format('DD MMM YYYY');
                         angular.element(document.querySelector(".datetime-input.date .display .date")).html(moment().format('DD MMM YYYY')); //update timepicker display with now
                         angular.element(document.querySelector(".datetime-input.time .display .time")).html(moment.utc().format('HH : mm')); //update timepicker display with now
+                        miniMapLoad(); //must be loaded before populating
                     },
                     function(data) { // error
                         growl.error("VTS interface population service could not be contacted. Please check your internet connection and try again.\nRetrying in 5 seconds.");
@@ -186,6 +297,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         $scope.VTSReadyToSend = false; //global readystate
 
+        $scope.areaWKT = "";
+        $scope.showVtsAreaMiniMap = false; //only displays if there is a WKT of VTS area extent available in model
+
         $scope.reportSummary = { //what is sent to the VTS
 
             //VTS information
@@ -233,15 +347,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 // }
             ],
             cargoType:"", //String, predefined by dropdown. Certain cargotypes demand listing of dangerous cargo/goods (DG/DC)
-            cargoIMOClass01:0, //Explosives
-            cargoIMOClass02:0, //Gases
-            cargoIMOClass03:0, //Flammable liquids
-            cargoIMOClass04:0, //Flammable solids or substances not liquid
-            cargoIMOClass05:0, //Oxydizing substances
-            cargoIMOClass06:0, //Toxic substances
-            cargoIMOClass07:0, //Radioactive substances
-            cargoIMOClass08:0, //Corrosives
-            cargoIMOClass09:0, //Miscellaneous dangerous substances and articles
             cargoDangerousCargoOnBoard:false, //any cargoIMOClass on board makes this true
             cargoDangerousCargoTotalTonnage:0, //sum of all dangerous cargo
             cargoIMOClassesOnBoard:"", //String of IMO DG Classes ex: "1,4,6,7" - required by some VTS
@@ -269,9 +374,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             vesselCog:"", //course over ground
             vesselDestination:"",
             vesselDraught:"",
-            vesselHeading:"",
-            vesselLat:"",
-            vesselLon:"",
+            vesselHeading:"", //used in minimap
+            vesselLat:"", //used in minimap and position
+            vesselLon:"", //used in minimap and position
             vesselLength:"",
             vesselNavStatus:"",
             vesselRot:"", //rate of turn
@@ -279,6 +384,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             vesselType:"",
             vesselWidth:""
         };
+        $scope.aisdataReady = false;
 
         //Validation area *****************************************************************************************
 
@@ -376,32 +482,28 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             //if(!$scope.showRoute) $scope.setvtsvesselRouteValid = true; //TODO: import RTZ or use VTS routes from model/service.
             if(!$scope.showPortOfDestination) $scope.setvtsvesselPortOfDestinationValid = true;
 
-            //exception for cargo information
-            if($scope.showCargoContactInformationInput == false) $scope.setvtsvesselContactDetailsValid = true;
-            if($scope.showCargoContactInformationInput == false) $scope.setvtsvesselContactDetailsValid = true;
-            if($scope.showCargoContactInformationInput == false) $scope.setvtsvesselContactDetailsValid = true;
-            if($scope.showCargoContactInformationInput == false) $scope.setvtsvesselContactDetailsValid = true;
+            //exception for cargo information - subject to change
+            // if($scope.showCargoContactInformationInput == false) $scope.setvtsvesselContactDetailsValid = true;
 
-            //grouped valid states into 3 to make less confusing
+            //grouped valid states to make easier debug
             var group1valid = false,
                 group2valid = false,
                 group3valid = false,
                 group4valid = false,
-                group5valid = false,
-                group6valid = false,
+                group5valid = true, //position not mandatory but subject to change
+                group6valid = true, //position not mandatory but subject to change
                 group7valid = false,
                 group8valid = false;
 
             if($scope.setvtsvesselnameValid && $scope.setvtsvesselcallsignValid && $scope.setvtsvesselMMSIValid) group1valid = true;
             if($scope.setvtsvesselIMOValid && $scope.setvtsvesselDraughtValid && $scope.setvtsvesselAirDraughtValid) group2valid = true;
             if($scope.setvtsvesselPersonsValid && $scope.setvtsVesselTypeValid && $scope.setvtsVesselLengthValid) group3valid = true;
-            if($scope.fuelDetailsValid && $scope.setvtsCargoTypeValid && $scope.setvtsvesselContactDetailsValid) group4valid = true;
-            if($scope.setvtsvesselPosLonDegreesValid && $scope.setvtsvesselPosLatDegreesValid) group5valid = true;
-            if($scope.setvtsvesselPosLonMinutesValid && $scope.setvtsvesselPosLatMinutesValid) group6valid = true;
+            if($scope.fuelDetailsValid && $scope.setvtsCargoTypeValid) group4valid = true;
+            // if($scope.setvtsvesselPosLonDegreesValid && $scope.setvtsvesselPosLatDegreesValid) group5valid = true; //position not mandatory but subject to change
+            // if($scope.setvtsvesselPosLonMinutesValid && $scope.setvtsvesselPosLatMinutesValid) group6valid = true;
             if($scope.setvtsvesselSpeedValid && $scope.setvtsvesselPortOfDestinationValid) group7valid = true;
             if($scope.setvtsvesseletaTimeDateValid && $scope.setvtsvesselCourseOverGroundValid && $scope.setvtsvesselTrueCourseValid) group8valid = true;
 
-            console.log("");
             console.log("");
             console.log("");
             if(group1valid) console.log("group1valid",group1valid);
@@ -514,6 +616,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 input = input.substring(0,9);
             }else{
                 $scope.setvtsvesselMMSIValid = false;
+                $scope.aisdataReady = false;
+                $scope.clearAISPlaceholders();
             }
             input = input.toString().replace(/\D/g, '');
             $scope.vtsvesselmmsiinput = input;
@@ -632,20 +736,31 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             }
         };
 
-            $scope.getLocation = function(){
+
+
+        $scope.retDecMinutesFromDecDegrees = function(decDeg){
+            var decMin = (decDeg+"").substring(0,(decDeg+"").indexOf("."));
+            decMin = Math.round((60*(decDeg-decMin))*10000)/10000;
+            decMin = Math.abs(decMin); //positive number
+            return decMin
+        };
+
+
+        $scope.getLocation = function(){
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    $scope.retMinutesFromDecDegrees = function(decDeg){
-                        var deg = (decDeg+"").substring(0,(decDeg+"").indexOf("."));
-                        deg = Math.round((60*(decDeg-deg))*10000)/10000;
-                        return deg
-                    };
+
                     var lon = position.coords.longitude;
-                    $scope.vtsvesselposlondegreesinput = (lon+"").substring(0,(lon+"").indexOf("."));
-                    $scope.vtsvesselposlonminutesinput = $scope.retMinutesFromDecDegrees(lon);
+                    $scope.vtsvesselposlondegreesinput = (lon + "").substring(0, (lon + "").indexOf("."));
+                    (position.coords.longitude > 0) ? $scope.vtsCurrentPosCompassAppendEW = "E" : $scope.vtsCurrentPosCompassAppendEW = "W"; //set N or S
+                    lon = $scope.retDecMinutesFromDecDegrees(lon);
+                    $scope.vtsvesselposlonminutesinput = lon;
+
                     var lat = position.coords.latitude;
-                    $scope.vtsvesselposlatdegreesinput = (lat+"").substring(0,(lat+"").indexOf("."));
-                    $scope.vtsvesselposlatminutesinput = $scope.retMinutesFromDecDegrees(lat);
+                    $scope.vtsvesselposlatdegreesinput = (lat + "").substring(0, (lat + "").indexOf("."));
+                    (position.coords.latitude > 0) ? $scope.vtsCurrentPosCompassAppendNS = "N" : $scope.vtsCurrentPosCompassAppendNS = "S"; //set E or W
+                    lat = $scope.retDecMinutesFromDecDegrees(lat);
+                    $scope.vtsvesselposlatminutesinput = lat;
 
                     //show to user is ok
                     $scope.setvtsvesselPosLonDegreesValid = true;
@@ -659,62 +774,105 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             }
         };
 
+
         //validates 0-90 or 0-180 degrees, 0.0001-60.0000 minutes
         $scope.positionDegMinValidationHelper = function(input,testfor){
-            //first determine validation
-            if(testfor!="decimalminutes") input = input.toString().replace(/\D/g, '');
-            var re;
-            if(testfor==90){
-                re = new RegExp(/^([0-9]|[0-8]\d|90)$/);
-                input = input.substring(0,2);
-            }
-            if(testfor==180){
-                re = new RegExp(/^(0{0,2}[0-9]|0?[1-9][0-9]|1[0-7][0-9]|180)$/);
-                input = input.substring(0,3);
-            }
-            var output = {valid:false,value:input,decimals:0};
+            var output = {valid:false,value:"",decimals:0};
+            if(input != null && input != "") {
+                // try {
+                    //first determine validation
+                    if (testfor != "decimalminutes") input = input.toString().replace(/\D/g, '');
+                    var re;
+                    if (testfor == 90) {
+                        re = new RegExp(/^([0-9]|[0-8]\d|90)$/);
+                        input = input.substring(0, 2);
+                    }
+                    if (testfor == 180) {
+                        re = new RegExp(/^(0{0,2}[0-9]|0?[1-9][0-9]|1[0-7][0-9]|180)$/);
+                        input = input.substring(0, 3);
+                    }
+                    output = {valid: false, value: input, decimals: 0};
 
-            if(testfor=="decimalminutes"){
-                input = input.replace(/[^0-9.]/g, '');
-                re = new RegExp(/^([1-9]|[0-5]\d|60)(\.[0-9]{4,})?$/);
-            }
+                    if (testfor == "decimalminutes") {
+                        re = new RegExp(/^([1-9]|[0-5]\d|60)(\.[0-9]{1,4})?$/);
+                    }
 
-            var m = re.exec(input); //executes the validation
-            (m == null) ? output.valid = false : output.valid = true;
-            return output;
+                    var m = re.exec(input); //executes the validation
+                    (m == null) ? output.valid = false : output.valid = true;
+                    return output;
+                // }catch(noInput){
+                //     return output;
+                //
+                // }
+            }else{
+                return output;
+            }
+        };
+
+        $scope.setSelectionRange = function(input, selectionStart, selectionEnd) {
+            if (input.setSelectionRange) {
+                window.setTimeout(function () {
+                    // input.focus();
+                    input.setSelectionRange(selectionStart, selectionEnd); //set caret
+                }, 0);
+            }
         };
 
         $scope.VTSVesselCurrentPositionLonDegValidation = function(validate){
             if($scope.showVesselCurrentPosition) { //only validate if displayed
                 var retVal = $scope.positionDegMinValidationHelper($scope.vtsvesselposlondegreesinput, 90);
-                $scope.vtsvesselposlondegreesinput = retVal.value;
+                if($scope.vtsvesselposlondegreesinput.substring(0,1) == "-"){
+                    $scope.vtsCurrentPosCompassAppendEW = "E";
+                    $scope.vtsvesselposlondegreesinput = "-" + retVal.value;
+                }else{
+                    $scope.vtsCurrentPosCompassAppendEW = "W";
+                    $scope.vtsvesselposlondegreesinput = retVal.value;
+                }
                 $scope.setvtsvesselPosLonDegreesValid = retVal.valid;
+                if (validate) $scope.VTSValidationAllDone();
+            }
+        };
+        $scope.VTSVesselCurrentPositionLonMinValidation = function(validate){
+            var selStart = 0;
+            if(/[^0-9.]/g.test($scope.vtsvesselposlonminutesinput)) selStart = document.activeElement.selectionStart;
+            if($scope.showVesselCurrentPosition) { //only validate if displayed
+                var retVal = $scope.positionDegMinValidationHelper($scope.vtsvesselposlonminutesinput.toString().replace(/[^0-9.]/g, ''), "decimalminutes");
+                $scope.vtsvesselposlonminutesinput = retVal.value;
+                if(selStart != 0) $scope.setSelectionRange(document.activeElement,selStart-1,selStart-1); //put caret back if not entered number
+                $scope.setvtsvesselPosLonMinutesValid = retVal.valid;
                 if (validate) $scope.VTSValidationAllDone();
             }
         };
         $scope.VTSVesselCurrentPositionLatDegValidation = function(validate){
             if($scope.showVesselCurrentPosition) { //only validate if displayed
                 var retVal = $scope.positionDegMinValidationHelper($scope.vtsvesselposlatdegreesinput, 180);
-                $scope.vtsvesselposlatdegreesinput = retVal.value;
+                if($scope.vtsvesselposlatdegreesinput.substring(0,1) == "-"){
+                    $scope.vtsCurrentPosCompassAppendNS = "S";
+                    $scope.vtsvesselposlatdegreesinput = "-" + retVal.value;
+                }else{
+                    $scope.vtsCurrentPosCompassAppendEW = "N";
+                    $scope.vtsvesselposlatdegreesinput = retVal.value;
+                }
                 $scope.setvtsvesselPosLatDegreesValid = retVal.valid;
                 if (validate) $scope.VTSValidationAllDone();
             }
         };
         $scope.VTSVesselCurrentPositionLatMinValidation = function(validate){
+            var selStart = 0;
+            if(/[^0-9.]/g.test($scope.vtsvesselposlonminutesinput)) selStart = document.activeElement.selectionStart;
             if($scope.showVesselCurrentPosition) { //only validate if displayed
-                var retVal = $scope.positionDegMinValidationHelper($scope.vtsvesselposlatminutesinput, "decimalminutes");
+                var retVal = $scope.positionDegMinValidationHelper($scope.vtsvesselposlatminutesinput.toString().replace(/[^0-9.]/g, ''), "decimalminutes");
                 $scope.vtsvesselposlatminutesinput = retVal.value;
+                if(selStart != 0) $scope.setSelectionRange(document.activeElement,selStart-1,selStart-1); //put caret back if not entered number
                 $scope.setvtsvesselPosLatMinutesValid = retVal.valid;
                 if (validate) $scope.VTSValidationAllDone();
             }
-        };
-        $scope.VTSVesselCurrentPositionLonMinValidation = function(validate){
-            if($scope.showVesselCurrentPosition) { //only validate if displayed
-                var retVal = $scope.positionDegMinValidationHelper($scope.vtsvesselposlonminutesinput, "decimalminutes");
-                $scope.vtsvesselposlonminutesinput = retVal.value;
-                $scope.setvtsvesselPosLonMinutesValid = retVal.valid;
-                if (validate) $scope.VTSValidationAllDone();
-            }
+            // if($scope.showVesselCurrentPosition) { //only validate if displayed
+            //     var retVal = $scope.positionDegMinValidationHelper($scope.vtsvesselposlatminutesinput, "decimalminutes");
+            //     $scope.vtsvesselposlatminutesinput = retVal.value;
+            //     $scope.setvtsvesselPosLatMinutesValid = retVal.valid;
+            //     if (validate) $scope.VTSValidationAllDone();
+            // }
         };
 
         //fuel types - number 999999999, no decimal. One filled makes all other neutral because only one field is mandatory
@@ -775,7 +933,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.selectVesselCargoChange = function (selectedItem) {
             if(selectedItem!="None" && selectedItem!="Bulk - grain" && selectedItem != "Ballast" && selectedItem != "Passenger" && selectedItem != "Bulk - other than grain"
                 && selectedItem != "Reefer" && selectedItem != "Container/Trailer" && selectedItem != "General Cargo") {
+                $scope.clearHighlightedDangerousCargoTypeSelector();
                 $scope.showCargoTypeFields = true;
+                $scope.cargoAddToManifestDisabled = true;
                 $scope.showCargoTypesCheckbox = true;
                 $scope.vtsDangCargoCheckBoxState = true;
                 $scope.vtsDangCargoCheckDisabled = true; //cannot turn off
@@ -808,8 +968,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             $scope.VTSCargoContactInformationChange();
         };
 
-
-        $scope.VTSDangerousCargoTypeSelection = function(number){
+        $scope.clearHighlightedDangerousCargoTypeSelector = function(){
             $scope.dgSelectedType1 = false;
             $scope.dgSelectedType21 = false;
             $scope.dgSelectedType22 = false;
@@ -825,8 +984,15 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             $scope.dgSelectedType7 = false;
             $scope.dgSelectedType8 = false;
             $scope.dgSelectedType9 = false;
+            $scope.vtsdangerouscargotonnageinput = ""; //clear tonnage input
+            $scope.vtsdangerouscargonoteinput = ""; //clear note
+        };
+
+        $scope.VTSDangerousCargoTypeSelection = function(number){
+            $scope.clearHighlightedDangerousCargoTypeSelector();
             $scope.selectedDangerousCargoType = number;
             $scope.vtsdangerouscargoselectedinput = number;
+            $scope.cargoAddToManifestDisabled = false;
 
             switch(number){
                 case "": //clear everything
@@ -913,7 +1079,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         };
         $scope.validateDangerousCargoTonnage = function(){
-            console.log("bob:",$scope.reportSummary.cargoEntries.length);
             var retVal = $scope.VTSValidation99999999($scope.vtsdangerouscargotonnageinput);
 
             $scope.vtsdangerouscargotonnageinput = retVal[1];
@@ -930,7 +1095,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         };
 
         $scope.cargoRemoveFromManifest = function(number) {
-            console.log("removeitem:",number);
             $scope.reportSummary.cargoEntries.splice(number, 1);
             $scope.cargoAddToManifestListFunction();
         };
@@ -939,7 +1103,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             var tmpArr = $scope.reportSummary.cargoEntries;
             var IMOtypesofDG = "", totalDGTonnage = 0.0;
             for(var i=0;i!=tmpArr.length;i++){
-                IMOtypesofDG =+ tmpArr[i].imoClass;
+                IMOtypesofDG += tmpArr[i].imoClass;
                 (i == tmpArr.length-1)? IMOtypesofDG += "" : IMOtypesofDG += " - ";
                 totalDGTonnage += parseFloat(tmpArr[i].tonnage)
 
@@ -965,7 +1129,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 entries += "<button class='btn btn-default vts-btn-highlight-danger vts-lesspadding' id='myAnchor'  type='button' ng-click='cargoRemoveFromManifest(\""+i+"\")' ><i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Remove</button>";
                 entries += "&nbsp;<img style='height:26px;' src="+imgName+">";
                 entries += "&nbsp;<span class='bold vts-force-spacing-100'>"+tmpArr[i].imoClass+"</span> - ";
-                entries += "&nbsp;&nbsp;&nbsp;&nbsp;<span class='vts-force-spacing-80'><strong>"+tmpArr[i].tonnage+"</strong> MT</span>";
+                entries += "&nbsp;&nbsp;&nbsp;&nbsp;<span class='vts-force-spacing-100'><strong>"+tmpArr[i].tonnage+"</strong> MT</span>";
                 //note is not mandatory
                 if(tmpArr[i].note && tmpArr[i].note!="" && tmpArr[i].note!="undefined") entries += " - <span style='font-style: italic;'>"+tmpArr[i].note+"</span>";
                 entries += "</div>"; //close it
@@ -978,7 +1142,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             var repEn = {//add to report summary
                 imoClass: $scope.vtsdangerouscargoselectedinput,
                 tonnage: $scope.vtsdangerouscargotonnageinput + "",
-                note: $scope.vtsdangerouscargonoteinput + ""
+                note: (($scope.vtsdangerouscargonoteinput != "" && typeof $scope.vtsdangerouscargonoteinput !== "undefined") ? ($scope.vtsdangerouscargonoteinput + "") : ""),
             };
             $scope.reportSummary.cargoEntries.push(repEn);
             $scope.selectedDangerousCargoType = "";
@@ -992,12 +1156,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             $scope.setvtsCargoTonnageValidState = 'neutral'; // is no longer mandatory
             $scope.cargoAddToManifestListFunction(); //update GUI
         };
-        // alert("TODO: fix float having more than one 0 trailing period.");
-        // TODO: additional contact details are no longer mandatory - remove button should be red - GPS pos is not mandatory - make gps coords come from AIS - make invalid AIS clear placeholder - make remove button work, make validator for tonnage to float, 3 decimal places, blur the cargo tonnage box, make order of validation work with box and class selector
+
 
         $scope.VTSCargoContactInformationChange = function(){
             var input = $scope.vtscargoadditionalcontactdetailsinput;
-            if(input!="" && input.length>5) {
+            if(input.length>5 || input.length==0) { // not mandatory but still min. chars - subject to change
                 $scope.setvtsvesselContactDetailsValid = true;
             }else{
                 $scope.setvtsvesselContactDetailsValid = false;
@@ -1192,6 +1355,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         //displays the form fields
         $scope.VTSSelected = true;
 
+        //draws the vts area on minimap
+        (VTSData[vtsID].areaWKT!="") ? $scope.areaWKT = VTSData[vtsID].areaWKT : VTSData[vtsID].areaWKT = "";
+
         //display time input as invalid
         angular.element(document.querySelector(".datetime-input.date .display")).addClass("vts-datetime-picker-box-highlight-invalid");
         angular.element(document.querySelector(".datetime-input.time .display")).addClass("vts-datetime-picker-box-highlight-invalid");
@@ -1203,6 +1369,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.VTSFuelTypeValidation(); //disables all fuel inputs if nothing
         $scope.VTSValidationAllDone(); //just in case
 
+        miniMapUpdate(VTSData[vtsID].areaWKT, null, null);
 
         //debugging
         $scope.vtsvesselmmsiinput = "265177000";
@@ -1256,17 +1423,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
 
         //cargo
         $scope.reportSummary.cargoType = $scope.vtsvesselcargotypeholder;
-        // $scope.reportSummary.cargoIMOClass01 = "" + (($scope.vtsdangerouscargotype01input!="") ? (parseFloat($scope.vtsdangerouscargotype01input)) : 0);
-        // $scope.reportSummary.cargoIMOClass02 = "" + (($scope.vtsdangerouscargotype02input!="") ? (parseFloat($scope.vtsdangerouscargotype02input)) : 0);
-        // $scope.reportSummary.cargoIMOClass03 = "" + (($scope.vtsdangerouscargotype03input!="") ? (parseFloat($scope.vtsdangerouscargotype03input)) : 0);
-        // $scope.reportSummary.cargoIMOClass04 = "" + (($scope.vtsdangerouscargotype04input!="") ? (parseFloat($scope.vtsdangerouscargotype04input)) : 0);
-        // $scope.reportSummary.cargoIMOClass05 = "" + (($scope.vtsdangerouscargotype05input!="") ? (parseFloat($scope.vtsdangerouscargotype05input)) : 0);
-        // $scope.reportSummary.cargoIMOClass06 = "" + (($scope.vtsdangerouscargotype06input!="") ? (parseFloat($scope.vtsdangerouscargotype06input)) : 0);
-        // $scope.reportSummary.cargoIMOClass07 = "" + (($scope.vtsdangerouscargotype07input!="") ? (parseFloat($scope.vtsdangerouscargotype07input)) : 0);
-        // $scope.reportSummary.cargoIMOClass08 = "" + (($scope.vtsdangerouscargotype08input!="") ? (parseFloat($scope.vtsdangerouscargotype08input)) : 0);
-        // $scope.reportSummary.cargoIMOClass09 = "" + (($scope.vtsdangerouscargotype09input!="") ? (parseFloat($scope.vtsdangerouscargotype09input)) : 0);
-        $scope.reportSummary.cargoDangerousCargoTotalTonnage = "" + ($scope.vtsdangerouscargotonnagelabel);
-        if($scope.reportSummary.vtsdangerouscargotonnagelabel != "" ) $scope.reportSummary.cargoDangerousCargoOnBoard = true;
+        $scope.reportSummary.cargoDangerousCargoTotalTonnage = (typeof $scope.vtsdangerouscargotonnagelabel !== "undefined")? ("" + ($scope.vtsdangerouscargotonnagelabel)) : "";
+        if($scope.reportSummary.vtsdangerouscargotonnagelabel != "" && typeof $scope.vtsdangerouscargotonnagelabel !== "undefined") $scope.reportSummary.cargoDangerousCargoOnBoard = true;
         $scope.reportSummary.cargoIMOClassesOnBoard = "" + ($scope.vtsdangerouscargotypeslabel);
         $scope.reportSummary.cargoPollutantOrDCLostOverBoard = "" + ($scope.vtsdangerouscargooverboard);
         $scope.reportSummary.cargoAdditionalContactInformation = "" + ($scope.vtscargoadditionalcontactdetailsinput);
@@ -1360,6 +1518,20 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             $scope.vtsvesseltypeholder = $scope.aisData.vesselType;
         }
 
+        if($scope.aisData.lon != "" && $scope.aisData.lon != null) {
+            $scope.vtsvesselposlondegreesinput = $scope.placeholderAisVesselLonDegrees;
+            $scope.vtsvesselposlonminutesinput = $scope.placeholderAisVesselLonDecimalMinutes;
+            ($scope.aisData.lon>0)? $scope.vtsCurrentPosCompassAppendEW = "E" : $scope.vtsCurrentPosCompassAppendEW = "W";
+            $scope.VTSVesselCurrentPositionLonDegValidation(false);
+            $scope.VTSVesselCurrentPositionLonMinValidation(false);
+        }
+        if($scope.aisData.lat != "" && $scope.aisData.lat != null) {
+            $scope.vtsvesselposlatdegreesinput = $scope.placeholderAisVesselLatDegrees;
+            $scope.vtsvesselposlatminutesinput = $scope.placeholderAisVesselLatDecimalMinutes;
+            ($scope.aisData.lat>0)? $scope.vtsCurrentPosCompassAppendNS = "N" : $scope.vtsCurrentPosCompassAppendNS = "S";
+            $scope.VTSVesselCurrentPositionLatDegValidation(false);
+            $scope.VTSVesselCurrentPositionLatMinValidation(false);
+        }
 
 
         $scope.VTSValidationAllDone(); //finally validate all values for ready to send
@@ -1381,7 +1553,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 $scope.aisData.vesselLength = vesselDetails.data.aisVessel.length;
                 $scope.aisData.vesselCOG = vesselDetails.data.aisVessel.cog;
                 $scope.aisData.vesselType = vesselDetails.data.aisVessel.vesselType;
-
+                $scope.aisData.lon = vesselDetails.data.aisVessel.lon;
+                $scope.aisData.lat = vesselDetails.data.aisVessel.lat;
 
                 //load the placeholders
                 $scope.placeholderAisVesselName = $scope.aisData.vesselName;
@@ -1391,14 +1564,67 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
                 $scope.placeholderAisVesselDestination = $scope.aisData.vesselDestination;
                 $scope.placeholderAisVesselDraught = $scope.aisData.vesselDraught;
                 $scope.placeholderAisVesselLength = $scope.aisData.vesselLength;
-                $scope.vtsvesselcourseovergroundinput = $scope.aisData.vesselCOG;
+                $scope.vtsvesselcourseovergroundinput = $scope.aisData.vesselCOG; //only displayed when using AIS
 
+                var lon = $scope.aisData.lon;
+                $scope.placeholderAisVesselLonDegrees = (lon+"").substring(0,(lon+"").indexOf("."));
+                ($scope.aisData.lon>0)? $scope.vtsCurrentPosCompassAppendEW = "E" : $scope.vtsCurrentPosCompassAppendEW = "W";
+                lon = $scope.retDecMinutesFromDecDegrees(lon);
+                $scope.placeholderAisVesselLonDecimalMinutes = lon;
+
+                var lat = $scope.aisData.lat;
+                $scope.placeholderAisVesselLatDegrees = (lat+"").substring(0,(lat+"").indexOf("."));
+                ($scope.aisData.lat>0)? $scope.vtsCurrentPosCompassAppendNS = "N" : $scope.vtsCurrentPosCompassAppendNS = "S";
+                lat = $scope.retDecMinutesFromDecDegrees(lat);
+                $scope.placeholderAisVesselLatDecimalMinutes = lat;
+
+                var tmpPos = [$scope.aisData.lon, $scope.aisData.lat];
+                miniMapUpdate(VTSData[$scope.VTSID].areaWKT, tmpPos, $scope.placeholderAisVesselCog);
+
+                $scope.aisdataReady = true;
 
 
             }, function (reason) {
-                console.log('AIS data fetch failed: ' + reason);
+                $scope.aisdataReady = false;
+                $scope.clearAISPlaceholders();
+                growl.error('AIS data fetch failed: ' + reason);
             });
         }
+        $scope.clearAISPlaceholders = function(){
+            $scope.placeholderAisVesselName = "";
+            $scope.placeholderAisVesselCallsign = "";
+            $scope.placeholderAisVesselImo = "";
+            $scope.placeholderAisVesselCog = "";
+            $scope.placeholderAisVesselDestination = "";
+            $scope.placeholderAisVesselDraught = "";
+            $scope.placeholderAisVesselLength = "";
+            $scope.vtsvesselcourseovergroundinput = "";
+            $scope.placeholderAisVesselLonDegrees = "";
+            $scope.placeholderAisVesselLonDecimalMinutes = "";
+            $scope.placeholderAisVesselLatDegrees = "";
+            $scope.placeholderAisVesselLatDecimalMinutes = "";
+        };
+
+        $scope.setLocationByAIS = function(){
+            if($scope.setvtsvesselMMSIValid && $scope.aisdataReady) {
+                var lon = $scope.aisData.lon;
+                $scope.vtsvesselposlondegreesinput = (lon+"").substring(0,(lon+"").indexOf("."));
+                ($scope.aisData.lon>0)? $scope.vtsCurrentPosCompassAppendEW = "E" : $scope.vtsCurrentPosCompassAppendEW = "W";
+                lon = $scope.retDecMinutesFromDecDegrees(lon);
+                $scope.vtsvesselposlonminutesinput = lon;
+                $scope.VTSVesselCurrentPositionLonDegValidation(false);
+                $scope.VTSVesselCurrentPositionLonMinValidation(false);
+
+                var lat = $scope.aisData.lat;
+                $scope.vtsvesselposlatdegreesinput = (lat+"").substring(0,(lat+"").indexOf("."));
+                ($scope.aisData.lat>0)? $scope.vtsCurrentPosCompassAppendNS = "N" : $scope.vtsCurrentPosCompassAppendNS = "S";
+                lat = $scope.retDecMinutesFromDecDegrees(lat);
+                $scope.vtsvesselposlatminutesinput = lat;
+                $scope.VTSVesselCurrentPositionLatDegValidation(false);
+                $scope.VTSVesselCurrentPositionLatMinValidation(false);
+            }
+        }
+
     };
 
     //Modal form control ******************************************************************************************
