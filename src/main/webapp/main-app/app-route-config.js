@@ -25,6 +25,9 @@ angular.module('maritimeweb').config(['$locationProvider', '$routeProvider',
         when('/vessel-traffic-service', {
             templateUrl: 'vessel-traffic-service/vessel-traffic-service-form.html'
         }).
+        when('/weather', {
+            templateUrl: 'weather/weather.html'
+        }).
         otherwise({
             //controller: 'AppController',
             templateUrl: 'partials/map.html'
