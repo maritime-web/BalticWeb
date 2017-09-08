@@ -9,8 +9,17 @@ angular.module('maritimeweb.weather')
             restrict: 'E',
             require: '^olMap',
             template:
-            "<span class='map-weather-btn'  tooltip='Get METOC data in area' data-toggle='tooltip' data-placement='right' title='Get METOC data in area' > Get " +
-                "<span> METOC <i class='fa fa-sun-o' ng-click='getWeatherAreaUI()'aria-hidden='true'></i></span> information from DMI" +
+            "<span class='map-weather-btn' ng-click='getWeatherAreaUI()' tooltip='Get METOC data in area' data-toggle='tooltip' " +
+            "data-placement='right' title='Get METOC data in area' > " +
+
+
+            "<span> Retrieve METOC <i class='fa fa-sun-o' aria-hidden='true'></i></span> information from DMI" +
+            "<div> {{time}} <input type='number' ng-model='hoursOffset' min='0' max='72' /> hours from now</div>"+
+            " <div class='btn-group' data-toggle='buttons'>"+
+                "<label class='btn btn-default'>Wind<input type='radio' ng-model='typeForecast' value='wind'></label>" +
+                "<label class='btn btn-default'>Wave<input type='radio' ng-model='typeForecast' value='wave'></label>" +
+                "<label class='btn btn-default'>Current<input type='radio' ng-model='typeForecast' value='current'></label>" +
+                "</div>" +
                 //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
                 "</span>"
            ,
@@ -30,6 +39,8 @@ angular.module('maritimeweb.weather')
                 const left_se_lat = 10.0;
                 scope.time = new Date();
                 scope.timeAgoString = "";
+                scope.hoursOffset= 0;
+                scope.typeForecast = "wind";
 
                 /*const top_nw_lon = 56.36316;
                  const bottom_se_lon = 54.36294;
@@ -581,8 +592,9 @@ angular.module('maritimeweb.weather')
                     };
 
                     scope.getWeatherAreaUI = function(){
-                        scope.time = new Date();
-                        scope.getWeatherInArea(scope.time);
+                        //scope.time = new Date();
+                        console.log("getWeatherAreaUI " + scope.hoursOffset + " " + scope.time);
+                        scope.getWeatherInArea(scope.time, scope.hoursOffset);
                     };
 
                     scope.findWeatherIcon = function(windstr){
@@ -637,13 +649,20 @@ angular.module('maritimeweb.weather')
                         return markerImageNamePath;
                     };
 
-                    scope.getWeatherInArea = function (time) {
+                    scope.getWeatherInArea = function (time, hoursoffset) {
                         scope.drawServiceLimitation();
                         if (!time) {
                             time = new Date();
                         }
 
+                        if(hoursoffset){
+                            time = new Date();
+                            time.setTime(time.getTime() + (hoursoffset*60*60*1000));
+                            console.log("time " + time);
+                        }
+
                         scope.time = time;
+                        console.log("scope.time " + scope.time);
 
                         var bboxBLTR = scope.clientBBOXAndServiceLimit();
                         var now = time.toISOString();
@@ -651,10 +670,10 @@ angular.module('maritimeweb.weather')
                             function (response) {
                                 $log.debug("bboxBLTR=" + bboxBLTR + " Time= " + now);
                                 $log.debug("Status=" + response.status);
-                                $log.debug("Response data: " + response.data);
+                                // $log.debug("Response data: " + response.data);
                                 $log.debug("Response data: " + response.data.forecastDate);
-                                $log.debug("Response points: " + response.data.points);
-                                $log.debug("Response points size: " + response.data.points.length);
+                                 $log.debug("Response points: " + response.data.points);
+                                // $log.debug("Response points size: " + response.data.points.length);
 
                                 var features = new Array(response.data.points.length);
 
@@ -696,10 +715,10 @@ angular.module('maritimeweb.weather')
                                                 src: scope.findWeatherIcon(weatherObj.windSpeed)
                                             })),
                                             text: new ol.style.Text({
-                                                font: 'bold 12px helvetica,sans-serif',
-                                                text: "" + weatherObj.windSpeed + "k - " + weatherObj.windDirection + "° ",
+                                                font: 'bold 10px helvetica,sans-serif',
+                                                text: "" + weatherObj.windSpeed + "w - " + weatherObj.currentSpeed + " ", //"° ",
                                                 offsetX: 0,
-                                                offsetY: waypointtextoffset * scale,
+                                                offsetY: 0, //waypointtextoffset * scale,
                                                 scale: (1 * scale),
                                                 fill: new ol.style.Fill({
                                                     color: '#000'
@@ -715,6 +734,59 @@ angular.module('maritimeweb.weather')
                                         iconlocFeature.setStyle(iconlocStyle);
                                         boundaryLayer.getSource().addFeature(iconlocFeature);
                                     }
+
+                                    if (weatherObj.waterCurrent && weatherObj.waterDirection) {
+
+
+                                        /**
+                                         *      "windDirection": 100.74,
+                                         * "windSpeed": 10.46,
+                                         * "currentDirection": 162.57,
+                                         * "currentSpeed": 0.43
+                                         */
+
+                                            // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
+                                        var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
+
+                                        var iconWatFeature = new ol.Feature({
+                                            geometry: markerPosition,
+                                            name: 'Weather',
+                                            windStrength: weatherObj.windSpeed,
+                                            windDirection: weatherObj.windDirection,
+                                            waterCurrent: weatherObj.currentSpeed,
+                                            waterDirection: weatherObj.currentDirection
+                                        });
+
+                                        var iconWatStyle = new ol.style.Style({
+                                            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                                anchor: [1, 1],
+                                                anchorXUnits: 'fraction',
+                                                anchorYUnits: 'pixels',
+                                                rotation:  (weatherObj.waterDirection - (180)) * (Math.PI / 180),//degToRad(weatherObj.windDirection),
+                                                rotateWithView: true,
+                                                src: scope.findWaterIcon(weatherObj.waterCurrent)
+                                            })),
+                                            text: new ol.style.Text({
+                                                font: 'bold 10px helvetica,sans-serif',
+                                                text: "" + weatherObj.waterCurrent + "water - " + weatherObj.waterDirection + " ", //"° ",
+                                                offsetX: 0,
+                                                offsetY: 0, //waypointtextoffset * scale,
+                                                scale: 1,
+                                                fill: new ol.style.Fill({
+                                                    color: '#0000ff'
+                                                }),
+                                                stroke: new ol.style.Stroke({
+                                                    color: '#fff',
+                                                    width: 1
+                                                })
+                                            })
+                                        });
+
+
+                                        iconlocFeature.setStyle(iconlocStyle);
+                                        boundaryLayer.getSource().addFeature(iconlocFeature);
+                                    }
+
                                         i++;
                                     })
                                 }

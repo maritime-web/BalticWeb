@@ -46,8 +46,8 @@ angular.module('maritimeweb.weather')
                             "lat": se_lat
                         },
                         "time": time, //"2017-04-19T14:10:00Z"
-                      //  "nx": 30,
-                      //  "ny": 30
+                        "nx": 10,
+                        "ny": 10
 
                     }
                 };
