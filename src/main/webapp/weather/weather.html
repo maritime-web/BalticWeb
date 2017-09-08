@@ -1,0 +1,27 @@
+<div ng-controller="WeatherCtrl">
+
+    <div class="container-fluid">
+        <h3>
+            Weather service
+        </h3>
+
+        <div>
+            <div id="rtz-map" >
+
+                <ol-map class="map route-details-map" map-state="mapState" minzoom="3"  swlon="-31" swlat="30" nelon="61" nelat="80">
+                    <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
+                    <map-scale-line units="nautical"></map-scale-line>
+                    <map-mouse-position></map-mouse-position>
+
+                    <!--map-nw-nm-layer message-list="nwNmMessages" services="nwNmServices" name="NW-NM" ></map-nw-nm-layer-->
+                    <!--<map-layer-switcher></map-layer-switcher>-->
+                    <!--map-overview collapsed="true"></map-overview-->
+                    <map-weather-layer name="metoc"></map-weather-layer>
+                </ol-map>
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
