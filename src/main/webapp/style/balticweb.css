@@ -524,9 +524,8 @@ body {
 
 .map-weather-btn {
     left: 12px;
-    top: 115px;
+    bottom: 0px;
     font-size: 1.0em;
-    width: 8em;
     position: absolute;
     z-index: 100;
     margin: 0;
