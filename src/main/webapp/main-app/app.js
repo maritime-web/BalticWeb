@@ -8,6 +8,7 @@ angular.module('maritimeweb.vessel', ['yaru22.angular-timeago']);
 angular.module('maritimeweb.nw-nm', []);
 angular.module('maritimeweb.no-go-area', []);
 angular.module('maritimeweb.weather', []);
+angular.module('maritimeweb.vts', []);
 angular.module('maritimeweb.serviceregistry', []);
 angular.module('maritimeweb.nasa-satellite', ['yaru22.angular-timeago']);
 
@@ -26,6 +27,7 @@ angular.module('maritimeweb.nasa-satellite', ['yaru22.angular-timeago']);
         'maritimeweb.nw-nm',
         'maritimeweb.no-go-area',
         'maritimeweb.weather',
+        'maritimeweb.vts',
         'maritimeweb.serviceregistry',
         'maritimeweb.route',
         'maritimeweb.nasa-satellite',

@@ -89,8 +89,21 @@ body {
     /* Vessel Traffic Service */
 
 .bold{font-weight:bold;}
+.italic{font-style: italic;}
+.vts-text-center{text-align: center;}
+.vts-text-right{text-align: right;}
+.vts-absolute{position: absolute;}
+.vts-topleft{top:0px;left:0px;}
+.vts-bottom{bottom:0px;}
 .vts-grey-text{color:#999999;}
+.vts-white-text{color:#ffffff;}
 .vts-red-text{color:#bb0000;}
+.vts-text-xxlarge{font-size: 1.8em;}
+.vts-text-xlarge{font-size: 1.6em;}
+.vts-text-large{font-size: 1.3em;}
+.vts-text-normal{font-size: 1.0em;}
+.vts-text-small{font-size: 0.8em;}
+.vts-text-shadow{text-shadow:0px 0px 9px #222222, 2px 2px 2px #333333}
 .vts-button-green{background-color:rgba(0,254,119,0.4) !important;}
 .vts-button-green:hover{background-color:rgba(0,254,119,0.2) !important;}
 .vts-button-green:active{background-color:rgba(0,254,119,0.6) !important;}
@@ -150,7 +163,6 @@ body {
     border-color: #eeeeee;
     width:90%;
 }
-.vts-center{text-align: center;}
 .vtsinvalid{
     border-color: rgba(229, 103, 23, 0.8);
     box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
@@ -290,7 +302,12 @@ body {
 .vts-cargolist-border{
     border:solid 1px #666666;
 }
-
+.vts-cargoentry-listitem{
+    overflow:hidden;
+    max-height:29px;
+    min-height:29px;
+    padding-top:3px;
+}
 .vts-placeholder-highlight::-webkit-input-placeholder { /* Chrome */
     color: #7376c7;
 }
