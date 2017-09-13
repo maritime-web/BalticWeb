@@ -35,7 +35,7 @@ angular.module('maritimeweb.weather')
                         "parameters": {
                             "wind": true, //returns in angle & m/sec
                             "current": true, //returns in angle & m/sec
-                            "wave": true //returns in angle & height in metres
+                            "density": true //returns in angle & height in metres
                         },
                         "northWest": {
                             "lon": nw_lon,
