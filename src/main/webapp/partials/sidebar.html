@@ -243,31 +243,32 @@
 
 
         <!-- VTS report tab tab -->
-        <!--<uib-tab classes="btn-sm">-->
-            <!--<uib-tab-heading>-->
-                <!--<span class="glyphicon glyphicon-globe"></span>VTS Reporting-->
-                <!--<span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>-->
-            <!--</uib-tab-heading>-->
+        <uib-tab classes="btn-sm">
+            <uib-tab-heading>
+                <span class="glyphicon glyphicon-globe"></span>
+                &nbsp;VTS
+                <span class="badge sidebar-badge" ng-bind="vtsAreasArr.length"></span>
+            </uib-tab-heading>
 
-            <!--<div class="panel" ng-class="(1==1) ? 'panel-primary' : 'panel-default'">-->
-                <!--<div class="panel-heading">Vessel Traffic Service Reporting-->
-                    <!--&lt;!&ndash;<small tooltip="Refresh" class="glyphicon glyphicon-refresh"&ndash;&gt;-->
-                    <!--&lt;!&ndash;ng-click="refreshNwNmServices()"></small>&ndash;&gt;-->
+            <div class="panel" ng-class="(1==1) ? 'panel-primary' : 'panel-default'">
+                <div class="panel-heading">Vessel Traffic Service Reporting areas</div>
 
-                <!--</div>-->
+                <div class="panel-body">
+                    <input type="checkbox" ng-model="vts_map_show" ng-change="vtsMapToggle()">
+                    Display VTS areas
+                    </input>
+                    <br>
+                    <input type="checkbox" ng-model="vts_map_show" ng-change="toggleBob()">
+                    test
+                    </input>
 
-                <!--<div class="panel-body">-->
-                    <!--<input type="checkbox" ng-model="" ng-change="">-->
-                    <!--Display VTS areas-->
-                    <!--</input>-->
-                    <!--<br>-->
-                    <!--<input type="checkbox" ng-model="" ng-change="">-->
+                    <br>
+                    <!--<input type="checkbox" ng-change="">-->
                     <!--Display only VTS centres on route-->
                     <!--</input>-->
-                <!--</div>-->
-            <!--</div>-->
-
-        <!--</uib-tab>-->
+                </div>
+            </div>
+        </uib-tab>
 
 
 

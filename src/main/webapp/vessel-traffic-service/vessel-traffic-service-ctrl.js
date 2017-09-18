@@ -1,20 +1,22 @@
-angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scope', '$uibModalInstance', '$window', '$sce', 'growl', '$http', 'Auth', 'VesselService', 'VtsHelperService',
+/**
+ * Handles the VTS report interface - uses the bootstrap modal form.
+ * Uses
+ *
+ * Minimap is init and populated from helper service.
+ * Uses localstorage for referencing loaded route objects. (RTZ)
+ *
+ * Please note that there are 2 services related to VTS: mapVtsAreaService and VesselTrafficServiceReportCtrl.
+ * They are different from each by that the mapservice has a map layer, much like other mapping services,
+ * and the VesselTrafficServiceReport is the form to write reports to VTS centres.
+ *
+ */
+
+
+angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', ['$scope', '$uibModalInstance', '$window', '$sce', 'growl', '$http', 'Auth', 'VesselService', 'VtsHelperService',
     function ($scope, $uibModalInstance, $window, $sce, growl, $http, Auth, VesselService, VtsHelperService) {
 
-        /**
-         * Handles the VTS report interface - uses the bootstrap modal form.
-         * Uses
-         *
-         * Minimap is init and populated from helper service.
-         * Uses localstorage for referencing loaded route objects. (RTZ)
-         *
-         *
-         */
 
-            //TODO: use $window.localStorage.getItem('route_id', $routeParams.mmsi); to get RTZ info
-
-
-            //Populate the interface using json object from service - anon allowed
+        //Populate the interface using json object from service - anon allowed
         var VTSData = []; //local array
         var getInterfaceObjectsFromService = function () {
             $http({ // get the VTS definition objects from service - builds the correct buttons/fields
@@ -358,6 +360,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             if ($scope.setvtsvesselSpeedValid && $scope.setvtsvesselPortOfDestinationValid) group7valid = true;
             if ($scope.setvtsvesseletaTimeDateValid && $scope.setvtsvesselCourseOverGroundValid && $scope.setvtsvesselTrueCourseValid) group8valid = true;
 
+            VtsHelperService.displayTotalSumOfBytesInLocalStorage(); //only if debugmode
             console.log("");
             console.log("");
             if (group1valid) console.log("group1valid", group1valid);
@@ -501,7 +504,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
         $scope.VTSVesselDraughtValidation = function (validate) {
             if ($scope.showMaxDraught) {
                 var test = VtsHelperService.validateNumber($scope.vtsvesseldraughtinput, 0, 99, 1);
-                console.log(test);
                 $scope.vtsvesseldraughtinput = test.val;
                 (test.valid == true) ? $scope.setvtsvesselDraughtValid = true : $scope.setvtsvesselDraughtValid = false;
                 if (validate) $scope.VTSValidationAllDone();
@@ -1462,7 +1464,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceCtrl', ['$scop
             }
         });
 
-        console.log("TODO: function to save state in localstorage");
+        console.log("TODO (final task): function to save and load state of report in localstorage");
         $scope.exitInterface = function(state){
             if(state==true){
                 // alert("add function to exit after save to localstorage - also load from localstorage..");

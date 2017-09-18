@@ -2,8 +2,8 @@ angular.module('maritimeweb.app')
 
     .controller("AppController", [
         '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
-        'VesselService', 'NwNmService', 'SatelliteService', 'ServiceRegistryService', 'growl', '$uibModal', '$log', '$interval',
-    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, ServiceRegistryService, growl, $uibModal, $log, $interval) {
+        'VesselService', 'NwNmService', 'SatelliteService', 'ServiceRegistryService', 'mapVtsAreaService','growl', '$uibModal', '$log', '$interval',
+    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, ServiceRegistryService,mapVtsAreaService, growl, $uibModal, $log, $interval) {
 
         // Cancel any pending NW-NN queries
         var loadTimerService = undefined;
@@ -94,8 +94,11 @@ angular.module('maritimeweb.app')
             return {lon: vessel.x, lat: vessel.y};
         };
 
+
+
+
         /**************************************/
-        /** Vessel Traffic Service functionality      **/
+        /** Vessel Traffic Service Report functionality      **/
         /**************************************/
 
         $scope.activateVTSForm = function (size) {
@@ -103,18 +106,52 @@ angular.module('maritimeweb.app')
             $uibModal.open({
                 animation: 'true',
                 templateUrl: 'vessel-traffic-service/vessel-traffic-service-form.html',
-                controller: 'VesselTrafficServiceCtrl',
+                controller: 'VesselTrafficServiceReportCtrl',
                 size: size
             })
         };
 
 
-        // $scope.update = function() {
-        //     $scope.item.size.code = $scope.selectedItem.code
-        //     // use $scope.selectedItem.code and $scope.selectedItem.name here
-        //     // for other stuff ...
-        // }
+        /**********************************************/
+        /** Vessel Traffic Service Map functionality **/
+        /**********************************************/
+        $scope.vts_map_show = $window.localStorage['vts_map_show'];
+        ($scope.vts_map_show == true || $scope.vts_map_show == "true") ? $scope.vts_map_show=true : $scope.vts_map_show = false; //is string, need bool
+        $scope.vtsAreasArr = []; //is watched by directive mapVtsAreaLayer to populate map on change
+        $scope.vtsLayerEnabled = $scope.vts_map_show; //is listened to
 
+        /** Toggle the enabled status of the layer **/
+        $scope.vtsMapToggle = function () {
+            $scope.vts_map_show = mapVtsAreaService.toggleVtsAreasLayerEnabled();
+            $scope.vtsLayerEnabled = $scope.vts_map_show;
+        };
+
+        //TODO: make layer go invisible, display vtsareas on map, make toggle for on route only if a route is loaded, make method for only display areas which intersect with route
+
+        $scope.reloadVtsAreas=function() {
+            mapVtsAreaService.getVtsAreas()
+                .success(function (data, status) {
+                    // Update the selected status from localstorage
+                    if (status == 204) {
+                    }
+
+                    if (status == 200) {
+                        $scope.vtsAreasArr = data.VtsJsObjects;
+                    }
+                })
+                .error(function (error) {
+                    $log.debug("Error getting VTS service. Reason=" + error);
+                })
+        };
+
+        if($scope.vts_map_show){
+            $scope.reloadVtsAreas();
+        }
+
+
+
+        /**************************************/
+        /** NOGO Service                     **/
         /**************************************/
         const top_nw_lon = 56.30;
         const bottom_se_lon = 54.4;
