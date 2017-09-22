@@ -2,7 +2,12 @@ angular.module('maritimeweb.weather')
     .service('WeatherService', ['$http',
         function ($http) {
 
-            this.getWeather = function (se_lat,  nw_lon,  nw_lat, se_lon, time) {
+            this.getWeather = function (se_lat,  nw_lon,  nw_lat, se_lon, time, wind, current, density) {
+
+                this.wind = wind !== false;
+                this.current = current !== false;
+                this.density = density !== false;
+               // this.wave = wave !== false;
 
                 var req = {
                     method: 'POST',
@@ -33,9 +38,10 @@ angular.module('maritimeweb.weather')
                     data: {
 
                         "parameters": {
-                            "wind": true, //returns in angle & m/sec
-                            "current": true, //returns in angle & m/sec
-                            "density": true //returns in angle & height in metres
+                            "wind": wind, //returns in angle & m/sec
+                            "current": current, //returns in angle & m/sec
+                            "density": density //returns in angle & height in metres
+                           // "wave": wave //returns in angle & height in metres
                         },
                         "northWest": {
                             "lon": nw_lon,
