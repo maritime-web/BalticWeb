@@ -89,11 +89,28 @@ body {
     /* Vessel Traffic Service */
 
 .bold{font-weight:bold;}
+.italic{font-style: italic;}
+.vts-text-center{text-align: center;}
+.vts-text-right{text-align: right;}
+.vts-absolute{position: absolute;}
+.vts-topleft{top:0px;left:0px;}
+.vts-bottom{bottom:0px;}
 .vts-grey-text{color:#999999;}
+.vts-white-text{color:#ffffff;}
 .vts-red-text{color:#bb0000;}
+.vts-text-xxlarge{font-size: 1.8em;}
+.vts-text-xlarge{font-size: 1.6em;}
+.vts-text-large{font-size: 1.3em;}
+.vts-text-normal{font-size: 1.0em;}
+.vts-text-small{font-size: 0.8em;}
+.vts-text-shadow{text-shadow:0px 0px 9px #222222, 2px 2px 2px #333333}
+.vts-button-green{background-color:rgba(0,254,119,0.4) !important;}
+.vts-button-green:hover{background-color:rgba(0,254,119,0.2) !important;}
+.vts-button-green:active{background-color:rgba(0,254,119,0.6) !important;}
+.vts-button-green:focus{background-color:rgba(0,254,119,0.3) !important;}
 .vts-pad-top{padding-top:8px;}
 .vts-input{width:160px;}
-.vts-input-small{width:40px;}
+.vts-input-small{width:50px;}
 .vts-input-medium{width:70px;}
 .vts-input-standard{width:100px;}
 .vts-input-large{width:200px;}
@@ -108,16 +125,14 @@ body {
 .vts-textarea-large{
     position:relative;
     top:0px;
-    width:240px;
+    width:300px;
     height:100px;
     max-width:350px;
     max-height:350px
 }
-/*#vtsparentdiv input[type=number]::-webkit-inner-spin-button,*/
-/*#vtsparentdiv input[type=number]::-webkit-outer-spin-button{*/
-    /*-webkit-appearance: none;*/
-    /*margin: 0;*/
-/*}*/
+.vts-cargo-input-forced-disabled:disabled {
+    background: #eeeeee;
+}
 .vts-less-lineheight{
     line-height: 1;
 }
@@ -148,7 +163,6 @@ body {
     border-color: #eeeeee;
     width:90%;
 }
-.vts-center{text-align: center;}
 .vtsinvalid{
     border-color: rgba(229, 103, 23, 0.8);
     box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
@@ -165,7 +179,7 @@ body {
     outline: 0 none;
 }
 .vtsneutral{
-    border-color: rgb(102, 101, 103, 0.8);
+    border-color: rgba(102, 101, 103, 0.8);
     box-shadow: 0 1px 1px rgba(219, 214, 229, 0.07) inset, 0 0 8px rgba(226, 223, 229, 0.6);
     outline: 0 none;
 }
@@ -174,7 +188,6 @@ body {
     box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
     outline: 0 none !important;
 }
-
 .vts-force-spacing-50{
     min-width:50px;
     max-width:50px;
@@ -226,6 +239,180 @@ body {
     display: inline;
     padding-left: 6px;
     padding-right:10px;
+}
+.vts-checkbox-label-blue{
+    color:#0000bb;
+}
+.datetime-input.date .display .date{
+    font-size:1.6em !important;
+}
+.datetime-input.time .display .time{
+    font-size:1.6em !important;
+}
+.vts-timedatepicker{
+    height:3em !important;
+    min-height:3em !important;
+    max-height:3em !important;
+}
+.vts-time-picker-box-highlight{
+    border: solid 2px #474bc3 !important;
+}
+.vts-datetime-picker-box-highlight-invalid{
+    background: #f39595 !important;
+    height:3em !important;
+    min-height:3em !important;
+    max-height:3em !important;
+}
+.vts-datetime-picker-box-highlight-valid{
+    background: #9dee5e !important;
+    height:3em !important;
+    min-height:3em !important;
+    max-height:3em !important;
+}
+.vts-btn-highlight{
+    background-color: #97fba0 !important;
+}
+.vts-btn-highlight-danger{
+    background-color: #fb5858 !important;
+}
+
+.time-picker-mod{
+    min-width:200px !important;
+    width:200px !important;
+    max-width:200px !important;
+}
+.vts-utc-label{
+    margin-right: 10px;
+}
+.vts-align-utc-label{
+    top: -13px;
+    position: relative;
+    left: 9px;
+    font-size: 1.6em;
+}
+.vts-cargotype-border{
+    border:solid 1px #eeeeee;
+}
+.vts-cargotype-hover-highlight:hover {
+    border:solid 1px #666666;
+}
+.vts-cargotype-selected-highlight {
+    background:#cccccc;
+}
+.vts-cargolist-border{
+    border:solid 1px #666666;
+}
+.vts-cargoentry-listitem{
+    overflow:hidden;
+    max-height:29px;
+    min-height:29px;
+    padding-top:3px;
+}
+.vts-placeholder-highlight::-webkit-input-placeholder { /* Chrome */
+    color: #7376c7;
+}
+.vts-placeholder-highlight::-webkit-input-placeholder{ /* Chrome */
+    color: #7376c7;
+}
+
+.vts-placeholder-highlight:-ms-input-placeholder { /* IE 10+ */
+    color: #7376c7;
+}
+.vts-placeholder-highlight::-moz-placeholder { /* Firefox 19+ */
+    color: #7376c7;
+    opacity: 1;
+}
+.vts-placeholder-highlight:-moz-placeholder { /* Firefox 4 - 18 */
+    color: #7376c7;
+    opacity: 1;
+}
+
+.vts-pulse {
+    background-color: #b3ccff;
+    animation-name: vts-pulse;
+    animation-duration: 3s;
+    animation-timing-function: ease-out;
+    animation-delay: 0ms;
+    animation-direction: alternate;
+    animation-iteration-count: 10;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}
+@keyframes vts-pulse {
+    0% {
+        background-color: #b3ccff;
+    }
+    50% {
+        background-color: #989bff;
+    }
+    100% {
+        background-color: #b3ccff;
+    }
+}
+
+.pulse-text-once {
+    background-color: #ffffff;
+    animation-name: pulse-text-once;
+    animation-duration: 2s;
+    animation-timing-function: ease-out;
+    animation-delay: 0ms;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}
+@keyframes pulse-text-once {
+    0% {
+        background-color: #ffffff;
+    }
+    50% {
+        background-color: rgba(0,254,119,0.4);
+    }
+    100% {
+        background-color: #ffffff;
+    }
+}
+.vts-quick-pulse {
+    background-color: #ffffff;
+    animation-name: vts-pulse;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-out;
+    animation-delay: 0ms;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}
+@keyframes vts-quick-pulse {
+    0% {
+        background-color: #ffffff;
+    }
+    50% {
+        background-color: #a4c5ff;
+    }
+    100% {
+        background-color: #ffffff;
+    }
+}
+
+
+@media screen and (max-width: 992px) {
+    .vts-responsive-minimap{
+        width: 100%;
+        height: 200px;
+    }
+}
+@media screen and (min-width: 610px) and (max-width: 992px) {
+    .vts-responsive-minimap{
+        width: 100%;
+        height: 270px;
+    }
+}
+@media screen and (min-width: 993px) {
+    .vts-responsive-minimap{
+        width: 100%;
+        height: 300px;
+    }
 }
 
 
