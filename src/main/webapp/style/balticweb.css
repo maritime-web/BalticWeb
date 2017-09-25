@@ -522,9 +522,20 @@ body {
 
 }
 
+.map-weather {
+    right: 1rem;
+    bottom: -8rem;
+    font-size: 1.0em;
+    position: absolute;
+    z-index: 100;
+    margin: 0;
+    padding: 3px;
+    border-radius: 4px;
+    opacity: 0.8;
+}
 .map-weather-btn {
     left: 12px;
-    bottom: 0px;
+    bottom: -200px;
     font-size: 1.0em;
     position: absolute;
     z-index: 100;

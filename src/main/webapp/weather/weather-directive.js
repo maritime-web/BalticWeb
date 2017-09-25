@@ -9,7 +9,6 @@ angular.module('maritimeweb.weather')
                 restrict: 'E',
                 require: '^olMap',
                 template: "<form>" +
-                "<span class='btn btn-primary btn-large' ng-click='drawLineString()'>line</span>" +
                 "<span class='map-weather-btn' ng-click='getWeatherAreaUI()' tooltip='Get METOC data in area' data-toggle='tooltip' " +
                 "data-placement='right' title='Get METOC data in area' > " +
 
@@ -17,12 +16,25 @@ angular.module('maritimeweb.weather')
                 "<span> Retrieve METOC <i class='fa fa-sun-o' aria-hidden='true'></i></span> information from DMI" +
                 "<div> {{time}} <input type='number' ng-model='hoursOffset' min='0' max='72' /> hours from now</div>" +
                 " <div class='btn-group' data-toggle='buttons'>" +
-                "<label>Wind <input type='radio' ng-model='typeForecast.name' value='wind'></label>" +
-                "<label>Density <input type='radio' ng-model='typeForecast.name' value='density'></label>" +
-                "<label>Current <input type='radio' ng-model='typeForecast.name' value='current'></label>" +
+                    "<div class=''>"+
+                        "<label>Wind <input type='radio' ng-model='typeForecast.name' value='wind'></label>" +
+                    "</div>" +
+                    "<div class=''>"+
+                        "<label>Density <input type='radio' ng-model='typeForecast.name' value='density'></label>" +
+                    "</div>" +
+                    "<div class=''>"+
+                        "<label>Current <input type='radio' ng-model='typeForecast.name' value='current'></label>" +
+                    "</div>" +
+
+                    "<div class=''>"+
+                        "<label>Sea level <input type='radio' ng-model='typeForecast.name' value='sealevel'></label>" +
+                    "</div>" +
                 "</div>" +
                 //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
+
                 "</span>" +
+                "<span class='map-weather btn btn-primary btn-large' ng-click='drawLineString()'>line</span>" +
+
                 "</form>"
 
                 ,
@@ -44,9 +56,8 @@ angular.module('maritimeweb.weather')
                     scope.timeAgoString = "";
                     scope.hoursOffset = 0;
                     scope.typeForecast = {
-                        wind: 'true',
-                        density: 'true',
-                        current: 'true'
+                        name: 'wind'
+
                     };
 
 
@@ -670,7 +681,6 @@ angular.module('maritimeweb.weather')
                                 serviceAvailableLayer.setVisible(true);
                                 serviceAvailableLayer.getSource().clear();
                                 serviceAvailableLayer.getSource().addFeature(feature);
-// uha det er lækkert
                                 //var coordinates = [[0, 0], [0, 5088000], [3330000, 3330000],  [3333300, 0], [0,0]];
                                 /*                     var coordinates = [
                                  ol.proj.transform([ 11, 65],'EPSG:4326', 'EPSG:3857'),
@@ -732,15 +742,18 @@ angular.module('maritimeweb.weather')
                             //scope.time = new Date();
                             console.log("getWeatherAreaUI " + scope.hoursOffset + " " + scope.time + " typeForecast=" + scope.typeForecast.name);
                             if (scope.typeForecast.name === "current") {
-                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, true, false);
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, true, false, false);
                             }
                             else if (scope.typeForecast.name === "wind") {
-                                scope.getWeatherInArea(scope.time, scope.hoursOffset, true, false, false);
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, true, false, false, false);
                             }
                             else if (scope.typeForecast.name === "density") {
-                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, false, true);
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, false, true, false);
+                            }
+                            else if (scope.typeForecast.name === "sealevel") {
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, false, false, true);
                             } else {
-                                scope.getWeatherInArea(scope.time, scope.hoursOffset, true, true, true);
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, true, true, true, true);
                             }
 
                         };
@@ -798,7 +811,7 @@ angular.module('maritimeweb.weather')
                         };
 
 
-                        scope.getWeatherInArea = function (time, hoursoffset, wind, current, density) {
+                        scope.getWeatherInArea = function (time, hoursoffset, wind, current, density, sealevel) {
                             scope.drawServiceLimitation();
                             if (!time) {
                                 time = new Date();
@@ -815,11 +828,10 @@ angular.module('maritimeweb.weather')
 
                             var bboxBLTR = scope.clientBBOXAndServiceLimit();
                             var now = time.toISOString();
-                            WeatherService.getWeather(bboxBLTR[0], bboxBLTR[1], bboxBLTR[2], bboxBLTR[3], now, wind, current, density).then(
+                            WeatherService.getWeather(bboxBLTR[0], bboxBLTR[1], bboxBLTR[2], bboxBLTR[3], now, wind, current, density, sealevel).then(
                                 function (response) {
-                                    $log.debug("bboxBLTR=" + bboxBLTR + " Time= " + now + " wind=" + wind + " current=" + current + " density=" + density);
+                                    $log.debug("bboxBLTR=" + bboxBLTR + " Time= " + now + " wind=" + wind + " current=" + current + " density=" + density + " Sea Level " + sealevel);
                                     $log.debug("Status=" + response.status);
-                                    // $log.debug("Response data: " + response.data);
                                     $log.debug("Response data: " + response.data.forecastDate);
                                     var features = new Array(response.data.points.length);
 
@@ -827,43 +839,33 @@ angular.module('maritimeweb.weather')
                                         boundaryLayer.getSource().clear();
 
                                         var i = 0;
+
                                         response.data.points.forEach(function (weatherObj) {
+
+                                            /*
+                                             {
+                                             "coordinate": {
+                                             "lon": 11.5,
+                                             "lat": 55.15
+                                             },
+                                             "windDirection": 252.4,
+                                             "windSpeed": 1.9,
+                                             "currentDirection": 143.4,
+                                             "currentSpeed": 0.03,
+                                             "density": 1009.55
+                                             },
+                                             */
+
                                             if (weatherObj.windSpeed && weatherObj.windDirection) {
 
-
-                                                /**
-                                                 *      "windDirection": 100.74,
-                                                 * "windSpeed": 10.46,
-                                                 * "currentDirection": 162.57,
-                                                 * "currentSpeed": 0.43
-                                                 */
-
-                                                    // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
                                                 var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
 
                                                 var iconlocFeature = new ol.Feature({
                                                     geometry: markerPosition,
-                                                    name: 'Weather',
+                                                    name: 'Wind',
                                                     windStrength: weatherObj.windSpeed,
                                                     windDirection: weatherObj.windDirection,
-                                                    waterCurrent: weatherObj.currentSpeed,
-                                                    waterDirection: weatherObj.currentDirection,
-                                                    density: weatherObj.density
                                                 });
-
-                                                /*
-                                                 {
-                                                 "coordinate": {
-                                                 "lon": 11.5,
-                                                 "lat": 55.15
-                                                 },
-                                                 "windDirection": 252.4,
-                                                 "windSpeed": 1.9,
-                                                 "currentDirection": 143.4,
-                                                 "currentSpeed": 0.03,
-                                                 "density": 1009.55
-                                                 },
-                                                 */
 
                                                 var iconlocStyle = new ol.style.Style({
                                                     image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -890,22 +892,12 @@ angular.module('maritimeweb.weather')
                                                     })
                                                 });
 
-
                                                 iconlocFeature.setStyle(iconlocStyle);
                                                 boundaryLayer.getSource().addFeature(iconlocFeature);
                                             }
 
                                             if (weatherObj.currentSpeed && weatherObj.currentDirection) {
-                                                console.log("water current");
 
-                                                /**
-                                                 *      "windDirection": 100.74,
-                                                 * "windSpeed": 10.46,
-                                                 * "currentDirection": 162.57,
-                                                 * "currentSpeed": 0.43
-                                                 */
-
-                                                    // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
                                                 var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
 
                                                 var iconWatFeature = new ol.Feature({
@@ -975,9 +967,40 @@ angular.module('maritimeweb.weather')
                                                     })
                                                 });
 
-
                                                 iconDensFeature.setStyle(iconDensStyle);
                                                 boundaryLayer.getSource().addFeature(iconDensFeature);
+                                            }
+
+                                            if (weatherObj.seaLevel) {
+                                                // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
+                                                var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
+
+                                                var iconSeaLevelFeature = new ol.Feature({
+                                                    geometry: markerPosition,
+                                                    name: 'SeaLevel',
+                                                    density: weatherObj.seaLevel
+                                                });
+
+                                                var iconSeaLevelStyle = new ol.style.Style({
+
+                                                    text: new ol.style.Text({
+                                                        font: 'bold 12px helvetica,sans-serif',
+                                                        text:  ""+weatherObj.seaLevel,
+                                                        offsetX: 0,
+                                                        offsetY: 0, //waypointtextoffset * scale,
+                                                        scale: 1,
+                                                        fill: new ol.style.Fill({
+                                                            color: '#0000ff'
+                                                        }),
+                                                        stroke: new ol.style.Stroke({
+                                                            color: '#fff',
+                                                            width: 1
+                                                        })
+                                                    })
+                                                });
+
+                                                iconSeaLevelFeature.setStyle(iconSeaLevelStyle);
+                                                boundaryLayer.getSource().addFeature(iconSeaLevelFeature);
                                             }
 
 
