@@ -8,13 +8,12 @@ angular.module('maritimeweb.weather')
             return {
                 restrict: 'E',
                 require: '^olMap',
-                template: "<form>" +
-                "<span class='map-weather-btn' ng-click='getWeatherAreaUI()' tooltip='Get METOC data in area' data-toggle='tooltip' " +
-                "data-placement='right' title='Get METOC data in area' > " +
+                template: "<form class='map-weather-box'>" +
 
 
-                "<span> Retrieve METOC <i class='fa fa-sun-o' aria-hidden='true'></i></span> information from DMI" +
-                "<div> {{time}} <input type='number' ng-model='hoursOffset' min='0' max='72' /> hours from now</div>" +
+
+                "<div> {{time}} </div>" +
+                "<div><input type='number' ng-model='hoursOffset' min='0' max='72' /> hours from now</div>" +
                 " <div class='btn-group' data-toggle='buttons'>" +
                     "<div class=''>"+
                         "<label>Wind <input type='radio' ng-model='typeForecast.name' value='wind'></label>" +
@@ -33,8 +32,16 @@ angular.module('maritimeweb.weather')
                 //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
 
                 "</span>" +
-                "<span class='map-weather btn btn-primary btn-large' ng-click='drawLineString()'>line</span>" +
-
+                "<div>" +
+                "<span class='btn btn-primary btn-large' ng-click='getWeatherAreaUI()' tooltip='Get METOC data in area' data-toggle='tooltip' " +
+                "data-placement='right' title='Get METOC data in area' > " +
+                " Retrieve METOC <i class='fa fa-download' aria-hidden='true'></i></span> information from DMI" +
+                "</div>" +
+                "<div>" +
+                //"<span class='map-weather btn btn-primary btn-large' ng-click='drawLineString()'>line</span>" +
+                "<span class=' btn btn-success btn-large' ng-click='animateWeatherOverTime()' tooltip='increase 15 minuttes' data-toggle='tooltip' " +
+                "data-placement='right' title='Animate' > Animate <i class='fa fa-play' aria-hidden='true'></i></span> " +
+                "</div>" +
                 "</form>"
 
                 ,
@@ -44,10 +51,8 @@ angular.module('maritimeweb.weather')
                 link: function (scope, element, attrs, ctrl) {
 
                     var olScope = ctrl.getOpenlayersScope();
-                    var weatherLayer;
-                    var weatherGroupLayer;
                     var serviceAvailableLayer;
-                    var boundaryLayer;
+                    var metocContentLayer;
                     const top_nw_lon = 56.30;
                     const bottom_se_lon = 54.4;
                     const right_nw_lat = 13.0;
@@ -57,7 +62,6 @@ angular.module('maritimeweb.weather')
                     scope.hoursOffset = 0;
                     scope.typeForecast = {
                         name: 'wind'
-
                     };
 
 
@@ -67,13 +71,588 @@ angular.module('maritimeweb.weather')
                      const left_se_lat = 9.419409;
                      */
 
+
+                    // #####
+
+
+                    olScope.getMap().then(function (map) {
+
+
+                        // Clean up when the layer is destroyed
+                        scope.$on('$destroy', function () {
+                            if (angular.isDefined(noGoLayer)) {
+                                map.removeLayer(noGoLayer);
+                            }
+                        });
+
+                        /***************************/
+                        /** noGoLayer Layers      **/
+                        /***************************/
+
+
+                        var noGoStyleRed = new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: 'rgba(255, 0, 10, 0.5)',
+                                width: 1
+                            }),
+                            fill: new ol.style.Fill({
+                                color: 'rgba(255, 0, 10, 0.10)'
+                            })
+                        });
+                        var availableServiceStyle = new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: 'rgba(0, 255, 10, 0.8)',
+                                width: 3
+                            })
+                        });
+
+
+                        // Construct the boundary layers
+                        metocContentLayer = new ol.layer.Vector({
+                            title: 'Weather Service Layer',
+                            zIndex: 11,
+                            source: new ol.source.Vector({
+                                features: new ol.Collection(),
+                                wrapX: false
+                            }),
+                            style: [noGoStyleRed]
+                        });
+
+                        serviceAvailableLayer = new ol.layer.Vector({
+                            title: 'Service Available - Weather',
+                            zIndex: 11,
+                            source: new ol.source.Vector({
+                                features: new ol.Collection(),
+                                wrapX: false
+                            }),
+                            style: [availableServiceStyle]
+                        });
+
+                        serviceAvailableLayer.setZIndex(12);
+                        serviceAvailableLayer.setVisible(true);
+                        serviceAvailableLayer.getSource().clear();
+
+
+                        metocContentLayer.setZIndex(11);
+                        metocContentLayer.setVisible(true);
+
+
+                        /***************************/
+                        /** Map creation          **/
+                        /***************************/
+
+                        // Construct No Go Layer Group layer
+                        var metocGroupLayer = new ol.layer.Group({
+                            title: scope.name || 'No Go Service',
+                            zIndex: 11,
+                            layers: [metocContentLayer, serviceAvailableLayer]
+                        });
+                        metocGroupLayer.setZIndex(11);
+                        metocGroupLayer.setVisible(true);
+
+                        map.addLayer(metocGroupLayer);
+
+                        var scale = 1;
+
+
+                        var startPt = new ol.geom.Point(0, 0).transform('EPSG:4326', 'EPSG:3857');
+                        var endPt = new ol.geom.Point(20, 75).transform('EPSG:4326', 'EPSG:3857');
+                        var style = new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: 'rgba(0, 255, 10, 0.8)',
+                                width: 60
+                            })
+                        });
+//style
+
+
+                        scope.drawAnimatedLine = function (startPt, endPt, style, steps, time, fn) {
+
+
+                            var line = new ol.geom.LineString([startPt, endPt]);
+                            //var fea = new ol.feature(line); //line, {}, style);
+                            var feature = new ol.Feature({
+                                geometry: line,
+                                finished: false
+                            });
+                            //feature.setStyle(style);
+                            var featureArray = [feature];
+                            //boundaryLayer.getSource().addFeatures(featureArray);
+                            serviceAvailableLayer.getSource().addFeature(feature);
+
+                            /*
+                             var directionX = (endPt.x - startPt.x) / steps;
+                             var directionY = (endPt.y - startPt.y) / steps;
+                             var i = 0;
+                             var prevLayer;
+                             var ivlDraw = setInterval(function () {
+                             if (i > steps) {
+                             clearInterval(ivlDraw);
+                             if (fn) fn();
+                             return;
+                             }
+                             var newEndPt = new ol.geom.Point(startPt.x + i * directionX, startPt.y + i * directionY);
+                             var line = new ol.geom.LineString([startPt, newEndPt]);
+                             var fea = new ol.Feature({geometry: line, labelPoint: newEndPt, name : 'animated'}); //line, {}, style);
+                             fea.setStyle(style);
+                             //var vec = new OpenLayers.Layer.Vector();
+
+                             boundaryLayer.getSource().addFeatures([fea]);
+                             //map.addLayer(vec);
+                             if(prevLayer) map.removeLayer(prevLayer);
+                             prevLayer = vec;
+                             i++;
+                             }, time / steps);
+                             */
+                        };
+
+                        scope.drawAnimatedLine(new ol.geom.Point([11, 55]).transform('EPSG:4326', 'EPSG:900913'),
+                            new ol.geom.Point([16, 65]).transform('EPSG:4326', 'EPSG:900913'),
+                            style, 50, 2000, null);
+
+
+                        /** get the current bounding box in Bottom left  Top right format. */
+                        scope.clientBBOXAndServiceLimit = function () {
+                            var bounds = map.getView().calculateExtent(map.getSize());
+                            var extent = ol.proj.transformExtent(bounds, MapService.featureProjection(), MapService.dataProjection());
+                            var l = Math.floor(extent[0] * 100) / 100;
+                            var b = Math.floor(extent[1] * 100) / 100;
+                            var r = Math.ceil(extent[2] * 100) / 100;
+                            var t = Math.ceil(extent[3] * 100) / 100;
+
+
+                            if (l < left_se_lat) {
+                                l = left_se_lat;
+                            }
+                            if (b < bottom_se_lon) {
+                                b = bottom_se_lon;
+                            }
+                            if (r > right_nw_lat) {
+                                r = right_nw_lat;
+                            }
+                            if (t > top_nw_lon) {
+                                t = top_nw_lon;
+                            }
+
+                            // hard coded service limitations...
+                            /*      if(l < 9.419409) {l = 9.419410;}
+                             if(b < 54.36294) { b = 54.36294;}
+                             if(r >  13.149009){ r =  13.149010;}
+                             if(t > 56.36316) { t = 56.36326;}*/
+                            return [b, l, t, r];
+                        };
+
+                        /** Create a waypoint feature, with  lat,lon,. */
+                        scope.createFeature = function () {
+                            var markerStyle = new ol.style.Style({
+                                image: new ol.style.Stroke({
+                                    color: 'red',
+                                    width: 20
+                                })
+
+                            });
+
+                            var waypointPositionStart = new ol.geom.Point(ol.proj.transform([parseFloat(10.0), parseFloat(55.0)], 'EPSG:4326', 'EPSG:900913'));
+                            var waypointPositionEnd = new ol.geom.Point(ol.proj.transform([parseFloat(10.0), parseFloat(55.0)], 'EPSG:4326', 'EPSG:900913'));
+
+                            var markWaypoint = this.createOpenLayerFeature(waypointPosition, waypoint);
+                            markWaypoint.setId(waypoint.id);
+                            markWaypoint.setStyle(markerStyle);
+                            return markWaypoint;
+                        };
+
+                        scope.drawLineString = function () {
+                            console.log("draw linestring");
+                            try {
+                                //var coordinates = [[0, 0], [0, 5088000], [3330000, 3330000],  [3333300, 0], [0,0]];
+                                var coordinates = [
+                                    ol.proj.transform([11, 65], 'EPSG:4326', 'EPSG:3857'),
+                                    ol.proj.transform([22, 55], 'EPSG:4326', 'EPSG:3857'),
+                                    ol.proj.transform([11, 51], 'EPSG:4326', 'EPSG:3857'),
+                                    ol.proj.transform([8, 52], 'EPSG:4326', 'EPSG:3857'),
+                                    ol.proj.transform([10, 55], 'EPSG:4326', 'EPSG:3857')
+                                ];
+
+                                /*
+                                 var line = new ol.geom.LineString([
+                                 new ol.geom.Point([55, 11]).transform('EPSG:4326', 'EPSG:3857'),
+                                 new ol.geom.Point([11, 55]).transform('EPSG:4326', 'EPSG:3857'),
+                                 new ol.geom.Point([16, 65]).transform('EPSG:4326', 'EPSG:3857')
+                                 ]); */
+                                var line = new ol.geom.LineString(coordinates);
+                                //var fea = new ol.feature(line); //line, {}, style);
+                                var feature = new ol.Feature({
+                                    geometry: line,
+                                    finished: false
+                                });
+                                //feature.setStyle(style);
+                                //var featureArray = [feature];
+                                serviceAvailableLayer.setVisible(true);
+                                serviceAvailableLayer.getSource().clear();
+                                serviceAvailableLayer.getSource().addFeature(feature);
+                                //var coordinates = [[0, 0], [0, 5088000], [3330000, 3330000],  [3333300, 0], [0,0]];
+                                /*                     var coordinates = [
+                                 ol.proj.transform([ 11, 65],'EPSG:4326', 'EPSG:3857'),
+                                 ol.proj.transform([ 22, 55],'EPSG:4326', 'EPSG:3857'),
+                                 ol.proj.transform([11 , 51],'EPSG:4326', 'EPSG:3857'),
+                                 ol.proj.transform([8 , 52],'EPSG:4326', 'EPSG:3857'),
+                                 ol.proj.transform([10 , 55],'EPSG:4326', 'EPSG:3857')
+                                 ];
+
+                                 var layerLines = new ol.layer.Vector({
+                                 source: new ol.source.Vector({
+                                 features: [new ol.Feature({
+                                 geometry: new ol.geom.LineString(coordinates),
+                                 name: 'Line'
+                                 })]
+                                 })
+                                 });
+
+                                 map.addLayer(layerLines);*/
+                            } catch (error) {
+                                $log.error("Error displaying Service Available boundary");
+                            }
+                        };
+
+                        scope.drawServiceLimitation = function () {
+                            try {
+                                var olServiceActiveArea = MapService.wktToOlFeature('POLYGON(('
+                                    + left_se_lat + ' ' + bottom_se_lon + ',  '
+                                    + right_nw_lat + ' ' + bottom_se_lon + ', '
+                                    + right_nw_lat + ' ' + top_nw_lon + ', '
+                                    + left_se_lat + ' ' + top_nw_lon + ', '
+                                    + left_se_lat + ' ' + bottom_se_lon + '))');
+                                serviceAvailableLayer.getSource().addFeature(olServiceActiveArea);
+                            } catch (error) {
+                                $log.error("Error displaying Service Available boundary");
+                            }
+                        };
+
+                        scope.getNextNoGoArea = function () {
+                            if (!scope.time) {
+                                scope.time = new Date();
+                            }
+                            scope.time.setHours(scope.time.getHours() + 1);
+                            scope.getNoGoArea(scope.time);
+                        };
+
+                        scope.animateIncreaseTime = function () {
+
+                            if (!scope.hoursOffset) {
+
+                                scope.hoursOffset = 0;
+                            } else if ( scope.hoursOffset > 72){
+                                scope.hoursOffset = 0;
+                            }
+                            // scope.time.setHours(scope.time.getHours() + 0.25);
+                            scope.hoursOffset += 1;
+                            scope.getWeatherAreaUI();
+                        }
+
+                        scope.animateWeatherOverTime = function () {
+                            $log.info("animateWeatherOverTime - doGruntAnimation");
+                            $interval(scope.animateIncreaseTime, 2200, 72);
+                        }
+
+                        scope.getWeatherAreaUI = function () {
+                            //scope.time = new Date();
+                            console.log("getWeatherAreaUI " + scope.hoursOffset + " " + scope.time + " typeForecast=" + scope.typeForecast.name);
+                            if (scope.typeForecast.name === "current") {
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, true, false, false);
+                            }
+                            else if (scope.typeForecast.name === "wind") {
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, true, false, false, false);
+                            }
+                            else if (scope.typeForecast.name === "density") {
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, false, true, false);
+                            }
+                            else if (scope.typeForecast.name === "sealevel") {
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, false, false, true);
+                            } else {
+                                scope.getWeatherInArea(scope.time, scope.hoursOffset, true, true, true, true);
+                            }
+
+                        };
+
+                        scope.findWeatherIcon = function (windstr) {
+
+                            var markerImageNamePath = "img/wind/";
+
+
+                            //Determine wind marker image to display
+                            if (windstr < 1.9) {
+                                markerImageNamePath += 'mark000.png';
+                            } else if (windstr >= 2 && windstr < 7.5) {
+                                markerImageNamePath += 'mark005.png';
+                            } else if (windstr >= 7.5 && windstr < 12.5) {
+                                markerImageNamePath += 'mark010.png';
+                            } else if (windstr >= 12.5 && windstr < 17.5) {
+                                markerImageNamePath += 'mark015.png';
+                            } else if (windstr >= 17.5 && windstr < 22.5) {
+                                markerImageNamePath += 'mark020.png';
+                            } else if (windstr >= 22.5 && windstr < 27.5) {
+                                markerImageNamePath += 'mark025.png';
+                            } else if (windstr >= 27.5 && windstr < 32.5) {
+                                markerImageNamePath += 'mark030.png';
+                            } else if (windstr >= 32.5 && windstr < 37.5) {
+                                markerImageNamePath += 'mark035.png';
+                            } else if (windstr >= 37.5 && windstr < 42.5) {
+                                markerImageNamePath += 'mark040.png';
+                            } else if (windstr >= 42.5 && windstr < 47.5) {
+                                markerImageNamePath += 'mark045.png';
+                            } else if (windstr >= 47.5 && windstr < 52.5) {
+                                markerImageNamePath += 'mark050.png';
+                            } else if (windstr >= 52.5 && windstr < 57.5) {
+                                markerImageNamePath += 'mark055.png';
+                            } else if (windstr >= 57.5 && windstr < 62.5) {
+                                markerImageNamePath += 'mark060.png';
+                            } else if (windstr >= 62.5 && windstr < 67.5) {
+                                markerImageNamePath += 'mark065.png';
+                            } else if (windstr >= 67.5 && windstr < 72.5) {
+                                markerImageNamePath += 'mark070.png';
+                            } else if (windstr >= 72.5 && windstr < 77.5) {
+                                markerImageNamePath += 'mark075.png';
+                            } else if (windstr >= 77.5 && windstr < 82.5) {
+                                markerImageNamePath += 'mark080.png';
+                            } else if (windstr >= 82.5 && windstr < 87.5) {
+                                markerImageNamePath += 'mark085.png';
+                            } else if (windstr >= 87.5 && windstr < 92.5) {
+                                markerImageNamePath += 'mark090.png';
+                            } else if (windstr >= 92.5 && windstr < 97.5) {
+                                markerImageNamePath += 'mark095.png';
+                            } else if (windstr >= 97.5) {
+                                markerImageNamePath += 'mark100.png';
+                            }
+                            return markerImageNamePath;
+                        };
+
+
+                        scope.getWeatherInArea = function (time, hoursoffset, wind, current, density, sealevel) {
+                            //scope.drawServiceLimitation();
+                            if (!time) {
+                                time = new Date();
+                            }
+
+                            if (hoursoffset) {
+                                time = new Date();
+                                time.setTime(time.getTime() + (hoursoffset * 60 * 60 * 1000));
+                                console.log("time " + time);
+                            }
+
+                            scope.time = time;
+                            console.log("scope.time " + scope.time);
+
+                            var bboxBLTR = scope.clientBBOXAndServiceLimit();
+                            var now = time.toISOString();
+                            WeatherService.getWeather(bboxBLTR[0], bboxBLTR[1], bboxBLTR[2], bboxBLTR[3], now, wind, current, density, sealevel).then(
+                                function (response) {
+                                    $log.debug("bboxBLTR=" + bboxBLTR + " Time= " + now + " wind=" + wind + " current=" + current + " density=" + density + " Sea Level " + sealevel);
+                                    $log.debug("Status=" + response.status);
+                                    $log.debug("Response data: " + response.data.forecastDate);
+                                    var features = new Array(response.data.points.length);
+
+                                    if (response.data.points.length > 0) {
+                                        try{
+                                            metocContentLayer.getSource().clear();
+                                        }catch (error){
+                                            console.error(error);
+                                        }
+                                        var i = 0;
+
+                                        response.data.points.forEach(function (weatherObj) {
+
+                                            /*
+                                             {
+                                             "coordinate": {
+                                             "lon": 11.5,
+                                             "lat": 55.15
+                                             },
+                                             "windDirection": 252.4,
+                                             "windSpeed": 1.9,
+                                             "currentDirection": 143.4,
+                                             "currentSpeed": 0.03,
+                                             "density": 1009.55
+                                             },
+                                             */
+
+                                            if (weatherObj.windSpeed && weatherObj.windDirection) {
+
+                                                var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
+
+                                                var iconlocFeature = new ol.Feature({
+                                                    geometry: markerPosition,
+                                                    name: 'Wind',
+                                                    windStrength: weatherObj.windSpeed,
+                                                    windDirection: weatherObj.windDirection,
+                                                });
+
+                                                var iconlocStyle = new ol.style.Style({
+                                                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                                        anchor: [0.5, 0.5],
+                                                        anchorXUnits: 'fraction',
+                                                        anchorYUnits: 'fraction',
+                                                        rotation: (weatherObj.windDirection - (180)) * (Math.PI / 180),//degToRad(weatherObj.windDirection),
+                                                        rotateWithView: true,
+                                                        src: scope.findWeatherIcon(weatherObj.windSpeed)
+                                                    })),
+                                                    text: new ol.style.Text({
+                                                        font: 'bold 10px helvetica,sans-serif',
+                                                        text: "" + weatherObj.windSpeed, // + " " + weatherObj.windDirection + "° ",
+                                                        offsetX: 2,
+                                                        offsetY: 2, //waypointtextoffset * scale,
+                                                        scale: (1 * scale),
+                                                        fill: new ol.style.Fill({
+                                                            color: '#000'
+                                                        }),
+                                                        stroke: new ol.style.Stroke({
+                                                            color: '#fff',
+                                                            width: 1
+                                                        })
+                                                    })
+                                                });
+
+                                                iconlocFeature.setStyle(iconlocStyle);
+                                                metocContentLayer.getSource().addFeature(iconlocFeature);
+                                            }
+
+                                            if (weatherObj.currentSpeed && weatherObj.currentDirection) {
+
+                                                var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
+
+                                                var iconWatFeature = new ol.Feature({
+                                                    geometry: markerPosition,
+                                                    name: 'Weather',
+                                                    windStrength: weatherObj.windSpeed,
+                                                    windDirection: weatherObj.windDirection,
+                                                    waterCurrent: weatherObj.currentSpeed,
+                                                    waterDirection: weatherObj.currentDirection,
+                                                    density: weatherObj.density
+                                                });
+
+                                                var iconWatStyle = new ol.style.Style({
+                                                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                                        anchor: [0.5, 0.5],
+                                                        anchorXUnits: 'fraction',
+                                                        anchorYUnits: 'fraction',
+                                                        rotation: (weatherObj.currentDirection ) * (Math.PI / 180),//degToRad(weatherObj.windDirection),
+                                                        rotateWithView: true,
+                                                        src: "img/wave/mark01.png"
+                                                    })),
+                                                    text: new ol.style.Text({
+                                                        font: 'bold 10px helvetica,sans-serif',
+                                                        text: "" + weatherObj.currentSpeed , //+ "water - " + weatherObj.currentDirection + " ", //"° ",
+                                                        offsetX: 0,
+                                                        offsetY: 0, //waypointtextoffset * scale,
+                                                        scale: 1,
+                                                        fill: new ol.style.Fill({
+                                                            color: '#0000ff'
+                                                        }),
+                                                        stroke: new ol.style.Stroke({
+                                                            color: '#fff',
+                                                            width: 1
+                                                        })
+                                                    })
+                                                });
+
+
+                                                iconWatFeature.setStyle(iconWatStyle);
+                                                metocContentLayer.getSource().addFeature(iconWatFeature);
+                                            }
+                                            if (weatherObj.density) {
+                                                // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
+                                                var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
+
+                                                var iconDensFeature = new ol.Feature({
+                                                    geometry: markerPosition,
+                                                    name: 'Density',
+                                                    density: weatherObj.density
+                                                });
+
+                                                var iconDensStyle = new ol.style.Style({
+
+                                                    text: new ol.style.Text({
+                                                        font: 'bold 12px helvetica,sans-serif',
+                                                        text:  ""+weatherObj.density,
+                                                        offsetX: 0,
+                                                        offsetY: 0, //waypointtextoffset * scale,
+                                                        scale: 1,
+                                                        fill: new ol.style.Fill({
+                                                            color: '#0000ff'
+                                                        }),
+                                                        stroke: new ol.style.Stroke({
+                                                            color: '#fff',
+                                                            width: 1
+                                                        })
+                                                    })
+                                                });
+
+                                                iconDensFeature.setStyle(iconDensStyle);
+                                                metocContentLayer.getSource().addFeature(iconDensFeature);
+                                            }
+
+                                            if (weatherObj.seaLevel) {
+                                                // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
+                                                var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
+
+                                                var iconSeaLevelFeature = new ol.Feature({
+                                                    geometry: markerPosition,
+                                                    name: 'SeaLevel',
+                                                    density: weatherObj.seaLevel
+                                                });
+
+                                                var iconSeaLevelStyle = new ol.style.Style({
+
+                                                    text: new ol.style.Text({
+                                                        font: 'bold 12px helvetica,sans-serif',
+                                                        text:  ""+weatherObj.seaLevel,
+                                                        offsetX: 0,
+                                                        offsetY: 0, //waypointtextoffset * scale,
+                                                        scale: 1,
+                                                        fill: new ol.style.Fill({
+                                                            color: '#0000ff'
+                                                        }),
+                                                        stroke: new ol.style.Stroke({
+                                                            color: '#fff',
+                                                            width: 1
+                                                        })
+                                                    })
+                                                });
+
+                                                iconSeaLevelFeature.setStyle(iconSeaLevelStyle);
+                                                metocContentLayer.getSource().addFeature(iconSeaLevelFeature);
+                                            }
+
+
+                                            i++;
+                                        })
+                                    }
+                                }, function (error) {
+                                    metocContentLayer.getSource().clear();
+                                    $log.error(error);
+                                    if (error.data.message) {
+                                        growl.error(error.data.message);
+                                    }
+
+                                });
+
+                        };
+
+                        scope.loggedIn = Auth.loggedIn;
+
+                        scope.login = function () {
+                            Auth.authz.login();
+                        };
+
+                    });
+
+
                     //Weather On Route Marker (WORM) generator
                     //var WORMWaveparams = { text: '2,5', rot: -135, anchor: [0.52, 0.25] };
                     var retWORMWaveStyle = function (scale, wavedir, wavestr) {
                         if (!scale) scale = 1;
                         if (!wavedir) wavedir = 180;
                         if (!wavestr) wavestr = 0;
-                        var WORMWaveStyleT = new ol.style.Style({
+                        var WORMWaveStyleReturn = new ol.style.Style({
                             image: new ol.style.Icon({
                                 opacity: 0.75,
                                 rotation: degToRad(wavedir), //wavepointer is pointing lowerright
@@ -99,7 +678,7 @@ angular.module('maritimeweb.weather')
                                 })
                             })
                         });
-                        return WORMWaveStyleT;
+                        return WORMWaveStyleReturn;
                     };
 
                     //var WORMCurrentparams = { text: '2', rot: -135, anchor:  };
@@ -107,7 +686,7 @@ angular.module('maritimeweb.weather')
                         if (!scale) scale = 1;
                         if (!currdir) currdir = 180;
                         if (!currstr) currstr = 0;
-                        var WORMCurrentStyle = new ol.style.Style({
+                        var WORMCurrentStyleReturn = new ol.style.Style({
                             image: new ol.style.Icon({
                                 opacity: 1,
                                 rotation: degToRad(currdir), //currentpointer is pointing lowerright
@@ -133,7 +712,7 @@ angular.module('maritimeweb.weather')
                                 })
                             })
                         });
-                        return WORMCurrentStyle;
+                        return WORMCurrentStyleReturn;
                     };
 
                     //var WORMWindparams = { rot: -135, anchor: [0.5, 0.5] };
@@ -461,570 +1040,6 @@ angular.module('maritimeweb.weather')
 
                     };
 
-
-                    // #####
-
-
-                    olScope.getMap().then(function (map) {
-
-
-                        // Clean up when the layer is destroyed
-                        scope.$on('$destroy', function () {
-                            if (angular.isDefined(noGoLayer)) {
-                                map.removeLayer(noGoLayer);
-                            }
-                        });
-
-                        /***************************/
-                        /** noGoLayer Layers      **/
-                        /***************************/
-
-
-                        var noGoStyleRed = new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                color: 'rgba(255, 0, 10, 0.5)',
-                                width: 1
-                            }),
-                            fill: new ol.style.Fill({
-                                color: 'rgba(255, 0, 10, 0.10)'
-                            })
-                        });
-                        var availableServiceStyle = new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                color: 'rgba(0, 255, 10, 0.8)',
-                                width: 3
-                            })
-                        });
-
-
-                        // Construct the boundary layers
-                        boundaryLayer = new ol.layer.Vector({
-                            title: 'Weather Service Layer',
-                            zIndex: 11,
-                            source: new ol.source.Vector({
-                                features: new ol.Collection(),
-                                wrapX: false
-                            }),
-                            style: [noGoStyleRed]
-                        });
-
-                        serviceAvailableLayer = new ol.layer.Vector({
-                            title: 'Service Available - Weather',
-                            zIndex: 11,
-                            source: new ol.source.Vector({
-                                features: new ol.Collection(),
-                                wrapX: false
-                            }),
-                            style: [availableServiceStyle]
-                        });
-
-                        serviceAvailableLayer.setZIndex(12);
-                        serviceAvailableLayer.setVisible(true);
-                        serviceAvailableLayer.getSource().clear();
-
-
-                        boundaryLayer.setZIndex(11);
-                        boundaryLayer.setVisible(true);
-
-
-                        /***************************/
-                        /** Map creation          **/
-                        /***************************/
-
-                        // Construct No Go Layer Group layer
-                        var noGoGroupLayer = new ol.layer.Group({
-                            title: scope.name || 'No Go Service',
-                            zIndex: 11,
-                            layers: [boundaryLayer, serviceAvailableLayer]
-                        });
-                        noGoGroupLayer.setZIndex(11);
-                        noGoGroupLayer.setVisible(true);
-
-                        map.addLayer(noGoGroupLayer);
-
-                        var scale = 1;
-                        var waypointtextoffset = 46;
-
-
-                        var startPt = new ol.geom.Point(0, 0).transform('EPSG:4326', 'EPSG:3857');
-                        var endPt = new ol.geom.Point(20, 75).transform('EPSG:4326', 'EPSG:3857');
-                        var style = new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                color: 'rgba(0, 255, 10, 0.8)',
-                                width: 60
-                            })
-                        });
-//style
-
-
-                        scope.drawAnimatedLine = function (startPt, endPt, style, steps, time, fn) {
-
-
-                            var line = new ol.geom.LineString([startPt, endPt]);
-                            //var fea = new ol.feature(line); //line, {}, style);
-                            var feature = new ol.Feature({
-                                geometry: line,
-                                finished: false
-                            });
-                            //feature.setStyle(style);
-                            var featureArray = [feature];
-                            //boundaryLayer.getSource().addFeatures(featureArray);
-                            serviceAvailableLayer.getSource().addFeature(feature);
-
-                            /*
-                             var directionX = (endPt.x - startPt.x) / steps;
-                             var directionY = (endPt.y - startPt.y) / steps;
-                             var i = 0;
-                             var prevLayer;
-                             var ivlDraw = setInterval(function () {
-                             if (i > steps) {
-                             clearInterval(ivlDraw);
-                             if (fn) fn();
-                             return;
-                             }
-                             var newEndPt = new ol.geom.Point(startPt.x + i * directionX, startPt.y + i * directionY);
-                             var line = new ol.geom.LineString([startPt, newEndPt]);
-                             var fea = new ol.Feature({geometry: line, labelPoint: newEndPt, name : 'animated'}); //line, {}, style);
-                             fea.setStyle(style);
-                             //var vec = new OpenLayers.Layer.Vector();
-
-                             boundaryLayer.getSource().addFeatures([fea]);
-                             //map.addLayer(vec);
-                             if(prevLayer) map.removeLayer(prevLayer);
-                             prevLayer = vec;
-                             i++;
-                             }, time / steps);
-                             */
-                        };
-
-                        scope.drawAnimatedLine(new ol.geom.Point([11, 55]).transform('EPSG:4326', 'EPSG:900913'),
-                            new ol.geom.Point([16, 65]).transform('EPSG:4326', 'EPSG:900913'),
-                            style, 50, 2000, null);
-
-
-                        /** get the current bounding box in Bottom left  Top right format. */
-                        scope.clientBBOXAndServiceLimit = function () {
-                            var bounds = map.getView().calculateExtent(map.getSize());
-                            var extent = ol.proj.transformExtent(bounds, MapService.featureProjection(), MapService.dataProjection());
-                            var l = Math.floor(extent[0] * 100) / 100;
-                            var b = Math.floor(extent[1] * 100) / 100;
-                            var r = Math.ceil(extent[2] * 100) / 100;
-                            var t = Math.ceil(extent[3] * 100) / 100;
-
-
-                            if (l < left_se_lat) {
-                                l = left_se_lat;
-                            }
-                            if (b < bottom_se_lon) {
-                                b = bottom_se_lon;
-                            }
-                            if (r > right_nw_lat) {
-                                r = right_nw_lat;
-                            }
-                            if (t > top_nw_lon) {
-                                t = top_nw_lon;
-                            }
-
-                            // hard coded service limitations...
-                            /*      if(l < 9.419409) {l = 9.419410;}
-                             if(b < 54.36294) { b = 54.36294;}
-                             if(r >  13.149009){ r =  13.149010;}
-                             if(t > 56.36316) { t = 56.36326;}*/
-                            return [b, l, t, r];
-                        };
-
-                        /** Create a waypoint feature, with  lat,lon,. */
-                        scope.createFeature = function () {
-                            var markerStyle = new ol.style.Style({
-                                image: new ol.style.Stroke({
-                                    color: 'red',
-                                    width: 20
-                                })
-
-                            });
-
-                            var waypointPositionStart = new ol.geom.Point(ol.proj.transform([parseFloat(10.0), parseFloat(55.0)], 'EPSG:4326', 'EPSG:900913'));
-                            var waypointPositionEnd = new ol.geom.Point(ol.proj.transform([parseFloat(10.0), parseFloat(55.0)], 'EPSG:4326', 'EPSG:900913'));
-
-                            var markWaypoint = this.createOpenLayerFeature(waypointPosition, waypoint);
-                            markWaypoint.setId(waypoint.id);
-                            markWaypoint.setStyle(markerStyle);
-                            return markWaypoint;
-                        };
-
-                        scope.drawLineString = function () {
-                            console.log("draw linestring");
-                            try {
-                                //var coordinates = [[0, 0], [0, 5088000], [3330000, 3330000],  [3333300, 0], [0,0]];
-                                var coordinates = [
-                                    ol.proj.transform([11, 65], 'EPSG:4326', 'EPSG:3857'),
-                                    ol.proj.transform([22, 55], 'EPSG:4326', 'EPSG:3857'),
-                                    ol.proj.transform([11, 51], 'EPSG:4326', 'EPSG:3857'),
-                                    ol.proj.transform([8, 52], 'EPSG:4326', 'EPSG:3857'),
-                                    ol.proj.transform([10, 55], 'EPSG:4326', 'EPSG:3857')
-                                ];
-
-                                /*
-                                 var line = new ol.geom.LineString([
-                                 new ol.geom.Point([55, 11]).transform('EPSG:4326', 'EPSG:3857'),
-                                 new ol.geom.Point([11, 55]).transform('EPSG:4326', 'EPSG:3857'),
-                                 new ol.geom.Point([16, 65]).transform('EPSG:4326', 'EPSG:3857')
-                                 ]); */
-                                var line = new ol.geom.LineString(coordinates);
-                                //var fea = new ol.feature(line); //line, {}, style);
-                                var feature = new ol.Feature({
-                                    geometry: line,
-                                    finished: false
-                                });
-                                //feature.setStyle(style);
-                                //var featureArray = [feature];
-                                serviceAvailableLayer.setVisible(true);
-                                serviceAvailableLayer.getSource().clear();
-                                serviceAvailableLayer.getSource().addFeature(feature);
-                                //var coordinates = [[0, 0], [0, 5088000], [3330000, 3330000],  [3333300, 0], [0,0]];
-                                /*                     var coordinates = [
-                                 ol.proj.transform([ 11, 65],'EPSG:4326', 'EPSG:3857'),
-                                 ol.proj.transform([ 22, 55],'EPSG:4326', 'EPSG:3857'),
-                                 ol.proj.transform([11 , 51],'EPSG:4326', 'EPSG:3857'),
-                                 ol.proj.transform([8 , 52],'EPSG:4326', 'EPSG:3857'),
-                                 ol.proj.transform([10 , 55],'EPSG:4326', 'EPSG:3857')
-                                 ];
-
-                                 var layerLines = new ol.layer.Vector({
-                                 source: new ol.source.Vector({
-                                 features: [new ol.Feature({
-                                 geometry: new ol.geom.LineString(coordinates),
-                                 name: 'Line'
-                                 })]
-                                 })
-                                 });
-
-                                 map.addLayer(layerLines);*/
-                            } catch (error) {
-                                $log.error("Error displaying Service Available boundary");
-                            }
-                        };
-
-                        scope.drawServiceLimitation = function () {
-                            try {
-                                var olServiceActiveArea = MapService.wktToOlFeature('POLYGON(('
-                                    + left_se_lat + ' ' + bottom_se_lon + ',  '
-                                    + right_nw_lat + ' ' + bottom_se_lon + ', '
-                                    + right_nw_lat + ' ' + top_nw_lon + ', '
-                                    + left_se_lat + ' ' + top_nw_lon + ', '
-                                    + left_se_lat + ' ' + bottom_se_lon + '))');
-                                serviceAvailableLayer.getSource().addFeature(olServiceActiveArea);
-                            } catch (error) {
-                                $log.error("Error displaying Service Available boundary");
-                            }
-                        };
-
-                        scope.getNextNoGoArea = function () {
-                            if (!scope.time) {
-                                scope.time = new Date();
-                            }
-                            scope.time.setHours(scope.time.getHours() + 1);
-                            scope.getNoGoArea(scope.time);
-                        };
-
-
-                        scope.doGruntAnimation = function () {
-                            $log.info("doGruntAnimation");
-                            $interval(scope.getNextNoGoArea, 2200, 8);
-                        };
-
-                        scope.doFakeGruntAnimation = function () {
-                            $log.info("doIncreaseDraughtAnimation");
-                            $interval(scope.getNextNoGoAreaIncreaseDraught, 2200, 8);
-                        };
-
-                        scope.getWeatherAreaUI = function () {
-                            //scope.time = new Date();
-                            console.log("getWeatherAreaUI " + scope.hoursOffset + " " + scope.time + " typeForecast=" + scope.typeForecast.name);
-                            if (scope.typeForecast.name === "current") {
-                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, true, false, false);
-                            }
-                            else if (scope.typeForecast.name === "wind") {
-                                scope.getWeatherInArea(scope.time, scope.hoursOffset, true, false, false, false);
-                            }
-                            else if (scope.typeForecast.name === "density") {
-                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, false, true, false);
-                            }
-                            else if (scope.typeForecast.name === "sealevel") {
-                                scope.getWeatherInArea(scope.time, scope.hoursOffset, false, false, false, true);
-                            } else {
-                                scope.getWeatherInArea(scope.time, scope.hoursOffset, true, true, true, true);
-                            }
-
-                        };
-
-                        scope.findWeatherIcon = function (windstr) {
-
-                            var markerImageNamePath = "img/wind/";
-
-
-                            //Determine wind marker image to display
-                            if (windstr < 1.9) {
-                                markerImageNamePath += 'mark000.png';
-                            } else if (windstr >= 2 && windstr < 7.5) {
-                                markerImageNamePath += 'mark005.png';
-                            } else if (windstr >= 7.5 && windstr < 12.5) {
-                                markerImageNamePath += 'mark010.png';
-                            } else if (windstr >= 12.5 && windstr < 17.5) {
-                                markerImageNamePath += 'mark015.png';
-                            } else if (windstr >= 17.5 && windstr < 22.5) {
-                                markerImageNamePath += 'mark020.png';
-                            } else if (windstr >= 22.5 && windstr < 27.5) {
-                                markerImageNamePath += 'mark025.png';
-                            } else if (windstr >= 27.5 && windstr < 32.5) {
-                                markerImageNamePath += 'mark030.png';
-                            } else if (windstr >= 32.5 && windstr < 37.5) {
-                                markerImageNamePath += 'mark035.png';
-                            } else if (windstr >= 37.5 && windstr < 42.5) {
-                                markerImageNamePath += 'mark040.png';
-                            } else if (windstr >= 42.5 && windstr < 47.5) {
-                                markerImageNamePath += 'mark045.png';
-                            } else if (windstr >= 47.5 && windstr < 52.5) {
-                                markerImageNamePath += 'mark050.png';
-                            } else if (windstr >= 52.5 && windstr < 57.5) {
-                                markerImageNamePath += 'mark055.png';
-                            } else if (windstr >= 57.5 && windstr < 62.5) {
-                                markerImageNamePath += 'mark060.png';
-                            } else if (windstr >= 62.5 && windstr < 67.5) {
-                                markerImageNamePath += 'mark065.png';
-                            } else if (windstr >= 67.5 && windstr < 72.5) {
-                                markerImageNamePath += 'mark070.png';
-                            } else if (windstr >= 72.5 && windstr < 77.5) {
-                                markerImageNamePath += 'mark075.png';
-                            } else if (windstr >= 77.5 && windstr < 82.5) {
-                                markerImageNamePath += 'mark080.png';
-                            } else if (windstr >= 82.5 && windstr < 87.5) {
-                                markerImageNamePath += 'mark085.png';
-                            } else if (windstr >= 87.5 && windstr < 92.5) {
-                                markerImageNamePath += 'mark090.png';
-                            } else if (windstr >= 92.5 && windstr < 97.5) {
-                                markerImageNamePath += 'mark095.png';
-                            } else if (windstr >= 97.5) {
-                                markerImageNamePath += 'mark100.png';
-                            }
-                            return markerImageNamePath;
-                        };
-
-
-                        scope.getWeatherInArea = function (time, hoursoffset, wind, current, density, sealevel) {
-                            scope.drawServiceLimitation();
-                            if (!time) {
-                                time = new Date();
-                            }
-
-                            if (hoursoffset) {
-                                time = new Date();
-                                time.setTime(time.getTime() + (hoursoffset * 60 * 60 * 1000));
-                                console.log("time " + time);
-                            }
-
-                            scope.time = time;
-                            console.log("scope.time " + scope.time);
-
-                            var bboxBLTR = scope.clientBBOXAndServiceLimit();
-                            var now = time.toISOString();
-                            WeatherService.getWeather(bboxBLTR[0], bboxBLTR[1], bboxBLTR[2], bboxBLTR[3], now, wind, current, density, sealevel).then(
-                                function (response) {
-                                    $log.debug("bboxBLTR=" + bboxBLTR + " Time= " + now + " wind=" + wind + " current=" + current + " density=" + density + " Sea Level " + sealevel);
-                                    $log.debug("Status=" + response.status);
-                                    $log.debug("Response data: " + response.data.forecastDate);
-                                    var features = new Array(response.data.points.length);
-
-                                    if (response.data.points.length > 0) {
-                                        boundaryLayer.getSource().clear();
-
-                                        var i = 0;
-
-                                        response.data.points.forEach(function (weatherObj) {
-
-                                            /*
-                                             {
-                                             "coordinate": {
-                                             "lon": 11.5,
-                                             "lat": 55.15
-                                             },
-                                             "windDirection": 252.4,
-                                             "windSpeed": 1.9,
-                                             "currentDirection": 143.4,
-                                             "currentSpeed": 0.03,
-                                             "density": 1009.55
-                                             },
-                                             */
-
-                                            if (weatherObj.windSpeed && weatherObj.windDirection) {
-
-                                                var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
-
-                                                var iconlocFeature = new ol.Feature({
-                                                    geometry: markerPosition,
-                                                    name: 'Wind',
-                                                    windStrength: weatherObj.windSpeed,
-                                                    windDirection: weatherObj.windDirection,
-                                                });
-
-                                                var iconlocStyle = new ol.style.Style({
-                                                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                                        anchor: [0.5, 0.5],
-                                                        anchorXUnits: 'fraction',
-                                                        anchorYUnits: 'fraction',
-                                                        rotation: (weatherObj.windDirection - (180)) * (Math.PI / 180),//degToRad(weatherObj.windDirection),
-                                                        rotateWithView: true,
-                                                        src: scope.findWeatherIcon(weatherObj.windSpeed)
-                                                    })),
-                                                    text: new ol.style.Text({
-                                                        font: 'bold 10px helvetica,sans-serif',
-                                                        text: "" + weatherObj.windSpeed, // + " " + weatherObj.windDirection + "° ",
-                                                        offsetX: 2,
-                                                        offsetY: 2, //waypointtextoffset * scale,
-                                                        scale: (1 * scale),
-                                                        fill: new ol.style.Fill({
-                                                            color: '#000'
-                                                        }),
-                                                        stroke: new ol.style.Stroke({
-                                                            color: '#fff',
-                                                            width: 1
-                                                        })
-                                                    })
-                                                });
-
-                                                iconlocFeature.setStyle(iconlocStyle);
-                                                boundaryLayer.getSource().addFeature(iconlocFeature);
-                                            }
-
-                                            if (weatherObj.currentSpeed && weatherObj.currentDirection) {
-
-                                                var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
-
-                                                var iconWatFeature = new ol.Feature({
-                                                    geometry: markerPosition,
-                                                    name: 'Weather',
-                                                    windStrength: weatherObj.windSpeed,
-                                                    windDirection: weatherObj.windDirection,
-                                                    waterCurrent: weatherObj.currentSpeed,
-                                                    waterDirection: weatherObj.currentDirection,
-                                                    density: weatherObj.density
-                                                });
-
-                                                var iconWatStyle = new ol.style.Style({
-                                                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                                        anchor: [0.5, 0.5],
-                                                        anchorXUnits: 'fraction',
-                                                        anchorYUnits: 'fraction',
-                                                        rotation: (weatherObj.currentDirection ) * (Math.PI / 180),//degToRad(weatherObj.windDirection),
-                                                        rotateWithView: true,
-                                                        src: "img/wave/mark01.png"
-                                                    })),
-                                                    text: new ol.style.Text({
-                                                        font: 'bold 10px helvetica,sans-serif',
-                                                        text: "" + weatherObj.currentSpeed , //+ "water - " + weatherObj.currentDirection + " ", //"° ",
-                                                        offsetX: 0,
-                                                        offsetY: 0, //waypointtextoffset * scale,
-                                                        scale: 1,
-                                                        fill: new ol.style.Fill({
-                                                            color: '#0000ff'
-                                                        }),
-                                                        stroke: new ol.style.Stroke({
-                                                            color: '#fff',
-                                                            width: 1
-                                                        })
-                                                    })
-                                                });
-
-
-                                                iconWatFeature.setStyle(iconWatStyle);
-                                                boundaryLayer.getSource().addFeature(iconWatFeature);
-                                            }
-                                            if (weatherObj.density) {
-                                                // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
-                                                var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
-
-                                                var iconDensFeature = new ol.Feature({
-                                                    geometry: markerPosition,
-                                                    name: 'Density',
-                                                    density: weatherObj.density
-                                                });
-
-                                                var iconDensStyle = new ol.style.Style({
-
-                                                    text: new ol.style.Text({
-                                                        font: 'bold 12px helvetica,sans-serif',
-                                                        text:  ""+weatherObj.density,
-                                                        offsetX: 0,
-                                                        offsetY: 0, //waypointtextoffset * scale,
-                                                        scale: 1,
-                                                        fill: new ol.style.Fill({
-                                                            color: '#0000ff'
-                                                        }),
-                                                        stroke: new ol.style.Stroke({
-                                                            color: '#fff',
-                                                            width: 1
-                                                        })
-                                                    })
-                                                });
-
-                                                iconDensFeature.setStyle(iconDensStyle);
-                                                boundaryLayer.getSource().addFeature(iconDensFeature);
-                                            }
-
-                                            if (weatherObj.seaLevel) {
-                                                // var markerPosition = new ol.geom.Point(ol.proj.transform([11, 55]), 'EPSG:4326', 'EPSG:900913');
-                                                var markerPosition = new ol.geom.Point(ol.proj.transform([weatherObj.coordinate.lon, weatherObj.coordinate.lat], 'EPSG:4326', 'EPSG:900913'));
-
-                                                var iconSeaLevelFeature = new ol.Feature({
-                                                    geometry: markerPosition,
-                                                    name: 'SeaLevel',
-                                                    density: weatherObj.seaLevel
-                                                });
-
-                                                var iconSeaLevelStyle = new ol.style.Style({
-
-                                                    text: new ol.style.Text({
-                                                        font: 'bold 12px helvetica,sans-serif',
-                                                        text:  ""+weatherObj.seaLevel,
-                                                        offsetX: 0,
-                                                        offsetY: 0, //waypointtextoffset * scale,
-                                                        scale: 1,
-                                                        fill: new ol.style.Fill({
-                                                            color: '#0000ff'
-                                                        }),
-                                                        stroke: new ol.style.Stroke({
-                                                            color: '#fff',
-                                                            width: 1
-                                                        })
-                                                    })
-                                                });
-
-                                                iconSeaLevelFeature.setStyle(iconSeaLevelStyle);
-                                                boundaryLayer.getSource().addFeature(iconSeaLevelFeature);
-                                            }
-
-
-                                            i++;
-                                        })
-                                    }
-                                }, function (error) {
-                                    boundaryLayer.getSource().clear();
-                                    $log.error(error);
-                                    if (error.data.message) {
-                                        growl.error(error.data.message);
-                                    }
-
-                                });
-
-                        };
-
-                        scope.loggedIn = Auth.loggedIn;
-
-                        scope.login = function () {
-                            Auth.authz.login();
-                        };
-
-                    });
                 }
             };
         }
