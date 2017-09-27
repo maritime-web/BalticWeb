@@ -260,6 +260,7 @@ angular.module('maritimeweb.route')
                         }
 
                         addFeatureToCharts(feature);
+                        // console.log("ROB:",feature);
                         $scope.oLfeatures.push($scope.createWaypointFeature(feature));
                         $scope.oLanimatedfeatures.push($scope.createAnimatedWaypointFeature(feature));
 

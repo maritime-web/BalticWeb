@@ -1,6 +1,6 @@
 
 <div uib-collapse="!$root.showgraphSidebar"  class="maritimeweb-sidebar col-xs-9 col-sm-5  col-md-5 sidebar"> <!-- uib-collapse="showgraphSidebar" -->
-    <uib-tabset type="pills" justified="true">
+    <uib-tabset type="pills" justified="true" active="activeTabIndex" index="$index">
 
 
         <!-- NW-NM tab -->
@@ -71,40 +71,37 @@
 
                 <div class="panel-heading"><span class="glyphicon glyphicon-globe"></span> No-Go services
                     <button ng-if="nogo.loading"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></button>
-
                 </div>
                 <div class="panel-body">
 
                     <div ng-if='loggedIn'>
-                    <div class='well well-sm'>
-                        <div>Check if a vessel can pass safely. Enter the minimum required sea level depth.</div>
-                        <div class='form-group '>
-
-                            <div><label for='depth'><small>Minimum depth:</small></label> <input id='depth' type='number' ng-model='nogo.ship.draught' class='form-control input-sm col-lg-1'> </input> </div>
+                        <div class='well well-sm'>
+                            <div>Check if a vessel can pass safely. Enter the minimum required sea level depth.</div>
+                            <div class='form-group '>
+                                <div>
+                                    <label for='depth'><small>Minimum depth:</small></label>
+                                    <input id='depth' type='number' ng-model='nogo.ship.draught' class='form-control input-sm col-lg-1' />
+                                </div>
                             </div>
-                        <div>
-                            <button data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone' ng-click='checkNoGoService()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> Mark non-safe area red</button>
-                            <button class="pull-right" ng-click="disableNoGoService()">Clear <i   class="fa fa-undo" aria-hidden="true"></i></button>
+                            <div>
+                                <button data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone' ng-click='checkNoGoService()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> Mark non-safe area red</button>
+                                <button class="pull-right" ng-click="disableNoGoService()">Clear <i   class="fa fa-undo" aria-hidden="true"></i></button>
+                            </div>
+                        <!--    <div>
+                                <button data-toggle='tooltip' data-placement='bottom' title='enable' ng-click='enableNoGoService()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> enable</button>
+                            </div>-->
 
                         </div>
-
-
-
-                    <!--    <div>
-                            <button data-toggle='tooltip' data-placement='bottom' title='enable' ng-click='enableNoGoService()'><i class='fa fa-area-chart' aria-hidden='true'  ></i> enable</button>
-                        </div>-->
-
-                        </div>
-                    <div class='well well-sm'> Start an animation where the time is increased with 1 hour.<br> Usefull in areas with high tidal where sea depth levels changes during the day.   <br>
-                        <div data-toggle='tooltip' data-placement='bottom' title='When is this relevant?'><label>Ago:</label>  {{nogo.timeAgoString}}</div>
-                        <div data-toggle='tooltip' data-placement='bottom' title={{nogo.time}}><label>Time:</label> <b>{{nogo.time.getUTCHours() + ":" + nogo.time.getUTCMinutes() + ":" + nogo.time.getUTCSeconds() }}</b> <small>{{nogo.time.getUTCDay()}} - {{nogo.time.getMonth()+1}} -  {{nogo.time.getFullYear()}} </small> UTC</div>
-                        <!--<input type='text' ng-model='nogo.time' class='form-control small'> </input-->
-                        <button ng-click='doGruntAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true'  ></i> Time animation</button>
-                        <button ng-click='getNextNoGoArea()' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ></i></button>
+                        <div class='well well-sm'> Start an animation where the time is increased with 1 hour.<br> Usefull in areas with high tidal where sea depth levels changes during the day.   <br>
+                            <div data-toggle='tooltip' data-placement='bottom' title='When is this relevant?'><label>Ago:</label>  {{nogo.timeAgoString}}</div>
+                            <div data-toggle='tooltip' data-placement='bottom' title={{nogo.time}}><label>Time:</label> <b>{{nogo.time.getUTCHours() + ":" + nogo.time.getUTCMinutes() + ":" + nogo.time.getUTCSeconds() }}</b> <small>{{nogo.time.getUTCDay()}} - {{nogo.time.getMonth()+1}} -  {{nogo.time.getFullYear()}} </small> UTC</div>
+                            <!--<input type='text' ng-model='nogo.time' class='form-control small'> </input-->
+                            <button ng-click='doGruntAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase time for zone with one hour'><i class='fa fa-play' aria-hidden='true'  ></i> Time animation</button>
+                            <button ng-click='getNextNoGoArea()' data-toggle='tooltip' data-placement='bottom' title='Retrieve No Go Zone + 1 hour'><i class='fa fa-step-forward' aria-hidden='true' ></i></button>
                         </div>
 
-                    <div class='well well-sm'> Start an animation where the minimum depth is increased with 0.5 meters. <br>
-                        <button  ng-click='doIncreaseDraughtAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase min. depth 0,5 meters'><i class='fa fa-play' aria-hidden='true'  ></i> Depth animation</button>
+                        <div class='well well-sm'> Start an animation where the minimum depth is increased with 0.5 meters. <br>
+                                <button  ng-click='doIncreaseDraughtAnimation()' data-toggle='tooltip' data-placement='bottom' title='Animate - Increase min. depth 0,5 meters'><i class='fa fa-play' aria-hidden='true'  ></i> Depth animation</button>
                         </div>
                     </div>
 
@@ -130,6 +127,10 @@
             </div>
 
         </uib-tab>
+
+
+
+
 
         <uib-tab classes="btn-sm">
             <uib-tab-heading ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
@@ -177,6 +178,9 @@
             </div>
 
         </uib-tab>
+
+
+
 
         <!-- Vessels tab -->
         <uib-tab classes="btn-sm">
@@ -243,31 +247,29 @@
 
 
         <!-- VTS report tab tab -->
-        <!--<uib-tab classes="btn-sm">-->
-            <!--<uib-tab-heading>-->
-                <!--<span class="glyphicon glyphicon-globe"></span>VTS Reporting-->
-                <!--<span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>-->
-            <!--</uib-tab-heading>-->
+        <uib-tab classes="btn-sm" >
+            <uib-tab-heading>
+                <span class="glyphicon glyphicon-globe"></span>
+                &nbsp;VTS
+                <span class="badge sidebar-badge" ng-bind="vtsAreasArr.length"></span>
+            </uib-tab-heading>
+            <div class="panel" ng-class="(1==1) ? 'panel-primary' : 'panel-default'">
+                <div class="panel-heading">Vessel Traffic Service Reporting areas</div>
 
-            <!--<div class="panel" ng-class="(1==1) ? 'panel-primary' : 'panel-default'">-->
-                <!--<div class="panel-heading">Vessel Traffic Service Reporting-->
-                    <!--&lt;!&ndash;<small tooltip="Refresh" class="glyphicon glyphicon-refresh"&ndash;&gt;-->
-                    <!--&lt;!&ndash;ng-click="refreshNwNmServices()"></small>&ndash;&gt;-->
+                <div class="panel-body">
+                    <input type="checkbox" ng-model="vts_map_show" ng-change="vtsMapToggle()" />
+                    Display VTS areas
+                    <br>
+                    <br>
+                    <input type="checkbox" ng-disabled="!vts_route_enabled" ng-model="vts_route_intersect_show" ng-change="vtsRouteIntersectToggle()" />
+                    Show only areas intersecting route
 
-                <!--</div>-->
-
-                <!--<div class="panel-body">-->
-                    <!--<input type="checkbox" ng-model="" ng-change="">-->
-                    <!--Display VTS areas-->
-                    <!--</input>-->
-                    <!--<br>-->
-                    <!--<input type="checkbox" ng-model="" ng-change="">-->
+                    <br>
+                    <!--<input type="checkbox" ng-change="">-->
                     <!--Display only VTS centres on route-->
-                    <!--</input>-->
-                <!--</div>-->
-            <!--</div>-->
-
-        <!--</uib-tab>-->
+                </div>
+            </div>
+        </uib-tab>
 
 
 
@@ -286,7 +288,7 @@
                     <!-- Table -->
                     <table class="table table-striped table-hover table-bordered ">
                         <tr>
-                            <td>Route name: {{$root.route_name}}</a>
+                            <td>Route name: {{$root.route_name}}
                             </td>
                         </tr>
                         <tr>

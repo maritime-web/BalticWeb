@@ -2,397 +2,449 @@ angular.module('maritimeweb.app')
 
     .controller("AppController", [
         '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
-        'VesselService', 'NwNmService', 'SatelliteService', 'ServiceRegistryService', 'growl', '$uibModal', '$log', '$interval',
-    function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, ServiceRegistryService, growl, $uibModal, $log, $interval) {
+        'VesselService', 'NwNmService', 'SatelliteService', 'ServiceRegistryService', 'mapVtsAreaService', 'growl', '$uibModal', '$log', '$interval',
+        function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, ServiceRegistryService, mapVtsAreaService, growl, $uibModal, $log, $interval) {
 
-        // Cancel any pending NW-NN queries
-        var loadTimerService = undefined;
-        $scope.$on("$destroy", function() {
-            if (loadTimerService) {
-                $timeout.cancel(loadTimerService);
-            }
-        });
-
-
-        $scope.welcomeToBalticWebModal = function (size) {
-            $uibModal.open({
-                animation: 'true',
-                templateUrl: 'partials/welcome.html',
-                controller: 'AcceptTermsCtrl',
-                size: size
-            })
-        };
-
-        $scope.loggedIn = Auth.loggedIn;
-
-        /** Logs the user in via Keycloak **/
-        $scope.login = function () {
-            Auth.authz.login();
-            //TODO sample Stena Danica 265177000. You can change this to anything you want, or even better take it from the login token.
-            $window.localStorage.setItem('mmsi', 265177000);
-        };
-
-        /** Logs the user out via Keycloak **/
-        $scope.logout = function () {
-            Auth.authz.logout();
-            $window.localStorage.setItem('mmsi', 0);
-        };
-
-        /** Returns the user name ,**/
-        $scope.userName = function () {
-            if (Auth.authz.idTokenParsed) {
-                return Auth.authz.idTokenParsed.name
-                    || Auth.authz.idTokenParsed.preferred_username;
-            }
-            return undefined;
-        };
-
-        /** Enters the Keycloak account management **/
-        $scope.accountManagement = function () {
-            Auth.authz.accountManagement();
-        };
-
-        // Map state and layers
-        $scope.mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
-        $scope.mapBackgroundLayers = MapService.createStdBgLayerGroup();
-        //$scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
-        $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
-        //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
-        $scope.mapSeaMapLayer =  MapService.createSuperSeaMapLayerGroup();
-        // $scope.mapMCLayers = MapService.createMCLayerGroup();
-        // $scope.mapNoGoLayer =  MapService.createNoGoLayerGroup(); // is set in the no-go-layer
-        //$scope.mcServiceRegistryInstances = ServiceRegistryService.getServiceInstances('POLYGON((9.268411718750002%2053.89831670389188%2C9.268411718750002%2057.58991390302003%2C18.392557226562502%2057.58991390302003%2C18.392557226562502%2053.89831670389188%2C9.268411718750002%2053.89831670389188))');
-        $scope.mcServiceRegistryInstances =  [];
-
-
-        var accepted_terms = $window.localStorage.getItem('terms_accepted_ttl');
-        $log.info("accepted_terms ttl = " + accepted_terms);
-        var now = new Date();
-
-        if (accepted_terms == null || (new Date(accepted_terms).getTime() < now )) {
-            $scope.welcomeToBalticWebModal('lg');
-        } else {
-            growl.info("Welcome back");
-        }
-
-
-
-        /**************************************/
-        /** Vessel sidebar functionality      **/
-        /**************************************/
-
-        // Vessels
-        $scope.vessels = [];
-
-        /** Returns the icon to use for the given vessel **/
-        $scope.iconForVessel = function (vo) {
-            return '/img/' + VesselService.imageAndTypeTextForVessel(vo).name;
-        };
-
-        /** Returns the lat-lon attributes of the vessel */
-        $scope.toLonLat = function (vessel) {
-            return {lon: vessel.x, lat: vessel.y};
-        };
-
-        /**************************************/
-        /** Vessel Traffic Service functionality      **/
-        /**************************************/
-
-        $scope.activateVTSForm = function (size) {
-            growl.info('Activating Vessel Traffic Control');
-            $uibModal.open({
-                animation: 'true',
-                templateUrl: 'vessel-traffic-service/vessel-traffic-service-form.html',
-                controller: 'VesselTrafficServiceCtrl',
-                size: size
-            })
-        };
-
-
-        // $scope.update = function() {
-        //     $scope.item.size.code = $scope.selectedItem.code
-        //     // use $scope.selectedItem.code and $scope.selectedItem.name here
-        //     // for other stuff ...
-        // }
-
-        /**************************************/
-        const top_nw_lon = 56.30;
-        const bottom_se_lon = 54.4;
-        const right_nw_lat = 13.0;
-        const left_se_lat = 10.0;
-        $scope.nogo = {};
-        $scope.nogo.ship = {};
-        $scope.nogo.ship.draught = 6;
-        $scope.nogo.time = new Date();
-        $scope.nogo.timeAgoString = "just now";
-        $scope.nogo.loading = false;
-        $scope.nogo.animating = false;
-
-
-        $scope.checkNoGoService = function () {
-            $log.info("main app controller - check no go service");
-            $scope.mapNoGoLayer.setVisible(false);
-            $scope.mapNoGoLayer.setVisible(true);
-
-        };
-
-        $scope.disableNoGoService = function () {
-            $log.info("main app controller - disable no go service");
-            $scope.mapNoGoLayer.setVisible(false);
-        };
-
-        $scope.enableNoGoService = function () {
-            $log.info("main app controller - enable no go service");
-            $scope.mapNoGoLayer.setVisible(true);
-        };
-
-        $scope.clearNoGo = function() {
-            $log.info("Clear no go");
-            serviceAvailableLayer.getSource().clear();
-            boundaryLayer.getSource().clear();
-            $scope.nogo.loading = false;
-        };
-
-        $scope.getNextNoGoArea = function(){
-            if(!$scope.nogo.time || ("" ==$scope.nogo.time)){
-                $scope.nogo.time = new Date();
-            }
-            $scope.nogo.time.setHours($scope.nogo.time.getHours() + 1);
-            console.log("getNextNoGoArea " + $scope.nogo.time);
-            $scope.checkNoGoService();
-        };
-
-        $scope.getNextNoGoAreaIncreaseDraught = function(){
-            if(!$scope.nogo.time){
-                $scope.nogo.time = new Date();
-            }
-            $scope.nogo.ship.draught = $scope.nogo.ship.draught + 0.5 ;
-            $scope.checkNoGoService();
-        };
-
-        $scope.doGruntAnimation = function(){
-            $log.info("doGruntAnimation");
-            $interval($scope.getNextNoGoArea, 2200, 8);
-        };
-
-        $scope.doIncreaseDraughtAnimation = function(){
-            $log.info("doIncreaseDraughtAnimation");
-            $interval($scope.getNextNoGoAreaIncreaseDraught, 2200, 8);
-        };
-
-
-        /**************************************/
-        /** NW-NM sidebar functionality      **/
-        /**************************************/
-
-        $scope.nwNmServices = [];
-        $scope.satelliteInstances =  [];
-        $scope.nwNmMessages = [];
-        $scope.nwNmLanguage = 'en';
-        $scope.nwNmType = {
-            NW: $window.localStorage['nwNmShowNw'] != 'false',
-            NM: $window.localStorage['nwNmShowNm'] == 'true'
-        };
-
-        /**
-         * Computes the current NW-NM service boundary
-         */
-        $scope.currentNwNmBoundary = function () {
-            return $scope.mapState['wktextent'];
-        };
-
-
-        /** Schedules reload of the NW-NM services **/
-        $scope.refreshNwNmServices = function () {
-            if (loadTimerService) {
-                $timeout.cancel(loadTimerService);
-            }
-            loadTimerService = $timeout(function () {
-                $scope.loadServicesFromRegistry();
-            }, 1000);
-        };
-
-        // Refresh the service list every time the NW-NM boundary changes
-        $scope.$watch($scope.currentNwNmBoundary, $scope.refreshNwNmServices);
-
-
-        /** Loads the  services **/
-        $scope.loadServicesFromRegistry = function () {
-            //$log.debug("     ...loadServicesFromRegistry");
-            var wkt = $scope.currentNwNmBoundary();
-           // var wkt = "POLYGON((-14.475675390625005 40.024168123114805,-14.475675390625005 68.88565248991273,59.92373867187499 68.88565248991273,59.92373867187499 40.024168123114805,-14.475675390625005 40.024168123114805))";
-
-            NwNmService.getNwNmServices(wkt) // add wkt here when SR can handle WKT searches again.
-                .success(function (services, status) {
-                    //$log.debug("NVNM Status " + status);
-                    $scope.nwNmServices.length = 0;
-
-                    // Update the selected status from localstorage
-                    var instanceIds = [];
-                    if(status==204){
-                        $scope.nwNmServicesStatus = 'false';
-                        $window.localStorage[NwNmService.serviceID()] = 'false';
-                        $scope.nwNmMessages = [];
-
-                    }
-
-                    if(status==200){
-                        $scope.nwNmServicesStatus = 'true';
-                        $window.localStorage[NwNmService.serviceID()] = 'true';
-
-
-                        angular.forEach(services, function (service) {
-                            $scope.nwNmServices.push(service);
-                            service.selected = $window.localStorage[service.instanceId] == 'true';
-                            if (service.selected) {
-                                instanceIds.push(service.instanceId);
-                            }
-                        });
-
-                        // Load messages for all the selected service instances
-                        var mainType = null;
-                        if ($scope.nwNmType.NW && !$scope.nwNmType.NM) {
-                            mainType = 'NW';
-                        } else if (!$scope.nwNmType.NW && $scope.nwNmType.NM) {
-                            mainType = 'NM';
-                        }
-                        if($window.localStorage[NwNmService.serviceID()]){
-                            NwNmService
-                                .getPublishedNwNm(instanceIds, $scope.nwNmLanguage, mainType, wkt)
-                                .success(function (messages) {
-                                    $scope.nwNmMessages = messages;
-                                });
-                        }
-                    }
-                })
-                .error(function (error) {
-                    growl.error("Error getting NW NM service from Service Register.");
-                    $window.localStorage[NwNmService.serviceID()] = 'false';
-                    $scope.nwNmServicesStatus = 'false';
-
-                    $log.debug("Error getting NW NM service. Reason=" + error);
-                })
-        };
-
-
-        /** Called when the NW-NM type selection has been changed **/
-        $scope.nwNmTypeChanged = function () {
-            $window.localStorage['nwNmShowNw'] = '' + $scope.nwNmType.NW;
-            $window.localStorage['nwNmShowNm'] = '' + $scope.nwNmType.NM;
-            $scope.loadServicesFromRegistry();
-        };
-
-
-        /** Update the selected status of the service **/
-        $scope.nwNmSelected = function (service) {
-            $window.localStorage[service.instanceId] = service.selected;
-            $scope.loadServicesFromRegistry();
-        };
-
-
-        /** Show the details of the message */
-        $scope.showNwNmDetails = function (message) {
-            NwNmService.showMessageInfo(message);
-        };
-
-
-        /** Returns the area heading for the message with the given index */
-        $scope.nwnmAreaHeading = function (index) {
-            var msg = $scope.nwNmMessages[index];
-            return NwNmService.getAreaHeading(msg);
-        };
-
-
-        /** Toggle the selected status of the layer **/
-        $scope.toggleLayer = function (layer) {
-            (layer.getVisible() == true) ? layer.setVisible(false) : layer.setVisible(true); // toggle layer visibility
-            if (layer.getVisible()) {
-                growl.info('Activating ' + layer.get('title') + ' layer');
-            }
-        };
-
-        /** Toggle the selected status of the service **/
-        $scope.toggleService = function (service) {
-            service.selected = (service.selected != true); // toggle layer visibility
-            if (service.selected) {
-                growl.info('Activating ' + service.name + ' layer');
-            }
-        };
-
-        /** Toggle the selected status of the service **/
-        $scope.switchBaseMap = function (basemap) {
-            angular.forEach($scope.mapBackgroundLayers.getLayers().getArray(), function (value) { // disable every basemaps
-                // console.log("disabling " + value.get('title'));
-                value.setVisible(false)
+            // Cancel any pending NW-NN queries
+            var loadTimerService = undefined;
+            $scope.$on("$destroy", function () {
+                if (loadTimerService) {
+                    $timeout.cancel(loadTimerService);
+                }
             });
-            basemap.setVisible(true);// activate selected basemap
-            growl.info('Activating map ' + basemap.get('title'));
-        };
 
-        /** Toggle the selected status of the service **/
-        $scope.toggleSeaMap = function () {
-            $log.debug(" Toogle sea maps");
-            if ($scope.loggedIn) {
+
+            $scope.welcomeToBalticWebModal = function (size) {
+                $uibModal.open({
+                    animation: 'true',
+                    templateUrl: 'partials/welcome.html',
+                    controller: 'AcceptTermsCtrl',
+                    size: size
+                })
+            };
+
+            $scope.loggedIn = Auth.loggedIn;
+
+            /** Logs the user in via Keycloak **/
+            $scope.login = function () {
+                Auth.authz.login();
+                //TODO sample Stena Danica 265177000. You can change this to anything you want, or even better take it from the login token.
+                $window.localStorage.setItem('mmsi', 265177000);
+            };
+
+            /** Logs the user out via Keycloak **/
+            $scope.logout = function () {
+                Auth.authz.logout();
+                $window.localStorage.setItem('mmsi', 0);
+            };
+
+            /** Returns the user name ,**/
+            $scope.userName = function () {
+                if (Auth.authz.idTokenParsed) {
+                    return Auth.authz.idTokenParsed.name
+                        || Auth.authz.idTokenParsed.preferred_username;
+                }
+                return undefined;
+            };
+
+            /** Enters the Keycloak account management **/
+            $scope.accountManagement = function () {
+                Auth.authz.accountManagement();
+            };
+
+            // Map state and layers
+            $scope.mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
+            $scope.mapBackgroundLayers = MapService.createStdBgLayerGroup();
+            //$scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
+            $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
+            //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
+            $scope.mapSeaMapLayer = MapService.createSuperSeaMapLayerGroup();
+            // $scope.mapMCLayers = MapService.createMCLayerGroup();
+            // $scope.mapNoGoLayer =  MapService.createNoGoLayerGroup(); // is set in the no-go-layer
+            //$scope.mcServiceRegistryInstances = ServiceRegistryService.getServiceInstances('POLYGON((9.268411718750002%2053.89831670389188%2C9.268411718750002%2057.58991390302003%2C18.392557226562502%2057.58991390302003%2C18.392557226562502%2053.89831670389188%2C9.268411718750002%2053.89831670389188))');
+            $scope.mcServiceRegistryInstances = [];
+
+
+            var accepted_terms = $window.localStorage.getItem('terms_accepted_ttl');
+            $log.info("accepted_terms ttl = " + accepted_terms);
+            var now = new Date();
+
+            if (accepted_terms == null || (new Date(accepted_terms).getTime() < now )) {
+                $scope.welcomeToBalticWebModal('lg');
+            } else {
+                growl.info("Welcome back");
+            }
+
+
+            /**************************************/
+            /** Vessel sidebar functionality      **/
+            /**************************************/
+
+            // Vessels
+            $scope.vessels = [];
+
+            /** Returns the icon to use for the given vessel **/
+            $scope.iconForVessel = function (vo) {
+                return '/img/' + VesselService.imageAndTypeTextForVessel(vo).name;
+            };
+
+            /** Returns the lat-lon attributes of the vessel */
+            $scope.toLonLat = function (vessel) {
+                return {lon: vessel.x, lat: vessel.y};
+            };
+
+
+            /**************************************/
+            /** Vessel Traffic Service Report functionality      **/
+            /**************************************/
+
+            $scope.activateVTSForm = function (size) {
+                growl.info('Activating Vessel Traffic Control');
+                $uibModal.open({
+                    animation: 'true',
+                    templateUrl: 'vessel-traffic-service/vessel-traffic-service-form.html',
+                    controller: 'VesselTrafficServiceReportCtrl',
+                    size: size
+                })
+            };
+
+
+            /**********************************************/
+            /** Vessel Traffic Service Map functionality **/
+            /**********************************************/
+            $scope.vts_map_show = $window.localStorage['vts_map_show'];
+            ($scope.vts_map_show == true || $scope.vts_map_show == "true") ? $scope.vts_map_show = true : $scope.vts_map_show = false; //is string, need bool
+
+            // $scope.vtsRouteEnabledTestStr = $window.localStorage['vts_route_enabled'];
+            // if($scope.vtsRouteEnabledTestStr)
+            $scope.vts_route_enabled = mapVtsAreaService.testForRoute();
+
+            // $scope.activeTabIndex =
+
+            $scope.vtsRouteWKT = ($scope.vts_route_enabled == true)? mapVtsAreaService.returnRouteAsWKT : ""; //watched by directive to populate map on change
+            $scope.vtsAreasArr = []; //is watched by directive mapVtsAreaLayer to populate map on change
+            $scope.vtsLayerEnabled = $scope.vts_map_show; //is listened to
+
+            /** Toggle the enabled status of the layer **/
+            $scope.vtsMapToggle = function () {
+                $scope.vts_map_show = mapVtsAreaService.toggleVtsAreasLayerEnabled();
+                $scope.vtsLayerEnabled = $scope.vts_map_show; //triggers layer visibility
+                if ($scope.vts_map_show == true) $scope.reloadVtsAreas(); //http service call, triggers update of map
+            };
+
+            $scope.vtsRouteIntersectToggle = function () {
+
+            };
+
+            /**
+             * TODO:
+             * make toggle for "on route" only if a route is loaded, and make method for only display areas which intersect with route
+             * make areas clickable for more info and option to send vts report
+             */
+
+            $scope.reloadVtsAreas = function () {
+                mapVtsAreaService.getVtsAreas()
+                    .success(function (data, status) {
+                        if (status == 204) {
+                        }
+                        if (status == 200) {
+                            $scope.vtsAreasArr = data.VtsJsObjects;
+                        }
+                        $scope.vtsRouteWKT = mapVtsAreaService.returnRouteAsWKT();
+                        // console.log("vtsRouteWKT:",$scope.vtsRouteWKT);
+                    })
+                    .error(function (error) {
+                        $log.debug("Error getting VTS service. Reason=" + error);
+                    })
+            };
+
+            if ($scope.vts_map_show) {
+                $scope.reloadVtsAreas();
+            }
+
+
+
+
+            /**************************************/
+            /** NOGO Service                     **/
+            /**************************************/
+            const top_nw_lon = 56.30;
+            const bottom_se_lon = 54.4;
+            const right_nw_lat = 13.0;
+            const left_se_lat = 10.0;
+            $scope.nogo = {};
+            $scope.nogo.ship = {};
+            $scope.nogo.ship.draught = 6;
+            $scope.nogo.time = new Date();
+            $scope.nogo.timeAgoString = "just now";
+            $scope.nogo.loading = false;
+            $scope.nogo.animating = false;
+
+
+            $scope.checkNoGoService = function () {
+                $log.info("main app controller - check no go service");
+                $scope.mapNoGoLayer.setVisible(false);
+                $scope.mapNoGoLayer.setVisible(true);
+
+            };
+
+            $scope.disableNoGoService = function () {
+                $log.info("main app controller - disable no go service");
+                $scope.mapNoGoLayer.setVisible(false);
+            };
+
+            $scope.enableNoGoService = function () {
+                $log.info("main app controller - enable no go service");
+                $scope.mapNoGoLayer.setVisible(true);
+            };
+
+            $scope.clearNoGo = function () {
+                $log.info("Clear no go");
+                serviceAvailableLayer.getSource().clear();
+                boundaryLayer.getSource().clear();
+                $scope.nogo.loading = false;
+            };
+
+            $scope.getNextNoGoArea = function () {
+                if (!$scope.nogo.time || ("" == $scope.nogo.time)) {
+                    $scope.nogo.time = new Date();
+                }
+                $scope.nogo.time.setHours($scope.nogo.time.getHours() + 1);
+                console.log("getNextNoGoArea " + $scope.nogo.time);
+                $scope.checkNoGoService();
+            };
+
+            $scope.getNextNoGoAreaIncreaseDraught = function () {
+                if (!$scope.nogo.time) {
+                    $scope.nogo.time = new Date();
+                }
+                $scope.nogo.ship.draught = $scope.nogo.ship.draught + 0.5;
+                $scope.checkNoGoService();
+            };
+
+            $scope.doGruntAnimation = function () {
+                $log.info("doGruntAnimation");
+                $interval($scope.getNextNoGoArea, 2200, 8);
+            };
+
+            $scope.doIncreaseDraughtAnimation = function () {
+                $log.info("doIncreaseDraughtAnimation");
+                $interval($scope.getNextNoGoAreaIncreaseDraught, 2200, 8);
+            };
+
+
+            /**************************************/
+            /** NW-NM sidebar functionality      **/
+            /**************************************/
+
+            $scope.nwNmServices = [];
+            $scope.satelliteInstances = [];
+            $scope.nwNmMessages = [];
+            $scope.nwNmLanguage = 'en';
+            $scope.nwNmType = {
+                NW: $window.localStorage['nwNmShowNw'] != 'false',
+                NM: $window.localStorage['nwNmShowNm'] == 'true'
+            };
+
+            /**
+             * Computes the current NW-NM service boundary
+             */
+            $scope.currentNwNmBoundary = function () {
+                return $scope.mapState['wktextent'];
+            };
+
+
+            /** Schedules reload of the NW-NM services **/
+            $scope.refreshNwNmServices = function () {
+                if (loadTimerService) {
+                    $timeout.cancel(loadTimerService);
+                }
+                loadTimerService = $timeout(function () {
+                    $scope.loadServicesFromRegistry();
+                }, 1000);
+            };
+
+            // Refresh the service list every time the NW-NM boundary changes
+            $scope.$watch($scope.currentNwNmBoundary, $scope.refreshNwNmServices);
+
+
+            /** Loads the  services **/
+            $scope.loadServicesFromRegistry = function () {
+                //$log.debug("     ...loadServicesFromRegistry");
+                var wkt = $scope.currentNwNmBoundary();
+                // var wkt = "POLYGON((-14.475675390625005 40.024168123114805,-14.475675390625005 68.88565248991273,59.92373867187499 68.88565248991273,59.92373867187499 40.024168123114805,-14.475675390625005 40.024168123114805))";
+
+                NwNmService.getNwNmServices(wkt) // add wkt here when SR can handle WKT searches again.
+                    .success(function (services, status) {
+                        //$log.debug("NVNM Status " + status);
+                        $scope.nwNmServices.length = 0;
+
+                        // Update the selected status from localstorage
+                        var instanceIds = [];
+                        if (status == 204) {
+                            $scope.nwNmServicesStatus = 'false';
+                            $window.localStorage[NwNmService.serviceID()] = 'false';
+                            $scope.nwNmMessages = [];
+
+                        }
+
+                        if (status == 200) {
+                            $scope.nwNmServicesStatus = 'true';
+                            $window.localStorage[NwNmService.serviceID()] = 'true';
+
+
+                            angular.forEach(services, function (service) {
+                                $scope.nwNmServices.push(service);
+                                service.selected = $window.localStorage[service.instanceId] == 'true';
+                                if (service.selected) {
+                                    instanceIds.push(service.instanceId);
+                                }
+                            });
+
+                            // Load messages for all the selected service instances
+                            var mainType = null;
+                            if ($scope.nwNmType.NW && !$scope.nwNmType.NM) {
+                                mainType = 'NW';
+                            } else if (!$scope.nwNmType.NW && $scope.nwNmType.NM) {
+                                mainType = 'NM';
+                            }
+                            if ($window.localStorage[NwNmService.serviceID()]) {
+                                NwNmService
+                                    .getPublishedNwNm(instanceIds, $scope.nwNmLanguage, mainType, wkt)
+                                    .success(function (messages) {
+                                        $scope.nwNmMessages = messages;
+                                    });
+                            }
+                        }
+                    })
+                    .error(function (error) {
+                        growl.error("Error getting NW NM service from Service Register.");
+                        $window.localStorage[NwNmService.serviceID()] = 'false';
+                        $scope.nwNmServicesStatus = 'false';
+
+                        $log.debug("Error getting NW NM service. Reason=" + error);
+                    })
+            };
+
+
+            /** Called when the NW-NM type selection has been changed **/
+            $scope.nwNmTypeChanged = function () {
+                $window.localStorage['nwNmShowNw'] = '' + $scope.nwNmType.NW;
+                $window.localStorage['nwNmShowNm'] = '' + $scope.nwNmType.NM;
+                $scope.loadServicesFromRegistry();
+            };
+
+
+            /** Update the selected status of the service **/
+            $scope.nwNmSelected = function (service) {
+                $window.localStorage[service.instanceId] = service.selected;
+                $scope.loadServicesFromRegistry();
+            };
+
+
+            /** Show the details of the message */
+            $scope.showNwNmDetails = function (message) {
+                NwNmService.showMessageInfo(message);
+            };
+
+
+            /** Returns the area heading for the message with the given index */
+            $scope.nwnmAreaHeading = function (index) {
+                var msg = $scope.nwNmMessages[index];
+                return NwNmService.getAreaHeading(msg);
+            };
+
+
+            /** Toggle the selected status of the layer **/
+            $scope.toggleLayer = function (layer) {
+                (layer.getVisible() == true) ? layer.setVisible(false) : layer.setVisible(true); // toggle layer visibility
+                if (layer.getVisible()) {
+                    growl.info('Activating ' + layer.get('title') + ' layer');
+                }
+            };
+
+            /** Toggle the selected status of the service **/
+            $scope.toggleService = function (service) {
+                service.selected = (service.selected != true); // toggle layer visibility
+                if (service.selected) {
+                    growl.info('Activating ' + service.name + ' layer');
+                }
+            };
+
+            /** Toggle the selected status of the service **/
+            $scope.switchBaseMap = function (basemap) {
                 angular.forEach($scope.mapBackgroundLayers.getLayers().getArray(), function (value) { // disable every basemaps
                     // console.log("disabling " + value.get('title'));
                     value.setVisible(false)
                 });
-                angular.forEach($scope.mapSeaMapLayer.getLayers().getArray(), function (value) { // disable/enable every basemaps
-                    $log.debug(value + " value.getVisible()=" + value.getVisible());
-                    value.setVisible(!value.getVisible());
-                    if(!value.getVisible()){
-                        $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true); // default to standard map when disabling
-                    }
-                });
-                growl.info('Activating combined  nautical chart');
-            } else {
-                growl.info("You need to login to access Nautical charts");
-                $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true);
-            }
-        };
-
-        /** Toggle the selected status of the service **/
-        $scope.switchService = function (groupLayers, layerToBeActivated) {
-            angular.forEach(groupLayers, function (layerToBeDisabled) { // disable every basemaps
-                layerToBeDisabled.setVisible(false);
-                //$log.debug(" ol disabling " + layerToBeDisabled.get('id'));
-                $window.localStorage.setItem(layerToBeDisabled.get('id'), false );
-            });
-
-            layerToBeActivated.selected = (layerToBeActivated.selected != true); // toggle service visibility. if already active
-            if (layerToBeActivated.selected) {
-                layerToBeActivated.setVisible(true);// activate selected basemap
-                growl.info('Activating map ' + layerToBeActivated.get('title'));
-                $window.localStorage.setItem(layerToBeActivated.get('id'), true );
-            }
-
-
-        };
-
-        $scope.showVesselDetails = function (vessel) {
-            $log.info("mmsi" + vessel);
-            //var vesselDetails = VesselService.details(vessel.mmsi);
-            VesselService.showVesselInfoFromMMsi(vessel);
-            //console.log("App Ctr received = vesselDetails" +JSON.stringify(vesselDetails));
-            //growl.info("got vesseldetails " + JSON.stringify(vesselDetails));
-            growl.info("Vessel details retrieved");
-
-        };
-
-        /**
-         * store all features in local storage, on a server or right now. Throw them on the root scope.
-         */
-        $scope.redirectToFrontpage = function() {
-            $scope.loading = true;
-            $log.debug("redirect to Frontpage");
-            var redirect = function(){
-                //$rootScope.showgraphSidebar = true; // rough enabling of the sidebar
-
-                $scope.loading = false;
-                $window.location.href = '#';
+                basemap.setVisible(true);// activate selected basemap
+                growl.info('Activating map ' + basemap.get('title'));
             };
-            $timeout( redirect, 100);
-        };
 
-    }]);
+            /** Toggle the selected status of the service **/
+            $scope.toggleSeaMap = function () {
+                $log.debug(" Toogle sea maps");
+                if ($scope.loggedIn) {
+                    angular.forEach($scope.mapBackgroundLayers.getLayers().getArray(), function (value) { // disable every basemaps
+                        // console.log("disabling " + value.get('title'));
+                        value.setVisible(false)
+                    });
+                    angular.forEach($scope.mapSeaMapLayer.getLayers().getArray(), function (value) { // disable/enable every basemaps
+                        $log.debug(value + " value.getVisible()=" + value.getVisible());
+                        value.setVisible(!value.getVisible());
+                        if (!value.getVisible()) {
+                            $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true); // default to standard map when disabling
+                        }
+                    });
+                    growl.info('Activating combined  nautical chart');
+                } else {
+                    growl.info("You need to login to access Nautical charts");
+                    $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true);
+                }
+            };
+
+            /** Toggle the selected status of the service **/
+            $scope.switchService = function (groupLayers, layerToBeActivated) {
+                angular.forEach(groupLayers, function (layerToBeDisabled) { // disable every basemaps
+                    layerToBeDisabled.setVisible(false);
+                    //$log.debug(" ol disabling " + layerToBeDisabled.get('id'));
+                    $window.localStorage.setItem(layerToBeDisabled.get('id'), false);
+                });
+
+                layerToBeActivated.selected = (layerToBeActivated.selected != true); // toggle service visibility. if already active
+                if (layerToBeActivated.selected) {
+                    layerToBeActivated.setVisible(true);// activate selected basemap
+                    growl.info('Activating map ' + layerToBeActivated.get('title'));
+                    $window.localStorage.setItem(layerToBeActivated.get('id'), true);
+                }
+
+
+            };
+
+            $scope.showVesselDetails = function (vessel) {
+                $log.info("mmsi" + vessel);
+                //var vesselDetails = VesselService.details(vessel.mmsi);
+                VesselService.showVesselInfoFromMMsi(vessel);
+                //console.log("App Ctr received = vesselDetails" +JSON.stringify(vesselDetails));
+                //growl.info("got vesseldetails " + JSON.stringify(vesselDetails));
+                growl.info("Vessel details retrieved");
+
+            };
+
+            /**
+             * store all features in local storage, on a server or right now. Throw them on the root scope.
+             */
+            $scope.redirectToFrontpage = function () {
+                $scope.loading = true;
+                $log.debug("redirect to Frontpage");
+                var redirect = function () {
+                    //$rootScope.showgraphSidebar = true; // rough enabling of the sidebar
+
+                    $scope.loading = false;
+                    $window.location.href = '#';
+                };
+                $timeout(redirect, 100);
+            };
+
+        }]);
 
