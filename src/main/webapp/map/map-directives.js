@@ -15,10 +15,10 @@
  */
 angular.module('maritimeweb.map')
 
-    /**
-     * A latitude directive that may be used with an input field
-     */
-    .directive('latitude', function() {
+/**
+ * A latitude directive that may be used with an input field
+ */
+    .directive('latitude', function () {
         return positionDirective('latitude', formatLatitude, parseLatitude);
     })
 
@@ -26,7 +26,7 @@ angular.module('maritimeweb.map')
     /**
      * A longitude directive that may be used with an input field
      */
-    .directive('longitude', function() {
+    .directive('longitude', function () {
         return positionDirective('longitude', formatLongitude, parseLongitude);
     })
 
@@ -34,10 +34,15 @@ angular.module('maritimeweb.map')
     /**
      * Formats a position
      */
-    .filter('lonlat', ['$rootScope', function() {
-        return function(input, args) {
+    .filter('lonlat', ['$rootScope', function () {
+        return function (input, args) {
             args = args || {};
             return input && input.lat && input.lon ? formatLatLon(input, args.decimals, args.pp).trim() : '';
+        };
+    }])
+    .filter('none', ['$rootScope', function () { //need ability to skip filter
+        return function (input) {
+            return input;
         };
     }])
 
@@ -74,30 +79,30 @@ angular.module('maritimeweb.map')
 
             },
 
-            controller: function($scope) {
+            controller: function ($scope) {
 
                 var _map = $q.defer();
 
-                $scope.getMap = function() {
+                $scope.getMap = function () {
                     return _map.promise;
                 };
 
-                $scope.setMap = function(map) {
+                $scope.setMap = function (map) {
                     _map.resolve(map);
                 };
 
-                this.getOpenlayersScope = function() {
+                this.getOpenlayersScope = function () {
                     return $scope;
                 };
             },
 
-            link: function(scope, element, attrs) {
+            link: function (scope, element, attrs) {
                 var isDefined = angular.isDefined;
                 var updateSizeTimer;
 
 
                 // Clean-up
-                element.on('$destroy', function() {
+                element.on('$destroy', function () {
 
                     if (isDefined(updateSizeTimer)) {
                         $timeout.cancel(updateSizeTimer);
@@ -126,17 +131,20 @@ angular.module('maritimeweb.map')
 
 
                 // Enable rotation on mobile devices
-                var controls = scope.readonly ? [] : ol.control.defaults({ rotate: false }).extend([new ol.control.Rotate()]);
-                var interactions = scope.readonly ? [] : ol.interaction.defaults({ altShiftDragRotate: true, pinchRotate: true});
-             //   console.log("extent" +[scope.swlon, scope.swlat, scope.nelon, scope.nelat]);
+                var controls = scope.readonly ? [] : ol.control.defaults({rotate: false}).extend([new ol.control.Rotate()]);
+                var interactions = scope.readonly ? [] : ol.interaction.defaults({
+                        altShiftDragRotate: true,
+                        pinchRotate: true
+                    });
+                //   console.log("extent" +[scope.swlon, scope.swlat, scope.nelon, scope.nelat]);
 
                 var balticExtent = ol.proj.transformExtent([scope.swlon, scope.swlat, scope.nelon, scope.nelat], 'EPSG:4326', 'EPSG:3857');
-               // var balticExtent = ol.proj.transformExtent([9, 53, 31, 66], 'EPSG:4326', 'EPSG:3857');
+                // var balticExtent = ol.proj.transformExtent([9, 53, 31, 66], 'EPSG:4326', 'EPSG:3857');
                 var layers = [];
                 var view = new ol.View({
                     zoom: 7,
                     minZoom: scope.minzoom,
-                   // extent: balticExtent
+                    // extent: balticExtent
                 });
                 var map = new ol.Map({
                     target: angular.element(element)[0],
@@ -155,7 +163,7 @@ angular.module('maritimeweb.map')
 
                     // Check if the center is defined in the directive attributes or in the mapState
                     if (initial && isDefined(attrs.lat) && isDefined(attrs.lon)) {
-                        center = [  parseFloat(attrs.lon), parseFloat(attrs.lat) ];
+                        center = [parseFloat(attrs.lon), parseFloat(attrs.lat)];
                     } else if (isDefined(scope.mapState) && isDefined(scope.mapState.center)) {
                         center = scope.mapState.center;
                     }
@@ -170,7 +178,7 @@ angular.module('maritimeweb.map')
                     // Update the map
                     view.setCenter(MapService.fromLonLat(center));
                     view.setZoom(zoom);
-                    
+
                 };
                 scope.updateMapExtent(true);
 
@@ -209,8 +217,12 @@ angular.module('maritimeweb.map')
                     map.updateSize();
                 };
                 scope.$watchGroup([
-                    function() { return element[0].clientWidth; },
-                    function() { return element[0].clientHeight; }
+                    function () {
+                        return element[0].clientWidth;
+                    },
+                    function () {
+                        return element[0].clientHeight;
+                    }
                 ], function () {
                     if (isDefined(updateSizeTimer)) {
                         $timeout.cancel(updateSizeTimer);
@@ -240,13 +252,13 @@ angular.module('maritimeweb.map')
                 source: '@',
                 sourceProperties: '='
             },
-            link: function(scope, element, attrs, ctrl) {
+            link: function (scope, element, attrs, ctrl) {
                 var olScope = ctrl.getOpenlayersScope();
                 var olLayer;
 
-                olScope.getMap().then(function(map) {
+                olScope.getMap().then(function (map) {
 
-                    scope.$on('$destroy', function() {
+                    scope.$on('$destroy', function () {
                         if (angular.isDefined(olLayer)) {
                             map.removeLayer(olLayer);
                         }
@@ -298,16 +310,16 @@ angular.module('maritimeweb.map')
             scope: {
                 layerGroup: '='
             },
-            link: function(scope, element, attrs, ctrl) {
+            link: function (scope, element, attrs, ctrl) {
                 var olScope = ctrl.getOpenlayersScope();
 
-                olScope.getMap().then(function(map) {
+                olScope.getMap().then(function (map) {
 
                     if (angular.isDefined(scope.layerGroup)) {
                         map.addLayer(scope.layerGroup);
                     }
 
-                    scope.$on('$destroy', function() {
+                    scope.$on('$destroy', function () {
                         if (angular.isDefined(scope.layerGroup)) {
                             map.removeLayer(scope.layerGroup);
                         }
@@ -328,24 +340,24 @@ angular.module('maritimeweb.map')
             scope: {
                 collapsed: '='
             },
-            link: function(scope, element, attrs, ctrl) {
-                var olScope         = ctrl.getOpenlayersScope();
+            link: function (scope, element, attrs, ctrl) {
+                var olScope = ctrl.getOpenlayersScope();
                 var overviewMap = new ol.control.OverviewMap({
                     collapsed: scope.collapsed || false,
                     layers: [
                         new ol.layer.Tile({
-                            source: new ol.source.OSM({ layer: 'sat' })
+                            source: new ol.source.OSM({layer: 'sat'})
                         })
                     ],
                     collapseLabel: '-',
                     label: '+'
                 });
 
-                olScope.getMap().then(function(map) {
+                olScope.getMap().then(function (map) {
                     map.addControl(overviewMap);
 
                     // When destroyed, clean up
-                    scope.$on('$destroy', function() {
+                    scope.$on('$destroy', function () {
                         map.removeControl(overviewMap);
                     });
 
@@ -362,15 +374,15 @@ angular.module('maritimeweb.map')
         return {
             restrict: 'E',
             require: '^olMap',
-            link: function(scope, element, attrs, ctrl) {
-                var olScope         = ctrl.getOpenlayersScope();
-                var layerSwitcher   = new ol.control.LayerSwitcher();
+            link: function (scope, element, attrs, ctrl) {
+                var olScope = ctrl.getOpenlayersScope();
+                var layerSwitcher = new ol.control.LayerSwitcher();
 
-                olScope.getMap().then(function(map) {
+                olScope.getMap().then(function (map) {
                     map.addControl(layerSwitcher);
 
                     // When destroyed, clean up
-                    scope.$on('$destroy', function() {
+                    scope.$on('$destroy', function () {
                         map.removeControl(layerSwitcher);
                     });
 
@@ -388,16 +400,14 @@ angular.module('maritimeweb.map')
             restrict: 'E',
             replace: false,
             require: '^olMap',
-            template:
-                "<span class='map-current-pos-btn'  tooltip='Go to current position' data-toggle='tooltip' data-placement='right' title='Go to current position' >" +
-                    "<span><i class='fa fa-location-arrow' ng-click='currentPos()'aria-hidden='true'></i></span>" +
-                //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
-                "</span>",
-            scope: {
-            },
-            link: function(scope, element, attrs, ctrl) {
-                var olScope     = ctrl.getOpenlayersScope();
-                olScope.getMap().then(function(map) {
+            template: "<span class='map-current-pos-btn'  tooltip='Go to current position' data-toggle='tooltip' data-placement='right' title='Go to current position' >" +
+            "<span><i class='fa fa-location-arrow' ng-click='currentPos()'aria-hidden='true'></i></span>" +
+            //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
+            "</span>",
+            scope: {},
+            link: function (scope, element, attrs, ctrl) {
+                var olScope = ctrl.getOpenlayersScope();
+                olScope.getMap().then(function (map) {
                     scope.currentPos = function () {
                         scope.loadingData = true; // start spinner
                         $window.navigator.geolocation.getCurrentPosition(function (pos) {
@@ -452,15 +462,13 @@ angular.module('maritimeweb.map')
             restrict: 'E',
             replace: false,
             require: '^olMap',
-            template:
-            "<span class='map-current-pos-btn'>" +
+            template: "<span class='map-current-pos-btn'>" +
             " <span><i class='fa fa-location-arrow' aria-hidden='true' ng-click='currentPosOrientation()' tooltip='Current Position and orientation' ></i></span>" +
             "</span>",
-            scope: {
-            },
-            link: function(scope, element, attrs, ctrl) {
-                var olScope     = ctrl.getOpenlayersScope();
-                olScope.getMap().then(function(map) {
+            scope: {},
+            link: function (scope, element, attrs, ctrl) {
+                var olScope = ctrl.getOpenlayersScope();
+                olScope.getMap().then(function (map) {
                     scope.currentPosOrientation = function () {
                         scope.loadingData = true; // start spinner
                         $window.navigator.geolocation.getCurrentPosition(function (pos) {
@@ -495,7 +503,7 @@ angular.module('maritimeweb.map')
                             deviceOrientation.setTracking(true);
 
                             // tilt the map
-                            deviceOrientation.on(['change:beta', 'change:gamma'], function(event) {
+                            deviceOrientation.on(['change:beta', 'change:gamma'], function (event) {
                                 var center = map.getView().getCenter();
                                 var resolution = view.getResolution();
                                 var beta = event.target.getBeta() || 0;
@@ -531,27 +539,26 @@ angular.module('maritimeweb.map')
             restrict: 'E',
             replace: true,
             require: '^olMap',
-            template:
-            "<span class='map-scale-line'  tooltip='nautical miles' data-toggle='tooltip' data-placement='bottom' title='nautical miles'></span>",
+            template: "<span class='map-scale-line'  tooltip='nautical miles' data-toggle='tooltip' data-placement='bottom' title='nautical miles'></span>",
             scope: {
-                units    : '@',
-                minWidth : '='
+                units: '@',
+                minWidth: '='
             },
-            link: function(scope, element, attrs, ctrl) {
-                var olScope     = ctrl.getOpenlayersScope();
-                var scaleLine   = new ol.control.ScaleLine({
+            link: function (scope, element, attrs, ctrl) {
+                var olScope = ctrl.getOpenlayersScope();
+                var scaleLine = new ol.control.ScaleLine({
                     className: 'ol-scale-line',
                     units: scope.units || 'nautical',
                     minWidth: scope.minWidth || 80,
                     target: angular.element(element)[0]
                 });
 
-                olScope.getMap().then(function(map) {
+                olScope.getMap().then(function (map) {
 
                     map.addControl(scaleLine);
 
                     // When destroyed, clean up
-                    scope.$on('$destroy', function() {
+                    scope.$on('$destroy', function () {
                         map.removeControl(scaleLine);
                     });
                 });
@@ -567,28 +574,33 @@ angular.module('maritimeweb.map')
             restrict: 'E',
             replace: true,
             require: '^olMap',
-            template:
-                "<div class='map-mouse-position'>{{currentPos | lonlat:{ decimals : 2, pp: true }  }}</div>",
-            scope: {
-            },
-            link: function(scope, element, attrs, ctrl) {
-                var olScope         = ctrl.getOpenlayersScope();
-                scope.currentPos    = undefined;
+            template: "<div class='map-mouse-position'>{{(filterPos) ? (currentPos | lonlat:{ decimals : 2, pp: true }) : (currentPos)  }}<div class='map-mouse-position-toggle glyphicon glyphicon-transfer' ng-click='clickToggleDisplayType()'></div></div>",
+            scope: {},
+            link: function (scope, element, attrs, ctrl) {
+                var olScope = ctrl.getOpenlayersScope();
+                scope.currentPos = undefined;
 
-                olScope.getMap().then(function(map) {
+                olScope.getMap().then(function (map) {
+                    scope.displayAsDecimalDegrees = false;
+                    scope.filterPos = true;
 
                     // Update the tooltip whenever the mouse is moved
-                    map.on('pointermove', function(evt) {
+                    map.on('pointermove', function (evt) {
                         var lonlat = MapService.toLonLat(evt.coordinate);
-                        scope.currentPos = { lon: lonlat[0], lat: lonlat[1] };
+                        (scope.filterPos) ? scope.currentPos = {lon: lonlat[0], lat: lonlat[1]} : scope.currentPos = (lonlat[1].toFixed(7) + " , " + lonlat[0].toFixed(7)); //reversed latlon because ISO 6709:2008
                         scope.$$phase || scope.$apply();
                     });
 
-                 /*
-                    $(map.getViewport()).on('mouseout', function() {
-                        scope.currentPos = undefined;
-                        scope.$$phase || scope.$apply();
-                    });*/
+                    scope.clickToggleDisplayType = function () {
+                        scope.displayAsDecimalDegrees = !scope.displayAsDecimalDegrees; //toggle decimal degrees
+                        (scope.displayAsDecimalDegrees) ? scope.filterPos = false : scope.filterPos = true;
+                        scope.currentPos = "";
+                    };
+                    /*
+                     $(map.getViewport()).on('mouseout', function() {
+                     scope.currentPos = undefined;
+                     scope.$$phase || scope.$apply();
+                     });*/
                 });
             }
         };
@@ -601,23 +613,21 @@ angular.module('maritimeweb.map')
             restrict: 'E',
             replace: true,
             require: '^olMap',
-            template:
-            "<span class='sidebar-toggle-btn' ng-click='toggleSideBarList()'  " +
+            template: "<span class='sidebar-toggle-btn' ng-click='toggleSideBarList()'  " +
             " tooltip='Toggle detailed list-view' data-toggle='tooltip' data-placement='right' title='Toggle detailed list-view'>" +
             "   <span >" +
             "<i ng-if='!$root.showgraphSidebar' class='fa fa-list fa-lg ' aria-hidden='true'></i> </span>" +
             "<i ng-if='$root.showgraphSidebar' class='fa fa-times fa-lg ' aria-hidden='true'></i> </span>" +
-            "</span>" ,
-            scope: {
-            },
-            link: function(scope, element, attrs, ctrl) {
-                var olScope         = ctrl.getOpenlayersScope();
+            "</span>",
+            scope: {},
+            link: function (scope, element, attrs, ctrl) {
+                var olScope = ctrl.getOpenlayersScope();
                 $rootScope.showgraphSidebar = true;
                 $log.info();
-                scope.toggleSideBarList = function(){
+                scope.toggleSideBarList = function () {
                     $rootScope.showgraphSidebar = !$rootScope.showgraphSidebar;
                 };
-                scope.disableSidebar = function(){
+                scope.disableSidebar = function () {
                     $rootScope.showgraphSidebar = false;
                 }
             }

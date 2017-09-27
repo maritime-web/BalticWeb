@@ -1035,7 +1035,7 @@ angular.module('maritimeweb.route')
                     features: '=?'
             },
             link: function(scope, element, attrs, ctrl) {
-                $log.info("The simple rtz route got features: ");// + $rootScope.route_oLfeatures.length + " and oLpoints:" + $rootScope.route_oLpoints.length );
+                // $log.info("The simple rtz route got features: ");// + $rootScope.route_oLfeatures.length + " and oLpoints:" + $rootScope.route_oLpoints.length );
                 var olScope         = ctrl.getOpenlayersScope();
 
                 scope.populatePopupWaypoint = function (feature) {

@@ -2,6 +2,7 @@
 html {
     position: relative;
     min-height: 100%;
+    /*min-height: calc(100% - 70px); !*remove footer height scroll issue*!*/
 }
 
 body {
@@ -11,6 +12,13 @@ body {
 }
 /* Sticky footer styles
 -------------------------------------------------- */
+
+.foot-hr{
+    padding: 4px;
+    margin: 4px;
+    width:100%;
+}
+
 .footer {
     position: absolute;
     bottom: -70px;
@@ -662,7 +670,21 @@ body {
     z-index: 100;
     background-color: rgba(0, 60, 136, 0.5);
 }
-
+.map-mouse-position-toggle{
+    font-size: 1.4em !important;
+    position: absolute;
+    left: 110%;
+    top:0px;
+    border-radius: 4px;
+    padding: 4px;
+    width: 22px;
+    height: 100%;
+    text-align: center;
+    font-size: 0.8em;
+    color: white;
+    z-index: 100;
+    background-color: rgba(0, 60, 136, 0.5);
+}
 
 
 .popover {

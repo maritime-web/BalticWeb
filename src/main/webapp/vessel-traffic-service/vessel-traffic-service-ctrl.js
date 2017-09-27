@@ -16,6 +16,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
     function ($scope, $uibModalInstance, $window, $sce, growl, $http, Auth, VesselService, VtsHelperService) {
 
 
+
+
         //Populate the interface using json object from service - anon allowed
         var VTSData = []; //local array
         var getInterfaceObjectsFromService = function () {
@@ -30,6 +32,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         growl.success("VTS interface population service was successful.");
                         $scope.VTSCenterData = parsedData.data.VtsJsObjects;
                         VTSData = $scope.VTSCenterData; //place in local
+                        VTSData.unshift(null); //has to start from item 1 - OL3 vector features cannot have ID=0.
                         angular.element(document.querySelector('#modalbody')).removeClass('ng-hide'); //is hidden until angular is ready
                         $scope.vtsTimeStamp = moment.utc().format('HH : mm');//display date and time in utc
                         $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + moment.utc().format('DD MMM YYYY');
@@ -1066,9 +1069,10 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
             var html = "",
                 vtsID = 0;
-
-            for (var i = 0; i != VTSData.length; i++) {
+            for (var i = 1; i != VTSData.length; i++) {
+                console.log("ID:", i," becomes:", VTSData[i].id);
                 if (selectedItem == VTSData[i].shortname) {
+                    console.log("ID:", i," becomes:", VTSData[i].id ," - ", selectedItem, " - ", VTSData[i].shortname);
                     vtsID = VTSData[i].id;
                     $scope.VTSID = vtsID;
                 }
@@ -1463,6 +1467,13 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 }
             }
         });
+
+        //Skips null items when populating dropdowns
+        $scope.isListItemNull = function(item) {
+            if (item === null) return false;
+            return true;
+        };
+
 
         console.log("TODO (final task): function to save and load state of report in localstorage");
         $scope.exitInterface = function(state){

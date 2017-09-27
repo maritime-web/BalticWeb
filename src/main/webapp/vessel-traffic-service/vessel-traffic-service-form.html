@@ -9,7 +9,7 @@
 
 <div id="modalbody" class="modal-body ng-hide">
     <div ng-show="showReportInterface">
-        <select class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in VTSCenterData" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname)">
+        <select class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname)">
             <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>
         </select>
         <div>
