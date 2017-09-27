@@ -530,11 +530,32 @@ body {
 
 }
 
-.map-weather-btn {
-    left: 12px;
-    bottom: 0px;
-    font-size: 1.0em;
+.map-weather-box {
+    left: 1rem;
+    bottom: -30rem;
+    height: auto;
+    font-size: 1.2rem;
+    width: 70rem;
     position: absolute;
+    z-index: 100;
+    margin: 0;
+    padding: 3px;
+    border-radius: 4px;
+    opacity: 1.0;
+}
+.map-weather {
+    right: 1rem;
+    bottom: -8rem;
+    font-size: 1.0em;
+    z-index: 100;
+    margin: 0;
+    padding: 3px;
+    border-radius: 4px;
+}
+.map-weather-btn {
+    left: 1rem;
+    bottom: -10rem;
+    font-size: 1.0rem;
     z-index: 100;
     margin: 0;
     padding: 3px;
