@@ -2,7 +2,6 @@
 html {
     position: relative;
     min-height: 100%;
-    /*min-height: calc(100% - 70px); !*remove footer height scroll issue*!*/
 }
 
 body {
@@ -12,12 +11,6 @@ body {
 }
 /* Sticky footer styles
 -------------------------------------------------- */
-
-.foot-hr{
-    padding: 4px;
-    margin: 4px;
-    width:100%;
-}
 
 .footer {
     position: absolute;

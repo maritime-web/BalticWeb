@@ -255,34 +255,42 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
 
 
             /**  Find the intersects of route on VTS areas **/
-            // if(routeRet) {
-            //         //Find ETA of intersect at VTS area line
-            //     var routeline = turf.lineString(routeArr);
-            //
-            //     //make WKT to poly
-            //     var tmpWKT = areaWKT.replace("POLYGON((", '').replace('))', '');
-            //     tmpWKT = tmpWKT.replace(/,([\s])+/g, ',');
-            //     var tmpPoly = tmpWKT.split(',');
-            //     var areaAsPoly = [], tmpAreaAsPoly = [];
-            //     for (var i = 0; i != tmpPoly.length; i++) {
-            //         var tmpPos = tmpPoly[i].split(" ");
-            //         tmpAreaAsPoly.push([parseFloat(tmpPos[0]), parseFloat(tmpPos[1])]);
-            //     }
-            //     if (tmpAreaAsPoly[0] != tmpAreaAsPoly[tmpAreaAsPoly.length]) tmpAreaAsPoly.push(tmpAreaAsPoly[0]); //last pos must be same as first pos
-            //
-            //
-            //     areaAsPoly.push(tmpAreaAsPoly); //inception array
-            //     var vtsarea = turf.polygon(areaAsPoly);
-            //     // var vtsarea = turf.polygon([[[12,56],[12,55],[13,55],[13,56],[12,56]]]);
-            //     var intersection = turf.lineIntersect(vtsarea, routeline);
-            //     console.log("intersection:", intersection);
-            //     // alert("TODO:line length, see ETA based on RTZ time, if no time added, make a new rtz with times added for august 2019");
-            //     //TODO: Make option in main map to display all VTS areas in visible map area, obey zoom level, cutoff at
-            //     //TODO: make an RTZ with times, without times and passing 2 VTS areas. (Tallin/Helsinki)
-            //     //TODO: if no route and no ETA for waypoints, and no AIS ETA, use nothing.
-            //     //TODO: if no route and no ETA for waypoints, use AIS ETA at whatever port.
-            //     //TODO: if route and has ETA at first waypoint inside VTS and last waypoint before VTS area, calculate ETA according to length of line using waypoint ETA before intersect.
-            // }
+            if(routeRet) {
+                var extentRoute = routefeature.getGeometry().getExtent();
+                var extentArea = areafeature.getGeometry().getExtent();
+
+                // console.log("extentRoute:",extentRoute);
+                // console.log("extentArea:",extentArea);
+                // console.log(ol.extent.containsExtent(extentArea,extentRoute));
+
+
+                //Find ETA of intersect at VTS area line
+                // var routeline = turf.lineString(routeArr);
+                //
+                // //make WKT to poly
+                // var tmpWKT = areaWKT.replace("POLYGON((", '').replace('))', '');
+                // tmpWKT = tmpWKT.replace(/,([\s])+/g, ',');
+                // var tmpPoly = tmpWKT.split(',');
+                // var areaAsPoly = [], tmpAreaAsPoly = [];
+                // for (var i = 0; i != tmpPoly.length; i++) {
+                //     var tmpPos = tmpPoly[i].split(" ");
+                //     tmpAreaAsPoly.push([parseFloat(tmpPos[0]), parseFloat(tmpPos[1])]);
+                // }
+                // if (tmpAreaAsPoly[0] != tmpAreaAsPoly[tmpAreaAsPoly.length]) tmpAreaAsPoly.push(tmpAreaAsPoly[0]); //last pos must be same as first pos
+                //
+                //
+                // areaAsPoly.push(tmpAreaAsPoly); //inception array
+                // var vtsarea = turf.polygon(areaAsPoly);
+                // // var vtsarea = turf.polygon([[[12,56],[12,55],[13,55],[13,56],[12,56]]]);
+                // var intersection = turf.lineIntersect(vtsarea, routeline);
+                // console.log("intersection:", intersection);
+                // alert("TODO:line length, see ETA based on RTZ time, if no time added, make a new rtz with times added for august 2019");
+                //TODO: Make option in main map to display all VTS areas in visible map area, obey zoom level, cutoff at
+                //TODO: make an RTZ with times, without times and passing 2 VTS areas. (Tallin/Helsinki)
+                //TODO: if no route and no ETA for waypoints, and no AIS ETA, use nothing.
+                //TODO: if no route and no ETA for waypoints, use AIS ETA at whatever port.
+                //TODO: if route and has ETA at first waypoint inside VTS and last waypoint before VTS area, calculate ETA according to length of line using waypoint ETA before intersect.
+            }
 
 
             if (AISpos && AISpos.length > 1) {//only if there is a pos
