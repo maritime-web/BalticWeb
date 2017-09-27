@@ -137,7 +137,7 @@ angular.module('maritimeweb.vts-map')
                         vtsareaLayer.getSource().addFeature(areafeature);
 
 
-                        vtsAreas = new ol.layer.Group({
+                        var vtsAreas = new ol.layer.Group({
                             title: scope.name || 'VTS',
                             zIndex: 11,
                             layers: [vtsareaLayer]
