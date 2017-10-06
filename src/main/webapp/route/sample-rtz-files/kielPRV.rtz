@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.1" xmlns="http://www.cirm.org/RTZ/1/1">
   <routeInfo routeName="Route_1464598347287"/>
   <waypoints>
     <waypoint id="1" name="WP_001">
@@ -79,25 +80,25 @@
   <schedules>
     <schedule id="1">
       <calculated>
-        <sheduleElement eta="2016-05-30T12:00:00.000Z" waypointId="1"/>
-        <sheduleElement eta="2016-05-30T12:13:15.000Z" speed="12.0" waypointId="2"/>
-        <sheduleElement eta="2016-05-30T13:21:18.000Z" speed="12.0" waypointId="3"/>
-        <sheduleElement eta="2016-05-30T15:04:20.000Z" speed="12.0" waypointId="4"/>
-        <sheduleElement eta="2016-05-30T20:15:56.000Z" speed="12.0" waypointId="5"/>
-        <sheduleElement eta="2016-05-30T23:07:13.000Z" speed="12.0" waypointId="6"/>
-        <sheduleElement eta="2016-05-31T13:28:33.000Z" speed="12.0" waypointId="7"/>
-        <sheduleElement eta="2016-05-31T19:38:42.000Z" speed="12.0" waypointId="8"/>
-        <sheduleElement eta="2016-06-01T02:19:45.000Z" speed="12.0" waypointId="9"/>
-        <sheduleElement eta="2016-06-01T04:42:53.000Z" speed="12.0" waypointId="10"/>
-        <sheduleElement eta="2016-06-01T08:52:18.000Z" speed="12.0" waypointId="11"/>
-        <sheduleElement eta="2016-06-01T10:28:54.000Z" speed="12.0" waypointId="12"/>
-        <sheduleElement eta="2016-06-01T10:51:44.000Z" speed="12.0" waypointId="13"/>
-        <sheduleElement eta="2016-06-01T11:10:58.000Z" speed="12.0" waypointId="14"/>
-        <sheduleElement eta="2016-06-01T11:18:44.000Z" speed="12.0" waypointId="15"/>
-        <sheduleElement eta="2016-06-01T12:25:39.000Z" speed="12.0" waypointId="16"/>
-        <sheduleElement eta="2016-06-01T14:26:24.000Z" speed="12.0" waypointId="17"/>
-        <sheduleElement eta="2016-06-01T16:03:04.000Z" speed="12.0" waypointId="18"/>
-        <sheduleElement eta="2016-06-01T17:03:03.000Z" speed="12.0" waypointId="19"/>
+        <scheduleElement eta="2016-05-30T12:00:00.000Z" waypointId="1"/>
+        <scheduleElement eta="2016-05-30T12:13:15.000Z" speed="12.0" waypointId="2"/>
+        <scheduleElement eta="2016-05-30T13:21:18.000Z" speed="12.0" waypointId="3"/>
+        <scheduleElement eta="2016-05-30T15:04:20.000Z" speed="12.0" waypointId="4"/>
+        <scheduleElement eta="2016-05-30T20:15:56.000Z" speed="12.0" waypointId="5"/>
+        <scheduleElement eta="2016-05-30T23:07:13.000Z" speed="12.0" waypointId="6"/>
+        <scheduleElement eta="2016-05-31T13:28:33.000Z" speed="12.0" waypointId="7"/>
+        <scheduleElement eta="2016-05-31T19:38:42.000Z" speed="12.0" waypointId="8"/>
+        <scheduleElement eta="2016-06-01T02:19:45.000Z" speed="12.0" waypointId="9"/>
+        <scheduleElement eta="2016-06-01T04:42:53.000Z" speed="12.0" waypointId="10"/>
+        <scheduleElement eta="2016-06-01T08:52:18.000Z" speed="12.0" waypointId="11"/>
+        <scheduleElement eta="2016-06-01T10:28:54.000Z" speed="12.0" waypointId="12"/>
+        <scheduleElement eta="2016-06-01T10:51:44.000Z" speed="12.0" waypointId="13"/>
+        <scheduleElement eta="2016-06-01T11:10:58.000Z" speed="12.0" waypointId="14"/>
+        <scheduleElement eta="2016-06-01T11:18:44.000Z" speed="12.0" waypointId="15"/>
+        <scheduleElement eta="2016-06-01T12:25:39.000Z" speed="12.0" waypointId="16"/>
+        <scheduleElement eta="2016-06-01T14:26:24.000Z" speed="12.0" waypointId="17"/>
+        <scheduleElement eta="2016-06-01T16:03:04.000Z" speed="12.0" waypointId="18"/>
+        <scheduleElement eta="2016-06-01T17:03:03.000Z" speed="12.0" waypointId="19"/>
       </calculated>
     </schedule>
   </schedules>

@@ -110,8 +110,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.cargoTypes = ["None", "Ballast", "Bulk - grain", "Bulk - other than grain", "Chemicals", "Container/Trailer", "General Cargo", "Gas", "Oil", "Passenger", "Reefer", "Other"];
 
         //Specific VTS center route dropdowns (They usually have predefined routes and abbreviations as specified in their pilot/master's guide )
-        $scope.BELTREPRoutes = ["", ""];
-        $scope.SOUNDREPRoutes = ["", ""];
+        // CURRENTLY NOT IN USE - PENDING DECISION REGARDING STANDARD.
+        // $scope.BELTREPRoutes = ["", ""];
+        // $scope.SOUNDREPRoutes = ["", ""];
 
 
         //Input validation area
@@ -121,6 +122,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.vtsUtcTime = moment.utc().format('HH : mm');
         $scope.vtsLocalDate = moment().format('DD MMM YYYY');
         $scope.setvtsvesseletaTimeDateValid = false;
+        $scope.detectedRouteETA = null; //If a route is loaded, with valid ETAs, this will contain the calculated ETA
 
         //vessel information
         $scope.vtsvesselnameinput = "";
@@ -429,9 +431,23 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             }
         };
 
+        // $scope.dateInputChange = function (now) {
+        //     $scope.vtsLocalDate = moment(now._d).format('DD MMM YYYY');
+        //     console.log("date:",$scope.vtsLocalDate);
+        //     $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + $scope.vtsLocalDate;
+        //     console.log("date2:",$scope.vtsDateStamp);
+        //
+        //     //angular.element(document.querySelector("#timedateutclabel")).html($scope.vtsLocalDate); //force to short month name
+        //     angular.element(document.querySelector(".datetime-input.date .display .date")).html(moment().format('DD MMM YYYY')); //update timepicker display with now
+        //     $scope.validateEtaTimeDate();
+        // };
+
+
+
         $scope.dateInputChange = function (now) {
             $scope.vtsLocalDate = moment(now._d).format('DD MMM YYYY');
             $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + $scope.vtsLocalDate;
+            angular.element(document.querySelector(".datetime-input.date .display .date")).html($scope.vtsLocalDate); //update timepicker display correct month format
             angular.element(document.querySelector("#timedateutclabel")).html($scope.vtsDateStamp + " - " + $scope.vtsUtcTime + " UTC"); //workaround to force update
             $scope.validateEtaTimeDate();
         };
@@ -1176,6 +1192,20 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
             //places VTS area in minimap
             VtsHelperService.miniMapUpdate(VTSData[vtsID].areaWKT, null, null);
+
+            //gets ETA from route if loaded
+            $scope.detectedRouteETA = VtsHelperService.returnDetectedRouteETA();
+            if($scope.detectedRouteETA && $scope.detectedRouteETA.length>10){
+                var routeETATime = $scope.detectedRouteETA.substring(14,$scope.detectedRouteETA.length);
+                var routeETADate = $scope.detectedRouteETA.substring(0, 11);
+                $scope.vtsTimeStamp = routeETATime;
+                $scope.vtsDateStamp = routeETADate;
+                angular.element(document.querySelector(".datetime-input.date .display .date")).html($scope.vtsDateStamp); //update timepicker display with now
+                angular.element(document.querySelector(".datetime-input.time .display .time")).html($scope.vtsTimeStamp); //update timepicker display with now
+
+            }
+
+            console.log("ReturningETA:",$scope.detectedRouteETA );
 
             //debugging
             $scope.vtsvesselmmsiinput = "265177000";

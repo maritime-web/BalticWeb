@@ -261,13 +261,16 @@
                     Display VTS areas
                     <br>
                     <br>
-                    <input type="checkbox" ng-disabled="!vts_route_enabled" ng-model="vts_route_intersect_show" ng-change="vtsRouteIntersectToggle()" />
+                    <input type="checkbox" ng-disabled="!vts_map_show  || !vts_route_enabled" ng-model="vts_onroute_only" ng-change="vtsRouteIntersectToggle()" />
                     Show only areas intersecting route
 
                     <br>
                     <!--<input type="checkbox" ng-change="">-->
                     <!--Display only VTS centres on route-->
                 </div>
+            </div>
+            <div class="panel" ng-class="(1==1) ? 'panel-primary' : 'panel-default'">
+                <p ng-repeat="p in vtsAreasArr">{{p.shortname}}</p>
             </div>
         </uib-tab>
 

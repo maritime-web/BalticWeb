@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><route version="1.0" xmlns="http://www.cirm.org/RTZ/1/0">
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.1" xmlns="http://www.cirm.org/RTZ/1/1">
   <routeInfo routeName="ROUTE_1460722500492"/>
   <waypoints>
     <waypoint id="1" name="WP_0001">
@@ -247,67 +248,67 @@
   <schedules>
     <schedule id="1">
       <calculated>
-        <sheduleElement eta="1976-01-01T09:11:00.000Z" waypointId="1"/>
-        <sheduleElement eta="1976-01-01T09:14:00.000Z" speed="20.0" waypointId="2"/>
-        <sheduleElement eta="1976-01-01T09:15:00.000Z" speed="20.0" waypointId="3"/>
-        <sheduleElement eta="1976-01-01T09:16:00.000Z" speed="20.0" waypointId="4"/>
-        <sheduleElement eta="1976-01-01T09:17:00.000Z" speed="20.0" waypointId="5"/>
-        <sheduleElement eta="1976-01-01T09:18:00.000Z" speed="20.0" waypointId="6"/>
-        <sheduleElement eta="1976-01-01T09:20:00.000Z" speed="20.0" waypointId="7"/>
-        <sheduleElement eta="1976-01-01T09:29:00.000Z" speed="20.0" waypointId="8"/>
-        <sheduleElement eta="1976-01-01T09:34:00.000Z" speed="20.0" waypointId="9"/>
-        <sheduleElement eta="1976-01-01T09:45:00.000Z" speed="20.0" waypointId="10"/>
-        <sheduleElement eta="1976-01-01T09:51:00.000Z" speed="20.0" waypointId="11"/>
-        <sheduleElement eta="1976-01-01T10:00:00.000Z" speed="20.0" waypointId="12"/>
-        <sheduleElement eta="1976-01-01T10:05:00.000Z" speed="20.0" waypointId="13"/>
-        <sheduleElement eta="1976-01-01T10:07:00.000Z" speed="20.0" waypointId="14"/>
-        <sheduleElement eta="1976-01-01T10:09:00.000Z" speed="20.0" waypointId="15"/>
-        <sheduleElement eta="1976-01-01T10:11:00.000Z" speed="20.0" waypointId="16"/>
-        <sheduleElement eta="1976-01-01T10:13:00.000Z" speed="20.0" waypointId="17"/>
-        <sheduleElement eta="1976-01-01T10:21:00.000Z" speed="20.0" waypointId="18"/>
-        <sheduleElement eta="1976-01-01T10:23:00.000Z" speed="20.0" waypointId="19"/>
-        <sheduleElement eta="1976-01-01T10:27:00.000Z" speed="20.0" waypointId="20"/>
-        <sheduleElement eta="1976-01-01T10:38:00.000Z" speed="20.0" waypointId="21"/>
-        <sheduleElement eta="1976-01-01T10:58:00.000Z" speed="20.0" waypointId="22"/>
-        <sheduleElement eta="1976-01-01T11:28:00.000Z" speed="20.0" waypointId="23"/>
-        <sheduleElement eta="1976-01-01T12:10:00.000Z" speed="20.0" waypointId="24"/>
-        <sheduleElement eta="1976-01-01T18:47:00.000Z" speed="20.0" waypointId="25"/>
-        <sheduleElement eta="1976-01-01T19:00:00.000Z" speed="20.0" waypointId="26"/>
-        <sheduleElement eta="1976-01-01T19:06:00.000Z" speed="20.0" waypointId="27"/>
-        <sheduleElement eta="1976-01-01T19:08:00.000Z" speed="20.0" waypointId="28"/>
-        <sheduleElement eta="1976-01-01T19:13:00.000Z" speed="20.0" waypointId="29"/>
-        <sheduleElement eta="1976-01-01T19:16:00.000Z" speed="20.0" waypointId="30"/>
-        <sheduleElement eta="1976-01-01T19:18:00.000Z" speed="20.0" waypointId="31"/>
-        <sheduleElement eta="1976-01-01T19:20:00.000Z" speed="20.0" waypointId="32"/>
-        <sheduleElement eta="1976-01-01T19:23:00.000Z" speed="20.0" waypointId="33"/>
-        <sheduleElement eta="1976-01-01T19:25:00.000Z" speed="20.0" waypointId="34"/>
-        <sheduleElement eta="1976-01-01T19:28:00.000Z" speed="20.0" waypointId="35"/>
-        <sheduleElement eta="1976-01-01T19:31:00.000Z" speed="20.0" waypointId="36"/>
-        <sheduleElement eta="1976-01-01T19:40:00.000Z" speed="20.0" waypointId="37"/>
-        <sheduleElement eta="1976-01-01T19:41:00.000Z" speed="20.0" waypointId="38"/>
-        <sheduleElement eta="1976-01-01T19:43:00.000Z" speed="20.0" waypointId="39"/>
-        <sheduleElement eta="1976-01-01T19:48:00.000Z" speed="20.0" waypointId="40"/>
-        <sheduleElement eta="1976-01-01T19:50:00.000Z" speed="20.0" waypointId="41"/>
-        <sheduleElement eta="1976-01-01T19:52:00.000Z" speed="20.0" waypointId="42"/>
-        <sheduleElement eta="1976-01-01T19:55:00.000Z" speed="20.0" waypointId="43"/>
-        <sheduleElement eta="1976-01-01T19:57:00.000Z" speed="20.0" waypointId="44"/>
-        <sheduleElement eta="1976-01-01T19:59:00.000Z" speed="20.0" waypointId="45"/>
-        <sheduleElement eta="1976-01-01T20:01:00.000Z" speed="20.0" waypointId="46"/>
-        <sheduleElement eta="1976-01-01T20:03:00.000Z" speed="20.0" waypointId="47"/>
-        <sheduleElement eta="1976-01-01T20:08:00.000Z" speed="20.0" waypointId="48"/>
-        <sheduleElement eta="1976-01-01T20:12:00.000Z" speed="20.0" waypointId="49"/>
-        <sheduleElement eta="1976-01-01T20:18:00.000Z" speed="20.0" waypointId="50"/>
-        <sheduleElement eta="1976-01-01T20:21:00.000Z" speed="20.0" waypointId="51"/>
-        <sheduleElement eta="1976-01-01T20:30:00.000Z" speed="20.0" waypointId="52"/>
-        <sheduleElement eta="1976-01-01T20:32:00.000Z" speed="20.0" waypointId="53"/>
-        <sheduleElement eta="1976-01-01T20:37:00.000Z" speed="20.0" waypointId="54"/>
-        <sheduleElement eta="1976-01-01T20:43:00.000Z" speed="20.0" waypointId="55"/>
-        <sheduleElement eta="1976-01-01T20:52:00.000Z" speed="20.0" waypointId="56"/>
-        <sheduleElement eta="1976-01-01T20:56:00.000Z" speed="20.0" waypointId="57"/>
-        <sheduleElement eta="1976-01-01T21:00:00.000Z" speed="20.0" waypointId="58"/>
-        <sheduleElement eta="1976-01-01T21:04:00.000Z" speed="20.0" waypointId="59"/>
-        <sheduleElement eta="1976-01-01T21:08:00.000Z" speed="20.0" waypointId="60"/>
-        <sheduleElement eta="1976-01-01T21:10:00.000Z" speed="20.0" waypointId="61"/>
+        <scheduleElement eta="1976-01-01T09:11:00.000Z" waypointId="1"/>
+        <scheduleElement eta="1976-01-01T09:14:00.000Z" speed="20.0" waypointId="2"/>
+        <scheduleElement eta="1976-01-01T09:15:00.000Z" speed="20.0" waypointId="3"/>
+        <scheduleElement eta="1976-01-01T09:16:00.000Z" speed="20.0" waypointId="4"/>
+        <scheduleElement eta="1976-01-01T09:17:00.000Z" speed="20.0" waypointId="5"/>
+        <scheduleElement eta="1976-01-01T09:18:00.000Z" speed="20.0" waypointId="6"/>
+        <scheduleElement eta="1976-01-01T09:20:00.000Z" speed="20.0" waypointId="7"/>
+        <scheduleElement eta="1976-01-01T09:29:00.000Z" speed="20.0" waypointId="8"/>
+        <scheduleElement eta="1976-01-01T09:34:00.000Z" speed="20.0" waypointId="9"/>
+        <scheduleElement eta="1976-01-01T09:45:00.000Z" speed="20.0" waypointId="10"/>
+        <scheduleElement eta="1976-01-01T09:51:00.000Z" speed="20.0" waypointId="11"/>
+        <scheduleElement eta="1976-01-01T10:00:00.000Z" speed="20.0" waypointId="12"/>
+        <scheduleElement eta="1976-01-01T10:05:00.000Z" speed="20.0" waypointId="13"/>
+        <scheduleElement eta="1976-01-01T10:07:00.000Z" speed="20.0" waypointId="14"/>
+        <scheduleElement eta="1976-01-01T10:09:00.000Z" speed="20.0" waypointId="15"/>
+        <scheduleElement eta="1976-01-01T10:11:00.000Z" speed="20.0" waypointId="16"/>
+        <scheduleElement eta="1976-01-01T10:13:00.000Z" speed="20.0" waypointId="17"/>
+        <scheduleElement eta="1976-01-01T10:21:00.000Z" speed="20.0" waypointId="18"/>
+        <scheduleElement eta="1976-01-01T10:23:00.000Z" speed="20.0" waypointId="19"/>
+        <scheduleElement eta="1976-01-01T10:27:00.000Z" speed="20.0" waypointId="20"/>
+        <scheduleElement eta="1976-01-01T10:38:00.000Z" speed="20.0" waypointId="21"/>
+        <scheduleElement eta="1976-01-01T10:58:00.000Z" speed="20.0" waypointId="22"/>
+        <scheduleElement eta="1976-01-01T11:28:00.000Z" speed="20.0" waypointId="23"/>
+        <scheduleElement eta="1976-01-01T12:10:00.000Z" speed="20.0" waypointId="24"/>
+        <scheduleElement eta="1976-01-01T18:47:00.000Z" speed="20.0" waypointId="25"/>
+        <scheduleElement eta="1976-01-01T19:00:00.000Z" speed="20.0" waypointId="26"/>
+        <scheduleElement eta="1976-01-01T19:06:00.000Z" speed="20.0" waypointId="27"/>
+        <scheduleElement eta="1976-01-01T19:08:00.000Z" speed="20.0" waypointId="28"/>
+        <scheduleElement eta="1976-01-01T19:13:00.000Z" speed="20.0" waypointId="29"/>
+        <scheduleElement eta="1976-01-01T19:16:00.000Z" speed="20.0" waypointId="30"/>
+        <scheduleElement eta="1976-01-01T19:18:00.000Z" speed="20.0" waypointId="31"/>
+        <scheduleElement eta="1976-01-01T19:20:00.000Z" speed="20.0" waypointId="32"/>
+        <scheduleElement eta="1976-01-01T19:23:00.000Z" speed="20.0" waypointId="33"/>
+        <scheduleElement eta="1976-01-01T19:25:00.000Z" speed="20.0" waypointId="34"/>
+        <scheduleElement eta="1976-01-01T19:28:00.000Z" speed="20.0" waypointId="35"/>
+        <scheduleElement eta="1976-01-01T19:31:00.000Z" speed="20.0" waypointId="36"/>
+        <scheduleElement eta="1976-01-01T19:40:00.000Z" speed="20.0" waypointId="37"/>
+        <scheduleElement eta="1976-01-01T19:41:00.000Z" speed="20.0" waypointId="38"/>
+        <scheduleElement eta="1976-01-01T19:43:00.000Z" speed="20.0" waypointId="39"/>
+        <scheduleElement eta="1976-01-01T19:48:00.000Z" speed="20.0" waypointId="40"/>
+        <scheduleElement eta="1976-01-01T19:50:00.000Z" speed="20.0" waypointId="41"/>
+        <scheduleElement eta="1976-01-01T19:52:00.000Z" speed="20.0" waypointId="42"/>
+        <scheduleElement eta="1976-01-01T19:55:00.000Z" speed="20.0" waypointId="43"/>
+        <scheduleElement eta="1976-01-01T19:57:00.000Z" speed="20.0" waypointId="44"/>
+        <scheduleElement eta="1976-01-01T19:59:00.000Z" speed="20.0" waypointId="45"/>
+        <scheduleElement eta="1976-01-01T20:01:00.000Z" speed="20.0" waypointId="46"/>
+        <scheduleElement eta="1976-01-01T20:03:00.000Z" speed="20.0" waypointId="47"/>
+        <scheduleElement eta="1976-01-01T20:08:00.000Z" speed="20.0" waypointId="48"/>
+        <scheduleElement eta="1976-01-01T20:12:00.000Z" speed="20.0" waypointId="49"/>
+        <scheduleElement eta="1976-01-01T20:18:00.000Z" speed="20.0" waypointId="50"/>
+        <scheduleElement eta="1976-01-01T20:21:00.000Z" speed="20.0" waypointId="51"/>
+        <scheduleElement eta="1976-01-01T20:30:00.000Z" speed="20.0" waypointId="52"/>
+        <scheduleElement eta="1976-01-01T20:32:00.000Z" speed="20.0" waypointId="53"/>
+        <scheduleElement eta="1976-01-01T20:37:00.000Z" speed="20.0" waypointId="54"/>
+        <scheduleElement eta="1976-01-01T20:43:00.000Z" speed="20.0" waypointId="55"/>
+        <scheduleElement eta="1976-01-01T20:52:00.000Z" speed="20.0" waypointId="56"/>
+        <scheduleElement eta="1976-01-01T20:56:00.000Z" speed="20.0" waypointId="57"/>
+        <scheduleElement eta="1976-01-01T21:00:00.000Z" speed="20.0" waypointId="58"/>
+        <scheduleElement eta="1976-01-01T21:04:00.000Z" speed="20.0" waypointId="59"/>
+        <scheduleElement eta="1976-01-01T21:08:00.000Z" speed="20.0" waypointId="60"/>
+        <scheduleElement eta="1976-01-01T21:10:00.000Z" speed="20.0" waypointId="61"/>
       </calculated>
     </schedule>
   </schedules>

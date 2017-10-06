@@ -112,29 +112,42 @@ angular.module('maritimeweb.app')
             /**********************************************/
             /** Vessel Traffic Service Map functionality **/
             /**********************************************/
+            //load state for show/hide vts areas on map
             $scope.vts_map_show = $window.localStorage['vts_map_show'];
             ($scope.vts_map_show == true || $scope.vts_map_show == "true") ? $scope.vts_map_show = true : $scope.vts_map_show = false; //is string, need bool
 
-            // $scope.vtsRouteEnabledTestStr = $window.localStorage['vts_route_enabled'];
-            // if($scope.vtsRouteEnabledTestStr)
-            $scope.vts_route_enabled = mapVtsAreaService.testForRoute();
+            //load state for only display areas intersecting route
+            $scope.vts_onroute_only = $window.localStorage['vts_onroute_only'];
+            ($scope.vts_onroute_only == true || $scope.vts_onroute_only == "true") ? $scope.vts_onroute_only = true : $scope.vts_onroute_only = false; //is string, need bool
+            $scope.vtsShowIntersecting = $scope.vts_onroute_only; //inits listener in vts-layer.js
 
-            // $scope.activeTabIndex =
-
+            $scope.vts_route_enabled = mapVtsAreaService.testForRoute(); //also used in sidebar.html
             $scope.vtsRouteWKT = ($scope.vts_route_enabled == true)? mapVtsAreaService.returnRouteAsWKT : ""; //watched by directive to populate map on change
             $scope.vtsAreasArr = []; //is watched by directive mapVtsAreaLayer to populate map on change
             $scope.vtsLayerEnabled = $scope.vts_map_show; //is listened to
+            $scope.vtsAreasArrSorted = [];
+
+            //Skips null items when populating dropdowns
+            $scope.isItemNull = function(item) {
+                if (item === null) return false;
+                return true;
+            };
+            /** populate the sidebar with VTS areas on map as selectable list **/
+
+
 
             /** Toggle the enabled status of the layer **/
             $scope.vtsMapToggle = function () {
-                $scope.vts_map_show = mapVtsAreaService.toggleVtsAreasLayerEnabled();
+                $scope.vts_map_show = mapVtsAreaService.toggleVtsAreasLayerEnabled(); //also saves to localstorage
                 $scope.vtsLayerEnabled = $scope.vts_map_show; //triggers layer visibility
                 if ($scope.vts_map_show == true) $scope.reloadVtsAreas(); //http service call, triggers update of map
             };
 
             $scope.vtsRouteIntersectToggle = function () {
-
+                $scope.vts_onroute_only = mapVtsAreaService.toggleVtsAreasOnlyIntersectingRouteEnabled(); //also saves to localstorage
+                $scope.vtsShowIntersecting = $scope.vts_onroute_only;
             };
+
 
             /**
              * TODO:
@@ -149,6 +162,14 @@ angular.module('maritimeweb.app')
                         }
                         if (status == 200) {
                             $scope.vtsAreasArr = data.VtsJsObjects;
+
+                            $scope.vtsAreasArr.sort(function(a, b) {
+                                var textA = a.shortname.toUpperCase();
+                                var textB = b.shortname.toUpperCase();
+                                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                            });
+
+                            console.log($scope.vtsAreasArr);
                         }
                         $scope.vtsRouteWKT = mapVtsAreaService.returnRouteAsWKT();
                         // console.log("vtsRouteWKT:",$scope.vtsRouteWKT);
