@@ -41,7 +41,7 @@ On the client side we use:
 * JavaScript/HTML
 * OpenLayers 4 (for maps)
 * Keycloak (for security)
-* Twitter Bootstrap (for basic layout)
+* Twitter Bootstrap 3.3.7(for basic layout)
 * AngularJS (for forms and similar)
 
 
@@ -64,10 +64,10 @@ On the server side we use:
 * Maven 3.3.1+
 * Wildfly 8.2 (Maven setup to deploy to Wildfly)
 * MySQL (Maven configures JBoss datasource to use MySQL)
-* Node.js (Follow the installation instructions at http://nodejs.org)
-* Grunt.js (Follow the installation instructions at http://gruntjs.com)
+* Node.js for building and local development (Follow the installation instructions at http://nodejs.org)
+* Grunt.js for building and local development (Follow the installation instructions at http://gruntjs.com)
 * CouchDB
-* a file called balticweb.properties with endpoints urls and configuration.
+* a file called balticweb.properties with endpoints urls and other sensitive information and configuration.
 
 ## Initial setup
 
