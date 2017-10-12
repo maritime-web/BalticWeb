@@ -12,9 +12,8 @@ The BalticWeb client is a rich client HTML/JS-application with a server side JSO
 On the client side we use:
 
 * JavaScript/HTML
-* OpenLayers 3(for maps)
+* OpenLayers 4(for maps)
 * Keycloak (for security)
-* JQuery (for DOM-manipulation and calling webservices)
 * Twitter Bootstrap (for basic layout)
 * AngularJS (for forms and similar)
 
@@ -41,9 +40,7 @@ On the server side we use:
 * Node.js (Follow the installation instructions at http://nodejs.org)
 * Grunt.js (Follow the installation instructions at http://gruntjs.com)
 * CouchDB
-* a file called balticweb.properties
-* Local lost-node, https://github.com/rprinz08/lost-node and services registered.
-* MongoDB
+* a file called balticweb.properties with endpoints urls and configuration.
 
 ## Initial setup
 
@@ -178,18 +175,18 @@ Ways to avoid annoying JavaScript Validation Errors in Eclipse:
 http://stackoverflow.com/questions/7102299/eclipse-javascript-validation-disabled-but-still-generating-errors
 
 
-## Demo test server
+## Test server
 
 More stable releases are demoed from this test server:
 
-http://test.e-navigation.net/arcticweb (requires credentials only available to development team)
+http://balticweb-test.e-navigation.net 
 
+# Production server
 
-## CI Test Server - Latest and Greatest
+Production releases are available on the server:
 
-The CI server continuously deployes the latest and greatest to a separate test server:
+http://balticweb.e-navigation.net 
 
-http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only available to development team)
 
 ## Database maintenaince
 
