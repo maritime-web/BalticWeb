@@ -77,6 +77,8 @@ angular.module('maritimeweb.route')
             ];
             $scope.sampleFile = $scope.sampleRTZdata[0].id;
 
+            console.log("RTZ:",$scope.sampleRTZdata);
+
             var resetChartArrays = function () {
                 charts.listMinSpeed.splice(0, charts.listMinSpeed.length);
                 charts.listMaxSpeed.splice(0, charts.listMaxSpeed.length);
@@ -151,6 +153,8 @@ angular.module('maritimeweb.route')
              * Generate a openlayers features array, animated features and ol path points array from the transformed RTZ JSON.
              * @param json_result transformed RTZ JSON from an RTZ xml
              */
+            console.log("PETERPIPER");
+
             var createOpenLayersFeatFromRTZ = function (json_result) {
                 $scope.rtzJSON = json_result; // used for debugging.
                 $scope.rtzName = json_result.route.routeInfo._routeName;
@@ -159,7 +163,7 @@ angular.module('maritimeweb.route')
                 $scope.oLanimatedfeatures = []; // openlayers animated features
                 $scope.oLpoints = [];
                 $scope.totaldistance = 0;
-
+                $scope.routeEtas = [];
                 // $scope.rtzOptimizedName = json_result.route.routeInfo._routeName;
                 $scope.oLOptimizedfeatures = []; // openlayers optimized features
                 $scope.oLanimatedOptimizedfeatures = []; // openlayers animated optimized features
@@ -211,10 +215,57 @@ angular.module('maritimeweb.route')
                     }
                 };
 
+
+                /** extract ETA from RTZ - prepare for insertion into localstorage **/
+                if($scope.rtzJSON.route.schedules.schedule){
+                    var isSchedArr = Array.isArray($scope.rtzJSON.route.schedules.schedule); //test if is array
+
+                    var pushIntoRouteEtas = function(arr){
+                        angular.forEach(arr, function (value,key) {
+                            $scope.routeEtas.push(value._eta);
+                        });
+
+                    };
+                    var displayETAError = function(){
+                        growl.error("No ETA in RTZ file");
+                        $log.error("No ETA in RTZ file");
+                    };
+
+
+                    if(isSchedArr){ //treat as array - loop through, find first one that has ETA and use it. Can fail multiple places.
+                        var schedArr = !$scope.rtzJSON.route.schedules.schedule;
+                        for(var i=0;i!=schedArr.length;i++){ //loop through schedule
+                            if(schedArr[i].calculated){ //check if has calculated
+                                if(schedArr[i].calculated.scheduleElement){ //cehck if has scheduleElement
+                                    if(Array.isArray(schedArr[i].calculated.scheduleElement)){ //check if is array
+                                        if(schedArr[i].calculated.scheduleElement.length > 1){ //check length - must have at least start and end ETA
+                                            pushIntoRouteEtas(schedArr[i].calculated.sheduleElement); //BINGO!
+                                            break; //don't use with other schedules
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }else{ //is not array, just do it
+                        try{ //can be missing
+                            if (!$scope.rtzJSON.route.schedules.schedule.calculated.scheduleElement &&
+                                $scope.rtzJSON.route.schedules.schedule.calculated.scheduleElement < 0) {
+                                displayETAError();
+                            } else {
+                                pushIntoRouteEtas($scope.rtzJSON.route.schedules.schedule.calculated.scheduleElement);
+                            }
+                        }catch(scheduleElementError){
+                            displayETAError();
+                        }
+                    }
+
+                }
+
+
                 if (!json_result.route.waypoints.waypoint &&
                     json_result.route.waypoints.waypoint.length > 0) {
-                    growl.error("No Waypoints in RTZ file");
-                    $log.error("No Waypoints in RTZ file");
+                    growl.error("No ETA in RTZ file");
+                    $log.error("No ETA in RTZ file");
                 } else {
                     angular.forEach(json_result.route.waypoints.waypoint, function (way_value, key) { // todo: according to xsd we might need to handle multiple waypoints lists
 
@@ -293,6 +344,7 @@ angular.module('maritimeweb.route')
                     });
                 }
             };
+            console.log("PETERPIPER 2");
 
             /**
              * store all features in local storge, on a server or right now. Throw them on the root scope.
@@ -307,6 +359,7 @@ angular.module('maritimeweb.route')
                 $rootScope.route_oLanimatedfeatures = $scope.oLanimatedfeatures;
                 $rootScope.route_oLpoints =  $scope.oLpoints;
                 $rootScope.route_totaldistance = $scope.totaldistance;
+                $rootScope.route_eta = $scope.routeEtas;
 
                 $window.localStorage.setItem('route_id', $routeParams.mmsi);
                 $window.localStorage.setItem('route_name', $scope.rtzName);
@@ -314,6 +367,7 @@ angular.module('maritimeweb.route')
                 $window.localStorage.setItem('route_oLanimatedfeatures', $scope.oLanimatedfeatures);
                 $window.localStorage.setItem('route_oLpoints', JSON.stringify($scope.oLpoints));
                 $window.localStorage.setItem('route_totaldistance' , $scope.totaldistance);
+                $window.localStorage.setItem('route_ETAs', JSON.stringify($scope.routeEtas));
 
                 var redirect = function(){
                     $rootScope.showgraphSidebar = true; // rough enabling of the sidebar
@@ -323,6 +377,7 @@ angular.module('maritimeweb.route')
                 };
                 $timeout( redirect, 3000);
             };
+            console.log("PETERPIPER 3");
 
             /**
              * store all features in local storge, on a server or right now. Throw them on the root scope.
@@ -354,6 +409,7 @@ angular.module('maritimeweb.route')
                 $timeout( redirect, 3000);
             };
 
+            console.log("PETERPIPER 4");
 
 
             /**
@@ -522,6 +578,7 @@ angular.module('maritimeweb.route')
 
 
 
+            console.log("PETERPIPER 5");
 
 
             /**
@@ -686,15 +743,20 @@ angular.module('maritimeweb.route')
                 $timeout( simulateOptimization, 3000);
             };
 
+            console.log("PETERPIPER 6");
+
+
             /**
              * convience method for loading a sample rtz route
              */
             $scope.autoPreloadRTZfile = function () {
+                console.log("MIKE");
                 $http.get('/route/sample-rtz-files/' + $scope.sampleFile, {
                     transformResponse: function (data, headers) {
                         $scope.rtzXML = data;
-
+console.log("HERE");
                         $scope.rtzJSON = fileReader.transformRtzXMLtoJSON(data);
+console.log("HERE BOB");
                         return $scope.rtzJSON;
                     }
                 }).then(function (result) {
@@ -715,6 +777,9 @@ angular.module('maritimeweb.route')
             };
 
 
+            console.log("PETERPIPER 7");
+
+
             /**
              * convience method for simulating an pre-entered optmized sample rtz route
              */
@@ -730,7 +795,7 @@ angular.module('maritimeweb.route')
                 }).then(function (result) {
                     //resetChartArrays();
                     //createOpenLayersFeatFromRTZ(result.data);
-                    $scope.optimizeRouteHardcoded(result.data)
+                    $scope.optimizeRouteHardcoded(result.data);
                     // $scope.storeAllFeaturesSomewhere();
                     //return result.data;
 
@@ -804,6 +869,9 @@ angular.module('maritimeweb.route')
                 });
 
             };
+
+            console.log("PETERPIPER 8");
+
 
             /** Create a waypoint feature, with  lat,lon,. */
             $scope.createWaypointFeature = function (waypoint) {
@@ -984,6 +1052,9 @@ angular.module('maritimeweb.route')
                 }
 
             }, true);
+
+            console.log("PETERPIPER 9");
+
 
             // SPEED Charts
             // Chart.js with speed-over-ground

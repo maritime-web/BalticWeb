@@ -13,7 +13,6 @@ angular.module('maritimeweb.vts-map')
     .service('mapVtsAreaService', ['$http', '$log', 'MapService', '$window', 'growl',
         function ($http, $log, MapService, $window, growl) {
 
-
             this.toggleVtsAreasLayerEnabled = function () {
                 this.vts_map_show = $window.localStorage['vts_map_show'];
                 (this.vts_map_show == true || this.vts_map_show == "true") ? this.vts_map_show = true : this.vts_map_show = false; //is string, need bool
@@ -23,7 +22,6 @@ angular.module('maritimeweb.vts-map')
                     state = true;
                     msg = "Activating VTS areas.";
                     $window.localStorage.setItem('vts_map_show', state);
-                    // this.getVtsAreasAndDisplayOnMap();
                 } else {
                     state = false;
                     msg = "Deactivating VTS areas.";
@@ -33,13 +31,27 @@ angular.module('maritimeweb.vts-map')
                 return state;
             };
 
+            this.toggleVtsAreasOnlyIntersectingRouteEnabled = function(){
+                this.vts_onroute_only = $window.localStorage['vts_onroute_only'];
+                (this.vts_onroute_only == true || this.vts_onroute_only == "true") ? this.vts_onroute_only = true : this.vts_onroute_only = false; //is string, need bool
+
+                var msg = "", state = false;
+                if (!this.vts_onroute_only) {
+                    state = true;
+                    msg = "Displaying VTS areas intersecting with current route";
+                    $window.localStorage.setItem('vts_onroute_only', state);
+                } else {
+                    state = false;
+                    msg = "Displaying all registered VTS areas";
+                    $window.localStorage.setItem('vts_onroute_only', state);
+                }
+                growl.info(msg);
+                return state;
+            };
+
             this.testForRoute = function(){ //just test if there is a route in localstorage
                 var tmpStr = $window.localStorage['route_oLpoints'];
-                if(tmpStr && tmpStr.length>9){
-                    return true
-                }else{
-                    return false;
-                }
+                return (tmpStr && tmpStr.length>9);
             };
 
             this.returnRouteAsWKT = function(){
@@ -76,7 +88,9 @@ angular.module('maritimeweb.vts-map')
                 template: "",
                 scope: {
                     vtsAreas: '=?',
-                    vtsVisible: '=?'
+                    vtsRoute: '=?',
+                    vtsVisible: '=?',
+                    vtsOnrouteOnly: '=?'
                 },
                 link: function (scope, element, attrs, ctrl) {
 
@@ -86,7 +100,7 @@ angular.module('maritimeweb.vts-map')
 
                     var olScope = ctrl.getOpenlayersScope();
                     var vtsareaLayer;
-                    var maxZoom = scope.maxZoom ? parseInt(scope.maxZoom) : 12;
+                    scope.onrouteOnly = false; //only draw VTS areas if true
 
                     olScope.getMap().then(function (map) {
 
@@ -106,7 +120,6 @@ angular.module('maritimeweb.vts-map')
                                 color: 'rgba(238, 153, 0,0.1)'
                             })
                         });
-
 
                         // Construct the boundary layers
                         vtsareaLayer = new ol.layer.Vector({
@@ -154,12 +167,12 @@ angular.module('maritimeweb.vts-map')
 
                         scope.maxZoom = 5;
                         scope.highlightColourStroke ="rgba(250, 0, 0, 0.8)";
-                        scope.highlightColourFill ="rgba(238, 153, 0,0.7)";
+                        scope.highlightColourFill ="rgba(238, 153, 0,0.4)";
                         scope.normalColourStroke ="rgba(250, 0, 0, 0.5)";
-                        scope.normalColourFill ="rgba(238, 153, 0,0.4)";
+                        scope.normalColourFill ="rgba(238, 153, 0,0.2)";
 
                         function styleFunctionNormal(areaName) {
-                            var labelSize = 18 - (map.getView().getZoom() *.2)
+                            var labelSize = 18 - (map.getView().getZoom() *.2);
                             return [
                                 new ol.style.Style({
                                     text: new ol.style.Text({
@@ -184,7 +197,7 @@ angular.module('maritimeweb.vts-map')
                         }
 
                         function styleFunctionHighlight(areaName) {
-                            var labelSize = 18 - (map.getView().getZoom() *.2)
+                            var labelSize = 18 - (map.getView().getZoom() *.2);
                             return [
                                 new ol.style.Style({
                                     text: new ol.style.Text({
@@ -209,8 +222,9 @@ angular.module('maritimeweb.vts-map')
                         }
 
 
-                        //uses areas from localstorage - "onroute"(true/false) draws only if route intersects with area
-                        scope.updateVtsAreas = function (onroute) {
+                        //uses areas from localstorage - "onrouteonly"(true/false) draws only if route intersects with area
+                        scope.updateVtsAreas = function (onrouteonly) {
+                            //draws VTS areas on map, skips areas not intersecting route if onrouteonly == true
                             var vts_areas_str = localStorage.getItem('vts_areas');
                             var vts_areas;
                             if(vts_areas_str && vts_areas_str.length>0) {
@@ -221,46 +235,69 @@ angular.module('maritimeweb.vts-map')
                                     for(var i=0;i!=vts_areas.length;i++){
                                         var areaWKT = vts_areas[i].areaWKT; //console this for easy debugging
                                         if (!areaWKT || areaWKT == "" || areaWKT.length < 9) {
-                                            growl.error(vts_areas[i].shortname + " does not have an area assigned.");
+                                            growl.error(vts_areas[i].shortname + " does not have an area assigned");
                                         }else{
-                                            var format = new ol.format.WKT();
-                                            var areafeature = format.readFeature(areaWKT, {
-                                                dataProjection: 'EPSG:4326',
-                                                featureProjection: 'EPSG:3857'
-                                            });
-                                            // //place something at center of mass of polygon - if needed (possibly a menu)
-                                            // var polygon = turf.polygon(format.readFeature(areaWKT).getGeometry().getCoordinates());
-                                            // var center = turf.centerOfMass(polygon);
-                                            areafeature.set("vtsAreaID",vts_areas[i].id);
-                                            areafeature.set("name",vts_areas[i].shortname);
-                                            //styling
-                                            areafeature.setStyle(styleFunctionNormal(vts_areas[i].shortname, vts_areas[i].id));
-                                            //add to layer
-                                            vtsareaLayer.getSource().addFeature(areafeature);
+
+                                            var drawArea = false;
+                                            if(onrouteonly && scope.isAreaOnRoute(areaWKT)){
+                                                drawArea = true;
+                                            }else if(!onrouteonly){
+                                                drawArea = true;
+                                            }
+                                            if(drawArea){
+                                                var format = new ol.format.WKT();
+                                                var areafeature = format.readFeature(areaWKT, {
+                                                    dataProjection: 'EPSG:4326',
+                                                    featureProjection: 'EPSG:3857'
+                                                });
+                                                // //place something at center of mass of polygon - if needed (possibly a menu)
+                                                // var polygon = turf.polygon(format.readFeature(areaWKT).getGeometry().getCoordinates());
+                                                // var center = turf.centerOfMass(polygon);
+                                                areafeature.set("vtsAreaID",vts_areas[i].id);
+                                                areafeature.set("name",vts_areas[i].shortname);
+                                                //styling
+                                                areafeature.setStyle(styleFunctionNormal(vts_areas[i].shortname, vts_areas[i].id));
+                                                //add to layer
+                                                vtsareaLayer.getSource().addFeature(areafeature);
+                                            }
                                         }
                                     }
                                 }
                             }
                         };
 
-                        //on load, show route as well
-                        scope.updateVtsRoute = function (data) { //draws route on map
-console.log("calc intersects with route here");
-                            // var format = new ol.format.WKT();
-                            // var routefeature = format.readFeature(routeWKT, {
-                            //     dataProjection: 'EPSG:4326',
-                            //     featureProjection: 'EPSG:3857'
-                            // });
-                            // routefeature.setStyle(
-                            //     new ol.style.Style({
-                            //         stroke: new ol.style.Stroke({
-                            //             color: '#bb0000',
-                            //             width: 3
-                            //         })
-                            //     })
-                            // );
-                            // vectorSource.addFeature(routefeature);
+                        /** returns true if an area is intersected by the route in localstorage (vts_areas & route_oLpoints) **/
+                        scope.isAreaOnRoute = function (areaWKT) {
+                            var wpPosArrArr = JSON.parse($window.localStorage.getItem('route_oLpoints'));
+                            if(wpPosArrArr && wpPosArrArr.length>2) {
+                                var wpLonLatArr = []; //needed to calculate intersect of route with VTS area
 
+                                for (var i = 0; i != wpPosArrArr.length; i++) {
+                                    var lonlat = ol.proj.transform([wpPosArrArr[i][0], wpPosArrArr[i][1]], 'EPSG:3857', 'EPSG:4326');
+                                    wpLonLatArr.push(lonlat);
+                                }
+
+                                //Find ETA of intersect at VTS area line
+                                var routeline = turf.lineString(wpLonLatArr);
+
+                                //make WKT to poly
+                                var tmpWKT = areaWKT.replace("POLYGON((", '').replace('))', '');
+                                tmpWKT = tmpWKT.replace(/,([\s])+/g, ',');
+                                var tmpPoly = tmpWKT.split(',');
+                                var areaAsPoly = [], tmpAreaAsPoly = [];
+                                for (var i = 0; i != tmpPoly.length; i++) {
+                                    var tmpPos = tmpPoly[i].split(" ");
+                                    tmpAreaAsPoly.push([parseFloat(tmpPos[0]), parseFloat(tmpPos[1])]);
+                                }
+                                if (tmpAreaAsPoly[0] != tmpAreaAsPoly[tmpAreaAsPoly.length]) tmpAreaAsPoly.push(tmpAreaAsPoly[0]); //last pos must be same as first pos
+
+                                areaAsPoly.push(tmpAreaAsPoly); //inception array
+                                var vtsarea = turf.polygon(areaAsPoly);
+                                var intersection = turf.intersect(vtsarea, routeline);
+
+                                return (intersection) ? true : false;
+                            }
+                            return false; //no route available
                         };
 
 
@@ -288,7 +325,7 @@ console.log("calc intersects with route here");
                         scope.detectZoomEnd = function(){
                             if(zoomLevel != map.getView().getZoom()){
                                 zoomLevel = map.getView().getZoom(); //get ready for next zoom
-                                scope.updateVtsAreas(); //deactivates text when far out (low zoom)
+                                scope.updateVtsAreas(scope.onrouteOnly); //deactivates text when far out (low zoom)
                             }
                         };
 
@@ -298,7 +335,7 @@ console.log("calc intersects with route here");
                         map.on('click', function(evt) { //display VTS area sidebar tab and VTS area information when click
                             var ret = scope.getIdForPixel(map.getEventPixel(evt.originalEvent));
                             if (ret.id != null) {
-                                // $rootScope.activeTabIndex = 4;
+                                // $rootScope.activeTabIndex = 4; //forces tab to display - disabled until decision made
                                 // console.log("clicked:",ret.id);
                             }
                         });
@@ -329,16 +366,36 @@ console.log("calc intersects with route here");
                         //See changes in VTS areas array, then update map
                         scope.$watch('vtsAreas', function (data) {
                             $window.localStorage.setItem('vts_areas', JSON.stringify(data));
-                            scope.updateVtsAreas();
+                            scope.updateVtsAreas(false);
                         }, true);
 
                         scope.$watch('vtsRoute', function (data) { //if route changes, trigger reload of route
-                            scope.updateVtsRoute(data);
+                            growl.info("Route has been updated"); //Route points are loaded into localstorage by RTZ handler
+                            scope.updateVtsAreas(false);
                         }, true);
 
                         //Toggle visibility of map layer
                         scope.$watch('vtsVisible', function (data) {
-                            vtsAreas.setVisible(data);
+                            vtsAreas.setVisible(data); //addresses the map layer group - true/false
+                        }, true);
+
+                        //user toggles filter for displaying VTS areas on route only
+                        scope.$watch('vtsOnrouteOnly', function (data) {
+                            if(data===true){
+                                growl.info("Displaying only VTS areas on route");
+                            }else{
+                                growl.info("Displaying all VTS areas available");
+                            }
+                            scope.onrouteOnly = data; //so zooming can figure out what to display
+                            scope.updateVtsAreas(data); //  data:true/false
+                            if(data) { //only center on areas when specifying
+                                try { //displays nicely on map
+                                    var extent = vtsareaLayer.getSource().getExtent();
+                                    map.getView().fit(extent, map.getSize());
+                                    map.getView().setZoom(zoomLevel);
+                                } catch (cantExtent) {
+                                }
+                            }
                         }, true);
 
                     });

@@ -1,3 +1,9 @@
+//TODO:makeall demo RTZ with ETA for august 2019"
+//TODO: make an RTZ with times, without times and passing 2 VTS areas. (Tallin/Helsinki)
+//TODO: if no route and no ETA for waypoints, and no AIS ETA, use nothing.
+//TODO: if no route and no ETA for waypoints, use AIS ETA at whatever port.
+
+
 /** Helper service for VTS
  *
  * Debug tool. <- set debugMode true/false.
@@ -9,8 +15,13 @@
  *
  * **/
 
-angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window', '$http', 'growl', '$q',
-    function ($window, $http, growl, $q) {
+angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
+    function ($window) {
+
+        this.detectedRouteETA = null;
+        this.returnDetectedRouteETA = function() {
+            return this.detectedRouteETA;
+        };
 
         //DEBUG TOOLS
         var debugMode = false;
@@ -154,7 +165,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
                 var wpLonLatWKT = "LINESTRING("; //begin LINESTRING
                 for (var i = 0; i != wpPosArrArr.length; i++) {
                     var lonlat = ol.proj.transform([wpPosArrArr[i][0], wpPosArrArr[i][1]], 'EPSG:3857', 'EPSG:4326');
-                    wpLonLatWKT += lonlat[0] + " " + lonlat[1] + ","
+                    wpLonLatWKT += lonlat[0] + " " + lonlat[1] + ",";
                     wpLonLatArr.push(lonlat);
                 }
                 wpLonLatWKT = wpLonLatWKT.slice(0, -1) + ")"; //remove trailing comma and terminate LINESTRING
@@ -203,6 +214,85 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
         });
 
 
+        /**  Find the intersects of route on VTS areas **/
+        this.findETAatIntersect = function(routeArr,areaWKT,skipIcon){
+            var route_ETAs = JSON.parse($window.localStorage.getItem('route_ETAs'));
+            if(route_ETAs && route_ETAs.length>1) {
+
+                //Find ETA of intersect at VTS area line
+                var routeline = turf.lineString(routeArr);
+
+                //make WKT to poly
+                var tmpWKT = areaWKT.replace("POLYGON((", '').replace('))', '');
+                tmpWKT = tmpWKT.replace(/,([\s])+/g, ',');
+                var tmpPoly = tmpWKT.split(',');
+                var areaAsPoly = [], tmpAreaAsPoly = [];
+                for (var i = 0; i != tmpPoly.length; i++) {
+                    var tmpPos = tmpPoly[i].split(" ");
+                    tmpAreaAsPoly.push([parseFloat(tmpPos[0]), parseFloat(tmpPos[1])]);
+                }
+                if (tmpAreaAsPoly[0] != tmpAreaAsPoly[tmpAreaAsPoly.length]) tmpAreaAsPoly.push(tmpAreaAsPoly[0]); //last pos must be same as first pos
+
+                areaAsPoly.push(tmpAreaAsPoly); //inception array
+                var vtsarea = turf.polygon(areaAsPoly);
+
+                var intersection = turf.intersect(vtsarea, routeline);
+                var stopcoord = intersection.geometry.coordinates[0];
+
+                //may be needed - pending design decision
+                // var routeDistance = (turf.lineDistance(routeline, 'kilometers') * 0.539956803);
+                // var startcoord = routeline.geometry.coordinates[0];
+                // var start = turf.point(startcoord);
+                // var stop = turf.point(stopcoord);
+                // var sliced = turf.lineSlice(start, stop, routeline); //length of the line inside the vts area poly
+                // var sliceDistance = turf.lineDistance(sliced, 'kilometers') * 0.539956803;
+
+                //Loop through all points, find the first one to be inside a poly, and the one just before as well.
+                var etaPoint1 = 0, etaPoint0 = 0;
+                for (var i = 0; i != routeArr.length; i++) {
+                    if (turf.inside(routeArr[i], vtsarea) === true) {
+                        etaPoint1 = i;
+                        etaPoint0 = i-1;
+                        if(debugMode) console.log(route_ETAs[etaPoint0], "Should be inside area.");
+                        var time1 = route_ETAs[etaPoint0];
+                        if(time1 && time1.length>20){
+                            var routeETA = moment(time1).utc().format("DD MMM YYYY - hh:mm");
+                            if(debugMode) console.log("Routepoint"+etaPoint1+":",routeETA);
+                            this.detectedRouteETA = routeETA; //set the variable so the CTRL can retrieve it
+                        }
+                        break;
+                    }
+                }
+
+                if(!skipIcon) {
+                    var iconFeature = new ol.Feature({
+                        geometry: new ol.geom.Point(ol.proj.transform(stopcoord, 'EPSG:4326', 'EPSG:3857')),
+                        name: 'VTS intersect'
+                    });
+
+                    var iconStyle = new ol.style.Style({
+                        text: new ol.style.Text({
+                            font: '18px Calibri,sans-serif',
+                            fill: new ol.style.Fill({color: '#FF0000'}),
+                            stroke: new ol.style.Stroke({
+                                color: '#fff', width: 2
+                            }),
+                            text: "X"
+                        })
+                    });
+
+                    iconFeature.setStyle(iconStyle);
+                    try {
+                        vectorSource.addFeature(iconFeature);
+                    } catch (doNothing) {
+                    }
+                }
+
+            }
+        };
+
+
+
         //MINIMAP
         this.miniMapUpdate = function (areaWKT, AISpos, AISheading) { //creates area and ais vessel icon on map
             vectorSource.clear();
@@ -236,6 +326,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
             if(routeRet) {
                 var routeWKT = routeRet[0];
                 var routeArr = routeRet[1];
+                this.findETAatIntersect(routeArr, areaWKT, false); //Finds the ETA at intersect of VTS area. Value is requested by CTRL. Also sets intersect icon.
                 routefeature = format.readFeature(routeWKT, {
                     dataProjection: 'EPSG:4326',
                     featureProjection: 'EPSG:3857'
@@ -252,46 +343,6 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
                     vectorSource.addFeature(routefeature);
                 }catch(doNothing){}
             }
-
-
-            /**  Find the intersects of route on VTS areas **/
-            if(routeRet) {
-                var extentRoute = routefeature.getGeometry().getExtent();
-                var extentArea = areafeature.getGeometry().getExtent();
-
-                // console.log("extentRoute:",extentRoute);
-                // console.log("extentArea:",extentArea);
-                // console.log(ol.extent.containsExtent(extentArea,extentRoute));
-
-
-                //Find ETA of intersect at VTS area line
-                // var routeline = turf.lineString(routeArr);
-                //
-                // //make WKT to poly
-                // var tmpWKT = areaWKT.replace("POLYGON((", '').replace('))', '');
-                // tmpWKT = tmpWKT.replace(/,([\s])+/g, ',');
-                // var tmpPoly = tmpWKT.split(',');
-                // var areaAsPoly = [], tmpAreaAsPoly = [];
-                // for (var i = 0; i != tmpPoly.length; i++) {
-                //     var tmpPos = tmpPoly[i].split(" ");
-                //     tmpAreaAsPoly.push([parseFloat(tmpPos[0]), parseFloat(tmpPos[1])]);
-                // }
-                // if (tmpAreaAsPoly[0] != tmpAreaAsPoly[tmpAreaAsPoly.length]) tmpAreaAsPoly.push(tmpAreaAsPoly[0]); //last pos must be same as first pos
-                //
-                //
-                // areaAsPoly.push(tmpAreaAsPoly); //inception array
-                // var vtsarea = turf.polygon(areaAsPoly);
-                // // var vtsarea = turf.polygon([[[12,56],[12,55],[13,55],[13,56],[12,56]]]);
-                // var intersection = turf.lineIntersect(vtsarea, routeline);
-                // console.log("intersection:", intersection);
-                // alert("TODO:line length, see ETA based on RTZ time, if no time added, make a new rtz with times added for august 2019");
-                //TODO: Make option in main map to display all VTS areas in visible map area, obey zoom level, cutoff at
-                //TODO: make an RTZ with times, without times and passing 2 VTS areas. (Tallin/Helsinki)
-                //TODO: if no route and no ETA for waypoints, and no AIS ETA, use nothing.
-                //TODO: if no route and no ETA for waypoints, use AIS ETA at whatever port.
-                //TODO: if route and has ETA at first waypoint inside VTS and last waypoint before VTS area, calculate ETA according to length of line using waypoint ETA before intersect.
-            }
-
 
             if (AISpos && AISpos.length > 1) {//only if there is a pos
                 function degToRad(deg) {
