@@ -3,32 +3,33 @@ BalticWeb
 The live system is available at https://balticweb.e-navigation.net and the latest development version is here https://balticweb-test.e-navigation.net 
 
 
-##What
+## What
 BalticWeb is a maritime map-centric portal. BalticWeb is a prototype. The site will aggregate relevant maritime data and information and allow access for users and services by utilizing the Maritime Cloud.
-####Services available for all:
+
+#### Services available for all:
 * Notices to Mariners and Navigational Warnings
 * Simulated Route planning, optimization and exchange service
 * OpenSeaMap.org overlay
 
 
-####Services requiring a Maritime Cloud ID:
+#### Services requiring a Maritime Cloud ID:
 * Sea Traffic - Live Vessel position and information (AIS)
 * No-Go area service
 * Satellite imagery service from NASA
 * Nautical Charts from the Swedish Maritime Administration and the Danish Geodata Agency
 * METOC forecasts from DMI
 
-##Why
+## Why
 BalticWeb is a prototype and it aims to serve the mariner in these ways:
 * Assist in planning a sea voyage
 * Navigational aid on a sea voyage
 * Monitoring of maritime traffic
 
-##How
+## How
 BalticWeb uses the Maritime Connectivity Platform (MCP) in order to identify and retrieve relevant web services and identify users.
 BalticWeb as been developed as part of the EU-funded EfficenSea2 Project.
 
-####Cookies and Local storage
+#### Cookies and Local storage
 BalticWeb stores some information in the client's browser both in the local storage and with cookies i.e. the position and zoom level of the map for a smoother user experience. Each visit is tracked via Google Analytics to gather usage metrics of the site in order to continuously improve the user experience. Cookies are used at login as well.
 
 
