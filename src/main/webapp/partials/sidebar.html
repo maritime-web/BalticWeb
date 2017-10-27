@@ -1,10 +1,10 @@
 
-<div uib-collapse="!$root.showgraphSidebar"  class="maritimeweb-sidebar col-xs-9 col-sm-5  col-md-5 sidebar"> <!-- uib-collapse="showgraphSidebar" -->
+<div id="maritimeweb-sidebar" uib-collapse="!$root.showgraphSidebar"  class="maritimeweb-sidebar col-xs-4 col-sm-5  col-md-5 sidebar "> <!-- uib-collapse="showgraphSidebar" -->
     <uib-tabset type="pills" justified="true" active="activeTabIndex" index="$index">
 
 
         <!-- NW-NM tab -->
-        <uib-tab classes="btn-sm">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading>
                 <img src="/img/nwnm/nw.png" height="16"/>
                 NW-NM
@@ -53,7 +53,7 @@
 
 
 
-        <uib-tab classes="btn-sm">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading ng-class="(NoGoServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <span class="glyphicon glyphicon-globe"></span> No-Go
                 <!--<span class="badge sidebar-badge" ng-bind="mapNoGoLayer.getLayers().getArray().length"></span>-->
@@ -132,7 +132,7 @@
 
 
 
-        <uib-tab classes="btn-sm">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <span class="glyphicon glyphicon-globe"></span> Satellite
                 <span class="badge sidebar-badge" ng-bind="mapWeatherLayers.getLayers().getArray().length"></span>
@@ -183,7 +183,7 @@
 
 
         <!-- Vessels tab -->
-        <uib-tab classes="btn-sm">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading classes="btn-sm" >
                 <img src="/img/vessel_gray.png"/>
                 &nbsp;Vessels
@@ -247,7 +247,7 @@
 
 
         <!-- VTS report tab tab -->
-        <uib-tab classes="btn-sm" >
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading>
                 <span class="glyphicon glyphicon-globe"></span>
                 &nbsp;VTS
@@ -278,7 +278,7 @@
 
 
         <!-- Route tab -->
-        <uib-tab ng-if="$root.route_id" classes="btn-sm">
+        <uib-tab ng-if="$root.route_id" classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading>
                 <span>Route <span class="badge sidebar-badge">1</span></span>
             </uib-tab-heading>

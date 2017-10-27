@@ -68,24 +68,6 @@ body {
     -o-background-size: cover;
     background-size: cover;
 }
-.maritimeweb-sidebar {
-    position: absolute;
-    top: 51px;
-    bottom: 3%;
-    right: 24px;
-    margin: 1em;
-    z-index: 300;
-    height: 75%;
-    background-color: white ;
-
-    border-radius: 4px;
-    padding: 4px;
-    overflow-y: scroll;
-
-    opacity: 0.90;
-    border: 1px #269 solid;
-
-}
 
     /* Vessel Traffic Service */
 
@@ -419,6 +401,35 @@ body {
 
 
     /* END Vessel Traffic Service */
+
+
+.maritimeweb-sidebar {
+    position: absolute;
+    min-width: 240px;
+    top: 51px;
+    bottom: 3%;
+    right: 24px;
+    margin: 1em;
+    z-index: 300;
+    height: 75%;
+    background-color: white ;
+    border-radius: 4px;
+    padding: 4px;
+    overflow-y: scroll;
+    opacity: 0.90;
+    border: 1px #269 solid;
+}
+
+.sidebar-minimized{
+    height:105px !important;
+}
+
+@media screen and (max-width: 768px) {
+    .sidebar-minimized{
+        height:300px !important;
+
+    }
+}
 
 .sidebar-panel {
     padding: 10px 5px;
@@ -935,6 +946,7 @@ Making room for the beta ribbon banner
 */
 .navbar-brand{
     padding-left: 41px;
+    cursor: pointer;
 }
 /*
 beta ribbon banner in pure css
