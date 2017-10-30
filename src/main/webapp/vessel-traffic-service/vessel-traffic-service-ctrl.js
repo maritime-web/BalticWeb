@@ -1198,7 +1198,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             //gets ETA from route if loaded, and if route actually intersects currently selected VTS
             $scope.detectedRouteETA = VtsHelperService.returnDetectedRouteETA();
             $scope.detectedRouteIntersect = VtsHelperService.returnDetectedRouteIntersect();
-            console.log("bob:",$scope.detectedRouteIntersect);
             if($scope.detectedRouteETA && $scope.detectedRouteETA.length>10 && $scope.detectedRouteIntersect){
                 var routeETATime = $scope.detectedRouteETA.substring(14,$scope.detectedRouteETA.length);
                 var routeETADate = $scope.detectedRouteETA.substring(0, 11);

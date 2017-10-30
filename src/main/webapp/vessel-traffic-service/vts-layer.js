@@ -290,6 +290,8 @@ angular.module('maritimeweb.vts-map')
                                                 areafeature.set("name",vts_areas[i].shortname);
                                                 //styling
                                                 areafeature.setStyle(styleFunctionNormal(vts_areas[i].shortname, vts_areas[i].id));
+                                                console.log("Gotta put a button in somehow");
+                                                // vtsAreasSidePanelListItem
                                                 //add to layer
                                                 vtsareaLayer.getSource().addFeature(areafeature);
                                             }

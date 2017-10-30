@@ -122,6 +122,9 @@ body {
 .vts-lesspadding{
     padding: 2px 6px;
 }
+.vts-padding-4-20{
+    padding: 20px 0px 0px 4px;
+}
 .vts-nopadding{
     padding: 0;
 }
@@ -434,7 +437,9 @@ body {
 .sidebar-panel {
     padding: 10px 5px;
 }
-
+.cursor-default{
+    cursor: default !important;
+}
 .sidebar-badge {
     background-color: lightgray;
     font-size: 10px;
