@@ -1,9 +1,37 @@
 BalticWeb
 =========
+The live system is available at https://balticweb.e-navigation.net and the latest development version is here https://balticweb-test.e-navigation.net 
 
-A tool for ships sailing in the Baltic region. BalticWeb serves as a single access point to safety related information.
 
-The live system will in a very near future be found here: https://balticweb.e-navigation.net
+## What
+BalticWeb is a maritime map-centric portal. BalticWeb is a prototype. The site will aggregate relevant maritime data and information and allow access for users and services by utilizing the Maritime Cloud.
+
+#### Services available for all:
+* Notices to Mariners and Navigational Warnings
+* Simulated Route planning, optimization and exchange service
+* OpenSeaMap.org overlay
+
+
+#### Services requiring a Maritime Cloud ID:
+* Sea Traffic - Live Vessel position and information (AIS)
+* No-Go area service
+* Satellite imagery service from NASA
+* Nautical Charts from the Swedish Maritime Administration and the Danish Geodata Agency
+* METOC forecasts from DMI
+
+## Why
+BalticWeb is a prototype and it aims to serve the mariner in these ways:
+* Assist in planning a sea voyage
+* Navigational aid on a sea voyage
+* Monitoring of maritime traffic
+
+## How
+BalticWeb uses the Maritime Connectivity Platform (MCP) in order to identify and retrieve relevant web services and identify users.
+BalticWeb as been developed as part of the EU-funded EfficenSea2 Project.
+
+#### Cookies and Local storage
+BalticWeb stores some information in the client's browser both in the local storage and with cookies i.e. the position and zoom level of the map for a smoother user experience. Each visit is tracked via Google Analytics to gather usage metrics of the site in order to continuously improve the user experience. Cookies are used at login as well.
+
 
 ## Software Architecture
 
@@ -12,10 +40,9 @@ The BalticWeb client is a rich client HTML/JS-application with a server side JSO
 On the client side we use:
 
 * JavaScript/HTML
-* OpenLayers 3(for maps)
+* OpenLayers 4 (for maps)
 * Keycloak (for security)
-* JQuery (for DOM-manipulation and calling webservices)
-* Twitter Bootstrap (for basic layout)
+* Twitter Bootstrap 3.3.7(for basic layout)
 * AngularJS (for forms and similar)
 
 
@@ -38,12 +65,10 @@ On the server side we use:
 * Maven 3.3.1+
 * Wildfly 8.2 (Maven setup to deploy to Wildfly)
 * MySQL (Maven configures JBoss datasource to use MySQL)
-* Node.js (Follow the installation instructions at http://nodejs.org)
-* Grunt.js (Follow the installation instructions at http://gruntjs.com)
+* Node.js for building and local development (Follow the installation instructions at http://nodejs.org)
+* Grunt.js for building and local development (Follow the installation instructions at http://gruntjs.com)
 * CouchDB
-* a file called balticweb.properties
-* Local lost-node, https://github.com/rprinz08/lost-node and services registered.
-* MongoDB
+* a file called balticweb.properties with endpoints urls and other sensitive information and configuration.
 
 ## Initial setup
 
@@ -178,18 +203,18 @@ Ways to avoid annoying JavaScript Validation Errors in Eclipse:
 http://stackoverflow.com/questions/7102299/eclipse-javascript-validation-disabled-but-still-generating-errors
 
 
-## Demo test server
+## Test server
 
 More stable releases are demoed from this test server:
 
-http://test.e-navigation.net/arcticweb (requires credentials only available to development team)
+http://balticweb-test.e-navigation.net 
 
+# Production server
 
-## CI Test Server - Latest and Greatest
+Production releases are available on the server:
 
-The CI server continuously deployes the latest and greatest to a separate test server:
+http://balticweb.e-navigation.net 
 
-http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only available to development team)
 
 ## Database maintenaince
 
