@@ -593,6 +593,7 @@ angular.module('maritimeweb.map')
 
                     map.on('click', function (evt) { //minimize the right side menu (sidebar) on click - not on drag.
                         MapService.sidebarCollapse();
+                        scope.$apply();
                     });
 
                     scope.clickToggleDisplayType = function () {
