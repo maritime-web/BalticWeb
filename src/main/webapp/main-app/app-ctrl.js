@@ -13,9 +13,13 @@ angular.module('maritimeweb.app')
                 }
             });
 
+            $scope.$watch(function(){
+                return MapService.sidebarCollapsed; //collapsed state, map-directive -> map-service -> here
+            }, function (newValue) {
+                $scope.sidebarCollapsed = MapService.sidebarCollapsed;
+            });
             $scope.sidebarUncollapse = function(){ //map-directive collapses on map click
-                var el = angular.element( document.querySelector('#maritimeweb-sidebar') );
-                el.removeClass('sidebar-minimized');
+                MapService.sidebarUnCollapse(); //is watched to change state in $scope
             };
 
             $scope.welcomeToBalticWebModal = function (size) {
@@ -183,7 +187,6 @@ angular.module('maritimeweb.app')
                             // console.log($scope.vtsAreasArr);
                         }
                         $scope.vtsRouteWKT = mapVtsAreaService.returnRouteAsWKT();
-                        // console.log("vtsRouteWKT:",$scope.vtsRouteWKT);
                     })
                     .error(function (error) {
                         $log.debug("Error getting VTS service. Reason=" + error);

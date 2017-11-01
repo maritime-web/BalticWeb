@@ -426,6 +426,10 @@ body {
 .sidebar-minimized{
     height:105px !important;
 }
+.sidebar-normal{
+    height:auto;
+}
+
 
 @media screen and (max-width: 768px) {
     .sidebar-minimized{
