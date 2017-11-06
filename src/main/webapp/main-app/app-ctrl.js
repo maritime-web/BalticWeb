@@ -13,6 +13,14 @@ angular.module('maritimeweb.app')
                 }
             });
 
+            $scope.$watch(function(){
+                return MapService.sidebarCollapsed; //collapsed state, map-directive -> map-service -> here
+            }, function (newValue) {
+                $scope.sidebarCollapsed = MapService.sidebarCollapsed;
+            });
+            $scope.sidebarUncollapse = function(){ //map-directive collapses on map click
+                MapService.sidebarUnCollapse(); //is watched to change state in $scope
+            };
 
             $scope.welcomeToBalticWebModal = function (size) {
                 $uibModal.open({
@@ -99,6 +107,7 @@ angular.module('maritimeweb.app')
             /**************************************/
 
             $scope.activateVTSForm = function (size) {
+                if(!size) size='lg';
                 growl.info('Activating Vessel Traffic Control');
                 $uibModal.open({
                     animation: 'true',
@@ -107,6 +116,16 @@ angular.module('maritimeweb.app')
                     size: size
                 })
             };
+
+            function checkToActivateVTSForm() { //if refresh without proper close, open form again in same area.
+                var vts_current_id = $window.localStorage['vts_current_id'];
+                try {
+                    if (vts_current_id && parseInt(vts_current_id) > 0){
+                        $scope.activateVTSForm();
+                    }
+                }catch(undefinedError){}
+            }
+            setTimeout(function(){ checkToActivateVTSForm(); }, 2000);
 
 
             /**********************************************/
@@ -134,8 +153,6 @@ angular.module('maritimeweb.app')
             };
             /** populate the sidebar with VTS areas on map as selectable list **/
 
-
-
             /** Toggle the enabled status of the layer **/
             $scope.vtsMapToggle = function () {
                 $scope.vts_map_show = mapVtsAreaService.toggleVtsAreasLayerEnabled(); //also saves to localstorage
@@ -151,7 +168,6 @@ angular.module('maritimeweb.app')
 
             /**
              * TODO:
-             * make toggle for "on route" only if a route is loaded, and make method for only display areas which intersect with route
              * make areas clickable for more info and option to send vts report
              */
 
@@ -168,11 +184,9 @@ angular.module('maritimeweb.app')
                                 var textB = b.shortname.toUpperCase();
                                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                             });
-
-                            console.log($scope.vtsAreasArr);
+                            // console.log($scope.vtsAreasArr);
                         }
                         $scope.vtsRouteWKT = mapVtsAreaService.returnRouteAsWKT();
-                        // console.log("vtsRouteWKT:",$scope.vtsRouteWKT);
                     })
                     .error(function (error) {
                         $log.debug("Error getting VTS service. Reason=" + error);

@@ -10,6 +10,18 @@ angular.module('maritimeweb.map')
         function ($http) {
             'use strict';
 
+            /** watched from app-ctrl to collapse/uncollapse sidebar**/
+            this.sidebarCollapsed = false;
+            this.sidebarCollapse = function(){
+                this.sidebarCollapsed = true;
+            };
+            this.sidebarUnCollapse = function(){
+                this.sidebarCollapsed = false;
+            };
+            /** watched from app-ctrl to collapse/uncollapse sidebar**/
+
+
+
             var projMercator = 'EPSG:3857';
             var proj4326 = 'EPSG:4326';
             var geoJsonFormat = new ol.format.GeoJSON();

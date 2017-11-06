@@ -9,16 +9,32 @@
 
 <div id="modalbody" class="modal-body ng-hide">
     <div ng-show="showReportInterface">
-        <select class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname)">
+        <select class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname,null)">
             <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>
         </select>
-        <div>
-            <div class="vts-pad-top"><span ng-bind-html="VTSSelectedTrafficCenterLogo"></span><strong>{{VTSSelectedTrafficCenterName}}</strong><span ng-bind-html="VTSSelectedTrafficCenterGuide"></span></div>
-            <div class="" ng-bind-html="VTSSelectedTrafficCenterData"></div>
-        </div>
     </div>
 
     <div id="vtsparentdiv" class="vts-pad-top" ng-show="VTSSelected && showReportInterface">
+        <div>
+            <div style="position: relative;height: 40px;" class="vts-pad-top">
+                <div style='min-width:44px;max-width:44px;position:absolute;top:0px'>
+                    <img style='height:40px;' src='{{VTSSelectedTrafficCenterLogo}}'>
+                </div>
+                <div style='position:absolute;top:0px;left:44px'>
+                    <div >
+                        <span style="float:left;"><strong>{{VTSSelectedTrafficCenterName}}</strong></span>
+                    </div>
+                    <div>
+                        <span ng-click="toggleDisplayVtsCenterData()"><a href="#">View contact details</a></span>
+                    </div>
+                </div>
+                <div style="position: absolute;top:0px;right:0px" ng-bind-html="VTSSelectedTrafficCenterGuide"></div>
+            </div>
+            <!--<div class="" ng-bind-html="VTSSelectedTrafficCenterData"></div>-->
+        </div>
+        <div style="position: relative;height:100px;" ng-hide="!displayVtsCenterData">
+            LALALALLALALALA
+        </div>
 
         <!-- VTS AREA MINIMAP -->
         <div class="vts-responsive-minimap" style="position: relative;" >
@@ -575,7 +591,7 @@
             <i class="fa fa-check" aria-hidden="true"></i> Send
         </button>
         <button class="btn btn-danger" type="button" ng-click="hideVTSForm()"><i class="fa fa-ban" aria-hidden="true"></i>
-            Cancel
+            <span ng-show="VTSSelected && showReportInterface">Save and </span>Cancel
         </button>
     </div>
     <div class="col-md-12 text-center vts-grey-text vts-text-small"  ng-show="!showReportInterface">
