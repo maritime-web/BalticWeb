@@ -33,12 +33,17 @@ angular.module('maritimeweb.vessel')
                 scope: {
                     name: '@',
                     alerts: '=?',
-                    vessels: '=?'
+                    vessels: '=?',
+                    vesselsinfo: '=?',
+                    maxnumberofvessels: '=?'
                 },
                 link: function (scope, element, attrs, ctrl) {
                     var olScope = ctrl.getOpenlayersScope();
                     var vesselLayers;
                     var loadTimer;
+
+                    var maxNumberOfVesselsOnMap = scope.maxnumberofvessels > 0 ? scope.maxnumberofvessels : 100;
+
                     scope.loggedIn = Auth.loggedIn;
 
                     olScope.getMap().then(function (map) {
@@ -237,11 +242,16 @@ angular.module('maritimeweb.vessel')
 
                             var zoomLvl = map.getView().getZoom();
                             scope.vessels.length = 0;
+
+
                             VesselService.getVesselsInArea(zoomLvl, scope.clientBBOX())
                                 .success(function (vessels) {
 
                                     var features = [];
-                                    for (var i = 0; i < vessels.length; i++) {
+                                    scope.vesselsinfo.maxnumberexceeded  = (vessels.length > maxNumberOfVesselsOnMap);
+                                    scope.vesselsinfo.actualnumberofvessels = vessels.length ;
+
+                                    for (var i = 0; i < vessels.length && i < maxNumberOfVesselsOnMap; i++) {
                                         var vessel = vessels[i];
                                         var vesselData = {
                                             name: vessel.name || "",
@@ -298,6 +308,7 @@ angular.module('maritimeweb.vessel')
                                 }
                                 loadTimer = $timeout(scope.refreshVessels, 500);
                             }else{
+
                                 scope.vessels.length = 0;
                             }
                         };

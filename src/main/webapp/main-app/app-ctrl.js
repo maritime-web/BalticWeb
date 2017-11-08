@@ -90,6 +90,10 @@ angular.module('maritimeweb.app')
 
             // Vessels
             $scope.vessels = [];
+            $scope.vesselsinfo = {};
+            $scope.vesselsinfo.maxnumberexceeded = false; // flag to indicate if more vessels are presented than displayed.
+            $scope.vesselsinfo.actualnumberofvessels = 0;
+
 
             /** Returns the icon to use for the given vessel **/
             $scope.iconForVessel = function (vo) {

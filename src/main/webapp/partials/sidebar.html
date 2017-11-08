@@ -185,7 +185,7 @@
             <uib-tab-heading classes="btn-sm" >
                 <img src="/img/vessel_gray.png"/>
                 &nbsp;Vessels
-                <span class="badge sidebar-badge" ng-bind="vessels.length"></span>
+                <span class="badge sidebar-badge" ng-if="vessels.length>0" >{{vessels.length}} <i ng-if="vesselsinfo.maxnumberexceeded" class="fa fa-plus" aria-hidden="true"></i> </span>
             </uib-tab-heading>
             <div class="sidebar-panel">
 
@@ -200,6 +200,7 @@
                     </div>
                     <div class="panel-body">
                         <p class="cursor-default"><i class="fa fa-ship" aria-hidden="true"></i> Position information from AIS providers</p>
+                        <p class="small" ng-if="vesselsinfo.maxnumberexceeded">Note that the actual number of vessels in the areas is {{vesselsinfo.actualnumberofvessels}} but the number is reduced to {{vessels.length}} in order to increase performance. Zoom in to see all vessels in an area.</p>
                     </div>
 
                     <!-- Table -->
