@@ -13,6 +13,7 @@ angular.module('maritimeweb.app')
                 }
             });
 
+            /** Sidemenu collapse handler **/
             $scope.$watch(function(){
                 return MapService.sidebarCollapsed; //collapsed state, map-directive -> map-service -> here
             }, function (newValue) {
@@ -21,6 +22,7 @@ angular.module('maritimeweb.app')
             $scope.sidebarUncollapse = function(){ //map-directive collapses on map click
                 MapService.sidebarUnCollapse(); //is watched to change state in $scope
             };
+            /** END Sidemenu collapse handler **/
 
             $scope.welcomeToBalticWebModal = function (size) {
                 $uibModal.open({
@@ -106,7 +108,7 @@ angular.module('maritimeweb.app')
             /** Vessel Traffic Service Report functionality      **/
             /**************************************/
 
-            $scope.activateVTSForm = function (size) {
+            $scope.activateVTSForm = function (size) { //if vts_current_id is set in localstorage, it opens that areas report form
                 if(!size) size='lg';
                 growl.info('Activating Vessel Traffic Control');
                 $uibModal.open({
@@ -116,6 +118,12 @@ angular.module('maritimeweb.app')
                     size: size
                 })
             };
+            $scope.setActiveVtsIdAndOpenForm = function(id){
+                console.log("opening VTS with ID:",id);
+                localStorage.setItem('vts_current_id', id);
+                $scope.activateVTSForm();
+            };
+
 
             function checkToActivateVTSForm() { //if refresh without proper close, open form again in same area.
                 var vts_current_id = $window.localStorage['vts_current_id'];
@@ -144,7 +152,7 @@ angular.module('maritimeweb.app')
             $scope.vtsRouteWKT = ($scope.vts_route_enabled == true)? mapVtsAreaService.returnRouteAsWKT : ""; //watched by directive to populate map on change
             $scope.vtsAreasArr = []; //is watched by directive mapVtsAreaLayer to populate map on change
             $scope.vtsLayerEnabled = $scope.vts_map_show; //is listened to
-            $scope.vtsAreasArrSorted = [];
+            $scope.vtsSidemenuListArr = [];
 
             //Skips null items when populating dropdowns
             $scope.isItemNull = function(item) {
@@ -166,10 +174,40 @@ angular.module('maritimeweb.app')
             };
 
 
-            /**
-             * TODO:
-             * make areas clickable for more info and option to send vts report
-             */
+            //Skips null items when populating lists
+            $scope.isListItemNull = function(item) {
+                if (item === null) return false;
+                return true;
+            };
+
+            $scope.populateVtsSidemenuList = function(intersectingIds,vtsAreasArr){ //id of area is not seq. id in list
+                $scope.vtsSidemenuListArr = []; //reset
+                // var sidemenuVtsReportButtonTemplate = "<p><div class=''><span>REPLACE_SHORTNAME</span><button class='btn btn-primary' type='button' ng-click='activateVTSForm(REPLACE_ID)'>Send VTS report now</button></div></p>";
+                var intersectingAreasArr = JSON.parse(intersectingIds);
+                if(vtsAreasArr.length>0 && intersectingAreasArr.length>0){
+                    for(var i=0;i!=$scope.vtsAreasArr.length-1;i++){
+                        for(var y=0;y!=intersectingAreasArr.length;y++){
+                            if(parseInt($scope.vtsAreasArr[i].id) == parseInt(intersectingAreasArr[y])){
+                                console.log("SEND REPORT TO:",$scope.vtsAreasArr[i].shortname);
+                                $scope.vtsSidemenuListArr.push({
+                                    id: $scope.vtsAreasArr[i].id,
+                                    shortname: $scope.vtsAreasArr[i].shortname
+                                });
+                                  // html += sidemenuVtsReportButtonTemplate.replace("REPLACE_ID",$scope.vtsAreasArr[i].id).replace("REPLACE_SHORTNAME",$scope.vtsAreasArr[i].shortname);
+                                // console.log("intersectingAreasArr:",intersectingAreasArr);
+                            }
+                        }
+                    }
+                    // $scope.vtsAreasSidemenuListTemplate = $sce.trustAsHtml(html);
+                    // console.log("html:",html);
+                }
+            };
+            $scope.$watch(function () { return window.localStorage['vts_intersectingareas']; },function(newVal,oldVal){
+                if(oldVal !== newVal && newVal === undefined){
+                }else{
+                    $scope.populateVtsSidemenuList(newVal,$scope.vtsAreasArr.length);
+                }
+            });
 
             $scope.reloadVtsAreas = function () {
                 mapVtsAreaService.getVtsAreas()
@@ -184,7 +222,7 @@ angular.module('maritimeweb.app')
                                 var textB = b.shortname.toUpperCase();
                                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                             });
-                            // console.log($scope.vtsAreasArr);
+                            $scope.populateVtsSidemenuList(window.localStorage['vts_intersectingareas'],$scope.vtsAreasArr); //init after areas fetched from service
                         }
                         $scope.vtsRouteWKT = mapVtsAreaService.returnRouteAsWKT();
                     })

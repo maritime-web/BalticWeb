@@ -71,6 +71,34 @@ body {
 
     /* Vessel Traffic Service */
 
+.hero {
+    border-top-left-radius:6px;
+    border-top-right-radius:6px;
+    border-bottom-left-radius:6px;
+    border-bottom-right-radius:6px;
+    border-color: #2e2e2e;
+    position:absolute;
+    top:-80px;
+    height:60px;
+    white-space:normal;
+    position:absolute;
+    background-color:#e15915;
+    width:100% ;
+}
+.hero:after {
+    content:'';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -21px;
+    width: 0;
+    height: 0;
+    border-top: solid 21px #e15915;
+    border-left: solid 21px transparent;
+    border-right: solid 21px transparent;
+}
+
+
 .bold{font-weight:bold;}
 .italic{font-style: italic;}
 .vts-text-center{text-align: center;}
@@ -91,7 +119,9 @@ body {
 .vts-button-green:hover{background-color:rgba(0,254,119,0.2) !important;}
 .vts-button-green:active{background-color:rgba(0,254,119,0.6) !important;}
 .vts-button-green:focus{background-color:rgba(0,254,119,0.3) !important;}
+.vts-button-modifier-slim{padding:4px 8px !important}
 .vts-pad-top{padding-top:8px;}
+.vts-pad-bottom{padding-bottom:8px;}
 .vts-input{width:160px;}
 .vts-input-small{width:50px;}
 .vts-input-medium{width:70px;}
@@ -148,6 +178,16 @@ body {
     color: #eeeeee;
     border-color: #eeeeee;
     width:90%;
+}
+.vts-popup{
+}
+.vts-popup:hover{
+}
+.vts-popup-icon{
+}
+
+.vts-popup-icon:hover{
+    color:rgba(100,100,100,1);
 }
 .vtsinvalid{
     border-color: rgba(229, 103, 23, 0.8);
@@ -207,6 +247,11 @@ body {
 .vts-force-spacing-350{
     min-width:350px;
     max-width:350px;
+    display: inline-block;
+}
+.vts-force-spacing-400{
+    min-width:400px;
+    max-width:3400px;
     display: inline-block;
 }
 
@@ -381,17 +426,37 @@ body {
     }
 }
 
+.vts-responsive-info-container{
+    min-height:30px;
+    position: relative;
+    left:-10px;
+    float:right;
+    text-align: right;
+}
+.vts-inline-block{
+    display:inline-block;
+}
 
 @media screen and (max-width: 992px) {
     .vts-responsive-minimap{
         width: 100%;
         height: 200px;
     }
+    .vts-responsive-info-container{
+        left:0px;
+        text-align:left;
+        float:none;
+    }
 }
 @media screen and (min-width: 610px) and (max-width: 992px) {
     .vts-responsive-minimap{
         width: 100%;
         height: 270px;
+    }
+    .vts-responsive-info-container{
+        left:0px;
+        text-align:left;
+        float:none;
     }
 }
 @media screen and (min-width: 993px) {

@@ -620,13 +620,13 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 navigator.geolocation.getCurrentPosition(function (position) {
 
                     var lon = position.coords.longitude;
-                    $scope.vtsvesselposlondegreesinput = (lon + "").substring(0, (lon + "").indexOf("."));
+                    $scope.vtsvesselposlondegreesinput = Math.abs(parseInt((lon + "").substring(0, (lon + "").indexOf("."))));
                     (position.coords.longitude > 0) ? $scope.vtsCurrentPosCompassAppendEW = "E" : $scope.vtsCurrentPosCompassAppendEW = "W"; //set N or S
                     lon = $scope.retDecMinutesFromDecDegrees(lon);
                     $scope.vtsvesselposlonminutesinput = lon;
 
                     var lat = position.coords.latitude;
-                    $scope.vtsvesselposlatdegreesinput = (lat + "").substring(0, (lat + "").indexOf("."));
+                    $scope.vtsvesselposlatdegreesinput = Math.abs(parseInt((lat + "").substring(0, (lat + "").indexOf("."))));
                     (position.coords.latitude > 0) ? $scope.vtsCurrentPosCompassAppendNS = "N" : $scope.vtsCurrentPosCompassAppendNS = "S"; //set E or W
                     lat = $scope.retDecMinutesFromDecDegrees(lat);
                     $scope.vtsvesselposlatminutesinput = lat;
@@ -1079,8 +1079,14 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         //Change VTS center dropdown **********************************************************************************
 
+
+        $scope.openMastersGuideNewWindow = function(){
+            $window.open($scope.VTSSelectedTrafficCenterMastersguide, '_blank');
+        };
+
         //clicking on dropdown menu to open the VTS form reates the input html according to VTSCenterData available - made as html insert because so many unknowns.
         $scope.selectVTSCenterChange = function (selectedItem,storageId) {
+            console.log("set selected into localstor here");
             var html = "",
                 vtsID = 0;
             if(!storageId || parseInt(storageId) == 0){
@@ -1090,6 +1096,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         console.log("ID:", i," becomes:", VTSData[i].id ," - ", selectedItem, " - ", VTSData[i].shortname);
                         vtsID = VTSData[i].id;
                         $scope.VTSID = vtsID;
+                        localStorage.setItem('vts_current_id', vtsID);
                     }
                 }
             }else{
@@ -1136,18 +1143,20 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.VTSTrueCourseValidation(false);
             $scope.VTSCourseOverGroundValidation(false);
 
-            $scope.VTSSelectedTrafficCenterName = VTSData[vtsID].name;
+
+            $scope.VTSSelectedTrafficCenterCountry = VTSData[vtsID].country;
+
+                $scope.VTSSelectedTrafficCenterName = VTSData[vtsID].name;
             if (VTSData[vtsID].iconImage != "") {
-                html = "<span style='min-width:24px;display: inline-block; text-align: left; '><img style='height:20px;' src='" + VTSData[vtsID].iconImage + "'></span>";
                 $scope.VTSSelectedTrafficCenterLogo = VTSData[vtsID].iconImage;
+
                     //$sce.trustAsHtml(html);
                 html = "";
             }
-            if (VTSData[vtsID].VTSGuideLink != "") {
-                html = "<span style='min-width:200px;max-width:100%;display: inline-block; text-align: right; right:0;float:right;'><a target='_blank' href='" + VTSData[vtsID].VTSGuideLink + "'>View Master&#39;s Guide online</a></span>";
-                $scope.VTSSelectedTrafficCenterGuide = $sce.trustAsHtml(html);
-                html = "";
-            }
+
+            $scope.VTSSelectedTrafficCenterMastersguide = (VTSData[vtsID].VTSGuideLink != "" && VTSData[vtsID].VTSGuideLink != null) ? VTSData[vtsID].VTSGuideLink : "";
+
+
 
             //create contact information for VTS center in compact form
             html += "<span style='min-width:220px;max-width:220px;display: inline-block; text-align: left;'>Call sign: &#34;" + VTSData[vtsID].callsign + "&#34;</span>";
@@ -1221,9 +1230,10 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 // TODO: Make flag for manual ETA change, ignore route ETA if so, add warning for loading ETA of route when swapping VTS area in dropdown, add button for inserting ETA from route, if manual has been performed.");
             //debugging
             $scope.vtsvesselmmsiinput = "265177000";
-            $scope.VTSVesselMMSIValidation();
 
-            $scope.VTSValidationAllDone(); //make sure to see if is ready to send
+
+            $scope.VTSVesselMMSIValidation();
+            $scope.VTSValidationAllDone(); //make sure to see if is ready to send on refreshed browser
 
         };
 
@@ -1236,9 +1246,15 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         };
 
 
-
+        /** SETTINGS **/
         $scope.selectedVesselType = "";
-        $scope.vtsTotalFuel = ""; //added up and displayed from validation
+        $scope.vtsTotalFuel = ""; //added up and displayed during validation, reset first.
+
+
+
+
+
+
 
 
         //Send form ****************************************************************************************************
@@ -1485,11 +1501,30 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         };
 
+
+        $scope.removePopupInfo = function(){
+            var el = document.getElementById('popupDiv');
+            for(var i=0;i!=10;i++) { //overkill
+                angular.element(el).remove();
+            }
+        };
+
+        $scope.displayPopupInfo = function(event, msg){
+            var elem = event.currentTarget;
+            var elemWidth = document.getElementById(elem.id).offsetWidth;
+            function appendNow(){
+                angular.element(elem).append("<div id='popupDiv' class='hero' style='left:"+event.offsetLeft+"px;width:"+elemWidth+"px;'>"+msg+"</div>");
+
+            }
+            appendNow(); // setTimeout(function(){ appendNow(); }, 500);
+        };
+
         //Modal form control ******************************************************************************************
         $scope.hideVTSForm = function () {
             localStorage.setItem('vts_current_id', "");
             $uibModalInstance.close();
         };
+
 
         $scope.$on('modal.closing', function (event, reason, closed) {
             // console.log('modal.closing: ' + (closed ? 'close' : 'dismiss') + '(' + reason + ')');

@@ -14,33 +14,41 @@
         </select>
     </div>
 
+    <!-- VTS CENTRE INFORMATION -->
     <div id="vtsparentdiv" class="vts-pad-top" ng-show="VTSSelected && showReportInterface">
-        <div>
-            <div style="position: relative;height: 40px;" class="vts-pad-top">
-                <div style='min-width:44px;max-width:44px;position:absolute;top:0px'>
-                    <img style='height:40px;' src='{{VTSSelectedTrafficCenterLogo}}'>
-                </div>
-                <div style='position:absolute;top:0px;left:44px'>
-                    <div >
-                        <span style="float:left;"><strong>{{VTSSelectedTrafficCenterName}}</strong></span>
+        <div class="vts-pad-top vts-pad-bottom" style="position: relative;min-height:40px;">
+                <div class="vts-force-spacing-400" style="min-height:40px;">
+                    <div class="vts-inline-block" style='min-width:48px;max-width:48px;'>
+                        <img style='height:40px;max-width:40px;max-height:40px; ' src='{{VTSSelectedTrafficCenterLogo}}'>
                     </div>
-                    <div>
-                        <span ng-click="toggleDisplayVtsCenterData()"><a href="#">View contact details</a></span>
+                    <div class="vts-force-spacing-350 vts-inline-block" style='left:52px;'>
+                        <span><strong>{{VTSSelectedTrafficCenterName}}</strong></span>
                     </div>
                 </div>
-                <div style="position: absolute;top:0px;right:0px" ng-bind-html="VTSSelectedTrafficCenterGuide"></div>
-            </div>
-            <!--<div class="" ng-bind-html="VTSSelectedTrafficCenterData"></div>-->
+                <div class="vts-pad-top vts-force-spacing-350 vts-responsive-info-container vts-inline-block" style="">
+                    <button class='btn  vts-button-modifier-slim vts-inline-block' ng-class="{false:'btn-primary', true:'btn-info'}[displayVtsCenterData]" ng-click="toggleDisplayVtsCenterData()" type='button' >Contact details</button>
+                    &nbsp;&nbsp;
+                    <button id="mastersguideButton" class='btn btn-primary vts-button-modifier-slim vts-inline-block'
+                            ng-mouseover="displayPopupInfo($event,'The Masters Guide is not part of the BalticWeb interface.')"
+                            ng-mouseleave="removePopupInfo()"
+                            ng-click="openMastersGuideNewWindow()" type='button' >View Masters guide online
+                    </button>
+                    <!--<div style="width:20px; display:inline-block"><span  class="vts-popup-icon glyphicon glyphicon-question-sign" style="width: 20px;font-size: 24px;margin-top: 2px; cursor:default;" ng-click="displayPopupInfo($event,'The Masters Guide is a custom guide for this VTS area only. Please note that the Masters Guide does not follow any particular standard. If you cannot find the information you need in the guide, please contact the VTS center directly.')"></span></div>-->
+                </div>
         </div>
         <div style="position: relative;height:100px;" ng-hide="!displayVtsCenterData">
+
             LALALALLALALALA
         </div>
 
         <!-- VTS AREA MINIMAP -->
-        <div class="vts-responsive-minimap" style="position: relative;" >
-            <div  id='minimap' class="vts-responsive-minimap" style="position:absolute;left:0px;top:0px;"></div>
-            <div  class="vts-responsive-minimap vts-absolute-top-left" style="background-color:#ffffff;opacity:0.1;cursor: default;" ng-click="doNothing()"></div>
-            <div class="vts-text-shadow vts-white-text vts-text-large" style="position:absolute;text-align:right; left:0px;bottom:0px;width:100%;">
+        <div id="minimapContainer" class="vts-responsive-minimap" style="position: relative;" ng-mouseover="displayPopupInfo($event,'yolo')" ng-mouseleave="removePopupInfo()">
+            <div  id='minimap' class="vts-responsive-minimap" style="position:absolute;left:0px;top:0px;" ng-mouseleave="removePopupInfo()"></div>
+            <div  class="vts-responsive-minimap vts-absolute-top-left" style="background-color:#ffffff;opacity:0.1;cursor: default;" ng-click="doNothing()" ng-mouseleave="removePopupInfo()"></div>
+            <div class="vts-text-shadow vts-white-text vts-text-xxlarge" style="position:absolute;left:0px;top:0px;width:100%;" ng-mouseleave="removePopupInfo()">
+                &nbsp;&nbsp;&nbsp;&nbsp; {{VTSSelectedTrafficCenterCountry}}
+            </div>
+            <div class="vts-text-shadow vts-white-text vts-text-large" style="position:absolute;text-align:right; left:0px;bottom:0px;width:100%;" ng-mouseleave="removePopupInfo()">
                 {{VTSSelectedTrafficCenterShortname}} reporting area &nbsp;&nbsp;&nbsp;&nbsp;
             </div>
         </div>
@@ -573,7 +581,7 @@
     </div>
 
 
-
+<!--<div id="infodiv" style="position:fixed;width:140px;height:80px;background-color:#bb0000;" ng-style="{left:popupInfoPos.left,top:popupInfoPos.top}"></div>-->
 
 
 </div>
@@ -591,7 +599,7 @@
             <i class="fa fa-check" aria-hidden="true"></i> Send
         </button>
         <button class="btn btn-danger" type="button" ng-click="hideVTSForm()"><i class="fa fa-ban" aria-hidden="true"></i>
-            <span ng-show="VTSSelected && showReportInterface">Save and </span>Cancel
+            <span ng-show="VTSSelected && showReportInterface">Save and </span>Exit
         </button>
     </div>
     <div class="col-md-12 text-center vts-grey-text vts-text-small"  ng-show="!showReportInterface">

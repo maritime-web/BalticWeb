@@ -267,8 +267,8 @@
                     <!--Display only VTS centres on route-->
                 </div>
             </div>
-            <div class="panel vts-padding-4-20" ng-class="(1==1) ? 'panel-primary' : 'panel-default'" ng-click="sidebarUncollapse()">
-                <p class="" ng-repeat="p in vtsAreasArr" id="vtsAreasSidePanelListItem{{p.id}}">{{p.shortname}} </p>
+            <div class="panel vts-padding-4-20"  ng-class="(1==1) ? 'panel-primary' : 'panel-default'">
+                <div ng-repeat="item in vtsSidemenuListArr"><span>{{item.shortname}}</span><button class='btn btn-primary vts-button-modifier-slim' type='button' ng-click="setActiveVtsIdAndOpenForm(item.id)">Report</button></p>
             </div>
         </uib-tab>
 

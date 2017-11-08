@@ -106,10 +106,6 @@ angular.module('maritimeweb.vts-map')
                 },
                 link: function (scope, element, attrs, ctrl) {
 
-
-
-
-
                     /* popup information vars*/
                     scope.clearVtsPopup = function(){
                         scope.vtsPopupVtsShortname = "";
@@ -265,6 +261,7 @@ angular.module('maritimeweb.vts-map')
                                 if(vts_areas.length > 0){
                                     vtsareaLayer.getSource().clear(); //cleanup first
                                     /** iterate through the object to draw all areas on map **/
+                                    var intersectingAreasArr = [];
                                     for(var i=0;i!=vts_areas.length;i++){
                                         var areaWKT = vts_areas[i].areaWKT; //console this for easy debugging
                                         if (!areaWKT || areaWKT == "" || areaWKT.length < 9) {
@@ -273,6 +270,7 @@ angular.module('maritimeweb.vts-map')
 
                                             var drawArea = false;
                                             if(onrouteonly && scope.isAreaOnRoute(areaWKT)){
+                                                intersectingAreasArr.push(vts_areas[i].id);
                                                 drawArea = true;
                                             }else if(!onrouteonly){
                                                 drawArea = true;
@@ -290,17 +288,18 @@ angular.module('maritimeweb.vts-map')
                                                 areafeature.set("name",vts_areas[i].shortname);
                                                 //styling
                                                 areafeature.setStyle(styleFunctionNormal(vts_areas[i].shortname, vts_areas[i].id));
-                                                console.log("Gotta put a button in somehow");
+                                                // console.log("Gotta put a button in somehow");
                                                 // vtsAreasSidePanelListItem
                                                 //add to layer
                                                 vtsareaLayer.getSource().addFeature(areafeature);
                                             }
                                         }
                                     }
+                                    //app-ctrl watches changes to this storage itam, populates sidemenu list accordingly
+                                    $window.localStorage.setItem('vts_intersectingareas', JSON.stringify(intersectingAreasArr));
                                 }
                             }
                         };
-
                         /** returns true if an area is intersected by the route in localstorage (vts_areas & route_oLpoints) **/
                         scope.isAreaOnRoute = function (areaWKT) {
                             var wpPosArrArr = JSON.parse($window.localStorage.getItem('route_oLpoints'));
