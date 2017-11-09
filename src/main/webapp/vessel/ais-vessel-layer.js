@@ -42,7 +42,7 @@ angular.module('maritimeweb.vessel')
                     var vesselLayers;
                     var loadTimer;
 
-                    var maxNumberOfVesselsOnMap = scope.maxnumberofvessels > 0 ? scope.maxnumberofvessels : 100;
+                    var maxNumberOfVesselsOnMap = scope.maxnumberofvessels > 0 ? scope.maxnumberofvessels : 100; // default number of ships is only 100, if maxnumberofvessels hasn't been defined.
 
                     scope.loggedIn = Auth.loggedIn;
 
@@ -336,7 +336,7 @@ angular.module('maritimeweb.vessel')
                             name: "vesselVectorLayer",
                             title: "Vessels - AIS",
                             source: vectorSource,
-                            visible: true
+                            visible: false
                         });
 
                         vesselLayers = new ol.layer.Group({
@@ -346,7 +346,6 @@ angular.module('maritimeweb.vessel')
                         });
 
                         map.addLayer(vesselLayers);
-                        $rootScope.mapTrafficLayers = vesselLayers; // add group-layer to rootscope so it can be enabled/disabled
 
                         // update the map when a user pan-move ends.
                         map.on('moveend', scope.mapChanged);
@@ -354,8 +353,10 @@ angular.module('maritimeweb.vessel')
 
 
                         // listens when visibility on map has been toggled.
-                        vesselLayers.on('change:visible', scope.mapChanged);
 
+
+                        $rootScope.mapTrafficLayers = vesselLayers; // add group-layer to rootscope so it can be enabled/disabled
+                        $rootScope.mapTrafficLayers.on('change:visible', console.log("AIS on/off"));
                         /***************************/
                         /** Vessel Details        **/
                         /***************************/

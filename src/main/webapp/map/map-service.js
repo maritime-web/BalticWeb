@@ -266,7 +266,7 @@ angular.module('maritimeweb.map')
                             })
                         }),*/
                         new ol.layer.Tile({
-                            title: 'Stamen - Toner',
+                            title: 'High-contrast map',
                             type: 'base',
                             visible: false,
                             source: new ol.source.Stamen({
@@ -275,7 +275,7 @@ angular.module('maritimeweb.map')
                         }),
 
                         new ol.layer.Tile({
-                            title: 'Thunderforest - Transport Dark',
+                            title: 'Transportation map (Dark)',
                             type: 'base',
                             visible: false,
                             source: new ol.source.OSM({

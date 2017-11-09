@@ -36,8 +36,6 @@ angular.module('maritimeweb.app')
             /** Logs the user in via Keycloak **/
             $scope.login = function () {
                 Auth.authz.login();
-                //TODO sample Stena Danica 265177000. You can change this to anything you want, or even better take it from the login token.
-                $window.localStorage.setItem('mmsi', 265177000);
             };
 
             /** Logs the user out via Keycloak **/
@@ -201,16 +199,10 @@ angular.module('maritimeweb.app')
                 $scope.reloadVtsAreas();
             }
 
-
-
-
             /**************************************/
             /** NOGO Service                     **/
             /**************************************/
-            const top_nw_lon = 56.30;
-            const bottom_se_lon = 54.4;
-            const right_nw_lat = 13.0;
-            const left_se_lat = 10.0;
+
             $scope.nogo = {};
             $scope.nogo.ship = {};
             $scope.nogo.ship.draught = 6;
@@ -224,7 +216,6 @@ angular.module('maritimeweb.app')
                 $log.info("main app controller - check no go service");
                 $scope.mapNoGoLayer.setVisible(false);
                 $scope.mapNoGoLayer.setVisible(true);
-
             };
 
             $scope.disableNoGoService = function () {
@@ -399,6 +390,9 @@ angular.module('maritimeweb.app')
                 (layer.getVisible() == true) ? layer.setVisible(false) : layer.setVisible(true); // toggle layer visibility
                 if (layer.getVisible()) {
                     growl.info('Activating ' + layer.get('title') + ' layer');
+                    $window.localStorage.setItem(layer.get('title'), true);
+                }else{
+                    $window.localStorage.setItem(layer.get('title'), false);
                 }
             };
 
@@ -435,7 +429,7 @@ angular.module('maritimeweb.app')
                             $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true); // default to standard map when disabling
                         }
                     });
-                    growl.info('Activating combined  nautical chart');
+                    growl.info('Activating combined nautical chart');
                 } else {
                     growl.info("You need to login to access Nautical charts");
                     $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true);
@@ -478,7 +472,7 @@ angular.module('maritimeweb.app')
                 $log.debug("redirect to Frontpage");
                 var redirect = function () {
                     //$rootScope.showgraphSidebar = true; // rough enabling of the sidebar
-
+                    // TODO use routing...
                     $scope.loading = false;
                     $window.location.href = '#';
                 };
