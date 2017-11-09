@@ -120,6 +120,7 @@ angular.module('maritimeweb.vts-map')
                         scope.vtsPopupVtsVhfReserve = "";
                     };
                     scope.clearVtsPopup(); //init
+                    scope.currentlySelectedVtsArea = 0;
 
                     /***************************/
                     /** VTS Layer             **/
@@ -405,6 +406,8 @@ angular.module('maritimeweb.vts-map')
                         map.addOverlay(overlay);
 
                         scope.activateVTSForm = function (size) {
+                            localStorage.setItem('vts_current_id', scope.currentlySelectedVtsArea);
+
                             if(!size) size='lg';
                             growl.info('Activating Vessel Traffic Control');
                             $uibModal.open({
@@ -449,7 +452,8 @@ angular.module('maritimeweb.vts-map')
                                                     break;
                                                 }
                                             }
-                                            localStorage.setItem('vts_current_id', vts_areas[i].id);
+
+                                            scope.currentlySelectedVtsArea = vts_areas[vtsNum].id;
 
                                             //Fill in the VTS info into vars needed by popup
                                             scope.vtsPopupVtsShortname = vts_areas[vtsNum].shortname;

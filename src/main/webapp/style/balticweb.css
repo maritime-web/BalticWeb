@@ -71,21 +71,30 @@ body {
 
     /* Vessel Traffic Service */
 
-.hero {
+.vts-popup-hero {
+    padding: 1px 2px 2px 3px;
     border-top-left-radius:6px;
     border-top-right-radius:6px;
     border-bottom-left-radius:6px;
     border-bottom-right-radius:6px;
-    border-color: #2e2e2e;
+    border:1px solid #888888;
     position:absolute;
     top:-80px;
-    height:60px;
+    height:67px;
     white-space:normal;
-    position:absolute;
-    background-color:#e15915;
-    width:100% ;
+    width:100%;
+    color: #333333;
+    background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #d6d6d6 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#f3f3f3 50%,#d6d6d6 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #ffffff 0%,#f3f3f3 50%,#d6d6d6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    display: table;
+    text-align: center;
 }
-.hero:after {
+.vts-align-middle{
+    display: table-cell;
+    vertical-align: middle;
+}
+.vts-popup-hero:after {
     content:'';
     position: absolute;
     top: 100%;
@@ -93,11 +102,18 @@ body {
     margin-left: -21px;
     width: 0;
     height: 0;
-    border-top: solid 21px #e15915;
+    border-top: 21px solid #888282;
     border-left: solid 21px transparent;
     border-right: solid 21px transparent;
 }
-
+.vts-popup-hero-small{height:44px;}
+.vts-popup-hero-medium{height:65px;}
+.vts-popup-hero-large{height:88px}
+.vts-popup-hero:hover{
+    display: none;
+    width:0px;
+    height:0px;
+}
 
 .bold{font-weight:bold;}
 .italic{font-style: italic;}

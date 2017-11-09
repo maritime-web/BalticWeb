@@ -123,6 +123,11 @@ angular.module('maritimeweb.app')
                 localStorage.setItem('vts_current_id', id);
                 $scope.activateVTSForm();
             };
+            $scope.setActiveVtsIdAndOpenForm = function(id){
+                console.log("opening VTS with ID:",id);
+                localStorage.setItem('vts_current_id', id);
+                $scope.activateVTSForm();
+            };
 
 
             function checkToActivateVTSForm() { //if refresh without proper close, open form again in same area.
@@ -180,7 +185,7 @@ angular.module('maritimeweb.app')
                 return true;
             };
 
-            $scope.populateVtsSidemenuList = function(intersectingIds,vtsAreasArr){ //id of area is not seq. id in list
+            $scope.populateVtsSidemenuList = function(intersectingIds,vtsAreasArr){ //id of area is not item id in list
                 $scope.vtsSidemenuListArr = []; //reset
                 // var sidemenuVtsReportButtonTemplate = "<p><div class=''><span>REPLACE_SHORTNAME</span><button class='btn btn-primary' type='button' ng-click='activateVTSForm(REPLACE_ID)'>Send VTS report now</button></div></p>";
                 var intersectingAreasArr = JSON.parse(intersectingIds);

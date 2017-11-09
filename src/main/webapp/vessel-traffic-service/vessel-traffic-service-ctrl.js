@@ -12,8 +12,8 @@
  */
 
 
-angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', ['$scope', '$uibModalInstance', '$window', '$sce', 'growl', '$http', 'Auth', 'VesselService', 'VtsHelperService',
-    function ($scope, $uibModalInstance, $window, $sce, growl, $http, Auth, VesselService, VtsHelperService) {
+angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', ['$scope', '$uibModalInstance', '$window', '$sce', 'growl', '$http', 'Auth', 'VesselService', 'VtsHelperService', '$compile',
+    function ($scope, $uibModalInstance, $window, $sce, growl, $http, Auth, VesselService, VtsHelperService,$compile) {
 
 
 
@@ -1501,23 +1501,37 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         };
 
-
+        /**  POPUP  **/
+        $scope.popupIsActive = false;
         $scope.removePopupInfo = function(){
             var el = document.getElementById('popupDiv');
             for(var i=0;i!=10;i++) { //overkill
                 angular.element(el).remove();
             }
+            setTimeout(function(){ $scope.popupIsActive = false; }, 50); //restrict time between popups can occur
         };
-
-        $scope.displayPopupInfo = function(event, msg){
-            var elem = event.currentTarget;
-            var elemWidth = document.getElementById(elem.id).offsetWidth;
-            function appendNow(){
-                angular.element(elem).append("<div id='popupDiv' class='hero' style='left:"+event.offsetLeft+"px;width:"+elemWidth+"px;'>"+msg+"</div>");
-
-            }
-            appendNow(); // setTimeout(function(){ appendNow(); }, 500);
+        $scope.stopPopupProp = function(event){
+            event.stopPropagation();
         };
+        $scope.displayPopupInfo = function(event, msg, size){ //size:small/medium/large/auto=default !! - elements MUST have an ID!
+            var small=44,medium=65,large=88,top = 0, elem = event.currentTarget, elemWidth=0;
+            if(!size || size=="") size = "medium";
+            if(size=="small") top=-59;
+            if(size=="medium") top=-80;
+            if(size=="large") top=-119;
+            try {
+                elemWidth = document.getElementById(elem.id).offsetWidth;
+            size = "vts-popup-hero-" + size;
+                function appendNow(){
+                    $scope.popupIsActive = true;
+                    angular.element(document.getElementById(elem.id)).append($compile("<div id='popupDiv' class='vts-popup-hero "+size+"' style='width:"+elemWidth+"px;top:"+top+"px;' ng-mouseover='removePopupInfo()' ng-click='stopPopupProp($event)'><span class='vts-align-middle'>"+msg+"</span></div>")($scope));
+                }
+            if(!$scope.popupIsActive) appendNow(); // setTimeout(function(){ appendNow(); }, 500);
+            }catch(noElError){console.log("Element popup only works if it has an ID!");}
+        };
+        /**  END POPUP  **/
+
+
 
         //Modal form control ******************************************************************************************
         $scope.hideVTSForm = function () {

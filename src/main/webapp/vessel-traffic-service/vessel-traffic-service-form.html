@@ -26,10 +26,15 @@
                     </div>
                 </div>
                 <div class="vts-pad-top vts-force-spacing-350 vts-responsive-info-container vts-inline-block" style="">
-                    <button class='btn  vts-button-modifier-slim vts-inline-block' ng-class="{false:'btn-primary', true:'btn-info'}[displayVtsCenterData]" ng-click="toggleDisplayVtsCenterData()" type='button' >Contact details</button>
+                    <button id="contactDetailsButton" class='btn  vts-button-modifier-slim vts-inline-block'
+                            ng-class="{false:'btn-primary', true:'btn-info'}[displayVtsCenterData]"
+                            ng-click="toggleDisplayVtsCenterData()" type='button'
+                            ng-mousemove="displayPopupInfo($event,'Displays contact information such as VHF channels, telephone etc.','large')"
+                            ng-mouseleave="removePopupInfo()">Contact details
+                    </button>
                     &nbsp;&nbsp;
                     <button id="mastersguideButton" class='btn btn-primary vts-button-modifier-slim vts-inline-block'
-                            ng-mouseover="displayPopupInfo($event,'The Masters Guide is not part of the BalticWeb interface.')"
+                            ng-mousemove="displayPopupInfo($event,'The Masters Guide is not part of the BalticWeb interface.','medium')"
                             ng-mouseleave="removePopupInfo()"
                             ng-click="openMastersGuideNewWindow()" type='button' >View Masters guide online
                     </button>
@@ -42,13 +47,13 @@
         </div>
 
         <!-- VTS AREA MINIMAP -->
-        <div id="minimapContainer" class="vts-responsive-minimap" style="position: relative;" ng-mouseover="displayPopupInfo($event,'yolo')" ng-mouseleave="removePopupInfo()">
-            <div  id='minimap' class="vts-responsive-minimap" style="position:absolute;left:0px;top:0px;" ng-mouseleave="removePopupInfo()"></div>
-            <div  class="vts-responsive-minimap vts-absolute-top-left" style="background-color:#ffffff;opacity:0.1;cursor: default;" ng-click="doNothing()" ng-mouseleave="removePopupInfo()"></div>
-            <div class="vts-text-shadow vts-white-text vts-text-xxlarge" style="position:absolute;left:0px;top:0px;width:100%;" ng-mouseleave="removePopupInfo()">
+        <div id="minimapContainer" class="vts-responsive-minimap" style="position: relative;" >
+            <div  id='minimap' class="vts-responsive-minimap" style="position:absolute;left:0px;top:0px;" ></div>
+            <div  class="vts-responsive-minimap vts-absolute-top-left" style="background-color:#ffffff;opacity:0.1;cursor: default;" ng-click="doNothing()" ></div>
+            <div class="vts-text-shadow vts-white-text vts-text-xxlarge" style="position:absolute;left:0px;top:0px;width:100%;" >
                 &nbsp;&nbsp;&nbsp;&nbsp; {{VTSSelectedTrafficCenterCountry}}
             </div>
-            <div class="vts-text-shadow vts-white-text vts-text-large" style="position:absolute;text-align:right; left:0px;bottom:0px;width:100%;" ng-mouseleave="removePopupInfo()">
+            <div class="vts-text-shadow vts-white-text vts-text-large" style="position:absolute;text-align:right; left:0px;bottom:0px;width:100%;">
                 {{VTSSelectedTrafficCenterShortname}} reporting area &nbsp;&nbsp;&nbsp;&nbsp;
             </div>
         </div>
@@ -61,15 +66,26 @@
             <span id="timedateutclabel" class="vts-force-spacing-200">
                 {{vtsDateStamp}} - {{vtsTimeStamp}} UTC
             </span>
-            <div class="vts-pad-top">
-                <div class="vts-force-spacing-200 ">
+            <div class="vts-pad-top" style="position: relative;">
+                <div id="etaDateContainer" class="vts-force-spacing-200"
+                    ng-mousemove="displayPopupInfo($event,'Manually change the date of ETA','small')"
+                    ng-mouseleave="removePopupInfo()">
                     <date-input date="now" class="vts-timedatepicker" on-change="dateInputChange(now)" placeholder="{{vtsCurrentDateStamp}}"></date-input>
                 </div>
                 <div class="vts-force-spacing-350 ">
-                    <div class="vts-force-spacing-200 ">
-                       <time-input time="time" class="vts-timedatepicker"  on-change="timeInputChange(time)" ng-click="timeInputClick()"></time-input>
+                    <div id="etaTimeContainer"  class="vts-force-spacing-200"
+                         ng-mousemove="displayPopupInfo($event,'Manually change the time of ETA','small')"
+                         ng-mouseleave="removePopupInfo()">
+                        <time-input time="time" class="vts-timedatepicker"  on-change="timeInputChange(time)" ng-click="timeInputClick()"></time-input>
                     </div>
                     <span class="vts-align-utc-label">UTC</span>
+                </div>
+                <div class="vts-force-spacing-200 ">
+                    <button id="useRouteEtaButton" class='btn btn-default vts-button-modifier-slim vts-inline-block'
+                            ng-mousemove="displayPopupInfo($event,'Use the ETA from the loaded route','small')"
+                            ng-mouseleave="removePopupInfo()"
+                            ng-click="openMastersGuideNewWindow()" type='button' >View Masters guide online
+                    </button>
                 </div>
             </div>
 
@@ -119,8 +135,12 @@
                 <span class="vts-force-spacing-200">Air draught (m)</span>
                 <input class="vts-input-small vts-text-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselAirDraughtValid]"  ng-model="vtsvesselairdraughtinput" ng-change="VTSVesselAirDraughtValidation(true)">
             </div>
-            <div class="vts-force-spacing-200" >
-                <textarea class="vts-textarea-standard" ng-model="vtsvesseldefectsinput" placeholder="Defects, deficiencies or limitations?"></textarea>
+            <div  class="vts-force-spacing-200">
+                <div id="lalala"
+                     ng-mousemove="displayPopupInfo($event,'Manually change the time of ETA','small')"
+                     ng-mouseleave="removePopupInfo()">
+                <textarea id="bobby" class="vts-textarea-standard" ng-model="vtsvesseldefectsinput" placeholder="Defects, deficiencies or limitations?"></textarea>
+                </div>
             </div>
         </div>
         <div class="vts-pad-top">
