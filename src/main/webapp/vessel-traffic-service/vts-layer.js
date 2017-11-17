@@ -49,11 +49,6 @@ angular.module('maritimeweb.vts-map')
                 return state;
             };
 
-            this.testForRoute = function(){ //just test if there is a route in localstorage
-                var tmpStr = $window.localStorage['route_oLpoints'];
-                return (tmpStr && tmpStr.length>9);
-            };
-
             this.returnRouteAsWKT = function(){
                 var tmpStr = $window.localStorage['route_oLpoints'];
                 try {
@@ -80,8 +75,8 @@ angular.module('maritimeweb.vts-map')
             };
         }])
 
-    .directive('mapVtsAreaLayer', ['MapService', '$window','growl', '$uibModal',
-        function (MapService, $window, growl, $uibModal) {
+    .directive('mapVtsAreaLayer', ['MapService', '$window','growl', '$uibModal', 'VtsHelperService',
+        function (MapService, $window, growl, $uibModal, VtsHelperService) {
             return {
                 restrict: 'E',
                 require: '^olMap',
@@ -105,6 +100,7 @@ angular.module('maritimeweb.vts-map')
                     vtsOnrouteOnly: '=?', //filter for intersecting
                 },
                 link: function (scope, element, attrs, ctrl) {
+
 
                     /* popup information vars*/
                     scope.clearVtsPopup = function(){
@@ -269,9 +265,9 @@ angular.module('maritimeweb.vts-map')
                                             growl.error(vts_areas[i].shortname + " does not have an area assigned");
                                         }else{
 
+                                            if(scope.isAreaOnRoute(areaWKT)) intersectingAreasArr.push(vts_areas[i].id);
                                             var drawArea = false;
                                             if(onrouteonly && scope.isAreaOnRoute(areaWKT)){
-                                                intersectingAreasArr.push(vts_areas[i].id);
                                                 drawArea = true;
                                             }else if(!onrouteonly){
                                                 drawArea = true;
@@ -452,8 +448,8 @@ angular.module('maritimeweb.vts-map')
                                                     break;
                                                 }
                                             }
-
                                             scope.currentlySelectedVtsArea = vts_areas[vtsNum].id;
+                                            VtsHelperService.showVtsCenterSelect = false;
 
                                             //Fill in the VTS info into vars needed by popup
                                             scope.vtsPopupVtsShortname = vts_areas[vtsNum].shortname;

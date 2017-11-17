@@ -18,6 +18,12 @@
 angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
     function ($window) {
 
+
+        this.showVtsCenterSelect = false; //app.ctrl needs to force the select hidden/shown
+        this.returnShowVtsCenterSelect = function() {
+            return this.showVtsCenterSelect;
+        };
+
         this.detectedRouteETA = null;
         this.returnDetectedRouteETA = function() {
             return this.detectedRouteETA;
@@ -60,9 +66,10 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
 
             inputString = inputString.toString();
             if (decimals > 0) {
-                inputString = inputString.replace(/[^0-9.]/g, '');
+                inputString = inputString.replace(/[^0-9.,]/g, '');
+                inputString = inputString.replace(/[,]/g, '.');
             } else {
-                inputString = inputString.replace(/[^0-9]/g, ''); //no decimals
+                inputString = inputString.replace(/[^0-9]/g, ''); //no decimals allowed
             }
             hasPeriod = inputString.indexOf(".") > -1;
             if (!decimals || decimals == "") decimals = 0;

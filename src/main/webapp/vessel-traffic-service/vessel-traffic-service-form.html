@@ -9,7 +9,7 @@
 
 <div id="modalbody" class="modal-body ng-hide">
     <div ng-show="showReportInterface">
-        <select class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname,null)">
+        <select ng-show="showVtsCenterSelect" class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname,null)">
             <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>
         </select>
     </div>
@@ -29,12 +29,12 @@
                     <button id="contactDetailsButton" class='btn  vts-button-modifier-slim vts-inline-block'
                             ng-class="{false:'btn-primary', true:'btn-info'}[displayVtsCenterData]"
                             ng-click="toggleDisplayVtsCenterData()" type='button'
-                            ng-mousemove="displayPopupInfo($event,'Displays contact information such as VHF channels, telephone etc.','large')"
+                            ng-mouseover="displayPopupInfo($event,'Displays contact information such as VHF channels, telephone etc.','large')"
                             ng-mouseleave="removePopupInfo()">Contact details
                     </button>
                     &nbsp;&nbsp;
-                    <button id="mastersguideButton" class='btn btn-primary vts-button-modifier-slim vts-inline-block'
-                            ng-mousemove="displayPopupInfo($event,'The Masters Guide is not part of the BalticWeb interface.','medium')"
+                    <button id="mastersguideButton" class='btn btn-primary vts-button-modifier-slim vts-inline-block' style="position: relative;"
+                            ng-mouseover="displayPopupInfo($event,'The Masters Guide opens in a seperate window and is not part of the BalticWeb interface.','large')"
                             ng-mouseleave="removePopupInfo()"
                             ng-click="openMastersGuideNewWindow()" type='button' >View Masters guide online
                     </button>
@@ -68,24 +68,25 @@
             </span>
             <div class="vts-pad-top" style="position: relative;">
                 <div id="etaDateContainer" class="vts-force-spacing-200"
-                    ng-mousemove="displayPopupInfo($event,'Manually change the date of ETA','small')"
+                    ng-mouseover="displayPopupInfo($event,'Manually change the date of ETA','small')"
                     ng-mouseleave="removePopupInfo()">
                     <date-input date="now" class="vts-timedatepicker" on-change="dateInputChange(now)" placeholder="{{vtsCurrentDateStamp}}"></date-input>
                 </div>
                 <div class="vts-force-spacing-350 ">
                     <div id="etaTimeContainer"  class="vts-force-spacing-200"
-                         ng-mousemove="displayPopupInfo($event,'Manually change the time of ETA','small')"
+                         ng-mouseover="displayPopupInfo($event,'Manually change the time of ETA','small')"
                          ng-mouseleave="removePopupInfo()">
                         <time-input time="time" class="vts-timedatepicker"  on-change="timeInputChange(time)" ng-click="timeInputClick()"></time-input>
                     </div>
                     <span class="vts-align-utc-label">UTC</span>
                 </div>
-                <div class="vts-force-spacing-200 ">
-                    <button id="useRouteEtaButton" class='btn btn-default vts-button-modifier-slim vts-inline-block'
-                            ng-mousemove="displayPopupInfo($event,'Use the ETA from the loaded route','small')"
-                            ng-mouseleave="removePopupInfo()"
-                            ng-click="openMastersGuideNewWindow()" type='button' >View Masters guide online
+                <div ng-show="detectedRouteETA!=null" ng-mouseleave="removePopupInfo()">
+                    <button id="useRouteEtaButton" class='btn btn-default vts-button-modifier-slim vts-inline-block' style="position: relative;"
+                            ng-click="setRouteEtaTimeDatePicker()" type='button' >
+                            <i class="glyphicon glyphicon-paste" aria-hidden="true"></i>
+                            Use route ETA
                     </button>
+                    <span class="vts-grey-text"> ({{renderedRouteETA}})</span>
                 </div>
             </div>
 
@@ -507,11 +508,11 @@
 
         <hr class="vts-hr"> <!-- VOYAGE INFORMATION ------------------------------------------------------------------- -->
 
-        <span class="bold">Voyage information</span>
+        <span class="bold">Voyage information</span><span class="vts-grey-text"> - Expected entry position entering VTS area according to route (RTZ)</span>
         <div class="">
             <div class="" ng-show="showVesselCurrentPosition">
                 <div class="vts-force-spacing-300 " >
-                    <div>Vessel actual position longitude:<span ng-model="vtsvesselposlondegreeslabel"></span></div>
+                    <div>Vessel longitude:</div>
                     <div class="">
                         <input class="vts-input-small vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonDegreesValid]" ng-model="vtsvesselposlondegreesinput" ng-change="VTSVesselCurrentPositionLonDegValidation(true)" placeholder="{{placeholderAisVesselLonDegrees}}">
                         <span> deg.</span>
@@ -520,7 +521,7 @@
                     </div>
                 </div>
                 <div class="vts-force-spacing-300 ">
-                    <div>Vessel actual position latitude:<span ng-model="vtsvesselposlatdegreeslabel"></span></div>
+                    <div>Vessel latitude:</span></div>
                     <input class="vts-input-small vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatDegreesValid]" ng-model="vtsvesselposlatdegreesinput" ng-change="VTSVesselCurrentPositionLatDegValidation(true)" placeholder="{{placeholderAisVesselLatDegrees}}">
                     <span> deg.</span>
                     <input class="vts-input-medium vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatMinutesValid]" ng-model="vtsvesselposlatminutesinput" ng-change="VTSVesselCurrentPositionLatMinValidation(true)" placeholder="{{placeholderAisVesselLatDecimalMinutes}}">
@@ -528,7 +529,8 @@
 
                 </div>
                 <div class="vts-pad-top">
-                    <button class="btn btn-default vts-lesspadding" ng-disabled="getGPSCoordsBtnDisabled" type="button" ng-click="getLocation()"><i class="glyphicon glyphicon-globe" aria-hidden="true"></i>
+                    <button class="btn btn-default vts-lesspadding" ng-disabled="getGPSCoordsBtnDisabled" type="button" ng-click="getLocation()">
+                        <i class="glyphicon glyphicon-globe" aria-hidden="true"></i>
                         Use GPS
                     </button>
                     <button class="btn btn-default vts-lesspadding" ng-disabled="!aisdataReady" ng-show="isLoggedIn" type="button" ng-click="setLocationByAIS()"><i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
@@ -544,10 +546,10 @@
                     <span class="vts-force-spacing-200">Port of destination:</span>
                     <input class="vts-input vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPortOfDestinationValid]" type="text" ng-model="vtsvesselportofdestinationinput" ng-change="VTSVesselPortOfDestinationValidation(true)" onfocus="this.placeholder = ''" onblur="this.placeholder = ''" placeholder="{{placeholderAisVesselDestination}}">
                 </div>
-                <div class="vts-force-spacing-200" ng-show="showPortOfDestinationEta">
-                    <span class="vts-force-spacing-200">ETA:</span>
-                    <div class="vts-force-spacing-200">
-                        {{vtsvesselportofdestinationetalabel}}<!-- ETA at destination port from AIS data -->
+                <div ng-show="showPortOfDestinationEta">
+                    <span> ETA at destination port according to AIS:</span><span style="font-style: italic;"> {{vtsvesselportofdestinationetalabel}}</span>
+                    <div >
+                        <!-- ETA at destination port from AIS data -->
                     </div>
                 </div>
                 <div class="vts-force-spacing-200" ng-show="showRoute">
