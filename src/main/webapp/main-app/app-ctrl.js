@@ -46,9 +46,9 @@ angular.module('maritimeweb.app')
 
             /** Returns the user name ,**/
             $scope.userName = function () {
-                if (Auth.authz.idTokenParsed) {
-                    return Auth.authz.idTokenParsed.name
-                        || Auth.authz.idTokenParsed.preferred_username;
+                if (Auth.authz.tokenParsed) {
+                    return Auth.authz.tokenParsed.name
+                        || Auth.authz.tokenParsed.preferred_username;
                 }
                 return undefined;
             };
