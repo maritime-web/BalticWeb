@@ -199,7 +199,6 @@ angular.module('maritimeweb.app')
                 $scope.vtsSidemenuListArr = []; //reset
                 var count = $scope.vtsAreasArr.length;
                 var ins = window.localStorage['vts_intersectingareas'];
-                console.log("localstorage says:", ins);
 
                 //get intersecting IDs into an array
                 var intersectingAreasArr = null;

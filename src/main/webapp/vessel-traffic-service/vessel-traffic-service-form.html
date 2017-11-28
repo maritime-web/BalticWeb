@@ -9,7 +9,7 @@
 
 <div id="modalbody" class="modal-body ng-hide">
     <div ng-show="showReportInterface">
-        <select ng-show="showVtsCenterSelect" class="form-control ng-pristine ng-valid ng-touched" name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname,null)">
+        <select ng-show="showVtsCenterSelect" class="form-control   " name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname,null)">
             <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>
         </select>
     </div>
@@ -17,39 +17,64 @@
     <!-- VTS CENTRE INFORMATION -->
     <div id="vtsparentdiv" class="vts-pad-top" ng-show="VTSSelected && showReportInterface">
         <div class="vts-pad-top vts-pad-bottom" style="position: relative;min-height:40px;">
-                <div class="vts-force-spacing-400" style="min-height:40px;">
-                    <div class="vts-inline-block" style='min-width:48px;max-width:48px;'>
+                <div class="vts-force-spacing-460" style="min-height:40px;">
+                    <div ng-show="VTSSelectedTrafficCenterLogo!=''" class="vts-inline-block" style='min-width:48px;max-width:48px;'>
                         <img style='height:40px;max-width:40px;max-height:40px; ' src='{{VTSSelectedTrafficCenterLogo}}'>
                     </div>
-                    <div class="vts-force-spacing-350 vts-inline-block" style='left:52px;'>
-                        <span><strong>{{VTSSelectedTrafficCenterName}}</strong></span>
+
+
+                    <div class="vts-force-spacing-400 vts-inline-block" style='left:52px;'>
+                        <span ><strong>{{VTSSelectedTrafficCenterName}}</strong></span>
                     </div>
                 </div>
                 <div class="vts-pad-top vts-force-spacing-350 vts-responsive-info-container vts-inline-block" style="">
                     <button id="contactDetailsButton" class='btn  vts-button-modifier-slim vts-inline-block'
-                            ng-class="{false:'btn-primary', true:'btn-info'}[displayVtsCenterData]"
-                            ng-click="toggleDisplayVtsCenterData()" type='button'
-                            ng-mouseover="displayPopupInfo($event,'Displays contact information such as VHF channels, telephone etc.','large')"
-                            ng-mouseleave="removePopupInfo()">Contact details
+                        ng-class="{false:'btn-primary', true:'btn-info'}[displayVtsCenterData]"
+                        ng-click="toggleDisplayVtsCenterData()" type='button'
+                        ng-mouseover="displayPopupInfo($event,'Displays contact information such as VHF channels, telephone etc.','large')"
+                        ng-mouseleave="removePopupInfo()">
+                        Contact details <span ng-class="{false:'glyphicon glyphicon-chevron-down', true:'glyphicon glyphicon-chevron-up'}[displayVtsCenterData]"></span>
                     </button>
                     &nbsp;&nbsp;
                     <button id="mastersguideButton" class='btn btn-primary vts-button-modifier-slim vts-inline-block' style="position: relative;"
-                            ng-mouseover="displayPopupInfo($event,'The Masters Guide opens in a seperate window and is not part of the BalticWeb interface.','large')"
-                            ng-mouseleave="removePopupInfo()"
-                            ng-click="openMastersGuideNewWindow()" type='button' >View Masters guide online
+                        ng-mouseover="displayPopupInfo($event,'The Masters Guide opens in a seperate window and is not part of the BalticWeb interface.','large')"
+                        ng-mouseleave="removePopupInfo()"
+                        ng-click="openMastersGuideNewWindow()" type='button'>
+                        View Masters guide online <span class="glyphicon glyphicon-new-window"></span>
                     </button>
-                    <!--<div style="width:20px; display:inline-block"><span  class="vts-popup-icon glyphicon glyphicon-question-sign" style="width: 20px;font-size: 24px;margin-top: 2px; cursor:default;" ng-click="displayPopupInfo($event,'The Masters Guide is a custom guide for this VTS area only. Please note that the Masters Guide does not follow any particular standard. If you cannot find the information you need in the guide, please contact the VTS center directly.')"></span></div>-->
                 </div>
         </div>
-        <div style="position: relative;height:100px;" ng-hide="!displayVtsCenterData">
+        <div ng-hide="!displayVtsCenterData" style="position: relative;min-height:100px;margin-bottom:5px;border: 3px solid #5bc0de;border-radius:8px;padding-left: 3px;padding-right: 13px;" >
+            <span style='min-width:220px;max-width:220px;display: inline-block; text-align: left;'><span class="bold">Call sign:</span> &#34;{{VtsDataCallsign}}&#34;</span>
+            <br>
+            <div ng-show="VtsDataVhf1!=''" class="vts-force-spacing-300">
+                <span ng-show="VtsDataVhf1!=''" style='min-width:140px;max-width:140px;display: inline-block;'><span class="bold">VHF ch1.</span> {{VtsDataVhf1}}</span>
+                <span ng-show="VtsDataVhf2!=''" style='min-width:140px;max-width:140px;display: inline-block;'><span class="bold">VHF ch2.</span> {{VtsDataVhf2}}</span>
+                <span ng-show="VtsDataVhf3!=''" style='min-width:140px;max-width:140px;display: inline-block;'><span class="bold">VHF ch3.</span> {{VtsDataVhf3}}</span>
+                <span ng-show="VtsDataVhf4!=''" style='min-width:140px;max-width:140px;display: inline-block;'><span class="bold">VHF ch4.</span> {{VtsDataVhf4}}</span>
+            </div>
+            <div ng-show="VtsDataReserveVhf1!=''" class="vts-force-spacing-350 vts-grey-text">
+                <span ng-show="VtsDataReserveVhf1!=''" style='min-width:150px;max-width:150px;display: inline-block;'><span class="bold">Reserve VHF ch1.</span> {{VtsDataReserveVhf1}}</span>
+                <span ng-show="VtsDataReserveVhf2!=''" style='min-width:150px;max-width:150px;display: inline-block;'><span class="bold">Reserve VHF ch2.</span> {{VtsDataReserveVhf2}}</span>
+            </div>
+            <hr class="vts-hr-seperator">
+            <div ng-show="VtsDataEmail!=''" class="vts-force-spacing-350">
+                <span class="bold">Email:</span> {{VtsDataEmail}} <span class="bold">Email:</span>
+            </div>
 
-            LALALALLALALALA
+
+            <!--$scope.VtsDataEmail = VTSData[vtsID].email;-->
+            <!--$scope.VtsDataTelephone = VTSData[vtsID].telephone1;-->
+            <!--$scope.VtsDataTelephon2 = VTSData[vtsID].telephone2;-->
+            <!--$scope.VtsDataFax = VTSData[vtsID].fax;-->
+
+
         </div>
 
         <!-- VTS AREA MINIMAP -->
         <div id="minimapContainer" class="vts-responsive-minimap" style="position: relative;" >
-            <div  id='minimap' class="vts-responsive-minimap" style="position:absolute;left:0px;top:0px;" ></div>
-            <div  class="vts-responsive-minimap vts-absolute-top-left" style="background-color:#ffffff;opacity:0.1;cursor: default;" ng-click="doNothing()" ></div>
+            <div id='minimap' class="vts-responsive-minimap" style="position:absolute;left:0px;top:0px;" ></div>
+            <div class="vts-responsive-minimap vts-absolute-top-left" style="background-color:#ffffff;opacity:0.1;cursor: default;" ng-click="doNothing()" ></div>
             <div class="vts-text-shadow vts-white-text vts-text-xxlarge" style="position:absolute;left:0px;top:0px;width:100%;" >
                 &nbsp;&nbsp;&nbsp;&nbsp; {{VTSSelectedTrafficCenterCountry}}
             </div>
@@ -63,9 +88,7 @@
             <span class="bold vts-pad-top">
                 Estimated Time of Arrival at {{VTSSelectedTrafficCenterShortname}} reporting area:
             </span>
-            <span id="timedateutclabel" class="vts-force-spacing-200">
-                {{vtsDateStamp}} - {{vtsTimeStamp}} UTC
-            </span>
+            <span id="timedateutclabel" class="vts-force-spacing-200">{{vtsDisplayEtaDateTime}}</span>
             <div class="vts-pad-top" style="position: relative;">
                 <div id="etaDateContainer" class="vts-force-spacing-200"
                     ng-mouseover="displayPopupInfo($event,'Manually change the date of ETA','small')"
@@ -86,24 +109,30 @@
                             <i class="glyphicon glyphicon-paste" aria-hidden="true"></i>
                             Use route ETA
                     </button>
-                    <span class="vts-grey-text"> ({{renderedRouteETA}})</span>
+                    <span class="vts-grey-text"> ({{renderedStaticRouteETA}})</span>
                 </div>
             </div>
 
         </div>
 
-        <hr class="vts-hr vts-pad-top" > <!-- VESSEL INFORMATION ------------------------------------------------------------------- -->
-        <span class="bold vts-pad-top">Vessel information</span>
+        <hr class="vts-hr vts-pad-top vts-pos-relative" > <!-- VESSEL INFORMATION ------------------------------------------------------------------- -->
+        <span class="bold vts-pad-top vts-pos-relative">Vessel information</span>
         <div>
             <span class="vts-force-spacing-200">{{vtsvesselmmsilabel}}</span>
             <br>
-            <div >
-                <input class="vts-input-standard" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselMMSIValid]" type="text" ng-model="vtsvesselmmsiinput" ng-change="VTSVesselMMSIValidation()" >
-            </div>
-            <div class="vts-pad-top" ng-show="isLoggedIn">
-                <button class="btn btn-default vts-lesspadding"  ng-class="{false:'', true:'vts-pulse'}[setvtsvesselMMSIValid]" ng-disabled="!isLoggedIn || !setvtsvesselMMSIValid" type="button" ng-click="populateInputsWithAisData()"><i class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></i>
-                    Insert AIS data
-                </button>
+            <div style="position: relative;"
+                 >
+                <input class="vts-input-standard vts-pos-relative" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselMMSIValid]" type="text" ng-model="vtsvesselmmsiinput" ng-change="VTSVesselMMSIValidation()" >
+                <div class="vts-pad-top vts-force-spacing-200 vts-pos-relative" ng-show="isLoggedIn">
+                    <div  style="width:124px;"id="lalala"
+                          ng-mouseenter="displayPopupInfo($event,'Inserting AIS data will overwrite previously inserted data.','large')"
+                          ng-mouseleave="removePopupInfo()">
+
+                        <button class="btn btn-default vts-less-padding"  ng-class="{false:'', true:'vts-pulse'}[setvtsvesselMMSIValid]" ng-disabled="!isLoggedIn || !setvtsvesselMMSIValid" type="button" ng-click="populateInputsWithAisData()"><i class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></i>
+                            Insert AIS data
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -129,25 +158,49 @@
                 <input class="vts-input-medium vts-text-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPersonsValid]"  ng-model="vtsvesselpersonsinput" ng-change="VTSVesselPersonsValidation(true)">
             </div>
             <div class="vts-force-spacing-200 " ng-show="showMaxDraught">
-                <span class="vts-force-spacing-200">Present max. draught (m)</span>
-                <input class="vts-input-small vts-text-center vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselDraughtValid]"  ng-model="vtsvesseldraughtinput" ng-change="VTSVesselDraughtValidation(true)" placeholder="{{placeholderAisVesselDraught}}">
+                <span class="vts-force-spacing-200">Draught (<span ng-class="{'vtsvalid-alert': maxDraughtExceedsLimit}">max. {{VTSSelectedTrafficCenterDraughtMax}}m</span>)</span>
+                <!--<span class="vts-force-spacing-200">Present max. draught (m)</span>-->
+                <!--<input class="vts-input-small vts-text-center vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselDraughtValid]"  ng-model="vtsvesseldraughtinput" ng-change="VTSVesselDraughtValidation(true)" placeholder="{{placeholderAisVesselDraught}}">-->
+                <input class="vts-input-small vts-text-center vts-placeholder-highlight"
+                       ng-class="{'vtsvalid': (setvtsvesselDraughtValid && maxDraughtExceedsLimit == false) == true,
+                    'vtsinvalid': setvtsvesselDraughtValid == false,
+                    'vtsvalid-alert': (setvtsvesselDraughtValid && maxDraughtExceedsLimit == true) == true}"
+                       ng-model="vtsvesseldraughtinput"
+                       ng-change="VTSVesselDraughtValidation(true)"
+                       placeholder="{{placeholderAisVesselDraught}}"
+                >
+                <div  class="vts-force-spacing-20">
+                    &nbsp;<abbr data-title="Draught is the maximum depth of a vessel below waterline." class="glyphicon glyphicon-question-sign vts-abbr"></abbr>
+                </div>
             </div>
+
             <div class="vts-force-spacing-200 " ng-show="showAirDraught">
-                <span class="vts-force-spacing-200">Air draught (m)</span>
-                <input class="vts-input-small vts-text-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselAirDraughtValid]"  ng-model="vtsvesselairdraughtinput" ng-change="VTSVesselAirDraughtValidation(true)">
+                <span class="vts-force-spacing-200">Air draught (<span ng-class="{'vtsvalid-alert': maxAirdraughtExceedsLimit}">max. {{VTSSelectedTrafficCenterAirdraughtMax}}m</span>)</span>
+                <input class="vts-input-small vts-text-center"
+                    ng-class="{'vtsvalid': (setvtsvesselAirDraughtValid && maxAirdraughtExceedsLimit == false) == true,
+                    'vtsinvalid': setvtsvesselAirDraughtValid == false,
+                    'vtsvalid-alert': (setvtsvesselAirDraughtValid && maxAirdraughtExceedsLimit == true) == true}"
+                    ng-model="vtsvesselairdraughtinput"
+                    ng-change="VTSVesselAirDraughtValidation(true)"
+                >
+                <div  class="vts-force-spacing-20">
+                    &nbsp;<abbr data-title="Air Draught is the maximum height of a vessel over waterline. Please contact the VTS center directly for more information." class="glyphicon glyphicon-question-sign vts-abbr"></abbr>
+                </div>
             </div>
-            <div  class="vts-force-spacing-200">
-                <div id="lalala"
-                     ng-mousemove="displayPopupInfo($event,'Manually change the time of ETA','small')"
-                     ng-mouseleave="removePopupInfo()">
-                <textarea id="bobby" class="vts-textarea-standard" ng-model="vtsvesseldefectsinput" placeholder="Defects, deficiencies or limitations?"></textarea>
+
+
+
+            <div  class="vts-force-spacing-300">
+                <textarea class="vts-textarea-standard vts-force-spacing-250" ng-model="vtsvesseldefectsinput" placeholder="Defects, deficiencies or limitations?"></textarea>
+                <div  class="vts-force-spacing-20">
+                    &nbsp;<abbr data-title="Any information related to lowered safety level of a vessel or its ability to maneuver should be reported as soon as possible." class="glyphicon glyphicon-question-sign vts-abbr"></abbr>
                 </div>
             </div>
         </div>
         <div class="vts-pad-top">
             <div class="vts-force-spacing-200 " ng-show="showVesselType">
                 <span class="vts-force-spacing-200">Vessel Type:</span>
-                <select class="form-control ng-pristine ng-valid ng-touched vts-force-spacing-150 vts-select-lesspadding" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsVesselTypeValid]"   name="vts-center-select" ng-options="items as items.type for items in vesselTypes" ng-model="selectedVesselType" ng-change="selectVesselTypeChange(selectedVesselType)" >
+                <select class="form-control vts-force-spacing-150 vts-select-less-padding" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsVesselTypeValid]"   name="vts-center-select" ng-options="items as items.type for items in vesselTypes" ng-model="selectedVesselType" ng-change="selectVesselTypeChange(selectedVesselType)" >
                     <option value="" selected disabled class="ng-binding ng-scope">Select a type:</option>
                 </select>
             </div>
@@ -311,7 +364,7 @@
 
             <div class=" vts-pad-top" >
                 <span class="vts-force-spacing-300">
-                    <select class="form-control ng-pristine ng-valid ng-touched vts-force-spacing-200 vts-select-lesspadding" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoTypeValid]"   name="vts-center-select" ng-options="items for items in cargoTypes" ng-model="selectedCargoType" ng-change="selectVesselCargoChange(selectedCargoType)" >
+                    <select class="form-control    vts-force-spacing-200 vts-select-less-padding" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoTypeValid]"   name="vts-center-select" ng-options="items for items in cargoTypes" ng-model="selectedCargoType" ng-change="selectVesselCargoChange(selectedCargoType)" >
                         <option value="" selected disabled class="ng-binding ng-scope ">Select a cargo type:</option>
                     </select>
                 </span>
@@ -440,7 +493,7 @@
                             </div>
                             <div class="vts-force-spacing-350 vts-pad-top">
                                 <input class="vts-input-large" id="vts-selected-cargo-input" ng-disabled="cargoAddToManifestDisabled" ng-model="vtsdangerouscargonoteinput" placeholder="Additional cargo information">
-                                <button class="btn btn-default vts-lesspadding" ng-disabled="cargoAddToManifestDisabled"  ng-class="{false:'', true:'vts-button-green'}[!cargoAddToManifestDisabled]" type="button" ng-click="cargoAddToManifestFunction()"><i class="glyphicon glyphicon-plus"></i>
+                                <button class="btn btn-default vts-less-padding" ng-disabled="cargoAddToManifestDisabled"  ng-class="{false:'', true:'vts-button-green'}[!cargoAddToManifestDisabled]" type="button" ng-click="cargoAddToManifestFunction()"><i class="glyphicon glyphicon-plus"></i>
                                     Add to manifest
                                 </button>
                             </div>
@@ -508,38 +561,7 @@
 
         <hr class="vts-hr"> <!-- VOYAGE INFORMATION ------------------------------------------------------------------- -->
 
-        <span class="bold">Voyage information</span><span class="vts-grey-text"> - Expected entry position entering VTS area according to route (RTZ)</span>
-        <div class="">
-            <div class="" ng-show="showVesselCurrentPosition">
-                <div class="vts-force-spacing-300 " >
-                    <div>Vessel longitude:</div>
-                    <div class="">
-                        <input class="vts-input-small vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonDegreesValid]" ng-model="vtsvesselposlondegreesinput" ng-change="VTSVesselCurrentPositionLonDegValidation(true)" placeholder="{{placeholderAisVesselLonDegrees}}">
-                        <span> deg.</span>
-                        <input class="vts-input-medium vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLonMinutesValid]" ng-model="vtsvesselposlonminutesinput" ng-change="VTSVesselCurrentPositionLonMinValidation(true)" placeholder="{{placeholderAisVesselLonDecimalMinutes}}">
-                        <span> min. {{vtsCurrentPosCompassAppendEW}}</span>
-                    </div>
-                </div>
-                <div class="vts-force-spacing-300 ">
-                    <div>Vessel latitude:</span></div>
-                    <input class="vts-input-small vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatDegreesValid]" ng-model="vtsvesselposlatdegreesinput" ng-change="VTSVesselCurrentPositionLatDegValidation(true)" placeholder="{{placeholderAisVesselLatDegrees}}">
-                    <span> deg.</span>
-                    <input class="vts-input-medium vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPosLatMinutesValid]" ng-model="vtsvesselposlatminutesinput" ng-change="VTSVesselCurrentPositionLatMinValidation(true)" placeholder="{{placeholderAisVesselLatDecimalMinutes}}">
-                    <span> min. {{vtsCurrentPosCompassAppendNS}}</span>
-
-                </div>
-                <div class="vts-pad-top">
-                    <button class="btn btn-default vts-lesspadding" ng-disabled="getGPSCoordsBtnDisabled" type="button" ng-click="getLocation()">
-                        <i class="glyphicon glyphicon-globe" aria-hidden="true"></i>
-                        Use GPS
-                    </button>
-                    <button class="btn btn-default vts-lesspadding" ng-disabled="!aisdataReady" ng-show="isLoggedIn" type="button" ng-click="setLocationByAIS()"><i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
-                        Use AIS
-                    </button>
-                </div>
-            </div>
-
-            <hr class="vts-hr-seperator" >
+        <span class="bold">Voyage information</span><span class="vts-grey-text"> - data extracted from AIS or route (RTZ)</span>
 
             <div class="vts-pad-top" ng-show="showPortOfDestination || showPortOfDestinationEta">
                 <div class="vts-force-spacing-200" ng-show="showPortOfDestination">
@@ -552,23 +574,17 @@
                         <!-- ETA at destination port from AIS data -->
                     </div>
                 </div>
-                <div class="vts-force-spacing-200" ng-show="showRoute">
-                    <span class="vts-force-spacing-100">Route</span>
-                    <input class="vts-input" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselRouteValid]" type="text" ng-model="vtsvesselrouteinput" onfocus="this.placeholder = 'Currently not in use'" onblur="this.placeholder = ''" placeholder="Currently not in use">
-                </div>
             </div>
-            <div class="vts-pad-top">
-                <div class="vts-force-spacing-200">
-                    <span class="vts-force-spacing-200">Vessel speed:</span>
-                    <input class="vts-input-small vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselSpeedValid]" ng-model="vtsvesselspeedinput" ng-change="VTSVesselSpeedValidation(true)" >
+
+            <div class="vts-pad-top" style="padding-left:5px;">
+                <div class="" ng-show="showCourseOverGround">
+                    <span class="">ETA at VTS area:</span> <span class="vts-grey-text">{{vtsDisplayEtaDateTime}}</span>
                 </div>
-                <div class="vts-force-spacing-200" ng-show="showTrueCourse">
-                    <span class="vts-force-spacing-200">True course:</span>
-                    <input class="vts-input-small vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselTrueCourseValid]"  ng-model="vtsvesseltruecourseinput" ng-change="VTSTrueCourseValidation(true)">
+                <div class="" ng-show="showCourseOverGround">
+                    <span class="">Course Over Ground entering VTS:</span> <span class="vts-grey-text">{{vtsvesselcourseovergroundinput}} degrees</span>
                 </div>
-                <div class="vts-force-spacing-200" ng-show="showCourseOverGround">
-                    <span class="vts-force-spacing-200">Course Over Ground:</span>
-                    <input class="vts-input-small vts-text-center vts-placeholder-highlight" type="text" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselCourseOverGroundValid]"  ng-model="vtsvesselcourseovergroundinput" ng-change="VTSCourseOverGroundValidation(true)" placeholder="{{placeholderAisVesselCog}}">
+                <div class="" ng-show="showCourseOverGround">
+                    <span class="">Expected VTS area entry point:</span> <span class="vts-grey-text">{{vtsEtaLatDegree}}&deg; {{vtsEtaLatDecMinutes}} - {{vtsEtaLonDegree}}&deg; {{vtsEtaLonDecMinutes}}</span>
                 </div>
             </div>
         </div>

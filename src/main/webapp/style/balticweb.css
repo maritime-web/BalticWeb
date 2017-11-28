@@ -71,6 +71,50 @@ body {
 
     /* Vessel Traffic Service */
 
+
+abbr {
+    /*position: relative;*/
+    cursor:default !important;
+}
+
+abbr:hover::after {
+    opacity:1;
+    /*width: auto;*/
+    /*height:auto;*/
+    left:-150px;
+    top:-100%;
+    z-index:100000;
+}
+
+abbr::after {
+    opacity:0;
+    z-index:-100000;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    content: attr(data-title);
+    position: absolute;
+    top: -100%;
+    /*margin-top: -100%;*/
+    left:-150px;
+    min-width:140px;
+    max-width:140px;
+    display: block;
+    padding: 1em;
+    background: #3e66ff;
+    border-radius:4px;
+    color:white;
+    text-align: center;
+    -o-transition:.5s;
+    -ms-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
+    transition:1s;
+}
+.vts-abbr{
+    font-size:16px;
+    color: rgba(0, 0, 200, 0.7);
+}
+
+
 .vts-popup-hero {
     opacity: 1;
     animation: fade .5s linear;
@@ -79,16 +123,12 @@ body {
     border-top-right-radius:6px;
     border-bottom-left-radius:6px;
     border-bottom-right-radius:6px;
-    /*border:1px solid #888888;*/
     position:absolute;
     top:-80px;
     height:67px;
     white-space:normal;
     width:100%;
     color: #333333;
-    /*background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #d6d6d6 100%); !* FF3.6-15 *!*/
-    /*background: -webkit-linear-gradient(top, #ffffff 0%,#f3f3f3 50%,#d6d6d6 100%); !* Chrome10-25,Safari5.1-6 *!*/
-    /*background: linear-gradient(to bottom, #ffffff 0%,#f3f3f3 50%,#d6d6d6 100%); !* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ *!*/
     background-color: #fcb400;
     display: table;
     text-align: center;
@@ -161,7 +201,9 @@ body {
 .vts-sidemenu-listitem:hover{
     background-color:#f2f2f2;
 }
-
+.vts-pos-relative{
+    position: relative;
+}
 .vts-textarea-standard{
     position:relative;
     top:8px;
@@ -184,7 +226,7 @@ body {
 .vts-less-lineheight{
     line-height: 1;
 }
-.vts-lesspadding{
+.vts-less-padding{
     padding: 2px 6px;
 }
 .vts-padding-list{
@@ -234,6 +276,11 @@ body {
     box-shadow: 0 1px 1px rgba(78, 229, 50, 0.07) inset, 0 0 8px rgba(114, 229, 56, 0.6);
     outline: 0 none;
 }
+/** is valid number but incorrect value according to VTS center specs **/
+.vtsvalid-alert{
+    color: rgba(200, 0, 0, 1) !important;
+    font-weight: bold;
+}
 .vtsvalid:focus {
     border-color: rgba(68, 142, 24, 0.8);
     box-shadow: 0 1px 1px rgba(78, 229, 50, 0.07) inset, 0 0 8px rgba(114, 229, 56, 0.6);
@@ -252,6 +299,11 @@ body {
 .vts-force-spacing-50{
     min-width:50px;
     max-width:50px;
+    display: inline-block;
+}
+.vts-force-spacing-20{
+    min-width:20px;
+    max-width:20px;
     display: inline-block;
 }
 .vts-force-spacing-80{
@@ -274,6 +326,11 @@ body {
     max-width:200px;
     display: inline-block;
 }
+.vts-force-spacing-250{
+    min-width:250px;
+    max-width:250px;
+    display: inline-block;
+}
 .vts-force-spacing-300{
     min-width:300px;
     max-width:300px;
@@ -286,7 +343,12 @@ body {
 }
 .vts-force-spacing-400{
     min-width:400px;
-    max-width:3400px;
+    max-width:400px;
+    display: inline-block;
+}
+.vts-force-spacing-460{
+    min-width:460px;
+    max-width:460px;
     display: inline-block;
 }
 
@@ -299,11 +361,15 @@ body {
     margin: 0;
     vertical-align: bottom;
     position: relative;
-    top: -3px;
+    top: 0px;
+    left:3px;
+
 }
 .vts-checkbox-label{
+    position: relative;
+    top: 3px;
     display: inline;
-    padding-left: 6px;
+    padding-left: 9px;
     padding-right:10px;
 }
 .vts-checkbox-label-blue{
